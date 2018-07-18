@@ -1,7 +1,7 @@
 {
   "name": "genFlow",
   "version": "0.1.0",
-  "description": "Reason workflow with Esy",
+  "description": "Generate Flow bindings for Reason",
   "license": "MIT",
   "esy": {
     "build": [
