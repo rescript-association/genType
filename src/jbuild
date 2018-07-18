@@ -1,0 +1,6 @@
+(jbuild_version 1)
+
+(executable
+ ((name GenFlowMain)
+  (public_name GenFlowMain.exe)
+  (libraries (ocaml-migrate-parsetree reason unix))))

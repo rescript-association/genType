@@ -1,0 +1,34 @@
+{
+  "name": "genFlow",
+  "version": "0.1.0",
+  "description": "Reason workflow with Esy",
+  "license": "MIT",
+  "esy": {
+    "build": [
+      [
+        "refmterr",
+        "jbuilder",
+        "build"
+      ]
+    ],
+    "install": [
+      "esy-installer"
+    ],
+    "buildsInSource": "_build"
+  },
+  "dependencies": {
+    "@esy-ocaml/esy-installer": "^0.0.0",
+    "@opam/jbuilder": "^1.0.0-beta14",
+    "@opam/lambda-term": "^1.11.0",
+    "@opam/ocaml-migrate-parsetree": "*",
+    "@esy-ocaml/reason": "^3.0.0",
+    "refmterr": "^3.0.4"
+  },
+  "peerDependencies": {
+    "ocaml": "~4.2.3001"
+  },
+  "devDependencies": {
+    "@esy-ocaml/merlin": "*",
+    "ocaml": "~4.2.3001"
+  }
+}
