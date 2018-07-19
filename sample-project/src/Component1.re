@@ -14,6 +14,8 @@ let handleClick = (_event, _self) => Js.log("clicked!");
    Which desugars to
 
    `ReasonReact.element(Page.make(~message="hello", [||]))` */
+
+[@genFlow]
 let make = (~message, _children) => {
   ...component,
   render: self =>
