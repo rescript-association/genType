@@ -23,7 +23,7 @@ Since this project is in active development, the binary uses `sample-project` as
 ```
 # in sample-project
 yarn install
-tarn build
+yarn build
 ```
 
 ## Run genFlow on the sample js project
