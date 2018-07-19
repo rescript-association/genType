@@ -1,1 +1,1 @@
-ReasonReactFlow.bs=ReasonReactShim
+ReasonReactFlow.bs=../shims/ReasonReactFlowShim

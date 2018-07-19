@@ -26,8 +26,20 @@ yarn install
 yarn build
 ```
 
+Every time genFlow changes, clean and build again:
+```
+yarn clean
+yarn build
+```
+
 ## Run genFlow on the sample js project
 
 ```
 yarn genFlow
+```
+
+## Type check with Flow
+```
+# in sample-project
+flow
 ```

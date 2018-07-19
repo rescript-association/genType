@@ -11,16 +11,16 @@
 var Component1 = require("../Component1.bs.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
-import type {ComponentSpec as ReasonReactComponentSpec} from 'ReasonReactFlow.bs'
+import type {ComponentSpec as ReasonReactComponentSpec} from '../shims/ReasonReactFlowShim'
 ;
 
-import type {Stateless as ReasonReactStateless} from 'ReasonReactFlow.bs'
+import type {Stateless as ReasonReactStateless} from '../shims/ReasonReactFlowShim'
 ;
 
-import type {NoRetainedProps as ReasonReactNoRetainedProps} from 'ReasonReactFlow.bs'
+import type {NoRetainedProps as ReasonReactNoRetainedProps} from '../shims/ReasonReactFlowShim'
 ;
 
-import type {Actionless as ReasonReactActionless} from 'ReasonReactFlow.bs'
+import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlowShim'
 ;
 
 import type {Component as ReactComponent} from 'React'
