@@ -42,9 +42,9 @@ let findCmtFiles = (): list(string) => {
   let sampleProject =
     ["sample-project", "lib", "bs", "src"] |> List.fold_left(concat, root);
   [
-    "Index-ReactLite.cmt",
-    "Component1-ReactLite.cmt",
-    "Component2-ReactLite.cmt",
+    "Index.cmt",
+    "Component1.cmt",
+    "Component2.cmt",
   ]
   |> List.map(concat(sampleProject));
 };
