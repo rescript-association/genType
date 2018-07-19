@@ -14,8 +14,16 @@ esy install
 esy build
 ```
 
-After a successful build, you can try the binary by running
-`./_build/install/default/bin/GenFlow.exe`.
-
 Since this project is in active development, the binary uses the
-`sample-project` as a hardcoded path for testing.
+`sample-project` as a hardcoded path for testing. Before we try running
+`GenFlow.exe`, we need to build the `sample-project` (which is being built
+with BuckleScript):
+
+```
+cd sample-project
+npm install
+npm run build
+```
+
+After a successful build, you can try the binary by running
+`./_build/install/default/bin/GenFlow.exe` in the project root directory.
