@@ -5,6 +5,6 @@
     (name BuckleScriptPostProcessLib)
 
     ; Dependencies
-    (libraries ())
+    (libraries (str))
   )
 )

@@ -34,8 +34,10 @@ var component = ReasonReact.wrapReasonForJs(Component1.component, (function (jsP
         return Component1.make(jsProps.message, argB);
       }));
 
-var __flowTypeValueAnnotation__component = "React$ComponentType<Props>";
 
-exports.__flowTypeValueAnnotation__component = __flowTypeValueAnnotation__component;
-exports.component = component;
+var plus = Component1.plus;
+
+
+exports.plus = (plus : <T10955>(number, T10955) => number);
+exports.component = (component : React$ComponentType<Props>);
 /*  Not a pure module */

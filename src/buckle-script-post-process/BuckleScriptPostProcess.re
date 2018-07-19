@@ -117,6 +117,44 @@ let capitalizeIdentifiers = fileInfo => {
   {...fileInfo, jsLines};
 };
 
+module StringMap = Map.Make(String);
+
+let annotateFlowExports = fileInfo => {
+  let foldLine = ((map, lines), nextLine) =>
+    if (Str.string_match(Patterns.flowStringVar, nextLine, 0)) {
+      let key = nextLine |> Str.matched_group(1);
+      let value = nextLine |> Str.matched_group(2);
+      (map |> StringMap.add(key, value), lines);
+    } else if (Str.string_match(Patterns.exportedIdentWithPrefix, nextLine, 0)) {
+      (
+        /* ignore -- not sure why this case is generated */
+        map,
+        lines,
+      );
+    } else if (Str.string_match(Patterns.exportedIdent, nextLine, 0)) {
+      let lhs = nextLine |> Str.matched_group(1);
+      let rhs = nextLine |> Str.matched_group(2);
+      if (map |> StringMap.mem(rhs)) {
+        let nextLineNew =
+          "exports."
+          ++ lhs
+          ++ " = ("
+          ++ rhs
+          ++ " : "
+          ++ (map |> StringMap.find(rhs))
+          ++ ");";
+        (map, [nextLineNew, ...lines]);
+      } else {
+        (map, [nextLine, ...lines]);
+      };
+    } else {
+      (map, [nextLine, ...lines]);
+    };
+  let (_, revJSLines) =
+    List.fold_left(foldLine, (StringMap.empty, []), fileInfo.jsLines);
+  {...fileInfo, jsLines: List.rev(revJSLines)};
+};
+
 let generate = fileInfo => String.concat("\n", fileInfo.jsLines) ++ "\n";
 
 let run = file =>
@@ -124,6 +162,7 @@ let run = file =>
   |> readFile
   |> addHeader
   |> capitalizeIdentifiers
+  |> annotateFlowExports
   |> generate
   |> writeFile(file);
 

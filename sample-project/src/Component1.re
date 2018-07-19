@@ -23,3 +23,6 @@ let make = (~message, _children) => {
       (ReasonReact.string(message))
     </div>,
 };
+
+[@genFlow]
+let plus = (x,_y) => x+1;

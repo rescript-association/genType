@@ -36,7 +36,12 @@ function make(message, _) {
         ];
 }
 
+function plus(x, _) {
+  return x + 1 | 0;
+}
+
 exports.component = component;
 exports.handleClick = handleClick;
 exports.make = make;
+exports.plus = plus;
 /* component Not a pure module */

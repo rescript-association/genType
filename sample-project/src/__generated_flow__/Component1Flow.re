@@ -13,6 +13,8 @@ Js_unsafe.raw_stmt(
   "import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlowShim'",
 );
 Js_unsafe.raw_stmt("import type {Component as ReactComponent} from 'React'");
+let __flowTypeValueAnnotation__plus = "<T10955>(number, T10955) => number";
+let plus = Component1.plus;
 Js_unsafe.raw_stmt("export type Props = {|message:string|}");
 let __flowTypeValueAnnotation__component = "React$ComponentType<Props>";
 let component =
