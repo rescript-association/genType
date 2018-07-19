@@ -1,0 +1,11 @@
+lib: [
+  "_build/install/default/lib/genFlow/META" {"META"}
+  "_build/install/default/lib/genFlow/opam" {"opam"}
+]
+bin: [
+  "_build/install/default/bin/GenFlow.exe" {"GenFlow.exe"}
+]
+doc: [
+  "_build/install/default/doc/genFlow/README.md"
+  "_build/install/default/doc/genFlow/LICENSE"
+]

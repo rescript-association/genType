@@ -1,0 +1,4 @@
+/_build
+/esy.lock
+/node_modules
+/src/.merlin
