@@ -1,0 +1,10 @@
+(jbuild_version 1)
+
+(library (
+    ; The main module that will become the binary.
+    (name BuckleScriptPostProcessLib)
+
+    ; Dependencies
+    (libraries ())
+  )
+)

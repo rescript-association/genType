@@ -1,0 +1,7 @@
+B /Users/cristianoc/.esy/3______________________________________________________________/i/opam__slash__ocamlfind-1.8.0-aa204d06/lib/ocaml
+B ../../_build/default/src/buckle-script-post-process-lib/.BuckleScriptPostProcessLib.objs
+B ../../_build/default/src/buckle-script-post-process/.BuckleScriptPostProcess.eobjs
+S /Users/cristianoc/.esy/3______________________________________________________________/i/opam__slash__ocamlfind-1.8.0-aa204d06/lib/ocaml
+S .
+S ../buckle-script-post-process-lib
+FLG -w -40
