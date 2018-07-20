@@ -925,7 +925,11 @@ module TypeVars = {
     List.map(((name, id)) => Flow.Ident(name, []), freeTypeVars);
 };
 
-let structureItemForType = (~opaque=false, typeParams, name, underlying) => {
+type codeItem =
+  | StructureItem(GenFlowEmitAst.ReasonAst.Parsetree.structure_item)
+  | RawJS(string);
+
+let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
   let opaqueTypeString =
     "export"
     ++ (opaque ? " opaque " : " ")
@@ -935,27 +939,26 @@ let structureItemForType = (~opaque=false, typeParams, name, underlying) => {
     ++ " = "
     ++ Flow.render(underlying)
     ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
-  GenFlowEmitAst.mkJSRawExprStmt(opaqueTypeString);
+  RawJS(opaqueTypeString);
 };
 
-let structureItemForOpaqueType = (typeParams, name, underlying) =>
-  structureItemForType(~opaque=true, typeParams, name, underlying);
+let codeItemForOpaqueType = (typeParams, name, underlying) =>
+  codeItemForType(~opaque=true, typeParams, name, underlying);
 
-let structureItemForUnionType = (typeParams, leafTypes, name) => {
+let codeItemForUnionType = (typeParams, leafTypes, name) => {
   let opaqueTypeString =
     "export type "
     ++ String.capitalize(name)
     ++ Flow.genericsString(List.map(Flow.render, typeParams))
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
-  let variantTypeInjection = GenFlowEmitAst.mkJSRawExprStmt(opaqueTypeString);
-  variantTypeInjection;
+  RawJS(opaqueTypeString);
 };
 
 /*
  * TODO: Make the types namespaced by nested Flow module.
  */
-let rec structureItemsFromConstructorDeclaration =
+let rec codeItemsFromConstructorDeclaration =
         (modulePath, variantTypeName, constructorDeclaration) => {
   GenIdent.resetPerStructure();
   let constructorArgs = constructorDeclaration.Types.cd_args;
@@ -976,20 +979,29 @@ let rec structureItemsFromConstructorDeclaration =
   let retType = Flow.Ident(leafTypeName, flowTypeVars);
   let constructorFlowType =
     createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
-  let items =
-    GenFlowEmitAst.[
-      structureItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
-      mkFlowAnnotationStructItem(annotationBindingName, constructorFlowType),
-      mkStructItemValBindings([
-        mkBinding(
-          mkPattern(Ppat_var(located(constructorAlias))),
-          mkExpr(
-            createVariantFunction(convertableFlowTypes, modulePath, leafName),
-          ),
-        ),
-      ]),
-    ];
-  (retType, (remainingDeps, items));
+  let codeItems = [
+    codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
+    ...GenFlowEmitAst.[
+         mkFlowAnnotationStructItem(
+           annotationBindingName,
+           constructorFlowType,
+         ),
+         mkStructItemValBindings([
+           mkBinding(
+             mkPattern(Ppat_var(located(constructorAlias))),
+             mkExpr(
+               createVariantFunction(
+                 convertableFlowTypes,
+                 modulePath,
+                 leafName,
+               ),
+             ),
+           ),
+         ]),
+       ]
+       |> List.map(i => StructureItem(i)),
+  ];
+  (retType, (remainingDeps, codeItems));
 };
 
 let mkFlowTypeBinding = (name, flowType) =>
@@ -1006,7 +1018,7 @@ let mkFlowTypeBinding = (name, flowType) =>
     )
   );
 
-let structureItemsForId = (~inputModuleName, ~value_binding, id) => {
+let codeItemsForId = (~inputModuleName, ~value_binding, id) => {
   let {Typedtree.vb_expr} = value_binding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
@@ -1036,7 +1048,7 @@ let structureItemsForId = (~inputModuleName, ~value_binding, id) => {
       ),
     ]),
   ];
-  (remainingDeps, items);
+  (remainingDeps, items |> List.map(i => StructureItem(i)));
 };
 
 /*
@@ -1116,35 +1128,38 @@ let structureItemsForMake = (~inputModuleName, ~value_binding, id) => {
     let propsTypeDeclaration =
       switch (flowPropGenerics) {
       | None => []
-      | Some(propsType) => [
-          structureItemForType([], propsTypeName, propsType),
-        ]
+      | Some(propsType) => [codeItemForType([], propsTypeName, propsType)]
       };
 
     let items =
       propsTypeDeclaration
-      @ [
-        GenFlowEmitAst.mkStructItemValBindings([
-          mkFlowTypeBinding("component", componentFlowType),
-        ]),
-        GenFlowEmitAst.mkStructItemValBindings([
-          GenFlowEmitAst.mkBinding(
-            GenFlowEmitAst.mkPatternIdent("component"),
-            GenFlowEmitAst.mkExprApplyFunLabels(
-              GenFlowEmitAst.mkExprIdentifier("ReasonReact.wrapReasonForJs"),
-              [
-                (
-                  ReasonAst.Asttypes.Labelled("component"),
-                  GenFlowEmitAst.mkExprIdentifier(
-                    inputModuleName ++ "." ++ "component",
-                  ),
+      @ (
+        [
+          GenFlowEmitAst.mkStructItemValBindings([
+            mkFlowTypeBinding("component", componentFlowType),
+          ]),
+          GenFlowEmitAst.mkStructItemValBindings([
+            GenFlowEmitAst.mkBinding(
+              GenFlowEmitAst.mkPatternIdent("component"),
+              GenFlowEmitAst.mkExprApplyFunLabels(
+                GenFlowEmitAst.mkExprIdentifier(
+                  "ReasonReact.wrapReasonForJs",
                 ),
-                (ReasonAst.Asttypes.Nolabel, jsPropsToReason),
-              ],
+                [
+                  (
+                    ReasonAst.Asttypes.Labelled("component"),
+                    GenFlowEmitAst.mkExprIdentifier(
+                      inputModuleName ++ "." ++ "component",
+                    ),
+                  ),
+                  (ReasonAst.Asttypes.Nolabel, jsPropsToReason),
+                ],
+              ),
             ),
-          ),
-        ]),
-      ];
+          ]),
+        ]
+        |> List.map(i => StructureItem(i))
+      );
     let deps = [
       JSTypeFromModule("Component", "ReactComponent", "React"),
       ...remainingDeps,
@@ -1152,7 +1167,7 @@ let structureItemsForMake = (~inputModuleName, ~value_binding, id) => {
     (deps, items);
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> structureItemsForId(~inputModuleName, ~value_binding)
+    id |> codeItemsForId(~inputModuleName, ~value_binding)
   };
 };
 
@@ -1173,20 +1188,19 @@ let structureItemsForMake = (~inputModuleName, ~value_binding, id) => {
  * Where the "someFlowType" is a flow converted type from Reason type, and
  * where the require() redirection may perform some safe conversions.
  */
-let structureItemsForValueBinding = (~inputModuleName, value_binding) => {
+let codeItemsForValueBinding = (~inputModuleName, value_binding) => {
   let {Typedtree.vb_pat, vb_expr, vb_attributes} = value_binding;
   GenIdent.resetPerStructure();
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
     id |> structureItemsForMake(~inputModuleName, ~value_binding)
   | (Tpat_var(id, _), GenFlow) =>
-    id |> structureItemsForId(~inputModuleName, ~value_binding)
+    id |> codeItemsForId(~inputModuleName, ~value_binding)
   | _ => ([], [])
   };
 };
 
-let structureItemsForTypeDecl =
-    (~inputModuleName, dec: Typedtree.type_declaration) => {
+let codeItemsForTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) => {
   GenIdent.resetPerStructure();
   switch (
     dec.typ_type.type_params,
@@ -1197,10 +1211,7 @@ let structureItemsForTypeDecl =
     let freeTypeVars = TypeVars.extract(typeParams);
     let flowTypeVars = TypeVars.toFlow(freeTypeVars);
     let typeName = Ident.name(dec.typ_id);
-    (
-      [],
-      [structureItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)],
-    );
+    ([], [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)]);
   /*
    * This case includes aliasings such as:
    *
@@ -1214,13 +1225,13 @@ let structureItemsForTypeDecl =
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [structureItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)],
+        [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)],
       )
     | Some(coreType) =>
       let (deps, (_converter, flowType)) =
         reasonTypeToConversion(coreType.Typedtree.ctyp_type);
       let structureItems = [
-        structureItemForOpaqueType(flowTypeVars, typeName, flowType),
+        codeItemForOpaqueType(flowTypeVars, typeName, flowType),
       ];
       let deps = Dependencies.filterFreeTypeVars(freeTypeVars, deps);
       (deps, structureItems);
@@ -1230,10 +1241,7 @@ let structureItemsForTypeDecl =
     let variantTypeName = Ident.name(dec.typ_id);
     let resultTypesDepsAndVariantLeafBindings =
       List.map(
-        structureItemsFromConstructorDeclaration(
-          inputModuleName,
-          variantTypeName,
-        ),
+        codeItemsFromConstructorDeclaration(inputModuleName, variantTypeName),
         constructorDeclarations,
       );
     let (resultTypes, depsAndVariantLeafBindings) =
@@ -1244,22 +1252,22 @@ let structureItemsForTypeDecl =
     let items = List.concat(listListItems);
     let flowTypeVars = TypeVars.toFlow(TypeVars.extract(typeParams));
     let unionType =
-      structureItemForUnionType(flowTypeVars, resultTypes, variantTypeName);
+      codeItemForUnionType(flowTypeVars, resultTypes, variantTypeName);
     (deps, List.append(items, [unionType]));
   | _ => ([], [])
   };
 };
 
-let typedtreeItemToParsetreeItem = (inputModuleName, item) => {
+let typedItemToParseItem = (inputModuleName, item) => {
   let (listListDeps, listListItems) =
     switch (item) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations)} =>
       typeDeclarations
-      |> List.map(structureItemsForTypeDecl(~inputModuleName))
+      |> List.map(codeItemsForTypeDecl(~inputModuleName))
       |> List.split
     | {Typedtree.str_desc: Tstr_value(loc, valueBindings)} =>
       valueBindings
-      |> List.map(structureItemsForValueBinding(~inputModuleName))
+      |> List.map(codeItemsForValueBinding(~inputModuleName))
       |> List.split
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
@@ -1282,62 +1290,61 @@ let dependencyEqual = (a, b) =>
   | _ => false
   };
 
-let structureItemsForDependencies = (modulesMap, dependencies) => {
+let codeItemsForDependencies = (modulesMap, dependencies): list(codeItem) => {
   /*
    * Makes sure we only add a dependency/import at the top of the file once per
    * dependency. How about a little n square action! (These lists should be
    * about length 3-5).
    */
-  let folder = ((handledDeps, revStructuredItems) as soFar, next) =>
+  let folder = ((handledDeps, revCodeItems) as soFar, next) =>
     if (List.exists(dependencyEqual(next), handledDeps)) {
       soFar;
     } else {
-      let structureItem =
+      let codeItem =
         switch (next) {
         | TypeAtPath(p) =>
           let importTypeString = typePathToFlowImportString(modulesMap, p);
-          GenFlowEmitAst.mkJSRawExprStmt(importTypeString);
+          RawJS(importTypeString);
         | JSTypeFromModule(typeName, asName, moduleName) =>
           let importTypeString = importString(typeName, asName, moduleName);
-          GenFlowEmitAst.mkJSRawExprStmt(importTypeString);
+          RawJS(importTypeString);
         | FreeTypeVariable(s, id) =>
-          GenFlowEmitAst.mkJSRawExprStmt(
-            "// Warning polymorphic type unhandled:" ++ s,
-          )
+          RawJS("// Warning polymorphic type unhandled:" ++ s)
         /* TODO: Currently unused. Would be useful for injecting dependencies
          * on runtime converters that end up being used. */
         | JSModuleImport(importAs, jsModuleName) =>
-          GenFlowEmitAst.mkJSRawExprStmt(
+          RawJS(
             "const " ++ importAs ++ " = require('" ++ jsModuleName ++ "')",
           )
         };
-      ([next, ...handledDeps], [structureItem, ...revStructuredItems]);
+      ([next, ...handledDeps], [codeItem, ...revCodeItems]);
     };
-  let (handledDeps, revStructuredItems) =
+  let (handledDeps, revCodeItems) =
     List.fold_left(folder, ([], []), dependencies);
-  List.rev(List.rev(revStructuredItems));
+  revCodeItems;
 };
 
-let cmtToStructureItems = (~modulesMap, ~globalModuleName, inputCMT) => {
+let cmtToCodeItems =
+    (~modulesMap, ~globalModuleName, inputCMT): list(codeItem) => {
   let {Cmt_format.cmt_annots} = inputCMT;
   switch (cmt_annots) {
   | Implementation(structure) =>
-    let typedTreeItems = structure.Typedtree.str_items;
-    let (deps, items) =
+    let typedItems = structure.Typedtree.str_items;
+    let (deps, parseItems) =
       List.fold_left(
-        ((curDeps, curItems), nextItem) => {
-          let (nextDeps, nextItems) =
-            typedtreeItemToParsetreeItem(globalModuleName, nextItem);
+        ((curDeps, curParseItems), nextTypedItem) => {
+          let (nextDeps, nextParseItems) =
+            typedItemToParseItem(globalModuleName, nextTypedItem);
           (
             List.append(nextDeps, curDeps),
-            List.append(nextItems, curItems),
+            List.append(nextParseItems, curParseItems),
           );
         },
         ([], []),
-        typedTreeItems,
+        typedItems,
       );
-    let imports = structureItemsForDependencies(modulesMap, deps);
-    List.append(imports, items);
+    let imports = codeItemsForDependencies(modulesMap, deps);
+    List.append(imports, parseItems);
   | _ => []
   };
 };
@@ -1453,7 +1460,7 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
-let emitStructureItems =
+let emitCodeItems =
     (
       ~generatedFiles,
       ~inputPath,
@@ -1464,16 +1471,20 @@ let emitStructureItems =
     ) =>
   switch (structureItems) {
   | [_, ..._] =>
-    let emitStructureItem = item => {
-      let outputFormatter = Format.str_formatter;
-      Reason_toolchain.RE.print_implementation_with_comments(
-        outputFormatter,
-        ([item], []),
-      );
-      Format.pp_print_flush(outputFormatter, ());
-      Format.flush_str_formatter();
-    };
-    let astText = structureItems |> List.map(emitStructureItem) |> String.concat("");
+    let emitCodeItem = codeItem =>
+      switch (codeItem) {
+      | StructureItem(item) =>
+        let outputFormatter = Format.str_formatter;
+        Reason_toolchain.RE.print_implementation_with_comments(
+          outputFormatter,
+          ([item], []),
+        );
+        Format.pp_print_flush(outputFormatter, ());
+        Format.flush_str_formatter();
+      | RawJS(s) => "Js_unsafe.raw_stmt(\"" ++ s ++ "\");\n "
+      };
+    let astText =
+      structureItems |> List.map(emitCodeItem) |> String.concat("");
     let astTextNoNewline = {
       /* refmt would also remove the newline */
       let n = String.length(astText);
@@ -1511,8 +1522,8 @@ let processCMTFile =
       Generator.outputReasonModuleName(globalModuleName) ++ ".re",
     );
   inputCMT
-  |> cmtToStructureItems(~modulesMap, ~globalModuleName)
-  |> emitStructureItems(
+  |> cmtToCodeItems(~modulesMap, ~globalModuleName)
+  |> emitCodeItems(
        ~generatedFiles,
        ~inputPath,
        ~outputPath,

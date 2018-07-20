@@ -109,30 +109,6 @@ let mkExprFun = (~label=ReasonAst.Asttypes.Nolabel, argName, retExpr) =>
 let mkString = s =>
   mkExpr(ReasonAst.Parsetree.Pexp_constant(Pconst_string(s, None)));
 
-let mkJSRawExprStmt = s =>
-/*
-This could be simplified by generating [%%raw s] but the printer for extensions seems broken
-
-mkStructItem(
-  Pstr_extension(
-    (located("raw"), PStr([mkStructItemEval(mkString(s))])),
-    [],
-  ),
-);
-*/
-  mkStructItemEval(
-    mkExpr(
-      ReasonAst.Parsetree.Pexp_apply(
-        mkExpr(
-          ReasonAst.Parsetree.Pexp_ident(
-            located(Longident.parse("Js_unsafe.raw_stmt")),
-          ),
-        ),
-        [(Nolabel, mkString(s))],
-      ),
-    ),
-  );
-
 /*
  * Since the AST we generate is assumed to be *after* operators are swapped:
  */
