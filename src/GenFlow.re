@@ -2,18 +2,16 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
-let root =
-  Filename.(Sys.executable_name |> dirname |> dirname |> dirname |> dirname);
-
-let project = Filename.concat(root, "sample-project");
+let project =
+  Filename.(
+    "sample-project"
+    |> (
+      Sys.executable_name |> dirname |> dirname |> dirname |> dirname |> concat
+    )
+  );
 
 let outputDir =
   Filename.(List.fold_left(concat, project, ["src", "__generated_flow__"]));
-
-let outputDirLib =
-  Filename.(
-    List.fold_left(concat, root, ["lib", "bs", "js", "__generated_flow__"])
-  );
 
 let createModulesMap = modulesMapFile =>
   switch (modulesMapFile) {
@@ -40,7 +38,12 @@ let createModulesMap = modulesMapFile =>
 let findCmtFiles = (): list(string) => {
   open Filename;
   let src = ["lib", "bs", "src"] |> List.fold_left(concat, project);
-  ["Index.cmt", "Component1.cmt", "Component2.cmt"] |> List.map(concat(src));
+  let cmtFiles =
+    src
+    |> Sys.readdir
+    |> Array.to_list
+    |> List.filter(Filename.check_suffix(_, ".cmt"));
+  cmtFiles |> List.map(concat(src));
 };
 
 let fileHeader =
