@@ -1422,11 +1422,11 @@ module GeneratedReFiles = {
       };
       if (!identical) {
         fileName |> logFileAction(Replace);
-        writeFile();
+        writeFile(fileName, fileContents);
       };
     } else {
       fileName |> logFileAction(Write);
-      writeFile();
+      writeFile(fileName, fileContents);
     };
   };
 
@@ -1481,8 +1481,9 @@ let emitStructureItems =
 
     generatedFiles
     |> GeneratedReFiles.writeFileIfRequired(
-         outputPath, fileContents, ~writeFile=() =>
-         writeFile(outputPath, fileContents)
+         outputPath,
+         fileContents,
+         ~writeFile,
        );
 
   | [] => outputPath |> GeneratedReFiles.logFileAction(NoMatch)
