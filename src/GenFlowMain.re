@@ -737,7 +737,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
  * TODO: Handle the case where the function in Reason accepts a single unit
  * arg, which should NOT be converted.
  */
-and reasonTypeToConversion = (typ: Types.type_expr) : conversionPlan =>
+and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
   Types.(
     switch (typ.desc) {
     | Tvar(None) =>
@@ -877,7 +877,7 @@ module Dependencies = {
     List.filter(
       fun
       | FreeTypeVariable(s, id) =>
-        ! List.exists(((s2, id2)) => id == id2, freeTypeVars)
+        !List.exists(((s2, id2)) => id == id2, freeTypeVars)
       | _ => true,
       deps,
     );
@@ -1226,7 +1226,7 @@ let structureItemsForTypeDecl =
       (deps, structureItems);
     };
   | (typeParams, Type_variant(constructorDeclarations), GenFlow)
-      when ! hasSomeGADTLeaf(constructorDeclarations) =>
+      when !hasSomeGADTLeaf(constructorDeclarations) =>
     let variantTypeName = Ident.name(dec.typ_id);
     let resultTypesDepsAndVariantLeafBindings =
       List.map(
@@ -1390,7 +1390,7 @@ module GeneratedReFiles = {
     {filesOnDisk, filesToWrite: StringSet.empty};
   };
 
-  let readLines = (file: string) : list(string) => {
+  let readLines = (file: string): list(string) => {
     let lines = ref([]);
     let chan = open_in(file);
     let finished_lines =
@@ -1409,7 +1409,7 @@ module GeneratedReFiles = {
     finished_lines;
   };
 
-  let readFile = (file: string) : string =>
+  let readFile = (file: string): string =>
     String.concat("\n", readLines(file));
 
   let generateFileIfRequired = (fileName, fileContents, ~generateFile, x) => {
@@ -1420,7 +1420,7 @@ module GeneratedReFiles = {
       if (identical) {
         fileName |> logFileAction(Skip);
       };
-      if (! identical) {
+      if (!identical) {
         fileName |> logFileAction(Replace);
         generateFile();
       };
@@ -1432,7 +1432,7 @@ module GeneratedReFiles = {
 
   let cleanup = ({filesOnDisk, filesToWrite}) => {
     let filesToRemove = StringSet.diff(filesOnDisk, filesToWrite);
-    if (! StringSet.is_empty(filesToRemove)) {
+    if (!StringSet.is_empty(filesToRemove)) {
       logItem("Clean up %d .re files\n", filesToRemove |> StringSet.cardinal);
       StringSet.iter(
         file => {
@@ -1474,7 +1474,7 @@ let emitStructureItems =
     let astTextNoNewline = {
       /* refmt would also remove the newline */
       let n = String.length(astText);
-      n > 0 && astText.[n - 1] == '\n' ?
+      n > 0 && astText.[(n - 1)] == '\n' ?
         String.sub(astText, 0, n - 1) : astText;
     };
     let fileContents = signFile(fileHeader ++ astTextNoNewline);
@@ -1526,6 +1526,7 @@ let run =
       ~findCmtFiles,
       ~buildSourceFiles,
       ~buildGeneratedFiles,
+      ~doCleanup,
     ) => {
   buildSourceFiles();
 
@@ -1548,8 +1549,10 @@ let run =
        ),
      );
 
-  log("Cleaning up\n");
-  GeneratedReFiles.cleanup(generatedFiles);
+  if (doCleanup) {
+    log("Cleaning up\n");
+    GeneratedReFiles.cleanup(generatedFiles);
+  };
 
   buildGeneratedFiles();
   log("Done\n");

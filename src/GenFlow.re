@@ -3,9 +3,7 @@
  */
 
 let root =
-  Filename.(
-    Sys.executable_name |> dirname |> dirname |> dirname |> dirname |> dirname
-  );
+  Filename.(Sys.executable_name |> dirname |> dirname |> dirname |> dirname);
 
 let project = Filename.concat(root, "sample-project");
 
@@ -59,6 +57,50 @@ let buildGeneratedFiles = () => ();
 let modulesMap = ref(None);
 let cli = () => {
   let setModulesMap = s => modulesMap := Some(s);
+  let setCmtAdd = s => {
+    let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
+    assert(Array.length(splitColon) === 2);
+    let cmt: string = splitColon[0];
+    let mlast: string = splitColon[1];
+    let cmtPath = Filename.concat(Sys.getcwd(), cmt);
+    let cmtExists = Sys.file_exists(cmtPath);
+    let shouldProcess = cmtExists && Filename.check_suffix(cmtPath, ".cmt");
+    if (shouldProcess) {
+      print_endline("-cmt-add cmt:" ++ cmtPath ++ " mlast:" ++ mlast);
+      GenFlowMain.run(
+        ~outputDir,
+        ~fileHeader,
+        ~signFile,
+        ~modulesMap=createModulesMap(modulesMap^),
+        ~findCmtFiles=() => [cmtPath],
+        ~buildSourceFiles,
+        ~buildGeneratedFiles,
+        ~doCleanup=false,
+      );
+    };
+    exit(0);
+  };
+  let setCmtRm = s => {
+    let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
+    assert(Array.length(splitColon) === 1);
+    let cmt: string = splitColon[0];
+    let globalModuleName = Filename.chop_extension(Filename.basename(cmt));
+    let re =
+      Filename.concat(
+        outputDir,
+        GenFlowMain.Generator.outputReasonModuleName(globalModuleName)
+        ++ ".re",
+      );
+    print_endline("-cmt-rm cmt:" ++ cmt);
+    if (Sys.file_exists(re)) {
+      if (Unix.fork() == 0) {
+        /* the child */
+        Unix.sleep(1);
+        Unix.unlink(re);
+      };
+    };
+    exit(0);
+  };
   let speclist = [
     (
       "--modulesMap",
@@ -68,18 +110,21 @@ let cli = () => {
       ++ " Example(--modulesMap map.txt) where each line is of the form 'ModuleFlow.bs=SomeShim'. "
       ++ "E.g. 'ReasonReactFlow.bs=ReasonReactShim'.",
     ),
+    ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt file"),
+    ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt file"),
   ];
   let usage = "genFlow";
   Arg.parse(speclist, print_endline, usage);
-  let modulesMap = createModulesMap(modulesMap^);
+
   GenFlowMain.run(
     ~outputDir,
     ~fileHeader,
     ~signFile,
-    ~modulesMap,
+    ~modulesMap=createModulesMap(modulesMap^),
     ~findCmtFiles,
     ~buildSourceFiles,
     ~buildGeneratedFiles,
+    ~doCleanup=true,
   );
 };
 
