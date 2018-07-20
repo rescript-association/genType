@@ -1412,7 +1412,7 @@ module GeneratedReFiles = {
   let readFile = (file: string): string =>
     String.concat("\n", readLines(file));
 
-  let generateFileIfRequired = (fileName, fileContents, ~generateFile, x) => {
+  let writeFileIfRequired = (fileName, fileContents, ~writeFile, x) => {
     x.filesToWrite = StringSet.add(fileName, x.filesToWrite);
     if (StringSet.mem(fileName, x.filesOnDisk)) {
       let oldContents = readFile(fileName);
@@ -1422,11 +1422,11 @@ module GeneratedReFiles = {
       };
       if (!identical) {
         fileName |> logFileAction(Replace);
-        generateFile();
+        writeFile();
       };
     } else {
       fileName |> logFileAction(Write);
-      generateFile();
+      writeFile();
     };
   };
 
@@ -1480,8 +1480,8 @@ let emitStructureItems =
     let fileContents = signFile(fileHeader ++ astTextNoNewline);
 
     generatedFiles
-    |> GeneratedReFiles.generateFileIfRequired(
-         outputPath, fileContents, ~generateFile=() =>
+    |> GeneratedReFiles.writeFileIfRequired(
+         outputPath, fileContents, ~writeFile=() =>
          writeFile(outputPath, fileContents)
        );
 
