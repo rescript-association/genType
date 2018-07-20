@@ -1464,13 +1464,16 @@ let emitStructureItems =
     ) =>
   switch (structureItems) {
   | [_, ..._] =>
-    let outputFormatter = Format.str_formatter;
-    Reason_toolchain.RE.print_implementation_with_comments(
-      outputFormatter,
-      (structureItems, []),
-    );
-    Format.pp_print_flush(outputFormatter, ());
-    let astText = Format.flush_str_formatter();
+    let emitStructureItem = item => {
+      let outputFormatter = Format.str_formatter;
+      Reason_toolchain.RE.print_implementation_with_comments(
+        outputFormatter,
+        ([item], []),
+      );
+      Format.pp_print_flush(outputFormatter, ());
+      Format.flush_str_formatter();
+    };
+    let astText = structureItems |> List.map(emitStructureItem) |> String.concat("");
     let astTextNoNewline = {
       /* refmt would also remove the newline */
       let n = String.length(astText);
