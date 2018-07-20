@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "description": "Generate Flow bindings for Reason",
   "license": "MIT",
-  "scripts": {
-    "genFlow": "_build/default/src/GenFlow.exe --modulesMap modulesMap.txt"
-  },  "esy": {
+  "esy": {
     "build": [
       [
         "refmterr",

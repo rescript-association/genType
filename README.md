@@ -35,6 +35,7 @@ yarn build
 ## Run genFlow on the sample js project
 
 ```
+# in sample-project
 yarn genFlow
 ```
 
