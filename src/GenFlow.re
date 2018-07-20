@@ -67,6 +67,7 @@ let cli = () => {
     let shouldProcess = cmtExists && Filename.check_suffix(cmtPath, ".cmt");
     if (shouldProcess) {
       print_endline("-cmt-add cmt:" ++ cmtPath ++ " mlast:" ++ mlast);
+      Unix.sleep(1); /* To avoid stale artifacts */
       GenFlowMain.run(
         ~outputDir,
         ~fileHeader,
@@ -93,11 +94,8 @@ let cli = () => {
       );
     print_endline("-cmt-rm cmt:" ++ cmt);
     if (Sys.file_exists(re)) {
-      if (Unix.fork() == 0) {
-        /* the child */
-        Unix.sleep(1);
-        Unix.unlink(re);
-      };
+      Unix.sleep(1); /* To avoid stale artifacts */
+      Unix.unlink(re);
     };
     exit(0);
   };
