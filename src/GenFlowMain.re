@@ -1481,7 +1481,7 @@ let emitCodeItems =
         );
         Format.pp_print_flush(outputFormatter, ());
         Format.flush_str_formatter();
-      | RawJS(s) => "Js_unsafe.raw_stmt(\"" ++ s ++ "\");\n "
+      | RawJS(s) => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\"\n);\n"
       };
     let astText =
       structureItems |> List.map(emitCodeItem) |> String.concat("");
