@@ -1412,7 +1412,7 @@ module GeneratedReFiles = {
   let readFile = (file: string): string =>
     String.concat("\n", readLines(file));
 
-  let writeFileIfRequired = (fileName, fileContents, ~writeFile, x) => {
+  let writeFileIfRequired = (~fileName, ~fileContents, ~writeFile, x) => {
     x.filesToWrite = StringSet.add(fileName, x.filesToWrite);
     if (StringSet.mem(fileName, x.filesOnDisk)) {
       let oldContents = readFile(fileName);
@@ -1481,8 +1481,8 @@ let emitStructureItems =
 
     generatedFiles
     |> GeneratedReFiles.writeFileIfRequired(
-         outputPath,
-         fileContents,
+         ~fileName=outputPath,
+         ~fileContents,
          ~writeFile,
        );
 
