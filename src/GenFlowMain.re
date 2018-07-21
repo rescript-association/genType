@@ -929,8 +929,13 @@ type codeItem =
   | StructureItem(GenFlowEmitAst.ReasonAst.Parsetree.structure_item)
   | RawJS(string)
   | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
-  | ValueBinding(string, expressionConverter, Ident.t)
-  | ComponentBinding(string, GenFlowEmitAst.ReasonAst.Parsetree.expression);
+  | ValueBinding(string, Ident.t, Types.type_expr)
+  | ComponentBinding(
+      string,
+      option(GenFlowCommon.Flow.typ),
+      Ident.t,
+      Types.type_expr,
+    );
 
 let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
   let opaqueTypeString =
@@ -1025,7 +1030,7 @@ let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
-  let (valueDeps, (converter, flowType)) = conversion;
+  let (valueDeps, (_converter, flowType)) = conversion;
   /*
    * We pull apart the polymorphic type variables at the binding level, but
    * not at deeper function types because we know that the Reason/OCaml type
@@ -1038,7 +1043,7 @@ let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
   let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
   let codeItems = [
     FlowTypeBinding(Ident.name(id), flowType),
-    ValueBinding(inputModuleName, converter, id),
+    ValueBinding(inputModuleName, id, expressionType),
   ];
   (remainingDeps, codeItems);
 };
@@ -1069,7 +1074,7 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
-  let (valueDeps, (converter, flowType)) = conversion;
+  let (valueDeps, (_converter, flowType)) = conversion;
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(valueDeps);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
@@ -1090,10 +1095,6 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
       /* Then we had both props and children. */
       | [children, ..._] => Some(propOrChildren)
       };
-    let makeIdentifier =
-      GenFlowEmitAst.mkExprIdentifier(
-        inputModuleName ++ "." ++ Ident.name(id),
-      );
     let propsTypeName = GenIdent.propsTypeName();
     let propsTypeNameFlow = Flow.Ident(propsTypeName, []);
     /* TODO: Polymorphic props */
@@ -1105,18 +1106,6 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
         | Some(propsType) => [propsTypeNameFlow]
         },
       );
-    let jsPropsIdent = GenFlowEmitAst.mkExprIdentifier("jsProps");
-    let getChildrenFromJSProps =
-      GenFlowEmitAst.mkJSGet(jsPropsIdent, "children");
-    let jsPropsToReason =
-      GenFlowEmitAst.mkExprFun(
-        "jsProps",
-        GenFlowEmitAst.mkExprApplyFun(
-          converter.toJS(makeIdentifier),
-          flowPropGenerics == None ?
-            [jsPropsIdent] : [jsPropsIdent, getChildrenFromJSProps],
-        ),
-      );
     let propsTypeDeclaration =
       switch (flowPropGenerics) {
       | None => []
@@ -1127,7 +1116,12 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
       propsTypeDeclaration
       @ [
         FlowTypeBinding("component", componentFlowType),
-        ComponentBinding(inputModuleName, jsPropsToReason),
+        ComponentBinding(
+          inputModuleName,
+          flowPropGenerics,
+          id,
+          expressionType,
+        ),
       ];
     let deps = [
       JSTypeFromModule("Component", "ReactComponent", "React"),
@@ -1455,11 +1449,13 @@ let emitCodeItems =
         [mkFlowTypeBinding(id, flowType)]
         |> GenFlowEmitAst.mkStructItemValBindings
         |> emitStructureItem
-      | ValueBinding(inputModuleName, converter, id) =>
+      | ValueBinding(inputModuleName, id, expressionType) =>
         let consumeProp =
           GenFlowEmitAst.mkExprIdentifier(
             inputModuleName ++ "." ++ Ident.name(id),
           );
+        let conversion = reasonTypeToConversion(expressionType);
+        let (_valueDeps, (converter, _flowType)) = conversion;
         GenFlowEmitAst.mkStructItemValBindings([
           GenFlowEmitAst.mkBinding(
             GenFlowEmitAst.mkPatternIdent(Ident.name(id)),
@@ -1467,7 +1463,30 @@ let emitCodeItems =
           ),
         ])
         |> emitStructureItem;
-      | ComponentBinding(inputModuleName, jsPropsToReason) =>
+      | ComponentBinding(
+          inputModuleName,
+          flowPropGenerics,
+          id,
+          expressionType,
+        ) =>
+        let makeIdentifier =
+          GenFlowEmitAst.mkExprIdentifier(
+            inputModuleName ++ "." ++ Ident.name(id),
+          );
+        let jsPropsIdent = GenFlowEmitAst.mkExprIdentifier("jsProps");
+        let getChildrenFromJSProps =
+          GenFlowEmitAst.mkJSGet(jsPropsIdent, "children");
+        let conversion = reasonTypeToConversion(expressionType);
+        let (_valueDeps, (converter, _flowType)) = conversion;
+        let jsPropsToReason =
+          GenFlowEmitAst.mkExprFun(
+            "jsProps",
+            GenFlowEmitAst.mkExprApplyFun(
+              converter.toJS(makeIdentifier),
+              flowPropGenerics == None ?
+                [jsPropsIdent] : [jsPropsIdent, getChildrenFromJSProps],
+            ),
+          );
         GenFlowEmitAst.mkStructItemValBindings([
           GenFlowEmitAst.mkBinding(
             GenFlowEmitAst.mkPatternIdent("component"),
@@ -1485,7 +1504,7 @@ let emitCodeItems =
             ),
           ),
         ])
-        |> emitStructureItem
+        |> emitStructureItem;
       };
     let astText =
       structureItems |> List.map(emitCodeItem) |> String.concat("");
