@@ -929,6 +929,7 @@ type codeItem =
   | StructureItem(GenFlowEmitAst.ReasonAst.Parsetree.structure_item)
   | RawJS(string)
   | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
+  | FlowAnnotation(string, GenFlowCommon.Flow.typ)
   | ValueBinding(string, Ident.t, Types.type_expr)
   | ComponentBinding(
       string,
@@ -989,25 +990,18 @@ let codeItemsFromConstructorDeclaration =
     createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
   let codeItems = [
     codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
-    ...GenFlowEmitAst.[
-         mkFlowAnnotationStructItem(
-           annotationBindingName,
-           constructorFlowType,
-         ),
-         mkStructItemValBindings([
-           mkBinding(
-             mkPattern(Ppat_var(located(constructorAlias))),
-             mkExpr(
-               createVariantFunction(
-                 convertableFlowTypes,
-                 modulePath,
-                 leafName,
-               ),
-             ),
-           ),
-         ]),
-       ]
-       |> List.map(i => StructureItem(i)),
+    FlowAnnotation(annotationBindingName, constructorFlowType),
+    GenFlowEmitAst.mkStructItemValBindings([
+      GenFlowEmitAst.mkBinding(
+        GenFlowEmitAst.mkPattern(
+          Ppat_var(GenFlowEmitAst.located(constructorAlias)),
+        ),
+        GenFlowEmitAst.mkExpr(
+          createVariantFunction(convertableFlowTypes, modulePath, leafName),
+        ),
+      ),
+    ])
+    |> (i => StructureItem(i)),
   ];
   (retType, (remainingDeps, codeItems));
 };
@@ -1448,6 +1442,12 @@ let emitCodeItems =
       | FlowTypeBinding(id, flowType) =>
         [mkFlowTypeBinding(id, flowType)]
         |> GenFlowEmitAst.mkStructItemValBindings
+        |> emitStructureItem
+      | FlowAnnotation(annotationBindingName, constructorFlowType) =>
+        GenFlowEmitAst.mkFlowAnnotationStructItem(
+          annotationBindingName,
+          constructorFlowType,
+        )
         |> emitStructureItem
       | ValueBinding(inputModuleName, id, expressionType) =>
         let consumeProp =
