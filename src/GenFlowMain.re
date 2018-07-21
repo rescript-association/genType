@@ -928,7 +928,8 @@ module TypeVars = {
 type codeItem =
   | StructureItem(GenFlowEmitAst.ReasonAst.Parsetree.structure_item)
   | RawJS(string)
-  | FlowTypeBinding(string, GenFlowCommon.Flow.typ);
+  | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
+  | ValueBinding(string, expressionConverter, Ident.t);
 
 let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
   let opaqueTypeString =
@@ -1019,8 +1020,8 @@ let mkFlowTypeBinding = (name, flowType) =>
     )
   );
 
-let codeItemsForId = (~inputModuleName, ~value_binding, id) => {
-  let {Typedtree.vb_expr} = value_binding;
+let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
+  let {Typedtree.vb_expr} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
   let (valueDeps, (converter, flowType)) = conversion;
@@ -1034,19 +1035,9 @@ let codeItemsForId = (~inputModuleName, ~value_binding, id) => {
     Dependencies.extractFreeTypeVars(valueDeps);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
   let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
-  let consumeProp =
-    GenFlowEmitAst.mkExprIdentifier(
-      inputModuleName ++ "." ++ Ident.name(id),
-    );
   let codeItems = [
     FlowTypeBinding(Ident.name(id), flowType),
-    GenFlowEmitAst.mkStructItemValBindings([
-      GenFlowEmitAst.mkBinding(
-        GenFlowEmitAst.mkPatternIdent(Ident.name(id)),
-        converter.toJS(consumeProp),
-      ),
-    ])
-    |> (i => StructureItem(i)),
+    ValueBinding(inputModuleName, converter, id),
   ];
   (remainingDeps, codeItems);
 };
@@ -1073,8 +1064,8 @@ let codeItemsForId = (~inputModuleName, ~value_binding, id) => {
  *     {named: number, args?: number}
  */
 
-let structureItemsForMake = (~inputModuleName, ~value_binding, id) => {
-  let {Typedtree.vb_expr} = value_binding;
+let structureItemsForMake = (~inputModuleName, ~valueBinding, id) => {
+  let {Typedtree.vb_expr} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
   let (valueDeps, (converter, flowType)) = conversion;
@@ -1167,7 +1158,7 @@ let structureItemsForMake = (~inputModuleName, ~value_binding, id) => {
     (deps, items);
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> codeItemsForId(~inputModuleName, ~value_binding)
+    id |> codeItemsForId(~inputModuleName, ~valueBinding)
   };
 };
 
@@ -1188,14 +1179,14 @@ let structureItemsForMake = (~inputModuleName, ~value_binding, id) => {
  * Where the "someFlowType" is a flow converted type from Reason type, and
  * where the require() redirection may perform some safe conversions.
  */
-let codeItemsForValueBinding = (~inputModuleName, value_binding) => {
-  let {Typedtree.vb_pat, vb_expr, vb_attributes} = value_binding;
+let codeItemsForValueBinding = (~inputModuleName, valueBinding) => {
+  let {Typedtree.vb_pat, vb_expr, vb_attributes} = valueBinding;
   GenIdent.resetPerStructure();
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> structureItemsForMake(~inputModuleName, ~value_binding)
+    id |> structureItemsForMake(~inputModuleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
-    id |> codeItemsForId(~inputModuleName, ~value_binding)
+    id |> codeItemsForId(~inputModuleName, ~valueBinding)
   | _ => ([], [])
   };
 };
@@ -1486,6 +1477,18 @@ let emitCodeItems =
         [mkFlowTypeBinding(id, flowType)]
         |> GenFlowEmitAst.mkStructItemValBindings
         |> emitStructureItem
+      | ValueBinding(inputModuleName, converter, id) =>
+        let consumeProp =
+          GenFlowEmitAst.mkExprIdentifier(
+            inputModuleName ++ "." ++ Ident.name(id),
+          );
+        GenFlowEmitAst.mkStructItemValBindings([
+          GenFlowEmitAst.mkBinding(
+            GenFlowEmitAst.mkPatternIdent(Ident.name(id)),
+            converter.toJS(consumeProp),
+          ),
+        ])
+        |> emitStructureItem;
       };
     let astText =
       structureItems |> List.map(emitCodeItem) |> String.concat("");
