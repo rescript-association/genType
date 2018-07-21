@@ -389,6 +389,23 @@ module Convert = {
     toJS: expr => expr,
   };
   let identity = {toReason: expr => expr, toJS: expr => expr};
+
+  type t =
+    | Unit
+    | Identity
+    | OptionalArgument(t)
+    | Option(t)
+    | Fn((list((GenFlowCommon.label, t)), t));
+
+  let rec apply = x =>
+    switch (x) {
+    | Unit => unit
+    | Identity => identity
+    | OptionalArgument(y) => optionalArgument(y |> apply)
+    | Option(y) => option(y |> apply)
+    | Fn((y, z)) =>
+      fn(y |> List.map(((label, x)) => (label, x |> apply)), z |> apply)
+    };
 };
 
 /*
@@ -519,7 +536,7 @@ type dependency =
   /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
 
-type convertableFlowType = (expressionConverter, Flow.typ);
+type convertableFlowType = (Convert.t, Flow.typ);
 
 type conversionPlan = (list(dependency), convertableFlowType);
 
@@ -545,7 +562,9 @@ let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
       let maker = GenFlowEmitAst.(tl === [] ? mkExprExplicitArity : mkExpr);
       let name = GenIdent.argIdent();
       let argExpr =
-        converter.toReason(GenFlowEmitAst.mkExprIdentifier(name));
+        (converter |> Convert.apply).toReason(
+          GenFlowEmitAst.mkExprIdentifier(name),
+        );
       GenFlowEmitAst.mkExprFunDesc(
         name,
         maker(
@@ -625,7 +644,7 @@ let typePathToFlowImportString = (modulesMap, typePath) =>
 let nullyToOptionalConverter = nullyValue => {};
 
 let needsArgConversion = ((lbl, c)) =>
-  lbl !== Nolabel || c !== Convert.identity;
+  lbl !== Nolabel || c !== Convert.Identity;
 
 /**
  * Turns
@@ -686,7 +705,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       | Some((lbl, t1)) =>
         let (deps, (t1Converter, t1FlowType)) = reasonTypeToConversion(t1);
         let t1Conversion = (
-          Convert.optionalArgument(t1Converter),
+          Convert.OptionalArgument(t1Converter),
           t1FlowType,
         );
         let nextRevDeps = List.append(deps, revArgDeps);
@@ -703,7 +722,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       /* TODO: Ignore all final single unit args at convert/type conversion time. */
       let notJustASingleUnitArg =
         switch (labeledConverters) {
-        | [(Nolabel, c)] when c === Convert.unit => false
+        | [(Nolabel, c)] when c === Convert.Unit => false
         | _ => true
         };
       let needsArgConversion =
@@ -720,8 +739,8 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       let flowArrow =
         Flow.Arrow([], List.map(flowArgs, groupedFlow), retType);
       let functionConverter =
-        retConverter !== Convert.identity || needsArgConversion ?
-          Convert.fn(labeledConverters, retConverter) : Convert.identity;
+        retConverter !== Convert.Identity || needsArgConversion ?
+          Convert.Fn((labeledConverters, retConverter)) : Convert.Identity;
       (allDeps, (functionConverter, flowArrow));
     }
   )
@@ -744,33 +763,33 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
       let typeName = Generator.jsTypeNameForAnonymousTypeID(typ.id);
       (
         [FreeTypeVariable(typeName, typ.id)],
-        (Convert.identity, Flow.Ident(typeName, [])),
+        (Convert.Identity, Flow.Ident(typeName, [])),
       );
     | Tvar(Some(s)) =>
       let typeName = s;
       (
         [FreeTypeVariable(typeName, typ.id)],
-        (Convert.identity, Flow.Ident(s, [])),
+        (Convert.Identity, Flow.Ident(s, [])),
       );
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "bool", _), [], _)
     | Tconstr(Path.Pident({name: "bool"}), [], _) => (
         [],
-        (Convert.identity, Flow.Ident("bool", [])),
+        (Convert.Identity, Flow.Ident("bool", [])),
       )
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "int", _), [], _)
     | Tconstr(Path.Pident({name: "int"}), [], _) => (
         [],
-        (Convert.identity, Flow.Ident("number", [])),
+        (Convert.Identity, Flow.Ident("number", [])),
       )
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "string", _), [], _)
     | Tconstr(Path.Pident({name: "string"}), [], _) => (
         [],
-        (Convert.identity, Flow.Ident("string", [])),
+        (Convert.Identity, Flow.Ident("string", [])),
       )
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "unit", _), [], _)
     | Tconstr(Path.Pident({name: "unit"}), [], _) => (
         [],
-        (Convert.unit, Flow.Ident("(typeof undefined)", [])),
+        (Convert.Unit, Flow.Ident("(typeof undefined)", [])),
       )
     /*
      * Arrays do not experience any conversion, in order to retain referencial
@@ -782,10 +801,10 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
     | Tconstr(Path.Pident({name: "array"}), [p], _) =>
       let (paramDeps, (itemConverter, itemFlow)) =
         reasonTypeToConversion(p);
-      if (itemConverter === Convert.identity) {
+      if (itemConverter === Convert.Identity) {
         (
           paramDeps,
-          (Convert.identity, Flow.Ident("$ReadOnlyArray", [itemFlow])),
+          (Convert.Identity, Flow.Ident("$ReadOnlyArray", [itemFlow])),
         );
       } else {
         raise(
@@ -801,13 +820,13 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
       /* TODO: Handle / verify the case of nested optionals. */
       let (paramDeps, (paramConverter, paramConverted)) =
         reasonTypeToConversion(p);
-      let composedConverter = Convert.option(paramConverter);
+      let composedConverter = Convert.Option(paramConverter);
       (paramDeps, (composedConverter, Flow.Optional(paramConverted)));
     | Tarrow(_) => extract_fun([], [], typ)
     | Tlink(t) => reasonTypeToConversion(t)
     | Tconstr(path, [], _) => (
         [TypeAtPath(path)],
-        (Convert.identity, Flow.Ident(typePathToFlowName(path), [])),
+        (Convert.Identity, Flow.Ident(typePathToFlowName(path), [])),
       )
     /* This type doesn't have any built in converter. But what if it was a
      * genFlow variant type? */
@@ -830,9 +849,9 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
         );
       (
         [TypeAtPath(path), ...typeParamDeps],
-        (Convert.identity, Flow.Ident(typePathToFlowName(path), typeArgs)),
+        (Convert.Identity, Flow.Ident(typePathToFlowName(path), typeArgs)),
       );
-    | _ => ([], (Convert.identity, Flow.anyAlias))
+    | _ => ([], (Convert.Identity, Flow.anyAlias))
     }
   )
 and reasonTypeToConversionMany = args => {
@@ -1459,7 +1478,7 @@ let emitCodeItems =
         GenFlowEmitAst.mkStructItemValBindings([
           GenFlowEmitAst.mkBinding(
             GenFlowEmitAst.mkPatternIdent(Ident.name(id)),
-            converter.toJS(consumeProp),
+            (converter |> Convert.apply).toJS(consumeProp),
           ),
         ])
         |> emitStructureItem;
@@ -1482,7 +1501,7 @@ let emitCodeItems =
           GenFlowEmitAst.mkExprFun(
             "jsProps",
             GenFlowEmitAst.mkExprApplyFun(
-              converter.toJS(makeIdentifier),
+              (converter |> Convert.apply).toJS(makeIdentifier),
               flowPropGenerics == None ?
                 [jsPropsIdent] : [jsPropsIdent, getChildrenFromJSProps],
             ),
