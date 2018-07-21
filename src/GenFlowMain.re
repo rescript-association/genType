@@ -929,7 +929,8 @@ type codeItem =
   | StructureItem(GenFlowEmitAst.ReasonAst.Parsetree.structure_item)
   | RawJS(string)
   | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
-  | ValueBinding(string, expressionConverter, Ident.t);
+  | ValueBinding(string, expressionConverter, Ident.t)
+  | ComponentBinding(string, GenFlowEmitAst.ReasonAst.Parsetree.expression);
 
 let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
   let opaqueTypeString =
@@ -1124,33 +1125,10 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
 
     let items =
       propsTypeDeclaration
-      @ (
-        [
-          GenFlowEmitAst.mkStructItemValBindings([
-            mkFlowTypeBinding("component", componentFlowType),
-          ]),
-          GenFlowEmitAst.mkStructItemValBindings([
-            GenFlowEmitAst.mkBinding(
-              GenFlowEmitAst.mkPatternIdent("component"),
-              GenFlowEmitAst.mkExprApplyFunLabels(
-                GenFlowEmitAst.mkExprIdentifier(
-                  "ReasonReact.wrapReasonForJs",
-                ),
-                [
-                  (
-                    ReasonAst.Asttypes.Labelled("component"),
-                    GenFlowEmitAst.mkExprIdentifier(
-                      inputModuleName ++ "." ++ "component",
-                    ),
-                  ),
-                  (ReasonAst.Asttypes.Nolabel, jsPropsToReason),
-                ],
-              ),
-            ),
-          ]),
-        ]
-        |> List.map(i => StructureItem(i))
-      );
+      @ [
+        FlowTypeBinding("component", componentFlowType),
+        ComponentBinding(inputModuleName, jsPropsToReason),
+      ];
     let deps = [
       JSTypeFromModule("Component", "ReactComponent", "React"),
       ...remainingDeps,
@@ -1489,6 +1467,25 @@ let emitCodeItems =
           ),
         ])
         |> emitStructureItem;
+      | ComponentBinding(inputModuleName, jsPropsToReason) =>
+        GenFlowEmitAst.mkStructItemValBindings([
+          GenFlowEmitAst.mkBinding(
+            GenFlowEmitAst.mkPatternIdent("component"),
+            GenFlowEmitAst.mkExprApplyFunLabels(
+              GenFlowEmitAst.mkExprIdentifier("ReasonReact.wrapReasonForJs"),
+              [
+                (
+                  ReasonAst.Asttypes.Labelled("component"),
+                  GenFlowEmitAst.mkExprIdentifier(
+                    inputModuleName ++ "." ++ "component",
+                  ),
+                ),
+                (ReasonAst.Asttypes.Nolabel, jsPropsToReason),
+              ],
+            ),
+          ),
+        ])
+        |> emitStructureItem
       };
     let astText =
       structureItems |> List.map(emitCodeItem) |> String.concat("");
