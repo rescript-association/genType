@@ -1451,7 +1451,8 @@ let emitCodeItems =
       if (emitJsDirectly) {
         switch (codeItem) {
         | RawJS(s) => s ++ ";\n"
-        | FlowTypeBinding(id, flowType) => "// TODO: FlowTypeBinding\n"
+        | FlowTypeBinding(id, flowType) =>
+          "type " ++ id ++ " = " ++ Flow.render(flowType) ++ ";\n"
         | FlowAnnotation(annotationBindingName, constructorFlowType) => "// TODO: FlowAnnotation\n"
         | ValueBinding(inputModuleName, id, converter) => "// TODO: ValueBinding\n"
         | ConstructorBinding(
