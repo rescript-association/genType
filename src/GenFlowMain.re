@@ -927,7 +927,8 @@ module TypeVars = {
 
 type codeItem =
   | StructureItem(GenFlowEmitAst.ReasonAst.Parsetree.structure_item)
-  | RawJS(string);
+  | RawJS(string)
+  | FlowTypeBinding(string, GenFlowCommon.Flow.typ);
 
 let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
   let opaqueTypeString =
@@ -1037,18 +1038,17 @@ let codeItemsForId = (~inputModuleName, ~value_binding, id) => {
     GenFlowEmitAst.mkExprIdentifier(
       inputModuleName ++ "." ++ Ident.name(id),
     );
-  let items = [
-    GenFlowEmitAst.mkStructItemValBindings([
-      mkFlowTypeBinding(Ident.name(id), flowType),
-    ]),
+  let codeItems = [
+    FlowTypeBinding(Ident.name(id), flowType),
     GenFlowEmitAst.mkStructItemValBindings([
       GenFlowEmitAst.mkBinding(
         GenFlowEmitAst.mkPatternIdent(Ident.name(id)),
         converter.toJS(consumeProp),
       ),
-    ]),
+    ])
+    |> (i => StructureItem(i)),
   ];
-  (remainingDeps, items |> List.map(i => StructureItem(i)));
+  (remainingDeps, codeItems);
 };
 
 /*
@@ -1258,9 +1258,9 @@ let codeItemsForTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =
   };
 };
 
-let typedItemToCodeItems = (~inputModuleName, item) => {
+let typedItemToCodeItems = (~inputModuleName, typedItem) => {
   let (listListDeps, listListItems) =
-    switch (item) {
+    switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations)} =>
       typeDeclarations
       |> List.map(codeItemsForTypeDecl(~inputModuleName))
@@ -1330,7 +1330,7 @@ let cmtToCodeItems =
   switch (cmt_annots) {
   | Implementation(structure) =>
     let typedItems = structure.Typedtree.str_items;
-    let (deps, parseItems) =
+    let (deps, codeItems) =
       List.fold_left(
         ((curDeps, curParseItems), nextTypedItem) => {
           let (nextDeps, nextCodeItems) =
@@ -1342,7 +1342,7 @@ let cmtToCodeItems =
         typedItems,
       );
     let imports = codeItemsForDependencies(modulesMap, deps);
-    List.append(imports, parseItems);
+    List.append(imports, codeItems);
   | _ => []
   };
 };
@@ -1469,17 +1469,23 @@ let emitCodeItems =
     ) =>
   switch (structureItems) {
   | [_, ..._] =>
+    let emitStructureItem = structureItem => {
+      let outputFormatter = Format.str_formatter;
+      Reason_toolchain.RE.print_implementation_with_comments(
+        outputFormatter,
+        ([structureItem], []),
+      );
+      Format.pp_print_flush(outputFormatter, ());
+      Format.flush_str_formatter();
+    };
     let emitCodeItem = codeItem =>
       switch (codeItem) {
-      | StructureItem(item) =>
-        let outputFormatter = Format.str_formatter;
-        Reason_toolchain.RE.print_implementation_with_comments(
-          outputFormatter,
-          ([item], []),
-        );
-        Format.pp_print_flush(outputFormatter, ());
-        Format.flush_str_formatter();
+      | StructureItem(structureItem) => structureItem |> emitStructureItem
       | RawJS(s) => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\",\n);\n"
+      | FlowTypeBinding(id, flowType) =>
+        [mkFlowTypeBinding(id, flowType)]
+        |> GenFlowEmitAst.mkStructItemValBindings
+        |> emitStructureItem
       };
     let astText =
       structureItems |> List.map(emitCodeItem) |> String.concat("");
