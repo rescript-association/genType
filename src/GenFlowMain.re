@@ -712,7 +712,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       let allDeps = List.append(List.rev(revArgDeps), retDeps);
       let revGroupedFlow = groupReversed([], [], labeledFlow);
       let groupedFlow = reverse(revGroupedFlow);
-      let rec flowArgs = itm =>
+      let flowArgs = itm =>
         switch (itm) {
         | NamedArgs(rows) => Flow.ObjectType(rows)
         | Arg(flowType) => flowType
@@ -966,8 +966,8 @@ let codeItemForUnionType = (typeParams, leafTypes, name) => {
 /*
  * TODO: Make the types namespaced by nested Flow module.
  */
-let rec codeItemsFromConstructorDeclaration =
-        (modulePath, variantTypeName, constructorDeclaration) => {
+let codeItemsFromConstructorDeclaration =
+    (modulePath, variantTypeName, constructorDeclaration) => {
   GenIdent.resetPerStructure();
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = Ident.name(constructorDeclaration.Types.cd_id);
