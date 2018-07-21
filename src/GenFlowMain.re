@@ -1064,7 +1064,7 @@ let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
  *     {named: number, args?: number}
  */
 
-let structureItemsForMake = (~inputModuleName, ~valueBinding, id) => {
+let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
@@ -1184,7 +1184,7 @@ let codeItemsForValueBinding = (~inputModuleName, valueBinding) => {
   GenIdent.resetPerStructure();
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> structureItemsForMake(~inputModuleName, ~valueBinding)
+    id |> codeItemsForMake(~inputModuleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
     id |> codeItemsForId(~inputModuleName, ~valueBinding)
   | _ => ([], [])
