@@ -945,11 +945,11 @@ module TypeVars = {
 };
 
 type codeItem =
-  | StructureItem(GenFlowEmitAst.ReasonAst.Parsetree.structure_item)
   | RawJS(string)
   | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
   | FlowAnnotation(string, GenFlowCommon.Flow.typ)
   | ValueBinding(string, Ident.t, Convert.t)
+  | ConstructorBinding(string, list(convertableFlowType), string, string)
   | ComponentBinding(
       string,
       option(GenFlowCommon.Flow.typ),
@@ -1010,17 +1010,12 @@ let codeItemsFromConstructorDeclaration =
   let codeItems = [
     codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
     FlowAnnotation(annotationBindingName, constructorFlowType),
-    GenFlowEmitAst.mkStructItemValBindings([
-      GenFlowEmitAst.mkBinding(
-        GenFlowEmitAst.mkPattern(
-          Ppat_var(GenFlowEmitAst.located(constructorAlias)),
-        ),
-        GenFlowEmitAst.mkExpr(
-          createVariantFunction(convertableFlowTypes, modulePath, leafName),
-        ),
-      ),
-    ])
-    |> (i => StructureItem(i)),
+    ConstructorBinding(
+      constructorAlias,
+      convertableFlowTypes,
+      modulePath,
+      leafName,
+    ),
   ];
   (retType, (remainingDeps, codeItems));
 };
@@ -1451,7 +1446,6 @@ let emitCodeItems =
     };
     let emitCodeItem = codeItem =>
       switch (codeItem) {
-      | StructureItem(structureItem) => structureItem |> emitStructureItem
       | RawJS(s) => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\",\n);\n"
       | FlowTypeBinding(id, flowType) =>
         [mkFlowTypeBinding(id, flowType)]
@@ -1475,6 +1469,27 @@ let emitCodeItems =
           ),
         ])
         |> emitStructureItem;
+      | ConstructorBinding(
+          constructorAlias,
+          convertableFlowTypes,
+          modulePath,
+          leafName,
+        ) =>
+        GenFlowEmitAst.mkStructItemValBindings([
+          GenFlowEmitAst.mkBinding(
+            GenFlowEmitAst.mkPattern(
+              Ppat_var(GenFlowEmitAst.located(constructorAlias)),
+            ),
+            GenFlowEmitAst.mkExpr(
+              createVariantFunction(
+                convertableFlowTypes,
+                modulePath,
+                leafName,
+              ),
+            ),
+          ),
+        ])
+        |> emitStructureItem
       | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
         let makeIdentifier =
           GenFlowEmitAst.mkExprIdentifier(
