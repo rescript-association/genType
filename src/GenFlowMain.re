@@ -1258,7 +1258,7 @@ let codeItemsForTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =
   };
 };
 
-let typedItemToParseItem = (inputModuleName, item) => {
+let typedItemToCodeItems = (~inputModuleName, item) => {
   let (listListDeps, listListItems) =
     switch (item) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations)} =>
@@ -1333,12 +1333,10 @@ let cmtToCodeItems =
     let (deps, parseItems) =
       List.fold_left(
         ((curDeps, curParseItems), nextTypedItem) => {
-          let (nextDeps, nextParseItems) =
-            typedItemToParseItem(globalModuleName, nextTypedItem);
-          (
-            List.append(nextDeps, curDeps),
-            List.append(nextParseItems, curParseItems),
-          );
+          let (nextDeps, nextCodeItems) =
+            nextTypedItem
+            |> typedItemToCodeItems(~inputModuleName=globalModuleName);
+          (nextDeps @ curDeps, nextCodeItems @ curParseItems);
         },
         ([], []),
         typedItems,
