@@ -47,7 +47,9 @@ let findCmtFiles = (): list(string) => {
 };
 
 let fileHeader =
-  BuckleScriptPostProcessLib.Patterns.generatedHeaderPrefix ++ "\n\n";
+  GenFlowMain.emitJsDirectly ?
+    "/* @flow strict */\n" :
+    BuckleScriptPostProcessLib.Patterns.generatedHeaderPrefix ++ "\n\n";
 
 let signFile = s => s;
 

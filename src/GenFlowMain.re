@@ -11,6 +11,8 @@ module StringSet = Set.Make(String);
 
 open GenFlowCommon;
 
+let emitJsDirectly = false;
+
 /*
  * TODO:
  * Change the name of types/variables "conversion". It is not a conversion, it
@@ -1349,7 +1351,7 @@ module GeneratedReFiles = {
       |> Sys.readdir
       |> Array.fold_left(
            (set, file) =>
-             Filename.check_suffix(file, ".re") ?
+             Filename.check_suffix(file, emitJsDirectly ? ".re.js" : ".re") ?
                StringSet.add(Filename.concat(outputDir, file), set) : set,
            StringSet.empty,
          );
@@ -1424,8 +1426,6 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
-let emitJsDirectly = false;
-
 let emitCodeItems =
     (
       ~generatedFiles,
@@ -1450,22 +1450,17 @@ let emitCodeItems =
     let emitCodeItem = codeItem =>
       if (emitJsDirectly) {
         switch (codeItem) {
-        | RawJS(s) => s |> emitRaw
-        | FlowTypeBinding(id, flowType) =>
-          "// TODO: FlowTypeBinding" |> emitRaw
-        | FlowAnnotation(annotationBindingName, constructorFlowType) =>
-          "// TODO: FlowAnnotation" |> emitRaw
-        | ValueBinding(inputModuleName, id, converter) =>
-          "// TODO: ValueBinding" |> emitRaw
+        | RawJS(s) => s ++ ";\n"
+        | FlowTypeBinding(id, flowType) => "// TODO: FlowTypeBinding\n"
+        | FlowAnnotation(annotationBindingName, constructorFlowType) => "// TODO: FlowAnnotation\n"
+        | ValueBinding(inputModuleName, id, converter) => "// TODO: ValueBinding\n"
         | ConstructorBinding(
             constructorAlias,
             convertableFlowTypes,
             modulePath,
             leafName,
-          ) =>
-          "// TODO: ConstructorBinding" |> emitRaw
-        | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
-          "// TODO: ComponentBinding" |> emitRaw
+          ) => "// TODO: ConstructorBinding\n"
+        | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) => "// TODO: ComponentBinding\n"
         };
       } else {
         switch (codeItem) {
@@ -1588,7 +1583,8 @@ let processCMTFile =
   let outputPath =
     Filename.concat(
       outputDir,
-      Generator.outputReasonModuleName(globalModuleName) ++ ".re",
+      Generator.outputReasonModuleName(globalModuleName)
+      ++ (emitJsDirectly ? ".re.js" : ".re"),
     );
   inputCMT
   |> cmtToCodeItems(~modulesMap, ~globalModuleName)
