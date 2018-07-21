@@ -1424,6 +1424,8 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
+let emitJsDirectly = false;
+
 let emitCodeItems =
     (
       ~generatedFiles,
@@ -1444,87 +1446,111 @@ let emitCodeItems =
       Format.pp_print_flush(outputFormatter, ());
       Format.flush_str_formatter();
     };
+    let emitRaw = s => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\",\n);\n";
     let emitCodeItem = codeItem =>
-      switch (codeItem) {
-      | RawJS(s) => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\",\n);\n"
-      | FlowTypeBinding(id, flowType) =>
-        [mkFlowTypeBinding(id, flowType)]
-        |> GenFlowEmitAst.mkStructItemValBindings
-        |> emitStructureItem
-      | FlowAnnotation(annotationBindingName, constructorFlowType) =>
-        GenFlowEmitAst.mkFlowAnnotationStructItem(
-          annotationBindingName,
-          constructorFlowType,
-        )
-        |> emitStructureItem
-      | ValueBinding(inputModuleName, id, converter) =>
-        let consumeProp =
-          GenFlowEmitAst.mkExprIdentifier(
-            inputModuleName ++ "." ++ Ident.name(id),
-          );
-        GenFlowEmitAst.mkStructItemValBindings([
-          GenFlowEmitAst.mkBinding(
-            GenFlowEmitAst.mkPatternIdent(Ident.name(id)),
-            (converter |> Convert.apply).toJS(consumeProp),
-          ),
-        ])
-        |> emitStructureItem;
-      | ConstructorBinding(
-          constructorAlias,
-          convertableFlowTypes,
-          modulePath,
-          leafName,
-        ) =>
-        GenFlowEmitAst.mkStructItemValBindings([
-          GenFlowEmitAst.mkBinding(
-            GenFlowEmitAst.mkPattern(
-              Ppat_var(GenFlowEmitAst.located(constructorAlias)),
+      if (emitJsDirectly) {
+        switch (codeItem) {
+        | RawJS(s) => s |> emitRaw
+        | FlowTypeBinding(id, flowType) =>
+          "// TODO: FlowTypeBinding" |> emitRaw
+        | FlowAnnotation(annotationBindingName, constructorFlowType) =>
+          "// TODO: FlowAnnotation" |> emitRaw
+        | ValueBinding(inputModuleName, id, converter) =>
+          "// TODO: ValueBinding" |> emitRaw
+        | ConstructorBinding(
+            constructorAlias,
+            convertableFlowTypes,
+            modulePath,
+            leafName,
+          ) =>
+          "// TODO: ConstructorBinding" |> emitRaw
+        | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
+          "// TODO: ComponentBinding" |> emitRaw
+        };
+      } else {
+        switch (codeItem) {
+        | RawJS(s) => s |> emitRaw
+        | FlowTypeBinding(id, flowType) =>
+          [mkFlowTypeBinding(id, flowType)]
+          |> GenFlowEmitAst.mkStructItemValBindings
+          |> emitStructureItem
+        | FlowAnnotation(annotationBindingName, constructorFlowType) =>
+          GenFlowEmitAst.mkFlowAnnotationStructItem(
+            annotationBindingName,
+            constructorFlowType,
+          )
+          |> emitStructureItem
+        | ValueBinding(inputModuleName, id, converter) =>
+          let consumeProp =
+            GenFlowEmitAst.mkExprIdentifier(
+              inputModuleName ++ "." ++ Ident.name(id),
+            );
+          GenFlowEmitAst.mkStructItemValBindings([
+            GenFlowEmitAst.mkBinding(
+              GenFlowEmitAst.mkPatternIdent(Ident.name(id)),
+              (converter |> Convert.apply).toJS(consumeProp),
             ),
-            GenFlowEmitAst.mkExpr(
-              createVariantFunction(
-                convertableFlowTypes,
-                modulePath,
-                leafName,
+          ])
+          |> emitStructureItem;
+        | ConstructorBinding(
+            constructorAlias,
+            convertableFlowTypes,
+            modulePath,
+            leafName,
+          ) =>
+          GenFlowEmitAst.mkStructItemValBindings([
+            GenFlowEmitAst.mkBinding(
+              GenFlowEmitAst.mkPattern(
+                Ppat_var(GenFlowEmitAst.located(constructorAlias)),
+              ),
+              GenFlowEmitAst.mkExpr(
+                createVariantFunction(
+                  convertableFlowTypes,
+                  modulePath,
+                  leafName,
+                ),
               ),
             ),
-          ),
-        ])
-        |> emitStructureItem
-      | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
-        let makeIdentifier =
-          GenFlowEmitAst.mkExprIdentifier(
-            inputModuleName ++ "." ++ Ident.name(id),
-          );
-        let jsPropsIdent = GenFlowEmitAst.mkExprIdentifier("jsProps");
-        let getChildrenFromJSProps =
-          GenFlowEmitAst.mkJSGet(jsPropsIdent, "children");
-        let jsPropsToReason =
-          GenFlowEmitAst.mkExprFun(
-            "jsProps",
-            GenFlowEmitAst.mkExprApplyFun(
-              (converter |> Convert.apply).toJS(makeIdentifier),
-              flowPropGenerics == None ?
-                [jsPropsIdent] : [jsPropsIdent, getChildrenFromJSProps],
-            ),
-          );
-        GenFlowEmitAst.mkStructItemValBindings([
-          GenFlowEmitAst.mkBinding(
-            GenFlowEmitAst.mkPatternIdent("component"),
-            GenFlowEmitAst.mkExprApplyFunLabels(
-              GenFlowEmitAst.mkExprIdentifier("ReasonReact.wrapReasonForJs"),
-              [
-                (
-                  ReasonAst.Asttypes.Labelled("component"),
-                  GenFlowEmitAst.mkExprIdentifier(
-                    inputModuleName ++ "." ++ "component",
-                  ),
+          ])
+          |> emitStructureItem
+        | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
+          let makeIdentifier =
+            GenFlowEmitAst.mkExprIdentifier(
+              inputModuleName ++ "." ++ Ident.name(id),
+            );
+          let jsPropsIdent = GenFlowEmitAst.mkExprIdentifier("jsProps");
+          let getChildrenFromJSProps =
+            GenFlowEmitAst.mkJSGet(jsPropsIdent, "children");
+          let jsPropsToReason =
+            GenFlowEmitAst.mkExprFun(
+              "jsProps",
+              GenFlowEmitAst.mkExprApplyFun(
+                (converter |> Convert.apply).toJS(makeIdentifier),
+                flowPropGenerics == None ?
+                  [jsPropsIdent] : [jsPropsIdent, getChildrenFromJSProps],
+              ),
+            );
+          GenFlowEmitAst.mkStructItemValBindings([
+            GenFlowEmitAst.mkBinding(
+              GenFlowEmitAst.mkPatternIdent("component"),
+              GenFlowEmitAst.mkExprApplyFunLabels(
+                GenFlowEmitAst.mkExprIdentifier(
+                  "ReasonReact.wrapReasonForJs",
                 ),
-                (ReasonAst.Asttypes.Nolabel, jsPropsToReason),
-              ],
+                [
+                  (
+                    ReasonAst.Asttypes.Labelled("component"),
+                    GenFlowEmitAst.mkExprIdentifier(
+                      inputModuleName ++ "." ++ "component",
+                    ),
+                  ),
+                  (ReasonAst.Asttypes.Nolabel, jsPropsToReason),
+                ],
+              ),
             ),
-          ),
-        ])
-        |> emitStructureItem;
+          ])
+          |> emitStructureItem;
+        };
       };
     let astText =
       structureItems |> List.map(emitCodeItem) |> String.concat("");
