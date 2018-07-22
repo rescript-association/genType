@@ -149,11 +149,11 @@ let typedItemToCodeItems = (~inputModuleName, typedItem) => {
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations)} =>
       typeDeclarations
-      |> List.map(CodeItem.codeItemsForTypeDecl(~inputModuleName))
+      |> List.map(CodeItem.fromTypeDecl(~inputModuleName))
       |> List.split
     | {Typedtree.str_desc: Tstr_value(loc, valueBindings)} =>
       valueBindings
-      |> List.map(CodeItem.codeItemsForValueBinding(~inputModuleName))
+      |> List.map(CodeItem.fromValueBinding(~inputModuleName))
       |> List.split
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
@@ -178,7 +178,7 @@ let cmtToCodeItems =
         ([], []),
         typedItems,
       );
-    let imports = CodeItem.codeItemsForDependencies(modulesMap, deps);
+    let imports = CodeItem.fromDependencies(modulesMap, deps);
     List.append(imports, codeItems);
   | _ => []
   };

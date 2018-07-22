@@ -910,7 +910,7 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
  * Where the "someFlowType" is a flow converted type from Reason type, and
  * where the require() redirection may perform some safe conversions.
  */
-let codeItemsForValueBinding = (~inputModuleName, valueBinding) => {
+let fromValueBinding = (~inputModuleName, valueBinding) => {
   let {Typedtree.vb_pat, vb_expr, vb_attributes} = valueBinding;
   GenIdent.resetPerStructure();
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
@@ -928,7 +928,7 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let codeItemsForTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) => {
+let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) => {
   GenIdent.resetPerStructure();
   switch (
     dec.typ_type.type_params,
@@ -1042,7 +1042,7 @@ let typePathToFlowImportString = (modulesMap, typePath) =>
   | Papply(p1, p2) => "// Cannot import type with Papply"
   };
 
-let codeItemsForDependencies = (modulesMap, dependencies): list(t) => {
+let fromDependencies = (modulesMap, dependencies): list(t) => {
   /*
    * Makes sure we only add a dependency/import at the top of the file once per
    * dependency. How about a little n square action! (These lists should be
