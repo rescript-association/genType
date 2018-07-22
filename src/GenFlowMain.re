@@ -140,58 +140,9 @@ open GenFlowCommon;
   }
  */
 
-let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
-  let rec buildUp =
-          (argLen, revConvertedArgs, convertableFlowTypes, modPath, leafName) =>
-    switch (revConvertedArgs, convertableFlowTypes) {
-    | ([], []) =>
-      GenFlowEmitAst.mkExprConstructorDesc(modPath ++ "." ++ leafName)
-    | ([hd, ...tl], []) =>
-      GenFlowEmitAst.mkExprConstructorDesc(
-        ~payload=GenFlowEmitAst.mkTuple(List.rev(revConvertedArgs)),
-        modPath ++ "." ++ leafName,
-      )
-    | (_, [(converter, _), ...tl]) =>
-      /* TODO: Apply the converter if available. */
-      let maker = GenFlowEmitAst.(tl === [] ? mkExprExplicitArity : mkExpr);
-      let name = GenIdent.argIdent();
-      let argExpr =
-        (converter |> CodeItem.Convert.apply).toReason(
-          GenFlowEmitAst.mkExprIdentifier(name),
-        );
-      GenFlowEmitAst.mkExprFunDesc(
-        name,
-        maker(
-          buildUp(
-            argLen + 1,
-            [argExpr, ...revConvertedArgs],
-            tl,
-            modPath,
-            leafName,
-          ),
-        ),
-      );
-    };
-  buildUp(0, [], List.rev(convertableFlowTypes), modPath, leafName);
-};
-
 let nullyToOptionalConverter = nullyValue => {};
 
 let pp = Printf.fprintf;
-
-let mkFlowTypeBinding = (name, flowType) =>
-  GenFlowEmitAst.(
-    mkBinding(
-      mkPatternIdent(
-        BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix ++ name,
-      ),
-      mkExpr(
-        ReasonAst.Parsetree.Pexp_constant(
-          Pconst_string(Flow.render(flowType), None),
-        ),
-      ),
-    )
-  );
 
 let typedItemToCodeItems = (~inputModuleName, typedItem) => {
   let (listListDeps, listListItems) =
@@ -344,89 +295,6 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
-module EmitAst = {
-  open GenFlowEmitAst;
-  let structureItem = structureItem => {
-    let outputFormatter = Format.str_formatter;
-    Reason_toolchain.RE.print_implementation_with_comments(
-      outputFormatter,
-      ([structureItem], []),
-    );
-    Format.pp_print_flush(outputFormatter, ());
-    Format.flush_str_formatter();
-  };
-  let raw = s => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\",\n);\n";
-
-  let codeItem = codeItem =>
-    switch (codeItem) {
-    | CodeItem.RawJS(s) => s |> raw
-    | FlowTypeBinding(id, flowType) =>
-      [mkFlowTypeBinding(id, flowType)]
-      |> mkStructItemValBindings
-      |> structureItem
-    | FlowAnnotation(annotationBindingName, constructorFlowType) =>
-      mkFlowAnnotationStructItem(annotationBindingName, constructorFlowType)
-      |> structureItem
-    | ValueBinding(inputModuleName, id, converter) =>
-      let consumeProp =
-        mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
-      mkStructItemValBindings([
-        mkBinding(
-          mkPatternIdent(Ident.name(id)),
-          (converter |> CodeItem.Convert.apply).toJS(consumeProp),
-        ),
-      ])
-      |> structureItem;
-    | ConstructorBinding(
-        constructorAlias,
-        convertableFlowTypes,
-        modulePath,
-        leafName,
-      ) =>
-      mkStructItemValBindings([
-        mkBinding(
-          mkPattern(Ppat_var(located(constructorAlias))),
-          mkExpr(
-            createVariantFunction(convertableFlowTypes, modulePath, leafName),
-          ),
-        ),
-      ])
-      |> structureItem
-    | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
-      let makeIdentifier =
-        mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
-      let jsPropsIdent = mkExprIdentifier("jsProps");
-      let getChildrenFromJSProps = mkJSGet(jsPropsIdent, "children");
-      let jsPropsToReason =
-        mkExprFun(
-          "jsProps",
-          mkExprApplyFun(
-            (converter |> CodeItem.Convert.apply).toJS(makeIdentifier),
-            flowPropGenerics == None ?
-              [jsPropsIdent] : [jsPropsIdent, getChildrenFromJSProps],
-          ),
-        );
-      mkStructItemValBindings([
-        mkBinding(
-          mkPatternIdent("component"),
-          mkExprApplyFunLabels(
-            mkExprIdentifier("ReasonReact.wrapReasonForJs"),
-            [
-              (
-                ReasonAst.Asttypes.Labelled("component"),
-                mkExprIdentifier(inputModuleName ++ "." ++ "component"),
-              ),
-              (ReasonAst.Asttypes.Nolabel, jsPropsToReason),
-            ],
-          ),
-        ),
-      ])
-      |> structureItem;
-    };
-
-  let codeItems = codeItems =>
-    List.map(codeItem, codeItems) |> String.concat("");
-};
 let emitCodeItems =
     (
       ~generatedFiles,

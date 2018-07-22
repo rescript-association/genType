@@ -1,3 +1,6 @@
+open GenFlowCommon;
+
+module StringMap = Map.Make(String);
 let requireModule = moduleName => {
   /* TODO: find the path from the module name */
   let path = Filename.(concat(parent_dir_name, moduleName ++ ".bs"));

@@ -120,39 +120,36 @@ let convertFunToJS = (origFun, groupedArgConverters, retConverter) => {
     switch (groupedArgConverters) {
     | [] =>
       let return =
-        GenFlowEmitAst.mkExprApplyFunLabels(
-          origFun,
-          List.rev(revAppArgsSoFar),
-        );
+        EmitAstUtil.mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
       retConverter.toJS(return);
     | [Arg(conv), ...tl] =>
       let newIdent = GenIdent.argIdent();
       let nextApp = (
         ReasonAst.Asttypes.Nolabel,
-        conv.toReason(GenFlowEmitAst.mkExprIdentifier(newIdent)),
+        conv.toReason(EmitAstUtil.mkExprIdentifier(newIdent)),
       );
-      GenFlowEmitAst.mkExprFun(
+      EmitAstUtil.mkExprFun(
         newIdent,
         createFun([nextApp, ...revAppArgsSoFar], tl),
       );
     | [NamedArgs(nameds), ...tl] =>
       let newIdent = GenIdent.argIdent();
       let mapToAppArg = ((name, optness, conv)) => {
-        let ident = GenFlowEmitAst.mkExprIdentifier(newIdent);
+        let ident = EmitAstUtil.mkExprIdentifier(newIdent);
         switch (optness) {
         | Mandatory => (
             ReasonAst.Asttypes.Labelled(name),
-            conv.toReason(GenFlowEmitAst.mkJSGet(ident, name)),
+            conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
           )
         | NonMandatory => (
             ReasonAst.Asttypes.Optional(name),
-            conv.toReason(GenFlowEmitAst.mkJSGet(ident, name)),
+            conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
           )
         };
       };
       let newRevArgs = List.rev_map(mapToAppArg, nameds);
       let nextRevAppArgs = List.append(newRevArgs, revAppArgsSoFar);
-      GenFlowEmitAst.mkExprFun(newIdent, createFun(nextRevAppArgs, tl));
+      EmitAstUtil.mkExprFun(newIdent, createFun(nextRevAppArgs, tl));
     };
   createFun([], groupedArgConverters);
 };
@@ -197,18 +194,15 @@ let convertFunToReason = (origFun, groupedArgConverters, retConverter) => {
     switch (groupedArgConverters) {
     | [] =>
       let return =
-        GenFlowEmitAst.mkExprApplyFunLabels(
-          origFun,
-          List.rev(revAppArgsSoFar),
-        );
+        EmitAstUtil.mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
       retConverter.toReason(return);
     | [Arg(c), ...tl] =>
       let newIdent = GenIdent.argIdent();
       let nextApp = (
         ReasonAst.Asttypes.Nolabel,
-        c.toJS(GenFlowEmitAst.mkExprIdentifier(newIdent)),
+        c.toJS(EmitAstUtil.mkExprIdentifier(newIdent)),
       );
-      GenFlowEmitAst.mkExprFun(
+      EmitAstUtil.mkExprFun(
         newIdent,
         createFun([nextApp, ...revAppArgsSoFar], tl),
       );
@@ -222,16 +216,16 @@ let convertFunToReason = (origFun, groupedArgConverters, retConverter) => {
       let identBase = GenIdent.argIdent();
       let mapToJSObjRow = ((nextName, optness, c)) => (
         nextName,
-        c.toJS(GenFlowEmitAst.mkExprIdentifier(identBase ++ nextName)),
+        c.toJS(EmitAstUtil.mkExprIdentifier(identBase ++ nextName)),
       );
       let jsObj = (
         ReasonAst.Asttypes.Nolabel,
-        GenFlowEmitAst.mkJSObj(List.map(mapToJSObjRow, nameds)),
+        EmitAstUtil.mkJSObj(List.map(mapToJSObjRow, nameds)),
       );
       let revAppArgsWObject = [jsObj, ...revAppArgsSoFar];
       List.fold_right(
         ((nextName, _nextOptness, _), soFar) =>
-          GenFlowEmitAst.mkExprFun(
+          EmitAstUtil.mkExprFun(
             ~label=ReasonAst.Asttypes.Labelled(nextName),
             identBase ++ nextName,
             soFar,
@@ -263,7 +257,7 @@ module Convert = {
       /* Need to create let binding to avoid double side effects from substitution! */
       let origJSExprIdent = GenIdent.jsMaybeIdent();
       let convertedReasonIdent = GenIdent.optIdent();
-      GenFlowEmitAst.(
+      EmitAstUtil.(
         mkExprLet(
           origJSExprIdent,
           expr,
@@ -290,7 +284,7 @@ module Convert = {
       );
     },
     toJS: expr =>
-      GenFlowEmitAst.(
+      EmitAstUtil.(
         mkOptionMatch(expr, mkJSRawExpr(jsNoneAs), ident =>
           expressionConverter.toJS(mkExprIdentifier(ident))
         )
