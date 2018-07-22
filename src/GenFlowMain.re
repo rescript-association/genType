@@ -60,6 +60,8 @@ let rec hasAttribute = (searchText, attributes) =>
  * Only supporting Flow + providesModule + using bs.raw for now.
  */
 module Generator = {
+  let suffix = emitJsDirectly ? ".re.js" : ".re";
+
   /**
    * Returns the generated JS module name for a given Reason module name.
    */
@@ -1351,7 +1353,7 @@ module GeneratedReFiles = {
       |> Sys.readdir
       |> Array.fold_left(
            (set, file) =>
-             Filename.check_suffix(file, emitJsDirectly ? ".re.js" : ".re") ?
+             Filename.check_suffix(file, Generator.suffix) ?
                StringSet.add(Filename.concat(outputDir, file), set) : set,
            StringSet.empty,
          );
@@ -1618,8 +1620,7 @@ let processCMTFile =
   let outputPath =
     Filename.concat(
       outputDir,
-      Generator.outputReasonModuleName(globalModuleName)
-      ++ (emitJsDirectly ? ".re.js" : ".re"),
+      Generator.outputReasonModuleName(globalModuleName) ++ Generator.suffix,
     );
   inputCMT
   |> cmtToCodeItems(~modulesMap, ~globalModuleName)
