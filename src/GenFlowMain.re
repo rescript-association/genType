@@ -948,80 +948,274 @@ module TypeVars = {
     List.map(((name, id)) => Flow.Ident(name, []), freeTypeVars);
 };
 
-type codeItem =
-  | RawJS(string)
-  | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
-  | FlowAnnotation(string, GenFlowCommon.Flow.typ)
-  | ValueBinding(string, Ident.t, Convert.t)
-  | ConstructorBinding(string, list(convertableFlowType), string, string)
-  | ComponentBinding(
-      string,
-      option(GenFlowCommon.Flow.typ),
-      Ident.t,
-      Convert.t,
-    );
+module CodeItem = {
+  type t =
+    | RawJS(string)
+    | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
+    | FlowAnnotation(string, GenFlowCommon.Flow.typ)
+    | ValueBinding(string, Ident.t, Convert.t)
+    | ConstructorBinding(string, list(convertableFlowType), string, string)
+    | ComponentBinding(
+        string,
+        option(GenFlowCommon.Flow.typ),
+        Ident.t,
+        Convert.t,
+      );
+  let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
+    let opaqueTypeString =
+      "export"
+      ++ (opaque ? " opaque " : " ")
+      ++ "type "
+      ++ String.capitalize(name)
+      ++ Flow.genericsString(List.map(Flow.render, typeParams))
+      ++ " = "
+      ++ Flow.render(underlying)
+      ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
+    RawJS(opaqueTypeString);
+  };
+  let codeItemForOpaqueType = (typeParams, name, underlying) =>
+    codeItemForType(~opaque=true, typeParams, name, underlying);
 
-let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
-  let opaqueTypeString =
-    "export"
-    ++ (opaque ? " opaque " : " ")
-    ++ "type "
-    ++ String.capitalize(name)
-    ++ Flow.genericsString(List.map(Flow.render, typeParams))
-    ++ " = "
-    ++ Flow.render(underlying)
-    ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
-  RawJS(opaqueTypeString);
-};
+  let codeItemForUnionType = (typeParams, leafTypes, name) => {
+    let opaqueTypeString =
+      "export type "
+      ++ String.capitalize(name)
+      ++ Flow.genericsString(List.map(Flow.render, typeParams))
+      ++ " =\n  | "
+      ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
+    RawJS(opaqueTypeString);
+  };
+  /*
+   * TODO: Make the types namespaced by nested Flow module.
+   */
+  let codeItemsFromConstructorDeclaration =
+      (modulePath, variantTypeName, constructorDeclaration) => {
+    GenIdent.resetPerStructure();
+    let constructorArgs = constructorDeclaration.Types.cd_args;
+    let leafName = Ident.name(constructorDeclaration.Types.cd_id);
+    let lowercaseLeaf = String.uncapitalize(leafName);
+    let (deps, convertableFlowTypes) =
+      reasonTypeToConversionMany(constructorArgs);
+    /* A valid Reason identifier that we can point UpperCase JS exports to. */
+    let constructorAlias =
+      BuckleScriptPostProcessLib.Patterns.capitalizeExportedNamePrefix
+      ++ lowercaseLeaf;
+    let annotationBindingName =
+      BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix
+      ++ constructorAlias;
+    let leafTypeName = variantLeafTypeName(variantTypeName, leafName);
+    let (freeTypeVars, remainingDeps) =
+      Dependencies.extractFreeTypeVars(deps);
+    let flowTypeVars = TypeVars.toFlow(freeTypeVars);
+    let retType = Flow.Ident(leafTypeName, flowTypeVars);
+    let constructorFlowType =
+      createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
+    let codeItems = [
+      codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
+      FlowAnnotation(annotationBindingName, constructorFlowType),
+      ConstructorBinding(
+        constructorAlias,
+        convertableFlowTypes,
+        modulePath,
+        leafName,
+      ),
+    ];
+    (retType, (remainingDeps, codeItems));
+  };
 
-let codeItemForOpaqueType = (typeParams, name, underlying) =>
-  codeItemForType(~opaque=true, typeParams, name, underlying);
+  let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
+    let {Typedtree.vb_expr} = valueBinding;
+    let expressionType = vb_expr.exp_type;
+    let conversion = reasonTypeToConversion(expressionType);
+    let (valueDeps, (converter, flowType)) = conversion;
+    /*
+     * We pull apart the polymorphic type variables at the binding level, but
+     * not at deeper function types because we know that the Reason/OCaml type
+     * system doesn't support higher ranked polymorphism, and so all type
+     * variables most likely belong at the binding level.
+     */
+    let (freeTypeVars, remainingDeps) =
+      Dependencies.extractFreeTypeVars(valueDeps);
+    let flowTypeVars = TypeVars.toFlow(freeTypeVars);
+    let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
+    let codeItems = [
+      FlowTypeBinding(Ident.name(id), flowType),
+      ValueBinding(inputModuleName, id, converter),
+    ];
+    (remainingDeps, codeItems);
+  };
 
-let codeItemForUnionType = (typeParams, leafTypes, name) => {
-  let opaqueTypeString =
-    "export type "
-    ++ String.capitalize(name)
-    ++ Flow.genericsString(List.map(Flow.render, typeParams))
-    ++ " =\n  | "
-    ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
-  RawJS(opaqueTypeString);
-};
+  /*
+   * The `make` function is typically of the type:
+   *
+   *    (~named, ~args=?, 'childrenType) => ReasonReactComponentSpec<
+   *      State,
+   *      State,
+   *      RetainedProps,
+   *      RetainedProps,
+   *      Action,
+   *    >)
+   *
+   * We take a reference to that function and turn it into a React component of
+   * type:
+   *
+   *
+   *     exports.component = (component : React.Component<Props>);
+   *
+   * Where `Props` is of type:
+   *
+   *     {named: number, args?: number}
+   */
 
-/*
- * TODO: Make the types namespaced by nested Flow module.
+  let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
+    let {Typedtree.vb_expr} = valueBinding;
+    let expressionType = vb_expr.exp_type;
+    let conversion = reasonTypeToConversion(expressionType);
+    let (valueDeps, (converter, flowType)) = conversion;
+    let (freeTypeVars, remainingDeps) =
+      Dependencies.extractFreeTypeVars(valueDeps);
+    let flowTypeVars = TypeVars.toFlow(freeTypeVars);
+    let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
+    switch (flowType) {
+    | Flow.Arrow(
+        _,
+        [propOrChildren, ...childrenOrNil],
+        Flow.Ident(
+          "ReasonReactComponentSpec" | "ReactComponentSpec",
+          [state, ..._],
+        ),
+      ) =>
+      let flowPropGenerics =
+        switch (childrenOrNil) {
+        /* Then we only extracted a function that accepts children, no props */
+        | [] => None
+        /* Then we had both props and children. */
+        | [children, ..._] => Some(propOrChildren)
+        };
+      let propsTypeName = GenIdent.propsTypeName();
+      let propsTypeNameFlow = Flow.Ident(propsTypeName, []);
+      /* TODO: Polymorphic props */
+      let componentFlowType =
+        Flow.Ident(
+          "React$ComponentType",
+          switch (flowPropGenerics) {
+          | None => []
+          | Some(propsType) => [propsTypeNameFlow]
+          },
+        );
+      let propsTypeDeclaration =
+        switch (flowPropGenerics) {
+        | None => []
+        | Some(propsType) => [codeItemForType([], propsTypeName, propsType)]
+        };
+
+      let items =
+        propsTypeDeclaration
+        @ [
+          FlowTypeBinding("component", componentFlowType),
+          ComponentBinding(inputModuleName, flowPropGenerics, id, converter),
+        ];
+      let deps = [
+        JSTypeFromModule("Component", "ReactComponent", "React"),
+        ...remainingDeps,
+      ];
+      (deps, items);
+    | _ =>
+      /* not a component: treat make as a normal function */
+      id |> codeItemsForId(~inputModuleName, ~valueBinding)
+    };
+  };
+
+  /**
+ * See how this binding is accessed/generated.
+ * [@bs.module] external workModeConfig : Js.t('untypedThing) = "WorkModeConfig";
+ * Js_unsafe.raw_expr("require('MyModule')");
  */
-let codeItemsFromConstructorDeclaration =
-    (modulePath, variantTypeName, constructorDeclaration) => {
-  GenIdent.resetPerStructure();
-  let constructorArgs = constructorDeclaration.Types.cd_args;
-  let leafName = Ident.name(constructorDeclaration.Types.cd_id);
-  let lowercaseLeaf = String.uncapitalize(leafName);
-  let (deps, convertableFlowTypes) =
-    reasonTypeToConversionMany(constructorArgs);
-  /* A valid Reason identifier that we can point UpperCase JS exports to. */
-  let constructorAlias =
-    BuckleScriptPostProcessLib.Patterns.capitalizeExportedNamePrefix
-    ++ lowercaseLeaf;
-  let annotationBindingName =
-    BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix
-    ++ constructorAlias;
-  let leafTypeName = variantLeafTypeName(variantTypeName, leafName);
-  let (freeTypeVars, remainingDeps) = Dependencies.extractFreeTypeVars(deps);
-  let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let retType = Flow.Ident(leafTypeName, flowTypeVars);
-  let constructorFlowType =
-    createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
-  let codeItems = [
-    codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
-    FlowAnnotation(annotationBindingName, constructorFlowType),
-    ConstructorBinding(
-      constructorAlias,
-      convertableFlowTypes,
-      modulePath,
-      leafName,
-    ),
-  ];
-  (retType, (remainingDeps, codeItems));
+  /**
+ * This is where all the logic for mapping from a CMT file, to a parsetree Ast
+ * which has injected Flow types and generated interop code.
+ * Each @genFlow binding will have the following two:
+ *
+ *     let __flowTypeValueAnnotation__bindingName = "someFlowType";
+ *     let bindingName =
+ *       require('ModuleWhereOrigBindingLives.bs').bindingName;
+ *
+ * Where the "someFlowType" is a flow converted type from Reason type, and
+ * where the require() redirection may perform some safe conversions.
+ */
+  let codeItemsForValueBinding = (~inputModuleName, valueBinding) => {
+    let {Typedtree.vb_pat, vb_expr, vb_attributes} = valueBinding;
+    GenIdent.resetPerStructure();
+    switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
+    | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
+      id |> codeItemsForMake(~inputModuleName, ~valueBinding)
+    | (Tpat_var(id, _), GenFlow) =>
+      id |> codeItemsForId(~inputModuleName, ~valueBinding)
+    | _ => ([], [])
+    };
+  };
+
+  let codeItemsForTypeDecl =
+      (~inputModuleName, dec: Typedtree.type_declaration) => {
+    GenIdent.resetPerStructure();
+    switch (
+      dec.typ_type.type_params,
+      dec.typ_type.type_kind,
+      getGenFlowKind(dec.typ_attributes),
+    ) {
+    | (typeParams, Type_record(_, _), GenFlow | GenFlowOpaque) =>
+      let freeTypeVars = TypeVars.extract(typeParams);
+      let flowTypeVars = TypeVars.toFlow(freeTypeVars);
+      let typeName = Ident.name(dec.typ_id);
+      ([], [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)]);
+    /*
+     * This case includes aliasings such as:
+     *
+     *     type list('t) = List.t('t');
+     */
+    | (typeParams, Type_abstract, GenFlow | GenFlowOpaque)
+    | (typeParams, Type_variant(_), GenFlowOpaque) =>
+      let freeTypeVars = TypeVars.extract(typeParams);
+      let flowTypeVars = TypeVars.toFlow(freeTypeVars);
+      let typeName = Ident.name(dec.typ_id);
+      switch (dec.typ_manifest) {
+      | None => (
+          [],
+          [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)],
+        )
+      | Some(coreType) =>
+        let (deps, (_converter, flowType)) =
+          reasonTypeToConversion(coreType.Typedtree.ctyp_type);
+        let structureItems = [
+          codeItemForOpaqueType(flowTypeVars, typeName, flowType),
+        ];
+        let deps = Dependencies.filterFreeTypeVars(freeTypeVars, deps);
+        (deps, structureItems);
+      };
+    | (typeParams, Type_variant(constructorDeclarations), GenFlow)
+        when !hasSomeGADTLeaf(constructorDeclarations) =>
+      let variantTypeName = Ident.name(dec.typ_id);
+      let resultTypesDepsAndVariantLeafBindings =
+        List.map(
+          codeItemsFromConstructorDeclaration(
+            inputModuleName,
+            variantTypeName,
+          ),
+          constructorDeclarations,
+        );
+      let (resultTypes, depsAndVariantLeafBindings) =
+        List.split(resultTypesDepsAndVariantLeafBindings);
+      let (listListDeps, listListItems) =
+        List.split(depsAndVariantLeafBindings);
+      let deps = List.concat(listListDeps);
+      let items = List.concat(listListItems);
+      let flowTypeVars = TypeVars.toFlow(TypeVars.extract(typeParams));
+      let unionType =
+        codeItemForUnionType(flowTypeVars, resultTypes, variantTypeName);
+      (deps, List.append(items, [unionType]));
+    | _ => ([], [])
+    };
+  };
 };
 
 let mkFlowTypeBinding = (name, flowType) =>
@@ -1038,206 +1232,16 @@ let mkFlowTypeBinding = (name, flowType) =>
     )
   );
 
-let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
-  let {Typedtree.vb_expr} = valueBinding;
-  let expressionType = vb_expr.exp_type;
-  let conversion = reasonTypeToConversion(expressionType);
-  let (valueDeps, (converter, flowType)) = conversion;
-  /*
-   * We pull apart the polymorphic type variables at the binding level, but
-   * not at deeper function types because we know that the Reason/OCaml type
-   * system doesn't support higher ranked polymorphism, and so all type
-   * variables most likely belong at the binding level.
-   */
-  let (freeTypeVars, remainingDeps) =
-    Dependencies.extractFreeTypeVars(valueDeps);
-  let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
-  let codeItems = [
-    FlowTypeBinding(Ident.name(id), flowType),
-    ValueBinding(inputModuleName, id, converter),
-  ];
-  (remainingDeps, codeItems);
-};
-
-/*
- * The `make` function is typically of the type:
- *
- *    (~named, ~args=?, 'childrenType) => ReasonReactComponentSpec<
- *      State,
- *      State,
- *      RetainedProps,
- *      RetainedProps,
- *      Action,
- *    >)
- *
- * We take a reference to that function and turn it into a React component of
- * type:
- *
- *
- *     exports.component = (component : React.Component<Props>);
- *
- * Where `Props` is of type:
- *
- *     {named: number, args?: number}
- */
-
-let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
-  let {Typedtree.vb_expr} = valueBinding;
-  let expressionType = vb_expr.exp_type;
-  let conversion = reasonTypeToConversion(expressionType);
-  let (valueDeps, (converter, flowType)) = conversion;
-  let (freeTypeVars, remainingDeps) =
-    Dependencies.extractFreeTypeVars(valueDeps);
-  let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
-  switch (flowType) {
-  | Flow.Arrow(
-      _,
-      [propOrChildren, ...childrenOrNil],
-      Flow.Ident(
-        "ReasonReactComponentSpec" | "ReactComponentSpec",
-        [state, ..._],
-      ),
-    ) =>
-    let flowPropGenerics =
-      switch (childrenOrNil) {
-      /* Then we only extracted a function that accepts children, no props */
-      | [] => None
-      /* Then we had both props and children. */
-      | [children, ..._] => Some(propOrChildren)
-      };
-    let propsTypeName = GenIdent.propsTypeName();
-    let propsTypeNameFlow = Flow.Ident(propsTypeName, []);
-    /* TODO: Polymorphic props */
-    let componentFlowType =
-      Flow.Ident(
-        "React$ComponentType",
-        switch (flowPropGenerics) {
-        | None => []
-        | Some(propsType) => [propsTypeNameFlow]
-        },
-      );
-    let propsTypeDeclaration =
-      switch (flowPropGenerics) {
-      | None => []
-      | Some(propsType) => [codeItemForType([], propsTypeName, propsType)]
-      };
-
-    let items =
-      propsTypeDeclaration
-      @ [
-        FlowTypeBinding("component", componentFlowType),
-        ComponentBinding(inputModuleName, flowPropGenerics, id, converter),
-      ];
-    let deps = [
-      JSTypeFromModule("Component", "ReactComponent", "React"),
-      ...remainingDeps,
-    ];
-    (deps, items);
-  | _ =>
-    /* not a component: treat make as a normal function */
-    id |> codeItemsForId(~inputModuleName, ~valueBinding)
-  };
-};
-
-/**
- * See how this binding is accessed/generated.
- * [@bs.module] external workModeConfig : Js.t('untypedThing) = "WorkModeConfig";
- * Js_unsafe.raw_expr("require('MyModule')");
- */
-/**
- * This is where all the logic for mapping from a CMT file, to a parsetree Ast
- * which has injected Flow types and generated interop code.
- * Each @genFlow binding will have the following two:
- *
- *     let __flowTypeValueAnnotation__bindingName = "someFlowType";
- *     let bindingName =
- *       require('ModuleWhereOrigBindingLives.bs').bindingName;
- *
- * Where the "someFlowType" is a flow converted type from Reason type, and
- * where the require() redirection may perform some safe conversions.
- */
-let codeItemsForValueBinding = (~inputModuleName, valueBinding) => {
-  let {Typedtree.vb_pat, vb_expr, vb_attributes} = valueBinding;
-  GenIdent.resetPerStructure();
-  switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
-  | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> codeItemsForMake(~inputModuleName, ~valueBinding)
-  | (Tpat_var(id, _), GenFlow) =>
-    id |> codeItemsForId(~inputModuleName, ~valueBinding)
-  | _ => ([], [])
-  };
-};
-
-let codeItemsForTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) => {
-  GenIdent.resetPerStructure();
-  switch (
-    dec.typ_type.type_params,
-    dec.typ_type.type_kind,
-    getGenFlowKind(dec.typ_attributes),
-  ) {
-  | (typeParams, Type_record(_, _), GenFlow | GenFlowOpaque) =>
-    let freeTypeVars = TypeVars.extract(typeParams);
-    let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-    let typeName = Ident.name(dec.typ_id);
-    ([], [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)]);
-  /*
-   * This case includes aliasings such as:
-   *
-   *     type list('t) = List.t('t');
-   */
-  | (typeParams, Type_abstract, GenFlow | GenFlowOpaque)
-  | (typeParams, Type_variant(_), GenFlowOpaque) =>
-    let freeTypeVars = TypeVars.extract(typeParams);
-    let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-    let typeName = Ident.name(dec.typ_id);
-    switch (dec.typ_manifest) {
-    | None => (
-        [],
-        [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)],
-      )
-    | Some(coreType) =>
-      let (deps, (_converter, flowType)) =
-        reasonTypeToConversion(coreType.Typedtree.ctyp_type);
-      let structureItems = [
-        codeItemForOpaqueType(flowTypeVars, typeName, flowType),
-      ];
-      let deps = Dependencies.filterFreeTypeVars(freeTypeVars, deps);
-      (deps, structureItems);
-    };
-  | (typeParams, Type_variant(constructorDeclarations), GenFlow)
-      when !hasSomeGADTLeaf(constructorDeclarations) =>
-    let variantTypeName = Ident.name(dec.typ_id);
-    let resultTypesDepsAndVariantLeafBindings =
-      List.map(
-        codeItemsFromConstructorDeclaration(inputModuleName, variantTypeName),
-        constructorDeclarations,
-      );
-    let (resultTypes, depsAndVariantLeafBindings) =
-      List.split(resultTypesDepsAndVariantLeafBindings);
-    let (listListDeps, listListItems) =
-      List.split(depsAndVariantLeafBindings);
-    let deps = List.concat(listListDeps);
-    let items = List.concat(listListItems);
-    let flowTypeVars = TypeVars.toFlow(TypeVars.extract(typeParams));
-    let unionType =
-      codeItemForUnionType(flowTypeVars, resultTypes, variantTypeName);
-    (deps, List.append(items, [unionType]));
-  | _ => ([], [])
-  };
-};
-
 let typedItemToCodeItems = (~inputModuleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations)} =>
       typeDeclarations
-      |> List.map(codeItemsForTypeDecl(~inputModuleName))
+      |> List.map(CodeItem.codeItemsForTypeDecl(~inputModuleName))
       |> List.split
     | {Typedtree.str_desc: Tstr_value(loc, valueBindings)} =>
       valueBindings
-      |> List.map(codeItemsForValueBinding(~inputModuleName))
+      |> List.map(CodeItem.codeItemsForValueBinding(~inputModuleName))
       |> List.split
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
@@ -1260,7 +1264,7 @@ let dependencyEqual = (a, b) =>
   | _ => false
   };
 
-let codeItemsForDependencies = (modulesMap, dependencies): list(codeItem) => {
+let codeItemsForDependencies = (modulesMap, dependencies): list(CodeItem.t) => {
   /*
    * Makes sure we only add a dependency/import at the top of the file once per
    * dependency. How about a little n square action! (These lists should be
@@ -1274,7 +1278,7 @@ let codeItemsForDependencies = (modulesMap, dependencies): list(codeItem) => {
         switch (next) {
         | TypeAtPath(p) =>
           let importTypeString = typePathToFlowImportString(modulesMap, p);
-          RawJS(importTypeString);
+          CodeItem.RawJS(importTypeString);
         | JSTypeFromModule(typeName, asName, moduleName) =>
           let importTypeString = importString(typeName, asName, moduleName);
           RawJS(importTypeString);
@@ -1295,7 +1299,7 @@ let codeItemsForDependencies = (modulesMap, dependencies): list(codeItem) => {
 };
 
 let cmtToCodeItems =
-    (~modulesMap, ~globalModuleName, inputCMT): list(codeItem) => {
+    (~modulesMap, ~globalModuleName, inputCMT): list(CodeItem.t) => {
   let {Cmt_format.cmt_annots} = inputCMT;
   switch (cmt_annots) {
   | Implementation(structure) =>
@@ -1442,7 +1446,7 @@ module EmitJs = {
     let line = s => Buffer.add_string(buffer, s);
     let codeItem = (typeMap, codeItem) =>
       switch (codeItem) {
-      | RawJS(s) =>
+      | CodeItem.RawJS(s) =>
         line(s ++ ";\n");
         typeMap;
       | FlowTypeBinding(id, flowType) =>
@@ -1493,7 +1497,7 @@ module EmitAst = {
 
   let codeItem = codeItem =>
     switch (codeItem) {
-    | RawJS(s) => s |> raw
+    | CodeItem.RawJS(s) => s |> raw
     | FlowTypeBinding(id, flowType) =>
       [mkFlowTypeBinding(id, flowType)]
       |> GenFlowEmitAst.mkStructItemValBindings
