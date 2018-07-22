@@ -72,7 +72,7 @@ module Convert = {
         let return =
           mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
         retConverter.toJS(return);
-      | [CodeItem.Arg(conv), ...tl] =>
+      | [NamedArgs.Arg(conv), ...tl] =>
         let newIdent = GenIdent.argIdent();
         let nextApp = (
           ReasonAst.Asttypes.Nolabel,
@@ -143,7 +143,7 @@ module Convert = {
         let return =
           mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
         retConverter.toReason(return);
-      | [CodeItem.Arg(c), ...tl] =>
+      | [NamedArgs.Arg(c), ...tl] =>
         let newIdent = GenIdent.argIdent();
         let nextApp = (
           ReasonAst.Asttypes.Nolabel,
@@ -183,8 +183,8 @@ module Convert = {
 
   let fn = (labeledConverters, retConverter) => {
     let revGroupedArgConverters =
-      CodeItem.groupReversed([], [], labeledConverters);
-    let groupedArgConverters = CodeItem.reverse(revGroupedArgConverters);
+      NamedArgs.groupReversed([], [], labeledConverters);
+    let groupedArgConverters = NamedArgs.reverse(revGroupedArgConverters);
     {
       toReason: expr =>
         convertFunToReason(expr, groupedArgConverters, retConverter),
