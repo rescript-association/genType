@@ -21,6 +21,8 @@ type optionalness =
   | NonMandatory
   | Mandatory;
 
+module StringMap = Map.Make(String);
+
 module Flow = {
   /* Introduction of type variables (for all) */
   type typ =

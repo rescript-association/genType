@@ -2,11 +2,6 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
-open Migrate_parsetree;
-
-module ReasonAst = OCaml_404.Ast;
-
-module StringMap = Map.Make(String);
 module StringSet = Set.Make(String);
 
 open GenFlowCommon;

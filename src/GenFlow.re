@@ -2,6 +2,8 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
+open GenFlowCommon;
+
 let project =
   Filename.(
     "sample-project"
@@ -15,7 +17,7 @@ let outputDir =
 
 let createModulesMap = modulesMapFile =>
   switch (modulesMapFile) {
-  | None => GenFlowMain.StringMap.empty
+  | None => StringMap.empty
   | Some(filePath) =>
     let s = GenFlowMain.GeneratedReFiles.readFile(filePath);
     Str.split(Str.regexp("\n"), s)
@@ -27,11 +29,11 @@ let createModulesMap = modulesMapFile =>
              assert(Array.length(fromTo) === 2);
              let k: string = fromTo[0];
              let v: string = fromTo[1];
-             GenFlowMain.StringMap.add(k, v, map);
+             StringMap.add(k, v, map);
            } else {
              map;
            },
-         GenFlowMain.StringMap.empty,
+         StringMap.empty,
        );
   };
 
@@ -94,8 +96,7 @@ let cli = () => {
     let re =
       Filename.concat(
         outputDir,
-        CodeItem.Generator.outputReasonModuleName(globalModuleName)
-        ++ ".re",
+        CodeItem.Generator.outputReasonModuleName(globalModuleName) ++ ".re",
       );
     print_endline("-cmt-rm cmt:" ++ cmt);
     if (Sys.file_exists(re)) {

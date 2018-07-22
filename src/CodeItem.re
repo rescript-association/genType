@@ -1,76 +1,5 @@
-open Migrate_parsetree;
-
-module ReasonAst = OCaml_404.Ast;
-
-module StringMap = Map.Make(String);
-
 open GenFlowCommon;
 let emitJsDirectly = false;
-
-/**
- * Allows conveniently organizing arguments into groupings of named args. This
- * is useful for when mapping those patterns to JS functions that accept
- * objects and turn them into calls into Reason named args.
- */
-type jsIdentifier = string;
-
-type convert =
-  | Unit
-  | Identity
-  | OptionalArgument(convert)
-  | Option(convert)
-  | Fn((list((GenFlowCommon.label, convert)), convert));
-
-type dependency =
-  /* Imports a JS Module Value into scope (importAsModuleName, moduleName) */
-  | JSModuleImport(string, string)
-  /* Import a type that we expect to also be genFlow'd. */
-  | TypeAtPath(Path.t)
-  /* Imports a JS type (typeName, importAs, moduleName) */
-  | JSTypeFromModule(string, string, string)
-  /* (type variable name, unique type id) */
-  | FreeTypeVariable(string, int);
-
-type convertableFlowType = (convert, Flow.typ);
-
-type conversionPlan = (list(dependency), convertableFlowType);
-
-type t =
-  | RawJS(string)
-  | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
-  | FlowAnnotation(string, GenFlowCommon.Flow.typ)
-  | ValueBinding(string, Ident.t, convert)
-  | ConstructorBinding(string, list(convertableFlowType), string, string)
-  | ComponentBinding(
-      string,
-      option(GenFlowCommon.Flow.typ),
-      Ident.t,
-      convert,
-    );
-let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
-  let opaqueTypeString =
-    "export"
-    ++ (opaque ? " opaque " : " ")
-    ++ "type "
-    ++ String.capitalize(name)
-    ++ Flow.genericsString(List.map(Flow.render, typeParams))
-    ++ " = "
-    ++ Flow.render(underlying)
-    ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
-  RawJS(opaqueTypeString);
-};
-let codeItemForOpaqueType = (typeParams, name, underlying) =>
-  codeItemForType(~opaque=true, typeParams, name, underlying);
-
-let codeItemForUnionType = (typeParams, leafTypes, name) => {
-  let opaqueTypeString =
-    "export type "
-    ++ String.capitalize(name)
-    ++ Flow.genericsString(List.map(Flow.render, typeParams))
-    ++ " =\n  | "
-    ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
-  RawJS(opaqueTypeString);
-};
 
 /*
  * A place to put all the customization of the generated output for various
@@ -105,6 +34,40 @@ module Generator = {
   let jsTypeNameForTypeParameterName = s => String.capitalize;
 };
 
+type convert =
+  | Unit
+  | Identity
+  | OptionalArgument(convert)
+  | Option(convert)
+  | Fn((list((GenFlowCommon.label, convert)), convert));
+
+type dependency =
+  /* Imports a JS Module Value into scope (importAsModuleName, moduleName) */
+  | JSModuleImport(string, string)
+  /* Import a type that we expect to also be genFlow'd. */
+  | TypeAtPath(Path.t)
+  /* Imports a JS type (typeName, importAs, moduleName) */
+  | JSTypeFromModule(string, string, string)
+  /* (type variable name, unique type id) */
+  | FreeTypeVariable(string, int);
+
+type convertableFlowType = (convert, Flow.typ);
+
+type conversionPlan = (list(dependency), convertableFlowType);
+
+type t =
+  | RawJS(string)
+  | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
+  | FlowAnnotation(string, GenFlowCommon.Flow.typ)
+  | ValueBinding(string, Ident.t, convert)
+  | ConstructorBinding(string, list(convertableFlowType), string, string)
+  | ComponentBinding(
+      string,
+      option(GenFlowCommon.Flow.typ),
+      Ident.t,
+      convert,
+    );
+
 type genFlowKind =
   | NoGenFlow
   | GenFlow
@@ -125,6 +88,31 @@ let getGenFlowKind = attrs =>
   } else {
     NoGenFlow;
   };
+
+let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
+  let opaqueTypeString =
+    "export"
+    ++ (opaque ? " opaque " : " ")
+    ++ "type "
+    ++ String.capitalize(name)
+    ++ Flow.genericsString(List.map(Flow.render, typeParams))
+    ++ " = "
+    ++ Flow.render(underlying)
+    ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
+  RawJS(opaqueTypeString);
+};
+let codeItemForOpaqueType = (typeParams, name, underlying) =>
+  codeItemForType(~opaque=true, typeParams, name, underlying);
+
+let codeItemForUnionType = (typeParams, leafTypes, name) => {
+  let opaqueTypeString =
+    "export type "
+    ++ String.capitalize(name)
+    ++ Flow.genericsString(List.map(Flow.render, typeParams))
+    ++ " =\n  | "
+    ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
+  RawJS(opaqueTypeString);
+};
 
 let rec removeOption = (label, typ) =>
   Types.(
@@ -169,6 +157,8 @@ let rec distributeSplitRev_ = (revLeftSoFar, revRightSoFar, lst) =>
     )
   };
 
+let distributeSplitRev = lst => distributeSplitRev_([], [], lst);
+
 let rec typePathToFlowName = typePath =>
   switch (typePath) {
   | Path.Pident(id) => String.capitalize(Ident.name(id))
@@ -179,9 +169,8 @@ let rec typePathToFlowName = typePath =>
     ++ typePathToFlowName(p2)
   };
 
-let distributeSplitRev = lst => distributeSplitRev_([], [], lst);
-
 let needsArgConversion = ((lbl, c)) => lbl !== Nolabel || c !== Identity;
+
 let rec extract_fun = (revArgDeps, revArgs, typ) =>
   Types.(
     switch (typ.desc) {
