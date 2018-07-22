@@ -247,50 +247,6 @@ module Convert = {
     };
 };
 
-let mkFlowTypeBinding = (name, flowType) =>
-  mkBinding(
-    mkPatternIdent(
-      BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix ++ name,
-    ),
-    mkExpr(
-      ReasonAst.Parsetree.Pexp_constant(
-        Pconst_string(Flow.render(flowType), None),
-      ),
-    ),
-  );
-
-let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
-  let rec buildUp =
-          (argLen, revConvertedArgs, convertableFlowTypes, modPath, leafName) =>
-    switch (revConvertedArgs, convertableFlowTypes) {
-    | ([], []) => mkExprConstructorDesc(modPath ++ "." ++ leafName)
-    | ([hd, ...tl], []) =>
-      mkExprConstructorDesc(
-        ~payload=mkTuple(List.rev(revConvertedArgs)),
-        modPath ++ "." ++ leafName,
-      )
-    | (_, [(converter, _), ...tl]) =>
-      /* TODO: Apply the converter if available. */
-      let maker = tl === [] ? mkExprExplicitArity : mkExpr;
-      let name = GenIdent.argIdent();
-      let argExpr =
-        (converter |> Convert.apply).toReason(mkExprIdentifier(name));
-      mkExprFunDesc(
-        name,
-        maker(
-          buildUp(
-            argLen + 1,
-            [argExpr, ...revConvertedArgs],
-            tl,
-            modPath,
-            leafName,
-          ),
-        ),
-      );
-    };
-  buildUp(0, [], List.rev(convertableFlowTypes), modPath, leafName);
-};
-
 let emitStructureItem = structureItem => {
   let outputFormatter = Format.str_formatter;
   Reason_toolchain.RE.print_implementation_with_comments(
@@ -304,13 +260,27 @@ let emitStructureItem = structureItem => {
 let emitCodeItem = codeItem =>
   switch (codeItem) {
   | CodeItem.RawJS(s) => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\",\n);\n"
+
   | FlowTypeBinding(id, flowType) =>
+    let mkFlowTypeBinding = (name, flowType) =>
+      mkBinding(
+        mkPatternIdent(
+          BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix ++ name,
+        ),
+        mkExpr(
+          ReasonAst.Parsetree.Pexp_constant(
+            Pconst_string(Flow.render(flowType), None),
+          ),
+        ),
+      );
     [mkFlowTypeBinding(id, flowType)]
     |> mkStructItemValBindings
-    |> emitStructureItem
+    |> emitStructureItem;
+
   | FlowAnnotation(annotationBindingName, constructorFlowType) =>
     mkFlowAnnotationStructItem(annotationBindingName, constructorFlowType)
     |> emitStructureItem
+
   | ValueBinding(inputModuleName, id, converter) =>
     let consumeProp =
       mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
@@ -321,12 +291,50 @@ let emitCodeItem = codeItem =>
       ),
     ])
     |> emitStructureItem;
+
   | ConstructorBinding(
       constructorAlias,
       convertableFlowTypes,
       modulePath,
       leafName,
     ) =>
+    let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
+      let rec buildUp =
+              (
+                argLen,
+                revConvertedArgs,
+                convertableFlowTypes,
+                modPath,
+                leafName,
+              ) =>
+        switch (revConvertedArgs, convertableFlowTypes) {
+        | ([], []) => mkExprConstructorDesc(modPath ++ "." ++ leafName)
+        | ([hd, ...tl], []) =>
+          mkExprConstructorDesc(
+            ~payload=mkTuple(List.rev(revConvertedArgs)),
+            modPath ++ "." ++ leafName,
+          )
+        | (_, [(converter, _), ...tl]) =>
+          /* TODO: Apply the converter if available. */
+          let maker = tl === [] ? mkExprExplicitArity : mkExpr;
+          let name = GenIdent.argIdent();
+          let argExpr =
+            (converter |> Convert.apply).toReason(mkExprIdentifier(name));
+          mkExprFunDesc(
+            name,
+            maker(
+              buildUp(
+                argLen + 1,
+                [argExpr, ...revConvertedArgs],
+                tl,
+                modPath,
+                leafName,
+              ),
+            ),
+          );
+        };
+      buildUp(0, [], List.rev(convertableFlowTypes), modPath, leafName);
+    };
     mkStructItemValBindings([
       mkBinding(
         mkPattern(Ppat_var(located(constructorAlias))),
@@ -335,7 +343,8 @@ let emitCodeItem = codeItem =>
         ),
       ),
     ])
-    |> emitStructureItem
+    |> emitStructureItem;
+
   | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
     let makeIdentifier =
       mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
