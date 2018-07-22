@@ -8,45 +8,6 @@ open GenFlowCommon;
 let emitJsDirectly = false;
 
 /**
- * A pair of functions:
- * - One function that can transform an expression representing JavaScript
- * runtime value into an expression that converts that runtime value into the
- * appropriate Reason runtime value.
- * - The other, performing the opposite AST transformation.
- *
- *     let boolConverter = {
- *       toJS: (exprOfTypeJSBool) => exprThatTransformsThatExprIntoReasonBool,
- *       toReason: (exprOfTypeReasonBool) => exprThatTransformsThatExprIntoJSBool
- *     };
- *     let optionalConverter = {
- *       toJS: (exprOfTypeJSNullableX) => exprThatTransformsThatExprIntoReasonOptional,
- *       toReason: (exprOfTypeReasonOptional) => exprThatTransformsThatExprIntoJSNullable
- *     };
- *
- * So when automatically creating bindings for the Reason function:
- *
- *     let isTrue = (b : option(bool)) : bool =>
- *       switch(b) {
- *       | None => false
- *       | Some(b_) => b_ === true
- *       };
- *
- * You would expose a wrapper of that function to Flow of the form:
- *     let isTrue' = (a) =>
- *       <boolConverter.toJS>(isTrue(
- *         <optionalConverter.toReason>(
- *           <boolConverter.toReason>(a)
- *         )
- *       ))
- *
- * Where the <> regions represent AST-processing substitutions.
- */
-type expressionConverter = {
-  toJS: ReasonAst.Parsetree.expression => ReasonAst.Parsetree.expression,
-  toReason: ReasonAst.Parsetree.expression => ReasonAst.Parsetree.expression,
-};
-
-/**
  * Allows conveniently organizing arguments into groupings of named args. This
  * is useful for when mapping those patterns to JS functions that accept
  * objects and turn them into calls into Reason named args.
@@ -91,230 +52,12 @@ let rec reverse = (~soFar=[], lst) =>
     reverse(~soFar=[NamedArgs(List.rev(namedArgs)), ...soFar], tl)
   };
 
-/**
- * Converts Reason values of the following form:
- *
- *     (~x: number, ~y: number) => x + y
- *
- * Into JS functions of the following form:
- *
- *     (jsObj) => thatReasonFunction(/*~x=*/jsObj.x, /*~y=*/jsObj.y)
- *
- * Because we start with Reason as the source of truth for libraries, we have
- * all the type information for callbacks.
- *
- * Use case:
- * ---------
- *
- * Module.re
- *
- *     [@genFlow]
- *     let utility = (~x, ~y) => x + y;
- *
- * Consumer.js
- *
- *     const result = Module.utility({x:0, y:100});
- */
-let convertFunToJS = (origFun, groupedArgConverters, retConverter) => {
-  let rec createFun = (revAppArgsSoFar, groupedArgConverters) =>
-    switch (groupedArgConverters) {
-    | [] =>
-      let return =
-        EmitAstUtil.mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
-      retConverter.toJS(return);
-    | [Arg(conv), ...tl] =>
-      let newIdent = GenIdent.argIdent();
-      let nextApp = (
-        ReasonAst.Asttypes.Nolabel,
-        conv.toReason(EmitAstUtil.mkExprIdentifier(newIdent)),
-      );
-      EmitAstUtil.mkExprFun(
-        newIdent,
-        createFun([nextApp, ...revAppArgsSoFar], tl),
-      );
-    | [NamedArgs(nameds), ...tl] =>
-      let newIdent = GenIdent.argIdent();
-      let mapToAppArg = ((name, optness, conv)) => {
-        let ident = EmitAstUtil.mkExprIdentifier(newIdent);
-        switch (optness) {
-        | Mandatory => (
-            ReasonAst.Asttypes.Labelled(name),
-            conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
-          )
-        | NonMandatory => (
-            ReasonAst.Asttypes.Optional(name),
-            conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
-          )
-        };
-      };
-      let newRevArgs = List.rev_map(mapToAppArg, nameds);
-      let nextRevAppArgs = List.append(newRevArgs, revAppArgsSoFar);
-      EmitAstUtil.mkExprFun(newIdent, createFun(nextRevAppArgs, tl));
-    };
-  createFun([], groupedArgConverters);
-};
-
-/**
- * Converts JS values such as the following:
- *
- *     (jsObj) => jsObj.x + jsObj.y
- *    /      \
- *    --------
- *   Where we assume that a grouping of Reason arguments has a corresponding
- *   JavaScript object containing the arguments keyed by their named argument
- *   labels.
- *
- * Into Reason functions of the following form:
- *
- *     (~x: number, ~y: number) => (calls_the_underlying_js_function)
- *
- * Because we start with Reason as the source of truth for libraries, we have
- * all the type information for callbacks.
- *
- * Use case:
- * ---------
- *
- * Module.re
- *
- *     [@genFlow]
- *     let consumeCallback = cb => cb(~y=10, ());
- *
- * Consumer.js
- *
- *     const result = Module.consumeCallback(jsObj => jsObj.x + jsObj.y);
- *
- * TODO: - Create Tests Cases With Mismatched Arity
- * TODO:   - Possibly inject runtime .length checks/adapters.
- * TODO: - Map optional types to optional fields.
- * TODO: - Make any final unit args implicit (just as it is right now with BS
- *         FFI for [LOWPRI].
- */
-let convertFunToReason = (origFun, groupedArgConverters, retConverter) => {
-  let rec createFun = (revAppArgsSoFar, groupedArgConverters) =>
-    switch (groupedArgConverters) {
-    | [] =>
-      let return =
-        EmitAstUtil.mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
-      retConverter.toReason(return);
-    | [Arg(c), ...tl] =>
-      let newIdent = GenIdent.argIdent();
-      let nextApp = (
-        ReasonAst.Asttypes.Nolabel,
-        c.toJS(EmitAstUtil.mkExprIdentifier(newIdent)),
-      );
-      EmitAstUtil.mkExprFun(
-        newIdent,
-        createFun([nextApp, ...revAppArgsSoFar], tl),
-      );
-    /* We know these several named args will be represented by a single object.
-     * The group has a "base" new identifier, and we append the label onto that
-     * to determine individual bound pattern identifiers for each argument.
-     * This won't work with named arguments that use the same name repeatedly,
-     * but that also won't map well to object keys, so that's okay. We need to
-     * add a test case for that. */
-    | [NamedArgs(nameds), ...tl] =>
-      let identBase = GenIdent.argIdent();
-      let mapToJSObjRow = ((nextName, optness, c)) => (
-        nextName,
-        c.toJS(EmitAstUtil.mkExprIdentifier(identBase ++ nextName)),
-      );
-      let jsObj = (
-        ReasonAst.Asttypes.Nolabel,
-        EmitAstUtil.mkJSObj(List.map(mapToJSObjRow, nameds)),
-      );
-      let revAppArgsWObject = [jsObj, ...revAppArgsSoFar];
-      List.fold_right(
-        ((nextName, _nextOptness, _), soFar) =>
-          EmitAstUtil.mkExprFun(
-            ~label=ReasonAst.Asttypes.Labelled(nextName),
-            identBase ++ nextName,
-            soFar,
-          ),
-        nameds,
-        createFun(revAppArgsWObject, tl),
-      );
-    };
-  createFun([], groupedArgConverters);
-};
-
-module Convert = {
-  let fn = (labeledConverters, retConverter) => {
-    let revGroupedArgConverters = groupReversed([], [], labeledConverters);
-    let groupedArgConverters = reverse(revGroupedArgConverters);
-    {
-      toReason: expr =>
-        convertFunToReason(expr, groupedArgConverters, retConverter),
-      toJS: expr => convertFunToJS(expr, groupedArgConverters, retConverter),
-    };
-  };
-
-  /**
-   * Utility for constructing new optional converters where a specific sentinal
-   * value (null/undefined) is used to represent None.
-   */
-  let optionalConverter = (~jsNoneAs, expressionConverter) => {
-    toReason: expr => {
-      /* Need to create let binding to avoid double side effects from substitution! */
-      let origJSExprIdent = GenIdent.jsMaybeIdent();
-      let convertedReasonIdent = GenIdent.optIdent();
-      EmitAstUtil.(
-        mkExprLet(
-          origJSExprIdent,
-          expr,
-          mkExprIf(
-            mkTrippleEqualExpr(
-              mkExprIdentifier(origJSExprIdent),
-              mkJSRawExpr(jsNoneAs),
-            ),
-            noneExpr,
-            mkExprLet(
-              convertedReasonIdent,
-              expressionConverter.toReason(
-                mkExprIdentifier(origJSExprIdent),
-              ),
-              mkExpr(
-                mkExprConstructorDesc(
-                  ~payload=mkExprIdentifier(convertedReasonIdent),
-                  "Some",
-                ),
-              ),
-            ),
-          ),
-        )
-      );
-    },
-    toJS: expr =>
-      EmitAstUtil.(
-        mkOptionMatch(expr, mkJSRawExpr(jsNoneAs), ident =>
-          expressionConverter.toJS(mkExprIdentifier(ident))
-        )
-      ),
-  };
-  let option = optionalConverter(~jsNoneAs="null");
-  let optionalArgument = optionalConverter(~jsNoneAs="undefined");
-  let unit: expressionConverter = {
-    toReason: expr => expr,
-    toJS: expr => expr,
-  };
-  let identity = {toReason: expr => expr, toJS: expr => expr};
-
-  type t =
-    | Unit
-    | Identity
-    | OptionalArgument(t)
-    | Option(t)
-    | Fn((list((GenFlowCommon.label, t)), t));
-
-  let rec apply = x =>
-    switch (x) {
-    | Unit => unit
-    | Identity => identity
-    | OptionalArgument(y) => optionalArgument(y |> apply)
-    | Option(y) => option(y |> apply)
-    | Fn((y, z)) =>
-      fn(y |> List.map(((label, x)) => (label, x |> apply)), z |> apply)
-    };
-};
+type convert =
+  | Unit
+  | Identity
+  | OptionalArgument(convert)
+  | Option(convert)
+  | Fn((list((GenFlowCommon.label, convert)), convert));
 
 type dependency =
   /* Imports a JS Module Value into scope (importAsModuleName, moduleName) */
@@ -326,7 +69,7 @@ type dependency =
   /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
 
-type convertableFlowType = (Convert.t, Flow.typ);
+type convertableFlowType = (convert, Flow.typ);
 
 type conversionPlan = (list(dependency), convertableFlowType);
 
@@ -334,13 +77,13 @@ type t =
   | RawJS(string)
   | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
   | FlowAnnotation(string, GenFlowCommon.Flow.typ)
-  | ValueBinding(string, Ident.t, Convert.t)
+  | ValueBinding(string, Ident.t, convert)
   | ConstructorBinding(string, list(convertableFlowType), string, string)
   | ComponentBinding(
       string,
       option(GenFlowCommon.Flow.typ),
       Ident.t,
-      Convert.t,
+      convert,
     );
 let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
   let opaqueTypeString =
@@ -476,8 +219,7 @@ let rec typePathToFlowName = typePath =>
 
 let distributeSplitRev = lst => distributeSplitRev_([], [], lst);
 
-let needsArgConversion = ((lbl, c)) =>
-  lbl !== Nolabel || c !== Convert.Identity;
+let needsArgConversion = ((lbl, c)) => lbl !== Nolabel || c !== Identity;
 let rec extract_fun = (revArgDeps, revArgs, typ) =>
   Types.(
     switch (typ.desc) {
@@ -503,10 +245,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
         );
       | Some((lbl, t1)) =>
         let (deps, (t1Converter, t1FlowType)) = reasonTypeToConversion(t1);
-        let t1Conversion = (
-          Convert.OptionalArgument(t1Converter),
-          t1FlowType,
-        );
+        let t1Conversion = (OptionalArgument(t1Converter), t1FlowType);
         let nextRevDeps = List.append(deps, revArgDeps);
         /* TODO: Convert name to object, convert null to optional. */
         extract_fun(
@@ -521,7 +260,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       /* TODO: Ignore all final single unit args at convert/type conversion time. */
       let notJustASingleUnitArg =
         switch (labeledConverters) {
-        | [(Nolabel, c)] when c === Convert.Unit => false
+        | [(Nolabel, c)] when c === Unit => false
         | _ => true
         };
       let needsArgConversion =
@@ -538,8 +277,8 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       let flowArrow =
         Flow.Arrow([], List.map(flowArgs, groupedFlow), retType);
       let functionConverter =
-        retConverter !== Convert.Identity || needsArgConversion ?
-          Convert.Fn((labeledConverters, retConverter)) : Convert.Identity;
+        retConverter !== Identity || needsArgConversion ?
+          Fn((labeledConverters, retConverter)) : Identity;
       (allDeps, (functionConverter, flowArrow));
     }
   )
@@ -562,33 +301,33 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
       let typeName = Generator.jsTypeNameForAnonymousTypeID(typ.id);
       (
         [FreeTypeVariable(typeName, typ.id)],
-        (Convert.Identity, Flow.Ident(typeName, [])),
+        (Identity, Flow.Ident(typeName, [])),
       );
     | Tvar(Some(s)) =>
       let typeName = s;
       (
         [FreeTypeVariable(typeName, typ.id)],
-        (Convert.Identity, Flow.Ident(s, [])),
+        (Identity, Flow.Ident(s, [])),
       );
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "bool", _), [], _)
     | Tconstr(Path.Pident({name: "bool"}), [], _) => (
         [],
-        (Convert.Identity, Flow.Ident("bool", [])),
+        (Identity, Flow.Ident("bool", [])),
       )
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "int", _), [], _)
     | Tconstr(Path.Pident({name: "int"}), [], _) => (
         [],
-        (Convert.Identity, Flow.Ident("number", [])),
+        (Identity, Flow.Ident("number", [])),
       )
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "string", _), [], _)
     | Tconstr(Path.Pident({name: "string"}), [], _) => (
         [],
-        (Convert.Identity, Flow.Ident("string", [])),
+        (Identity, Flow.Ident("string", [])),
       )
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB"}), "unit", _), [], _)
     | Tconstr(Path.Pident({name: "unit"}), [], _) => (
         [],
-        (Convert.Unit, Flow.Ident("(typeof undefined)", [])),
+        (Unit, Flow.Ident("(typeof undefined)", [])),
       )
     /*
      * Arrays do not experience any conversion, in order to retain referencial
@@ -600,11 +339,8 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
     | Tconstr(Path.Pident({name: "array"}), [p], _) =>
       let (paramDeps, (itemConverter, itemFlow)) =
         reasonTypeToConversion(p);
-      if (itemConverter === Convert.Identity) {
-        (
-          paramDeps,
-          (Convert.Identity, Flow.Ident("$ReadOnlyArray", [itemFlow])),
-        );
+      if (itemConverter === Identity) {
+        (paramDeps, (Identity, Flow.Ident("$ReadOnlyArray", [itemFlow])));
       } else {
         raise(
           Invalid_argument(
@@ -619,13 +355,13 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
       /* TODO: Handle / verify the case of nested optionals. */
       let (paramDeps, (paramConverter, paramConverted)) =
         reasonTypeToConversion(p);
-      let composedConverter = Convert.Option(paramConverter);
+      let composedConverter = Option(paramConverter);
       (paramDeps, (composedConverter, Flow.Optional(paramConverted)));
     | Tarrow(_) => extract_fun([], [], typ)
     | Tlink(t) => reasonTypeToConversion(t)
     | Tconstr(path, [], _) => (
         [TypeAtPath(path)],
-        (Convert.Identity, Flow.Ident(typePathToFlowName(path), [])),
+        (Identity, Flow.Ident(typePathToFlowName(path), [])),
       )
     /* This type doesn't have any built in converter. But what if it was a
      * genFlow variant type? */
@@ -648,9 +384,9 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
         );
       (
         [TypeAtPath(path), ...typeParamDeps],
-        (Convert.Identity, Flow.Ident(typePathToFlowName(path), typeArgs)),
+        (Identity, Flow.Ident(typePathToFlowName(path), typeArgs)),
       );
-    | _ => ([], (Convert.Identity, Flow.anyAlias))
+    | _ => ([], (Identity, Flow.anyAlias))
     }
   )
 and reasonTypeToConversionMany = args => {

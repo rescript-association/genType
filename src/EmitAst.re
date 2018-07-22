@@ -1,5 +1,270 @@
 open GenFlowCommon;
 open EmitAstUtil;
+
+module Convert = {
+  /**
+ * A pair of functions:
+ * - One function that can transform an expression representing JavaScript
+ * runtime value into an expression that converts that runtime value into the
+ * appropriate Reason runtime value.
+ * - The other, performing the opposite AST transformation.
+ *
+ *     let boolConverter = {
+ *       toJS: (exprOfTypeJSBool) => exprThatTransformsThatExprIntoReasonBool,
+ *       toReason: (exprOfTypeReasonBool) => exprThatTransformsThatExprIntoJSBool
+ *     };
+ *     let optionalConverter = {
+ *       toJS: (exprOfTypeJSNullableX) => exprThatTransformsThatExprIntoReasonOptional,
+ *       toReason: (exprOfTypeReasonOptional) => exprThatTransformsThatExprIntoJSNullable
+ *     };
+ *
+ * So when automatically creating bindings for the Reason function:
+ *
+ *     let isTrue = (b : option(bool)) : bool =>
+ *       switch(b) {
+ *       | None => false
+ *       | Some(b_) => b_ === true
+ *       };
+ *
+ * You would expose a wrapper of that function to Flow of the form:
+ *     let isTrue' = (a) =>
+ *       <boolConverter.toJS>(isTrue(
+ *         <optionalConverter.toReason>(
+ *           <boolConverter.toReason>(a)
+ *         )
+ *       ))
+ *
+ * Where the <> regions represent AST-processing substitutions.
+ */
+  type expressionConverter = {
+    toJS: ReasonAst.Parsetree.expression => ReasonAst.Parsetree.expression,
+    toReason: ReasonAst.Parsetree.expression => ReasonAst.Parsetree.expression,
+  };
+
+  /**
+ * Converts Reason values of the following form:
+ *
+ *     (~x: number, ~y: number) => x + y
+ *
+ * Into JS functions of the following form:
+ *
+ *     (jsObj) => thatReasonFunction(/*~x=*/jsObj.x, /*~y=*/jsObj.y)
+ *
+ * Because we start with Reason as the source of truth for libraries, we have
+ * all the type information for callbacks.
+ *
+ * Use case:
+ * ---------
+ *
+ * Module.re
+ *
+ *     [@genFlow]
+ *     let utility = (~x, ~y) => x + y;
+ *
+ * Consumer.js
+ *
+ *     const result = Module.utility({x:0, y:100});
+ */
+  let convertFunToJS = (origFun, groupedArgConverters, retConverter) => {
+    let rec createFun = (revAppArgsSoFar, groupedArgConverters) =>
+      switch (groupedArgConverters) {
+      | [] =>
+        let return =
+          EmitAstUtil.mkExprApplyFunLabels(
+            origFun,
+            List.rev(revAppArgsSoFar),
+          );
+        retConverter.toJS(return);
+      | [CodeItem.Arg(conv), ...tl] =>
+        let newIdent = GenIdent.argIdent();
+        let nextApp = (
+          ReasonAst.Asttypes.Nolabel,
+          conv.toReason(EmitAstUtil.mkExprIdentifier(newIdent)),
+        );
+        EmitAstUtil.mkExprFun(
+          newIdent,
+          createFun([nextApp, ...revAppArgsSoFar], tl),
+        );
+      | [NamedArgs(nameds), ...tl] =>
+        let newIdent = GenIdent.argIdent();
+        let mapToAppArg = ((name, optness, conv)) => {
+          let ident = EmitAstUtil.mkExprIdentifier(newIdent);
+          switch (optness) {
+          | Mandatory => (
+              ReasonAst.Asttypes.Labelled(name),
+              conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
+            )
+          | NonMandatory => (
+              ReasonAst.Asttypes.Optional(name),
+              conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
+            )
+          };
+        };
+        let newRevArgs = List.rev_map(mapToAppArg, nameds);
+        let nextRevAppArgs = List.append(newRevArgs, revAppArgsSoFar);
+        EmitAstUtil.mkExprFun(newIdent, createFun(nextRevAppArgs, tl));
+      };
+    createFun([], groupedArgConverters);
+  };
+
+  /**
+ * Converts JS values such as the following:
+ *
+ *     (jsObj) => jsObj.x + jsObj.y
+ *    /      \
+ *    --------
+ *   Where we assume that a grouping of Reason arguments has a corresponding
+ *   JavaScript object containing the arguments keyed by their named argument
+ *   labels.
+ *
+ * Into Reason functions of the following form:
+ *
+ *     (~x: number, ~y: number) => (calls_the_underlying_js_function)
+ *
+ * Because we start with Reason as the source of truth for libraries, we have
+ * all the type information for callbacks.
+ *
+ * Use case:
+ * ---------
+ *
+ * Module.re
+ *
+ *     [@genFlow]
+ *     let consumeCallback = cb => cb(~y=10, ());
+ *
+ * Consumer.js
+ *
+ *     const result = Module.consumeCallback(jsObj => jsObj.x + jsObj.y);
+ *
+ * TODO: - Create Tests Cases With Mismatched Arity
+ * TODO:   - Possibly inject runtime .length checks/adapters.
+ * TODO: - Map optional types to optional fields.
+ * TODO: - Make any final unit args implicit (just as it is right now with BS
+ *         FFI for [LOWPRI].
+ */
+  let convertFunToReason = (origFun, groupedArgConverters, retConverter) => {
+    let rec createFun = (revAppArgsSoFar, groupedArgConverters) =>
+      switch (groupedArgConverters) {
+      | [] =>
+        let return =
+          EmitAstUtil.mkExprApplyFunLabels(
+            origFun,
+            List.rev(revAppArgsSoFar),
+          );
+        retConverter.toReason(return);
+      | [CodeItem.Arg(c), ...tl] =>
+        let newIdent = GenIdent.argIdent();
+        let nextApp = (
+          ReasonAst.Asttypes.Nolabel,
+          c.toJS(EmitAstUtil.mkExprIdentifier(newIdent)),
+        );
+        EmitAstUtil.mkExprFun(
+          newIdent,
+          createFun([nextApp, ...revAppArgsSoFar], tl),
+        );
+      /* We know these several named args will be represented by a single object.
+       * The group has a "base" new identifier, and we append the label onto that
+       * to determine individual bound pattern identifiers for each argument.
+       * This won't work with named arguments that use the same name repeatedly,
+       * but that also won't map well to object keys, so that's okay. We need to
+       * add a test case for that. */
+      | [NamedArgs(nameds), ...tl] =>
+        let identBase = GenIdent.argIdent();
+        let mapToJSObjRow = ((nextName, optness, c)) => (
+          nextName,
+          c.toJS(EmitAstUtil.mkExprIdentifier(identBase ++ nextName)),
+        );
+        let jsObj = (
+          ReasonAst.Asttypes.Nolabel,
+          EmitAstUtil.mkJSObj(List.map(mapToJSObjRow, nameds)),
+        );
+        let revAppArgsWObject = [jsObj, ...revAppArgsSoFar];
+        List.fold_right(
+          ((nextName, _nextOptness, _), soFar) =>
+            EmitAstUtil.mkExprFun(
+              ~label=ReasonAst.Asttypes.Labelled(nextName),
+              identBase ++ nextName,
+              soFar,
+            ),
+          nameds,
+          createFun(revAppArgsWObject, tl),
+        );
+      };
+    createFun([], groupedArgConverters);
+  };
+
+  let fn = (labeledConverters, retConverter) => {
+    let revGroupedArgConverters =
+      CodeItem.groupReversed([], [], labeledConverters);
+    let groupedArgConverters = CodeItem.reverse(revGroupedArgConverters);
+    {
+      toReason: expr =>
+        convertFunToReason(expr, groupedArgConverters, retConverter),
+      toJS: expr => convertFunToJS(expr, groupedArgConverters, retConverter),
+    };
+  };
+
+  /**
+   * Utility for constructing new optional converters where a specific sentinal
+   * value (null/undefined) is used to represent None.
+   */
+  let optionalConverter = (~jsNoneAs, expressionConverter) => {
+    toReason: expr => {
+      /* Need to create let binding to avoid double side effects from substitution! */
+      let origJSExprIdent = GenIdent.jsMaybeIdent();
+      let convertedReasonIdent = GenIdent.optIdent();
+      EmitAstUtil.(
+        mkExprLet(
+          origJSExprIdent,
+          expr,
+          mkExprIf(
+            mkTrippleEqualExpr(
+              mkExprIdentifier(origJSExprIdent),
+              mkJSRawExpr(jsNoneAs),
+            ),
+            noneExpr,
+            mkExprLet(
+              convertedReasonIdent,
+              expressionConverter.toReason(
+                mkExprIdentifier(origJSExprIdent),
+              ),
+              mkExpr(
+                mkExprConstructorDesc(
+                  ~payload=mkExprIdentifier(convertedReasonIdent),
+                  "Some",
+                ),
+              ),
+            ),
+          ),
+        )
+      );
+    },
+    toJS: expr =>
+      EmitAstUtil.(
+        mkOptionMatch(expr, mkJSRawExpr(jsNoneAs), ident =>
+          expressionConverter.toJS(mkExprIdentifier(ident))
+        )
+      ),
+  };
+  let option = optionalConverter(~jsNoneAs="null");
+  let optionalArgument = optionalConverter(~jsNoneAs="undefined");
+  let unit: expressionConverter = {
+    toReason: expr => expr,
+    toJS: expr => expr,
+  };
+  let identity = {toReason: expr => expr, toJS: expr => expr};
+
+  let rec apply = x =>
+    switch (x) {
+    | CodeItem.Unit => unit
+    | Identity => identity
+    | OptionalArgument(y) => optionalArgument(y |> apply)
+    | Option(y) => option(y |> apply)
+    | Fn((y, z)) =>
+      fn(y |> List.map(((label, x)) => (label, x |> apply)), z |> apply)
+    };
+};
+
 let structureItem = structureItem => {
   let outputFormatter = Format.str_formatter;
   Reason_toolchain.RE.print_implementation_with_comments(
@@ -40,7 +305,7 @@ let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
       let maker = EmitAstUtil.(tl === [] ? mkExprExplicitArity : mkExpr);
       let name = GenIdent.argIdent();
       let argExpr =
-        (converter |> CodeItem.Convert.apply).toReason(
+        (converter |> Convert.apply).toReason(
           EmitAstUtil.mkExprIdentifier(name),
         );
       EmitAstUtil.mkExprFunDesc(
@@ -75,7 +340,7 @@ let codeItem = codeItem =>
     mkStructItemValBindings([
       mkBinding(
         mkPatternIdent(Ident.name(id)),
-        (converter |> CodeItem.Convert.apply).toJS(consumeProp),
+        (converter |> Convert.apply).toJS(consumeProp),
       ),
     ])
     |> structureItem;
@@ -103,7 +368,7 @@ let codeItem = codeItem =>
       mkExprFun(
         "jsProps",
         mkExprApplyFun(
-          (converter |> CodeItem.Convert.apply).toJS(makeIdentifier),
+          (converter |> Convert.apply).toJS(makeIdentifier),
           flowPropGenerics == None ?
             [jsPropsIdent] : [jsPropsIdent, getChildrenFromJSProps],
         ),
