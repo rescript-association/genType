@@ -247,16 +247,6 @@ module Convert = {
     };
 };
 
-let structureItem = structureItem => {
-  let outputFormatter = Format.str_formatter;
-  Reason_toolchain.RE.print_implementation_with_comments(
-    outputFormatter,
-    ([structureItem], []),
-  );
-  Format.pp_print_flush(outputFormatter, ());
-  Format.flush_str_formatter();
-};
-
 let mkFlowTypeBinding = (name, flowType) =>
   mkBinding(
     mkPatternIdent(
@@ -301,16 +291,26 @@ let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
   buildUp(0, [], List.rev(convertableFlowTypes), modPath, leafName);
 };
 
-let codeItem = codeItem =>
+let emitStructureItem = structureItem => {
+  let outputFormatter = Format.str_formatter;
+  Reason_toolchain.RE.print_implementation_with_comments(
+    outputFormatter,
+    ([structureItem], []),
+  );
+  Format.pp_print_flush(outputFormatter, ());
+  Format.flush_str_formatter();
+};
+
+let emitCodeItem = codeItem =>
   switch (codeItem) {
   | CodeItem.RawJS(s) => "Js_unsafe.raw_stmt(\n  \"" ++ s ++ "\",\n);\n"
   | FlowTypeBinding(id, flowType) =>
     [mkFlowTypeBinding(id, flowType)]
     |> mkStructItemValBindings
-    |> structureItem
+    |> emitStructureItem
   | FlowAnnotation(annotationBindingName, constructorFlowType) =>
     mkFlowAnnotationStructItem(annotationBindingName, constructorFlowType)
-    |> structureItem
+    |> emitStructureItem
   | ValueBinding(inputModuleName, id, converter) =>
     let consumeProp =
       mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
@@ -320,7 +320,7 @@ let codeItem = codeItem =>
         (converter |> Convert.apply).toJS(consumeProp),
       ),
     ])
-    |> structureItem;
+    |> emitStructureItem;
   | ConstructorBinding(
       constructorAlias,
       convertableFlowTypes,
@@ -335,7 +335,7 @@ let codeItem = codeItem =>
         ),
       ),
     ])
-    |> structureItem
+    |> emitStructureItem
   | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
     let makeIdentifier =
       mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
@@ -365,8 +365,8 @@ let codeItem = codeItem =>
         ),
       ),
     ])
-    |> structureItem;
+    |> emitStructureItem;
   };
 
-let codeItems = codeItems =>
-  List.map(codeItem, codeItems) |> String.concat("");
+let emitCodeItems = codeItems =>
+  List.map(emitCodeItem, codeItems) |> String.concat("");

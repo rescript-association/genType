@@ -7,9 +7,11 @@ let requireModule = moduleName => {
   "require(\"" ++ path ++ "\")";
 };
 
-let applyConverter = (~converter, s) => "/* TODO converter */ " ++ s;
+module Convert = {
+  let apply = (~converter, s) => "/* TODO converter */ " ++ s;
+};
 
-let codeItems = codeItems => {
+let emitCodeItems = codeItems => {
   let buffer = Buffer.create(100);
   let line = s => Buffer.add_string(buffer, s);
   let codeItem = (typeMap, codeItem) =>
@@ -28,7 +30,7 @@ let codeItems = codeItems => {
         "const "
         ++ Ident.name(id)
         ++ " = "
-        ++ (inputModuleName |> requireModule |> applyConverter(~converter))
+        ++ (inputModuleName |> requireModule |> Convert.apply(~converter))
         ++ "."
         ++ Ident.name(id)
         ++ ";\n",

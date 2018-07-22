@@ -308,7 +308,9 @@ let emitCodeItems =
   | [_, ..._] =>
     let astText =
       codeItems
-      |> (CodeItem.emitJsDirectly ? EmitJs.codeItems : EmitAst.codeItems);
+      |> (
+        CodeItem.emitJsDirectly ? EmitJs.emitCodeItems : EmitAst.emitCodeItems
+      );
     let astTextNoNewline = {
       /* refmt would also remove the newline */
       let n = String.length(astText);
