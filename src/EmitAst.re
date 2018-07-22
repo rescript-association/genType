@@ -70,39 +70,33 @@ module Convert = {
       switch (groupedArgConverters) {
       | [] =>
         let return =
-          EmitAstUtil.mkExprApplyFunLabels(
-            origFun,
-            List.rev(revAppArgsSoFar),
-          );
+          mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
         retConverter.toJS(return);
       | [CodeItem.Arg(conv), ...tl] =>
         let newIdent = GenIdent.argIdent();
         let nextApp = (
           ReasonAst.Asttypes.Nolabel,
-          conv.toReason(EmitAstUtil.mkExprIdentifier(newIdent)),
+          conv.toReason(mkExprIdentifier(newIdent)),
         );
-        EmitAstUtil.mkExprFun(
-          newIdent,
-          createFun([nextApp, ...revAppArgsSoFar], tl),
-        );
+        mkExprFun(newIdent, createFun([nextApp, ...revAppArgsSoFar], tl));
       | [NamedArgs(nameds), ...tl] =>
         let newIdent = GenIdent.argIdent();
         let mapToAppArg = ((name, optness, conv)) => {
-          let ident = EmitAstUtil.mkExprIdentifier(newIdent);
+          let ident = mkExprIdentifier(newIdent);
           switch (optness) {
           | Mandatory => (
               ReasonAst.Asttypes.Labelled(name),
-              conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
+              conv.toReason(mkJSGet(ident, name)),
             )
           | NonMandatory => (
               ReasonAst.Asttypes.Optional(name),
-              conv.toReason(EmitAstUtil.mkJSGet(ident, name)),
+              conv.toReason(mkJSGet(ident, name)),
             )
           };
         };
         let newRevArgs = List.rev_map(mapToAppArg, nameds);
         let nextRevAppArgs = List.append(newRevArgs, revAppArgsSoFar);
-        EmitAstUtil.mkExprFun(newIdent, createFun(nextRevAppArgs, tl));
+        mkExprFun(newIdent, createFun(nextRevAppArgs, tl));
       };
     createFun([], groupedArgConverters);
   };
@@ -147,21 +141,15 @@ module Convert = {
       switch (groupedArgConverters) {
       | [] =>
         let return =
-          EmitAstUtil.mkExprApplyFunLabels(
-            origFun,
-            List.rev(revAppArgsSoFar),
-          );
+          mkExprApplyFunLabels(origFun, List.rev(revAppArgsSoFar));
         retConverter.toReason(return);
       | [CodeItem.Arg(c), ...tl] =>
         let newIdent = GenIdent.argIdent();
         let nextApp = (
           ReasonAst.Asttypes.Nolabel,
-          c.toJS(EmitAstUtil.mkExprIdentifier(newIdent)),
+          c.toJS(mkExprIdentifier(newIdent)),
         );
-        EmitAstUtil.mkExprFun(
-          newIdent,
-          createFun([nextApp, ...revAppArgsSoFar], tl),
-        );
+        mkExprFun(newIdent, createFun([nextApp, ...revAppArgsSoFar], tl));
       /* We know these several named args will be represented by a single object.
        * The group has a "base" new identifier, and we append the label onto that
        * to determine individual bound pattern identifiers for each argument.
@@ -172,16 +160,16 @@ module Convert = {
         let identBase = GenIdent.argIdent();
         let mapToJSObjRow = ((nextName, optness, c)) => (
           nextName,
-          c.toJS(EmitAstUtil.mkExprIdentifier(identBase ++ nextName)),
+          c.toJS(mkExprIdentifier(identBase ++ nextName)),
         );
         let jsObj = (
           ReasonAst.Asttypes.Nolabel,
-          EmitAstUtil.mkJSObj(List.map(mapToJSObjRow, nameds)),
+          mkJSObj(List.map(mapToJSObjRow, nameds)),
         );
         let revAppArgsWObject = [jsObj, ...revAppArgsSoFar];
         List.fold_right(
           ((nextName, _nextOptness, _), soFar) =>
-            EmitAstUtil.mkExprFun(
+            mkExprFun(
               ~label=ReasonAst.Asttypes.Labelled(nextName),
               identBase ++ nextName,
               soFar,
@@ -213,37 +201,31 @@ module Convert = {
       /* Need to create let binding to avoid double side effects from substitution! */
       let origJSExprIdent = GenIdent.jsMaybeIdent();
       let convertedReasonIdent = GenIdent.optIdent();
-      EmitAstUtil.(
-        mkExprLet(
-          origJSExprIdent,
-          expr,
-          mkExprIf(
-            mkTrippleEqualExpr(
-              mkExprIdentifier(origJSExprIdent),
-              mkJSRawExpr(jsNoneAs),
-            ),
-            noneExpr,
-            mkExprLet(
-              convertedReasonIdent,
-              expressionConverter.toReason(
-                mkExprIdentifier(origJSExprIdent),
-              ),
-              mkExpr(
-                mkExprConstructorDesc(
-                  ~payload=mkExprIdentifier(convertedReasonIdent),
-                  "Some",
-                ),
+      mkExprLet(
+        origJSExprIdent,
+        expr,
+        mkExprIf(
+          mkTrippleEqualExpr(
+            mkExprIdentifier(origJSExprIdent),
+            mkJSRawExpr(jsNoneAs),
+          ),
+          noneExpr,
+          mkExprLet(
+            convertedReasonIdent,
+            expressionConverter.toReason(mkExprIdentifier(origJSExprIdent)),
+            mkExpr(
+              mkExprConstructorDesc(
+                ~payload=mkExprIdentifier(convertedReasonIdent),
+                "Some",
               ),
             ),
           ),
-        )
+        ),
       );
     },
     toJS: expr =>
-      EmitAstUtil.(
-        mkOptionMatch(expr, mkJSRawExpr(jsNoneAs), ident =>
-          expressionConverter.toJS(mkExprIdentifier(ident))
-        )
+      mkOptionMatch(expr, mkJSRawExpr(jsNoneAs), ident =>
+        expressionConverter.toJS(mkExprIdentifier(ident))
       ),
   };
   let option = optionalConverter(~jsNoneAs="null");
@@ -276,39 +258,34 @@ let structureItem = structureItem => {
 };
 
 let mkFlowTypeBinding = (name, flowType) =>
-  EmitAstUtil.(
-    mkBinding(
-      mkPatternIdent(
-        BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix ++ name,
+  mkBinding(
+    mkPatternIdent(
+      BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix ++ name,
+    ),
+    mkExpr(
+      ReasonAst.Parsetree.Pexp_constant(
+        Pconst_string(Flow.render(flowType), None),
       ),
-      mkExpr(
-        ReasonAst.Parsetree.Pexp_constant(
-          Pconst_string(Flow.render(flowType), None),
-        ),
-      ),
-    )
+    ),
   );
 
 let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
   let rec buildUp =
           (argLen, revConvertedArgs, convertableFlowTypes, modPath, leafName) =>
     switch (revConvertedArgs, convertableFlowTypes) {
-    | ([], []) =>
-      EmitAstUtil.mkExprConstructorDesc(modPath ++ "." ++ leafName)
+    | ([], []) => mkExprConstructorDesc(modPath ++ "." ++ leafName)
     | ([hd, ...tl], []) =>
-      EmitAstUtil.mkExprConstructorDesc(
-        ~payload=EmitAstUtil.mkTuple(List.rev(revConvertedArgs)),
+      mkExprConstructorDesc(
+        ~payload=mkTuple(List.rev(revConvertedArgs)),
         modPath ++ "." ++ leafName,
       )
     | (_, [(converter, _), ...tl]) =>
       /* TODO: Apply the converter if available. */
-      let maker = EmitAstUtil.(tl === [] ? mkExprExplicitArity : mkExpr);
+      let maker = tl === [] ? mkExprExplicitArity : mkExpr;
       let name = GenIdent.argIdent();
       let argExpr =
-        (converter |> Convert.apply).toReason(
-          EmitAstUtil.mkExprIdentifier(name),
-        );
-      EmitAstUtil.mkExprFunDesc(
+        (converter |> Convert.apply).toReason(mkExprIdentifier(name));
+      mkExprFunDesc(
         name,
         maker(
           buildUp(
