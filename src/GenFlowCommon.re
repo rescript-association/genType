@@ -2,11 +2,35 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
+module StringMap = Map.Make(String);
+
+let emitJsDirectly = false;
+
+let suffix = emitJsDirectly ? ".re.js" : ".re";
+
+/**
+ * Returns the generated JS module name for a given Reason module name.
+ */
+let jsModuleNameForReasonModuleName = (modulesMap, reasonModuleName) => {
+  let tentative = reasonModuleName ++ ".bs";
+  StringMap.mem(tentative, modulesMap) ?
+    StringMap.find(tentative, modulesMap) : tentative;
+};
+/**
+ * Returns the *output* Reason module name for an input Reason module name.
+ * Note that this is not the JS/providesModule module name.
+ */
+let outputReasonModuleName = inputReasonModuleName =>
+  inputReasonModuleName ++ "Flow";
+let tagSearch = "genFlow";
+let tagSearchOpaque = "genFlow.opaque";
+let componentTagSearch = tagSearch;
+let jsTypeNameForAnonymousTypeID = id => "T" ++ string_of_int(id);
+let jsTypeNameForTypeParameterName = s => String.capitalize;
+
 type optionalness =
   | NonMandatory
   | Mandatory;
-
-module StringMap = Map.Make(String);
 
 module Flow = {
   /* Introduction of type variables (for all) */

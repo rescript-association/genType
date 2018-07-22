@@ -1,38 +1,4 @@
 open GenFlowCommon;
-let emitJsDirectly = false;
-
-/*
- * A place to put all the customization of the generated output for various
- * backends such as:
- * - Alternative Typed Language: Flow, TS?
- * - Module Systems: CommonJS/providesModule.
- * - Binding Strategy: Injecting raw JS (bs.raw) vs. using extern API.
- *
- * Only supporting Flow + providesModule + using bs.raw for now.
- */
-module Generator = {
-  let suffix = emitJsDirectly ? ".re.js" : ".re";
-
-  /**
-   * Returns the generated JS module name for a given Reason module name.
-   */
-  let jsModuleNameForReasonModuleName = (modulesMap, reasonModuleName) => {
-    let tentative = reasonModuleName ++ ".bs";
-    StringMap.mem(tentative, modulesMap) ?
-      StringMap.find(tentative, modulesMap) : tentative;
-  };
-  /**
-   * Returns the *output* Reason module name for an input Reason module name.
-   * Note that this is not the JS/providesModule module name.
-   */
-  let outputReasonModuleName = inputReasonModuleName =>
-    inputReasonModuleName ++ "Flow";
-  let tagSearch = "genFlow";
-  let tagSearchOpaque = "genFlow.opaque";
-  let componentTagSearch = tagSearch;
-  let jsTypeNameForAnonymousTypeID = id => "T" ++ string_of_int(id);
-  let jsTypeNameForTypeParameterName = s => String.capitalize;
-};
 
 type convert =
   | Unit
@@ -81,9 +47,9 @@ let rec hasAttribute = (searchText, attributes) =>
   };
 
 let getGenFlowKind = attrs =>
-  if (hasAttribute(Generator.tagSearch, attrs)) {
+  if (hasAttribute(tagSearch, attrs)) {
     GenFlow;
-  } else if (hasAttribute(Generator.tagSearchOpaque, attrs)) {
+  } else if (hasAttribute(tagSearchOpaque, attrs)) {
     GenFlowOpaque;
   } else {
     NoGenFlow;
@@ -250,7 +216,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
   Types.(
     switch (typ.desc) {
     | Tvar(None) =>
-      let typeName = Generator.jsTypeNameForAnonymousTypeID(typ.id);
+      let typeName = jsTypeNameForAnonymousTypeID(typ.id);
       (
         [FreeTypeVariable(typeName, typ.id)],
         (Identity, Flow.Ident(typeName, [])),
@@ -397,7 +363,7 @@ module TypeVars = {
   let extractOne = (soFar, typ) =>
     switch (typ) {
     | {Types.id, desc: Tvar(None)} =>
-      let typeName = Generator.jsTypeNameForAnonymousTypeID(id);
+      let typeName = jsTypeNameForAnonymousTypeID(id);
       [(typeName, id), ...soFar];
     | {id, desc: Tvar(Some(s))} =>
       let typeName = s;
@@ -720,11 +686,9 @@ let typePathToFlowImportString = (modulesMap, typePath) =>
     importString(
       String.capitalize(s),
       typePathToFlowName(typePath),
-      Generator.(
-        jsModuleNameForReasonModuleName(
-          modulesMap,
-          outputReasonModuleName(typePathToFlowName(p)),
-        )
+      jsModuleNameForReasonModuleName(
+        modulesMap,
+        outputReasonModuleName(typePathToFlowName(p)),
       ),
     )
   | Papply(p1, p2) => "// Cannot import type with Papply"

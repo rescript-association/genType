@@ -215,7 +215,7 @@ module GeneratedReFiles = {
       |> Sys.readdir
       |> Array.fold_left(
            (set, file) =>
-             Filename.check_suffix(file, CodeItem.Generator.suffix) ?
+             Filename.check_suffix(file, suffix) ?
                StringSet.add(Filename.concat(outputDir, file), set) : set,
            StringSet.empty,
          );
@@ -303,9 +303,7 @@ let emitCodeItems =
   | [_, ..._] =>
     let astText =
       codeItems
-      |> (
-        CodeItem.emitJsDirectly ? EmitJs.emitCodeItems : EmitAst.emitCodeItems
-      );
+      |> (emitJsDirectly ? EmitJs.emitCodeItems : EmitAst.emitCodeItems);
     let astTextNoNewline = {
       /* refmt would also remove the newline */
       let n = String.length(astText);
@@ -340,8 +338,7 @@ let processCMTFile =
   let outputPath =
     Filename.concat(
       outputDir,
-      CodeItem.Generator.outputReasonModuleName(globalModuleName)
-      ++ CodeItem.Generator.suffix,
+      outputReasonModuleName(globalModuleName) ++ suffix,
     );
   inputCMT
   |> cmtToCodeItems(~modulesMap, ~globalModuleName)
@@ -367,7 +364,7 @@ let run =
     ) => {
   buildSourceFiles();
 
-  log("Looking for files with %s\n", CodeItem.Generator.tagSearch);
+  log("Looking for files with %s\n", tagSearch);
   let cmtFiles = findCmtFiles();
   cmtFiles |> List.iter(fileName => logItem("Found  %s\n", fileName));
 

@@ -49,7 +49,7 @@ let findCmtFiles = (): list(string) => {
 };
 
 let fileHeader =
-  CodeItem.emitJsDirectly ?
+  emitJsDirectly ?
     "/* @flow strict */\n" :
     BuckleScriptPostProcessLib.Patterns.generatedHeaderPrefix ++ "\n\n";
 
@@ -96,7 +96,7 @@ let cli = () => {
     let re =
       Filename.concat(
         outputDir,
-        CodeItem.Generator.outputReasonModuleName(globalModuleName) ++ ".re",
+        outputReasonModuleName(globalModuleName) ++ ".re",
       );
     print_endline("-cmt-rm cmt:" ++ cmt);
     if (Sys.file_exists(re)) {
