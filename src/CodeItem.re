@@ -39,7 +39,7 @@ type convert =
   | Identity
   | OptionalArgument(convert)
   | Option(convert)
-  | Fn((list((GenFlowCommon.label, convert)), convert));
+  | Fn((list((NamedArgs.label, convert)), convert));
 
 type dependency =
   /* Imports a JS Module Value into scope (importAsModuleName, moduleName) */
@@ -169,7 +169,8 @@ let rec typePathToFlowName = typePath =>
     ++ typePathToFlowName(p2)
   };
 
-let needsArgConversion = ((lbl, c)) => lbl !== Nolabel || c !== Identity;
+let needsArgConversion = ((lbl, c)) =>
+  lbl !== NamedArgs.Nolabel || c !== Identity;
 
 let rec extract_fun = (revArgDeps, revArgs, typ) =>
   Types.(
@@ -180,7 +181,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       let nextRevDeps = List.append(deps, revArgDeps);
       extract_fun(
         nextRevDeps,
-        [(Nolabel, convertableFlowType), ...revArgs],
+        [(NamedArgs.Nolabel, convertableFlowType), ...revArgs],
         t2,
       );
     | Tarrow(lbl, t1, t2, _) =>

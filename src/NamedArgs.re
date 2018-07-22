@@ -1,5 +1,10 @@
 open GenFlowCommon;
 
+type label =
+  | Nolabel
+  | Label(string)
+  | OptLabel(string);
+
 type groupedArg('t) =
   /* Contains a list of (name, isOptional, 't)  */
   | NamedArgs(list((string, optionalness, 't)))

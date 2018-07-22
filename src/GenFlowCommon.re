@@ -2,21 +2,6 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
-type label =
-  | Nolabel
-  | Label(string)
-  | OptLabel(string);
-
-type convertedT =
-  | Var(string)
-  | Bool
-  | Int
-  | String
-  | Unit
-  | Function(list((label, convertedT)), convertedT)
-  | Option(convertedT)
-  | Unknown(Types.type_expr);
-
 type optionalness =
   | NonMandatory
   | Mandatory;
