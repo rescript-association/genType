@@ -16,53 +16,21 @@ Js_unsafe.raw_stmt(
   "import type {Component as ReactComponent} from 'React'",
 );
 Js_unsafe.raw_stmt(
-  "// No need to import locally visible type Variant. Make sure it is also marked with @genFlow",
+  "import type {Variant as Component2Variant} from 'Component2Flow.bs'",
 );
-let __flowTypeValueAnnotation__consumeVariant = "(Variant) => number";
+let __flowTypeValueAnnotation__consumeVariant = "(Component2Variant) => number";
 let consumeVariant = Component1.consumeVariant;
-Js_unsafe.raw_stmt(
-  "export opaque type VariantA = any // Reason type already checked. Making it opaque",
-);
-let __flowTypeValueAnnotation____capitalizeExport__a = "VariantA";
-let __capitalizeExport__a = Component1.A;
-Js_unsafe.raw_stmt(
-  "export opaque type VariantB = any // Reason type already checked. Making it opaque",
-);
-let __flowTypeValueAnnotation____capitalizeExport__b = "(number, number) => VariantB";
-let __capitalizeExport__b = (argA, argB) => Component1.B(argA, argB);
-Js_unsafe.raw_stmt(
-  "export opaque type VariantC = any // Reason type already checked. Making it opaque",
-);
-let __flowTypeValueAnnotation____capitalizeExport__c = "(?number) => VariantC";
-let __capitalizeExport__c = argC =>
-  Component1.C(
+let __flowTypeValueAnnotation__concat = "(string, ?string) => ?string";
+let concat = (argA, argB) =>
+  Component1.concat(
+    argA,
     {
-      let jsMaybeA = argC;
+      let jsMaybeA = argB;
       if (jsMaybeA === Js_unsafe.raw_expr("null")) {
         None;
       } else {
         let optDataA = jsMaybeA;
         Some(optDataA);
-      };
-    },
-  );
-Js_unsafe.raw_stmt(
-  "export type Variant =
-  | VariantA
-  | VariantB
-  | VariantC",
-);
-let __flowTypeValueAnnotation__concat = "(string, ?string) => ?string";
-let concat = (argD, argE) =>
-  Component1.concat(
-    argD,
-    {
-      let jsMaybeB = argE;
-      if (jsMaybeB === Js_unsafe.raw_expr("null")) {
-        None;
-      } else {
-        let optDataB = jsMaybeB;
-        Some(optDataB);
       };
     },
   );
@@ -74,7 +42,7 @@ Js_unsafe.raw_stmt(
 let __flowTypeValueAnnotation__component = "React$ComponentType<Props>";
 let component =
   ReasonReact.wrapReasonForJs(~component=Component1.component, jsProps =>
-    ((argF, argG) => Component1.make(~message=?argF##message, argG))(
+    ((argC, argD) => Component1.make(~message=?argC##message, argD))(
       jsProps,
       jsProps##children,
     )

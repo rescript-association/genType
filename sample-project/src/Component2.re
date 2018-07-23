@@ -18,16 +18,13 @@ let component = ReasonReact.reducerComponent("Example");
 let make = (~greeting, _children) => {
   /* spread the other default fields of component here and override a few */
   ...component,
-
   initialState: () => {count: 0, show: true},
-
   /* State transitions */
   reducer: (action, state) =>
     switch (action) {
     | Click => ReasonReact.Update({...state, count: state.count + 1})
     | Toggle => ReasonReact.Update({...state, show: ! state.show})
     },
-
   render: self => {
     let message =
       "You've clicked this " ++ string_of_int(self.state.count) ++ " times(s)";
@@ -42,3 +39,9 @@ let make = (~greeting, _children) => {
     </div>;
   },
 };
+
+[@genFlow]
+type variant =
+  | A
+  | B(int, int)
+  | C(option(int));
