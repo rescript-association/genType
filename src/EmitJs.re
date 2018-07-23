@@ -1,9 +1,6 @@
 open GenFlowCommon;
 
 module Convert = {
-  let apply = (~converter: CodeItem.converter, s) =>
-    "/* TODO converter */ " ++ s;
-
   let rec toString = converter =>
     switch (converter) {
     | CodeItem.Unit => "unit"
@@ -14,8 +11,8 @@ module Convert = {
       let labelToString = label =>
         switch (label) {
         | NamedArgs.Nolabel => "-"
-        | NamedArgs.Label(l) => l
-        | NamedArgs.OptLabel(l) => "?" ++ l
+        | Label(l) => l
+        | OptLabel(l) => "?" ++ l
         };
       "fn("
       ++ (
@@ -29,6 +26,9 @@ module Convert = {
       ++ toString(c)
       ++ ")";
     };
+
+  let apply = (~converter, s) =>
+    "/* TODO converter: " ++ toString(converter) ++ " */ " ++ s;
 };
 
 type env = {
@@ -103,6 +103,8 @@ let emitCodeItems = codeItems => {
       env;
     | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
       let name = "component";
+      let jsProps = "jsProps";
+      let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
         switch (flowPropGenerics) {
         | None => None
@@ -110,25 +112,43 @@ let emitCodeItems = codeItems => {
           Some(Flow.Ident("React$ComponentType", [flowType]))
         };
       let args =
-        "("
-        ++ (
-          [
-            "/* TODO converter: " ++ Convert.toString(converter) ++ "*/ null",
-            "jsProps.children",
-          ]
-          |> String.concat(", ")
-        )
-        ++ ")";
+        switch (converter) {
+        | CodeItem.Fn((argsConverter, _retConverter)) when argsConverter != [] =>
+          switch (List.rev(argsConverter)) {
+          | [] => assert(false)
+          | [(_, childrenConverter), ...revPropConverters] =>
+            [
+              jsPropsDot("children")
+              |> Convert.apply(~converter=childrenConverter),
+              ...revPropConverters
+                 |> List.map(((lbl, argConverter)) =>
+                      switch (lbl) {
+                      | NamedArgs.Label(l) =>
+                        jsPropsDot(l)
+                        |> Convert.apply(~converter=argConverter)
+                      | OptLabel(l) => assert(false)
+                      | Nolabel => assert(false)
+                      }
+                    ),
+            ]
+            |> List.rev
+          }
+
+        | _ => [jsPropsDot("children")]
+        };
+
+      let mkArgs = args => "(" ++ (args |> String.concat(", ")) ++ ")";
+
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
       line("  " ++ inputModuleName ++ ".component" ++ ",");
-      line("  (function (jsProps) {");
+      line("  (function (" ++ jsProps ++ ") {");
       line("     /* TODO ComponentBinding */");
       line(
         "     return "
         ++ inputModuleName
         ++ "."
         ++ Ident.name(id)
-        ++ args
+        ++ mkArgs(args)
         ++ ";",
       );
       line("  }));");
