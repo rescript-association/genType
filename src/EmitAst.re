@@ -228,7 +228,7 @@ module Convert = {
   };
 
   let identity = {toReason: expr => expr, toJS: expr => expr};
-  let option = optionalConverter(~jsNoneAs="undefined");
+  let option = optionalConverter;
   let optionalArgument = converter => converter;
   let unit: expressionConverter = {
     toReason: expr => expr,

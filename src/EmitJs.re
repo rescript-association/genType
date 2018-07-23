@@ -22,17 +22,75 @@ module Convert = {
            )
         |> String.concat(", ")
       )
-      ++ ", "
+      ++ " -> "
       ++ toString(c)
       ++ ")";
     };
 
-  let rec apply = (~converter, s) =>
+  let rec apply = (~converter, ~toJS, s) =>
     switch (converter) {
     | CodeItem.Unit => s
     | Identity => s
-    | OptionalArgument(c) => apply(~converter=c, s)
-    | _ => "/* TODO converter: " ++ toString(converter) ++ " */ " ++ s
+    | OptionalArgument(c) => apply(~converter=c, ~toJS, s)
+    | Option(c) =>
+      let convertedArg = apply(~converter=c, ~toJS, s);
+      toJS ?
+        convertedArg :
+        "("
+        ++ convertedArg
+        ++ " === null ? undefined : "
+        ++ convertedArg
+        ++ ")";
+    | Fn((args, resultConverter))
+        when
+          args
+          |> List.for_all(((_label, argConverter)) =>
+               argConverter == CodeItem.Identity
+             ) =>
+      s |> apply(~converter=resultConverter, ~toJS)
+
+    | Fn((args, resultConverter)) =>
+      let convertArg = {
+        let cnt = ref(0);
+        (
+          ((lbl, argConverter)) => {
+            let varName =
+              switch (lbl) {
+              | NamedArgs.Nolabel =>
+                incr(cnt);
+                "Arg" ++ string_of_int(cnt^);
+              | Label(l)
+              | OptLabel(l) => "Arg" ++ l
+              };
+            let notToJS = !toJS;
+            (
+              varName,
+              varName |> apply(~converter=argConverter, ~toJS=notToJS),
+            );
+          }
+        );
+      };
+      let mkReturn = {
+        let result = "result";
+        (
+          e =>
+            "const "
+            ++ result
+            ++ " = "
+            ++ e
+            ++ "; return "
+            ++ apply(~converter=resultConverter, ~toJS, result)
+        );
+      };
+      let convertedArgs = args |> List.map(convertArg);
+      let funArgs =
+        "(" ++ (convertedArgs |> List.map(fst) |> String.concat(", ")) ++ ")";
+      let funBody =
+        s
+        ++ "("
+        ++ (convertedArgs |> List.map(snd) |> String.concat(", "))
+        ++ ")";
+      "(function " ++ funArgs ++ " { " ++ mkReturn(funBody) ++ " })";
     };
 };
 
@@ -87,9 +145,9 @@ let emitCodeItems = codeItems => {
         "const "
         ++ name
         ++ " = "
-        ++ (moduleStr |> Convert.apply(~converter))
-        ++ "."
-        ++ name
+        ++ (
+          moduleStr ++ "." ++ name |> Convert.apply(~converter, ~toJS=true)
+        )
         ++ ";",
       );
       let flowType = env.typeMap |> StringMap.find(name);
@@ -135,14 +193,14 @@ let emitCodeItems = codeItems => {
           | [(_, childrenConverter), ...revPropConverters] =>
             [
               jsPropsDot("children")
-              |> Convert.apply(~converter=childrenConverter),
+              |> Convert.apply(~converter=childrenConverter, ~toJS=true),
               ...revPropConverters
                  |> List.map(((lbl, argConverter)) =>
                       switch (lbl) {
                       | NamedArgs.Label(l)
                       | OptLabel(l) =>
                         jsPropsDot(l)
-                        |> Convert.apply(~converter=argConverter)
+                        |> Convert.apply(~converter=argConverter, ~toJS=true)
                       | Nolabel => assert(false)
                       }
                     ),
