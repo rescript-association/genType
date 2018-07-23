@@ -27,12 +27,7 @@ import type {Component as ReactComponent} from 'React'
 ;
 
 function concat(argA, argB) {
-  var match = Component1.concat(argA, argB === (null) ? undefined : argB);
-  if (match !== undefined) {
-    return match;
-  } else {
-    return (null);
-  }
+  return Component1.concat(argA, argB === (null) ? undefined : argB);
 }
 
 export type Props = {|message?:string|}

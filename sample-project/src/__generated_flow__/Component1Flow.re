@@ -17,23 +17,18 @@ Js_unsafe.raw_stmt(
 );
 let __flowTypeValueAnnotation__concat = "(string, ?string) => ?string";
 let concat = (argA, argB) =>
-  switch (
-    Component1.concat(
-      argA,
-      {
-        let jsMaybeA = argB;
-        if (jsMaybeA === Js_unsafe.raw_expr("null")) {
-          None;
-        } else {
-          let optDataA = jsMaybeA;
-          Some(optDataA);
-        };
-      },
-    )
-  ) {
-  | None => Js_unsafe.raw_expr("null")
-  | Some(a) => a
-  };
+  Component1.concat(
+    argA,
+    {
+      let jsMaybeA = argB;
+      if (jsMaybeA === Js_unsafe.raw_expr("null")) {
+        None;
+      } else {
+        let optDataA = jsMaybeA;
+        Some(optDataA);
+      };
+    },
+  );
 let __flowTypeValueAnnotation__plus = "<T10970>(number, T10970) => number";
 let plus = Component1.plus;
 Js_unsafe.raw_stmt(

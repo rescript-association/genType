@@ -112,7 +112,7 @@ let mkString = s =>
 /*
  * Since the AST we generate is assumed to be *after* operators are swapped:
  */
-let mkTrippleEqualExpr = (expr1, expr2) =>
+let mkTripleEqualExpr = (expr1, expr2) =>
   mkExpr(
     ReasonAst.Parsetree.Pexp_apply(
       mkExpr(

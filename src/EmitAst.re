@@ -193,10 +193,11 @@ module Convert = {
   };
 
   /**
-   * Utility for constructing new optional converters where a specific sentinal
-   * value (null/undefined) is used to represent None.
+   * Utility for constructing new optional converters.
+   * The only conversion needed is from ?typ to option(typ)
+   * since ?typ admits null, while option(typ) only admits undefined.
    */
-  let optionalConverter = (~jsNoneAs, expressionConverter) => {
+  let optionalConverter = expressionConverter => {
     toReason: expr => {
       /* Need to create let binding to avoid double side effects from substitution! */
       let origJSExprIdent = GenIdent.jsMaybeIdent();
@@ -205,9 +206,9 @@ module Convert = {
         origJSExprIdent,
         expr,
         mkExprIf(
-          mkTrippleEqualExpr(
+          mkTripleEqualExpr(
             mkExprIdentifier(origJSExprIdent),
-            mkJSRawExpr(jsNoneAs),
+            mkJSRawExpr("null"),
           ),
           noneExpr,
           mkExprLet(
@@ -223,14 +224,11 @@ module Convert = {
         ),
       );
     },
-    toJS: expr =>
-      mkOptionMatch(expr, mkJSRawExpr(jsNoneAs), ident =>
-        expressionConverter.toJS(mkExprIdentifier(ident))
-      ),
+    toJS: expr => expressionConverter.toJS(expr),
   };
 
   let identity = {toReason: expr => expr, toJS: expr => expr};
-  let option = optionalConverter(~jsNoneAs="null");
+  let option = optionalConverter(~jsNoneAs="undefined");
   let optionalArgument = converter => converter;
   let unit: expressionConverter = {
     toReason: expr => expr,
