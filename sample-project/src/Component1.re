@@ -33,3 +33,8 @@ let concat = (x, y) =>
   | None => None
   | Some(v) => Some(x ++ v)
   };
+
+[@genFlow]
+type twoVariants =
+  | A
+  | B;

@@ -57,9 +57,6 @@ let executeReplacements = (replacements, line) =>
     replacements,
   );
 
-let reasonAlreadyCheckedType = "SafeReasonValueNotExportedToFlow";
-let any = "any";
-
 let rec seenFlowString = (flowStrings, exportName) =>
   switch (flowStrings) {
   | [] => None
@@ -69,25 +66,6 @@ let rec seenFlowString = (flowStrings, exportName) =>
   | [hd, ...tl] => seenFlowString(tl, exportName)
   };
 
-/**
- * Reason files may export strings containing flow type definitions for their
- * corresponding Reason bindings and those will be turned into Flow type
- * annotations on the generated .bs.js file.
- *
- * This is useful for auto-generated Reason files that have the goal of binding
- * to Flow.
- *
- *     let __flowTypeValueAnnotation__identifier = "number";
- *     let identifier = 0;
- *
- * If any one exported let binding has a flow type definition the file will
- * become @flow enabled, and every binding that does not have a
- * `__flowTypeValueAnnotation` will be given an annotated type of
- * `SafeReasonValueNotExportedToFlow`.
- *
- * If no Reason bindings have corresponding `__flowTypeValueAnnotation`s
- * specified, then the entire file will not have Flow enabled.
- */
 open BuckleScriptPostProcessLib;
 let identifierToCapitalize =
   Str.regexp(Patterns.capitalizeExportedNamePrefix ++ "\\([A-Za-z_]+\\)");

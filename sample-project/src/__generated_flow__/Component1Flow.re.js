@@ -8,6 +8,15 @@ import type {Stateless as ReasonReactStateless} from '../shims/ReasonReactFlowSh
 import type {NoRetainedProps as ReasonReactNoRetainedProps} from '../shims/ReasonReactFlowShim';
 import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlowShim';
 import type {Component as ReactComponent} from 'React';
+export opaque type TwoVariantsA = any // Reason type already checked. Making it opaque;
+// TODO: FlowAnnotation
+// TODO: ConstructorBinding
+export opaque type TwoVariantsB = any // Reason type already checked. Making it opaque;
+// TODO: FlowAnnotation
+// TODO: ConstructorBinding
+export type TwoVariants =
+  | TwoVariantsA
+  | TwoVariantsB;
 const concat = (function (Arg1, Arg2) { const result = Component1.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result });
 const plus = Component1.plus;
 export type Props = {|message?:string|};

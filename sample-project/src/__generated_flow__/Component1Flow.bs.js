@@ -26,6 +26,17 @@ import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlow
 import type {Component as ReactComponent} from 'React'
 ;
 
+export opaque type TwoVariantsA = any // Reason type already checked. Making it opaque
+;
+
+export opaque type TwoVariantsB = any // Reason type already checked. Making it opaque
+;
+
+export type TwoVariants =
+  | TwoVariantsA
+  | TwoVariantsB
+;
+
 function concat(argA, argB) {
   return Component1.concat(argA, argB === (null) ? undefined : argB);
 }
@@ -39,10 +50,18 @@ var component = ReasonReact.wrapReasonForJs(Component1.component, (function (jsP
       }));
 
 
+var a = /* A */0;
+
+
+var b = /* B */1;
+
+
 
 var plus = Component1.plus;
 
 
+exports.a = (a : TwoVariantsA);
+exports.b = (b : TwoVariantsB);
 exports.concat = (concat : (string, ?string) => ?string);
 exports.plus = (plus : <T10970>(number, T10970) => number);
 exports.component = (component : React$ComponentType<Props>);

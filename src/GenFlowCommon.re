@@ -88,7 +88,7 @@ module Flow = {
     | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
     };
   /* Assumes post processing will inject an alias to any. */
-  let anyAlias = Ident("SafeReasonValueNotExportedToFlow", []);
+  let anyAlias = Ident("any", []);
 };
 
 /* Generate fresh identifiers */

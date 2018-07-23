@@ -15,6 +15,21 @@ Js_unsafe.raw_stmt(
 Js_unsafe.raw_stmt(
   "import type {Component as ReactComponent} from 'React'",
 );
+Js_unsafe.raw_stmt(
+  "export opaque type TwoVariantsA = any // Reason type already checked. Making it opaque",
+);
+let __flowTypeValueAnnotation____capitalizeExport__a = "TwoVariantsA";
+let __capitalizeExport__a = Component1.A;
+Js_unsafe.raw_stmt(
+  "export opaque type TwoVariantsB = any // Reason type already checked. Making it opaque",
+);
+let __flowTypeValueAnnotation____capitalizeExport__b = "TwoVariantsB";
+let __capitalizeExport__b = Component1.B;
+Js_unsafe.raw_stmt(
+  "export type TwoVariants =
+  | TwoVariantsA
+  | TwoVariantsB",
+);
 let __flowTypeValueAnnotation__concat = "(string, ?string) => ?string";
 let concat = (argA, argB) =>
   Component1.concat(
