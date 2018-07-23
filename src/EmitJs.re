@@ -1,7 +1,17 @@
 open GenFlowCommon;
 
 module Convert = {
-  let apply = (~converter, s) => "/* TODO converter */ " ++ s;
+  let apply = (~converter: CodeItem.converter, s) =>
+    "/* TODO converter */ " ++ s;
+
+  let rec toString = converter =>
+    switch (converter) {
+    | CodeItem.Unit => "unit"
+    | Identity => "id"
+    | OptionalArgument(c) => "optionalArgument(" ++ toString(c) ++ ")"
+    | Option(c) => "option(" ++ toString(c) ++ ")"
+    | Fn(args) => "fn"
+    };
 };
 
 type env = {
@@ -82,9 +92,29 @@ let emitCodeItems = codeItems => {
         | Some(flowType) =>
           Some(Flow.Ident("React$ComponentType", [flowType]))
         };
+      let args =
+        "("
+        ++ (
+          [
+            "/* TODO converter: " ++ Convert.toString(converter) ++ "*/ null",
+            "jsProps.children",
+          ]
+          |> String.concat(", ")
+        )
+        ++ ")";
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
-      line("// TODO: ComponentBinding");
-      line(");");
+      line("  " ++ inputModuleName ++ ".component" ++ ",");
+      line("  (function (jsProps) {");
+      line("     /* TODO ComponentBinding */");
+      line(
+        "     return "
+        ++ inputModuleName
+        ++ "."
+        ++ Ident.name(id)
+        ++ args
+        ++ ";",
+      );
+      line("  }));");
       {
         ...env,
         exports: [(name, componentType), ...env.exports],

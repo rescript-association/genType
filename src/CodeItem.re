@@ -1,11 +1,11 @@
 open GenFlowCommon;
 
-type convert =
+type converter =
   | Unit
   | Identity
-  | OptionalArgument(convert)
-  | Option(convert)
-  | Fn((list((NamedArgs.label, convert)), convert));
+  | OptionalArgument(converter)
+  | Option(converter)
+  | Fn((list((NamedArgs.label, converter)), converter));
 
 type dependency =
   /* Imports a JS Module Value into scope (importAsModuleName, moduleName) */
@@ -17,7 +17,7 @@ type dependency =
   /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
 
-type convertableFlowType = (convert, Flow.typ);
+type convertableFlowType = (converter, Flow.typ);
 
 type conversionPlan = (list(dependency), convertableFlowType);
 
@@ -25,9 +25,9 @@ type t =
   | RawJS(string)
   | FlowTypeBinding(string, Flow.typ)
   | FlowAnnotation(string, Flow.typ)
-  | ValueBinding(string, Ident.t, convert)
+  | ValueBinding(string, Ident.t, converter)
   | ConstructorBinding(string, list(convertableFlowType), string, string)
-  | ComponentBinding(string, option(Flow.typ), Ident.t, convert);
+  | ComponentBinding(string, option(Flow.typ), Ident.t, converter);
 
 type genFlowKind =
   | NoGenFlow
