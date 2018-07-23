@@ -13,7 +13,7 @@ export type Props = {|message?:string|};
 const component = ReasonReact.wrapReasonForJs(
   Component1.component,
   (function (jsProps: {...Props, children:any}) {
-     return Component1.make(/* TODO converter: optionalArgument(id) */ /* TODO: OptLabel*/jsProps.message, jsProps.children);
+     return Component1.make(jsProps.message, jsProps.children);
   }));
 
 exports.plus = (plus: <T10970>(number, T10970) => number);

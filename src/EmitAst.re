@@ -228,13 +228,14 @@ module Convert = {
         expressionConverter.toJS(mkExprIdentifier(ident))
       ),
   };
+
+  let identity = {toReason: expr => expr, toJS: expr => expr};
   let option = optionalConverter(~jsNoneAs="null");
-  let optionalArgument = optionalConverter(~jsNoneAs="undefined");
+  let optionalArgument = converter => converter;
   let unit: expressionConverter = {
     toReason: expr => expr,
     toJS: expr => expr,
   };
-  let identity = {toReason: expr => expr, toJS: expr => expr};
 
   let rec apply = x =>
     switch (x) {

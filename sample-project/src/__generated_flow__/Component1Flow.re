@@ -23,21 +23,7 @@ Js_unsafe.raw_stmt(
 let __flowTypeValueAnnotation__component = "React$ComponentType<Props>";
 let component =
   ReasonReact.wrapReasonForJs(~component=Component1.component, jsProps =>
-    (
-      (argA, argB) =>
-        Component1.make(
-          ~message=?{
-            let jsMaybeA = argA##message;
-            if (jsMaybeA === Js_unsafe.raw_expr("undefined")) {
-              None;
-            } else {
-              let optDataA = jsMaybeA;
-              Some(optDataA);
-            };
-          },
-          argB,
-        )
-    )(
+    ((argA, argB) => Component1.make(~message=?argA##message, argB))(
       jsProps,
       jsProps##children,
     )

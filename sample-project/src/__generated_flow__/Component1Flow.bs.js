@@ -31,8 +31,7 @@ export type Props = {|message?:string|}
 
 var component = ReasonReact.wrapReasonForJs(Component1.component, (function (jsProps) {
         var argB = jsProps.children;
-        var jsMaybeA = jsProps.message;
-        return Component1.make(jsMaybeA === (undefined) ? undefined : jsMaybeA, argB);
+        return Component1.make(jsProps.message, argB);
       }));
 
 

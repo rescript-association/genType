@@ -27,10 +27,11 @@ module Convert = {
       ++ ")";
     };
 
-  let apply = (~converter, s) =>
+  let rec apply = (~converter, s) =>
     switch (converter) {
     | CodeItem.Unit => s
     | Identity => s
+    | OptionalArgument(c) => apply(~converter=c, s)
     | _ => "/* TODO converter: " ++ toString(converter) ++ " */ " ++ s
     };
 };
@@ -138,12 +139,9 @@ let emitCodeItems = codeItems => {
               ...revPropConverters
                  |> List.map(((lbl, argConverter)) =>
                       switch (lbl) {
-                      | NamedArgs.Label(l) =>
-                        jsPropsDot(l)
-                        |> Convert.apply(~converter=argConverter)
+                      | NamedArgs.Label(l)
                       | OptLabel(l) =>
-                        "/* TODO: OptLabel*/"
-                        ++ jsPropsDot(l)
+                        jsPropsDot(l)
                         |> Convert.apply(~converter=argConverter)
                       | Nolabel => assert(false)
                       }
