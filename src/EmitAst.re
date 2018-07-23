@@ -345,7 +345,13 @@ let emitCodeItem = codeItem =>
     ])
     |> emitStructureItem;
 
-  | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
+  | ComponentBinding(
+      inputModuleName,
+      flowPropGenerics,
+      id,
+      converter,
+      _propsTypeName,
+    ) =>
     let makeIdentifier =
       mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
     let jsPropsIdent = mkExprIdentifier("jsProps");

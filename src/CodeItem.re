@@ -27,7 +27,7 @@ type t =
   | FlowAnnotation(string, Flow.typ)
   | ValueBinding(string, Ident.t, converter)
   | ConstructorBinding(string, list(convertableFlowType), string, string)
-  | ComponentBinding(string, option(Flow.typ), Ident.t, converter);
+  | ComponentBinding(string, option(Flow.typ), Ident.t, converter, string);
 
 type genFlowKind =
   | NoGenFlow
@@ -529,7 +529,7 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
       propsTypeDeclaration
       @ [
         FlowTypeBinding("component", componentFlowType),
-        ComponentBinding(inputModuleName, flowPropGenerics, id, converter),
+        ComponentBinding(inputModuleName, flowPropGenerics, id, converter, propsTypeName),
       ];
     let deps = [
       JSTypeFromModule("Component", "ReactComponent", "React"),

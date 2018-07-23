@@ -105,7 +105,13 @@ let emitCodeItems = codeItems => {
       ) =>
       line("// TODO: ConstructorBinding");
       env;
-    | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
+    | ComponentBinding(
+        inputModuleName,
+        flowPropGenerics,
+        id,
+        converter,
+        propsTypeName,
+      ) =>
       let name = "component";
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
@@ -113,7 +119,12 @@ let emitCodeItems = codeItems => {
         switch (flowPropGenerics) {
         | None => None
         | Some(flowType) =>
-          Some(Flow.Ident("React$ComponentType", [flowType]))
+          Some(
+            Flow.Ident(
+              "React$ComponentType",
+              [Flow.Ident(propsTypeName, [])],
+            ),
+          )
         };
       let args =
         switch (converter) {
@@ -146,7 +157,6 @@ let emitCodeItems = codeItems => {
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
       line("  " ++ inputModuleName ++ ".component" ++ ",");
       line("  (function (" ++ jsProps ++ ") {");
-      line("     /* TODO ComponentBinding */");
       line(
         "     return "
         ++ inputModuleName
