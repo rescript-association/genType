@@ -10,63 +10,90 @@ module Convert = {
 };
 
 type env = {
+  requires: StringMap.t(string),
   typeMap: StringMap.t(Flow.typ),
-  exports: list((string, Flow.typ)),
+  exports: list((string, option(Flow.typ))),
 };
 
 let emitCodeItems = codeItems => {
-  let buffer = Buffer.create(100);
-  let line = s => Buffer.add_string(buffer, s);
-  let emitExport = ((id, flowType)) =>
-    line(
-      "exports."
-      ++ id
-      ++ " = ("
-      ++ id
-      ++ ": "
-      ++ Flow.render(flowType)
-      ++ ");\n",
-    );
+  let requireBuffer = Buffer.create(100);
+  let mainBuffer = Buffer.create(100);
+  let exportBuffer = Buffer.create(100);
+  let line_ = (buffer, s) => {
+    Buffer.add_string(buffer, s);
+    Buffer.add_string(buffer, "\n");
+  };
+  let line = line_(mainBuffer);
+  let emitExport = ((id, flowTypeOpt)) => {
+    let addType = s =>
+      switch (flowTypeOpt) {
+      | None => s
+      | Some(flowType) => "(" ++ s ++ ": " ++ Flow.render(flowType) ++ ")"
+      };
+    line_(exportBuffer, "exports." ++ id ++ " = " ++ addType(id) ++ ";");
+  };
+  let emitRequire = (id, v) =>
+    line_(requireBuffer, "var " ++ id ++ " = require(\"" ++ v ++ "\");");
   let codeItem = (env, codeItem) =>
     switch (codeItem) {
     | CodeItem.RawJS(s) =>
-      line(s ++ ";\n");
+      line(s ++ ";");
       env;
-    | FlowTypeBinding(id, flowType) =>
-      {...env, typeMap: env.typeMap |> StringMap.add(id, flowType)};
+    | FlowTypeBinding(id, flowType) => {
+        ...env,
+        typeMap: env.typeMap |> StringMap.add(id, flowType),
+      }
     | FlowAnnotation(annotationBindingName, constructorFlowType) =>
-      line("// TODO: FlowAnnotation\n");
+      line("// TODO: FlowAnnotation");
       env;
     | ValueBinding(inputModuleName, id, converter) =>
+      let name = Ident.name(id);
       line(
         "const "
-        ++ Ident.name(id)
+        ++ name
         ++ " = "
         ++ (inputModuleName |> requireModule |> Convert.apply(~converter))
         ++ "."
-        ++ Ident.name(id)
-        ++ ";\n",
+        ++ name
+        ++ ";",
       );
-      let flowType = env.typeMap |> StringMap.find(Ident.name(id));
-      {...env, exports: [(Ident.name(id), flowType), ...env.exports]};
+      let flowType = env.typeMap |> StringMap.find(name);
+      {
+        ...env,
+        exports: [(Ident.name(id), Some(flowType)), ...env.exports],
+      };
     | ConstructorBinding(
         constructorAlias,
         convertableFlowTypes,
         modulePath,
         leafName,
       ) =>
-      line("// TODO: ConstructorBinding\n");
+      line("// TODO: ConstructorBinding");
       env;
     | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
-      line("// TODO: ComponentBinding\n");
-      env;
+      line("const make = ReasonReact.wrapReasonForJs(");
+      line("// TODO: ComponentBinding");
+      line("    );");
+      {
+        ...env,
+        exports: [(Ident.name(id), flowPropGenerics), ...env.exports],
+        requires:
+          env.requires
+          |> StringMap.add("ReasonReact", "reason-react/src/ReasonReact.js"),
+      };
     };
-  let {exports} =
+  let {requires, exports} =
     List.fold_left(
       codeItem,
-      {typeMap: StringMap.empty, exports: []},
+      {typeMap: StringMap.empty, exports: [], requires: StringMap.empty},
       codeItems,
     );
-  exports |> List.iter(emitExport);
-  buffer |> Buffer.to_bytes;
+  requires |> StringMap.iter(emitRequire);
+  exports |> List.rev |> List.iter(emitExport);
+  "\n"
+  ++ (requireBuffer |> Buffer.to_bytes)
+  ++ "\n"
+  ++ (mainBuffer |> Buffer.to_bytes)
+  ++ "\n"
+  ++ (exportBuffer |> Buffer.to_bytes);
 };
