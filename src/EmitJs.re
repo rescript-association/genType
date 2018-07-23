@@ -28,7 +28,11 @@ module Convert = {
     };
 
   let apply = (~converter, s) =>
-    "/* TODO converter: " ++ toString(converter) ++ " */ " ++ s;
+    switch (converter) {
+    | CodeItem.Unit => s
+    | Identity => s
+    | _ => "/* TODO converter: " ++ toString(converter) ++ " */ " ++ s
+    };
 };
 
 type env = {
