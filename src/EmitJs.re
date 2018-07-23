@@ -156,7 +156,9 @@ let emitCodeItems = codeItems => {
 
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
       line("  " ++ inputModuleName ++ ".component" ++ ",");
-      line("  (function (" ++ jsProps ++ ") {");
+      line(
+        "  (function (" ++ jsProps ++ ": {...Props, children:any}" ++ ") {",
+      );
       line(
         "     return "
         ++ inputModuleName

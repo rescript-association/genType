@@ -12,7 +12,7 @@ const plus = Component1.plus;
 export type Props = {|message:string|};
 const component = ReasonReact.wrapReasonForJs(
   Component1.component,
-  (function (jsProps) {
+  (function (jsProps: {...Props, children:any}) {
      return Component1.make(jsProps.message, jsProps.children);
   }));
 
