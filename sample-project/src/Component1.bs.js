@@ -12,7 +12,8 @@ function handleClick(_, _$1) {
   return /* () */0;
 }
 
-function make(message, _) {
+function make($staropt$star, _) {
+  var message = $staropt$star !== undefined ? $staropt$star : "default message";
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],

@@ -26,18 +26,19 @@ import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlow
 import type {Component as ReactComponent} from 'React'
 ;
 
-export type Props = {|message:string|}
+export type Props = {|message?:string|}
 ;
 
 var component = ReasonReact.wrapReasonForJs(Component1.component, (function (jsProps) {
         var argB = jsProps.children;
-        return Component1.make(jsProps.message, argB);
+        var jsMaybeA = jsProps.message;
+        return Component1.make(jsMaybeA === (undefined) ? undefined : jsMaybeA, argB);
       }));
 
 
 var plus = Component1.plus;
 
 
-exports.plus = (plus : <T10955>(number, T10955) => number);
+exports.plus = (plus : <T10970>(number, T10970) => number);
 exports.component = (component : React$ComponentType<Props>);
 /*  Not a pure module */

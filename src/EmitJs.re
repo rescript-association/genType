@@ -141,7 +141,10 @@ let emitCodeItems = codeItems => {
                       | NamedArgs.Label(l) =>
                         jsPropsDot(l)
                         |> Convert.apply(~converter=argConverter)
-                      | OptLabel(l) => assert(false)
+                      | OptLabel(l) =>
+                        "/* TODO: OptLabel*/"
+                        ++ jsPropsDot(l)
+                        |> Convert.apply(~converter=argConverter)
                       | Nolabel => assert(false)
                       }
                     ),

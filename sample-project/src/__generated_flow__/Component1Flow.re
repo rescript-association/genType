@@ -15,15 +15,29 @@ Js_unsafe.raw_stmt(
 Js_unsafe.raw_stmt(
   "import type {Component as ReactComponent} from 'React'",
 );
-let __flowTypeValueAnnotation__plus = "<T10955>(number, T10955) => number";
+let __flowTypeValueAnnotation__plus = "<T10970>(number, T10970) => number";
 let plus = Component1.plus;
 Js_unsafe.raw_stmt(
-  "export type Props = {|message:string|}",
+  "export type Props = {|message?:string|}",
 );
 let __flowTypeValueAnnotation__component = "React$ComponentType<Props>";
 let component =
   ReasonReact.wrapReasonForJs(~component=Component1.component, jsProps =>
-    ((argA, argB) => Component1.make(~message=argA##message, argB))(
+    (
+      (argA, argB) =>
+        Component1.make(
+          ~message=?{
+            let jsMaybeA = argA##message;
+            if (jsMaybeA === Js_unsafe.raw_expr("undefined")) {
+              None;
+            } else {
+              let optDataA = jsMaybeA;
+              Some(optDataA);
+            };
+          },
+          argB,
+        )
+    )(
       jsProps,
       jsProps##children,
     )

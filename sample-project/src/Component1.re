@@ -16,7 +16,7 @@ let handleClick = (_event, _self) => Js.log("clicked!");
    `ReasonReact.element(Page.make(~message="hello", [||]))` */
 
 [@genFlow]
-let make = (~message, _children) => {
+let make = (~message="default message", _children) => {
   ...component,
   render: self =>
     <div onClick=(self.handle(handleClick))>
