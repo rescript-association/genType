@@ -9,18 +9,16 @@ module Paths = {
   let executable =
     Sys.executable_name |> is_relative ?
       concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
-  let projectRoot =
-    "sample-project"
-    |> (executable |> dirname |> dirname |> dirname |> dirname |> concat);
-  let outputDir =
+  let projectRoot = ref(Sys.getcwd());
+  let outputDir = () =>
     Filename.(
-      List.fold_left(concat, projectRoot, ["src", "__generated_flow__"])
+      List.fold_left(concat, projectRoot^, ["src", "__generated_flow__"])
     );
 
-  let defaultModulesMap = concat(projectRoot, "modulesMap.txt");
+  let defaultModulesMap = () => concat(projectRoot^, "modulesMap.txt");
   let absoluteFromProject = filePath =>
     Filename.(
-      filePath |> is_relative ? concat(projectRoot, filePath) : filePath
+      filePath |> is_relative ? concat(projectRoot^, filePath) : filePath
     );
 
   let concat = concat;
@@ -50,7 +48,7 @@ let createModulesMap = modulesMapFile =>
 
 let findCmtFiles = (): list(string) => {
   open Paths;
-  let src = ["lib", "bs", "src"] |> List.fold_left(concat, projectRoot);
+  let src = ["lib", "bs", "src"] |> List.fold_left(concat, projectRoot^);
   let cmtFiles =
     src
     |> Sys.readdir
@@ -74,11 +72,14 @@ let buildGeneratedFiles = () => ();
 
 let modulesMap = {
   let default =
-    Sys.file_exists(Paths.defaultModulesMap) ?
-      Some(Paths.defaultModulesMap) : None;
+    Sys.file_exists(Paths.defaultModulesMap()) ?
+      Some(Paths.defaultModulesMap()) : None;
   ref(default);
 };
 let cli = () => {
+  let setProjectRoot = s =>
+    Paths.projectRoot :=
+      Filename.is_relative(s) ? Filename.concat(Unix.getcwd(), s) : s;
   let setModulesMap = s => modulesMap := Some(s |> Paths.absoluteFromProject);
   let setCmtAdd = s => {
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
@@ -94,7 +95,7 @@ let cli = () => {
         Unix.sleep(1 /* To avoid stale artifacts */);
       };
       GenFlowMain.run(
-        ~outputDir=Paths.outputDir,
+        ~outputDir=Paths.outputDir(),
         ~fileHeader,
         ~signFile,
         ~modulesMap=createModulesMap(modulesMap^),
@@ -113,7 +114,10 @@ let cli = () => {
     let globalModuleName = Filename.chop_extension(Filename.basename(cmt));
     let re =
       Paths.(
-        concat(outputDir, outputReasonModuleName(globalModuleName) ++ suffix)
+        concat(
+          outputDir(),
+          outputReasonModuleName(globalModuleName) ++ suffix,
+        )
       );
     print_endline("-cmt-rm cmt:" ++ cmt);
     if (Sys.file_exists(re)) {
@@ -125,6 +129,11 @@ let cli = () => {
     exit(0);
   };
   let speclist = [
+    (
+      "--setProjectRoot",
+      Arg.String(setProjectRoot),
+      "set the root of the bucklescript project",
+    ),
     (
       "--modulesMap",
       Arg.String(setModulesMap),
@@ -140,7 +149,7 @@ let cli = () => {
   Arg.parse(speclist, print_endline, usage);
 
   GenFlowMain.run(
-    ~outputDir=Paths.outputDir,
+    ~outputDir=Paths.outputDir(),
     ~fileHeader,
     ~signFile,
     ~modulesMap=createModulesMap(modulesMap^),
