@@ -1,5 +1,11 @@
 open GenFlowCommon;
 
+let emitFunction = (~functionName="", ~mkBody, ~mkReturn, args) => {
+  let funArgs = "(" ++ (args |> List.map(fst) |> String.concat(", ")) ++ ")";
+  let funBody = mkBody(args |> List.map(snd) |> String.concat(", "));
+  "function " ++ functionName ++ funArgs ++ " { " ++ mkReturn(funBody) ++ " }";
+};
+
 module Convert = {
   let rec toString = converter =>
     switch (converter) {
@@ -83,14 +89,13 @@ module Convert = {
         );
       };
       let convertedArgs = args |> List.map(convertArg);
-      let funArgs =
-        "(" ++ (convertedArgs |> List.map(fst) |> String.concat(", ")) ++ ")";
-      let funBody =
-        s
-        ++ "("
-        ++ (convertedArgs |> List.map(snd) |> String.concat(", "))
-        ++ ")";
-      "(function " ++ funArgs ++ " { " ++ mkReturn(funBody) ++ " })";
+      "("
+      ++ emitFunction(
+           ~mkReturn,
+           ~mkBody=x => s ++ "(" ++ x ++ ")",
+           convertedArgs,
+         )
+      ++ ")";
     };
 };
 
@@ -162,34 +167,45 @@ let emitCodeItems = codeItems => {
         convertableFlowTypes,
         modulePath,
         leafName,
+        (n, isBoxed),
       ) =>
-      line(
-        "// type "
-        ++ annotationBindingName
-        ++ " = "
-        ++ Flow.render(constructorFlowType),
-      );
-      line("const " ++ leafName ++ " = " ++ "null /*TODO*/" ++ ";");
-      line("// constructorAlias: " ++ constructorAlias);
-      line(
-        "// convertableFlowTypes: "
-        ++ (
+      let createBucklescriptBlock = "CreateBucklescriptBlock";
+      let runtimeValue = string_of_int(n);
+      if (convertableFlowTypes == []) {
+        line("const " ++ leafName ++ " = " ++ runtimeValue ++ ";");
+      } else {
+        let args =
           convertableFlowTypes
-          |> List.map(((converter, flowType)) =>
-               "("
-               ++ Convert.toString(converter)
-               ++ ", "
-               ++ Flow.render(flowType)
-               ++ ")"
-             )
-          |> String.concat(" ")
-        ),
-      );
-      line("// modulePath: " ++ modulePath);
-      line("// leafName: " ++ leafName);
-      line("// TODO: ConstructorBinding");
+          |> List.mapi((i, (converter, flowTyp)) => {
+               let arg = "Arg" ++ string_of_int(i);
+               let v = arg |> Convert.apply(~converter, ~toJS=false);
+               (arg, v);
+             });
+        line(
+          emitFunction(
+            ~functionName=leafName,
+            ~mkReturn=x => "return " ++ x,
+            ~mkBody=
+              x =>
+                createBucklescriptBlock
+                ++ ".__"
+                ++ "("
+                ++ runtimeValue
+                ++ ", ["
+                ++ x
+                ++ "])",
+            args,
+          ),
+        );
+      };
       {
         ...env,
+        requires:
+          env.requires
+          |> StringMap.add(
+               "CreateBucklescriptBlock",
+               "bs-platform/lib/js/block.js",
+             ),
         exports: [(leafName, Some(constructorFlowType)), ...env.exports],
       };
 
@@ -267,7 +283,7 @@ let emitCodeItems = codeItems => {
   let {requires, exports} =
     List.fold_left(
       codeItem,
-      {typeMap: StringMap.empty, exports: [], requires: StringMap.empty},
+      {requires: StringMap.empty, typeMap: StringMap.empty, exports: []},
       codeItems,
     );
   requires |> StringMap.iter(emitRequire);

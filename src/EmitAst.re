@@ -293,6 +293,7 @@ let emitCodeItem = codeItem =>
       convertableFlowTypes,
       modulePath,
       leafName,
+      _runtimeValue,
     ) =>
     let createVariantFunction = (convertableFlowTypes, modPath, leafName) => {
       let rec buildUp =

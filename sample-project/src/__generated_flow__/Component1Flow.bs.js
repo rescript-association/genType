@@ -27,46 +27,49 @@ import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlow
 import type {Component as ReactComponent} from 'React'
 ;
 
-// No need to import locally visible type TwoVariants. Make sure it is also marked with @genFlow
+// No need to import locally visible type Variant. Make sure it is also marked with @genFlow
 ;
 
-export opaque type TwoVariantsA = any // Reason type already checked. Making it opaque
+export opaque type VariantA = any // Reason type already checked. Making it opaque
 ;
 
-export opaque type TwoVariantsB = any // Reason type already checked. Making it opaque
+export opaque type VariantB = any // Reason type already checked. Making it opaque
 ;
 
-function b(argA) {
-  return /* B */Block.__(0, [argA]);
+function b(argA, argB) {
+  return /* B */Block.__(0, [
+            argA,
+            argB
+          ]);
 }
 
-export opaque type TwoVariantsC = any // Reason type already checked. Making it opaque
+export opaque type VariantC = any // Reason type already checked. Making it opaque
 ;
 
-function c(argB) {
-  return /* C */Block.__(1, [argB === (null) ? undefined : argB]);
+function c(argC) {
+  return /* C */Block.__(1, [argC === (null) ? undefined : argC]);
 }
 
-export type TwoVariants =
-  | TwoVariantsA
-  | TwoVariantsB
-  | TwoVariantsC
+export type Variant =
+  | VariantA
+  | VariantB
+  | VariantC
 ;
 
-function concat(argC, argD) {
-  return Component1.concat(argC, argD === (null) ? undefined : argD);
+function concat(argD, argE) {
+  return Component1.concat(argD, argE === (null) ? undefined : argE);
 }
 
 export type Props = {|message?:string|}
 ;
 
 var component = ReasonReact.wrapReasonForJs(Component1.component, (function (jsProps) {
-        var argF = jsProps.children;
-        return Component1.make(jsProps.message, argF);
+        var argG = jsProps.children;
+        return Component1.make(jsProps.message, argG);
       }));
 
 
-var consumeTwoVariants = Component1.consumeTwoVariants;
+var consumeVariant = Component1.consumeVariant;
 
 
 var a = /* A */0;
@@ -78,10 +81,10 @@ var a = /* A */0;
 var plus = Component1.plus;
 
 
-exports.consumeTwoVariants = (consumeTwoVariants : (TwoVariants) => number);
-exports.a = (a : TwoVariantsA);
-exports.b = (b : (number) => TwoVariantsB);
-exports.c = (c : (?number) => TwoVariantsC);
+exports.consumeVariant = (consumeVariant : (Variant) => number);
+exports.a = (a : VariantA);
+exports.b = (b : (number, number) => VariantB);
+exports.c = (c : (?number) => VariantC);
 exports.concat = (concat : (string, ?string) => ?string);
 exports.plus = (plus : <T10970>(number, T10970) => number);
 exports.component = (component : React$ComponentType<Props>);

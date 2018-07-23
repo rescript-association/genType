@@ -35,28 +35,28 @@ let concat = (x, y) =>
   };
 
 /* name clash with Block
-[@genFlow]
-type block =
-  | Block;
+   [@genFlow]
+   type block =
+     | Block;
+
+   [@genFlow]
+   let getBlock = x =>
+     switch (x) {
+     | Block => 34
+     };
+   */
 
 [@genFlow]
-let getBlock = x =>
-  switch (x) {
-  | Block => 34
-  };
-*/
-
-[@genFlow]
-type twoVariants =
+type variant =
   | A
-  | B(int)
+  | B(int, int)
   | C(option(int));
 
 [@genFlow]
-let consumeTwoVariants = x =>
+let consumeVariant = x =>
   switch (x) {
   | A => 1
-  | B(n) => n + 2
+  | B(n1, n2) => n1 + n2 + 2
   | C(n) =>
     (
       switch (n) {

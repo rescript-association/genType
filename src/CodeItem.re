@@ -31,6 +31,7 @@ type t =
       list(convertableFlowType),
       string,
       string,
+      (int, bool),
     )
   | ComponentBinding(string, option(Flow.typ), Ident.t, converter, string);
 
@@ -411,7 +412,13 @@ let createFunctionFlowType =
  * TODO: Make the types namespaced by nested Flow module.
  */
 let codeItemsFromConstructorDeclaration =
-    (modulePath, variantTypeName, constructorDeclaration) => {
+    (
+      modulePath,
+      variantTypeName,
+      constructorDeclaration,
+      unboxedCounter,
+      boxedCounter,
+    ) => {
   GenIdent.resetPerStructure();
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = Ident.name(constructorDeclaration.Types.cd_id);
@@ -431,6 +438,16 @@ let codeItemsFromConstructorDeclaration =
   let retType = Flow.Ident(leafTypeName, flowTypeVars);
   let constructorFlowType =
     createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
+  let runTimeValue =
+    if (constructorArgs == []) {
+      let v = (unboxedCounter^, false);
+      incr(unboxedCounter);
+      v;
+    } else {
+      let v = (boxedCounter^, true);
+      incr(boxedCounter);
+      v;
+    };
   let codeItems = [
     codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
     ConstructorBinding(
@@ -439,6 +456,7 @@ let codeItemsFromConstructorDeclaration =
       convertableFlowTypes,
       modulePath,
       leafName,
+      runTimeValue,
     ),
   ];
   (retType, (remainingDeps, codeItems));
@@ -627,11 +645,21 @@ let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) => {
   | (typeParams, Type_variant(constructorDeclarations), GenFlow)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
     let variantTypeName = Ident.name(dec.typ_id);
-    let resultTypesDepsAndVariantLeafBindings =
+    let resultTypesDepsAndVariantLeafBindings = {
+      let unboxedCounter = ref(0);
+      let boxedCounter = ref(0);
       List.map(
-        codeItemsFromConstructorDeclaration(inputModuleName, variantTypeName),
+        constructorDeclaration =>
+          codeItemsFromConstructorDeclaration(
+            inputModuleName,
+            variantTypeName,
+            constructorDeclaration,
+            unboxedCounter,
+            boxedCounter,
+          ),
         constructorDeclarations,
       );
+    };
     let (resultTypes, depsAndVariantLeafBindings) =
       List.split(resultTypesDepsAndVariantLeafBindings);
     let (listListDeps, listListItems) =

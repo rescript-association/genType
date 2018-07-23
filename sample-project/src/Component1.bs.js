@@ -48,7 +48,7 @@ function concat(x, y) {
   
 }
 
-function consumeTwoVariants(x) {
+function consumeVariant(x) {
   if (typeof x === "number") {
     return 1;
   } else if (x.tag) {
@@ -57,7 +57,7 @@ function consumeTwoVariants(x) {
             n !== undefined ? n : 0
           ) + 3 | 0;
   } else {
-    return x[0] + 2 | 0;
+    return (x[0] + x[1] | 0) + 2 | 0;
   }
 }
 
@@ -66,5 +66,5 @@ exports.handleClick = handleClick;
 exports.make = make;
 exports.plus = plus;
 exports.concat = concat;
-exports.consumeTwoVariants = consumeTwoVariants;
+exports.consumeVariant = consumeVariant;
 /* component Not a pure module */
