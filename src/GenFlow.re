@@ -4,16 +4,25 @@
 
 open GenFlowCommon;
 
-let project =
-  Filename.(
+module Paths = {
+  open Filename;
+  let executable =
+    Sys.executable_name |> is_relative ?
+      concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
+  let projectRoot =
     "sample-project"
-    |> (
-      Sys.executable_name |> dirname |> dirname |> dirname |> dirname |> concat
-    )
-  );
+    |> (executable |> dirname |> dirname |> dirname |> dirname |> concat);
+  let outputDir =
+    Filename.(
+      List.fold_left(concat, projectRoot, ["src", "__generated_flow__"])
+    );
+  let absoluteFromProject = filePath =>
+    Filename.(
+      filePath |> is_relative ? concat(projectRoot, filePath) : filePath
+    );
 
-let outputDir =
-  Filename.(List.fold_left(concat, project, ["src", "__generated_flow__"]));
+  let concat = concat;
+};
 
 let createModulesMap = modulesMapFile =>
   switch (modulesMapFile) {
@@ -38,8 +47,8 @@ let createModulesMap = modulesMapFile =>
   };
 
 let findCmtFiles = (): list(string) => {
-  open Filename;
-  let src = ["lib", "bs", "src"] |> List.fold_left(concat, project);
+  open Paths;
+  let src = ["lib", "bs", "src"] |> List.fold_left(concat, projectRoot);
   let cmtFiles =
     src
     |> Sys.readdir
@@ -63,7 +72,7 @@ let buildGeneratedFiles = () => ();
 
 let modulesMap = ref(None);
 let cli = () => {
-  let setModulesMap = s => modulesMap := Some(s);
+  let setModulesMap = s => modulesMap := Some(s |> Paths.absoluteFromProject);
   let setCmtAdd = s => {
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
     assert(Array.length(splitColon) === 2);
@@ -76,7 +85,7 @@ let cli = () => {
       print_endline("-cmt-add cmt:" ++ cmtPath ++ " mlast:" ++ mlast);
       Unix.sleep(1); /* To avoid stale artifacts */
       GenFlowMain.run(
-        ~outputDir,
+        ~outputDir=Paths.outputDir,
         ~fileHeader,
         ~signFile,
         ~modulesMap=createModulesMap(modulesMap^),
@@ -95,7 +104,7 @@ let cli = () => {
     let globalModuleName = Filename.chop_extension(Filename.basename(cmt));
     let re =
       Filename.concat(
-        outputDir,
+        Paths.outputDir,
         outputReasonModuleName(globalModuleName) ++ ".re",
       );
     print_endline("-cmt-rm cmt:" ++ cmt);
@@ -121,7 +130,7 @@ let cli = () => {
   Arg.parse(speclist, print_endline, usage);
 
   GenFlowMain.run(
-    ~outputDir,
+    ~outputDir=Paths.outputDir,
     ~fileHeader,
     ~signFile,
     ~modulesMap=createModulesMap(modulesMap^),
