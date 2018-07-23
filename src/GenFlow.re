@@ -78,8 +78,7 @@ let modulesMap = {
 };
 let cli = () => {
   let setProjectRoot = s =>
-    Paths.projectRoot :=
-      Filename.is_relative(s) ? Filename.concat(Unix.getcwd(), s) : s;
+    Paths.projectRoot := s |> Paths.absoluteFromProject;
   let setModulesMap = s => modulesMap := Some(s |> Paths.absoluteFromProject);
   let setCmtAdd = s => {
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
