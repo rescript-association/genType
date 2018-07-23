@@ -83,7 +83,9 @@ let cli = () => {
     let shouldProcess = cmtExists && Filename.check_suffix(cmtPath, ".cmt");
     if (shouldProcess) {
       print_endline("-cmt-add cmt:" ++ cmtPath ++ " mlast:" ++ mlast);
-      Unix.sleep(1); /* To avoid stale artifacts */
+      if (!emitJsDirectly) {
+        Unix.sleep(1 /* To avoid stale artifacts */);
+      };
       GenFlowMain.run(
         ~outputDir=Paths.outputDir,
         ~fileHeader,
@@ -103,13 +105,14 @@ let cli = () => {
     let cmt: string = splitColon[0];
     let globalModuleName = Filename.chop_extension(Filename.basename(cmt));
     let re =
-      Filename.concat(
-        Paths.outputDir,
-        outputReasonModuleName(globalModuleName) ++ ".re",
+      Paths.(
+        concat(outputDir, outputReasonModuleName(globalModuleName) ++ suffix)
       );
     print_endline("-cmt-rm cmt:" ++ cmt);
     if (Sys.file_exists(re)) {
-      Unix.sleep(1); /* To avoid stale artifacts */
+      if (!emitJsDirectly) {
+        Unix.sleep(1 /* To avoid stale artifacts */);
+      };
       Unix.unlink(re);
     };
     exit(0);
