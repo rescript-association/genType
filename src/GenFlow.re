@@ -16,6 +16,8 @@ module Paths = {
     Filename.(
       List.fold_left(concat, projectRoot, ["src", "__generated_flow__"])
     );
+
+  let defaultModulesMap = concat(projectRoot, "modulesMap.txt");
   let absoluteFromProject = filePath =>
     Filename.(
       filePath |> is_relative ? concat(projectRoot, filePath) : filePath
@@ -70,7 +72,12 @@ let buildSourceFiles = () => ();
 let buildGeneratedFiles = () => ();
 /* TODO */
 
-let modulesMap = ref(None);
+let modulesMap = {
+  let default =
+    Sys.file_exists(Paths.defaultModulesMap) ?
+      Some(Paths.defaultModulesMap) : None;
+  ref(default);
+};
 let cli = () => {
   let setModulesMap = s => modulesMap := Some(s |> Paths.absoluteFromProject);
   let setCmtAdd = s => {

@@ -4,7 +4,12 @@
 
 module StringMap = Map.Make(String);
 
-let emitJsDirectly = false;
+let emitJsDirectly =
+  switch (Unix.getenv("BS_CMT_POST_PROCESS_CMD")) {
+  | "" => false
+  | _ => true
+  | exception _ => false
+  };
 
 let suffix = emitJsDirectly ? ".re.js" : ".re";
 

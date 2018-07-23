@@ -25,4 +25,4 @@ let make = (~message, _children) => {
 };
 
 [@genFlow]
-let plus = (x,_y) => x+1;
+let plus = (x, _y) => x + 1;
