@@ -1,9 +1,4 @@
 open GenFlowCommon;
-let requireModule = moduleName => {
-  /* TODO: find the path from the module name */
-  let path = Filename.(concat(parent_dir_name, moduleName ++ ".bs"));
-  "require(\"" ++ path ++ "\")";
-};
 
 module Convert = {
   let apply = (~converter, s) => "/* TODO converter */ " ++ s;
@@ -13,6 +8,13 @@ type env = {
   requires: StringMap.t(string),
   typeMap: StringMap.t(Flow.typ),
   exports: list((string, option(Flow.typ))),
+};
+
+let requireModule = (~env, moduleName) => {
+  /* TODO: find the path from the module name */
+  let path = Filename.(concat(parent_dir_name, moduleName ++ ".bs"));
+  let requires = env.requires |> StringMap.add(moduleName, path);
+  (requires, moduleName);
 };
 
 let emitCodeItems = codeItems => {
@@ -48,11 +50,12 @@ let emitCodeItems = codeItems => {
       env;
     | ValueBinding(inputModuleName, id, converter) =>
       let name = Ident.name(id);
+      let (requires, moduleStr) = inputModuleName |> requireModule(~env);
       line(
         "const "
         ++ name
         ++ " = "
-        ++ (inputModuleName |> requireModule |> Convert.apply(~converter))
+        ++ (moduleStr |> Convert.apply(~converter))
         ++ "."
         ++ name
         ++ ";",
@@ -61,6 +64,7 @@ let emitCodeItems = codeItems => {
       {
         ...env,
         exports: [(Ident.name(id), Some(flowType)), ...env.exports],
+        requires,
       };
     | ConstructorBinding(
         constructorAlias,
@@ -71,12 +75,19 @@ let emitCodeItems = codeItems => {
       line("// TODO: ConstructorBinding");
       env;
     | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
-      line("const make = ReasonReact.wrapReasonForJs(");
+      let name = "component";
+      let componentType =
+        switch (flowPropGenerics) {
+        | None => None
+        | Some(flowType) =>
+          Some(Flow.Ident("React$ComponentType", [flowType]))
+        };
+      line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
       line("// TODO: ComponentBinding");
-      line("    );");
+      line(");");
       {
         ...env,
-        exports: [(Ident.name(id), flowPropGenerics), ...env.exports],
+        exports: [(name, componentType), ...env.exports],
         requires:
           env.requires
           |> StringMap.add("ReasonReact", "reason-react/src/ReasonReact.js"),
