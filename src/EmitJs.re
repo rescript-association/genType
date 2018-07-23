@@ -10,7 +10,24 @@ module Convert = {
     | Identity => "id"
     | OptionalArgument(c) => "optionalArgument(" ++ toString(c) ++ ")"
     | Option(c) => "option(" ++ toString(c) ++ ")"
-    | Fn(args) => "fn"
+    | Fn((args, c)) =>
+      let labelToString = label =>
+        switch (label) {
+        | NamedArgs.Nolabel => "-"
+        | NamedArgs.Label(l) => l
+        | NamedArgs.OptLabel(l) => "?" ++ l
+        };
+      "fn("
+      ++ (
+        args
+        |> List.map(((label, conv)) =>
+             "(~" ++ labelToString(label) ++ ":" ++ toString(conv) ++ ")"
+           )
+        |> String.concat(", ")
+      )
+      ++ ", "
+      ++ toString(c)
+      ++ ")";
     };
 };
 
