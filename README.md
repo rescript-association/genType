@@ -50,6 +50,6 @@ flow
 ```
 # in sample-project
 export BS_CMT_POST_PROCESS_CMD=$PWD/../_build/default/src/GenFlow.exe
-code .
 yarn start
+yarn serve
 ```
