@@ -45,3 +45,15 @@ type variant =
   | A
   | B(int, int)
   | C(option(int));
+
+/* name clash with Block
+   [@genFlow]
+   type block =
+     | Block;
+
+   [@genFlow]
+   let getBlock = x =>
+     switch (x) {
+     | Block => 34
+     };
+   */
