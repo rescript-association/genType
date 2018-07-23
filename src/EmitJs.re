@@ -106,9 +106,9 @@ type env = {
 };
 
 let requireModule = (~env, moduleName) => {
-  /* TODO: find the path from the module name */
-  let path = Filename.(concat(parent_dir_name, moduleName ++ ".bs"));
-  let requires = env.requires |> StringMap.add(moduleName, path);
+  let requires =
+    env.requires
+    |> StringMap.add(moduleName, resolveSourceModule(moduleName));
   (requires, moduleName);
 };
 

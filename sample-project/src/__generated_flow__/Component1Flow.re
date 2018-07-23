@@ -16,7 +16,7 @@ Js_unsafe.raw_stmt(
   "import type {Component as ReactComponent} from 'React'",
 );
 Js_unsafe.raw_stmt(
-  "import type {Variant as Component2Variant} from 'Component2Flow.bs'",
+  "import type {Variant as Component2Variant} from './Component2Flow.bs'",
 );
 let __flowTypeValueAnnotation__consumeVariant = "(Component2Variant) => number";
 let consumeVariant = Component1.consumeVariant;

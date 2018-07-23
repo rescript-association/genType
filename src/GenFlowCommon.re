@@ -13,13 +13,24 @@ let emitJsDirectly =
 
 let suffix = emitJsDirectly ? ".re.js" : ".re";
 
+let resolveSourceModule = moduleName =>
+  /* TODO: find the path from the module name */
+  Filename.(concat(parent_dir_name, moduleName ++ ".bs"));
+
+let resolveGeneratedModule = moduleName =>
+  /* TODO: find the path from the module name */
+  Filename.(
+    concat(current_dir_name, moduleName ++ (emitJsDirectly ? ".re" : ".bs"))
+  );
+
 /**
  * Returns the generated JS module name for a given Reason module name.
  */
 let jsModuleNameForReasonModuleName = (modulesMap, reasonModuleName) => {
   let tentative = reasonModuleName ++ ".bs";
   StringMap.mem(tentative, modulesMap) ?
-    StringMap.find(tentative, modulesMap) : tentative;
+    StringMap.find(tentative, modulesMap) :
+    resolveGeneratedModule(reasonModuleName);
 };
 /**
  * Returns the *output* Reason module name for an input Reason module name.

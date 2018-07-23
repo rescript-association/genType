@@ -8,7 +8,7 @@ import type {Stateless as ReasonReactStateless} from '../shims/ReasonReactFlowSh
 import type {NoRetainedProps as ReasonReactNoRetainedProps} from '../shims/ReasonReactFlowShim';
 import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlowShim';
 import type {Component as ReactComponent} from 'React';
-import type {Variant as Component2Variant} from 'Component2Flow.bs';
+import type {Variant as Component2Variant} from './Component2Flow.re';
 const consumeVariant = Component1.consumeVariant;
 const concat = (function (Arg1, Arg2) { const result = Component1.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result });
 const plus = Component1.plus;

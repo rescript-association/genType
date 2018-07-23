@@ -26,7 +26,7 @@ import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlow
 import type {Component as ReactComponent} from 'React'
 ;
 
-import type {Variant as Component2Variant} from 'Component2Flow.bs'
+import type {Variant as Component2Variant} from './Component2Flow.bs'
 ;
 
 function concat(argA, argB) {
