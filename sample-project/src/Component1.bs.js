@@ -41,8 +41,16 @@ function plus(x, _) {
   return x + 1 | 0;
 }
 
+function concat(x, y) {
+  if (y !== undefined) {
+    return x + y;
+  }
+  
+}
+
 exports.component = component;
 exports.handleClick = handleClick;
 exports.make = make;
 exports.plus = plus;
+exports.concat = concat;
 /* component Not a pure module */

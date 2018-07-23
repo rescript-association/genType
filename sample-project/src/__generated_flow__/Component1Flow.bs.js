@@ -26,18 +26,29 @@ import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlow
 import type {Component as ReactComponent} from 'React'
 ;
 
+function concat(argA, argB) {
+  var match = Component1.concat(argA, argB === (null) ? undefined : argB);
+  if (match !== undefined) {
+    return match;
+  } else {
+    return (null);
+  }
+}
+
 export type Props = {|message?:string|}
 ;
 
 var component = ReasonReact.wrapReasonForJs(Component1.component, (function (jsProps) {
-        var argB = jsProps.children;
-        return Component1.make(jsProps.message, argB);
+        var argD = jsProps.children;
+        return Component1.make(jsProps.message, argD);
       }));
+
 
 
 var plus = Component1.plus;
 
 
+exports.concat = (concat : (string, ?string) => ?string);
 exports.plus = (plus : <T10970>(number, T10970) => number);
 exports.component = (component : React$ComponentType<Props>);
 /*  Not a pure module */

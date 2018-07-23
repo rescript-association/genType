@@ -26,3 +26,10 @@ let make = (~message="default message", _children) => {
 
 [@genFlow]
 let plus = (x, _y) => x + 1;
+
+[@genFlow]
+let concat = (x, y) =>
+  switch (y) {
+  | None => None
+  | Some(v) => Some(x ++ v)
+  };

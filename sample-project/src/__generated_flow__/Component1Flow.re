@@ -15,6 +15,25 @@ Js_unsafe.raw_stmt(
 Js_unsafe.raw_stmt(
   "import type {Component as ReactComponent} from 'React'",
 );
+let __flowTypeValueAnnotation__concat = "(string, ?string) => ?string";
+let concat = (argA, argB) =>
+  switch (
+    Component1.concat(
+      argA,
+      {
+        let jsMaybeA = argB;
+        if (jsMaybeA === Js_unsafe.raw_expr("null")) {
+          None;
+        } else {
+          let optDataA = jsMaybeA;
+          Some(optDataA);
+        };
+      },
+    )
+  ) {
+  | None => Js_unsafe.raw_expr("null")
+  | Some(a) => a
+  };
 let __flowTypeValueAnnotation__plus = "<T10970>(number, T10970) => number";
 let plus = Component1.plus;
 Js_unsafe.raw_stmt(
@@ -23,7 +42,7 @@ Js_unsafe.raw_stmt(
 let __flowTypeValueAnnotation__component = "React$ComponentType<Props>";
 let component =
   ReasonReact.wrapReasonForJs(~component=Component1.component, jsProps =>
-    ((argA, argB) => Component1.make(~message=?argA##message, argB))(
+    ((argC, argD) => Component1.make(~message=?argC##message, argD))(
       jsProps,
       jsProps##children,
     )
