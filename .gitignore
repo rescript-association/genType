@@ -3,3 +3,4 @@
 /node_modules
 /src/.merlin
 /src/buckle-script-post-process-lib/.merlin
+/yarn-error.log
