@@ -49,7 +49,7 @@ flow
 
 ```
 # in sample-project
-export BS_CMT_POST_PROCESS_CMD=$PWD/../_build/default/src/GenFlow.exe
+export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/src/GenFlow.exe --setProjectRoot $PWD"
 yarn start
 yarn serve
 ```

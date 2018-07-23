@@ -24,27 +24,24 @@ module Paths = {
   let concat = concat;
 };
 
-let createModulesMap = modulesMapFile =>
-  switch (modulesMapFile) {
-  | None => StringMap.empty
-  | Some(filePath) =>
-    let s = GenFlowMain.GeneratedReFiles.readFile(filePath);
-    Str.split(Str.regexp("\n"), s)
-    |> List.fold_left(
-         (map, nextPairStr) =>
-           if (nextPairStr != "") {
-             let fromTo =
-               Str.split(Str.regexp("="), nextPairStr) |> Array.of_list;
-             assert(Array.length(fromTo) === 2);
-             let k: string = fromTo[0];
-             let v: string = fromTo[1];
-             StringMap.add(k, v, map);
-           } else {
-             map;
-           },
-         StringMap.empty,
-       );
-  };
+let createModulesMap = modulesMapFile => {
+  let s = GenFlowMain.GeneratedReFiles.readFile(modulesMapFile);
+  Str.split(Str.regexp("\n"), s)
+  |> List.fold_left(
+       (map, nextPairStr) =>
+         if (nextPairStr != "") {
+           let fromTo =
+             Str.split(Str.regexp("="), nextPairStr) |> Array.of_list;
+           assert(Array.length(fromTo) === 2);
+           let k: string = fromTo[0];
+           let v: string = fromTo[1];
+           StringMap.add(k, v, map);
+         } else {
+           map;
+         },
+       StringMap.empty,
+     );
+};
 
 let findCmtFiles = (): list(string) => {
   open Paths;
@@ -76,10 +73,17 @@ let modulesMap = {
       Some(Paths.defaultModulesMap()) : None;
   ref(default);
 };
+
 let cli = () => {
   let setProjectRoot = s =>
-    Paths.projectRoot := s |> Paths.absoluteFromProject;
+    Paths.projectRoot :=
+      Filename.is_relative(s) ? Filename.concat(Unix.getcwd(), s) : s;
   let setModulesMap = s => modulesMap := Some(s |> Paths.absoluteFromProject);
+  let getModulesMap = () =>
+    switch (modulesMap^) {
+    | None => Paths.defaultModulesMap() |> createModulesMap
+    | Some(path) => path |> createModulesMap
+    };
   let setCmtAdd = s => {
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
     assert(Array.length(splitColon) === 2);
@@ -97,7 +101,7 @@ let cli = () => {
         ~outputDir=Paths.outputDir(),
         ~fileHeader,
         ~signFile,
-        ~modulesMap=createModulesMap(modulesMap^),
+        ~modulesMap=getModulesMap(),
         ~findCmtFiles=() => [cmtPath],
         ~buildSourceFiles,
         ~buildGeneratedFiles,
@@ -151,7 +155,7 @@ let cli = () => {
     ~outputDir=Paths.outputDir(),
     ~fileHeader,
     ~signFile,
-    ~modulesMap=createModulesMap(modulesMap^),
+    ~modulesMap=getModulesMap(),
     ~findCmtFiles,
     ~buildSourceFiles,
     ~buildGeneratedFiles,
