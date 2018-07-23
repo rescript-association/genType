@@ -48,9 +48,23 @@ function concat(x, y) {
   
 }
 
+function consumeTwoVariants(x) {
+  if (typeof x === "number") {
+    return 1;
+  } else if (x.tag) {
+    var n = x[0];
+    return (
+            n !== undefined ? n : 0
+          ) + 3 | 0;
+  } else {
+    return x[0] + 2 | 0;
+  }
+}
+
 exports.component = component;
 exports.handleClick = handleClick;
 exports.make = make;
 exports.plus = plus;
 exports.concat = concat;
+exports.consumeTwoVariants = consumeTwoVariants;
 /* component Not a pure module */

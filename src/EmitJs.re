@@ -163,8 +163,35 @@ let emitCodeItems = codeItems => {
         modulePath,
         leafName,
       ) =>
+      line(
+        "// type "
+        ++ annotationBindingName
+        ++ " = "
+        ++ Flow.render(constructorFlowType),
+      );
+      line("const " ++ leafName ++ " = " ++ "null /*TODO*/" ++ ";");
+      line("// constructorAlias: " ++ constructorAlias);
+      line(
+        "// convertableFlowTypes: "
+        ++ (
+          convertableFlowTypes
+          |> List.map(((converter, flowType)) =>
+               "("
+               ++ Convert.toString(converter)
+               ++ ", "
+               ++ Flow.render(flowType)
+               ++ ")"
+             )
+          |> String.concat(" ")
+        ),
+      );
+      line("// modulePath: " ++ modulePath);
+      line("// leafName: " ++ leafName);
       line("// TODO: ConstructorBinding");
-      env;
+      {
+        ...env,
+        exports: [(leafName, Some(constructorFlowType)), ...env.exports],
+      };
 
     | ComponentBinding(
         inputModuleName,

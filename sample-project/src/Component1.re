@@ -34,7 +34,35 @@ let concat = (x, y) =>
   | Some(v) => Some(x ++ v)
   };
 
+/* name clash with Block
+[@genFlow]
+type block =
+  | Block;
+
+[@genFlow]
+let getBlock = x =>
+  switch (x) {
+  | Block => 34
+  };
+*/
+
 [@genFlow]
 type twoVariants =
   | A
-  | B;
+  | B(int)
+  | C(option(int));
+
+[@genFlow]
+let consumeTwoVariants = x =>
+  switch (x) {
+  | A => 1
+  | B(n) => n + 2
+  | C(n) =>
+    (
+      switch (n) {
+      | None => 0
+      | Some(v) => v
+      }
+    )
+    + 3
+  };

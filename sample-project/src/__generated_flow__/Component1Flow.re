@@ -16,6 +16,11 @@ Js_unsafe.raw_stmt(
   "import type {Component as ReactComponent} from 'React'",
 );
 Js_unsafe.raw_stmt(
+  "// No need to import locally visible type TwoVariants. Make sure it is also marked with @genFlow",
+);
+let __flowTypeValueAnnotation__consumeTwoVariants = "(TwoVariants) => number";
+let consumeTwoVariants = Component1.consumeTwoVariants;
+Js_unsafe.raw_stmt(
   "export opaque type TwoVariantsA = any // Reason type already checked. Making it opaque",
 );
 let __flowTypeValueAnnotation____capitalizeExport__a = "TwoVariantsA";
@@ -23,17 +28,14 @@ let __capitalizeExport__a = Component1.A;
 Js_unsafe.raw_stmt(
   "export opaque type TwoVariantsB = any // Reason type already checked. Making it opaque",
 );
-let __flowTypeValueAnnotation____capitalizeExport__b = "TwoVariantsB";
-let __capitalizeExport__b = Component1.B;
+let __flowTypeValueAnnotation____capitalizeExport__b = "(number) => TwoVariantsB";
+let __capitalizeExport__b = argA => Component1.B(argA);
 Js_unsafe.raw_stmt(
-  "export type TwoVariants =
-  | TwoVariantsA
-  | TwoVariantsB",
+  "export opaque type TwoVariantsC = any // Reason type already checked. Making it opaque",
 );
-let __flowTypeValueAnnotation__concat = "(string, ?string) => ?string";
-let concat = (argA, argB) =>
-  Component1.concat(
-    argA,
+let __flowTypeValueAnnotation____capitalizeExport__c = "(?number) => TwoVariantsC";
+let __capitalizeExport__c = argB =>
+  Component1.C(
     {
       let jsMaybeA = argB;
       if (jsMaybeA === Js_unsafe.raw_expr("null")) {
@@ -41,6 +43,26 @@ let concat = (argA, argB) =>
       } else {
         let optDataA = jsMaybeA;
         Some(optDataA);
+      };
+    },
+  );
+Js_unsafe.raw_stmt(
+  "export type TwoVariants =
+  | TwoVariantsA
+  | TwoVariantsB
+  | TwoVariantsC",
+);
+let __flowTypeValueAnnotation__concat = "(string, ?string) => ?string";
+let concat = (argC, argD) =>
+  Component1.concat(
+    argC,
+    {
+      let jsMaybeB = argD;
+      if (jsMaybeB === Js_unsafe.raw_expr("null")) {
+        None;
+      } else {
+        let optDataB = jsMaybeB;
+        Some(optDataB);
       };
     },
   );
@@ -52,7 +74,7 @@ Js_unsafe.raw_stmt(
 let __flowTypeValueAnnotation__component = "React$ComponentType<Props>";
 let component =
   ReasonReact.wrapReasonForJs(~component=Component1.component, jsProps =>
-    ((argC, argD) => Component1.make(~message=?argC##message, argD))(
+    ((argE, argF) => Component1.make(~message=?argE##message, argF))(
       jsProps,
       jsProps##children,
     )
