@@ -131,13 +131,12 @@ let emitCodeItems = codeItems => {
     | CodeItem.RawJS(s) =>
       line(s ++ ";");
       env;
+
     | FlowTypeBinding(id, flowType) => {
         ...env,
         typeMap: env.typeMap |> StringMap.add(id, flowType),
       }
-    | FlowAnnotation(annotationBindingName, constructorFlowType) =>
-      line("// TODO: FlowAnnotation");
-      env;
+
     | ValueBinding(inputModuleName, id, converter) =>
       let name = Ident.name(id);
       let (requires, moduleStr) = inputModuleName |> requireModule(~env);
@@ -156,7 +155,9 @@ let emitCodeItems = codeItems => {
         exports: [(Ident.name(id), Some(flowType)), ...env.exports],
         requires,
       };
+
     | ConstructorBinding(
+        (annotationBindingName, constructorFlowType),
         constructorAlias,
         convertableFlowTypes,
         modulePath,
@@ -164,6 +165,7 @@ let emitCodeItems = codeItems => {
       ) =>
       line("// TODO: ConstructorBinding");
       env;
+
     | ComponentBinding(
         inputModuleName,
         flowPropGenerics,

@@ -276,10 +276,6 @@ let emitCodeItem = codeItem =>
     |> mkStructItemValBindings
     |> emitStructureItem;
 
-  | FlowAnnotation(annotationBindingName, constructorFlowType) =>
-    mkFlowAnnotationStructItem(annotationBindingName, constructorFlowType)
-    |> emitStructureItem
-
   | ValueBinding(inputModuleName, id, converter) =>
     let consumeProp =
       mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
@@ -292,6 +288,7 @@ let emitCodeItem = codeItem =>
     |> emitStructureItem;
 
   | ConstructorBinding(
+      (annotationBindingName, constructorFlowType),
       constructorAlias,
       convertableFlowTypes,
       modulePath,
@@ -334,15 +331,21 @@ let emitCodeItem = codeItem =>
         };
       buildUp(0, [], List.rev(convertableFlowTypes), modPath, leafName);
     };
-    mkStructItemValBindings([
-      mkBinding(
-        mkPattern(Ppat_var(located(constructorAlias))),
-        mkExpr(
-          createVariantFunction(convertableFlowTypes, modulePath, leafName),
+    (
+      mkFlowAnnotationStructItem(annotationBindingName, constructorFlowType)
+      |> emitStructureItem
+    )
+    ++ (
+      mkStructItemValBindings([
+        mkBinding(
+          mkPattern(Ppat_var(located(constructorAlias))),
+          mkExpr(
+            createVariantFunction(convertableFlowTypes, modulePath, leafName),
+          ),
         ),
-      ),
-    ])
-    |> emitStructureItem;
+      ])
+      |> emitStructureItem
+    );
 
   | ComponentBinding(
       inputModuleName,

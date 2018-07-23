@@ -24,9 +24,14 @@ type conversionPlan = (list(dependency), convertableFlowType);
 type t =
   | RawJS(string)
   | FlowTypeBinding(string, Flow.typ)
-  | FlowAnnotation(string, Flow.typ)
   | ValueBinding(string, Ident.t, converter)
-  | ConstructorBinding(string, list(convertableFlowType), string, string)
+  | ConstructorBinding(
+      (string, Flow.typ),
+      string,
+      list(convertableFlowType),
+      string,
+      string,
+    )
   | ComponentBinding(string, option(Flow.typ), Ident.t, converter, string);
 
 type genFlowKind =
@@ -428,8 +433,8 @@ let codeItemsFromConstructorDeclaration =
     createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
   let codeItems = [
     codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
-    FlowAnnotation(annotationBindingName, constructorFlowType),
     ConstructorBinding(
+      (annotationBindingName, constructorFlowType),
       constructorAlias,
       convertableFlowTypes,
       modulePath,
@@ -529,7 +534,13 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
       propsTypeDeclaration
       @ [
         FlowTypeBinding("component", componentFlowType),
-        ComponentBinding(inputModuleName, flowPropGenerics, id, converter, propsTypeName),
+        ComponentBinding(
+          inputModuleName,
+          flowPropGenerics,
+          id,
+          converter,
+          propsTypeName,
+        ),
       ];
     let deps = [
       JSTypeFromModule("Component", "ReactComponent", "React"),
