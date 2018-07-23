@@ -162,15 +162,15 @@ let emitCodeItems = codeItems => {
       };
 
     | ConstructorBinding(
-        (annotationBindingName, constructorFlowType),
-        constructorAlias,
+        (_annotationBindingName, constructorFlowType),
+        _constructorAlias,
         convertableFlowTypes,
-        modulePath,
+        _modulePath,
         leafName,
-        (n, isBoxed),
+        runtimeValue_,
       ) =>
       let createBucklescriptBlock = "CreateBucklescriptBlock";
-      let runtimeValue = string_of_int(n);
+      let runtimeValue = string_of_int(runtimeValue_);
       if (convertableFlowTypes == []) {
         line("const " ++ leafName ++ " = " ++ runtimeValue ++ ";");
       } else {

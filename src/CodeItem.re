@@ -31,7 +31,7 @@ type t =
       list(convertableFlowType),
       string,
       string,
-      (int, bool),
+      int,
     )
   | ComponentBinding(string, option(Flow.typ), Ident.t, converter, string);
 
@@ -440,11 +440,11 @@ let codeItemsFromConstructorDeclaration =
     createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
   let runTimeValue =
     if (constructorArgs == []) {
-      let v = (unboxedCounter^, false);
+      let v = unboxedCounter^;
       incr(unboxedCounter);
       v;
     } else {
-      let v = (boxedCounter^, true);
+      let v = boxedCounter^;
       incr(boxedCounter);
       v;
     };
