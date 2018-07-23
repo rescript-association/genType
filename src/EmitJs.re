@@ -9,20 +9,22 @@ module Convert = {
   let apply = (~converter, s) => "/* TODO converter */ " ++ s;
 };
 
+type env = {typeMap: StringMap.t(Flow.typ)};
+
 let emitCodeItems = codeItems => {
   let buffer = Buffer.create(100);
   let line = s => Buffer.add_string(buffer, s);
-  let codeItem = (typeMap, codeItem) =>
+  let codeItem = (env, codeItem) =>
     switch (codeItem) {
     | CodeItem.RawJS(s) =>
       line(s ++ ";\n");
-      typeMap;
+      env;
     | FlowTypeBinding(id, flowType) =>
       line("// type " ++ id ++ " = " ++ Flow.render(flowType) ++ ";\n");
-      typeMap |> StringMap.add(id, flowType);
+      {typeMap: env.typeMap |> StringMap.add(id, flowType)};
     | FlowAnnotation(annotationBindingName, constructorFlowType) =>
       line("// TODO: FlowAnnotation\n");
-      typeMap;
+      env;
     | ValueBinding(inputModuleName, id, converter) =>
       line(
         "const "
@@ -33,7 +35,7 @@ let emitCodeItems = codeItems => {
         ++ Ident.name(id)
         ++ ";\n",
       );
-      typeMap;
+      env;
     | ConstructorBinding(
         constructorAlias,
         convertableFlowTypes,
@@ -41,11 +43,12 @@ let emitCodeItems = codeItems => {
         leafName,
       ) =>
       line("// TODO: ConstructorBinding\n");
-      typeMap;
+      env;
     | ComponentBinding(inputModuleName, flowPropGenerics, id, converter) =>
       line("// TODO: ComponentBinding\n");
-      typeMap;
+      env;
     };
-  let _typeMap = List.fold_left(codeItem, StringMap.empty, codeItems);
+  let _finalEnv =
+    List.fold_left(codeItem, {typeMap: StringMap.empty}, codeItems);
   buffer |> Buffer.to_bytes;
 };

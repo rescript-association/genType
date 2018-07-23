@@ -23,16 +23,11 @@ type conversionPlan = (list(dependency), convertableFlowType);
 
 type t =
   | RawJS(string)
-  | FlowTypeBinding(string, GenFlowCommon.Flow.typ)
-  | FlowAnnotation(string, GenFlowCommon.Flow.typ)
+  | FlowTypeBinding(string, Flow.typ)
+  | FlowAnnotation(string, Flow.typ)
   | ValueBinding(string, Ident.t, convert)
   | ConstructorBinding(string, list(convertableFlowType), string, string)
-  | ComponentBinding(
-      string,
-      option(GenFlowCommon.Flow.typ),
-      Ident.t,
-      convert,
-    );
+  | ComponentBinding(string, option(Flow.typ), Ident.t, convert);
 
 type genFlowKind =
   | NoGenFlow
