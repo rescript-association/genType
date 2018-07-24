@@ -1,12 +1,12 @@
 /* @flow strict */
 
-var Component1 = require("../Component1.bs");
+var Component1 = require("./Component1.bs");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
-import type {ComponentSpec as ReasonReactComponentSpec} from '../shims/ReasonReactShim';
-import type {Stateless as ReasonReactStateless} from '../shims/ReasonReactShim';
-import type {NoRetainedProps as ReasonReactNoRetainedProps} from '../shims/ReasonReactShim';
-import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactShim';
+import type {ComponentSpec as ReasonReactComponentSpec} from './shims/ReasonReactShim';
+import type {Stateless as ReasonReactStateless} from './shims/ReasonReactShim';
+import type {NoRetainedProps as ReasonReactNoRetainedProps} from './shims/ReasonReactShim';
+import type {Actionless as ReasonReactActionless} from './shims/ReasonReactShim';
 import type {Component as ReactComponent} from 'React';
 import type {Variant as Component2Variant} from './Component2.re';
 const consumeVariant = Component1.consumeVariant;

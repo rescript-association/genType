@@ -8,7 +8,7 @@ let suffix = ".re.js";
 
 let resolveSourceModule = moduleName =>
   /* TODO: find the path from the module name */
-  Filename.(concat(parent_dir_name, moduleName ++ ".bs"));
+  Filename.(concat(current_dir_name, moduleName ++ ".bs"));
 
 let resolveGeneratedModule = moduleName =>
   /* TODO: find the path from the module name */

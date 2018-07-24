@@ -249,28 +249,27 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
-let emitCodeItems = (~outputPath, ~fileHeader, ~signFile, codeItems) =>
+let emitCodeItems = (~outputFile, ~fileHeader, ~signFile, codeItems) =>
   switch (codeItems) {
   | [_, ..._] =>
     let codeText = codeItems |> EmitJs.emitCodeItems;
     let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
 
     GeneratedReFiles.writeFileIfRequired(
-      ~fileName=outputPath,
+      ~fileName=outputFile,
       ~fileContents,
       ~writeFile,
     );
 
-  | [] => outputPath |> GeneratedReFiles.logFileAction(NoMatch)
+  | [] => outputFile |> GeneratedReFiles.logFileAction(NoMatch)
   };
 
 let processCmtFile =
-    (~outputDir, ~fileHeader, ~signFile, ~modulesMap, cmtFile) => {
+    (~outputFile, ~fileHeader, ~signFile, ~modulesMap, cmtFile) => {
   GenIdent.resetPerFile();
   let inputCMT = Cmt_format.read_cmt(cmtFile);
   let globalModuleName = Filename.chop_extension(Filename.basename(cmtFile));
-  let outputPath = Filename.concat(outputDir, globalModuleName ++ suffix);
   inputCMT
   |> cmtToCodeItems(~modulesMap, ~globalModuleName)
-  |> emitCodeItems(~outputPath, ~fileHeader, ~signFile);
+  |> emitCodeItems(~outputFile, ~fileHeader, ~signFile);
 };

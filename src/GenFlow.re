@@ -10,10 +10,9 @@ module Paths = {
     Sys.executable_name |> is_relative ?
       concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
   let projectRoot = ref(Sys.getcwd());
-  let outputDir = () =>
-    Filename.(
-      List.fold_left(concat, projectRoot^, ["src", "__generated_flow__"])
-    );
+
+  let getOutputFile = cmt =>
+    concat(projectRoot^, Filename.chop_extension(cmt) ++ suffix);
 
   let defaultModulesMap = () => concat(projectRoot^, "modulesMap.txt");
   let absoluteFromProject = filePath =>
@@ -91,9 +90,10 @@ let cli = () => {
     let shouldProcess = cmtExists && Filename.check_suffix(cmtFile, ".cmt");
     if (shouldProcess) {
       print_endline("  Add " ++ cmt ++ "  " ++ mlast);
+      let outputFile = cmt |> Paths.getOutputFile;
       cmtFile
       |> GenFlowMain.processCmtFile(
-           ~outputDir=Paths.outputDir(),
+           ~outputFile,
            ~fileHeader,
            ~signFile,
            ~modulesMap=getModulesMap(),
@@ -105,11 +105,10 @@ let cli = () => {
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
     assert(Array.length(splitColon) === 1);
     let cmt: string = splitColon[0];
-    let globalModuleName = Filename.chop_extension(Filename.basename(cmt));
-    let re = Paths.(concat(outputDir(), globalModuleName ++ suffix));
+    let outputFile = cmt |> Paths.getOutputFile;
     print_endline("  Remove " ++ cmt);
-    if (Sys.file_exists(re)) {
-      Unix.unlink(re);
+    if (Sys.file_exists(outputFile)) {
+      Unix.unlink(outputFile);
     };
     exit(0);
   };
