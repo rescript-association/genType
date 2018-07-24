@@ -16,40 +16,32 @@ esy install
 esy build
 ```
 
-Since this project is in active development, the binary uses `sample-project` as a hardcoded path for testing.
-
 ## Build the sample js project
 
 ```
 # in sample-project
-yarn install
+export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/yarn install
 yarn build
 ```
 
 Every time genFlow changes, clean and build again:
+
 ```
 yarn clean
 yarn build
 ```
 
-## Run genFlow on the sample js project
-
-```
-# in sample-project
-yarn genFlow
-```
-
-## Type check with Flow
-```
-# in sample-project
-flow
-```
-
-## Direct JS generation mode (experimental, WIP)
+## Hot reloading plus genFlow
 
 ```
 # in sample-project
 export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/src/GenFlow.exe --setProjectRoot $PWD"
 yarn start
 yarn serve
+```
+
+## Type check with Flow
+```
+# in sample-project
+flow
 ```

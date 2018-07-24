@@ -54,10 +54,7 @@ let findCmtFiles = (): list(string) => {
   cmtFiles |> List.map(concat(src));
 };
 
-let fileHeader =
-  emitJsDirectly ?
-    "/* @flow strict */\n" :
-    BuckleScriptPostProcessLib.Patterns.generatedHeaderPrefix ++ "\n\n";
+let fileHeader = "/* @flow strict */\n";
 
 let signFile = s => s;
 
@@ -94,9 +91,6 @@ let cli = () => {
     let shouldProcess = cmtExists && Filename.check_suffix(cmtPath, ".cmt");
     if (shouldProcess) {
       print_endline("-cmt-add cmt:" ++ cmtPath ++ " mlast:" ++ mlast);
-      if (!emitJsDirectly) {
-        Unix.sleep(1 /* To avoid stale artifacts */);
-      };
       GenFlowMain.run(
         ~outputDir=Paths.outputDir(),
         ~fileHeader,
@@ -124,9 +118,6 @@ let cli = () => {
       );
     print_endline("-cmt-rm cmt:" ++ cmt);
     if (Sys.file_exists(re)) {
-      if (!emitJsDirectly) {
-        Unix.sleep(1 /* To avoid stale artifacts */);
-      };
       Unix.unlink(re);
     };
     exit(0);
@@ -150,17 +141,6 @@ let cli = () => {
   ];
   let usage = "genFlow";
   Arg.parse(speclist, print_endline, usage);
-
-  GenFlowMain.run(
-    ~outputDir=Paths.outputDir(),
-    ~fileHeader,
-    ~signFile,
-    ~modulesMap=getModulesMap(),
-    ~findCmtFiles,
-    ~buildSourceFiles,
-    ~buildGeneratedFiles,
-    ~doCleanup=true,
-  );
 };
 
 cli();

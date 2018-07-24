@@ -4,14 +4,7 @@
 
 module StringMap = Map.Make(String);
 
-let emitJsDirectly =
-  switch (Unix.getenv("BS_CMT_POST_PROCESS_CMD")) {
-  | "" => false
-  | _ => true
-  | exception _ => false
-  };
-
-let suffix = emitJsDirectly ? ".re.js" : ".re";
+let suffix = ".re.js";
 
 let resolveSourceModule = moduleName =>
   /* TODO: find the path from the module name */
@@ -19,9 +12,7 @@ let resolveSourceModule = moduleName =>
 
 let resolveGeneratedModule = moduleName =>
   /* TODO: find the path from the module name */
-  Filename.(
-    concat(current_dir_name, moduleName ++ (emitJsDirectly ? ".re" : ".bs"))
-  );
+  Filename.(concat(current_dir_name, moduleName ++ ".re"));
 
 /**
  * Returns the generated JS module name for a given Reason module name.

@@ -6,7 +6,6 @@
     "start": "bsb -make-world -w -ws _",
     "clean": "bsb -clean-world",
     "serve": "http-server",
-    "genFlow": "../_build/default/src/GenFlow.exe --modulesMap modulesMap.txt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
