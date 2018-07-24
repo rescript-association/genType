@@ -90,7 +90,7 @@ let cli = () => {
     let cmtExists = Sys.file_exists(cmtFile);
     let shouldProcess = cmtExists && Filename.check_suffix(cmtFile, ".cmt");
     if (shouldProcess) {
-      print_endline("  Add " ++ cmtFile ++ "\n      " ++ mlast);
+      print_endline("  Add " ++ cmt ++ "  " ++ mlast);
       cmtFile
       |> GenFlowMain.processCmtFile(
            ~outputDir=Paths.outputDir(),
