@@ -34,18 +34,6 @@ let concat = (x, y) =>
   | Some(v) => Some(x ++ v)
   };
 
-/* name clash with Block
-   [@genFlow]
-   type block =
-     | Block;
-
-   [@genFlow]
-   let getBlock = x =>
-     switch (x) {
-     | Block => 34
-     };
-   */
-
 [@genFlow]
 let consumeVariant = x =>
   switch (x) {

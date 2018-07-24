@@ -1,9 +1,21 @@
 open GenFlowCommon;
 
-let emitFunction = (~functionName="", ~mkBody, ~mkReturn, args) => {
-  let funArgs = "(" ++ (args |> List.map(fst) |> String.concat(", ")) ++ ")";
-  let funBody = mkBody(args |> List.map(snd) |> String.concat(", "));
-  "function " ++ functionName ++ funArgs ++ " { " ++ mkReturn(funBody) ++ " }";
+module Emit = {
+  let parens = xs => "(" ++ (xs |> String.concat(", ")) ++ ")";
+  let brackets = x => "{ " ++ x ++ " }";
+  let array = xs => "[" ++ (xs |> String.concat(", ")) ++ "]";
+  let funCall = (~args, name) =>
+    name ++ "(" ++ (args |> String.concat(", ")) ++ ")";
+  let funDef = (~args, ~mkBody, functionName) => {
+    let (params, vals) = List.split(args);
+    let decl =
+      "function "
+      ++ functionName
+      ++ (params |> parens)
+      ++ " "
+      ++ (vals |> mkBody |> brackets);
+    functionName == "" ? parens([decl]) : decl;
+  };
 };
 
 module Convert = {
@@ -56,46 +68,32 @@ module Convert = {
       s |> apply(~converter=resultConverter, ~toJS)
 
     | Fn((args, resultConverter)) =>
-      let convertArg = {
-        let cnt = ref(0);
-        (
-          ((lbl, argConverter)) => {
-            let varName =
-              switch (lbl) {
-              | NamedArgs.Nolabel =>
-                incr(cnt);
-                "Arg" ++ string_of_int(cnt^);
-              | Label(l)
-              | OptLabel(l) => "Arg" ++ l
-              };
-            let notToJS = !toJS;
-            (
-              varName,
-              varName |> apply(~converter=argConverter, ~toJS=notToJS),
-            );
-          }
-        );
+      let resultVar = "result";
+      let mkReturn = x =>
+        "const "
+        ++ resultVar
+        ++ " = "
+        ++ x
+        ++ "; return "
+        ++ apply(~converter=resultConverter, ~toJS, resultVar);
+      let convertedArgs = {
+        let convertArg = (i, (lbl, argConverter)) => {
+          let varName =
+            switch (lbl) {
+            | NamedArgs.Nolabel => "Arg" ++ string_of_int(i + 1)
+            | Label(l)
+            | OptLabel(l) => "Arg" ++ l
+            };
+          let notToJS = !toJS;
+          (
+            varName,
+            varName |> apply(~converter=argConverter, ~toJS=notToJS),
+          );
+        };
+        args |> List.mapi(convertArg);
       };
-      let mkReturn = {
-        let result = "result";
-        (
-          e =>
-            "const "
-            ++ result
-            ++ " = "
-            ++ e
-            ++ "; return "
-            ++ apply(~converter=resultConverter, ~toJS, result)
-        );
-      };
-      let convertedArgs = args |> List.map(convertArg);
-      "("
-      ++ emitFunction(
-           ~mkReturn,
-           ~mkBody=x => s ++ "(" ++ x ++ ")",
-           convertedArgs,
-         )
-      ++ ")";
+      let mkBody = args => s |> Emit.funCall(~args) |> mkReturn;
+      Emit.funDef(~args=convertedArgs, ~mkBody, "");
     };
 };
 
@@ -181,22 +179,11 @@ let emitCodeItems = codeItems => {
                let v = arg |> Convert.apply(~converter, ~toJS=false);
                (arg, v);
              });
-        line(
-          emitFunction(
-            ~functionName=leafName,
-            ~mkReturn=x => "return " ++ x,
-            ~mkBody=
-              x =>
-                createBucklescriptBlock
-                ++ ".__"
-                ++ "("
-                ++ runtimeValue
-                ++ ", ["
-                ++ x
-                ++ "])",
-            args,
-          ),
-        );
+        let mkBody = args =>
+          createBucklescriptBlock
+          ++ ".__"
+          |> Emit.funCall(~args=[runtimeValue, Emit.array(args)]);
+        line(leafName |> Emit.funDef(~args, ~mkBody));
       };
       {
         ...env,
