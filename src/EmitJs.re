@@ -49,18 +49,18 @@ module Convert = {
 
   let rec apply = (~converter, ~toJS, s) =>
     switch (converter) {
-    | CodeItem.Unit => s
+    | CodeItem.Unit
     | Identity => s
+
     | OptionalArgument(c) => apply(~converter=c, ~toJS, s)
+
     | Option(c) =>
+      let nullableToOption = x =>
+        Emit.parens([x ++ " === null ? undefined : " ++ x]);
+      let optionToNullable = x => x;
       let convertedArg = apply(~converter=c, ~toJS, s);
-      toJS ?
-        convertedArg :
-        "("
-        ++ convertedArg
-        ++ " === null ? undefined : "
-        ++ convertedArg
-        ++ ")";
+      toJS ? optionToNullable(convertedArg) : nullableToOption(convertedArg);
+
     | Fn((args, resultConverter))
         when
           args
@@ -245,8 +245,6 @@ let emitCodeItems = codeItems => {
         | _ => [jsPropsDot("children")]
         };
 
-      let mkArgs = args => "(" ++ (args |> String.concat(", ")) ++ ")";
-
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
       line("  " ++ inputModuleName ++ ".component" ++ ",");
       line(
@@ -257,7 +255,7 @@ let emitCodeItems = codeItems => {
         ++ inputModuleName
         ++ "."
         ++ Ident.name(id)
-        ++ mkArgs(args)
+        ++ Emit.parens(args)
         ++ ";",
       );
       line("  }));");
