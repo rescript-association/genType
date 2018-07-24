@@ -57,6 +57,11 @@ function make(greeting, _) {
         ];
 }
 
+function getBlock() {
+  return 34;
+}
+
 exports.component = component;
 exports.make = make;
+exports.getBlock = getBlock;
 /* component Not a pure module */

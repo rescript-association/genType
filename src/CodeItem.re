@@ -179,7 +179,7 @@ let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
     "export"
     ++ (opaque ? " opaque " : " ")
     ++ "type "
-    ++ String.capitalize(name)
+    ++ name
     ++ Flow.genericsString(List.map(Flow.render, typeParams))
     ++ " = "
     ++ Flow.render(underlying)
@@ -192,7 +192,7 @@ let codeItemForOpaqueType = (typeParams, name, underlying) =>
 let codeItemForUnionType = (typeParams, leafTypes, name) => {
   let opaqueTypeString =
     "export type "
-    ++ String.capitalize(name)
+    ++ name
     ++ Flow.genericsString(List.map(Flow.render, typeParams))
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
@@ -246,8 +246,8 @@ let distributeSplitRev = lst => distributeSplitRev_([], [], lst);
 
 let rec typePathToFlowName = typePath =>
   switch (typePath) {
-  | Path.Pident(id) => String.capitalize(Ident.name(id))
-  | Pdot(p, s, _pos) => typePathToFlowName(p) ++ String.capitalize(s)
+  | Path.Pident(id) => Ident.name(id)
+  | Pdot(p, s, _pos) => typePathToFlowName(p) ++ s
   | Papply(p1, p2) =>
     typePathToFlowName(p1)
     ++ "__unsupported_genFlow__"
@@ -824,11 +824,11 @@ let typePathToFlowImportString = (modulesMap, typePath) =>
     importString("List", "List", "ReasonPervasives.bs")
   | Path.Pident(id) =>
     "// No need to import locally visible type "
-    ++ String.capitalize(Ident.name(id))
+    ++ Ident.name(id)
     ++ ". Make sure it is also marked with @genFlow"
   | Pdot(p, s, _pos) =>
     importString(
-      String.capitalize(s),
+      s,
       typePathToFlowName(typePath),
       jsModuleNameForReasonModuleName(modulesMap, typePathToFlowName(p)),
     )

@@ -10,19 +10,19 @@
 // external types. They may be replaced with a .flow.js interface file.
 
 // $FlowExpectedError: Reason checked type sufficiently.
-export opaque type ReactElement = any;
+export opaque type reactElement = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.
-export opaque type ComponentSpec = any;
+export opaque type componentSpec = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.
-export opaque type NoRetainedProps = any;
+export opaque type noRetainedProps = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.
-export opaque type Actionless = any;
+export opaque type actionless = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.
-export opaque type Stateless = any;
+export opaque type stateless = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.
-export opaque type ReactRef = any;
+export opaque type reactRef = any;
