@@ -175,7 +175,7 @@ let emitCodeItems = codeItems => {
         let args =
           convertableFlowTypes
           |> List.mapi((i, (converter, flowTyp)) => {
-               let arg = "Arg" ++ string_of_int(i);
+               let arg = "Arg" ++ string_of_int(i + 1);
                let v = arg |> Convert.apply(~converter, ~toJS=false);
                (arg, v);
              });
