@@ -273,8 +273,11 @@ let emitCodeItems = codeItems => {
       {requires: StringMap.empty, typeMap: StringMap.empty, exports: []},
       codeItems,
     );
+
   requires |> StringMap.iter(emitRequire);
+
   exports |> List.rev |> List.iter(emitExport);
+
   "\n"
   ++ (requireBuffer |> Buffer.to_bytes)
   ++ "\n"
