@@ -143,23 +143,16 @@ let emitCodeItems = codeItems => {
       }
 
     | ValueBinding(inputModuleName, id, converter) =>
-      let name = Ident.name(id);
       let (requires, moduleStr) = inputModuleName |> requireModule(~env);
       line(
         "const "
-        ++ name
+        ++ id
         ++ " = "
-        ++ (
-          moduleStr ++ "." ++ name |> Convert.apply(~converter, ~toJS=true)
-        )
+        ++ (moduleStr ++ "." ++ id |> Convert.apply(~converter, ~toJS=true))
         ++ ";",
       );
-      let flowType = env.typeMap |> StringMap.find(name);
-      {
-        ...env,
-        exports: [(Ident.name(id), Some(flowType)), ...env.exports],
-        requires,
-      };
+      let flowType = env.typeMap |> StringMap.find(id);
+      {...env, exports: [(id, Some(flowType)), ...env.exports], requires};
 
     | ConstructorBinding(
         (_annotationBindingName, constructorFlowType),

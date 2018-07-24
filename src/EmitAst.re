@@ -277,11 +277,10 @@ let emitCodeItem = codeItem =>
     |> emitStructureItem;
 
   | ValueBinding(inputModuleName, id, converter) =>
-    let consumeProp =
-      mkExprIdentifier(inputModuleName ++ "." ++ Ident.name(id));
+    let consumeProp = mkExprIdentifier(inputModuleName ++ "." ++ id);
     mkStructItemValBindings([
       mkBinding(
-        mkPatternIdent(Ident.name(id)),
+        mkPatternIdent(id),
         (converter |> Convert.apply).toJS(consumeProp),
       ),
     ])

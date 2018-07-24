@@ -24,7 +24,7 @@ type conversionPlan = (list(dependency), convertableFlowType);
 type t =
   | RawJS(string)
   | FlowTypeBinding(string, Flow.typ)
-  | ValueBinding(string, Ident.t, converter)
+  | ValueBinding(string, string, converter)
   | ConstructorBinding(
       (string, Flow.typ),
       string,
@@ -479,7 +479,7 @@ let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
   let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
   let codeItems = [
     FlowTypeBinding(Ident.name(id), flowType),
-    ValueBinding(inputModuleName, id, converter),
+    ValueBinding(inputModuleName, Ident.name(id), converter),
   ];
   (remainingDeps, codeItems);
 };
