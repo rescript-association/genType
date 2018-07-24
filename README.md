@@ -2,6 +2,10 @@
 
 `genFlow` is a tool for providing type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/).
 
+<video width="640" controls>
+  <source src="assets/genFlow.mov">
+</video> 
+
 # Development
 
 ## Build genFlow
