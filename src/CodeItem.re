@@ -711,10 +711,7 @@ let typePathToFlowImportString = (modulesMap, typePath) =>
     importString(
       String.capitalize(s),
       typePathToFlowName(typePath),
-      jsModuleNameForReasonModuleName(
-        modulesMap,
-        outputReasonModuleName(typePathToFlowName(p)),
-      ),
+      jsModuleNameForReasonModuleName(modulesMap, typePathToFlowName(p)),
     )
   | Papply(p1, p2) => "// Cannot import type with Papply"
   };

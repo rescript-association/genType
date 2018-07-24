@@ -269,11 +269,7 @@ let processCmtFile =
   GenIdent.resetPerFile();
   let inputCMT = Cmt_format.read_cmt(cmtFile);
   let globalModuleName = Filename.chop_extension(Filename.basename(cmtFile));
-  let outputPath =
-    Filename.concat(
-      outputDir,
-      outputReasonModuleName(globalModuleName) ++ suffix,
-    );
+  let outputPath = Filename.concat(outputDir, globalModuleName ++ suffix);
   inputCMT
   |> cmtToCodeItems(~modulesMap, ~globalModuleName)
   |> emitCodeItems(~outputPath, ~fileHeader, ~signFile);

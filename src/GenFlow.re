@@ -106,13 +106,7 @@ let cli = () => {
     assert(Array.length(splitColon) === 1);
     let cmt: string = splitColon[0];
     let globalModuleName = Filename.chop_extension(Filename.basename(cmt));
-    let re =
-      Paths.(
-        concat(
-          outputDir(),
-          outputReasonModuleName(globalModuleName) ++ suffix,
-        )
-      );
+    let re = Paths.(concat(outputDir(), globalModuleName ++ suffix));
     print_endline("  Remove " ++ cmt);
     if (Sys.file_exists(re)) {
       Unix.unlink(re);

@@ -3,12 +3,12 @@
 var Component1 = require("../Component1.bs");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
-import type {ComponentSpec as ReasonReactComponentSpec} from '../shims/ReasonReactFlowShim';
-import type {Stateless as ReasonReactStateless} from '../shims/ReasonReactFlowShim';
-import type {NoRetainedProps as ReasonReactNoRetainedProps} from '../shims/ReasonReactFlowShim';
-import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactFlowShim';
+import type {ComponentSpec as ReasonReactComponentSpec} from '../shims/ReasonReactShim';
+import type {Stateless as ReasonReactStateless} from '../shims/ReasonReactShim';
+import type {NoRetainedProps as ReasonReactNoRetainedProps} from '../shims/ReasonReactShim';
+import type {Actionless as ReasonReactActionless} from '../shims/ReasonReactShim';
 import type {Component as ReactComponent} from 'React';
-import type {Variant as Component2Variant} from './Component2Flow.re';
+import type {Variant as Component2Variant} from './Component2.re';
 const consumeVariant = Component1.consumeVariant;
 const concat = (function (Arg1, Arg2) { const result = Component1.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result });
 const plus = Component1.plus;

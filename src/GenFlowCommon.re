@@ -23,12 +23,6 @@ let jsModuleNameForReasonModuleName = (modulesMap, reasonModuleName) => {
     StringMap.find(tentative, modulesMap) :
     resolveGeneratedModule(reasonModuleName);
 };
-/**
- * Returns the *output* Reason module name for an input Reason module name.
- * Note that this is not the JS/providesModule module name.
- */
-let outputReasonModuleName = inputReasonModuleName =>
-  inputReasonModuleName ++ "Flow";
 let tagSearch = "genFlow";
 let tagSearchOpaque = "genFlow.opaque";
 let componentTagSearch = tagSearch;
