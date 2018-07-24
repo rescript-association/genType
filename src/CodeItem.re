@@ -26,8 +26,7 @@ type t =
   | FlowTypeBinding(string, Flow.typ)
   | ValueBinding(string, string, converter)
   | ConstructorBinding(
-      (string, Flow.typ),
-      string,
+      Flow.typ,
       list(convertableFlowType),
       string,
       string,
@@ -422,14 +421,9 @@ let codeItemsFromConstructorDeclaration =
   GenIdent.resetPerStructure();
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = Ident.name(constructorDeclaration.Types.cd_id);
-  let lowercaseLeaf = String.uncapitalize(leafName);
   let (deps, convertableFlowTypes) =
     reasonTypeToConversionMany(constructorArgs);
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
-  let constructorAlias =
-    Patterns.capitalizeExportedNamePrefix ++ lowercaseLeaf;
-  let annotationBindingName =
-    Patterns.flowTypeAnnotationPrefix ++ constructorAlias;
   let leafTypeName = variantLeafTypeName(variantTypeName, leafName);
   let (freeTypeVars, remainingDeps) = Dependencies.extractFreeTypeVars(deps);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
@@ -449,8 +443,7 @@ let codeItemsFromConstructorDeclaration =
   let codeItems = [
     codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
     ConstructorBinding(
-      (annotationBindingName, constructorFlowType),
-      constructorAlias,
+      constructorFlowType,
       convertableFlowTypes,
       modulePath,
       leafName,

@@ -155,8 +155,7 @@ let emitCodeItems = codeItems => {
       {...env, exports: [(id, Some(flowType)), ...env.exports], requires};
 
     | ConstructorBinding(
-        (_annotationBindingName, constructorFlowType),
-        _constructorAlias,
+        constructorFlowType,
         convertableFlowTypes,
         _modulePath,
         leafName,
