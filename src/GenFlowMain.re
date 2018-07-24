@@ -301,14 +301,8 @@ let emitCodeItems =
     ) =>
   switch (codeItems) {
   | [_, ..._] =>
-    let astText = codeItems |> EmitJs.emitCodeItems;
-    let astTextNoNewline = {
-      /* refmt would also remove the newline */
-      let n = String.length(astText);
-      n > 0 && astText.[(n - 1)] == '\n' ?
-        String.sub(astText, 0, n - 1) : astText;
-    };
-    let fileContents = signFile(fileHeader ++ astTextNoNewline);
+    let codeText = codeItems |> EmitJs.emitCodeItems;
+    let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
 
     generatedFiles
     |> GeneratedReFiles.writeFileIfRequired(

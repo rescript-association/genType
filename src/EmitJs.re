@@ -117,8 +117,10 @@ let emitCodeItems = codeItems => {
   let mainBuffer = Buffer.create(100);
   let exportBuffer = Buffer.create(100);
   let line_ = (buffer, s) => {
+    if (Buffer.length(buffer) > 0) {
+      Buffer.add_string(buffer, "\n");
+    };
     Buffer.add_string(buffer, s);
-    Buffer.add_string(buffer, "\n");
   };
   let line = line_(mainBuffer);
   let emitExport = ((id, flowTypeOpt)) => {
@@ -270,10 +272,10 @@ let emitCodeItems = codeItems => {
 
   exports |> List.rev |> List.iter(emitExport);
 
-  "\n"
-  ++ (requireBuffer |> Buffer.to_bytes)
-  ++ "\n"
-  ++ (mainBuffer |> Buffer.to_bytes)
-  ++ "\n"
-  ++ (exportBuffer |> Buffer.to_bytes);
+  [
+    requireBuffer |> Buffer.to_bytes,
+    mainBuffer |> Buffer.to_bytes,
+    exportBuffer |> Buffer.to_bytes,
+  ]
+  |> String.concat("\n\n");
 };
