@@ -181,20 +181,15 @@ let cmtToCodeItems =
 
 let log = Printf.printf;
 let logItem = x => {
-  log("  > ");
+  log("  ");
   log(x);
 };
 
 module GeneratedReFiles = {
-  type t = {
-    filesOnDisk: StringSet.t,
-    mutable filesToWrite: StringSet.t,
-  };
-
   type fileAction =
     | NoMatch /* No @genFlow annotation found. */
     | Replace /* Replace existing file on disk with new contents. */
-    | Skip /* File already on disk with identical contents. */
+    | Identical /* File already on disk with identical contents. Skip. */
     | Write; /* File not present on disk. */
 
   let logFileAction = (fileAction, fileName) =>
@@ -203,29 +198,11 @@ module GeneratedReFiles = {
       switch (fileAction) {
       | NoMatch => "NoMatch"
       | Replace => "Replace"
-      | Skip => "Skip   "
-      | Write => "Write  "
+      | Identical => "Identical"
+      | Write => "Write"
       },
       fileName,
     );
-
-  let readFromDisk = (~outputDir) => {
-    let filesOnDisk =
-      outputDir
-      |> Sys.readdir
-      |> Array.fold_left(
-           (set, file) =>
-             Filename.check_suffix(file, suffix) ?
-               StringSet.add(Filename.concat(outputDir, file), set) : set,
-           StringSet.empty,
-         );
-    logItem(
-      "Found %d generated .re files in %s\n",
-      filesOnDisk |> StringSet.cardinal,
-      outputDir,
-    );
-    {filesOnDisk, filesToWrite: StringSet.empty};
-  };
 
   let readLines = (file: string): list(string) => {
     let lines = ref([]);
@@ -249,13 +226,12 @@ module GeneratedReFiles = {
   let readFile = (file: string): string =>
     String.concat("\n", readLines(file));
 
-  let writeFileIfRequired = (~fileName, ~fileContents, ~writeFile, x) => {
-    x.filesToWrite = StringSet.add(fileName, x.filesToWrite);
-    if (StringSet.mem(fileName, x.filesOnDisk)) {
+  let writeFileIfRequired = (~fileName, ~fileContents, ~writeFile) =>
+    if (Sys.file_exists(fileName)) {
       let oldContents = readFile(fileName);
       let identical = oldContents == fileContents;
       if (identical) {
-        fileName |> logFileAction(Skip);
+        fileName |> logFileAction(Identical);
       };
       if (!identical) {
         fileName |> logFileAction(Replace);
@@ -265,23 +241,6 @@ module GeneratedReFiles = {
       fileName |> logFileAction(Write);
       writeFile(fileName, fileContents);
     };
-  };
-
-  let cleanup = ({filesOnDisk, filesToWrite}) => {
-    let filesToRemove = StringSet.diff(filesOnDisk, filesToWrite);
-    if (!StringSet.is_empty(filesToRemove)) {
-      logItem("Clean up %d .re files\n", filesToRemove |> StringSet.cardinal);
-      StringSet.iter(
-        file => {
-          log("Delete %s\n", file);
-          Unix.unlink(file);
-        },
-        filesToRemove,
-      );
-    } else {
-      logItem("No .re files to clean up.\n");
-    };
-  };
 };
 
 let writeFile = (filePath: string, contents: string) => {
@@ -290,43 +249,26 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
-let emitCodeItems =
-    (
-      ~generatedFiles,
-      ~inputPath,
-      ~outputPath,
-      ~fileHeader,
-      ~signFile,
-      codeItems,
-    ) =>
+let emitCodeItems = (~outputPath, ~fileHeader, ~signFile, codeItems) =>
   switch (codeItems) {
   | [_, ..._] =>
     let codeText = codeItems |> EmitJs.emitCodeItems;
     let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
 
-    generatedFiles
-    |> GeneratedReFiles.writeFileIfRequired(
-         ~fileName=outputPath,
-         ~fileContents,
-         ~writeFile,
-       );
+    GeneratedReFiles.writeFileIfRequired(
+      ~fileName=outputPath,
+      ~fileContents,
+      ~writeFile,
+    );
 
   | [] => outputPath |> GeneratedReFiles.logFileAction(NoMatch)
   };
 
-let processCMTFile =
-    (
-      ~generatedFiles,
-      ~modulesMap,
-      ~outputDir,
-      ~fileHeader,
-      ~signFile,
-      inputPath,
-    ) => {
+let processCmtFile =
+    (~outputDir, ~fileHeader, ~signFile, ~modulesMap, cmtFile) => {
   GenIdent.resetPerFile();
-  let inputCMT = Cmt_format.read_cmt(inputPath);
-  let globalModuleName =
-    Filename.chop_extension(Filename.basename(inputPath));
+  let inputCMT = Cmt_format.read_cmt(cmtFile);
+  let globalModuleName = Filename.chop_extension(Filename.basename(cmtFile));
   let outputPath =
     Filename.concat(
       outputDir,
@@ -334,52 +276,5 @@ let processCMTFile =
     );
   inputCMT
   |> cmtToCodeItems(~modulesMap, ~globalModuleName)
-  |> emitCodeItems(
-       ~generatedFiles,
-       ~inputPath,
-       ~outputPath,
-       ~fileHeader,
-       ~signFile,
-     );
-};
-
-let run =
-    (
-      ~outputDir,
-      ~fileHeader,
-      ~signFile,
-      ~modulesMap,
-      ~findCmtFiles,
-      ~buildSourceFiles,
-      ~buildGeneratedFiles,
-      ~doCleanup,
-    ) => {
-  buildSourceFiles();
-
-  log("Looking for files with %s\n", tagSearch);
-  let cmtFiles = findCmtFiles();
-  cmtFiles |> List.iter(fileName => logItem("Found  %s\n", fileName));
-
-  log("Searching for existing files on disk\n");
-  let generatedFiles = GeneratedReFiles.readFromDisk(~outputDir);
-
-  log("Generating .re files\n");
-  cmtFiles
-  |> List.iter(
-       processCMTFile(
-         ~generatedFiles,
-         ~modulesMap,
-         ~fileHeader,
-         ~signFile,
-         ~outputDir,
-       ),
-     );
-
-  if (doCleanup) {
-    log("Cleaning up\n");
-    GeneratedReFiles.cleanup(generatedFiles);
-  };
-
-  buildGeneratedFiles();
-  log("Done\n");
+  |> emitCodeItems(~outputPath, ~fileHeader, ~signFile);
 };

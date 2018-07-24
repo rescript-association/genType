@@ -86,21 +86,18 @@ let cli = () => {
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
-    let cmtPath = Filename.concat(Sys.getcwd(), cmt);
-    let cmtExists = Sys.file_exists(cmtPath);
-    let shouldProcess = cmtExists && Filename.check_suffix(cmtPath, ".cmt");
+    let cmtFile = Filename.concat(Sys.getcwd(), cmt);
+    let cmtExists = Sys.file_exists(cmtFile);
+    let shouldProcess = cmtExists && Filename.check_suffix(cmtFile, ".cmt");
     if (shouldProcess) {
-      print_endline("-cmt-add cmt:" ++ cmtPath ++ " mlast:" ++ mlast);
-      GenFlowMain.run(
-        ~outputDir=Paths.outputDir(),
-        ~fileHeader,
-        ~signFile,
-        ~modulesMap=getModulesMap(),
-        ~findCmtFiles=() => [cmtPath],
-        ~buildSourceFiles,
-        ~buildGeneratedFiles,
-        ~doCleanup=false,
-      );
+      print_endline("  Add " ++ cmtFile ++ "\n      " ++ mlast);
+      cmtFile
+      |> GenFlowMain.processCmtFile(
+           ~outputDir=Paths.outputDir(),
+           ~fileHeader,
+           ~signFile,
+           ~modulesMap=getModulesMap(),
+         );
     };
     exit(0);
   };
@@ -116,7 +113,7 @@ let cli = () => {
           outputReasonModuleName(globalModuleName) ++ suffix,
         )
       );
-    print_endline("-cmt-rm cmt:" ++ cmt);
+    print_endline("  Remove " ++ cmt);
     if (Sys.file_exists(re)) {
       Unix.unlink(re);
     };
