@@ -1,6 +1,6 @@
 # Reason genFlow
 
-`genFlow` is a tool for providing type-safe bindings between Reason and Flow.
+`genFlow` is a tool for providing type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/).
 
 # Development
 
