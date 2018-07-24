@@ -20,7 +20,8 @@ esy build
 
 ```
 # in sample-project
-export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/yarn install
+export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/src/GenFlow.exe --setProjectRoot $PWD"
+yarn install
 yarn build
 ```
 
