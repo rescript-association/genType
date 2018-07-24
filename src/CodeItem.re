@@ -427,11 +427,9 @@ let codeItemsFromConstructorDeclaration =
     reasonTypeToConversionMany(constructorArgs);
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let constructorAlias =
-    BuckleScriptPostProcessLib.Patterns.capitalizeExportedNamePrefix
-    ++ lowercaseLeaf;
+    Patterns.capitalizeExportedNamePrefix ++ lowercaseLeaf;
   let annotationBindingName =
-    BuckleScriptPostProcessLib.Patterns.flowTypeAnnotationPrefix
-    ++ constructorAlias;
+    Patterns.flowTypeAnnotationPrefix ++ constructorAlias;
   let leafTypeName = variantLeafTypeName(variantTypeName, leafName);
   let (freeTypeVars, remainingDeps) = Dependencies.extractFreeTypeVars(deps);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
