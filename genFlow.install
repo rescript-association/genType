@@ -3,7 +3,6 @@ lib: [
   "_build/install/default/lib/genFlow/opam" {"opam"}
 ]
 bin: [
-  "_build/install/default/bin/BuckleScriptPostProcess.exe" {"BuckleScriptPostProcess.exe"}
   "_build/install/default/bin/GenFlow.exe" {"GenFlow.exe"}
 ]
 doc: [

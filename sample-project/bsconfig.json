@@ -16,9 +16,5 @@
   "bs-dependencies": [
     "reason-react"
   ],
-  "js-post-build": {
-    "cmd":
-      "../_build/default/src/buckle-script-post-process/BuckleScriptPostProcess.exe"
-  },
   "refmt": 3
 }
