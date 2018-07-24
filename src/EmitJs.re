@@ -1,6 +1,8 @@
 open GenFlowCommon;
 
 module Emit = {
+  let arg = x => "Arg" ++ x;
+  let argi = i => i |> string_of_int |> arg;
   let parens = xs => "(" ++ (xs |> String.concat(", ")) ++ ")";
   let brackets = x => "{ " ++ x ++ " }";
   let array = xs => "[" ++ (xs |> String.concat(", ")) ++ "]";
@@ -80,9 +82,9 @@ module Convert = {
         let convertArg = (i, (lbl, argConverter)) => {
           let varName =
             switch (lbl) {
-            | NamedArgs.Nolabel => "Arg" ++ string_of_int(i + 1)
+            | NamedArgs.Nolabel => Emit.argi(i + 1)
             | Label(l)
-            | OptLabel(l) => "Arg" ++ l
+            | OptLabel(l) => Emit.arg(l)
             };
           let notToJS = !toJS;
           (
@@ -175,7 +177,7 @@ let emitCodeItems = codeItems => {
         let args =
           convertableFlowTypes
           |> List.mapi((i, (converter, flowTyp)) => {
-               let arg = "Arg" ++ string_of_int(i + 1);
+               let arg = Emit.argi(i + 1);
                let v = arg |> Convert.apply(~converter, ~toJS=false);
                (arg, v);
              });
