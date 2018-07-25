@@ -20,6 +20,35 @@ module Paths = {
       filePath |> is_relative ? concat(projectRoot^, filePath) : filePath
     );
 
+  /* Find the relative path from /.../bs/lib
+     e.g. /foo/bar/bs/lib/src/Hello.re --> src/Hello.re */
+  let relativePathFromBsLib = fileName =>
+    if (is_relative(fileName)) {
+      fileName;
+    } else {
+      let rec pathToList = path => {
+        let isRoot = path |> dirname == path;
+        isRoot ?
+          [path] : [path |> basename, ...path |> dirname |> pathToList];
+      };
+      let rec fromLibBs = (~acc, reversedList) =>
+        switch (reversedList) {
+        | ["bs", "lib", ..._] => acc
+        | [dir, ...dirs] => fromLibBs(~acc=[dir, ...acc], dirs)
+        | [] => [] /* not found */
+        };
+      fileName
+      |> pathToList
+      |> fromLibBs(~acc=[])
+      |> (
+        l =>
+          switch (l) {
+          | [] => fileName
+          | [root, ...dirs] => dirs |> List.fold_left(concat, root)
+          }
+      );
+    };
+
   let concat = concat;
 };
 
@@ -105,8 +134,10 @@ let cli = () => {
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
     assert(Array.length(splitColon) === 1);
     let cmt: string = splitColon[0];
-    let outputFile = cmt |> Paths.getOutputFile;
-    print_endline("  Remove " ++ cmt);
+    /* somehow the CMT hook is passing an absolute path here */
+    let cmtRelativePath = cmt |> Paths.relativePathFromBsLib;
+    let outputFile = cmtRelativePath |> Paths.getOutputFile;
+    print_endline("  Remove " ++ cmtRelativePath);
     if (Sys.file_exists(outputFile)) {
       Unix.unlink(outputFile);
     };
