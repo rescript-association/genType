@@ -142,7 +142,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     line_(requireBuffer, "var " ++ id ++ " = require(\"" ++ v ++ "\");");
   let emitCodeItem = (env, codeItem) =>
     switch (codeItem) {
-    | CodeItem.Import(import) =>
+    | CodeItem.ImportType(import) =>
       line(CodeItem.importToString(import) ++ ";");
       env;
 

@@ -37,7 +37,7 @@ type exportUnionType = {
 };
 
 type t =
-  | Import(import)
+  | ImportType(import)
   | ExportType(exportType)
   | ExportUnionType(exportUnionType)
   | FlowTypeBinding(string, Flow.typ)
@@ -891,5 +891,5 @@ let fromDependencies =
   dependencies
   |> List.map(dependencyToImport)
   |> List.sort_uniq(importCompare)
-  |> List.map(import => Import(import));
+  |> List.map(import => ImportType(import));
 };
