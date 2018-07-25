@@ -19,8 +19,12 @@ type convertableFlowType = (converter, Flow.typ);
 
 type conversionPlan = (list(dependency), convertableFlowType);
 
+type import =
+  | ImportComment(string)
+  | ImportAsFrom(string, string, string);
+
 type t =
-  | Import(string)
+  | Import(import)
   | ExportType(string)
   | FlowTypeBinding(string, Flow.typ)
   | ValueBinding(string, string, converter)
@@ -799,30 +803,36 @@ let dependencyEqual = (a, b) =>
   | _ => false
   };
 
-let importString = (jsTypeName, jsTypeNameAs, jsModuleName) =>
-  "import type {"
-  ++ jsTypeName
-  ++ " as "
-  ++ jsTypeNameAs
-  ++ "} from '"
-  ++ jsModuleName
-  ++ "'";
+let importToString = import =>
+  switch (import) {
+  | ImportComment(s) => s
+  | ImportAsFrom(jsTypeName, jsTypeNameAs, jsModuleName) =>
+    "import type {"
+    ++ jsTypeName
+    ++ " as "
+    ++ jsTypeNameAs
+    ++ "} from '"
+    ++ jsModuleName
+    ++ "'"
+  };
 
-let typePathToFlowImportString = (modulesMap, typePath) =>
+let typePathToImport = (modulesMap, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
-    importString("List", "List", "ReasonPervasives.bs")
+    ImportAsFrom("List", "List", "ReasonPervasives.bs")
   | Path.Pident(id) =>
-    "// No need to import locally visible type "
-    ++ Ident.name(id)
-    ++ ". Make sure it is also marked with @genFlow"
+    ImportComment(
+      "// No need to import locally visible type "
+      ++ Ident.name(id)
+      ++ ". Make sure it is also marked with @genFlow",
+    )
   | Pdot(p, s, _pos) =>
-    importString(
+    ImportAsFrom(
       s,
       typePathToFlowName(typePath),
       jsModuleNameForReasonModuleName(modulesMap, typePathToFlowName(p)),
     )
-  | Papply(p1, p2) => "// Cannot import type with Papply"
+  | Papply(p1, p2) => ImportComment("// Cannot import type with Papply")
   };
 
 let fromDependencies = (modulesMap, dependencies): list(t) => {
@@ -838,13 +848,15 @@ let fromDependencies = (modulesMap, dependencies): list(t) => {
       let codeItem =
         switch (next) {
         | TypeAtPath(p) =>
-          let importTypeString = typePathToFlowImportString(modulesMap, p);
-          Import(importTypeString);
+          let import = typePathToImport(modulesMap, p);
+          Import(import);
         | JSTypeFromModule(typeName, asName, moduleName) =>
-          let importTypeString = importString(typeName, asName, moduleName);
-          Import(importTypeString);
+          let import = ImportAsFrom(typeName, asName, moduleName);
+          Import(import);
         | FreeTypeVariable(s, id) =>
-          Import("// Warning polymorphic type unhandled:" ++ s)
+          Import(
+            ImportComment("// Warning polymorphic type unhandled:" ++ s),
+          )
         /* TODO: Currently unused. Would be useful for injecting dependencies
          * on runtime converters that end up being used. */
         };

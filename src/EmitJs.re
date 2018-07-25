@@ -135,8 +135,8 @@ let emitCodeItems = codeItems => {
     line_(requireBuffer, "var " ++ id ++ " = require(\"" ++ v ++ "\");");
   let codeItem = (env, codeItem) =>
     switch (codeItem) {
-    | CodeItem.Import(s) =>
-      line(s ++ ";");
+    | CodeItem.Import(import) =>
+      line((import |> CodeItem.importToString) ++ ";");
       env;
 
     | CodeItem.ExportType(s) =>
