@@ -835,34 +835,34 @@ let dependencyEqual = (a, b) =>
   | _ => false
   };
 
+let importCompare = (i1, i2) =>
+  switch (i1, i2) {
+  | (ImportComment(s1), ImportComment(s2)) => compare(s1, s2)
+  | (ImportComment(_), _) => (-1)
+  | (_, ImportComment(_)) => 1
+  | (ImportAsFrom(x1, y1, z1), ImportAsFrom(x2, y2, z2)) =>
+    let x = compare(x1, x2);
+    x != 0 ?
+      x :
+      {
+        let y = compare(y1, y2);
+        y != 0 ? y : compare(z1, z2);
+      };
+  };
+
 let fromDependencies = (modulesMap, dependencies): list(t) => {
-  /*
-   * Makes sure we only add a dependency/import at the top of the file once per
-   * dependency. How about a little n square action! (These lists should be
-   * about length 3-5).
-   */
-  let folder = ((handledDeps, revCodeItems) as soFar, next) =>
-    if (List.exists(dependencyEqual(next), handledDeps)) {
-      soFar;
-    } else {
-      let codeItem =
-        switch (next) {
-        | TypeAtPath(p) =>
-          let import = typePathToImport(modulesMap, p);
-          Import(import);
-        | JSTypeFromModule(typeName, asName, moduleName) =>
-          let import = ImportAsFrom(typeName, asName, moduleName);
-          Import(import);
-        | FreeTypeVariable(s, id) =>
-          Import(
-            ImportComment("// Warning polymorphic type unhandled:" ++ s),
-          )
-        /* TODO: Currently unused. Would be useful for injecting dependencies
-         * on runtime converters that end up being used. */
-        };
-      ([next, ...handledDeps], [codeItem, ...revCodeItems]);
+  let dependencyToImport = dependency =>
+    switch (dependency) {
+    | TypeAtPath(p) => typePathToImport(modulesMap, p)
+    | JSTypeFromModule(typeName, asName, moduleName) =>
+      ImportAsFrom(typeName, asName, moduleName)
+    | FreeTypeVariable(s, id) =>
+      ImportComment("// Warning polymorphic type unhandled:" ++ s)
+    /* TODO: Currently unused. Would be useful for injecting dependencies
+     * on runtime converters that end up being used. */
     };
-  let (handledDeps, revCodeItems) =
-    List.fold_left(folder, ([], []), dependencies);
-  revCodeItems;
+  dependencies
+  |> List.map(dependencyToImport)
+  |> List.sort_uniq(importCompare)
+  |> List.map(import => Import(import));
 };
