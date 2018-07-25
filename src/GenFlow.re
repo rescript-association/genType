@@ -28,7 +28,7 @@ module Paths = {
       fileName;
     } else {
       let rec pathToList = path => {
-        let isRoot = path |> dirname == path;
+        let isRoot = path |> basename == path;
         isRoot ?
           [path] : [path |> basename, ...path |> dirname |> pathToList];
       };

@@ -63,37 +63,98 @@ let sourcedirsJsonToMap = (~projectRoot, ~ext) => {
   };
 };
 
-let createResolver = (~projectRoot, ~ext) =>
-  lazy {
-    let map = sourcedirsJsonToMap(~projectRoot, ~ext);
-    moduleName =>
-      switch (map |> StringMap.find(moduleName)) {
-      | resolvedModuleName => Some(resolvedModuleName)
-      | exception _ => None
-      };
-  };
+type resolver = {
+  lazyFind: Lazy.t(string => option(string)),
+  projectRoot: string,
+};
 
+let createResolver = (~projectRoot, ~ext) => {
+  lazyFind:
+    lazy {
+      let map = sourcedirsJsonToMap(~projectRoot, ~ext);
+      moduleName =>
+        switch (map |> StringMap.find(moduleName)) {
+        | resolvedModuleName => Some(resolvedModuleName)
+        | exception _ => None
+        };
+    },
+  projectRoot,
+};
+
+let apply = (~resolver, moduleName) =>
+  Lazy.force(resolver.lazyFind, moduleName);
+
+/* Resolve a reference to ModuleName, and produce a path suitable for require.
+   E.g. require "../foo/bar/ModuleName.ext" where ext is ".re" or ".js". */
 let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
   open Filename;
-  /* TODO: find the path from the module name */
-  let candidate = concat(current_dir_name, moduleName ++ ext);
-  let resolved =
-    switch (moduleName |> Lazy.force(resolver)) {
-    | None => candidate
-    | Some(resovedModuleName) =>
-      [moduleName ++ ext] |> List.fold_left(concat, resovedModuleName)
+  let outputFileRelativeDir =
+    /* e.g. src if we're generating src/File.re.js */
+    dirname(outputFileRelative);
+  let outputFileAbsoluteDir =
+    concat(resolver.projectRoot, outputFileRelativeDir);
+  let moduleNameReFile =
+    /* Check if the module is in the same directory as the file being generated.
+       So if e.g. project_root/src/ModuleName.re exists. */
+    concat(outputFileAbsoluteDir, moduleName ++ ".re");
+  if (Sys.file_exists(moduleNameReFile)) {
+    /* e.g. import "./Modulename.ext" */
+    concat(
+      current_dir_name,
+      moduleName ++ ext,
+    );
+  } else {
+    let candidate = concat(current_dir_name, moduleName ++ ext);
+    let rec pathToList = path => {
+      let isRoot = path |> basename == path;
+      isRoot ? [path] : [path |> basename, ...path |> dirname |> pathToList];
     };
-  print_endline(
-    "resolveModule "
-    ++ moduleName
-    ++ " outputFileRelative "
-    ++ outputFileRelative
-    ++ " candidate "
-    ++ candidate
-    ++ " resolved "
-    ++ resolved,
-  );
-  candidate;
+    switch (moduleName |> apply(~resolver)) {
+    | None => candidate
+    | Some(resovedModuleDir) =>
+      /* e.g. "dst" in case of dst/ModuleName.re */
+
+      let walkUpOutputDir =
+        /* e.g. ".." in case dst is a path of length 1 */
+        outputFileRelativeDir
+        |> pathToList
+        |> List.map(_ => parent_dir_name)
+        |> (
+          l =>
+            switch (l) {
+            | [] => ""
+            | [_, ...rest] => rest |> List.fold_left(concat, parent_dir_name)
+            }
+        );
+
+      let fromOutputDirToModuleDir =
+        /* e.g. "../dst" */
+        concat(walkUpOutputDir, resovedModuleDir);
+
+      let resolvedImportPath =
+        /* e.g. import "../dst/ModuleName.ext" */
+        concat(fromOutputDirToModuleDir, moduleName ++ ext);
+
+      /* print_endline(
+           "resolveModule "
+           ++ moduleName
+           ++ "\n  outputFileRelativeDir: "
+           ++ outputFileRelativeDir
+           ++ "\n  resovedModuleDir: "
+           ++ resovedModuleDir
+           ++ "\n  outputFileRelative: "
+           ++ outputFileRelative
+           ++ "\n  walkUpOutputDir: "
+           ++ walkUpOutputDir
+           ++ "\n  fromOutputDirToModuleDir: "
+           ++ fromOutputDirToModuleDir
+           ++ "\n  resolvedImportPath: "
+           ++ resolvedImportPath,
+         ); */
+
+      resolvedImportPath;
+    };
+  };
 };
 
 let resolveSourceModule = (~outputFileRelative, ~resolver, moduleName) =>
