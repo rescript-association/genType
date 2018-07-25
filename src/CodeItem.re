@@ -783,26 +783,6 @@ let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =>
   | _ => ([], [])
   };
 
-let rec typePathsEqual = (a, b) =>
-  switch (a, b) {
-  | (Path.Pident(idA), Path.Pident(idB)) =>
-    Ident.name(idA) == Ident.name(idB)
-  | (Pdot(pA, sA, _), Pdot(pB, sB, _)) =>
-    sA == sB && typePathsEqual(pA, pB)
-  | (Path.Papply(_), Path.Papply(_))
-  | (_, _) => false
-  };
-
-let dependencyEqual = (a, b) =>
-  switch (a, b) {
-  | (TypeAtPath(pA), TypeAtPath(pB)) => typePathsEqual(pA, pB)
-  | (JSTypeFromModule(sA, sB, sC), JSTypeFromModule(sD, sE, sF)) =>
-    sA == sD && sB == sE && sC == sF
-  | (FreeTypeVariable(sA, idA), FreeTypeVariable(sB, idB)) =>
-    sA == sB && idA === idB
-  | _ => false
-  };
-
 let importToString = import =>
   switch (import) {
   | ImportComment(s) => s
@@ -814,6 +794,16 @@ let importToString = import =>
     ++ "} from '"
     ++ jsModuleName
     ++ "'"
+  };
+
+let rec typePathsEqual = (a, b) =>
+  switch (a, b) {
+  | (Path.Pident(idA), Path.Pident(idB)) =>
+    Ident.name(idA) == Ident.name(idB)
+  | (Pdot(pA, sA, _), Pdot(pB, sB, _)) =>
+    sA == sB && typePathsEqual(pA, pB)
+  | (Path.Papply(_), Path.Papply(_))
+  | (_, _) => false
   };
 
 let typePathToImport = (modulesMap, typePath) =>
@@ -833,6 +823,16 @@ let typePathToImport = (modulesMap, typePath) =>
       jsModuleNameForReasonModuleName(modulesMap, typePathToFlowName(p)),
     )
   | Papply(p1, p2) => ImportComment("// Cannot import type with Papply")
+  };
+
+let dependencyEqual = (a, b) =>
+  switch (a, b) {
+  | (TypeAtPath(pA), TypeAtPath(pB)) => typePathsEqual(pA, pB)
+  | (JSTypeFromModule(sA, sB, sC), JSTypeFromModule(sD, sE, sF)) =>
+    sA == sD && sB == sE && sC == sF
+  | (FreeTypeVariable(sA, idA), FreeTypeVariable(sB, idB)) =>
+    sA == sB && idA === idB
+  | _ => false
   };
 
 let fromDependencies = (modulesMap, dependencies): list(t) => {
