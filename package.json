@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@esy-ocaml/esy-installer": "^0.0.0",
-    "@opam/jbuilder": "^1.0.0-beta14",
+    "@opam/jbuilder": "*",
     "refmterr": "^3.0.4"
   },
   "peerDependencies": {
