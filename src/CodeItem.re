@@ -8,8 +8,6 @@ type converter =
   | Fn((list((NamedArgs.label, converter)), converter));
 
 type dependency =
-  /* Imports a JS Module Value into scope (importAsModuleName, moduleName) */
-  | JSModuleImport(string, string)
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t)
   /* Imports a JS type (typeName, importAs, moduleName) */
@@ -797,11 +795,6 @@ let dependencyEqual = (a, b) =>
     sA == sD && sB == sE && sC == sF
   | (FreeTypeVariable(sA, idA), FreeTypeVariable(sB, idB)) =>
     sA == sB && idA === idB
-  | (
-      JSModuleImport(importAsA, jsModuleNameA),
-      JSModuleImport(importAsB, jsModuleNameB),
-    ) =>
-    importAsA == importAsB && jsModuleNameA == jsModuleNameB
   | _ => false
   };
 
@@ -853,10 +846,6 @@ let fromDependencies = (modulesMap, dependencies): list(t) => {
           RawJS("// Warning polymorphic type unhandled:" ++ s)
         /* TODO: Currently unused. Would be useful for injecting dependencies
          * on runtime converters that end up being used. */
-        | JSModuleImport(importAs, jsModuleName) =>
-          RawJS(
-            "const " ++ importAs ++ " = require('" ++ jsModuleName ++ "')",
-          )
         };
       ([next, ...handledDeps], [codeItem, ...revCodeItems]);
     };
