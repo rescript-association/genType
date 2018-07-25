@@ -133,7 +133,7 @@ let emitCodeItems = codeItems => {
   };
   let emitRequire = (id, v) =>
     line_(requireBuffer, "var " ++ id ++ " = require(\"" ++ v ++ "\");");
-  let codeItem = (env, codeItem) =>
+  let emitCodeItem = (env, codeItem) =>
     switch (codeItem) {
     | CodeItem.Import(import) =>
       line(CodeItem.importToString(import) ++ ";");
@@ -271,7 +271,7 @@ let emitCodeItems = codeItems => {
     };
   let {requires, exports} =
     List.fold_left(
-      codeItem,
+      emitCodeItem,
       {requires: StringMap.empty, typeMap: StringMap.empty, exports: []},
       codeItems,
     );
