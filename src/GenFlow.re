@@ -11,8 +11,9 @@ module Paths = {
       concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
   let projectRoot = ref(Sys.getcwd());
 
+  let getOutputFileRelative = cmt => Filename.chop_extension(cmt) ++ suffix;
   let getOutputFile = cmt =>
-    concat(projectRoot^, Filename.chop_extension(cmt) ++ suffix);
+    concat(projectRoot^, getOutputFileRelative(cmt));
 
   let defaultModulesMap = () => concat(projectRoot^, "modulesMap.txt");
   let absoluteFromProject = filePath =>
@@ -125,9 +126,11 @@ let cli = () => {
     if (shouldProcess) {
       print_endline("  Add " ++ cmt ++ "  " ++ mlast);
       let outputFile = cmt |> Paths.getOutputFile;
+      let outputFileRelative = cmt |> Paths.getOutputFileRelative;
       cmtFile
       |> GenFlowMain.processCmtFile(
            ~outputFile,
+           ~outputFileRelative,
            ~fileHeader,
            ~signFile,
            ~resolver,

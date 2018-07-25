@@ -816,7 +816,7 @@ let importToString = import =>
     ++ "'"
   };
 
-let typePathToImport = (~resolver, ~modulesMap, typePath) =>
+let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
     ImportAsFrom("List", "List", "ReasonPervasives.bs")
@@ -830,7 +830,12 @@ let typePathToImport = (~resolver, ~modulesMap, typePath) =>
     ImportAsFrom(
       s,
       typePathToFlowName(typePath),
-      jsModuleNameForReasonModuleName(~resolver, ~modulesMap, typePathToFlowName(p)),
+      jsModuleNameForReasonModuleName(
+        ~outputFileRelative,
+        ~resolver,
+        ~modulesMap,
+        typePathToFlowName(p),
+      ),
     )
   | Papply(p1, p2) => ImportComment("// Cannot import type with Papply")
   };
@@ -870,10 +875,12 @@ let importCompare = (i1, i2) =>
       };
   };
 
-let fromDependencies = (~resolver, ~modulesMap, dependencies): list(t) => {
+let fromDependencies =
+    (~outputFileRelative, ~resolver, ~modulesMap, dependencies): list(t) => {
   let dependencyToImport = dependency =>
     switch (dependency) {
-    | TypeAtPath(p) => typePathToImport(~resolver, ~modulesMap, p)
+    | TypeAtPath(p) =>
+      typePathToImport(~outputFileRelative, ~resolver, ~modulesMap, p)
     | JSTypeFromModule(typeName, asName, moduleName) =>
       ImportAsFrom(typeName, asName, moduleName)
     | FreeTypeVariable(s, id) =>

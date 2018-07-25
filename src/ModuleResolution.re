@@ -73,7 +73,7 @@ let createResolver = (~projectRoot, ~ext) =>
       };
   };
 
-let resolveModule = (~resolver, ~ext, moduleName) => {
+let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
   open Filename;
   /* TODO: find the path from the module name */
   let candidate = concat(current_dir_name, moduleName ++ ext);
@@ -86,6 +86,8 @@ let resolveModule = (~resolver, ~ext, moduleName) => {
   print_endline(
     "resolveModule "
     ++ moduleName
+    ++ " outputFileRelative "
+    ++ outputFileRelative
     ++ " candidate "
     ++ candidate
     ++ " resolved "
@@ -94,8 +96,8 @@ let resolveModule = (~resolver, ~ext, moduleName) => {
   candidate;
 };
 
-let resolveSourceModule = (~resolver, moduleName) =>
-  resolveModule(~resolver, ~ext=".bs", moduleName);
+let resolveSourceModule = (~outputFileRelative, ~resolver, moduleName) =>
+  resolveModule(~outputFileRelative, ~resolver, ~ext=".bs", moduleName);
 
-let resolveGeneratedModule = (~resolver, moduleName) =>
-  resolveModule(~resolver, ~ext=".re", moduleName);
+let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) =>
+  resolveModule(~outputFileRelative, ~resolver, ~ext=".re", moduleName);

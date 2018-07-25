@@ -10,11 +10,15 @@ let suffix = ".re.js";
  * Returns the generated JS module name for a given Reason module name.
  */
 let jsModuleNameForReasonModuleName =
-    (~resolver, ~modulesMap, reasonModuleName) => {
+    (~outputFileRelative, ~resolver, ~modulesMap, reasonModuleName) => {
   let tentative = reasonModuleName ++ ".bs";
   StringMap.mem(tentative, modulesMap) ?
     StringMap.find(tentative, modulesMap) :
-    ModuleResolution.resolveGeneratedModule(~resolver, reasonModuleName);
+    ModuleResolution.resolveGeneratedModule(
+      ~outputFileRelative,
+      ~resolver,
+      reasonModuleName,
+    );
 };
 let tagSearch = "genFlow";
 let tagSearchOpaque = "genFlow.opaque";

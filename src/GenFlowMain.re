@@ -28,7 +28,8 @@ let typedItemToCodeItems = (~inputModuleName, typedItem) => {
 };
 
 let cmtToCodeItems =
-    (~modulesMap, ~globalModuleName, ~resolver, inputCMT): list(CodeItem.t) => {
+    (~modulesMap, ~globalModuleName, ~outputFileRelative, ~resolver, inputCMT)
+    : list(CodeItem.t) => {
   let {Cmt_format.cmt_annots} = inputCMT;
   switch (cmt_annots) {
   | Implementation(structure) =>
@@ -44,7 +45,13 @@ let cmtToCodeItems =
         ([], []),
         typedItems,
       );
-    let imports = CodeItem.fromDependencies(~resolver, ~modulesMap, deps);
+    let imports =
+      CodeItem.fromDependencies(
+        ~outputFileRelative,
+        ~resolver,
+        ~modulesMap,
+        deps,
+      );
     List.append(imports, codeItems);
   | _ => []
   };
@@ -121,10 +128,18 @@ let writeFile = (filePath: string, contents: string) => {
 };
 
 let emitCodeItems =
-    (~outputFile, ~fileHeader, ~signFile, ~resolver, codeItems) =>
+    (
+      ~outputFile,
+      ~outputFileRelative,
+      ~fileHeader,
+      ~signFile,
+      ~resolver,
+      codeItems,
+    ) =>
   switch (codeItems) {
   | [_, ..._] =>
-    let codeText = codeItems |> EmitJs.emitCodeItems(~resolver);
+    let codeText =
+      codeItems |> EmitJs.emitCodeItems(~outputFileRelative, ~resolver);
     let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
 
     GeneratedReFiles.writeFileIfRequired(
@@ -137,11 +152,30 @@ let emitCodeItems =
   };
 
 let processCmtFile =
-    (~outputFile, ~fileHeader, ~signFile, ~resolver, ~modulesMap, cmtFile) => {
+    (
+      ~outputFile,
+      ~outputFileRelative,
+      ~fileHeader,
+      ~signFile,
+      ~resolver,
+      ~modulesMap,
+      cmtFile,
+    ) => {
   GenIdent.resetPerFile();
   let inputCMT = Cmt_format.read_cmt(cmtFile);
   let globalModuleName = Filename.chop_extension(Filename.basename(cmtFile));
   inputCMT
-  |> cmtToCodeItems(~modulesMap, ~globalModuleName, ~resolver)
-  |> emitCodeItems(~outputFile, ~fileHeader, ~signFile, ~resolver);
+  |> cmtToCodeItems(
+       ~modulesMap,
+       ~globalModuleName,
+       ~outputFileRelative,
+       ~resolver,
+     )
+  |> emitCodeItems(
+       ~outputFile,
+       ~outputFileRelative,
+       ~fileHeader,
+       ~signFile,
+       ~resolver,
+     );
 };
