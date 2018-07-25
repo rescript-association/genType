@@ -10,7 +10,7 @@ type converter =
 type dependency =
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t)
-  /* Imports a JS type (typeName, importAs, moduleName) */
+  /* Imports a JS type (typeName, importAs, jsModuleName) */
   | JSTypeFromModule(string, string, string)
   /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
@@ -41,14 +41,15 @@ type t =
   | ExportType(exportType)
   | ExportUnionType(exportUnionType)
   | FlowTypeBinding(string, Flow.typ)
-  | ValueBinding(string, string, converter)
-  | ConstructorBinding(
-      Flow.typ,
-      list(convertableFlowType),
+  | ValueBinding(ModuleName.t, string, converter)
+  | ConstructorBinding(Flow.typ, list(convertableFlowType), string, int)
+  | ComponentBinding(
+      ModuleName.t,
+      option(Flow.typ),
+      Ident.t,
+      converter,
       string,
-      int,
-    )
-  | ComponentBinding(string, option(Flow.typ), Ident.t, converter, string);
+    );
 
 type genFlowKind =
   | NoGenFlow
@@ -541,12 +542,7 @@ let createFunctionFlowType =
  * TODO: Make the types namespaced by nested Flow module.
  */
 let codeItemsFromConstructorDeclaration =
-    (
-      variantTypeName,
-      constructorDeclaration,
-      unboxedCounter,
-      boxedCounter,
-    ) => {
+    (variantTypeName, constructorDeclaration, unboxedCounter, boxedCounter) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = Ident.name(constructorDeclaration.Types.cd_id);
   let (deps, convertableFlowTypes) =
@@ -725,7 +721,7 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let fromTypeDecl = (~moduleName, dec: Typedtree.type_declaration) =>
+let fromTypeDecl = (dec: Typedtree.type_declaration) =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
@@ -816,14 +812,14 @@ let importToString = import =>
  * Returns the path to import a given Reason module name.
  */
 let importPathForReasonModuleName =
-    (~outputFileRelative, ~resolver, ~modulesMap, ~reasonModuleName) => {
-  let tentative = reasonModuleName ++ ".bs";
+    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) => {
+  let tentative = ModuleName.toString(moduleName) ++ ".bs";
   StringMap.mem(tentative, modulesMap) ?
     StringMap.find(tentative, modulesMap) :
     ModuleResolver.resolveGeneratedModule(
       ~outputFileRelative,
       ~resolver,
-      reasonModuleName,
+      moduleName,
     );
 };
 
@@ -843,10 +839,10 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
   | Papply(_, _) => ImportComment("// Cannot import type with Papply")
 
   | Pdot(p, s, _pos) =>
-    let reasonModuleName =
+    let moduleName =
       switch (p) {
-      | Path.Pident(id) => Ident.name(id)
-      | Pdot(_, lastNameInPath, _) => lastNameInPath
+      | Path.Pident(id) => id |> Ident.name |> ModuleName.fromString
+      | Pdot(_, lastNameInPath, _) => lastNameInPath |> ModuleName.fromString
       | Papply(_, _) => assert(false) /* impossible: handled above */
       };
     ImportAsFrom(
@@ -856,7 +852,7 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
         ~outputFileRelative,
         ~resolver,
         ~modulesMap,
-        ~reasonModuleName,
+        ~moduleName,
       ),
     );
   };
@@ -902,8 +898,8 @@ let fromDependencies =
     switch (dependency) {
     | TypeAtPath(p) =>
       typePathToImport(~outputFileRelative, ~resolver, ~modulesMap, p)
-    | JSTypeFromModule(typeName, asName, moduleName) =>
-      ImportAsFrom(typeName, asName, moduleName)
+    | JSTypeFromModule(typeName, asName, jsModuleName) =>
+      ImportAsFrom(typeName, asName, jsModuleName)
     | FreeTypeVariable(s, id) =>
       ImportComment("// Warning polymorphic type unhandled:" ++ s)
     /* TODO: Currently unused. Would be useful for injecting dependencies

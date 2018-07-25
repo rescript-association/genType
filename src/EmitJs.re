@@ -99,15 +99,17 @@ module Convert = {
     };
 };
 
+module ModuleNameMap = Map.Make(ModuleName);
+
 type env = {
-  requires: StringMap.t(string),
+  requires: ModuleNameMap.t(string),
   typeMap: StringMap.t(Flow.typ),
   exports: list((string, option(Flow.typ))),
 };
 
 let requireModule = (~env, ~outputFileRelative, ~resolver, moduleName) =>
   env.requires
-  |> StringMap.add(
+  |> ModuleNameMap.add(
        moduleName,
        ModuleResolver.resolveSourceModule(
          ~outputFileRelative,
@@ -135,8 +137,15 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       };
     line_(exportBuffer, "exports." ++ id ++ " = " ++ addType(id) ++ ";");
   };
-  let emitRequire = (id, v) =>
-    line_(requireBuffer, "var " ++ id ++ " = require(\"" ++ v ++ "\");");
+  let emitRequire = (moduleName, v) =>
+    line_(
+      requireBuffer,
+      "var "
+      ++ ModuleName.toString(moduleName)
+      ++ " = require(\""
+      ++ v
+      ++ "\");",
+    );
   let emitCodeItem = (env, codeItem) =>
     switch (codeItem) {
     | CodeItem.ImportType(import) =>
@@ -163,7 +172,12 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         "const "
         ++ id
         ++ " = "
-        ++ (moduleName ++ "." ++ id |> Convert.apply(~converter, ~toJS=true))
+        ++ (
+          ModuleName.toString(moduleName)
+          ++ "."
+          ++ id
+          |> Convert.apply(~converter, ~toJS=true)
+        )
         ++ ";",
       );
       let flowType = env.typeMap |> StringMap.find(id);
@@ -197,8 +211,8 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         ...env,
         requires:
           env.requires
-          |> StringMap.add(
-               "CreateBucklescriptBlock",
+          |> ModuleNameMap.add(
+               ModuleName.fromString("CreateBucklescriptBlock"),
                "bs-platform/lib/js/block.js",
              ),
         exports: [(leafName, Some(constructorFlowType)), ...env.exports],
@@ -252,13 +266,13 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         };
 
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
-      line("  " ++ moduleName ++ ".component" ++ ",");
+      line("  " ++ ModuleName.toString(moduleName) ++ ".component" ++ ",");
       line(
         "  (function (" ++ jsProps ++ ": {...Props, children:any}" ++ ") {",
       );
       line(
         "     return "
-        ++ moduleName
+        ++ ModuleName.toString(moduleName)
         ++ "."
         ++ Ident.name(id)
         ++ Emit.parens(args)
@@ -270,17 +284,20 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         exports: [(name, componentType), ...env.exports],
         requires:
           env.requires
-          |> StringMap.add("ReasonReact", "reason-react/src/ReasonReact.js"),
+          |> ModuleNameMap.add(
+               ModuleName.fromString("ReasonReact"),
+               "reason-react/src/ReasonReact.js",
+             ),
       };
     };
   let {requires, exports} =
     List.fold_left(
       emitCodeItem,
-      {requires: StringMap.empty, typeMap: StringMap.empty, exports: []},
+      {requires: ModuleNameMap.empty, typeMap: StringMap.empty, exports: []},
       codeItems,
     );
 
-  requires |> StringMap.iter(emitRequire);
+  requires |> ModuleNameMap.iter(emitRequire);
 
   exports |> List.rev |> List.iter(emitExport);
 

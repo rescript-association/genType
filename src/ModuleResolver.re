@@ -1,5 +1,7 @@
 open GenFlowCommon;
 
+module ModuleNameMap = Map.Make(ModuleName);
+
 /* Read the project's .sourcedirs.json file if it exists
    and build a map of the files with the given extension
    back to the directory where they belong.  */
@@ -30,7 +32,7 @@ let sourcedirsJsonToMap = (~ext) => {
   };
 
   let createFileMap = (~filter, dirs) => {
-    let fileMap = ref(StringMap.empty);
+    let fileMap = ref(ModuleNameMap.empty);
     dirs
     |> List.iter(dir =>
          dir
@@ -40,7 +42,12 @@ let sourcedirsJsonToMap = (~ext) => {
               if (fname |> filter) {
                 fileMap :=
                   fileMap^
-                  |> StringMap.add(Filename.chop_extension(fname), dir);
+                  |> ModuleNameMap.add(
+                       fname
+                       |> Filename.chop_extension
+                       |> ModuleName.fromString,
+                       dir,
+                     );
               }
             )
        );
@@ -56,21 +63,21 @@ let sourcedirsJsonToMap = (~ext) => {
            Filename.check_suffix(fileName, ext)
          )
     ) {
-    | _ => StringMap.empty
+    | _ => ModuleNameMap.empty
     };
   } else {
-    StringMap.empty;
+    ModuleNameMap.empty;
   };
 };
 
-type resolver = {lazyFind: Lazy.t(string => option(string))};
+type resolver = {lazyFind: Lazy.t(ModuleName.t => option(string))};
 
 let createResolver = (~ext) => {
   lazyFind:
     lazy {
       let map = sourcedirsJsonToMap(~ext);
       moduleName =>
-        switch (map |> StringMap.find(moduleName)) {
+        switch (map |> ModuleNameMap.find(moduleName)) {
         | resolvedModuleName => Some(resolvedModuleName)
         | exception _ => None
         };
@@ -84,6 +91,7 @@ let apply = (~resolver, moduleName) =>
    E.g. require "../foo/bar/ModuleName.ext" where ext is ".re" or ".js". */
 let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
   open Filename;
+  let moduleNameString = moduleName |> ModuleName.toString;
   let outputFileRelativeDir =
     /* e.g. src if we're generating src/File.re.js */
     dirname(outputFileRelative);
@@ -92,15 +100,15 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
   let moduleNameReFile =
     /* Check if the module is in the same directory as the file being generated.
        So if e.g. project_root/src/ModuleName.re exists. */
-    concat(outputFileAbsoluteDir, moduleName ++ ".re");
+    concat(outputFileAbsoluteDir, ModuleName.toString(moduleName) ++ ".re");
   if (Sys.file_exists(moduleNameReFile)) {
     /* e.g. import "./Modulename.ext" */
     concat(
       current_dir_name,
-      moduleName ++ ext,
+      moduleNameString ++ ext,
     );
   } else {
-    let candidate = concat(current_dir_name, moduleName ++ ext);
+    let candidate = concat(current_dir_name, moduleNameString ++ ext);
     let rec pathToList = path => {
       let isRoot = path |> basename == path;
       isRoot ? [path] : [path |> basename, ...path |> dirname |> pathToList];
@@ -129,24 +137,10 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
 
       let resolvedImportPath =
         /* e.g. import "../dst/ModuleName.ext" */
-        concat(fromOutputDirToModuleDir, moduleName ++ ext);
-
-      /* print_endline(
-           "resolveModule "
-           ++ moduleName
-           ++ "\n  outputFileRelativeDir: "
-           ++ outputFileRelativeDir
-           ++ "\n  resovedModuleDir: "
-           ++ resovedModuleDir
-           ++ "\n  outputFileRelative: "
-           ++ outputFileRelative
-           ++ "\n  walkUpOutputDir: "
-           ++ walkUpOutputDir
-           ++ "\n  fromOutputDirToModuleDir: "
-           ++ fromOutputDirToModuleDir
-           ++ "\n  resolvedImportPath: "
-           ++ resolvedImportPath,
-         ); */
+        concat(
+          fromOutputDirToModuleDir,
+          ModuleName.toString(moduleName) ++ ext,
+        );
 
       resolvedImportPath;
     };

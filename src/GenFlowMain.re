@@ -10,9 +10,7 @@ let typedItemToCodeItems = (~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations)} =>
-      typeDeclarations
-      |> List.map(CodeItem.fromTypeDecl(~moduleName))
-      |> List.split
+      typeDeclarations |> List.map(CodeItem.fromTypeDecl) |> List.split
     | {Typedtree.str_desc: Tstr_value(loc, valueBindings)} =>
       valueBindings
       |> List.map(CodeItem.fromValueBinding(~moduleName))
