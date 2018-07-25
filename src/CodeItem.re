@@ -46,7 +46,6 @@ type t =
       Flow.typ,
       list(convertableFlowType),
       string,
-      string,
       int,
     )
   | ComponentBinding(string, option(Flow.typ), Ident.t, converter, string);
@@ -543,7 +542,6 @@ let createFunctionFlowType =
  */
 let codeItemsFromConstructorDeclaration =
     (
-      modulePath,
       variantTypeName,
       constructorDeclaration,
       unboxedCounter,
@@ -575,7 +573,6 @@ let codeItemsFromConstructorDeclaration =
     ConstructorBinding(
       constructorFlowType,
       convertableFlowTypes,
-      modulePath,
       leafName,
       runTimeValue,
     ),
@@ -583,7 +580,7 @@ let codeItemsFromConstructorDeclaration =
   (retType, (remainingDeps, codeItems));
 };
 
-let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
+let codeItemsForId = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
@@ -600,7 +597,7 @@ let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
   let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
   let codeItems = [
     FlowTypeBinding(Ident.name(id), flowType),
-    ValueBinding(inputModuleName, Ident.name(id), converter),
+    ValueBinding(moduleName, Ident.name(id), converter),
   ];
   (remainingDeps, codeItems);
 };
@@ -627,7 +624,7 @@ let codeItemsForId = (~inputModuleName, ~valueBinding, id) => {
  *     {named: number, args?: number}
  */
 
-let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
+let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let conversion = reasonTypeToConversion(expressionType);
@@ -676,7 +673,7 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
       @ [
         FlowTypeBinding("component", componentFlowType),
         ComponentBinding(
-          inputModuleName,
+          moduleName,
           flowPropGenerics,
           id,
           converter,
@@ -690,7 +687,7 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
     (deps, items);
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> codeItemsForId(~inputModuleName, ~valueBinding)
+    id |> codeItemsForId(~moduleName, ~valueBinding)
   };
 };
 
@@ -711,13 +708,13 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
  * Where the "someFlowType" is a flow converted type from Reason type, and
  * where the require() redirection may perform some safe conversions.
  */
-let fromValueBinding = (~inputModuleName, valueBinding) => {
+let fromValueBinding = (~moduleName, valueBinding) => {
   let {Typedtree.vb_pat, vb_expr, vb_attributes} = valueBinding;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> codeItemsForMake(~inputModuleName, ~valueBinding)
+    id |> codeItemsForMake(~moduleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
-    id |> codeItemsForId(~inputModuleName, ~valueBinding)
+    id |> codeItemsForId(~moduleName, ~valueBinding)
   | _ => ([], [])
   };
 };
@@ -728,7 +725,7 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =>
+let fromTypeDecl = (~moduleName, dec: Typedtree.type_declaration) =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
@@ -777,7 +774,6 @@ let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =>
       List.map(
         constructorDeclaration =>
           codeItemsFromConstructorDeclaration(
-            inputModuleName,
             variantTypeName,
             constructorDeclaration,
             unboxedCounter,
@@ -816,28 +812,53 @@ let importToString = import =>
     ++ "'"
   };
 
+/**
+ * Returns the path to import a given Reason module name.
+ */
+let importPathForReasonModuleName =
+    (~outputFileRelative, ~resolver, ~modulesMap, ~reasonModuleName) => {
+  let tentative = reasonModuleName ++ ".bs";
+  StringMap.mem(tentative, modulesMap) ?
+    StringMap.find(tentative, modulesMap) :
+    ModuleResolver.resolveGeneratedModule(
+      ~outputFileRelative,
+      ~resolver,
+      reasonModuleName,
+    );
+};
+
 let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
     ImportAsFrom("List", "List", "ReasonPervasives.bs")
+
   | Path.Pident(id) =>
     ImportComment(
       "// No need to import locally visible type "
       ++ Ident.name(id)
       ++ ". Make sure it is also marked with @genFlow",
     )
+
+  | Pdot(Papply(_, _), _, _)
+  | Papply(_, _) => ImportComment("// Cannot import type with Papply")
+
   | Pdot(p, s, _pos) =>
+    let reasonModuleName =
+      switch (p) {
+      | Path.Pident(id) => Ident.name(id)
+      | Pdot(_, lastNameInPath, _) => lastNameInPath
+      | Papply(_, _) => assert(false) /* impossible: handled above */
+      };
     ImportAsFrom(
       s,
       typePathToFlowName(typePath),
-      jsModuleNameForReasonModuleName(
+      importPathForReasonModuleName(
         ~outputFileRelative,
         ~resolver,
         ~modulesMap,
-        typePathToFlowName(p),
+        ~reasonModuleName,
       ),
-    )
-  | Papply(p1, p2) => ImportComment("// Cannot import type with Papply")
+    );
   };
 
 let rec typePathsEqual = (a, b) =>

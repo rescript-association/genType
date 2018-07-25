@@ -4,21 +4,88 @@
 
 module StringMap = Map.Make(String);
 
-let suffix = ".re.js";
+module Paths = {
+  open Filename;
 
-/**
- * Returns the generated JS module name for a given Reason module name.
- */
-let jsModuleNameForReasonModuleName =
-    (~outputFileRelative, ~resolver, ~modulesMap, reasonModuleName) => {
-  let tentative = reasonModuleName ++ ".bs";
-  StringMap.mem(tentative, modulesMap) ?
-    StringMap.find(tentative, modulesMap) :
-    ModuleResolver.resolveGeneratedModule(
-      ~outputFileRelative,
-      ~resolver,
-      reasonModuleName,
+  let outputFileSuffix = ".re.js";
+
+  let projectRoot = ref(Sys.getcwd());
+
+  let setProjectRoot = s =>
+    projectRoot :=
+      Filename.is_relative(s) ? Filename.concat(Unix.getcwd(), s) : s;
+
+  /*
+   * Handle namespaces in cmt files.
+   * E.g. src/Module-Project.cmt becomes src/Module
+   */
+  let handleNamespace = cmt => {
+    let cutAfterDash = s =>
+      switch (String.index(s, '-')) {
+      | n => String.sub(s, 0, n)
+      | exception Not_found => s
+      };
+    let noDir = Filename.basename(cmt) == cmt;
+    if (noDir) {
+      cmt |> Filename.chop_extension |> cutAfterDash;
+    } else {
+      let dir = cmt |> Filename.dirname;
+      let base =
+        cmt |> Filename.basename |> Filename.chop_extension |> cutAfterDash;
+      Filename.concat(dir, base);
+    };
+  };
+
+  /* Get the output file to be written, relative to the project root. */
+  let getOutputFileRelative = cmt =>
+    (cmt |> handleNamespace) ++ outputFileSuffix;
+
+  /* Get the output file to be written, as an absolute path. */
+  let getOutputFile = cmt =>
+    Filename.concat(projectRoot^, getOutputFileRelative(cmt));
+
+  let getModuleName = cmt => cmt |> handleNamespace |> Filename.basename;
+
+  let executable =
+    Sys.executable_name |> is_relative ?
+      concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
+
+  let defaultModulesMap = () => concat(projectRoot^, "modulesMap.txt");
+  let absoluteFromProject = filePath =>
+    Filename.(
+      filePath |> is_relative ? concat(projectRoot^, filePath) : filePath
     );
+
+  /* Find the relative path from /.../bs/lib
+     e.g. /foo/bar/bs/lib/src/Hello.re --> src/Hello.re */
+  let relativePathFromBsLib = fileName =>
+    if (is_relative(fileName)) {
+      fileName;
+    } else {
+      let rec pathToList = path => {
+        let isRoot = path |> basename == path;
+        isRoot ?
+          [path] : [path |> basename, ...path |> dirname |> pathToList];
+      };
+      let rec fromLibBs = (~acc, reversedList) =>
+        switch (reversedList) {
+        | ["bs", "lib", ..._] => acc
+        | [dir, ...dirs] => fromLibBs(~acc=[dir, ...acc], dirs)
+        | [] => [] /* not found */
+        };
+      fileName
+      |> pathToList
+      |> fromLibBs(~acc=[])
+      |> (
+        l =>
+          switch (l) {
+          | [] => fileName
+          | [root, ...dirs] => dirs |> List.fold_left(concat, root)
+          }
+      );
+    };
+
+  let concat = concat;
 };
 let tagSearch = "genFlow";
 let tagSearchOpaque = "genFlow.opaque";
@@ -95,3 +162,25 @@ module GenIdent = {
     );
   };
 };
+
+let readLines = (file: string): list(string) => {
+  let lines = ref([]);
+  let chan = open_in(file);
+  let finished_lines =
+    try (
+      {
+        while (true) {
+          lines := [input_line(chan), ...lines^];
+        };
+        [];
+      }
+    ) {
+    | End_of_file =>
+      close_in(chan);
+      lines^ |> List.rev;
+    };
+  finished_lines;
+};
+
+let readFile = (file: string): string =>
+  String.concat("\n", readLines(file));

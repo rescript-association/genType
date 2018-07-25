@@ -4,57 +4,8 @@
 
 open GenFlowCommon;
 
-module Paths = {
-  open Filename;
-  let executable =
-    Sys.executable_name |> is_relative ?
-      concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
-  let projectRoot = ref(Sys.getcwd());
-
-  let getOutputFileRelative = cmt => Filename.chop_extension(cmt) ++ suffix;
-  let getOutputFile = cmt =>
-    concat(projectRoot^, getOutputFileRelative(cmt));
-
-  let defaultModulesMap = () => concat(projectRoot^, "modulesMap.txt");
-  let absoluteFromProject = filePath =>
-    Filename.(
-      filePath |> is_relative ? concat(projectRoot^, filePath) : filePath
-    );
-
-  /* Find the relative path from /.../bs/lib
-     e.g. /foo/bar/bs/lib/src/Hello.re --> src/Hello.re */
-  let relativePathFromBsLib = fileName =>
-    if (is_relative(fileName)) {
-      fileName;
-    } else {
-      let rec pathToList = path => {
-        let isRoot = path |> basename == path;
-        isRoot ?
-          [path] : [path |> basename, ...path |> dirname |> pathToList];
-      };
-      let rec fromLibBs = (~acc, reversedList) =>
-        switch (reversedList) {
-        | ["bs", "lib", ..._] => acc
-        | [dir, ...dirs] => fromLibBs(~acc=[dir, ...acc], dirs)
-        | [] => [] /* not found */
-        };
-      fileName
-      |> pathToList
-      |> fromLibBs(~acc=[])
-      |> (
-        l =>
-          switch (l) {
-          | [] => fileName
-          | [root, ...dirs] => dirs |> List.fold_left(concat, root)
-          }
-      );
-    };
-
-  let concat = concat;
-};
-
 let createModulesMap = modulesMapFile => {
-  let s = GenFlowMain.GeneratedReFiles.readFile(modulesMapFile);
+  let s = readFile(modulesMapFile);
   Str.split(Str.regexp("\n"), s)
   |> List.fold_left(
        (map, nextPairStr) =>
@@ -72,26 +23,9 @@ let createModulesMap = modulesMapFile => {
      );
 };
 
-let findCmtFiles = (): list(string) => {
-  open Paths;
-  let src = ["lib", "bs", "src"] |> List.fold_left(concat, projectRoot^);
-  let cmtFiles =
-    src
-    |> Sys.readdir
-    |> Array.to_list
-    |> List.filter(Filename.check_suffix(_, ".cmt"));
-  cmtFiles |> List.map(concat(src));
-};
-
 let fileHeader = "/* @flow strict */\n";
 
 let signFile = s => s;
-
-let buildSourceFiles = () => ();
-/* TODO */
-
-let buildGeneratedFiles = () => ();
-/* TODO */
 
 let modulesMap = {
   let default =
@@ -101,9 +35,7 @@ let modulesMap = {
 };
 
 let cli = () => {
-  let setProjectRoot = s =>
-    Paths.projectRoot :=
-      Filename.is_relative(s) ? Filename.concat(Unix.getcwd(), s) : s;
+  let setProjectRoot = Paths.setProjectRoot;
   let setModulesMap = s => modulesMap := Some(s |> Paths.absoluteFromProject);
   let getModulesMap = () =>
     switch (modulesMap^) {
@@ -115,38 +47,23 @@ let cli = () => {
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
-    let cmtFile = Filename.concat(Sys.getcwd(), cmt);
-    let cmtExists = Sys.file_exists(cmtFile);
-    let shouldProcess = cmtExists && Filename.check_suffix(cmtFile, ".cmt");
-    let resolver =
-      ModuleResolver.createResolver(
-        ~projectRoot=Paths.projectRoot^,
-        ~ext=".re",
-      );
-    if (shouldProcess) {
-      print_endline("  Add " ++ cmt ++ "  " ++ mlast);
-      let outputFile = cmt |> Paths.getOutputFile;
-      let outputFileRelative = cmt |> Paths.getOutputFileRelative;
-      cmtFile
-      |> GenFlowMain.processCmtFile(
-           ~outputFile,
-           ~outputFileRelative,
-           ~fileHeader,
-           ~signFile,
-           ~resolver,
-           ~modulesMap=getModulesMap(),
-         );
-    };
+    print_endline("  Add " ++ cmt ++ "  " ++ mlast);
+    cmt
+    |> GenFlowMain.processCmtFile(
+         ~fileHeader,
+         ~signFile,
+         ~modulesMap=getModulesMap(),
+       );
     exit(0);
   };
   let setCmtRm = s => {
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
     assert(Array.length(splitColon) === 1);
-    let cmt: string = splitColon[0];
+    let cmtAbsolutePath: string = splitColon[0];
     /* somehow the CMT hook is passing an absolute path here */
-    let cmtRelativePath = cmt |> Paths.relativePathFromBsLib;
-    let outputFile = cmtRelativePath |> Paths.getOutputFile;
-    print_endline("  Remove " ++ cmtRelativePath);
+    let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
+    let outputFile = cmt |> Paths.getOutputFile;
+    print_endline("  Remove " ++ cmt);
     if (Sys.file_exists(outputFile)) {
       Unix.unlink(outputFile);
     };
@@ -166,8 +83,8 @@ let cli = () => {
       ++ " Example(--modulesMap map.txt) where each line is of the form 'ModuleFlow.bs=SomeShim'. "
       ++ "E.g. 'ReasonReactFlow.bs=ReasonReactShim'.",
     ),
-    ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt file"),
-    ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt file"),
+    ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt[i] file"),
+    ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt[i] file"),
   ];
   let usage = "genFlow";
   Arg.parse(speclist, print_endline, usage);

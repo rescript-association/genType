@@ -1,12 +1,12 @@
-module StringMap = Map.Make(String);
+open GenFlowCommon;
 
 /* Read the project's .sourcedirs.json file if it exists
    and build a map of the files with the given extension
    back to the directory where they belong.  */
-let sourcedirsJsonToMap = (~projectRoot, ~ext) => {
+let sourcedirsJsonToMap = (~ext) => {
   let sourceDirs =
     ["lib", "bs", ".sourcedirs.json"]
-    |> List.fold_left(Filename.concat, projectRoot);
+    |> List.fold_left(Filename.concat, Paths.projectRoot^);
 
   let getDirs = json => {
     let dirs = ref([]);
@@ -34,7 +34,7 @@ let sourcedirsJsonToMap = (~projectRoot, ~ext) => {
     dirs
     |> List.iter(dir =>
          dir
-         |> Filename.concat(projectRoot)
+         |> Filename.concat(Paths.projectRoot^)
          |> Sys.readdir
          |> Array.iter(fname =>
               if (fname |> filter) {
@@ -63,22 +63,18 @@ let sourcedirsJsonToMap = (~projectRoot, ~ext) => {
   };
 };
 
-type resolver = {
-  lazyFind: Lazy.t(string => option(string)),
-  projectRoot: string,
-};
+type resolver = {lazyFind: Lazy.t(string => option(string))};
 
-let createResolver = (~projectRoot, ~ext) => {
+let createResolver = (~ext) => {
   lazyFind:
     lazy {
-      let map = sourcedirsJsonToMap(~projectRoot, ~ext);
+      let map = sourcedirsJsonToMap(~ext);
       moduleName =>
         switch (map |> StringMap.find(moduleName)) {
         | resolvedModuleName => Some(resolvedModuleName)
         | exception _ => None
         };
     },
-  projectRoot,
 };
 
 let apply = (~resolver, moduleName) =>
@@ -92,7 +88,7 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
     /* e.g. src if we're generating src/File.re.js */
     dirname(outputFileRelative);
   let outputFileAbsoluteDir =
-    concat(resolver.projectRoot, outputFileRelativeDir);
+    concat(Paths.projectRoot^, outputFileRelativeDir);
   let moduleNameReFile =
     /* Check if the module is in the same directory as the file being generated.
        So if e.g. project_root/src/ModuleName.re exists. */

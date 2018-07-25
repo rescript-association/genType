@@ -105,19 +105,16 @@ type env = {
   exports: list((string, option(Flow.typ))),
 };
 
-let requireModule = (~env, ~outputFileRelative, ~resolver, moduleName) => {
-  let requires =
-    env.requires
-    |> StringMap.add(
+let requireModule = (~env, ~outputFileRelative, ~resolver, moduleName) =>
+  env.requires
+  |> StringMap.add(
+       moduleName,
+       ModuleResolver.resolveSourceModule(
+         ~outputFileRelative,
+         ~resolver,
          moduleName,
-         ModuleResolver.resolveSourceModule(
-           ~outputFileRelative,
-           ~resolver,
-           moduleName,
-         ),
-       );
-  (requires, moduleName);
-};
+       ),
+     );
 
 let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
@@ -159,14 +156,14 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         typeMap: env.typeMap |> StringMap.add(id, flowType),
       }
 
-    | ValueBinding(inputModuleName, id, converter) =>
-      let (requires, moduleStr) =
-        inputModuleName |> requireModule(~env, ~outputFileRelative, ~resolver);
+    | ValueBinding(moduleName, id, converter) =>
+      let requires =
+        moduleName |> requireModule(~env, ~outputFileRelative, ~resolver);
       line(
         "const "
         ++ id
         ++ " = "
-        ++ (moduleStr ++ "." ++ id |> Convert.apply(~converter, ~toJS=true))
+        ++ (moduleName ++ "." ++ id |> Convert.apply(~converter, ~toJS=true))
         ++ ";",
       );
       let flowType = env.typeMap |> StringMap.find(id);
@@ -175,7 +172,6 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     | ConstructorBinding(
         constructorFlowType,
         convertableFlowTypes,
-        _modulePath,
         leafName,
         runtimeValue_,
       ) =>
@@ -209,7 +205,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       };
 
     | ComponentBinding(
-        inputModuleName,
+        moduleName,
         flowPropGenerics,
         id,
         converter,
@@ -256,13 +252,13 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         };
 
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
-      line("  " ++ inputModuleName ++ ".component" ++ ",");
+      line("  " ++ moduleName ++ ".component" ++ ",");
       line(
         "  (function (" ++ jsProps ++ ": {...Props, children:any}" ++ ") {",
       );
       line(
         "     return "
-        ++ inputModuleName
+        ++ moduleName
         ++ "."
         ++ Ident.name(id)
         ++ Emit.parens(args)
