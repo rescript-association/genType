@@ -5,6 +5,11 @@
 [Click here or image below for video](https://youtu.be/0YLXGBiB9dY)
 [![IMAGE ALT TEXT HERE](assets/genFlow.png)](https://youtu.be/0YLXGBiB9dY)
 
+# Limitations
+Currently `genFlow` only supports bucklescript projects with in-source generation of `.bs.js` files. For `File.re`, bucklescript generates `File.bs.js` alongside it. If some values in `File.re` are annotated with `[@genFlow]` then `genFlow` also generates `File.re.js`, which can be imported by flow-typed javascript files.
+
+Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`). Also, it does not support nested values: annotations inside modules are ignored.
+
 # Development
 
 ## Build genFlow
