@@ -23,9 +23,17 @@ type import =
   | ImportComment(string)
   | ImportAsFrom(string, string, string);
 
+type exportType = {
+  opaque: bool,
+  typeParams: list(Flow.typ),
+  name: string,
+  flowType: Flow.typ,
+};
+
 type t =
   | Import(import)
-  | ExportType(string)
+  | ExportType(exportType)
+  | ExportUnionType(string)
   | FlowTypeBinding(string, Flow.typ)
   | ValueBinding(string, string, converter)
   | ConstructorBinding(
@@ -177,20 +185,18 @@ let getGenFlowKind = attrs =>
     NoGenFlow;
   };
 
-let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
-  let opaqueTypeString =
-    "export"
-    ++ (opaque ? " opaque " : " ")
-    ++ "type "
-    ++ name
-    ++ Flow.genericsString(List.map(Flow.render, typeParams))
-    ++ " = "
-    ++ Flow.render(underlying)
-    ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
-  ExportType(opaqueTypeString);
-};
-let codeItemForOpaqueType = (typeParams, name, underlying) =>
-  codeItemForType(~opaque=true, typeParams, name, underlying);
+let exportTypeToString = ({opaque, typeParams, name, flowType}) =>
+  "export"
+  ++ (opaque ? " opaque " : " ")
+  ++ "type "
+  ++ name
+  ++ Flow.genericsString(List.map(Flow.render, typeParams))
+  ++ " = "
+  ++ Flow.render(flowType)
+  ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
+
+let codeItemForType = (~opaque, typeParams, name, flowType) =>
+  ExportType({opaque, typeParams, name, flowType});
 
 let codeItemForUnionType = (typeParams, leafTypes, name) => {
   let opaqueTypeString =
@@ -199,7 +205,7 @@ let codeItemForUnionType = (typeParams, leafTypes, name) => {
     ++ Flow.genericsString(List.map(Flow.render, typeParams))
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
-  ExportType(opaqueTypeString);
+  ExportUnionType(opaqueTypeString);
 };
 
 let rec removeOption = (label, typ) =>
@@ -562,7 +568,7 @@ let codeItemsFromConstructorDeclaration =
       v;
     };
   let codeItems = [
-    codeItemForOpaqueType(flowTypeVars, leafTypeName, Flow.anyAlias),
+    codeItemForType(~opaque=true, flowTypeVars, leafTypeName, Flow.anyAlias),
     ConstructorBinding(
       constructorFlowType,
       convertableFlowTypes,
@@ -657,7 +663,9 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
     let propsTypeDeclaration =
       switch (flowPropGenerics) {
       | None => []
-      | Some(propsType) => [codeItemForType([], propsTypeName, propsType)]
+      | Some(propsType) => [
+          codeItemForType(~opaque=false, [], propsTypeName, propsType),
+        ]
       };
 
     let items =
@@ -727,7 +735,10 @@ let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =>
     let freeTypeVars = TypeVars.extract(typeParams);
     let flowTypeVars = TypeVars.toFlow(freeTypeVars);
     let typeName = Ident.name(dec.typ_id);
-    ([], [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)]);
+    (
+      [],
+      [codeItemForType(~opaque=true, flowTypeVars, typeName, Flow.anyAlias)],
+    );
   /*
    * This case includes aliasings such as:
    *
@@ -741,13 +752,15 @@ let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =>
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [codeItemForOpaqueType(flowTypeVars, typeName, Flow.anyAlias)],
+        [
+          codeItemForType(~opaque=true, flowTypeVars, typeName, Flow.anyAlias),
+        ],
       )
     | Some(coreType) =>
       let (deps, (_converter, flowType)) =
         reasonTypeToConversion(coreType.Typedtree.ctyp_type);
       let structureItems = [
-        codeItemForOpaqueType(flowTypeVars, typeName, flowType),
+        codeItemForType(~opaque=true, flowTypeVars, typeName, flowType),
       ];
       let deps = Dependencies.filterFreeTypeVars(freeTypeVars, deps);
       (deps, structureItems);

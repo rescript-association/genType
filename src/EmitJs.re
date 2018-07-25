@@ -136,10 +136,14 @@ let emitCodeItems = codeItems => {
   let codeItem = (env, codeItem) =>
     switch (codeItem) {
     | CodeItem.Import(import) =>
-      line((import |> CodeItem.importToString) ++ ";");
+      line(CodeItem.importToString(import) ++ ";");
       env;
 
-    | CodeItem.ExportType(s) =>
+    | CodeItem.ExportType(exportType) =>
+      line(CodeItem.exportTypeToString(exportType) ++ ";");
+      env;
+
+    | CodeItem.ExportUnionType(s) =>
       line(s ++ ";");
       env;
 
