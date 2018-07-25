@@ -17,6 +17,7 @@
     "buildsInSource": "_build"
   },
   "dependencies": {
+    "@esy-ocaml/esy-installer": "*",
     "@opam/jbuilder": "*",
     "refmterr": "^3.0.4"
   },
