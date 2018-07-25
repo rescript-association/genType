@@ -3,7 +3,7 @@
 var CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 var Nested = require("./Nested.bs");
 
-// No need to import locally visible type variant. Make sure it is also marked with @genFlow;
+import type {variant as Component2variant} from '../../src/Component2.re';
 const consumeVariant = Nested.consumeVariant;
 export opaque type VariantA = any // Reason type already checked. Making it opaque;
 const A = 0;
@@ -16,7 +16,7 @@ export type variant =
   | VariantB
   | VariantC;
 
-exports.consumeVariant = (consumeVariant: (variant) => number);
+exports.consumeVariant = (consumeVariant: (Component2variant) => number);
 exports.A = (A: VariantA);
 exports.B = (B: (number, number) => VariantB);
 exports.C = (C: (?number) => VariantC);

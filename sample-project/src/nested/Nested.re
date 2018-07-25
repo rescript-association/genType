@@ -7,7 +7,7 @@ type variant =
 [@genFlow]
 let consumeVariant = x =>
   switch (x) {
-  | A => 1
+  | Component2.A => 1
   | B(n1, n2) => n1 + n2 + 2
   | C(n) =>
     (
