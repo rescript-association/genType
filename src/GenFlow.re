@@ -119,7 +119,7 @@ let cli = () => {
     let cmtExists = Sys.file_exists(cmtFile);
     let shouldProcess = cmtExists && Filename.check_suffix(cmtFile, ".cmt");
     let resolver =
-      ModuleResolution.createResolver(
+      ModuleResolver.createResolver(
         ~projectRoot=Paths.projectRoot^,
         ~ext=".re",
       );

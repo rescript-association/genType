@@ -14,7 +14,7 @@ let jsModuleNameForReasonModuleName =
   let tentative = reasonModuleName ++ ".bs";
   StringMap.mem(tentative, modulesMap) ?
     StringMap.find(tentative, modulesMap) :
-    ModuleResolution.resolveGeneratedModule(
+    ModuleResolver.resolveGeneratedModule(
       ~outputFileRelative,
       ~resolver,
       reasonModuleName,

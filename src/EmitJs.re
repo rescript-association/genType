@@ -110,7 +110,7 @@ let requireModule = (~env, ~outputFileRelative, ~resolver, moduleName) => {
     env.requires
     |> StringMap.add(
          moduleName,
-         ModuleResolution.resolveSourceModule(
+         ModuleResolver.resolveSourceModule(
            ~outputFileRelative,
            ~resolver,
            moduleName,
