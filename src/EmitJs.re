@@ -143,8 +143,8 @@ let emitCodeItems = codeItems => {
       line(CodeItem.exportTypeToString(exportType) ++ ";");
       env;
 
-    | CodeItem.ExportUnionType(s) =>
-      line(s ++ ";");
+    | CodeItem.ExportUnionType(exportUnionType) =>
+      line(CodeItem.exportUnionTypeToString(exportUnionType) ++ ";");
       env;
 
     | FlowTypeBinding(id, flowType) => {

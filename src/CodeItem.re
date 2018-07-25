@@ -30,10 +30,16 @@ type exportType = {
   flowType: Flow.typ,
 };
 
+type exportUnionType = {
+  typeParams: list(Flow.typ),
+  leafTypes: list(Flow.typ),
+  name: string,
+};
+
 type t =
   | Import(import)
   | ExportType(exportType)
-  | ExportUnionType(string)
+  | ExportUnionType(exportUnionType)
   | FlowTypeBinding(string, Flow.typ)
   | ValueBinding(string, string, converter)
   | ConstructorBinding(
@@ -198,15 +204,12 @@ let exportTypeToString = ({opaque, typeParams, name, flowType}) =>
 let codeItemForType = (~opaque, typeParams, name, flowType) =>
   ExportType({opaque, typeParams, name, flowType});
 
-let codeItemForUnionType = (typeParams, leafTypes, name) => {
-  let opaqueTypeString =
-    "export type "
-    ++ name
-    ++ Flow.genericsString(List.map(Flow.render, typeParams))
-    ++ " =\n  | "
-    ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
-  ExportUnionType(opaqueTypeString);
-};
+let exportUnionTypeToString = ({typeParams, leafTypes, name}) =>
+  "export type "
+  ++ name
+  ++ Flow.genericsString(List.map(Flow.render, typeParams))
+  ++ " =\n  | "
+  ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
 
 let rec removeOption = (label, typ) =>
   Types.(
@@ -791,7 +794,11 @@ let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =>
     let items = List.concat(listListItems);
     let flowTypeVars = TypeVars.toFlow(TypeVars.extract(typeParams));
     let unionType =
-      codeItemForUnionType(flowTypeVars, resultTypes, variantTypeName);
+      ExportUnionType({
+        typeParams: flowTypeVars,
+        leafTypes: resultTypes,
+        name: variantTypeName,
+      });
     (deps, List.append(items, [unionType]));
   | _ => ([], [])
   };
