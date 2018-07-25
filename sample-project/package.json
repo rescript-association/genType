@@ -4,7 +4,7 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w -ws _",
-    "clean": "bsb -clean-world",
+    "clean": "bsb -clean-world && rm `find . -name '*.re.js'`",
     "serve": "http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
