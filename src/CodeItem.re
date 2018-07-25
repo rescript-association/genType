@@ -796,16 +796,6 @@ let importToString = import =>
     ++ "'"
   };
 
-let rec typePathsEqual = (a, b) =>
-  switch (a, b) {
-  | (Path.Pident(idA), Path.Pident(idB)) =>
-    Ident.name(idA) == Ident.name(idB)
-  | (Pdot(pA, sA, _), Pdot(pB, sB, _)) =>
-    sA == sB && typePathsEqual(pA, pB)
-  | (Path.Papply(_), Path.Papply(_))
-  | (_, _) => false
-  };
-
 let typePathToImport = (modulesMap, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
@@ -823,6 +813,16 @@ let typePathToImport = (modulesMap, typePath) =>
       jsModuleNameForReasonModuleName(modulesMap, typePathToFlowName(p)),
     )
   | Papply(p1, p2) => ImportComment("// Cannot import type with Papply")
+  };
+
+let rec typePathsEqual = (a, b) =>
+  switch (a, b) {
+  | (Path.Pident(idA), Path.Pident(idB)) =>
+    Ident.name(idA) == Ident.name(idB)
+  | (Pdot(pA, sA, _), Pdot(pB, sB, _)) =>
+    sA == sB && typePathsEqual(pA, pB)
+  | (Path.Papply(_), Path.Papply(_))
+  | (_, _) => false
   };
 
 let dependencyEqual = (a, b) =>
