@@ -135,7 +135,11 @@ let emitCodeItems = codeItems => {
     line_(requireBuffer, "var " ++ id ++ " = require(\"" ++ v ++ "\");");
   let codeItem = (env, codeItem) =>
     switch (codeItem) {
-    | CodeItem.RawJS(s) =>
+    | CodeItem.Import(s) =>
+      line(s ++ ";");
+      env;
+
+    | CodeItem.ExportType(s) =>
       line(s ++ ";");
       env;
 

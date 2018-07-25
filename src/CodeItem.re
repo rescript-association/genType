@@ -20,7 +20,8 @@ type convertableFlowType = (converter, Flow.typ);
 type conversionPlan = (list(dependency), convertableFlowType);
 
 type t =
-  | RawJS(string)
+  | Import(string)
+  | ExportType(string)
   | FlowTypeBinding(string, Flow.typ)
   | ValueBinding(string, string, converter)
   | ConstructorBinding(
@@ -182,7 +183,7 @@ let codeItemForType = (~opaque=false, typeParams, name, underlying) => {
     ++ " = "
     ++ Flow.render(underlying)
     ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
-  RawJS(opaqueTypeString);
+  ExportType(opaqueTypeString);
 };
 let codeItemForOpaqueType = (typeParams, name, underlying) =>
   codeItemForType(~opaque=true, typeParams, name, underlying);
@@ -194,7 +195,7 @@ let codeItemForUnionType = (typeParams, leafTypes, name) => {
     ++ Flow.genericsString(List.map(Flow.render, typeParams))
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
-  RawJS(opaqueTypeString);
+  ExportType(opaqueTypeString);
 };
 
 let rec removeOption = (label, typ) =>
@@ -838,12 +839,12 @@ let fromDependencies = (modulesMap, dependencies): list(t) => {
         switch (next) {
         | TypeAtPath(p) =>
           let importTypeString = typePathToFlowImportString(modulesMap, p);
-          RawJS(importTypeString);
+          Import(importTypeString);
         | JSTypeFromModule(typeName, asName, moduleName) =>
           let importTypeString = importString(typeName, asName, moduleName);
-          RawJS(importTypeString);
+          Import(importTypeString);
         | FreeTypeVariable(s, id) =>
-          RawJS("// Warning polymorphic type unhandled:" ++ s)
+          Import("// Warning polymorphic type unhandled:" ++ s)
         /* TODO: Currently unused. Would be useful for injecting dependencies
          * on runtime converters that end up being used. */
         };
