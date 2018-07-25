@@ -537,7 +537,6 @@ let codeItemsFromConstructorDeclaration =
       unboxedCounter,
       boxedCounter,
     ) => {
-  GenIdent.resetPerStructure();
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = Ident.name(constructorDeclaration.Types.cd_id);
   let (deps, convertableFlowTypes) =
@@ -700,7 +699,6 @@ let codeItemsForMake = (~inputModuleName, ~valueBinding, id) => {
  */
 let fromValueBinding = (~inputModuleName, valueBinding) => {
   let {Typedtree.vb_pat, vb_expr, vb_attributes} = valueBinding;
-  GenIdent.resetPerStructure();
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
     id |> codeItemsForMake(~inputModuleName, ~valueBinding)
@@ -716,8 +714,7 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) => {
-  GenIdent.resetPerStructure();
+let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
@@ -782,7 +779,6 @@ let fromTypeDecl = (~inputModuleName, dec: Typedtree.type_declaration) => {
     (deps, List.append(items, [unionType]));
   | _ => ([], [])
   };
-};
 
 let rec typePathsEqual = (a, b) =>
   switch (a, b) {

@@ -25,9 +25,7 @@ let jsModuleNameForReasonModuleName = (modulesMap, reasonModuleName) => {
 };
 let tagSearch = "genFlow";
 let tagSearchOpaque = "genFlow.opaque";
-let componentTagSearch = tagSearch;
 let jsTypeNameForAnonymousTypeID = id => "T" ++ string_of_int(id);
-let jsTypeNameForTypeParameterName = s => String.capitalize;
 
 type optionalness =
   | NonMandatory
@@ -68,13 +66,7 @@ module Flow = {
     ++ String.concat(", ", List.map(render, valParams))
     ++ ") => "
     ++ render(retType);
-  let applyTypeArgs = (typ, args) =>
-    switch (typ) {
-    | Optional(typ) => typ
-    | Ident(identPath, _) => Ident(identPath, args)
-    | ObjectType(fields) => typ
-    | Arrow(typeParams, valParams, retType) => typ
-    };
+
   /* Applies type parameters to types (for all) */
   let abstractTheTypeParameters = (typ, params) =>
     switch (typ) {
@@ -93,57 +85,9 @@ module GenIdent = {
    * Keep a few banks of identifiers to make them more readable.
    */
 
-  let identCount = {contents: 0};
-
-  let argIdentCount = {contents: 0};
-
-  let jsMaybeIdentCount = {contents: 0};
-
-  let optIdentCount = {contents: 0};
-
   let propsTypeNameCount = {contents: 0};
 
-  let resetPerStructure = () => {
-    identCount.contents = 0;
-    argIdentCount.contents = 0;
-    jsMaybeIdentCount.contents = 0;
-    optIdentCount.contents = 0;
-  };
-
-  let resetPerFile = () => {
-    resetPerStructure();
-    propsTypeNameCount.contents = 0;
-  };
-
-  let ident_ = count =>
-    count < 26 ?
-      String.make(1, Char.chr(97 /*a*/ + count)) :
-      "var" ++ string_of_int(count);
-
-  let ident = () => {
-    let ret = ident_(identCount.contents);
-    identCount.contents = identCount.contents + 1;
-    ret;
-  };
-
-  let argIdent = () => {
-    let ret = "arg" ++ String.capitalize(ident_(argIdentCount.contents));
-    argIdentCount.contents = argIdentCount.contents + 1;
-    ret;
-  };
-
-  let jsMaybeIdent = () => {
-    let ret =
-      "jsMaybe" ++ String.capitalize(ident_(jsMaybeIdentCount.contents));
-    jsMaybeIdentCount.contents = jsMaybeIdentCount.contents + 1;
-    ret;
-  };
-
-  let optIdent = () => {
-    let ret = "optData" ++ String.capitalize(ident_(optIdentCount.contents));
-    optIdentCount.contents = optIdentCount.contents + 1;
-    ret;
-  };
+  let resetPerFile = () => propsTypeNameCount.contents = 0;
 
   let propsTypeName = () => {
     propsTypeNameCount.contents = propsTypeNameCount.contents + 1;
