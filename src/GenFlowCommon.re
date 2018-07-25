@@ -6,22 +6,15 @@ module StringMap = Map.Make(String);
 
 let suffix = ".re.js";
 
-let resolveSourceModule = moduleName =>
-  /* TODO: find the path from the module name */
-  Filename.(concat(current_dir_name, moduleName ++ ".bs"));
-
-let resolveGeneratedModule = moduleName =>
-  /* TODO: find the path from the module name */
-  Filename.(concat(current_dir_name, moduleName ++ ".re"));
-
 /**
  * Returns the generated JS module name for a given Reason module name.
  */
-let jsModuleNameForReasonModuleName = (modulesMap, reasonModuleName) => {
+let jsModuleNameForReasonModuleName =
+    (~resolver, ~modulesMap, reasonModuleName) => {
   let tentative = reasonModuleName ++ ".bs";
   StringMap.mem(tentative, modulesMap) ?
     StringMap.find(tentative, modulesMap) :
-    resolveGeneratedModule(reasonModuleName);
+    ModuleResolution.resolveGeneratedModule(~resolver, reasonModuleName);
 };
 let tagSearch = "genFlow";
 let tagSearchOpaque = "genFlow.opaque";

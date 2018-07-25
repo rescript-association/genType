@@ -105,14 +105,17 @@ type env = {
   exports: list((string, option(Flow.typ))),
 };
 
-let requireModule = (~env, moduleName) => {
+let requireModule = (~env, ~resolver, moduleName) => {
   let requires =
     env.requires
-    |> StringMap.add(moduleName, resolveSourceModule(moduleName));
+    |> StringMap.add(
+         moduleName,
+         ModuleResolution.resolveSourceModule(~resolver, moduleName),
+       );
   (requires, moduleName);
 };
 
-let emitCodeItems = codeItems => {
+let emitCodeItems = (~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
   let mainBuffer = Buffer.create(100);
   let exportBuffer = Buffer.create(100);
@@ -153,7 +156,8 @@ let emitCodeItems = codeItems => {
       }
 
     | ValueBinding(inputModuleName, id, converter) =>
-      let (requires, moduleStr) = inputModuleName |> requireModule(~env);
+      let (requires, moduleStr) =
+        inputModuleName |> requireModule(~env, ~resolver);
       line(
         "const "
         ++ id

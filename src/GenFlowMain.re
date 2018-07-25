@@ -28,7 +28,7 @@ let typedItemToCodeItems = (~inputModuleName, typedItem) => {
 };
 
 let cmtToCodeItems =
-    (~modulesMap, ~globalModuleName, inputCMT): list(CodeItem.t) => {
+    (~modulesMap, ~globalModuleName, ~resolver, inputCMT): list(CodeItem.t) => {
   let {Cmt_format.cmt_annots} = inputCMT;
   switch (cmt_annots) {
   | Implementation(structure) =>
@@ -44,7 +44,7 @@ let cmtToCodeItems =
         ([], []),
         typedItems,
       );
-    let imports = CodeItem.fromDependencies(modulesMap, deps);
+    let imports = CodeItem.fromDependencies(~resolver, ~modulesMap, deps);
     List.append(imports, codeItems);
   | _ => []
   };
@@ -120,10 +120,11 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
-let emitCodeItems = (~outputFile, ~fileHeader, ~signFile, codeItems) =>
+let emitCodeItems =
+    (~outputFile, ~fileHeader, ~signFile, ~resolver, codeItems) =>
   switch (codeItems) {
   | [_, ..._] =>
-    let codeText = codeItems |> EmitJs.emitCodeItems;
+    let codeText = codeItems |> EmitJs.emitCodeItems(~resolver);
     let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
 
     GeneratedReFiles.writeFileIfRequired(
@@ -136,11 +137,11 @@ let emitCodeItems = (~outputFile, ~fileHeader, ~signFile, codeItems) =>
   };
 
 let processCmtFile =
-    (~outputFile, ~fileHeader, ~signFile, ~modulesMap, cmtFile) => {
+    (~outputFile, ~fileHeader, ~signFile, ~resolver, ~modulesMap, cmtFile) => {
   GenIdent.resetPerFile();
   let inputCMT = Cmt_format.read_cmt(cmtFile);
   let globalModuleName = Filename.chop_extension(Filename.basename(cmtFile));
   inputCMT
-  |> cmtToCodeItems(~modulesMap, ~globalModuleName)
-  |> emitCodeItems(~outputFile, ~fileHeader, ~signFile);
+  |> cmtToCodeItems(~modulesMap, ~globalModuleName, ~resolver)
+  |> emitCodeItems(~outputFile, ~fileHeader, ~signFile, ~resolver);
 };

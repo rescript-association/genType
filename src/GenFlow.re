@@ -117,6 +117,11 @@ let cli = () => {
     let cmtFile = Filename.concat(Sys.getcwd(), cmt);
     let cmtExists = Sys.file_exists(cmtFile);
     let shouldProcess = cmtExists && Filename.check_suffix(cmtFile, ".cmt");
+    let resolver =
+      ModuleResolution.createResolver(
+        ~projectRoot=Paths.projectRoot^,
+        ~ext=".re",
+      );
     if (shouldProcess) {
       print_endline("  Add " ++ cmt ++ "  " ++ mlast);
       let outputFile = cmt |> Paths.getOutputFile;
@@ -125,6 +130,7 @@ let cli = () => {
            ~outputFile,
            ~fileHeader,
            ~signFile,
+           ~resolver,
            ~modulesMap=getModulesMap(),
          );
     };
