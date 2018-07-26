@@ -3,6 +3,8 @@
 var ReactDOM = require('react-dom');
 var React = require('react');
 
+const x : number = "wrong";
+
 // Import a ReasonReact component! `jsComponent` is the exposed, underlying ReactJS class
 var PageReason = require('./GreetingRe.bs').jsComponent;
 
