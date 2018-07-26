@@ -1,104 +1,5 @@
 open GenFlowCommon;
 
-module Emit = {
-  let arg = x => "Arg" ++ x;
-  let argi = i => i |> string_of_int |> arg;
-  let parens = xs => "(" ++ (xs |> String.concat(", ")) ++ ")";
-  let brackets = x => "{ " ++ x ++ " }";
-  let array = xs => "[" ++ (xs |> String.concat(", ")) ++ "]";
-  let funCall = (~args, name) =>
-    name ++ "(" ++ (args |> String.concat(", ")) ++ ")";
-  let funDef = (~args, ~mkBody, functionName) => {
-    let (params, vals) = List.split(args);
-    let decl =
-      "function "
-      ++ functionName
-      ++ (params |> parens)
-      ++ " "
-      ++ (vals |> mkBody |> brackets);
-    functionName == "" ? parens([decl]) : decl;
-  };
-};
-
-module Convert = {
-  let rec toString = converter =>
-    switch (converter) {
-    | CodeItem.Unit => "unit"
-    | Identity => "id"
-    | OptionalArgument(c) => "optionalArgument(" ++ toString(c) ++ ")"
-    | Option(c) => "option(" ++ toString(c) ++ ")"
-    | Fn((args, c)) =>
-      let labelToString = label =>
-        switch (label) {
-        | NamedArgs.Nolabel => "-"
-        | Label(l) => l
-        | OptLabel(l) => "?" ++ l
-        };
-      "fn("
-      ++ (
-        args
-        |> List.map(((label, conv)) =>
-             "(~" ++ labelToString(label) ++ ":" ++ toString(conv) ++ ")"
-           )
-        |> String.concat(", ")
-      )
-      ++ " -> "
-      ++ toString(c)
-      ++ ")";
-    };
-
-  let rec apply = (~converter, ~toJS, s) =>
-    switch (converter) {
-    | CodeItem.Unit
-    | Identity => s
-
-    | OptionalArgument(c) => apply(~converter=c, ~toJS, s)
-
-    | Option(c) =>
-      let nullableToOption = x =>
-        Emit.parens([x ++ " === null ? undefined : " ++ x]);
-      let optionToNullable = x => x;
-      let convertedArg = apply(~converter=c, ~toJS, s);
-      toJS ? optionToNullable(convertedArg) : nullableToOption(convertedArg);
-
-    | Fn((args, resultConverter))
-        when
-          args
-          |> List.for_all(((_label, argConverter)) =>
-               argConverter == CodeItem.Identity
-             ) =>
-      s |> apply(~converter=resultConverter, ~toJS)
-
-    | Fn((args, resultConverter)) =>
-      let resultVar = "result";
-      let mkReturn = x =>
-        "const "
-        ++ resultVar
-        ++ " = "
-        ++ x
-        ++ "; return "
-        ++ apply(~converter=resultConverter, ~toJS, resultVar);
-      let convertedArgs = {
-        let convertArg = (i, (lbl, argConverter)) => {
-          let varName =
-            switch (lbl) {
-            | NamedArgs.Nolabel => Emit.argi(i + 1)
-            | Label(l)
-            | OptLabel(l) => Emit.arg(l)
-            };
-          let notToJS = !toJS;
-          (
-            varName,
-            varName |> apply(~converter=argConverter, ~toJS=notToJS),
-          );
-        };
-        args |> List.mapi(convertArg);
-      };
-      let mkBody = args => s |> Emit.funCall(~args) |> mkReturn;
-      Emit.funDef(~args=convertedArgs, ~mkBody, "");
-    };
-};
-
 module ModuleNameMap = Map.Make(ModuleName);
 
 type env = {
@@ -176,7 +77,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
           ModuleName.toString(moduleName)
           ++ "."
           ++ id
-          |> Convert.apply(~converter, ~toJS=true)
+          |> Convert.toJS(~converter)
         )
         ++ ";",
       );
@@ -186,26 +87,22 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     | ConstructorBinding(
         constructorFlowType,
         convertableFlowTypes,
-        leafName,
-        runtimeValue_,
+        variantName,
+        recordValue,
       ) =>
-      let createBucklescriptBlock = "CreateBucklescriptBlock";
-      let runtimeValue = string_of_int(runtimeValue_);
+      let recordAsInt = recordValue |> Runtime.emitRecordAsInt;
       if (convertableFlowTypes == []) {
-        line("const " ++ leafName ++ " = " ++ runtimeValue ++ ";");
+        line("const " ++ variantName ++ " = " ++ recordAsInt ++ ";");
       } else {
         let args =
           convertableFlowTypes
           |> List.mapi((i, (converter, flowTyp)) => {
                let arg = Emit.argi(i + 1);
-               let v = arg |> Convert.apply(~converter, ~toJS=false);
+               let v = arg |> Convert.toReason(~converter);
                (arg, v);
              });
-        let mkBody = args =>
-          createBucklescriptBlock
-          ++ ".__"
-          |> Emit.funCall(~args=[runtimeValue, Emit.array(args)]);
-        line(leafName |> Emit.funDef(~args, ~mkBody));
+        let mkBody = args => recordValue |> Runtime.emitRecordAsBlock(~args);
+        line(variantName |> Emit.funDef(~args, ~mkBody));
       };
       {
         ...env,
@@ -215,7 +112,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
                ModuleName.fromString("CreateBucklescriptBlock"),
                "bs-platform/lib/js/block.js",
              ),
-        exports: [(leafName, Some(constructorFlowType)), ...env.exports],
+        exports: [(variantName, Some(constructorFlowType)), ...env.exports],
       };
 
     | ComponentBinding(
