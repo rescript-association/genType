@@ -828,16 +828,6 @@ let importToString = import =>
     ++ "'"
   };
 
-/**
- * Returns the path to import a given Reason module name.
- */
-let importPathForReasonModuleName =
-    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) =>
-  modulesMap |> ModuleNameMap.mem(moduleName) ?
-    modulesMap |> ModuleNameMap.find(moduleName) :
-    moduleName
-    |> ModuleResolver.resolveGeneratedModule(~outputFileRelative, ~resolver);
-
 let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
@@ -863,7 +853,7 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
     ImportAsFrom(
       s,
       typePathToFlowName(typePath),
-      importPathForReasonModuleName(
+      ModuleResolver.importPathForReasonModuleName(
         ~outputFileRelative,
         ~resolver,
         ~modulesMap,

@@ -152,3 +152,12 @@ let resolveSourceModule = (~outputFileRelative, ~resolver, moduleName) =>
 
 let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) =>
   resolveModule(~outputFileRelative, ~resolver, ~ext=".re", moduleName);
+
+/**
+ * Returns the path to import a given Reason module name.
+ */
+let importPathForReasonModuleName =
+    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) =>
+  modulesMap |> ModuleNameMap.mem(moduleName) ?
+    modulesMap |> ModuleNameMap.find(moduleName) :
+    moduleName |> resolveGeneratedModule(~outputFileRelative, ~resolver);
