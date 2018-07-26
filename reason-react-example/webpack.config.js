@@ -8,7 +8,21 @@ module.exports = {
   },
   mode: isProd ? 'production' : 'development',
   output: {
-    path: path.join(__dirname, "bundledOutputs"),
+    path: path.join(__dirname, 'bundledOutputs'),
     filename: '[name].js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-flow', '@babel/preset-react'],
+          },
+        },
+      },
+    ],
   },
 };

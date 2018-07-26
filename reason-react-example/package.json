@@ -21,6 +21,11 @@
     "reason-react": "^0.4.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "@babel/preset-flow": "^7.0.0-beta.54",
+    "@babel/preset-react": "^7.0.0-beta.54",
+    "babel-loader": "^8.0.0-beta.4",
     "bs-platform": "^4.0.1",
     "concurrently": "^3.5.0",
     "webpack": "^4.0.1",
