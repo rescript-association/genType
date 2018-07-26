@@ -1,5 +1,6 @@
 /* @flow strict */
 
+var GreetingRe = require("./GreetingRe.bs");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {Component as ReactComponent} from 'React';

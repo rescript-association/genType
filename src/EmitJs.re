@@ -174,11 +174,13 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         ++ ";",
       );
       line("  }));");
+      let requires =
+        moduleName |> requireModule(~env, ~outputFileRelative, ~resolver);
       {
         ...env,
         exports: [(name, componentType), ...env.exports],
         requires:
-          env.requires
+          requires
           |> ModuleNameMap.add(
                ModuleName.fromString("ReasonReact"),
                "reason-react/src/ReasonReact.js",
