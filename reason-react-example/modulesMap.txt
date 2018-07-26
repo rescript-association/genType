@@ -1,0 +1,1 @@
+ReasonReact.bs=./shims/ReasonReactShim

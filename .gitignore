@@ -4,3 +4,7 @@
 /src/.merlin
 /src/buckle-script-post-process-lib/.merlin
 /yarn-error.log
+/reason-react-example/bundledOutputs
+/reason-react-example/lib
+/reason-react-example/node_modules
+/reason-react-example/.merlin

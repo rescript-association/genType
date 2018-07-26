@@ -1,0 +1,29 @@
+{
+  "name": "reason-react-example",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
+    "test": "exit 0",
+    "webpack": "webpack -w",
+    "webpack:production": "NODE_ENV=production webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "reason-react": "^0.4.2"
+  },
+  "devDependencies": {
+    "bs-platform": "^4.0.1",
+    "concurrently": "^3.5.0",
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.10"
+  }
+}
