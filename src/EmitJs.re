@@ -1,7 +1,5 @@
 open GenFlowCommon;
 
-module ModuleNameMap = Map.Make(ModuleName);
-
 type env = {
   requires: ModuleNameMap.t(string),
   typeMap: StringMap.t(Flow.typ),

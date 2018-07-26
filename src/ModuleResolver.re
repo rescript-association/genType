@@ -5,7 +5,7 @@ module ModuleNameMap = Map.Make(ModuleName);
 /* Read the project's .sourcedirs.json file if it exists
    and build a map of the files with the given extension
    back to the directory where they belong.  */
-let sourcedirsJsonToMap = (~ext) => {
+let sourcedirsJsonToMap = (~extensions) => {
   let sourceDirs =
     ["lib", "bs", ".sourcedirs.json"]
     |> List.fold_left(Filename.concat, Paths.projectRoot^);
@@ -31,6 +31,12 @@ let sourcedirsJsonToMap = (~ext) => {
     dirs^;
   };
 
+  let rec chopExtensions = fname =>
+    switch (fname |> Filename.chop_extension) {
+    | fnameChopped => fnameChopped |> chopExtensions
+    | exception _ => fname
+    };
+
   let createFileMap = (~filter, dirs) => {
     let fileMap = ref(ModuleNameMap.empty);
     dirs
@@ -43,9 +49,7 @@ let sourcedirsJsonToMap = (~ext) => {
                 fileMap :=
                   fileMap^
                   |> ModuleNameMap.add(
-                       fname
-                       |> Filename.chop_extension
-                       |> ModuleName.fromString,
+                       fname |> chopExtensions |> ModuleName.fromString,
                        dir,
                      );
               }
@@ -60,7 +64,8 @@ let sourcedirsJsonToMap = (~ext) => {
       |> Ext_json_parse.parse_json_from_file
       |> getDirs
       |> createFileMap(~filter=fileName =>
-           Filename.check_suffix(fileName, ext)
+           extensions
+           |> List.exists(ext => Filename.check_suffix(fileName, ext))
          )
     ) {
     | _ => ModuleNameMap.empty
@@ -72,10 +77,10 @@ let sourcedirsJsonToMap = (~ext) => {
 
 type resolver = {lazyFind: Lazy.t(ModuleName.t => option(string))};
 
-let createResolver = (~ext) => {
+let createResolver = (~extensions) => {
   lazyFind:
     lazy {
-      let map = sourcedirsJsonToMap(~ext);
+      let map = sourcedirsJsonToMap(~extensions);
       moduleName =>
         switch (map |> ModuleNameMap.find(moduleName)) {
         | resolvedModuleName => Some(resolvedModuleName)
@@ -158,6 +163,14 @@ let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) =>
  */
 let importPathForReasonModuleName =
     (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) =>
-  modulesMap |> ModuleNameMap.mem(moduleName) ?
-    modulesMap |> ModuleNameMap.find(moduleName) :
-    moduleName |> resolveGeneratedModule(~outputFileRelative, ~resolver);
+  switch (modulesMap |> ModuleNameMap.find(moduleName)) {
+  | shimModuleName =>
+    resolveModule(
+      ~outputFileRelative,
+      ~resolver,
+      ~ext=".shim.js",
+      shimModuleName |> ModuleName.fromString,
+    )
+  | exception Not_found =>
+    moduleName |> resolveGeneratedModule(~outputFileRelative, ~resolver)
+  };

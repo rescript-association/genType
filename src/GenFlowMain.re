@@ -129,7 +129,8 @@ let processCmtFile = (~fileHeader, ~signFile, ~modulesMap, cmt) => {
     let outputFile = cmt |> Paths.getOutputFile;
     let outputFileRelative = cmt |> Paths.getOutputFileRelative;
     let moduleName = cmt |> Paths.getModuleName;
-    let resolver = ModuleResolver.createResolver(~ext=".re");
+    let resolver =
+      ModuleResolver.createResolver(~extensions=[".re", ".shim.js"]);
     inputCMT
     |> cmtToCodeItems(
          ~modulesMap,
