@@ -9,9 +9,9 @@ import type {noRetainedProps as ReasonReactnoRetainedProps} from '../shims/Reaso
 import type {stateless as ReasonReactstateless} from '../shims/ReasonReactShim';
 export type Props = {|message:string, extraGreeting?:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
-  GreetingRe.component,
+  Greez.component,
   (function (jsProps: Props) {
-     return GreetingRe.make(jsProps.message, jsProps.extraGreeting, jsProps.children);
+     return Greez.make(jsProps.message, jsProps.extraGreeting, jsProps.children);
   }));
 
 exports.component = (component: React$ComponentType<Props>);
