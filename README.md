@@ -12,7 +12,7 @@
 # New Project Setup
 
 1. Set environment variable `BS_CMT_POST_PROCESS_CMD` as explained below before building or starting a watcher.
-2. Add a file `modulesMap.txt`, and a directory `shims/` just like in the sample project.
+2. Add a file `shims.txt`, and a directory `shims/` just like in the sample project.
 3. Add some `[@genFlow]` annotations to the values to be used from JS. If an annotated value uses a type, the type must be anotated too.
 
 # Limitations

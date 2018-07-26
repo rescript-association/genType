@@ -52,7 +52,7 @@ module Paths = {
     Sys.executable_name |> is_relative ?
       concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
 
-  let defaultModulesMap = () => concat(projectRoot^, "modulesMap.txt");
+  let defaultShimsFile = () => concat(projectRoot^, "shims.txt");
   let absoluteFromProject = filePath =>
     Filename.(
       filePath |> is_relative ? concat(projectRoot^, filePath) : filePath
