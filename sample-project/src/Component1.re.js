@@ -12,10 +12,10 @@ import type {variant as Component2variant} from './Component2.re';
 const consumeVariant = Component1.consumeVariant;
 const concat = (function (Arg1, Arg2) { const result = Component1.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result });
 const plus = Component1.plus;
-export type Props = {|message?:string|};
+export type Props = {|message?:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
   Component1.component,
-  (function (jsProps: {...Props, children:any}) {
+  (function (jsProps: Props) {
      return Component1.make(jsProps.message, jsProps.children);
   }));
 

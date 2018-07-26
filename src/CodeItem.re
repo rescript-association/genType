@@ -645,7 +645,14 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
       /* Then we only extracted a function that accepts children, no props */
       | [] => None
       /* Then we had both props and children. */
-      | [_children, ..._] => Some(propOrChildren)
+      | [_children, ..._] =>
+        switch (propOrChildren) {
+        | Flow.ObjectType(fields) =>
+          /* Add children?:any to props type */
+          let childrenField = ("children", NonMandatory, Flow.anyAlias);
+          Some(Flow.ObjectType(fields @ [childrenField]));
+        | _ => Some(propOrChildren)
+        }
       };
     let propsTypeName = GenIdent.propsTypeName();
     let propsTypeNameFlow = Flow.Ident(propsTypeName, []);
