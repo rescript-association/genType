@@ -832,16 +832,11 @@ let importToString = import =>
  * Returns the path to import a given Reason module name.
  */
 let importPathForReasonModuleName =
-    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) => {
-  let tentative = ModuleName.toString(moduleName) ++ ".bs";
-  StringMap.mem(tentative, modulesMap) ?
-    StringMap.find(tentative, modulesMap) :
-    ModuleResolver.resolveGeneratedModule(
-      ~outputFileRelative,
-      ~resolver,
-      moduleName,
-    );
-};
+    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) =>
+  modulesMap |> ModuleNameMap.mem(moduleName) ?
+    modulesMap |> ModuleNameMap.find(moduleName) :
+    moduleName
+    |> ModuleResolver.resolveGeneratedModule(~outputFileRelative, ~resolver);
 
 let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =>
   switch (typePath) {

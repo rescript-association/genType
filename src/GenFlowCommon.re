@@ -3,6 +3,7 @@
  */
 
 module StringMap = Map.Make(String);
+module ModuleNameMap = Map.Make(ModuleName);
 
 module Paths = {
   open Filename;
