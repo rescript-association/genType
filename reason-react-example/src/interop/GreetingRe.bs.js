@@ -3,7 +3,6 @@
 var React = require("react");
 var MyBannerRe = require("./MyBannerRe.bs.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
-var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
 
 var component = ReasonReact.statelessComponent("PageReason");
 
@@ -30,11 +29,6 @@ function make(message, extraGreeting, _) {
         ];
 }
 
-var jsComponent = ReasonReact.wrapReasonForJs(component, (function (jsProps) {
-        return make(jsProps.message, Js_primitive.nullable_to_opt(jsProps.extraGreeting), /* array */[]);
-      }));
-
 exports.component = component;
 exports.make = make;
-exports.jsComponent = jsComponent;
 /* component Not a pure module */

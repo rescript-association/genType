@@ -3,6 +3,7 @@
    it into a ReactJS-compatible component is the wrapReasonForJs call below */
 let component = ReasonReact.statelessComponent("PageReason");
 
+[@genFlow]
 let make = (~message, ~extraGreeting=?, _children) => {
   ...component,
   render: _self => {
@@ -14,23 +15,3 @@ let make = (~message, ~extraGreeting=?, _children) => {
     <div> <MyBannerRe show=true message=(message ++ " " ++ greeting) /> </div>;
   },
 };
-
-/* The following exposes a `jsComponent` that the ReactJS side can use as
-   require('greetingRe.js').jsComponent */
-[@bs.deriving abstract]
-type jsProps = {
-  message: string,
-  extraGreeting: Js.nullable(string),
-};
-
-/* if **you know what you're doing** and have
-   the correct babel/webpack setup, you can also do `let default = ...` and use it
-   on the JS side as a default export. */
-let jsComponent =
-  ReasonReact.wrapReasonForJs(~component, jsProps =>
-    make(
-      ~message=jsProps |. messageGet,
-      ~extraGreeting=?Js.Nullable.toOption(jsProps |. extraGreetingGet),
-      [||],
-    )
-  );
