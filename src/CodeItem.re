@@ -636,7 +636,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
       _,
       [propOrChildren, ...childrenOrNil],
       Flow.Ident(
-        "ReasonReactComponentSpec" | "ReactComponentSpec",
+        "ReasonReactcomponentSpec" | "ReactcomponentSpec",
         [state, ..._],
       ),
     ) =>
@@ -688,6 +688,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
       ...remainingDeps,
     ];
     (deps, items);
+
   | _ =>
     /* not a component: treat make as a normal function */
     id |> codeItemsForId(~moduleName, ~valueBinding)
