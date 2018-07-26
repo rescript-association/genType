@@ -7,7 +7,7 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world",
+    "clean": "bsb -clean-world && rm `find . -name '*.re.js'`",
     "test": "exit 0",
     "webpack": "webpack -w",
     "webpack:production": "NODE_ENV=production webpack"
