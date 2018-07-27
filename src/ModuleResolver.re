@@ -108,12 +108,11 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
     concat(outputFileAbsoluteDir, ModuleName.toString(moduleName) ++ ".re");
   if (Sys.file_exists(moduleNameReFile)) {
     /* e.g. import "./Modulename.ext" */
-    concat(
-      current_dir_name,
-      moduleNameString ++ ext,
-    );
+    concat(current_dir_name, moduleNameString ++ ext) |> ImportPath.fromString;
   } else {
-    let candidate = concat(current_dir_name, moduleNameString ++ ext);
+    let candidate =
+      concat(current_dir_name, moduleNameString ++ ext)
+      |> ImportPath.fromString;
     let rec pathToList = path => {
       let isRoot = path |> basename == path;
       isRoot ? [path] : [path |> basename, ...path |> dirname |> pathToList];
@@ -145,7 +144,8 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
         concat(
           fromOutputDirToModuleDir,
           ModuleName.toString(moduleName) ++ ext,
-        );
+        )
+        |> ImportPath.fromString;
 
       resolvedImportPath;
     };
@@ -159,7 +159,7 @@ let resolveSourceModule = (~outputFileRelative, ~resolver, moduleName) => {
   let importPath =
     resolveModule(~outputFileRelative, ~resolver, ~ext=".bs", moduleName);
   if (Debug.moduleResolution) {
-    logItem("Import Path: %s\n", importPath);
+    logItem("Import Path: %s\n", importPath |> ImportPath.toString);
   };
   importPath;
 };
@@ -174,7 +174,7 @@ let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) => {
   let importPath =
     resolveModule(~outputFileRelative, ~resolver, ~ext=".re", moduleName);
   if (Debug.moduleResolution) {
-    logItem("Import Path: %s\n", importPath);
+    logItem("Import Path: %s\n", importPath |> ImportPath.toString);
   };
   importPath;
 };
@@ -183,7 +183,7 @@ let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) => {
  * Returns the path to import a given Reason module name.
  */
 let importPathForReasonModuleName =
-    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) => {
+    (~outputFileRelative, ~resolver, ~modulesMap, moduleName) => {
   if (Debug.moduleResolution) {
     logItem("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
   };
@@ -200,7 +200,7 @@ let importPathForReasonModuleName =
         shimModuleName |> ModuleName.fromString,
       );
     if (Debug.moduleResolution) {
-      logItem("Import Path: %s\n", importPath);
+      logItem("Import Path: %s\n", importPath |> ImportPath.toString);
     };
     importPath;
   | exception Not_found =>

@@ -11,7 +11,7 @@ type dependency =
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t)
   /* Imports a JS type (typeName, importAs, jsModuleName) */
-  | JSTypeFromModule(string, string, string)
+  | JSTypeFromModule(string, string, ImportPath.t)
   /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
 
@@ -21,7 +21,7 @@ type conversionPlan = (list(dependency), convertableFlowType);
 
 type import =
   | ImportComment(string)
-  | ImportAsFrom(string, string, string);
+  | ImportAsFrom(string, string, ImportPath.t);
 
 type exportType = {
   opaque: bool,
@@ -691,7 +691,11 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         ),
       ];
     let deps = [
-      JSTypeFromModule("Component", "ReactComponent", "React"),
+      JSTypeFromModule(
+        "Component",
+        "ReactComponent",
+        "React" |> ImportPath.fromString,
+      ),
       ...remainingDeps,
     ];
     (deps, items);
@@ -818,20 +822,30 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
 let importToString = import =>
   switch (import) {
   | ImportComment(s) => s
-  | ImportAsFrom(jsTypeName, jsTypeNameAs, jsModuleName) =>
+  | ImportAsFrom(jsTypeName, jsTypeNameAs, importPath) =>
     "import type {"
     ++ jsTypeName
     ++ " as "
     ++ jsTypeNameAs
     ++ "} from '"
-    ++ jsModuleName
+    ++ (importPath |> ImportPath.toString)
     ++ "'"
   };
 
 let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
-    ImportAsFrom("List", "List", "ReasonPervasives.bs")
+    ImportAsFrom(
+      "List",
+      "List",
+      "ReasonPervasives"
+      |> ModuleName.fromString
+      |> ModuleResolver.importPathForReasonModuleName(
+           ~outputFileRelative,
+           ~resolver,
+           ~modulesMap,
+         ),
+    )
 
   | Path.Pident(id) =>
     ImportComment(
@@ -853,12 +867,12 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
     ImportAsFrom(
       s,
       typePathToFlowName(typePath),
-      ModuleResolver.importPathForReasonModuleName(
-        ~outputFileRelative,
-        ~resolver,
-        ~modulesMap,
-        ~moduleName,
-      ),
+      moduleName
+      |> ModuleResolver.importPathForReasonModuleName(
+           ~outputFileRelative,
+           ~resolver,
+           ~modulesMap,
+         ),
     );
   };
 
@@ -903,8 +917,8 @@ let fromDependencies =
     switch (dependency) {
     | TypeAtPath(p) =>
       typePathToImport(~outputFileRelative, ~resolver, ~modulesMap, p)
-    | JSTypeFromModule(typeName, asName, jsModuleName) =>
-      ImportAsFrom(typeName, asName, jsModuleName)
+    | JSTypeFromModule(typeName, asName, importPath) =>
+      ImportAsFrom(typeName, asName, importPath)
     | FreeTypeVariable(s, id) =>
       ImportComment("// Warning polymorphic type unhandled:" ++ s)
     /* TODO: Currently unused. Would be useful for injecting dependencies

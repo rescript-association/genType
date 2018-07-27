@@ -1,7 +1,7 @@
 open GenFlowCommon;
 
 type env = {
-  requires: ModuleNameMap.t(string),
+  requires: ModuleNameMap.t(ImportPath.t),
   typeMap: StringMap.t(Flow.typ),
   exports: list((string, option(Flow.typ))),
 };
@@ -36,13 +36,13 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       };
     line_(exportBuffer, "exports." ++ id ++ " = " ++ addType(id) ++ ";");
   };
-  let emitRequire = (moduleName, v) =>
+  let emitRequire = (moduleName, importPath) =>
     line_(
       requireBuffer,
       "var "
       ++ ModuleName.toString(moduleName)
       ++ " = require(\""
-      ++ v
+      ++ (importPath |> ImportPath.toString)
       ++ "\");",
     );
   let emitCodeItem = (env, codeItem) =>
@@ -107,8 +107,8 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         requires:
           env.requires
           |> ModuleNameMap.add(
-               ModuleName.fromString("CreateBucklescriptBlock"),
-               "bs-platform/lib/js/block.js",
+               "CreateBucklescriptBlock" |> ModuleName.fromString,
+               "bs-platform/lib/js/block.js" |> ImportPath.fromString,
              ),
         exports: [(variantName, Some(constructorFlowType)), ...env.exports],
       };
@@ -181,7 +181,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
           requires
           |> ModuleNameMap.add(
                ModuleName.fromString("ReasonReact"),
-               "reason-react/src/ReasonReact.js",
+               "reason-react/src/ReasonReact.js" |> ImportPath.fromString,
              ),
       };
     };
