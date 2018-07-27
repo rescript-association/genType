@@ -52,7 +52,11 @@ module Paths = {
     Sys.executable_name |> is_relative ?
       concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
 
-  let defaultShimsFile = () => concat(projectRoot^, "shims.txt");
+  let getConfigFile = () => {
+    let fname = concat(projectRoot^, "genflowconfig.json");
+    fname |> Sys.file_exists ? Some(fname) : None;
+  };
+
   let absoluteFromProject = filePath =>
     Filename.(
       filePath |> is_relative ? concat(projectRoot^, filePath) : filePath
