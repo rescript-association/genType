@@ -1,1 +1,6 @@
-ReasonReact=ReactShim
+{
+  "shims": [
+    "ReasonReact=ReactShim",
+    "Reason=ReactShim"
+  ]
+}

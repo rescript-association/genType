@@ -4,12 +4,38 @@
 
 open GenFlowCommon;
 
+let getShims = configFile => {
+  let parseJson = json => {
+    let shims = ref([]);
+    switch (json) {
+    | Ext_json_types.Obj({map}) =>
+      switch (map |> String_map.find_opt("shims")) {
+      | Some(Arr({content})) =>
+        content
+        |> Array.iter(x =>
+             switch (x) {
+             | Ext_json_types.Str({str}) => shims := [str, ...shims^]
+             | _ => ()
+             }
+           );
+        ();
+      | _ => ()
+      }
+    | _ => ()
+    };
+    shims^;
+  };
+  try (configFile |> Ext_json_parse.parse_json_from_file |> parseJson) {
+  | _ => []
+  };
+};
+
 let createModulesMap = configFileOpt =>
   switch (configFileOpt) {
   | None => ModuleNameMap.empty
   | Some(configFile) =>
-    let s = readFile(configFile);
-    Str.split(Str.regexp("\n"), s)
+    configFile
+    |> getShims
     |> List.fold_left(
          (map, nextPairStr) =>
            if (nextPairStr != "") {
@@ -23,7 +49,7 @@ let createModulesMap = configFileOpt =>
              map;
            },
          ModuleNameMap.empty,
-       );
+       )
   };
 
 let fileHeader = "/* @flow strict */\n";
