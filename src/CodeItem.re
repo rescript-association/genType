@@ -836,8 +836,8 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
     ImportAsFrom(
-      "List",
-      "List",
+      "list",
+      "list",
       "ReasonPervasives"
       |> ModuleName.fromString
       |> ModuleResolver.importPathForReasonModuleName(

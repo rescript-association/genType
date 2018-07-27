@@ -1,6 +1,7 @@
 {
   "shims": [
     "ReasonReact=ReactShim",
-    "Reason=ReactShim"
+    "Reason=ReactShim",
+    "ReasonPervasives=ReasonPervasives",
   ]
 }

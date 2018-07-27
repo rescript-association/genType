@@ -48,3 +48,9 @@ let consumeVariant = x =>
     )
     + 3
   };
+
+[@genFlow]
+let l = [1, 2, 3];
+
+[@genFlow]
+let map = List.map;
