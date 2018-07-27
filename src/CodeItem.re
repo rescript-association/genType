@@ -199,23 +199,6 @@ let getGenFlowKind = attrs =>
     NoGenFlow;
   };
 
-let exportTypeToString = ({opaque, typeParams, typeName, flowType}) =>
-  "export"
-  ++ (opaque ? " opaque " : " ")
-  ++ "type "
-  ++ typeName
-  ++ Flow.genericsString(List.map(Flow.render, typeParams))
-  ++ " = "
-  ++ Flow.render(flowType)
-  ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
-
-let exportUnionTypeToString = ({typeParams, leafTypes, name}) =>
-  "export type "
-  ++ name
-  ++ Flow.genericsString(List.map(Flow.render, typeParams))
-  ++ " =\n  | "
-  ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
-
 let rec removeOption = (label, typ) =>
   Types.(
     switch (typ.desc) {

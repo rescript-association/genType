@@ -17,6 +17,23 @@ let requireModule = (~env, ~outputFileRelative, ~resolver, moduleName) =>
        ),
      );
 
+let emitExportType = ({CodeItem.opaque, typeParams, typeName, flowType}) =>
+  "export"
+  ++ (opaque ? " opaque " : " ")
+  ++ "type "
+  ++ typeName
+  ++ Flow.genericsString(List.map(Flow.render, typeParams))
+  ++ " = "
+  ++ Flow.render(flowType)
+  ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
+
+let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>
+  "export type "
+  ++ name
+  ++ Flow.genericsString(List.map(Flow.render, typeParams))
+  ++ " =\n  | "
+  ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
+
 let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
   let mainBuffer = Buffer.create(100);
@@ -52,11 +69,11 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       env;
 
     | CodeItem.ExportType(exportType) =>
-      line(CodeItem.exportTypeToString(exportType) ++ ";");
+      line(emitExportType(exportType) ++ ";");
       env;
 
     | CodeItem.ExportUnionType(exportUnionType) =>
-      line(CodeItem.exportUnionTypeToString(exportUnionType) ++ ";");
+      line(emitExportUnionType(exportUnionType) ++ ";");
       env;
 
     | FlowTypeBinding(id, flowType) => {
