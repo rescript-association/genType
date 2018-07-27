@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require("react");
+var $$String = require("bs-platform/lib/js/string.js");
 var MyBannerRe = require("./MyBannerRe.bs.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
@@ -29,6 +30,20 @@ function make(message, extraGreeting, _) {
         ];
 }
 
+function cons(x, l) {
+  return /* :: */[
+          x,
+          l
+        ];
+}
+
+var empty = /* [] */0;
+
+var concat = $$String.concat;
+
 exports.component = component;
 exports.make = make;
+exports.empty = empty;
+exports.cons = cons;
+exports.concat = concat;
 /* component Not a pure module */

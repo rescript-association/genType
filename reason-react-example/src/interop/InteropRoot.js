@@ -1,12 +1,18 @@
 /* @flow strict */
 
-var ReactDOM = require('react-dom');
-var React = require('react');
+const ReactDOM = require('react-dom');
+const React = require('react');
 
-// Import a ReasonReact component! `jsComponent` is the exposed, underlying ReactJS class
-var PageReason = require('./GreetingRe.re.js').component;
+const GreetingRe = require('./GreetingRe.re.js');
 
-var App = () => <div> <PageReason message="This is from genFlow!"/> </div>;
+// Import a ReasonReact component!
+const PageReason = GreetingRe.component;
+
+const helloWorldList = GreetingRe.cons("Hello", GreetingRe.cons("World", GreetingRe.empty));
+
+const helloWorld = GreetingRe.concat("++", helloWorldList);
+
+const App = () => <div> <PageReason message={helloWorld}/> </div>;
 App.displayName = 'ExampleInteropRoot';
 
 // $FlowFixMe

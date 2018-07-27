@@ -15,3 +15,12 @@ let make = (~message, ~extraGreeting=?, _children) => {
     <div> <MyBannerRe show=true message=(message ++ " " ++ greeting) /> </div>;
   },
 };
+
+[@genFlow]
+let empty : list(string) = [];
+
+[@genFlow]
+let cons = (x,l) => [x, ...l];
+
+[@genFlow]
+let concat = String.concat;
