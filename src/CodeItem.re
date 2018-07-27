@@ -11,7 +11,7 @@ type dependency =
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t)
   /* Imports a JS type (typeName, importAs, jsModuleName) */
-  | JSTypeFromModule(string, string, ImportPath.t)
+  | JSTypeFromModule(string, option(string), ImportPath.t)
   /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
 
@@ -21,7 +21,7 @@ type conversionPlan = (list(dependency), convertableFlowType);
 
 type import =
   | ImportComment(string)
-  | ImportAsFrom(string, string, ImportPath.t);
+  | ImportAsFrom(string, option(string), ImportPath.t);
 
 type exportType = {
   opaque: bool,
@@ -691,7 +691,11 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         ),
       ];
     let deps = [
-      JSTypeFromModule("Component", "ReactComponent", ImportPath.react),
+      JSTypeFromModule(
+        "Component",
+        Some("ReactComponent"),
+        ImportPath.react,
+      ),
       ...remainingDeps,
     ];
     (deps, items);
@@ -818,11 +822,15 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
 let importToString = import =>
   switch (import) {
   | ImportComment(s) => s
-  | ImportAsFrom(jsTypeName, jsTypeNameAs, importPath) =>
+  | ImportAsFrom(typeName, asTypeName, importPath) =>
     "import type {"
-    ++ jsTypeName
-    ++ " as "
-    ++ jsTypeNameAs
+    ++ typeName
+    ++ (
+      switch (asTypeName) {
+      | Some(asT) => " as " ++ asT
+      | None => ""
+      }
+    )
     ++ "} from '"
     ++ (importPath |> ImportPath.toString)
     ++ "'"
@@ -833,7 +841,7 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
   | Path.Pident(id) when Ident.name(id) == "list" =>
     ImportAsFrom(
       "list",
-      "list",
+      None,
       ModuleName.reasonPervasives
       |> ModuleResolver.importPathForReasonModuleName(
            ~outputFileRelative,
@@ -860,9 +868,13 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
         lastNameInPath |> ModuleName.fromStringUnsafe
       | Papply(_, _) => assert(false) /* impossible: handled above */
       };
+    let typeName = s;
     ImportAsFrom(
-      s,
-      typePathToFlowName(typePath),
+      typeName,
+      {
+        let asTypeName = typePathToFlowName(typePath);
+        asTypeName == typeName ? None : Some(asTypeName);
+      },
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
            ~outputFileRelative,
@@ -913,8 +925,8 @@ let fromDependencies =
     switch (dependency) {
     | TypeAtPath(p) =>
       typePathToImport(~outputFileRelative, ~resolver, ~modulesMap, p)
-    | JSTypeFromModule(typeName, asName, importPath) =>
-      ImportAsFrom(typeName, asName, importPath)
+    | JSTypeFromModule(typeName, asTypeName, importPath) =>
+      ImportAsFrom(typeName, asTypeName, importPath)
     | FreeTypeVariable(s, id) =>
       ImportComment("// Warning polymorphic type unhandled:" ++ s)
     /* TODO: Currently unused. Would be useful for injecting dependencies

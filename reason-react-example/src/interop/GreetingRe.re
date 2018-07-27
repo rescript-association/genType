@@ -17,10 +17,10 @@ let make = (~message, ~extraGreeting=?, _children) => {
 };
 
 [@genFlow]
-let empty : list(string) = [];
+let empty: list(string) = [];
 
 [@genFlow]
-let cons = (x,l) => [x, ...l];
+let cons = (x, l) => [x, ...l];
 
 [@genFlow]
 let concat = String.concat;

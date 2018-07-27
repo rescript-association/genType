@@ -6,7 +6,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 import type {Component as ReactComponent} from 'React';
 import type {actionless as ReasonReactactionless} from '../src/shims/ReactShim.shim.js';
 import type {componentSpec as ReasonReactcomponentSpec} from '../src/shims/ReactShim.shim.js';
-import type {list as list} from '../src/shims/ReasonPervasives.shim.js';
+import type {list} from '../src/shims/ReasonPervasives.shim.js';
 import type {noRetainedProps as ReasonReactnoRetainedProps} from '../src/shims/ReactShim.shim.js';
 import type {stateless as ReasonReactstateless} from '../src/shims/ReactShim.shim.js';
 import type {variant as Component2variant} from './Component2.re';
