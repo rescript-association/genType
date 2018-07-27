@@ -2,23 +2,35 @@
 
 `genFlow` is a tool to automatically generate type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/). It also generates typed wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components.
 
-[This is how to convert an existing component](https://youtu.be/k9QYjq0c8rA)
+Type-safe wrappers for using ReasonReact components from javascript are generated when the annotation `[@genFLow] let make ...` is added to the component definition.
+
+[Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/k9QYjq0c8rA)
 [![IMAGE ALT TEXT HERE](assets/genFlowInAction.png)](https://youtu.be/k9QYjq0c8rA)
 
-[This is the code generated behind the scene](https://youtu.be/0YLXGBiB9dY)
+
+When a `[@genFlow]` annotation is added to some declaration in `Module.re`, a file `Module.re.js` is generated. Value and type declarations are supported.
+
+[Here is a video showing the generation of .re.js files.](https://youtu.be/0YLXGBiB9dY)
 [![IMAGE ALT TEXT HERE](assets/genFlow.png)](https://youtu.be/0YLXGBiB9dY)
 
 
-# New Project Setup
+# Set up genFlow in a project
 
-1. Set environment variable `BS_CMT_POST_PROCESS_CMD` as explained below before building or starting a watcher.
-2. Add a file `genflowconfig.json`, and a directory `shims/` just like in the sample project.
-3. Add some `[@genFlow]` annotations to the values to be used from JS. If an annotated value uses a type, the type must be anotated too.
+There are some steps to set up `genFlow` in a project.
+Some of this might become simpler if `genFlow` gets integrated
+into bucklescript in future.
+
+1. Set environment variable `BS_CMT_POST_PROCESS_CMD`, as explained below, before building, or starting a watcher, or starting vscode with bsb integration.
+2. Add a file [genflowconfig.json](sample-project/src/shims) in the project root, and some `.shims.js` files e.g. in a directory `shims/` just like in the [sample-project](sample-project). The `.shims.js` files must be in a source directory visible by bucklescript. See e.g. [ReactShim.shim.js](sample-project/src/shims/ReactShim.shim.js).
+3. Add `[@genFlow]` annotations to the values to be used from javascript. If an annotated value uses a type, the type must be anotated too. See e.g. [Component2.re](sample-project/src/Component2.re).
 
 # Limitations
-Currently `genFlow` only supports bucklescript projects with in-source generation of `.bs.js` files. For `File.re`, bucklescript generates `File.bs.js` alongside it. If some values in `File.re` are annotated with `[@genFlow]` then `genFlow` also generates `File.re.js`, which can be imported by flow-typed javascript files.
 
-Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`). Also, it does not support nested modules: annotations inside modules are ignored.
+<span style="color:red">Work in progress, only for early adopters. It is possible that the workflow will change in future.</span>
+
+Currently `genFlow` only supports bucklescript projects with in-source generation of `.bs.js` files.
+
+Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`). Also, nested modules are not supported, and annotations will be ignored.
 
 # Development
 
