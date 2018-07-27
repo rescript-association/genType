@@ -465,9 +465,6 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
 and reasonTypeToConversionMany = args: list(conversionPlan) =>
   args |> List.map(reasonTypeToConversion);
 
-let variantLeafTypeName = (typeName, leafName) =>
-  String.capitalize(typeName) ++ String.capitalize(leafName);
-
 module Dependencies = {
   /**
      * Allows checking if there exists a polymorphic dep before creating several
@@ -561,6 +558,9 @@ let createFunctionFlowType =
 
 let codeItemForType = (~opaque, typeParams, ~typeName, flowType) =>
   ExportType({opaque, typeParams, typeName, flowType});
+
+let variantLeafTypeName = (typeName, leafName) =>
+  String.capitalize(typeName) ++ String.capitalize(leafName);
 
 /*
  * TODO: Make the types namespaced by nested Flow module.
