@@ -691,11 +691,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         ),
       ];
     let deps = [
-      JSTypeFromModule(
-        "Component",
-        "ReactComponent",
-        "React" |> ImportPath.fromString,
-      ),
+      JSTypeFromModule("Component", "ReactComponent", ImportPath.react),
       ...remainingDeps,
     ];
     (deps, items);

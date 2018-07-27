@@ -96,7 +96,6 @@ let apply = (~resolver, moduleName) =>
    E.g. require "../foo/bar/ModuleName.ext" where ext is ".re" or ".js". */
 let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
   open Filename;
-  let moduleNameString = moduleName |> ModuleName.toString;
   let outputFileRelativeDir =
     /* e.g. src if we're generating src/File.re.js */
     dirname(outputFileRelative);
@@ -106,13 +105,12 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
     /* Check if the module is in the same directory as the file being generated.
        So if e.g. project_root/src/ModuleName.re exists. */
     concat(outputFileAbsoluteDir, ModuleName.toString(moduleName) ++ ".re");
-  if (Sys.file_exists(moduleNameReFile)) {
+  let candidate =
     /* e.g. import "./Modulename.ext" */
-    concat(current_dir_name, moduleNameString ++ ext) |> ImportPath.fromString;
+    moduleName |> ImportPath.fromModule(~dir=current_dir_name, ~ext);
+  if (Sys.file_exists(moduleNameReFile)) {
+    candidate;
   } else {
-    let candidate =
-      concat(current_dir_name, moduleNameString ++ ext)
-      |> ImportPath.fromString;
     let rec pathToList = path => {
       let isRoot = path |> basename == path;
       isRoot ? [path] : [path |> basename, ...path |> dirname |> pathToList];
@@ -139,15 +137,8 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
         /* e.g. "../dst" */
         concat(walkUpOutputDir, resovedModuleDir);
 
-      let resolvedImportPath =
-        /* e.g. import "../dst/ModuleName.ext" */
-        concat(
-          fromOutputDirToModuleDir,
-          ModuleName.toString(moduleName) ++ ext,
-        )
-        |> ImportPath.fromString;
-
-      resolvedImportPath;
+      /* e.g. import "../dst/ModuleName.ext" */
+      moduleName |> ImportPath.fromModule(~dir=fromOutputDirToModuleDir, ~ext);
     };
   };
 };
