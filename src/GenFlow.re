@@ -42,7 +42,8 @@ let createModulesMap = configFileOpt =>
              let fromTo =
                Str.split(Str.regexp("="), nextPairStr) |> Array.of_list;
              assert(Array.length(fromTo) === 2);
-             let moduleName: ModuleName.t = fromTo[0] |> ModuleName.fromString;
+             let moduleName: ModuleName.t =
+               fromTo[0] |> ModuleName.fromStringUnsafe;
              let v: string = fromTo[1];
              ModuleNameMap.add(moduleName, v, map);
            } else {

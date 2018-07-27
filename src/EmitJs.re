@@ -107,7 +107,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         requires:
           env.requires
           |> ModuleNameMap.add(
-               "CreateBucklescriptBlock" |> ModuleName.fromString,
+               ModuleName.createBucklescriptBlock,
                ImportPath.bsPlatformBlock,
              ),
         exports: [(variantName, Some(constructorFlowType)), ...env.exports],
@@ -179,10 +179,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         exports: [(name, componentType), ...env.exports],
         requires:
           requires
-          |> ModuleNameMap.add(
-               ModuleName.fromString("ReasonReact"),
-               ImportPath.reasonReact,
-             ),
+          |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact),
       };
     };
   let {requires, exports} =

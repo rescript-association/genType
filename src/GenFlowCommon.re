@@ -56,7 +56,7 @@ module Paths = {
     Filename.concat(projectRoot^, getOutputFileRelative(cmt));
 
   let getModuleName = cmt =>
-    cmt |> handleNamespace |> Filename.basename |> ModuleName.fromString;
+    cmt |> handleNamespace |> Filename.basename |> ModuleName.fromStringUnsafe;
 
   let executable =
     Sys.executable_name |> is_relative ?

@@ -1,4 +1,10 @@
 type t;
 let compare: (t, t) => int;
-let fromString: string => t;
+let createBucklescriptBlock: t;
+
+/** Used to turn strings read from external files into module names. */
+let fromStringUnsafe: string => t;
+
+let reasonPervasives: t;
+let reasonReact: t;
 let toString: t => string;

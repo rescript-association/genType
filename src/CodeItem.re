@@ -834,8 +834,7 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
     ImportAsFrom(
       "list",
       "list",
-      "ReasonPervasives"
-      |> ModuleName.fromString
+      ModuleName.reasonPervasives
       |> ModuleResolver.importPathForReasonModuleName(
            ~outputFileRelative,
            ~resolver,
@@ -856,8 +855,9 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
   | Pdot(p, s, _pos) =>
     let moduleName =
       switch (p) {
-      | Path.Pident(id) => id |> Ident.name |> ModuleName.fromString
-      | Pdot(_, lastNameInPath, _) => lastNameInPath |> ModuleName.fromString
+      | Path.Pident(id) => id |> Ident.name |> ModuleName.fromStringUnsafe
+      | Pdot(_, lastNameInPath, _) =>
+        lastNameInPath |> ModuleName.fromStringUnsafe
       | Papply(_, _) => assert(false) /* impossible: handled above */
       };
     ImportAsFrom(

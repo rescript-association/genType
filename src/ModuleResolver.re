@@ -49,7 +49,7 @@ let sourcedirsJsonToMap = (~extensions) => {
                 fileMap :=
                   fileMap^
                   |> ModuleNameMap.add(
-                       fname |> chopExtensions |> ModuleName.fromString,
+                       fname |> chopExtensions |> ModuleName.fromStringUnsafe,
                        dir,
                      );
               }
@@ -188,7 +188,7 @@ let importPathForReasonModuleName =
         ~outputFileRelative,
         ~resolver,
         ~ext=".shim.js",
-        shimModuleName |> ModuleName.fromString,
+        shimModuleName |> ModuleName.fromStringUnsafe,
       );
     if (Debug.moduleResolution) {
       logItem("Import Path: %s\n", importPath |> ImportPath.toString);
