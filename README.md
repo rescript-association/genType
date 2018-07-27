@@ -46,7 +46,7 @@ esy install
 esy build
 ```
 
-## Build the sample js project
+## Build sample-project
 
 ```
 # in sample-project
@@ -62,7 +62,7 @@ yarn clean
 yarn build
 ```
 
-## Hot reloading plus genFlow
+## Hot reloading plus genFlow in sample-project
 
 ```
 # in sample-project
@@ -71,8 +71,18 @@ yarn start
 yarn serve
 ```
 
-## Type check with Flow
+## Type check with Flow in sample-project
 ```
 # in sample-project
 flow
+```
+
+## Type-safe interop in reason-react-example
+```
+# in reason-react-example
+export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/src/GenFlow.exe --setProjectRoot $PWD"
+yarn install
+yarn start
+yarn webpack
+open src/index.html
 ```
