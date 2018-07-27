@@ -63,7 +63,7 @@ let cli = () => {
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
-    print_endline("  Add " ++ cmt ++ "  " ++ mlast);
+    logItem("Add %s  %s\n", cmt, mlast);
     cmt
     |> GenFlowMain.processCmtFile(
          ~fileHeader,
@@ -79,7 +79,7 @@ let cli = () => {
     /* somehow the CMT hook is passing an absolute path here */
     let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
     let outputFile = cmt |> Paths.getOutputFile;
-    print_endline("  Remove " ++ cmt);
+    logItem("Remove %s\n", cmt);
     if (Sys.file_exists(outputFile)) {
       Unix.unlink(outputFile);
     };

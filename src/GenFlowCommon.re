@@ -5,6 +5,16 @@
 module StringMap = Map.Make(String);
 module ModuleNameMap = Map.Make(ModuleName);
 
+let log = Printf.printf;
+let logItem = x => {
+  log("  ");
+  log(x);
+};
+
+module Debug = {
+  let moduleResolution = false;
+};
+
 module Paths = {
   open Filename;
 

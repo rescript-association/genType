@@ -1,6 +1,6 @@
 {
   "shims": [
     "ReasonReact=ReactShim",
-    "Reason=ReactShim"
+    "Reason=ReactShim",
   ]
 }

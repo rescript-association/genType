@@ -152,25 +152,58 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
   };
 };
 
-let resolveSourceModule = (~outputFileRelative, ~resolver, moduleName) =>
-  resolveModule(~outputFileRelative, ~resolver, ~ext=".bs", moduleName);
+let resolveSourceModule = (~outputFileRelative, ~resolver, moduleName) => {
+  if (Debug.moduleResolution) {
+    logItem("Resolve Source Module: %s\n", moduleName |> ModuleName.toString);
+  };
+  let importPath =
+    resolveModule(~outputFileRelative, ~resolver, ~ext=".bs", moduleName);
+  if (Debug.moduleResolution) {
+    logItem("Import Path: %s\n", importPath);
+  };
+  importPath;
+};
 
-let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) =>
-  resolveModule(~outputFileRelative, ~resolver, ~ext=".re", moduleName);
+let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) => {
+  if (Debug.moduleResolution) {
+    logItem(
+      "Resolve Generated Module: %s\n",
+      moduleName |> ModuleName.toString,
+    );
+  };
+  let importPath =
+    resolveModule(~outputFileRelative, ~resolver, ~ext=".re", moduleName);
+  if (Debug.moduleResolution) {
+    logItem("Import Path: %s\n", importPath);
+  };
+  importPath;
+};
 
 /**
  * Returns the path to import a given Reason module name.
  */
 let importPathForReasonModuleName =
-    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) =>
+    (~outputFileRelative, ~resolver, ~modulesMap, ~moduleName) => {
+  if (Debug.moduleResolution) {
+    logItem("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
+  };
   switch (modulesMap |> ModuleNameMap.find(moduleName)) {
   | shimModuleName =>
-    resolveModule(
-      ~outputFileRelative,
-      ~resolver,
-      ~ext=".shim.js",
-      shimModuleName |> ModuleName.fromString,
-    )
+    if (Debug.moduleResolution) {
+      logItem("ShimModuleName: %s\n", shimModuleName);
+    };
+    let importPath =
+      resolveModule(
+        ~outputFileRelative,
+        ~resolver,
+        ~ext=".shim.js",
+        shimModuleName |> ModuleName.fromString,
+      );
+    if (Debug.moduleResolution) {
+      logItem("Import Path: %s\n", importPath);
+    };
+    importPath;
   | exception Not_found =>
     moduleName |> resolveGeneratedModule(~outputFileRelative, ~resolver)
   };
+};

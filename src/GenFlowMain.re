@@ -50,12 +50,6 @@ let cmtToCodeItems =
   };
 };
 
-let log = Printf.printf;
-let logItem = x => {
-  log("  ");
-  log(x);
-};
-
 module GeneratedFiles = {
   type fileAction =
     | NoMatch /* No @genFlow annotation found. */
