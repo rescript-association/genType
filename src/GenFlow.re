@@ -44,8 +44,8 @@ let createModulesMap = configFileOpt =>
              assert(Array.length(fromTo) === 2);
              let moduleName: ModuleName.t =
                fromTo[0] |> ModuleName.fromStringUnsafe;
-             let v: string = fromTo[1];
-             ModuleNameMap.add(moduleName, v, map);
+             let shimModuleName = fromTo[1] |> ModuleName.fromStringUnsafe;
+             ModuleNameMap.add(moduleName, shimModuleName, map);
            } else {
              map;
            },

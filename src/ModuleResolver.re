@@ -181,14 +181,14 @@ let importPathForReasonModuleName =
   switch (modulesMap |> ModuleNameMap.find(moduleName)) {
   | shimModuleName =>
     if (Debug.moduleResolution) {
-      logItem("ShimModuleName: %s\n", shimModuleName);
+      logItem("ShimModuleName: %s\n", shimModuleName |> ModuleName.toString);
     };
     let importPath =
       resolveModule(
         ~outputFileRelative,
         ~resolver,
         ~ext=".shim.js",
-        shimModuleName |> ModuleName.fromStringUnsafe,
+        shimModuleName,
       );
     if (Debug.moduleResolution) {
       logItem("Import Path: %s\n", importPath |> ImportPath.toString);
