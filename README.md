@@ -78,6 +78,11 @@ flow
 ```
 
 ## Type-safe interop in reason-react-example
+
+An example of type-safe interop for ReasonReact components is [reason-react-example](reason-react-example).
+
+**Note** the webpack configuration [webpack.config.js](reason-react-example/webpack.config.js) is using [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) to load `Module.re.js` when `Module.re` is required.
+
 ```
 # in reason-react-example
 export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/src/GenFlow.exe --setProjectRoot $PWD"
