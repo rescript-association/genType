@@ -3,7 +3,7 @@
 const ReactDOM = require('react-dom');
 const React = require('react');
 
-const GreetingRe = require('./GreetingRe.re.js');
+const GreetingRe = require('./GreetingRe.re');
 
 // Import a ReasonReact component!
 const PageReason = GreetingRe.component;
