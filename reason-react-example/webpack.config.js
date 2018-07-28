@@ -1,15 +1,15 @@
-const path = require('path');
+const path = require("path");
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === "production";
 
 module.exports = {
   entry: {
-    interop: './src/interop/InteropRoot.js',
+    interop: "./src/interop/InteropRoot.js"
   },
-  mode: isProd ? 'production' : 'development',
+  mode: isProd ? "production" : "development",
   output: {
-    path: path.join(__dirname, 'bundledOutputs'),
-    filename: '[name].js',
+    path: path.join(__dirname, "bundledOutputs"),
+    filename: "[name].js"
   },
   module: {
     rules: [
@@ -17,11 +17,15 @@ module.exports = {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-flow', '@babel/preset-react'],
-          },
-        },
+            presets: [
+              "@babel/preset-env",
+              "@babel/preset-flow",
+              "@babel/preset-react"
+            ]
+          }
+        }
       },
       {
         loader: "extension-replace-loader",
