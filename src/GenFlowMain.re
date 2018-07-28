@@ -9,9 +9,9 @@ open GenFlowCommon;
 let typedItemToCodeItems = (~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
-    | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations)} =>
+    | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
       typeDeclarations |> List.map(CodeItem.fromTypeDecl) |> List.split
-    | {Typedtree.str_desc: Tstr_value(loc, valueBindings)} =>
+    | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
       valueBindings
       |> List.map(CodeItem.fromValueBinding(~moduleName))
       |> List.split
@@ -24,7 +24,7 @@ let typedItemToCodeItems = (~moduleName, typedItem) => {
 let cmtToCodeItems =
     (~modulesMap, ~moduleName, ~outputFileRelative, ~resolver, inputCMT)
     : list(CodeItem.t) => {
-  let {Cmt_format.cmt_annots} = inputCMT;
+  let {Cmt_format.cmt_annots, _} = inputCMT;
   switch (cmt_annots) {
   | Implementation(structure) =>
     let typedItems = structure.Typedtree.str_items;

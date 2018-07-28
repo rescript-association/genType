@@ -111,7 +111,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       } else {
         let args =
           convertableFlowTypes
-          |> List.mapi((i, (converter, flowTyp)) => {
+          |> List.mapi((i, (converter, _flowTyp)) => {
                let arg = Emit.argi(i + 1);
                let v = arg |> Convert.toReason(~converter);
                (arg, v);
@@ -143,7 +143,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       let componentType =
         switch (flowPropGenerics) {
         | None => None
-        | Some(flowType) =>
+        | Some(_flowType) =>
           Some(
             Flow.Ident(
               "React$ComponentType",
@@ -199,7 +199,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
           |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact),
       };
     };
-  let {requires, exports} =
+  let {requires, exports, _} =
     List.fold_left(
       emitCodeItem,
       {requires: ModuleNameMap.empty, typeMap: StringMap.empty, exports: []},

@@ -13,13 +13,13 @@ let sourcedirsJsonToMap = (~extensions) => {
   let getDirs = json => {
     let dirs = ref([]);
     switch (json) {
-    | Ext_json_types.Obj({map}) =>
+    | Ext_json_types.Obj({map, _}) =>
       switch (map |> String_map.find_opt("dirs")) {
-      | Some(Arr({content})) =>
+      | Some(Arr({content, _})) =>
         content
         |> Array.iter(x =>
              switch (x) {
-             | Ext_json_types.Str({str}) => dirs := [str, ...dirs^]
+             | Ext_json_types.Str({str, _}) => dirs := [str, ...dirs^]
              | _ => ()
              }
            );

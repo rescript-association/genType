@@ -24,10 +24,10 @@ let rec groupReversed = (revCurGroup, revResult, lst) =>
   | (_, [(Label(name), t), ...tl]) =>
     groupReversed([(name, Mandatory, t), ...revCurGroup], revResult, tl)
   | ([], []) => revResult
-  | ([grpHd, ...grpTl], [] as _tl)
+  | ([_grpHd, ..._grpTl], [] as _tl)
   /* Just form the group, and recurse ignoring the (None, t) in that case.
    * it will be handled in recursion. */
-  | ([grpHd, ...grpTl], [(Nolabel, _), ..._tl]) =>
+  | ([_grpHd, ..._grpTl], [(Nolabel, _), ..._tl]) =>
     groupReversed([], [NamedArgs(revCurGroup), ...revResult], lst)
   };
 
@@ -38,7 +38,7 @@ let rec groupReversed = (revCurGroup, revResult, lst) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
-  | [Arg(t) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
+  | [Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
   | [NamedArgs(namedArgs), ...tl] =>
     reverse(~soFar=[NamedArgs(List.rev(namedArgs)), ...soFar], tl)
   };

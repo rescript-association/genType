@@ -94,19 +94,19 @@ let is_empty = function Empty -> true | _ -> false
 
 let rec min_binding_exn = function
     Empty -> raise Not_found
-  | Node(Empty, x, d, r, _) -> (x, d)
-  | Node(l, x, d, r, _) -> min_binding_exn l
+  | Node(Empty, x, d, _r, _) -> (x, d)
+  | Node(l, _x, _d, _r, _) -> min_binding_exn l
 
 let choose = min_binding_exn
 
 let rec max_binding_exn = function
     Empty -> raise Not_found
-  | Node(l, x, d, Empty, _) -> (x, d)
-  | Node(l, x, d, r, _) -> max_binding_exn r
+  | Node(_l, x, d, Empty, _) -> (x, d)
+  | Node(_l, _x, _d, r, _) -> max_binding_exn r
 
 let rec remove_min_binding = function
     Empty -> invalid_arg "Map.remove_min_elt"
-  | Node(Empty, x, d, r, _) -> r
+  | Node(Empty, _x, _d, r, _) -> r
   | Node(l, x, d, r, _) -> bal (remove_min_binding l) x d r
 
 let merge t1 t2 =
@@ -165,12 +165,12 @@ let rec exists p = function
 
 let rec add_min_binding k v = function
   | Empty -> singleton k v
-  | Node (l, x, d, r, h) ->
+  | Node (l, x, d, r, _h) ->
     bal (add_min_binding k v l) x d r
 
 let rec add_max_binding k v = function
   | Empty -> singleton k v
-  | Node (l, x, d, r, h) ->
+  | Node (l, x, d, r, _h) ->
     bal l x d (add_max_binding k v r)
 
 (* Same as create and bal, but no assumptions are made on the
@@ -261,10 +261,12 @@ module type S =
     val add: key -> 'a -> 'a t -> 'a t
     (** [add x y m] 
         If [x] was already bound in [m], its previous binding disappears. *)
+
     val adjust: key -> (unit -> 'a)  -> ('a ->  'a) -> 'a t -> 'a t 
     (** [adjust k v f map] if not exist [add k v], otherwise 
         [add k v (f old)]
     *)
+
     val singleton: key -> 'a -> 'a t
 
     val remove: key -> 'a t -> 'a t
@@ -327,6 +329,7 @@ module type S =
     (** Return the list of all bindings of the given map.
        The returned list is sorted in increasing order with respect
        to the ordering *)
+
     val keys : 'a t -> key list 
     (* Increasing order *)
 
@@ -356,6 +359,7 @@ module type S =
     val find_exn: key -> 'a t -> 'a
     (** [find x m] returns the current binding of [x] in [m],
        or raises [Not_found] if no such binding exists. *)
+    
     val find_opt: key -> 'a t -> 'a option
     val find_default: key  -> 'a t -> 'a  -> 'a 
     val map: ('a -> 'b) -> 'a t -> 'b t

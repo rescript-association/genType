@@ -112,11 +112,11 @@ let ends_with_then_chop s beg =
   if i >= 0 then Some (String.sub s 0 i) 
   else None
 
-let check_suffix_case = ends_with 
-let check_suffix_case_then_chop = ends_with_then_chop
+(* let check_suffix_case = ends_with *)
+(* let check_suffix_case_then_chop = ends_with_then_chop *)
 
-let check_any_suffix_case s suffixes = 
-  List.exists (fun x -> check_suffix_case s x) suffixes
+(* let check_any_suffix_case s suffixes = 
+  List.exists (fun x -> check_suffix_case s x) suffixes *)
 
 let check_any_suffix_case_then_chop s suffixes = 
   let rec aux suffixes = 
@@ -176,7 +176,7 @@ let repeat n s  =
   done;
   Bytes.to_string res
 
-let equal (x : string) y  = x = y
+(* let equal (x : string) y  = x = y *)
 
 
 
@@ -225,7 +225,7 @@ let non_overlap_count ~sub s =
 let rfind ~sub s =
   let n = String.length sub in
   let i = ref (String.length s - n) in
-  let module M = struct exception Exit end in 
+  (* let module M = struct exception Exit end in *)
   try
     while !i >= 0 do
       if unsafe_is_sub ~sub 0 s !i ~len:n then 

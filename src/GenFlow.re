@@ -8,13 +8,13 @@ let getShims = configFile => {
   let parseJson = json => {
     let shims = ref([]);
     switch (json) {
-    | Ext_json_types.Obj({map}) =>
+    | Ext_json_types.Obj({map, _}) =>
       switch (map |> String_map.find_opt("shims")) {
-      | Some(Arr({content})) =>
+      | Some(Arr({content, _})) =>
         content
         |> Array.iter(x =>
              switch (x) {
-             | Ext_json_types.Str({str}) => shims := [str, ...shims^]
+             | Ext_json_types.Str({str, _}) => shims := [str, ...shims^]
              | _ => ()
              }
            );
