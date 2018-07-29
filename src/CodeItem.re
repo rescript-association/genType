@@ -464,7 +464,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
           Flow.Ident(typePathToFlowName(path), typeArgs),
         ),
       };
-    | _ => {dependencies: [], convertableFlowType: (Identity, Flow.anyAlias)}
+    | _ => {dependencies: [], convertableFlowType: (Identity, Flow.any)}
     }
   )
 and reasonTypesToConversion = args: list(conversionPlan) =>
@@ -597,7 +597,7 @@ let codeItemsFromConstructorDeclaration =
       ~opaque=true,
       flowTypeVars,
       ~typeName=variantTypeName,
-      Flow.anyAlias,
+      Flow.any,
     ),
     ConstructorBinding(
       constructorFlowType,
@@ -679,7 +679,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         switch (propOrChildren) {
         | Flow.ObjectType(fields) =>
           /* Add children?:any to props type */
-          let childrenField = ("children", NonMandatory, Flow.anyAlias);
+          let childrenField = ("children", NonMandatory, Flow.any);
           Flow.ObjectType(fields @ [childrenField]);
         | _ => propOrChildren
         }
@@ -770,9 +770,7 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     let typeName = Ident.name(dec.typ_id);
     (
       [],
-      [
-        codeItemForType(~opaque=true, flowTypeVars, ~typeName, Flow.anyAlias),
-      ],
+      [codeItemForType(~opaque=true, flowTypeVars, ~typeName, Flow.any)],
     );
   /*
    * This case includes aliasings such as:
@@ -787,14 +785,7 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [
-          codeItemForType(
-            ~opaque=true,
-            flowTypeVars,
-            ~typeName,
-            Flow.anyAlias,
-          ),
-        ],
+        [codeItemForType(~opaque=true, flowTypeVars, ~typeName, Flow.any)],
       )
     | Some(coreType) =>
       let {dependencies, convertableFlowType: (_converter, flowType)} =

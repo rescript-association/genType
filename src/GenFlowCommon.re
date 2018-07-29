@@ -108,6 +108,7 @@ type optionalness =
 
 module Flow = {
   /* Introduction of type variables (for all) */
+
   type typ =
     | Optional(typ)
     /* List of typ is the type arguments applied */
@@ -116,9 +117,11 @@ module Flow = {
     /* List of typ is the type parameters abstracted. Not the arguments
      * applied. */
     | Arrow(list(typ), list(typ), typ);
+
   let genericsString = genericStrings =>
     genericStrings === [] ?
       "" : "<" ++ String.concat(",", genericStrings) ++ ">";
+
   let rec toString = typ =>
     switch (typ) {
     | Optional(typ) => "?" ++ toString(typ)
@@ -150,8 +153,8 @@ module Flow = {
     | ObjectType(_) => typ
     | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
     };
-  /* Assumes post processing will inject an alias to any. */
-  let anyAlias = Ident("any", []);
+
+  let any = Ident("any", []);
 };
 
 /* Generate fresh identifiers */
