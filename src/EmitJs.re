@@ -150,12 +150,12 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         exports: [(variantName, Some(constructorFlowType)), ...env.exports],
       };
 
-    | ComponentBinding(
+    | ComponentBinding({
         moduleName,
         flowPropGenerics,
         converter,
         propsTypeName,
-      ) =>
+      }) =>
       let name = "component";
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;

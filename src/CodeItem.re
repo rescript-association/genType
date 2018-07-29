@@ -39,6 +39,13 @@ type exportUnionType = {
   name: string,
 };
 
+type componentBinding = {
+  moduleName: ModuleName.t,
+  flowPropGenerics: option(Flow.typ),
+  converter,
+  propsTypeName: string,
+};
+
 type t =
   | ImportType(import)
   | ExportType(exportType)
@@ -51,7 +58,7 @@ type t =
       string,
       Runtime.recordValue,
     )
-  | ComponentBinding(ModuleName.t, option(Flow.typ), converter, string);
+  | ComponentBinding(componentBinding);
 
 type genFlowKind =
   | NoGenFlow
@@ -706,12 +713,12 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
       propsTypeDeclaration
       @ [
         FlowTypeBinding("component", componentFlowType),
-        ComponentBinding(
+        ComponentBinding({
           moduleName,
           flowPropGenerics,
           converter,
           propsTypeName,
-        ),
+        }),
       ];
     let deps = [
       JSTypeFromModule(
