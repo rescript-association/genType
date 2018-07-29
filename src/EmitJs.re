@@ -93,11 +93,6 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       line(emitExportUnionType(exportUnionType) ++ ";");
       env;
 
-    | FlowTypeBinding(id, flowType) => {
-        ...env,
-        typeMap: env.typeMap |> StringMap.add(id, flowType),
-      }
-
     | ValueBinding(moduleName, id, flowType, converter) =>
       let requires =
         moduleName |> requireModule(~env, ~outputFileRelative, ~resolver);

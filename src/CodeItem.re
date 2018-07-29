@@ -51,7 +51,6 @@ type t =
   | ImportType(import)
   | ExportType(exportType)
   | ExportUnionType(exportUnionType)
-  | FlowTypeBinding(string, Flow.typ)
   | ValueBinding(ModuleName.t, string, Flow.typ, converter)
   | ConstructorBinding(
       Flow.typ,
