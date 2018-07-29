@@ -5,7 +5,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {Component as ReactComponent} from 'React';
 import type {actionless as ReasonReactactionless} from '../src/shims/ReactShim.shim.js';
-import type {componentSpec as ReasonReactcomponentSpec} from '../src/shims/ReactShim.shim.js';
+import type {component as ReasonReactcomponent} from '../src/shims/ReactShim.shim.js';
 import type {list} from '../src/shims/ReasonPervasives.shim.js';
 import type {noRetainedProps as ReasonReactnoRetainedProps} from '../src/shims/ReactShim.shim.js';
 import type {stateless as ReasonReactstateless} from '../src/shims/ReactShim.shim.js';
@@ -22,9 +22,9 @@ const component = ReasonReact.wrapReasonForJs(
      return Component1.make(jsProps.message, jsProps.children);
   }));
 
-exports.map = (map: <T11480,T11478>((T11480) => T11478, list<T11480>) => list<T11478>);
+exports.map = (map: <T11519,T11517>((T11519) => T11517, list<T11519>) => list<T11517>);
 exports.l = (l: list<number>);
 exports.consumeVariant = (consumeVariant: (Component2variant) => number);
 exports.concat = (concat: (string, ?string) => ?string);
-exports.plus = (plus: <T10970>(number, T10970) => number);
+exports.plus = (plus: <T11009>(number, T11009) => number);
 exports.component = (component: React$ComponentType<Props>);

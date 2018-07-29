@@ -13,6 +13,9 @@
 export opaque type reactElement = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.
+export opaque type component = any;
+
+// $FlowExpectedError: Reason checked type sufficiently.
 export opaque type componentSpec = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.

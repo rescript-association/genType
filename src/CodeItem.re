@@ -666,7 +666,9 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
       _,
       [propOrChildren, ...childrenOrNil],
       Flow.Ident(
-        "ReasonReactcomponentSpec" | "ReactcomponentSpec",
+        "ReasonReactcomponentSpec" | "ReactcomponentSpec" |
+        "ReasonReactcomponent" |
+        "Reactcomponent",
         [_state, ..._],
       ),
     ) =>
