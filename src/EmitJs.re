@@ -98,7 +98,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         typeMap: env.typeMap |> StringMap.add(id, flowType),
       }
 
-    | ValueBinding(moduleName, id, converter) =>
+    | ValueBinding(moduleName, id, flowType, converter) =>
       let requires =
         moduleName |> requireModule(~env, ~outputFileRelative, ~resolver);
       line(
@@ -113,8 +113,11 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         )
         ++ ";",
       );
-      let flowType = env.typeMap |> StringMap.find(id);
-      {...env, exports: [(id, Some(flowType)), ...env.exports], requires};
+      {
+        typeMap: env.typeMap |> StringMap.add(id, flowType),
+        exports: [(id, Some(flowType)), ...env.exports],
+        requires,
+      };
 
     | ConstructorBinding(
         constructorFlowType,

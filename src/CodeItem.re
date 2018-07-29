@@ -44,7 +44,7 @@ type t =
   | ExportType(exportType)
   | ExportUnionType(exportUnionType)
   | FlowTypeBinding(string, Flow.typ)
-  | ValueBinding(ModuleName.t, string, converter)
+  | ValueBinding(ModuleName.t, string, Flow.typ, converter)
   | ConstructorBinding(
       Flow.typ,
       list(convertableFlowType),
@@ -625,8 +625,7 @@ let codeItemsForId = (~moduleName, ~valueBinding, id) => {
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
   let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
   let codeItems = [
-    FlowTypeBinding(Ident.name(id), flowType),
-    ValueBinding(moduleName, Ident.name(id), converter),
+    ValueBinding(moduleName, Ident.name(id), flowType, converter),
   ];
   (remainingDeps, codeItems);
 };
