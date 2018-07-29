@@ -67,11 +67,6 @@ module Paths = {
     fname |> Sys.file_exists ? Some(fname) : None;
   };
 
-  let absoluteFromProject = filePath =>
-    Filename.(
-      filePath |> is_relative ? concat(projectRoot^, filePath) : filePath
-    );
-
   /* Find the relative path from /.../bs/lib
      e.g. /foo/bar/bs/lib/src/Hello.re --> src/Hello.re */
   let relativePathFromBsLib = fileName =>
