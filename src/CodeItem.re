@@ -41,6 +41,7 @@ type exportUnionType = {
 
 type componentBinding = {
   moduleName: ModuleName.t,
+  componentType: Flow.typ,
   propsTypeName: string,
   propsTypeArguments: option(Flow.typ),
   converter,
@@ -688,7 +689,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     let propsTypeName = GenIdent.propsTypeName();
     let propsTypeNameFlow = Flow.Ident(propsTypeName, []);
     /* TODO: Polymorphic props */
-    let componentFlowType =
+    let componentType =
       Flow.Ident(
         "React$ComponentType",
         switch (propsTypeArguments) {
@@ -712,9 +713,9 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     let items =
       propsTypeDeclaration
       @ [
-        FlowTypeBinding("component", componentFlowType),
         ComponentBinding({
           moduleName,
+          componentType,
           propsTypeName,
           propsTypeArguments,
           converter,

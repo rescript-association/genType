@@ -152,6 +152,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
 
     | ComponentBinding({
         moduleName,
+        componentType,
         propsTypeName,
         propsTypeArguments,
         converter,
@@ -211,7 +212,12 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       let requires =
         moduleName |> requireModule(~env, ~outputFileRelative, ~resolver);
       {
-        ...env,
+        typeMap:
+          switch (componentType) {
+          | None => env.typeMap
+          | Some(flowType) =>
+            env.typeMap |> StringMap.add("component", flowType)
+          },
         exports: [(name, componentType), ...env.exports],
         requires:
           requires
