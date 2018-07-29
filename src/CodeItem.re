@@ -254,9 +254,6 @@ let rec typePathToFlowName = typePath =>
     ++ typePathToFlowName(p2)
   };
 
-let needsArgConversion = ((lbl, c)) =>
-  lbl !== NamedArgs.Nolabel || c !== Identity;
-
 let rec extract_fun = (revArgDeps, revArgs, typ) =>
   Types.(
     switch (typ.desc) {
@@ -304,7 +301,11 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
         | _ => true
         };
       let needsArgConversion =
-        List.exists(needsArgConversion, labeledConverters)
+        List.exists(
+          ((lbl, converter)) =>
+            lbl !== NamedArgs.Nolabel || converter !== Identity,
+          labeledConverters,
+        )
         && notJustASingleUnitArg;
       let allDeps = List.append(List.rev(revArgDeps), dependencies);
       let revGroupedFlow = NamedArgs.groupReversed([], [], labeledFlow);
@@ -442,7 +443,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
      * built-in JS type defs are brought in from the right location.
      */
     | Tconstr(path, typeParams, _) =>
-      let conversionPlans = reasonTypeToConversionMany(typeParams);
+      let conversionPlans = reasonTypesToConversion(typeParams);
       let convertableFlowTypes =
         conversionPlans
         |> List.map(({convertableFlowType, _}) => convertableFlowType);
@@ -466,7 +467,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
     | _ => {dependencies: [], convertableFlowType: (Identity, Flow.anyAlias)}
     }
   )
-and reasonTypeToConversionMany = args: list(conversionPlan) =>
+and reasonTypesToConversion = args: list(conversionPlan) =>
   args |> List.map(reasonTypeToConversion);
 
 module Dependencies = {
@@ -573,7 +574,7 @@ let codeItemsFromConstructorDeclaration =
     (variantTypeName, constructorDeclaration, ~recordGen) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
-  let conversionPlans = reasonTypeToConversionMany(constructorArgs);
+  let conversionPlans = reasonTypesToConversion(constructorArgs);
   let convertableFlowTypes =
     conversionPlans
     |> List.map(({convertableFlowType, _}) => convertableFlowType);
