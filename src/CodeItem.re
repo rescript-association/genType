@@ -41,9 +41,9 @@ type exportUnionType = {
 
 type componentBinding = {
   moduleName: ModuleName.t,
-  flowPropGenerics: option(Flow.typ),
-  converter,
   propsTypeName: string,
+  propsTypeArguments: option(Flow.typ),
+  converter,
 };
 
 type t =
@@ -671,7 +671,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         [_state, ..._],
       ),
     ) =>
-    let flowPropGenerics =
+    let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
       | [] => None
@@ -691,13 +691,13 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     let componentFlowType =
       Flow.Ident(
         "React$ComponentType",
-        switch (flowPropGenerics) {
+        switch (propsTypeArguments) {
         | None => []
         | Some(_propsType) => [propsTypeNameFlow]
         },
       );
     let propsTypeDeclaration =
-      switch (flowPropGenerics) {
+      switch (propsTypeArguments) {
       | None => []
       | Some(propsType) => [
           codeItemForType(
@@ -715,9 +715,9 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         FlowTypeBinding("component", componentFlowType),
         ComponentBinding({
           moduleName,
-          flowPropGenerics,
-          converter,
           propsTypeName,
+          propsTypeArguments,
+          converter,
         }),
       ];
     let deps = [

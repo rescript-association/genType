@@ -152,15 +152,15 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
 
     | ComponentBinding({
         moduleName,
-        flowPropGenerics,
-        converter,
         propsTypeName,
+        propsTypeArguments,
+        converter,
       }) =>
       let name = "component";
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
-        switch (flowPropGenerics) {
+        switch (propsTypeArguments) {
         | None => None
         | Some(_flowType) =>
           Some(
