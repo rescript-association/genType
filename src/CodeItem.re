@@ -399,7 +399,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
           Invalid_argument(
             "Converting Arrays with elements that require conversion "
             ++ "is not yet supported. Saw an array containing type:"
-            ++ Flow.render(itemFlow),
+            ++ Flow.toString(itemFlow),
           ),
         );
       };

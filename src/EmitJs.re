@@ -22,17 +22,17 @@ let emitExportType = ({CodeItem.opaque, typeParams, typeName, flowType}) =>
   ++ (opaque ? " opaque " : " ")
   ++ "type "
   ++ typeName
-  ++ Flow.genericsString(List.map(Flow.render, typeParams))
+  ++ Flow.genericsString(List.map(Flow.toString, typeParams))
   ++ " = "
-  ++ Flow.render(flowType)
+  ++ Flow.toString(flowType)
   ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
 
 let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>
   "export type "
   ++ name
-  ++ Flow.genericsString(List.map(Flow.render, typeParams))
+  ++ Flow.genericsString(List.map(Flow.toString, typeParams))
   ++ " =\n  | "
-  ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
+  ++ String.concat("\n  | ", List.map(Flow.toString, leafTypes));
 
 let emitImport = import =>
   switch (import) {
@@ -66,7 +66,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     let addType = s =>
       switch (flowTypeOpt) {
       | None => s
-      | Some(flowType) => "(" ++ s ++ ": " ++ Flow.render(flowType) ++ ")"
+      | Some(flowType) => "(" ++ s ++ ": " ++ Flow.toString(flowType) ++ ")"
       };
     line_(exportBuffer, "exports." ++ id ++ " = " ++ addType(id) ++ ";");
   };
@@ -145,12 +145,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         exports: [(variantName, Some(constructorFlowType)), ...env.exports],
       };
 
-    | ComponentBinding({
-        moduleName,
-        componentType,
-        propsTypeName,
-        converter,
-      }) =>
+    | ComponentBinding({moduleName, componentType, propsTypeName, converter}) =>
       let name = "component";
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
