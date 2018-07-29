@@ -2,6 +2,9 @@
 
 `genFlow` is a tool to automatically generate type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/). It also generates typed wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components.
 
+###Work in progress, only for early adopters. It is possible that the workflow will change in future.
+###
+
 Type-safe wrappers for using ReasonReact components from javascript are generated when the annotation `[@genFLow] let make ...` is added to the component definition.
 
 [Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/k9QYjq0c8rA)
@@ -25,8 +28,6 @@ into bucklescript in future.
 3. Add `[@genFlow]` annotations to the values to be used from javascript. If an annotated value uses a type, the type must be anotated too. See e.g. [Component2.re](sample-project/src/Component2.re).
 
 # Limitations
-
-<span style="color:red">Work in progress, only for early adopters. It is possible that the workflow will change in future.</span>
 
 Currently `genFlow` only supports bucklescript projects with in-source generation of `.bs.js` files.
 
