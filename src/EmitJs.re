@@ -153,7 +153,6 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     | ComponentBinding(
         moduleName,
         flowPropGenerics,
-        id,
         converter,
         propsTypeName,
       ) =>
@@ -204,7 +203,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         "     return "
         ++ ModuleName.toString(moduleName)
         ++ "."
-        ++ Ident.name(id)
+        ++ "make"
         ++ Emit.parens(args)
         ++ ";",
       );

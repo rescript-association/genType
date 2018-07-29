@@ -51,13 +51,7 @@ type t =
       string,
       Runtime.recordValue,
     )
-  | ComponentBinding(
-      ModuleName.t,
-      option(Flow.typ),
-      Ident.t,
-      converter,
-      string,
-    );
+  | ComponentBinding(ModuleName.t, option(Flow.typ), converter, string);
 
 type genFlowKind =
   | NoGenFlow
@@ -715,7 +709,6 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         ComponentBinding(
           moduleName,
           flowPropGenerics,
-          id,
           converter,
           propsTypeName,
         ),
