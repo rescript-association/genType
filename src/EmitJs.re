@@ -34,6 +34,23 @@ let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>
   ++ " =\n  | "
   ++ String.concat("\n  | ", List.map(Flow.render, leafTypes));
 
+let emitImport = import =>
+  switch (import) {
+  | CodeItem.ImportComment(s) => s
+  | ImportAsFrom(typeName, asTypeName, importPath) =>
+    "import type {"
+    ++ typeName
+    ++ (
+      switch (asTypeName) {
+      | Some(asT) => " as " ++ asT
+      | None => ""
+      }
+    )
+    ++ "} from '"
+    ++ (importPath |> ImportPath.toString)
+    ++ "'"
+  };
+
 let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
   let mainBuffer = Buffer.create(100);
@@ -65,7 +82,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
   let emitCodeItem = (env, codeItem) =>
     switch (codeItem) {
     | CodeItem.ImportType(import) =>
-      line(CodeItem.importToString(import) ++ ";");
+      line(emitImport(import) ++ ";");
       env;
 
     | CodeItem.ExportType(exportType) =>

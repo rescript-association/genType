@@ -849,23 +849,6 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
   | _ => ([], [])
   };
 
-let importToString = import =>
-  switch (import) {
-  | ImportComment(s) => s
-  | ImportAsFrom(typeName, asTypeName, importPath) =>
-    "import type {"
-    ++ typeName
-    ++ (
-      switch (asTypeName) {
-      | Some(asT) => " as " ++ asT
-      | None => ""
-      }
-    )
-    ++ "} from '"
-    ++ (importPath |> ImportPath.toString)
-    ++ "'"
-  };
-
 let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
