@@ -112,7 +112,11 @@ let emitCodeItems =
       ~writeFile,
     );
 
-  | [] => outputFile |> GeneratedFiles.logFileAction(NoMatch)
+  | [] =>
+    outputFile |> GeneratedFiles.logFileAction(NoMatch);
+    if (Sys.file_exists(outputFile)) {
+      Unix.unlink(outputFile);
+    };
   };
 
 let processCmtFile = (~fileHeader, ~signFile, ~modulesMap, cmt) => {
