@@ -885,26 +885,6 @@ let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =
     );
   };
 
-let rec typePathsEqual = (a, b) =>
-  switch (a, b) {
-  | (Path.Pident(idA), Path.Pident(idB)) =>
-    Ident.name(idA) == Ident.name(idB)
-  | (Pdot(pA, sA, _), Pdot(pB, sB, _)) =>
-    sA == sB && typePathsEqual(pA, pB)
-  | (Path.Papply(_), Path.Papply(_))
-  | (_, _) => false
-  };
-
-let dependencyEqual = (a, b) =>
-  switch (a, b) {
-  | (TypeAtPath(pA), TypeAtPath(pB)) => typePathsEqual(pA, pB)
-  | (JSTypeFromModule(sA, sB, sC), JSTypeFromModule(sD, sE, sF)) =>
-    sA == sD && sB == sE && sC == sF
-  | (FreeTypeVariable(sA, idA), FreeTypeVariable(sB, idB)) =>
-    sA == sB && idA === idB
-  | _ => false
-  };
-
 let importCompare = (i1, i2) =>
   switch (i1, i2) {
   | (ImportComment(s1), ImportComment(s2)) => compare(s1, s2)
