@@ -43,7 +43,6 @@ type componentBinding = {
   moduleName: ModuleName.t,
   componentType: Flow.typ,
   propsTypeName: string,
-  propsTypeArguments: option(Flow.typ),
   converter,
 };
 
@@ -674,40 +673,30 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
-      | [] => None
+      | [] => Flow.ObjectType([])
       /* Then we had both props and children. */
       | [_children, ..._] =>
         switch (propOrChildren) {
         | Flow.ObjectType(fields) =>
           /* Add children?:any to props type */
           let childrenField = ("children", NonMandatory, Flow.anyAlias);
-          Some(Flow.ObjectType(fields @ [childrenField]));
-        | _ => Some(propOrChildren)
+          Flow.ObjectType(fields @ [childrenField]);
+        | _ => propOrChildren
         }
       };
     let propsTypeName = GenIdent.propsTypeName();
     let propsTypeNameFlow = Flow.Ident(propsTypeName, []);
     /* TODO: Polymorphic props */
     let componentType =
-      Flow.Ident(
-        "React$ComponentType",
-        switch (propsTypeArguments) {
-        | None => []
-        | Some(_propsType) => [propsTypeNameFlow]
-        },
-      );
-    let propsTypeDeclaration =
-      switch (propsTypeArguments) {
-      | None => []
-      | Some(propsType) => [
-          codeItemForType(
-            ~opaque=false,
-            [],
-            ~typeName=propsTypeName,
-            propsType,
-          ),
-        ]
-      };
+      Flow.Ident("React$ComponentType", [propsTypeNameFlow]);
+    let propsTypeDeclaration = [
+      codeItemForType(
+        ~opaque=false,
+        [],
+        ~typeName=propsTypeName,
+        propsTypeArguments,
+      ),
+    ];
 
     let items =
       propsTypeDeclaration
@@ -716,7 +705,6 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
           moduleName,
           componentType,
           propsTypeName,
-          propsTypeArguments,
           converter,
         }),
       ];

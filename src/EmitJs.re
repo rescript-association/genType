@@ -149,23 +149,18 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         moduleName,
         componentType,
         propsTypeName,
-        propsTypeArguments,
         converter,
       }) =>
       let name = "component";
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
-        switch (propsTypeArguments) {
-        | None => None
-        | Some(_flowType) =>
-          Some(
-            Flow.Ident(
-              "React$ComponentType",
-              [Flow.Ident(propsTypeName, [])],
-            ),
-          )
-        };
+        Some(
+          Flow.Ident(
+            "React$ComponentType",
+            [Flow.Ident(propsTypeName, [])],
+          ),
+        );
       let args =
         switch (converter) {
         | CodeItem.Fn((argsConverter, _retConverter)) when argsConverter != [] =>
