@@ -1,6 +1,6 @@
 # Reason genFlow
 
-`genFlow` is a tool to automatically generate type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/). It also generates typed wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components.
+`genFlow` is a tool to automatically generate type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/). It also generates typed JS wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components, and in the other direction, checks that ReasonReact wrappers for JS components are well typed.
 
 ###Work in progress, only for early adopters. It is possible that the workflow will change in future.
 ###
@@ -15,6 +15,11 @@ When a `[@genFlow]` annotation is added to some declaration in `Module.re`, a fi
 
 [Here is a video showing the generation of .re.js files.](https://youtu.be/0YLXGBiB9dY)
 [![IMAGE ALT TEXT HERE](assets/genFlow.png)](https://youtu.be/0YLXGBiB9dY)
+
+When a `[@genFlow]` annotation is added to an external `ReasonReact.reactclass` binding and to the `make` function that calls `ReasonReact.wrapJsForReason` with it, a function `checkJsWrapperType` is generated to catch type errors in wrapping the JS component.
+
+[Here is a video showing how to safely wrap JS components for use from Reason.](https://youtu.be/UKACByHmuQE)
+[![IMAGE ALT TEXT HERE](assets/genFlowWrapJsComponent.png)](https://youtu.be/UKACByHmuQE)
 
 
 # Set up genFlow in a project
@@ -31,9 +36,13 @@ into bucklescript in future.
 
 # Limitations
 
-Currently `genFlow` only supports bucklescript projects with in-source generation of `.bs.js` files.
+* **In-source**. Currently only supports bucklescript projects with in-source generation of `.bs.js` files.
 
-Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`). Also, nested modules are not supported, and annotations will be ignored.
+* **No iterfaces**. Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`).
+
+* **No nested modules**. Nested modules are not supported, and annotations will be ignored.
+
+* **Limited JS wrappers**. There must be ony one `@genFlow` annotation on one external binding, and the component it binds is passed to `wrapJsForReason` (this is assumed, not checked). Also, `wrapJsForReason` in the `make` function must simply forward the props, without renaming/wrapping or modifying their values (again, this is assumed, not checked). See for example [MyBannerRe.re](reason-react-example/src/interop/MyBannerRe.re).
 
 # Development
 
