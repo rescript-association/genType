@@ -6,15 +6,58 @@ module StringSet = Set.Make(String);
 
 open GenFlowCommon;
 
+let getPriority = x =>
+  switch (x) {
+  | CodeItem.ImportType(_)
+  | ExternalReactClass(_) => "2low"
+  | ValueBinding(_)
+  | ConstructorBinding(_)
+  | ComponentBinding(_)
+  | ExportType(_)
+  | ExportUnionType(_) => "1med"
+  };
+
+let sortcodeItemsByPriority = codeItems => {
+  module M = StringMap;
+  let map =
+    codeItems
+    |> List.fold_left(
+         (map, codeItem) => {
+           let priority = codeItem |> getPriority;
+           let items =
+             try (map |> StringMap.find(priority)) {
+             | Not_found => []
+             };
+           map |> StringMap.add(priority, [codeItem, ...items]);
+         },
+         StringMap.empty,
+       );
+  let sortedCodeItems = ref([]);
+  map
+  |> StringMap.iter((priority, codeItemsAtPriority) =>
+       codeItemsAtPriority
+       |> List.iter(codeItem =>
+            sortedCodeItems := [codeItem, ...sortedCodeItems^]
+          )
+     );
+  sortedCodeItems^;
+};
+
 let typedItemToCodeItems = (~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
       typeDeclarations |> List.map(CodeItem.fromTypeDecl) |> List.split
+
     | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
       valueBindings
       |> List.map(CodeItem.fromValueBinding(~moduleName))
       |> List.split
+
+    | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
+      /* external declaration */
+      valueDescription |> CodeItem.fromValueDescription
+
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
     };
@@ -45,7 +88,7 @@ let cmtToCodeItems =
         ~modulesMap,
         deps,
       );
-    List.append(imports, codeItems);
+    List.append(imports, codeItems |> sortcodeItemsByPriority);
   | _ => []
   };
 };
@@ -100,8 +143,12 @@ let emitCodeItems =
       ~resolver,
       codeItems,
     ) =>
-  switch (codeItems) {
-  | [_, ..._] =>
+  if (codeItems == []) {
+    outputFile |> GeneratedFiles.logFileAction(NoMatch);
+    if (Sys.file_exists(outputFile)) {
+      Unix.unlink(outputFile);
+    };
+  } else {
     let codeText =
       codeItems |> EmitJs.emitCodeItems(~outputFileRelative, ~resolver);
     let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
@@ -111,12 +158,6 @@ let emitCodeItems =
       ~fileContents,
       ~writeFile,
     );
-
-  | [] =>
-    outputFile |> GeneratedFiles.logFileAction(NoMatch);
-    if (Sys.file_exists(outputFile)) {
-      Unix.unlink(outputFile);
-    };
   };
 
 let processCmtFile = (~fileHeader, ~signFile, ~modulesMap, cmt) => {

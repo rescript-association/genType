@@ -1,6 +1,9 @@
 type t = string;
 
 let createBucklescriptBlock = "CreateBucklescriptBlock";
+
+let react = "React";
+
 let reasonPervasives = "ReasonPervasives";
 let reasonReact = "ReasonReact";
 

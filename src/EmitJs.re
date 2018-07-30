@@ -4,10 +4,11 @@ type env = {
   requires: ModuleNameMap.t(ImportPath.t),
   typeMap: StringMap.t(Flow.typ),
   exports: list((string, option(Flow.typ))),
+  externalReactClass: list(CodeItem.externalReactClass),
 };
 
-let requireModule = (~env, ~outputFileRelative, ~resolver, moduleName) =>
-  env.requires
+let requireModule = (~requires, ~outputFileRelative, ~resolver, moduleName) =>
+  requires
   |> ModuleNameMap.add(
        moduleName,
        ModuleResolver.resolveSourceModule(
@@ -79,6 +80,30 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       ++ (importPath |> ImportPath.toString)
       ++ "\");",
     );
+  let emitCheckJsWrapperType = (~env, ~propsTypeName) =>
+    switch (env.externalReactClass) {
+    | [] => env.requires
+
+    | [{componentName}] =>
+      let s =
+        "function checkJsWrapperType(props: "
+        ++ propsTypeName
+        ++ ") {
+      return <"
+        ++ componentName
+        ++ " {...props}> </"
+        ++ componentName
+        ++ ">;
+    }";
+      line(s);
+      env.requires |> ModuleNameMap.add(ModuleName.react, ImportPath.reactjs);
+
+    | [_, ..._] =>
+      line(
+        "// genFlow warning: found more than one external component annotated with @genFlow",
+      );
+      env.requires;
+    };
   let emitCodeItem = (env, codeItem) =>
     switch (codeItem) {
     | CodeItem.ImportType(import) =>
@@ -95,7 +120,12 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
 
     | ValueBinding(moduleName, id, flowType, converter) =>
       let requires =
-        moduleName |> requireModule(~env, ~outputFileRelative, ~resolver);
+        moduleName
+        |> requireModule(
+             ~requires=env.requires,
+             ~outputFileRelative,
+             ~resolver,
+           );
       line(
         "const "
         ++ id
@@ -109,6 +139,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         ++ ";",
       );
       {
+        ...env,
         typeMap: env.typeMap |> StringMap.add(id, flowType),
         exports: [(id, Some(flowType)), ...env.exports],
         requires,
@@ -194,9 +225,22 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         ++ ";",
       );
       line("  }));");
-      let requires =
-        moduleName |> requireModule(~env, ~outputFileRelative, ~resolver);
+
+      let requiresWithCheckJsWrapper =
+        emitCheckJsWrapperType(~env, ~propsTypeName);
+
+      let requiresWithModule =
+        moduleName
+        |> requireModule(
+             ~requires=requiresWithCheckJsWrapper,
+             ~outputFileRelative,
+             ~resolver,
+           );
+      let requiresWithReasonReact =
+        requiresWithModule
+        |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact);
       {
+        ...env,
         typeMap:
           switch (componentType) {
           | None => env.typeMap
@@ -204,15 +248,36 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
             env.typeMap |> StringMap.add("component", flowType)
           },
         exports: [(name, componentType), ...env.exports],
-        requires:
-          requires
-          |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact),
+        requires: requiresWithReasonReact,
+      };
+
+    | ExternalReactClass({componentName, importPath} as externalReactClass) =>
+      line(
+        "const "
+        ++ componentName
+        ++ " = require(\""
+        ++ (importPath |> ImportPath.toString)
+        ++ "\");"
+        ++ " // external "
+        ++ componentName
+        ++ " : ReasonReact.reactClass = \""
+        ++ (importPath |> ImportPath.toString)
+        ++ "\"",
+      );
+      {
+        ...env,
+        externalReactClass: [externalReactClass, ...env.externalReactClass],
       };
     };
   let {requires, exports, _} =
     List.fold_left(
       emitCodeItem,
-      {requires: ModuleNameMap.empty, typeMap: StringMap.empty, exports: []},
+      {
+        requires: ModuleNameMap.empty,
+        typeMap: StringMap.empty,
+        exports: [],
+        externalReactClass: [],
+      },
       codeItems,
     );
 

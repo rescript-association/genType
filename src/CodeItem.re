@@ -46,10 +46,14 @@ type componentBinding = {
   converter,
 };
 
+type externalReactClass = {
+  componentName: string,
+  importPath: ImportPath.t,
+};
+
 type t =
   | ImportType(import)
-  | ExportType(exportType)
-  | ExportUnionType(exportUnionType)
+  | ExternalReactClass(externalReactClass)
   | ValueBinding(ModuleName.t, string, Flow.typ, converter)
   | ConstructorBinding(
       Flow.typ,
@@ -57,7 +61,14 @@ type t =
       string,
       Runtime.recordValue,
     )
-  | ComponentBinding(componentBinding);
+  | ComponentBinding(componentBinding)
+  | ExportType(exportType)
+  | ExportUnionType(exportUnionType);
+
+type priority =
+  | Import
+  | Binding
+  | Export;
 
 type genFlowKind =
   | NoGenFlow
@@ -750,6 +761,32 @@ let fromValueBinding = (~moduleName, valueBinding) => {
     id |> codeItemsForMake(~moduleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
     id |> codeItemsForId(~moduleName, ~valueBinding)
+  | _ => ([], [])
+  };
+};
+
+/**
+ * [@genFlow]
+ * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
+ */
+let fromValueDescription = (valueDescription: Typedtree.value_description) => {
+  let componentName =
+    valueDescription.val_id |> Ident.name |> String.capitalize;
+  let path =
+    switch (valueDescription.val_prim) {
+    | [firstValPrim, ..._] => firstValPrim
+    | [] => ""
+    };
+  let importPath = path |> ImportPath.fromStringUnsafe;
+  let conversionPlan =
+    valueDescription.val_desc.ctyp_type |> reasonTypeToConversion;
+  let flowType = conversionPlan.convertableFlowType |> snd;
+  let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
+  switch (flowType, genFlowKind) {
+  | (Flow.Ident("ReasonReactreactClass", []), GenFlow) when path != "" => (
+      [],
+      [[ExternalReactClass({componentName, importPath})]],
+    )
   | _ => ([], [])
   };
 };
