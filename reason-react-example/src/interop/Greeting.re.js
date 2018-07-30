@@ -1,6 +1,6 @@
 /* @flow strict */
 
-var GreetingRe = require("./GreetingRe.bs");
+var Greeting = require("./Greeting.bs");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {Component as ReactComponent} from 'React';
@@ -9,14 +9,14 @@ import type {componentSpec as ReasonReactcomponentSpec} from '../../src/shims/Re
 import type {list} from '../../src/shims/ReasonPervasives.shim.js';
 import type {noRetainedProps as ReasonReactnoRetainedProps} from '../../src/shims/ReactShim.shim.js';
 import type {stateless as ReasonReactstateless} from '../../src/shims/ReactShim.shim.js';
-const concat = GreetingRe.concat;
-const cons = GreetingRe.cons;
-const empty = GreetingRe.empty;
+const concat = Greeting.concat;
+const cons = Greeting.cons;
+const empty = Greeting.empty;
 export type Props = {|message:string, extraGreeting?:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
-  GreetingRe.component,
+  Greeting.component,
   (function (jsProps: Props) {
-     return GreetingRe.make(jsProps.message, jsProps.extraGreeting, jsProps.children);
+     return Greeting.make(jsProps.message, jsProps.extraGreeting, jsProps.children);
   }));
 
 exports.concat = (concat: (string, list<string>) => string);
