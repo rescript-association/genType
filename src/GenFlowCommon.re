@@ -13,6 +13,7 @@ let logItem = x => {
 
 module Debug = {
   let moduleResolution = false;
+  let codeItems = false;
 };
 
 module Paths = {

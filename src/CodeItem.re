@@ -75,6 +75,17 @@ type genFlowKind =
   | GenFlow
   | GenFlowOpaque;
 
+let toString = codeItem =>
+  switch (codeItem) {
+  | ImportType(_) => "ImportType"
+  | ExternalReactClass(_) => "ExternalReactClass"
+  | ValueBinding(_) => "ValueBinding"
+  | ConstructorBinding(_) => "ConstructorBinding"
+  | ComponentBinding(_) => "ComponentBinding"
+  | ExportType(_) => "ExportType"
+  | ExportUnionType(_) => "ExportUnionType"
+  };
+
 /*
   When reading the data structures: There are structures from the `Typedtree`
   module which is the typed AST, and that AST references types from the module

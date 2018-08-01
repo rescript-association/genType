@@ -104,7 +104,10 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       );
       env.requires;
     };
-  let emitCodeItem = (env, codeItem) =>
+  let emitCodeItem = (env, codeItem) => {
+    if (Debug.codeItems) {
+      logItem("Code Item: %s\n", codeItem |> CodeItem.toString);
+    };
     switch (codeItem) {
     | CodeItem.ImportType(import) =>
       line(emitImport(import) ++ ";");
@@ -269,6 +272,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         externalReactClass: [externalReactClass, ...env.externalReactClass],
       };
     };
+  };
   let {requires, exports, _} =
     List.fold_left(
       emitCodeItem,
