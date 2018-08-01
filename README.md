@@ -2,8 +2,7 @@
 
 `genFlow` is a tool to automatically generate type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/). It also generates typed JS wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components, and in the other direction, if you have ReasonReact wrappers for JS components, it checks that they are well typed.
 
-###Work in progress, only for early adopters. It is possible that the workflow will change in future.
-###
+### Work in progress, only for early adopters. It is possible that the workflow will change in future.
 
 Type-safe wrappers for using ReasonReact components from javascript are generated when the annotation `[@genFLow] let make ...` is added to the component definition.
 
