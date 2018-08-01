@@ -1,28 +1,3 @@
-let rec toString = converter =>
-  switch (converter) {
-  | CodeItem.Unit => "unit"
-  | Identity => "id"
-  | OptionalArgument(c) => "optionalArgument(" ++ toString(c) ++ ")"
-  | Option(c) => "option(" ++ toString(c) ++ ")"
-  | Fn((args, c)) =>
-    let labelToString = label =>
-      switch (label) {
-      | NamedArgs.Nolabel => "-"
-      | Label(l) => l
-      | OptLabel(l) => "?" ++ l
-      };
-    "fn("
-    ++ (
-      args
-      |> List.map(((label, conv)) =>
-           "(~" ++ labelToString(label) ++ ":" ++ toString(conv) ++ ")"
-         )
-      |> String.concat(", ")
-    )
-    ++ " -> "
-    ++ toString(c)
-    ++ ")";
-  };
 
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {

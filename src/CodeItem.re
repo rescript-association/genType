@@ -75,11 +75,46 @@ type genFlowKind =
   | GenFlow
   | GenFlowOpaque;
 
+let rec converterToString = converter =>
+  switch (converter) {
+  | Unit => "unit"
+  | Identity => "id"
+  | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
+  | Option(c) => "option(" ++ converterToString(c) ++ ")"
+  | Fn((args, c)) =>
+    let labelToString = label =>
+      switch (label) {
+      | NamedArgs.Nolabel => "-"
+      | Label(l) => l
+      | OptLabel(l) => "?" ++ l
+      };
+    "fn("
+    ++ (
+      args
+      |> List.map(((label, conv)) =>
+           "(~"
+           ++ labelToString(label)
+           ++ ":"
+           ++ converterToString(conv)
+           ++ ")"
+         )
+      |> String.concat(", ")
+    )
+    ++ " -> "
+    ++ converterToString(c)
+    ++ ")";
+  };
+
 let toString = codeItem =>
   switch (codeItem) {
   | ImportType(_) => "ImportType"
   | ExternalReactClass(_) => "ExternalReactClass"
-  | ValueBinding(_) => "ValueBinding"
+  | ValueBinding(moduleName, id, flowType, converter) =>
+    "ValueBinding"
+    ++ " id:"
+    ++ id
+    ++ " converter:"
+    ++ converterToString(converter)
   | ConstructorBinding(_) => "ConstructorBinding"
   | ComponentBinding(_) => "ComponentBinding"
   | ExportType(_) => "ExportType"
