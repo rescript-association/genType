@@ -1,34 +1,40 @@
 open GenFlowCommon;
 
-type label =
-  | Nolabel
-  | Label(string)
-  | OptLabel(string);
-
-type groupedArg('t) =
-  /* Contains a list of (name, isOptional, 't)  */
-  | GroupedArgs(Flow.fields)
-  | Arg('t);
-
 /**
  * For convenient processing turns consecutive named arguments into a
  * `NamedArgs` group, and individual non-named arguments into `Arg`s.
  */
-let rec groupReversed = (revCurGroup, revResult, lst) =>
-  switch (revCurGroup, lst) {
-  | ([], [(Nolabel, t), ...tl]) =>
-    groupReversed([], [Arg(t), ...revResult], tl)
+let rec groupReversed = (~revCurGroup, ~revResult, labeledConvertableTypes) =>
+  switch (revCurGroup, labeledConvertableTypes) {
+  | ([], [(Flow.Nolabel, convertableType), ...tl]) =>
+    groupReversed(
+      ~revCurGroup=[],
+      ~revResult=[Flow.Arg(convertableType), ...revResult],
+      tl,
+    )
   /* Add it to the current group, not result. */
-  | (_, [(OptLabel(name), t), ...tl]) =>
-    groupReversed([(name, NonMandatory, t), ...revCurGroup], revResult, tl)
-  | (_, [(Label(name), t), ...tl]) =>
-    groupReversed([(name, Mandatory, t), ...revCurGroup], revResult, tl)
+  | (_, [(OptLabel(name), convertableType), ...tl]) =>
+    groupReversed(
+      ~revCurGroup=[(name, NonMandatory, convertableType), ...revCurGroup],
+      ~revResult,
+      tl,
+    )
+  | (_, [(Label(name), convertableType), ...tl]) =>
+    groupReversed(
+      ~revCurGroup=[(name, Mandatory, convertableType), ...revCurGroup],
+      ~revResult,
+      tl,
+    )
   | ([], []) => revResult
   | ([_grpHd, ..._grpTl], [] as _tl)
   /* Just form the group, and recurse ignoring the (None, t) in that case.
    * it will be handled in recursion. */
   | ([_grpHd, ..._grpTl], [(Nolabel, _), ..._tl]) =>
-    groupReversed([], [GroupedArgs(revCurGroup), ...revResult], lst)
+    groupReversed(
+      ~revCurGroup=[],
+      ~revResult=[GroupedArgs(revCurGroup), ...revResult],
+      labeledConvertableTypes,
+    )
   };
 
 /**
@@ -38,7 +44,12 @@ let rec groupReversed = (revCurGroup, revResult, lst) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
-  | [Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
+  | [Flow.Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
   | [GroupedArgs(namedArgs), ...tl] =>
     reverse(~soFar=[GroupedArgs(List.rev(namedArgs)), ...soFar], tl)
   };
+
+let group = labeledConvertableTypes =>
+  labeledConvertableTypes
+  |> groupReversed(~revCurGroup=[], ~revResult=[])
+  |> reverse;

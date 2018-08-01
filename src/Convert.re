@@ -1,6 +1,8 @@
+open GenFlowCommon;
+
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
-  | CodeItem.Unit
+  | Flow.Unit
   | Identity => value
 
   | OptionalArgument(c) => apply(~converter=c, ~toJS, value)
@@ -17,7 +19,7 @@ let rec apply = (~converter, ~toJS, value) =>
       when
         args
         |> List.for_all(((label, argConverter)) =>
-             label == NamedArgs.Nolabel && argConverter == CodeItem.Identity
+             label == Flow.Nolabel && argConverter == Flow.Identity
            ) =>
     value |> apply(~converter=resultConverter, ~toJS)
 
@@ -34,7 +36,7 @@ let rec apply = (~converter, ~toJS, value) =>
       let convertArg = (i, (lbl, argConverter)) => {
         let varName =
           switch (lbl) {
-          | NamedArgs.Nolabel => Emit.argi(i + 1)
+          | Flow.Nolabel => Emit.argi(i + 1)
           | Label(l)
           | OptLabel(l) => Emit.arg(l)
           };

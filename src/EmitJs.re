@@ -192,7 +192,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         );
       let args =
         switch (converter) {
-        | CodeItem.Fn((argsConverter, _retConverter)) when argsConverter != [] =>
+        | Flow.Fn((argsConverter, _retConverter)) when argsConverter != [] =>
           switch (List.rev(argsConverter)) {
           | [] => assert(false)
           | [(_, childrenConverter), ...revPropConverters] =>
@@ -202,7 +202,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
               ...revPropConverters
                  |> List.map(((lbl, argConverter)) =>
                       switch (lbl) {
-                      | NamedArgs.Label(l)
+                      | Flow.Label(l)
                       | OptLabel(l) =>
                         jsPropsDot(l)
                         |> Convert.apply(~converter=argConverter, ~toJS=true)

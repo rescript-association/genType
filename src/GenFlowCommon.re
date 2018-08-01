@@ -108,8 +108,6 @@ type optionalness =
   | Mandatory;
 
 module Flow = {
-  /* Introduction of type variables (for all) */
-
   type typ =
     | Optional(typ)
     /* List of typ is the type arguments applied */
@@ -123,6 +121,26 @@ module Flow = {
     groupedArgs: bool,
   }
   and fields = list((string, optionalness, typ));
+
+  type label =
+    | Nolabel
+    | Label(string)
+    | OptLabel(string);
+
+  type converter =
+    | Unit
+    | Identity
+    | OptionalArgument(converter)
+    | Option(converter)
+    | Fn((list((label, converter)), converter));
+
+  type convertableType = (converter, typ);
+  type groupedArgs = list((string, optionalness, convertableType));
+
+  type groupedArg =
+    /* Contains a list of (name, isOptional, 't)  */
+    | GroupedArgs(groupedArgs)
+    | Arg(convertableType);
 
   let genericsString = genericStrings =>
     genericStrings === [] ?

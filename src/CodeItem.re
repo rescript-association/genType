@@ -1,12 +1,5 @@
 open GenFlowCommon;
 
-type converter =
-  | Unit
-  | Identity
-  | OptionalArgument(converter)
-  | Option(converter)
-  | Fn((list((NamedArgs.label, converter)), converter));
-
 type dependency =
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t)
@@ -15,11 +8,9 @@ type dependency =
   /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
 
-type convertableFlowType = (converter, Flow.typ);
-
 type conversionPlan = {
   dependencies: list(dependency),
-  convertableFlowType,
+  convertableType: Flow.convertableType,
 };
 
 type import =
@@ -43,7 +34,7 @@ type componentBinding = {
   moduleName: ModuleName.t,
   componentType: Flow.typ,
   propsTypeName: string,
-  converter,
+  converter: Flow.converter,
 };
 
 type externalReactClass = {
@@ -54,10 +45,10 @@ type externalReactClass = {
 type t =
   | ImportType(import)
   | ExternalReactClass(externalReactClass)
-  | ValueBinding(ModuleName.t, string, Flow.typ, converter)
+  | ValueBinding(ModuleName.t, string, Flow.typ, Flow.converter)
   | ConstructorBinding(
       Flow.typ,
-      list(convertableFlowType),
+      list(Flow.convertableType),
       string,
       Runtime.recordValue,
     )
@@ -77,14 +68,14 @@ type genFlowKind =
 
 let rec converterToString = converter =>
   switch (converter) {
-  | Unit => "unit"
+  | Flow.Unit => "unit"
   | Identity => "id"
   | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
   | Option(c) => "option(" ++ converterToString(c) ++ ")"
   | Fn((args, c)) =>
     let labelToString = label =>
       switch (label) {
-      | NamedArgs.Nolabel => "-"
+      | Flow.Nolabel => "-"
       | Label(l) => l
       | OptLabel(l) => "?" ++ l
       };
@@ -290,18 +281,14 @@ let rec removeOption = (label, typ) =>
  *       [(x, b), (y, d), ...]
  *     )
  */
-let rec distributeSplitRev_ = (revLeftSoFar, revRightSoFar, lst) =>
+let rec distributeSplitRev_ = (revSoFar, lst) =>
   switch (lst) {
-  | [] => (revLeftSoFar, revRightSoFar)
+  | [] => revSoFar
   | [(toDistribute, (ontoA, ontoB)), ...tl] =>
-    distributeSplitRev_(
-      [(toDistribute, ontoA), ...revLeftSoFar],
-      [(toDistribute, ontoB), ...revRightSoFar],
-      tl,
-    )
+    distributeSplitRev_([(toDistribute, (ontoA, ontoB)), ...revSoFar], tl)
   };
 
-let distributeSplitRev = lst => distributeSplitRev_([], [], lst);
+let distributeSplitRev = lst => distributeSplitRev_([], lst);
 
 let rec typePathToFlowName = typePath =>
   switch (typePath) {
@@ -318,18 +305,18 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
     switch (typ.desc) {
     | Tlink(t) => extract_fun(revArgDeps, revArgs, t)
     | Tarrow("", t1, t2, _) =>
-      let {dependencies, convertableFlowType} = reasonTypeToConversion(t1);
+      let {dependencies, convertableType} = reasonTypeToConversion(t1);
       let nextRevDeps = List.append(dependencies, revArgDeps);
       extract_fun(
         nextRevDeps,
-        [(NamedArgs.Nolabel, convertableFlowType), ...revArgs],
+        [(Flow.Nolabel, convertableType), ...revArgs],
         t2,
       );
     | Tarrow(lbl, t1, t2, _) =>
       switch (removeOption(lbl, t1)) {
       | None =>
         /* TODO: Convert name to object, convert null to optional. */
-        let {dependencies, convertableFlowType: t1Conversion} =
+        let {dependencies, convertableType: t1Conversion} =
           reasonTypeToConversion(t1);
         let nextRevDeps = List.rev_append(dependencies, revArgDeps);
         extract_fun(
@@ -338,9 +325,9 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
           t2,
         );
       | Some((lbl, t1)) =>
-        let {dependencies, convertableFlowType: (t1Converter, t1FlowType)} =
+        let {dependencies, convertableType: (t1Converter, t1FlowType)} =
           reasonTypeToConversion(t1);
-        let t1Conversion = (OptionalArgument(t1Converter), t1FlowType);
+        let t1Conversion = (Flow.OptionalArgument(t1Converter), t1FlowType);
         let nextRevDeps = List.append(dependencies, revArgDeps);
         /* TODO: Convert name to object, convert null to optional. */
         extract_fun(
@@ -350,39 +337,45 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
         );
       }
     | _ =>
-      let {dependencies, convertableFlowType: (retConverter, retType)} =
+      let {dependencies, convertableType: (retConverter, retType)} =
         reasonTypeToConversion(typ);
-      let (labeledConverters, labeledFlow) = distributeSplitRev(revArgs);
+      let labeledConvertableTypes = distributeSplitRev(revArgs);
       /* TODO: Ignore all final single unit args at convert/type conversion time. */
       let notJustASingleUnitArg =
-        switch (labeledConverters) {
-        | [(Nolabel, c)] when c === Unit => false
+        switch (labeledConvertableTypes) {
+        | [(Nolabel, (c, _t))] when c === Unit => false
         | _ => true
         };
       let needsArgConversion =
         List.exists(
-          ((lbl, converter)) =>
-            lbl !== NamedArgs.Nolabel || converter !== Identity,
-          labeledConverters,
+          ((lbl, (converter, _t))) =>
+            lbl !== Flow.Nolabel || converter !== Flow.Identity,
+          labeledConvertableTypes,
         )
         && notJustASingleUnitArg;
       let allDeps = List.append(List.rev(revArgDeps), dependencies);
-      let revGroupedFlow = NamedArgs.groupReversed([], [], labeledFlow);
-      let groupedFlow = NamedArgs.reverse(revGroupedFlow);
-      let flowArgs = itm =>
-        switch (itm) {
-        | NamedArgs.GroupedArgs(fields) =>
-          Flow.(ObjectType({fields, groupedArgs: true}))
-        | Arg(flowType) => flowType
+      let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
+      let groupedArgToTyp = groupedArg =>
+        switch (groupedArg) {
+        | Flow.GroupedArgs(groupedArgs) =>
+          let fields =
+            groupedArgs
+            |> List.map(((s, optionalness, (_c, typ))) =>
+                 (s, optionalness, typ)
+               );
+          Flow.(ObjectType({fields, groupedArgs: true}));
+        | Arg((_c, flowType)) => flowType
         };
       let flowArrow =
-        Flow.Arrow([], List.map(flowArgs, groupedFlow), retType);
+        Flow.Arrow([], groupedArgs |> List.map(groupedArgToTyp), retType);
+      let labeledConverters =
+        labeledConvertableTypes |> List.map(((lbl, (c, _t))) => (lbl, c));
       let functionConverter =
         retConverter !== Identity || needsArgConversion ?
-          Fn((labeledConverters, retConverter)) : Identity;
+          Flow.Fn((labeledConverters, retConverter)) : Identity;
       {
         dependencies: allDeps,
-        convertableFlowType: (functionConverter, flowArrow),
+        convertableType: (functionConverter, flowArrow),
       };
     }
   )
@@ -405,33 +398,33 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
       let typeName = jsTypeNameForAnonymousTypeID(typ.id);
       {
         dependencies: [FreeTypeVariable(typeName, typ.id)],
-        convertableFlowType: (Identity, Flow.Ident(typeName, [])),
+        convertableType: (Identity, Flow.Ident(typeName, [])),
       };
     | Tvar(Some(s)) =>
       let typeName = s;
       {
         dependencies: [FreeTypeVariable(typeName, typ.id)],
-        convertableFlowType: (Identity, Flow.Ident(s, [])),
+        convertableType: (Identity, Flow.Ident(s, [])),
       };
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
     | Tconstr(Path.Pident({name: "bool", _}), [], _) => {
         dependencies: [],
-        convertableFlowType: (Identity, Flow.Ident("bool", [])),
+        convertableType: (Identity, Flow.Ident("bool", [])),
       }
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "int", _), [], _)
     | Tconstr(Path.Pident({name: "int", _}), [], _) => {
         dependencies: [],
-        convertableFlowType: (Identity, Flow.Ident("number", [])),
+        convertableType: (Identity, Flow.Ident("number", [])),
       }
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "string", _), [], _)
     | Tconstr(Path.Pident({name: "string", _}), [], _) => {
         dependencies: [],
-        convertableFlowType: (Identity, Flow.Ident("string", [])),
+        convertableType: (Identity, Flow.Ident("string", [])),
       }
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "unit", _), [], _)
     | Tconstr(Path.Pident({name: "unit", _}), [], _) => {
         dependencies: [],
-        convertableFlowType: (Unit, Flow.Ident("(typeof undefined)", [])),
+        convertableType: (Unit, Flow.Ident("(typeof undefined)", [])),
       }
     /*
      * Arrays do not experience any conversion, in order to retain referencial
@@ -443,13 +436,13 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
     | Tconstr(Path.Pident({name: "array", _}), [p], _) =>
       let {
         dependencies: paramDeps,
-        convertableFlowType: (itemConverter, itemFlow),
+        convertableType: (itemConverter, itemFlow),
       } =
         reasonTypeToConversion(p);
       if (itemConverter === Identity) {
         {
           dependencies: paramDeps,
-          convertableFlowType: (
+          convertableType: (
             Identity,
             Flow.Ident("$ReadOnlyArray", [itemFlow]),
           ),
@@ -472,22 +465,19 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
       /* TODO: Handle / verify the case of nested optionals. */
       let {
         dependencies: paramDeps,
-        convertableFlowType: (paramConverter, paramConverted),
+        convertableType: (paramConverter, paramConverted),
       } =
         reasonTypeToConversion(p);
-      let composedConverter = Option(paramConverter);
+      let composedConverter = Flow.Option(paramConverter);
       {
         dependencies: paramDeps,
-        convertableFlowType: (
-          composedConverter,
-          Flow.Optional(paramConverted),
-        ),
+        convertableType: (composedConverter, Flow.Optional(paramConverted)),
       };
     | Tarrow(_) => extract_fun([], [], typ)
     | Tlink(t) => reasonTypeToConversion(t)
     | Tconstr(path, [], _) => {
         dependencies: [TypeAtPath(path)],
-        convertableFlowType: (
+        convertableType: (
           Identity,
           Flow.Ident(typePathToFlowName(path), []),
         ),
@@ -506,7 +496,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
       let conversionPlans = reasonTypesToConversion(typeParams);
       let convertableFlowTypes =
         conversionPlans
-        |> List.map(({convertableFlowType, _}) => convertableFlowType);
+        |> List.map(({convertableType, _}) => convertableType);
       let typeParamDeps =
         conversionPlans
         |> List.map(({dependencies, _}) => dependencies)
@@ -519,12 +509,12 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
         );
       {
         dependencies: [TypeAtPath(path), ...typeParamDeps],
-        convertableFlowType: (
+        convertableType: (
           Identity,
           Flow.Ident(typePathToFlowName(path), typeArgs),
         ),
       };
-    | _ => {dependencies: [], convertableFlowType: (Identity, Flow.any)}
+    | _ => {dependencies: [], convertableType: (Identity, Flow.any)}
     }
   )
 and reasonTypesToConversion = args: list(conversionPlan) =>
@@ -636,8 +626,7 @@ let codeItemsFromConstructorDeclaration =
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
   let conversionPlans = reasonTypesToConversion(constructorArgs);
   let convertableFlowTypes =
-    conversionPlans
-    |> List.map(({convertableFlowType, _}) => convertableFlowType);
+    conversionPlans |> List.map(({convertableType, _}) => convertableType);
   let dependencies =
     conversionPlans
     |> List.map(({dependencies, _}) => dependencies)
@@ -672,7 +661,7 @@ let codeItemsFromConstructorDeclaration =
 let codeItemsForId = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
-  let {dependencies, convertableFlowType: (converter, flowType)} =
+  let {dependencies, convertableType: (converter, flowType)} =
     reasonTypeToConversion(expressionType);
   /*
    * We pull apart the polymorphic type variables at the binding level, but
@@ -715,7 +704,7 @@ let codeItemsForId = (~moduleName, ~valueBinding, id) => {
 let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
-  let {dependencies, convertableFlowType: (converter, flowType)} =
+  let {dependencies, convertableType: (converter, flowType)} =
     reasonTypeToConversion(expressionType);
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
@@ -832,7 +821,7 @@ let fromValueDescription = (valueDescription: Typedtree.value_description) => {
   let importPath = path |> ImportPath.fromStringUnsafe;
   let conversionPlan =
     valueDescription.val_desc.ctyp_type |> reasonTypeToConversion;
-  let flowType = conversionPlan.convertableFlowType |> snd;
+  let flowType = conversionPlan.convertableType |> snd;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (flowType, genFlowKind) {
   | (Flow.Ident("ReasonReactreactClass", []), GenFlow) when path != "" => (
@@ -879,7 +868,7 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
         [codeItemForType(~opaque=true, flowTypeVars, ~typeName, Flow.any)],
       )
     | Some(coreType) =>
-      let {dependencies, convertableFlowType: (_converter, flowType)} =
+      let {dependencies, convertableType: (_converter, flowType)} =
         reasonTypeToConversion(coreType.Typedtree.ctyp_type);
       let structureItems = [
         codeItemForType(~opaque=true, flowTypeVars, ~typeName, flowType),
