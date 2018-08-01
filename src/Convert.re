@@ -1,4 +1,3 @@
-
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
   | CodeItem.Unit
@@ -17,8 +16,8 @@ let rec apply = (~converter, ~toJS, value) =>
   | Fn((args, resultConverter))
       when
         args
-        |> List.for_all(((_label, argConverter)) =>
-             argConverter == CodeItem.Identity
+        |> List.for_all(((label, argConverter)) =>
+             label == NamedArgs.Nolabel && argConverter == CodeItem.Identity
            ) =>
     value |> apply(~converter=resultConverter, ~toJS)
 

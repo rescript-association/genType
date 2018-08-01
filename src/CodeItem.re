@@ -113,6 +113,8 @@ let toString = codeItem =>
     "ValueBinding"
     ++ " id:"
     ++ id
+    ++ " flowType:"
+    ++ Flow.toString(flowType)
     ++ " converter:"
     ++ converterToString(converter)
   | ConstructorBinding(_) => "ConstructorBinding"
@@ -369,7 +371,8 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
       let groupedFlow = NamedArgs.reverse(revGroupedFlow);
       let flowArgs = itm =>
         switch (itm) {
-        | NamedArgs.NamedArgs(rows) => Flow.ObjectType(rows)
+        | NamedArgs.GroupedArgs(fields) =>
+          Flow.(ObjectType({fields, groupedArgs: true}))
         | Arg(flowType) => flowType
         };
       let flowArrow =
@@ -732,14 +735,17 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
-      | [] => Flow.ObjectType([])
+      | [] => Flow.ObjectType({fields: [], groupedArgs: false})
       /* Then we had both props and children. */
       | [_children, ..._] =>
         switch (propOrChildren) {
-        | Flow.ObjectType(fields) =>
+        | Flow.ObjectType({fields}) =>
           /* Add children?:any to props type */
           let childrenField = ("children", NonMandatory, Flow.any);
-          Flow.ObjectType(fields @ [childrenField]);
+          Flow.ObjectType({
+            fields: fields @ [childrenField],
+            groupedArgs: false,
+          });
         | _ => propOrChildren
         }
       };

@@ -114,10 +114,15 @@ module Flow = {
     | Optional(typ)
     /* List of typ is the type arguments applied */
     | Ident(string, list(typ))
-    | ObjectType(list((string, optionalness, typ)))
+    | ObjectType(objectType)
     /* List of typ is the type parameters abstracted. Not the arguments
      * applied. */
-    | Arrow(list(typ), list(typ), typ);
+    | Arrow(list(typ), list(typ), typ)
+  and objectType = {
+    fields,
+    groupedArgs: bool,
+  }
+  and fields = list((string, optionalness, typ));
 
   let genericsString = genericStrings =>
     genericStrings === [] ?
@@ -128,7 +133,7 @@ module Flow = {
     | Optional(typ) => "?" ++ toString(typ)
     | Ident(identPath, typeArguments) =>
       identPath ++ genericsString(List.map(toString, typeArguments))
-    | ObjectType(fields) => renderObjType(fields)
+    | ObjectType({fields}) => renderObjType(fields)
     | Arrow(typeParams, valParams, retType) =>
       renderFunType(typeParams, valParams, retType)
     }

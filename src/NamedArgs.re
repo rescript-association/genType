@@ -7,7 +7,7 @@ type label =
 
 type groupedArg('t) =
   /* Contains a list of (name, isOptional, 't)  */
-  | NamedArgs(list((string, optionalness, 't)))
+  | GroupedArgs(Flow.fields)
   | Arg('t);
 
 /**
@@ -28,7 +28,7 @@ let rec groupReversed = (revCurGroup, revResult, lst) =>
   /* Just form the group, and recurse ignoring the (None, t) in that case.
    * it will be handled in recursion. */
   | ([_grpHd, ..._grpTl], [(Nolabel, _), ..._tl]) =>
-    groupReversed([], [NamedArgs(revCurGroup), ...revResult], lst)
+    groupReversed([], [GroupedArgs(revCurGroup), ...revResult], lst)
   };
 
 /**
@@ -39,6 +39,6 @@ let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
   | [Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
-  | [NamedArgs(namedArgs), ...tl] =>
-    reverse(~soFar=[NamedArgs(List.rev(namedArgs)), ...soFar], tl)
+  | [GroupedArgs(namedArgs), ...tl] =>
+    reverse(~soFar=[GroupedArgs(List.rev(namedArgs)), ...soFar], tl)
   };
