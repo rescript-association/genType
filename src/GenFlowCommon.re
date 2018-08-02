@@ -17,8 +17,9 @@ let logItem = x => {
 };
 
 module Debug = {
-  let moduleResolution = false;
   let codeItems = false;
+  let config = false;
+  let moduleResolution = false;
 };
 
 module Paths = {
@@ -157,6 +158,13 @@ module Paths = {
                },
              ModuleNameMap.empty,
            );
+      if (Debug.config) {
+        logItem(
+          "Config language:%s modulesMap:%d entries\n",
+          language,
+          modulesMap |> ModuleNameMap.cardinal,
+        );
+      };
       {language, modulesMap};
     };
 

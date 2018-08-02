@@ -1,4 +1,5 @@
 {
+  "language" : "flow",
   "shims": [
     "ReasonReact=ReactShim",
     "Reason=ReactShim",
