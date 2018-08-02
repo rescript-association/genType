@@ -680,6 +680,15 @@ let codeItemsFromConstructorDeclaration =
   (retType, (remainingDeps, codeItems));
 };
 
+/* Applies type parameters to types (for all) */
+let abstractTheTypeParameters = (typ, params) =>
+  switch (typ) {
+  | Optional(_) => typ
+  | Ident(_) => typ
+  | ObjectType(_) => typ
+  | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
+  };
+
 let codeItemsForId = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
@@ -694,7 +703,7 @@ let codeItemsForId = (~moduleName, ~valueBinding, id) => {
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = EmitFlow.abstractTheTypeParameters(flowType, flowTypeVars);
+  let flowType = abstractTheTypeParameters(flowType, flowTypeVars);
   let codeItems = [
     ValueBinding(moduleName, Ident.name(id), flowType, converter),
   ];
@@ -731,7 +740,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = EmitFlow.abstractTheTypeParameters(flowType, flowTypeVars);
+  let flowType = abstractTheTypeParameters(flowType, flowTypeVars);
   switch (flowType) {
   | Arrow(
       _,

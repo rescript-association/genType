@@ -27,13 +27,4 @@ and renderFunType = (typeParams, valParams, retType) =>
   ++ ") => "
   ++ toString(retType);
 
-/* Applies type parameters to types (for all) */
-let abstractTheTypeParameters = (typ, params) =>
-  switch (typ) {
-  | Optional(_) => typ
-  | Ident(_) => typ
-  | ObjectType(_) => typ
-  | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
-  };
-
 let any = Ident("any", []);
