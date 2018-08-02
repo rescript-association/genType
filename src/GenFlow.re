@@ -65,12 +65,8 @@ let cli = () => {
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
     logItem("Add %s  %s\n", cmt, mlast);
-    cmt
-    |> GenFlowMain.processCmtFile(
-         ~fileHeader,
-         ~signFile,
-         ~modulesMap=Paths.getConfigFile() |> createModulesMap,
-       );
+    let modulesMap = Paths.getConfigFile() |> createModulesMap;
+    cmt |> GenFlowMain.processCmtFile(~fileHeader, ~signFile, ~modulesMap);
     exit(0);
   };
   let setCmtRm = s => {
