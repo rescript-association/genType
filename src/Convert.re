@@ -2,7 +2,7 @@ open GenFlowCommon;
 
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
-  | Flow.Unit
+  | Unit
   | Identity => value
 
   | OptionalArgument(c) => apply(~converter=c, ~toJS, value)
@@ -20,8 +20,8 @@ let rec apply = (~converter, ~toJS, value) =>
         groupedArgConverters
         |> List.for_all(groupedArgConverter =>
              switch (groupedArgConverter) {
-             | Flow.ArgConverter(label, argConverter) =>
-               label == Flow.Nolabel && argConverter == Flow.Identity
+             | ArgConverter(label, argConverter) =>
+               label == Nolabel && argConverter == Identity
              | GroupConverter(_) => false
              }
            ) =>
@@ -39,10 +39,10 @@ let rec apply = (~converter, ~toJS, value) =>
     let convertedArgs = {
       let convertArg = (i, groupedArgConverter) =>
         switch (groupedArgConverter) {
-        | Flow.ArgConverter(lbl, argConverter) =>
+        | ArgConverter(lbl, argConverter) =>
           let varName =
             switch (lbl) {
-            | Flow.Nolabel => Emit.argi(i + 1)
+            | Nolabel => Emit.argi(i + 1)
             | Label(l)
             | OptLabel(l) => Emit.arg(l)
             };

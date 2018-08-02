@@ -2,8 +2,8 @@ open GenFlowCommon;
 
 type env = {
   requires: ModuleNameMap.t(ImportPath.t),
-  typeMap: StringMap.t(Flow.typ),
-  exports: list((string, option(Flow.typ))),
+  typeMap: StringMap.t(typ),
+  exports: list((string, option(typ))),
   externalReactClass: list(CodeItem.externalReactClass),
 };
 
@@ -184,15 +184,10 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
-        Some(
-          Flow.Ident(
-            "React$ComponentType",
-            [Flow.Ident(propsTypeName, [])],
-          ),
-        );
+        Some(Ident("React$ComponentType", [Ident(propsTypeName, [])]));
       let args =
         switch (converter) {
-        | Flow.Fn((groupedArgConverters, _retConverter)) =>
+        | Fn((groupedArgConverters, _retConverter)) =>
           switch (groupedArgConverters) {
           | [
               GroupConverter(propConverters),

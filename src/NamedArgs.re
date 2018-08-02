@@ -6,10 +6,10 @@ open GenFlowCommon;
  */
 let rec groupReversed = (~revCurGroup, ~revResult, labeledConvertableTypes) =>
   switch (revCurGroup, labeledConvertableTypes) {
-  | ([], [(Flow.Nolabel, convertableType), ...tl]) =>
+  | ([], [(Nolabel, convertableType), ...tl]) =>
     groupReversed(
       ~revCurGroup=[],
-      ~revResult=[Flow.Arg(convertableType), ...revResult],
+      ~revResult=[Arg(convertableType), ...revResult],
       tl,
     )
   /* Add it to the current group, not result. */
@@ -44,7 +44,7 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledConvertableTypes) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
-  | [Flow.Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
+  | [Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
   | [Group(group), ...tl] =>
     reverse(~soFar=[Group(List.rev(group)), ...soFar], tl)
   };
