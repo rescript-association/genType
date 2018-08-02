@@ -72,22 +72,35 @@ let rec converterToString = converter =>
   | Identity => "id"
   | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
   | Option(c) => "option(" ++ converterToString(c) ++ ")"
-  | Fn((args, c)) =>
+  | Fn((groupedArgConverters, c)) =>
     let labelToString = label =>
       switch (label) {
-      | Flow.Nolabel => "-"
-      | Label(l) => l
-      | OptLabel(l) => "?" ++ l
+      | Flow.Nolabel => "_"
+      | Label(l) => "~l"
+      | OptLabel(l) => "~?" ++ l
       };
     "fn("
     ++ (
-      args
-      |> List.map(((label, conv)) =>
-           "(~"
-           ++ labelToString(label)
-           ++ ":"
-           ++ converterToString(conv)
-           ++ ")"
+      groupedArgConverters
+      |> List.map(groupedArgConverter =>
+           switch (groupedArgConverter) {
+           | Flow.ArgConverter(label, conv) =>
+             "("
+             ++ labelToString(label)
+             ++ ":"
+             ++ converterToString(conv)
+             ++ ")"
+           | GroupConverter(groupConverters) =>
+             "{|"
+             ++ (
+               groupConverters
+               |> List.map(((s, optionalness, argConverter)) =>
+                    s ++ ":" ++ converterToString(argConverter)
+                  )
+               |> String.concat(", ")
+             )
+             ++ "|}"
+           }
          )
       |> String.concat(", ")
     )
@@ -339,7 +352,24 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
     | _ =>
       let {dependencies, convertableType: (retConverter, retType)} =
         reasonTypeToConversion(typ);
+      let allDeps = List.append(List.rev(revArgDeps), dependencies);
+
       let labeledConvertableTypes = distributeSplitRev(revArgs);
+      let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
+
+      let groupedArgToConverter = groupedArg =>
+        switch (groupedArg) {
+        | Flow.Group(group) =>
+          Flow.GroupConverter(
+            group
+            |> List.map(((s, optionalness, (c, _t))) =>
+                 (s, optionalness, c)
+               ),
+          )
+        | Arg((c, _t)) => Flow.ArgConverter(Flow.Nolabel, c)
+        };
+      let groupedArgConverters =
+        groupedArgs |> List.map(groupedArgToConverter);
       /* TODO: Ignore all final single unit args at convert/type conversion time. */
       let notJustASingleUnitArg =
         switch (labeledConvertableTypes) {
@@ -353,29 +383,27 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
           labeledConvertableTypes,
         )
         && notJustASingleUnitArg;
-      let allDeps = List.append(List.rev(revArgDeps), dependencies);
-      let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
+      let functionConverter =
+        retConverter !== Identity || needsArgConversion ?
+          Flow.Fn((groupedArgConverters, retConverter)) : Identity;
+
       let groupedArgToTyp = groupedArg =>
         switch (groupedArg) {
-        | Flow.GroupedArgs(groupedArgs) =>
+        | Flow.Group(group) =>
           let fields =
-            groupedArgs
+            group
             |> List.map(((s, optionalness, (_c, typ))) =>
                  (s, optionalness, typ)
                );
-          Flow.(ObjectType({fields, groupedArgs: true}));
+          Flow.(ObjectType(fields));
         | Arg((_c, flowType)) => flowType
         };
-      let flowArrow =
+      let functionType =
         Flow.Arrow([], groupedArgs |> List.map(groupedArgToTyp), retType);
-      let labeledConverters =
-        labeledConvertableTypes |> List.map(((lbl, (c, _t))) => (lbl, c));
-      let functionConverter =
-        retConverter !== Identity || needsArgConversion ?
-          Flow.Fn((labeledConverters, retConverter)) : Identity;
+
       {
         dependencies: allDeps,
-        convertableType: (functionConverter, flowArrow),
+        convertableType: (functionConverter, functionType),
       };
     }
   )
@@ -724,17 +752,14 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
-      | [] => Flow.ObjectType({fields: [], groupedArgs: false})
+      | [] => Flow.ObjectType([])
       /* Then we had both props and children. */
       | [_children, ..._] =>
         switch (propOrChildren) {
-        | Flow.ObjectType({fields}) =>
+        | Flow.ObjectType(fields) =>
           /* Add children?:any to props type */
           let childrenField = ("children", NonMandatory, Flow.any);
-          Flow.ObjectType({
-            fields: fields @ [childrenField],
-            groupedArgs: false,
-          });
+          Flow.ObjectType(fields @ [childrenField]);
         | _ => propOrChildren
         }
       };

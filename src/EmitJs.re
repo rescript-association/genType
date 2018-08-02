@@ -192,25 +192,30 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         );
       let args =
         switch (converter) {
-        | Flow.Fn((argsConverter, _retConverter)) when argsConverter != [] =>
-          switch (List.rev(argsConverter)) {
-          | [] => assert(false)
-          | [(_, childrenConverter), ...revPropConverters] =>
+        | Flow.Fn((groupedArgConverters, _retConverter)) =>
+          switch (groupedArgConverters) {
+          | [
+              GroupConverter(propConverters),
+              ArgConverter(_, childrenConverter),
+              ..._,
+            ] =>
             [
               jsPropsDot("children")
               |> Convert.apply(~converter=childrenConverter, ~toJS=true),
-              ...revPropConverters
-                 |> List.map(((lbl, argConverter)) =>
-                      switch (lbl) {
-                      | Flow.Label(l)
-                      | OptLabel(l) =>
-                        jsPropsDot(l)
-                        |> Convert.apply(~converter=argConverter, ~toJS=true)
-                      | Nolabel => assert(false)
-                      }
+              ...propConverters
+                 |> List.rev_map(((s, _optionalness, argConverter)) =>
+                      jsPropsDot(s)
+                      |> Convert.apply(~converter=argConverter, ~toJS=true)
                     ),
             ]
             |> List.rev
+
+          | [ArgConverter(_, childrenConverter), ..._] => [
+              jsPropsDot("children")
+              |> Convert.apply(~converter=childrenConverter, ~toJS=true),
+            ]
+
+          | _ => [jsPropsDot("children")]
           }
 
         | _ => [jsPropsDot("children")]

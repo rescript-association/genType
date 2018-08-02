@@ -32,7 +32,7 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledConvertableTypes) =>
   | ([_grpHd, ..._grpTl], [(Nolabel, _), ..._tl]) =>
     groupReversed(
       ~revCurGroup=[],
-      ~revResult=[GroupedArgs(revCurGroup), ...revResult],
+      ~revResult=[Group(revCurGroup), ...revResult],
       labeledConvertableTypes,
     )
   };
@@ -45,8 +45,8 @@ let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
   | [Flow.Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
-  | [GroupedArgs(namedArgs), ...tl] =>
-    reverse(~soFar=[GroupedArgs(List.rev(namedArgs)), ...soFar], tl)
+  | [Group(group), ...tl] =>
+    reverse(~soFar=[Group(List.rev(group)), ...soFar], tl)
   };
 
 let group = labeledConvertableTypes =>

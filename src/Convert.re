@@ -15,15 +15,19 @@ let rec apply = (~converter, ~toJS, value) =>
     |> apply(~converter=c, ~toJS)
     |> (toJS ? optionToNullable : nullableToOption);
 
-  | Fn((args, resultConverter))
+  | Fn((groupedArgConverters, resultConverter))
       when
-        args
-        |> List.for_all(((label, argConverter)) =>
-             label == Flow.Nolabel && argConverter == Flow.Identity
+        groupedArgConverters
+        |> List.for_all(groupedArgConverter =>
+             switch (groupedArgConverter) {
+             | Flow.ArgConverter(label, argConverter) =>
+               label == Flow.Nolabel && argConverter == Flow.Identity
+             | GroupConverter(_) => false
+             }
            ) =>
     value |> apply(~converter=resultConverter, ~toJS)
 
-  | Fn((args, resultConverter)) =>
+  | Fn((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";
     let mkReturn = x =>
       "const "
@@ -33,17 +37,57 @@ let rec apply = (~converter, ~toJS, value) =>
       ++ "; return "
       ++ apply(~converter=resultConverter, ~toJS, resultVar);
     let convertedArgs = {
-      let convertArg = (i, (lbl, argConverter)) => {
-        let varName =
-          switch (lbl) {
-          | Flow.Nolabel => Emit.argi(i + 1)
-          | Label(l)
-          | OptLabel(l) => Emit.arg(l)
+      let convertArg = (i, groupedArgConverter) =>
+        switch (groupedArgConverter) {
+        | Flow.ArgConverter(lbl, argConverter) =>
+          let varName =
+            switch (lbl) {
+            | Flow.Nolabel => Emit.argi(i + 1)
+            | Label(l)
+            | OptLabel(l) => Emit.arg(l)
+            };
+          let notToJS = !toJS;
+          (
+            varName,
+            varName |> apply(~converter=argConverter, ~toJS=notToJS),
+          );
+        | GroupConverter(groupConverters) =>
+          let notToJS = !toJS;
+          if (toJS) {
+            let varName = Emit.argi(i + 1);
+            (
+              varName,
+              groupConverters
+              |> List.map(((s, _optionalness, argConverter)) =>
+                   varName
+                   ++ "."
+                   ++ s
+                   |> apply(~converter=argConverter, ~toJS=notToJS)
+                 )
+              |> String.concat(", "),
+            );
+          } else {
+            let varNames =
+              groupConverters
+              |> List.map(((s, _optionalness, argConverter)) =>
+                   Emit.arg(s)
+                 )
+              |> String.concat(", ");
+            let fieldValues =
+              groupConverters
+              |> List.map(((s, _optionalness, argConverter)) =>
+                   s
+                   ++ ":"
+                   ++ (
+                     Emit.arg(s)
+                     |> apply(~converter=argConverter, ~toJS=notToJS)
+                   )
+                 )
+              |> String.concat(", ");
+            (varNames, "{" ++ fieldValues ++ "}");
           };
-        let notToJS = !toJS;
-        (varName, varName |> apply(~converter=argConverter, ~toJS=notToJS));
-      };
-      args |> List.mapi(convertArg);
+        };
+      groupedArgConverters |> List.mapi(convertArg);
     };
     let mkBody = args => value |> Emit.funCall(~args) |> mkReturn;
     Emit.funDef(~args=convertedArgs, ~mkBody, "");

@@ -112,14 +112,10 @@ module Flow = {
     | Optional(typ)
     /* List of typ is the type arguments applied */
     | Ident(string, list(typ))
-    | ObjectType(objectType)
+    | ObjectType(fields)
     /* List of typ is the type parameters abstracted. Not the arguments
      * applied. */
     | Arrow(list(typ), list(typ), typ)
-  and objectType = {
-    fields,
-    groupedArgs: bool,
-  }
   and fields = list((string, optionalness, typ));
 
   type label =
@@ -132,14 +128,16 @@ module Flow = {
     | Identity
     | OptionalArgument(converter)
     | Option(converter)
-    | Fn((list((label, converter)), converter));
+    | Fn((list(groupedArgConverter), converter))
+  and groupedArgConverter =
+    | ArgConverter(label, converter)
+    | GroupConverter(list((string, optionalness, converter)));
 
   type convertableType = (converter, typ);
-  type groupedArgs = list((string, optionalness, convertableType));
 
   type groupedArg =
     /* Contains a list of (name, isOptional, 't)  */
-    | GroupedArgs(groupedArgs)
+    | Group(list((string, optionalness, convertableType)))
     | Arg(convertableType);
 
   let genericsString = genericStrings =>
@@ -151,7 +149,7 @@ module Flow = {
     | Optional(typ) => "?" ++ toString(typ)
     | Ident(identPath, typeArguments) =>
       identPath ++ genericsString(List.map(toString, typeArguments))
-    | ObjectType({fields}) => renderObjType(fields)
+    | ObjectType(fields) => renderObjType(fields)
     | Arrow(typeParams, valParams, retType) =>
       renderFunType(typeParams, valParams, retType)
     }
