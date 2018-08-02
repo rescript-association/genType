@@ -118,7 +118,7 @@ let toString = codeItem =>
     ++ " id:"
     ++ id
     ++ " flowType:"
-    ++ Flow.toString(flowType)
+    ++ EmitFlow.toString(flowType)
     ++ " converter:"
     ++ converterToString(converter)
   | ConstructorBinding(_) => "ConstructorBinding"
@@ -395,7 +395,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
             |> List.map(((s, optionalness, (_c, typ))) =>
                  (s, optionalness, typ)
                );
-          Flow.(ObjectType(fields));
+          ObjectType(fields);
         | Arg((_c, flowType)) => flowType
         };
       let functionType =
@@ -477,7 +477,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
           Invalid_argument(
             "Converting Arrays with elements that require conversion "
             ++ "is not yet supported. Saw an array containing type:"
-            ++ Flow.toString(itemFlow),
+            ++ EmitFlow.toString(itemFlow),
           ),
         );
       };
@@ -536,7 +536,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
           Ident(typePathToFlowName(path), typeArgs),
         ),
       };
-    | _ => {dependencies: [], convertableType: (Identity, Flow.any)}
+    | _ => {dependencies: [], convertableType: (Identity, EmitFlow.any)}
     }
   )
 and reasonTypesToConversion = args: list(conversionPlan) =>
@@ -668,7 +668,7 @@ let codeItemsFromConstructorDeclaration =
       ~opaque=true,
       flowTypeVars,
       ~typeName=variantTypeName,
-      Flow.any,
+      EmitFlow.any,
     ),
     ConstructorBinding(
       constructorFlowType,
@@ -694,7 +694,7 @@ let codeItemsForId = (~moduleName, ~valueBinding, id) => {
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
+  let flowType = EmitFlow.abstractTheTypeParameters(flowType, flowTypeVars);
   let codeItems = [
     ValueBinding(moduleName, Ident.name(id), flowType, converter),
   ];
@@ -731,7 +731,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
   let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = Flow.abstractTheTypeParameters(flowType, flowTypeVars);
+  let flowType = EmitFlow.abstractTheTypeParameters(flowType, flowTypeVars);
   switch (flowType) {
   | Arrow(
       _,
@@ -752,7 +752,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         switch (propOrChildren) {
         | ObjectType(fields) =>
           /* Add children?:any to props type */
-          let childrenField = ("children", NonMandatory, Flow.any);
+          let childrenField = ("children", NonMandatory, EmitFlow.any);
           ObjectType(fields @ [childrenField]);
         | _ => propOrChildren
         }
@@ -868,7 +868,7 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     let typeName = Ident.name(dec.typ_id);
     (
       [],
-      [codeItemForType(~opaque=true, flowTypeVars, ~typeName, Flow.any)],
+      [codeItemForType(~opaque=true, flowTypeVars, ~typeName, EmitFlow.any)],
     );
   /*
    * This case includes aliasings such as:
@@ -883,7 +883,9 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [codeItemForType(~opaque=true, flowTypeVars, ~typeName, Flow.any)],
+        [
+          codeItemForType(~opaque=true, flowTypeVars, ~typeName, EmitFlow.any),
+        ],
       )
     | Some(coreType) =>
       let {dependencies, convertableType: (_converter, flowType)} =

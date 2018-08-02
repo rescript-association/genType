@@ -23,17 +23,17 @@ let emitExportType = ({CodeItem.opaque, typeParams, typeName, flowType}) =>
   ++ (opaque ? " opaque " : " ")
   ++ "type "
   ++ typeName
-  ++ Flow.genericsString(List.map(Flow.toString, typeParams))
+  ++ EmitFlow.genericsString(List.map(EmitFlow.toString, typeParams))
   ++ " = "
-  ++ Flow.toString(flowType)
+  ++ EmitFlow.toString(flowType)
   ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
 
 let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>
   "export type "
   ++ name
-  ++ Flow.genericsString(List.map(Flow.toString, typeParams))
+  ++ EmitFlow.genericsString(List.map(EmitFlow.toString, typeParams))
   ++ " =\n  | "
-  ++ String.concat("\n  | ", List.map(Flow.toString, leafTypes));
+  ++ String.concat("\n  | ", List.map(EmitFlow.toString, leafTypes));
 
 let emitImport = import =>
   switch (import) {
@@ -67,7 +67,8 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     let addType = s =>
       switch (flowTypeOpt) {
       | None => s
-      | Some(flowType) => "(" ++ s ++ ": " ++ Flow.toString(flowType) ++ ")"
+      | Some(flowType) =>
+        "(" ++ s ++ ": " ++ EmitFlow.toString(flowType) ++ ")"
       };
     line_(exportBuffer, "exports." ++ id ++ " = " ++ addType(id) ++ ";");
   };
