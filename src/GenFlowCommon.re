@@ -96,26 +96,6 @@ module Flow = {
   let any = Ident("any", []);
 };
 
-/* Generate fresh identifiers */
-module GenIdent = {
-  /*
-   * Keep a few banks of identifiers to make them more readable.
-   */
-
-  let propsTypeNameCount = {contents: 0};
-
-  let resetPerFile = () => propsTypeNameCount.contents = 0;
-
-  let propsTypeName = () => {
-    propsTypeNameCount.contents = propsTypeNameCount.contents + 1;
-    "Props"
-    ++ (
-      propsTypeNameCount.contents == 1 ?
-        "" : string_of_int(propsTypeNameCount.contents)
-    );
-  };
-};
-
 let readLines = (file: string): list(string) => {
   let lines = ref([]);
   let chan = open_in(file);
