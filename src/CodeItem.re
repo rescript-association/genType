@@ -933,7 +933,8 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
   | _ => ([], [])
   };
 
-let typePathToImport = (~outputFileRelative, ~resolver, ~modulesMap, typePath) =>
+let typePathToImport =
+    (~outputFileRelative, ~resolver, ~config as {modulesMap}, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
     ImportAsFrom(
@@ -997,11 +998,11 @@ let importCompare = (i1, i2) =>
   };
 
 let fromDependencies =
-    (~outputFileRelative, ~resolver, ~modulesMap, dependencies): list(t) => {
+    (~outputFileRelative, ~resolver, ~config, dependencies): list(t) => {
   let dependencyToImport = dependency =>
     switch (dependency) {
     | TypeAtPath(p) =>
-      typePathToImport(~outputFileRelative, ~resolver, ~modulesMap, p)
+      typePathToImport(~outputFileRelative, ~resolver, ~config, p)
     | JSTypeFromModule(typeName, asTypeName, importPath) =>
       ImportAsFrom(typeName, asTypeName, importPath)
     | FreeTypeVariable(s, _id) =>

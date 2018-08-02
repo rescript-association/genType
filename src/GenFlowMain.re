@@ -65,7 +65,7 @@ let typedItemToCodeItems = (~moduleName, typedItem) => {
 };
 
 let cmtToCodeItems =
-    (~modulesMap, ~moduleName, ~outputFileRelative, ~resolver, inputCMT)
+    (~config, ~moduleName, ~outputFileRelative, ~resolver, inputCMT)
     : list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   switch (cmt_annots) {
@@ -89,7 +89,7 @@ let cmtToCodeItems =
       CodeItem.fromDependencies(
         ~outputFileRelative,
         ~resolver,
-        ~modulesMap,
+        ~config,
         deps,
       );
     List.append(imports, codeItems |> sortcodeItemsByPriority);
@@ -164,7 +164,7 @@ let emitCodeItems =
     );
   };
 
-let processCmtFile = (~fileHeader, ~signFile, ~modulesMap, cmt) => {
+let processCmtFile = (~fileHeader, ~signFile, ~config, cmt) => {
   let cmtFile = Filename.concat(Sys.getcwd(), cmt);
   if (Sys.file_exists(cmtFile)) {
     GenIdent.resetPerFile();
@@ -176,7 +176,7 @@ let processCmtFile = (~fileHeader, ~signFile, ~modulesMap, cmt) => {
       ModuleResolver.createResolver(~extensions=[".re", ".shim.js"]);
     inputCMT
     |> cmtToCodeItems(
-         ~modulesMap,
+         ~config,
          ~moduleName,
          ~outputFileRelative,
          ~resolver,

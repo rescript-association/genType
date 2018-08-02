@@ -5,6 +5,8 @@
 module StringMap = Map.Make(String);
 module ModuleNameMap = Map.Make(ModuleName);
 
+type config = {modulesMap: ModuleNameMap.t(ModuleName.t)};
+
 let log = Printf.printf;
 let logItem = x => {
   log("  ");

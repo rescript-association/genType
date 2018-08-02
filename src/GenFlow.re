@@ -30,28 +30,30 @@ let getShims = configFile => {
   };
 };
 
-let createModulesMap = configFileOpt =>
-  switch (configFileOpt) {
-  | None => ModuleNameMap.empty
-  | Some(configFile) =>
-    configFile
-    |> getShims
-    |> List.fold_left(
-         (map, nextPairStr) =>
-           if (nextPairStr != "") {
-             let fromTo =
-               Str.split(Str.regexp("="), nextPairStr) |> Array.of_list;
-             assert(Array.length(fromTo) === 2);
-             let moduleName: ModuleName.t =
-               fromTo[0] |> ModuleName.fromStringUnsafe;
-             let shimModuleName = fromTo[1] |> ModuleName.fromStringUnsafe;
-             ModuleNameMap.add(moduleName, shimModuleName, map);
-           } else {
-             map;
-           },
-         ModuleNameMap.empty,
-       )
-  };
+let readConfig = configFileOpt => {
+  modulesMap:
+    switch (configFileOpt) {
+    | None => ModuleNameMap.empty
+    | Some(configFile) =>
+      configFile
+      |> getShims
+      |> List.fold_left(
+           (map, nextPairStr) =>
+             if (nextPairStr != "") {
+               let fromTo =
+                 Str.split(Str.regexp("="), nextPairStr) |> Array.of_list;
+               assert(Array.length(fromTo) === 2);
+               let moduleName: ModuleName.t =
+                 fromTo[0] |> ModuleName.fromStringUnsafe;
+               let shimModuleName = fromTo[1] |> ModuleName.fromStringUnsafe;
+               ModuleNameMap.add(moduleName, shimModuleName, map);
+             } else {
+               map;
+             },
+           ModuleNameMap.empty,
+         )
+    },
+};
 
 let fileHeader = "/* @flow strict */\n";
 
@@ -65,8 +67,8 @@ let cli = () => {
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
     logItem("Add %s  %s\n", cmt, mlast);
-    let modulesMap = Paths.getConfigFile() |> createModulesMap;
-    cmt |> GenFlowMain.processCmtFile(~fileHeader, ~signFile, ~modulesMap);
+    let config = Paths.getConfigFile() |> readConfig;
+    cmt |> GenFlowMain.processCmtFile(~fileHeader, ~signFile, ~config);
     exit(0);
   };
   let setCmtRm = s => {
