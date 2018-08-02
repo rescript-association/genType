@@ -76,7 +76,7 @@ let cmtToCodeItems =
         ((curDeps, curParseItems), nextTypedItem) => {
           let (nextDeps, nextCodeItems) =
             nextTypedItem |> typedItemToCodeItems(~moduleName);
-          (nextDeps @ curDeps, nextCodeItems @ curParseItems);
+          (curDeps @ nextDeps, curParseItems @ nextCodeItems);
         },
         ([], []),
         typedItems,
