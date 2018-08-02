@@ -5,7 +5,10 @@
 module StringMap = Map.Make(String);
 module ModuleNameMap = Map.Make(ModuleName);
 
-type config = {modulesMap: ModuleNameMap.t(ModuleName.t)};
+type config = {
+  language: string,
+  modulesMap: ModuleNameMap.t(ModuleName.t),
+};
 
 let log = Printf.printf;
 let logItem = x => {
@@ -101,38 +104,43 @@ module Paths = {
 
   let concat = concat;
 
-  let getShims = configFile => {
-    let parseJson = json => {
-      let shims = ref([]);
-      switch (json) {
-      | Ext_json_types.Obj({map, _}) =>
-        switch (map |> String_map.find_opt("shims")) {
-        | Some(Arr({content, _})) =>
-          content
-          |> Array.iter(x =>
-               switch (x) {
-               | Ext_json_types.Str({str, _}) => shims := [str, ...shims^]
-               | _ => ()
-               }
-             );
-          ();
-        | _ => ()
-        }
+  let getLanguage = json =>
+    switch (json) {
+    | Ext_json_types.Obj({map, _}) =>
+      switch (map |> String_map.find_opt("language")) {
+      | Some(Str({str, _})) => str
+      | _ => ""
+      }
+    | _ => ""
+    };
+
+  let getShims = json => {
+    let shims = ref([]);
+    switch (json) {
+    | Ext_json_types.Obj({map, _}) =>
+      switch (map |> String_map.find_opt("shims")) {
+      | Some(Arr({content, _})) =>
+        content
+        |> Array.iter(x =>
+             switch (x) {
+             | Ext_json_types.Str({str, _}) => shims := [str, ...shims^]
+             | _ => ()
+             }
+           );
+        ();
       | _ => ()
-      };
-      shims^;
+      }
+    | _ => ()
     };
-    try (configFile |> Ext_json_parse.parse_json_from_file |> parseJson) {
-    | _ => []
-    };
+    shims^;
   };
 
+  let emptyConfig = {language: "", modulesMap: ModuleNameMap.empty};
   let readConfig = () => {
-    modulesMap:
-      switch (getConfigFile()) {
-      | None => ModuleNameMap.empty
-      | Some(configFile) =>
-        configFile
+    let fromJson = json => {
+      let language = json |> getLanguage;
+      let modulesMap =
+        json
         |> getShims
         |> List.fold_left(
              (map, nextPairStr) =>
@@ -148,10 +156,20 @@ module Paths = {
                  map;
                },
              ModuleNameMap.empty,
-           )
-      },
+           );
+      {language, modulesMap};
+    };
+
+    switch (getConfigFile()) {
+    | None => emptyConfig
+    | Some(configFile) =>
+      try (configFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
+      | _ => emptyConfig
+      }
+    };
   };
 };
+
 let tagSearch = "genFlow";
 let tagSearchOpaque = "genFlow.opaque";
 let jsTypeNameForAnonymousTypeID = id => "T" ++ string_of_int(id);
