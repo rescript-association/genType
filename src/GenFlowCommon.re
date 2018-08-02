@@ -95,25 +95,3 @@ module Flow = {
 
   let any = Ident("any", []);
 };
-
-let readLines = (file: string): list(string) => {
-  let lines = ref([]);
-  let chan = open_in(file);
-  let finished_lines =
-    try (
-      {
-        while (true) {
-          lines := [input_line(chan), ...lines^];
-        };
-        [];
-      }
-    ) {
-    | End_of_file =>
-      close_in(chan);
-      lines^ |> List.rev;
-    };
-  finished_lines;
-};
-
-let readFile = (file: string): string =>
-  String.concat("\n", readLines(file));
