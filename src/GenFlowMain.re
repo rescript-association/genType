@@ -71,16 +71,20 @@ let cmtToCodeItems =
   switch (cmt_annots) {
   | Implementation(structure) =>
     let typedItems = structure.Typedtree.str_items;
-    let (deps, codeItems) =
+    let (deps, revCodeItems) =
       List.fold_left(
         ((curDeps, curParseItems), nextTypedItem) => {
           let (nextDeps, nextCodeItems) =
             nextTypedItem |> typedItemToCodeItems(~moduleName);
-          (curDeps @ nextDeps, curParseItems @ nextCodeItems);
+          (
+            List.rev_append(nextDeps, curDeps),
+            List.rev_append(nextCodeItems, curParseItems),
+          );
         },
         ([], []),
         typedItems,
       );
+    let codeItems = revCodeItems |> List.rev;
     let imports =
       CodeItem.fromDependencies(
         ~outputFileRelative,
