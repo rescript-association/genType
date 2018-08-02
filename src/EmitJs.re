@@ -18,14 +18,14 @@ let requireModule = (~requires, ~outputFileRelative, ~resolver, moduleName) =>
        ),
      );
 
-let emitExportType = ({CodeItem.opaque, typeParams, typeName, flowType}) =>
+let emitExportType = ({CodeItem.opaque, typeParams, typeName, typ}) =>
   "export"
   ++ (opaque ? " opaque " : " ")
   ++ "type "
   ++ typeName
   ++ EmitFlow.genericsString(List.map(EmitFlow.toString, typeParams))
   ++ " = "
-  ++ EmitFlow.toString(flowType)
+  ++ EmitFlow.toString(typ)
   ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
 
 let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>

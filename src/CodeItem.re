@@ -21,7 +21,7 @@ type exportType = {
   opaque: bool,
   typeParams: list(typ),
   typeName: string,
-  flowType: typ,
+  typ,
 };
 
 type exportUnionType = {
@@ -633,8 +633,8 @@ let createFunctionFlowType =
     Arrow(generics, args, resultFlowType);
   };
 
-let codeItemForType = (~opaque, typeParams, ~typeName, flowType) =>
-  ExportType({opaque, typeParams, typeName, flowType});
+let codeItemForType = (~opaque, typeParams, ~typeName, typ) =>
+  ExportType({opaque, typeParams, typeName, typ});
 
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
