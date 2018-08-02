@@ -4,57 +4,6 @@
 
 open GenFlowCommon;
 
-let getShims = configFile => {
-  let parseJson = json => {
-    let shims = ref([]);
-    switch (json) {
-    | Ext_json_types.Obj({map, _}) =>
-      switch (map |> String_map.find_opt("shims")) {
-      | Some(Arr({content, _})) =>
-        content
-        |> Array.iter(x =>
-             switch (x) {
-             | Ext_json_types.Str({str, _}) => shims := [str, ...shims^]
-             | _ => ()
-             }
-           );
-        ();
-      | _ => ()
-      }
-    | _ => ()
-    };
-    shims^;
-  };
-  try (configFile |> Ext_json_parse.parse_json_from_file |> parseJson) {
-  | _ => []
-  };
-};
-
-let readConfig = configFileOpt => {
-  modulesMap:
-    switch (configFileOpt) {
-    | None => ModuleNameMap.empty
-    | Some(configFile) =>
-      configFile
-      |> getShims
-      |> List.fold_left(
-           (map, nextPairStr) =>
-             if (nextPairStr != "") {
-               let fromTo =
-                 Str.split(Str.regexp("="), nextPairStr) |> Array.of_list;
-               assert(Array.length(fromTo) === 2);
-               let moduleName: ModuleName.t =
-                 fromTo[0] |> ModuleName.fromStringUnsafe;
-               let shimModuleName = fromTo[1] |> ModuleName.fromStringUnsafe;
-               ModuleNameMap.add(moduleName, shimModuleName, map);
-             } else {
-               map;
-             },
-           ModuleNameMap.empty,
-         )
-    },
-};
-
 let fileHeader = "/* @flow strict */\n";
 
 let signFile = s => s;
@@ -67,7 +16,7 @@ let cli = () => {
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
     logItem("Add %s  %s\n", cmt, mlast);
-    let config = Paths.getConfigFile() |> readConfig;
+    let config = Paths.readConfig();
     cmt |> GenFlowMain.processCmtFile(~fileHeader, ~signFile, ~config);
     exit(0);
   };
