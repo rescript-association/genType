@@ -16,12 +16,6 @@ let logItem = x => {
   log(x);
 };
 
-module Debug = {
-  let codeItems = false;
-  let config = false;
-  let moduleResolution = false;
-};
-
 module Paths = {
   open Filename;
 
