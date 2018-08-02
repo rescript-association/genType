@@ -63,12 +63,11 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     Buffer.add_string(buffer, s);
   };
   let line = line_(mainBuffer);
-  let emitExport = ((id, flowTypeOpt)) => {
+  let emitExport = ((id, typeOpt)) => {
     let addType = s =>
-      switch (flowTypeOpt) {
+      switch (typeOpt) {
       | None => s
-      | Some(flowType) =>
-        "(" ++ s ++ ": " ++ EmitFlow.toString(flowType) ++ ")"
+      | Some(typ) => "(" ++ s ++ ": " ++ EmitFlow.toString(typ) ++ ")"
       };
     line_(exportBuffer, "exports." ++ id ++ " = " ++ addType(id) ++ ";");
   };
@@ -122,7 +121,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       line(emitExportUnionType(exportUnionType) ++ ";");
       env;
 
-    | ValueBinding(moduleName, id, flowType, converter) =>
+    | ValueBinding(moduleName, id, typ, converter) =>
       let requires =
         moduleName
         |> requireModule(
@@ -144,23 +143,23 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       );
       {
         ...env,
-        typeMap: env.typeMap |> StringMap.add(id, flowType),
-        exports: [(id, Some(flowType)), ...env.exports],
+        typeMap: env.typeMap |> StringMap.add(id, typ),
+        exports: [(id, Some(typ)), ...env.exports],
         requires,
       };
 
     | ConstructorBinding(
-        constructorFlowType,
-        convertableFlowTypes,
+        constructorType,
+        convertableTypes,
         variantName,
         recordValue,
       ) =>
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt;
-      if (convertableFlowTypes == []) {
+      if (convertableTypes == []) {
         line("const " ++ variantName ++ " = " ++ recordAsInt ++ ";");
       } else {
         let args =
-          convertableFlowTypes
+          convertableTypes
           |> List.mapi((i, (converter, _flowTyp)) => {
                let arg = Emit.argi(i + 1);
                let v = arg |> Convert.toReason(~converter);
@@ -177,7 +176,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
                ModuleName.createBucklescriptBlock,
                ImportPath.bsPlatformBlock,
              ),
-        exports: [(variantName, Some(constructorFlowType)), ...env.exports],
+        exports: [(variantName, Some(constructorType)), ...env.exports],
       };
 
     | ComponentBinding({moduleName, componentType, propsTypeName, converter}) =>
@@ -249,8 +248,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         typeMap:
           switch (componentType) {
           | None => env.typeMap
-          | Some(flowType) =>
-            env.typeMap |> StringMap.add("component", flowType)
+          | Some(typ) => env.typeMap |> StringMap.add("component", typ)
           },
         exports: [(name, componentType), ...env.exports],
         requires: requiresWithReasonReact,

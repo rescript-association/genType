@@ -113,12 +113,12 @@ let toString = codeItem =>
   switch (codeItem) {
   | ImportType(_) => "ImportType"
   | ExternalReactClass(_) => "ExternalReactClass"
-  | ValueBinding(moduleName, id, flowType, converter) =>
+  | ValueBinding(moduleName, id, typ, converter) =>
     "ValueBinding"
     ++ " id:"
     ++ id
-    ++ " flowType:"
-    ++ EmitFlow.toString(flowType)
+    ++ " typ:"
+    ++ EmitFlow.toString(typ)
     ++ " converter:"
     ++ converterToString(converter)
   | ConstructorBinding(_) => "ConstructorBinding"
@@ -338,9 +338,9 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
           t2,
         );
       | Some((lbl, t1)) =>
-        let {dependencies, convertableType: (t1Converter, t1FlowType)} =
+        let {dependencies, convertableType: (t1Converter, t1Typ)} =
           reasonTypeToConversion(t1);
-        let t1Conversion = (OptionalArgument(t1Converter), t1FlowType);
+        let t1Conversion = (OptionalArgument(t1Converter), t1Typ);
         let nextRevDeps = List.append(dependencies, revArgDeps);
         /* TODO: Convert name to object, convert null to optional. */
         extract_fun(
@@ -396,7 +396,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
                  (s, optionalness, typ)
                );
           ObjectType(fields);
-        | Arg((_c, flowType)) => flowType
+        | Arg((_converter, typ)) => typ
         };
       let functionType =
         Arrow([], groupedArgs |> List.map(groupedArgToTyp), retType);
@@ -410,12 +410,12 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
 /**
  * Convertes Types.type_expr to:
  *
- *   (list(dependency), option(expressionConverter), renderedFlowType)).
+ *   (list(dependency), option(expressionConverter), renderedType)).
  *
  * - `list(dependency)`: The Reason types types used in the type structure.  It
  * must be ensured that these are then imported.
  * - `option(expressionConverter)`: Any converter that is required for this type.
- * - `renderedFlowType` the flow type (just a string prepresentation)
+ * - `renderedType` the flow type (just a string prepresentation)
  * TODO: Handle the case where the function in Reason accepts a single unit
  * arg, which should NOT be converted.
  */
@@ -516,7 +516,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
      */
     | Tconstr(path, typeParams, _) =>
       let conversionPlans = reasonTypesToConversion(typeParams);
-      let convertableFlowTypes =
+      let convertableTypes =
         conversionPlans
         |> List.map(({convertableType, _}) => convertableType);
       let typeParamDeps =
@@ -525,10 +525,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
         |> List.concat;
       /* How is this exprConv completely ignored? */
       let typeArgs =
-        List.map(
-          ((_exprConv, flowTyp: typ)) => flowTyp,
-          convertableFlowTypes,
-        );
+        List.map(((_exprConv, flowTyp: typ)) => flowTyp, convertableTypes);
       {
         dependencies: [TypeAtPath(path), ...typeParamDeps],
         convertableType: (
@@ -624,13 +621,12 @@ module TypeVars = {
     List.map(((name, _id)) => Ident(name, []), freeTypeVars);
 };
 
-let createFunctionFlowType =
-    (generics, argConvertableFlowTypes, resultFlowType) =>
-  if (argConvertableFlowTypes === []) {
-    resultFlowType;
+let createFunctionType = (generics, argConvertableTypes, resultType) =>
+  if (argConvertableTypes === []) {
+    resultType;
   } else {
-    let args = List.map(((_, flowTyp)) => flowTyp, argConvertableFlowTypes);
-    Arrow(generics, args, resultFlowType);
+    let args = List.map(((_, flowTyp)) => flowTyp, argConvertableTypes);
+    Arrow(generics, args, resultType);
   };
 
 let codeItemForType = (~opaque, typeParams, ~typeName, typ) =>
@@ -647,7 +643,7 @@ let codeItemsFromConstructorDeclaration =
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
   let conversionPlans = reasonTypesToConversion(constructorArgs);
-  let convertableFlowTypes =
+  let convertableTypes =
     conversionPlans |> List.map(({convertableType, _}) => convertableType);
   let dependencies =
     conversionPlans
@@ -657,22 +653,22 @@ let codeItemsFromConstructorDeclaration =
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let retType = Ident(variantTypeName, flowTypeVars);
-  let constructorFlowType =
-    createFunctionFlowType(flowTypeVars, convertableFlowTypes, retType);
+  let typeVars = TypeVars.toFlow(freeTypeVars);
+  let retType = Ident(variantTypeName, typeVars);
+  let constructorTyp =
+    createFunctionType(typeVars, convertableTypes, retType);
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
     codeItemForType(
       ~opaque=true,
-      flowTypeVars,
+      typeVars,
       ~typeName=variantTypeName,
       EmitFlow.any,
     ),
     ConstructorBinding(
-      constructorFlowType,
-      convertableFlowTypes,
+      constructorTyp,
+      convertableTypes,
       variantName,
       recordValue,
     ),
@@ -692,7 +688,7 @@ let abstractTheTypeParameters = (typ, params) =>
 let codeItemsForId = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
-  let {dependencies, convertableType: (converter, flowType)} =
+  let {dependencies, convertableType: (converter, typ)} =
     reasonTypeToConversion(expressionType);
   /*
    * We pull apart the polymorphic type variables at the binding level, but
@@ -702,10 +698,10 @@ let codeItemsForId = (~moduleName, ~valueBinding, id) => {
    */
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = abstractTheTypeParameters(flowType, flowTypeVars);
+  let typeVars = TypeVars.toFlow(freeTypeVars);
+  let abstractTyp = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [
-    ValueBinding(moduleName, Ident.name(id), flowType, converter),
+    ValueBinding(moduleName, Ident.name(id), abstractTyp, converter),
   ];
   (remainingDeps, codeItems);
 };
@@ -735,13 +731,13 @@ let codeItemsForId = (~moduleName, ~valueBinding, id) => {
 let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
-  let {dependencies, convertableType: (converter, flowType)} =
+  let {dependencies, convertableType: (converter, typ)} =
     reasonTypeToConversion(expressionType);
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let flowTypeVars = TypeVars.toFlow(freeTypeVars);
-  let flowType = abstractTheTypeParameters(flowType, flowTypeVars);
-  switch (flowType) {
+  let typeVars = TypeVars.toFlow(freeTypeVars);
+  let abstractTyp = abstractTheTypeParameters(typ, typeVars);
+  switch (abstractTyp) {
   | Arrow(
       _,
       [propOrChildren, ...childrenOrNil],
@@ -805,23 +801,6 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   };
 };
 
-/**
- * See how this binding is accessed/generated.
- * [@bs.module] external workModeConfig : Js.t('untypedThing) = "WorkModeConfig";
- * Js_unsafe.raw_expr("require('MyModule')");
- */
-/**
- * This is where all the logic for mapping from a CMT file, to a parsetree Ast
- * which has injected Flow types and generated interop code.
- * Each @genFlow binding will have the following two:
- *
- *     let __flowTypeValueAnnotation__bindingName = "someFlowType";
- *     let bindingName =
- *       require('ModuleWhereOrigBindingLives.bs').bindingName;
- *
- * Where the "someFlowType" is a flow converted type from Reason type, and
- * where the require() redirection may perform some safe conversions.
- */
 let fromValueBinding = (~moduleName, valueBinding) => {
   let {Typedtree.vb_pat, vb_attributes, _} = valueBinding;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
@@ -848,9 +827,9 @@ let fromValueDescription = (valueDescription: Typedtree.value_description) => {
   let importPath = path |> ImportPath.fromStringUnsafe;
   let conversionPlan =
     valueDescription.val_desc.ctyp_type |> reasonTypeToConversion;
-  let flowType = conversionPlan.convertableType |> snd;
+  let typ = conversionPlan.convertableType |> snd;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
-  switch (flowType, genFlowKind) {
+  switch (typ, genFlowKind) {
   | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => (
       [],
       [[ExternalReactClass({componentName, importPath})]],
@@ -872,12 +851,12 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     getGenFlowKind(dec.typ_attributes),
   ) {
   | (typeParams, Type_record(_, _), GenFlow | GenFlowOpaque) =>
-    let freeTypeVars = TypeVars.extract(typeParams);
-    let flowTypeVars = TypeVars.toFlow(freeTypeVars);
+    let freeTypeVarNames = TypeVars.extract(typeParams);
+    let typeVars = TypeVars.toFlow(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
     (
       [],
-      [codeItemForType(~opaque=true, flowTypeVars, ~typeName, EmitFlow.any)],
+      [codeItemForType(~opaque=true, typeVars, ~typeName, EmitFlow.any)],
     );
   /*
    * This case includes aliasings such as:
@@ -886,26 +865,25 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
    */
   | (typeParams, Type_abstract, GenFlow | GenFlowOpaque)
   | (typeParams, Type_variant(_), GenFlowOpaque) =>
-    let freeTypeVars = TypeVars.extract(typeParams);
-    let flowTypeVars = TypeVars.toFlow(freeTypeVars);
+    let freeTypeVarNames = TypeVars.extract(typeParams);
+    let typeVars = TypeVars.toFlow(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [
-          codeItemForType(~opaque=true, flowTypeVars, ~typeName, EmitFlow.any),
-        ],
+        [codeItemForType(~opaque=true, typeVars, ~typeName, EmitFlow.any)],
       )
     | Some(coreType) =>
-      let {dependencies, convertableType: (_converter, flowType)} =
+      let {dependencies, convertableType: (_converter, typ)} =
         reasonTypeToConversion(coreType.Typedtree.ctyp_type);
       let structureItems = [
-        codeItemForType(~opaque=true, flowTypeVars, ~typeName, flowType),
+        codeItemForType(~opaque=true, typeVars, ~typeName, typ),
       ];
-      let deps = Dependencies.filterFreeTypeVars(freeTypeVars, dependencies);
+      let deps =
+        Dependencies.filterFreeTypeVars(freeTypeVarNames, dependencies);
       (deps, structureItems);
     };
-  | (typeParams, Type_variant(constructorDeclarations), GenFlow)
+  | (astTypeParams, Type_variant(constructorDeclarations), GenFlow)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
     let variantTypeName = Ident.name(dec.typ_id);
     let resultTypesDepsAndVariantLeafBindings = {
@@ -926,10 +904,10 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
       List.split(depsAndVariantLeafBindings);
     let deps = List.concat(listListDeps);
     let items = List.concat(listListItems);
-    let flowTypeVars = TypeVars.toFlow(TypeVars.extract(typeParams));
+    let typeParams = TypeVars.toFlow(TypeVars.extract(astTypeParams));
     let unionType =
       ExportUnionType({
-        typeParams: flowTypeVars,
+        typeParams,
         leafTypes: resultTypes,
         name: variantTypeName,
       });
