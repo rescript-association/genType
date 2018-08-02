@@ -118,7 +118,7 @@ let toString = codeItem =>
     ++ " id:"
     ++ id
     ++ " typ:"
-    ++ EmitFlow.toString(typ)
+    ++ EmitTyp.toString(typ)
     ++ " converter:"
     ++ converterToString(converter)
   | ConstructorBinding(_) => "ConstructorBinding"
@@ -477,7 +477,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
           Invalid_argument(
             "Converting Arrays with elements that require conversion "
             ++ "is not yet supported. Saw an array containing type:"
-            ++ EmitFlow.toString(itemFlow),
+            ++ EmitTyp.toString(itemFlow),
           ),
         );
       };
@@ -533,7 +533,7 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
           Ident(typePathToFlowName(path), typeArgs),
         ),
       };
-    | _ => {dependencies: [], convertableType: (Identity, EmitFlow.any)}
+    | _ => {dependencies: [], convertableType: (Identity, EmitTyp.any)}
     }
   )
 and reasonTypesToConversion = args: list(conversionPlan) =>
@@ -664,7 +664,7 @@ let codeItemsFromConstructorDeclaration =
       ~opaque=true,
       typeVars,
       ~typeName=variantTypeName,
-      EmitFlow.any,
+      EmitTyp.any,
     ),
     ConstructorBinding(
       constructorTyp,
@@ -757,7 +757,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         switch (propOrChildren) {
         | ObjectType(fields) =>
           /* Add children?:any to props type */
-          let childrenField = ("children", NonMandatory, EmitFlow.any);
+          let childrenField = ("children", NonMandatory, EmitTyp.any);
           ObjectType(fields @ [childrenField]);
         | _ => propOrChildren
         }
@@ -856,7 +856,7 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     let typeName = Ident.name(dec.typ_id);
     (
       [],
-      [codeItemForType(~opaque=true, typeVars, ~typeName, EmitFlow.any)],
+      [codeItemForType(~opaque=true, typeVars, ~typeName, EmitTyp.any)],
     );
   /*
    * This case includes aliasings such as:
@@ -871,7 +871,7 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [codeItemForType(~opaque=true, typeVars, ~typeName, EmitFlow.any)],
+        [codeItemForType(~opaque=true, typeVars, ~typeName, EmitTyp.any)],
       )
     | Some(coreType) =>
       let {dependencies, convertableType: (_converter, typ)} =

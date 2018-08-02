@@ -26,5 +26,3 @@ and renderFunType = (typeParams, valParams, retType) =>
   ++ String.concat(", ", List.map(toString, valParams))
   ++ ") => "
   ++ toString(retType);
-
-let any = Ident("any", []);
