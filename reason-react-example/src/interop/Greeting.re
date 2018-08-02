@@ -4,7 +4,7 @@
 let component = ReasonReact.statelessComponent("PageReason");
 
 [@genFlow]
-let make = (~message, ~extraGreeting=?, _children) => {
+let make = (~message, ~someNumber, ~extraGreeting=?, _children) => {
   ...component,
   render: _self => {
     let greeting =
@@ -12,7 +12,10 @@ let make = (~message, ~extraGreeting=?, _children) => {
       | None => "How are you?"
       | Some(g) => g
       };
-    <div> <MyBannerRe show=true message=(message ++ " " ++ greeting) /> </div>;
+    <div>
+      <MyBannerRe show=true message=(message ++ " " ++ greeting) />
+      (ReasonReact.string("someNumber:" ++ string_of_int(someNumber)))
+    </div>;
   },
 };
 
@@ -20,7 +23,20 @@ let make = (~message, ~extraGreeting=?, _children) => {
 let empty: list(string) = [];
 
 [@genFlow]
-let cons = (x, l) => [x, ...l];
+let cons = (~x, ~l) => [x, ...l];
+
+[@genFlow]
+let cons2 = (~l, ~x) => [x, ...l];
 
 [@genFlow]
 let concat = String.concat;
+
+[@genFlow]
+let testNamedArgs = (~a, ~b, x, ~c, ~d, y, ~e) => a + b + x + c + d + y + e;
+
+[@genFlow]
+let testCallNamedArgs = (foo: ((~a: int, ~b: int) => int), a, b) =>
+  foo(~a, ~b);
+
+[@genFlow]
+let testDefaultArgs = (~x=3, ~y) => x + y;
