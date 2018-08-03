@@ -25,7 +25,7 @@ When a `[@genFlow]` annotation is added to an external `ReasonReact.reactclass` 
 
 There are some steps to set up `genFlow` in a project.
 Some of this might become simpler if `genFlow` gets integrated
-into bucklescript in future.
+into bucklescript in future. The current requirement is `bs-platform 4.0.3`.
 
 1. Set environment variable `BS_CMT_POST_PROCESS_CMD`, as explained below, before building, or starting a watcher, or starting vscode with bsb integration.
 2. Add a file [genflowconfig.json](sample-project/src/shims) in the project root, and some `.shims.js` files e.g. in a directory `shims/` just like in the [sample-project](sample-project). The `.shims.js` files must be in a source directory visible by bucklescript. See e.g. [ReactShim.shim.js](sample-project/src/shims/ReactShim.shim.js).
