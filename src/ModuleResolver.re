@@ -143,12 +143,11 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
   };
 };
 
-let resolveSourceModule = (~outputFileRelative, ~resolver, moduleName) => {
+let resolveSourceModule =
+    (~outputFileRelative, ~resolver, ~importPath, moduleName) => {
   if (Debug.moduleResolution) {
     logItem("Resolve Source Module: %s\n", moduleName |> ModuleName.toString);
   };
-  let importPath =
-    resolveModule(~outputFileRelative, ~resolver, ~ext=".bs", moduleName);
   if (Debug.moduleResolution) {
     logItem("Import Path: %s\n", importPath |> ImportPath.toString);
   };

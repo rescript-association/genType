@@ -7,15 +7,17 @@ type env = {
   externalReactClass: list(CodeItem.externalReactClass),
 };
 
-let requireModule = (~requires, ~outputFileRelative, ~resolver, moduleName) =>
+let requireModule =
+    (~requires, ~outputFileRelative, ~resolver, ~importPath, moduleName) =>
   requires
   |> ModuleNameMap.add(
        moduleName,
-       ModuleResolver.resolveSourceModule(
-         ~outputFileRelative,
-         ~resolver,
-         moduleName,
-       ),
+       moduleName
+       |> ModuleResolver.resolveSourceModule(
+            ~outputFileRelative,
+            ~resolver,
+            ~importPath,
+          ),
      );
 
 let emitExportType = ({CodeItem.opaque, typeParams, typeName, typ}) =>
@@ -122,19 +124,28 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       env;
 
     | ValueBinding(moduleName, id, typ, converter) =>
+      let importPath =
+        ModuleResolver.resolveModule(
+          ~outputFileRelative,
+          ~resolver,
+          ~ext=".bs",
+          moduleName,
+        );
+      let moduleNameBs = moduleName |> ModuleName.forBsFile;
       let requires =
-        moduleName
+        moduleNameBs
         |> requireModule(
              ~requires=env.requires,
              ~outputFileRelative,
              ~resolver,
+             ~importPath,
            );
       line(
         "const "
         ++ id
         ++ " = "
         ++ (
-          ModuleName.toString(moduleName)
+          ModuleName.toString(moduleNameBs)
           ++ "."
           ++ id
           |> Convert.toJS(~converter)
@@ -180,6 +191,15 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       };
 
     | ComponentBinding({moduleName, componentType, propsTypeName, converter}) =>
+      let importPath =
+        ModuleResolver.resolveModule(
+          ~outputFileRelative,
+          ~resolver,
+          ~ext=".bs",
+          moduleName,
+        );
+      let moduleNameBs = moduleName |> ModuleName.forBsFile;
+
       let name = "component";
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
@@ -218,11 +238,11 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         };
 
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
-      line("  " ++ ModuleName.toString(moduleName) ++ ".component" ++ ",");
+      line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");
       line("  (function (" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
       line(
         "     return "
-        ++ ModuleName.toString(moduleName)
+        ++ ModuleName.toString(moduleNameBs)
         ++ "."
         ++ "make"
         ++ Emit.parens(args)
@@ -234,11 +254,12 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         emitCheckJsWrapperType(~env, ~propsTypeName);
 
       let requiresWithModule =
-        moduleName
+        moduleNameBs
         |> requireModule(
              ~requires=requiresWithCheckJsWrapper,
              ~outputFileRelative,
              ~resolver,
+             ~importPath,
            );
       let requiresWithReasonReact =
         requiresWithModule
