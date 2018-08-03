@@ -1,7 +1,7 @@
 /* @flow strict */
 
-var Component2 = require("./Component2.bs");
-var CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
+const Component2 = require("./Component2.bs");
+const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 
 // No need to import locally visible type block. Make sure it is also marked with @genFlow;
 export opaque type VariantA = any // Reason type already checked. Making it opaque;

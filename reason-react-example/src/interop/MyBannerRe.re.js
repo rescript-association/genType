@@ -1,8 +1,8 @@
 /* @flow strict */
 
-var MyBannerRe = require("./MyBannerRe.bs");
-var React = require("react");
-var ReasonReact = require("reason-react/src/ReasonReact.js");
+const MyBannerRe = require("./MyBannerRe.bs");
+const React = require("react");
+const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {Component as ReactComponent} from 'React';
 import type {actionless as ReasonReactactionless} from '../../src/shims/ReactShim.shim.js';

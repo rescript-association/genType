@@ -1,7 +1,7 @@
 /* @flow strict */
 
-var Component1 = require("./Component1.bs");
-var ReasonReact = require("reason-react/src/ReasonReact.js");
+const Component1 = require("./Component1.bs");
+const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {Component as ReactComponent} from 'React';
 import type {actionless as ReasonReactactionless} from '../src/shims/ReactShim.shim.js';

@@ -1,7 +1,7 @@
 /* @flow strict */
 
-var CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
-var Nested = require("./Nested.bs");
+const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
+const Nested = require("./Nested.bs");
 
 import type {variant as Component2variant} from '../../src/Component2.re';
 export opaque type VariantA = any // Reason type already checked. Making it opaque;
