@@ -7,7 +7,7 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world && rm `find . -name '*.re.js'`",
+    "clean": "bsb -clean-world",
     "test": "exit 0",
     "webpack": "webpack -w",
     "webpack:production": "NODE_ENV=production webpack"
@@ -27,7 +27,7 @@
     "@babel/preset-flow": "^7.0.0-beta.54",
     "@babel/preset-react": "^7.0.0-beta.54",
     "babel-loader": "^8.0.0-beta.4",
-    "bs-platform": "^4.0.1",
+    "bs-platform": "^4.0.3",
     "concurrently": "^3.5.0",
     "webpack": "^4.0.1",
     "webpack-cli": "^2.0.10"
