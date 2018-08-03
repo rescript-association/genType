@@ -1,6 +1,6 @@
 /* @flow strict */
 
-const Greeting = require("./Greeting.bs");
+const GreetingBS = require("./Greeting.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {Component as ReactComponent} from 'React';
@@ -11,17 +11,17 @@ import type {noRetainedProps as ReasonReactnoRetainedProps} from '../../src/shim
 import type {stateless as ReasonReactstateless} from '../../src/shims/ReactShim.shim.js';
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
-  Greeting.component,
+  GreetingBS.component,
   (function (jsProps: Props) {
-     return Greeting.make(jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.children);
+     return GreetingBS.make(jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.children);
   }));
-const empty = Greeting.empty;
-const cons = (function (Arg1) { const result = Greeting.cons(Arg1.x, Arg1.l); return result });
-const cons2 = (function (Arg1) { const result = Greeting.cons2(Arg1.l, Arg1.x); return result });
-const concat = Greeting.concat;
-const testNamedArgs = (function (Arg1, Arg2, Arg3, Arg4, Arg5) { const result = Greeting.testNamedArgs(Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e); return result });
-const testCallNamedArgs = (function (Arg1, Arg2, Arg3) { const result = Greeting.testCallNamedArgs((function (Arga, Argb) { const result = Arg1({a:Arga, b:Argb}); return result }), Arg2, Arg3); return result });
-const testDefaultArgs = (function (Arg1) { const result = Greeting.testDefaultArgs(Arg1.x, Arg1.y); return result });
+const empty = GreetingBS.empty;
+const cons = (function (Arg1) { const result = GreetingBS.cons(Arg1.x, Arg1.l); return result });
+const cons2 = (function (Arg1) { const result = GreetingBS.cons2(Arg1.l, Arg1.x); return result });
+const concat = GreetingBS.concat;
+const testNamedArgs = (function (Arg1, Arg2, Arg3, Arg4, Arg5) { const result = GreetingBS.testNamedArgs(Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e); return result });
+const testCallNamedArgs = (function (Arg1, Arg2, Arg3) { const result = GreetingBS.testCallNamedArgs((function (Arga, Argb) { const result = Arg1({a:Arga, b:Argb}); return result }), Arg2, Arg3); return result });
+const testDefaultArgs = (function (Arg1) { const result = GreetingBS.testDefaultArgs(Arg1.x, Arg1.y); return result });
 
 exports.component = (component: React$ComponentType<Props>);
 exports.empty = (empty: list<string>);

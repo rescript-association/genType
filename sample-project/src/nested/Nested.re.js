@@ -1,7 +1,7 @@
 /* @flow strict */
 
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
-const Nested = require("./Nested.bs");
+const NestedBS = require("./Nested.bs");
 
 import type {variant as Component2variant} from '../../src/Component2.re';
 export opaque type VariantA = any // Reason type already checked. Making it opaque;
@@ -14,7 +14,7 @@ export type variant =
   | VariantA
   | VariantB
   | VariantC;
-const consumeVariant = Nested.consumeVariant;
+const consumeVariant = NestedBS.consumeVariant;
 
 exports.A = (A: VariantA);
 exports.B = (B: (number, number) => VariantB);

@@ -1,6 +1,6 @@
 /* @flow strict */
 
-const MyBannerRe = require("./MyBannerRe.bs");
+const MyBannerReBS = require("./MyBannerRe.bs");
 const React = require("react");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
@@ -12,9 +12,9 @@ import type {stateless as ReasonReactstateless} from '../../src/shims/ReactShim.
 const MyBanner = require("./MyBanner"); // external MyBanner : ReasonReact.reactClass = "./MyBanner"
 export type Props = {|show:bool, message:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
-  MyBannerRe.component,
+  MyBannerReBS.component,
   (function (jsProps: Props) {
-     return MyBannerRe.make(jsProps.show, jsProps.message, jsProps.children);
+     return MyBannerReBS.make(jsProps.show, jsProps.message, jsProps.children);
   }));
 function checkJsWrapperType(props: Props) {
       return <MyBanner {...props}> </MyBanner>;
