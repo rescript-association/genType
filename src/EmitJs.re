@@ -91,13 +91,11 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       let s =
         "function checkJsWrapperType(props: "
         ++ propsTypeName
-        ++ ") {
-      return <"
+        ++ ") {\n      return <"
         ++ componentName
         ++ " {...props}> </"
         ++ componentName
-        ++ ">;
-    }";
+        ++ ">;\n    }";
       line(s);
       EmitTyp.requireReact ?
         env.requires
