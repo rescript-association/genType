@@ -11,20 +11,14 @@ import type {noRetainedProps as ReasonReactnoRetainedProps} from '../src/shims/R
 import type {stateless as ReasonReactstateless} from '../src/shims/ReactShim.shim.js';
 import type {variant as Component2variant} from './Component2.re';
 export type Props = {|message?:string, children?:any|};
-const component = ReasonReact.wrapReasonForJs(
+export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   Component1BS.component,
   (function _(jsProps: Props) {
      return Component1BS.make(jsProps.message, jsProps.children);
   }));
-const plus = Component1BS.plus;
-const concat = function _(Arg1, Arg2) { const result = Component1BS.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result };
-const consumeVariant = Component1BS.consumeVariant;
-const l = Component1BS.l;
-const map = Component1BS.map;
+export const plus: <T11009>(number, T11009) => number = Component1BS.plus;
+export const concat: (string, ?string) => ?string = function _(Arg1, Arg2) { const result = Component1BS.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result };
+export const consumeVariant: (Component2variant) => number = Component1BS.consumeVariant;
+export const l: list<number> = Component1BS.l;
+export const map: <T11519,T11517>((T11519) => T11517, list<T11519>) => list<T11517> = Component1BS.map;
 
-exports.component = (component: React$ComponentType<Props>);
-exports.plus = (plus: <T11009>(number, T11009) => number);
-exports.concat = (concat: (string, ?string) => ?string);
-exports.consumeVariant = (consumeVariant: (Component2variant) => number);
-exports.l = (l: list<number>);
-exports.map = (map: <T11519,T11517>((T11519) => T11517, list<T11519>) => list<T11517>);

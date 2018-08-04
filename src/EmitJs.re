@@ -3,7 +3,6 @@ open GenFlowCommon;
 type env = {
   requires: ModuleNameMap.t(ImportPath.t),
   typeMap: StringMap.t(typ),
-  exports: list((string, option(typ))),
   externalReactClass: list(CodeItem.externalReactClass),
 };
 
@@ -65,14 +64,6 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     Buffer.add_string(buffer, s);
   };
   let line = line_(mainBuffer);
-  let emitExport = ((id, typeOpt)) => {
-    let addType = s =>
-      switch (typeOpt) {
-      | None => s
-      | Some(typ) => "(" ++ s ++ ": " ++ EmitTyp.toString(typ) ++ ")"
-      };
-    line_(exportBuffer, "exports." ++ id ++ " = " ++ addType(id) ++ ";");
-  };
   let emitRequire = (moduleName, importPath) =>
     line_(
       requireBuffer,
@@ -143,8 +134,10 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
              ~importPath,
            );
       line(
-        "const "
+        "export const "
         ++ id
+        ++ ": "
+        ++ EmitTyp.toString(typ)
         ++ " = "
         ++ (
           ModuleName.toString(moduleNameBs)
@@ -154,12 +147,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         )
         ++ ";",
       );
-      {
-        ...env,
-        typeMap: env.typeMap |> StringMap.add(id, typ),
-        exports: [(id, Some(typ)), ...env.exports],
-        requires,
-      };
+      {...env, typeMap: env.typeMap |> StringMap.add(id, typ), requires};
 
     | ConstructorBinding(
         exportType,
@@ -171,7 +159,15 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       line(emitExportType(exportType) ++ ";");
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt;
       if (convertableTypes == []) {
-        line("const " ++ variantName ++ " = " ++ recordAsInt ++ ";");
+        line(
+          "export const "
+          ++ variantName
+          ++ ": "
+          ++ EmitTyp.toString(constructorType)
+          ++ " = "
+          ++ recordAsInt
+          ++ ";",
+        );
       } else {
         let args =
           convertableTypes
@@ -181,7 +177,14 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
                (arg, v);
              });
         let mkBody = args => recordValue |> Runtime.emitRecordAsBlock(~args);
-        line(variantName |> Emit.funDef(~args, ~mkBody));
+        line(
+          "export const "
+          ++ variantName
+          ++ ": "
+          ++ EmitTyp.toString(constructorType)
+          ++ " = "
+          ++ Emit.funDef(~args, ~mkBody, ""),
+        );
       };
       {
         ...env,
@@ -191,7 +194,6 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
                ModuleName.createBucklescriptBlock,
                ImportPath.bsPlatformBlock,
              ),
-        exports: [(variantName, Some(constructorType)), ...env.exports],
       };
 
     | ComponentBinding({
@@ -214,7 +216,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
-        Some(Ident("React$ComponentType", [Ident(propsTypeName, [])]));
+        Ident("React$ComponentType", [Ident(propsTypeName, [])]);
       let args =
         switch (converter) {
         | Fn((groupedArgConverters, _retConverter)) =>
@@ -248,7 +250,13 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         };
 
       line(emitExportType(exportType) ++ ";");
-      line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
+      line(
+        "export const "
+        ++ name
+        ++ ": "
+        ++ EmitTyp.toString(componentType)
+        ++ " = ReasonReact.wrapReasonForJs(",
+      );
       line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");
       line("  (function _(" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
       line(
@@ -277,12 +285,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact);
       {
         ...env,
-        typeMap:
-          switch (componentType) {
-          | None => env.typeMap
-          | Some(typ) => env.typeMap |> StringMap.add("component", typ)
-          },
-        exports: [(name, componentType), ...env.exports],
+        typeMap: env.typeMap |> StringMap.add("component", componentType),
         requires: requiresWithReasonReact,
       };
 
@@ -305,21 +308,18 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       };
     };
   };
-  let {requires, exports, _} =
+  let {requires, _} =
     List.fold_left(
       emitCodeItem,
       {
         requires: ModuleNameMap.empty,
         typeMap: StringMap.empty,
-        exports: [],
         externalReactClass: [],
       },
       codeItems,
     );
 
   requires |> ModuleNameMap.iter(emitRequire);
-
-  exports |> List.rev |> List.iter(emitExport);
 
   [
     requireBuffer |> Buffer.to_bytes,
