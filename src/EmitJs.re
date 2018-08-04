@@ -21,14 +21,14 @@ let requireModule =
      );
 
 let emitExportType = ({CodeItem.opaque, typeParams, typeName, typ}) =>
-  "export"
-  ++ (opaque ? " opaque " : " ")
-  ++ "type "
-  ++ typeName
-  ++ EmitTyp.genericsString(List.map(EmitTyp.toString, typeParams))
-  ++ " = "
-  ++ EmitTyp.toString(typ)
-  ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
+  typ
+  |> EmitTyp.toString
+  |> EmitTyp.emitExportType(
+       ~opaque,
+       ~typeName,
+       ~typeParams=
+         EmitTyp.genericsString(List.map(EmitTyp.toString, typeParams)),
+     );
 
 let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>
   "export type "
@@ -76,7 +76,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
   let emitRequire = (moduleName, importPath) =>
     line_(
       requireBuffer,
-      EmitType.commentBeforeRequire
+      EmitTyp.commentBeforeRequire
       ++ "const "
       ++ ModuleName.toString(moduleName)
       ++ " = require(\""
