@@ -741,7 +741,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   let expressionType = vb_expr.exp_type;
   let {dependencies, convertableType: (converter, typ)} =
     reasonTypeToConversion(expressionType);
-  let (freeTypeVars, remainingDeps) =
+  let (_, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
   switch (typ) {
   | Arrow(
