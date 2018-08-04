@@ -13,3 +13,5 @@ let funDef = (~args, ~mkBody, functionName) => {
   ++ " "
   ++ (vals |> mkBody |> brackets);
 };
+
+let commentBeforeRequire = "";

@@ -76,7 +76,8 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
   let emitRequire = (moduleName, importPath) =>
     line_(
       requireBuffer,
-      "const "
+      Emit.commentBeforeRequire
+      ++ "const "
       ++ ModuleName.toString(moduleName)
       ++ " = require(\""
       ++ (importPath |> ImportPath.toString)
