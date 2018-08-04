@@ -19,22 +19,27 @@ let requireModule =
           ),
      );
 
-let emitExportType = ({CodeItem.opaque, typeParams, typeName, typ}) =>
+let emitExportType = (~config, {CodeItem.opaque, typeParams, typeName, typ}) =>
   typ
-  |> EmitTyp.toString
+  |> EmitTyp.toString(~config)
   |> EmitTyp.emitExportType(
+       ~config,
        ~opaque,
        ~typeName,
        ~typeParams=
-         EmitTyp.genericsString(List.map(EmitTyp.toString, typeParams)),
+         EmitTyp.genericsString(
+           List.map(EmitTyp.toString(~config), typeParams),
+         ),
      );
 
-let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>
+let emitExportUnionType = (~config, {CodeItem.typeParams, leafTypes, name}) =>
   "export type "
   ++ name
-  ++ EmitTyp.genericsString(List.map(EmitTyp.toString, typeParams))
+  ++ EmitTyp.genericsString(
+       List.map(EmitTyp.toString(~config), typeParams),
+     )
   ++ " =\n  | "
-  ++ String.concat("\n  | ", List.map(EmitTyp.toString, leafTypes));
+  ++ String.concat("\n  | ", List.map(EmitTyp.toString(~config), leafTypes));
 
 let emitImportType = importType =>
   switch (importType) {
@@ -53,7 +58,7 @@ let emitImportType = importType =>
     ++ "'"
   };
 
-let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
+let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
   let mainBuffer = Buffer.create(100);
   let exportBuffer = Buffer.create(100);
@@ -67,7 +72,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
   let emitRequire = (moduleName, importPath) =>
     line_(
       requireBuffer,
-      EmitTyp.commentBeforeRequire
+      EmitTyp.commentBeforeRequire(~config)
       ++ "const "
       ++ ModuleName.toString(moduleName)
       ++ " = require(\""
@@ -88,9 +93,8 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         ++ componentName
         ++ ">;\n    }";
       line(s);
-      EmitTyp.requireReact ?
-        env.requires
-        |> ModuleNameMap.add(ModuleName.react, ImportPath.react) :
+      EmitTyp.requireReact(~config) ?
+        env.requires |> ModuleNameMap.add(ModuleName.react, ImportPath.react) :
         env.requires;
 
     | [_, ..._] =>
@@ -101,7 +105,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     };
   let emitCodeItem = (env, codeItem) => {
     if (Debug.codeItems) {
-      logItem("Code Item: %s\n", codeItem |> CodeItem.toString);
+      logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~config));
     };
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
@@ -109,11 +113,11 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       env;
 
     | ExportType(exportType) =>
-      line(emitExportType(exportType) ++ ";");
+      line(emitExportType(~config, exportType) ++ ";");
       env;
 
     | ExportUnionType(exportUnionType) =>
-      line(emitExportUnionType(exportUnionType) ++ ";");
+      line(emitExportUnionType(~config, exportUnionType) ++ ";");
       env;
 
     | ValueBinding(moduleName, id, typ, converter) =>
@@ -137,7 +141,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         "export const "
         ++ id
         ++ ": "
-        ++ EmitTyp.toString(typ)
+        ++ EmitTyp.toString(~config, typ)
         ++ " = "
         ++ (
           ModuleName.toString(moduleNameBs)
@@ -156,14 +160,14 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         variantName,
         recordValue,
       ) =>
-      line(emitExportType(exportType) ++ ";");
+      line(emitExportType(~config, exportType) ++ ";");
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt;
       if (convertableTypes == []) {
         line(
           "export const "
           ++ variantName
           ++ ": "
-          ++ EmitTyp.toString(constructorType)
+          ++ EmitTyp.toString(~config, constructorType)
           ++ " = "
           ++ recordAsInt
           ++ ";",
@@ -181,7 +185,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
           "export const "
           ++ variantName
           ++ ": "
-          ++ EmitTyp.toString(constructorType)
+          ++ EmitTyp.toString(~config, constructorType)
           ++ " = "
           ++ Emit.funDef(~args, ~mkBody, ""),
         );
@@ -196,12 +200,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
              ),
       };
 
-    | ComponentBinding({
-        exportType,
-        moduleName,
-        propsTypeName,
-        converter,
-      }) =>
+    | ComponentBinding({exportType, moduleName, propsTypeName, converter}) =>
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,
@@ -215,7 +214,10 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
-        Ident(EmitTyp.reactComponentType, [Ident(propsTypeName, [])]);
+        Ident(
+          EmitTyp.reactComponentType(~config),
+          [Ident(propsTypeName, [])],
+        );
       let args =
         switch (converter) {
         | Fn((groupedArgConverters, _retConverter)) =>
@@ -248,12 +250,12 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         | _ => [jsPropsDot("children")]
         };
 
-      line(emitExportType(exportType) ++ ";");
+      line(emitExportType(~config, exportType) ++ ";");
       line(
         "export const "
         ++ name
         ++ ": "
-        ++ EmitTyp.toString(componentType)
+        ++ EmitTyp.toString(~config, componentType)
         ++ " = ReasonReact.wrapReasonForJs(",
       );
       line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");

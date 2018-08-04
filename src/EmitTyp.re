@@ -2,10 +2,10 @@ open GenFlowCommon;
 
 let any = Ident("any", []);
 let genericsString = EmitFlow.genericsString;
-let toString = EmitFlow.toString(~exact=true);
-let commentBeforeRequire = "";
+let toString = (~config) => EmitFlow.toString(~exact=true);
+let commentBeforeRequire = (~config) => "";
 
-let emitExportType = (~opaque, ~typeName, ~typeParams, typ) =>
+let emitExportType = (~config, ~opaque, ~typeName, ~typeParams, typ) =>
   "export"
   ++ (opaque ? " opaque " : " ")
   ++ "type "
@@ -15,6 +15,6 @@ let emitExportType = (~opaque, ~typeName, ~typeParams, typ) =>
   ++ typ
   ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
 
-let requireReact = true;
+let requireReact = (~config) => true;
 
-let reactComponentType = "React$ComponentType";
+let reactComponentType = (~config) => "React$ComponentType";

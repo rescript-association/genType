@@ -43,20 +43,22 @@ let sortcodeItemsByPriority = codeItems => {
   sortedCodeItems^;
 };
 
-let typedItemToCodeItems = (~moduleName, typedItem) => {
+let typedItemToCodeItems = (~config, ~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
-      typeDeclarations |> List.map(CodeItem.fromTypeDecl) |> List.split
+      typeDeclarations
+      |> List.map(CodeItem.fromTypeDecl(~config))
+      |> List.split
 
     | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
       valueBindings
-      |> List.map(CodeItem.fromValueBinding(~moduleName))
+      |> List.map(CodeItem.fromValueBinding(~config, ~moduleName))
       |> List.split
 
     | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
       /* external declaration */
-      valueDescription |> CodeItem.fromValueDescription
+      valueDescription |> CodeItem.fromValueDescription(~config)
 
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
@@ -75,7 +77,7 @@ let cmtToCodeItems =
       List.fold_left(
         ((curDeps, curParseItems), nextTypedItem) => {
           let (nextDeps, nextCodeItems) =
-            nextTypedItem |> typedItemToCodeItems(~moduleName);
+            nextTypedItem |> typedItemToCodeItems(~config, ~moduleName);
           (
             List.rev_append(nextDeps, curDeps),
             List.rev_append(nextCodeItems, curParseItems),
@@ -97,9 +99,9 @@ let cmtToCodeItems =
   };
 };
 
-
 let emitCodeItems =
     (
+      ~config,
       ~outputFile,
       ~outputFileRelative,
       ~fileHeader,
@@ -114,7 +116,8 @@ let emitCodeItems =
     };
   } else {
     let codeText =
-      codeItems |> EmitJs.emitCodeItems(~outputFileRelative, ~resolver);
+      codeItems
+      |> EmitJs.emitCodeItems(~config, ~outputFileRelative, ~resolver);
     let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
 
     GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
@@ -133,6 +136,7 @@ let processCmtFile = (~fileHeader, ~signFile, ~config, cmt) => {
     inputCMT
     |> cmtToCodeItems(~config, ~moduleName, ~outputFileRelative, ~resolver)
     |> emitCodeItems(
+         ~config,
          ~outputFile,
          ~outputFileRelative,
          ~fileHeader,
