@@ -755,7 +755,6 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
       ~noFunctionReturnDependencies=true,
       expressionType,
     );
-  let dependencies = [];
   let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
   switch (typ) {
   | Arrow(

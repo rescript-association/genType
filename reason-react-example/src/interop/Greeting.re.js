@@ -4,7 +4,11 @@ const GreetingBS = require("./Greeting.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {Component as ReactComponent} from 'React';
+import type {actionless as ReasonReactactionless} from '../../src/shims/ReactShim.shim.js';
+import type {componentSpec as ReasonReactcomponentSpec} from '../../src/shims/ReactShim.shim.js';
 import type {list} from '../../src/shims/ReasonPervasives.shim.js';
+import type {noRetainedProps as ReasonReactnoRetainedProps} from '../../src/shims/ReactShim.shim.js';
+import type {stateless as ReasonReactstateless} from '../../src/shims/ReactShim.shim.js';
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, children?:any|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   GreetingBS.component,
