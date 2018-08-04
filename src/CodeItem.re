@@ -13,7 +13,7 @@ type conversionPlan = {
   convertableType,
 };
 
-type import =
+type importType =
   | ImportComment(string)
   | ImportAsFrom(string, option(string), ImportPath.t);
 
@@ -44,7 +44,7 @@ type externalReactClass = {
 };
 
 type t =
-  | ImportType(import)
+  | ImportType(importType)
   | ExternalReactClass(externalReactClass)
   | ValueBinding(ModuleName.t, string, typ, converter)
   | ConstructorBinding(
@@ -967,7 +967,7 @@ let typePathToImport =
     );
   };
 
-let importCompare = (i1, i2) =>
+let importTypeCompare = (i1, i2) =>
   switch (i1, i2) {
   | (ImportComment(s1), ImportComment(s2)) => compare(s1, s2)
   | (ImportComment(_), _) => (-1)
@@ -984,7 +984,7 @@ let importCompare = (i1, i2) =>
 
 let fromDependencies =
     (~outputFileRelative, ~resolver, ~config, dependencies): list(t) => {
-  let dependencyToImport = dependency =>
+  let dependencyToImportType = dependency =>
     switch (dependency) {
     | TypeAtPath(p) =>
       typePathToImport(~outputFileRelative, ~resolver, ~config, p)
@@ -996,7 +996,7 @@ let fromDependencies =
      * on runtime converters that end up being used. */
     };
   dependencies
-  |> List.map(dependencyToImport)
-  |> List.sort_uniq(importCompare)
-  |> List.map(import => ImportType(import));
+  |> List.map(dependencyToImportType)
+  |> List.sort_uniq(importTypeCompare)
+  |> List.map(importType => ImportType(importType));
 };

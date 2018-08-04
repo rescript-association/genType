@@ -36,8 +36,8 @@ let emitExportUnionType = ({CodeItem.typeParams, leafTypes, name}) =>
   ++ " =\n  | "
   ++ String.concat("\n  | ", List.map(EmitTyp.toString, leafTypes));
 
-let emitImport = import =>
-  switch (import) {
+let emitImportType = importType =>
+  switch (importType) {
   | CodeItem.ImportComment(s) => s
   | ImportAsFrom(typeName, asTypeName, importPath) =>
     "import type {"
@@ -104,8 +104,8 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       logItem("Code Item: %s\n", codeItem |> CodeItem.toString);
     };
     switch (codeItem) {
-    | CodeItem.ImportType(import) =>
-      line(emitImport(import) ++ ";");
+    | CodeItem.ImportType(importType) =>
+      line(emitImportType(importType) ++ ";");
       env;
 
     | ExportType(exportType) =>
