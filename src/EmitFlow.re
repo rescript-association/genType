@@ -4,25 +4,30 @@ let genericsString = genericStrings =>
   genericStrings === [] ?
     "" : "<" ++ String.concat(",", genericStrings) ++ ">";
 
-let rec toString = typ =>
+let rec toString = (~exact, typ) =>
   switch (typ) {
-  | Optional(typ) => "?" ++ toString(typ)
+  | Optional(typ) => "?" ++ (typ |> toString(~exact))
   | Ident(identPath, typeArguments) =>
-    identPath ++ genericsString(List.map(toString, typeArguments))
-  | ObjectType(fields) => renderObjType(fields)
+    identPath ++ genericsString(List.map(toString(~exact), typeArguments))
+  | ObjectType(fields) => fields |> renderObjType(~exact)
   | Arrow(typeParams, valParams, retType) =>
-    renderFunType(typeParams, valParams, retType)
+    renderFunType(~exact, typeParams, valParams, retType)
   }
-and renderField = ((lbl, optness, typ)) => {
+and renderField = (~exact, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
-  lbl ++ optMarker ++ ":" ++ toString(typ);
+  lbl ++ optMarker ++ ":" ++ (typ |> toString(~exact));
 }
-and renderObjType = fields =>
-  "{|" ++ String.concat(", ", List.map(renderField, fields)) ++ "|}"
+and renderObjType = (~exact, fields) =>
+  (exact ? "{|" : "{")
+  ++ String.concat(
+       exact ? ", " : "; ",
+       List.map(renderField(~exact), fields),
+     )
+  ++ (exact ? "|}" : "}")
 /* TODO: Always drop the final unit argument. */
-and renderFunType = (typeParams, valParams, retType) =>
-  genericsString(List.map(toString, typeParams))
+and renderFunType = (~exact, typeParams, valParams, retType) =>
+  genericsString(List.map(toString(~exact), typeParams))
   ++ "("
-  ++ String.concat(", ", List.map(toString, valParams))
+  ++ String.concat(", ", List.map(toString(~exact), valParams))
   ++ ") => "
-  ++ toString(retType);
+  ++ (retType |> toString(~exact));
