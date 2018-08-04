@@ -16,3 +16,5 @@ let emitExportType = (~opaque, ~typeName, ~typeParams, typ) =>
   ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
 
 let requireReact = true;
+
+let reactComponentType = "React$ComponentType";

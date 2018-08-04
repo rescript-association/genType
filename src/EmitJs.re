@@ -216,7 +216,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
-        Ident("React$ComponentType", [Ident(propsTypeName, [])]);
+        Ident(EmitTyp.reactComponentType, [Ident(propsTypeName, [])]);
       let args =
         switch (converter) {
         | Fn((groupedArgConverters, _retConverter)) =>
