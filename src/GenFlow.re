@@ -4,8 +4,6 @@
 
 open GenFlowCommon;
 
-let fileHeader = "/* @flow strict */\n";
-
 let signFile = s => s;
 
 let cli = () => {
@@ -17,7 +15,7 @@ let cli = () => {
     let mlast: string = splitColon[1];
     logItem("Add %s  %s\n", cmt, mlast);
     let config = Paths.readConfig();
-    cmt |> GenFlowMain.processCmtFile(~fileHeader, ~signFile, ~config);
+    cmt |> GenFlowMain.processCmtFile(~signFile, ~config);
     exit(0);
   };
   let setCmtRm = s => {

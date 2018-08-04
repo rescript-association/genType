@@ -104,7 +104,6 @@ let emitCodeItems =
       ~config,
       ~outputFile,
       ~outputFileRelative,
-      ~fileHeader,
       ~signFile,
       ~resolver,
       codeItems,
@@ -118,12 +117,13 @@ let emitCodeItems =
     let codeText =
       codeItems
       |> EmitJs.emitCodeItems(~config, ~outputFileRelative, ~resolver);
-    let fileContents = signFile(fileHeader ++ "\n" ++ codeText);
+    let fileContents =
+      signFile(EmitTyp.fileHeader(~config) ++ "\n" ++ codeText);
 
     GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
   };
 
-let processCmtFile = (~fileHeader, ~signFile, ~config, cmt) => {
+let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = Filename.concat(Sys.getcwd(), cmt);
   if (Sys.file_exists(cmtFile)) {
     GenIdent.resetPerFile();
@@ -139,7 +139,6 @@ let processCmtFile = (~fileHeader, ~signFile, ~config, cmt) => {
          ~config,
          ~outputFile,
          ~outputFileRelative,
-         ~fileHeader,
          ~signFile,
          ~resolver,
        );

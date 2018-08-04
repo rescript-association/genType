@@ -18,3 +18,5 @@ let emitExportType = (~config, ~opaque, ~typeName, ~typeParams, typ) =>
 let requireReact = (~config) => true;
 
 let reactComponentType = (~config) => "React$ComponentType";
+
+let fileHeader = (~config) => "/* @flow strict */\n";
