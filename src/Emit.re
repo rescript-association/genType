@@ -7,11 +7,9 @@ let funCall = (~args, name) =>
   name ++ "(" ++ (args |> String.concat(", ")) ++ ")";
 let funDef = (~args, ~mkBody, functionName) => {
   let (params, vals) = List.split(args);
-  let decl =
-    "function "
-    ++ functionName
-    ++ (params |> parens)
-    ++ " "
-    ++ (vals |> mkBody |> brackets);
-  functionName == "" ? parens([decl]) : decl;
+  "function "
+  ++ (functionName == "" ? "_" : functionName)
+  ++ (params |> parens)
+  ++ " "
+  ++ (vals |> mkBody |> brackets);
 };

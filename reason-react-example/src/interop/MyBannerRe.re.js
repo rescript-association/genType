@@ -13,7 +13,7 @@ const MyBanner = require("./MyBanner"); // external MyBanner : ReasonReact.react
 export type Props = {|show:bool, message:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
   MyBannerReBS.component,
-  (function (jsProps: Props) {
+  (function _(jsProps: Props) {
      return MyBannerReBS.make(jsProps.show, jsProps.message, jsProps.children);
   }));
 function checkJsWrapperType(props: Props) {

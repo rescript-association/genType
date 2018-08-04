@@ -13,11 +13,11 @@ import type {variant as Component2variant} from './Component2.re';
 export type Props = {|message?:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
   Component1BS.component,
-  (function (jsProps: Props) {
+  (function _(jsProps: Props) {
      return Component1BS.make(jsProps.message, jsProps.children);
   }));
 const plus = Component1BS.plus;
-const concat = (function (Arg1, Arg2) { const result = Component1BS.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result });
+const concat = function _(Arg1, Arg2) { const result = Component1BS.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result };
 const consumeVariant = Component1BS.consumeVariant;
 const l = Component1BS.l;
 const map = Component1BS.map;

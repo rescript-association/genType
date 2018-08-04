@@ -12,16 +12,16 @@ import type {stateless as ReasonReactstateless} from '../../src/shims/ReactShim.
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, children?:any|};
 const component = ReasonReact.wrapReasonForJs(
   GreetingBS.component,
-  (function (jsProps: Props) {
+  (function _(jsProps: Props) {
      return GreetingBS.make(jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.children);
   }));
 const empty = GreetingBS.empty;
-const cons = (function (Arg1) { const result = GreetingBS.cons(Arg1.x, Arg1.l); return result });
-const cons2 = (function (Arg1) { const result = GreetingBS.cons2(Arg1.l, Arg1.x); return result });
+const cons = function _(Arg1) { const result = GreetingBS.cons(Arg1.x, Arg1.l); return result };
+const cons2 = function _(Arg1) { const result = GreetingBS.cons2(Arg1.l, Arg1.x); return result };
 const concat = GreetingBS.concat;
-const testNamedArgs = (function (Arg1, Arg2, Arg3, Arg4, Arg5) { const result = GreetingBS.testNamedArgs(Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e); return result });
-const testCallNamedArgs = (function (Arg1, Arg2, Arg3) { const result = GreetingBS.testCallNamedArgs((function (Arga, Argb) { const result = Arg1({a:Arga, b:Argb}); return result }), Arg2, Arg3); return result });
-const testDefaultArgs = (function (Arg1) { const result = GreetingBS.testDefaultArgs(Arg1.x, Arg1.y); return result });
+const testNamedArgs = function _(Arg1, Arg2, Arg3, Arg4, Arg5) { const result = GreetingBS.testNamedArgs(Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e); return result };
+const testCallNamedArgs = function _(Arg1, Arg2, Arg3) { const result = GreetingBS.testCallNamedArgs(function _(Arga, Argb) { const result = Arg1({a:Arga, b:Argb}); return result }, Arg2, Arg3); return result };
+const testDefaultArgs = function _(Arg1) { const result = GreetingBS.testDefaultArgs(Arg1.x, Arg1.y); return result };
 
 exports.component = (component: React$ComponentType<Props>);
 exports.empty = (empty: list<string>);

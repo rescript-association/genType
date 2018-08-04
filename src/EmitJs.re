@@ -239,7 +239,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
 
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
       line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");
-      line("  (function (" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
+      line("  (function _(" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
       line(
         "     return "
         ++ ModuleName.toString(moduleNameBs)
