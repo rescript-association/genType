@@ -744,9 +744,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     reasonTypeToConversion(expressionType);
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toFlow(freeTypeVars);
-  let abstractTyp = abstractTheTypeParameters(typ, typeVars);
-  switch (abstractTyp) {
+  switch (typ) {
   | Arrow(
       _,
       [propOrChildren, ...childrenOrNil],
@@ -772,9 +770,9 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         }
       };
     let propsTypeName = GenIdent.propsTypeName();
-    let propsTypeNameFlow = Ident(propsTypeName, []);
+    let propsTypeId= Ident(propsTypeName, []);
     /* TODO: Polymorphic props */
-    let componentType = Ident("React$ComponentType", [propsTypeNameFlow]);
+    let componentType = Ident("React$ComponentType", [propsTypeId]);
 
     let items = [
       ComponentBinding({
