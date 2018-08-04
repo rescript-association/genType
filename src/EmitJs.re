@@ -199,7 +199,6 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
     | ComponentBinding({
         exportType,
         moduleName,
-        componentType,
         propsTypeName,
         converter,
       }) =>

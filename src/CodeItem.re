@@ -33,7 +33,6 @@ type exportUnionType = {
 type componentBinding = {
   exportType,
   moduleName: ModuleName.t,
-  componentType: typ,
   propsTypeName: string,
   converter,
 };
@@ -770,9 +769,6 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         }
       };
     let propsTypeName = GenIdent.propsTypeName();
-    let propsTypeId= Ident(propsTypeName, []);
-    /* TODO: Polymorphic props */
-    let componentType = Ident("React$ComponentType", [propsTypeId]);
 
     let items = [
       ComponentBinding({
@@ -784,7 +780,6 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
             propsTypeArguments,
           ),
         moduleName,
-        componentType,
         propsTypeName,
         converter,
       }),
