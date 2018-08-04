@@ -99,7 +99,10 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         ++ ">;
     }";
       line(s);
-      env.requires |> ModuleNameMap.add(ModuleName.react, ImportPath.reactjs);
+      EmitTyp.requireReact ?
+        env.requires
+        |> ModuleNameMap.add(ModuleName.react, ImportPath.reactjs) :
+        env.requires;
 
     | [_, ..._] =>
       line(

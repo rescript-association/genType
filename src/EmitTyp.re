@@ -14,3 +14,5 @@ let emitExportType = (~opaque, ~typeName, ~typeParams, typ) =>
   ++ " = "
   ++ typ
   ++ (opaque ? " // Reason type already checked. Making it opaque" : "");
+
+let requireReact = true;
