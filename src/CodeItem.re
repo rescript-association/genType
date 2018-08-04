@@ -314,14 +314,17 @@ let rec typePathToFlowName = typePath =>
     ++ typePathToFlowName(p2)
   };
 
-let rec extract_fun = (revArgDeps, revArgs, typ) =>
+let rec extract_fun =
+        (~noFunctionReturnDependencies=false, revArgDeps, revArgs, typ) =>
   Types.(
     switch (typ.desc) {
-    | Tlink(t) => extract_fun(revArgDeps, revArgs, t)
+    | Tlink(t) =>
+      extract_fun(~noFunctionReturnDependencies, revArgDeps, revArgs, t)
     | Tarrow("", t1, t2, _) =>
       let {dependencies, convertableType} = reasonTypeToConversion(t1);
       let nextRevDeps = List.append(dependencies, revArgDeps);
       extract_fun(
+        ~noFunctionReturnDependencies,
         nextRevDeps,
         [(Nolabel, convertableType), ...revArgs],
         t2,
@@ -334,6 +337,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
           reasonTypeToConversion(t1);
         let nextRevDeps = List.rev_append(dependencies, revArgDeps);
         extract_fun(
+          ~noFunctionReturnDependencies,
           nextRevDeps,
           [(Label(lbl), t1Conversion), ...revArgs],
           t2,
@@ -345,6 +349,7 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
         let nextRevDeps = List.append(dependencies, revArgDeps);
         /* TODO: Convert name to object, convert null to optional. */
         extract_fun(
+          ~noFunctionReturnDependencies,
           nextRevDeps,
           [(OptLabel(lbl), t1Conversion), ...revArgs],
           t2,
@@ -353,7 +358,9 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
     | _ =>
       let {dependencies, convertableType: (retConverter, retType)} =
         reasonTypeToConversion(typ);
-      let allDeps = List.append(List.rev(revArgDeps), dependencies);
+      let allDeps =
+        noFunctionReturnDependencies ?
+          dependencies : List.append(List.rev(revArgDeps), dependencies);
 
       let labeledConvertableTypes = distributeSplitRev(revArgs);
       let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
@@ -420,7 +427,9 @@ let rec extract_fun = (revArgDeps, revArgs, typ) =>
  * TODO: Handle the case where the function in Reason accepts a single unit
  * arg, which should NOT be converted.
  */
-and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
+and reasonTypeToConversion =
+    (~noFunctionReturnDependencies=false, typ: Types.type_expr)
+    : conversionPlan =>
   Types.(
     switch (typ.desc) {
     | Tvar(None) =>
@@ -499,8 +508,8 @@ and reasonTypeToConversion = (typ: Types.type_expr): conversionPlan =>
         dependencies: paramDeps,
         convertableType: (composedConverter, Optional(paramConverted)),
       };
-    | Tarrow(_) => extract_fun([], [], typ)
-    | Tlink(t) => reasonTypeToConversion(t)
+    | Tarrow(_) => extract_fun(~noFunctionReturnDependencies, [], [], typ)
+    | Tlink(t) => reasonTypeToConversion(~noFunctionReturnDependencies, t)
     | Tconstr(path, [], _) => {
         dependencies: [TypeAtPath(path)],
         convertableType: (Identity, Ident(typePathToFlowName(path), [])),
@@ -740,9 +749,14 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let {dependencies, convertableType: (converter, typ)} =
-    reasonTypeToConversion(expressionType);
-  let (_, remainingDeps) =
-    Dependencies.extractFreeTypeVars(dependencies);
+    reasonTypeToConversion(
+      /* Only get the dependencies for the prop types.
+         The return type is a ReasonReact component. */
+      ~noFunctionReturnDependencies=true,
+      expressionType,
+    );
+  let dependencies = [];
+  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
   switch (typ) {
   | Arrow(
       _,
