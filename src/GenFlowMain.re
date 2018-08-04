@@ -128,8 +128,8 @@ let processCmtFile = (~signFile, ~config, cmt) => {
   if (Sys.file_exists(cmtFile)) {
     GenIdent.resetPerFile();
     let inputCMT = Cmt_format.read_cmt(cmtFile);
-    let outputFile = cmt |> Paths.getOutputFile;
-    let outputFileRelative = cmt |> Paths.getOutputFileRelative;
+    let outputFile = cmt |> Paths.getOutputFile(~config);
+    let outputFileRelative = cmt |> Paths.getOutputFileRelative(~config);
     let moduleName = cmt |> Paths.getModuleName;
     let resolver =
       ModuleResolver.createResolver(~extensions=[".re", ".shim.js"]);

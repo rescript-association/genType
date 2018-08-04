@@ -1,7 +1,5 @@
 open GenFlowCommon;
 
-let outputFileSuffix = ".re.js";
-
 let projectRoot = ref(Sys.getcwd());
 
 let setProjectRoot = s =>
@@ -32,12 +30,12 @@ let handleNamespace = cmt => {
 };
 
 /* Get the output file to be written, relative to the project root. */
-let getOutputFileRelative = cmt =>
-  (cmt |> handleNamespace) ++ outputFileSuffix;
+let getOutputFileRelative = (~config, cmt) =>
+  (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~config);
 
 /* Get the output file to be written, as an absolute path. */
-let getOutputFile = cmt =>
-  Filename.concat(projectRoot^, getOutputFileRelative(cmt));
+let getOutputFile = (~config, cmt) =>
+  Filename.concat(projectRoot^, getOutputFileRelative(~config, cmt));
 
 let getModuleName = cmt =>
   cmt |> handleNamespace |> Filename.basename |> ModuleName.fromStringUnsafe;
@@ -59,7 +57,9 @@ let relativePathFromBsLib = fileName =>
   } else {
     let rec pathToList = path => {
       let isRoot = path |> Filename.basename == path;
-      isRoot ? [path] : [path |> Filename.basename, ...path |> Filename.dirname |> pathToList];
+      isRoot ?
+        [path] :
+        [path |> Filename.basename, ...path |> Filename.dirname |> pathToList];
     };
     let rec fromLibBs = (~acc, reversedList) =>
       switch (reversedList) {

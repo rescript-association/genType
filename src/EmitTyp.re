@@ -22,3 +22,5 @@ let reactComponentType = (~config) => "React$ComponentType";
 let fileHeader = (~config) => "/* @flow strict */\n";
 
 let componentExportName = (~config, ~moduleName) => "component";
+
+let outputFileSuffix = (~config) => ".re.js";
