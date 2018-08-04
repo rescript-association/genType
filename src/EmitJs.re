@@ -117,11 +117,11 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       line(emitImport(import) ++ ";");
       env;
 
-    | CodeItem.ExportType(exportType) =>
+    | ExportType(exportType) =>
       line(emitExportType(exportType) ++ ";");
       env;
 
-    | CodeItem.ExportUnionType(exportUnionType) =>
+    | ExportUnionType(exportUnionType) =>
       line(emitExportUnionType(exportUnionType) ++ ";");
       env;
 
@@ -162,11 +162,13 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
       };
 
     | ConstructorBinding(
+        exportType,
         constructorType,
         convertableTypes,
         variantName,
         recordValue,
       ) =>
+      line(emitExportType(exportType) ++ ";");
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt;
       if (convertableTypes == []) {
         line("const " ++ variantName ++ " = " ++ recordAsInt ++ ";");
@@ -192,7 +194,13 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         exports: [(variantName, Some(constructorType)), ...env.exports],
       };
 
-    | ComponentBinding({moduleName, componentType, propsTypeName, converter}) =>
+    | ComponentBinding({
+        exportType,
+        moduleName,
+        componentType,
+        propsTypeName,
+        converter,
+      }) =>
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,
@@ -239,6 +247,7 @@ let emitCodeItems = (~outputFileRelative, ~resolver, codeItems) => {
         | _ => [jsPropsDot("children")]
         };
 
+      line(emitExportType(exportType) ++ ";");
       line("const " ++ name ++ " = ReasonReact.wrapReasonForJs(");
       line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");
       line("  (function _(" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");

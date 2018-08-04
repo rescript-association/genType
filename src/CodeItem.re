@@ -31,6 +31,7 @@ type exportUnionType = {
 };
 
 type componentBinding = {
+  exportType,
   moduleName: ModuleName.t,
   componentType: typ,
   propsTypeName: string,
@@ -47,6 +48,7 @@ type t =
   | ExternalReactClass(externalReactClass)
   | ValueBinding(ModuleName.t, string, typ, converter)
   | ConstructorBinding(
+      exportType,
       typ,
       list(convertableType),
       string,
@@ -629,6 +631,13 @@ let createFunctionType = (generics, argConvertableTypes, resultType) =>
     Arrow(generics, args, resultType);
   };
 
+let exportType = (~opaque, typeParams, ~typeName, typ) => {
+  opaque,
+  typeParams,
+  typeName,
+  typ,
+};
+
 let codeItemForType = (~opaque, typeParams, ~typeName, typ) =>
   ExportType({opaque, typeParams, typeName, typ});
 
@@ -660,13 +669,13 @@ let codeItemsFromConstructorDeclaration =
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
-    codeItemForType(
-      ~opaque=true,
-      typeVars,
-      ~typeName=variantTypeName,
-      EmitTyp.any,
-    ),
     ConstructorBinding(
+      exportType(
+        ~opaque=true,
+        typeVars,
+        ~typeName=variantTypeName,
+        EmitTyp.any,
+      ),
       constructorTyp,
       convertableTypes,
       variantName,
@@ -766,25 +775,22 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
     let propsTypeNameFlow = Ident(propsTypeName, []);
     /* TODO: Polymorphic props */
     let componentType = Ident("React$ComponentType", [propsTypeNameFlow]);
-    let propsTypeDeclaration = [
-      codeItemForType(
-        ~opaque=false,
-        [],
-        ~typeName=propsTypeName,
-        propsTypeArguments,
-      ),
-    ];
 
-    let items =
-      propsTypeDeclaration
-      @ [
-        ComponentBinding({
-          moduleName,
-          componentType,
-          propsTypeName,
-          converter,
-        }),
-      ];
+    let items = [
+      ComponentBinding({
+        exportType:
+          exportType(
+            ~opaque=false,
+            [],
+            ~typeName=propsTypeName,
+            propsTypeArguments,
+          ),
+        moduleName,
+        componentType,
+        propsTypeName,
+        converter,
+      }),
+    ];
     let deps = [
       JSTypeFromModule(
         "Component",
@@ -854,10 +860,7 @@ let fromTypeDecl = (dec: Typedtree.type_declaration) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
     let typeVars = TypeVars.toFlow(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
-    (
-      [],
-      [codeItemForType(~opaque=true, typeVars, ~typeName, EmitTyp.any)],
-    );
+    ([], [codeItemForType(~opaque=true, typeVars, ~typeName, EmitTyp.any)]);
   /*
    * This case includes aliasings such as:
    *
