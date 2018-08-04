@@ -3,7 +3,6 @@
 const GreetingBS = require("./Greeting.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
-import type {Component as ReactComponent} from 'React';
 import type {list} from '../../src/shims/ReasonPervasives.shim.js';
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, children?:any|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(

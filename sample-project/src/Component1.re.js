@@ -3,7 +3,6 @@
 const Component1BS = require("./Component1.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
-import type {Component as ReactComponent} from 'React';
 import type {list} from '../src/shims/ReasonPervasives.shim.js';
 import type {variant as Component2variant} from './Component2.re';
 export type Props = {|message?:string, children?:any|};

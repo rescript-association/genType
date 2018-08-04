@@ -1,7 +1,6 @@
 type t = string;
 
-let reactjs = "react";
-let react = "React";
+let react = "react";
 let reasonReact = "reason-react/src/ReasonReact.js";
 let bsPlatformBlock = "bs-platform/lib/js/block.js";
 

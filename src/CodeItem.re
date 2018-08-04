@@ -799,15 +799,7 @@ let codeItemsForMake = (~moduleName, ~valueBinding, id) => {
         converter,
       }),
     ];
-    let deps = [
-      JSTypeFromModule(
-        "Component",
-        Some("ReactComponent"),
-        ImportPath.react,
-      ),
-      ...remainingDeps,
-    ];
-    (deps, items);
+    (remainingDeps, items);
 
   | _ =>
     /* not a component: treat make as a normal function */
