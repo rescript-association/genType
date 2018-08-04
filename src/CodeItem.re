@@ -359,8 +359,10 @@ let rec extract_fun =
       let {dependencies, convertableType: (retConverter, retType)} =
         reasonTypeToConversion(typ);
       let allDeps =
-        noFunctionReturnDependencies ?
-          dependencies : List.append(List.rev(revArgDeps), dependencies);
+        List.append(
+          List.rev(revArgDeps),
+          noFunctionReturnDependencies ? [] : dependencies,
+        );
 
       let labeledConvertableTypes = distributeSplitRev(revArgs);
       let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
