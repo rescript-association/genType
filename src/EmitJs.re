@@ -210,7 +210,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         );
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
 
-      let name = "component";
+      let name = EmitTyp.componentExportName(~config, ~moduleName);
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =

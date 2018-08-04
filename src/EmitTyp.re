@@ -20,3 +20,5 @@ let requireReact = (~config) => true;
 let reactComponentType = (~config) => "React$ComponentType";
 
 let fileHeader = (~config) => "/* @flow strict */\n";
+
+let componentExportName = (~config, ~moduleName) => "component";
