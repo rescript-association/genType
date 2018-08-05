@@ -154,7 +154,8 @@ let resolveSourceModule =
   importPath;
 };
 
-let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) => {
+let resolveGeneratedModule =
+    (~config, ~outputFileRelative, ~resolver, moduleName) => {
   if (Debug.moduleResolution) {
     logItem(
       "Resolve Generated Module: %s\n",
@@ -162,7 +163,12 @@ let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) => {
     );
   };
   let importPath =
-    resolveModule(~outputFileRelative, ~resolver, ~ext=".re", moduleName);
+    resolveModule(
+      ~outputFileRelative,
+      ~resolver,
+      ~ext=EmitTyp.generatedModuleExtension(~config),
+      moduleName,
+    );
   if (Debug.moduleResolution) {
     logItem("Import Path: %s\n", importPath |> ImportPath.toString);
   };
@@ -173,7 +179,7 @@ let resolveGeneratedModule = (~outputFileRelative, ~resolver, moduleName) => {
  * Returns the path to import a given Reason module name.
  */
 let importPathForReasonModuleName =
-    (~outputFileRelative, ~resolver, ~modulesMap, moduleName) => {
+    (~config, ~outputFileRelative, ~resolver, ~modulesMap, moduleName) => {
   if (Debug.moduleResolution) {
     logItem("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
   };
@@ -194,6 +200,7 @@ let importPathForReasonModuleName =
     };
     importPath;
   | exception Not_found =>
-    moduleName |> resolveGeneratedModule(~outputFileRelative, ~resolver)
+    moduleName
+    |> resolveGeneratedModule(~config, ~outputFileRelative, ~resolver)
   };
 };

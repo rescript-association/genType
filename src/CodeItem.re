@@ -939,7 +939,13 @@ let fromTypeDecl = (~config, dec: Typedtree.type_declaration) =>
   };
 
 let typePathToImport =
-    (~outputFileRelative, ~resolver, ~config as {modulesMap}, typePath) =>
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~config as {modulesMap},
+      typePath,
+    ) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
     ImportAsFrom(
@@ -947,6 +953,7 @@ let typePathToImport =
       None,
       ModuleName.reasonPervasives
       |> ModuleResolver.importPathForReasonModuleName(
+           ~config,
            ~outputFileRelative,
            ~resolver,
            ~modulesMap,
@@ -980,6 +987,7 @@ let typePathToImport =
       },
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
+           ~config,
            ~outputFileRelative,
            ~resolver,
            ~modulesMap,
@@ -1007,7 +1015,7 @@ let fromDependencies =
   let dependencyToImportType = dependency =>
     switch (dependency) {
     | TypeAtPath(p) =>
-      typePathToImport(~outputFileRelative, ~resolver, ~config, p)
+      typePathToImport(~config, ~outputFileRelative, ~resolver, ~config, p)
     | JSTypeFromModule(typeName, asTypeName, importPath) =>
       ImportAsFrom(typeName, asTypeName, importPath)
     | FreeTypeVariable(s, _id) =>

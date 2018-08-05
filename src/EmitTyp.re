@@ -24,3 +24,5 @@ let fileHeader = (~config) => "/* @flow strict */\n";
 let componentExportName = (~config, ~moduleName) => "component";
 
 let outputFileSuffix = (~config) => ".re.js";
+
+let generatedModuleExtension = (~config) => ".re";
