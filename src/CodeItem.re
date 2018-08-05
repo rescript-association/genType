@@ -896,10 +896,20 @@ let fromTypeDecl = (~config, dec: Typedtree.type_declaration) =>
         [codeItemForType(~opaque=true, typeVars, ~typeName, EmitTyp.any)],
       )
     | Some(coreType) =>
+      let opaque =
+        switch (coreType.ctyp_desc) {
+        | Ttyp_constr(
+            Path.Pident({name: "int" | "bool" | "string" | "unit", _}),
+            _,
+            [],
+          ) =>
+          false
+        | _ => true
+        };
       let {dependencies, convertableType: (_converter, typ)} =
         reasonTypeToConversion(~config, coreType.Typedtree.ctyp_type);
       let structureItems = [
-        codeItemForType(~opaque=true, typeVars, ~typeName, typ),
+        codeItemForType(~opaque, typeVars, ~typeName, typ),
       ];
       let deps =
         Dependencies.filterFreeTypeVars(freeTypeVarNames, dependencies);
