@@ -7,11 +7,13 @@ type recordGen = {
 
 type recordValue = int;
 
-let emitRecordAsInt = string_of_int;
+let emitRecordAsInt = (~config, i) => i |> EmitTyp.blockTagValue(~config);
 
-let emitRecordAsBlock = (~args, recordValue) =>
+let emitRecordAsBlock = (~config, ~args, recordValue) =>
   createBucklescriptBlock
-  |> Emit.funCall(~args=[recordValue |> emitRecordAsInt, Emit.array(args)]);
+  |> Emit.funCall(
+       ~args=[recordValue |> emitRecordAsInt(~config), Emit.array(args)],
+     );
 
 let recordGen = () => {unboxed: 0, boxed: 0};
 

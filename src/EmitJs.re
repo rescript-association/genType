@@ -151,7 +151,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         recordValue,
       ) =>
       line(emitExportType(~config, exportType) ++ ";");
-      let recordAsInt = recordValue |> Runtime.emitRecordAsInt;
+      let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~config);
       if (convertableTypes == []) {
         line(
           "export const "
@@ -170,7 +170,8 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
                let v = arg |> Convert.toReason(~converter);
                (arg, v);
              });
-        let mkBody = args => recordValue |> Runtime.emitRecordAsBlock(~args);
+        let mkBody = args =>
+          recordValue |> Runtime.emitRecordAsBlock(~config, ~args);
         line(
           "export const "
           ++ variantName

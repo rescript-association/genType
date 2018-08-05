@@ -73,3 +73,5 @@ let importTypeAs = (~config, ~typeName, ~asTypeName, ~importPath) =>
   ++ "} from '"
   ++ (importPath |> ImportPath.toString)
   ++ "'";
+
+let blockTagValue = (~config, i) => string_of_int(i);
