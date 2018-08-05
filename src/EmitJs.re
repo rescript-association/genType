@@ -41,21 +41,11 @@ let emitExportUnionType = (~config, {CodeItem.typeParams, leafTypes, name}) =>
   ++ " =\n  | "
   ++ String.concat("\n  | ", List.map(EmitTyp.toString(~config), leafTypes));
 
-let emitImportType = importType =>
+let emitImportType = (~config, importType) =>
   switch (importType) {
   | CodeItem.ImportComment(s) => s
   | ImportAsFrom(typeName, asTypeName, importPath) =>
-    "import type {"
-    ++ typeName
-    ++ (
-      switch (asTypeName) {
-      | Some(asT) => " as " ++ asT
-      | None => ""
-      }
-    )
-    ++ "} from '"
-    ++ (importPath |> ImportPath.toString)
-    ++ "'"
+    EmitTyp.importTypeAs(~config, ~typeName, ~asTypeName, ~importPath)
   };
 
 let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
@@ -109,7 +99,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
     };
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
-      line(emitImportType(importType) ++ ";");
+      line(emitImportType(~config, importType) ++ ";");
       env;
 
     | ExportType(exportType) =>
