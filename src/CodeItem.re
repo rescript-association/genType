@@ -788,20 +788,16 @@ let codeItemsForMake = (~config, ~moduleName, ~valueBinding, id) => {
         [_state, ..._],
       ),
     ) =>
+    /* Add children?:any to props type */
+    let childrenField = ("children", NonMandatory, EmitTyp.any);
     let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
-      | [] =>
-        /* Add children?:any to props type */
-        let childrenField = ("children", NonMandatory, EmitTyp.any);
-        ObjectType([childrenField]);
+      | [] => ObjectType([childrenField])
       /* Then we had both props and children. */
       | [_children, ..._] =>
         switch (propOrChildren) {
-        | ObjectType(fields) =>
-          /* Add children?:any to props type */
-          let childrenField = ("children", NonMandatory, EmitTyp.any);
-          ObjectType(fields @ [childrenField]);
+        | ObjectType(fields) => ObjectType(fields @ [childrenField])
         | _ => propOrChildren
         }
       };
