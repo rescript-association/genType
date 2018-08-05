@@ -7,9 +7,9 @@ import type {variant as Component2variant} from '../../src/Component2.re';
 export opaque type VariantA = any // Reason type already checked. Making it opaque;
 export const A: VariantA = 0;
 export opaque type VariantB = any // Reason type already checked. Making it opaque;
-export const B: (_:number, _:number) => VariantB = function _(Arg1, Arg2) { CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
+export const B: (_:number, _:number) => VariantB = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
 export opaque type VariantC = any // Reason type already checked. Making it opaque;
-export const C: (_:?number) => VariantC = function _(Arg1) { CreateBucklescriptBlock.__(1, [(Arg1 === null ? undefined : Arg1)]) }
+export const C: (_:?number) => VariantC = function _(Arg1) { return CreateBucklescriptBlock.__(1, [(Arg1 === null ? undefined : Arg1)]) }
 export type variant =
   | VariantA
   | VariantB

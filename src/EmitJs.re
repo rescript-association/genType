@@ -170,8 +170,9 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
                let v = arg |> Convert.toReason(~converter);
                (arg, v);
              });
+        let mkReturn = s => "return " ++ s;
         let mkBody = args =>
-          recordValue |> Runtime.emitRecordAsBlock(~config, ~args);
+          recordValue |> Runtime.emitRecordAsBlock(~config, ~args) |> mkReturn;
         line(
           "export const "
           ++ variantName
