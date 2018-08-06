@@ -115,7 +115,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         ModuleResolver.resolveModule(
           ~outputFileRelative,
           ~resolver,
-          ~ext=".bs",
+          ~importExtension=".bs",
           moduleName,
         );
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
@@ -197,7 +197,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         ModuleResolver.resolveModule(
           ~outputFileRelative,
           ~resolver,
-          ~ext=".bs",
+          ~importExtension=".bs",
           moduleName,
         );
       let moduleNameBs = moduleName |> ModuleName.forBsFile;

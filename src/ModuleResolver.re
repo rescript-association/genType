@@ -94,7 +94,8 @@ let apply = (~resolver, moduleName) =>
 
 /* Resolve a reference to ModuleName, and produce a path suitable for require.
    E.g. require "../foo/bar/ModuleName.ext" where ext is ".re" or ".js". */
-let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
+let resolveModule =
+    (~outputFileRelative, ~resolver, ~importExtension, moduleName) => {
   open Filename;
   let outputFileRelativeDir =
     /* e.g. src if we're generating src/File.re.js */
@@ -107,7 +108,8 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
     concat(outputFileAbsoluteDir, ModuleName.toString(moduleName) ++ ".re");
   let candidate =
     /* e.g. import "./Modulename.ext" */
-    moduleName |> ImportPath.fromModule(~dir=current_dir_name, ~ext);
+    moduleName
+    |> ImportPath.fromModule(~dir=current_dir_name, ~importExtension);
   if (Sys.file_exists(moduleNameReFile)) {
     candidate;
   } else {
@@ -138,7 +140,11 @@ let resolveModule = (~outputFileRelative, ~resolver, ~ext, moduleName) => {
         concat(walkUpOutputDir, resovedModuleDir);
 
       /* e.g. import "../dst/ModuleName.ext" */
-      moduleName |> ImportPath.fromModule(~dir=fromOutputDirToModuleDir, ~ext);
+      moduleName
+      |> ImportPath.fromModule(
+           ~dir=fromOutputDirToModuleDir,
+           ~importExtension,
+         );
     };
   };
 };
@@ -166,7 +172,7 @@ let resolveGeneratedModule =
     resolveModule(
       ~outputFileRelative,
       ~resolver,
-      ~ext=EmitTyp.generatedModuleExtension(~config),
+      ~importExtension=EmitTyp.generatedModuleExtension(~config),
       moduleName,
     );
   if (Debug.moduleResolution) {
@@ -192,7 +198,7 @@ let importPathForReasonModuleName =
       resolveModule(
         ~outputFileRelative,
         ~resolver,
-        ~ext=".shim",
+        ~importExtension=".shim",
         shimModuleName,
       );
     if (Debug.moduleResolution) {
