@@ -11,10 +11,10 @@ export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs
      return GreetingBS.make(jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.children);
   }));
 export const empty: list<string> = GreetingBS.empty;
-export const cons: <T8013>(_:{|x:T8013, l:list<T8013>|}) => list<T8013> = function _(Arg1) { const result = GreetingBS.cons(Arg1.x, Arg1.l); return result };
-export const cons2: <T8031>(_:{|l:list<T8031>, x:T8031|}) => list<T8031> = function _(Arg1) { const result = GreetingBS.cons2(Arg1.l, Arg1.x); return result };
-export const concat: (_:string, _:list<string>) => string = GreetingBS.concat;
-export const testNamedArgs: (_:{|a:number, b:number|}, _:number, _:{|c:number, d:number|}, _:number, _:{|e:number|}) => number = function _(Arg1, Arg2, Arg3, Arg4, Arg5) { const result = GreetingBS.testNamedArgs(Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e); return result };
-export const testCallNamedArgs: (_:(_:{|a:number, b:number|}) => number, _:number, _:number) => number = function _(Arg1, Arg2, Arg3) { const result = GreetingBS.testCallNamedArgs(function _(Arga, Argb) { const result = Arg1({a:Arga, b:Argb}); return result }, Arg2, Arg3); return result };
-export const testDefaultArgs: (_:{|x?:number, y:number|}) => number = function _(Arg1) { const result = GreetingBS.testDefaultArgs(Arg1.x, Arg1.y); return result };
+export const cons: <T8013>({|x:T8013, l:list<T8013>|}) => list<T8013> = function _(Arg1) { const result = GreetingBS.cons(Arg1.x, Arg1.l); return result };
+export const cons2: <T8031>({|l:list<T8031>, x:T8031|}) => list<T8031> = function _(Arg1) { const result = GreetingBS.cons2(Arg1.l, Arg1.x); return result };
+export const concat: (string, list<string>) => string = GreetingBS.concat;
+export const testNamedArgs: ({|a:number, b:number|}, number, {|c:number, d:number|}, number, {|e:number|}) => number = function _(Arg1, Arg2, Arg3, Arg4, Arg5) { const result = GreetingBS.testNamedArgs(Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e); return result };
+export const testCallNamedArgs: (({|a:number, b:number|}) => number, number, number) => number = function _(Arg1, Arg2, Arg3) { const result = GreetingBS.testCallNamedArgs(function _(Arga, Argb) { const result = Arg1({a:Arga, b:Argb}); return result }, Arg2, Arg3); return result };
+export const testDefaultArgs: ({|x?:number, y:number|}) => number = function _(Arg1) { const result = GreetingBS.testDefaultArgs(Arg1.x, Arg1.y); return result };
 

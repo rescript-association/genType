@@ -28,10 +28,7 @@ and renderObjType = (~exact, fields) =>
 and renderFunType = (~exact, typeParams, valParams, retType) =>
   genericsString(List.map(toString(~exact), typeParams))
   ++ "("
-  ++ String.concat(
-       ", ",
-       List.map(t => "_:" ++ (t |> toString(~exact)), valParams),
-     )
+  ++ String.concat(", ", List.map(toString(~exact), valParams))
   ++ ") => "
   ++ (retType |> toString(~exact));
 
