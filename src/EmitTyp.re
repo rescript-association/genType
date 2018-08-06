@@ -72,3 +72,5 @@ let importTypeAs = (~config, ~typeName, ~asTypeName, ~importPath) =>
   ++ "'";
 
 let blockTagValue = (~config, i) => string_of_int(i);
+
+let shimExtension = (~config) => ".shim.js";
