@@ -192,7 +192,7 @@ let importPathForReasonModuleName =
       resolveModule(
         ~outputFileRelative,
         ~resolver,
-        ~ext=".shim.js",
+        ~ext=".shim",
         shimModuleName,
       );
     if (Debug.moduleResolution) {
