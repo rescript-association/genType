@@ -760,7 +760,7 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
  *     {named: number, args?: number}
  */
 
-let codeItemsForMake = (~language, ~moduleName, ~valueBinding, id) => {
+let codeItemsForMake = (~language, ~generator, ~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let {dependencies, convertableType: (converter, typ)} =
@@ -796,7 +796,7 @@ let codeItemsForMake = (~language, ~moduleName, ~valueBinding, id) => {
         | _ => propOrChildren
         }
       };
-    let propsTypeName = GenIdent.propsTypeName();
+    let propsTypeName = GenIdent.propsTypeName(~generator);
 
     let items = [
       ComponentBinding({
@@ -820,11 +820,11 @@ let codeItemsForMake = (~language, ~moduleName, ~valueBinding, id) => {
   };
 };
 
-let fromValueBinding = (~language, ~moduleName, valueBinding) => {
+let fromValueBinding = (~language, ~generator, ~moduleName, valueBinding) => {
   let {Typedtree.vb_pat, vb_attributes, _} = valueBinding;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> codeItemsForMake(~language, ~moduleName, ~valueBinding)
+    id |> codeItemsForMake(~language, ~generator, ~moduleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
     id |> codeItemsForId(~language, ~moduleName, ~valueBinding)
   | _ => ([], [])

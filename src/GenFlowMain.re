@@ -43,7 +43,7 @@ let sortcodeItemsByPriority = codeItems => {
   sortedCodeItems^;
 };
 
-let typedItemToCodeItems = (~language, ~moduleName, typedItem) => {
+let typedItemToCodeItems = (~language, ~generator, ~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
@@ -53,7 +53,9 @@ let typedItemToCodeItems = (~language, ~moduleName, typedItem) => {
 
     | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
       valueBindings
-      |> List.map(CodeItem.fromValueBinding(~language, ~moduleName))
+      |> List.map(
+           CodeItem.fromValueBinding(~language, ~generator, ~moduleName),
+         )
       |> List.split
 
     | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
@@ -67,7 +69,14 @@ let typedItemToCodeItems = (~language, ~moduleName, typedItem) => {
 };
 
 let cmtToCodeItems =
-    (~config, ~moduleName, ~outputFileRelative, ~resolver, inputCMT)
+    (
+      ~config,
+      ~generator,
+      ~moduleName,
+      ~outputFileRelative,
+      ~resolver,
+      inputCMT,
+    )
     : list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   switch (cmt_annots) {
@@ -78,7 +87,11 @@ let cmtToCodeItems =
         ((curDeps, curParseItems), nextTypedItem) => {
           let (nextDeps, nextCodeItems) =
             nextTypedItem
-            |> typedItemToCodeItems(~language=config.language, ~moduleName);
+            |> typedItemToCodeItems(
+                 ~language=config.language,
+                 ~generator,
+                 ~moduleName,
+               );
           (
             List.rev_append(nextDeps, curDeps),
             List.rev_append(nextCodeItems, curParseItems),
@@ -127,7 +140,7 @@ let emitCodeItems =
 let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = Filename.concat(Sys.getcwd(), cmt);
   if (Sys.file_exists(cmtFile)) {
-    GenIdent.resetPerFile();
+    let generator = GenIdent.create();
     let inputCMT = Cmt_format.read_cmt(cmtFile);
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
     let outputFileRelative =
@@ -141,7 +154,13 @@ let processCmtFile = (~signFile, ~config, cmt) => {
         ],
       );
     inputCMT
-    |> cmtToCodeItems(~config, ~moduleName, ~outputFileRelative, ~resolver)
+    |> cmtToCodeItems(
+         ~config,
+         ~generator,
+         ~moduleName,
+         ~outputFileRelative,
+         ~resolver,
+       )
     |> emitCodeItems(
          ~language=config.language,
          ~outputFile,
