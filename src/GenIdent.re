@@ -1,12 +1,34 @@
 /** Generate fresh identifiers */
+module IntMap =
+  Map.Make({
+    type t = int;
+    let compare = (x: int, y: int) => compare(x, y);
+  });
 
-type generator = {mutable propsType: int};
+type propsTypeGen = {mutable propsType: int};
 
-let create = () => {propsType: 0};
+let createPropsTypeGen = () => {propsType: 0};
 
-let jsTypeNameForAnonymousTypeID = id => "T" ++ string_of_int(id);
-
-let propsTypeName = (~generator) => {
-  generator.propsType = generator.propsType + 1;
-  "Props" ++ (generator.propsType == 1 ? "" : string_of_int(generator.propsType));
+let propsTypeName = (~propsTypeGen) => {
+  propsTypeGen.propsType = propsTypeGen.propsType + 1;
+  "Props"
+  ++ (
+    propsTypeGen.propsType == 1 ? "" : string_of_int(propsTypeGen.propsType)
+  );
 };
+
+type typeVarsGen = {
+  mutable typeNameMap: IntMap.t(string),
+  mutable typeNameCounter: int,
+};
+
+let createTypeVarsGen = () => {typeNameMap: IntMap.empty, typeNameCounter: 0};
+
+let jsTypeNameForAnonymousTypeID = (~typeVarsGen, id) =>
+  try (typeVarsGen.typeNameMap |> IntMap.find(id)) {
+  | Not_found =>
+    typeVarsGen.typeNameCounter = typeVarsGen.typeNameCounter + 1;
+    let name = "T" ++ string_of_int(typeVarsGen.typeNameCounter);
+    typeVarsGen.typeNameMap = typeVarsGen.typeNameMap |> IntMap.add(id, name);
+    name;
+  };

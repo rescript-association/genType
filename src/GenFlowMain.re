@@ -43,7 +43,7 @@ let sortcodeItemsByPriority = codeItems => {
   sortedCodeItems^;
 };
 
-let typedItemToCodeItems = (~language, ~generator, ~moduleName, typedItem) => {
+let typedItemToCodeItems = (~language, ~propsTypeGen, ~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
@@ -54,13 +54,14 @@ let typedItemToCodeItems = (~language, ~generator, ~moduleName, typedItem) => {
     | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
       valueBindings
       |> List.map(
-           CodeItem.fromValueBinding(~language, ~generator, ~moduleName),
+           CodeItem.fromValueBinding(~language, ~propsTypeGen, ~moduleName),
          )
       |> List.split
 
     | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
       /* external declaration */
-      valueDescription |> CodeItem.fromValueDescription(~language)
+      valueDescription
+      |> CodeItem.fromValueDescription(~language)
 
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
@@ -71,7 +72,7 @@ let typedItemToCodeItems = (~language, ~generator, ~moduleName, typedItem) => {
 let cmtToCodeItems =
     (
       ~config,
-      ~generator,
+      ~propsTypeGen,
       ~moduleName,
       ~outputFileRelative,
       ~resolver,
@@ -89,7 +90,7 @@ let cmtToCodeItems =
             nextTypedItem
             |> typedItemToCodeItems(
                  ~language=config.language,
-                 ~generator,
+                 ~propsTypeGen,
                  ~moduleName,
                );
           (
@@ -140,7 +141,7 @@ let emitCodeItems =
 let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = Filename.concat(Sys.getcwd(), cmt);
   if (Sys.file_exists(cmtFile)) {
-    let generator = GenIdent.create();
+    let propsTypeGen = GenIdent.createPropsTypeGen();
     let inputCMT = Cmt_format.read_cmt(cmtFile);
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
     let outputFileRelative =
@@ -156,7 +157,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     inputCMT
     |> cmtToCodeItems(
          ~config,
-         ~generator,
+         ~propsTypeGen,
          ~moduleName,
          ~outputFileRelative,
          ~resolver,

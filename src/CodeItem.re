@@ -314,9 +314,10 @@ let rec typePathToFlowName = typePath =>
     ++ typePathToFlowName(p2)
   };
 
-let rec extract_fun =
+let rec extract_fun_ =
         (
           ~language,
+          ~typeVarsGen,
           ~noFunctionReturnDependencies=false,
           revArgDeps,
           revArgs,
@@ -325,8 +326,9 @@ let rec extract_fun =
   Types.(
     switch (typ.desc) {
     | Tlink(t) =>
-      extract_fun(
+      extract_fun_(
         ~language,
+        ~typeVarsGen,
         ~noFunctionReturnDependencies,
         revArgDeps,
         revArgs,
@@ -334,10 +336,11 @@ let rec extract_fun =
       )
     | Tarrow("", t1, t2, _) =>
       let {dependencies, convertableType} =
-        reasonTypeToConversion(~language, t1);
+        reasonTypeToConversion_(~language, ~typeVarsGen, t1);
       let nextRevDeps = List.append(dependencies, revArgDeps);
-      extract_fun(
+      extract_fun_(
         ~language,
+        ~typeVarsGen,
         ~noFunctionReturnDependencies,
         nextRevDeps,
         [(Nolabel, convertableType), ...revArgs],
@@ -348,10 +351,11 @@ let rec extract_fun =
       | None =>
         /* TODO: Convert name to object, convert null to optional. */
         let {dependencies, convertableType: t1Conversion} =
-          reasonTypeToConversion(~language, t1);
+          reasonTypeToConversion_(~language, ~typeVarsGen, t1);
         let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-        extract_fun(
+        extract_fun_(
           ~language,
+          ~typeVarsGen,
           ~noFunctionReturnDependencies,
           nextRevDeps,
           [(Label(lbl), t1Conversion), ...revArgs],
@@ -359,12 +363,13 @@ let rec extract_fun =
         );
       | Some((lbl, t1)) =>
         let {dependencies, convertableType: (t1Converter, t1Typ)} =
-          reasonTypeToConversion(~language, t1);
+          reasonTypeToConversion_(~language, ~typeVarsGen, t1);
         let t1Conversion = (OptionalArgument(t1Converter), t1Typ);
         let nextRevDeps = List.append(dependencies, revArgDeps);
         /* TODO: Convert name to object, convert null to optional. */
-        extract_fun(
+        extract_fun_(
           ~language,
+          ~typeVarsGen,
           ~noFunctionReturnDependencies,
           nextRevDeps,
           [(OptLabel(lbl), t1Conversion), ...revArgs],
@@ -373,7 +378,7 @@ let rec extract_fun =
       }
     | _ =>
       let {dependencies, convertableType: (retConverter, retType)} =
-        reasonTypeToConversion(~language, typ);
+        reasonTypeToConversion_(~language, ~typeVarsGen, typ);
       let allDeps =
         List.append(
           List.rev(revArgDeps),
@@ -445,13 +450,19 @@ let rec extract_fun =
  * TODO: Handle the case where the function in Reason accepts a single unit
  * arg, which should NOT be converted.
  */
-and reasonTypeToConversion =
-    (~language, ~noFunctionReturnDependencies=false, typ: Types.type_expr)
+and reasonTypeToConversion_ =
+    (
+      ~language,
+      ~typeVarsGen,
+      ~noFunctionReturnDependencies=false,
+      typ: Types.type_expr,
+    )
     : conversionPlan =>
   Types.(
     switch (typ.desc) {
     | Tvar(None) =>
-      let typeName = GenIdent.jsTypeNameForAnonymousTypeID(typ.id);
+      let typeName =
+        GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, typ.id);
       {
         dependencies: [FreeTypeVariable(typeName, typ.id)],
         convertableType: (Identity, Ident(typeName, [])),
@@ -494,7 +505,7 @@ and reasonTypeToConversion =
         dependencies: paramDeps,
         convertableType: (itemConverter, itemFlow),
       } =
-        reasonTypeToConversion(~language, p);
+        reasonTypeToConversion_(~language, ~typeVarsGen, p);
       if (itemConverter === Identity) {
         {
           dependencies: paramDeps,
@@ -520,16 +531,28 @@ and reasonTypeToConversion =
         dependencies: paramDeps,
         convertableType: (paramConverter, paramConverted),
       } =
-        reasonTypeToConversion(~language, p);
+        reasonTypeToConversion_(~language, ~typeVarsGen, p);
       let composedConverter = Option(paramConverter);
       {
         dependencies: paramDeps,
         convertableType: (composedConverter, Optional(paramConverted)),
       };
     | Tarrow(_) =>
-      extract_fun(~language, ~noFunctionReturnDependencies, [], [], typ)
+      extract_fun_(
+        ~language,
+        ~typeVarsGen,
+        ~noFunctionReturnDependencies,
+        [],
+        [],
+        typ,
+      )
     | Tlink(t) =>
-      reasonTypeToConversion(~language, ~noFunctionReturnDependencies, t)
+      reasonTypeToConversion_(
+        ~language,
+        ~typeVarsGen,
+        ~noFunctionReturnDependencies,
+        t,
+      )
     | Tconstr(path, [], _) => {
         dependencies: [TypeAtPath(path)],
         convertableType: (Identity, Ident(typePathToFlowName(path), [])),
@@ -545,7 +568,8 @@ and reasonTypeToConversion =
      * built-in JS type defs are brought in from the right location.
      */
     | Tconstr(path, typeParams, _) =>
-      let conversionPlans = reasonTypesToConversion(~language, typeParams);
+      let conversionPlans =
+        reasonTypesToConversion_(~language, ~typeVarsGen, typeParams);
       let convertableTypes =
         conversionPlans
         |> List.map(({convertableType, _}) => convertableType);
@@ -566,8 +590,18 @@ and reasonTypeToConversion =
     | _ => {dependencies: [], convertableType: (Identity, any)}
     }
   )
-and reasonTypesToConversion = (~language, args): list(conversionPlan) =>
-  args |> List.map(reasonTypeToConversion(~language));
+and reasonTypesToConversion_ =
+    (~language, ~typeVarsGen, args): list(conversionPlan) =>
+  args |> List.map(reasonTypeToConversion_(~language, ~typeVarsGen));
+
+let reasonTypeToConversion = (~language) => {
+  let typeVarsGen = GenIdent.createTypeVarsGen();
+  reasonTypeToConversion_(~language, ~typeVarsGen);
+};
+let reasonTypesToConversion = (~language) => {
+  let typeVarsGen = GenIdent.createTypeVarsGen();
+  reasonTypesToConversion_(~language, ~typeVarsGen);
+};
 
 module Dependencies = {
   /**
@@ -613,10 +647,10 @@ module TypeVars = {
   /**
    * Extracts type variables from dependencies.
    */
-  let extractOne = (soFar, typ) =>
+  let extractOne = (~typeVarsGen, soFar, typ) =>
     switch (typ) {
     | {Types.id, desc: Tvar(None), _} =>
-      let typeName = GenIdent.jsTypeNameForAnonymousTypeID(id);
+      let typeName = GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, id);
       [(typeName, id), ...soFar];
     | {id, desc: Tvar(Some(s)), _} =>
       let typeName = s;
@@ -640,8 +674,8 @@ module TypeVars = {
    */
 
   let extract = typeParams => {
-    let typeVarnamesAndIDs = List.fold_left(extractOne, [], typeParams);
-    List.rev(typeVarnamesAndIDs);
+    let typeVarsGen = GenIdent.createTypeVarsGen();
+    typeParams |> List.fold_left(extractOne(~typeVarsGen), []) |> List.rev;
   };
   /*
    * A little bit of n squared never hurt anyone for n < 5.
@@ -760,7 +794,8 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
  *     {named: number, args?: number}
  */
 
-let codeItemsForMake = (~language, ~generator, ~moduleName, ~valueBinding, id) => {
+let codeItemsForMake =
+    (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let {dependencies, convertableType: (converter, typ)} =
@@ -796,7 +831,7 @@ let codeItemsForMake = (~language, ~generator, ~moduleName, ~valueBinding, id) =
         | _ => propOrChildren
         }
       };
-    let propsTypeName = GenIdent.propsTypeName(~generator);
+    let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
 
     let items = [
       ComponentBinding({
@@ -820,11 +855,12 @@ let codeItemsForMake = (~language, ~generator, ~moduleName, ~valueBinding, id) =
   };
 };
 
-let fromValueBinding = (~language, ~generator, ~moduleName, valueBinding) => {
+let fromValueBinding = (~language, ~propsTypeGen, ~moduleName, valueBinding) => {
   let {Typedtree.vb_pat, vb_attributes, _} = valueBinding;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> codeItemsForMake(~language, ~generator, ~moduleName, ~valueBinding)
+    id
+    |> codeItemsForMake(~language, ~propsTypeGen, ~moduleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
     id |> codeItemsForId(~language, ~moduleName, ~valueBinding)
   | _ => ([], [])

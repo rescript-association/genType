@@ -11,9 +11,9 @@ export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs
   (function _(jsProps: Props) {
      return Component1BS.make(jsProps.message, jsProps.children);
   }));
-export const plus: <T11009>(number, T11009) => number = Component1BS.plus;
+export const plus: <T1>(number, T1) => number = Component1BS.plus;
 export const concat: (string, ?string) => ?string = function _(Arg1, Arg2) { const result = Component1BS.concat(Arg1, (Arg2 === null ? undefined : Arg2)); return result };
 export const consumeVariant: (Component2variant) => number = Component1BS.consumeVariant;
 export const l: list<number> = Component1BS.l;
-export const map: <T11519,T11517>((T11519) => T11517, list<T11519>) => list<T11517> = Component1BS.map;
+export const map: <T1,T2>((T1) => T2, list<T1>) => list<T2> = Component1BS.map;
 
