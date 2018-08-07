@@ -47,6 +47,10 @@ and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
 
 let typToString = (~language) =>
   renderString(~language, ~exact=language == Flow);
+
+let ofType = (~language, ~typ, s) =>
+  language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
+
 let commentBeforeRequire = (~language) =>
   language == Typescript ?
     "// tslint:disable-next-line:no-var-requires\n" : "";
@@ -63,7 +67,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
     ++ typeName
     ++ typeParams
     ++ " = "
-    ++ typ
+    ++ (typ |> typToString(~language))
     ++ (opaque ? " // Reason type already checked. Making it opaque" : "")
     ++ ";"
 
@@ -79,7 +83,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
       ++ typeName
       ++ typeParams
       ++ " = "
-      ++ typ
+      ++ (typ |> typToString(~language))
       ++ ";";
     }
   | Untyped => ""
@@ -102,7 +106,7 @@ let emitExportUnionType = (~language, ~name, ~typeParams, ~leafTypes) =>
 let requireReact = (~language) => language == Flow;
 
 let importReact = (~language) =>
-  language == Flow ? "" : "import * as React from \"react\";";
+  language == Typescript ? "import * as React from \"react\";" : "";
 
 let reactComponentType = (~language) =>
   language == Flow ? "React$ComponentType" : "React.ComponentClass";
@@ -148,6 +152,11 @@ let emitImportTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
   };
 
 let blockTagValue = (~language, i) =>
-  string_of_int(i) ++ (language == Flow ? "" : " as any");
+  string_of_int(i) ++ (language == Typescript ? " as any" : "");
 
-let shimExtension = (~language) => language == Flow ? ".shim.js" : ".shim.ts";
+let shimExtension = (~language) =>
+  switch (language) {
+  | Flow => ".shim.js"
+  | Typescript => ".shim.ts"
+  | Untyped => ".shim.not.used"
+  };

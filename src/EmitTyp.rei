@@ -22,7 +22,7 @@ let emitExportType:
     ~opaque: bool,
     ~typeName: string,
     ~typeParams: list(typ),
-    string
+    typ
   ) =>
   string;
 
@@ -42,6 +42,8 @@ let emitImportTypeAs:
     ~importPath: ImportPath.t
   ) =>
   string;
+
+let ofType: (~language: language, ~typ: typ, string) => string;
 
 let outputFileSuffix: (~language: language) => string;
 

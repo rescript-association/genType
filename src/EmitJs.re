@@ -21,9 +21,7 @@ let requireModule =
 
 let emitExportType =
     (~language, {CodeItem.opaque, typeParams, typeName, typ}) =>
-  typ
-  |> EmitTyp.typToString(~language)
-  |> EmitTyp.emitExportType(~language, ~opaque, ~typeName, ~typeParams);
+  typ |> EmitTyp.emitExportType(~language, ~opaque, ~typeName, ~typeParams);
 
 let emitExportUnionType = (~language, {CodeItem.typeParams, leafTypes, name}) =>
   EmitTyp.emitExportUnionType(~language, ~name, ~typeParams, ~leafTypes);
@@ -62,8 +60,10 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
 
     | [{componentName}] =>
       let s =
-        "export function checkJsWrapperType(props: "
-        ++ propsTypeName
+        "export function checkJsWrapperType("
+        ++ (
+          "props" |> EmitTyp.ofType(~language, ~typ=Ident(propsTypeName, []))
+        )
         ++ ") {\n      return <"
         ++ componentName
         ++ " {...props}/>;\n    }";
@@ -108,11 +108,10 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
              ~resolver,
              ~importPath,
            );
+
       line(
         "export const "
-        ++ id
-        ++ ": "
-        ++ EmitTyp.typToString(~language, typ)
+        ++ (id |> EmitTyp.ofType(~language, ~typ))
         ++ " = "
         ++ (
           ModuleName.toString(moduleNameBs)
@@ -136,9 +135,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       if (convertableTypes == []) {
         line(
           "export const "
-          ++ variantName
-          ++ ": "
-          ++ EmitTyp.typToString(~language, constructorType)
+          ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
           ++ " = "
           ++ recordAsInt
           ++ ";",
@@ -158,9 +155,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
           |> mkReturn;
         line(
           "export const "
-          ++ variantName
-          ++ ": "
-          ++ EmitTyp.typToString(~language, constructorType)
+          ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
           ++ " = "
           ++ Emit.funDef(~args, ~mkBody, ""),
         );
@@ -228,9 +223,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       line(emitExportType(~language, exportType));
       line(
         "export const "
-        ++ name
-        ++ ": "
-        ++ EmitTyp.typToString(~language, componentType)
+        ++ (name |> EmitTyp.ofType(~language, ~typ=componentType))
         ++ " = ReasonReact.wrapReasonForJs(",
       );
       line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");
