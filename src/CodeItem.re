@@ -451,7 +451,7 @@ and reasonTypeToConversion =
   Types.(
     switch (typ.desc) {
     | Tvar(None) =>
-      let typeName = jsTypeNameForAnonymousTypeID(typ.id);
+      let typeName = GenIdent.jsTypeNameForAnonymousTypeID(typ.id);
       {
         dependencies: [FreeTypeVariable(typeName, typ.id)],
         convertableType: (Identity, Ident(typeName, [])),
@@ -616,7 +616,7 @@ module TypeVars = {
   let extractOne = (soFar, typ) =>
     switch (typ) {
     | {Types.id, desc: Tvar(None), _} =>
-      let typeName = jsTypeNameForAnonymousTypeID(id);
+      let typeName = GenIdent.jsTypeNameForAnonymousTypeID(id);
       [(typeName, id), ...soFar];
     | {id, desc: Tvar(Some(s)), _} =>
       let typeName = s;

@@ -1,14 +1,14 @@
 /** Generate fresh identifiers */
 
-let propsTypeNameCount = {contents: 0};
+type generator = {mutable propsType: int};
 
-let resetPerFile = () => propsTypeNameCount.contents = 0;
+let initial = {propsType: 0};
+
+let resetPerFile = () => initial.propsType = 0;
+
+let jsTypeNameForAnonymousTypeID = id => "T" ++ string_of_int(id);
 
 let propsTypeName = () => {
-  propsTypeNameCount.contents = propsTypeNameCount.contents + 1;
-  "Props"
-  ++ (
-    propsTypeNameCount.contents == 1 ?
-      "" : string_of_int(propsTypeNameCount.contents)
-  );
+  initial.propsType = initial.propsType + 1;
+  "Props" ++ (initial.propsType == 1 ? "" : string_of_int(initial.propsType));
 };

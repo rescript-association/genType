@@ -23,7 +23,6 @@ let logItem = x => {
 
 let tagSearch = "genFlow";
 let tagSearchOpaque = "genFlow.opaque";
-let jsTypeNameForAnonymousTypeID = id => "T" ++ string_of_int(id);
 
 type optionalness =
   | NonMandatory
