@@ -32,7 +32,7 @@ let emitImportType = (~language, importType) =>
   switch (importType) {
   | CodeItem.ImportComment(s) => s
   | ImportAsFrom(typeName, asTypeName, importPath) =>
-    EmitTyp.importTypeAs(~language, ~typeName, ~asTypeName, ~importPath)
+    EmitTyp.emitImportTypeAs(~language, ~typeName, ~asTypeName, ~importPath)
   };
 
 let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
@@ -80,7 +80,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     };
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
-      line(emitImportType(~language, importType) ++ ";");
+      line(emitImportType(~language, importType));
       env;
 
     | ExportType(exportType) =>
@@ -88,7 +88,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       env;
 
     | ExportUnionType(exportUnionType) =>
-      line(emitExportUnionType(~language, exportUnionType) ++ ";");
+      line(emitExportUnionType(~language, exportUnionType));
       env;
 
     | ValueBinding(moduleName, id, typ, converter) =>

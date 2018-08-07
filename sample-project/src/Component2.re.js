@@ -3,7 +3,7 @@
 const Component2BS = require("./Component2.bs");
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 
-// No need to import locally visible type block. Make sure it is also marked with @genFlow;
+// No need to import locally visible type block. Make sure it is also marked with @genFlow
 export opaque type VariantA = any // Reason type already checked. Making it opaque;
 export const A: VariantA = 0;
 export opaque type VariantB = any // Reason type already checked. Making it opaque;

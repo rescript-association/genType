@@ -65,7 +65,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
     ++ " = "
     ++ typ
     ++ (opaque ? " // Reason type already checked. Making it opaque" : "")
-    ++  ";"
+    ++ ";"
 
   | Typescript =>
     if (opaque) {
@@ -95,6 +95,7 @@ let emitExportUnionType = (~language, ~name, ~typeParams, ~leafTypes) =>
     ++ genericsString(List.map(typToString(~language), typeParams))
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
+    ++ ";"
   | Untyped => ""
   };
 
@@ -125,7 +126,7 @@ let outputFileSuffix = (~language) =>
 
 let generatedModuleExtension = (~language) => language == Flow ? ".re" : "";
 
-let importTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
+let emitImportTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
   switch (language) {
   | Flow
   | Typescript =>
@@ -142,7 +143,7 @@ let importTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
     )
     ++ "} from '"
     ++ (importPath |> ImportPath.toString)
-    ++ "'"
+    ++ "';"
   | Untyped => ""
   };
 

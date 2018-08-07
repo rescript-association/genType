@@ -34,7 +34,7 @@ let genericsString: list(string) => string;
 
 let importReact: (~language: language) => string;
 
-let importTypeAs:
+let emitImportTypeAs:
   (
     ~language: language,
     ~typeName: string,
