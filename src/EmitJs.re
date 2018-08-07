@@ -75,7 +75,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
 
     | [{componentName}] =>
       let s =
-        "function checkJsWrapperType(props: "
+        "export function checkJsWrapperType(props: "
         ++ propsTypeName
         ++ ") {\n      return <"
         ++ componentName
