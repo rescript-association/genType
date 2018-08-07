@@ -110,10 +110,10 @@ let getShims = json => {
   shims^;
 };
 
-let emptyConfig = {language: "", modulesMap: ModuleNameMap.empty};
+let emptyConfig = {language: Flow, modulesMap: ModuleNameMap.empty};
 let readConfig = () => {
   let fromJson = json => {
-    let language = json |> getLanguage;
+    let languageString = json |> getLanguage;
     let modulesMap =
       json
       |> getShims
@@ -135,10 +135,16 @@ let readConfig = () => {
     if (Debug.config) {
       logItem(
         "Config language:%s modulesMap:%d entries\n",
-        language,
+        languageString,
         modulesMap |> ModuleNameMap.cardinal,
       );
     };
+    let language =
+      switch (languageString) {
+      | "typescript" => Typescript
+      | "untyped" => Untyped
+      | _ => Flow
+      };
     {language, modulesMap};
   };
 

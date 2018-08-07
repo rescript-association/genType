@@ -34,7 +34,7 @@ and renderFunType = (~config, ~exact, typeParams, valParams, retType) =>
        List.mapi(
          (i, t) => {
            let parameterName =
-             config.language != "typescript" ?
+             config.language == Flow ?
                "" : "_" ++ string_of_int(i + 1) ++ ":";
            parameterName ++ (t |> toString(~config, ~exact));
          },
@@ -46,13 +46,13 @@ and renderFunType = (~config, ~exact, typeParams, valParams, retType) =>
 
 let any = Ident("any", []);
 let toString = (~config) =>
-  toString(~config, ~exact=config.language != "typescript");
+  toString(~config, ~exact=config.language == Flow);
 let commentBeforeRequire = (~config) =>
-  config.language != "typescript" ?
+  config.language == Flow ?
     "" : "// tslint:disable-next-line:no-var-requires\n";
 
 let emitExportType = (~config, ~opaque, ~typeName, ~typeParams, typ) =>
-  if (config.language != "typescript") {
+  if (config.language == Flow) {
     "export"
     ++ (opaque ? " opaque " : " ")
     ++ "type "
@@ -75,30 +75,30 @@ let emitExportType = (~config, ~opaque, ~typeName, ~typeParams, typ) =>
     ++ typ;
   };
 
-let requireReact = (~config) => config.language != "typescript";
+let requireReact = (~config) => config.language == Flow;
 
 let reactComponentType = (~config) =>
-  config.language != "typescript" ?
+  config.language == Flow ?
     "React$ComponentType" : "React.ComponentClass";
 
 let fileHeader = (~config) =>
-  config.language != "typescript" ?
+  config.language == Flow ?
     "/* @flow strict */\n" : "/* Typescript file generated */";
 
 let componentExportName = (~config, ~moduleName) =>
-  config.language != "typescript" ?
+  config.language == Flow ?
     "component" : ModuleName.toString(moduleName);
 
 let outputFileSuffix = (~config) =>
-  config.language != "typescript" ? ".re.js" : ".tsx";
+  config.language == Flow ? ".re.js" : ".tsx";
 
 let generatedModuleExtension = (~config) =>
-  config.language != "typescript" ? ".re" : "";
+  config.language == Flow ? ".re" : "";
 
 let importTypeAs = (~config, ~typeName, ~asTypeName, ~importPath) =>
-  (config.language != "typescript" ? "" : "\n")
+  (config.language == Flow ? "" : "\n")
   ++ "import "
-  ++ (config.language != "typescript" ? "type " : "")
+  ++ (config.language == Flow ? "type " : "")
   ++ "{"
   ++ typeName
   ++ (
@@ -112,10 +112,10 @@ let importTypeAs = (~config, ~typeName, ~asTypeName, ~importPath) =>
   ++ "'";
 
 let blockTagValue = (~config, i) =>
-  string_of_int(i) ++ (config.language != "typescript" ? "" : " as any");
+  string_of_int(i) ++ (config.language == Flow ? "" : " as any");
 
 let shimExtension = (~config) =>
-  config.language != "typescript" ? ".shim.js" : ".shim.ts";
+  config.language == Flow ? ".shim.js" : ".shim.ts";
 
 let imporReact = (~config) =>
-  config.language != "typescript" ? "" : "import * as React from \"react\";";
+  config.language == Flow ? "" : "import * as React from \"react\";";

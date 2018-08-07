@@ -5,8 +5,13 @@
 module StringMap = Map.Make(String);
 module ModuleNameMap = Map.Make(ModuleName);
 
+type language =
+  | Flow
+  | Typescript
+  | Untyped;
+
 type config = {
-  language: string,
+  language: language,
   modulesMap: ModuleNameMap.t(ModuleName.t),
 };
 
