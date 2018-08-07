@@ -283,20 +283,15 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
       };
 
     | ExternalReactClass({componentName, importPath} as externalReactClass) =>
-      line(
-        "const "
-        ++ componentName
-        ++ " = require(\""
-        ++ (importPath |> ImportPath.toString)
-        ++ "\");"
-        ++ " // external "
-        ++ componentName
-        ++ " : ReasonReact.reactClass = \""
-        ++ (importPath |> ImportPath.toString)
-        ++ "\"",
-      );
+      let requires =
+        env.requires
+        |> ModuleNameMap.add(
+             ModuleName.fromStringUnsafe(componentName),
+             importPath,
+           );
       {
         ...env,
+        requires,
         externalReactClass: [externalReactClass, ...env.externalReactClass],
       };
     };
