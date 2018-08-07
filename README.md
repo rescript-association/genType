@@ -1,6 +1,8 @@
 # Reason genFlow
 
-`genFlow` is a tool to automatically generate type-safe bindings between [Reason](https://reasonml.github.io/) and [Flow](https://flow.org/en/). It also generates typed JS wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components, and in the other direction, if you have ReasonReact wrappers for JS components, it checks that they are well typed.
+`genFlow` is a tool to automatically generate typed bindings between [Reason](https://reasonml.github.io/), and either [Flow](https://flow.org/en/) or [Typescript](https://www.typescriptlang.org/): see the companion project [genTypescript](https://github.com/cristianoc/genTypescript) for more info.
+
+`genFlow` generates typed JS wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components, and in the other direction, if you have ReasonReact wrappers for JS components, it checks that they are well typed.
 
 ### Work in progress, only for early adopters. It is possible that the workflow will change in future.
 
@@ -31,6 +33,14 @@ into bucklescript in future. The current requirement is `bs-platform 4.0.3`.
 2. Add a file [genflowconfig.json](sample-project/src/shims) in the project root, and some `.shims.js` files e.g. in a directory `shims/` just like in the [sample-project](sample-project). The `.shims.js` files must be in a source directory visible by bucklescript. See e.g. [ReactShim.shim.js](sample-project/src/shims/ReactShim.shim.js).
 3. Add `[@genFlow]` annotations to the values to be used from javascript. If an annotated value uses a type, the type must be anotated too. See e.g. [Component2.re](sample-project/src/Component2.re).
 4. If using webpack, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) just like in [webpack.config.js](reason-react-example/webpack.config.js).
+
+# Back-ends
+
+There are 3 back-ends for `genFlow`, which can be selected by specifyng `"language" : "xxx"` in `genflowconfig.json` with `xxx` ranging over:
+
+1. "flow": generate bindings for [Flow](https://flow.org/en/) in `Filename.re.js`.
+2. "typescript": generate bindings for [Typescript](https://www.typescriptlang.org/) in `Filename.tsx`.
+3. "untyped": generate untyped bindings in `Filename.re.js`, if you're interested in the generated wrappers, but not the types.
 
 
 # Limitations
