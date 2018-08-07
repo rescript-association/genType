@@ -19,36 +19,40 @@ let requireModule =
           ),
      );
 
-let emitExportType = (~config, {CodeItem.opaque, typeParams, typeName, typ}) =>
+let emitExportType =
+    (~language, {CodeItem.opaque, typeParams, typeName, typ}) =>
   typ
-  |> EmitTyp.toString(~config)
+  |> EmitTyp.toString(~language)
   |> EmitTyp.emitExportType(
-       ~config,
+       ~language,
        ~opaque,
        ~typeName,
        ~typeParams=
          EmitTyp.genericsString(
-           List.map(EmitTyp.toString(~config), typeParams),
+           List.map(EmitTyp.toString(~language), typeParams),
          ),
      );
 
-let emitExportUnionType = (~config, {CodeItem.typeParams, leafTypes, name}) =>
+let emitExportUnionType = (~language, {CodeItem.typeParams, leafTypes, name}) =>
   "export type "
   ++ name
   ++ EmitTyp.genericsString(
-       List.map(EmitTyp.toString(~config), typeParams),
+       List.map(EmitTyp.toString(~language), typeParams),
      )
   ++ " =\n  | "
-  ++ String.concat("\n  | ", List.map(EmitTyp.toString(~config), leafTypes));
+  ++ String.concat(
+       "\n  | ",
+       List.map(EmitTyp.toString(~language), leafTypes),
+     );
 
-let emitImportType = (~config, importType) =>
+let emitImportType = (~language, importType) =>
   switch (importType) {
   | CodeItem.ImportComment(s) => s
   | ImportAsFrom(typeName, asTypeName, importPath) =>
-    EmitTyp.importTypeAs(~config, ~typeName, ~asTypeName, ~importPath)
+    EmitTyp.importTypeAs(~language, ~typeName, ~asTypeName, ~importPath)
   };
 
-let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
+let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
   let mainBuffer = Buffer.create(100);
   let exportBuffer = Buffer.create(100);
@@ -62,7 +66,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
   let emitRequire = (moduleName, importPath) =>
     line_(
       requireBuffer,
-      EmitTyp.commentBeforeRequire(~config)
+      EmitTyp.commentBeforeRequire(~language)
       ++ "const "
       ++ ModuleName.toString(moduleName)
       ++ " = require(\""
@@ -89,19 +93,19 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
     };
   let emitCodeItem = (env, codeItem) => {
     if (Debug.codeItems) {
-      logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~config));
+      logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~language));
     };
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
-      line(emitImportType(~config, importType) ++ ";");
+      line(emitImportType(~language, importType) ++ ";");
       env;
 
     | ExportType(exportType) =>
-      line(emitExportType(~config, exportType) ++ ";");
+      line(emitExportType(~language, exportType) ++ ";");
       env;
 
     | ExportUnionType(exportUnionType) =>
-      line(emitExportUnionType(~config, exportUnionType) ++ ";");
+      line(emitExportUnionType(~language, exportUnionType) ++ ";");
       env;
 
     | ValueBinding(moduleName, id, typ, converter) =>
@@ -125,7 +129,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         "export const "
         ++ id
         ++ ": "
-        ++ EmitTyp.toString(~config, typ)
+        ++ EmitTyp.toString(~language, typ)
         ++ " = "
         ++ (
           ModuleName.toString(moduleNameBs)
@@ -144,14 +148,14 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         variantName,
         recordValue,
       ) =>
-      line(emitExportType(~config, exportType) ++ ";");
-      let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~config);
+      line(emitExportType(~language, exportType) ++ ";");
+      let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
       if (convertableTypes == []) {
         line(
           "export const "
           ++ variantName
           ++ ": "
-          ++ EmitTyp.toString(~config, constructorType)
+          ++ EmitTyp.toString(~language, constructorType)
           ++ " = "
           ++ recordAsInt
           ++ ";",
@@ -166,12 +170,14 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
              });
         let mkReturn = s => "return " ++ s;
         let mkBody = args =>
-          recordValue |> Runtime.emitRecordAsBlock(~config, ~args) |> mkReturn;
+          recordValue
+          |> Runtime.emitRecordAsBlock(~language, ~args)
+          |> mkReturn;
         line(
           "export const "
           ++ variantName
           ++ ": "
-          ++ EmitTyp.toString(~config, constructorType)
+          ++ EmitTyp.toString(~language, constructorType)
           ++ " = "
           ++ Emit.funDef(~args, ~mkBody, ""),
         );
@@ -196,12 +202,12 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         );
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
 
-      let name = EmitTyp.componentExportName(~config, ~moduleName);
+      let name = EmitTyp.componentExportName(~language, ~moduleName);
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let componentType =
         Ident(
-          EmitTyp.reactComponentType(~config),
+          EmitTyp.reactComponentType(~language),
           [Ident(propsTypeName, [])],
         );
       let args =
@@ -236,12 +242,12 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         | _ => [jsPropsDot("children")]
         };
 
-      line(emitExportType(~config, exportType) ++ ";");
+      line(emitExportType(~language, exportType) ++ ";");
       line(
         "export const "
         ++ name
         ++ ": "
-        ++ EmitTyp.toString(~config, componentType)
+        ++ EmitTyp.toString(~language, componentType)
         ++ " = ReasonReact.wrapReasonForJs(",
       );
       line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");
@@ -301,10 +307,10 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
     );
 
   if (externalReactClass != []) {
-    if (EmitTyp.requireReact(~config)) {
+    if (EmitTyp.requireReact(~language)) {
       emitRequire(ModuleName.react, ImportPath.react);
     } else {
-      line_(requireBuffer, EmitTyp.importReact(~config));
+      line_(requireBuffer, EmitTyp.importReact(~language));
     };
   };
   requires |> ModuleNameMap.iter(emitRequire);

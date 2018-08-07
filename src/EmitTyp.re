@@ -4,55 +4,52 @@ let genericsString = genericStrings =>
   genericStrings === [] ?
     "" : "<" ++ String.concat(",", genericStrings) ++ ">";
 
-let rec toString = (~config, ~exact, typ) =>
+let rec toString = (~language, ~exact, typ) =>
   switch (typ) {
-  | Optional(typ) => "?" ++ (typ |> toString(~config, ~exact))
+  | Optional(typ) => "?" ++ (typ |> toString(~language, ~exact))
   | Ident(identPath, typeArguments) =>
     identPath
-    ++ genericsString(List.map(toString(~config, ~exact), typeArguments))
-  | ObjectType(fields) => fields |> renderObjType(~config, ~exact)
+    ++ genericsString(List.map(toString(~language, ~exact), typeArguments))
+  | ObjectType(fields) => fields |> renderObjType(~language, ~exact)
   | Arrow(typeParams, valParams, retType) =>
-    renderFunType(~config, ~exact, typeParams, valParams, retType)
+    renderFunType(~language, ~exact, typeParams, valParams, retType)
   }
-and renderField = (~config, ~exact, (lbl, optness, typ)) => {
+and renderField = (~language, ~exact, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
-  lbl ++ optMarker ++ ":" ++ (typ |> toString(~config, ~exact));
+  lbl ++ optMarker ++ ":" ++ (typ |> toString(~language, ~exact));
 }
-and renderObjType = (~config, ~exact, fields) =>
+and renderObjType = (~language, ~exact, fields) =>
   (exact ? "{|" : "{")
   ++ String.concat(
        exact ? ", " : "; ",
-       List.map(renderField(~config, ~exact), fields),
+       List.map(renderField(~language, ~exact), fields),
      )
   ++ (exact ? "|}" : "}")
 /* TODO: Always drop the final unit argument. */
-and renderFunType = (~config, ~exact, typeParams, valParams, retType) =>
-  genericsString(List.map(toString(~config, ~exact), typeParams))
+and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
+  genericsString(List.map(toString(~language, ~exact), typeParams))
   ++ "("
   ++ String.concat(
        ", ",
        List.mapi(
          (i, t) => {
            let parameterName =
-             config.language == Flow ?
-               "" : "_" ++ string_of_int(i + 1) ++ ":";
-           parameterName ++ (t |> toString(~config, ~exact));
+             language == Flow ? "" : "_" ++ string_of_int(i + 1) ++ ":";
+           parameterName ++ (t |> toString(~language, ~exact));
          },
          valParams,
        ),
      )
   ++ ") => "
-  ++ (retType |> toString(~config, ~exact));
+  ++ (retType |> toString(~language, ~exact));
 
 let any = Ident("any", []);
-let toString = (~config) =>
-  toString(~config, ~exact=config.language == Flow);
-let commentBeforeRequire = (~config) =>
-  config.language == Flow ?
-    "" : "// tslint:disable-next-line:no-var-requires\n";
+let toString = (~language) => toString(~language, ~exact=language == Flow);
+let commentBeforeRequire = (~language) =>
+  language == Flow ? "" : "// tslint:disable-next-line:no-var-requires\n";
 
-let emitExportType = (~config, ~opaque, ~typeName, ~typeParams, typ) =>
-  if (config.language == Flow) {
+let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) =>
+  if (language == Flow) {
     "export"
     ++ (opaque ? " opaque " : " ")
     ++ "type "
@@ -75,33 +72,29 @@ let emitExportType = (~config, ~opaque, ~typeName, ~typeParams, typ) =>
     ++ typ;
   };
 
-let requireReact = (~config) => config.language == Flow;
+let requireReact = (~language) => language == Flow;
 
-let importReact = (~config) =>
-  config.language == Flow ? "" : "import * as React from \"react\";";
+let importReact = (~language) =>
+  language == Flow ? "" : "import * as React from \"react\";";
 
-let reactComponentType = (~config) =>
-  config.language == Flow ?
-    "React$ComponentType" : "React.ComponentClass";
+let reactComponentType = (~language) =>
+  language == Flow ? "React$ComponentType" : "React.ComponentClass";
 
-let fileHeader = (~config) =>
-  config.language == Flow ?
+let fileHeader = (~language) =>
+  language == Flow ?
     "/* @flow strict */\n" : "/* Typescript file generated */";
 
-let componentExportName = (~config, ~moduleName) =>
-  config.language == Flow ?
-    "component" : ModuleName.toString(moduleName);
+let componentExportName = (~language, ~moduleName) =>
+  language == Flow ? "component" : ModuleName.toString(moduleName);
 
-let outputFileSuffix = (~config) =>
-  config.language == Flow ? ".re.js" : ".tsx";
+let outputFileSuffix = (~language) => language == Flow ? ".re.js" : ".tsx";
 
-let generatedModuleExtension = (~config) =>
-  config.language == Flow ? ".re" : "";
+let generatedModuleExtension = (~language) => language == Flow ? ".re" : "";
 
-let importTypeAs = (~config, ~typeName, ~asTypeName, ~importPath) =>
-  (config.language == Flow ? "" : "\n")
+let importTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
+  (language == Flow ? "" : "\n")
   ++ "import "
-  ++ (config.language == Flow ? "type " : "")
+  ++ (language == Flow ? "type " : "")
   ++ "{"
   ++ typeName
   ++ (
@@ -114,9 +107,7 @@ let importTypeAs = (~config, ~typeName, ~asTypeName, ~importPath) =>
   ++ (importPath |> ImportPath.toString)
   ++ "'";
 
-let blockTagValue = (~config, i) =>
-  string_of_int(i) ++ (config.language == Flow ? "" : " as any");
+let blockTagValue = (~language, i) =>
+  string_of_int(i) ++ (language == Flow ? "" : " as any");
 
-let shimExtension = (~config) =>
-  config.language == Flow ? ".shim.js" : ".shim.ts";
-
+let shimExtension = (~language) => language == Flow ? ".shim.js" : ".shim.ts";

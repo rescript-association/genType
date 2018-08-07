@@ -43,22 +43,22 @@ let sortcodeItemsByPriority = codeItems => {
   sortedCodeItems^;
 };
 
-let typedItemToCodeItems = (~config, ~moduleName, typedItem) => {
+let typedItemToCodeItems = (~language, ~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
     | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
       typeDeclarations
-      |> List.map(CodeItem.fromTypeDecl(~config))
+      |> List.map(CodeItem.fromTypeDecl(~language))
       |> List.split
 
     | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
       valueBindings
-      |> List.map(CodeItem.fromValueBinding(~config, ~moduleName))
+      |> List.map(CodeItem.fromValueBinding(~language, ~moduleName))
       |> List.split
 
     | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
       /* external declaration */
-      valueDescription |> CodeItem.fromValueDescription(~config)
+      valueDescription |> CodeItem.fromValueDescription(~language)
 
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
@@ -77,7 +77,8 @@ let cmtToCodeItems =
       List.fold_left(
         ((curDeps, curParseItems), nextTypedItem) => {
           let (nextDeps, nextCodeItems) =
-            nextTypedItem |> typedItemToCodeItems(~config, ~moduleName);
+            nextTypedItem
+            |> typedItemToCodeItems(~language=config.language, ~moduleName);
           (
             List.rev_append(nextDeps, curDeps),
             List.rev_append(nextCodeItems, curParseItems),
@@ -89,9 +90,9 @@ let cmtToCodeItems =
     let codeItems = revCodeItems |> List.rev;
     let imports =
       CodeItem.fromDependencies(
+        ~config,
         ~outputFileRelative,
         ~resolver,
-        ~config,
         deps,
       );
     List.append(imports, codeItems |> sortcodeItemsByPriority);
@@ -101,7 +102,7 @@ let cmtToCodeItems =
 
 let emitCodeItems =
     (
-      ~config,
+      ~language,
       ~outputFile,
       ~outputFileRelative,
       ~signFile,
@@ -116,9 +117,9 @@ let emitCodeItems =
   } else {
     let codeText =
       codeItems
-      |> EmitJs.emitCodeItems(~config, ~outputFileRelative, ~resolver);
+      |> EmitJs.emitCodeItems(~language, ~outputFileRelative, ~resolver);
     let fileContents =
-      signFile(EmitTyp.fileHeader(~config) ++ "\n" ++ codeText);
+      signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText);
 
     GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
   };
@@ -128,17 +129,21 @@ let processCmtFile = (~signFile, ~config, cmt) => {
   if (Sys.file_exists(cmtFile)) {
     GenIdent.resetPerFile();
     let inputCMT = Cmt_format.read_cmt(cmtFile);
-    let outputFile = cmt |> Paths.getOutputFile(~config);
-    let outputFileRelative = cmt |> Paths.getOutputFileRelative(~config);
+    let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
+    let outputFileRelative =
+      cmt |> Paths.getOutputFileRelative(~language=config.language);
     let moduleName = cmt |> Paths.getModuleName;
     let resolver =
       ModuleResolver.createResolver(
-        ~extensions=[".re", EmitTyp.shimExtension(~config)],
+        ~extensions=[
+          ".re",
+          EmitTyp.shimExtension(~language=config.language),
+        ],
       );
     inputCMT
     |> cmtToCodeItems(~config, ~moduleName, ~outputFileRelative, ~resolver)
     |> emitCodeItems(
-         ~config,
+         ~language=config.language,
          ~outputFile,
          ~outputFileRelative,
          ~signFile,

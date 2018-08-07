@@ -25,7 +25,7 @@ let cli = () => {
     /* somehow the CMT hook is passing an absolute path here */
     let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
     let config = Paths.readConfig();
-    let outputFile = cmt |> Paths.getOutputFile(~config);
+    let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
     logItem("Remove %s\n", cmt);
     if (Sys.file_exists(outputFile)) {
       Unix.unlink(outputFile);

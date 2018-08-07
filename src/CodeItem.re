@@ -110,7 +110,7 @@ let rec converterToString = converter =>
     ++ ")";
   };
 
-let toString = (~config, codeItem) =>
+let toString = (~language, codeItem) =>
   switch (codeItem) {
   | ImportType(_) => "ImportType"
   | ExternalReactClass(_) => "ExternalReactClass"
@@ -119,7 +119,7 @@ let toString = (~config, codeItem) =>
     ++ " id:"
     ++ id
     ++ " typ:"
-    ++ EmitTyp.toString(~config, typ)
+    ++ EmitTyp.toString(~language, typ)
     ++ " converter:"
     ++ converterToString(converter)
   | ConstructorBinding(_) => "ConstructorBinding"
@@ -316,7 +316,7 @@ let rec typePathToFlowName = typePath =>
 
 let rec extract_fun =
         (
-          ~config,
+          ~language,
           ~noFunctionReturnDependencies=false,
           revArgDeps,
           revArgs,
@@ -326,7 +326,7 @@ let rec extract_fun =
     switch (typ.desc) {
     | Tlink(t) =>
       extract_fun(
-        ~config,
+        ~language,
         ~noFunctionReturnDependencies,
         revArgDeps,
         revArgs,
@@ -334,10 +334,10 @@ let rec extract_fun =
       )
     | Tarrow("", t1, t2, _) =>
       let {dependencies, convertableType} =
-        reasonTypeToConversion(~config, t1);
+        reasonTypeToConversion(~language, t1);
       let nextRevDeps = List.append(dependencies, revArgDeps);
       extract_fun(
-        ~config,
+        ~language,
         ~noFunctionReturnDependencies,
         nextRevDeps,
         [(Nolabel, convertableType), ...revArgs],
@@ -348,10 +348,10 @@ let rec extract_fun =
       | None =>
         /* TODO: Convert name to object, convert null to optional. */
         let {dependencies, convertableType: t1Conversion} =
-          reasonTypeToConversion(~config, t1);
+          reasonTypeToConversion(~language, t1);
         let nextRevDeps = List.rev_append(dependencies, revArgDeps);
         extract_fun(
-          ~config,
+          ~language,
           ~noFunctionReturnDependencies,
           nextRevDeps,
           [(Label(lbl), t1Conversion), ...revArgs],
@@ -359,12 +359,12 @@ let rec extract_fun =
         );
       | Some((lbl, t1)) =>
         let {dependencies, convertableType: (t1Converter, t1Typ)} =
-          reasonTypeToConversion(~config, t1);
+          reasonTypeToConversion(~language, t1);
         let t1Conversion = (OptionalArgument(t1Converter), t1Typ);
         let nextRevDeps = List.append(dependencies, revArgDeps);
         /* TODO: Convert name to object, convert null to optional. */
         extract_fun(
-          ~config,
+          ~language,
           ~noFunctionReturnDependencies,
           nextRevDeps,
           [(OptLabel(lbl), t1Conversion), ...revArgs],
@@ -373,7 +373,7 @@ let rec extract_fun =
       }
     | _ =>
       let {dependencies, convertableType: (retConverter, retType)} =
-        reasonTypeToConversion(~config, typ);
+        reasonTypeToConversion(~language, typ);
       let allDeps =
         List.append(
           List.rev(revArgDeps),
@@ -446,7 +446,7 @@ let rec extract_fun =
  * arg, which should NOT be converted.
  */
 and reasonTypeToConversion =
-    (~config, ~noFunctionReturnDependencies=false, typ: Types.type_expr)
+    (~language, ~noFunctionReturnDependencies=false, typ: Types.type_expr)
     : conversionPlan =>
   Types.(
     switch (typ.desc) {
@@ -494,7 +494,7 @@ and reasonTypeToConversion =
         dependencies: paramDeps,
         convertableType: (itemConverter, itemFlow),
       } =
-        reasonTypeToConversion(~config, p);
+        reasonTypeToConversion(~language, p);
       if (itemConverter === Identity) {
         {
           dependencies: paramDeps,
@@ -505,7 +505,7 @@ and reasonTypeToConversion =
           Invalid_argument(
             "Converting Arrays with elements that require conversion "
             ++ "is not yet supported. Saw an array containing type:"
-            ++ EmitTyp.toString(~config, itemFlow),
+            ++ EmitTyp.toString(~language, itemFlow),
           ),
         );
       };
@@ -520,16 +520,16 @@ and reasonTypeToConversion =
         dependencies: paramDeps,
         convertableType: (paramConverter, paramConverted),
       } =
-        reasonTypeToConversion(~config, p);
+        reasonTypeToConversion(~language, p);
       let composedConverter = Option(paramConverter);
       {
         dependencies: paramDeps,
         convertableType: (composedConverter, Optional(paramConverted)),
       };
     | Tarrow(_) =>
-      extract_fun(~config, ~noFunctionReturnDependencies, [], [], typ)
+      extract_fun(~language, ~noFunctionReturnDependencies, [], [], typ)
     | Tlink(t) =>
-      reasonTypeToConversion(~config, ~noFunctionReturnDependencies, t)
+      reasonTypeToConversion(~language, ~noFunctionReturnDependencies, t)
     | Tconstr(path, [], _) => {
         dependencies: [TypeAtPath(path)],
         convertableType: (Identity, Ident(typePathToFlowName(path), [])),
@@ -545,7 +545,7 @@ and reasonTypeToConversion =
      * built-in JS type defs are brought in from the right location.
      */
     | Tconstr(path, typeParams, _) =>
-      let conversionPlans = reasonTypesToConversion(~config, typeParams);
+      let conversionPlans = reasonTypesToConversion(~language, typeParams);
       let convertableTypes =
         conversionPlans
         |> List.map(({convertableType, _}) => convertableType);
@@ -566,8 +566,8 @@ and reasonTypeToConversion =
     | _ => {dependencies: [], convertableType: (Identity, EmitTyp.any)}
     }
   )
-and reasonTypesToConversion = (~config, args): list(conversionPlan) =>
-  args |> List.map(reasonTypeToConversion(~config));
+and reasonTypesToConversion = (~language, args): list(conversionPlan) =>
+  args |> List.map(reasonTypeToConversion(~language));
 
 module Dependencies = {
   /**
@@ -676,10 +676,10 @@ let variantLeafTypeName = (typeName, leafName) =>
  * TODO: Make the types namespaced by nested Flow module.
  */
 let codeItemsFromConstructorDeclaration =
-    (~config, variantTypeName, constructorDeclaration, ~recordGen) => {
+    (~language, variantTypeName, constructorDeclaration, ~recordGen) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
-  let conversionPlans = reasonTypesToConversion(~config, constructorArgs);
+  let conversionPlans = reasonTypesToConversion(~language, constructorArgs);
   let convertableTypes =
     conversionPlans |> List.map(({convertableType, _}) => convertableType);
   let dependencies =
@@ -722,11 +722,11 @@ let abstractTheTypeParameters = (typ, params) =>
   | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
   };
 
-let codeItemsForId = (~config, ~moduleName, ~valueBinding, id) => {
+let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let {dependencies, convertableType: (converter, typ)} =
-    reasonTypeToConversion(~config, expressionType);
+    reasonTypeToConversion(~language, expressionType);
   /*
    * We pull apart the polymorphic type variables at the binding level, but
    * not at deeper function types because we know that the Reason/OCaml type
@@ -765,12 +765,12 @@ let codeItemsForId = (~config, ~moduleName, ~valueBinding, id) => {
  *     {named: number, args?: number}
  */
 
-let codeItemsForMake = (~config, ~moduleName, ~valueBinding, id) => {
+let codeItemsForMake = (~language, ~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let expressionType = vb_expr.exp_type;
   let {dependencies, convertableType: (converter, typ)} =
     reasonTypeToConversion(
-      ~config,
+      ~language,
       /* Only get the dependencies for the prop types.
          The return type is a ReasonReact component. */
       ~noFunctionReturnDependencies=true,
@@ -821,17 +821,17 @@ let codeItemsForMake = (~config, ~moduleName, ~valueBinding, id) => {
 
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> codeItemsForId(~config, ~moduleName, ~valueBinding)
+    id |> codeItemsForId(~language, ~moduleName, ~valueBinding)
   };
 };
 
-let fromValueBinding = (~config, ~moduleName, valueBinding) => {
+let fromValueBinding = (~language, ~moduleName, valueBinding) => {
   let {Typedtree.vb_pat, vb_attributes, _} = valueBinding;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> codeItemsForMake(~config, ~moduleName, ~valueBinding)
+    id |> codeItemsForMake(~language, ~moduleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
-    id |> codeItemsForId(~config, ~moduleName, ~valueBinding)
+    id |> codeItemsForId(~language, ~moduleName, ~valueBinding)
   | _ => ([], [])
   };
 };
@@ -841,7 +841,7 @@ let fromValueBinding = (~config, ~moduleName, valueBinding) => {
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
 let fromValueDescription =
-    (~config, valueDescription: Typedtree.value_description) => {
+    (~language, valueDescription: Typedtree.value_description) => {
   let componentName =
     valueDescription.val_id |> Ident.name |> String.capitalize;
   let path =
@@ -851,7 +851,7 @@ let fromValueDescription =
     };
   let importPath = path |> ImportPath.fromStringUnsafe;
   let conversionPlan =
-    valueDescription.val_desc.ctyp_type |> reasonTypeToConversion(~config);
+    valueDescription.val_desc.ctyp_type |> reasonTypeToConversion(~language);
   let typ = conversionPlan.convertableType |> snd;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typ, genFlowKind) {
@@ -869,7 +869,7 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let fromTypeDecl = (~config, dec: Typedtree.type_declaration) =>
+let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
@@ -907,7 +907,7 @@ let fromTypeDecl = (~config, dec: Typedtree.type_declaration) =>
         | _ => true
         };
       let {dependencies, convertableType: (_converter, typ)} =
-        reasonTypeToConversion(~config, coreType.Typedtree.ctyp_type);
+        reasonTypeToConversion(~language, coreType.Typedtree.ctyp_type);
       let structureItems = [
         codeItemForType(~opaque, typeVars, ~typeName, typ),
       ];
@@ -923,7 +923,7 @@ let fromTypeDecl = (~config, dec: Typedtree.type_declaration) =>
       List.map(
         constructorDeclaration =>
           codeItemsFromConstructorDeclaration(
-            ~config,
+            ~language,
             variantTypeName,
             constructorDeclaration,
             ~recordGen,
@@ -950,10 +950,9 @@ let fromTypeDecl = (~config, dec: Typedtree.type_declaration) =>
 
 let typePathToImport =
     (
-      ~config,
+      ~config as {modulesMap, language},
       ~outputFileRelative,
       ~resolver,
-      ~config as {modulesMap},
       typePath,
     ) =>
   switch (typePath) {
@@ -963,7 +962,7 @@ let typePathToImport =
       None,
       ModuleName.reasonPervasives
       |> ModuleResolver.importPathForReasonModuleName(
-           ~config,
+           ~language,
            ~outputFileRelative,
            ~resolver,
            ~modulesMap,
@@ -997,7 +996,7 @@ let typePathToImport =
       },
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
-           ~config,
+           ~language,
            ~outputFileRelative,
            ~resolver,
            ~modulesMap,
@@ -1021,11 +1020,11 @@ let importTypeCompare = (i1, i2) =>
   };
 
 let fromDependencies =
-    (~outputFileRelative, ~resolver, ~config, dependencies): list(t) => {
+    (~config, ~outputFileRelative, ~resolver, dependencies): list(t) => {
   let dependencyToImportType = dependency =>
     switch (dependency) {
     | TypeAtPath(p) =>
-      typePathToImport(~config, ~outputFileRelative, ~resolver, ~config, p)
+      typePathToImport(~config, ~outputFileRelative, ~resolver, p)
     | JSTypeFromModule(typeName, asTypeName, importPath) =>
       ImportAsFrom(typeName, asTypeName, importPath)
     | FreeTypeVariable(s, _id) =>

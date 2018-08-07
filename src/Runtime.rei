@@ -4,10 +4,10 @@ type recordGen;
 
 type recordValue;
 
-let emitRecordAsInt: (~config: config, recordValue) => string;
+let emitRecordAsInt: (~language: language, recordValue) => string;
 
 let emitRecordAsBlock:
-  (~config: config, ~args: list(string), recordValue) => string;
+  (~language: language, ~args: list(string), recordValue) => string;
 
 let recordGen: unit => recordGen;
 
