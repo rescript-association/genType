@@ -22,9 +22,8 @@ let requireModule =
 let emitExportType =
     (~language, {CodeItem.opaque, typeParams, typeName, typ}) =>
   typ
-  |> EmitTyp.toString(~language)
+  |> EmitTyp.typToString(~language)
   |> EmitTyp.emitExportType(~language, ~opaque, ~typeName, ~typeParams);
-
 
 let emitExportUnionType = (~language, {CodeItem.typeParams, leafTypes, name}) =>
   EmitTyp.emitExportUnionType(~language, ~name, ~typeParams, ~leafTypes);
@@ -113,7 +112,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         "export const "
         ++ id
         ++ ": "
-        ++ EmitTyp.toString(~language, typ)
+        ++ EmitTyp.typToString(~language, typ)
         ++ " = "
         ++ (
           ModuleName.toString(moduleNameBs)
@@ -139,7 +138,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
           "export const "
           ++ variantName
           ++ ": "
-          ++ EmitTyp.toString(~language, constructorType)
+          ++ EmitTyp.typToString(~language, constructorType)
           ++ " = "
           ++ recordAsInt
           ++ ";",
@@ -161,7 +160,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
           "export const "
           ++ variantName
           ++ ": "
-          ++ EmitTyp.toString(~language, constructorType)
+          ++ EmitTyp.typToString(~language, constructorType)
           ++ " = "
           ++ Emit.funDef(~args, ~mkBody, ""),
         );
@@ -231,7 +230,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         "export const "
         ++ name
         ++ ": "
-        ++ EmitTyp.toString(~language, componentType)
+        ++ EmitTyp.typToString(~language, componentType)
         ++ " = ReasonReact.wrapReasonForJs(",
       );
       line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");

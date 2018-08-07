@@ -119,7 +119,7 @@ let toString = (~language, codeItem) =>
     ++ " id:"
     ++ id
     ++ " typ:"
-    ++ EmitTyp.toString(~language, typ)
+    ++ EmitTyp.typToString(~language, typ)
     ++ " converter:"
     ++ converterToString(converter)
   | ConstructorBinding(_) => "ConstructorBinding"
@@ -505,7 +505,7 @@ and reasonTypeToConversion =
           Invalid_argument(
             "Converting Arrays with elements that require conversion "
             ++ "is not yet supported. Saw an array containing type:"
-            ++ EmitTyp.toString(~language, itemFlow),
+            ++ EmitTyp.typToString(~language, itemFlow),
           ),
         );
       };

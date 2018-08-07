@@ -51,4 +51,4 @@ let requireReact: (~language: language) => bool;
 
 let shimExtension: (~language: language) => string;
 
-let toString: (~language: language, typ) => string;
+let typToString: (~language: language, typ) => string;
