@@ -465,7 +465,7 @@ and reasonTypeToConversion =
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
     | Tconstr(Path.Pident({name: "bool", _}), [], _) => {
         dependencies: [],
-        convertableType: (Identity, Ident("bool", [])),
+        convertableType: (Identity, Ident("boolean", [])),
       }
     | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "int", _), [], _)
     | Tconstr(Path.Pident({name: "int", _}), [], _) => {
