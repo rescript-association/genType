@@ -4,19 +4,21 @@ let genericsString = genericStrings =>
   genericStrings === [] ?
     "" : "<" ++ String.concat(",", genericStrings) ++ ">";
 
-let rec toString = (~language, ~exact, typ) =>
+let rec renderString = (~language, ~exact, typ) =>
   switch (typ) {
-  | Optional(typ) => "?" ++ (typ |> toString(~language, ~exact))
+  | Optional(typ) => "?" ++ (typ |> renderString(~language, ~exact))
   | Ident(identPath, typeArguments) =>
     identPath
-    ++ genericsString(List.map(toString(~language, ~exact), typeArguments))
+    ++ genericsString(
+         List.map(renderString(~language, ~exact), typeArguments),
+       )
   | ObjectType(fields) => fields |> renderObjType(~language, ~exact)
   | Arrow(typeParams, valParams, retType) =>
     renderFunType(~language, ~exact, typeParams, valParams, retType)
   }
 and renderField = (~language, ~exact, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
-  lbl ++ optMarker ++ ":" ++ (typ |> toString(~language, ~exact));
+  lbl ++ optMarker ++ ":" ++ (typ |> renderString(~language, ~exact));
 }
 and renderObjType = (~language, ~exact, fields) =>
   (exact ? "{|" : "{")
@@ -27,7 +29,7 @@ and renderObjType = (~language, ~exact, fields) =>
   ++ (exact ? "|}" : "}")
 /* TODO: Always drop the final unit argument. */
 and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
-  genericsString(List.map(toString(~language, ~exact), typeParams))
+  genericsString(List.map(renderString(~language, ~exact), typeParams))
   ++ "("
   ++ String.concat(
        ", ",
@@ -35,16 +37,16 @@ and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
          (i, t) => {
            let parameterName =
              language == Flow ? "" : "_" ++ string_of_int(i + 1) ++ ":";
-           parameterName ++ (t |> toString(~language, ~exact));
+           parameterName ++ (t |> renderString(~language, ~exact));
          },
          valParams,
        ),
      )
   ++ ") => "
-  ++ (retType |> toString(~language, ~exact));
+  ++ (retType |> renderString(~language, ~exact));
 
 let typToString = (~language) =>
-  toString(~language, ~exact=language == Flow);
+  renderString(~language, ~exact=language == Flow);
 let commentBeforeRequire = (~language) =>
   language == Flow ? "" : "// tslint:disable-next-line:no-var-requires\n";
 
