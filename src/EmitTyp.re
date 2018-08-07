@@ -116,3 +116,6 @@ let blockTagValue = (~config, i) =>
 
 let shimExtension = (~config) =>
   config.language != "typescript" ? ".shim.js" : ".shim.ts";
+
+let imporReact = (~config) =>
+  config.language != "typescript" ? "" : "import * as React from \"react\";";

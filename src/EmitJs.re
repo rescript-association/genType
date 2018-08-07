@@ -296,7 +296,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
       };
     };
   };
-  let {requires, _} =
+  let {requires, externalReactClass} =
     List.fold_left(
       emitCodeItem,
       {
@@ -307,6 +307,9 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
       codeItems,
     );
 
+  if (externalReactClass != []) {
+    line_(requireBuffer, EmitTyp.imporReact(~config));
+  };
   requires |> ModuleNameMap.iter(emitRequire);
 
   [
