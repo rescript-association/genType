@@ -1,8 +1,8 @@
 /* @flow strict */
 
+const React = require("react");
 const MyBanner = require("./MyBanner");
 const MyBannerReBS = require("./MyBannerRe.bs");
-const React = require("react");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 export type Props = {|show:boolean, message:string, children?:any|};

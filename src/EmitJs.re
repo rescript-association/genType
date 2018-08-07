@@ -71,7 +71,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
     );
   let emitCheckJsWrapperType = (~env, ~propsTypeName) =>
     switch (env.externalReactClass) {
-    | [] => env.requires
+    | [] => ()
 
     | [{componentName}] =>
       let s =
@@ -81,15 +81,11 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         ++ componentName
         ++ " {...props}/>;\n    }";
       line(s);
-      EmitTyp.requireReact(~config) ?
-        env.requires |> ModuleNameMap.add(ModuleName.react, ImportPath.react) :
-        env.requires;
 
     | [_, ..._] =>
       line(
         "// genFlow warning: found more than one external component annotated with @genFlow",
-      );
-      env.requires;
+      )
     };
   let emitCodeItem = (env, codeItem) => {
     if (Debug.codeItems) {
@@ -260,13 +256,12 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
       );
       line("  }));");
 
-      let requiresWithCheckJsWrapper =
-        emitCheckJsWrapperType(~env, ~propsTypeName);
+      emitCheckJsWrapperType(~env, ~propsTypeName);
 
       let requiresWithModule =
         moduleNameBs
         |> requireModule(
-             ~requires=requiresWithCheckJsWrapper,
+             ~requires=env.requires,
              ~outputFileRelative,
              ~resolver,
              ~importPath,
@@ -306,7 +301,11 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
     );
 
   if (externalReactClass != []) {
-    line_(requireBuffer, EmitTyp.imporReact(~config));
+    if (EmitTyp.requireReact(~config)) {
+      emitRequire(ModuleName.react, ImportPath.react);
+    } else {
+      line_(requireBuffer, EmitTyp.importReact(~config));
+    };
   };
   requires |> ModuleNameMap.iter(emitRequire);
 

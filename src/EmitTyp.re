@@ -77,6 +77,9 @@ let emitExportType = (~config, ~opaque, ~typeName, ~typeParams, typ) =>
 
 let requireReact = (~config) => config.language == Flow;
 
+let importReact = (~config) =>
+  config.language == Flow ? "" : "import * as React from \"react\";";
+
 let reactComponentType = (~config) =>
   config.language == Flow ?
     "React$ComponentType" : "React.ComponentClass";
@@ -117,5 +120,3 @@ let blockTagValue = (~config, i) =>
 let shimExtension = (~config) =>
   config.language == Flow ? ".shim.js" : ".shim.ts";
 
-let imporReact = (~config) =>
-  config.language == Flow ? "" : "import * as React from \"react\";";
