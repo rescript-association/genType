@@ -43,12 +43,13 @@ and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
   ++ ") => "
   ++ (retType |> toString(~language, ~exact));
 
-let any = Ident("any", []);
 let toString = (~language) => toString(~language, ~exact=language == Flow);
 let commentBeforeRequire = (~language) =>
   language == Flow ? "" : "// tslint:disable-next-line:no-var-requires\n";
 
-let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) =>
+let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
+  let typeParams =
+    genericsString(List.map(toString(~language), typeParams));
   if (language == Flow) {
     "export"
     ++ (opaque ? " opaque " : " ")
@@ -71,6 +72,14 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) =>
     ++ " = "
     ++ typ;
   };
+};
+
+let emitExportUnionType = (~language, ~name, ~typeParams, ~leafTypes) =>
+  "export type "
+  ++ name
+  ++ genericsString(List.map(toString(~language), typeParams))
+  ++ " =\n  | "
+  ++ String.concat("\n  | ", List.map(toString(~language), leafTypes));
 
 let requireReact = (~language) => language == Flow;
 

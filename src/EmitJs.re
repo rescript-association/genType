@@ -23,27 +23,11 @@ let emitExportType =
     (~language, {CodeItem.opaque, typeParams, typeName, typ}) =>
   typ
   |> EmitTyp.toString(~language)
-  |> EmitTyp.emitExportType(
-       ~language,
-       ~opaque,
-       ~typeName,
-       ~typeParams=
-         EmitTyp.genericsString(
-           List.map(EmitTyp.toString(~language), typeParams),
-         ),
-     );
+  |> EmitTyp.emitExportType(~language, ~opaque, ~typeName, ~typeParams);
+
 
 let emitExportUnionType = (~language, {CodeItem.typeParams, leafTypes, name}) =>
-  "export type "
-  ++ name
-  ++ EmitTyp.genericsString(
-       List.map(EmitTyp.toString(~language), typeParams),
-     )
-  ++ " =\n  | "
-  ++ String.concat(
-       "\n  | ",
-       List.map(EmitTyp.toString(~language), leafTypes),
-     );
+  EmitTyp.emitExportUnionType(~language, ~name, ~typeParams, ~leafTypes);
 
 let emitImportType = (~language, importType) =>
   switch (importType) {

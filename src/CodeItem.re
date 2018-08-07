@@ -563,7 +563,7 @@ and reasonTypeToConversion =
           Ident(typePathToFlowName(path), typeArgs),
         ),
       };
-    | _ => {dependencies: [], convertableType: (Identity, EmitTyp.any)}
+    | _ => {dependencies: [], convertableType: (Identity, any)}
     }
   )
 and reasonTypesToConversion = (~language, args): list(conversionPlan) =>
@@ -698,12 +698,7 @@ let codeItemsFromConstructorDeclaration =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
     ConstructorBinding(
-      exportType(
-        ~opaque=true,
-        typeVars,
-        ~typeName=variantTypeName,
-        EmitTyp.any,
-      ),
+      exportType(~opaque=true, typeVars, ~typeName=variantTypeName, any),
       constructorTyp,
       convertableTypes,
       variantName,
@@ -789,7 +784,7 @@ let codeItemsForMake = (~language, ~moduleName, ~valueBinding, id) => {
       ),
     ) =>
     /* Add children?:any to props type */
-    let childrenField = ("children", NonMandatory, EmitTyp.any);
+    let childrenField = ("children", NonMandatory, any);
     let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
@@ -879,7 +874,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
     let typeVars = TypeVars.toFlow(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
-    ([], [codeItemForType(~opaque=true, typeVars, ~typeName, EmitTyp.any)]);
+    ([], [codeItemForType(~opaque=true, typeVars, ~typeName, any)]);
   /*
    * This case includes aliasings such as:
    *
@@ -893,7 +888,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [codeItemForType(~opaque=true, typeVars, ~typeName, EmitTyp.any)],
+        [codeItemForType(~opaque=true, typeVars, ~typeName, any)],
       )
     | Some(coreType) =>
       let opaque =

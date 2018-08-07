@@ -11,7 +11,7 @@ type language =
   | Untyped;
 
 type config = {
-  language: language,
+  language,
   modulesMap: ModuleNameMap.t(ModuleName.t),
 };
 
@@ -60,3 +60,5 @@ type groupedArg =
   /* Contains a list of (name, isOptional, 't)  */
   | Group(list((string, optionalness, convertableType)))
   | Arg(convertableType);
+
+let any = Ident("any", []);
