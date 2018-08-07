@@ -84,7 +84,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       env;
 
     | ExportType(exportType) =>
-      line(emitExportType(~language, exportType) ++ ";");
+      line(emitExportType(~language, exportType));
       env;
 
     | ExportUnionType(exportUnionType) =>
@@ -131,7 +131,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         variantName,
         recordValue,
       ) =>
-      line(emitExportType(~language, exportType) ++ ";");
+      line(emitExportType(~language, exportType));
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
       if (convertableTypes == []) {
         line(
@@ -225,7 +225,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         | _ => [jsPropsDot("children")]
         };
 
-      line(emitExportType(~language, exportType) ++ ";");
+      line(emitExportType(~language, exportType));
       line(
         "export const "
         ++ name

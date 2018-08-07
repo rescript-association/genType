@@ -65,20 +65,22 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
     ++ " = "
     ++ typ
     ++ (opaque ? " // Reason type already checked. Making it opaque" : "")
+    ++  ";"
 
   | Typescript =>
     if (opaque) {
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ "export abstract class "
       ++ typeName
-      ++ " { protected opaque:any } /* simulate opaque types */";
+      ++ " { protected opaque:any }; /* simulate opaque types */";
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
       ++ typeName
       ++ typeParams
       ++ " = "
-      ++ typ;
+      ++ typ
+      ++ ";";
     }
   | Untyped => ""
   };
