@@ -79,9 +79,7 @@ let emitCodeItems = (~config, ~outputFileRelative, ~resolver, codeItems) => {
         ++ propsTypeName
         ++ ") {\n      return <"
         ++ componentName
-        ++ " {...props}> </"
-        ++ componentName
-        ++ ">;\n    }";
+        ++ " {...props}/>;\n    }";
       line(s);
       EmitTyp.requireReact(~config) ?
         env.requires |> ModuleNameMap.add(ModuleName.react, ImportPath.react) :
