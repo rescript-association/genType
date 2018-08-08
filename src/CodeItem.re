@@ -700,7 +700,7 @@ let exportType = (~opaque, typeParams, ~typeName, typ) => {
   typ,
 };
 
-let codeItemForType = (~opaque, typeParams, ~typeName, typ) =>
+let codeItemForExportType = (~opaque, typeParams, ~typeName, typ) =>
   ExportType({opaque, typeParams, typeName, typ});
 
 let variantLeafTypeName = (typeName, leafName) =>
@@ -910,7 +910,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
     let typeVars = TypeVars.toFlow(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
-    ([], [codeItemForType(~opaque=true, typeVars, ~typeName, any)]);
+    ([], [codeItemForExportType(~opaque=true, typeVars, ~typeName, any)]);
   /*
    * This case includes aliasings such as:
    *
@@ -924,7 +924,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     switch (dec.typ_manifest) {
     | None => (
         [],
-        [codeItemForType(~opaque=true, typeVars, ~typeName, any)],
+        [codeItemForExportType(~opaque=true, typeVars, ~typeName, any)],
       )
     | Some(coreType) =>
       let opaque =
@@ -940,7 +940,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
       let {dependencies, convertableType: (_converter, typ)} =
         reasonTypeToConversion(~language, coreType.Typedtree.ctyp_type);
       let structureItems = [
-        codeItemForType(~opaque, typeVars, ~typeName, typ),
+        codeItemForExportType(~opaque, typeVars, ~typeName, typ),
       ];
       let deps =
         Dependencies.filterFreeTypeVars(freeTypeVarNames, dependencies);
@@ -968,7 +968,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
       List.split(depsAndVariantLeafBindings);
     let deps = List.concat(listListDeps);
     let items = List.concat(listListItems);
-    let typeParams = TypeVars.toFlow(TypeVars.extract(astTypeParams));
+    let typeParams = TypeVars.(astTypeParams |> extract |> toFlow);
     let unionType =
       ExportUnionType({
         typeParams,
