@@ -24,7 +24,7 @@ type exportType = {
   typ,
 };
 
-type exportUnionType = {
+type exportVariantType = {
   typeParams: list(typ),
   leafTypes: list(typ),
   name: string,
@@ -55,7 +55,7 @@ type t =
     )
   | ComponentBinding(componentBinding)
   | ExportType(exportType)
-  | ExportUnionType(exportUnionType);
+  | ExportVariantType(exportVariantType);
 
 type priority =
   | Import
@@ -125,7 +125,7 @@ let toString = (~language, codeItem) =>
   | ConstructorBinding(_) => "ConstructorBinding"
   | ComponentBinding(_) => "ComponentBinding"
   | ExportType(_) => "ExportType"
-  | ExportUnionType(_) => "ExportUnionType"
+  | ExportVariantType(_) => "ExportVariantType"
   };
 
 /*
@@ -970,7 +970,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     let items = List.concat(listListItems);
     let typeParams = TypeVars.(astTypeParams |> extract |> toFlow);
     let unionType =
-      ExportUnionType({
+      ExportVariantType({
         typeParams,
         leafTypes: resultTypes,
         name: variantTypeName,

@@ -7,7 +7,7 @@ let commentBeforeRequire: (~language: language) => string;
 let componentExportName:
   (~language: language, ~moduleName: ModuleName.t) => string;
 
-let emitExportUnionType:
+let emitExportVariantType:
   (
     ~language: language,
     ~name: string,

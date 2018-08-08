@@ -14,7 +14,7 @@ let getPriority = x =>
   | ConstructorBinding(_)
   | ComponentBinding(_)
   | ExportType(_)
-  | ExportUnionType(_) => "1med"
+  | ExportVariantType(_) => "1med"
   };
 
 let sortcodeItemsByPriority = codeItems => {

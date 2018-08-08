@@ -90,7 +90,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
   };
 };
 
-let emitExportUnionType = (~language, ~name, ~typeParams, ~leafTypes) =>
+let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
   switch (language) {
   | Flow
   | Typescript =>
