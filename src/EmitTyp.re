@@ -56,7 +56,7 @@ let commentBeforeRequire = (~language) =>
     "// tslint:disable-next-line:no-var-requires\n" : "";
 
 let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
-  let typeParams =
+  let typeParamsString =
     genericsString(List.map(typToString(~language), typeParams));
 
   switch (language) {
@@ -65,7 +65,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
     ++ (opaque ? " opaque " : " ")
     ++ "type "
     ++ typeName
-    ++ typeParams
+    ++ typeParamsString
     ++ " = "
     ++ (typ |> typToString(~language))
     ++ (opaque ? " // Reason type already checked. Making it opaque" : "")
@@ -73,15 +73,27 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
 
   | Typescript =>
     if (opaque) {
+      /* Represent an opaque type as an absract class with a field called 'opaque'.
+         Any type parameters must occur in the type of opaque, so that different
+         instantiations are considered different types. */
+      let typeOfOpaqueField =
+        typeParams == [] ?
+          "any" :
+          typeParams
+          |> List.map(typToString(~language))
+          |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ "export abstract class "
       ++ typeName
-      ++ " { protected opaque:any }; /* simulate opaque types */";
+      ++ typeParamsString
+      ++ " { protected opaque: "
+      ++ typeOfOpaqueField
+      ++ " }; /* simulate opaque types */";
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
       ++ typeName
-      ++ typeParams
+      ++ typeParamsString
       ++ " = "
       ++ (typ |> typToString(~language))
       ++ ";";
