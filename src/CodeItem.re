@@ -283,27 +283,6 @@ let rec removeOption = (label, typ) =>
     }
   );
 
-/**
- * Turns
- *
- *     [(x, (a, b)), (y, (c, d)), ...]
- *
- * Into:
- *
- *     (
- *       [(x, a), (y, c), ...],
- *       [(x, b), (y, d), ...]
- *     )
- */
-let rec distributeSplitRev_ = (revSoFar, lst) =>
-  switch (lst) {
-  | [] => revSoFar
-  | [(toDistribute, (ontoA, ontoB)), ...tl] =>
-    distributeSplitRev_([(toDistribute, (ontoA, ontoB)), ...revSoFar], tl)
-  };
-
-let distributeSplitRev = lst => distributeSplitRev_([], lst);
-
 let rec typePathToFlowName = typePath =>
   switch (typePath) {
   | Path.Pident(id) => Ident.name(id)
@@ -337,7 +316,7 @@ let rec extract_fun_ =
     | Tarrow("", t1, t2, _) =>
       let {dependencies, convertableType} =
         reasonTypeToConversion_(~language, ~typeVarsGen, t1);
-      let nextRevDeps = List.append(dependencies, revArgDeps);
+      let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       extract_fun_(
         ~language,
         ~typeVarsGen,
@@ -365,7 +344,7 @@ let rec extract_fun_ =
         let {dependencies, convertableType: (t1Converter, t1Typ)} =
           reasonTypeToConversion_(~language, ~typeVarsGen, t1);
         let t1Conversion = (OptionalArgument(t1Converter), t1Typ);
-        let nextRevDeps = List.append(dependencies, revArgDeps);
+        let nextRevDeps = List.rev_append(dependencies, revArgDeps);
         /* TODO: Convert name to object, convert null to optional. */
         extract_fun_(
           ~language,
@@ -380,12 +359,12 @@ let rec extract_fun_ =
       let {dependencies, convertableType: (retConverter, retType)} =
         reasonTypeToConversion_(~language, ~typeVarsGen, typ);
       let allDeps =
-        List.append(
-          List.rev(revArgDeps),
+        List.rev_append(
+          revArgDeps,
           noFunctionReturnDependencies ? [] : dependencies,
         );
 
-      let labeledConvertableTypes = distributeSplitRev(revArgs);
+      let labeledConvertableTypes = revArgs |> List.rev;
       let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
 
       let groupedArgToConverter = groupedArg =>
@@ -604,32 +583,30 @@ let reasonTypesToConversion = (~language) => {
 };
 
 module Dependencies = {
-  /**
-     * Allows checking if there exists a polymorphic dep before creating several
-     * list coppies.
-     */
-  let rec hasTypeVar = deps =>
-    switch (deps) {
-    | [] => false
-    | [FreeTypeVariable(_s, _), ..._tl] => true
-    | [_, ...tl] => hasTypeVar(tl)
+  let depHasTypeVar = dep =>
+    switch (dep) {
+    | FreeTypeVariable(_) => true
+    | TypeAtPath(_)
+    | JSTypeFromModule(_) => false
     };
   /*
    * A little bit of n squared never hurt anyone for n < 5.
    */
   let extractFreeTypeVars = deps =>
-    if (hasTypeVar(deps)) {
-      List.fold_left(
-        ((curFreeTypeVars, curNonFreeTypeVars) as soFar, next) =>
-          switch (next) {
-          | FreeTypeVariable(s, id) =>
-            List.exists(((s2, _id2)) => s2 == s, curFreeTypeVars) ?
-              soFar : ([(s, id), ...curFreeTypeVars], curNonFreeTypeVars)
-          | _ => (curFreeTypeVars, [next, ...curNonFreeTypeVars])
-          },
-        ([], []),
-        deps,
-      );
+    if (deps |> List.exists(depHasTypeVar)) {
+      let (revFreeTypeVars, revRemainingDeps) =
+        List.fold_left(
+          ((revFreeTypeVars, revRemainingDeps) as soFar, nextDep) =>
+            switch (nextDep) {
+            | FreeTypeVariable(s, id) =>
+              revFreeTypeVars |> List.exists(((s2, _id2)) => s2 == s) ?
+                soFar : ([(s, id), ...revFreeTypeVars], revRemainingDeps)
+            | _ => (revFreeTypeVars, [nextDep, ...revRemainingDeps])
+            },
+          ([], []),
+          deps,
+        );
+      (revFreeTypeVars |> List.rev, revRemainingDeps |> List.rev);
     } else {
       ([], deps);
     };
