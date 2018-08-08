@@ -55,9 +55,15 @@ let commentBeforeRequire = (~language) =>
   language == Typescript ?
     "// tslint:disable-next-line:no-var-requires\n" : "";
 
-let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
+let emitExportType =
+    (~language, ~opaque, ~typeName, ~typeParams, ~comment, typ) => {
   let typeParamsString =
     genericsString(List.map(typToString(~language), typeParams));
+  let commentString =
+    switch (comment) {
+    | None => ""
+    | Some(s) => " /* " ++ s ++ " */"
+    };
 
   switch (language) {
   | Flow =>
@@ -68,8 +74,8 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
     ++ typeParamsString
     ++ " = "
     ++ (typ |> typToString(~language))
-    ++ (opaque ? " // Reason type already checked. Making it opaque" : "")
     ++ ";"
+    ++ commentString
 
   | Typescript =>
     if (opaque) {
@@ -88,7 +94,8 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
       ++ typeParamsString
       ++ " { protected opaque: "
       ++ typeOfOpaqueField
-      ++ " }; /* simulate opaque types */";
+      ++ " }; /* simulate opaque types */"
+      ++ commentString;
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
@@ -96,7 +103,8 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeParams, typ) => {
       ++ typeParamsString
       ++ " = "
       ++ (typ |> typToString(~language))
-      ++ ";";
+      ++ ";"
+      ++ commentString;
     }
   | Untyped => ""
   };

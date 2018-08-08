@@ -22,6 +22,7 @@ let emitExportType:
     ~opaque: bool,
     ~typeName: string,
     ~typeParams: list(typ),
+    ~comment: option(string),
     typ
   ) =>
   string;

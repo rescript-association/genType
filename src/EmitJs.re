@@ -20,8 +20,15 @@ let requireModule =
      );
 
 let emitExportType =
-    (~language, {CodeItem.opaque, typeParams, typeName, typ}) =>
-  typ |> EmitTyp.emitExportType(~language, ~opaque, ~typeName, ~typeParams);
+    (~language, {CodeItem.opaque, typeParams, typeName, comment, typ}) =>
+  typ
+  |> EmitTyp.emitExportType(
+       ~language,
+       ~opaque,
+       ~typeName,
+       ~typeParams,
+       ~comment,
+     );
 
 let emitImportType = (~language, importType) =>
   switch (importType) {

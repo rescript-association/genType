@@ -8,6 +8,7 @@ type exportType = {
   opaque: bool,
   typeParams: list(typ),
   typeName: string,
+  comment: option(string),
   typ,
 };
 
@@ -179,15 +180,16 @@ let createFunctionType = (generics, argConvertableTypes, resultType) =>
     Arrow(generics, args, resultType);
   };
 
-let exportType = (~opaque, typeParams, ~typeName, typ) => {
+let exportType = (~opaque, typeParams, ~typeName, ~comment=?, typ) => {
   opaque,
   typeParams,
   typeName,
+  comment,
   typ,
 };
 
-let codeItemForExportType = (~opaque, typeParams, ~typeName, typ) =>
-  ExportType({opaque, typeParams, typeName, typ});
+let codeItemForExportType = (~opaque, typeParams, ~typeName, ~comment=?, typ) =>
+  ExportType({opaque, typeParams, typeName, comment, typ});
 
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
@@ -399,7 +401,18 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
     let typeVars = TypeVars.toFlow(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
-    ([], [codeItemForExportType(~opaque=true, typeVars, ~typeName, any)]);
+    (
+      [],
+      [
+        codeItemForExportType(
+          ~opaque=true,
+          typeVars,
+          ~typeName,
+          ~comment="Record type not supported",
+          any,
+        ),
+      ],
+    );
   /*
    * This case includes aliasings such as:
    *
