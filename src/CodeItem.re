@@ -165,9 +165,7 @@ module TypeVars = {
     let typeVarsGen = GenIdent.createTypeVarsGen();
     typeParams |> List.fold_left(extractOne(~typeVarsGen), []) |> List.rev;
   };
-  /*
-   * A little bit of n squared never hurt anyone for n < 5.
-   */
+
   let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
   let toFlow = freeTypeVars =>
     List.map(((name, _id)) => Ident(name, []), freeTypeVars);
