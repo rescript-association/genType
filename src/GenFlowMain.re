@@ -60,8 +60,7 @@ let typedItemToCodeItems = (~language, ~propsTypeGen, ~moduleName, typedItem) =>
 
     | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
       /* external declaration */
-      valueDescription
-      |> CodeItem.fromValueDescription(~language)
+      valueDescription |> CodeItem.fromValueDescription(~language)
 
     | _ => ([], [])
     /* TODO: Support mapping of variant type definitions. */
