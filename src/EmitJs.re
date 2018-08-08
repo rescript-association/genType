@@ -23,10 +23,6 @@ let emitExportType =
     (~language, {CodeItem.opaque, typeParams, typeName, typ}) =>
   typ |> EmitTyp.emitExportType(~language, ~opaque, ~typeName, ~typeParams);
 
-let emitExportVariantType =
-    (~language, {CodeItem.typeParams, leafTypes, name}) =>
-  EmitTyp.emitExportVariantType(~language, ~name, ~typeParams, ~leafTypes);
-
 let emitImportType = (~language, importType) =>
   switch (importType) {
   | CodeItem.ImportComment(s) => s
@@ -88,8 +84,15 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       line(emitExportType(~language, exportType));
       env;
 
-    | ExportVariantType(exportVariantType) =>
-      line(emitExportVariantType(~language, exportVariantType));
+    | ExportVariantType({CodeItem.typeParams, leafTypes, name}) =>
+      line(
+        EmitTyp.emitExportVariantType(
+          ~language,
+          ~name,
+          ~typeParams,
+          ~leafTypes,
+        ),
+      );
       env;
 
     | ValueBinding(moduleName, id, typ, converter) =>
