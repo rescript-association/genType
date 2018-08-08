@@ -202,7 +202,7 @@ let codeItemsFromConstructorDeclaration =
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
   let conversionPlans =
-    Dependencies.reasonTypesToConversion(~language, constructorArgs);
+    Dependencies.typeExprsToConversion(~language, constructorArgs);
   let convertableTypes =
     conversionPlans
     |> List.map(({Dependencies.convertableType, _}) => convertableType);
@@ -243,9 +243,9 @@ let abstractTheTypeParameters = (typ, params) =>
 
 let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
-  let expressionType = vb_expr.exp_type;
+  let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, convertableType: (converter, typ)} =
-    Dependencies.reasonTypeToConversion(~language, expressionType);
+    typeExpr |> Dependencies.typeExprToConversion(~language);
   /*
    * We pull apart the polymorphic type variables at the binding level, but
    * not at deeper function types because we know that the Reason/OCaml type
@@ -287,15 +287,15 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
 let codeItemsForMake =
     (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id) => {
   let {Typedtree.vb_expr, _} = valueBinding;
-  let expressionType = vb_expr.exp_type;
+  let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, convertableType: (converter, typ)} =
-    Dependencies.reasonTypeToConversion(
-      ~language,
-      /* Only get the dependencies for the prop types.
-         The return type is a ReasonReact component. */
-      ~noFunctionReturnDependencies=true,
-      expressionType,
-    );
+    typeExpr
+    |> Dependencies.typeExprToConversion(
+         ~language,
+         /* Only get the dependencies for the prop types.
+            The return type is a ReasonReact component. */
+         ~noFunctionReturnDependencies=true,
+       );
   let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
   switch (typ) {
   | Arrow(
@@ -373,7 +373,7 @@ let fromValueDescription =
   let importPath = path |> ImportPath.fromStringUnsafe;
   let conversionPlan =
     valueDescription.val_desc.ctyp_type
-    |> Dependencies.reasonTypeToConversion(~language);
+    |> Dependencies.typeExprToConversion(~language);
   let typ = conversionPlan.convertableType |> snd;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typ, genFlowKind) {
@@ -429,10 +429,8 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
         | _ => true
         };
       let {Dependencies.dependencies, convertableType: (_converter, typ)} =
-        Dependencies.reasonTypeToConversion(
-          ~language,
-          coreType.Typedtree.ctyp_type,
-        );
+        coreType.Typedtree.ctyp_type
+        |> Dependencies.typeExprToConversion(~language);
       let structureItems = [
         codeItemForExportType(~opaque, typeVars, ~typeName, typ),
       ];
