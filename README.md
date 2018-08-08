@@ -1,6 +1,6 @@
 # Reason genFlow
 
-`genFlow` is a tool to automatically generate typed bindings between [Reason](https://reasonml.github.io/), and either [Flow](https://flow.org/en/) or [Typescript](https://www.typescriptlang.org/): see the companion project [genTypescript](https://github.com/cristianoc/genTypescript) for more info.
+`genFlow` is a tool to automatically generate typed bindings between [Reason](https://reasonml.github.io/), and either [Flow](https://flow.org/en/) or [TypeScript](https://www.typescriptlang.org/): see the companion project [genTypeScript](https://github.com/cristianoc/genTypeScript) for more info.
 
 `genFlow` generates typed JS wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components, and in the other direction, if you have ReasonReact wrappers for JS components, it checks that they are well typed.
 
@@ -39,7 +39,7 @@ into bucklescript in future. The current requirement is `bs-platform 4.0.3`.
 There are 3 back-ends for `genFlow`, which can be selected by specifyng `"language" : "xxx"` in `genflowconfig.json` with `xxx` ranging over:
 
 1. "flow": generate bindings for [Flow](https://flow.org/en/) in `Filename.re.js`.
-2. "typescript": generate bindings for [Typescript](https://www.typescriptlang.org/) in `Filename.tsx`.
+2. "typescript": generate bindings for [TypeScript](https://www.typescriptlang.org/) in `Filename.tsx`.
 3. "untyped": generate untyped bindings in `Filename.re.js`, if you're interested in the generated wrappers, but not the types.
 
 
