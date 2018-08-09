@@ -1,6 +1,0 @@
-(jbuild_version 1)
-
-(executable
- ((name GenFlow)
-  (public_name GenFlow.exe)
-  (libraries (ocaml-migrate-parsetree unix str))))

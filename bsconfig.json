@@ -1,10 +1,17 @@
 {
   "name": "refactor",
-  "sources": "src",
-  "entries": [{
-    "backend": "native",
-    "main-module": "GenFlow"
-  }],
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "entries": [
+    {
+      "backend": "native",
+      "main-module": "GenFlow"
+    }
+  ],
   "ocaml-flags": ["-bin-annot"],
   "ocaml-dependencies": ["unix", "compiler-libs", "str"],
   "refmt": 3
