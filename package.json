@@ -3,29 +3,12 @@
   "version": "0.1.0",
   "description": "Generate Flow bindings for Reason",
   "license": "MIT",
-  "esy": {
-    "build": [
-      [
-        "refmterr",
-        "jbuilder",
-        "build"
-      ]
-    ],
-    "install": [
-      "esy-installer"
-    ],
-    "buildsInSource": "_build"
+  "scripts": {
+    "start": "bsb -make-world -backend native -w",
+    "build": "bsb -make-world -backend native",
+    "clean": "bsb -clean-world"
   },
   "dependencies": {
-    "@esy-ocaml/esy-installer": "*",
-    "@opam/jbuilder": "*",
-    "refmterr": "^3.1.7"
-  },
-  "peerDependencies": {
-    "ocaml": "~4.2.3001"
-  },
-  "devDependencies": {
-    "@esy-ocaml/merlin": "*",
-    "ocaml": "~4.2.3001"
+    "bs-platform": "github:bsansouci/bsb-native#3.2.0"
   }
 }

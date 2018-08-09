@@ -15,3 +15,6 @@
 /reason-react-example/yarn-error.log
 /reason-react-example/.bsb.lock
 /genFlow.install
+/.merlin
+/lib
+/yarn.lock

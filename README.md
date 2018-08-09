@@ -71,7 +71,7 @@ esy build
 
 ```
 # in sample-project
-export BS_CMT_POST_PROCESS_CMD="$PWD/../_build/default/src/GenFlow.exe --setProjectRoot $PWD"
+export BS_CMT_POST_PROCESS_CMD="$PWD/../lib/bs/native/genflow.native --setProjectRoot $PWD"
 yarn install
 yarn build
 ```
