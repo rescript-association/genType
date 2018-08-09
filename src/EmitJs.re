@@ -6,17 +6,11 @@ type env = {
   externalReactClass: list(CodeItem.externalReactClass),
 };
 
-let requireModule =
-    (~requires, ~outputFileRelative, ~resolver, ~importPath, moduleName) =>
+let requireModule = (~requires, ~importPath, moduleName) =>
   requires
   |> ModuleNameMap.add(
        moduleName,
-       moduleName
-       |> ModuleResolver.resolveSourceModule(
-            ~outputFileRelative,
-            ~resolver,
-            ~importPath,
-          ),
+       moduleName |> ModuleResolver.resolveSourceModule(~importPath),
      );
 
 let emitExportType =
@@ -112,13 +106,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         );
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
       let requires =
-        moduleNameBs
-        |> requireModule(
-             ~requires=env.requires,
-             ~outputFileRelative,
-             ~resolver,
-             ~importPath,
-           );
+        moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
 
       line(
         "export const "
@@ -210,7 +198,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
             ] =>
             (
               propConverters
-              |> List.map(((s, _optionalness, argConverter)) =>
+              |> List.map(((s, argConverter)) =>
                    jsPropsDot(s)
                    |> Convert.apply(~converter=argConverter, ~toJS=true)
                  )
@@ -252,13 +240,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       emitCheckJsWrapperType(~env, ~propsTypeName);
 
       let requiresWithModule =
-        moduleNameBs
-        |> requireModule(
-             ~requires=env.requires,
-             ~outputFileRelative,
-             ~resolver,
-             ~importPath,
-           );
+        moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
       let requiresWithReasonReact =
         requiresWithModule
         |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact);

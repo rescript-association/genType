@@ -5,9 +5,6 @@
     "backend": "native",
     "main-module": "GenFlow"
   }],
-  "warnings": {
-    "number": "-40-20-21-26-27-28-32-45-44-33-37-34-39-6"
-  },
   "ocaml-flags": ["-bin-annot"],
   "ocaml-dependencies": ["unix", "compiler-libs", "str"],
   "refmt": 3

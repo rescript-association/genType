@@ -150,7 +150,7 @@ let resolveModule =
 };
 
 let resolveSourceModule =
-    (~outputFileRelative, ~resolver, ~importPath, moduleName) => {
+    (~importPath, moduleName) => {
   if (Debug.moduleResolution) {
     logItem("Resolve Source Module: %s\n", moduleName |> ModuleName.toString);
   };

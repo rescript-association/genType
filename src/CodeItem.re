@@ -65,7 +65,7 @@ let rec converterToString = converter =>
     let labelToString = label =>
       switch (label) {
       | Nolabel => "_"
-      | Label(l) => "~l"
+      | Label(_) => "~l"
       | OptLabel(l) => "~?" ++ l
       };
     "fn("
@@ -83,7 +83,7 @@ let rec converterToString = converter =>
              "{|"
              ++ (
                groupConverters
-               |> List.map(((s, optionalness, argConverter)) =>
+               |> List.map(((s, argConverter)) =>
                     s ++ ":" ++ converterToString(argConverter)
                   )
                |> String.concat(", ")
@@ -104,6 +104,8 @@ let toString = (~language, codeItem) =>
   | ExternalReactClass(_) => "ExternalReactClass"
   | ValueBinding(moduleName, id, typ, converter) =>
     "ValueBinding"
+    ++ " moduleName:"
+    ++ ModuleName.toString(moduleName)
     ++ " id:"
     ++ id
     ++ " typ:"

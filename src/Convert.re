@@ -58,7 +58,7 @@ let rec apply = (~converter, ~toJS, value) =>
             (
               varName,
               groupConverters
-              |> List.map(((s, _optionalness, argConverter)) =>
+              |> List.map(((s, argConverter)) =>
                    varName
                    ++ "."
                    ++ s
@@ -69,13 +69,11 @@ let rec apply = (~converter, ~toJS, value) =>
           } else {
             let varNames =
               groupConverters
-              |> List.map(((s, _optionalness, argConverter)) =>
-                   Emit.arg(s)
-                 )
+              |> List.map(((s, _argConverter)) => Emit.arg(s))
               |> String.concat(", ");
             let fieldValues =
               groupConverters
-              |> List.map(((s, _optionalness, argConverter)) =>
+              |> List.map(((s, argConverter)) =>
                    s
                    ++ ":"
                    ++ (

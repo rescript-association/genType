@@ -51,7 +51,7 @@ type converter =
   | Fn((list(groupedArgConverter), converter))
 and groupedArgConverter =
   | ArgConverter(label, converter)
-  | GroupConverter(list((string, optionalness, converter)));
+  | GroupConverter(list((string, converter)));
 
 type convertableType = (converter, typ);
 

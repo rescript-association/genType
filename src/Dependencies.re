@@ -274,7 +274,7 @@ let rec extract_fun_ =
       | Group(group) =>
         GroupConverter(
           group
-          |> List.map(((s, optionalness, (c, _t))) => (s, optionalness, c)),
+          |> List.map(((s, _optionalness, (c, _t))) => (s, c)),
         )
       | Arg((c, _t)) => ArgConverter(Nolabel, c)
       };

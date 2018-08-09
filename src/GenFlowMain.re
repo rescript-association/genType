@@ -34,7 +34,7 @@ let sortcodeItemsByPriority = codeItems => {
        );
   let sortedCodeItems = ref([]);
   map
-  |> StringMap.iter((priority, codeItemsAtPriority) =>
+  |> StringMap.iter((_priority, codeItemsAtPriority) =>
        codeItemsAtPriority
        |> List.iter(codeItem =>
             sortedCodeItems := [codeItem, ...sortedCodeItems^]
