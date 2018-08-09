@@ -85,14 +85,14 @@ let rec find_default x (tree : _ Map_gen.t ) default     = match tree with
 let rec mem x (tree : _ Map_gen.t )   = match tree with 
   | Empty ->
     false
-  | Node(l, v, d, r, _) ->
+  | Node(l, v, _d, r, _) ->
     let c = compare_key x v in
     c = 0 || mem x (if c < 0 then l else r)
 
 let rec remove x (tree : _ Map_gen.t as 'a) : 'a = match tree with 
   | Empty ->
     Empty
-  | Node(l, v, d, r, h) ->
+  | Node(l, v, d, r, _h) ->
     let c = compare_key x v in
     if c = 0 then
       Map_gen.merge l r
@@ -119,7 +119,7 @@ let rec merge f (s1 : _ Map_gen.t) (s2  : _ Map_gen.t) : _ Map_gen.t =
   | (Node (l1, v1, d1, r1, h1), _) when h1 >= height s2 ->
     let (l2, d2, r2) = split v1 s2 in
     Map_gen.concat_or_join (merge f l1 l2) v1 (f v1 (Some d1) d2) (merge f r1 r2)
-  | (_, Node (l2, v2, d2, r2, h2)) ->
+  | (_, Node (l2, v2, d2, r2, _h2)) ->
     let (l1, d1, r1) = split v2 s1 in
     Map_gen.concat_or_join (merge f l1 l2) v2 (f v2 d1 (Some d2)) (merge f r1 r2)
   | _ ->
@@ -135,7 +135,7 @@ let rec disjoint_merge  (s1 : _ Map_gen.t) (s2  : _ Map_gen.t) : _ Map_gen.t =
     | _, Some _, _ ->
       raise (Duplicate_key  v1)
     end        
-  | (_, Node (l2, v2, d2, r2, h2)) ->
+  | (_, Node (l2, v2, d2, r2, _h2)) ->
     begin match  split v2 s1 with 
     | (l1, None, r1) -> 
       Map_gen.join (disjoint_merge  l1 l2) v2 d2 (disjoint_merge  r1 r2)
