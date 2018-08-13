@@ -47,7 +47,7 @@ There are 3 back-ends for `genFlow`, which can be selected by specifyng `"langua
 
 * **In-source**. Currently only supports bucklescript projects with in-source generation of `.bs.js` files.
 
-* **No iterfaces**. Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`).
+* **No interfaces**. Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`).
 
 * **No nested modules**. Nested modules are not supported, and annotations will be ignored.
 
