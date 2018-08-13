@@ -22,6 +22,7 @@ type componentBinding = {
   exportType,
   moduleName: ModuleName.t,
   propsTypeName: string,
+  componentType: typ,
   converter,
 };
 
@@ -324,6 +325,11 @@ let codeItemsForMake =
         }
       };
     let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
+    let componentType =
+      Ident(
+        EmitTyp.reactComponentType(~language),
+        [Ident(propsTypeName, [])],
+      );
 
     let items = [
       ComponentBinding({
@@ -336,6 +342,7 @@ let codeItemsForMake =
           ),
         moduleName,
         propsTypeName,
+        componentType,
         converter,
       }),
     ];

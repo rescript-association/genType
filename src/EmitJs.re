@@ -169,7 +169,13 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
              ),
       };
 
-    | ComponentBinding({exportType, moduleName, propsTypeName, converter}) =>
+    | ComponentBinding({
+        exportType,
+        moduleName,
+        propsTypeName,
+        componentType,
+        converter,
+      }) =>
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,
@@ -182,11 +188,6 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       let name = EmitTyp.componentExportName(~language, ~moduleName);
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
-      let componentType =
-        Ident(
-          EmitTyp.reactComponentType(~language),
-          [Ident(propsTypeName, [])],
-        );
       let args =
         switch (converter) {
         | Fn((groupedArgConverters, _retConverter)) =>
