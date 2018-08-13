@@ -265,25 +265,22 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       };
     };
   };
-  let {requires, externalReactClass} =
-    List.fold_left(
-      emitCodeItem,
-      {
-        requires: ModuleNameMap.empty,
-        typeMap: StringMap.empty,
-        externalReactClass: [],
-      },
-      codeItems,
-    );
 
-  if (externalReactClass != []) {
+  let initialEnv = {
+    requires: ModuleNameMap.empty,
+    typeMap: StringMap.empty,
+    externalReactClass: [],
+  };
+  let finalEnv = List.fold_left(emitCodeItem, initialEnv, codeItems);
+
+  if (finalEnv.externalReactClass != []) {
     if (EmitTyp.requireReact(~language)) {
       emitRequire(ModuleName.react, ImportPath.react);
     } else {
       line_(requireBuffer, EmitTyp.importReact(~language));
     };
   };
-  requires |> ModuleNameMap.iter(emitRequire);
+  finalEnv.requires |> ModuleNameMap.iter(emitRequire);
 
   [
     requireBuffer |> Buffer.to_bytes,
