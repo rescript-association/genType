@@ -42,16 +42,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     Buffer.add_string(buffer, s);
   };
   let line = line_(mainBuffer);
-  let emitRequire = (moduleName, importPath) =>
-    line_(
-      requireBuffer,
-      EmitTyp.commentBeforeRequire(~language)
-      ++ "const "
-      ++ ModuleName.toString(moduleName)
-      ++ " = require(\""
-      ++ (importPath |> ImportPath.toString)
-      ++ "\");",
-    );
+
   let emitCheckJsWrapperType = (~env, ~propsTypeName) =>
     switch (env.externalReactClass) {
     | [] => ()
@@ -291,12 +282,17 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
 
   if (finalEnv.externalReactClass != []) {
     if (EmitTyp.requireReact(~language)) {
-      emitRequire(ModuleName.react, ImportPath.react);
+      EmitTyp.emitRequire(~language, ModuleName.react, ImportPath.react)
+      |> line_(requireBuffer);
     } else {
-      line_(requireBuffer, EmitTyp.importReact(~language));
+      EmitTyp.importReact(~language) |> line_(requireBuffer);
     };
   };
-  finalEnv.requires |> ModuleNameMap.iter(emitRequire);
+  finalEnv.requires
+  |> ModuleNameMap.iter((moduleName, importPath) =>
+       EmitTyp.emitRequire(~language, moduleName, importPath)
+       |> line_(requireBuffer)
+     );
 
   [
     requireBuffer |> Buffer.to_bytes,

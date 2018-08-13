@@ -123,6 +123,14 @@ let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
   | Untyped => ""
   };
 
+let emitRequire = (~language, moduleName, importPath) =>
+  commentBeforeRequire(~language)
+  ++ "const "
+  ++ ModuleName.toString(moduleName)
+  ++ " = require(\""
+  ++ (importPath |> ImportPath.toString)
+  ++ "\");";
+
 let requireReact = (~language) => language == Flow;
 
 let importReact = (~language) =>

@@ -44,6 +44,8 @@ let emitImportTypeAs:
   ) =>
   string;
 
+let emitRequire: (~language: language, ModuleName.t, ImportPath.t) => string;
+
 let ofType: (~language: language, ~typ: typ, string) => string;
 
 let outputFileSuffix: (~language: language) => string;
