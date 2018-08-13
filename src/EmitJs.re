@@ -281,12 +281,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   let finalEnv = List.fold_left(emitCodeItem, envWithTypeMaps, codeItems);
 
   if (finalEnv.externalReactClass != []) {
-    if (EmitTyp.requireReact(~language)) {
-      EmitTyp.emitRequire(~language, ModuleName.react, ImportPath.react)
-      |> line_(requireBuffer);
-    } else {
-      EmitTyp.importReact(~language) |> line_(requireBuffer);
-    };
+    EmitTyp.importReact(~language) |> line_(requireBuffer);
   };
   finalEnv.requires
   |> ModuleNameMap.iter((moduleName, importPath) =>

@@ -52,8 +52,6 @@ let outputFileSuffix: (~language: language) => string;
 
 let reactComponentType: (~language: language) => string;
 
-let requireReact: (~language: language) => bool;
-
 let shimExtension: (~language: language) => string;
 
 let typToString: (~language: language, typ) => string;

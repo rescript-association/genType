@@ -131,10 +131,12 @@ let emitRequire = (~language, moduleName, importPath) =>
   ++ (importPath |> ImportPath.toString)
   ++ "\");";
 
-let requireReact = (~language) => language == Flow;
-
 let importReact = (~language) =>
-  language == Typescript ? "import * as React from \"react\";" : "";
+  switch (language) {
+  | Flow => emitRequire(~language, ModuleName.react, ImportPath.react)
+  | Typescript => "import * as React from \"react\";"
+  | Untyped => ""
+  };
 
 let reactComponentType = (~language) =>
   language == Flow ? "React$ComponentType" : "React.ComponentClass";
