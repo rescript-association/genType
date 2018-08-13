@@ -72,6 +72,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         "// genFlow warning: found more than one external component annotated with @genFlow",
       )
     };
+
   let emitCodeItem = (env, codeItem) => {
     if (Debug.codeItems) {
       logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~language));
@@ -120,7 +121,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         )
         ++ ";",
       );
-      {...env, typeMap: env.typeMap |> StringMap.add(id, typ), requires};
+      {...env, requires};
 
     | ConstructorBinding(
         exportType,
@@ -245,11 +246,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       let requiresWithReasonReact =
         requiresWithModule
         |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact);
-      {
-        ...env,
-        typeMap: env.typeMap |> StringMap.add("component", componentType),
-        requires: requiresWithReasonReact,
-      };
+      {...env, requires: requiresWithReasonReact};
 
     | ExternalReactClass({componentName, importPath} as externalReactClass) =>
       let requires =
@@ -266,12 +263,31 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     };
   };
 
+  let updateTypeMap = (env, codeItem) =>
+    switch (codeItem) {
+    | CodeItem.ValueBinding(_moduleName, id, typ, _converter) => {
+        ...env,
+        typeMap: env.typeMap |> StringMap.add(id, typ),
+      }
+    | ComponentBinding({componentType}) => {
+        ...env,
+        typeMap: env.typeMap |> StringMap.add("component", componentType),
+      }
+
+    | ImportType(_)
+    | ExportType(_)
+    | ExportVariantType(_)
+    | ConstructorBinding(_)
+    | ExternalReactClass(_) => env
+    };
+
   let initialEnv = {
     requires: ModuleNameMap.empty,
     typeMap: StringMap.empty,
     externalReactClass: [],
   };
-  let finalEnv = List.fold_left(emitCodeItem, initialEnv, codeItems);
+  let envWithTypeMaps = List.fold_left(updateTypeMap, initialEnv, codeItems);
+  let finalEnv = List.fold_left(emitCodeItem, envWithTypeMaps, codeItems);
 
   if (finalEnv.externalReactClass != []) {
     if (EmitTyp.requireReact(~language)) {
