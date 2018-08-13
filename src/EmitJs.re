@@ -88,7 +88,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       );
       env;
 
-    | ValueBinding(moduleName, id, typ, converter) =>
+    | ValueBinding({moduleName, id, typ, converter}) =>
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,
@@ -102,12 +102,12 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
 
       line(
         "export const "
-        ++ (id |> EmitTyp.ofType(~language, ~typ))
+        ++ (id |> Ident.name |> EmitTyp.ofType(~language, ~typ))
         ++ " = "
         ++ (
           ModuleName.toString(moduleNameBs)
           ++ "."
-          ++ id
+          ++ Ident.name(id)
           |> Convert.toJS(~converter)
         )
         ++ ";",
@@ -256,9 +256,9 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
 
   let updateTypeMap = (env, codeItem) =>
     switch (codeItem) {
-    | CodeItem.ValueBinding(_moduleName, id, typ, _converter) => {
+    | CodeItem.ValueBinding({id, typ}) => {
         ...env,
-        typeMap: env.typeMap |> StringMap.add(id, typ),
+        typeMap: env.typeMap |> StringMap.add(id |> Ident.name, typ),
       }
     | ComponentBinding({componentType}) => {
         ...env,
@@ -281,7 +281,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   let finalEnv = List.fold_left(emitCodeItem, envWithTypeMaps, codeItems);
 
   if (finalEnv.externalReactClass != []) {
-    EmitTyp.importReact(~language) |> line_(requireBuffer);
+    EmitTyp.requireReact(~language) |> line_(requireBuffer);
   };
   finalEnv.requires
   |> ModuleNameMap.iter((moduleName, importPath) =>

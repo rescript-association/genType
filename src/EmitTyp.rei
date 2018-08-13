@@ -33,7 +33,7 @@ let generatedModuleExtension: (~language: language) => string;
 
 let genericsString: list(string) => string;
 
-let importReact: (~language: language) => string;
+let requireReact: (~language: language) => string;
 
 let emitImportTypeAs:
   (

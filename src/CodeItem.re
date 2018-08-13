@@ -31,10 +31,17 @@ type externalReactClass = {
   importPath: ImportPath.t,
 };
 
+type valueBinding = {
+  moduleName: ModuleName.t,
+  id: Ident.t,
+  typ,
+  converter,
+};
+
 type t =
   | ImportType(importType)
   | ExternalReactClass(externalReactClass)
-  | ValueBinding(ModuleName.t, string, typ, converter)
+  | ValueBinding(valueBinding)
   | ConstructorBinding(
       exportType,
       typ,
@@ -103,12 +110,12 @@ let toString = (~language, codeItem) =>
   switch (codeItem) {
   | ImportType(_) => "ImportType"
   | ExternalReactClass(_) => "ExternalReactClass"
-  | ValueBinding(moduleName, id, typ, converter) =>
+  | ValueBinding({moduleName, id, typ, converter}) =>
     "ValueBinding"
     ++ " moduleName:"
     ++ ModuleName.toString(moduleName)
     ++ " id:"
-    ++ id
+    ++ Ident.name(id)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
     ++ " converter:"
@@ -258,10 +265,8 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
   let typeVars = TypeVars.toFlow(freeTypeVars);
-  let abstractTyp = abstractTheTypeParameters(typ, typeVars);
-  let codeItems = [
-    ValueBinding(moduleName, Ident.name(id), abstractTyp, converter),
-  ];
+  let typ = abstractTheTypeParameters(typ, typeVars);
+  let codeItems = [ValueBinding({moduleName, id, typ, converter})];
   (remainingDeps, codeItems);
 };
 
