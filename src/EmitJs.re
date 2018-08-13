@@ -254,23 +254,28 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     };
   };
 
-  let updateTypeMap = (env, codeItem) =>
+  let updateTypeMap = (env, codeItem) => {
+    let addType = (name, typ) => {
+      if (Debug.codeItems) {
+        logItem(
+          "Add Type: %s = %s\n",
+          name,
+          typ |> EmitTyp.typToString(~language),
+        );
+      };
+      {...env, typeMap: env.typeMap |> StringMap.add(name, typ)};
+    };
     switch (codeItem) {
-    | CodeItem.ValueBinding({id, typ}) => {
-        ...env,
-        typeMap: env.typeMap |> StringMap.add(id |> Ident.name, typ),
-      }
-    | ComponentBinding({componentType}) => {
-        ...env,
-        typeMap: env.typeMap |> StringMap.add("component", componentType),
-      }
-
+    | CodeItem.ValueBinding({id, typ}) => addType(id |> Ident.name, typ)
+    | ComponentBinding({componentType}) =>
+      addType("component", componentType)
     | ImportType(_)
     | ExportType(_)
     | ExportVariantType(_)
     | ConstructorBinding(_)
     | ExternalReactClass(_) => env
     };
+  };
 
   let initialEnv = {
     requires: ModuleNameMap.empty,
