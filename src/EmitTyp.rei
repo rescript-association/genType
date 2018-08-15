@@ -50,7 +50,7 @@ let ofType: (~language: language, ~typ: typ, string) => string;
 
 let outputFileSuffix: (~language: language) => string;
 
-let reactComponentType: (~language: language) => string;
+let reactComponentType: (~language: language, ~propsTypeName: string) => typ;
 
 let shimExtension: (~language: language) => string;
 

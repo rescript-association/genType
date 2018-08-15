@@ -330,11 +330,7 @@ let codeItemsForMake =
         }
       };
     let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
-    let componentType =
-      Ident(
-        EmitTyp.reactComponentType(~language),
-        [Ident(propsTypeName, [])],
-      );
+    let componentType = EmitTyp.reactComponentType(~language, ~propsTypeName);
 
     let items = [
       ComponentBinding({

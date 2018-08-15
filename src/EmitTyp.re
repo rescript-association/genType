@@ -118,7 +118,10 @@ let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
     ++ name
     ++ genericsString(List.map(typToString(~language), typeParams))
     ++ " =\n  | "
-    ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
+    ++ String.concat(
+         "\n  | ",
+         List.map(typToString(~language), leafTypes),
+       )
     ++ ";"
   | Untyped => ""
   };
@@ -138,8 +141,11 @@ let requireReact = (~language) =>
   | Untyped => ""
   };
 
-let reactComponentType = (~language) =>
-  language == Flow ? "React$ComponentType" : "React.ComponentClass";
+let reactComponentType = (~language, ~propsTypeName) =>
+  Ident(
+    language == Flow ? "React$ComponentType" : "React.ComponentClass",
+    [Ident(propsTypeName, [])],
+  );
 
 let fileHeader = (~language) =>
   switch (language) {
