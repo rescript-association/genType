@@ -537,7 +537,7 @@ let typePathToImport =
     ImportAsFrom(
       typeName,
       {
-        let asTypeName = Dependencies.typePathToFlowName(typePath);
+        let asTypeName = Dependencies.typePathToName(typePath);
         asTypeName == typeName ? None : Some(asTypeName);
       },
       moduleName
@@ -571,8 +571,6 @@ let fromDependencies =
     switch (dependency) {
     | Dependencies.TypeAtPath(p) =>
       typePathToImport(~config, ~outputFileRelative, ~resolver, p)
-    | JSTypeFromModule(typeName, asTypeName, importPath) =>
-      ImportAsFrom(typeName, asTypeName, importPath)
     | FreeTypeVariable(s, _id) =>
       ImportComment("// Warning polymorphic type unhandled:" ++ s)
     /* TODO: Currently unused. Would be useful for injecting dependencies

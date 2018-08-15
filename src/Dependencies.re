@@ -3,9 +3,6 @@ open GenFlowCommon;
 type t =
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t)
-  /* Imports a JS type (typeName, importAs, jsModuleName) */
-  | JSTypeFromModule(string, option(string), ImportPath.t)
-  /* (type variable name, unique type id) */
   | FreeTypeVariable(string, int);
 
 type conversionPlan = {
@@ -13,15 +10,29 @@ type conversionPlan = {
   convertableType,
 };
 
-let depHasTypeVar = dep =>
+let rec typePathToName = typePath =>
+  switch (typePath) {
+  | Path.Pident(id) => Ident.name(id)
+  | Pdot(p, s, _pos) => typePathToName(p) ++ s
+  | Papply(p1, p2) =>
+    typePathToName(p1) ++ "__unsupported_genFlow__" ++ typePathToName(p2)
+  };
+
+let toString = dep =>
+  switch (dep) {
+  | TypeAtPath(path) => "TypeAtPath(" ++ typePathToName(path) ++ ")"
+  | FreeTypeVariable(s, i) =>
+    "FreeTypeVariable(" ++ s ++ ", " ++ string_of_int(i) ++ ")"
+  };
+
+let hasTypeVar = dep =>
   switch (dep) {
   | FreeTypeVariable(_) => true
-  | TypeAtPath(_)
-  | JSTypeFromModule(_) => false
+  | TypeAtPath(_) => false
   };
 
 let extractFreeTypeVars = deps =>
-  if (deps |> List.exists(depHasTypeVar)) {
+  if (deps |> List.exists(hasTypeVar)) {
     let (revFreeTypeVars, revRemainingDeps) =
       List.fold_left(
         ((revFreeTypeVars, revRemainingDeps) as soFar, nextDep) =>
@@ -183,16 +194,6 @@ let rec removeOption = (label, type_expr: Types.type_expr) =>
     Some((String.sub(label, 1, String.length(label) - 1), t))
   | Tlink(t) => removeOption(label, t)
   | _ => None
-  };
-
-let rec typePathToFlowName = typePath =>
-  switch (typePath) {
-  | Path.Pident(id) => Ident.name(id)
-  | Pdot(p, s, _pos) => typePathToFlowName(p) ++ s
-  | Papply(p1, p2) =>
-    typePathToFlowName(p1)
-    ++ "__unsupported_genFlow__"
-    ++ typePathToFlowName(p2)
   };
 
 let rec extract_fun_ =
@@ -422,7 +423,7 @@ and typeExprToConversion_ =
     )
   | Tconstr(path, [], _) => {
       dependencies: [TypeAtPath(path)],
-      convertableType: (Identity, Ident(typePathToFlowName(path), [])),
+      convertableType: (Identity, Ident(typePathToName(path), [])),
     }
   /* This type doesn't have any built in converter. But what if it was a
    * genFlow variant type? */
@@ -448,22 +449,40 @@ and typeExprToConversion_ =
       List.map(((_exprConv, flowTyp: typ)) => flowTyp, convertableTypes);
     {
       dependencies: [TypeAtPath(path), ...typeParamDeps],
-      convertableType: (
-        Identity,
-        Ident(typePathToFlowName(path), typeArgs),
-      ),
+      convertableType: (Identity, Ident(typePathToName(path), typeArgs)),
     };
   | _ => {dependencies: [], convertableType: (Identity, any)}
   }
 and typeExprsToConversion_ =
-    (~language, ~typeVarsGen, args): list(conversionPlan) =>
-  args |> List.map(typeExprToConversion_(~language, ~typeVarsGen));
+    (~language, ~typeVarsGen, typeExprs): list(conversionPlan) =>
+  typeExprs |> List.map(typeExprToConversion_(~language, ~typeVarsGen));
 
-let typeExprToConversion = (~language) => {
+let typeExprToConversion =
+    (~language, ~noFunctionReturnDependencies=?, typeExpr) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
-  typeExprToConversion_(~language, ~typeVarsGen);
+  let conversionPlan =
+    typeExpr
+    |> typeExprToConversion_(
+         ~language,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies?,
+       );
+  if (Debug.dependencies) {
+    conversionPlan.dependencies
+    |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString));
+  };
+  conversionPlan;
 };
-let typeExprsToConversion = (~language) => {
+let typeExprsToConversion = (~language, typeExprs) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
-  typeExprsToConversion_(~language, ~typeVarsGen);
+  let conversionPlans =
+    typeExprs |> typeExprsToConversion_(~language, ~typeVarsGen);
+  if (Debug.dependencies) {
+    conversionPlans
+    |> List.iter(conversionPlan =>
+         conversionPlan.dependencies
+         |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString))
+       );
+  };
+  conversionPlans;
 };
