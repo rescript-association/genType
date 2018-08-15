@@ -1,3 +1,7 @@
+# Master
+
+Support for polymorphic props (https://github.com/cristianoc/genFlow/issues/15).
+
 # 0.2.0
 
 Build with bsb-native.
