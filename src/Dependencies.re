@@ -19,9 +19,7 @@ let depHasTypeVar = dep =>
   | TypeAtPath(_)
   | JSTypeFromModule(_) => false
   };
-/*
- * A little bit of n squared never hurt anyone for n < 5.
- */
+
 let extractFreeTypeVars = deps =>
   if (deps |> List.exists(depHasTypeVar)) {
     let (revFreeTypeVars, revRemainingDeps) =
@@ -40,6 +38,7 @@ let extractFreeTypeVars = deps =>
   } else {
     ([], deps);
   };
+
 let filterFreeTypeVars = (freeTypeVars, deps) =>
   List.filter(
     fun
@@ -273,8 +272,7 @@ let rec extract_fun_ =
       switch (groupedArg) {
       | Group(group) =>
         GroupConverter(
-          group
-          |> List.map(((s, _optionalness, (c, _t))) => (s, c)),
+          group |> List.map(((s, _optionalness, (c, _t))) => (s, c)),
         )
       | Arg((c, _t)) => ArgConverter(Nolabel, c)
       };

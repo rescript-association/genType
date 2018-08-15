@@ -178,7 +178,7 @@ module TypeVars = {
   };
 
   let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
-  let toFlow = freeTypeVars =>
+  let toTyp = freeTypeVars =>
     List.map(((name, _id)) => Ident(name, []), freeTypeVars);
 };
 
@@ -224,7 +224,7 @@ let codeItemsFromConstructorDeclaration =
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toFlow(freeTypeVars);
+  let typeVars = TypeVars.toTyp(freeTypeVars);
   let retType = Ident(variantTypeName, typeVars);
   let constructorTyp =
     createFunctionType(typeVars, convertableTypes, retType);
@@ -264,7 +264,7 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
    */
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toFlow(freeTypeVars);
+  let typeVars = TypeVars.toTyp(freeTypeVars);
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
   (remainingDeps, codeItems);
@@ -304,7 +304,9 @@ let codeItemsForMake =
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
-  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
+  let (freeTypeVars, remainingDeps) =
+    Dependencies.extractFreeTypeVars(dependencies);
+  let typeVars = TypeVars.toTyp(freeTypeVars);
   switch (typ) {
   | Arrow(
       _,
@@ -409,7 +411,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
   ) {
   | (typeParams, Type_record(_, _), GenFlow | GenFlowOpaque) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
-    let typeVars = TypeVars.toFlow(freeTypeVarNames);
+    let typeVars = TypeVars.toTyp(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
     (
       [],
@@ -431,7 +433,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
   | (typeParams, Type_abstract, GenFlow | GenFlowOpaque)
   | (typeParams, Type_variant(_), GenFlowOpaque) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
-    let typeVars = TypeVars.toFlow(freeTypeVarNames);
+    let typeVars = TypeVars.toTyp(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
     switch (dec.typ_manifest) {
     | None => (
@@ -481,7 +483,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
       List.split(depsAndVariantLeafBindings);
     let deps = List.concat(listListDeps);
     let items = List.concat(listListItems);
-    let typeParams = TypeVars.(astTypeParams |> extract |> toFlow);
+    let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let unionType =
       ExportVariantType({
         typeParams,
