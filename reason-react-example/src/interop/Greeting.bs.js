@@ -9,7 +9,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("PageReason");
 
-function make(message, someNumber, extraGreeting, _) {
+function make(message, someNumber, extraGreeting, polymorphicProp, _) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -21,6 +21,7 @@ function make(message, someNumber, extraGreeting, _) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
+              console.log("polymorphicProp:", polymorphicProp);
               var greeting = extraGreeting !== undefined ? extraGreeting : "How are you?";
               return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, MyBannerRe.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
             }),

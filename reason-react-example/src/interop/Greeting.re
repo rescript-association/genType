@@ -4,9 +4,10 @@
 let component = ReasonReact.statelessComponent("PageReason");
 
 [@genFlow]
-let make = (~message, ~someNumber, ~extraGreeting=?, _children) => {
+let make = (~message, ~someNumber, ~extraGreeting=?, ~polymorphicProp, _children) => {
   ...component,
   render: _self => {
+    Js.log2("polymorphicProp:", polymorphicProp);
     let greeting =
       switch (extraGreeting) {
       | None => "How are you?"

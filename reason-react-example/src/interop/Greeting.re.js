@@ -4,11 +4,11 @@ const GreetingBS = require("./Greeting.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {list} from '../../src/shims/ReasonPervasives.shim';
-export type Props = {|message:string, someNumber:number, extraGreeting?:string, children?:any|};
+export type Props = {|message:string, someNumber:number, extraGreeting?:string, polymorphicProp:any, children?:any|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   GreetingBS.component,
   (function _(jsProps: Props) {
-     return GreetingBS.make(jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.children);
+     return GreetingBS.make(jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.polymorphicProp, jsProps.children);
   }));
 export const empty: list<string> = GreetingBS.empty;
 export const cons: <T1>({|x:T1, l:list<T1>|}) => list<T1> = function _(Arg1) { const result = GreetingBS.cons(Arg1.x, Arg1.l); return result };

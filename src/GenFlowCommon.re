@@ -61,3 +61,27 @@ type groupedArg =
   | Arg(convertableType);
 
 let any = Ident("any", []);
+
+let rec subTypeVars = (~f, typ) =>
+  switch (typ) {
+  | Optional(typ) => Optional(typ |> subTypeVars(~f))
+  | Ident(s, []) =>
+    switch (f(s)) {
+    | None => typ
+    | Some(typ') => typ'
+    }
+  | Ident(s, [_, ..._]) => typ
+  | ObjectType(fields) =>
+    ObjectType(
+      fields
+      |> List.map(((s, optionalness, t)) =>
+           (s, optionalness, t |> subTypeVars(~f))
+         ),
+    )
+  | Arrow(typs1, typs2, t) =>
+    Arrow(
+      typs1 |> List.map(subTypeVars(~f)),
+      typs2 |> List.map(subTypeVars(~f)),
+      t |> subTypeVars(~f),
+    )
+  };

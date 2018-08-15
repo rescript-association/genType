@@ -222,9 +222,9 @@ let codeItemsFromConstructorDeclaration =
     |> List.concat;
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
-  let (freeTypeVars, remainingDeps) =
+  let (freeTypeVarss, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toTyp(freeTypeVars);
+  let typeVars = TypeVars.toTyp(freeTypeVarss);
   let retType = Ident(variantTypeName, typeVars);
   let constructorTyp =
     createFunctionType(typeVars, convertableTypes, retType);
@@ -262,9 +262,9 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
    * system doesn't support higher ranked polymorphism, and so all type
    * variables most likely belong at the binding level.
    */
-  let (freeTypeVars, remainingDeps) =
+  let (freeTypeVarss, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toTyp(freeTypeVars);
+  let typeVars = TypeVars.toTyp(freeTypeVarss);
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
   (remainingDeps, codeItems);
@@ -306,7 +306,19 @@ let codeItemsForMake =
        );
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toTyp(freeTypeVars);
+
+  /* Replace type variables in props/children with any. */
+  let (typeVars, typ) = (
+    [],
+    typ
+    |> subTypeVars(~f=s =>
+         if (freeTypeVars |> List.exists(((s1, _)) => s1 == s)) {
+           Some(any);
+         } else {
+           None;
+         }
+       ),
+  );
   switch (typ) {
   | Arrow(
       _,
@@ -319,15 +331,15 @@ let codeItemsForMake =
       ),
     ) =>
     /* Add children?:any to props type */
-    let childrenField = ("children", NonMandatory, any);
     let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
-      | [] => ObjectType([childrenField])
+      | [] => ObjectType([("children", NonMandatory, any)])
       /* Then we had both props and children. */
-      | [_children, ..._] =>
+      | [children, ..._] =>
         switch (propOrChildren) {
-        | ObjectType(fields) => ObjectType(fields @ [childrenField])
+        | ObjectType(fields) =>
+          ObjectType(fields @ [("children", NonMandatory, children)])
         | _ => propOrChildren
         }
       };
@@ -339,7 +351,7 @@ let codeItemsForMake =
         exportType:
           exportType(
             ~opaque=false,
-            [],
+            typeVars,
             ~typeName=propsTypeName,
             propsTypeArguments,
           ),

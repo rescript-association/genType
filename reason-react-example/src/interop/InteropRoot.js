@@ -19,7 +19,11 @@ const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
 const App = () => (
   <div>
-    <PageReason message={helloWorld} someNumber={someNumber} />
+    <PageReason
+      message={helloWorld}
+      someNumber={someNumber}
+      polymorphicProp={[1, 2, 3]}
+    />
   </div>
 );
 App.displayName = "ExampleInteropRoot";
