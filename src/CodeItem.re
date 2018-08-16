@@ -196,13 +196,12 @@ let codeItemsFromConstructorDeclaration =
     (~language, variantTypeName, constructorDeclaration, ~recordGen) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
-  let conversionPlans =
+  let typsWithDependencies =
     Dependencies.typeExprsToConversion(~language, constructorArgs);
   let argTypes =
-    conversionPlans
-    |> List.map(({Dependencies.convertableType, _}) => convertableType);
+    typsWithDependencies |> List.map(({Dependencies.typ, _}) => typ);
   let dependencies =
-    conversionPlans
+    typsWithDependencies
     |> List.map(({Dependencies.dependencies, _}) => dependencies)
     |> List.concat;
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
@@ -241,7 +240,7 @@ let abstractTheTypeParameters = (typ, params) =>
 let translateId = (~language, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
-  let {Dependencies.dependencies, convertableType: typ} =
+  let {Dependencies.dependencies, typ} =
     typeExpr |> Dependencies.typeExprToConversion(~language);
   let converter = typ |> Dependencies.typToConverter;
   let typeVars = typ |> TypeVars.free;
@@ -276,7 +275,7 @@ let translateMake =
     (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
-  let {Dependencies.dependencies, convertableType: typ} =
+  let {Dependencies.dependencies, typ} =
     typeExpr
     |> Dependencies.typeExprToConversion(
          ~language,
@@ -376,12 +375,11 @@ let translateValueDescription =
     | [] => ""
     };
   let importPath = path |> ImportPath.fromStringUnsafe;
-  let conversionPlan =
+  let typsWithDependencies =
     valueDescription.val_desc.ctyp_type
     |> Dependencies.typeExprToConversion(~language);
-  let typ = conversionPlan.convertableType;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
-  switch (typ, genFlowKind) {
+  switch (typsWithDependencies.typ, genFlowKind) {
   | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => {
       dependencies: [],
       codeItems: [ExternalReactClass({componentName, importPath})],
@@ -450,7 +448,7 @@ let translateTypeDecl =
           false
         | _ => true
         };
-      let {Dependencies.dependencies, convertableType: typ} =
+      let {Dependencies.dependencies, typ} =
         coreType.Typedtree.ctyp_type
         |> Dependencies.typeExprToConversion(~language);
       let codeItems = [
