@@ -53,11 +53,6 @@ type t =
   | ExportType(exportType)
   | ExportVariantType(exportVariantType);
 
-type priority =
-  | Import
-  | Binding
-  | Export;
-
 type genFlowKind =
   | NoGenFlow
   | GenFlow
