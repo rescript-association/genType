@@ -210,7 +210,7 @@ let codeItemsFromConstructorDeclaration =
 
   let retType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
   let functionArgs =
-    argTypes |> List.map(typ => (typ |> Dependencies.typToConverter, typ));
+    argTypes |> List.map(typ => (typ |> Convert.typToConverter, typ));
   let constructorTyp = createFunctionType(typeVars, functionArgs, retType);
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
@@ -241,7 +241,7 @@ let translateId = (~moduleName, ~valueBinding, id): translation => {
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, typ} =
     typeExpr |> Dependencies.translateTypeExpr;
-  let converter = typ |> Dependencies.typToConverter;
+  let converter = typ |> Convert.typToConverter;
   let typeVars = typ |> TypeVars.free;
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
@@ -281,7 +281,7 @@ let translateMake =
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
-  let converter = typ |> Dependencies.typToConverter;
+  let converter = typ |> Convert.typToConverter;
 
   let freeTypeVarsSet = typ |> TypeVars.free_;
 

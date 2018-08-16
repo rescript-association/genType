@@ -137,7 +137,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         let args =
           argTypes
           |> List.mapi((i, typ) => {
-               let converter = typ |> Dependencies.typToConverter;
+               let converter = typ |> Convert.typToConverter;
                let arg = Emit.argi(i + 1);
                let v = arg |> Convert.toReason(~converter);
                (arg, v);

@@ -159,35 +159,6 @@ let rec removeOption = (label, typeExpr: Types.type_expr) =>
   | _ => None
   };
 
-let rec typToConverter = typ =>
-  switch (typ) {
-  | TypeVar(_) => Identity
-  | Ident(_, _) => Identity
-  | Optional(t) => Option(t |> typToConverter)
-  | ObjectType(_) => Identity
-  | Arrow(_generics, args, resultType) =>
-    let argConverters = args |> List.map(typToGroupedArgConverter);
-    let retConverter = resultType |> typToConverter;
-    if (retConverter == Identity
-        && argConverters
-        |> List.for_all(converter =>
-             converter == ArgConverter(Nolabel, Identity)
-           )) {
-      Identity;
-    } else {
-      Fn((argConverters, retConverter));
-    };
-  }
-and typToGroupedArgConverter = typ =>
-  switch (typ) {
-  | ObjectType(fields) =>
-    GroupConverter(
-      fields
-      |> List.map(((s, _optionalness, t)) => (s, t |> typToConverter)),
-    )
-  | _ => ArgConverter(Nolabel, typ |> typToConverter)
-  };
-
 let rec extract_fun =
         (
           ~typeVarsGen,
@@ -367,10 +338,7 @@ let translateTypeExpr = (~noFunctionReturnDependencies=?, typeExpr) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
   let typsWithDependencies =
     typeExpr
-    |> translateTypeExpr_(
-         ~typeVarsGen,
-         ~noFunctionReturnDependencies?,
-       );
+    |> translateTypeExpr_(~typeVarsGen, ~noFunctionReturnDependencies?);
 
   if (Debug.dependencies) {
     typsWithDependencies.dependencies
@@ -378,10 +346,9 @@ let translateTypeExpr = (~noFunctionReturnDependencies=?, typeExpr) => {
   };
   typsWithDependencies;
 };
-let translateTypeExprs = (typeExprs) => {
+let translateTypeExprs = typeExprs => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
-  let typsWithDependencies =
-    typeExprs |> translateTypeExprs_(~typeVarsGen);
+  let typsWithDependencies = typeExprs |> translateTypeExprs_(~typeVarsGen);
 
   if (Debug.dependencies) {
     typsWithDependencies
