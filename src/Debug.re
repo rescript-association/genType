@@ -1,4 +1,5 @@
-let codeItems = false;
-let config = false;
-let dependencies = false;
-let moduleResolution = false;
+let all = false;
+let codeItems = false || all;
+let config = false || all;
+let dependencies = false || all;
+let moduleResolution = false || all;
