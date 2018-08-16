@@ -119,7 +119,6 @@ let cmtToCodeItems =
               )
          )
       |> CodeItem.combineTranslations;
-    let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
     let imports =
       translationUnit.dependencies
       |> CodeItem.translateDependencies(
@@ -127,6 +126,7 @@ let cmtToCodeItems =
            ~outputFileRelative,
            ~resolver,
          );
+    let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
     imports @ sortedCodeItems;
   | _ => []
   };
