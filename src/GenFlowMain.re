@@ -59,30 +59,32 @@ let typedItemHasGenFlowAnnotation = typedItem =>
   | _ => false
   };
 
-let typedItemToCodeItems = (~language, ~propsTypeGen, ~moduleName, typedItem) => {
-  let (listListDeps, listListItems) =
-    switch (typedItem) {
-    | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
-      typeDeclarations
-      |> List.map(CodeItem.fromTypeDecl(~language))
-      |> List.split
+let translateTypedItem =
+    (~language, ~propsTypeGen, ~moduleName, typedItem): CodeItem.translation =>
+  switch (typedItem) {
+  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
+    typeDeclarations
+    |> List.map(CodeItem.translateTypeDecl(~language))
+    |> CodeItem.combineTranslations
 
-    | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
-      valueBindings
-      |> List.map(
-           CodeItem.fromValueBinding(~language, ~propsTypeGen, ~moduleName),
-         )
-      |> List.split
+  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
+    valueBindings
+    |> List.map(
+         CodeItem.translateValueBinding(
+           ~language,
+           ~propsTypeGen,
+           ~moduleName,
+         ),
+       )
+    |> CodeItem.combineTranslations
 
-    | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
-      /* external declaration */
-      valueDescription |> CodeItem.fromValueDescription(~language)
+  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
+    /* external declaration */
+    valueDescription |> CodeItem.translateValueDescription(~language)
 
-    | _ => ([], [])
-    /* TODO: Support mapping of variant type definitions. */
-    };
-  (List.concat(listListDeps), List.concat(listListItems));
-};
+  | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
+  /* TODO: Support mapping of variant type definitions. */
+  };
 
 let cmtHasGenFlowAnnotations = inputCMT =>
   switch (inputCMT.Cmt_format.cmt_annots) {
@@ -106,33 +108,22 @@ let cmtToCodeItems =
   switch (cmt_annots) {
   | Implementation(structure) =>
     let typedItems = structure.Typedtree.str_items;
-    let (deps, revCodeItems) =
+    let translationUnit =
       typedItems
-      |> List.fold_left(
-           ((curDeps, curParseItems), nextTypedItem) => {
-             let (nextDeps, nextCodeItems) =
-               nextTypedItem
-               |> typedItemToCodeItems(
-                    ~language=config.language,
-                    ~propsTypeGen,
-                    ~moduleName,
-                  );
-             (
-               List.rev_append(nextDeps, curDeps),
-               List.rev_append(nextCodeItems, curParseItems),
-             );
-           },
-           ([], []),
-         );
-    let codeItems = revCodeItems |> List.rev;
+      |> List.map(nextTypedItem =>
+           nextTypedItem
+           |> translateTypedItem(
+                ~language=config.language,
+                ~propsTypeGen,
+                ~moduleName,
+              )
+         )
+      |> CodeItem.combineTranslations;
+    let codeItems = translationUnit.codeItems;
     let imports =
-      CodeItem.fromDependencies(
-        ~config,
-        ~outputFileRelative,
-        ~resolver,
-        deps,
-      );
-    List.append(imports, codeItems |> sortcodeItemsByPriority);
+      translationUnit.dependencies
+      |> CodeItem.fromDependencies(~config, ~outputFileRelative, ~resolver);
+    imports @ (codeItems |> sortcodeItemsByPriority);
   | _ => []
   };
 };

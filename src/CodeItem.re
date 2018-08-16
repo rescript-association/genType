@@ -63,6 +63,22 @@ type genFlowKind =
   | GenFlow
   | GenFlowOpaque;
 
+type translation = {
+  dependencies: list(Dependencies.t),
+  codeItems: list(t),
+};
+
+let combineTranslations = (translations: list(translation)): translation =>
+  translations
+  |> List.map(({dependencies, codeItems}) => (dependencies, codeItems))
+  |> List.split
+  |> (
+    ((dependencies, codeItems)) => {
+      dependencies: dependencies |> List.concat,
+      codeItems: codeItems |> List.concat,
+    }
+  );
+
 let rec converterToString = converter =>
   switch (converter) {
   | Unit => "unit"
@@ -226,7 +242,7 @@ let abstractTheTypeParameters = (typ, params) =>
   | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
   };
 
-let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
+let translateId = (~language, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, convertableType: (converter, typ)} =
@@ -234,7 +250,7 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
   let typeVars = typ |> TypeVars.free |> TypeVars.toTypes;
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
-  (dependencies, codeItems);
+  {dependencies, codeItems};
 };
 
 /*
@@ -259,8 +275,8 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
  *     {named: number, args?: number}
  */
 
-let codeItemsForMake =
-    (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id) => {
+let translateMake =
+    (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, convertableType: (converter, typ)} =
@@ -313,7 +329,7 @@ let codeItemsForMake =
     let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
     let componentType = EmitTyp.reactComponentType(~language, ~propsTypeName);
 
-    let items = [
+    let codeItems = [
       ComponentBinding({
         exportType:
           exportType(
@@ -328,23 +344,23 @@ let codeItemsForMake =
         converter,
       }),
     ];
-    (dependencies, items);
+    {dependencies, codeItems};
 
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> codeItemsForId(~language, ~moduleName, ~valueBinding)
+    id |> translateId(~language, ~moduleName, ~valueBinding)
   };
 };
 
-let fromValueBinding = (~language, ~propsTypeGen, ~moduleName, valueBinding) => {
+let translateValueBinding =
+    (~language, ~propsTypeGen, ~moduleName, valueBinding): translation => {
   let {Typedtree.vb_pat, vb_attributes, _} = valueBinding;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id
-    |> codeItemsForMake(~language, ~propsTypeGen, ~moduleName, ~valueBinding)
+    id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
-    id |> codeItemsForId(~language, ~moduleName, ~valueBinding)
-  | _ => ([], [])
+    id |> translateId(~language, ~moduleName, ~valueBinding)
+  | _ => {dependencies: [], codeItems: []}
   };
 };
 
@@ -352,8 +368,8 @@ let fromValueBinding = (~language, ~propsTypeGen, ~moduleName, valueBinding) => 
  * [@genFlow]
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
-let fromValueDescription =
-    (~language, valueDescription: Typedtree.value_description) => {
+let translateValueDescription =
+    (~language, valueDescription: Typedtree.value_description): translation => {
   let componentName =
     valueDescription.val_id |> Ident.name |> String.capitalize;
   let path =
@@ -368,11 +384,11 @@ let fromValueDescription =
   let typ = conversionPlan.convertableType |> snd;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typ, genFlowKind) {
-  | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => (
-      [],
-      [[ExternalReactClass({componentName, importPath})]],
-    )
-  | _ => ([], [])
+  | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => {
+      dependencies: [],
+      codeItems: [ExternalReactClass({componentName, importPath})],
+    }
+  | _ => {dependencies: [], codeItems: []}
   };
 };
 
@@ -382,7 +398,8 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
+let translateTypeDecl =
+    (~language, dec: Typedtree.type_declaration): translation =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
@@ -392,9 +409,9 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
     let typeVars = TypeVars.toTyp(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
-    (
-      [],
-      [
+    {
+      dependencies: [],
+      codeItems: [
         codeItemForExportType(
           ~opaque=true,
           typeVars,
@@ -403,7 +420,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
           any,
         ),
       ],
-    );
+    };
   /*
    * This case includes aliasings such as:
    *
@@ -415,10 +432,12 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
     let typeVars = TypeVars.toTyp(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
     switch (dec.typ_manifest) {
-    | None => (
-        [],
-        [codeItemForExportType(~opaque=true, typeVars, ~typeName, any)],
-      )
+    | None => {
+        dependencies: [],
+        codeItems: [
+          codeItemForExportType(~opaque=true, typeVars, ~typeName, any),
+        ],
+      }
     | Some(coreType) =>
       let opaque =
         switch (coreType.ctyp_desc) {
@@ -433,10 +452,10 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
       let {Dependencies.dependencies, convertableType: (_converter, typ)} =
         coreType.Typedtree.ctyp_type
         |> Dependencies.typeExprToConversion(~language);
-      let structureItems = [
+      let codeItems = [
         codeItemForExportType(~opaque, typeVars, ~typeName, typ),
       ];
-      (dependencies, structureItems);
+      {dependencies, codeItems};
     };
   | (astTypeParams, Type_variant(constructorDeclarations), GenFlow)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
@@ -467,8 +486,8 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
         leafTypes: resultTypes,
         name: variantTypeName,
       });
-    (deps, List.append(items, [unionType]));
-  | _ => ([], [])
+    {dependencies: deps, codeItems: List.append(items, [unionType])};
+  | _ => {dependencies: [], codeItems: []}
   };
 
 let typePathToImport =
