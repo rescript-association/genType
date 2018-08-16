@@ -3,8 +3,6 @@
 const Component1BS = require("./Component1.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
-// Warning polymorphic type unhandled:T1
-// Warning polymorphic type unhandled:T2
 import type {list} from '../src/shims/ReasonPervasives.shim';
 import type {variant as Component2variant} from './Component2.re';
 export type Props = {|message?:string, children?:any|};
