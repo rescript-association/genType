@@ -1,8 +1,7 @@
 open GenFlowCommon;
 
-let genericsString = genericStrings =>
-  genericStrings === [] ?
-    "" : "<" ++ String.concat(",", genericStrings) ++ ">";
+let genericsString = typeParams =>
+  typeParams === [] ? "" : "<" ++ String.concat(",", typeParams) ++ ">";
 
 let rec renderString = (~language, ~exact, typ) =>
   switch (typ) {
@@ -30,7 +29,7 @@ and renderObjType = (~language, ~exact, fields) =>
   ++ (exact ? "|}" : "}")
 /* TODO: Always drop the final unit argument. */
 and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
-  genericsString(List.map(renderString(~language, ~exact), typeParams))
+  genericsString(typeParams)
   ++ "("
   ++ String.concat(
        ", ",
@@ -58,8 +57,7 @@ let commentBeforeRequire = (~language) =>
 
 let emitExportType =
     (~language, ~opaque, ~typeName, ~typeParams, ~comment, typ) => {
-  let typeParamsString =
-    genericsString(List.map(typToString(~language), typeParams));
+  let typeParamsString = genericsString(typeParams);
   let commentString =
     switch (comment) {
     | None => ""
@@ -84,11 +82,7 @@ let emitExportType =
          Any type parameters must occur in the type of opaque, so that different
          instantiations are considered different types. */
       let typeOfOpaqueField =
-        typeParams == [] ?
-          "any" :
-          typeParams
-          |> List.map(typToString(~language))
-          |> String.concat(" | ");
+        typeParams == [] ? "any" : typeParams |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ "export abstract class "
       ++ typeName

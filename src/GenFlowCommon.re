@@ -37,7 +37,7 @@ type typ =
   | ObjectType(fields)
   /* List of typ is the type parameters abstracted. Not the arguments
    * applied. */
-  | Arrow(list(typ), list(typ), typ)
+  | Arrow(list(string), list(typ), typ)
 and fields = list((string, optionalness, typ));
 
 type label =

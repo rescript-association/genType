@@ -37,9 +37,6 @@ let extract = typeParams => {
 let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
 let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
-let toTypes = freeTypeVars =>
-  freeTypeVars |> StringSet.elements |> List.map(name => TypeVar(name));
-
 let rec substitute = (~f, typ) =>
   switch (typ) {
   | Optional(typ) => Optional(typ |> substitute(~f))
@@ -56,28 +53,30 @@ let rec substitute = (~f, typ) =>
            (s, optionalness, t |> substitute(~f))
          ),
     )
-  | Arrow(typs1, typs2, t) =>
-    Arrow(
-      typs1 |> List.map(substitute(~f)),
-      typs2 |> List.map(substitute(~f)),
-      t |> substitute(~f),
-    )
+  | Arrow(generics, args, t) =>
+    Arrow(generics, args |> List.map(substitute(~f)), t |> substitute(~f))
   };
 
-let rec free = typ: StringSet.t =>
+let rec free_ = typ: StringSet.t =>
   switch (typ) {
-  | Optional(typ) => typ |> free
+  | Optional(typ) => typ |> free_
   | TypeVar(s) => s |> StringSet.singleton
   | Ident(_) => StringSet.empty
   | ObjectType(fields) =>
     fields
     |> List.fold_left(
-         (s, (_, _, t)) => StringSet.union(s, t |> free),
+         (s, (_, _, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
-  | Arrow(typs1, typs2, t) =>
-    (typs1 |> freeOfList) +++ (typs2 |> freeOfList) +++ (t |> free)
+  | Arrow(generics, args, t) =>
+    StringSet.diff(
+      (args |> freeOfList_) +++ (t |> free_),
+      generics |> StringSet.of_list,
+    )
   }
-and freeOfList = typs =>
-  typs |> List.fold_left((s, t) => s +++ (t |> free), StringSet.empty)
+and freeOfList_ = typs =>
+  typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)
 and (+++) = StringSet.union;
+
+let free = typ => typ |> free_ |> StringSet.elements;
+let freeOfList = typ => typ |> freeOfList_ |> StringSet.elements;

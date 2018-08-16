@@ -6,7 +6,7 @@ type importType =
 
 type exportType = {
   opaque: bool,
-  typeParams: list(typ),
+  typeParams: list(string),
   typeName: string,
   comment: option(string),
   typ,
@@ -210,13 +210,9 @@ let codeItemsFromConstructorDeclaration =
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
 
-  let typeVars =
-    convertableTypes
-    |> List.map(snd)
-    |> TypeVars.freeOfList
-    |> TypeVars.toTypes;
+  let typeVars = convertableTypes |> List.map(snd) |> TypeVars.freeOfList;
 
-  let retType = Ident(variantTypeName, typeVars);
+  let retType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
   let constructorTyp =
     createFunctionType(typeVars, convertableTypes, retType);
   let recordValue =
@@ -248,7 +244,7 @@ let translateId = (~language, ~moduleName, ~valueBinding, id): translation => {
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, convertableType: (converter, typ)} =
     typeExpr |> Dependencies.typeExprToConversion(~language);
-  let typeVars = typ |> TypeVars.free |> TypeVars.toTypes;
+  let typeVars = typ |> TypeVars.free;
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
   {dependencies, codeItems};
@@ -289,14 +285,14 @@ let translateMake =
          ~noFunctionReturnDependencies=true,
        );
 
-  let freeTypeVars = typ |> TypeVars.free;
+  let freeTypeVarsSet = typ |> TypeVars.free_;
 
   /* Replace type variables in props/children with any. */
   let (typeVars, typ) = (
     [],
     typ
     |> TypeVars.substitute(~f=s =>
-         if (freeTypeVars |> StringSet.mem(s)) {
+         if (freeTypeVarsSet |> StringSet.mem(s)) {
            Some(any);
          } else {
            None;
@@ -415,7 +411,7 @@ let translateTypeDecl =
       codeItems: [
         codeItemForExportType(
           ~opaque=true,
-          typeVars,
+          freeTypeVarNames,
           ~typeName,
           ~comment="Record type not supported",
           any,
@@ -436,7 +432,12 @@ let translateTypeDecl =
     | None => {
         dependencies: [],
         codeItems: [
-          codeItemForExportType(~opaque=true, typeVars, ~typeName, any),
+          codeItemForExportType(
+            ~opaque=true,
+            freeTypeVarNames,
+            ~typeName,
+            any,
+          ),
         ],
       }
     | Some(coreType) =>
@@ -454,7 +455,7 @@ let translateTypeDecl =
         coreType.Typedtree.ctyp_type
         |> Dependencies.typeExprToConversion(~language);
       let codeItems = [
-        codeItemForExportType(~opaque, typeVars, ~typeName, typ),
+        codeItemForExportType(~opaque, freeTypeVarNames, ~typeName, typ),
       ];
       {dependencies, codeItems};
     };
