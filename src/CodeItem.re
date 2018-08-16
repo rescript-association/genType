@@ -150,10 +150,10 @@ module TypeVars = {
     switch (typ) {
     | {Types.id, desc: Tvar(None), _} =>
       let typeName = GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, id);
-      [(typeName, id), ...soFar];
-    | {id, desc: Tvar(Some(s)), _} =>
+      [typeName, ...soFar];
+    | {desc: Tvar(Some(s)), _} =>
       let typeName = s;
-      [(typeName, id), ...soFar];
+      [typeName, ...soFar];
     | _ => soFar
     };
 
@@ -179,7 +179,7 @@ module TypeVars = {
 
   let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
   let toTyp = freeTypeVars =>
-    List.map(((name, _id)) => Ident(name, []), freeTypeVars);
+    List.map(name => Ident(name, []), freeTypeVars);
 };
 
 let createFunctionType = (generics, argConvertableTypes, resultType) =>
@@ -222,9 +222,9 @@ let codeItemsFromConstructorDeclaration =
     |> List.concat;
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
-  let (freeTypeVarss, remainingDeps) =
+  let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toTyp(freeTypeVarss);
+  let typeVars = TypeVars.toTyp(freeTypeVars);
   let retType = Ident(variantTypeName, typeVars);
   let constructorTyp =
     createFunctionType(typeVars, convertableTypes, retType);
@@ -262,9 +262,9 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
    * system doesn't support higher ranked polymorphism, and so all type
    * variables most likely belong at the binding level.
    */
-  let (freeTypeVarss, remainingDeps) =
+  let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toTyp(freeTypeVarss);
+  let typeVars = TypeVars.toTyp(freeTypeVars);
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
   (remainingDeps, codeItems);
@@ -312,7 +312,7 @@ let codeItemsForMake =
     [],
     typ
     |> subTypeVars(~f=s =>
-         if (freeTypeVars |> List.exists(((s1, _)) => s1 == s)) {
+         if (freeTypeVars |> List.exists(s1 => s1 == s)) {
            Some(any);
          } else {
            None;
@@ -583,7 +583,7 @@ let fromDependencies =
     switch (dependency) {
     | Dependencies.TypeAtPath(p) =>
       typePathToImport(~config, ~outputFileRelative, ~resolver, p)
-    | FreeTypeVariable(s, _id) =>
+    | FreeTypeVariable(s) =>
       ImportComment("// Warning polymorphic type unhandled:" ++ s)
     /* TODO: Currently unused. Would be useful for injecting dependencies
      * on runtime converters that end up being used. */

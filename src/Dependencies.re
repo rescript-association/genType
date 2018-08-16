@@ -3,7 +3,7 @@ open GenFlowCommon;
 type t =
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t)
-  | FreeTypeVariable(string, int);
+  | FreeTypeVariable(string);
 
 type conversionPlan = {
   dependencies: list(t),
@@ -21,8 +21,7 @@ let rec typePathToName = typePath =>
 let toString = dep =>
   switch (dep) {
   | TypeAtPath(path) => "TypeAtPath(" ++ typePathToName(path) ++ ")"
-  | FreeTypeVariable(s, i) =>
-    "FreeTypeVariable(" ++ s ++ ", " ++ string_of_int(i) ++ ")"
+  | FreeTypeVariable(s) => "FreeTypeVariable(" ++ s ++ ")"
   };
 
 let hasTypeVar = dep =>
@@ -37,9 +36,9 @@ let extractFreeTypeVars = deps =>
       List.fold_left(
         ((revFreeTypeVars, revRemainingDeps) as soFar, nextDep) =>
           switch (nextDep) {
-          | FreeTypeVariable(s, id) =>
-            revFreeTypeVars |> List.exists(((s2, _id2)) => s2 == s) ?
-              soFar : ([(s, id), ...revFreeTypeVars], revRemainingDeps)
+          | FreeTypeVariable(s) =>
+            revFreeTypeVars |> List.exists(s2 => s2 == s) ?
+              soFar : ([s, ...revFreeTypeVars], revRemainingDeps)
           | _ => (revFreeTypeVars, [nextDep, ...revRemainingDeps])
           },
         ([], []),
@@ -53,8 +52,7 @@ let extractFreeTypeVars = deps =>
 let filterFreeTypeVars = (freeTypeVars, deps) =>
   List.filter(
     fun
-    | FreeTypeVariable(s, _id) =>
-      !List.exists(((s2, _id2)) => s == s2, freeTypeVars)
+    | FreeTypeVariable(s) => !List.exists(s2 => s == s2, freeTypeVars)
     | _ => true,
     deps,
   );
@@ -339,13 +337,13 @@ and typeExprToConversion_ =
     let typeName =
       GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, type_expr.id);
     {
-      dependencies: [FreeTypeVariable(typeName, type_expr.id)],
+      dependencies: [FreeTypeVariable(typeName)],
       convertableType: (Identity, Ident(typeName, [])),
     };
   | Tvar(Some(s)) =>
     let typeName = s;
     {
-      dependencies: [FreeTypeVariable(typeName, type_expr.id)],
+      dependencies: [FreeTypeVariable(typeName)],
       convertableType: (Identity, Ident(s, [])),
     };
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
