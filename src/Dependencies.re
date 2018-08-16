@@ -141,8 +141,8 @@ let toString = dep =>
   }
  */
 
-let rec removeOption = (label, type_expr: Types.type_expr) =>
-  switch (type_expr.desc) {
+let rec removeOption = (label, typeExpr: Types.type_expr) =>
+  switch (typeExpr.desc) {
   | Tconstr(Path.Pident(id), [t], _)
       /* This has a different representation in 4.03+ */
       when Ident.name(id) == "option" && label != "" && label.[0] == '?' =>
@@ -166,9 +166,9 @@ let rec extract_fun_ =
           ~noFunctionReturnDependencies=false,
           revArgDeps,
           revArgs,
-          type_expr: Types.type_expr,
+          typeExpr: Types.type_expr,
         ) =>
-  switch (type_expr.desc) {
+  switch (typeExpr.desc) {
   | Tlink(t) =>
     extract_fun_(
       ~language,
@@ -180,7 +180,7 @@ let rec extract_fun_ =
     )
   | Tarrow("", t1, t2, _) =>
     let {dependencies, convertableType} =
-      typeExprToConversion_(~language, ~typeVarsGen, t1);
+      t1 |> typeExprToConversion_(~language, ~typeVarsGen);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
     extract_fun_(
       ~language,
@@ -195,19 +195,19 @@ let rec extract_fun_ =
     | None =>
       /* TODO: Convert name to object, convert null to optional. */
       let {dependencies, convertableType: t1Conversion} =
-        typeExprToConversion_(~language, ~typeVarsGen, t1);
+        t1 |> typeExprToConversion_(~language, ~typeVarsGen);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      extract_fun_(
-        ~language,
-        ~typeVarsGen,
-        ~noFunctionReturnDependencies,
-        nextRevDeps,
-        [(Label(lbl), t1Conversion), ...revArgs],
-        t2,
-      );
+      t2
+      |> extract_fun_(
+           ~language,
+           ~typeVarsGen,
+           ~noFunctionReturnDependencies,
+           nextRevDeps,
+           [(Label(lbl), t1Conversion), ...revArgs],
+         );
     | Some((lbl, t1)) =>
       let {dependencies, convertableType: (t1Converter, t1Typ)} =
-        typeExprToConversion_(~language, ~typeVarsGen, t1);
+        t1 |> typeExprToConversion_(~language, ~typeVarsGen);
       let t1Conversion = (OptionalArgument(t1Converter), t1Typ);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       /* TODO: Convert name to object, convert null to optional. */
@@ -222,7 +222,7 @@ let rec extract_fun_ =
     }
   | _ =>
     let {dependencies, convertableType: (retConverter, retType)} =
-      typeExprToConversion_(~language, ~typeVarsGen, type_expr);
+      typeExpr |> typeExprToConversion_(~language, ~typeVarsGen);
     let allDeps =
       List.rev_append(
         revArgDeps,
@@ -294,22 +294,18 @@ and typeExprToConversion_ =
       ~language,
       ~typeVarsGen,
       ~noFunctionReturnDependencies=false,
-      type_expr: Types.type_expr,
+      typeExpr: Types.type_expr,
     )
     : conversionPlan =>
-  switch (type_expr.desc) {
+  switch (typeExpr.desc) {
   | Tvar(None) =>
     let typeName =
-      GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, type_expr.id);
-    {
-      dependencies: [],
-      convertableType: (Identity, TypeVar(typeName)),
-    };
-  | Tvar(Some(s)) =>
-    {
+      GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, typeExpr.id);
+    {dependencies: [], convertableType: (Identity, TypeVar(typeName))};
+  | Tvar(Some(s)) => {
       dependencies: [],
       convertableType: (TypeVarConversion(s), TypeVar(s)),
-    };
+    }
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
   | Tconstr(Path.Pident({name: "bool", _}), [], _) => {
       dependencies: [],
@@ -336,10 +332,14 @@ and typeExprToConversion_ =
    * which require conversion. The solution here could be to use the Reason
    * representation of option for everything except named arguments.
    */
-  | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "array", _), [p], _)
-  | Tconstr(Path.Pident({name: "array", _}), [p], _) =>
+  | Tconstr(
+      Pdot(Path.Pident({Ident.name: "FB", _}), "array", _),
+      [param],
+      _,
+    )
+  | Tconstr(Path.Pident({name: "array", _}), [param], _) =>
     let {dependencies: paramDeps, convertableType: (itemConverter, itemFlow)} =
-      typeExprToConversion_(~language, ~typeVarsGen, p);
+      param |> typeExprToConversion_(~language, ~typeVarsGen);
     if (itemConverter === Identity) {
       {
         dependencies: paramDeps,
@@ -354,35 +354,34 @@ and typeExprToConversion_ =
         ),
       );
     };
-  | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "option", _), [p], _)
-  | Tconstr(Path.Pident({name: "option", _}), [p], _) =>
-    /* TODO: Handle / verify the case of nested optionals. */
-    let {
-      dependencies: paramDeps,
-      convertableType: (paramConverter, paramConverted),
-    } =
-      typeExprToConversion_(~language, ~typeVarsGen, p);
-    let composedConverter = Option(paramConverter);
+  | Tconstr(
+      Pdot(Path.Pident({Ident.name: "FB", _}), "option", _),
+      [param],
+      _,
+    )
+  | Tconstr(Path.Pident({name: "option", _}), [param], _) =>
+    let {dependencies: paramDeps, convertableType: (converter, typ)} =
+      param |> typeExprToConversion_(~language, ~typeVarsGen);
     {
       dependencies: paramDeps,
-      convertableType: (composedConverter, Optional(paramConverted)),
+      convertableType: (Option(converter), Optional(typ)),
     };
   | Tarrow(_) =>
-    extract_fun_(
-      ~language,
-      ~typeVarsGen,
-      ~noFunctionReturnDependencies,
-      [],
-      [],
-      type_expr,
-    )
+    typeExpr
+    |> extract_fun_(
+         ~language,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies,
+         [],
+         [],
+       )
   | Tlink(t) =>
-    typeExprToConversion_(
-      ~language,
-      ~typeVarsGen,
-      ~noFunctionReturnDependencies,
-      t,
-    )
+    t
+    |> typeExprToConversion_(
+         ~language,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies,
+       )
   | Tconstr(path, [], _) => {
       dependencies: [TypeAtPath(path)],
       convertableType: (Identity, Ident(typePathToName(path), [])),
@@ -399,7 +398,7 @@ and typeExprToConversion_ =
    */
   | Tconstr(path, typeParams, _) =>
     let conversionPlans =
-      typeExprsToConversion_(~language, ~typeVarsGen, typeParams);
+      typeParams |> typeExprsToConversion_(~language, ~typeVarsGen);
     let convertableTypes =
       conversionPlans |> List.map(({convertableType, _}) => convertableType);
     let typeParamDeps =
