@@ -106,16 +106,15 @@ let rec converterToString = converter =>
     ++ ")";
   };
 
+let importTypeGetName = importType =>
+  switch (importType) {
+  | ImportComment(s) => s
+  | ImportAsFrom(s, _, _) => s
+  };
+
 let toString = (~language, codeItem) =>
   switch (codeItem) {
-  | ImportType(importType) =>
-    "ImportType "
-    ++ (
-      switch (importType) {
-      | ImportComment(s) => s
-      | ImportAsFrom(s, _, _) => s
-      }
-    )
+  | ImportType(importType) => "ImportType " ++ importTypeGetName(importType)
   | ExternalReactClass(externalReactClass) =>
     "ExternalReactClass " ++ externalReactClass.componentName
   | ValueBinding({moduleName, id, typ, converter}) =>
@@ -529,19 +528,7 @@ let typePathToImport =
   };
 
 let importTypeCompare = (i1, i2) =>
-  switch (i1, i2) {
-  | (ImportComment(s1), ImportComment(s2)) => compare(s1, s2)
-  | (ImportComment(_), _) => (-1)
-  | (_, ImportComment(_)) => 1
-  | (ImportAsFrom(x1, y1, z1), ImportAsFrom(x2, y2, z2)) =>
-    let x = compare(x1, x2);
-    x != 0 ?
-      x :
-      {
-        let y = compare(y1, y2);
-        y != 0 ? y : compare(z1, z2);
-      };
-  };
+  compare(i1 |> importTypeGetName, i2 |> importTypeGetName);
 
 let fromDependencies =
     (~config, ~outputFileRelative, ~resolver, dependencies): list(t) => {
