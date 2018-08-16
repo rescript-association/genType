@@ -4,6 +4,8 @@ let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
   | Unit
   | Identity => value
+  
+  | TypeVarConversion(_)  => value
 
   | OptionalArgument(c) => apply(~converter=c, ~toJS, value)
 

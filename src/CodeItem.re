@@ -83,6 +83,7 @@ let rec converterToString = converter =>
   switch (converter) {
   | Unit => "unit"
   | Identity => "id"
+  | TypeVarConversion(s) => "TypeVarConversion(" ++ s ++ ")"
   | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
   | Option(c) => "option(" ++ converterToString(c) ++ ")"
   | Fn((groupedArgConverters, c)) =>
