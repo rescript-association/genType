@@ -120,13 +120,13 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     | ConstructorBinding(
         exportType,
         constructorType,
-        convertableTypes,
+        argTypes,
         variantName,
         recordValue,
       ) =>
       emitExportType(~language, exportType);
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
-      if (convertableTypes == []) {
+      if (argTypes == []) {
         "export const "
         ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
         ++ " = "
@@ -135,7 +135,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         |> export;
       } else {
         let args =
-          convertableTypes
+          argTypes
           |> List.mapi((i, typ) => {
                let converter = typ |> Dependencies.typToConverter;
                let arg = Emit.argi(i + 1);

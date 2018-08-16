@@ -2,30 +2,26 @@ open GenFlowCommon;
 
 type groupedArg =
   | Group(fields)
-  | Arg(convertableType);
+  | Arg(typ);
 
 /**
  * For convenient processing turns consecutive named arguments into a
  * `NamedArgs` group, and individual non-named arguments into `Arg`s.
  */
-let rec groupReversed = (~revCurGroup, ~revResult, labeledConvertableTypes) =>
-  switch (revCurGroup, labeledConvertableTypes) {
-  | ([], [(Nolabel, convertableType), ...tl]) =>
-    groupReversed(
-      ~revCurGroup=[],
-      ~revResult=[Arg(convertableType), ...revResult],
-      tl,
-    )
+let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
+  switch (revCurGroup, labeledTypes) {
+  | ([], [(Nolabel, typ), ...tl]) =>
+    groupReversed(~revCurGroup=[], ~revResult=[Arg(typ), ...revResult], tl)
   /* Add it to the current group, not result. */
-  | (_, [(OptLabel(name), convertableType), ...tl]) =>
+  | (_, [(OptLabel(name), typ), ...tl]) =>
     groupReversed(
-      ~revCurGroup=[(name, NonMandatory, convertableType), ...revCurGroup],
+      ~revCurGroup=[(name, NonMandatory, typ), ...revCurGroup],
       ~revResult,
       tl,
     )
-  | (_, [(Label(name), convertableType), ...tl]) =>
+  | (_, [(Label(name), typ), ...tl]) =>
     groupReversed(
-      ~revCurGroup=[(name, Mandatory, convertableType), ...revCurGroup],
+      ~revCurGroup=[(name, Mandatory, typ), ...revCurGroup],
       ~revResult,
       tl,
     )
@@ -37,7 +33,7 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledConvertableTypes) =>
     groupReversed(
       ~revCurGroup=[],
       ~revResult=[Group(revCurGroup), ...revResult],
-      labeledConvertableTypes,
+      labeledTypes,
     )
   };
 
@@ -53,7 +49,7 @@ let rec reverse = (~soFar=[], lst) =>
     reverse(~soFar=[ObjectType(List.rev(fields)), ...soFar], tl)
   };
 
-let group = labeledConvertableTypes =>
-  labeledConvertableTypes
+let group = labeledTypes =>
+  labeledTypes
   |> groupReversed(~revCurGroup=[], ~revResult=[])
   |> reverse;

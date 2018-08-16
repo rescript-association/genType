@@ -45,7 +45,7 @@ type t =
   | ConstructorBinding(
       exportType,
       typ,
-      list(convertableType),
+      list(typ),
       string,
       Runtime.recordValue,
     )
@@ -198,7 +198,7 @@ let codeItemsFromConstructorDeclaration =
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
   let conversionPlans =
     Dependencies.typeExprsToConversion(~language, constructorArgs);
-  let convertableTypes =
+  let argTypes =
     conversionPlans
     |> List.map(({Dependencies.convertableType, _}) => convertableType);
   let dependencies =
@@ -208,12 +208,11 @@ let codeItemsFromConstructorDeclaration =
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
 
-  let typeVars = convertableTypes |> TypeVars.freeOfList;
+  let typeVars = argTypes |> TypeVars.freeOfList;
 
   let retType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
   let functionArgs =
-    convertableTypes
-    |> List.map(typ => (typ |> Dependencies.typToConverter, typ));
+    argTypes |> List.map(typ => (typ |> Dependencies.typToConverter, typ));
   let constructorTyp = createFunctionType(typeVars, functionArgs, retType);
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
@@ -221,7 +220,7 @@ let codeItemsFromConstructorDeclaration =
     ConstructorBinding(
       exportType(~opaque=true, typeVars, ~typeName=variantTypeName, any),
       constructorTyp,
-      convertableTypes,
+      argTypes,
       variantName,
       recordValue,
     ),

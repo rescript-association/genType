@@ -54,6 +54,4 @@ and groupedArgConverter =
   | ArgConverter(label, converter)
   | GroupConverter(list((string, converter)));
 
-type convertableType = typ;
-
 let any = Ident("any", []);
