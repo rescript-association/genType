@@ -260,13 +260,7 @@ let rec extract_fun_ =
     let labeledConvertableTypes = revArgs |> List.rev;
     let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
 
-    let groupedArgToTyp = groupedArg =>
-      switch (groupedArg) {
-      | Group(fields) => ObjectType(fields)
-      | Arg(typ) => typ
-      };
-    let functionType =
-      Arrow([], groupedArgs |> List.map(groupedArgToTyp), retType);
+    let functionType = Arrow([], groupedArgs, retType);
 
     {dependencies: allDeps, convertableType: functionType};
   }

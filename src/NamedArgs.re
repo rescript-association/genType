@@ -1,5 +1,9 @@
 open GenFlowCommon;
 
+type groupedArg =
+  | Group(fields)
+  | Arg(convertableType);
+
 /**
  * For convenient processing turns consecutive named arguments into a
  * `NamedArgs` group, and individual non-named arguments into `Arg`s.
@@ -44,9 +48,9 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledConvertableTypes) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
-  | [Arg(_) as hd, ...tl] => reverse(~soFar=[hd, ...soFar], tl)
-  | [Group(group), ...tl] =>
-    reverse(~soFar=[Group(List.rev(group)), ...soFar], tl)
+  | [Arg(typ), ...tl] => reverse(~soFar=[typ, ...soFar], tl)
+  | [Group(fields), ...tl] =>
+    reverse(~soFar=[ObjectType(List.rev(fields)), ...soFar], tl)
   };
 
 let group = labeledConvertableTypes =>

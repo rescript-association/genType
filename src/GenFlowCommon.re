@@ -56,9 +56,4 @@ and groupedArgConverter =
 
 type convertableType = typ;
 
-type groupedArg =
-  /* Contains a list of (name, isOptional, 't)  */
-  | Group(fields)
-  | Arg(convertableType);
-
 let any = Ident("any", []);
