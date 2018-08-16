@@ -83,7 +83,6 @@ let rec converterToString = converter =>
   switch (converter) {
   | Unit => "unit"
   | Identity => "id"
-  | TypeVarConversion(s) => "TypeVarConversion(" ++ s ++ ")"
   | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
   | Option(c) => "option(" ++ converterToString(c) ++ ")"
   | Fn((groupedArgConverters, c)) =>
@@ -404,7 +403,6 @@ let translateTypeDecl =
   ) {
   | (typeParams, Type_record(_, _), GenFlow | GenFlowOpaque) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
-    let typeVars = TypeVars.toTyp(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
     {
       dependencies: [],
@@ -426,7 +424,6 @@ let translateTypeDecl =
   | (typeParams, Type_abstract, GenFlow | GenFlowOpaque)
   | (typeParams, Type_variant(_), GenFlowOpaque) =>
     let freeTypeVarNames = TypeVars.extract(typeParams);
-    let typeVars = TypeVars.toTyp(freeTypeVarNames);
     let typeName = Ident.name(dec.typ_id);
     switch (dec.typ_manifest) {
     | None => {

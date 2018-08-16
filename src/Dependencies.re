@@ -304,7 +304,7 @@ and typeExprToConversion_ =
     {dependencies: [], convertableType: (Identity, TypeVar(typeName))};
   | Tvar(Some(s)) => {
       dependencies: [],
-      convertableType: (TypeVarConversion(s), TypeVar(s)),
+      convertableType: (Identity, TypeVar(s)),
     }
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
   | Tconstr(Path.Pident({name: "bool", _}), [], _) => {

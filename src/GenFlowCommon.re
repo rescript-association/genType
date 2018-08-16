@@ -48,7 +48,6 @@ type label =
 type converter =
   | Unit
   | Identity
-  | TypeVarConversion(string)
   | OptionalArgument(converter)
   | Option(converter)
   | Fn((list(groupedArgConverter), converter))
