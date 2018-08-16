@@ -182,13 +182,13 @@ let codeItemsFromConstructorDeclaration =
     |> List.concat;
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
-  let (freeTypeVars, remainingDeps) =
-    Dependencies.extractFreeTypeVars(dependencies);
+  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
 
-  /* let types = convertableTypes |> List.map(snd);
-     let typeVars =
-       types |> freeTypeVarsOfList |> StringSet.elements |> TypeVars.toTyp; */
-  let typeVars = TypeVars.toTyp(freeTypeVars);
+  let typeVars =
+    convertableTypes
+    |> List.map(snd)
+    |> TypeVars.freeOfList
+    |> TypeVars.toTypes;
 
   let retType = Ident(variantTypeName, typeVars);
   let constructorTyp =
@@ -222,15 +222,8 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, convertableType: (converter, typ)} =
     typeExpr |> Dependencies.typeExprToConversion(~language);
-  /*
-   * We pull apart the polymorphic type variables at the binding level, but
-   * not at deeper function types because we know that the Reason/OCaml type
-   * system doesn't support higher ranked polymorphism, and so all type
-   * variables most likely belong at the binding level.
-   */
-  let (freeTypeVars, remainingDeps) =
-    Dependencies.extractFreeTypeVars(dependencies);
-  let typeVars = TypeVars.toTyp(freeTypeVars);
+  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
+  let typeVars = typ |> TypeVars.free |> TypeVars.toTypes;
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
   (remainingDeps, codeItems);
@@ -270,15 +263,16 @@ let codeItemsForMake =
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
-  let (freeTypeVars, remainingDeps) =
-    Dependencies.extractFreeTypeVars(dependencies);
+  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
+
+  let freeTypeVars = typ |> TypeVars.free;
 
   /* Replace type variables in props/children with any. */
   let (typeVars, typ) = (
     [],
     typ
     |> TypeVars.substitute(~f=s =>
-         if (freeTypeVars |> List.exists(s1 => s1 == s)) {
+         if (freeTypeVars |> StringSet.mem(s)) {
            Some(any);
          } else {
            None;

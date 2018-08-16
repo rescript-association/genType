@@ -37,6 +37,9 @@ let extract = typeParams => {
 let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
 let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
+let toTypes = freeTypeVars =>
+  freeTypeVars |> StringSet.elements |> List.map(name => TypeVar(name));
+
 let rec substitute = (~f, typ) =>
   switch (typ) {
   | Optional(typ) => Optional(typ |> substitute(~f))
