@@ -338,19 +338,19 @@ and typeExprToConversion_ =
       _,
     )
   | Tconstr(Path.Pident({name: "array", _}), [param], _) =>
-    let {dependencies: paramDeps, convertableType: (itemConverter, itemFlow)} =
+    let {dependencies: paramDeps, convertableType: (itemConverter, itemType)} =
       param |> typeExprToConversion_(~language, ~typeVarsGen);
     if (itemConverter === Identity) {
       {
         dependencies: paramDeps,
-        convertableType: (Identity, Ident("$ReadOnlyArray", [itemFlow])),
+        convertableType: (Identity, Ident("$ReadOnlyArray", [itemType])),
       };
     } else {
       raise(
         Invalid_argument(
           "Converting Arrays with elements that require conversion "
           ++ "is not yet supported. Saw an array containing type:"
-          ++ EmitTyp.typToString(~language, itemFlow),
+          ++ EmitTyp.typToString(~language, itemType),
         ),
       );
     };
