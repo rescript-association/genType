@@ -108,8 +108,16 @@ let rec converterToString = converter =>
 
 let toString = (~language, codeItem) =>
   switch (codeItem) {
-  | ImportType(_) => "ImportType"
-  | ExternalReactClass(_) => "ExternalReactClass"
+  | ImportType(importType) =>
+    "ImportType "
+    ++ (
+      switch (importType) {
+      | ImportComment(s) => s
+      | ImportAsFrom(s, _, _) => s
+      }
+    )
+  | ExternalReactClass(externalReactClass) =>
+    "ExternalReactClass " ++ externalReactClass.componentName
   | ValueBinding({moduleName, id, typ, converter}) =>
     "ValueBinding"
     ++ " moduleName:"
@@ -120,10 +128,13 @@ let toString = (~language, codeItem) =>
     ++ EmitTyp.typToString(~language, typ)
     ++ " converter:"
     ++ converterToString(converter)
-  | ConstructorBinding(_) => "ConstructorBinding"
-  | ComponentBinding(_) => "ComponentBinding"
-  | ExportType(_) => "ExportType"
-  | ExportVariantType(_) => "ExportVariantType"
+  | ConstructorBinding(_, _, _, variantName, _) =>
+    "ConstructorBinding " ++ variantName
+  | ComponentBinding(componentBinding) =>
+    "ComponentBinding " ++ (componentBinding.moduleName |> ModuleName.toString)
+  | ExportType(exportType) => "ExportType " ++ exportType.typeName
+  | ExportVariantType(exportVariantType) =>
+    "ExportVariantType " ++ exportVariantType.name
   };
 
 let rec hasAttribute = (searchText, attributes) =>
