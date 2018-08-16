@@ -549,7 +549,7 @@ let typePathToImport =
 let importTypeCompare = (i1, i2) =>
   compare(i1 |> importTypeGetName, i2 |> importTypeGetName);
 
-let fromDependencies =
+let translateDependencies =
     (~config, ~outputFileRelative, ~resolver, dependencies): list(t) => {
   let dependencyToImportType = dependency =>
     switch (dependency) {

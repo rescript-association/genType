@@ -122,7 +122,11 @@ let cmtToCodeItems =
     let codeItems = translationUnit.codeItems;
     let imports =
       translationUnit.dependencies
-      |> CodeItem.fromDependencies(~config, ~outputFileRelative, ~resolver);
+      |> CodeItem.translateDependencies(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+         );
     imports @ (codeItems |> sortcodeItemsByPriority);
   | _ => []
   };
