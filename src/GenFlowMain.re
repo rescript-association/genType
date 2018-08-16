@@ -43,6 +43,22 @@ let sortcodeItemsByPriority = codeItems => {
   sortedCodeItems^;
 };
 
+let hasGenFlowAnnotation = attributes =>
+  CodeItem.getGenFlowKind(attributes) != NoGenFlow;
+
+let typedItemHasGenFlowAnnotation = typedItem =>
+  switch (typedItem) {
+  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
+    typeDeclarations
+    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenFlowAnnotation)
+  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
+    valueBindings
+    |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenFlowAnnotation)
+  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
+    valueDescription.val_attributes |> hasGenFlowAnnotation
+  | _ => false
+  };
+
 let typedItemToCodeItems = (~language, ~propsTypeGen, ~moduleName, typedItem) => {
   let (listListDeps, listListItems) =
     switch (typedItem) {
@@ -68,6 +84,14 @@ let typedItemToCodeItems = (~language, ~propsTypeGen, ~moduleName, typedItem) =>
   (List.concat(listListDeps), List.concat(listListItems));
 };
 
+let cmtHasGenFlowAnnotations = inputCMT =>
+  switch (inputCMT.Cmt_format.cmt_annots) {
+  | Implementation(structure) =>
+    structure.Typedtree.str_items
+    |> List.exists(typedItemHasGenFlowAnnotation)
+  | _ => false
+  };
+
 let cmtToCodeItems =
     (
       ~config,
@@ -83,23 +107,23 @@ let cmtToCodeItems =
   | Implementation(structure) =>
     let typedItems = structure.Typedtree.str_items;
     let (deps, revCodeItems) =
-      List.fold_left(
-        ((curDeps, curParseItems), nextTypedItem) => {
-          let (nextDeps, nextCodeItems) =
-            nextTypedItem
-            |> typedItemToCodeItems(
-                 ~language=config.language,
-                 ~propsTypeGen,
-                 ~moduleName,
-               );
-          (
-            List.rev_append(nextDeps, curDeps),
-            List.rev_append(nextCodeItems, curParseItems),
-          );
-        },
-        ([], []),
-        typedItems,
-      );
+      typedItems
+      |> List.fold_left(
+           ((curDeps, curParseItems), nextTypedItem) => {
+             let (nextDeps, nextCodeItems) =
+               nextTypedItem
+               |> typedItemToCodeItems(
+                    ~language=config.language,
+                    ~propsTypeGen,
+                    ~moduleName,
+                  );
+             (
+               List.rev_append(nextDeps, curDeps),
+               List.rev_append(nextCodeItems, curParseItems),
+             );
+           },
+           ([], []),
+         );
     let codeItems = revCodeItems |> List.rev;
     let imports =
       CodeItem.fromDependencies(
@@ -121,21 +145,15 @@ let emitCodeItems =
       ~signFile,
       ~resolver,
       codeItems,
-    ) =>
-  if (codeItems == []) {
-    outputFile |> GeneratedFiles.logFileAction(NoMatch);
-    if (Sys.file_exists(outputFile)) {
-      Unix.unlink(outputFile);
-    };
-  } else {
-    let codeText =
-      codeItems
-      |> EmitJs.emitCodeItems(~language, ~outputFileRelative, ~resolver);
-    let fileContents =
-      signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText);
+    ) => {
+  let codeText =
+    codeItems
+    |> EmitJs.emitCodeItems(~language, ~outputFileRelative, ~resolver);
+  let fileContents =
+    signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText);
 
-    GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
-  };
+  GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
+};
 
 let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = Filename.concat(Sys.getcwd(), cmt);
@@ -153,20 +171,27 @@ let processCmtFile = (~signFile, ~config, cmt) => {
           EmitTyp.shimExtension(~language=config.language),
         ],
       );
-    inputCMT
-    |> cmtToCodeItems(
-         ~config,
-         ~propsTypeGen,
-         ~moduleName,
-         ~outputFileRelative,
-         ~resolver,
-       )
-    |> emitCodeItems(
-         ~language=config.language,
-         ~outputFile,
-         ~outputFileRelative,
-         ~signFile,
-         ~resolver,
-       );
+    if (inputCMT |> cmtHasGenFlowAnnotations) {
+      inputCMT
+      |> cmtToCodeItems(
+           ~config,
+           ~propsTypeGen,
+           ~moduleName,
+           ~outputFileRelative,
+           ~resolver,
+         )
+      |> emitCodeItems(
+           ~language=config.language,
+           ~outputFile,
+           ~outputFileRelative,
+           ~signFile,
+           ~resolver,
+         );
+    } else {
+      outputFile |> GeneratedFiles.logFileAction(NoMatch);
+      if (Sys.file_exists(outputFile)) {
+        Unix.unlink(outputFile);
+      };
+    };
   };
 };
