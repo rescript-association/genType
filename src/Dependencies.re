@@ -6,7 +6,7 @@ type t =
 
 type conversionPlan = {
   dependencies: list(t),
-  convertableType,
+  convertableType: typ,
 };
 
 let rec typePathToName = typePath =>
@@ -223,7 +223,7 @@ let rec extract_fun_ =
     switch (removeOption(lbl, t1)) {
     | None =>
       /* TODO: Convert name to object, convert null to optional. */
-      let {dependencies, convertableType: t1Conversion} =
+      let {dependencies, convertableType: typ1} =
         t1 |> typeExprToConversion_(~language, ~typeVarsGen);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       t2
@@ -232,12 +232,11 @@ let rec extract_fun_ =
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
            nextRevDeps,
-           [(Label(lbl), t1Conversion), ...revArgs],
+           [(Label(lbl), typ1), ...revArgs],
          );
     | Some((lbl, t1)) =>
-      let {dependencies, convertableType: (t1Converter, t1Typ)} =
+      let {dependencies, convertableType: typ1} =
         t1 |> typeExprToConversion_(~language, ~typeVarsGen);
-      let t1Conversion = (OptionalArgument(t1Converter), t1Typ);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       /* TODO: Convert name to object, convert null to optional. */
       extract_fun_(
@@ -245,12 +244,12 @@ let rec extract_fun_ =
         ~typeVarsGen,
         ~noFunctionReturnDependencies,
         nextRevDeps,
-        [(OptLabel(lbl), t1Conversion), ...revArgs],
+        [(OptLabel(lbl), typ1), ...revArgs],
         t2,
       );
     }
   | _ =>
-    let {dependencies, convertableType: (retConverter, retType)} =
+    let {dependencies, convertableType: retType} =
       typeExpr |> typeExprToConversion_(~language, ~typeVarsGen);
     let allDeps =
       List.rev_append(
@@ -261,50 +260,15 @@ let rec extract_fun_ =
     let labeledConvertableTypes = revArgs |> List.rev;
     let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
 
-    let groupedArgToConverter = groupedArg =>
-      switch (groupedArg) {
-      | Group(group) =>
-        GroupConverter(
-          group |> List.map(((s, _optionalness, (c, _t))) => (s, c)),
-        )
-      | Arg((c, _t)) => ArgConverter(Nolabel, c)
-      };
-    let groupedArgConverters = groupedArgs |> List.map(groupedArgToConverter);
-    /* TODO: Ignore all final single unit args at convert/type conversion time. */
-    let notJustASingleUnitArg =
-      switch (labeledConvertableTypes) {
-      | [(Nolabel, (c, _t))] when c === Unit => false
-      | _ => true
-      };
-    let needsArgConversion =
-      List.exists(
-        ((lbl, (converter, _t))) =>
-          lbl !== Nolabel || converter !== Identity,
-        labeledConvertableTypes,
-      )
-      && notJustASingleUnitArg;
-    let functionConverter =
-      retConverter !== Identity || needsArgConversion ?
-        Fn((groupedArgConverters, retConverter)) : Identity;
-
     let groupedArgToTyp = groupedArg =>
       switch (groupedArg) {
-      | Group(group) =>
-        let fields =
-          group
-          |> List.map(((s, optionalness, (_c, typ))) =>
-               (s, optionalness, typ)
-             );
-        ObjectType(fields);
-      | Arg((_converter, typ)) => typ
+      | Group(fields) => ObjectType(fields)
+      | Arg(typ) => typ
       };
     let functionType =
       Arrow([], groupedArgs |> List.map(groupedArgToTyp), retType);
 
-    {
-      dependencies: allDeps,
-      convertableType: (functionConverter, functionType),
-    };
+    {dependencies: allDeps, convertableType: functionType};
   }
 /**
  * Convertes Types.type_expr to:
@@ -330,30 +294,27 @@ and typeExprToConversion_ =
   | Tvar(None) =>
     let typeName =
       GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, typeExpr.id);
-    {dependencies: [], convertableType: (Identity, TypeVar(typeName))};
-  | Tvar(Some(s)) => {
-      dependencies: [],
-      convertableType: (Identity, TypeVar(s)),
-    }
+    {dependencies: [], convertableType: TypeVar(typeName)};
+  | Tvar(Some(s)) => {dependencies: [], convertableType: TypeVar(s)}
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
   | Tconstr(Path.Pident({name: "bool", _}), [], _) => {
       dependencies: [],
-      convertableType: (Identity, Ident("boolean", [])),
+      convertableType: Ident("boolean", []),
     }
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "int", _), [], _)
   | Tconstr(Path.Pident({name: "int", _}), [], _) => {
       dependencies: [],
-      convertableType: (Identity, Ident("number", [])),
+      convertableType: Ident("number", []),
     }
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "string", _), [], _)
   | Tconstr(Path.Pident({name: "string", _}), [], _) => {
       dependencies: [],
-      convertableType: (Identity, Ident("string", [])),
+      convertableType: Ident("string", []),
     }
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "unit", _), [], _)
   | Tconstr(Path.Pident({name: "unit", _}), [], _) => {
       dependencies: [],
-      convertableType: (Unit, Ident("(typeof undefined)", [])),
+      convertableType: Ident("(typeof undefined)", []),
     }
   /*
    * Arrays do not experience any conversion, in order to retain referencial
@@ -367,21 +328,11 @@ and typeExprToConversion_ =
       _,
     )
   | Tconstr(Path.Pident({name: "array", _}), [param], _) =>
-    let {dependencies: paramDeps, convertableType: (itemConverter, itemType)} =
+    let {dependencies: paramDeps, convertableType: itemType} =
       param |> typeExprToConversion_(~language, ~typeVarsGen);
-    if (itemConverter === Identity) {
-      {
-        dependencies: paramDeps,
-        convertableType: (Identity, Ident("$ReadOnlyArray", [itemType])),
-      };
-    } else {
-      raise(
-        Invalid_argument(
-          "Converting Arrays with elements that require conversion "
-          ++ "is not yet supported. Saw an array containing type:"
-          ++ EmitTyp.typToString(~language, itemType),
-        ),
-      );
+    {
+      dependencies: paramDeps,
+      convertableType: Ident("$ReadOnlyArray", [itemType]),
     };
   | Tconstr(
       Pdot(Path.Pident({Ident.name: "FB", _}), "option", _),
@@ -389,12 +340,9 @@ and typeExprToConversion_ =
       _,
     )
   | Tconstr(Path.Pident({name: "option", _}), [param], _) =>
-    let {dependencies: paramDeps, convertableType: (converter, typ)} =
+    let {dependencies: paramDeps, convertableType: typ} =
       param |> typeExprToConversion_(~language, ~typeVarsGen);
-    {
-      dependencies: paramDeps,
-      convertableType: (Option(converter), Optional(typ)),
-    };
+    {dependencies: paramDeps, convertableType: Optional(typ)};
   | Tarrow(_) =>
     typeExpr
     |> extract_fun_(
@@ -413,7 +361,7 @@ and typeExprToConversion_ =
        )
   | Tconstr(path, [], _) => {
       dependencies: [TypeAtPath(path)],
-      convertableType: (Identity, Ident(typePathToName(path), [])),
+      convertableType: Ident(typePathToName(path), []),
     }
   /* This type doesn't have any built in converter. But what if it was a
    * genFlow variant type? */
@@ -428,30 +376,21 @@ and typeExprToConversion_ =
   | Tconstr(path, typeParams, _) =>
     let conversionPlans =
       typeParams |> typeExprsToConversion_(~language, ~typeVarsGen);
-    let convertableTypes =
+    let typeArgs =
       conversionPlans |> List.map(({convertableType, _}) => convertableType);
     let typeParamDeps =
       conversionPlans
       |> List.map(({dependencies, _}) => dependencies)
       |> List.concat;
-    /* How is this exprConv completely ignored? */
-    let typeArgs =
-      List.map(((_exprConv, flowTyp: typ)) => flowTyp, convertableTypes);
     {
       dependencies: [TypeAtPath(path), ...typeParamDeps],
-      convertableType: (Identity, Ident(typePathToName(path), typeArgs)),
+      convertableType: Ident(typePathToName(path), typeArgs),
     };
-  | _ => {dependencies: [], convertableType: (Identity, any)}
+  | _ => {dependencies: [], convertableType: any}
   }
 and typeExprsToConversion_ =
     (~language, ~typeVarsGen, typeExprs): list(conversionPlan) =>
   typeExprs |> List.map(typeExprToConversion_(~language, ~typeVarsGen));
-
-let addConversionFromTyp = conversionPlan => {
-  let (_, typ) = conversionPlan.convertableType;
-  let conversion = typ |> typToConverter;
-  {...conversionPlan, convertableType: (conversion, typ)};
-};
 
 let typeExprToConversion =
     (~language, ~noFunctionReturnDependencies=?, typeExpr) => {
@@ -462,8 +401,8 @@ let typeExprToConversion =
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies?,
-       )
-    |> addConversionFromTyp;
+       );
+
   if (Debug.dependencies) {
     conversionPlan.dependencies
     |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString));
@@ -473,9 +412,8 @@ let typeExprToConversion =
 let typeExprsToConversion = (~language, typeExprs) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
   let conversionPlans =
-    typeExprs
-    |> typeExprsToConversion_(~language, ~typeVarsGen)
-    |> List.map(addConversionFromTyp);
+    typeExprs |> typeExprsToConversion_(~language, ~typeVarsGen);
+
   if (Debug.dependencies) {
     conversionPlans
     |> List.iter(conversionPlan =>

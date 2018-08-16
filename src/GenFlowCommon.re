@@ -46,7 +46,6 @@ type label =
   | OptLabel(string);
 
 type converter =
-  | Unit
   | Identity
   | OptionalArgument(converter)
   | Option(converter)
@@ -55,11 +54,11 @@ and groupedArgConverter =
   | ArgConverter(label, converter)
   | GroupConverter(list((string, converter)));
 
-type convertableType = (converter, typ);
+type convertableType = typ;
 
 type groupedArg =
   /* Contains a list of (name, isOptional, 't)  */
-  | Group(list((string, optionalness, convertableType)))
+  | Group(fields)
   | Arg(convertableType);
 
 let any = Ident("any", []);

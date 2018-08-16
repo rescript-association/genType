@@ -81,7 +81,6 @@ let combineTranslations = (translations: list(translation)): translation =>
 
 let rec converterToString = converter =>
   switch (converter) {
-  | Unit => "unit"
   | Identity => "id"
   | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
   | Option(c) => "option(" ++ converterToString(c) ++ ")"
@@ -209,11 +208,13 @@ let codeItemsFromConstructorDeclaration =
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
 
-  let typeVars = convertableTypes |> List.map(snd) |> TypeVars.freeOfList;
+  let typeVars = convertableTypes |> TypeVars.freeOfList;
 
   let retType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
-  let constructorTyp =
-    createFunctionType(typeVars, convertableTypes, retType);
+  let functionArgs =
+    convertableTypes
+    |> List.map(typ => (typ |> Dependencies.typToConverter, typ));
+  let constructorTyp = createFunctionType(typeVars, functionArgs, retType);
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
@@ -241,8 +242,9 @@ let abstractTheTypeParameters = (typ, params) =>
 let translateId = (~language, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
-  let {Dependencies.dependencies, convertableType: (converter, typ)} =
+  let {Dependencies.dependencies, convertableType: typ} =
     typeExpr |> Dependencies.typeExprToConversion(~language);
+  let converter = typ |> Dependencies.typToConverter;
   let typeVars = typ |> TypeVars.free;
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
@@ -275,7 +277,7 @@ let translateMake =
     (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
-  let {Dependencies.dependencies, convertableType: (converter, typ)} =
+  let {Dependencies.dependencies, convertableType: typ} =
     typeExpr
     |> Dependencies.typeExprToConversion(
          ~language,
@@ -283,6 +285,7 @@ let translateMake =
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
+  let converter = typ |> Dependencies.typToConverter;
 
   let freeTypeVarsSet = typ |> TypeVars.free_;
 
@@ -377,7 +380,7 @@ let translateValueDescription =
   let conversionPlan =
     valueDescription.val_desc.ctyp_type
     |> Dependencies.typeExprToConversion(~language);
-  let typ = conversionPlan.convertableType |> snd;
+  let typ = conversionPlan.convertableType;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typ, genFlowKind) {
   | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => {
@@ -448,7 +451,7 @@ let translateTypeDecl =
           false
         | _ => true
         };
-      let {Dependencies.dependencies, convertableType: (_converter, typ)} =
+      let {Dependencies.dependencies, convertableType: typ} =
         coreType.Typedtree.ctyp_type
         |> Dependencies.typeExprToConversion(~language);
       let codeItems = [

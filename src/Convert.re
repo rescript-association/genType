@@ -2,9 +2,8 @@ open GenFlowCommon;
 
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
-  | Unit
   | Identity => value
-  
+
   | OptionalArgument(c) => apply(~converter=c, ~toJS, value)
 
   | Option(c) =>

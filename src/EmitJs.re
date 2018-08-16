@@ -136,7 +136,8 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       } else {
         let args =
           convertableTypes
-          |> List.mapi((i, (converter, _flowTyp)) => {
+          |> List.mapi((i, typ) => {
+               let converter = typ |> Dependencies.typToConverter;
                let arg = Emit.argi(i + 1);
                let v = arg |> Convert.toReason(~converter);
                (arg, v);
