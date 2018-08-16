@@ -136,7 +136,7 @@ let exportType = (~opaque, typeParams, ~typeName, ~comment=?, typ) => {
   typ,
 };
 
-let codeItemForExportType = (~opaque, typeParams, ~typeName, ~comment=?, typ) =>
+let translateExportType = (~opaque, typeParams, ~typeName, ~comment=?, typ) =>
   ExportType({opaque, typeParams, typeName, comment, typ});
 
 let variantLeafTypeName = (typeName, leafName) =>
@@ -145,7 +145,7 @@ let variantLeafTypeName = (typeName, leafName) =>
 /*
  * TODO: Make the types namespaced by nested Flow module.
  */
-let codeItemsFromConstructorDeclaration =
+let translateConstructorDeclaration =
     (variantTypeName, constructorDeclaration, ~recordGen) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
@@ -356,7 +356,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
     {
       dependencies: [],
       codeItems: [
-        codeItemForExportType(
+        translateExportType(
           ~opaque=true,
           freeTypeVarNames,
           ~typeName,
@@ -378,12 +378,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
     | None => {
         dependencies: [],
         codeItems: [
-          codeItemForExportType(
-            ~opaque=true,
-            freeTypeVarNames,
-            ~typeName,
-            any,
-          ),
+          translateExportType(~opaque=true, freeTypeVarNames, ~typeName, any),
         ],
       }
     | Some(coreType) =>
@@ -400,7 +395,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       let {Dependencies.dependencies, typ} =
         coreType.Typedtree.ctyp_type |> Dependencies.translateTypeExpr;
       let codeItems = [
-        codeItemForExportType(~opaque, freeTypeVarNames, ~typeName, typ),
+        translateExportType(~opaque, freeTypeVarNames, ~typeName, typ),
       ];
       {dependencies, codeItems};
     };
@@ -411,7 +406,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       let recordGen = Runtime.recordGen();
       List.map(
         constructorDeclaration =>
-          codeItemsFromConstructorDeclaration(
+          translateConstructorDeclaration(
             variantTypeName,
             constructorDeclaration,
             ~recordGen,

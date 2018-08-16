@@ -4,7 +4,7 @@ type t =
   /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t);
 
-type typWithDependencies = {
+type translation = {
   dependencies: list(t),
   typ,
 };
@@ -246,7 +246,7 @@ and translateTypeExpr_ =
       ~noFunctionReturnDependencies=false,
       typeExpr: Types.type_expr,
     )
-    : typWithDependencies =>
+    : translation =>
   switch (typeExpr.desc) {
   | Tvar(None) =>
     let typeName =
@@ -330,8 +330,7 @@ and translateTypeExpr_ =
     };
   | _ => {dependencies: [], typ: any}
   }
-and translateTypeExprs_ =
-    (~typeVarsGen, typeExprs): list(typWithDependencies) =>
+and translateTypeExprs_ = (~typeVarsGen, typeExprs): list(translation) =>
   typeExprs |> List.map(translateTypeExpr_(~typeVarsGen));
 
 let translateTypeExpr = (~noFunctionReturnDependencies=?, typeExpr) => {
