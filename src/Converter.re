@@ -1,19 +1,19 @@
 open GenFlowCommon;
 
-type converter =
+type t =
   | Identity
-  | OptionalArgument(converter)
-  | Option(converter)
-  | Fn((list(groupedArgConverter), converter))
+  | OptionalArgument(t)
+  | Option(t)
+  | Fn((list(groupedArgConverter), t))
 and groupedArgConverter =
-  | ArgConverter(label, converter)
-  | GroupConverter(list((string, converter)));
+  | ArgConverter(label, t)
+  | GroupConverter(list((string, t)));
 
-let rec converterToString = converter =>
+let rec toString = converter =>
   switch (converter) {
   | Identity => "id"
-  | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
-  | Option(c) => "option(" ++ converterToString(c) ++ ")"
+  | OptionalArgument(c) => "optionalArgument(" ++ toString(c) ++ ")"
+  | Option(c) => "option(" ++ toString(c) ++ ")"
   | Fn((groupedArgConverters, c)) =>
     let labelToString = label =>
       switch (label) {
@@ -27,17 +27,13 @@ let rec converterToString = converter =>
       |> List.map(groupedArgConverter =>
            switch (groupedArgConverter) {
            | ArgConverter(label, conv) =>
-             "("
-             ++ labelToString(label)
-             ++ ":"
-             ++ converterToString(conv)
-             ++ ")"
+             "(" ++ labelToString(label) ++ ":" ++ toString(conv) ++ ")"
            | GroupConverter(groupConverters) =>
              "{|"
              ++ (
                groupConverters
                |> List.map(((s, argConverter)) =>
-                    s ++ ":" ++ converterToString(argConverter)
+                    s ++ ":" ++ toString(argConverter)
                   )
                |> String.concat(", ")
              )
@@ -47,7 +43,7 @@ let rec converterToString = converter =>
       |> String.concat(", ")
     )
     ++ " -> "
-    ++ converterToString(c)
+    ++ toString(c)
     ++ ")";
   };
 

@@ -23,7 +23,7 @@ type componentBinding = {
   moduleName: ModuleName.t,
   propsTypeName: string,
   componentType: typ,
-  converter: Converter.converter,
+  converter: Converter.t,
 };
 
 type externalReactClass = {
@@ -35,7 +35,7 @@ type valueBinding = {
   moduleName: ModuleName.t,
   id: Ident.t,
   typ,
-  converter: Converter.converter,
+  converter: Converter.t,
 };
 
 type t =
@@ -99,7 +99,7 @@ let toString = (~language, codeItem) =>
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
     ++ " converter:"
-    ++ Converter.converterToString(converter)
+    ++ Converter.toString(converter)
   | ConstructorBinding(_, _, _, variantName, _) =>
     "ConstructorBinding " ++ variantName
   | ComponentBinding(componentBinding) =>
