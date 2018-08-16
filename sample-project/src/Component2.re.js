@@ -4,6 +4,7 @@ const Component2BS = require("./Component2.bs");
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 
 // No need to import locally visible type block. Make sure it is also marked with @genFlow
+
 export opaque type VariantA = any;
 export const A: VariantA = 0;
 export opaque type VariantB = any;
@@ -19,4 +20,3 @@ export const Block: BlockBlock = 0;
 export type block =
   | BlockBlock;
 export const getBlock: (block) => number = Component2BS.getBlock;
-

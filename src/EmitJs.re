@@ -13,35 +13,45 @@ let requireModule = (~requires, ~importPath, moduleName) =>
        moduleName |> ModuleResolver.resolveSourceModule(~importPath),
      );
 
-let emitExportType =
-    (~language, {CodeItem.opaque, typeParams, typeName, comment, typ}) =>
-  typ
-  |> EmitTyp.emitExportType(
-       ~language,
-       ~opaque,
-       ~typeName,
-       ~typeParams,
-       ~comment,
-     );
-
-let emitImportType = (~language, importType) =>
-  switch (importType) {
-  | CodeItem.ImportComment(s) => s
-  | ImportAsFrom(typeName, asTypeName, importPath) =>
-    EmitTyp.emitImportTypeAs(~language, ~typeName, ~asTypeName, ~importPath)
-  };
-
 let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
-  let mainBuffer = Buffer.create(100);
+  let importTypeBuffer = Buffer.create(100);
   let exportBuffer = Buffer.create(100);
-  let line_ = (buffer, s) => {
+  let line__ = (buffer, s) => {
     if (Buffer.length(buffer) > 0) {
       Buffer.add_string(buffer, "\n");
     };
     Buffer.add_string(buffer, s);
   };
-  let line = line_(mainBuffer);
+  let require = line__(requireBuffer);
+  let export = line__(exportBuffer);
+
+  let emitImportType = (~language, importType) =>
+    (
+      switch (importType) {
+      | CodeItem.ImportComment(s) => s
+      | ImportAsFrom(typeName, asTypeName, importPath) =>
+        EmitTyp.emitImportTypeAs(
+          ~language,
+          ~typeName,
+          ~asTypeName,
+          ~importPath,
+        )
+      }
+    )
+    |> line__(importTypeBuffer);
+
+  let emitExportType =
+      (~language, {CodeItem.opaque, typeParams, typeName, comment, typ}) =>
+    typ
+    |> EmitTyp.emitExportType(
+         ~language,
+         ~opaque,
+         ~typeName,
+         ~typeParams,
+         ~comment,
+       )
+    |> export;
 
   let emitCheckJsWrapperType = (~env, ~propsTypeName) =>
     switch (env.externalReactClass) {
@@ -56,10 +66,10 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         ++ ") {\n      return <"
         ++ componentName
         ++ " {...props}/>;\n    }";
-      line(s);
+      export(s);
 
     | [_, ..._] =>
-      line(
+      export(
         "// genFlow warning: found more than one external component annotated with @genFlow",
       )
     };
@@ -70,22 +80,16 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     };
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
-      line(emitImportType(~language, importType));
+      emitImportType(~language, importType);
       env;
 
     | ExportType(exportType) =>
-      line(emitExportType(~language, exportType));
+      emitExportType(~language, exportType);
       env;
 
     | ExportVariantType({CodeItem.typeParams, leafTypes, name}) =>
-      line(
-        EmitTyp.emitExportVariantType(
-          ~language,
-          ~name,
-          ~typeParams,
-          ~leafTypes,
-        ),
-      );
+      EmitTyp.emitExportVariantType(~language, ~name, ~typeParams, ~leafTypes)
+      |> export;
       env;
 
     | ValueBinding({moduleName, id, typ, converter}) =>
@@ -100,18 +104,17 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       let requires =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
 
-      line(
-        "export const "
-        ++ (id |> Ident.name |> EmitTyp.ofType(~language, ~typ))
-        ++ " = "
-        ++ (
-          ModuleName.toString(moduleNameBs)
-          ++ "."
-          ++ Ident.name(id)
-          |> Convert.toJS(~converter)
-        )
-        ++ ";",
-      );
+      "export const "
+      ++ (id |> Ident.name |> EmitTyp.ofType(~language, ~typ))
+      ++ " = "
+      ++ (
+        ModuleName.toString(moduleNameBs)
+        ++ "."
+        ++ Ident.name(id)
+        |> Convert.toJS(~converter)
+      )
+      ++ ";"
+      |> export;
       {...env, requires};
 
     | ConstructorBinding(
@@ -121,16 +124,15 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         variantName,
         recordValue,
       ) =>
-      line(emitExportType(~language, exportType));
+      emitExportType(~language, exportType);
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
       if (convertableTypes == []) {
-        line(
-          "export const "
-          ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
-          ++ " = "
-          ++ recordAsInt
-          ++ ";",
-        );
+        "export const "
+        ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
+        ++ " = "
+        ++ recordAsInt
+        ++ ";"
+        |> export;
       } else {
         let args =
           convertableTypes
@@ -144,12 +146,11 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
           recordValue
           |> Runtime.emitRecordAsBlock(~language, ~args)
           |> mkReturn;
-        line(
-          "export const "
-          ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
-          ++ " = "
-          ++ Emit.funDef(~args, ~mkBody, ""),
-        );
+        "export const "
+        ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
+        ++ " = "
+        ++ Emit.funDef(~args, ~mkBody, "")
+        |> export;
       };
       {
         ...env,
@@ -212,15 +213,18 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         | _ => [jsPropsDot("children")]
         };
 
-      line(emitExportType(~language, exportType));
-      line(
+      emitExportType(~language, exportType);
+      export(
         "export const "
         ++ (name |> EmitTyp.ofType(~language, ~typ=componentType))
         ++ " = ReasonReact.wrapReasonForJs(",
       );
-      line("  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",");
-      line("  (function _(" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
-      line(
+
+      export(
+        "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
+      );
+      export("  (function _(" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
+      export(
         "     return "
         ++ ModuleName.toString(moduleNameBs)
         ++ "."
@@ -228,7 +232,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         ++ Emit.parens(args)
         ++ ";",
       );
-      line("  }));");
+      export("  }));");
 
       emitCheckJsWrapperType(~env, ~propsTypeName);
 
@@ -286,18 +290,20 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   let finalEnv = List.fold_left(emitCodeItem, envWithTypeMaps, codeItems);
 
   if (finalEnv.externalReactClass != []) {
-    EmitTyp.requireReact(~language) |> line_(requireBuffer);
+    EmitTyp.requireReact(~language) |> require;
   };
   finalEnv.requires
   |> ModuleNameMap.iter((moduleName, importPath) =>
-       EmitTyp.emitRequire(~language, moduleName, importPath)
-       |> line_(requireBuffer)
+       EmitTyp.emitRequire(~language, moduleName, importPath) |> require
      );
 
-  [
-    requireBuffer |> Buffer.to_bytes,
-    mainBuffer |> Buffer.to_bytes,
-    exportBuffer |> Buffer.to_bytes,
-  ]
+  let requireString = requireBuffer |> Buffer.to_bytes;
+  let importTypeString = importTypeBuffer |> Buffer.to_bytes;
+  let exportString = exportBuffer |> Buffer.to_bytes;
+  let toList = s => s == "" ? [] : [s];
+
+  (requireString |> toList)
+  @ (importTypeString |> toList)
+  @ (exportString |> toList)
   |> String.concat("\n\n");
 };

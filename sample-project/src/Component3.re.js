@@ -9,4 +9,3 @@ export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs
   (function _(jsProps: Props) {
      return Component3BS.make(jsProps.children);
   }));
-

@@ -14,4 +14,3 @@ export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs
 export function checkJsWrapperType(props: Props) {
       return <MyBanner {...props}/>;
     }
-
