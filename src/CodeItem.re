@@ -277,7 +277,7 @@ let codeItemsForMake =
   let (typeVars, typ) = (
     [],
     typ
-    |> TypeVars.subTypeVars(~f=s =>
+    |> TypeVars.substitute(~f=s =>
          if (freeTypeVars |> List.exists(s1 => s1 == s)) {
            Some(any);
          } else {
