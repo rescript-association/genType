@@ -469,9 +469,7 @@ let fromTypeDecl = (~language, dec: Typedtree.type_declaration) =>
       let structureItems = [
         codeItemForExportType(~opaque, typeVars, ~typeName, typ),
       ];
-      let deps =
-        Dependencies.filterFreeTypeVars(freeTypeVarNames, dependencies);
-      (deps, structureItems);
+      (dependencies, structureItems);
     };
   | (astTypeParams, Type_variant(constructorDeclarations), GenFlow)
       when !hasSomeGADTLeaf(constructorDeclarations) =>

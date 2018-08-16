@@ -49,14 +49,6 @@ let extractFreeTypeVars = deps =>
     ([], deps);
   };
 
-let filterFreeTypeVars = (freeTypeVars, deps) =>
-  List.filter(
-    fun
-    | FreeTypeVariable(s) => !List.exists(s2 => s == s2, freeTypeVars)
-    | _ => true,
-    deps,
-  );
-
 /*
   When reading the data structures: There are structures from the `Typedtree`
   module which is the typed AST, and that AST references types from the module
