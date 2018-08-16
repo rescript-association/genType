@@ -5,6 +5,7 @@ const MyBanner = require("./MyBanner");
 const MyBannerReBS = require("./MyBannerRe.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
+// Warning polymorphic type unhandled:T1
 export type Props = {|show:boolean, message:string, children?:any|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   MyBannerReBS.component,

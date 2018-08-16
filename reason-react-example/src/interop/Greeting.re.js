@@ -3,6 +3,8 @@
 const GreetingBS = require("./Greeting.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
+// Warning polymorphic type unhandled:T1
+// Warning polymorphic type unhandled:T2
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, polymorphicProp:any, children?:any|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(

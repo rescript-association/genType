@@ -30,25 +30,6 @@ let hasTypeVar = dep =>
   | TypeAtPath(_) => false
   };
 
-let extractFreeTypeVars = deps =>
-  if (deps |> List.exists(hasTypeVar)) {
-    let (revFreeTypeVars, revRemainingDeps) =
-      List.fold_left(
-        ((revFreeTypeVars, revRemainingDeps) as soFar, nextDep) =>
-          switch (nextDep) {
-          | FreeTypeVariable(s) =>
-            revFreeTypeVars |> List.exists(s2 => s2 == s) ?
-              soFar : ([s, ...revFreeTypeVars], revRemainingDeps)
-          | _ => (revFreeTypeVars, [nextDep, ...revRemainingDeps])
-          },
-        ([], []),
-        deps,
-      );
-    (revFreeTypeVars |> List.rev, revRemainingDeps |> List.rev);
-  } else {
-    ([], deps);
-  };
-
 /*
   When reading the data structures: There are structures from the `Typedtree`
   module which is the typed AST, and that AST references types from the module

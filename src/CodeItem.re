@@ -182,7 +182,6 @@ let codeItemsFromConstructorDeclaration =
     |> List.concat;
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
-  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
 
   let typeVars =
     convertableTypes
@@ -204,7 +203,7 @@ let codeItemsFromConstructorDeclaration =
       recordValue,
     ),
   ];
-  (retType, (remainingDeps, codeItems));
+  (retType, (dependencies, codeItems));
 };
 
 /* Applies type parameters to types (for all) */
@@ -222,11 +221,10 @@ let codeItemsForId = (~language, ~moduleName, ~valueBinding, id) => {
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, convertableType: (converter, typ)} =
     typeExpr |> Dependencies.typeExprToConversion(~language);
-  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
   let typeVars = typ |> TypeVars.free |> TypeVars.toTypes;
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
-  (remainingDeps, codeItems);
+  (dependencies, codeItems);
 };
 
 /*
@@ -263,7 +261,6 @@ let codeItemsForMake =
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
-  let (_, remainingDeps) = Dependencies.extractFreeTypeVars(dependencies);
 
   let freeTypeVars = typ |> TypeVars.free;
 
@@ -321,7 +318,7 @@ let codeItemsForMake =
         converter,
       }),
     ];
-    (remainingDeps, items);
+    (dependencies, items);
 
   | _ =>
     /* not a component: treat make as a normal function */
