@@ -53,8 +53,8 @@ let extractFreeTypeVars = deps =>
 let filterFreeTypeVars = (freeTypeVars, deps) =>
   List.filter(
     fun
-    | FreeTypeVariable(_s, id) =>
-      !List.exists(((_s2, id2)) => id == id2, freeTypeVars)
+    | FreeTypeVariable(s, _id) =>
+      !List.exists(((s2, _id2)) => s == s2, freeTypeVars)
     | _ => true,
     deps,
   );

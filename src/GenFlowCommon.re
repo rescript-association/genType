@@ -70,7 +70,7 @@ let rec subTypeVars = (~f, typ) =>
     | None => typ
     | Some(typ') => typ'
     }
-  | Ident(s, [_, ..._]) => typ
+  | Ident(_, [_, ..._]) => typ
   | ObjectType(fields) =>
     ObjectType(
       fields
