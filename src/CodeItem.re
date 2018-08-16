@@ -178,8 +178,7 @@ module TypeVars = {
   };
 
   let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
-  let toTyp = freeTypeVars =>
-    List.map(name => Ident(name, []), freeTypeVars);
+  let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 };
 
 let createFunctionType = (generics, argConvertableTypes, resultType) =>
@@ -224,7 +223,12 @@ let codeItemsFromConstructorDeclaration =
   let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
   let (freeTypeVars, remainingDeps) =
     Dependencies.extractFreeTypeVars(dependencies);
+
+  /* let types = convertableTypes |> List.map(snd);
+  let typeVars =
+    types |> freeTypeVarsOfList |> StringSet.elements |> TypeVars.toTyp; */
   let typeVars = TypeVars.toTyp(freeTypeVars);
+
   let retType = Ident(variantTypeName, typeVars);
   let constructorTyp =
     createFunctionType(typeVars, convertableTypes, retType);
@@ -245,8 +249,9 @@ let codeItemsFromConstructorDeclaration =
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (typ, params) =>
   switch (typ) {
-  | Optional(_) => typ
-  | Ident(_) => typ
+  | Optional(_)
+  | Ident(_)
+  | TypeVar(_)
   | ObjectType(_) => typ
   | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
   };

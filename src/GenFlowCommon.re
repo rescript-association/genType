@@ -3,6 +3,7 @@
  */
 
 module StringMap = Map.Make(String);
+module StringSet = Set.Make(String);
 module ModuleNameMap = Map.Make(ModuleName);
 
 type language =
@@ -32,6 +33,7 @@ type typ =
   | Optional(typ)
   /* List of typ is the type arguments applied */
   | Ident(string, list(typ))
+  | TypeVar(string)
   | ObjectType(fields)
   /* List of typ is the type parameters abstracted. Not the arguments
    * applied. */
@@ -65,12 +67,12 @@ let any = Ident("any", []);
 let rec subTypeVars = (~f, typ) =>
   switch (typ) {
   | Optional(typ) => Optional(typ |> subTypeVars(~f))
-  | Ident(s, []) =>
+  | TypeVar(s) =>
     switch (f(s)) {
     | None => typ
     | Some(typ') => typ'
     }
-  | Ident(_, [_, ..._]) => typ
+  | Ident(_) => typ
   | ObjectType(fields) =>
     ObjectType(
       fields
@@ -85,3 +87,24 @@ let rec subTypeVars = (~f, typ) =>
       t |> subTypeVars(~f),
     )
   };
+
+let rec freeTypeVars = typ: StringSet.t =>
+  switch (typ) {
+  | Optional(typ) => typ |> freeTypeVars
+  | TypeVar(s) => s |> StringSet.singleton
+  | Ident(_) => StringSet.empty
+  | ObjectType(fields) =>
+    fields
+    |> List.fold_left(
+         (s, (_, _, t)) => StringSet.union(s, t |> freeTypeVars),
+         StringSet.empty,
+       )
+  | Arrow(typs1, typs2, t) =>
+    (typs1 |> freeTypeVarsOfList)
+    +++ (typs2 |> freeTypeVarsOfList)
+    +++ (t |> freeTypeVars)
+  }
+and freeTypeVarsOfList = typs =>
+  typs
+  |> List.fold_left((s, t) => s +++ (t |> freeTypeVars), StringSet.empty)
+and (+++) = StringSet.union;

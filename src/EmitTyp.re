@@ -7,6 +7,7 @@ let genericsString = genericStrings =>
 let rec renderString = (~language, ~exact, typ) =>
   switch (typ) {
   | Optional(typ) => "?" ++ (typ |> renderString(~language, ~exact))
+  | TypeVar(s) => s
   | Ident(identPath, typeArguments) =>
     identPath
     ++ genericsString(
@@ -118,10 +119,7 @@ let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
     ++ name
     ++ genericsString(List.map(typToString(~language), typeParams))
     ++ " =\n  | "
-    ++ String.concat(
-         "\n  | ",
-         List.map(typToString(~language), leafTypes),
-       )
+    ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
     ++ ";"
   | Untyped => ""
   };

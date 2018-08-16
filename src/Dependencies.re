@@ -330,13 +330,13 @@ and typeExprToConversion_ =
       GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, type_expr.id);
     {
       dependencies: [FreeTypeVariable(typeName)],
-      convertableType: (Identity, Ident(typeName, [])),
+      convertableType: (Identity, TypeVar(typeName)),
     };
   | Tvar(Some(s)) =>
     let typeName = s;
     {
       dependencies: [FreeTypeVariable(typeName)],
-      convertableType: (Identity, Ident(s, [])),
+      convertableType: (Identity, TypeVar(s)),
     };
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
   | Tconstr(Path.Pident({name: "bool", _}), [], _) => {
