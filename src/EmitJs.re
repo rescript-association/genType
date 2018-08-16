@@ -2,7 +2,7 @@ open GenFlowCommon;
 
 type env = {
   requires: ModuleNameMap.t(ImportPath.t),
-  typeMap: StringMap.t(typ),
+  exportTypeMap: StringMap.t(typ),
   externalReactClass: list(CodeItem.externalReactClass),
 };
 
@@ -258,23 +258,27 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     };
   };
 
-  let updateTypeMap = (env, codeItem) => {
-    let addType = (name, typ) => {
+  let updateExportTypeMap = (env, codeItem) => {
+    let addExportType = (exportType: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
-          "Add Type: %s = %s\n",
-          name,
-          typ |> EmitTyp.typToString(~language),
+          "Export Type: %s = %s\n",
+          exportType.typeName,
+          exportType.typ |> EmitTyp.typToString(~language),
         );
       };
-      {...env, typeMap: env.typeMap |> StringMap.add(name, typ)};
+      {
+        ...env,
+        exportTypeMap:
+          env.exportTypeMap
+          |> StringMap.add(exportType.typeName, exportType.typ),
+      };
     };
     switch (codeItem) {
-    | CodeItem.ValueBinding({id, typ}) => addType(id |> Ident.name, typ)
-    | ComponentBinding({componentType}) =>
-      addType("component", componentType)
+    | CodeItem.ExportType(exportType) => exportType |> addExportType
+    | ValueBinding(_)
+    | ComponentBinding(_)
     | ImportType(_)
-    | ExportType(_)
     | ExportVariantType(_)
     | ConstructorBinding(_)
     | ExternalReactClass(_) => env
@@ -283,11 +287,13 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
 
   let initialEnv = {
     requires: ModuleNameMap.empty,
-    typeMap: StringMap.empty,
+    exportTypeMap: StringMap.empty,
     externalReactClass: [],
   };
-  let envWithTypeMaps = List.fold_left(updateTypeMap, initialEnv, codeItems);
-  let finalEnv = List.fold_left(emitCodeItem, envWithTypeMaps, codeItems);
+  let envWithExportTypeMap =
+    List.fold_left(updateExportTypeMap, initialEnv, codeItems);
+  let finalEnv =
+    List.fold_left(emitCodeItem, envWithExportTypeMap, codeItems);
 
   if (finalEnv.externalReactClass != []) {
     EmitTyp.requireReact(~language) |> require;
