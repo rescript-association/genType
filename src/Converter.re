@@ -2,7 +2,6 @@ open GenFlowCommon;
 
 type t =
   | Identity
-  | OptionalArgument(t)
   | Option(t)
   | Fn((list(groupedArgConverter), t))
 and groupedArgConverter =
@@ -12,7 +11,6 @@ and groupedArgConverter =
 let rec toString = converter =>
   switch (converter) {
   | Identity => "id"
-  | OptionalArgument(c) => "optionalArgument(" ++ toString(c) ++ ")"
   | Option(c) => "option(" ++ toString(c) ++ ")"
   | Fn((groupedArgConverters, c)) =>
     let labelToString = label =>
@@ -79,8 +77,6 @@ and typToGroupedArgConverter = typ =>
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
   | Identity => value
-
-  | OptionalArgument(c) => apply(~converter=c, ~toJS, value)
 
   | Option(c) =>
     let optionToNullable = x => x;
