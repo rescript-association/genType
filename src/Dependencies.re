@@ -159,6 +159,35 @@ let rec removeOption = (label, typeExpr: Types.type_expr) =>
   | _ => None
   };
 
+let rec typToConverter = typ =>
+  switch (typ) {
+  | TypeVar(_) => Identity
+  | Ident(_, _) => Identity
+  | Optional(t) => Option(t |> typToConverter)
+  | ObjectType(_) => Identity
+  | Arrow(_generics, args, resultType) =>
+    let argConverters = args |> List.map(typToGroupedArgConverter);
+    let retConverter = resultType |> typToConverter;
+    if (retConverter == Identity
+        && argConverters
+        |> List.for_all(converter =>
+             converter == ArgConverter(Nolabel, Identity)
+           )) {
+      Identity;
+    } else {
+      Fn((argConverters, retConverter));
+    };
+  }
+and typToGroupedArgConverter = typ =>
+  switch (typ) {
+  | ObjectType(fields) =>
+    GroupConverter(
+      fields
+      |> List.map(((s, _optionalness, t)) => (s, t |> typToConverter)),
+    )
+  | _ => ArgConverter(Nolabel, typ |> typToConverter)
+  };
+
 let rec extract_fun_ =
         (
           ~language,
@@ -418,6 +447,12 @@ and typeExprsToConversion_ =
     (~language, ~typeVarsGen, typeExprs): list(conversionPlan) =>
   typeExprs |> List.map(typeExprToConversion_(~language, ~typeVarsGen));
 
+let addConversionFromTyp = conversionPlan => {
+  let (_, typ) = conversionPlan.convertableType;
+  let conversion = typ |> typToConverter;
+  {...conversionPlan, convertableType: (conversion, typ)};
+};
+
 let typeExprToConversion =
     (~language, ~noFunctionReturnDependencies=?, typeExpr) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
@@ -427,7 +462,8 @@ let typeExprToConversion =
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies?,
-       );
+       )
+    |> addConversionFromTyp;
   if (Debug.dependencies) {
     conversionPlan.dependencies
     |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString));
@@ -437,7 +473,9 @@ let typeExprToConversion =
 let typeExprsToConversion = (~language, typeExprs) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
   let conversionPlans =
-    typeExprs |> typeExprsToConversion_(~language, ~typeVarsGen);
+    typeExprs
+    |> typeExprsToConversion_(~language, ~typeVarsGen)
+    |> List.map(addConversionFromTyp);
   if (Debug.dependencies) {
     conversionPlans
     |> List.iter(conversionPlan =>
