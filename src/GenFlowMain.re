@@ -110,8 +110,8 @@ let cmtToCodeItems =
     let typedItems = structure.Typedtree.str_items;
     let translationUnit =
       typedItems
-      |> List.map(nextTypedItem =>
-           nextTypedItem
+      |> List.map(typedItem =>
+           typedItem
            |> translateTypedItem(
                 ~language=config.language,
                 ~propsTypeGen,
