@@ -74,7 +74,7 @@ let combineTranslations = (translations: list(translation)): translation =>
     }
   );
 
-let importTypeGetName = importType =>
+let getImportTypeName = importType =>
   switch (importType) {
   | ImportComment(s) => s
   | ImportAsFrom(s, _, _) => s
@@ -82,7 +82,7 @@ let importTypeGetName = importType =>
 
 let toString = (~language, codeItem) =>
   switch (codeItem) {
-  | ImportType(importType) => "ImportType " ++ importTypeGetName(importType)
+  | ImportType(importType) => "ImportType " ++ getImportTypeName(importType)
   | ExternalReactClass(externalReactClass) =>
     "ExternalReactClass " ++ externalReactClass.componentName
   | ValueBinding({moduleName, id, typ, converter}) =>
@@ -493,7 +493,7 @@ let typePathToImport =
   };
 
 let importTypeCompare = (i1, i2) =>
-  compare(i1 |> importTypeGetName, i2 |> importTypeGetName);
+  compare(i1 |> getImportTypeName, i2 |> getImportTypeName);
 
 let translateDependencies =
     (~config, ~outputFileRelative, ~resolver, dependencies): list(t) => {
