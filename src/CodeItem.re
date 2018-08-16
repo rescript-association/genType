@@ -197,7 +197,7 @@ let codeItemsFromConstructorDeclaration =
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
   let typsWithDependencies =
-    Dependencies.typeExprsToConversion(~language, constructorArgs);
+    Dependencies.translateTypeExprs(~language, constructorArgs);
   let argTypes =
     typsWithDependencies |> List.map(({Dependencies.typ, _}) => typ);
   let dependencies =
@@ -241,7 +241,7 @@ let translateId = (~language, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, typ} =
-    typeExpr |> Dependencies.typeExprToConversion(~language);
+    typeExpr |> Dependencies.translateTypeExpr(~language);
   let converter = typ |> Dependencies.typToConverter;
   let typeVars = typ |> TypeVars.free;
   let typ = abstractTheTypeParameters(typ, typeVars);
@@ -277,7 +277,7 @@ let translateMake =
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, typ} =
     typeExpr
-    |> Dependencies.typeExprToConversion(
+    |> Dependencies.translateTypeExpr(
          ~language,
          /* Only get the dependencies for the prop types.
             The return type is a ReasonReact component. */
@@ -377,7 +377,7 @@ let translateValueDescription =
   let importPath = path |> ImportPath.fromStringUnsafe;
   let typsWithDependencies =
     valueDescription.val_desc.ctyp_type
-    |> Dependencies.typeExprToConversion(~language);
+    |> Dependencies.translateTypeExpr(~language);
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typsWithDependencies.typ, genFlowKind) {
   | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => {
@@ -450,7 +450,7 @@ let translateTypeDecl =
         };
       let {Dependencies.dependencies, typ} =
         coreType.Typedtree.ctyp_type
-        |> Dependencies.typeExprToConversion(~language);
+        |> Dependencies.translateTypeExpr(~language);
       let codeItems = [
         codeItemForExportType(~opaque, freeTypeVarNames, ~typeName, typ),
       ];

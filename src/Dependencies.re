@@ -188,7 +188,7 @@ and typToGroupedArgConverter = typ =>
   | _ => ArgConverter(Nolabel, typ |> typToConverter)
   };
 
-let rec extract_fun_ =
+let rec extract_fun =
         (
           ~language,
           ~typeVarsGen,
@@ -199,7 +199,7 @@ let rec extract_fun_ =
         ) =>
   switch (typeExpr.desc) {
   | Tlink(t) =>
-    extract_fun_(
+    extract_fun(
       ~language,
       ~typeVarsGen,
       ~noFunctionReturnDependencies,
@@ -207,27 +207,27 @@ let rec extract_fun_ =
       revArgs,
       t,
     )
-  | Tarrow("", t1, t2, _) =>
+  | Tarrow("", typExpr1, typExpr2, _) =>
     let {dependencies, typ} =
-      t1 |> typeExprToConversion_(~language, ~typeVarsGen);
+      typExpr1 |> translateTypeExpr_(~language, ~typeVarsGen);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-    extract_fun_(
+    extract_fun(
       ~language,
       ~typeVarsGen,
       ~noFunctionReturnDependencies,
       nextRevDeps,
       [(Nolabel, typ), ...revArgs],
-      t2,
+      typExpr2,
     );
-  | Tarrow(lbl, t1, t2, _) =>
-    switch (removeOption(lbl, t1)) {
+  | Tarrow(lbl, typExpr1, typExpr2, _) =>
+    switch (removeOption(lbl, typExpr1)) {
     | None =>
       /* TODO: Convert name to object, convert null to optional. */
       let {dependencies, typ: typ1} =
-        t1 |> typeExprToConversion_(~language, ~typeVarsGen);
+        typExpr1 |> translateTypeExpr_(~language, ~typeVarsGen);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      t2
-      |> extract_fun_(
+      typExpr2
+      |> extract_fun(
            ~language,
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
@@ -236,21 +236,21 @@ let rec extract_fun_ =
          );
     | Some((lbl, t1)) =>
       let {dependencies, typ: typ1} =
-        t1 |> typeExprToConversion_(~language, ~typeVarsGen);
+        t1 |> translateTypeExpr_(~language, ~typeVarsGen);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       /* TODO: Convert name to object, convert null to optional. */
-      extract_fun_(
+      extract_fun(
         ~language,
         ~typeVarsGen,
         ~noFunctionReturnDependencies,
         nextRevDeps,
         [(OptLabel(lbl), typ1), ...revArgs],
-        t2,
+        typExpr2,
       );
     }
   | _ =>
     let {dependencies, typ: retType} =
-      typeExpr |> typeExprToConversion_(~language, ~typeVarsGen);
+      typeExpr |> translateTypeExpr_(~language, ~typeVarsGen);
     let allDeps =
       List.rev_append(
         revArgDeps,
@@ -276,7 +276,7 @@ let rec extract_fun_ =
  * TODO: Handle the case where the function in Reason accepts a single unit
  * arg, which should NOT be converted.
  */
-and typeExprToConversion_ =
+and translateTypeExpr_ =
     (
       ~language,
       ~typeVarsGen,
@@ -323,7 +323,7 @@ and typeExprToConversion_ =
     )
   | Tconstr(Path.Pident({name: "array", _}), [param], _) =>
     let {dependencies: paramDeps, typ: itemType} =
-      param |> typeExprToConversion_(~language, ~typeVarsGen);
+      param |> translateTypeExpr_(~language, ~typeVarsGen);
     {dependencies: paramDeps, typ: Ident("$ReadOnlyArray", [itemType])};
   | Tconstr(
       Pdot(Path.Pident({Ident.name: "FB", _}), "option", _),
@@ -332,11 +332,11 @@ and typeExprToConversion_ =
     )
   | Tconstr(Path.Pident({name: "option", _}), [param], _) =>
     let {dependencies: paramDeps, typ} =
-      param |> typeExprToConversion_(~language, ~typeVarsGen);
+      param |> translateTypeExpr_(~language, ~typeVarsGen);
     {dependencies: paramDeps, typ: Optional(typ)};
   | Tarrow(_) =>
     typeExpr
-    |> extract_fun_(
+    |> extract_fun(
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
@@ -345,7 +345,7 @@ and typeExprToConversion_ =
        )
   | Tlink(t) =>
     t
-    |> typeExprToConversion_(
+    |> translateTypeExpr_(
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
@@ -366,7 +366,7 @@ and typeExprToConversion_ =
    */
   | Tconstr(path, typeParams, _) =>
     let typsWithDependencies =
-      typeParams |> typeExprsToConversion_(~language, ~typeVarsGen);
+      typeParams |> translateTypeExprs_(~language, ~typeVarsGen);
     let typeArgs = typsWithDependencies |> List.map(({typ, _}) => typ);
     let typeParamDeps =
       typsWithDependencies
@@ -378,16 +378,16 @@ and typeExprToConversion_ =
     };
   | _ => {dependencies: [], typ: any}
   }
-and typeExprsToConversion_ =
+and translateTypeExprs_ =
     (~language, ~typeVarsGen, typeExprs): list(typWithDependencies) =>
-  typeExprs |> List.map(typeExprToConversion_(~language, ~typeVarsGen));
+  typeExprs |> List.map(translateTypeExpr_(~language, ~typeVarsGen));
 
-let typeExprToConversion =
+let translateTypeExpr =
     (~language, ~noFunctionReturnDependencies=?, typeExpr) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
   let typsWithDependencies =
     typeExpr
-    |> typeExprToConversion_(
+    |> translateTypeExpr_(
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies?,
@@ -399,10 +399,10 @@ let typeExprToConversion =
   };
   typsWithDependencies;
 };
-let typeExprsToConversion = (~language, typeExprs) => {
+let translateTypeExprs = (~language, typeExprs) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
   let typsWithDependencies =
-    typeExprs |> typeExprsToConversion_(~language, ~typeVarsGen);
+    typeExprs |> translateTypeExprs_(~language, ~typeVarsGen);
 
   if (Debug.dependencies) {
     typsWithDependencies
