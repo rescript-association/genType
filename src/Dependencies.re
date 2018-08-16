@@ -228,18 +228,6 @@ let rec extract_fun =
 
     {dependencies: allDeps, typ: functionType};
   }
-/**
- * Convertes Types.type_expr to:
- *
- *   (list(dependency), option(expressionConverter), renderedType)).
- *
- * - `list(dependency)`: The Reason types types used in the type structure.  It
- * must be ensured that these are then imported.
- * - `option(expressionConverter)`: Any converter that is required for this type.
- * - `renderedType` the flow type (just a string prepresentation)
- * TODO: Handle the case where the function in Reason accepts a single unit
- * arg, which should NOT be converted.
- */
 and translateTypeExpr_ =
     (
       ~typeVarsGen,
