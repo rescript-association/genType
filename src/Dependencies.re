@@ -273,18 +273,19 @@ and translateTypeExpr_ =
       _,
     )
   | Tconstr(Path.Pident({name: "array", _}), [param], _) =>
-    let {dependencies: paramDeps, typ: itemType} =
-      param |> translateTypeExpr_(~typeVarsGen);
-    {dependencies: paramDeps, typ: Ident("$ReadOnlyArray", [itemType])};
+    let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
+    {
+      ...paramTranslation,
+      typ: Ident("$ReadOnlyArray", [paramTranslation.typ]),
+    };
   | Tconstr(
       Pdot(Path.Pident({Ident.name: "FB", _}), "option", _),
       [param],
       _,
     )
   | Tconstr(Path.Pident({name: "option", _}), [param], _) =>
-    let {dependencies: paramDeps, typ} =
-      param |> translateTypeExpr_(~typeVarsGen);
-    {dependencies: paramDeps, typ: Optional(typ)};
+    let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
+    {...paramTranslation, typ: Optional(paramTranslation.typ)};
   | Tarrow(_) =>
     typeExpr
     |> extract_fun(~typeVarsGen, ~noFunctionReturnDependencies, [], [])
@@ -305,11 +306,10 @@ and translateTypeExpr_ =
    * built-in JS type defs are brought in from the right location.
    */
   | Tconstr(path, typeParams, _) =>
-    let typsWithDependencies =
-      typeParams |> translateTypeExprs_(~typeVarsGen);
-    let typeArgs = typsWithDependencies |> List.map(({typ, _}) => typ);
+    let paramsTranslation = typeParams |> translateTypeExprs_(~typeVarsGen);
+    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
     let typeParamDeps =
-      typsWithDependencies
+      paramsTranslation
       |> List.map(({dependencies, _}) => dependencies)
       |> List.concat;
     {
@@ -323,26 +323,26 @@ and translateTypeExprs_ = (~typeVarsGen, typeExprs): list(translation) =>
 
 let translateTypeExpr = (~noFunctionReturnDependencies=?, typeExpr) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
-  let typsWithDependencies =
+  let translation =
     typeExpr
     |> translateTypeExpr_(~typeVarsGen, ~noFunctionReturnDependencies?);
 
   if (Debug.dependencies) {
-    typsWithDependencies.dependencies
+    translation.dependencies
     |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString));
   };
-  typsWithDependencies;
+  translation;
 };
 let translateTypeExprs = typeExprs => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
-  let typsWithDependencies = typeExprs |> translateTypeExprs_(~typeVarsGen);
+  let translations = typeExprs |> translateTypeExprs_(~typeVarsGen);
 
   if (Debug.dependencies) {
-    typsWithDependencies
-    |> List.iter(typsWithDependencies =>
-         typsWithDependencies.dependencies
+    translations
+    |> List.iter(translation =>
+         translation.dependencies
          |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString))
        );
   };
-  typsWithDependencies;
+  translations;
 };

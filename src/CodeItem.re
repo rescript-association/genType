@@ -149,11 +149,10 @@ let translateConstructorDeclaration =
     (variantTypeName, constructorDeclaration, ~recordGen) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
-  let typsWithDependencies = Dependencies.translateTypeExprs(constructorArgs);
-  let argTypes =
-    typsWithDependencies |> List.map(({Dependencies.typ, _}) => typ);
+  let argsTranslation = Dependencies.translateTypeExprs(constructorArgs);
+  let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
   let dependencies =
-    typsWithDependencies
+    argsTranslation
     |> List.map(({Dependencies.dependencies, _}) => dependencies)
     |> List.concat;
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
@@ -192,13 +191,12 @@ let abstractTheTypeParameters = (typ, params) =>
 let translateId = (~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
-  let {Dependencies.dependencies, typ} =
-    typeExpr |> Dependencies.translateTypeExpr;
-  let converter = typ |> Converter.typToConverter;
-  let typeVars = typ |> TypeVars.free;
-  let typ = abstractTheTypeParameters(typ, typeVars);
+  let typeExprTranslation = typeExpr |> Dependencies.translateTypeExpr;
+  let converter = typeExprTranslation.typ |> Converter.typToConverter;
+  let typeVars = typeExprTranslation.typ |> TypeVars.free;
+  let typ = abstractTheTypeParameters(typeExprTranslation.typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
-  {dependencies, codeItems};
+  {dependencies: typeExprTranslation.dependencies, codeItems};
 };
 
 /*
@@ -227,21 +225,21 @@ let translateMake =
     (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
-  let {Dependencies.dependencies, typ} =
+  let typeExprTranslation =
     typeExpr
     |> Dependencies.translateTypeExpr(
          /* Only get the dependencies for the prop types.
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
-  let converter = typ |> Converter.typToConverter;
+  let converter = typeExprTranslation.typ |> Converter.typToConverter;
 
-  let freeTypeVarsSet = typ |> TypeVars.free_;
+  let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
 
   /* Replace type variables in props/children with any. */
   let (typeVars, typ) = (
     [],
-    typ
+    typeExprTranslation.typ
     |> TypeVars.substitute(~f=s =>
          if (freeTypeVarsSet |> StringSet.mem(s)) {
            Some(any);
@@ -292,7 +290,7 @@ let translateMake =
         converter,
       }),
     ];
-    {dependencies, codeItems};
+    {dependencies: typeExprTranslation.dependencies, codeItems};
 
   | _ =>
     /* not a component: treat make as a normal function */
@@ -326,10 +324,10 @@ let translateValueDescription =
     | [] => ""
     };
   let importPath = path |> ImportPath.fromStringUnsafe;
-  let typsWithDependencies =
+  let typeExprTranslation =
     valueDescription.val_desc.ctyp_type |> Dependencies.translateTypeExpr;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
-  switch (typsWithDependencies.typ, genFlowKind) {
+  switch (typeExprTranslation.typ, genFlowKind) {
   | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => {
       dependencies: [],
       codeItems: [ExternalReactClass({componentName, importPath})],
@@ -392,12 +390,17 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
           false
         | _ => true
         };
-      let {Dependencies.dependencies, typ} =
+      let typeExprTranslation =
         coreType.Typedtree.ctyp_type |> Dependencies.translateTypeExpr;
       let codeItems = [
-        translateExportType(~opaque, freeTypeVarNames, ~typeName, typ),
+        translateExportType(
+          ~opaque,
+          freeTypeVarNames,
+          ~typeName,
+          typeExprTranslation.typ,
+        ),
       ];
-      {dependencies, codeItems};
+      {dependencies: typeExprTranslation.dependencies, codeItems};
     };
   | (astTypeParams, Type_variant(constructorDeclarations), GenFlow)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
