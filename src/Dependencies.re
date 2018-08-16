@@ -2,8 +2,7 @@ open GenFlowCommon;
 
 type t =
   /* Import a type that we expect to also be genFlow'd. */
-  | TypeAtPath(Path.t)
-  | FreeTypeVariable(string);
+  | TypeAtPath(Path.t);
 
 type conversionPlan = {
   dependencies: list(t),
@@ -21,13 +20,6 @@ let rec typePathToName = typePath =>
 let toString = dep =>
   switch (dep) {
   | TypeAtPath(path) => "TypeAtPath(" ++ typePathToName(path) ++ ")"
-  | FreeTypeVariable(s) => "FreeTypeVariable(" ++ s ++ ")"
-  };
-
-let hasTypeVar = dep =>
-  switch (dep) {
-  | FreeTypeVariable(_) => true
-  | TypeAtPath(_) => false
   };
 
 /*
@@ -310,13 +302,12 @@ and typeExprToConversion_ =
     let typeName =
       GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, type_expr.id);
     {
-      dependencies: [FreeTypeVariable(typeName)],
+      dependencies: [],
       convertableType: (Identity, TypeVar(typeName)),
     };
   | Tvar(Some(s)) =>
-    let typeName = s;
     {
-      dependencies: [FreeTypeVariable(typeName)],
+      dependencies: [],
       convertableType: (Identity, TypeVar(s)),
     };
   | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)

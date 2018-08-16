@@ -538,10 +538,6 @@ let fromDependencies =
     switch (dependency) {
     | Dependencies.TypeAtPath(p) =>
       typePathToImport(~config, ~outputFileRelative, ~resolver, p)
-    | FreeTypeVariable(s) =>
-      ImportComment("// Warning polymorphic type unhandled:" ++ s)
-    /* TODO: Currently unused. Would be useful for injecting dependencies
-     * on runtime converters that end up being used. */
     };
   dependencies
   |> List.map(dependencyToImportType)
