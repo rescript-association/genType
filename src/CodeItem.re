@@ -23,7 +23,7 @@ type componentBinding = {
   moduleName: ModuleName.t,
   propsTypeName: string,
   componentType: typ,
-  converter: Convert.converter,
+  converter: Converter.converter,
 };
 
 type externalReactClass = {
@@ -35,7 +35,7 @@ type valueBinding = {
   moduleName: ModuleName.t,
   id: Ident.t,
   typ,
-  converter: Convert.converter,
+  converter: Converter.converter,
 };
 
 type t =
@@ -99,7 +99,7 @@ let toString = (~language, codeItem) =>
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
     ++ " converter:"
-    ++ Convert.converterToString(converter)
+    ++ Converter.converterToString(converter)
   | ConstructorBinding(_, _, _, variantName, _) =>
     "ConstructorBinding " ++ variantName
   | ComponentBinding(componentBinding) =>
@@ -168,7 +168,7 @@ let codeItemsFromConstructorDeclaration =
 
   let retType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
   let functionArgs =
-    argTypes |> List.map(typ => (typ |> Convert.typToConverter, typ));
+    argTypes |> List.map(typ => (typ |> Converter.typToConverter, typ));
   let constructorTyp = createFunctionType(typeVars, functionArgs, retType);
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
@@ -199,7 +199,7 @@ let translateId = (~moduleName, ~valueBinding, id): translation => {
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, typ} =
     typeExpr |> Dependencies.translateTypeExpr;
-  let converter = typ |> Convert.typToConverter;
+  let converter = typ |> Converter.typToConverter;
   let typeVars = typ |> TypeVars.free;
   let typ = abstractTheTypeParameters(typ, typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
@@ -239,7 +239,7 @@ let translateMake =
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
-  let converter = typ |> Convert.typToConverter;
+  let converter = typ |> Converter.typToConverter;
 
   let freeTypeVarsSet = typ |> TypeVars.free_;
 

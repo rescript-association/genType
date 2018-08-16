@@ -111,7 +111,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         ModuleName.toString(moduleNameBs)
         ++ "."
         ++ Ident.name(id)
-        |> Convert.toJS(~converter)
+        |> Converter.toJS(~converter)
       )
       ++ ";"
       |> export;
@@ -137,9 +137,9 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         let args =
           argTypes
           |> List.mapi((i, typ) => {
-               let converter = typ |> Convert.typToConverter;
+               let converter = typ |> Converter.typToConverter;
                let arg = Emit.argi(i + 1);
-               let v = arg |> Convert.toReason(~converter);
+               let v = arg |> Converter.toReason(~converter);
                (arg, v);
              });
         let mkReturn = s => "return " ++ s;
@@ -195,17 +195,17 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
               propConverters
               |> List.map(((s, argConverter)) =>
                    jsPropsDot(s)
-                   |> Convert.apply(~converter=argConverter, ~toJS=true)
+                   |> Converter.apply(~converter=argConverter, ~toJS=true)
                  )
             )
             @ [
               jsPropsDot("children")
-              |> Convert.apply(~converter=childrenConverter, ~toJS=true),
+              |> Converter.apply(~converter=childrenConverter, ~toJS=true),
             ]
 
           | [ArgConverter(_, childrenConverter), ..._] => [
               jsPropsDot("children")
-              |> Convert.apply(~converter=childrenConverter, ~toJS=true),
+              |> Converter.apply(~converter=childrenConverter, ~toJS=true),
             ]
 
           | _ => [jsPropsDot("children")]
