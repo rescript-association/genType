@@ -193,11 +193,10 @@ let variantLeafTypeName = (typeName, leafName) =>
  * TODO: Make the types namespaced by nested Flow module.
  */
 let codeItemsFromConstructorDeclaration =
-    (~language, variantTypeName, constructorDeclaration, ~recordGen) => {
+    (variantTypeName, constructorDeclaration, ~recordGen) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
-  let typsWithDependencies =
-    Dependencies.translateTypeExprs(~language, constructorArgs);
+  let typsWithDependencies = Dependencies.translateTypeExprs(constructorArgs);
   let argTypes =
     typsWithDependencies |> List.map(({Dependencies.typ, _}) => typ);
   let dependencies =
@@ -237,11 +236,11 @@ let abstractTheTypeParameters = (typ, params) =>
   | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
   };
 
-let translateId = (~language, ~moduleName, ~valueBinding, id): translation => {
+let translateId = (~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
   let {Dependencies.dependencies, typ} =
-    typeExpr |> Dependencies.translateTypeExpr(~language);
+    typeExpr |> Dependencies.translateTypeExpr;
   let converter = typ |> Dependencies.typToConverter;
   let typeVars = typ |> TypeVars.free;
   let typ = abstractTheTypeParameters(typ, typeVars);
@@ -278,7 +277,6 @@ let translateMake =
   let {Dependencies.dependencies, typ} =
     typeExpr
     |> Dependencies.translateTypeExpr(
-         ~language,
          /* Only get the dependencies for the prop types.
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
@@ -345,7 +343,7 @@ let translateMake =
 
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> translateId(~language, ~moduleName, ~valueBinding)
+    id |> translateId(~moduleName, ~valueBinding)
   };
 };
 
@@ -356,7 +354,7 @@ let translateValueBinding =
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~valueBinding)
   | (Tpat_var(id, _), GenFlow) =>
-    id |> translateId(~language, ~moduleName, ~valueBinding)
+    id |> translateId(~moduleName, ~valueBinding)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -366,7 +364,7 @@ let translateValueBinding =
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
 let translateValueDescription =
-    (~language, valueDescription: Typedtree.value_description): translation => {
+    (valueDescription: Typedtree.value_description): translation => {
   let componentName =
     valueDescription.val_id |> Ident.name |> String.capitalize;
   let path =
@@ -376,8 +374,7 @@ let translateValueDescription =
     };
   let importPath = path |> ImportPath.fromStringUnsafe;
   let typsWithDependencies =
-    valueDescription.val_desc.ctyp_type
-    |> Dependencies.translateTypeExpr(~language);
+    valueDescription.val_desc.ctyp_type |> Dependencies.translateTypeExpr;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typsWithDependencies.typ, genFlowKind) {
   | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => {
@@ -394,8 +391,7 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let translateTypeDecl =
-    (~language, dec: Typedtree.type_declaration): translation =>
+let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
@@ -449,8 +445,7 @@ let translateTypeDecl =
         | _ => true
         };
       let {Dependencies.dependencies, typ} =
-        coreType.Typedtree.ctyp_type
-        |> Dependencies.translateTypeExpr(~language);
+        coreType.Typedtree.ctyp_type |> Dependencies.translateTypeExpr;
       let codeItems = [
         codeItemForExportType(~opaque, freeTypeVarNames, ~typeName, typ),
       ];
@@ -464,7 +459,6 @@ let translateTypeDecl =
       List.map(
         constructorDeclaration =>
           codeItemsFromConstructorDeclaration(
-            ~language,
             variantTypeName,
             constructorDeclaration,
             ~recordGen,

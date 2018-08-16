@@ -64,7 +64,7 @@ let translateTypedItem =
   switch (typedItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(CodeItem.translateTypeDecl(~language))
+    |> List.map(CodeItem.translateTypeDecl)
     |> CodeItem.combineTranslations
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
@@ -80,7 +80,7 @@ let translateTypedItem =
 
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
-    valueDescription |> CodeItem.translateValueDescription(~language)
+    valueDescription |> CodeItem.translateValueDescription
 
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   /* TODO: Support mapping of variant type definitions. */
