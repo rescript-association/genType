@@ -45,13 +45,4 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-type converter =
-  | Identity
-  | OptionalArgument(converter)
-  | Option(converter)
-  | Fn((list(groupedArgConverter), converter))
-and groupedArgConverter =
-  | ArgConverter(label, converter)
-  | GroupConverter(list((string, converter)));
-
 let any = Ident("any", []);

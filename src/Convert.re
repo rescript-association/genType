@@ -1,5 +1,56 @@
 open GenFlowCommon;
 
+type converter =
+  | Identity
+  | OptionalArgument(converter)
+  | Option(converter)
+  | Fn((list(groupedArgConverter), converter))
+and groupedArgConverter =
+  | ArgConverter(label, converter)
+  | GroupConverter(list((string, converter)));
+
+let rec converterToString = converter =>
+  switch (converter) {
+  | Identity => "id"
+  | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
+  | Option(c) => "option(" ++ converterToString(c) ++ ")"
+  | Fn((groupedArgConverters, c)) =>
+    let labelToString = label =>
+      switch (label) {
+      | Nolabel => "_"
+      | Label(_) => "~l"
+      | OptLabel(l) => "~?" ++ l
+      };
+    "fn("
+    ++ (
+      groupedArgConverters
+      |> List.map(groupedArgConverter =>
+           switch (groupedArgConverter) {
+           | ArgConverter(label, conv) =>
+             "("
+             ++ labelToString(label)
+             ++ ":"
+             ++ converterToString(conv)
+             ++ ")"
+           | GroupConverter(groupConverters) =>
+             "{|"
+             ++ (
+               groupConverters
+               |> List.map(((s, argConverter)) =>
+                    s ++ ":" ++ converterToString(argConverter)
+                  )
+               |> String.concat(", ")
+             )
+             ++ "|}"
+           }
+         )
+      |> String.concat(", ")
+    )
+    ++ " -> "
+    ++ converterToString(c)
+    ++ ")";
+  };
+
 let rec typToConverter = typ =>
   switch (typ) {
   | TypeVar(_) => Identity

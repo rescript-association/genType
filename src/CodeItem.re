@@ -23,7 +23,7 @@ type componentBinding = {
   moduleName: ModuleName.t,
   propsTypeName: string,
   componentType: typ,
-  converter,
+  converter: Convert.converter,
 };
 
 type externalReactClass = {
@@ -35,7 +35,7 @@ type valueBinding = {
   moduleName: ModuleName.t,
   id: Ident.t,
   typ,
-  converter,
+  converter: Convert.converter,
 };
 
 type t =
@@ -79,48 +79,6 @@ let combineTranslations = (translations: list(translation)): translation =>
     }
   );
 
-let rec converterToString = converter =>
-  switch (converter) {
-  | Identity => "id"
-  | OptionalArgument(c) => "optionalArgument(" ++ converterToString(c) ++ ")"
-  | Option(c) => "option(" ++ converterToString(c) ++ ")"
-  | Fn((groupedArgConverters, c)) =>
-    let labelToString = label =>
-      switch (label) {
-      | Nolabel => "_"
-      | Label(_) => "~l"
-      | OptLabel(l) => "~?" ++ l
-      };
-    "fn("
-    ++ (
-      groupedArgConverters
-      |> List.map(groupedArgConverter =>
-           switch (groupedArgConverter) {
-           | ArgConverter(label, conv) =>
-             "("
-             ++ labelToString(label)
-             ++ ":"
-             ++ converterToString(conv)
-             ++ ")"
-           | GroupConverter(groupConverters) =>
-             "{|"
-             ++ (
-               groupConverters
-               |> List.map(((s, argConverter)) =>
-                    s ++ ":" ++ converterToString(argConverter)
-                  )
-               |> String.concat(", ")
-             )
-             ++ "|}"
-           }
-         )
-      |> String.concat(", ")
-    )
-    ++ " -> "
-    ++ converterToString(c)
-    ++ ")";
-  };
-
 let importTypeGetName = importType =>
   switch (importType) {
   | ImportComment(s) => s
@@ -141,7 +99,7 @@ let toString = (~language, codeItem) =>
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
     ++ " converter:"
-    ++ converterToString(converter)
+    ++ Convert.converterToString(converter)
   | ConstructorBinding(_, _, _, variantName, _) =>
     "ConstructorBinding " ++ variantName
   | ComponentBinding(componentBinding) =>
