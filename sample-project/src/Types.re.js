@@ -13,6 +13,6 @@ export type typeWithVars<x,y,z> =
   | TypeWithVarsA<x,y>
   | TypeWithVarsB<z>;
 export opaque type coord = any; /* Record type not supported */
-export opaque type optionInt = ?number;
+export type optionInt = ?number;
 export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 === null ? undefined : Arg1)); return result };
 export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 === null ? undefined : Arg1)); return result };

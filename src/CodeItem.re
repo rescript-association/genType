@@ -372,18 +372,15 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
         ],
       }
     | Some(coreType) =>
-      let opaque =
-        switch (coreType.ctyp_desc) {
-        | Ttyp_constr(
-            Path.Pident({name: "int" | "bool" | "string" | "unit", _}),
-            _,
-            [],
-          ) =>
-          false
-        | _ => true
-        };
       let typeExprTranslation =
         coreType.Typedtree.ctyp_type |> Dependencies.translateTypeExpr;
+      let rec isOpaque = typ =>
+        switch (typ) {
+        | Ident("boolean" | "number" | "string", []) => false
+        | Optional(t) => t |> isOpaque
+        | _ => true
+        };
+      let opaque = typeExprTranslation.typ |> isOpaque;
       let codeItems = [
         translateExportType(
           ~opaque,
