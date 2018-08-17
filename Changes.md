@@ -1,6 +1,7 @@
 # Master
 
 Support for polymorphic props (https://github.com/cristianoc/genFlow/issues/15).
+Support conversion for user-defined types (https://github.com/cristianoc/genFlow/issues/16).
 
 # 0.2.0
 
