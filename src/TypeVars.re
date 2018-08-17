@@ -39,36 +39,40 @@ let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
 let rec substitute = (~f, typ) =>
   switch (typ) {
-  | Optional(typ) => Optional(typ |> substitute(~f))
+  | Option(typ) => Option(typ |> substitute(~f))
   | TypeVar(s) =>
     switch (f(s)) {
     | None => typ
     | Some(typ') => typ'
     }
   | Ident(_) => typ
-  | ObjectType(fields) =>
-    ObjectType(
+  | Object(fields) =>
+    Object(
       fields
       |> List.map(((s, optionalness, t)) =>
            (s, optionalness, t |> substitute(~f))
          ),
     )
-  | Arrow(generics, args, t) =>
-    Arrow(generics, args |> List.map(substitute(~f)), t |> substitute(~f))
+  | Function(generics, args, t) =>
+    Function(
+      generics,
+      args |> List.map(substitute(~f)),
+      t |> substitute(~f),
+    )
   };
 
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
-  | Optional(typ) => typ |> free_
+  | Option(typ) => typ |> free_
   | TypeVar(s) => s |> StringSet.singleton
   | Ident(_) => StringSet.empty
-  | ObjectType(fields) =>
+  | Object(fields) =>
     fields
     |> List.fold_left(
          (s, (_, _, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
-  | Arrow(generics, args, t) =>
+  | Function(generics, args, t) =>
     StringSet.diff(
       (args |> freeOfList_) +++ (t |> free_),
       generics |> StringSet.of_list,

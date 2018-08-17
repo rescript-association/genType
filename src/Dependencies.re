@@ -224,7 +224,7 @@ let rec extract_fun =
     let labeledConvertableTypes = revArgs |> List.rev;
     let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
 
-    let functionType = Arrow([], groupedArgs, retType);
+    let functionType = Function([], groupedArgs, retType);
 
     {dependencies: allDeps, typ: functionType};
   }
@@ -285,7 +285,7 @@ and translateTypeExpr_ =
     )
   | Tconstr(Path.Pident({name: "option", _}), [param], _) =>
     let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
-    {...paramTranslation, typ: Optional(paramTranslation.typ)};
+    {...paramTranslation, typ: Option(paramTranslation.typ)};
   | Tarrow(_) =>
     typeExpr
     |> extract_fun(~typeVarsGen, ~noFunctionReturnDependencies, [], [])

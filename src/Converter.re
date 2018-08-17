@@ -1,18 +1,18 @@
 open GenFlowCommon;
 
 type t =
-  | Identity
-  | Option(t)
-  | Fn((list(groupedArgConverter), t))
+  | IdentC
+  | OptionC(t)
+  | FunctionC((list(groupedArgConverter), t))
 and groupedArgConverter =
   | ArgConverter(label, t)
   | GroupConverter(list((string, t)));
 
 let rec toString = converter =>
   switch (converter) {
-  | Identity => "id"
-  | Option(c) => "option(" ++ toString(c) ++ ")"
-  | Fn((groupedArgConverters, c)) =>
+  | IdentC => "id"
+  | OptionC(c) => "option(" ++ toString(c) ++ ")"
+  | FunctionC((groupedArgConverters, c)) =>
     let labelToString = label =>
       switch (label) {
       | Nolabel => "_"
@@ -47,7 +47,7 @@ let rec toString = converter =>
 
 let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
   switch (typ) {
-  | TypeVar(_) => Identity
+  | TypeVar(_) => IdentC
   | Ident(s, []) =>
     try (
       {
@@ -55,28 +55,28 @@ let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
         t |> typToConverter_(~exportTypeMap);
       }
     ) {
-    | Not_found => Identity
+    | Not_found => IdentC
     }
-  | Ident(_, _) => Identity
-  | Optional(t) => Option(t |> typToConverter_(~exportTypeMap))
-  | ObjectType(_) => Identity
-  | Arrow(_generics, argTypes, resultType) =>
+  | Ident(_, _) => IdentC
+  | Option(t) => OptionC(t |> typToConverter_(~exportTypeMap))
+  | Object(_) => IdentC
+  | Function(_generics, argTypes, resultType) =>
     let argConverters =
       argTypes |> List.map(typToGroupedArgConverter_(~exportTypeMap));
     let retConverter = resultType |> typToConverter_(~exportTypeMap);
-    if (retConverter == Identity
+    if (retConverter == IdentC
         && argConverters
         |> List.for_all(converter =>
-             converter == ArgConverter(Nolabel, Identity)
+             converter == ArgConverter(Nolabel, IdentC)
            )) {
-      Identity;
+      IdentC;
     } else {
-      Fn((argConverters, retConverter));
+      FunctionC((argConverters, retConverter));
     };
   }
 and typToGroupedArgConverter_ = (~exportTypeMap, typ) =>
   switch (typ) {
-  | ObjectType(fields) =>
+  | Object(fields) =>
     GroupConverter(
       fields
       |> List.map(((s, _optionalness, t)) =>
@@ -100,9 +100,9 @@ let typToConverter = (~language, ~exportTypeMap, typ) => {
 
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
-  | Identity => value
+  | IdentC => value
 
-  | Option(c) =>
+  | OptionC(c) =>
     let optionToNullable = x => x;
     let nullableToOption = x =>
       EmitText.parens([x ++ " === null ? undefined : " ++ x]);
@@ -110,19 +110,19 @@ let rec apply = (~converter, ~toJS, value) =>
     |> apply(~converter=c, ~toJS)
     |> (toJS ? optionToNullable : nullableToOption);
 
-  | Fn((groupedArgConverters, resultConverter))
+  | FunctionC((groupedArgConverters, resultConverter))
       when
         groupedArgConverters
         |> List.for_all(groupedArgConverter =>
              switch (groupedArgConverter) {
              | ArgConverter(label, argConverter) =>
-               label == Nolabel && argConverter == Identity
+               label == Nolabel && argConverter == IdentC
              | GroupConverter(_) => false
              }
            ) =>
     value |> apply(~converter=resultConverter, ~toJS)
 
-  | Fn((groupedArgConverters, resultConverter)) =>
+  | FunctionC((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";
     let mkReturn = x =>
       "const "

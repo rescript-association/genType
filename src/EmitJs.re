@@ -190,7 +190,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       let jsPropsDot = s => jsProps ++ "." ++ s;
       let args =
         switch (converter) {
-        | Fn((groupedArgConverters, _retConverter)) =>
+        | FunctionC((groupedArgConverters, _retConverter)) =>
           switch (groupedArgConverters) {
           | [
               GroupConverter(propConverters),

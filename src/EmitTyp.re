@@ -5,7 +5,7 @@ let genericsString = (~typeVars) =>
 
 let rec renderString = (~language, ~exact, typ) =>
   switch (typ) {
-  | Optional(typ) => "?" ++ (typ |> renderString(~language, ~exact))
+  | Option(typ) => "?" ++ (typ |> renderString(~language, ~exact))
   | TypeVar(s) => s
   | Ident(identPath, typeArguments) =>
     identPath
@@ -13,8 +13,8 @@ let rec renderString = (~language, ~exact, typ) =>
          ~typeVars=
            typeArguments |> List.map(renderString(~language, ~exact)),
        )
-  | ObjectType(fields) => fields |> renderObjType(~language, ~exact)
-  | Arrow(typeVars, argTypes, retType) =>
+  | Object(fields) => fields |> renderObjType(~language, ~exact)
+  | Function(typeVars, argTypes, retType) =>
     renderFunType(~language, ~exact, ~typeVars, argTypes, retType)
   }
 and renderField = (~language, ~exact, (lbl, optness, typ)) => {

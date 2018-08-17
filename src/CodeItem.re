@@ -121,7 +121,7 @@ let createFunctionType = (typeVars, argTypes, resultType) =>
   if (argTypes === []) {
     resultType;
   } else {
-    Arrow(typeVars, argTypes, resultType);
+    Function(typeVars, argTypes, resultType);
   };
 
 let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
@@ -175,11 +175,11 @@ let translateConstructorDeclaration =
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, typ) =>
   switch (typ) {
-  | Optional(_)
+  | Option(_)
   | Ident(_)
   | TypeVar(_)
-  | ObjectType(_) => typ
-  | Arrow(_, argTypes, retType) => Arrow(typeVars, argTypes, retType)
+  | Object(_) => typ
+  | Function(_, argTypes, retType) => Function(typeVars, argTypes, retType)
   };
 
 let translateId = (~moduleName, ~valueBinding, id): translation => {
@@ -241,7 +241,7 @@ let translateMake =
        ),
   );
   switch (typ) {
-  | Arrow(
+  | Function(
       _typeVars,
       [propOrChildren, ...childrenOrNil],
       Ident(
@@ -255,12 +255,12 @@ let translateMake =
     let propsTypeArguments =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
-      | [] => ObjectType([("children", NonMandatory, any)])
+      | [] => Object([("children", NonMandatory, any)])
       /* Then we had both props and children. */
       | [children, ..._] =>
         switch (propOrChildren) {
-        | ObjectType(fields) =>
-          ObjectType(fields @ [("children", NonMandatory, children)])
+        | Object(fields) =>
+          Object(fields @ [("children", NonMandatory, children)])
         | _ => propOrChildren
         }
       };
@@ -377,7 +377,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       let rec isOpaque = typ =>
         switch (typ) {
         | Ident("boolean" | "number" | "string", []) => false
-        | Optional(t) => t |> isOpaque
+        | Option(t) => t |> isOpaque
         | _ => true
         };
       let opaque = typeExprTranslation.typ |> isOpaque;

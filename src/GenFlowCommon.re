@@ -30,14 +30,14 @@ type optionalness =
   | Mandatory;
 
 type typ =
-  | Optional(typ)
-  /* List of typ is the type arguments applied */
   | Ident(string, list(typ))
   | TypeVar(string)
-  | ObjectType(fields)
+  | Option(typ)
+  /* List of typ is the type arguments applied */
+  | Object(fields)
   /* List of typ is the type parameters abstracted. Not the arguments
    * applied. */
-  | Arrow(list(string), list(typ), typ)
+  | Function(list(string), list(typ), typ)
 and fields = list((string, optionalness, typ));
 
 type label =
