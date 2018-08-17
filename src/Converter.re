@@ -45,15 +45,25 @@ let rec toString = converter =>
     ++ ")";
   };
 
-let rec typToConverter_ = typ =>
+let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
   switch (typ) {
   | TypeVar(_) => Identity
+  | Ident(s, []) =>
+    try (
+      {
+        let t = exportTypeMap |> StringMap.find(s);
+        t |> typToConverter_(~exportTypeMap);
+      }
+    ) {
+    | Not_found => Identity
+    }
   | Ident(_, _) => Identity
-  | Optional(t) => Option(t |> typToConverter_)
+  | Optional(t) => Option(t |> typToConverter_(~exportTypeMap))
   | ObjectType(_) => Identity
   | Arrow(_generics, argTypes, resultType) =>
-    let argConverters = argTypes |> List.map(typToGroupedArgConverter_);
-    let retConverter = resultType |> typToConverter_;
+    let argConverters =
+      argTypes |> List.map(typToGroupedArgConverter_(~exportTypeMap));
+    let retConverter = resultType |> typToConverter_(~exportTypeMap);
     if (retConverter == Identity
         && argConverters
         |> List.for_all(converter =>
@@ -64,18 +74,20 @@ let rec typToConverter_ = typ =>
       Fn((argConverters, retConverter));
     };
   }
-and typToGroupedArgConverter_ = typ =>
+and typToGroupedArgConverter_ = (~exportTypeMap, typ) =>
   switch (typ) {
   | ObjectType(fields) =>
     GroupConverter(
       fields
-      |> List.map(((s, _optionalness, t)) => (s, t |> typToConverter_)),
+      |> List.map(((s, _optionalness, t)) =>
+           (s, t |> typToConverter_(~exportTypeMap))
+         ),
     )
-  | _ => ArgConverter(Nolabel, typ |> typToConverter_)
+  | _ => ArgConverter(Nolabel, typ |> typToConverter_(~exportTypeMap))
   };
 
-let typToConverter = (~language, typ) => {
-  let converter = typ |> typToConverter_;
+let typToConverter = (~language, ~exportTypeMap, typ) => {
+  let converter = typ |> typToConverter_(~exportTypeMap);
   if (Debug.converter) {
     logItem(
       "Converter typ:%s converter:%s\n",
