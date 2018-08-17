@@ -42,13 +42,13 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     |> line__(importTypeBuffer);
 
   let emitExportType =
-      (~language, {CodeItem.opaque, typeParams, typeName, comment, typ}) =>
+      (~language, {CodeItem.opaque, typeVars, typeName, comment, typ}) =>
     typ
     |> EmitTyp.emitExportType(
          ~language,
          ~opaque,
          ~typeName,
-         ~typeParams,
+         ~typeVars,
          ~comment,
        )
     |> export;

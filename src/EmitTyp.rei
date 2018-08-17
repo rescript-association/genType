@@ -21,7 +21,7 @@ let emitExportType:
     ~language: language,
     ~opaque: bool,
     ~typeName: string,
-    ~typeParams: list(string),
+    ~typeVars: list(string),
     ~comment: option(string),
     typ
   ) =>
@@ -31,7 +31,7 @@ let fileHeader: (~language: language) => string;
 
 let generatedModuleExtension: (~language: language) => string;
 
-let genericsString: list(string) => string;
+let genericsString: (~typeVars:list(string)) => string;
 
 let requireReact: (~language: language) => string;
 

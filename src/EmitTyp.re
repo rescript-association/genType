@@ -1,7 +1,7 @@
 open GenFlowCommon;
 
-let genericsString = typeParams =>
-  typeParams === [] ? "" : "<" ++ String.concat(",", typeParams) ++ ">";
+let genericsString = (~typeVars) =>
+  typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
 let rec renderString = (~language, ~exact, typ) =>
   switch (typ) {
@@ -10,11 +10,12 @@ let rec renderString = (~language, ~exact, typ) =>
   | Ident(identPath, typeArguments) =>
     identPath
     ++ genericsString(
-         List.map(renderString(~language, ~exact), typeArguments),
+         ~typeVars=
+           typeArguments |> List.map(renderString(~language, ~exact)),
        )
   | ObjectType(fields) => fields |> renderObjType(~language, ~exact)
-  | Arrow(typeParams, valParams, retType) =>
-    renderFunType(~language, ~exact, typeParams, valParams, retType)
+  | Arrow(typeVars, argTypes, retType) =>
+    renderFunType(~language, ~exact, ~typeVars, argTypes, retType)
   }
 and renderField = (~language, ~exact, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
@@ -28,8 +29,8 @@ and renderObjType = (~language, ~exact, fields) =>
      )
   ++ (exact ? "|}" : "}")
 /* TODO: Always drop the final unit argument. */
-and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
-  genericsString(typeParams)
+and renderFunType = (~language, ~exact, ~typeVars, argTypes, retType) =>
+  genericsString(~typeVars)
   ++ "("
   ++ String.concat(
        ", ",
@@ -39,7 +40,7 @@ and renderFunType = (~language, ~exact, typeParams, valParams, retType) =>
              language == Flow ? "" : "_" ++ string_of_int(i + 1) ++ ":";
            parameterName ++ (t |> renderString(~language, ~exact));
          },
-         valParams,
+         argTypes,
        ),
      )
   ++ ") => "
@@ -55,9 +56,8 @@ let commentBeforeRequire = (~language) =>
   language == Typescript ?
     "// tslint:disable-next-line:no-var-requires\n" : "";
 
-let emitExportType =
-    (~language, ~opaque, ~typeName, ~typeParams, ~comment, typ) => {
-  let typeParamsString = genericsString(typeParams);
+let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
+  let typeParamsString = genericsString(~typeVars);
   let commentString =
     switch (comment) {
     | None => ""
@@ -82,7 +82,7 @@ let emitExportType =
          Any type parameters must occur in the type of opaque, so that different
          instantiations are considered different types. */
       let typeOfOpaqueField =
-        typeParams == [] ? "any" : typeParams |> String.concat(" | ");
+        typeVars == [] ? "any" : typeVars |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ "export abstract class "
       ++ typeName
@@ -111,7 +111,9 @@ let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
   | Typescript =>
     "export type "
     ++ name
-    ++ genericsString(List.map(typToString(~language), typeParams))
+    ++ genericsString(
+         ~typeVars=typeParams |> List.map(typToString(~language)),
+       )
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
     ++ ";"

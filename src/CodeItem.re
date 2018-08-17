@@ -6,7 +6,7 @@ type importType =
 
 type exportType = {
   opaque: bool,
-  typeParams: list(string),
+  typeVars: list(string),
   typeName: string,
   comment: option(string),
   typ,
@@ -120,24 +120,23 @@ let getGenFlowKind = attrs =>
     NoGenFlow;
   };
 
-let createFunctionType = (generics, argConvertableTypes, resultType) =>
-  if (argConvertableTypes === []) {
+let createFunctionType = (typeVars, argTypes, resultType) =>
+  if (argTypes === []) {
     resultType;
   } else {
-    let args = List.map(((_, flowTyp)) => flowTyp, argConvertableTypes);
-    Arrow(generics, args, resultType);
+    Arrow(typeVars, argTypes, resultType);
   };
 
-let exportType = (~opaque, typeParams, ~typeName, ~comment=?, typ) => {
+let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
   opaque,
-  typeParams,
+  typeVars,
   typeName,
   comment,
   typ,
 };
 
-let translateExportType = (~opaque, typeParams, ~typeName, ~comment=?, typ) =>
-  ExportType({opaque, typeParams, typeName, comment, typ});
+let translateExportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) =>
+  ExportType({opaque, typeVars, typeName, comment, typ});
 
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
@@ -161,14 +160,12 @@ let translateConstructorDeclaration =
   let typeVars = argTypes |> TypeVars.freeOfList;
 
   let retType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
-  let functionArgs =
-    argTypes |> List.map(typ => (typ |> Converter.typToConverter, typ));
-  let constructorTyp = createFunctionType(typeVars, functionArgs, retType);
+  let constructorTyp = createFunctionType(typeVars, argTypes, retType);
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
     ConstructorBinding(
-      exportType(~opaque=true, typeVars, ~typeName=variantTypeName, any),
+      exportType(~opaque=true, ~typeVars, ~typeName=variantTypeName, any),
       constructorTyp,
       argTypes,
       variantName,
@@ -179,13 +176,13 @@ let translateConstructorDeclaration =
 };
 
 /* Applies type parameters to types (for all) */
-let abstractTheTypeParameters = (typ, params) =>
+let abstractTheTypeParameters = (~typeVars, typ) =>
   switch (typ) {
   | Optional(_)
   | Ident(_)
   | TypeVar(_)
   | ObjectType(_) => typ
-  | Arrow(_, valParams, retType) => Arrow(params, valParams, retType)
+  | Arrow(_, argTypes, retType) => Arrow(typeVars, argTypes, retType)
   };
 
 let translateId = (~moduleName, ~valueBinding, id): translation => {
@@ -194,7 +191,7 @@ let translateId = (~moduleName, ~valueBinding, id): translation => {
   let typeExprTranslation = typeExpr |> Dependencies.translateTypeExpr;
   let converter = typeExprTranslation.typ |> Converter.typToConverter;
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
-  let typ = abstractTheTypeParameters(typeExprTranslation.typ, typeVars);
+  let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ, converter})];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
@@ -250,7 +247,7 @@ let translateMake =
   );
   switch (typ) {
   | Arrow(
-      _,
+      _typeVars,
       [propOrChildren, ...childrenOrNil],
       Ident(
         "ReasonReactcomponentSpec" | "ReactcomponentSpec" |
@@ -280,7 +277,7 @@ let translateMake =
         exportType:
           exportType(
             ~opaque=false,
-            typeVars,
+            ~typeVars,
             ~typeName=propsTypeName,
             propsTypeArguments,
           ),
@@ -349,14 +346,14 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
     getGenFlowKind(dec.typ_attributes),
   ) {
   | (typeParams, Type_record(_, _), GenFlow | GenFlowOpaque) =>
-    let freeTypeVarNames = TypeVars.extract(typeParams);
+    let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
     {
       dependencies: [],
       codeItems: [
         translateExportType(
           ~opaque=true,
-          freeTypeVarNames,
+          ~typeVars,
           ~typeName,
           ~comment="Record type not supported",
           any,
@@ -370,13 +367,13 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
    */
   | (typeParams, Type_abstract, GenFlow | GenFlowOpaque)
   | (typeParams, Type_variant(_), GenFlowOpaque) =>
-    let freeTypeVarNames = TypeVars.extract(typeParams);
+    let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
     switch (dec.typ_manifest) {
     | None => {
         dependencies: [],
         codeItems: [
-          translateExportType(~opaque=true, freeTypeVarNames, ~typeName, any),
+          translateExportType(~opaque=true, ~typeVars, ~typeName, any),
         ],
       }
     | Some(coreType) =>
@@ -395,7 +392,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       let codeItems = [
         translateExportType(
           ~opaque,
-          freeTypeVarNames,
+          ~typeVars,
           ~typeName,
           typeExprTranslation.typ,
         ),

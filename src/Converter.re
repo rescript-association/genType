@@ -51,8 +51,8 @@ let rec typToConverter = typ =>
   | Ident(_, _) => Identity
   | Optional(t) => Option(t |> typToConverter)
   | ObjectType(_) => Identity
-  | Arrow(_generics, args, resultType) =>
-    let argConverters = args |> List.map(typToGroupedArgConverter);
+  | Arrow(_generics, argTypes, resultType) =>
+    let argConverters = argTypes |> List.map(typToGroupedArgConverter);
     let retConverter = resultType |> typToConverter;
     if (retConverter == Identity
         && argConverters
