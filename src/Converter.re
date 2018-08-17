@@ -45,15 +45,15 @@ let rec toString = converter =>
     ++ ")";
   };
 
-let rec typToConverter = typ =>
+let rec typToConverter_ = typ =>
   switch (typ) {
   | TypeVar(_) => Identity
   | Ident(_, _) => Identity
-  | Optional(t) => Option(t |> typToConverter)
+  | Optional(t) => Option(t |> typToConverter_)
   | ObjectType(_) => Identity
   | Arrow(_generics, argTypes, resultType) =>
-    let argConverters = argTypes |> List.map(typToGroupedArgConverter);
-    let retConverter = resultType |> typToConverter;
+    let argConverters = argTypes |> List.map(typToGroupedArgConverter_);
+    let retConverter = resultType |> typToConverter_;
     if (retConverter == Identity
         && argConverters
         |> List.for_all(converter =>
@@ -64,15 +64,27 @@ let rec typToConverter = typ =>
       Fn((argConverters, retConverter));
     };
   }
-and typToGroupedArgConverter = typ =>
+and typToGroupedArgConverter_ = typ =>
   switch (typ) {
   | ObjectType(fields) =>
     GroupConverter(
       fields
-      |> List.map(((s, _optionalness, t)) => (s, t |> typToConverter)),
+      |> List.map(((s, _optionalness, t)) => (s, t |> typToConverter_)),
     )
-  | _ => ArgConverter(Nolabel, typ |> typToConverter)
+  | _ => ArgConverter(Nolabel, typ |> typToConverter_)
   };
+
+let typToConverter = (~language, typ) => {
+  let converter = typ |> typToConverter_;
+  if (Debug.converter) {
+    logItem(
+      "Converter typ:%s converter:%s\n",
+      typ |> EmitTyp.typToString(~language),
+      converter |> toString,
+    );
+  };
+  converter;
+};
 
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {

@@ -103,7 +103,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
       let requires =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
-      let converter = typ |> Converter.typToConverter;
+      let converter = typ |> Converter.typToConverter(~language);
 
       "export const "
       ++ (id |> Ident.name |> EmitTyp.ofType(~language, ~typ))
@@ -138,7 +138,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         let args =
           argTypes
           |> List.mapi((i, typ) => {
-               let converter = typ |> Converter.typToConverter;
+               let converter = typ |> Converter.typToConverter(~language);
                let arg = EmitText.argi(i + 1);
                let v = arg |> Converter.toReason(~converter);
                (arg, v);
@@ -171,7 +171,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         componentType,
         typ,
       }) =>
-      let converter = typ |> Converter.typToConverter;
+      let converter = typ |> Converter.typToConverter(~language);
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,

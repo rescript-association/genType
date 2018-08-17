@@ -4,5 +4,6 @@ let all = false;
 let basic = true;
 let codeItems = false || all;
 let config = false || all;
+let converter = false || all;
 let dependencies = false || all;
 let moduleResolution = false || all;
