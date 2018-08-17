@@ -23,7 +23,7 @@ type componentBinding = {
   moduleName: ModuleName.t,
   propsTypeName: string,
   componentType: typ,
-  converter: Converter.t,
+  typ,
 };
 
 type externalReactClass = {
@@ -35,7 +35,6 @@ type valueBinding = {
   moduleName: ModuleName.t,
   id: Ident.t,
   typ,
-  converter: Converter.t,
 };
 
 type t =
@@ -85,7 +84,7 @@ let toString = (~language, codeItem) =>
   | ImportType(importType) => "ImportType " ++ getImportTypeName(importType)
   | ExternalReactClass(externalReactClass) =>
     "ExternalReactClass " ++ externalReactClass.componentName
-  | ValueBinding({moduleName, id, typ, converter}) =>
+  | ValueBinding({moduleName, id, typ}) =>
     "ValueBinding"
     ++ " moduleName:"
     ++ ModuleName.toString(moduleName)
@@ -93,8 +92,6 @@ let toString = (~language, codeItem) =>
     ++ Ident.name(id)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
-    ++ " converter:"
-    ++ Converter.toString(converter)
   | ConstructorBinding(_, _, _, variantName, _) =>
     "ConstructorBinding " ++ variantName
   | ComponentBinding(componentBinding) =>
@@ -189,10 +186,9 @@ let translateId = (~moduleName, ~valueBinding, id): translation => {
   let {Typedtree.vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
   let typeExprTranslation = typeExpr |> Dependencies.translateTypeExpr;
-  let converter = typeExprTranslation.typ |> Converter.typToConverter;
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let codeItems = [ValueBinding({moduleName, id, typ, converter})];
+  let codeItems = [ValueBinding({moduleName, id, typ})];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
 
@@ -229,7 +225,6 @@ let translateMake =
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
        );
-  let converter = typeExprTranslation.typ |> Converter.typToConverter;
 
   let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
 
@@ -284,7 +279,7 @@ let translateMake =
         moduleName,
         propsTypeName,
         componentType,
-        converter,
+        typ,
       }),
     ];
     {dependencies: typeExprTranslation.dependencies, codeItems};

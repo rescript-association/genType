@@ -92,7 +92,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       |> export;
       env;
 
-    | ValueBinding({moduleName, id, typ, converter}) =>
+    | ValueBinding({moduleName, id, typ}) =>
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,
@@ -103,6 +103,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
       let requires =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
+      let converter = typ |> Converter.typToConverter;
 
       "export const "
       ++ (id |> Ident.name |> EmitTyp.ofType(~language, ~typ))
@@ -168,8 +169,9 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         moduleName,
         propsTypeName,
         componentType,
-        converter,
+        typ,
       }) =>
+      let converter = typ |> Converter.typToConverter;
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,
