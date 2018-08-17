@@ -60,6 +60,7 @@ let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
   | Ident(_, _) => IdentC
   | Option(t) => OptionC(t |> typToConverter_(~exportTypeMap))
   | Object(_) => IdentC
+  | Record(_) => IdentC
   | Function(_generics, argTypes, resultType) =>
     let argConverters =
       argTypes |> List.map(typToGroupedArgConverter_(~exportTypeMap));

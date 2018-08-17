@@ -13,6 +13,7 @@ let rec renderString = (~language, ~exact, typ) =>
          ~typeVars=
            typeArguments |> List.map(renderString(~language, ~exact)),
        )
+  | Record(recordFields) => recordFields |> renderRecordType(~language)
   | Object(fields) => fields |> renderObjType(~language, ~exact)
   | Function(typeVars, argTypes, retType) =>
     renderFunType(~language, ~exact, ~typeVars, argTypes, retType)
@@ -28,7 +29,15 @@ and renderObjType = (~language, ~exact, fields) =>
        List.map(renderField(~language, ~exact), fields),
      )
   ++ (exact ? "|}" : "}")
-/* TODO: Always drop the final unit argument. */
+and renderRecordField = (~language, (lbl, typ)) =>
+  lbl ++ ":" ++ (typ |> renderString(~language, ~exact=false))
+and renderRecordType = (~language, recordFields) =>
+  "{|"
+  ++ String.concat(
+       ", ",
+       List.map(renderRecordField(~language), recordFields),
+     )
+  ++ "|}"
 and renderFunType = (~language, ~exact, ~typeVars, argTypes, retType) =>
   genericsString(~typeVars)
   ++ "("

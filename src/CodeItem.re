@@ -178,7 +178,8 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Option(_)
   | Ident(_)
   | TypeVar(_)
-  | Object(_) => typ
+  | Object(_)
+  | Record(_) => typ
   | Function(_, argTypes, retType) => Function(typeVars, argTypes, retType)
   };
 
@@ -340,18 +341,31 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
     dec.typ_type.type_kind,
     getGenFlowKind(dec.typ_attributes),
   ) {
-  | (typeParams, Type_record(_, _), GenFlow | GenFlowOpaque) =>
+  | (typeParams, Type_record(labelDeclarations, _), GenFlow | GenFlowOpaque) =>
+    let fieldTranslations =
+      labelDeclarations
+      |> List.map(({Types.ld_id, ld_type}) =>
+           (ld_id |> Ident.name, ld_type |> Dependencies.translateTypeExpr)
+         );
+    let dependencies =
+      fieldTranslations
+      |> List.map(((_, {Dependencies.dependencies})) => dependencies)
+      |> List.concat;
+    let recordFields =
+      fieldTranslations
+      |> List.map(((name, {Dependencies.typ})) => (name, typ));
+    let typ = Record(recordFields);
     let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
     {
-      dependencies: [],
+      dependencies,
       codeItems: [
         translateExportType(
           ~opaque=true,
           ~typeVars,
           ~typeName,
           ~comment="Record type not supported",
-          any,
+          typ,
         ),
       ],
     };
