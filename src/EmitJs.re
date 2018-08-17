@@ -138,7 +138,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
           argTypes
           |> List.mapi((i, typ) => {
                let converter = typ |> Converter.typToConverter;
-               let arg = Emit.argi(i + 1);
+               let arg = EmitText.argi(i + 1);
                let v = arg |> Converter.toReason(~converter);
                (arg, v);
              });
@@ -150,7 +150,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         "export const "
         ++ (variantName |> EmitTyp.ofType(~language, ~typ=constructorType))
         ++ " = "
-        ++ Emit.funDef(~args, ~mkBody, "")
+        ++ EmitText.funDef(~args, ~mkBody, "")
         |> export;
       };
       {
@@ -230,7 +230,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         ++ ModuleName.toString(moduleNameBs)
         ++ "."
         ++ "make"
-        ++ Emit.parens(args)
+        ++ EmitText.parens(args)
         ++ ";",
       );
       export("  }));");

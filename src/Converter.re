@@ -81,7 +81,7 @@ let rec apply = (~converter, ~toJS, value) =>
   | Option(c) =>
     let optionToNullable = x => x;
     let nullableToOption = x =>
-      Emit.parens([x ++ " === null ? undefined : " ++ x]);
+      EmitText.parens([x ++ " === null ? undefined : " ++ x]);
     value
     |> apply(~converter=c, ~toJS)
     |> (toJS ? optionToNullable : nullableToOption);
@@ -113,9 +113,9 @@ let rec apply = (~converter, ~toJS, value) =>
         | ArgConverter(lbl, argConverter) =>
           let varName =
             switch (lbl) {
-            | Nolabel => Emit.argi(i + 1)
+            | Nolabel => EmitText.argi(i + 1)
             | Label(l)
-            | OptLabel(l) => Emit.arg(l)
+            | OptLabel(l) => EmitText.arg(l)
             };
           let notToJS = !toJS;
           (
@@ -125,7 +125,7 @@ let rec apply = (~converter, ~toJS, value) =>
         | GroupConverter(groupConverters) =>
           let notToJS = !toJS;
           if (toJS) {
-            let varName = Emit.argi(i + 1);
+            let varName = EmitText.argi(i + 1);
             (
               varName,
               groupConverters
@@ -140,7 +140,7 @@ let rec apply = (~converter, ~toJS, value) =>
           } else {
             let varNames =
               groupConverters
-              |> List.map(((s, _argConverter)) => Emit.arg(s))
+              |> List.map(((s, _argConverter)) => EmitText.arg(s))
               |> String.concat(", ");
             let fieldValues =
               groupConverters
@@ -148,7 +148,7 @@ let rec apply = (~converter, ~toJS, value) =>
                    s
                    ++ ":"
                    ++ (
-                     Emit.arg(s)
+                     EmitText.arg(s)
                      |> apply(~converter=argConverter, ~toJS=notToJS)
                    )
                  )
@@ -158,8 +158,8 @@ let rec apply = (~converter, ~toJS, value) =>
         };
       groupedArgConverters |> List.mapi(convertArg);
     };
-    let mkBody = args => value |> Emit.funCall(~args) |> mkReturn;
-    Emit.funDef(~args=convertedArgs, ~mkBody, "");
+    let mkBody = args => value |> EmitText.funCall(~args) |> mkReturn;
+    EmitText.funDef(~args=convertedArgs, ~mkBody, "");
   };
 
 let toJS = (~converter, value) => value |> apply(~converter, ~toJS=true);

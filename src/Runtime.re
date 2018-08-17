@@ -12,8 +12,11 @@ let emitRecordAsInt = (~language, i) =>
 
 let emitRecordAsBlock = (~language, ~args, recordValue) =>
   createBucklescriptBlock
-  |> Emit.funCall(
-       ~args=[recordValue |> emitRecordAsInt(~language), Emit.array(args)],
+  |> EmitText.funCall(
+       ~args=[
+         recordValue |> emitRecordAsInt(~language),
+         EmitText.array(args),
+       ],
      );
 
 let recordGen = () => {unboxed: 0, boxed: 0};
