@@ -13,7 +13,9 @@ let cli = () => {
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
-    logItem("Add %s  %s\n", cmt, mlast);
+    if (Debug.basic) {
+      logItem("Add %s  %s\n", cmt, mlast);
+    };
     let config = Paths.readConfig();
     cmt |> GenFlowMain.processCmtFile(~signFile, ~config);
     exit(0);
@@ -26,7 +28,9 @@ let cli = () => {
     let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
     let config = Paths.readConfig();
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
-    logItem("Remove %s\n", cmt);
+    if (Debug.basic) {
+      logItem("Remove %s\n", cmt);
+    };
     if (Sys.file_exists(outputFile)) {
       Unix.unlink(outputFile);
     };

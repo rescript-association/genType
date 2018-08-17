@@ -7,16 +7,18 @@ type fileAction =
   | Write; /* File not present on disk. */
 
 let logFileAction = (fileAction, fileName) =>
-  logItem(
-    "%s  %s\n",
-    switch (fileAction) {
-    | NoMatch => "NoMatch"
-    | Replace => "Replace"
-    | Identical => "Identical"
-    | Write => "Write"
-    },
-    fileName,
-  );
+  if (Debug.basic) {
+    logItem(
+      "%s  %s\n",
+      switch (fileAction) {
+      | NoMatch => "NoMatch"
+      | Replace => "Replace"
+      | Identical => "Identical"
+      | Write => "Write"
+      },
+      fileName,
+    );
+  };
 
 let readLines = (file: string): list(string) => {
   let lines = ref([]);
