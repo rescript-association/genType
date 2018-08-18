@@ -29,13 +29,11 @@ and renderObjType = (~language, ~exact, fields) =>
        List.map(renderField(~language, ~exact), fields),
      )
   ++ (exact ? "|}" : "}")
-and renderRecordField = (~language, (lbl, typ)) =>
-  lbl ++ ":" ++ (typ |> renderString(~language, ~exact=false))
-and renderRecordType = (~language, recordFields) =>
+and renderRecordType = (~language, fields) =>
   "{|"
   ++ String.concat(
        ", ",
-       List.map(renderRecordField(~language), recordFields),
+       List.map(renderField(~language, ~exact=true), fields),
      )
   ++ "|}"
 and renderFunType = (~language, ~exact, ~typeVars, argTypes, retType) =>

@@ -37,10 +37,9 @@ type typ =
   | Object(fields)
   /* List of typ is the type parameters abstracted. Not the arguments
    * applied. */
-  | Record(recordFields)
+  | Record(fields)
   | Function(list(string), list(typ), typ)
-and fields = list((string, optionalness, typ))
-and recordFields = list((string, typ));
+and fields = list((string, optionalness, typ));
 
 type label =
   | Nolabel

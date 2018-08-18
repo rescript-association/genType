@@ -351,10 +351,10 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       fieldTranslations
       |> List.map(((_, {Dependencies.dependencies})) => dependencies)
       |> List.concat;
-    let recordFields =
+    let fields =
       fieldTranslations
-      |> List.map(((name, {Dependencies.typ})) => (name, typ));
-    let typ = Record(recordFields);
+      |> List.map(((name, {Dependencies.typ})) => (name, Mandatory, typ));
+    let typ = Record(fields);
     let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
     {

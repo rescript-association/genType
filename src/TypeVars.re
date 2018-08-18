@@ -53,8 +53,13 @@ let rec substitute = (~f, typ) =>
            (s, optionalness, t |> substitute(~f))
          ),
     )
-  | Record(recordFields) =>
-    Record(recordFields |> List.map(((s, t)) => (s, t |> substitute(~f))))
+  | Record(fields) =>
+    Record(
+      fields
+      |> List.map(((s, optionalness, t)) =>
+           (s, optionalness, t |> substitute(~f))
+         ),
+    )
   | Function(generics, args, t) =>
     Function(
       generics,
@@ -68,16 +73,11 @@ let rec free_ = typ: StringSet.t =>
   | Option(typ) => typ |> free_
   | TypeVar(s) => s |> StringSet.singleton
   | Ident(_) => StringSet.empty
-  | Object(fields) =>
+  | Object(fields)
+  | Record(fields) =>
     fields
     |> List.fold_left(
          (s, (_, _, t)) => StringSet.union(s, t |> free_),
-         StringSet.empty,
-       )
-  | Record(recordFields) =>
-    recordFields
-    |> List.fold_left(
-         (s, (_, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
   | Function(generics, args, t) =>
