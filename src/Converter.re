@@ -3,15 +3,25 @@ open GenFlowCommon;
 type t =
   | IdentC
   | OptionC(t)
+  | RecordC(fieldsC)
   | FunctionC((list(groupedArgConverter), t))
 and groupedArgConverter =
   | ArgConverter(label, t)
-  | GroupConverter(list((string, t)));
+  | GroupConverter(list((string, t)))
+and fieldsC = list((string, t));
 
 let rec toString = converter =>
   switch (converter) {
   | IdentC => "id"
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
+  | RecordC(fieldsC) =>
+    "{"
+    ++ (
+      fieldsC
+      |> List.map(((lbl, c)) => lbl ++ ":" ++ (c |> toString))
+      |> String.concat(", ")
+    )
+    ++ "}"
   | FunctionC((groupedArgConverters, c)) =>
     let labelToString = label =>
       switch (label) {
@@ -60,7 +70,13 @@ let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
   | Ident(_, _) => IdentC
   | Option(t) => OptionC(t |> typToConverter_(~exportTypeMap))
   | Object(_) => IdentC
-  | Record(_) => IdentC
+  | Record(fields) =>
+    RecordC(
+      fields
+      |> List.map(((lbl, _, t)) =>
+           (lbl, t |> typToConverter_(~exportTypeMap))
+         ),
+    )
   | Function(_generics, argTypes, resultType) =>
     let argConverters =
       argTypes |> List.map(typToGroupedArgConverter_(~exportTypeMap));
@@ -110,6 +126,8 @@ let rec apply = (~converter, ~toJS, value) =>
     value
     |> apply(~converter=c, ~toJS)
     |> (toJS ? optionToNullable : nullableToOption);
+
+  | RecordC(_fieldsC) => value
 
   | FunctionC((groupedArgConverters, resultConverter))
       when
