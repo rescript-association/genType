@@ -7,6 +7,7 @@ type typeWithVars('x, 'y, 'z) =
 type coord = {
   x: int,
   y: int,
+  z: option(int),
 };
 
 [@genFlow]

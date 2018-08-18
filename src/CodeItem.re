@@ -353,7 +353,14 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       |> List.concat;
     let fields =
       fieldTranslations
-      |> List.map(((name, {Dependencies.typ})) => (name, Mandatory, typ));
+      |> List.map(((name, {Dependencies.typ})) => {
+           let (optionalNess, typ') =
+             switch (typ) {
+             | Option(typ') => (NonMandatory, typ')
+             | _ => (Mandatory, typ)
+             };
+           (name, optionalNess, typ');
+         });
     let typ = Record(fields);
     let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
