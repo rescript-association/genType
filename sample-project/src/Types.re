@@ -4,13 +4,6 @@ type typeWithVars('x, 'y, 'z) =
   | B('z);
 
 [@genFlow]
-type coord = {
-  x: int,
-  y: int,
-  z: option(int),
-};
-
-[@genFlow]
 type optionInt = option(int);
 
 [@genFlow]
