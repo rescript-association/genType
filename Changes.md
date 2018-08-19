@@ -1,3 +1,7 @@
+# 0.4.0
+
+[Emit array type in a way that satisfies typescript’s linter](https://github.com/cristianoc/genFlow/commit/4e6674d35a4f85c2a98a7a8eb29367008245537c).
+
 # 0.3.0
 
 [Support for polymorphic props](https://github.com/cristianoc/genFlow/issues/15).
