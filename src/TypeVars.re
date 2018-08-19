@@ -60,12 +60,12 @@ let rec substitute = (~f, typ) =>
            (s, optionalness, t |> substitute(~f))
          ),
     )
-  | Function(generics, args, t) =>
-    Function(
-      generics,
-      args |> List.map(substitute(~f)),
-      t |> substitute(~f),
-    )
+  | Function(function_) =>
+    Function({
+      ...function_,
+      argTypes: function_.argTypes |> List.map(substitute(~f)),
+      retType: function_.retType |> substitute(~f),
+    })
   };
 
 let rec free_ = typ: StringSet.t =>
@@ -80,10 +80,10 @@ let rec free_ = typ: StringSet.t =>
          (s, (_, _, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
-  | Function(generics, args, t) =>
+  | Function({typeVars, argTypes, retType}) =>
     StringSet.diff(
-      (args |> freeOfList_) +++ (t |> free_),
-      generics |> StringSet.of_list,
+      (argTypes |> freeOfList_) +++ (retType |> free_),
+      typeVars |> StringSet.of_list,
     )
   }
 and freeOfList_ = typs =>

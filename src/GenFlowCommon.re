@@ -33,13 +33,15 @@ type typ =
   | Ident(string, list(typ))
   | TypeVar(string)
   | Option(typ)
-  /* List of typ is the type arguments applied */
   | Object(fields)
-  /* List of typ is the type parameters abstracted. Not the arguments
-   * applied. */
   | Record(fields)
-  | Function(list(string), list(typ), typ)
-and fields = list((string, optionalness, typ));
+  | Function(function_)
+and fields = list((string, optionalness, typ))
+and function_ = {
+  typeVars: list(string),
+  argTypes: list(typ),
+  retType: typ,
+};
 
 type label =
   | Nolabel

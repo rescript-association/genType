@@ -14,7 +14,7 @@ let rec renderString = (~language, typ) =>
        )
   | Record(recordFields) => recordFields |> renderRecordType(~language)
   | Object(fields) => fields |> renderObjType(~language)
-  | Function(typeVars, argTypes, retType) =>
+  | Function({typeVars, argTypes, retType}) =>
     renderFunType(~language, ~typeVars, argTypes, retType)
   }
 and renderField = (~language, (lbl, optness, typ)) => {

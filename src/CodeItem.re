@@ -117,11 +117,11 @@ let getGenFlowKind = attrs =>
     NoGenFlow;
   };
 
-let createFunctionType = (typeVars, argTypes, resultType) =>
+let createFunctionType = (typeVars, argTypes, retType) =>
   if (argTypes === []) {
-    resultType;
+    retType;
   } else {
-    Function(typeVars, argTypes, resultType);
+    Function({typeVars, argTypes, retType});
   };
 
 let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
@@ -180,7 +180,7 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | TypeVar(_)
   | Object(_)
   | Record(_) => typ
-  | Function(_, argTypes, retType) => Function(typeVars, argTypes, retType)
+  | Function({argTypes, retType}) => Function({typeVars, argTypes, retType})
   };
 
 let translateId = (~moduleName, ~valueBinding, id): translation => {
@@ -242,16 +242,16 @@ let translateMake =
        ),
   );
   switch (typ) {
-  | Function(
-      _typeVars,
-      [propOrChildren, ...childrenOrNil],
-      Ident(
-        "ReasonReactcomponentSpec" | "ReactcomponentSpec" |
-        "ReasonReactcomponent" |
-        "Reactcomponent",
-        [_state, ..._],
-      ),
-    ) =>
+  | Function({
+      argTypes: [propOrChildren, ...childrenOrNil],
+      retType:
+        Ident(
+          "ReasonReactcomponentSpec" | "ReactcomponentSpec" |
+          "ReasonReactcomponent" |
+          "Reactcomponent",
+          [_state, ..._],
+        ),
+    }) =>
     /* Add children?:any to props type */
     let propsTypeArguments =
       switch (childrenOrNil) {
@@ -367,12 +367,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
     {
       dependencies,
       codeItems: [
-        translateExportType(
-          ~opaque=false,
-          ~typeVars,
-          ~typeName,
-          typ,
-        ),
+        translateExportType(~opaque=false, ~typeVars, ~typeName, typ),
       ],
     };
   /*

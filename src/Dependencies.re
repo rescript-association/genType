@@ -222,9 +222,9 @@ let rec extract_fun =
       );
 
     let labeledConvertableTypes = revArgs |> List.rev;
-    let groupedArgs = labeledConvertableTypes |> NamedArgs.group;
+    let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
-    let functionType = Function([], groupedArgs, retType);
+    let functionType = Function({typeVars: [], argTypes, retType});
 
     {dependencies: allDeps, typ: functionType};
   }

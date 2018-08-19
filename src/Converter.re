@@ -81,10 +81,10 @@ let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
            )
          ),
     )
-  | Function(_generics, argTypes, resultType) =>
+  | Function({argTypes, retType}) =>
     let argConverters =
       argTypes |> List.map(typToGroupedArgConverter_(~exportTypeMap));
-    let retConverter = resultType |> typToConverter_(~exportTypeMap);
+    let retConverter = retType |> typToConverter_(~exportTypeMap);
     if (retConverter == IdentC
         && argConverters
         |> List.for_all(converter =>
@@ -133,7 +133,7 @@ let rec apply = (~converter, ~toJS, value) =>
         ++ value
         |> apply(~converter=c, ~toJS),
       ]);
-    };
+    }
 
   | RecordC(fieldsC) =>
     if (toJS) {
