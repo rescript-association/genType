@@ -1,4 +1,4 @@
-# Master
+# 0.3.0
 
 [Support for polymorphic props](https://github.com/cristianoc/genFlow/issues/15).
 
