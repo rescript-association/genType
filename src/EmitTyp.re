@@ -12,7 +12,19 @@ let rec renderString = (~language, typ) =>
        )
   | TypeVar(s) => s
   | Option(typ) => "?" ++ (typ |> renderString(~language))
-  | Array(typ) => "(" ++ (typ |> renderString(~language)) ++ ")" ++ "[]"
+  | Array(typ) =>
+    let typIsSimple =
+      switch (typ) {
+      | Ident(_)
+      | TypeVar(_) => true
+      | _ => false
+      };
+
+    if (language == Typescript && typIsSimple) {
+      (typ |> renderString(~language)) ++ "[]";
+    } else {
+      "Array<" ++ (typ |> renderString(~language)) ++ ">";
+    };
   | Record(recordFields) => recordFields |> renderRecordType(~language)
   | Object(fields) => fields |> renderObjType(~language)
   | Function({typeVars, argTypes, retType}) =>
