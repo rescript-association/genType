@@ -174,7 +174,7 @@ let rec apply = (~converter, ~toJS, value) =>
 
   | ArrayC(c) =>
     value
-    ++ ".map(function (x) { return "
+    ++ ".map(function _element(x) { return "
     ++ ("x" |> apply(~converter=c, ~toJS))
     ++ "})"
 

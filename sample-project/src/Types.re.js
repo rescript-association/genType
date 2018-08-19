@@ -15,4 +15,4 @@ export type typeWithVars<x,y,z> =
 export type optionInt = ?number;
 export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
 export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };
-export const testArray: ([?number]) => [?number] = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function (x) { return (x == null ? undefined : x)})); return result };
+export const testArray: ([?number]) => [?number] = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(x) { return (x == null ? undefined : x)})); return result };
