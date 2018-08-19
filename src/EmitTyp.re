@@ -3,40 +3,36 @@ open GenFlowCommon;
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
-let rec renderString = (~language, ~exact, typ) =>
+let rec renderString = (~language, typ) =>
   switch (typ) {
-  | Option(typ) => "?" ++ (typ |> renderString(~language, ~exact))
+  | Option(typ) => "?" ++ (typ |> renderString(~language))
   | TypeVar(s) => s
   | Ident(identPath, typeArguments) =>
     identPath
     ++ genericsString(
-         ~typeVars=
-           typeArguments |> List.map(renderString(~language, ~exact)),
+         ~typeVars=typeArguments |> List.map(renderString(~language)),
        )
   | Record(recordFields) => recordFields |> renderRecordType(~language)
-  | Object(fields) => fields |> renderObjType(~language, ~exact)
+  | Object(fields) => fields |> renderObjType(~language)
   | Function(typeVars, argTypes, retType) =>
-    renderFunType(~language, ~exact, ~typeVars, argTypes, retType)
+    renderFunType(~language, ~typeVars, argTypes, retType)
   }
-and renderField = (~language, ~exact, (lbl, optness, typ)) => {
+and renderField = (~language, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
-  lbl ++ optMarker ++ ":" ++ (typ |> renderString(~language, ~exact));
+  lbl ++ optMarker ++ ":" ++ (typ |> renderString(~language));
 }
-and renderObjType = (~language, ~exact, fields) =>
-  (exact ? "{|" : "{")
+and renderObjType = (~language, fields) =>
+  (language == Flow ? "{|" : "{")
   ++ String.concat(
-       exact ? ", " : "; ",
-       List.map(renderField(~language, ~exact), fields),
+       language == Flow ? ", " : "; ",
+       List.map(renderField(~language), fields),
      )
-  ++ (exact ? "|}" : "}")
+  ++ (language == Flow ? "|}" : "}")
 and renderRecordType = (~language, fields) =>
-  "{|"
-  ++ String.concat(
-       ", ",
-       List.map(renderField(~language, ~exact=true), fields),
-     )
-  ++ "|}"
-and renderFunType = (~language, ~exact, ~typeVars, argTypes, retType) =>
+  (language == Flow ? "{|" : "{")
+  ++ String.concat(", ", List.map(renderField(~language), fields))
+  ++ (language == Flow ? "|}" : "}")
+and renderFunType = (~language, ~typeVars, argTypes, retType) =>
   genericsString(~typeVars)
   ++ "("
   ++ String.concat(
@@ -45,16 +41,15 @@ and renderFunType = (~language, ~exact, ~typeVars, argTypes, retType) =>
          (i, t) => {
            let parameterName =
              language == Flow ? "" : "_" ++ string_of_int(i + 1) ++ ":";
-           parameterName ++ (t |> renderString(~language, ~exact));
+           parameterName ++ (t |> renderString(~language));
          },
          argTypes,
        ),
      )
   ++ ") => "
-  ++ (retType |> renderString(~language, ~exact));
+  ++ (retType |> renderString(~language));
 
-let typToString = (~language) =>
-  renderString(~language, ~exact=language == Flow);
+let typToString = (~language) => renderString(~language);
 
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
