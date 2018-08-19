@@ -127,11 +127,37 @@ let rec apply = (~converter, ~toJS, value) =>
     |> apply(~converter=c, ~toJS)
     |> (toJS ? optionToNullable : nullableToOption);
 
-  | RecordC(_fieldsC) => value
+  | RecordC(fieldsC) =>
+    if (toJS) {
+      let fieldValues =
+        fieldsC
+        |> List.mapi((i, (lbl, fieldConverter)) =>
+             lbl
+             ++ ":"
+             ++ (
+               value
+               ++ "["
+               ++ string_of_int(i)
+               ++ "]"
+               |> apply(~converter=fieldConverter, ~toJS)
+             )
+           )
+        |> String.concat(", ");
+      "{" ++ fieldValues ++ "}";
+    } else {
+      let fieldValues =
+        fieldsC
+        |> List.map(((lbl, fieldConverter)) =>
+             value ++ "." ++ lbl |> apply(~converter=fieldConverter, ~toJS)
+           )
+        |> String.concat(", ");
+      "[" ++ fieldValues ++ "]";
+    }
 
   | FunctionC((groupedArgConverters, resultConverter))
       when
-        groupedArgConverters
+        resultConverter == IdentC
+        && groupedArgConverters
         |> List.for_all(groupedArgConverter =>
              switch (groupedArgConverter) {
              | ArgConverter(label, argConverter) =>

@@ -86,10 +86,10 @@ let toString = (~language, codeItem) =>
     "ExternalReactClass " ++ externalReactClass.componentName
   | ValueBinding({moduleName, id, typ}) =>
     "ValueBinding"
-    ++ " moduleName:"
-    ++ ModuleName.toString(moduleName)
     ++ " id:"
     ++ Ident.name(id)
+    ++ " moduleName:"
+    ++ ModuleName.toString(moduleName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
   | ConstructorBinding(_, _, _, variantName, _) =>
@@ -368,10 +368,9 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       dependencies,
       codeItems: [
         translateExportType(
-          ~opaque=true,
+          ~opaque=false,
           ~typeVars,
           ~typeName,
-          ~comment="Record type not supported",
           typ,
         ),
       ],
