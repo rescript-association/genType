@@ -3,6 +3,7 @@ open GenFlowCommon;
 type t =
   | IdentC
   | OptionC(t)
+  | ArrayC(t)
   | RecordC(fieldsC)
   | FunctionC((list(groupedArgConverter), t))
 and groupedArgConverter =
@@ -14,6 +15,7 @@ let rec toString = converter =>
   switch (converter) {
   | IdentC => "id"
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
+  | ArrayC(c) => "array(" ++ toString(c) ++ ")"
   | RecordC(fieldsC) =>
     "{"
     ++ (
@@ -57,7 +59,6 @@ let rec toString = converter =>
 
 let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
   switch (typ) {
-  | TypeVar(_) => IdentC
   | Ident(s, []) =>
     try (
       {
@@ -68,7 +69,11 @@ let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
     | Not_found => IdentC
     }
   | Ident(_, _) => IdentC
+  | TypeVar(_) => IdentC
   | Option(t) => OptionC(t |> typToConverter_(~exportTypeMap))
+  | Array(t) =>
+    let converter = t |> typToConverter_(~exportTypeMap);
+    converter == IdentC ? IdentC : ArrayC(converter);
   | Object(_) => IdentC
   | Record(fields) =>
     RecordC(
@@ -134,6 +139,12 @@ let rec apply = (~converter, ~toJS, value) =>
         |> apply(~converter=c, ~toJS),
       ]);
     }
+
+  | ArrayC(c) =>
+    value
+    ++ ".map(function (x) { return "
+    ++ ("x" |> apply(~converter=c, ~toJS))
+    ++ "})"
 
   | RecordC(fieldsC) =>
     if (toJS) {

@@ -33,6 +33,7 @@ type typ =
   | Ident(string, list(typ))
   | TypeVar(string)
   | Option(typ)
+  | Array(typ)
   | Object(fields)
   | Record(fields)
   | Function(function_)

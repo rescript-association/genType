@@ -5,13 +5,14 @@ let genericsString = (~typeVars) =>
 
 let rec renderString = (~language, typ) =>
   switch (typ) {
-  | Option(typ) => "?" ++ (typ |> renderString(~language))
-  | TypeVar(s) => s
   | Ident(identPath, typeArguments) =>
     identPath
     ++ genericsString(
          ~typeVars=typeArguments |> List.map(renderString(~language)),
        )
+  | TypeVar(s) => s
+  | Option(typ) => "?" ++ (typ |> renderString(~language))
+  | Array(typ) => "[" ++ (typ |> renderString(~language)) ++ "]"
   | Record(recordFields) => recordFields |> renderRecordType(~language)
   | Object(fields) => fields |> renderObjType(~language)
   | Function({typeVars, argTypes, retType}) =>

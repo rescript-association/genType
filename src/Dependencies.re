@@ -274,10 +274,7 @@ and translateTypeExpr_ =
     )
   | Tconstr(Path.Pident({name: "array", _}), [param], _) =>
     let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
-    {
-      ...paramTranslation,
-      typ: Ident("$ReadOnlyArray", [paramTranslation.typ]),
-    };
+    {...paramTranslation, typ: Array(paramTranslation.typ)};
   | Tconstr(
       Pdot(Path.Pident({Ident.name: "FB", _}), "option", _),
       [param],

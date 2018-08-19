@@ -175,9 +175,10 @@ let translateConstructorDeclaration =
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, typ) =>
   switch (typ) {
-  | Option(_)
   | Ident(_)
   | TypeVar(_)
+  | Option(_)
+  | Array(_)
   | Object(_)
   | Record(_) => typ
   | Function({argTypes, retType}) => Function({typeVars, argTypes, retType})

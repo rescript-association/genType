@@ -39,13 +39,14 @@ let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
 let rec substitute = (~f, typ) =>
   switch (typ) {
-  | Option(typ) => Option(typ |> substitute(~f))
+  | Ident(_) => typ
   | TypeVar(s) =>
     switch (f(s)) {
     | None => typ
     | Some(typ') => typ'
     }
-  | Ident(_) => typ
+  | Option(typ) => Option(typ |> substitute(~f))
+  | Array(typ) => Array(typ |> substitute(~f))
   | Object(fields) =>
     Object(
       fields
@@ -70,9 +71,10 @@ let rec substitute = (~f, typ) =>
 
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
-  | Option(typ) => typ |> free_
-  | TypeVar(s) => s |> StringSet.singleton
   | Ident(_) => StringSet.empty
+  | TypeVar(s) => s |> StringSet.singleton
+  | Option(typ) => typ |> free_
+  | Array(typ) => typ |> free_
   | Object(fields)
   | Record(fields) =>
     fields

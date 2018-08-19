@@ -15,6 +15,11 @@ function consumeOption2(x) {
               }));
 }
 
+function testArray(a) {
+  return a;
+}
+
 exports.consumeOption = consumeOption;
 exports.consumeOption2 = consumeOption2;
+exports.testArray = testArray;
 /* No side effect */

@@ -13,3 +13,6 @@ let consumeOption = (x: option(int)) =>
 [@genFlow]
 let consumeOption2 = (x: optionInt) =>
   Belt.Option.(x->(mapWithDefault(0, n => n)));
+
+[@genFlow]
+let testArray = (a: array(option(int))): array(option(int)) => a;
