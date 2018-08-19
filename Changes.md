@@ -6,8 +6,9 @@
 
 [Fix converter issue with nested optionals](https://github.com/cristianoc/genFlow/commit/55e0360eaba1b22e02878ebd4dfe74e05f272601).
 
-[Add support for array types and conversions]
-(https://github.com/cristianoc/genFlow/issues/17).
+[Add support for array types and conversions](https://github.com/cristianoc/genFlow/issues/17).
+
+[Add support for record types and conversions](https://github.com/cristianoc/genFlow/issues/18).
 
 # 0.2.0
 
