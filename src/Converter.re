@@ -124,8 +124,40 @@ let typToConverter = (~language, ~exportTypeMap, typ) => {
   converter;
 };
 
+let rec converterIsIdentity = (~toJS, converter) =>
+  switch (converter) {
+  | IdentC => true
+
+  | OptionC(c) =>
+    if (toJS) {
+      c |> converterIsIdentity(~toJS);
+    } else {
+      false;
+    }
+
+  | ArrayC(c) => c |> converterIsIdentity(~toJS)
+
+  | RecordC(_) => false
+
+  | FunctionC((groupedArgConverters, resultConverter)) =>
+    resultConverter
+    |> converterIsIdentity(~toJS)
+    && groupedArgConverters
+    |> List.for_all(groupedArgConverter =>
+         switch (groupedArgConverter) {
+         | ArgConverter(label, argConverter) =>
+           label == Nolabel
+           && argConverter
+           |> converterIsIdentity(~toJS=!toJS)
+         | GroupConverter(_) => false
+         }
+       )
+  };
+
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
+  | _ when converter |> converterIsIdentity(~toJS) => value
+
   | IdentC => value
 
   | OptionC(c) =>
@@ -172,19 +204,6 @@ let rec apply = (~converter, ~toJS, value) =>
         |> String.concat(", ");
       "[" ++ fieldValues ++ "]";
     }
-
-  | FunctionC((groupedArgConverters, resultConverter))
-      when
-        resultConverter == IdentC
-        && groupedArgConverters
-        |> List.for_all(groupedArgConverter =>
-             switch (groupedArgConverter) {
-             | ArgConverter(label, argConverter) =>
-               label == Nolabel && argConverter == IdentC
-             | GroupConverter(_) => false
-             }
-           ) =>
-    value |> apply(~converter=resultConverter, ~toJS)
 
   | FunctionC((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";
