@@ -73,8 +73,12 @@ let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
   | Record(fields) =>
     RecordC(
       fields
-      |> List.map(((lbl, _, t)) =>
-           (lbl, t |> typToConverter_(~exportTypeMap))
+      |> List.map(((lbl, optionalness, t)) =>
+           (
+             lbl,
+             (optionalness == Mandatory ? t : Option(t))
+             |> typToConverter_(~exportTypeMap),
+           )
          ),
     )
   | Function(_generics, argTypes, resultType) =>
@@ -120,12 +124,16 @@ let rec apply = (~converter, ~toJS, value) =>
   | IdentC => value
 
   | OptionC(c) =>
-    let optionToNullable = x => x;
-    let nullableToOption = x =>
-      EmitText.parens([x ++ " === null ? undefined : " ++ x]);
-    value
-    |> apply(~converter=c, ~toJS)
-    |> (toJS ? optionToNullable : nullableToOption);
+    if (toJS) {
+      value |> apply(~converter=c, ~toJS);
+    } else {
+      EmitText.parens([
+        value
+        ++ " == null ? undefined : "
+        ++ value
+        |> apply(~converter=c, ~toJS),
+      ]);
+    };
 
   | RecordC(fieldsC) =>
     if (toJS) {

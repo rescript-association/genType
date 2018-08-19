@@ -14,5 +14,5 @@ export type typeWithVars<x,y,z> =
   | TypeWithVarsB<z>;
 export type coord = {|x:number, y:number, z?:number|};
 export type optionInt = ?number;
-export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 === null ? undefined : Arg1)); return result };
-export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 === null ? undefined : Arg1)); return result };
+export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
+export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };
