@@ -167,8 +167,7 @@ let rec apply = (~converter, ~toJS, value) =>
       EmitText.parens([
         value
         ++ " == null ? undefined : "
-        ++ value
-        |> apply(~converter=c, ~toJS),
+        ++ (value |> apply(~converter=c, ~toJS)),
       ]);
     }
 
