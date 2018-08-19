@@ -12,7 +12,7 @@ let rec renderString = (~language, typ) =>
        )
   | TypeVar(s) => s
   | Option(typ) => "?" ++ (typ |> renderString(~language))
-  | Array(typ) => "[" ++ (typ |> renderString(~language)) ++ "]"
+  | Array(typ) => "(" ++ (typ |> renderString(~language)) ++ ")" ++ "[]"
   | Record(recordFields) => recordFields |> renderRecordType(~language)
   | Object(fields) => fields |> renderObjType(~language)
   | Function({typeVars, argTypes, retType}) =>
