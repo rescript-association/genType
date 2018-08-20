@@ -91,11 +91,7 @@ let translateStructItem =
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
     |> List.map(
-         CodeItem.translateValueBinding(
-           ~language,
-           ~propsTypeGen,
-           ~moduleName,
-         ),
+         CodeItem.translateStructValue(~language, ~propsTypeGen, ~moduleName),
        )
     |> CodeItem.combineTranslations
 
@@ -108,7 +104,7 @@ let translateStructItem =
   };
 
 let translateSignatureItem =
-    (~language as _, ~propsTypeGen as _, ~moduleName as _, signatureItem)
+    (~language, ~propsTypeGen, ~moduleName, signatureItem)
     : CodeItem.translation =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
@@ -116,9 +112,9 @@ let translateSignatureItem =
     |> List.map(CodeItem.translateTypeDecl)
     |> CodeItem.combineTranslations
 
-  | {Typedtree.sig_desc: Tsig_value(_valueDescription), _} =>
-    /* TODO */
-    {CodeItem.dependencies: [], CodeItem.codeItems: []}
+  | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
+    valueDescription
+    |> CodeItem.translateSignatureValue(~language, ~propsTypeGen, ~moduleName)
 
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   };

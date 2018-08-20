@@ -288,7 +288,7 @@ let translateMake =
   };
 };
 
-let translateValueBinding =
+let translateStructValue =
     (~language, ~propsTypeGen, ~moduleName, valueBinding): translation => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
@@ -296,6 +296,24 @@ let translateValueBinding =
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
   | (Tpat_var(id, _), GenFlow) => id |> translateId(~moduleName, ~typeExpr)
+  | _ => {dependencies: [], codeItems: []}
+  };
+};
+
+let translateSignatureValue =
+    (
+      ~language,
+      ~propsTypeGen,
+      ~moduleName,
+      valueDescription: Typedtree.value_description,
+    )
+    : translation => {
+  let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
+  let typeExpr = val_desc.ctyp_type;
+  switch (val_id, getGenFlowKind(val_attributes)) {
+  | (id, GenFlow) when Ident.name(id) == "make" =>
+    id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
+  | (id, GenFlow) => id |> translateId(~moduleName, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
