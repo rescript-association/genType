@@ -134,9 +134,9 @@ let cmtToCodeItems =
     )
     : list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
-  switch (cmt_annots) {
-  | Implementation(structure) =>
-    let translationUnit =
+  let translationUnits =
+    switch (cmt_annots) {
+    | Implementation(structure) =>
       structure.Typedtree.str_items
       |> List.map(structItem =>
            structItem
@@ -146,19 +146,8 @@ let cmtToCodeItems =
                 ~moduleName,
               )
          )
-      |> CodeItem.combineTranslations;
-    let imports =
-      translationUnit.dependencies
-      |> CodeItem.translateDependencies(
-           ~config,
-           ~outputFileRelative,
-           ~resolver,
-         );
-    let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
-    imports @ sortedCodeItems;
 
-  | Interface(signature) =>
-    let translationUnit =
+    | Interface(signature) =>
       signature.Typedtree.sig_items
       |> List.map(signatureItem =>
            signatureItem
@@ -168,19 +157,15 @@ let cmtToCodeItems =
                 ~moduleName,
               )
          )
-      |> CodeItem.combineTranslations;
-    let imports =
-      translationUnit.dependencies
-      |> CodeItem.translateDependencies(
-           ~config,
-           ~outputFileRelative,
-           ~resolver,
-         );
-    let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
-    imports @ sortedCodeItems;
 
-  | _ => []
-  };
+    | _ => []
+    };
+  let translationUnit = translationUnits |> CodeItem.combineTranslations;
+  let imports =
+    translationUnit.dependencies
+    |> CodeItem.translateDependencies(~config, ~outputFileRelative, ~resolver);
+  let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
+  imports @ sortedCodeItems;
 };
 
 let emitCodeItems =
