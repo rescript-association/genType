@@ -46,8 +46,8 @@ let sortcodeItemsByPriority = codeItems => {
 let hasGenFlowAnnotation = attributes =>
   CodeItem.getGenFlowKind(attributes) != NoGenFlow;
 
-let typedItemHasGenFlowAnnotation = typedItem =>
-  switch (typedItem) {
+let structItemHasGenFlowAnnotation = structItem =>
+  switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenFlowAnnotation)
@@ -59,9 +59,30 @@ let typedItemHasGenFlowAnnotation = typedItem =>
   | _ => false
   };
 
-let translateTypedItem =
-    (~language, ~propsTypeGen, ~moduleName, typedItem): CodeItem.translation =>
-  switch (typedItem) {
+let signatureItemHasGenFlowAnnotation = signatureItem =>
+  switch (signatureItem) {
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
+    typeDeclarations
+    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenFlowAnnotation)
+  | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
+    valueDescription.val_attributes |> hasGenFlowAnnotation
+  | _ => false
+  };
+
+let cmtHasGenFlowAnnotations = inputCMT =>
+  switch (inputCMT.Cmt_format.cmt_annots) {
+  | Implementation(structure) =>
+    structure.Typedtree.str_items
+    |> List.exists(structItemHasGenFlowAnnotation)
+  | Interface(signature) =>
+    signature.Typedtree.sig_items
+    |> List.exists(signatureItemHasGenFlowAnnotation)
+  | _ => false
+  };
+
+let translateStructItem =
+    (~language, ~propsTypeGen, ~moduleName, structItem): CodeItem.translation =>
+  switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
     |> List.map(CodeItem.translateTypeDecl)
@@ -86,12 +107,20 @@ let translateTypedItem =
   /* TODO: Support mapping of variant type definitions. */
   };
 
-let cmtHasGenFlowAnnotations = inputCMT =>
-  switch (inputCMT.Cmt_format.cmt_annots) {
-  | Implementation(structure) =>
-    structure.Typedtree.str_items
-    |> List.exists(typedItemHasGenFlowAnnotation)
-  | _ => false
+let translateSignatureItem =
+    (~language as _, ~propsTypeGen as _, ~moduleName as _, signatureItem)
+    : CodeItem.translation =>
+  switch (signatureItem) {
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
+    typeDeclarations
+    |> List.map(CodeItem.translateTypeDecl)
+    |> CodeItem.combineTranslations
+
+  | {Typedtree.sig_desc: Tsig_value(_valueDescription), _} =>
+    /* TODO */
+    {CodeItem.dependencies: [], CodeItem.codeItems: []}
+
+  | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   };
 
 let cmtToCodeItems =
@@ -107,12 +136,11 @@ let cmtToCodeItems =
   let {Cmt_format.cmt_annots, _} = inputCMT;
   switch (cmt_annots) {
   | Implementation(structure) =>
-    let typedItems = structure.Typedtree.str_items;
     let translationUnit =
-      typedItems
-      |> List.map(typedItem =>
-           typedItem
-           |> translateTypedItem(
+      structure.Typedtree.str_items
+      |> List.map(structItem =>
+           structItem
+           |> translateStructItem(
                 ~language=config.language,
                 ~propsTypeGen,
                 ~moduleName,
@@ -128,6 +156,29 @@ let cmtToCodeItems =
          );
     let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
     imports @ sortedCodeItems;
+
+  | Interface(signature) =>
+    let translationUnit =
+      signature.Typedtree.sig_items
+      |> List.map(signatureItem =>
+           signatureItem
+           |> translateSignatureItem(
+                ~language=config.language,
+                ~propsTypeGen,
+                ~moduleName,
+              )
+         )
+      |> CodeItem.combineTranslations;
+    let imports =
+      translationUnit.dependencies
+      |> CodeItem.translateDependencies(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+         );
+    let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
+    imports @ sortedCodeItems;
+
   | _ => []
   };
 };
@@ -151,8 +202,24 @@ let emitCodeItems =
 };
 
 let processCmtFile = (~signFile, ~config, cmt) => {
-  let cmtFile = Filename.concat(Sys.getcwd(), cmt);
-  if (Sys.file_exists(cmtFile)) {
+  let cmtFile = {
+    let pathCmt = Filename.concat(Sys.getcwd(), cmt);
+    let cmtFile =
+      if (Filename.check_suffix(pathCmt, ".cmt")) {
+        let pathCmti = Filename.chop_extension(pathCmt) ++ ".cmti";
+        if (Sys.file_exists(pathCmti)) {
+          pathCmti;
+        } else if (Sys.file_exists(pathCmt)) {
+          pathCmt;
+        } else {
+          "";
+        };
+      } else {
+        "";
+      };
+    cmtFile;
+  };
+  if (cmtFile != "") {
     let propsTypeGen = GenIdent.createPropsTypeGen();
     let inputCMT = Cmt_format.read_cmt(cmtFile);
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);

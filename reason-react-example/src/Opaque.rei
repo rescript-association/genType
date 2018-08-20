@@ -1,0 +1,2 @@
+[@genFlow]
+type t;
