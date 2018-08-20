@@ -1,4 +1,4 @@
-# Reason genFlow 0.5.0
+# Reason genFlow 0.6.0
 
 `genFlow` is a tool to automatically generate typed bindings between [Reason](https://reasonml.github.io/), and either [Flow](https://flow.org/en/) or [TypeScript](https://www.typescriptlang.org/): see the companion project [genTypeScript](https://github.com/cristianoc/genTypeScript) for more info.
 
@@ -46,8 +46,6 @@ There are 3 back-ends for `genFlow`, which can be selected by specifyng `"langua
 # Limitations
 
 * **In-source**. Currently only supports bucklescript projects with in-source generation of `.bs.js` files.
-
-* **No interfaces**. Currently `genFlow` does not support `[@genFlow]` annotations in interface files (`.rei`).
 
 * **No nested modules**. Nested modules are not supported, and annotations will be ignored.
 

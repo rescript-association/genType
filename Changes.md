@@ -1,3 +1,7 @@
+# 0.6.0
+
+[Add support for interface files] (https://github.com/cristianoc/genFlow/issues/19).
+
 # 0.5.0
 
 [Fix precedence when omitting option converter](https://github.com/cristianoc/genFlow/commit/ac2ad1ba278960ef906e97642d01e0e45f980c34).
