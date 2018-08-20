@@ -101,7 +101,7 @@ let translateStructItem =
 
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
-    valueDescription |> CodeItem.translateValueDescription
+    valueDescription |> CodeItem.translatePrimitive
 
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   /* TODO: Support mapping of variant type definitions. */

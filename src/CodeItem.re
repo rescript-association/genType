@@ -304,7 +304,7 @@ let translateValueBinding =
  * [@genFlow]
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
-let translateValueDescription =
+let translatePrimitive =
     (valueDescription: Typedtree.value_description): translation => {
   let componentName =
     valueDescription.val_id |> Ident.name |> String.capitalize;
