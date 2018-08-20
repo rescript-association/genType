@@ -113,8 +113,16 @@ let translateSignatureItem =
     |> CodeItem.combineTranslations
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
-    valueDescription
-    |> CodeItem.translateSignatureValue(~language, ~propsTypeGen, ~moduleName)
+    if (valueDescription.val_prim != []) {
+      valueDescription |> CodeItem.translatePrimitive;
+    } else {
+      valueDescription
+      |> CodeItem.translateSignatureValue(
+           ~language,
+           ~propsTypeGen,
+           ~moduleName,
+         );
+    }
 
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   };

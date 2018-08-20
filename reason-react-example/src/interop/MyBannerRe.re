@@ -1,11 +1,6 @@
-/**
- *  ReactJS used by ReasonReact
- * This component wraps a ReactJS one, so that ReasonReact components can consume it
- * Typing the myBanner.js component's output as a `reactClass`.
-*/
-[@genFlow]
-[@bs.module]
-external myBanner : ReasonReact.reactClass = "./MyBanner";
+/* The @genFlow annotation is ignored if there's also a .rei file */
+[@genFlow] [@bs.module]
+external myBanner: ReasonReact.reactClass = "./MyBanner";
 
 [@bs.deriving abstract]
 type jsProps = {
@@ -13,7 +8,7 @@ type jsProps = {
   message: string,
 };
 
-/** This is like declaring a normal ReasonReact component's `make` function, except the body is a the interop hook wrapJsForReason */
+/* The @genFlow annotation is ignored if there's also a .rei file */
 [@genFlow]
 let make = (~show, ~message, children) =>
   ReasonReact.wrapJsForReason(
