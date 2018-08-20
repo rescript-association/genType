@@ -184,9 +184,7 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Function({argTypes, retType}) => Function({typeVars, argTypes, retType})
   };
 
-let translateId = (~moduleName, ~valueBinding, id): translation => {
-  let {Typedtree.vb_expr, _} = valueBinding;
-  let typeExpr = vb_expr.exp_type;
+let translateId = (~moduleName, ~typeExpr, id): translation => {
   let typeExprTranslation = typeExpr |> Dependencies.translateTypeExpr;
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
@@ -217,9 +215,7 @@ let translateId = (~moduleName, ~valueBinding, id): translation => {
  */
 
 let translateMake =
-    (~language, ~propsTypeGen, ~moduleName, ~valueBinding, id): translation => {
-  let {Typedtree.vb_expr, _} = valueBinding;
-  let typeExpr = vb_expr.exp_type;
+    (~language, ~propsTypeGen, ~moduleName, ~typeExpr, id): translation => {
   let typeExprTranslation =
     typeExpr
     |> Dependencies.translateTypeExpr(
@@ -288,18 +284,18 @@ let translateMake =
 
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> translateId(~moduleName, ~valueBinding)
+    id |> translateId(~moduleName, ~typeExpr)
   };
 };
 
 let translateValueBinding =
     (~language, ~propsTypeGen, ~moduleName, valueBinding): translation => {
-  let {Typedtree.vb_pat, vb_attributes, _} = valueBinding;
+  let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
+  let typeExpr = vb_expr.exp_type;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
   | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
-    id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~valueBinding)
-  | (Tpat_var(id, _), GenFlow) =>
-    id |> translateId(~moduleName, ~valueBinding)
+    id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
+  | (Tpat_var(id, _), GenFlow) => id |> translateId(~moduleName, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
