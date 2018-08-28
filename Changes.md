@@ -1,3 +1,6 @@
+# 0.7.0
+  Print log information to .genFlowLog in the project root insted of standard output.
+
 # 0.6.0
 
 [Add support for interface files] (https://github.com/cristianoc/genFlow/issues/19).

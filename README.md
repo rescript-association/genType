@@ -1,4 +1,4 @@
-# Reason genFlow 0.6.0
+# Reason genFlow 0.7.0
 
 `genFlow` is a tool to automatically generate typed bindings between [Reason](https://reasonml.github.io/), and either [Flow](https://flow.org/en/) or [TypeScript](https://www.typescriptlang.org/): see the companion project [genTypeScript](https://github.com/cristianoc/genTypeScript) for more info.
 
