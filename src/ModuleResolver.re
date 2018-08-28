@@ -8,7 +8,7 @@ module ModuleNameMap = Map.Make(ModuleName);
 let sourcedirsJsonToMap = (~extensions) => {
   let sourceDirs =
     ["lib", "bs", ".sourcedirs.json"]
-    |> List.fold_left(Filename.concat, Paths.projectRoot^);
+    |> List.fold_left(Filename.concat, projectRoot^);
 
   let getDirs = json => {
     let dirs = ref([]);
@@ -42,7 +42,7 @@ let sourcedirsJsonToMap = (~extensions) => {
     dirs
     |> List.iter(dir =>
          dir
-         |> Filename.concat(Paths.projectRoot^)
+         |> Filename.concat(projectRoot^)
          |> Sys.readdir
          |> Array.iter(fname =>
               if (fname |> filter) {
@@ -100,8 +100,7 @@ let resolveModule =
   let outputFileRelativeDir =
     /* e.g. src if we're generating src/File.re.js */
     dirname(outputFileRelative);
-  let outputFileAbsoluteDir =
-    concat(Paths.projectRoot^, outputFileRelativeDir);
+  let outputFileAbsoluteDir = concat(projectRoot^, outputFileRelativeDir);
   let moduleNameReFile =
     /* Check if the module is in the same directory as the file being generated.
        So if e.g. project_root/src/ModuleName.re exists. */
@@ -149,8 +148,7 @@ let resolveModule =
   };
 };
 
-let resolveSourceModule =
-    (~importPath, moduleName) => {
+let resolveSourceModule = (~importPath, moduleName) => {
   if (Debug.moduleResolution) {
     logItem("Resolve Source Module: %s\n", moduleName |> ModuleName.toString);
   };

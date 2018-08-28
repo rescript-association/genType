@@ -16,10 +16,28 @@ type config = {
   modulesMap: ModuleNameMap.t(ModuleName.t),
 };
 
-let log = Printf.printf;
+let projectRoot = ref(Sys.getcwd());
+
+let logFile = ref(None);
+
+let getLogFile = () =>
+  switch (logFile^) {
+  | None =>
+    let f =
+      open_out_gen(
+        [Open_creat, Open_text, Open_append],
+        0o640,
+        Filename.concat(projectRoot^, ".genFlowLog"),
+      );
+    logFile := Some(f);
+    f;
+  | Some(f) => f
+  };
+
 let logItem = x => {
-  log("  ");
-  log(x);
+  let outChannel = getLogFile();
+  Printf.fprintf(outChannel, "  ");
+  Printf.fprintf(outChannel, x);
 };
 
 let tagSearch = "genFlow";

@@ -1,7 +1,5 @@
 open GenFlowCommon;
 
-let projectRoot = ref(Sys.getcwd());
-
 let setProjectRoot = s =>
   projectRoot :=
     Filename.is_relative(s) ? Filename.concat(Unix.getcwd(), s) : s;
