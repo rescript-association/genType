@@ -51,8 +51,8 @@ Every genFlow powered project requires a configuration file in the root of the p
 
 - **language**
   - "typescript" : Generate `*.tsx` files with TypeScript types
-  - "flow": Generate `*.js` files with Flow types
-  - "untyped": Generate untyped `*.re.js` files. Useful if you are interested in the generated wrappers (shims), but not the types.
+  - "flow": Generate `*.re.js` files with Flow types
+  - "untyped": Generate untyped `*.re.js` files. Useful if you are interested in the generated wrappers, but not the types.
 
 - **shims**
   - `Array<string>` with following format: `"ReasonModule=JavaScriptModule"`
