@@ -1,0 +1,6 @@
+{
+  "language" : "typescript",
+    "shims": [
+    "ReasonPervasives=ReasonPervasives"
+  ]
+}
