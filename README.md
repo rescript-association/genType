@@ -85,12 +85,12 @@ The following types are currently supported (Reason -> JS Type System):
 npm install
 npm run build
 ```
-This will create the binary `lib/bs/native/genflow.native`, which is the executable, BuckleScript is supposed to use via `BS_CMT_POST_PROCESS_CMD`.
+This will create the binary `lib/bs/native/genflow.native`, which is the executable that BuckleScript is supposed to use via `BS_CMT_POST_PROCESS_CMD`.
 
 
 ## Examples
 
-We prepared some examples to give you an idea on how to integrate genFlow in your own project. Check out the README of the listed projects.
+We prepared some examples to give you an idea on how to integrate `genFlow` in your own project. Check out the README of the listed projects.
 
 **Please make sure to build genFlow before trying to build the examples.**
 
