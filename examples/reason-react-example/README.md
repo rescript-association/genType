@@ -23,7 +23,7 @@ Then open `src/index.html` to see the links to the examples (**no server needed!
 ## Build for Production
 
 ```sh
-export BS_CMT_POST_PROCESS_CMD="$PWD/../lib/bs/native/genflow.native"
+export BS_CMT_POST_PROCESS_CMD="$PWD/../../lib/bs/native/genflow.native --setProjectRoot $PWD"
 npm run build
 npm run webpack:production
 ```
