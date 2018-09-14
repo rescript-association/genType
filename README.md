@@ -1,6 +1,6 @@
 # Reason genFlow / genTypeScript 0.7.0
 
-Disclosure: This project started out as an experiment for better Flow integration, but it's actually also working with TypeScript. This tool will be renamed accordingly in the future.
+> **Disclosure:** This project started out as an experiment for better Flow integration, but it's actually also working with TypeScript. This tool will be renamed accordingly in the future.
 
 `genFlow` is a tool to automatically generate typed bindings between [Reason](https://reasonml.github.io/), and either [Flow](https://flow.org/en/) or [TypeScript](https://www.typescriptlang.org/): see the companion project [genTypeScript](https://github.com/cristianoc/genTypeScript) for more info.
 
@@ -90,55 +90,9 @@ This will create the binary `lib/bs/native/genflow.native`, which is the executa
 
 ## Examples
 
-We prepared some examples, to get a feeling on how to integrate genFlow in your own project. Check out the README of the relevant projects
+We prepared some examples to give you an idea on how to integrate genFlow in your own project. Check out the README of the listed projects.
 
 **Please make sure to build genFlow before trying to build the examples.**
 
-- [reason-react-example](examples/reason-react-example)
-- [typescript-example](examples/typescript-example)
-
-## Build sample-project
-
-```
-cd examples/sample-project
-export BS_CMT_POST_PROCESS_CMD="$PWD/../lib/bs/native/genflow.native --setProjectRoot $PWD"
-yarn install
-yarn build
-```
-
-Every time genFlow changes, clean and build again:
-
-```
-npm run clean
-npm run build
-```
-
-## Hot reloading plus genFlow in sample-project
-
-```
-# in sample-project
-export BS_CMT_POST_PROCESS_CMD="$PWD/../lib/bs/native/genflow.native --setProjectRoot $PWD"
-npm start
-npm run serve
-```
-
-## Type check with Flow in sample-project
-```
-# in sample-project
-flow
-```
-
-## Type-safe interop in reason-react-example
-
-An example of type-safe interop for ReasonReact components is [reason-react-example](examples/reason-react-example).
-
-**Note** the webpack configuration [webpack.config.js](examples/reason-react-example/webpack.config.js) is using [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) to load `Module.re.js` when `Module.re` is required.
-
-```
-cd examples/reason-react-example
-export BS_CMT_POST_PROCESS_CMD="$PWD/../lib/bs/native/genflow.native --setProjectRoot $PWD"
-npm install
-npm start
-npm run webpack
-open src/index.html
-```
+- [reason-react-example](examples/reason-react-example/README.md)
+- [typescript-example](examples/typescript-example/README.md)

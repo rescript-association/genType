@@ -1,4 +1,4 @@
-# TypeScript Example
+# typescript-example
 
 This project was created with [Create React App](https://github.com/facebookincubator/create-react-app).
 
