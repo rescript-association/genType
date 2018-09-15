@@ -201,17 +201,17 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
               propConverters
               |> List.map(((s, argConverter)) =>
                    jsPropsDot(s)
-                   |> Converter.apply(~converter=argConverter, ~toJS=true)
+                   |> Converter.apply(~converter=argConverter, ~toJS=false)
                  )
             )
             @ [
               jsPropsDot("children")
-              |> Converter.apply(~converter=childrenConverter, ~toJS=true),
+              |> Converter.apply(~converter=childrenConverter, ~toJS=false),
             ]
 
           | [ArgConverter(_, childrenConverter), ..._] => [
               jsPropsDot("children")
-              |> Converter.apply(~converter=childrenConverter, ~toJS=true),
+              |> Converter.apply(~converter=childrenConverter, ~toJS=false),
             ]
 
           | _ => [jsPropsDot("children")]

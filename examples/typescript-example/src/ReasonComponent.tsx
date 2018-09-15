@@ -7,6 +7,7 @@ const ReasonComponentBS = require("./ReasonComponent.bs");
 // tslint:disable-next-line:no-var-requires
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
+// No need to import locally visible type person. Make sure it is also marked with @genFlow
 // No need to import locally visible type t. Make sure it is also marked with @genFlow
 
 import {list} from '../src/shims/ReasonPervasives.shim';
@@ -14,11 +15,13 @@ import {list} from '../src/shims/ReasonPervasives.shim';
 import {t as Typest} from '../src/nested/Types';
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = {message?:string; intList?:list<number>; children?:any};
+export type person = {name:string, surname:string};
+// tslint:disable-next-line:interface-over-type-literal
+export type Props = {message?:string; person:person; intList?:list<number>; children?:any};
 export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
   ReasonComponentBS.component,
   (function _(jsProps: Props) {
-     return ReasonComponentBS.make(jsProps.message, jsProps.intList, jsProps.children);
+     return ReasonComponentBS.make(jsProps.message, [jsProps.person.name, jsProps.person.surname], jsProps.intList, jsProps.children);
   }));
 export default ReasonComponent;
 export const minus: (_1:{first?:number; second:number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };

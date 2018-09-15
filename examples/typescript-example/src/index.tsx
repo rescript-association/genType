@@ -44,6 +44,7 @@ ReactDOM.render(
         addresses
       }
       intList={intList}
+      person={{ name: "Name", surname: "Surname" }}
     />
   </div>,
   document.getElementById("root") as HTMLElement

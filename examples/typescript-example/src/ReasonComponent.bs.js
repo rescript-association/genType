@@ -8,7 +8,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("Component");
 
-function make($staropt$star, $staropt$star$1, _) {
+function make($staropt$star, person, $staropt$star$1, _) {
   var message = $staropt$star !== undefined ? $staropt$star : "default message";
   var intList = $staropt$star$1 !== undefined ? $staropt$star$1 : /* :: */[
       0,
@@ -27,9 +27,9 @@ function make($staropt$star, $staropt$star$1, _) {
           /* render */(function () {
               return React.createElement("div", {
                           className: "App"
-                        }, "ReasonReact " + (message + (" and intList: " + $$String.concat(",", List.map((function (i) {
-                                        return String(i);
-                                      }), intList)))));
+                        }, "ReasonReact " + (message + (" and intList: " + ($$String.concat(",", List.map((function (i) {
+                                          return String(i);
+                                        }), intList)) + (" and person name: " + person[/* name */0])))));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
