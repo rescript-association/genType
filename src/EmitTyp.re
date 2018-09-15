@@ -75,7 +75,7 @@ let emitExportDefault = (~language, name) =>
   switch (language) {
   | Flow
   | Untyped => ""
-  | Typescript => "export default " ++ name ++ ";\n"
+  | Typescript => "export default " ++ name ++ ";"
   };
 
 let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {

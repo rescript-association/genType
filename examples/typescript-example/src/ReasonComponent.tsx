@@ -21,7 +21,6 @@ export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReas
      return ReasonComponentBS.make(jsProps.message, jsProps.intList, jsProps.children);
   }));
 export default ReasonComponent;
-
 export const minus: (_1:{first?:number; second:number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };
 export const useTypeDefinedInAnotherModule: (_1:Typest) => Typest = ReasonComponentBS.useTypeDefinedInAnotherModule;
 // tslint:disable-next-line:max-classes-per-file 
