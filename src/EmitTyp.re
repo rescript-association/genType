@@ -71,6 +71,13 @@ let commentBeforeRequire = (~language) =>
   language == Typescript ?
     "// tslint:disable-next-line:no-var-requires\n" : "";
 
+let emitExportDefault = (~language, name) =>
+  switch (language) {
+  | Flow
+  | Untyped => ""
+  | Typescript => "export default " ++ name ++ ";\n"
+  };
+
 let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
   let typeParamsString = genericsString(~typeVars);
   let commentString =

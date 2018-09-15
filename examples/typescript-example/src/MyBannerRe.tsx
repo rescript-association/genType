@@ -15,6 +15,8 @@ export const MyBannerRe: React.ComponentClass<Props> = ReasonReact.wrapReasonFor
   (function _(jsProps: Props) {
      return MyBannerReBS.make(jsProps.show, jsProps.message, jsProps.children);
   }));
+export default MyBannerRe;
+
 export function checkJsWrapperType(props: Props) {
       return <MyBanner {...props}/>;
     }

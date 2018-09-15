@@ -1,3 +1,6 @@
+# master
+  Add "export default ComponentName" for TypeScript.
+
 # 0.7.0
   Print log information to .genFlowLog in the project root insted of standard output.
 

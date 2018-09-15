@@ -241,6 +241,8 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       );
       export("  }));");
 
+      EmitTyp.emitExportDefault(~language, name) |> export;
+
       emitCheckJsWrapperType(~env, ~propsTypeName);
 
       let requiresWithModule =

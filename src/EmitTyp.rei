@@ -27,11 +27,13 @@ let emitExportType:
   ) =>
   string;
 
+let emitExportDefault: (~language: language, string) => string;
+
 let fileHeader: (~language: language) => string;
 
 let generatedModuleExtension: (~language: language) => string;
 
-let genericsString: (~typeVars:list(string)) => string;
+let genericsString: (~typeVars: list(string)) => string;
 
 let requireReact: (~language: language) => string;
 
