@@ -1,4 +1,4 @@
-# Reason genFlow / genTypeScript 0.7.0
+# Reason genFlow / genTypeScript 0.8.0
 
 > **Disclosure:** This project started out as an experiment for better Flow integration, but it's actually also working with TypeScript. This tool will be renamed accordingly in the future.
 

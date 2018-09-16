@@ -1,4 +1,4 @@
-# master
+# 0.8.0
   [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21).
   
   [Fix: props are contravariant](https://github.com/cristianoc/genFlow/issues/22).

@@ -1,6 +1,6 @@
 {
   "name": "genFlow",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Generate Flow bindings for Reason",
   "license": "MIT",
   "scripts": {
