@@ -40,8 +40,8 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-let tagSearch = "genFlow";
-let tagSearchOpaque = "genFlow.opaque";
+let tagIsGenFlow = s => s == "genFlow";
+let tagIsGenFlowOpaque = s => s == "genFlow.opaque";
 
 type optionalness =
   | NonMandatory

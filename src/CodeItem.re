@@ -101,17 +101,17 @@ let toString = (~language, codeItem) =>
     "ExportVariantType " ++ exportVariantType.name
   };
 
-let rec hasAttribute = (searchText, attributes) =>
+let rec hasAttribute = (checkText, attributes) =>
   switch (attributes) {
   | [] => false
-  | [({Asttypes.txt, _}, _), ..._tl] when txt == searchText => true
-  | [_hd, ...tl] => hasAttribute(searchText, tl)
+  | [({Asttypes.txt, _}, _), ..._tl] when checkText(txt) => true
+  | [_hd, ...tl] => hasAttribute(checkText, tl)
   };
 
 let getGenFlowKind = attrs =>
-  if (hasAttribute(tagSearch, attrs)) {
+  if (hasAttribute(tagIsGenFlow, attrs)) {
     GenFlow;
-  } else if (hasAttribute(tagSearchOpaque, attrs)) {
+  } else if (hasAttribute(tagIsGenFlowOpaque, attrs)) {
     GenFlowOpaque;
   } else {
     NoGenFlow;
