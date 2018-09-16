@@ -1,10 +1,10 @@
-[@genFlow]
+[@genType]
 type variant =
   | A
   | B(int, int)
   | C(option(int));
 
-[@genFlow]
+[@genType]
 let consumeVariant = x =>
   switch (x) {
   | Component2.A => 1

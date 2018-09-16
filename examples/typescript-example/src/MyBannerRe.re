@@ -3,7 +3,7 @@
  * This component wraps a ReactJS one, so that ReasonReact components can consume it
  * Typing the myBanner.js component's output as a `reactClass`.
 */
-[@genFlow]
+[@genType]
 [@bs.module]
 external myBanner : ReasonReact.reactClass = "./MyBanner";
 
@@ -14,7 +14,7 @@ type jsProps = {
 };
 
 /** This is like declaring a normal ReasonReact component's `make` function, except the body is a the interop hook wrapJsForReason */
-[@genFlow]
+[@genType]
 let make = (~show, ~message, children) =>
   ReasonReact.wrapJsForReason(
     ~reactClass=myBanner,

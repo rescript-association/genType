@@ -2,7 +2,7 @@
 
 const RecordsBS = require("./Records.bs");
 
-// No need to import locally visible type coord. Make sure it is also marked with @genFlow
+// No need to import locally visible type coord. Make sure it is also marked with @genType
 
 export type coord = {|x:number, y:number, z?:number|};
 export const origin: coord = {x:RecordsBS.origin[0], y:RecordsBS.origin[1], z:RecordsBS.origin[2]};

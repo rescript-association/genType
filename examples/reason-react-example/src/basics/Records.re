@@ -1,18 +1,18 @@
 open Belt;
 
-[@genFlow]
+[@genType]
 type coord = {
   x: int,
   y: int,
   z: option(int),
 };
 
-[@genFlow]
+[@genType]
 let origin = {x: 0, y: 0, z: Some(0)};
 
-[@genFlow]
+[@genType]
 let computeArea = ({x, y, z}) =>
   Option.(x * y * z->(mapWithDefault(1, n => n)));
 
-[@genFlow]
+[@genType]
 let coord2d = (x, y) => {x, y, z: None};

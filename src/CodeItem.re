@@ -109,7 +109,7 @@ let rec hasAttribute = (checkText, attributes) =>
   };
 
 let getGenFlowKind = attrs =>
-  if (hasAttribute(tagIsGenFlow, attrs)) {
+  if (hasAttribute(tagIsGenType, attrs)) {
     GenFlow;
   } else if (hasAttribute(tagIsGenFlowOpaque, attrs)) {
     GenFlowOpaque;
@@ -319,7 +319,7 @@ let translateSignatureValue =
 };
 
 /**
- * [@genFlow]
+ * [@genType]
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
 let translatePrimitive =
@@ -478,7 +478,7 @@ let typePathToImport =
     ImportComment(
       "// No need to import locally visible type "
       ++ Ident.name(id)
-      ++ ". Make sure it is also marked with @genFlow",
+      ++ ". Make sure it is also marked with @genType",
     )
 
   | Pdot(Papply(_, _), _, _)

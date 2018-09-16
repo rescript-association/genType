@@ -7,8 +7,8 @@ const ReasonComponentBS = require("./ReasonComponent.bs");
 // tslint:disable-next-line:no-var-requires
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
-// No need to import locally visible type person. Make sure it is also marked with @genFlow
-// No need to import locally visible type t. Make sure it is also marked with @genFlow
+// No need to import locally visible type person. Make sure it is also marked with @genType
+// No need to import locally visible type t. Make sure it is also marked with @genType
 
 import {list} from '../src/shims/ReasonPervasives.shim';
 

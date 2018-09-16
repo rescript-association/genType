@@ -1,4 +1,4 @@
-[@genFlow] [@bs.module]
+[@genType] [@bs.module]
 external myBanner: ReasonReact.reactClass = "./MyBanner";
 
 [@bs.deriving abstract]
@@ -7,7 +7,7 @@ type jsProps = {
   message: string,
 };
 
-[@genFlow]
+[@genType]
 let make:
   (~show: bool, ~message: string, 'a) =>
   ReasonReact.component(

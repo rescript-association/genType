@@ -1,7 +1,7 @@
 open GenFlowCommon;
 
 type fileAction =
-  | NoMatch /* No @genFlow annotation found. */
+  | NoMatch /* No @genType annotation found. */
   | Replace /* Replace existing file on disk with new contents. */
   | Identical /* File already on disk with identical contents. Skip. */
   | Write; /* File not present on disk. */

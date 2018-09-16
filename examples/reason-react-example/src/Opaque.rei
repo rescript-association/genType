@@ -1,5 +1,5 @@
-[@genFlow]
+[@genType]
 type t;
 
-[@genFlow]
+[@genType]
 let fromInt : int => t;

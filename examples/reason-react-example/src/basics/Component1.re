@@ -15,7 +15,7 @@ let handleClick = (_event, _self) => Js.log("clicked!");
 
    `ReasonReact.element(Page.make(~message="hello", [||]))` */
 
-[@genFlow]
+[@genType]
 let make = (~message="default message", _children) : ReasonReact.component(_) => {
   ...component,
   render: self =>
@@ -24,17 +24,17 @@ let make = (~message="default message", _children) : ReasonReact.component(_) =>
     </div>,
 };
 
-[@genFlow]
+[@genType]
 let plus = (x, _y) => x + 1;
 
-[@genFlow]
+[@genType]
 let concat = (x, y) =>
   switch (y) {
   | None => None
   | Some(v) => Some(x ++ v)
   };
 
-[@genFlow]
+[@genType]
 let consumeVariant = x =>
   switch (x) {
   | Component2.A => 1
@@ -49,8 +49,8 @@ let consumeVariant = x =>
     + 3
   };
 
-[@genFlow]
+[@genType]
 let l = [1, 2, 3];
 
-[@genFlow]
+[@genType]
 let map = List.map;

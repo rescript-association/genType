@@ -70,7 +70,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
 
     | [_, ..._] =>
       export(
-        "// genFlow warning: found more than one external component annotated with @genFlow",
+        "// genFlow warning: found more than one external component annotated with @genType",
       )
     };
 

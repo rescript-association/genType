@@ -3,6 +3,9 @@
   
   [Fix: props are contravariant](https://github.com/cristianoc/genFlow/issues/22).
 
+  Use @genType annotation (the @genFlow annotation is still supported for
+  backward compatibility).
+
 # 0.7.0
   Print log information to .genFlowLog in the project root insted of standard output.
 

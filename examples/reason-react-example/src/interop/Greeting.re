@@ -3,7 +3,7 @@
    it into a ReactJS-compatible component is the wrapReasonForJs call below */
 let component = ReasonReact.statelessComponent("PageReason");
 
-[@genFlow]
+[@genType]
 let make = (~message, ~someNumber, ~extraGreeting=?, ~polymorphicProp, _children) => {
   ...component,
   render: _self => {
@@ -20,24 +20,24 @@ let make = (~message, ~someNumber, ~extraGreeting=?, ~polymorphicProp, _children
   },
 };
 
-[@genFlow]
+[@genType]
 let empty: list(string) = [];
 
-[@genFlow]
+[@genType]
 let cons = (~x, ~l) => [x, ...l];
 
-[@genFlow]
+[@genType]
 let cons2 = (~l, ~x) => [x, ...l];
 
-[@genFlow]
+[@genType]
 let concat = String.concat;
 
-[@genFlow]
+[@genType]
 let testNamedArgs = (~a, ~b, x, ~c, ~d, y, ~e) => a + b + x + c + d + y + e;
 
-[@genFlow]
+[@genType]
 let testCallNamedArgs = (foo: ((~a: int, ~b: int) => int), a, b) =>
   foo(~a, ~b);
 
-[@genFlow]
+[@genType]
 let testDefaultArgs = (~x=3, ~y) => x + y;

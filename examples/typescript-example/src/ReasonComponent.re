@@ -1,12 +1,12 @@
 let component = ReasonReact.statelessComponent("Component");
 
-[@genFlow]
+[@genType]
 type person = {
   name: string,
   surname: string,
 };
 
-[@genFlow]
+[@genType]
 let make =
     (~message="default message", ~person: person, ~intList=[0], _children)
     : ReasonReact.component(_) => {
@@ -27,19 +27,19 @@ let make =
     </div>,
 };
 
-[@genFlow]
+[@genType]
 let minus = (~first=0, ~second) => first - second;
 
-[@genFlow]
+[@genType]
 let useTypeDefinedInAnotherModule = (x: Types.t) => x;
 
-[@genFlow]
+[@genType]
 type t =
   | A
   | B(int)
   | C(string);
 
-[@genFlow]
+[@genType]
 let tToString = t =>
   switch (t) {
   | A => "A"

@@ -1,13 +1,13 @@
-[@genFlow]
+[@genType]
 type t = int;
 
-[@genFlow]
+[@genType]
 let someIntList = [1, 2, 3];
 
-[@genFlow]
+[@genType]
 let map = List.map;
 
-[@genFlow]
+[@genType]
 type typeWithVars('x, 'y, 'z) =
   | A('x, 'y)
   | B('z);

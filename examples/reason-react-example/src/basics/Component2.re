@@ -40,18 +40,18 @@ let make = (~greeting, _children) => {
   },
 };
 
-[@genFlow]
+[@genType]
 type variant =
   | A
   | B(int, int)
   | C(option(int));
 
 /* No name clash with Block */
-[@genFlow]
+[@genType]
 type block =
   | Block;
 
-[@genFlow]
+[@genType]
 let getBlock = x =>
   switch (x) {
   | Block => 34

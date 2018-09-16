@@ -3,7 +3,7 @@
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 const TypesBS = require("./Types.bs");
 
-// No need to import locally visible type optionInt. Make sure it is also marked with @genFlow
+// No need to import locally visible type optionInt. Make sure it is also marked with @genType
 
 export opaque type TypeWithVarsA<x,y> = any;
 export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
