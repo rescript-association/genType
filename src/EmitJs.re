@@ -185,6 +185,10 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         );
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
 
+      let fnParam = (paramName, paramType) => switch(language) {
+        | Typescript | Flow => paramName ++ ": " ++ paramType
+        | Untyped => paramName
+      };
       let name = EmitTyp.componentExportName(~language, ~moduleName);
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
@@ -230,7 +234,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       export(
         "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
       );
-      export("  (function _(" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
+      export("  (function _(" ++ fnParam(jsProps, propsTypeName) ++ ") {");
       export(
         "     return "
         ++ ModuleName.toString(moduleNameBs)
