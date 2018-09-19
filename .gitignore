@@ -1,3 +1,5 @@
+*.DS_Store*
+*.genFlowLog*
 *.merlin*
 *.bsb.lock*
 bundledOutputs/
