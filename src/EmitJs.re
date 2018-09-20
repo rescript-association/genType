@@ -230,7 +230,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       export(
         "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
       );
-      export("  (function _(" ++ jsProps ++ ": " ++ propsTypeName ++ ") {");
+      export("  (function _(" ++ EmitTyp.ofType(~language, ~typ=Ident(propsTypeName, []), jsProps) ++ ") {");
       export(
         "     return "
         ++ ModuleName.toString(moduleNameBs)
