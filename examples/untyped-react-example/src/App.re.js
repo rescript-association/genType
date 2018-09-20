@@ -8,3 +8,4 @@ export const App = ReasonReact.wrapReasonForJs(
   (function _(jsProps) {
      return AppBS.make(jsProps.children);
   }));
+export default App;
