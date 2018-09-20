@@ -73,7 +73,7 @@ let commentBeforeRequire = (~language) =>
 
 let emitExportDefault = (~language, name) =>
   switch (language) {
-  | Flow => ""
+  | Flow
   | Typescript
   | Untyped => "export default " ++ name ++ ";"
   };

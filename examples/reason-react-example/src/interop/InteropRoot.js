@@ -6,7 +6,7 @@ const React = require("react");
 const GreetingRe = require("./Greeting.re");
 
 // Import a ReasonReact component!
-const PageReason = GreetingRe.component;
+const PageReason = require("./Greeting.re").default;
 
 const helloWorldList = GreetingRe.cons({
   x: "Hello",
