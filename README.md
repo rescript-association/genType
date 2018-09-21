@@ -24,6 +24,17 @@ When a `[@genType]` annotation is added to an external `ReasonReact.reactclass` 
 [Here is a video showing how to safely wrap JS components for use from Reason.](https://youtu.be/UKACByHmuQE)
 [![IMAGE ALT TEXT HERE](assets/genFlowWrapJsComponent.png)](https://youtu.be/UKACByHmuQE)
 
+# Download genFlow from Prebuilt Releases
+
+```
+# Will download and automatically untar the file in the current directory as genflow.native
+
+# MacOS
+curl -L https://github.com/cristianoc/genFlow/releases/download/v0.8.0/genflow-macos.tar.gz | tar xz
+
+# Linux
+curl -L https://github.com/cristianoc/genFlow/releases/download/v0.8.0/genflow-linux.tar.gz | tar xz
+```
 
 # Quick Start: Set up genFlow in existing TS / Flow / BuckleScript project
 
@@ -31,12 +42,14 @@ There are some steps to set up `genFlow` in a project.
 Some of this might become simpler if `genFlow` gets integrated
 into bucklescript in future. The current requirement is `bs-platform 4.0.3` or later.
 
+0. Build the genflow binary (`$GENFLOW_REPO/lib/bs/native/genflow.native`) or retrieve it from our prebuilt releases
 1. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENFLOW_REPO/lib/bs/native/genflow.native`, before building a project, or starting a watcher / vscode with bsb integration.
 2. Add a file [`genflowconfig.json`](examples/reason-react-example/genflowconfig.json) in the project root, and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/reason-react-example/src/shims). An example for a ReasonReact->React shim can be found [here](examples/reason-react-example/src/shims/ReactShim.shim.js).
 3. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from javascript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
 4. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re`  [example webpack.config.js](examples/reason-react-example/webpack.config.js).
 
 # genFlow Configuration
+
 
 Every genFlow powered project requires a configuration file in the root of the project, called `genflowconfig.json`. The file has following structure:
 
@@ -96,3 +109,31 @@ We prepared some examples to give you an idea on how to integrate `genFlow` in y
 
 - [reason-react-example](examples/reason-react-example/README.md)
 - [typescript-example](examples/typescript-example/README.md)
+
+
+## Build Linux Build Artifacts (via Docker)
+
+```
+# Copies package.json etc. and npm installs the compiler inside the image (workdir: /genFlow)
+docker build -t genflow .
+
+# Mounts only the src / lib volume and runs `npm run build`
+docker run -it -v $PWD/lib:/genFlow/lib -v $PWD/src:/genFlow/src genflow bash -c "npm run clean && npm run build"
+```
+
+
+## Release Procedure for native binaries (Linux / MacOS)
+
+For now, we do the manual procedure:
+
+```
+# MacOS
+npm run clean && npm run build
+tar -zcvf lib/genflow-macos.tar.gz  -C lib/bs/native genflow.native
+```
+
+```
+# Linux
+docker run -it -v $PWD/lib:/genFlow/lib -v $PWD/src:/genFlow/src genflow bash -c "npm run clean && npm run build"
+tar -zcvf lib/genflow-linux.tar.gz  -C lib/bs/native genflow.native
+```
