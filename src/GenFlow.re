@@ -8,7 +8,15 @@ let signFile = s => s;
 
 let cli = () => {
   let setProjectRoot = Paths.setProjectRoot;
+  let checkProjectRoot = () =>
+    if (projectRoot^ == "") {
+      prerr_endline(
+        "Error: command line --setProjectRoot not passed to BS_CMT_POST_PROCESS_CMD.",
+      );
+      assert(false);
+    };
   let setCmtAdd = s => {
+    checkProjectRoot();
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
@@ -21,6 +29,7 @@ let cli = () => {
     exit(0);
   };
   let setCmtRm = s => {
+    checkProjectRoot();
     let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
     assert(Array.length(splitColon) === 1);
     let cmtAbsolutePath: string = splitColon[0];
@@ -40,7 +49,7 @@ let cli = () => {
     (
       "--setProjectRoot",
       Arg.String(setProjectRoot),
-      "set the root of the bucklescript project",
+      "set the root of the bucklescript project. This option is mandatory.",
     ),
     ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt[i] file"),
