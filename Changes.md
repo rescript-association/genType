@@ -1,6 +1,7 @@
 # master
   [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35).
-  Make --setProjectRoot option mandatory in BS_CMT_POST_PROCESS_CMD.
+  
+  Depecate -setProjectRoot CLI option. The project root is now found automatically and the option ignored.
 
 # 0.8.0
   [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21).

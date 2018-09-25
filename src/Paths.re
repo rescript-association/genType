@@ -1,8 +1,23 @@
 open GenFlowCommon;
 
-let setProjectRoot = s =>
-  projectRoot :=
-    Filename.is_relative(s) ? Filename.concat(Unix.getcwd(), s) : s;
+let bsconfig = "bsconfig.json";
+
+let rec findProjectRoot = (~dir) =>
+  if (Sys.file_exists(Filename.concat(dir, bsconfig))) {
+    dir;
+  } else {
+    let parent = dir |> Filename.dirname;
+    if (parent == dir) {
+      prerr_endline(
+        "Error: cannot find project root containing " ++ bsconfig ++ ".",
+      );
+      assert(false);
+    } else {
+      findProjectRoot(~dir=parent);
+    };
+  };
+
+let setProjectRoot = () => projectRoot := findProjectRoot(~dir=Sys.getcwd());
 
 let concat = Filename.concat;
 

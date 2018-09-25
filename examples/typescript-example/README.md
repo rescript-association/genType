@@ -8,7 +8,7 @@ For the setup, run `npm install`.
 
 ```sh
 # Make sure to build genflow.native, as stated in the project root README
-export BS_CMT_POST_PROCESS_CMD="$PWD/../../lib/bs/native/genflow.native --setProjectRoot $PWD"
+export BS_CMT_POST_PROCESS_CMD="$PWD/../../lib/bs/native/genflow.native"
 
 npm run build
 npm run start
