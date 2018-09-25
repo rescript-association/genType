@@ -108,7 +108,8 @@ We prepared some examples to give you an idea on how to integrate `genFlow` in y
 **Please make sure to build genFlow before trying to build the examples.**
 
 - [reason-react-example](examples/reason-react-example/README.md)
-- [typescript-example](examples/typescript-example/README.md)
+- [typescript-react-example](examples/typescript-react-example/README.md)
+- [untyped-react-example](examples/untyped-react-example/README.md)
 
 
 ## Build Linux Build Artifacts (via Docker)
