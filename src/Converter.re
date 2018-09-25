@@ -59,7 +59,7 @@ let rec toString = converter =>
 
 let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
   switch (typ) {
-  | Ident(s, []) =>
+  | Ident(s, _) =>
     try (
       {
         let t = exportTypeMap |> StringMap.find(s);
@@ -68,7 +68,6 @@ let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
     ) {
     | Not_found => IdentC
     }
-  | Ident(_, _) => IdentC
   | TypeVar(_) => IdentC
   | Option(t) => OptionC(t |> typToConverter_(~exportTypeMap))
   | Array(t) =>

@@ -11,8 +11,7 @@ export interface Props {
 class App extends React.PureComponent<Props> {
   public render() {
     return (
-      <div className="App">
-      </div>
+      <div className="App" />
     );
   }
 }
