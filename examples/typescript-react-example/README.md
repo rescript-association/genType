@@ -3,7 +3,7 @@
 This project was created with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 For the setup, run `npm install`.
-Make sure that you built the `genflow.native` binary in the genFlow root before running this project.
+Make sure to build genflow.native, as stated in the project root README.
 
 ## Running the Project
 

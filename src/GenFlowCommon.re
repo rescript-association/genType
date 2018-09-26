@@ -16,7 +16,7 @@ type config = {
   modulesMap: ModuleNameMap.t(ModuleName.t),
 };
 
-let projectRoot = ref(Sys.getcwd());
+let projectRoot = ref("");
 
 let logFile = ref(None);
 

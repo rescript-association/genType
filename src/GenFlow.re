@@ -39,13 +39,14 @@ let cli = () => {
   let speclist = [
     (
       "--setProjectRoot",
-      Arg.String(setProjectRoot),
-      "set the root of the bucklescript project",
+      Arg.String(_ => ()),
+      "This option is deprecated and is ignored (project root found automatically).",
     ),
     ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt[i] file"),
   ];
   let usage = "genFlow";
+  setProjectRoot();
   Arg.parse(speclist, print_endline, usage);
 };
 
