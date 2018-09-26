@@ -1,13 +1,11 @@
 # reason-react-example
 
 For the setup, run `npm install`.
+Make sure to build genflow.native, as stated in the project root README.
 
 ## Running the Project
 
 ```sh
-# Make sure to build genflow.native, as stated in the project root README
-export BS_CMT_POST_PROCESS_CMD="$PWD/../../lib/bs/native/genflow.native"
-
 # If not done yet, do an initial build
 npm run build
 
@@ -23,7 +21,6 @@ Then open `src/index.html` to see the links to the examples (**no server needed!
 ## Build for Production
 
 ```sh
-export BS_CMT_POST_PROCESS_CMD="$PWD/../../lib/bs/native/genflow.native"
 npm run build
 npm run webpack:production
 ```
