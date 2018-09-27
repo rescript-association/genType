@@ -44,7 +44,12 @@ ReactDOM.render(
         addresses
       }
       intList={intList}
-      person={{ name: "Name", surname: "Surname", polymorphicPayload: null}}
+      person={{
+        name: "Name",
+        polymorphicPayload: null,
+        surname: "Surname",
+        type: ""
+      }}
     />
   </div>,
   document.getElementById("root") as HTMLElement

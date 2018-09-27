@@ -1,3 +1,6 @@
+# master
+  [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37).
+
 # 0.9.0
   [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35).
   

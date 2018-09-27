@@ -4,17 +4,14 @@ let component = ReasonReact.statelessComponent("Component");
 type person('a) = {
   name: string,
   surname: string,
+  [@genType.as "type"]
+  type_: string,
   polymorphicPayload: 'a,
 };
 
 [@genType]
 let make =
-    (
-      ~message="default message",
-      ~person,
-      ~intList=[0],
-      _children,
-    )
+    (~message="default message", ~person, ~intList=[0], _children)
     : ReasonReact.component(_) => {
   ...component,
   render: _self =>

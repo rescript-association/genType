@@ -15,13 +15,13 @@ import {list} from '../src/shims/ReasonPervasives.shim';
 import {t as Typest} from '../src/nested/Types';
 
 // tslint:disable-next-line:interface-over-type-literal
-export type person<a> = {name:string, surname:string, polymorphicPayload:a};
+export type person<a> = {name:string, surname:string, type:string, polymorphicPayload:a};
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {message?:string; person:person<any>; intList?:list<number>; children?:any};
 export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
   ReasonComponentBS.component,
   (function _(jsProps: Props) {
-     return ReasonComponentBS.make(jsProps.message, [jsProps.person.name, jsProps.person.surname, jsProps.person.polymorphicPayload], jsProps.intList, jsProps.children);
+     return ReasonComponentBS.make(jsProps.message, [jsProps.person.name, jsProps.person.surname, jsProps.person.type, jsProps.person.polymorphicPayload], jsProps.intList, jsProps.children);
   }));
 export default ReasonComponent;
 export const minus: (_1:{first?:number; second:number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };

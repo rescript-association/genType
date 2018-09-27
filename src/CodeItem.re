@@ -101,17 +101,34 @@ let toString = (~language, codeItem) =>
     "ExportVariantType " ++ exportVariantType.name
   };
 
-let rec hasAttribute = (checkText, attributes) =>
+type attributePayload =
+  | UnrecognizedPayload
+  | StringPayload(string);
+
+let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
   switch (attributes) {
-  | [] => false
-  | [({Asttypes.txt, _}, _), ..._tl] when checkText(txt) => true
-  | [_hd, ...tl] => hasAttribute(checkText, tl)
+  | [] => None
+  | [({Asttypes.txt, _}, payload), ..._tl] when checkText(txt) =>
+    switch (payload) {
+    | PStr([
+        {
+          pstr_desc:
+            Pstr_eval({pexp_desc: Pexp_constant(Const_string(s, _))}, _),
+        },
+      ]) =>
+      Some(StringPayload(s))
+    | _ => Some(UnrecognizedPayload)
+    }
+  | [_hd, ...tl] => getAttributePayload(checkText, tl)
   };
 
-let getGenFlowKind = attrs =>
-  if (hasAttribute(tagIsGenType, attrs)) {
+let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
+  getAttributePayload(checkText, attributes) != None;
+
+let getGenFlowKind = (attributes: Typedtree.attributes) =>
+  if (hasAttribute(tagIsGenType, attributes)) {
     GenFlow;
-  } else if (hasAttribute(tagIsGenFlowOpaque, attrs)) {
+  } else if (hasAttribute(tagIsGenFlowOpaque, attributes)) {
     GenFlowOpaque;
   } else {
     NoGenFlow;
@@ -359,9 +376,14 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
   | (typeParams, Type_record(labelDeclarations, _), GenFlow | GenFlowOpaque) =>
     let fieldTranslations =
       labelDeclarations
-      |> List.map(({Types.ld_id, ld_type}) =>
-           (ld_id |> Ident.name, ld_type |> Dependencies.translateTypeExpr)
-         );
+      |> List.map(({Types.ld_id, ld_type, ld_attributes}) => {
+           let name =
+             switch (ld_attributes |> getAttributePayload(tagIsGenTypeAs)) {
+             | Some(StringPayload(s)) => s
+             | _ => ld_id |> Ident.name
+             };
+           (name, ld_type |> Dependencies.translateTypeExpr);
+         });
     let dependencies =
       fieldTranslations
       |> List.map(((_, {Dependencies.dependencies})) => dependencies)
