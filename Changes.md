@@ -1,4 +1,4 @@
-# master
+# 0.9.0
   [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35).
   
   Depecate -setProjectRoot CLI option. The project root is now found automatically and the option ignored.
