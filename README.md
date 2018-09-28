@@ -1,14 +1,21 @@
-# Reason genFlow / genTypeScript 0.9.0
+# Reason genFlow 0.9.0
 
-> **Disclosure:** This project started out as an experiment for better Flow integration, but it's actually also working with TypeScript. This tool will be renamed accordingly in the future.
+> **Disclosure:** This project started out as an experiment for better Flow integration, but it's actually also working with TypeScript and an untyped back-end. The project and its files/annotations are gradually being renamed from "genFlow" to "genType".
 
-`genFlow` is a tool to automatically generate typed bindings between [Reason](https://reasonml.github.io/), and either [Flow](https://flow.org/en/) or [TypeScript](https://www.typescriptlang.org/): see the companion project [genTypeScript](https://github.com/cristianoc/genTypeScript) for more info.
+`genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components.
 
-`genFlow` generates typed JS wrappers for [ReasonReact](https://reasonml.github.io/reason-react/) components, and in the other direction, if you have ReasonReact wrappers for JS components, it checks that they are well typed.
+The implementation performs a type-directed transformation of Reason programs after bucklescript compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is mapped to a JS function operating on the corresponding JS object `{x:3}`.
+
+There are 3 back-ends, to choose if generated JS code is untyped, or typed with either [TypeScript](https://www.typescriptlang.org/) or [Flow](https://flow.org/en/).
+If a typed back-end is used, `genType` generates typed JS wrappers for ReasonReact components, and in the other direction, if you have ReasonReact wrappers for JS components, it generates code to checks that they are well typed.
+
+For more info on TypeScript support, see the companion project [genTypeScript](https://github.com/cristianoc/genTypeScript) .
 
 ### Work in progress, only for early adopters. It is possible that the workflow will change in future.
 
-Typed wrappers for using ReasonReact components from javascript are generated when the annotation `[@genType] let make ...` is added to the component definition.
+-----
+
+Wrappers for using ReasonReact components from javascript are generated when the annotation `[@genType] let make ...` is added to the component definition.
 
 [Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/k9QYjq0c8rA)
 [![IMAGE ALT TEXT HERE](assets/genFlowInAction.png)](https://youtu.be/k9QYjq0c8rA)
@@ -71,16 +78,46 @@ Every genFlow powered project requires a configuration file in the root of the p
   - `Array<string>` with following format: `"ReasonModule=JavaScriptModule"`
   - Required to map certain basic TypeScript/ Flow data types & wrapping logic for Reason data types (e.g. mapping TypeScript lists to Reason lists)
 
-# Supported Types
+# Types Supported
 
-The following types are currently supported (Reason -> JS Type System):
+### int
+Reason values e.g. `1`, `2`, `3` are unchanged. So they are mapped to JS values of type `number`.
 
-1. Base types `int` and `string`.
-2. Variant types e.g. `type t = | A | B(int)`.
-3. Option types e.g. `option(string)`, with automatic conversion to/from `string?`.
-4. Array types, with automatic conversion of the values if required.
-5. Record types, with automatic conversion to/from javascript objects.
+### float
+Reason values e.g. `1.0`, `2.0`, `3.0` are unchanged. So they are mapped to JS values of type `number`.
 
+### string
+Reason values e.g. `"a"`, `"b"`, `"c"` are unchanged. So they are mapped to JS values of type `string`.
+
+### optionals
+Reason values of type e.g. `option(int)`, such as `None`, `Some(0)`, `Some(1)`, `Some(2)`, are mapped to JS values `null`, `undefined`,  `0`, `1`, `2`.
+The JS values are unboxed, and `null`/`undefined` are conflated.
+So they are mapped to JS values of type `null` or `undefined` or `number`.
+
+### records
+Reason record values of type e.g. `{x:int}` such as `{x:0}`, `{x:1}`, `{x:2}`, are mapped to JS object values `{x:0}`, `{x:1}`, `{x:2}`. This requires a change of runtime representation from arrays to objects.
+So they are mapped to JS values of type `{x:number}`.
+
+The `@genType.as` annotation can be used to change the name of a field on the JS side of things. So e.g. `{[@genType.as "y"] x:int}` is mapped to the JS type `{y:int}`.
+
+### variants
+Reason values of variant type e.g. `| A | B(int)` have the same representation in JS. Constructor functions with the same name as the variants are generated, so e.g. `A` and `B(3)` are valid JS programs to generate Reason values.
+
+
+### arrays
+Arrays with elements of Reason type `t` are mapped to JS arrays with elements of the corresponding JS type. If a conversion is required, a copy of the array is performed.
+
+### functions
+Reason functions are represented as JS functions of the corresponding type.
+So for example a Reason function `foo : int => int` is represented as a JS function from numbers to numbers.
+
+If named arguments are present in the Reason type, they are grouped and represented as JS objects. For example `foo : (~x:int, ~y:int) => int` is represented as a JS function from objects of type `{x:number, y:number}` to numbers.
+
+In case of mixed named and unnamed arguments, consecutive named arguments form separate groups. So e.g. `foo : (int, ~x:int, ~y:int, int, ~z:int) => int` is mapped to a JS function of type `(number, {x:number, y:number}, number, {z:number}) => number`.
+
+
+### components
+ReasonReact components with props of Reason types `t1`, `t2`, `t3` are mapped to reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`.
 
 # Limitations
 
