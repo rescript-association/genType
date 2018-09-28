@@ -55,3 +55,10 @@ ReactDOM.render(
   document.getElementById("root") as HTMLElement
 );
 registerServiceWorker();
+
+const x1 = Records.getPayload(Records.payloadValue).v;
+const x2 = Records.getPayloadRecord(Records.payloadValue).v;
+const x3 = Records.payloadValue.payload.v;
+const x4 = Records.getPayloadRecordPlusOne(Records.payloadValue).v;
+// tslint:disable-next-line:no-console
+console.log("x1,x2,x3,x4 are", x1, x2, x3, x4);

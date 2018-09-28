@@ -57,13 +57,24 @@ let rec toString = converter =>
     ++ ")";
   };
 
-let rec typToConverter_ = (~exportTypeMap: StringMap.t(typ), typ) =>
+let rec typToConverter_ =
+        (~exportTypeMap: StringMap.t((list(string), typ)), typ) =>
   switch (typ) {
-  | Ident(s, _) =>
+  | Ident(s, typeArguments) =>
     try (
       {
-        let t = exportTypeMap |> StringMap.find(s);
-        t |> typToConverter_(~exportTypeMap);
+        let (typeVars, t) = exportTypeMap |> StringMap.find(s);
+        let pairs =
+          try (List.combine(typeVars, typeArguments)) {
+          | Invalid_argument(_) => []
+          };
+
+        let f = typeVar =>
+          switch (pairs |> List.find(((typeVar1, _)) => typeVar == typeVar1)) {
+          | (_, typeArgument) => Some(typeArgument)
+          | exception Not_found => None
+          };
+        t |> TypeVars.substitute(~f) |> typToConverter_(~exportTypeMap);
       }
     ) {
     | Not_found => IdentC

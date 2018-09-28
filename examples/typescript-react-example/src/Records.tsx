@@ -5,7 +5,9 @@ const RecordsBS = require("./Records.bs");
 
 // No need to import locally visible type business. Make sure it is also marked with @genType
 // No need to import locally visible type coord. Make sure it is also marked with @genType
+// No need to import locally visible type payload. Make sure it is also marked with @genType
 // No need to import locally visible type person. Make sure it is also marked with @genType
+// No need to import locally visible type record. Make sure it is also marked with @genType
 
 import {list} from '../src/shims/ReasonPervasives.shim';
 
@@ -20,3 +22,12 @@ export type person = {name:string, age:number, address?:string};
 export type business = {name:string, owner?:person, address?:string};
 export const findAddress: (_1:business) => list<string> = function _(Arg1) { const result = RecordsBS.findAddress([Arg1.name, (Arg1.owner == null ? undefined : [Arg1.owner.name, Arg1.owner.age, (Arg1.owner.address == null ? undefined : Arg1.owner.address)]), (Arg1.address == null ? undefined : Arg1.address)]); return result };
 export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1) { const result = RecordsBS.findAllAddresses(Arg1.map(function _element(x) { return [x.name, (x.owner == null ? undefined : [x.owner.name, x.owner.age, (x.owner.address == null ? undefined : x.owner.address)]), (x.address == null ? undefined : x.address)]})); return result };
+// tslint:disable-next-line:interface-over-type-literal
+export type payload<a> = {num:number, payload:a};
+export const getPayload: <T1>(_1:payload<T1>) => T1 = function _(Arg1) { const result = RecordsBS.getPayload([Arg1.num, Arg1.payload]); return result };
+// tslint:disable-next-line:interface-over-type-literal
+export type record = {v:number, w:number};
+export const getPayloadRecord: (_1:payload<record>) => record = function _(Arg1) { const result = RecordsBS.getPayloadRecord([Arg1.num, [Arg1.payload.v, Arg1.payload.w]]); return {v:result[0], w:result[1]} };
+export const recordValue: record = {v:RecordsBS.recordValue[0], w:RecordsBS.recordValue[1]};
+export const payloadValue: payload<record> = {num:RecordsBS.payloadValue[0], payload:{v:RecordsBS.payloadValue[1][0], w:RecordsBS.payloadValue[1][1]}};
+export const getPayloadRecordPlusOne: (_1:payload<record>) => record = function _(Arg1) { const result = RecordsBS.getPayloadRecordPlusOne([Arg1.num, [Arg1.payload.v, Arg1.payload.w]]); return {v:result[0], w:result[1]} };

@@ -2,7 +2,7 @@ open GenFlowCommon;
 
 type env = {
   requires: ModuleNameMap.t(ImportPath.t),
-  exportTypeMap: StringMap.t(typ),
+  exportTypeMap: StringMap.t((list(string), typ)),
   externalReactClass: list(CodeItem.externalReactClass),
 };
 
@@ -230,7 +230,11 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       export(
         "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
       );
-      export("  (function _(" ++ EmitTyp.ofType(~language, ~typ=Ident(propsTypeName, []), jsProps) ++ ") {");
+      export(
+        "  (function _("
+        ++ EmitTyp.ofType(~language, ~typ=Ident(propsTypeName, []), jsProps)
+        ++ ") {",
+      );
       export(
         "     return "
         ++ ModuleName.toString(moduleNameBs)
@@ -268,19 +272,20 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   };
 
   let updateExportTypeMap = (env, codeItem) => {
-    let addExportType = (exportType: CodeItem.exportType) => {
+    let addExportType = ({typeName, typeVars, typ}: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
-          "Export Type: %s = %s\n",
-          exportType.typeName,
-          exportType.typ |> EmitTyp.typToString(~language),
+          "Export Type: %s%s = %s\n",
+          typeName,
+          typeVars == [] ?
+            "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
+          typ |> EmitTyp.typToString(~language),
         );
       };
       {
         ...env,
         exportTypeMap:
-          env.exportTypeMap
-          |> StringMap.add(exportType.typeName, exportType.typ),
+          env.exportTypeMap |> StringMap.add(typeName, (typeVars, typ)),
       };
     };
     switch (codeItem) {

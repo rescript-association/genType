@@ -47,3 +47,33 @@ let findAllAddresses = (businesses: array(business)): array(string) =>
   ->List.fromArray
   ->List.flatten
   ->List.toArray;
+
+[@genType]
+type payload('a) = {
+  num: int,
+  payload: 'a,
+};
+
+[@genType]
+let getPayload = ({payload}) => payload;
+
+[@genType]
+type record = {
+  v: int,
+  w: int,
+};
+
+[@genType]
+let getPayloadRecord = ({payload}): record => payload;
+
+[@genType]
+let recordValue = {v: 1, w: 1};
+
+[@genType]
+let payloadValue = {num: 1, payload: recordValue};
+
+[@genType]
+let getPayloadRecordPlusOne = ({payload}): record => {
+  ...payload,
+  v: payload.v + 1,
+};

@@ -50,6 +50,32 @@ function findAllAddresses(businesses) {
                           })))));
 }
 
+function getPayload(param) {
+  return param[/* payload */1];
+}
+
+function getPayloadRecord(param) {
+  return param[/* payload */1];
+}
+
+var recordValue = /* record */[
+  /* v */1,
+  /* w */1
+];
+
+var payloadValue = /* record */[
+  /* num */1,
+  /* payload */recordValue
+];
+
+function getPayloadRecordPlusOne(param) {
+  var payload = param[/* payload */1];
+  return /* record */[
+          /* v */payload[/* v */0] + 1 | 0,
+          /* w */payload[/* w */1]
+        ];
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -62,4 +88,9 @@ exports.coord2d = coord2d;
 exports.getOpt = getOpt;
 exports.findAddress = findAddress;
 exports.findAllAddresses = findAllAddresses;
+exports.getPayload = getPayload;
+exports.getPayloadRecord = getPayloadRecord;
+exports.recordValue = recordValue;
+exports.payloadValue = payloadValue;
+exports.getPayloadRecordPlusOne = getPayloadRecordPlusOne;
 /* No side effect */
