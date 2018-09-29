@@ -1,5 +1,7 @@
-# master
+# 0.10.0
   [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37).
+  
+  [Full support for polymorphic types (type instantiation works correctly to generate conversions)](https://github.com/cristianoc/genFlow/commit/9712a60fab3ef0f31ad074f15a4256939f9e40a6).
 
 # 0.9.0
   [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35).
