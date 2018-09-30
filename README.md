@@ -153,29 +153,11 @@ We prepared some examples to give you an idea on how to integrate `genFlow` in y
 - [untyped-react-example](examples/untyped-react-example/README.md)
 
 
-## Build Linux Build Artifacts (via Docker)
+## Release Procedure for MacOS and Linux binaries
+
+For now, this is a manual process to create `lib/genflow-macos.tar.gz` and  `lib/genflow-linux.tar.gz` on a Mac. The linux binaries are created using a docker container.
+
 
 ```
-# Copies package.json etc. and npm installs the compiler inside the image (workdir: /genFlow)
-docker build -t genflow .
-
-# Mounts only the src / lib volume and runs `npm run build`
-docker run -it -v $PWD/lib:/genFlow/lib -v $PWD/src:/genFlow/src genflow bash -c "npm run clean && npm run build"
-```
-
-
-## Release Procedure for native binaries (Linux / MacOS)
-
-For now, we do the manual procedure:
-
-```
-# MacOS
-npm run clean && npm run build
-tar -zcvf lib/genflow-macos.tar.gz  -C lib/bs/native genflow.native
-```
-
-```
-# Linux
-docker run -it -v $PWD/lib:/genFlow/lib -v $PWD/src:/genFlow/src genflow bash -c "npm run clean && npm run build"
-tar -zcvf lib/genflow-linux.tar.gz  -C lib/bs/native genflow.native
+./create-release.sh
 ```
