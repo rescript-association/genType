@@ -1,12 +1,14 @@
 open GenFlowCommon;
 
+type typeMap = StringMap.t((list(string), typ));
+
 type env = {
   requires: ModuleNameMap.t(ImportPath.t),
   externalReactClass: list(CodeItem.externalReactClass),
   /* For each .cmt we import types from, keep the map of exported types. */
-  cmtExportTypeMapCache: StringMap.t(StringMap.t((list(string), typ))),
+  cmtExportTypeMapCache: StringMap.t(typeMap),
   /* Map of types imported from other files. */
-  typesFromOtherFiles: StringMap.t((list(string), typ)),
+  typesFromOtherFiles: typeMap,
 };
 
 let requireModule = (~requires, ~importPath, moduleName) =>
@@ -16,8 +18,8 @@ let requireModule = (~requires, ~importPath, moduleName) =>
        moduleName |> ModuleResolver.resolveSourceModule(~importPath),
      );
 
-let createExportTypeMap = (~language, codeItems) => {
-  let updateExportTypeMap = (exportTypeMap, codeItem) => {
+let createExportTypeMap = (~language, codeItems): typeMap => {
+  let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
     let addExportType = ({typeName, typeVars, typ}: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
