@@ -1,17 +1,17 @@
 # Cleanup
-rm -f lib/genflow-*.tar.gz
+rm -f lib/gentype-*.tar.gz
 
 # MacOS
 npm install
 npm run clean && npm run build
-tar czvf lib/genflow-macos.tar.gz  -C lib/bs/native genflow.native
+tar czvf lib/gentype-macos.tar.gz  -C lib/bs/native gentype.native
 
 
 # Linux
 # Copies package.json etc. and runs `npm install`.
-docker build -t genflow .
+docker build -t gentype .
 
 # Mounts only the lib and src volume and runs `npm run build`
-docker run -it -v $PWD/lib:/genFlow/lib -v $PWD/src:/genFlow/src genflow bash -c "npm run clean && npm run build"
+docker run -it -v $PWD/lib:/genType/lib -v $PWD/src:/genType/src gentype bash -c "npm run clean && npm run build"
 
-tar czvf lib/genflow-linux.tar.gz  -C lib/bs/native genflow.native
+tar czvf lib/gentype-linux.tar.gz  -C lib/bs/native gentype.native
