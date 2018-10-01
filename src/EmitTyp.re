@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";

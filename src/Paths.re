@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 let bsconfig = "bsconfig.json";
 

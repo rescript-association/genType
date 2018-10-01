@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 /**
   * Extracts type variables from dependencies.

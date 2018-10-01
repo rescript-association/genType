@@ -2,7 +2,7 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
-open GenFlowCommon;
+open GenTypeCommon;
 
 let signFile = s => s;
 
@@ -17,7 +17,7 @@ let cli = () => {
       logItem("Add %s  %s\n", cmt, mlast);
     };
     let config = Paths.readConfig();
-    cmt |> GenFlowMain.processCmtFile(~signFile, ~config);
+    cmt |> GenTypeMain.processCmtFile(~signFile, ~config);
     exit(0);
   };
   let setCmtRm = s => {
@@ -45,7 +45,7 @@ let cli = () => {
     ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt[i] file"),
   ];
-  let usage = "genFlow";
+  let usage = "genType";
   setProjectRoot();
   Arg.parse(speclist, print_endline, usage);
 };
