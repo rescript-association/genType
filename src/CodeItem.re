@@ -2,7 +2,7 @@ open GenFlowCommon;
 
 type importType =
   | ImportComment(string)
-  | ImportTypeAs(string, option(string), ImportPath.t);
+  | ImportTypeAs(string, option(string), ImportPath.t, string);
 
 type exportType = {
   opaque: bool,
@@ -76,7 +76,7 @@ let combineTranslations = (translations: list(translation)): translation =>
 let getImportTypeName = importType =>
   switch (importType) {
   | ImportComment(s) => s
-  | ImportTypeAs(s, _, _) => s
+  | ImportTypeAs(s, _, _, _) => s
   };
 
 let toString = (~language, codeItem) =>
@@ -494,6 +494,7 @@ let typePathToImport =
            ~resolver,
            ~modulesMap,
          ),
+      "",
     )
 
   | Path.Pident(id) =>
@@ -525,7 +526,9 @@ let typePathToImport =
            ~resolver,
            ~modulesMap,
          );
-    ImportTypeAs(typeName, asName, importPath);
+    let cmtFile =
+      importPath |> ImportPath.toCmt(~outputFileRelative) |> Paths.getCmtFile;
+    ImportTypeAs(typeName, asName, importPath, cmtFile);
   };
 
 let importTypeCompare = (i1, i2) =>

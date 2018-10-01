@@ -191,23 +191,7 @@ let emitCodeItems =
 };
 
 let processCmtFile = (~signFile, ~config, cmt) => {
-  let cmtFile = {
-    let pathCmt = Filename.concat(Sys.getcwd(), cmt);
-    let cmtFile =
-      if (Filename.check_suffix(pathCmt, ".cmt")) {
-        let pathCmti = Filename.chop_extension(pathCmt) ++ ".cmti";
-        if (Sys.file_exists(pathCmti)) {
-          pathCmti;
-        } else if (Sys.file_exists(pathCmt)) {
-          pathCmt;
-        } else {
-          "";
-        };
-      } else {
-        "";
-      };
-    cmtFile;
-  };
+  let cmtFile = cmt |> Paths.getCmtFile;
   if (cmtFile != "") {
     let propsTypeGen = GenIdent.createPropsTypeGen();
     let inputCMT = Cmt_format.read_cmt(cmtFile);

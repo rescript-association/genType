@@ -11,4 +11,7 @@ let fromModule = (~dir, ~importExtension, moduleName) =>
   );
 
 let fromStringUnsafe = s => s;
+
+let toCmt = (~outputFileRelative, s) =>
+  Filename.(concat(outputFileRelative |> dirname, s ++ ".cmt"));
 let toString = s => s;

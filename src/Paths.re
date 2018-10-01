@@ -53,6 +53,24 @@ let getOutputFile = (~language, cmt) =>
 let getModuleName = cmt =>
   cmt |> handleNamespace |> Filename.basename |> ModuleName.fromStringUnsafe;
 
+let getCmtFile = cmt => {
+  let pathCmt = Filename.concat(Sys.getcwd(), cmt);
+  let cmtFile =
+    if (Filename.check_suffix(pathCmt, ".cmt")) {
+      let pathCmti = Filename.chop_extension(pathCmt) ++ ".cmti";
+      if (Sys.file_exists(pathCmti)) {
+        pathCmti;
+      } else if (Sys.file_exists(pathCmt)) {
+        pathCmt;
+      } else {
+        "";
+      };
+    } else {
+      "";
+    };
+  cmtFile;
+};
+
 let executable =
   Sys.executable_name |> Filename.is_relative ?
     concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
