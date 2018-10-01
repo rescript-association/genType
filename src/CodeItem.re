@@ -515,12 +515,11 @@ let typePathToImport =
       | Papply(_, _) => assert(false) /* impossible: handled above */
       };
     let typeName = s;
+    let nameFromPath = Dependencies.typePathToName(typePath);
+    let asName = nameFromPath == typeName ? None : Some(nameFromPath);
     ImportTypeAs(
       typeName,
-      {
-        let asTypeName = Dependencies.typePathToName(typePath);
-        asTypeName == typeName ? None : Some(asTypeName);
-      },
+      asName,
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
            ~language,
