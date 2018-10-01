@@ -2,7 +2,7 @@ open GenFlowCommon;
 
 type importType =
   | ImportComment(string)
-  | ImportAsFrom(string, option(string), ImportPath.t);
+  | ImportTypeAs(string, option(string), ImportPath.t);
 
 type exportType = {
   opaque: bool,
@@ -76,7 +76,7 @@ let combineTranslations = (translations: list(translation)): translation =>
 let getImportTypeName = importType =>
   switch (importType) {
   | ImportComment(s) => s
-  | ImportAsFrom(s, _, _) => s
+  | ImportTypeAs(s, _, _) => s
   };
 
 let toString = (~language, codeItem) =>
@@ -484,7 +484,7 @@ let typePathToImport =
     ) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
-    ImportAsFrom(
+    ImportTypeAs(
       "list",
       None,
       ModuleName.reasonPervasives
@@ -515,7 +515,7 @@ let typePathToImport =
       | Papply(_, _) => assert(false) /* impossible: handled above */
       };
     let typeName = s;
-    ImportAsFrom(
+    ImportTypeAs(
       typeName,
       {
         let asTypeName = Dependencies.typePathToName(typePath);

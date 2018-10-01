@@ -30,7 +30,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     (
       switch (importType) {
       | CodeItem.ImportComment(s) => s
-      | ImportAsFrom(typeName, asTypeName, importPath) =>
+      | ImportTypeAs(typeName, asTypeName, importPath) =>
         EmitTyp.emitImportTypeAs(
           ~language,
           ~typeName,
