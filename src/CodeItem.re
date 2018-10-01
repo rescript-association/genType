@@ -1,8 +1,15 @@
 open GenFlowCommon;
 
+type importTypeAs = {
+  typeName: string,
+  asTypeName: option(string),
+  importPath: ImportPath.t,
+  cmtFile: option(string),
+};
+
 type importType =
   | ImportComment(string)
-  | ImportTypeAs(string, option(string), ImportPath.t, string);
+  | ImportTypeAs(importTypeAs);
 
 type exportType = {
   opaque: bool,
@@ -76,7 +83,7 @@ let combineTranslations = (translations: list(translation)): translation =>
 let getImportTypeName = importType =>
   switch (importType) {
   | ImportComment(s) => s
-  | ImportTypeAs(s, _, _, _) => s
+  | ImportTypeAs({typeName}) => typeName
   };
 
 let toString = (~language, codeItem) =>
@@ -484,19 +491,19 @@ let typePathToImport =
     ) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
-    ImportTypeAs(
-      "list",
-      None,
-      ModuleName.reasonPervasives
-      |> ModuleResolver.importPathForReasonModuleName(
-           ~language,
-           ~outputFileRelative,
-           ~resolver,
-           ~modulesMap,
-         ),
-      "",
-    )
-
+    ImportTypeAs({
+      typeName: "list",
+      asTypeName: None,
+      importPath:
+        ModuleName.reasonPervasives
+        |> ModuleResolver.importPathForReasonModuleName(
+             ~language,
+             ~outputFileRelative,
+             ~resolver,
+             ~modulesMap,
+           ),
+      cmtFile: None,
+    })
   | Path.Pident(id) =>
     ImportComment(
       "// No need to import locally visible type "
@@ -517,7 +524,7 @@ let typePathToImport =
       };
     let typeName = s;
     let nameFromPath = Dependencies.typePathToName(typePath);
-    let asName = nameFromPath == typeName ? None : Some(nameFromPath);
+    let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
     let importPath =
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
@@ -526,9 +533,14 @@ let typePathToImport =
            ~resolver,
            ~modulesMap,
          );
-    let cmtFile =
-      importPath |> ImportPath.toCmt(~outputFileRelative) |> Paths.getCmtFile;
-    ImportTypeAs(typeName, asName, importPath, cmtFile);
+    let cmtFile = {
+      let cmtFile =
+        importPath
+        |> ImportPath.toCmt(~outputFileRelative)
+        |> Paths.getCmtFile;
+      cmtFile == "" ? None : Some(cmtFile);
+    };
+    ImportTypeAs({typeName, asTypeName, importPath, cmtFile});
   };
 
 let importTypeCompare = (i1, i2) =>
