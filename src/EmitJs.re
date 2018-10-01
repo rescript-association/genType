@@ -12,6 +12,33 @@ let requireModule = (~requires, ~importPath, moduleName) =>
        moduleName |> ModuleResolver.resolveSourceModule(~importPath),
      );
 
+let createExportTypeMap = (~language, codeItems) => {
+  let updateExportTypeMap = (exportTypeMap, codeItem) => {
+    let addExportType = ({typeName, typeVars, typ}: CodeItem.exportType) => {
+      if (Debug.codeItems) {
+        logItem(
+          "Export Type: %s%s = %s\n",
+          typeName,
+          typeVars == [] ?
+            "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
+          typ |> EmitTyp.typToString(~language),
+        );
+      };
+      exportTypeMap |> StringMap.add(typeName, (typeVars, typ));
+    };
+    switch (codeItem) {
+    | CodeItem.ExportType(exportType) => exportType |> addExportType
+    | ValueBinding(_)
+    | ComponentBinding(_)
+    | ImportType(_)
+    | ExportVariantType(_)
+    | ConstructorBinding(_)
+    | ExternalReactClass(_) => exportTypeMap
+    };
+  };
+  codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
+};
+
 let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   let requireBuffer = Buffer.create(100);
   let importTypeBuffer = Buffer.create(100);
@@ -265,34 +292,9 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     };
   };
 
-  let updateExportTypeMap = (exportTypeMap, codeItem) => {
-    let addExportType = ({typeName, typeVars, typ}: CodeItem.exportType) => {
-      if (Debug.codeItems) {
-        logItem(
-          "Export Type: %s%s = %s\n",
-          typeName,
-          typeVars == [] ?
-            "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
-          typ |> EmitTyp.typToString(~language),
-        );
-      };
-      exportTypeMap |> StringMap.add(typeName, (typeVars, typ));
-    };
-    switch (codeItem) {
-    | CodeItem.ExportType(exportType) => exportType |> addExportType
-    | ValueBinding(_)
-    | ComponentBinding(_)
-    | ImportType(_)
-    | ExportVariantType(_)
-    | ConstructorBinding(_)
-    | ExternalReactClass(_) => exportTypeMap
-    };
-  };
-
   let initialEnv = {requires: ModuleNameMap.empty, externalReactClass: []};
   let typToConverter = {
-    let exportTypeMap =
-      codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
+    let exportTypeMap = codeItems |> createExportTypeMap(~language);
     typ => typ |> Converter.typToConverter(~language, ~exportTypeMap);
   };
   let finalEnv =
