@@ -517,17 +517,15 @@ let typePathToImport =
     let typeName = s;
     let nameFromPath = Dependencies.typePathToName(typePath);
     let asName = nameFromPath == typeName ? None : Some(nameFromPath);
-    ImportTypeAs(
-      typeName,
-      asName,
+    let importPath =
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
            ~language,
            ~outputFileRelative,
            ~resolver,
            ~modulesMap,
-         ),
-    );
+         );
+    ImportTypeAs(typeName, asName, importPath);
   };
 
 let importTypeCompare = (i1, i2) =>
