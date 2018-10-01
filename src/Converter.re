@@ -58,12 +58,19 @@ let rec toString = converter =>
   };
 
 let rec typToConverter_ =
-        (~exportTypeMap: StringMap.t((list(string), typ)), typ) =>
+        (
+          ~exportTypeMap: StringMap.t((list(string), typ)),
+          ~typesFromOtherFiles: StringMap.t((list(string), typ)),
+          typ,
+        ) =>
   switch (typ) {
   | Ident(s, typeArguments) =>
     try (
       {
-        let (typeVars, t) = exportTypeMap |> StringMap.find(s);
+        let (typeVars, t) =
+          try (exportTypeMap |> StringMap.find(s)) {
+          | Not_found => typesFromOtherFiles |> StringMap.find(s)
+          };
         let pairs =
           try (List.combine(typeVars, typeArguments)) {
           | Invalid_argument(_) => []
@@ -74,15 +81,19 @@ let rec typToConverter_ =
           | (_, typeArgument) => Some(typeArgument)
           | exception Not_found => None
           };
-        t |> TypeVars.substitute(~f) |> typToConverter_(~exportTypeMap);
+        t
+        |> TypeVars.substitute(~f)
+        |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
       }
     ) {
     | Not_found => IdentC
     }
   | TypeVar(_) => IdentC
-  | Option(t) => OptionC(t |> typToConverter_(~exportTypeMap))
+  | Option(t) =>
+    OptionC(t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles))
   | Array(t) =>
-    let converter = t |> typToConverter_(~exportTypeMap);
+    let converter =
+      t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
     converter == IdentC ? IdentC : ArrayC(converter);
   | Object(_) => IdentC
   | Record(fields) =>
@@ -92,14 +103,18 @@ let rec typToConverter_ =
            (
              lbl,
              (optionalness == Mandatory ? t : Option(t))
-             |> typToConverter_(~exportTypeMap),
+             |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles),
            )
          ),
     )
   | Function({argTypes, retType}) =>
     let argConverters =
-      argTypes |> List.map(typToGroupedArgConverter_(~exportTypeMap));
-    let retConverter = retType |> typToConverter_(~exportTypeMap);
+      argTypes
+      |> List.map(
+           typToGroupedArgConverter_(~exportTypeMap, ~typesFromOtherFiles),
+         );
+    let retConverter =
+      retType |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
     if (retConverter == IdentC
         && argConverters
         |> List.for_all(converter =>
@@ -110,20 +125,25 @@ let rec typToConverter_ =
       FunctionC((argConverters, retConverter));
     };
   }
-and typToGroupedArgConverter_ = (~exportTypeMap, typ) =>
+and typToGroupedArgConverter_ = (~exportTypeMap, ~typesFromOtherFiles, typ) =>
   switch (typ) {
   | Object(fields) =>
     GroupConverter(
       fields
       |> List.map(((s, _optionalness, t)) =>
-           (s, t |> typToConverter_(~exportTypeMap))
+           (s, t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles))
          ),
     )
-  | _ => ArgConverter(Nolabel, typ |> typToConverter_(~exportTypeMap))
+  | _ =>
+    ArgConverter(
+      Nolabel,
+      typ |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles),
+    )
   };
 
-let typToConverter = (~language, ~exportTypeMap, typ) => {
-  let converter = typ |> typToConverter_(~exportTypeMap);
+let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
+  let converter =
+    typ |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
   if (Debug.converter) {
     logItem(
       "Converter typ:%s converter:%s\n",

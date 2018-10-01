@@ -127,6 +127,42 @@ let translateSignatureItem =
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   };
 
+let typeDeclarationsOfStructItem = structItem =>
+  switch (structItem) {
+  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} => typeDeclarations
+  | _ => []
+  };
+
+let typeDeclarationsOfSignature = signatureItem =>
+  switch (signatureItem) {
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} => typeDeclarations
+  | _ => []
+  };
+
+let inputCmtToTypeDeclarations = inputCMT: list(CodeItem.t) => {
+  let {Cmt_format.cmt_annots, _} = inputCMT;
+  let typeDeclarations =
+    (
+      switch (cmt_annots) {
+      | Implementation(structure) =>
+        structure.Typedtree.str_items
+        |> List.map(structItem => structItem |> typeDeclarationsOfStructItem)
+      | Interface(signature) =>
+        signature.Typedtree.sig_items
+        |> List.map(signatureItem =>
+             signatureItem |> typeDeclarationsOfSignature
+           )
+      | _ => []
+      }
+    )
+    |> List.concat;
+  typeDeclarations
+  |> List.map(typeDeclaration =>
+       (typeDeclaration |> CodeItem.translateTypeDecl).codeItems
+     )
+  |> List.concat;
+};
+
 let cmtToCodeItems =
     (
       ~config,
@@ -183,7 +219,12 @@ let emitCodeItems =
     ) => {
   let codeText =
     codeItems
-    |> EmitJs.emitCodeItems(~language, ~outputFileRelative, ~resolver);
+    |> EmitJs.emitCodeItems(
+         ~language,
+         ~outputFileRelative,
+         ~resolver,
+         ~inputCmtToTypeDeclarations,
+       );
   let fileContents =
     signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText);
 

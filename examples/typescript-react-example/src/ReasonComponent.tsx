@@ -42,4 +42,4 @@ export type t =
   | TB
   | TC;
 export const tToString: (_1:t) => string = ReasonComponentBS.tToString;
-export const useRecordsCoord: (_1:Records_coord) => number = ReasonComponentBS.useRecordsCoord;
+export const useRecordsCoord: (_1:Records_coord) => number = function _(Arg1) { const result = ReasonComponentBS.useRecordsCoord([Arg1.x, Arg1.y, (Arg1.z == null ? undefined : Arg1.z)]); return result };

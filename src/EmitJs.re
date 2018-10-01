@@ -3,6 +3,10 @@ open GenFlowCommon;
 type env = {
   requires: ModuleNameMap.t(ImportPath.t),
   externalReactClass: list(CodeItem.externalReactClass),
+  /* For each .cmt we import types from, keep the map of exported types. */
+  cmtExportTypeMapCache: StringMap.t(StringMap.t((list(string), typ))),
+  /* Map of types imported from other files. */
+  typesFromOtherFiles: StringMap.t((list(string), typ)),
 };
 
 let requireModule = (~requires, ~importPath, moduleName) =>
@@ -39,7 +43,14 @@ let createExportTypeMap = (~language, codeItems) => {
   codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
-let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
+let emitCodeItems =
+    (
+      ~language,
+      ~outputFileRelative,
+      ~resolver,
+      ~inputCmtToTypeDeclarations,
+      codeItems,
+    ) => {
   let requireBuffer = Buffer.create(100);
   let importTypeBuffer = Buffer.create(100);
   let exportBuffer = Buffer.create(100);
@@ -52,20 +63,47 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
   let require = line__(requireBuffer);
   let export = line__(exportBuffer);
 
-  let emitImportType = (~language, importType) =>
-    (
-      switch (importType) {
-      | CodeItem.ImportComment(s) => s
-      | ImportTypeAs({typeName, asTypeName, importPath, cmtFile: _}) =>
-        EmitTyp.emitImportTypeAs(
-          ~language,
-          ~typeName,
-          ~asTypeName,
-          ~importPath,
-        )
-      }
-    )
-    |> line__(importTypeBuffer);
+  let emitImportType = (~language, ~env, importType) =>
+    switch (importType) {
+    | CodeItem.ImportComment(s) =>
+      s |> line__(importTypeBuffer);
+      env;
+    | ImportTypeAs({typeName, asTypeName, importPath, cmtFile}) =>
+      EmitTyp.emitImportTypeAs(~language, ~typeName, ~asTypeName, ~importPath)
+      |> line__(importTypeBuffer);
+
+      switch (asTypeName, cmtFile) {
+      | (None, _)
+      | (_, None) => env
+      | (Some(asType), Some(cmtFile)) =>
+        let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
+          switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
+          | x => env.typesFromOtherFiles |> StringMap.add(asType, x)
+          | exception Not_found => exportTypeMapFromCmt
+          };
+        switch (env.cmtExportTypeMapCache |> StringMap.find(cmtFile)) {
+        | exportTypeMapFromCmt => {
+            ...env,
+            typesFromOtherFiles:
+              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+          }
+        | exception Not_found =>
+          let exportTypeMapFromCmt =
+            Cmt_format.read_cmt(cmtFile)
+            |> inputCmtToTypeDeclarations
+            |> createExportTypeMap(~language);
+          let cmtExportTypeMapCache =
+            env.cmtExportTypeMapCache
+            |> StringMap.add(cmtFile, exportTypeMapFromCmt);
+          {
+            ...env,
+            cmtExportTypeMapCache,
+            typesFromOtherFiles:
+              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+          };
+        };
+      };
+    };
 
   let emitExportType =
       (~language, {CodeItem.opaque, typeVars, typeName, comment, typ}) =>
@@ -100,14 +138,20 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       )
     };
 
-  let emitCodeItem = (~typToConverter, env, codeItem) => {
+  let emitCodeItem = (~exportTypeMap, env, codeItem) => {
+    let typToConverter = typ =>
+      typ
+      |> Converter.typToConverter(
+           ~language,
+           ~exportTypeMap,
+           ~typesFromOtherFiles=env.typesFromOtherFiles,
+         );
     if (Debug.codeItems) {
       logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~language));
     };
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
-      emitImportType(~language, importType);
-      env;
+      emitImportType(~language, ~env, importType)
 
     | ExportType(exportType) =>
       emitExportType(~language, exportType);
@@ -286,19 +330,22 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
              importPath,
            );
       {
+        ...env,
         requires,
         externalReactClass: [externalReactClass, ...env.externalReactClass],
       };
     };
   };
 
-  let initialEnv = {requires: ModuleNameMap.empty, externalReactClass: []};
-  let typToConverter = {
-    let exportTypeMap = codeItems |> createExportTypeMap(~language);
-    typ => typ |> Converter.typToConverter(~language, ~exportTypeMap);
+  let initialEnv = {
+    requires: ModuleNameMap.empty,
+    externalReactClass: [],
+    cmtExportTypeMapCache: StringMap.empty,
+    typesFromOtherFiles: StringMap.empty,
   };
+  let exportTypeMap = codeItems |> createExportTypeMap(~language);
   let finalEnv =
-    codeItems |> List.fold_left(emitCodeItem(~typToConverter), initialEnv);
+    codeItems |> List.fold_left(emitCodeItem(~exportTypeMap), initialEnv);
 
   if (finalEnv.externalReactClass != []) {
     EmitTyp.requireReact(~language) |> require;
