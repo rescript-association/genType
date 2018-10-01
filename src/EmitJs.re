@@ -305,9 +305,9 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     externalReactClass: [],
   };
   let envWithExportTypeMap =
-    List.fold_left(updateExportTypeMap, initialEnv, codeItems);
+    codeItems |> List.fold_left(updateExportTypeMap, initialEnv);
   let finalEnv =
-    List.fold_left(emitCodeItem, envWithExportTypeMap, codeItems);
+    codeItems |> List.fold_left(emitCodeItem, envWithExportTypeMap);
 
   if (finalEnv.externalReactClass != []) {
     EmitTyp.requireReact(~language) |> require;
