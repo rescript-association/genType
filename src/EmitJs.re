@@ -2,7 +2,6 @@ open GenFlowCommon;
 
 type env = {
   requires: ModuleNameMap.t(ImportPath.t),
-  exportTypeMap: StringMap.t((list(string), typ)),
   externalReactClass: list(CodeItem.externalReactClass),
 };
 
@@ -74,11 +73,10 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       )
     };
 
-  let emitCodeItem = (env, codeItem) => {
+  let emitCodeItem = (~typToConverter, env, codeItem) => {
     if (Debug.codeItems) {
       logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~language));
     };
-    let {exportTypeMap} = env;
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
       emitImportType(~language, importType);
@@ -104,8 +102,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
       let moduleNameBs = moduleName |> ModuleName.forBsFile;
       let requires =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
-      let converter =
-        typ |> Converter.typToConverter(~language, ~exportTypeMap);
+      let converter = typ |> typToConverter;
 
       "export const "
       ++ (id |> Ident.name |> EmitTyp.ofType(~language, ~typ))
@@ -140,8 +137,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         let args =
           argTypes
           |> List.mapi((i, typ) => {
-               let converter =
-                 typ |> Converter.typToConverter(~language, ~exportTypeMap);
+               let converter = typ |> typToConverter;
                let arg = EmitText.argi(i + 1);
                let v = arg |> Converter.toReason(~converter);
                (arg, v);
@@ -174,8 +170,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
         componentType,
         typ,
       }) =>
-      let converter =
-        typ |> Converter.typToConverter(~language, ~exportTypeMap);
+      let converter = typ |> typToConverter;
       let importPath =
         ModuleResolver.resolveModule(
           ~outputFileRelative,
@@ -264,14 +259,13 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
              importPath,
            );
       {
-        ...env,
         requires,
         externalReactClass: [externalReactClass, ...env.externalReactClass],
       };
     };
   };
 
-  let updateExportTypeMap = (env, codeItem) => {
+  let updateExportTypeMap = (exportTypeMap, codeItem) => {
     let addExportType = ({typeName, typeVars, typ}: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
@@ -282,11 +276,7 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
           typ |> EmitTyp.typToString(~language),
         );
       };
-      {
-        ...env,
-        exportTypeMap:
-          env.exportTypeMap |> StringMap.add(typeName, (typeVars, typ)),
-      };
+      exportTypeMap |> StringMap.add(typeName, (typeVars, typ));
     };
     switch (codeItem) {
     | CodeItem.ExportType(exportType) => exportType |> addExportType
@@ -295,19 +285,18 @@ let emitCodeItems = (~language, ~outputFileRelative, ~resolver, codeItems) => {
     | ImportType(_)
     | ExportVariantType(_)
     | ConstructorBinding(_)
-    | ExternalReactClass(_) => env
+    | ExternalReactClass(_) => exportTypeMap
     };
   };
 
-  let initialEnv = {
-    requires: ModuleNameMap.empty,
-    exportTypeMap: StringMap.empty,
-    externalReactClass: [],
+  let initialEnv = {requires: ModuleNameMap.empty, externalReactClass: []};
+  let typToConverter = {
+    let exportTypeMap =
+      codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
+    typ => typ |> Converter.typToConverter(~language, ~exportTypeMap);
   };
-  let envWithExportTypeMap =
-    codeItems |> List.fold_left(updateExportTypeMap, initialEnv);
   let finalEnv =
-    codeItems |> List.fold_left(emitCodeItem, envWithExportTypeMap);
+    codeItems |> List.fold_left(emitCodeItem(~typToConverter), initialEnv);
 
   if (finalEnv.externalReactClass != []) {
     EmitTyp.requireReact(~language) |> require;
