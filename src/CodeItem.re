@@ -125,7 +125,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
 let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
   getAttributePayload(checkText, attributes) != None;
 
-let getGenFlowKind = (attributes: Typedtree.attributes) =>
+let getGenTypeKind = (attributes: Typedtree.attributes) =>
   if (hasAttribute(tagIsGenType, attributes)) {
     GenType;
   } else if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
@@ -309,7 +309,7 @@ let translateStructValue =
     (~language, ~propsTypeGen, ~moduleName, valueBinding): translation => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
-  switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
+  switch (vb_pat.pat_desc, getGenTypeKind(vb_attributes)) {
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
   | (Tpat_var(id, _), GenType) => id |> translateId(~moduleName, ~typeExpr)
@@ -327,7 +327,7 @@ let translateSignatureValue =
     : translation => {
   let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
   let typeExpr = val_desc.ctyp_type;
-  switch (val_id, getGenFlowKind(val_attributes)) {
+  switch (val_id, getGenTypeKind(val_attributes)) {
   | (id, GenType) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
   | (id, GenType) => id |> translateId(~moduleName, ~typeExpr)
@@ -351,8 +351,8 @@ let translatePrimitive =
   let importPath = path |> ImportPath.fromStringUnsafe;
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type |> Dependencies.translateTypeExpr;
-  let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
-  switch (typeExprTranslation.typ, genFlowKind) {
+  let genTypeKind = getGenTypeKind(valueDescription.val_attributes);
+  switch (typeExprTranslation.typ, genTypeKind) {
   | (Ident("ReasonReact_reactClass", []), GenType) when path != "" => {
       dependencies: [],
       codeItems: [ExternalReactClass({componentName, importPath})],
@@ -371,7 +371,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
-    getGenFlowKind(dec.typ_attributes),
+    getGenTypeKind(dec.typ_attributes),
   ) {
   | (typeParams, Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
     let fieldTranslations =

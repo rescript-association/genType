@@ -43,40 +43,40 @@ let sortcodeItemsByPriority = codeItems => {
   sortedCodeItems^;
 };
 
-let hasGenFlowAnnotation = attributes =>
-  CodeItem.getGenFlowKind(attributes) != NoGenType;
+let hasGenTypeAnnotation = attributes =>
+  CodeItem.getGenTypeKind(attributes) != NoGenType;
 
-let structItemHasGenFlowAnnotation = structItem =>
+let structItemHasGenTypeAnnotation = structItem =>
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenFlowAnnotation)
+    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
-    |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenFlowAnnotation)
+    |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenTypeAnnotation)
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenFlowAnnotation
+    valueDescription.val_attributes |> hasGenTypeAnnotation
   | _ => false
   };
 
-let signatureItemHasGenFlowAnnotation = signatureItem =>
+let signatureItemHasGenTypeAnnotation = signatureItem =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenFlowAnnotation)
+    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenFlowAnnotation
+    valueDescription.val_attributes |> hasGenTypeAnnotation
   | _ => false
   };
 
-let cmtHasGenFlowAnnotations = inputCMT =>
+let cmtHasGenTypeAnnotations = inputCMT =>
   switch (inputCMT.Cmt_format.cmt_annots) {
   | Implementation(structure) =>
     structure.Typedtree.str_items
-    |> List.exists(structItemHasGenFlowAnnotation)
+    |> List.exists(structItemHasGenTypeAnnotation)
   | Interface(signature) =>
     signature.Typedtree.sig_items
-    |> List.exists(signatureItemHasGenFlowAnnotation)
+    |> List.exists(signatureItemHasGenTypeAnnotation)
   | _ => false
   };
 
@@ -222,7 +222,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
           EmitTyp.shimExtension(~language=config.language),
         ],
       );
-    if (inputCMT |> cmtHasGenFlowAnnotations) {
+    if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
       |> cmtToCodeItems(
            ~config,
