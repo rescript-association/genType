@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent("App");
 
-[@genFlow]
+[@genType]
 let make = (_children) => {
     ...component,
     render: _self => {
