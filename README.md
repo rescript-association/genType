@@ -1,6 +1,6 @@
-# Reason genFlow 0.11.0
+# Reason genType 0.11.0
 
-> **Disclosure:** This project started out as an experiment for better Flow integration, but it's actually also working with TypeScript and an untyped back-end. The project and its files/annotations are gradually being renamed from "genFlow" to "genType".
+> **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`.
 
 `genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components.
 
