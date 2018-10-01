@@ -1,3 +1,8 @@
+# 0.11.0
+  [Import type definitions from other files](https://github.com/cristianoc/genFlow/issues/43).
+
+  Allow gentypeconfig.json in addition to genflowconfig.json.
+
 # 0.10.0
   [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37).
   
