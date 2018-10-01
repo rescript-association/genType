@@ -52,10 +52,10 @@ type t =
   | ExportType(exportType)
   | ExportVariantType(exportVariantType);
 
-type genFlowKind =
-  | NoGenFlow
-  | GenFlow
-  | GenFlowOpaque;
+type genTypeKind =
+  | NoGenType
+  | GenType
+  | GenTypeOpaque;
 
 type translation = {
   dependencies: list(Dependencies.t),
@@ -127,11 +127,11 @@ let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
 
 let getGenFlowKind = (attributes: Typedtree.attributes) =>
   if (hasAttribute(tagIsGenType, attributes)) {
-    GenFlow;
-  } else if (hasAttribute(tagIsGenFlowOpaque, attributes)) {
-    GenFlowOpaque;
+    GenType;
+  } else if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
+    GenTypeOpaque;
   } else {
-    NoGenFlow;
+    NoGenType;
   };
 
 let createFunctionType = (typeVars, argTypes, retType) =>
@@ -310,9 +310,9 @@ let translateStructValue =
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;
   switch (vb_pat.pat_desc, getGenFlowKind(vb_attributes)) {
-  | (Tpat_var(id, _), GenFlow) when Ident.name(id) == "make" =>
+  | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
-  | (Tpat_var(id, _), GenFlow) => id |> translateId(~moduleName, ~typeExpr)
+  | (Tpat_var(id, _), GenType) => id |> translateId(~moduleName, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -328,9 +328,9 @@ let translateSignatureValue =
   let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
   let typeExpr = val_desc.ctyp_type;
   switch (val_id, getGenFlowKind(val_attributes)) {
-  | (id, GenFlow) when Ident.name(id) == "make" =>
+  | (id, GenType) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
-  | (id, GenFlow) => id |> translateId(~moduleName, ~typeExpr)
+  | (id, GenType) => id |> translateId(~moduleName, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -353,7 +353,7 @@ let translatePrimitive =
     valueDescription.val_desc.ctyp_type |> Dependencies.translateTypeExpr;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typeExprTranslation.typ, genFlowKind) {
-  | (Ident("ReasonReact_reactClass", []), GenFlow) when path != "" => {
+  | (Ident("ReasonReact_reactClass", []), GenType) when path != "" => {
       dependencies: [],
       codeItems: [ExternalReactClass({componentName, importPath})],
     }
@@ -373,7 +373,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
     dec.typ_type.type_kind,
     getGenFlowKind(dec.typ_attributes),
   ) {
-  | (typeParams, Type_record(labelDeclarations, _), GenFlow | GenFlowOpaque) =>
+  | (typeParams, Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_type, ld_attributes}) => {
@@ -412,8 +412,8 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
    *
    *     type list('t) = List.t('t');
    */
-  | (typeParams, Type_abstract, GenFlow | GenFlowOpaque)
-  | (typeParams, Type_variant(_), GenFlowOpaque) =>
+  | (typeParams, Type_abstract, GenType | GenTypeOpaque)
+  | (typeParams, Type_variant(_), GenTypeOpaque) =>
     let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
     switch (dec.typ_manifest) {
@@ -443,7 +443,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       ];
       {dependencies: typeExprTranslation.dependencies, codeItems};
     };
-  | (astTypeParams, Type_variant(constructorDeclarations), GenFlow)
+  | (astTypeParams, Type_variant(constructorDeclarations), GenType)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
     let variantTypeName = Ident.name(dec.typ_id);
     let resultTypesDepsAndVariantLeafBindings = {

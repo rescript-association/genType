@@ -44,7 +44,7 @@ let sortcodeItemsByPriority = codeItems => {
 };
 
 let hasGenFlowAnnotation = attributes =>
-  CodeItem.getGenFlowKind(attributes) != NoGenFlow;
+  CodeItem.getGenFlowKind(attributes) != NoGenType;
 
 let structItemHasGenFlowAnnotation = structItem =>
   switch (structItem) {
