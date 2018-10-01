@@ -2,11 +2,11 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
+import * as Records from "./nested/Records";
 import * as Types from "./nested/Types";
 import ReasonComponent from "./ReasonComponent";
 import { A, B, minus, tToString } from "./ReasonComponent";
 import { t, TA, TB } from "./ReasonComponent";
-import * as Records from "./Records";
 import registerServiceWorker from "./registerServiceWorker";
 
 const minusOne: number = minus({ second: 1 });

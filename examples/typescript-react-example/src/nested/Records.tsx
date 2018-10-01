@@ -9,7 +9,7 @@ const RecordsBS = require("./Records.bs");
 // No need to import locally visible type person. Make sure it is also marked with @genType
 // No need to import locally visible type record. Make sure it is also marked with @genType
 
-import {list} from '../src/shims/ReasonPervasives.shim';
+import {list} from '../../src/shims/ReasonPervasives.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type coord = {x:number, y:number, z?:number};
