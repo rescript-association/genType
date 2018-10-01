@@ -10,6 +10,8 @@ const ReasonReact = require("reason-react/src/ReasonReact.js");
 // No need to import locally visible type person. Make sure it is also marked with @genType
 // No need to import locally visible type t. Make sure it is also marked with @genType
 
+import {coord as Recordscoord} from '../src/nested/Records';
+
 import {list} from '../src/shims/ReasonPervasives.shim';
 
 import {t as Typest} from '../src/nested/Types';
@@ -40,3 +42,4 @@ export type t =
   | TB
   | TC;
 export const tToString: (_1:t) => string = ReasonComponentBS.tToString;
+export const useRecordsCoord: (_1:Recordscoord) => number = ReasonComponentBS.useRecordsCoord;

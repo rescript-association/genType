@@ -57,9 +57,14 @@ function tToString(t) {
   }
 }
 
+function useRecordsCoord(param) {
+  return param[/* x */0] + param[/* y */1] | 0;
+}
+
 exports.component = component;
 exports.make = make;
 exports.minus = minus;
 exports.useTypeDefinedInAnotherModule = useTypeDefinedInAnotherModule;
 exports.tToString = tToString;
+exports.useRecordsCoord = useRecordsCoord;
 /* component Not a pure module */

@@ -49,3 +49,6 @@ let tToString = t =>
   | B(i) => "B(" ++ string_of_int(i) ++ ")"
   | C(s) => "C(" ++ s ++ ")"
   };
+
+[@genType]
+let useRecordsCoord = ({Records.x, y}) => x + y;
