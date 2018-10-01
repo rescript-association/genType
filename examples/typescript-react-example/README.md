@@ -8,8 +8,11 @@ Make sure to build genflow.native, as stated in the project root README.
 ## Running the Project
 
 ```sh
-npm run build
+# Start the Reason watcher.
 npm run start
+
+# In another tab: start the TypeScript watcher.
+npm run ts:watch
 ```
 
 
