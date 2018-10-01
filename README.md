@@ -1,4 +1,4 @@
-# Reason genFlow 0.10.0
+# Reason genFlow 0.11.0
 
 > **Disclosure:** This project started out as an experiment for better Flow integration, but it's actually also working with TypeScript and an untyped back-end. The project and its files/annotations are gradually being renamed from "genFlow" to "genType".
 
@@ -37,10 +37,10 @@ When a `[@genType]` annotation is added to an external `ReasonReact.reactclass` 
 # Will download and automatically untar the file in the current directory as genflow.native
 
 # MacOS
-curl -L https://github.com/cristianoc/genFlow/releases/download/v0.10.0/genflow-macos.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genFlow/releases/download/v0.11.0/genflow-macos.tar.gz | tar xz
 
 # Linux
-curl -L https://github.com/cristianoc/genFlow/releases/download/v0.10.0/genflow-linux.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genFlow/releases/download/v0.11.0/genflow-linux.tar.gz | tar xz
 ```
 
 # Quick Start: Set up genFlow in existing TS / Flow / BuckleScript project
