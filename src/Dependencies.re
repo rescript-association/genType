@@ -1,7 +1,6 @@
 open GenFlowCommon;
 
 type t =
-  /* Import a type that we expect to also be genFlow'd. */
   | TypeAtPath(Path.t);
 
 type translation = {
@@ -14,7 +13,7 @@ let rec typePathToName = typePath =>
   | Path.Pident(id) => Ident.name(id)
   | Pdot(p, s, _pos) => typePathToName(p) ++ "_" ++ s
   | Papply(p1, p2) =>
-    typePathToName(p1) ++ "__unsupported_genFlow__" ++ typePathToName(p2)
+    typePathToName(p1) ++ "__unsupported_genType__" ++ typePathToName(p2)
   };
 
 let toString = dep =>
@@ -293,7 +292,7 @@ and translateTypeExpr_ =
       typ: Ident(typePathToName(path), []),
     }
   /* This type doesn't have any built in converter. But what if it was a
-   * genFlow variant type? */
+   * genType variant type? */
   /*
    * Built-in standard library parameterized types (aside from option) are
    * like custom parameterized types in that they don't undergo conversion,
