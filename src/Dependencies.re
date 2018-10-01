@@ -12,7 +12,7 @@ type translation = {
 let rec typePathToName = typePath =>
   switch (typePath) {
   | Path.Pident(id) => Ident.name(id)
-  | Pdot(p, s, _pos) => typePathToName(p) ++ s
+  | Pdot(p, s, _pos) => typePathToName(p) ++ "_" ++ s
   | Papply(p1, p2) =>
     typePathToName(p1) ++ "__unsupported_genFlow__" ++ typePathToName(p2)
   };

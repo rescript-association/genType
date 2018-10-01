@@ -10,11 +10,11 @@ const ReasonReact = require("reason-react/src/ReasonReact.js");
 // No need to import locally visible type person. Make sure it is also marked with @genType
 // No need to import locally visible type t. Make sure it is also marked with @genType
 
-import {coord as Recordscoord} from '../src/nested/Records';
+import {coord as Records_coord} from '../src/nested/Records';
 
 import {list} from '../src/shims/ReasonPervasives.shim';
 
-import {t as Typest} from '../src/nested/Types';
+import {t as Types_t} from '../src/nested/Types';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type person<a> = {name:string, surname:string, type:string, polymorphicPayload:a};
@@ -27,7 +27,7 @@ export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReas
   }));
 export default ReasonComponent;
 export const minus: (_1:{first?:number; second:number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };
-export const useTypeDefinedInAnotherModule: (_1:Typest) => Typest = ReasonComponentBS.useTypeDefinedInAnotherModule;
+export const useTypeDefinedInAnotherModule: (_1:Types_t) => Types_t = ReasonComponentBS.useTypeDefinedInAnotherModule;
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TA { protected opaque: any }; /* simulate opaque types */
 export const A: TA = 0 as any;
@@ -42,4 +42,4 @@ export type t =
   | TB
   | TC;
 export const tToString: (_1:t) => string = ReasonComponentBS.tToString;
-export const useRecordsCoord: (_1:Recordscoord) => number = ReasonComponentBS.useRecordsCoord;
+export const useRecordsCoord: (_1:Records_coord) => number = ReasonComponentBS.useRecordsCoord;

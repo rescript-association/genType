@@ -260,9 +260,9 @@ let translateMake =
       argTypes: [propOrChildren, ...childrenOrNil],
       retType:
         Ident(
-          "ReasonReactcomponentSpec" | "ReactcomponentSpec" |
-          "ReasonReactcomponent" |
-          "Reactcomponent",
+          "ReasonReact_componentSpec" | "React_componentSpec" |
+          "ReasonReact_component" |
+          "React_component",
           [_state, ..._],
         ),
     }) =>
@@ -353,7 +353,7 @@ let translatePrimitive =
     valueDescription.val_desc.ctyp_type |> Dependencies.translateTypeExpr;
   let genFlowKind = getGenFlowKind(valueDescription.val_attributes);
   switch (typeExprTranslation.typ, genFlowKind) {
-  | (Ident("ReasonReactreactClass", []), GenFlow) when path != "" => {
+  | (Ident("ReasonReact_reactClass", []), GenFlow) when path != "" => {
       dependencies: [],
       codeItems: [ExternalReactClass({componentName, importPath})],
     }

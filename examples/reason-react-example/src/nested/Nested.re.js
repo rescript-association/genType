@@ -3,7 +3,7 @@
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 const NestedBS = require("./Nested.bs");
 
-import type {variant as Component2variant} from '../../src/basics/Component2.re';
+import type {variant as Component2_variant} from '../../src/basics/Component2.re';
 
 export opaque type VariantA = any;
 export const A: VariantA = 0;
@@ -15,4 +15,4 @@ export type variant =
   | VariantA
   | VariantB
   | VariantC;
-export const consumeVariant: (Component2variant) => number = NestedBS.consumeVariant;
+export const consumeVariant: (Component2_variant) => number = NestedBS.consumeVariant;
