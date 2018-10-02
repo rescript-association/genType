@@ -62,7 +62,7 @@ Every genType powered project requires a configuration file in the root of the p
 
 ```ts
 {
-  "language" : "flow" | "typescript",
+  "language" : "typescript" | "flow" | "untyped",
   "shims": [
     "ReasonReact=ReactShim"
   ]
@@ -70,9 +70,9 @@ Every genType powered project requires a configuration file in the root of the p
 ```
 
 - **language**
-  - "typescript" : Generate `*.tsx` files with TypeScript types
-  - "flow": Generate `*.re.js` files with Flow types
-  - "untyped": Generate untyped `*.re.js` files. Useful if you are interested in the generated wrappers, but not the types.
+  - "typescript" : Generate `*.tsx` files with TypeScript types.
+  - "flow": Generate `*.re.js` files with Flow types.
+  - "untyped": Generate `*.re.js` files with no type annotations.
 
 - **shims**
   - `Array<string>` with following format: `"ReasonModule=JavaScriptModule"`

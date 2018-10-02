@@ -1,4 +1,4 @@
-# reason-react-example
+# untyped-react-example
 
 For the setup, run `npm install`.
 Make sure to build gentype.native, as stated in the project root README.
