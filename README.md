@@ -47,7 +47,7 @@ curl -L https://github.com/cristianoc/genType/releases/download/v0.12.0/gentype-
 
 There are some steps to set up `genType` in a project.
 Some of this might become simpler if `genType` gets integrated
-into bucklescript in future. The current requirement is `bs-platform 4.0.3` or later.
+into bucklescript in future. The current requirement is `bs-platform 4.0.5` or later.
 
 0. Build the gentype.native binary (`$GENTYPE_REPO/lib/bs/native/gentype.native`) or retrieve it from our prebuilt releases
 1. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENTYPE_REPO/lib/bs/native/gentype.native`, before building a project, or starting a watcher / vscode with bsb integration.
