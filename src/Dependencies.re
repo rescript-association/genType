@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 type t =
   | TypeAtPath(Path.t);

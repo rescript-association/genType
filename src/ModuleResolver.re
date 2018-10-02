@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 module ModuleNameMap = Map.Make(ModuleName);
 

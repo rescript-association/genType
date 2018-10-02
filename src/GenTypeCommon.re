@@ -27,7 +27,7 @@ let getLogFile = () =>
       open_out_gen(
         [Open_creat, Open_text, Open_append],
         0o640,
-        Filename.concat(projectRoot^, ".genFlowLog"),
+        Filename.concat(projectRoot^, ".genTypeLog"),
       );
     logFile := Some(f);
     f;

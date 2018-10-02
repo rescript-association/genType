@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 type fileAction =
   | NoMatch /* No @genType annotation found. */

@@ -1,3 +1,7 @@
+# 0.12.0
+  Rename the project to genType, the executable to gentype.native,
+  the config to gentypeconfig.json, the log to .genTypeLog.
+
 # 0.11.0
   [Import type definitions from other files](https://github.com/cristianoc/genFlow/issues/43).
 

@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 type typeMap = StringMap.t((list(string), typ));
 

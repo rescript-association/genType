@@ -1,4 +1,4 @@
-open GenFlowCommon;
+open GenTypeCommon;
 
 type importTypeAs = {
   typeName: string,

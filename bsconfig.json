@@ -9,7 +9,7 @@
   "entries": [
     {
       "backend": "native",
-      "main-module": "GenFlow"
+      "main-module": "GenType"
     }
   ],
   "ocaml-flags": ["-bin-annot"],

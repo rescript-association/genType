@@ -4,7 +4,7 @@
 
 module StringSet = Set.Make(String);
 
-open GenFlowCommon;
+open GenTypeCommon;
 
 let getPriority = x =>
   switch (x) {
