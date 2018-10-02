@@ -16,8 +16,9 @@ If a typed back-end is used, `genType` generates typed JS wrappers. In the other
 
 Wrappers for using ReasonReact components from JavaScript are generated when the annotation `[@genType] let make ...` is added to the component definition.
 
-[Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/k9QYjq0c8rA)
-[![IMAGE ALT TEXT HERE](assets/genFlowInAction.png)](https://youtu.be/k9QYjq0c8rA)
+[Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/EV12EbxCPjM)
+[![IMAGE ALT TEXT HERE](assets/genTypeDemo.png)](https://youtu.be/EV12EbxCPjM)
+
 
 # Download genType from Prebuilt Releases
 
