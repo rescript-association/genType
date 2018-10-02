@@ -37,10 +37,10 @@ When a `[@genType]` annotation is added to an external `ReasonReact.reactclass` 
 # Will download and automatically untar the file in the current directory as gentype.native
 
 # MacOS
-curl -L https://github.com/cristianoc/genFlow/releases/download/v0.11.0/gentype-macos.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.12.0/gentype-macos.tar.gz | tar xz
 
 # Linux
-curl -L https://github.com/cristianoc/genFlow/releases/download/v0.11.0/gentype-linux.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.12.0/gentype-linux.tar.gz | tar xz
 ```
 
 # Quick Start: Set up genType in existing TypeScript / Flow / BuckleScript project
