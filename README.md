@@ -1,4 +1,4 @@
-# Reason genType 0.11.0
+# Reason genType 0.12.0
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, change the path to use `gentype.native`, and the config file to be `gentypeconfig.json`.
 
