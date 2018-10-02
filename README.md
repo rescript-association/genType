@@ -14,21 +14,10 @@ If a typed back-end is used, `genType` generates typed JS wrappers. In the other
 
 -----
 
-Wrappers for using ReasonReact components from javascript are generated when the annotation `[@genType] let make ...` is added to the component definition.
+Wrappers for using ReasonReact components from JavaScript are generated when the annotation `[@genType] let make ...` is added to the component definition.
 
 [Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/k9QYjq0c8rA)
 [![IMAGE ALT TEXT HERE](assets/genFlowInAction.png)](https://youtu.be/k9QYjq0c8rA)
-
-
-When a `[@genType]` annotation is added to some declaration in e.g. `Module.re`, a file with typed bindings is generated (`Module.re.js` for Flow, `Module.tsx` for TypeScript). The annotation can be added to both value and type declarations.
-
-[Here is a video showing the generation of .re.js files.](https://youtu.be/0YLXGBiB9dY)
-[![IMAGE ALT TEXT HERE](assets/genFlow.png)](https://youtu.be/0YLXGBiB9dY)
-
-When a `[@genType]` annotation is added to an external `ReasonReact.reactclass` binding and to the `make` function that calls `ReasonReact.wrapJsForReason` with it, a function `checkJsWrapperType` is generated to catch type errors in wrapping the JS component.
-
-[Here is a video showing how to safely wrap JS components for use from Reason.](https://youtu.be/UKACByHmuQE)
-[![IMAGE ALT TEXT HERE](assets/genFlowWrapJsComponent.png)](https://youtu.be/UKACByHmuQE)
 
 # Download genType from Prebuilt Releases
 
@@ -51,7 +40,7 @@ into bucklescript in future. The current requirement is `bs-platform 4.0.5` or l
 0. Build the gentype.native binary (`$GENTYPE_REPO/lib/bs/native/gentype.native`) or retrieve it from our prebuilt releases
 1. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENTYPE_REPO/lib/bs/native/gentype.native`, before building a project, or starting a watcher / vscode with bsb integration.
 2. Add a file [`gentypeconfig.json`](examples/reason-react-example/gentypeconfig.json) in the project root, and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/reason-react-example/src/shims). An example for a ReasonReact->React shim can be found [here](examples/reason-react-example/src/shims/ReactShim.shim.js).
-3. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from javascript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
+3. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
 4. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re`  [example webpack.config.js](examples/reason-react-example/webpack.config.js).
 
 # genType Configuration
