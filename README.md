@@ -2,7 +2,7 @@
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, change the path to use `gentype.native`, and the config file to be `gentypeconfig.json`.
 
-`genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components.
+`genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript idiomatically. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components.
 
 The implementation performs a type-directed transformation of Reason programs after bucklescript compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is mapped to a JS function operating on the corresponding JS object `{x:3}`.
 
