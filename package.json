@@ -1,5 +1,5 @@
 {
-  "name": "genType",
+  "name": "gentype",
   "version": "0.12.0",
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
   "license": "MIT",

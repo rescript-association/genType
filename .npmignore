@@ -1,0 +1,17 @@
+.dockerignore
+.merlin
+Changes.md
+Dockerfile
+LICENSE
+README.md
+assets/*
+bsconfig.json
+create-release.sh
+examples/*
+jbuild-ignore
+lib/*
+node_modules/*
+package-lock.json
+package.json
+src/*
+!lib/gen*.tar.gz
