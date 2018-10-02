@@ -4,12 +4,11 @@
 
 `genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript idiomatically. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components.
 
-The implementation performs a type-directed transformation of Reason programs after bucklescript compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is mapped to a JS function operating on the corresponding JS object `{x:3}`.
+The implementation performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is mapped to a JS function operating on the corresponding JS object `{x:3}`.
 
 There are 3 back-ends, to choose if generated JS code is untyped, or typed with either [TypeScript](https://www.typescriptlang.org/) or [Flow](https://flow.org/en/).
-If a typed back-end is used, `genType` generates typed JS wrappers for ReasonReact components, and in the other direction, if you have ReasonReact wrappers for JS components, it generates code to checks that they are well typed.
+If a typed back-end is used, `genType` generates typed JS wrappers. In the other direction, if you have ReasonReact wrappers for JS components, it generates code to check that they are well typed.
 
-For more info on TypeScript support, see the companion project [genTypeScript](https://github.com/cristianoc/genTypeScript) .
 
 ### Work in progress, only for early adopters. It is possible that the workflow will change in future.
 
