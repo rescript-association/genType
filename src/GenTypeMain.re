@@ -246,6 +246,8 @@ let processCmtFile = (~signFile, ~config, cmt) => {
           ".re",
           EmitTyp.shimExtension(~language=config.language),
         ],
+        ~excludeFile=fname =>
+        fname == "React.re" || fname == "ReasonReact.re"
       );
     if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
