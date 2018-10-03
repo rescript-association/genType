@@ -67,10 +67,13 @@ let typToString = (~language) => renderString(~language);
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
 
+let flowExpectedError = "// $FlowExpectedError: Reason checked type sufficiently\n";
 let commentBeforeRequire = (~language) =>
-  language == Typescript ?
-    "// tslint:disable-next-line:no-var-requires\n" : "";
-
+  switch (language) {
+  | Typescript => "// tslint:disable-next-line:no-var-requires\n"
+  | Flow => flowExpectedError
+  | _ => ""
+  };
 let emitExportDefault = (~language, name) =>
   switch (language) {
   | Flow
@@ -88,7 +91,8 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
 
   switch (language) {
   | Flow =>
-    "export"
+    flowExpectedError
+    ++ "export"
     ++ (opaque ? " opaque " : " ")
     ++ "type "
     ++ typeName

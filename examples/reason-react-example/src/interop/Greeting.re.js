@@ -1,10 +1,13 @@
 /* @flow strict */
 
+// $FlowExpectedError: Reason checked type sufficiently
 const GreetingBS = require("./Greeting.bs");
+// $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
+// $FlowExpectedError: Reason checked type sufficiently
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, polymorphicProp:any, children?:any|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   GreetingBS.component,

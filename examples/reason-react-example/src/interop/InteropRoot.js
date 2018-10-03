@@ -28,5 +28,5 @@ const App = () => (
 );
 App.displayName = "ExampleInteropRoot";
 
-// $FlowFixMe
+// $FlowExpectedError: Reason checked type sufficiently
 ReactDOM.render(React.createElement(App), document.getElementById("index"));
