@@ -1,4 +1,8 @@
-/* @flow strict */
+/** 
+ * @flow strict
+ * @generated 
+ * @nolint
+ */
 
 // $FlowExpectedError: Reason checked type sufficiently
 const GreetingBS = require("./Greeting.bs");

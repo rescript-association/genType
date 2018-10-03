@@ -1,4 +1,8 @@
-/* @flow strict */
+/** 
+ * @flow strict
+ * @generated 
+ * @nolint
+ */
 
 // $FlowExpectedError: Reason checked type sufficiently
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
