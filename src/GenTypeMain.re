@@ -210,17 +210,18 @@ let cmtToCodeItems =
 
 let emitCodeItems =
     (
-      ~language,
+      ~config,
       ~outputFile,
       ~outputFileRelative,
       ~signFile,
       ~resolver,
       codeItems,
     ) => {
+  let language = config.language;
   let codeText =
     codeItems
     |> EmitJs.emitCodeItems(
-         ~language,
+         ~config,
          ~outputFileRelative,
          ~resolver,
          ~inputCmtToTypeDeclarations,
@@ -259,7 +260,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
            ~resolver,
          )
       |> emitCodeItems(
-           ~language=config.language,
+           ~config,
            ~outputFile,
            ~outputFileRelative,
            ~signFile,

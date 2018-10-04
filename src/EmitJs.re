@@ -47,12 +47,13 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
 
 let emitCodeItems =
     (
-      ~language,
+      ~config,
       ~outputFileRelative,
       ~resolver,
       ~inputCmtToTypeDeclarations,
       codeItems,
     ) => {
+  let language = config.language;
   let requireBuffer = Buffer.create(100);
   let importTypeBuffer = Buffer.create(100);
   let exportBuffer = Buffer.create(100);
@@ -132,7 +133,8 @@ let emitCodeItems =
         ++ ") {\n      return <"
         ++ componentName
         ++ " {...props}/>;\n    }";
-      EmitTyp.emitExportFunction(~name="checkJsWrapperType", s) |> export;
+      EmitTyp.emitExportFunction(~name="checkJsWrapperType", ~config, s)
+      |> export;
 
     | [_, ..._] =>
       export(
@@ -184,7 +186,7 @@ let emitCodeItems =
         |> Converter.toJS(~converter)
       )
       ++ ";"
-      |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~language)
+      |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~config)
       |> export;
       {...env, requires};
 
@@ -203,7 +205,7 @@ let emitCodeItems =
         |> EmitTyp.emitExportConst(
              ~name=variantName,
              ~typ=constructorType,
-             ~language,
+             ~config,
            )
         |> export;
       } else {
@@ -224,7 +226,7 @@ let emitCodeItems =
         |> EmitTyp.emitExportConst(
              ~name=variantName,
              ~typ=constructorType,
-             ~language,
+             ~config,
            )
         |> export;
       };
@@ -294,7 +296,7 @@ let emitCodeItems =
       EmitTyp.emitExportConstMany(
         ~name,
         ~typ=componentType,
-        ~language,
+        ~config,
         [
           "ReasonReact.wrapReasonForJs(",
           "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
@@ -316,7 +318,7 @@ let emitCodeItems =
       )
       |> export;
 
-      EmitTyp.emitExportDefault(~language, name) |> export;
+      EmitTyp.emitExportDefault(~config, name) |> export;
 
       emitCheckJsWrapperType(~env, ~propsTypeName);
 

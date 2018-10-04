@@ -75,17 +75,41 @@ let commentBeforeRequire = (~language) =>
   | _ => ""
   };
 
-let emitExportConst = (~name, ~typ, ~language, line) =>
-  "export const " ++ (name |> ofType(~language, ~typ)) ++ " = " ++ line;
-let emitExportConstMany = (~name, ~typ, ~language, lines) =>
-  lines |> String.concat("\n") |> emitExportConst(~name, ~typ, ~language);
-let emitExportFunction = (~name, line) => "export function " ++ name ++ line;
+let emitExportConst = (~name, ~typ, ~config, line) =>
+  switch (config.module_, config.language) {
+  | (_, Typescript)
+  | (ES6, _) =>
+    "export const "
+    ++ (name |> ofType(~language=config.language, ~typ))
+    ++ " = "
+    ++ line
+  | (CommonJS, _) =>
+    "const "
+    ++ (name |> ofType(~language=config.language, ~typ))
+    ++ " = "
+    ++ line
+    ++ ";\nexports."
+    ++ name
+    ++ " = "
+    ++ name
+  };
 
-let emitExportDefault = (~language, name) =>
-  switch (language) {
-  | Flow
-  | Typescript
-  | Untyped => "export default " ++ name ++ ";"
+let emitExportConstMany = (~name, ~typ, ~config, lines) =>
+  lines |> String.concat("\n") |> emitExportConst(~name, ~typ, ~config);
+
+let emitExportFunction = (~name, ~config, line) =>
+  switch (config.module_, config.language) {
+  | (_, Typescript)
+  | (ES6, _) => "export function " ++ name ++ line
+  | (CommonJS, _) =>
+    "function " ++ name ++ line ++ ";\nexports." ++ name ++ " = " ++ name
+  };
+
+let emitExportDefault = (~config, name) =>
+  switch (config.module_, config.language) {
+  | (_, Typescript)
+  | (ES6, _) => "export default " ++ name ++ ";"
+  | (CommonJS, _) => "exports.default = " ++ name ++ ";"
   };
 
 let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
