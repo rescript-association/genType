@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10.11
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout 
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v0-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v0-dependencies-
+
+      # build
+      - run: npm install
+      - run: npm run build
+
+      - save_cache:
+          key: v0-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+      - store_artifacts:
+          path: ./lib/bs/native/gentype.native
+          destination: gentype.linux.native
+
+# TODO: Github publish release
