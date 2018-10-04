@@ -32,11 +32,11 @@ let rec encode_aux (x : Ext_json_types.t )
   let a str = Buffer.add_string buf str in 
   match x with 
   | Null _ -> a "null"
-  | Str {str = s }  -> a (quot s)
-  | Flo {flo = s} -> 
+  | Str {str = s; _}  -> a (quot s)
+  | Flo {flo = s; _} -> 
     a s (* 
     since our parsing keep the original float representation, we just dump it as is, there is no cases like [nan] *)
-  | Arr  {content} -> 
+  | Arr  {content; _} -> 
     begin match content with 
       | [||] -> a "[]"
       | _ -> 
@@ -54,7 +54,7 @@ let rec encode_aux (x : Ext_json_types.t )
     end
   | True _ -> a "true"
   | False _ -> a "false"
-  | Obj {map} -> 
+  | Obj {map; _} -> 
     if String_map.is_empty map then 
       a "{}"
     else 

@@ -83,7 +83,7 @@ let combineTranslations = (translations: list(translation)): translation =>
 let getImportTypeName = importType =>
   switch (importType) {
   | ImportComment(s) => s
-  | ImportTypeAs({typeName}) => typeName
+  | ImportTypeAs({typeName, _}) => typeName
   };
 
 let toString = (~language, codeItem) =>
@@ -120,7 +120,11 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
     | PStr([
         {
           pstr_desc:
-            Pstr_eval({pexp_desc: Pexp_constant(Const_string(s, _))}, _),
+            Pstr_eval(
+              {pexp_desc: Pexp_constant(Const_string(s, _)), _},
+              _,
+            ),
+          _,
         },
       ]) =>
       Some(StringPayload(s))
@@ -205,7 +209,8 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Array(_)
   | Object(_)
   | Record(_) => typ
-  | Function({argTypes, retType}) => Function({typeVars, argTypes, retType})
+  | Function({argTypes, retType, _}) =>
+    Function({typeVars, argTypes, retType})
   };
 
 let translateId = (~moduleName, ~typeExpr, id): translation => {
@@ -272,6 +277,7 @@ let translateMake =
           "React_component",
           [_state, ..._],
         ),
+      _,
     }) =>
     /* Add children?:any to props type */
     let propsTypeArguments =
@@ -383,7 +389,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
   | (typeParams, Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
     let fieldTranslations =
       labelDeclarations
-      |> List.map(({Types.ld_id, ld_type, ld_attributes}) => {
+      |> List.map(({Types.ld_id, ld_type, ld_attributes, _}) => {
            let name =
              switch (ld_attributes |> getAttributePayload(tagIsGenTypeAs)) {
              | Some(StringPayload(s)) => s
@@ -393,11 +399,11 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
          });
     let dependencies =
       fieldTranslations
-      |> List.map(((_, {Dependencies.dependencies})) => dependencies)
+      |> List.map(((_, {Dependencies.dependencies, _})) => dependencies)
       |> List.concat;
     let fields =
       fieldTranslations
-      |> List.map(((name, {Dependencies.typ})) => {
+      |> List.map(((name, {Dependencies.typ, _})) => {
            let (optionalNess, typ') =
              switch (typ) {
              | Option(typ') => (NonMandatory, typ')
@@ -485,7 +491,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
 
 let typePathToImport =
     (
-      ~config as {modulesMap, language},
+      ~config as {modulesMap, language, _},
       ~outputFileRelative,
       ~resolver,
       typePath,

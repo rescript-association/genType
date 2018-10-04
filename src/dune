@@ -1,0 +1,11 @@
+(copy_files# ext/*.{ml,mli})
+(
+  executable
+    (public_name GenType.exe)
+
+    ; The main module that will become the binary.
+    (name GenType)
+
+    ; Depends on:
+    (libraries unix str compiler-libs.common)
+)

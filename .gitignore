@@ -6,3 +6,5 @@ esy.lock
 esy.lock.json
 lib/
 node_modules/
+/_build
+/genType.install

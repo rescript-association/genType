@@ -107,7 +107,7 @@ let rec typToConverter_ =
            )
          ),
     )
-  | Function({argTypes, retType}) =>
+  | Function({argTypes, retType, _}) =>
     let argConverters =
       argTypes
       |> List.map(

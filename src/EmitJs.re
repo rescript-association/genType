@@ -20,7 +20,7 @@ let requireModule = (~requires, ~importPath, moduleName) =>
 
 let createExportTypeMap = (~language, codeItems): typeMap => {
   let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
-    let addExportType = ({typeName, typeVars, typ}: CodeItem.exportType) => {
+    let addExportType = ({typeName, typeVars, typ, _}: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
           "Export Type: %s%s = %s\n",
@@ -124,7 +124,7 @@ let emitCodeItems =
     switch (env.externalReactClass) {
     | [] => ()
 
-    | [{componentName}] =>
+    | [{componentName, _}] =>
       let s =
         "("
         ++ (
