@@ -11,9 +11,14 @@ type language =
   | Typescript
   | Untyped;
 
+type module_ =
+  | CommonJS
+  | ES6;
+
 type config = {
   language,
   modulesMap: ModuleNameMap.t(ModuleName.t),
+  module_,
 };
 
 let projectRoot = ref("");
@@ -41,7 +46,8 @@ let logItem = x => {
 };
 
 let tagIsGenType = s => s == "genFlow" || s == "genType";
-let tagIsGenTypeAs = s => s == "genFlow" || s == "genType" || s == "genFlow.as" || s == "genType.as";
+let tagIsGenTypeAs = s =>
+  s == "genFlow" || s == "genType" || s == "genFlow.as" || s == "genType.as";
 let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "genFlow.opaque";
 
 type optionalness =

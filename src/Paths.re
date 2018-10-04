@@ -144,7 +144,11 @@ let getShims = json => {
   shims^;
 };
 
-let emptyConfig = {language: Flow, modulesMap: ModuleNameMap.empty};
+let emptyConfig = {
+  language: Flow,
+  modulesMap: ModuleNameMap.empty,
+  module_: ES6,
+};
 let readConfig = () => {
   let fromJson = json => {
     let languageString = json |> getLanguage;
@@ -179,7 +183,7 @@ let readConfig = () => {
       | "untyped" => Untyped
       | _ => Flow
       };
-    {language, modulesMap};
+    {...emptyConfig, language, modulesMap};
   };
 
   switch (getConfigFile()) {
