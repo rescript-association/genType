@@ -40,7 +40,11 @@ let getLogFile = () =>
   };
 
 let logItem = x => {
-  let outChannel = getLogFile();
+  let outChannel =
+    switch (Debug.channel) {
+    | Stdout => stdout
+    | Logfile => getLogFile()
+    };
   Printf.fprintf(outChannel, "  ");
   Printf.fprintf(outChannel, x);
 };

@@ -1,3 +1,7 @@
+type channel =
+  | Stdout
+  | Logfile;
+let channel = Stdout;
 let all = false;
 
 /* log Add and Remove and file actions to see that the cmt hook is working */
