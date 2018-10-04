@@ -14,7 +14,7 @@ install:
 build_script:
     - npm run build
     # Validate binary
-    - lib/bs/native/gentype.native --help
+    - lib\bs\native\gentype.native --help
 
 artifacts:
     - path: lib/bs/native/gentype.native
