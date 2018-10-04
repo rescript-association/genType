@@ -27,6 +27,26 @@ let emitExportType:
   ) =>
   string;
 
+let emitExportConst:
+  (
+    ~name: string,
+    ~typ: GenTypeCommon.typ,
+    ~language: GenTypeCommon.language,
+    string
+  ) =>
+  string;
+
+let emitExportConstMany:
+  (
+    ~name: string,
+    ~typ: GenTypeCommon.typ,
+    ~language: GenTypeCommon.language,
+    list(string)
+  ) =>
+  string;
+
+let emitExportFunction: (~name: string, string) => string;
+
 let emitExportDefault: (~language: language, string) => string;
 
 let fileHeader: (~language: language) => string;

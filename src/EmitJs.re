@@ -65,16 +65,6 @@ let emitCodeItems =
   let require = line__(requireBuffer);
   let export = line__(exportBuffer);
 
-  let emitExportConst = (~name, ~typ, line) =>
-    "export const "
-    ++ (name |> EmitTyp.ofType(~language, ~typ))
-    ++ " = "
-    ++ line;
-  let emitExportConstMany = (~name, ~typ, lines) =>
-    lines |> String.concat("\n") |> emitExportConst(~name, ~typ);
-  let emitExportFunction = (~name, line) =>
-    "export function " ++ name ++ line;
-
   let emitImportType = (~language, ~env, importType) =>
     switch (importType) {
     | CodeItem.ImportComment(s) =>
@@ -142,7 +132,7 @@ let emitCodeItems =
         ++ ") {\n      return <"
         ++ componentName
         ++ " {...props}/>;\n    }";
-      emitExportFunction(~name="checkJsWrapperType", s) |> export;
+      EmitTyp.emitExportFunction(~name="checkJsWrapperType", s) |> export;
 
     | [_, ..._] =>
       export(
@@ -194,7 +184,7 @@ let emitCodeItems =
         |> Converter.toJS(~converter)
       )
       ++ ";"
-      |> emitExportConst(~name=id |> Ident.name, ~typ)
+      |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~language)
       |> export;
       {...env, requires};
 
@@ -210,7 +200,11 @@ let emitCodeItems =
       if (argTypes == []) {
         recordAsInt
         ++ ";"
-        |> emitExportConst(~name=variantName, ~typ=constructorType)
+        |> EmitTyp.emitExportConst(
+             ~name=variantName,
+             ~typ=constructorType,
+             ~language,
+           )
         |> export;
       } else {
         let args =
@@ -227,7 +221,11 @@ let emitCodeItems =
           |> Runtime.emitRecordAsBlock(~language, ~args)
           |> mkReturn;
         EmitText.funDef(~args, ~mkBody, "")
-        |> emitExportConst(~name=variantName, ~typ=constructorType)
+        |> EmitTyp.emitExportConst(
+             ~name=variantName,
+             ~typ=constructorType,
+             ~language,
+           )
         |> export;
       };
       {
@@ -293,9 +291,10 @@ let emitCodeItems =
         };
 
       emitExportType(~language, exportType);
-      emitExportConstMany(
+      EmitTyp.emitExportConstMany(
         ~name,
         ~typ=componentType,
+        ~language,
         [
           "ReasonReact.wrapReasonForJs(",
           "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",

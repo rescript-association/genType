@@ -74,6 +74,13 @@ let commentBeforeRequire = (~language) =>
   | Flow => flowExpectedError
   | _ => ""
   };
+
+let emitExportConst = (~name, ~typ, ~language, line) =>
+  "export const " ++ (name |> ofType(~language, ~typ)) ++ " = " ++ line;
+let emitExportConstMany = (~name, ~typ, ~language, lines) =>
+  lines |> String.concat("\n") |> emitExportConst(~name, ~typ, ~language);
+let emitExportFunction = (~name, line) => "export function " ++ name ++ line;
+
 let emitExportDefault = (~language, name) =>
   switch (language) {
   | Flow
