@@ -1,0 +1,22 @@
+image: Visual Studio 2017
+
+platform:
+    - x64
+
+cache:
+    - node_modules
+
+install:
+    # The x64 is required as a workaround for esy/esy#412
+    - ps: Install-Product node 10 x64
+    - npm install
+
+build_script:
+    - npm run build
+    # Validate binary
+    - lib/bs/native/gentype.native --help
+
+artifacts:
+    - path: lib/bs/native/gentype.native
+      name: Windows Build
+      type: File
