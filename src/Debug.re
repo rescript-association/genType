@@ -5,7 +5,7 @@ let channel = Stdout;
 let all = false;
 
 /* log Add and Remove and file actions to see that the cmt hook is working */
-let basic = true;
+let basic = false || all;
 let codeItems = false || all;
 let config = false || all;
 let converter = false || all;
