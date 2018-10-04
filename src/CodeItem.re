@@ -437,6 +437,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
         switch (typ) {
         | Ident("boolean" | "number" | "string", []) => false
         | Option(t) => t |> isOpaque
+        | Function(_) => false
         | _ => true
         };
       let opaque = typeExprTranslation.typ |> isOpaque;

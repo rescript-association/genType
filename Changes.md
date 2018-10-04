@@ -2,6 +2,7 @@
   Stricter checks for FlowType.
   [FlowType] include @generated and @nolint in prelude.
   Support CommonJS export.
+  Fix export function type: not opaque.
 
 # 0.12.0
   Rename the project to genType, the executable to gentype.native,
