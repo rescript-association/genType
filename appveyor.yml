@@ -14,9 +14,9 @@ install:
 build_script:
     - npm run build
     # Validate binary
-    - lib\bs\native\gentype.native --help
+    - lib\bs\native\gentype.native.exe --help
 
 artifacts:
-    - path: lib/bs/native/gentype.native
+    - path: lib/bs/native/gentype.native.exe
       name: Windows Build
       type: File
