@@ -1,7 +1,5 @@
 /**
- *
  * @flow strict
- * @format
  * @nolint
  */
 

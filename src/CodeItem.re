@@ -515,15 +515,23 @@ let typePathToImport =
   | Pdot(Papply(_, _), _, _)
   | Papply(_, _) => ImportComment("// Cannot import type with Papply")
 
-  | Pdot(p, s, _pos) =>
-    let moduleName =
-      switch (p) {
+  | Pdot(_) =>
+    let rec getOuterModuleName = path =>
+      switch (path) {
       | Path.Pident(id) => id |> Ident.name |> ModuleName.fromStringUnsafe
-      | Pdot(_, lastNameInPath, _) =>
-        lastNameInPath |> ModuleName.fromStringUnsafe
-      | Papply(_, _) => assert(false) /* impossible: handled above */
+      | Pdot(path1, _, _) => path1 |> getOuterModuleName
+      | Papply(_, p2) => p2 |> getOuterModuleName
       };
-    let typeName = s;
+    let rec removeOuterModule = path =>
+      switch (path) {
+      | Path.Pident(_) => path
+      | Pdot(Path.Pident(_), s, _) => Path.Pident(s |> Ident.create)
+      | Pdot(path1, s, pos) => Pdot(path1 |> removeOuterModule, s, pos)
+      | Papply(_, p2) => p2 |> removeOuterModule
+      };
+    let moduleName = typePath |> getOuterModuleName;
+    let typeName =
+      typePath |> removeOuterModule |> Dependencies.typePathToName;
     let nameFromPath = Dependencies.typePathToName(typePath);
     let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
     let importPath =

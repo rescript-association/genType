@@ -10,8 +10,10 @@ const GreetingBS = require("./Greeting.bs");
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
 // No need to import locally visible type foo. Make sure it is also marked with @genType
+import type {Mouse_t as ReactEvent_Mouse_t} from '../../src/shims/ReactEvent.shim';
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
+export const onClick: (ReactEvent_Mouse_t) => (typeof undefined) = GreetingBS.onClick;
 // $FlowExpectedError: Reason checked type sufficiently
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, polymorphicProp:any, children?:any|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(

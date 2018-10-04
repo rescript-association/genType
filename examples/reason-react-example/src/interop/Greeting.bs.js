@@ -9,6 +9,11 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("PageReason");
 
+function onClick() {
+  console.log("click");
+  return /* () */0;
+}
+
 function make(message, someNumber, extraGreeting, polymorphicProp, _) {
   return /* record */[
           /* debugName */component[/* debugName */0],
@@ -23,7 +28,9 @@ function make(message, someNumber, extraGreeting, polymorphicProp, _) {
           /* render */(function () {
               console.log("polymorphicProp:", polymorphicProp);
               var greeting = extraGreeting !== undefined ? extraGreeting : "How are you?";
-              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, MyBannerRe.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
+              return React.createElement("div", {
+                          onClick: onClick
+                        }, ReasonReact.element(undefined, undefined, MyBannerRe.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
@@ -64,6 +71,7 @@ var empty = /* [] */0;
 var concat = $$String.concat;
 
 exports.component = component;
+exports.onClick = onClick;
 exports.make = make;
 exports.empty = empty;
 exports.cons = cons;

@@ -4,5 +4,6 @@
     "ReasonReact=ReactShim",
     "React=ReactShim",
     "ReasonPervasives=ReasonPervasives",
+    "ReactEvent=ReactEvent",
   ]
 }

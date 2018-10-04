@@ -4,6 +4,9 @@
 let component = ReasonReact.statelessComponent("PageReason");
 
 [@genType]
+let onClick = (_: ReactEvent.Mouse.t): unit => Js.log("click");
+
+[@genType]
 let make =
     (~message, ~someNumber, ~extraGreeting=?, ~polymorphicProp, _children) => {
   ...component,
@@ -14,7 +17,7 @@ let make =
       | None => "How are you?"
       | Some(g) => g
       };
-    <div>
+    <div onClick>
       <MyBannerRe show=true message={message ++ " " ++ greeting} />
       {ReasonReact.string("someNumber:" ++ string_of_int(someNumber))}
     </div>;
@@ -40,8 +43,7 @@ let testNamedArgs = (~a, ~b, x, ~c, ~d, y, ~e) => a + b + x + c + d + y + e;
 type foo = (~a: int, ~b: int) => int;
 
 [@genType]
-let testCallNamedArgs = (foo: foo, a, b) =>
-  foo(~a, ~b);
+let testCallNamedArgs = (foo: foo, a, b) => foo(~a, ~b);
 
 [@genType]
 let testDefaultArgs = (~x=3, ~y) => x + y;
