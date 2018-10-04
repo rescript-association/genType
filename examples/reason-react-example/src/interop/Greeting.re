@@ -4,7 +4,8 @@
 let component = ReasonReact.statelessComponent("PageReason");
 
 [@genType]
-let make = (~message, ~someNumber, ~extraGreeting=?, ~polymorphicProp, _children) => {
+let make =
+    (~message, ~someNumber, ~extraGreeting=?, ~polymorphicProp, _children) => {
   ...component,
   render: _self => {
     Js.log2("polymorphicProp:", polymorphicProp);
@@ -14,8 +15,8 @@ let make = (~message, ~someNumber, ~extraGreeting=?, ~polymorphicProp, _children
       | Some(g) => g
       };
     <div>
-      <MyBannerRe show=true message=(message ++ " " ++ greeting) />
-      (ReasonReact.string("someNumber:" ++ string_of_int(someNumber)))
+      <MyBannerRe show=true message={message ++ " " ++ greeting} />
+      {ReasonReact.string("someNumber:" ++ string_of_int(someNumber))}
     </div>;
   },
 };
@@ -36,7 +37,10 @@ let concat = String.concat;
 let testNamedArgs = (~a, ~b, x, ~c, ~d, y, ~e) => a + b + x + c + d + y + e;
 
 [@genType]
-let testCallNamedArgs = (foo: ((~a: int, ~b: int) => int), a, b) =>
+type foo = (~a: int, ~b: int) => int;
+
+[@genType]
+let testCallNamedArgs = (foo: foo, a, b) =>
   foo(~a, ~b);
 
 [@genType]
