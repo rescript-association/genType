@@ -1,4 +1,4 @@
-# master
+# 0.13.0
   Stricter checks for FlowType.
   [FlowType] include @generated and @nolint in prelude.
   Support CommonJS export.
