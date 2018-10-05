@@ -150,6 +150,7 @@ let emptyConfig = {
   module_: ES6,
 };
 let readConfig = () => {
+  setProjectRoot();
   let fromJson = json => {
     let languageString = json |> getLanguage;
     let modulesMap =
