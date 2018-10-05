@@ -37,7 +37,7 @@ jobs:
 
   build-macos:
     macos:
-      xcode: "10.0"
+      xcode: "9.0"
 
     working_directory: ~/repo
 
