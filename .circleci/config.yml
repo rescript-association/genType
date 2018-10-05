@@ -39,7 +39,7 @@ jobs:
     macos:
       xcode: "9.0"
 
-    working_directory: ~/repo
+    working_directory: /Users/distiller/project
 
     steps:
       - checkout 
