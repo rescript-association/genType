@@ -16,6 +16,7 @@ let cli = () => {
     if (Debug.basic) {
       logItem("Add %s  %s\n", cmt, mlast);
     };
+    setProjectRoot();
     let config = Paths.readConfig();
     cmt |> GenTypeMain.processCmtFile(~signFile, ~config);
     exit(0);
@@ -26,6 +27,7 @@ let cli = () => {
     let cmtAbsolutePath: string = splitColon[0];
     /* somehow the CMT hook is passing an absolute path here */
     let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
+    setProjectRoot();
     let config = Paths.readConfig();
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
     if (Debug.basic) {
@@ -46,7 +48,6 @@ let cli = () => {
     ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt[i] file"),
   ];
   let usage = "genType";
-  setProjectRoot();
   Arg.parse(speclist, print_endline, usage);
 };
 
