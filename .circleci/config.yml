@@ -65,4 +65,11 @@ jobs:
           destination: gentype.macos.native
 
 
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build
+    - build-macos
+
 # TODO: Github publish release
