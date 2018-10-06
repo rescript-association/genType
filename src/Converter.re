@@ -224,6 +224,12 @@ let rec apply = (~converter, ~toJS, value) =>
     ++ "})"
 
   | RecordC(fieldsC) =>
+    let simplifyFieldConverted = fieldConverter =>
+      switch (fieldConverter) {
+      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
+        IdentC
+      | _ => fieldConverter
+      };
     if (toJS) {
       let fieldValues =
         fieldsC
@@ -235,7 +241,10 @@ let rec apply = (~converter, ~toJS, value) =>
                ++ "["
                ++ string_of_int(i)
                ++ "]"
-               |> apply(~converter=fieldConverter, ~toJS)
+               |> apply(
+                    ~converter=fieldConverter |> simplifyFieldConverted,
+                    ~toJS,
+                  )
              )
            )
         |> String.concat(", ");
@@ -244,11 +253,17 @@ let rec apply = (~converter, ~toJS, value) =>
       let fieldValues =
         fieldsC
         |> List.map(((lbl, fieldConverter)) =>
-             value ++ "." ++ lbl |> apply(~converter=fieldConverter, ~toJS)
+             value
+             ++ "."
+             ++ lbl
+             |> apply(
+                  ~converter=fieldConverter |> simplifyFieldConverted,
+                  ~toJS,
+                )
            )
         |> String.concat(", ");
       "[" ++ fieldValues ++ "]";
-    }
+    };
 
   | FunctionC((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";

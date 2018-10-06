@@ -5,6 +5,7 @@
   Add ReactEvent shims for TypeScript.
   Use type “void” instead of “typeof undefined”.
   Fix converter for options to JS in nested case.
+  Simplify converter for optional record fields.
 
 # 0.13.0
   Stricter checks for FlowType.

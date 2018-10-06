@@ -14,15 +14,15 @@ import {list} from '../../src/shims/ReasonPervasives.shim';
 // tslint:disable-next-line:interface-over-type-literal
 export type coord = {x:number, y:number, z?:number};
 export const origin: coord = {x:RecordsBS.origin[0], y:RecordsBS.origin[1], z:RecordsBS.origin[2]};
-export const computeArea: (_1:coord) => number = function _(Arg1) { const result = RecordsBS.computeArea([Arg1.x, Arg1.y, (Arg1.z == null ? undefined : Arg1.z)]); return result };
+export const computeArea: (_1:coord) => number = function _(Arg1) { const result = RecordsBS.computeArea([Arg1.x, Arg1.y, Arg1.z]); return result };
 export const coord2d: (_1:number, _2:number) => coord = function _(Arg1, Arg2) { const result = RecordsBS.coord2d(Arg1, Arg2); return {x:result[0], y:result[1], z:result[2]} };
 // tslint:disable-next-line:interface-over-type-literal
 export type person = {name:string, age:number, address?:string};
 // tslint:disable-next-line:interface-over-type-literal
 export type business = {name:string, owner?:person, address?:string};
-export const findAddress: (_1:business) => list<string> = function _(Arg1) { const result = RecordsBS.findAddress([Arg1.name, (Arg1.owner == null ? undefined : [Arg1.owner.name, Arg1.owner.age, (Arg1.owner.address == null ? undefined : Arg1.owner.address)]), (Arg1.address == null ? undefined : Arg1.address)]); return result };
+export const findAddress: (_1:business) => list<string> = function _(Arg1) { const result = RecordsBS.findAddress([Arg1.name, (Arg1.owner == null ? undefined : [Arg1.owner.name, Arg1.owner.age, Arg1.owner.address]), Arg1.address]); return result };
 export const someBusiness: business = {name:RecordsBS.someBusiness[0], owner:(RecordsBS.someBusiness[1] == null ? RecordsBS.someBusiness[1] : {name:RecordsBS.someBusiness[1][0], age:RecordsBS.someBusiness[1][1], address:RecordsBS.someBusiness[1][2]}), address:RecordsBS.someBusiness[2]};
-export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1) { const result = RecordsBS.findAllAddresses(Arg1.map(function _element(x) { return [x.name, (x.owner == null ? undefined : [x.owner.name, x.owner.age, (x.owner.address == null ? undefined : x.owner.address)]), (x.address == null ? undefined : x.address)]})); return result };
+export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1) { const result = RecordsBS.findAllAddresses(Arg1.map(function _element(x) { return [x.name, (x.owner == null ? undefined : [x.owner.name, x.owner.age, x.owner.address]), x.address]})); return result };
 // tslint:disable-next-line:interface-over-type-literal
 export type payload<a> = {num:number, payload:a};
 export const getPayload: <T1>(_1:payload<T1>) => T1 = function _(Arg1) { const result = RecordsBS.getPayload([Arg1.num, Arg1.payload]); return result };
