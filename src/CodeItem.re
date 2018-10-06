@@ -460,7 +460,8 @@ let translateTypeDecl =
         |> Dependencies.translateTypeExpr(~language);
       let rec isOpaque = typ =>
         switch (typ) {
-        | Ident("boolean" | "number" | "string", []) => false
+        | Ident(_) when typ == booleanT || typ == numberT || typ == stringT =>
+          false
         | Option(t)
         | Nullable(t) => t |> isOpaque
         | Function(_) => false

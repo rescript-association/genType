@@ -251,22 +251,22 @@ and translateTypeExpr_ =
   | Tconstr(Pdot(Pident({name: "FB", _}), "bool", _), [], _)
   | Tconstr(Pident({name: "bool", _}), [], _) => {
       dependencies: [],
-      typ: Ident("boolean", []),
+      typ: booleanT,
     }
   | Tconstr(Pdot(Pident({name: "FB", _}), "int", _), [], _)
   | Tconstr(Pident({name: "int", _}), [], _) => {
       dependencies: [],
-      typ: Ident("number", []),
+      typ: numberT,
     }
   | Tconstr(Pdot(Pident({name: "FB", _}), "string", _), [], _)
   | Tconstr(Pident({name: "string", _}), [], _) => {
       dependencies: [],
-      typ: Ident("string", []),
+      typ: stringT,
     }
   | Tconstr(Pdot(Pident({name: "FB", _}), "unit", _), [], _)
   | Tconstr(Pident({name: "unit", _}), [], _) => {
       dependencies: [],
-      typ: Ident("(typeof undefined)", []),
+      typ: unitT,
     }
   /*
    * Arrays do not experience any conversion, in order to retain referencial
