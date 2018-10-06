@@ -215,7 +215,14 @@ let rec apply = (~converter, ~toJS, value) =>
       ]);
     }
 
-  | NullableC(c) => value |> apply(~converter=c, ~toJS)
+  | NullableC(c) =>
+    EmitText.parens([
+      value
+      ++ " == null ? "
+      ++ value
+      ++ " : "
+      ++ (value |> apply(~converter=c, ~toJS)),
+    ])
 
   | ArrayC(c) =>
     value

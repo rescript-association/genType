@@ -6,6 +6,7 @@ var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var Caml_int32 = require("bs-platform/lib/js/caml_int32.js");
 var Pervasives = require("bs-platform/lib/js/pervasives.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
+var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
 
 function computeArea(param) {
   return Caml_int32.imul(Caml_int32.imul(param[/* x */0], param[/* y */1]), Belt_Option.mapWithDefault(param[/* z */2], 1, (function (n) {
@@ -76,6 +77,25 @@ function getPayloadRecordPlusOne(param) {
         ];
 }
 
+function findAddress2(business) {
+  return Belt_Option.mapWithDefault(Js_primitive.nullable_to_opt(business[/* address2 */2]), /* [] */0, (function (a) {
+                return /* :: */[
+                        a,
+                        /* [] */0
+                      ];
+              }));
+}
+
+var someBusiness2_001 = /* owner */null;
+
+var someBusiness2_002 = /* address2 */null;
+
+var someBusiness2 = /* record */[
+  /* name */"SomeBusiness",
+  someBusiness2_001,
+  someBusiness2_002
+];
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -100,4 +120,6 @@ exports.getPayloadRecord = getPayloadRecord;
 exports.recordValue = recordValue;
 exports.payloadValue = payloadValue;
 exports.getPayloadRecordPlusOne = getPayloadRecordPlusOne;
+exports.findAddress2 = findAddress2;
+exports.someBusiness2 = someBusiness2;
 /* No side effect */

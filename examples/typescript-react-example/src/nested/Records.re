@@ -80,3 +80,21 @@ let getPayloadRecordPlusOne = ({payload}): record => {
   ...payload,
   v: payload.v + 1,
 };
+
+[@genType]
+type business2 = {
+  name: string,
+  owner: Js.Nullable.t(person),
+  address2: Js.Nullable.t(string),
+};
+
+[@genType]
+let findAddress2 = (business: business2): list(string) =>
+  business.address2->Js.Nullable.toOption->getOpt([], a => [a]);
+
+[@genType]
+let someBusiness2 = {
+  name: "SomeBusiness",
+  owner: Js.Nullable.null,
+  address2: Js.Nullable.null,
+};

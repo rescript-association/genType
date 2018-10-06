@@ -6,6 +6,7 @@
   Use type “void” instead of “typeof undefined”.
   Fix converter for options to JS in nested case.
   Simplify converter for optional record fields.
+  Support nullable types whose argument requires conversion.
 
 # 0.13.0
   Stricter checks for FlowType.

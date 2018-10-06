@@ -12,7 +12,13 @@ let rec renderString = (~language, typ) =>
        )
   | TypeVar(s) => s
   | Option(typ)
-  | Nullable(typ) => "?" ++ (typ |> renderString(~language))
+  | Nullable(typ) =>
+    switch (language) {
+    | Flow
+    | Untyped => "?" ++ (typ |> renderString(~language))
+    | Typescript =>
+      "(null | undefined | " ++ (typ |> renderString(~language)) ++ ")"
+    }
   | Array(typ) =>
     let typIsSimple =
       switch (typ) {

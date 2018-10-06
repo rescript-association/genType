@@ -4,6 +4,7 @@
 const RecordsBS = require("./Records.bs");
 
 // No need to import locally visible type business. Make sure it is also marked with @genType
+// No need to import locally visible type business2. Make sure it is also marked with @genType
 // No need to import locally visible type coord. Make sure it is also marked with @genType
 // No need to import locally visible type payload. Make sure it is also marked with @genType
 // No need to import locally visible type person. Make sure it is also marked with @genType
@@ -32,3 +33,7 @@ export const getPayloadRecord: (_1:payload<record>) => record = function _(Arg1)
 export const recordValue: record = {v:RecordsBS.recordValue[0], w:RecordsBS.recordValue[1]};
 export const payloadValue: payload<record> = {num:RecordsBS.payloadValue[0], payload:{v:RecordsBS.payloadValue[1][0], w:RecordsBS.payloadValue[1][1]}};
 export const getPayloadRecordPlusOne: (_1:payload<record>) => record = function _(Arg1) { const result = RecordsBS.getPayloadRecordPlusOne([Arg1.num, [Arg1.payload.v, Arg1.payload.w]]); return {v:result[0], w:result[1]} };
+// tslint:disable-next-line:interface-over-type-literal
+export type business2 = {name:string, owner:(null | undefined | person), address2:(null | undefined | string)};
+export const findAddress2: (_1:business2) => list<string> = function _(Arg1) { const result = RecordsBS.findAddress2([Arg1.name, (Arg1.owner == null ? Arg1.owner : [Arg1.owner.name, Arg1.owner.age, Arg1.owner.address]), Arg1.address2]); return result };
+export const someBusiness2: business2 = {name:RecordsBS.someBusiness2[0], owner:(RecordsBS.someBusiness2[1] == null ? RecordsBS.someBusiness2[1] : {name:RecordsBS.someBusiness2[1][0], age:RecordsBS.someBusiness2[1][1], address:RecordsBS.someBusiness2[1][2]}), address2:RecordsBS.someBusiness2[2]};
