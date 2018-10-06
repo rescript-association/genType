@@ -11,7 +11,8 @@ let rec renderString = (~language, typ) =>
          ~typeVars=typeArguments |> List.map(renderString(~language)),
        )
   | TypeVar(s) => s
-  | Option(typ) => "?" ++ (typ |> renderString(~language))
+  | Option(typ)
+  | Nullable(typ) => "?" ++ (typ |> renderString(~language))
   | Array(typ) =>
     let typIsSimple =
       switch (typ) {

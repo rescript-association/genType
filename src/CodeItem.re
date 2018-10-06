@@ -206,6 +206,7 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Ident(_)
   | TypeVar(_)
   | Option(_)
+  | Nullable(_)
   | Array(_)
   | Object(_)
   | Record(_) => typ
@@ -442,7 +443,8 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       let rec isOpaque = typ =>
         switch (typ) {
         | Ident("boolean" | "number" | "string", []) => false
-        | Option(t) => t |> isOpaque
+        | Option(t)
+        | Nullable(t) => t |> isOpaque
         | Function(_) => false
         | _ => true
         };

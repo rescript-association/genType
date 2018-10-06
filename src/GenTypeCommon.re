@@ -62,6 +62,7 @@ type typ =
   | Ident(string, list(typ))
   | TypeVar(string)
   | Option(typ)
+  | Nullable(typ)
   | Array(typ)
   | Object(fields)
   | Record(fields)

@@ -3,6 +3,7 @@ open GenTypeCommon;
 type t =
   | IdentC
   | OptionC(t)
+  | NullableC(t)
   | ArrayC(t)
   | RecordC(fieldsC)
   | FunctionC((list(groupedArgConverter), t))
@@ -15,6 +16,7 @@ let rec toString = converter =>
   switch (converter) {
   | IdentC => "id"
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
+  | NullableC(c) => "nullable(" ++ toString(c) ++ ")"
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
   | RecordC(fieldsC) =>
     "{"
@@ -91,6 +93,10 @@ let rec typToConverter_ =
   | TypeVar(_) => IdentC
   | Option(t) =>
     OptionC(t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles))
+  | Nullable(t) =>
+    let converter =
+      t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
+    converter == IdentC ? IdentC : NullableC(converter);
   | Array(t) =>
     let converter =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
@@ -165,6 +171,8 @@ let rec converterIsIdentity = (~toJS, converter) =>
       false;
     }
 
+  | NullableC(c) => c |> converterIsIdentity(~toJS)
+
   | ArrayC(c) => c |> converterIsIdentity(~toJS)
 
   | RecordC(_) => false
@@ -200,6 +208,8 @@ let rec apply = (~converter, ~toJS, value) =>
         ++ (value |> apply(~converter=c, ~toJS)),
       ]);
     }
+
+  | NullableC(c) => value |> apply(~converter=c, ~toJS)
 
   | ArrayC(c) =>
     value

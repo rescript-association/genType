@@ -16,3 +16,14 @@ let computeArea = ({x, y, z}) =>
 
 [@genType]
 let coord2d = (x, y) => {x, y, z: None};
+
+[@genType]
+type coord2 = {
+  a: int,
+  b: int,
+  c: Js.Nullable.t(int),
+};
+
+[@genType]
+let computeArea2 = ({a, b, c}) =>
+  a * b * c->Js.Nullable.toOption->Option.mapWithDefault(1, n => n);

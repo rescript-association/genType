@@ -280,7 +280,7 @@ and translateTypeExpr_ =
       _,
     ) =>
     let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
-    {...paramTranslation, typ: Option(paramTranslation.typ)};
+    {...paramTranslation, typ: Nullable(paramTranslation.typ)};
   | Tarrow(_) =>
     typeExpr
     |> extract_fun(~typeVarsGen, ~noFunctionReturnDependencies, [], [])

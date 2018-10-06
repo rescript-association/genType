@@ -48,6 +48,7 @@ let rec substitute = (~f, typ) =>
     | Some(typ') => typ'
     }
   | Option(typ) => Option(typ |> substitute(~f))
+  | Nullable(typ) => Nullable(typ |> substitute(~f))
   | Array(typ) => Array(typ |> substitute(~f))
   | Object(fields) =>
     Object(
@@ -81,6 +82,7 @@ let rec free_ = typ: StringSet.t =>
        )
   | TypeVar(s) => s |> StringSet.singleton
   | Option(typ) => typ |> free_
+  | Nullable(typ) => typ |> free_
   | Array(typ) => typ |> free_
   | Object(fields)
   | Record(fields) =>

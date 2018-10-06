@@ -3,6 +3,7 @@
 
 var Caml_int32 = require("bs-platform/lib/js/caml_int32.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
+var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
 
 function computeArea(param) {
   return Caml_int32.imul(Caml_int32.imul(param[/* x */0], param[/* y */1]), Belt_Option.mapWithDefault(param[/* z */2], 1, (function (n) {
@@ -18,6 +19,12 @@ function coord2d(x, y) {
         ];
 }
 
+function computeArea2(param) {
+  return Caml_int32.imul(Caml_int32.imul(param[/* a */0], param[/* b */1]), Belt_Option.mapWithDefault(Js_primitive.nullable_to_opt(param[/* c */2]), 1, (function (n) {
+                    return n;
+                  })));
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -27,4 +34,5 @@ var origin = /* record */[
 exports.origin = origin;
 exports.computeArea = computeArea;
 exports.coord2d = coord2d;
+exports.computeArea2 = computeArea2;
 /* No side effect */
