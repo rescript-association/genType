@@ -96,11 +96,11 @@ let rec typToConverter_ =
   | Nullable(t) =>
     let converter =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    converter == IdentC ? IdentC : NullableC(converter);
+    NullableC(converter);
   | Array(t) =>
     let converter =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    converter == IdentC ? IdentC : ArrayC(converter);
+    ArrayC(converter);
   | Object(_) => IdentC
   | Record(fields) =>
     RecordC(
@@ -121,15 +121,7 @@ let rec typToConverter_ =
          );
     let retConverter =
       retType |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    if (retConverter == IdentC
-        && argConverters
-        |> List.for_all(converter =>
-             converter == ArgConverter(Nolabel, IdentC)
-           )) {
-      IdentC;
-    } else {
-      FunctionC((argConverters, retConverter));
-    };
+    FunctionC((argConverters, retConverter));
   }
 and typToGroupedArgConverter_ = (~exportTypeMap, ~typesFromOtherFiles, typ) =>
   switch (typ) {
