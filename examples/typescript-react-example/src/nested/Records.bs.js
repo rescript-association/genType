@@ -82,11 +82,18 @@ var origin = /* record */[
   /* z */0
 ];
 
+var someBusiness = /* record */[
+  /* name */"SomeBusiness",
+  /* owner */undefined,
+  /* address */undefined
+];
+
 exports.origin = origin;
 exports.computeArea = computeArea;
 exports.coord2d = coord2d;
 exports.getOpt = getOpt;
 exports.findAddress = findAddress;
+exports.someBusiness = someBusiness;
 exports.findAllAddresses = findAllAddresses;
 exports.getPayload = getPayload;
 exports.getPayloadRecord = getPayloadRecord;

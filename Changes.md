@@ -4,6 +4,7 @@
   Avoid generation of type any: use mixed (Flow) or unknown (TS) instead.
   Add ReactEvent shims for TypeScript.
   Use type “void” instead of “typeof undefined”.
+  Fix converter for options to JS in nested case.
 
 # 0.13.0
   Stricter checks for FlowType.

@@ -21,6 +21,7 @@ export type person = {name:string, age:number, address?:string};
 // tslint:disable-next-line:interface-over-type-literal
 export type business = {name:string, owner?:person, address?:string};
 export const findAddress: (_1:business) => list<string> = function _(Arg1) { const result = RecordsBS.findAddress([Arg1.name, (Arg1.owner == null ? undefined : [Arg1.owner.name, Arg1.owner.age, (Arg1.owner.address == null ? undefined : Arg1.owner.address)]), (Arg1.address == null ? undefined : Arg1.address)]); return result };
+export const someBusiness: business = {name:RecordsBS.someBusiness[0], owner:(RecordsBS.someBusiness[1] == null ? RecordsBS.someBusiness[1] : {name:RecordsBS.someBusiness[1][0], age:RecordsBS.someBusiness[1][1], address:RecordsBS.someBusiness[1][2]}), address:RecordsBS.someBusiness[2]};
 export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1) { const result = RecordsBS.findAllAddresses(Arg1.map(function _element(x) { return [x.name, (x.owner == null ? undefined : [x.owner.name, x.owner.age, (x.owner.address == null ? undefined : x.owner.address)]), (x.address == null ? undefined : x.address)]})); return result };
 // tslint:disable-next-line:interface-over-type-literal
 export type payload<a> = {num:number, payload:a};

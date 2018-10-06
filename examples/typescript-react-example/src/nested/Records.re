@@ -38,6 +38,9 @@ let findAddress = (business: business): list(string) =>
   business.address->getOpt([], a => [a]);
 
 [@genType]
+let someBusiness = {name: "SomeBusiness", owner: None, address: None};
+
+[@genType]
 let findAllAddresses = (businesses: array(business)): array(string) =>
   businesses
   ->Array.map(business =>

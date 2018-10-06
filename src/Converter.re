@@ -200,7 +200,13 @@ let rec apply = (~converter, ~toJS, value) =>
 
   | OptionC(c) =>
     if (toJS) {
-      value |> apply(~converter=c, ~toJS);
+      EmitText.parens([
+        value
+        ++ " == null ? "
+        ++ value
+        ++ " : "
+        ++ (value |> apply(~converter=c, ~toJS)),
+      ]);
     } else {
       EmitText.parens([
         value
