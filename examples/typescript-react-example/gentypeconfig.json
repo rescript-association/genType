@@ -1,6 +1,7 @@
 {
   "language" : "typescript",
     "shims": [
-    "ReasonPervasives=ReasonPervasives"
+    "ReasonPervasives=ReasonPervasives",
+    "ReactEvent=ReactEvent",
   ]
 }
