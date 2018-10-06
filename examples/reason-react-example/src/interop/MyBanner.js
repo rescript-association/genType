@@ -3,10 +3,10 @@
 // This file isn't used directly by JS; it's used to myBanner.re, which is then
 // used by the ReasonReact component GreetingRe.
 
-var ReactDOM = require("react-dom");
-var React = require("react");
+const ReactDOM = require("react-dom");
+const React = require("react");
 
-export type Props = { show: boolean, message?: string };
+export type Props = {| show: boolean, message?: string |};
 
 class App extends React.Component<Props> {
   render() {

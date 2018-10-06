@@ -280,7 +280,7 @@ let translateMake =
       _,
     }) =>
     /* Add children?:any to props type */
-    let propsTypeArguments =
+    let propsType =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
       | [] => Object([("children", NonMandatory, any)])
@@ -302,7 +302,7 @@ let translateMake =
             ~opaque=false,
             ~typeVars,
             ~typeName=propsTypeName,
-            propsTypeArguments,
+            propsType,
           ),
         moduleName,
         propsTypeName,

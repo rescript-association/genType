@@ -122,7 +122,7 @@ let emitCodeItems =
 
   let emitCheckJsWrapperType = (~env, ~propsTypeName) =>
     switch (env.externalReactClass) {
-    | [] => ()
+    | [] => ""
 
     | [{componentName, _}] =>
       let s =
@@ -133,13 +133,9 @@ let emitCodeItems =
         ++ ") {\n      return <"
         ++ componentName
         ++ " {...props}/>;\n    }";
-      EmitTyp.emitExportFunction(~name="checkJsWrapperType", ~config, s)
-      |> export;
+      EmitTyp.emitExportFunction(~name="checkJsWrapperType", ~config, s);
 
-    | [_, ..._] =>
-      export(
-        "// genType warning: found more than one external component annotated with @genType",
-      )
+    | [_, ..._] => "// genType warning: found more than one external component annotated with @genType"
     };
 
   let emitCodeItem = (~exportTypeMap, env, codeItem) => {
@@ -260,6 +256,7 @@ let emitCodeItems =
       let name = EmitTyp.componentExportName(~language, ~moduleName);
       let jsProps = "jsProps";
       let jsPropsDot = s => jsProps ++ "." ++ s;
+
       let args =
         switch (converter) {
         | FunctionC((groupedArgConverters, _retConverter)) =>
@@ -292,42 +289,59 @@ let emitCodeItems =
         | _ => [jsPropsDot("children")]
         };
 
-      emitExportType(~language, exportType);
-      EmitTyp.emitExportConstMany(
-        ~name,
-        ~typ=componentType,
-        ~config,
-        [
-          "ReasonReact.wrapReasonForJs(",
-          "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
-          "  (function _("
-          ++ EmitTyp.ofType(
-               ~language,
-               ~typ=Ident(propsTypeName, []),
-               jsProps,
-             )
-          ++ ") {",
-          "     return "
-          ++ ModuleName.toString(moduleNameBs)
-          ++ "."
-          ++ "make"
-          ++ EmitText.parens(args)
-          ++ ";",
-          "  }));",
-        ],
-      )
-      |> export;
+      let checkJsWrapperType = emitCheckJsWrapperType(~env, ~propsTypeName);
 
-      EmitTyp.emitExportDefault(~config, name) |> export;
+      if (checkJsWrapperType != "") {
+        let exportTypeNoChildren =
+          switch (exportType.typ) {
+          | Object(fields) =>
+            switch (fields |> List.rev) {
+            | [_child, ...propFieldsRev] =>
+              let typNoChildren = Object(propFieldsRev |> List.rev);
+              {...exportType, typ: typNoChildren};
+            | [] => exportType
+            }
+          | _ => exportType
+          };
+        emitExportType(~language, exportTypeNoChildren);
+        checkJsWrapperType |> export;
+        env
+      } else {
+        emitExportType(~language, exportType);
+        EmitTyp.emitExportConstMany(
+          ~name,
+          ~typ=componentType,
+          ~config,
+          [
+            "ReasonReact.wrapReasonForJs(",
+            "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
+            "  (function _("
+            ++ EmitTyp.ofType(
+                 ~language,
+                 ~typ=Ident(propsTypeName, []),
+                 jsProps,
+               )
+            ++ ") {",
+            "     return "
+            ++ ModuleName.toString(moduleNameBs)
+            ++ "."
+            ++ "make"
+            ++ EmitText.parens(args)
+            ++ ";",
+            "  }));",
+          ],
+        )
+        |> export;
 
-      emitCheckJsWrapperType(~env, ~propsTypeName);
+        EmitTyp.emitExportDefault(~config, name) |> export;
 
-      let requiresWithModule =
-        moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
-      let requiresWithReasonReact =
-        requiresWithModule
-        |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact);
-      {...env, requires: requiresWithReasonReact};
+        let requiresWithModule =
+          moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
+        let requiresWithReasonReact =
+          requiresWithModule
+          |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact);
+        {...env, requires: requiresWithReasonReact};
+      };
 
     | ExternalReactClass({componentName, importPath} as externalReactClass) =>
       let requires =

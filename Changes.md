@@ -1,3 +1,6 @@
+# master
+  Improve support for checking JS component used from Reason.
+
 # 0.13.0
   Stricter checks for FlowType.
   [FlowType] include @generated and @nolint in prelude.
