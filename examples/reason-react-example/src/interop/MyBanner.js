@@ -6,7 +6,7 @@
 const ReactDOM = require("react-dom");
 const React = require("react");
 
-export type Props = {| show: boolean, message?: string |};
+export type Props = {| show: boolean, message: ?string |};
 
 class App extends React.Component<Props> {
   render() {

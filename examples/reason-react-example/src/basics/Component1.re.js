@@ -12,8 +12,7 @@ const ReasonReact = require("reason-react/src/ReasonReact.js");
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 import type {variant as Component2_variant} from './Component2.re';
 
-// $FlowExpectedError: Reason checked type sufficiently
-export type Props = {|message?:string, children?:any|};
+export type Props = {|message?:string, children?:mixed|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   Component1BS.component,
   (function _(jsProps: Props) {

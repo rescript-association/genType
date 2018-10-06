@@ -93,7 +93,7 @@ let emitCodeItems =
         | exception Not_found =>
           let exportTypeMapFromCmt =
             Cmt_format.read_cmt(cmtFile)
-            |> inputCmtToTypeDeclarations
+            |> inputCmtToTypeDeclarations(~language)
             |> createExportTypeMap(~language);
           let cmtExportTypeMapCache =
             env.cmtExportTypeMapCache

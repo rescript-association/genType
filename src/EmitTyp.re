@@ -123,8 +123,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
 
   switch (language) {
   | Flow =>
-    flowExpectedError
-    ++ "export"
+    "export"
     ++ (opaque ? " opaque " : " ")
     ++ "type "
     ++ typeName

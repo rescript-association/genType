@@ -19,7 +19,7 @@ import {t as Types_t} from '../src/nested/Types';
 // tslint:disable-next-line:interface-over-type-literal
 export type person<a> = {name:string, surname:string, type:string, polymorphicPayload:a};
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = {message?:string; person:person<any>; intList?:list<number>; children?:any};
+export type Props = {message?:string; person:person<unknown>; intList?:list<number>; children?:unknown};
 export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
   ReasonComponentBS.component,
   (function _(jsProps: Props) {

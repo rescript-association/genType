@@ -85,7 +85,7 @@ let translateStructItem =
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(CodeItem.translateTypeDecl)
+    |> List.map(CodeItem.translateTypeDecl(~language))
     |> CodeItem.combineTranslations
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
@@ -97,7 +97,7 @@ let translateStructItem =
 
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
-    valueDescription |> CodeItem.translatePrimitive
+    valueDescription |> CodeItem.translatePrimitive(~language)
 
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   /* TODO: Support mapping of variant type definitions. */
@@ -109,12 +109,12 @@ let translateSignatureItem =
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(CodeItem.translateTypeDecl)
+    |> List.map(CodeItem.translateTypeDecl(~language))
     |> CodeItem.combineTranslations
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {
-      valueDescription |> CodeItem.translatePrimitive;
+      valueDescription |> CodeItem.translatePrimitive(~language);
     } else {
       valueDescription
       |> CodeItem.translateSignatureValue(
@@ -139,7 +139,7 @@ let typeDeclarationsOfSignature = signatureItem =>
   | _ => []
   };
 
-let inputCmtToTypeDeclarations = inputCMT: list(CodeItem.t) => {
+let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeDeclarations =
     (
@@ -158,7 +158,7 @@ let inputCmtToTypeDeclarations = inputCMT: list(CodeItem.t) => {
     |> List.concat;
   typeDeclarations
   |> List.map(typeDeclaration =>
-       (typeDeclaration |> CodeItem.translateTypeDecl).codeItems
+       (typeDeclaration |> CodeItem.translateTypeDecl(~language)).codeItems
      )
   |> List.concat;
 };

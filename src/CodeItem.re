@@ -170,10 +170,11 @@ let variantLeafTypeName = (typeName, leafName) =>
  * TODO: Make the types namespaced by nested Flow module.
  */
 let translateConstructorDeclaration =
-    (variantTypeName, constructorDeclaration, ~recordGen) => {
+    (~language, ~recordGen, variantTypeName, constructorDeclaration) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let variantName = Ident.name(constructorDeclaration.Types.cd_id);
-  let argsTranslation = Dependencies.translateTypeExprs(constructorArgs);
+  let argsTranslation =
+    Dependencies.translateTypeExprs(~language, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
   let dependencies =
     argsTranslation
@@ -190,7 +191,12 @@ let translateConstructorDeclaration =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
     ConstructorBinding(
-      exportType(~opaque=true, ~typeVars, ~typeName=variantTypeName, any),
+      exportType(
+        ~opaque=true,
+        ~typeVars,
+        ~typeName=variantTypeName,
+        mixedOrUnknown(~language),
+      ),
       constructorTyp,
       argTypes,
       variantName,
@@ -214,8 +220,9 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
     Function({typeVars, argTypes, retType})
   };
 
-let translateId = (~moduleName, ~typeExpr, id): translation => {
-  let typeExprTranslation = typeExpr |> Dependencies.translateTypeExpr;
+let translateId = (~language, ~moduleName, ~typeExpr, id): translation => {
+  let typeExprTranslation =
+    typeExpr |> Dependencies.translateTypeExpr(~language);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
   let codeItems = [ValueBinding({moduleName, id, typ})];
@@ -249,6 +256,7 @@ let translateMake =
   let typeExprTranslation =
     typeExpr
     |> Dependencies.translateTypeExpr(
+         ~language,
          /* Only get the dependencies for the prop types.
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
@@ -262,7 +270,7 @@ let translateMake =
     typeExprTranslation.typ
     |> TypeVars.substitute(~f=s =>
          if (freeTypeVarsSet |> StringSet.mem(s)) {
-           Some(any);
+           Some(mixedOrUnknown(~language));
          } else {
            None;
          }
@@ -284,7 +292,8 @@ let translateMake =
     let propsType =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
-      | [] => Object([("children", NonMandatory, any)])
+      | [] =>
+        Object([("children", NonMandatory, mixedOrUnknown(~language))])
       /* Then we had both props and children. */
       | [children, ..._] =>
         switch (propOrChildren) {
@@ -315,7 +324,7 @@ let translateMake =
 
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> translateId(~moduleName, ~typeExpr)
+    id |> translateId(~language, ~moduleName, ~typeExpr)
   };
 };
 
@@ -326,7 +335,8 @@ let translateStructValue =
   switch (vb_pat.pat_desc, getGenTypeKind(vb_attributes)) {
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
-  | (Tpat_var(id, _), GenType) => id |> translateId(~moduleName, ~typeExpr)
+  | (Tpat_var(id, _), GenType) =>
+    id |> translateId(~language, ~moduleName, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -344,7 +354,7 @@ let translateSignatureValue =
   switch (val_id, getGenTypeKind(val_attributes)) {
   | (id, GenType) when Ident.name(id) == "make" =>
     id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
-  | (id, GenType) => id |> translateId(~moduleName, ~typeExpr)
+  | (id, GenType) => id |> translateId(~language, ~moduleName, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -354,7 +364,7 @@ let translateSignatureValue =
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
 let translatePrimitive =
-    (valueDescription: Typedtree.value_description): translation => {
+    (~language, valueDescription: Typedtree.value_description): translation => {
   let componentName =
     valueDescription.val_id |> Ident.name |> String.capitalize;
   let path =
@@ -364,7 +374,8 @@ let translatePrimitive =
     };
   let importPath = path |> ImportPath.fromStringUnsafe;
   let typeExprTranslation =
-    valueDescription.val_desc.ctyp_type |> Dependencies.translateTypeExpr;
+    valueDescription.val_desc.ctyp_type
+    |> Dependencies.translateTypeExpr(~language);
   let genTypeKind = getGenTypeKind(valueDescription.val_attributes);
   switch (typeExprTranslation.typ, genTypeKind) {
   | (Ident("ReasonReact_reactClass", []), GenType) when path != "" => {
@@ -381,7 +392,8 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
+let translateTypeDecl =
+    (~language, dec: Typedtree.type_declaration): translation =>
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
@@ -396,7 +408,7 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
              | Some(StringPayload(s)) => s
              | _ => ld_id |> Ident.name
              };
-           (name, ld_type |> Dependencies.translateTypeExpr);
+           (name, ld_type |> Dependencies.translateTypeExpr(~language));
          });
     let dependencies =
       fieldTranslations
@@ -434,12 +446,18 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
     | None => {
         dependencies: [],
         codeItems: [
-          translateExportType(~opaque=true, ~typeVars, ~typeName, any),
+          translateExportType(
+            ~opaque=true,
+            ~typeVars,
+            ~typeName,
+            mixedOrUnknown(~language),
+          ),
         ],
       }
     | Some(coreType) =>
       let typeExprTranslation =
-        coreType.Typedtree.ctyp_type |> Dependencies.translateTypeExpr;
+        coreType.Typedtree.ctyp_type
+        |> Dependencies.translateTypeExpr(~language);
       let rec isOpaque = typ =>
         switch (typ) {
         | Ident("boolean" | "number" | "string", []) => false
@@ -467,9 +485,10 @@ let translateTypeDecl = (dec: Typedtree.type_declaration): translation =>
       List.map(
         constructorDeclaration =>
           translateConstructorDeclaration(
+            ~language,
+            ~recordGen,
             variantTypeName,
             constructorDeclaration,
-            ~recordGen,
           ),
         constructorDeclarations,
       );

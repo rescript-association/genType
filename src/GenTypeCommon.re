@@ -79,4 +79,12 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-let any = Ident("any", []);
+let mixedOrUnknown = (~language) =>
+  Ident(
+    switch (language) {
+    | Flow => "mixed"
+    | Typescript
+    | Untyped => "unknown"
+    },
+    [],
+  );
