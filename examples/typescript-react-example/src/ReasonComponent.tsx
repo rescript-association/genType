@@ -10,6 +10,8 @@ const ReasonReact = require("reason-react/src/ReasonReact.js");
 // No need to import locally visible type person. Make sure it is also marked with @genType
 // No need to import locally visible type t. Make sure it is also marked with @genType
 
+import {Mouse_t as ReactEvent_Mouse_t} from '../src/shims/ReactEvent.shim';
+
 import {coord as Records_coord} from '../src/nested/Records';
 
 import {list} from '../src/shims/ReasonPervasives.shim';
@@ -18,6 +20,7 @@ import {t as Types_t} from '../src/nested/Types';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type person<a> = {name:string, surname:string, type:string, polymorphicPayload:a};
+export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {message?:string; person:person<unknown>; intList?:list<number>; children?:unknown};
 export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(

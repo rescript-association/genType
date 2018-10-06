@@ -13,7 +13,7 @@ const ReasonReact = require("reason-react/src/ReasonReact.js");
 import type {Mouse_t as ReactEvent_Mouse_t} from '../../src/shims/ReactEvent.shim';
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
-export const onClick: (ReactEvent_Mouse_t) => (typeof undefined) = GreetingBS.onClick;
+export const onClick: (ReactEvent_Mouse_t) => void = GreetingBS.onClick;
 export type Props = {|message:string, someNumber:number, extraGreeting?:string, polymorphicProp:mixed, children?:mixed|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   GreetingBS.component,

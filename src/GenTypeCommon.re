@@ -92,4 +92,4 @@ let mixedOrUnknown = (~language) =>
 let booleanT = Ident("boolean", []);
 let numberT = Ident("number", []);
 let stringT = Ident("string", []);
-let unitT = Ident("(typeof undefined)", []);
+let unitT = Ident("void", []);

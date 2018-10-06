@@ -10,23 +10,28 @@ type person('a) = {
 };
 
 [@genType]
+let onClick = (_: ReactEvent.Mouse.t): unit => Js.log("click");
+
+[@genType]
 let make =
     (~message="default message", ~person, ~intList=[0], _children)
     : ReasonReact.component(_) => {
   ...component,
   render: _self =>
-    <div className="App">
-      (
-        "ReasonReact "
-        ++ message
-        ++ " and intList: "
-        ++ (
-          intList |> List.map(i => string_of_int(i)) |> String.concat(",")
+    <div className="App" onClick>
+      {
+        (
+          "ReasonReact "
+          ++ message
+          ++ " and intList: "
+          ++ (
+            intList |> List.map(i => string_of_int(i)) |> String.concat(",")
+          )
+          ++ " and person name: "
+          ++ person.name
         )
-        ++ " and person name: "
-        ++ person.name
-      )
-      ->ReasonReact.string
+        ->ReasonReact.string
+      }
     </div>,
 };
 

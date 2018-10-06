@@ -8,6 +8,11 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("Component");
 
+function onClick() {
+  console.log("click");
+  return /* () */0;
+}
+
 function make($staropt$star, person, $staropt$star$1, _) {
   var message = $staropt$star !== undefined ? $staropt$star : "default message";
   var intList = $staropt$star$1 !== undefined ? $staropt$star$1 : /* :: */[
@@ -26,7 +31,8 @@ function make($staropt$star, person, $staropt$star$1, _) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
               return React.createElement("div", {
-                          className: "App"
+                          className: "App",
+                          onClick: onClick
                         }, "ReasonReact " + (message + (" and intList: " + ($$String.concat(",", List.map((function (i) {
                                           return String(i);
                                         }), intList)) + (" and person name: " + person[/* name */0])))));
@@ -62,6 +68,7 @@ function useRecordsCoord(param) {
 }
 
 exports.component = component;
+exports.onClick = onClick;
 exports.make = make;
 exports.minus = minus;
 exports.useTypeDefinedInAnotherModule = useTypeDefinedInAnotherModule;
