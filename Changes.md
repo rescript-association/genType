@@ -2,6 +2,8 @@
   Improve support for checking JS component used from Reason.
   Support for nullable types Js.Nullable.t.
   Avoid generation of type any: use mixed (Flow) or unknown (TS) instead.
+  Add ReactEvent shims for TypeScript.
+  Use type “void” instead of “typeof undefined”.
 
 # 0.13.0
   Stricter checks for FlowType.
