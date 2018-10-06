@@ -4,12 +4,12 @@ external myBanner: ReasonReact.reactClass = "./MyBanner";
 [@bs.deriving abstract]
 type jsProps = {
   show: bool,
-  message: string,
+  message: Js.Nullable.t(string),
 };
 
 [@genType]
 let make:
-  (~show: bool, ~message: string, 'a) =>
+  (~show: bool, ~message: Js.Nullable.t(string), 'a) =>
   ReasonReact.component(
     ReasonReact.stateless,
     ReasonReact.noRetainedProps,

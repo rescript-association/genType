@@ -240,23 +240,23 @@ and translateTypeExpr_ =
       GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, typeExpr.id);
     {dependencies: [], typ: TypeVar(typeName)};
   | Tvar(Some(s)) => {dependencies: [], typ: TypeVar(s)}
-  | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "bool", _), [], _)
-  | Tconstr(Path.Pident({name: "bool", _}), [], _) => {
+  | Tconstr(Pdot(Pident({name: "FB", _}), "bool", _), [], _)
+  | Tconstr(Pident({name: "bool", _}), [], _) => {
       dependencies: [],
       typ: Ident("boolean", []),
     }
-  | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "int", _), [], _)
-  | Tconstr(Path.Pident({name: "int", _}), [], _) => {
+  | Tconstr(Pdot(Pident({name: "FB", _}), "int", _), [], _)
+  | Tconstr(Pident({name: "int", _}), [], _) => {
       dependencies: [],
       typ: Ident("number", []),
     }
-  | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "string", _), [], _)
-  | Tconstr(Path.Pident({name: "string", _}), [], _) => {
+  | Tconstr(Pdot(Pident({name: "FB", _}), "string", _), [], _)
+  | Tconstr(Pident({name: "string", _}), [], _) => {
       dependencies: [],
       typ: Ident("string", []),
     }
-  | Tconstr(Pdot(Path.Pident({Ident.name: "FB", _}), "unit", _), [], _)
-  | Tconstr(Path.Pident({name: "unit", _}), [], _) => {
+  | Tconstr(Pdot(Pident({name: "FB", _}), "unit", _), [], _)
+  | Tconstr(Pident({name: "unit", _}), [], _) => {
       dependencies: [],
       typ: Ident("(typeof undefined)", []),
     }
@@ -266,20 +266,19 @@ and translateTypeExpr_ =
    * which require conversion. The solution here could be to use the Reason
    * representation of option for everything except named arguments.
    */
-  | Tconstr(
-      Pdot(Path.Pident({Ident.name: "FB", _}), "array", _),
-      [param],
-      _,
-    )
-  | Tconstr(Path.Pident({name: "array", _}), [param], _) =>
+  | Tconstr(Pdot(Pident({name: "FB", _}), "array", _), [param], _)
+  | Tconstr(Pident({name: "array", _}), [param], _) =>
     let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
     {...paramTranslation, typ: Array(paramTranslation.typ)};
+  | Tconstr(Pdot(Pident({name: "FB", _}), "option", _), [param], _)
+  | Tconstr(Pident({name: "option", _}), [param], _) =>
+    let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
+    {...paramTranslation, typ: Option(paramTranslation.typ)};
   | Tconstr(
-      Pdot(Path.Pident({Ident.name: "FB", _}), "option", _),
+      Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
       [param],
       _,
-    )
-  | Tconstr(Path.Pident({name: "option", _}), [param], _) =>
+    ) =>
     let paramTranslation = param |> translateTypeExpr_(~typeVarsGen);
     {...paramTranslation, typ: Option(paramTranslation.typ)};
   | Tarrow(_) =>

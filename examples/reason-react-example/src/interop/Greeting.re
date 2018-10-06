@@ -18,7 +18,10 @@ let make =
       | Some(g) => g
       };
     <div onClick>
-      <MyBannerRe show=true message={message ++ " " ++ greeting} />
+      <MyBannerRe
+        show=true
+        message={Js.Nullable.return(message ++ " " ++ greeting)}
+      />
       {ReasonReact.string("someNumber:" ++ string_of_int(someNumber))}
     </div>;
   },

@@ -305,7 +305,7 @@ let emitCodeItems =
           };
         emitExportType(~language, exportTypeNoChildren);
         checkJsWrapperType |> export;
-        env
+        env;
       } else {
         emitExportType(~language, exportType);
         EmitTyp.emitExportConstMany(

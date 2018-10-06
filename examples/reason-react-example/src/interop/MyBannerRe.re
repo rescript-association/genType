@@ -5,7 +5,7 @@ external myBanner: ReasonReact.reactClass = "./MyBanner";
 [@bs.deriving abstract]
 type jsProps = {
   show: bool,
-  message: string,
+  message: Js.Nullable.t(string),
 };
 
 /* The @genType annotation is ignored if there's also a .rei file */
