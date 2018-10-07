@@ -122,3 +122,16 @@ let computeArea4 =
       },
     ) =>
   o##x * o##y * o##z->Option.mapWithDefault(1, n => n);
+
+[@genType]
+type mix = {
+  .
+  "a": int,
+  "b": int,
+  "c":
+    option({
+      .
+      "name": string,
+      "surname": string,
+    }),
+};

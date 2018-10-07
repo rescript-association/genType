@@ -39,3 +39,5 @@ export const findAddress2: (_1:business2) => list<string> = function _(Arg1) { c
 export const someBusiness2: business2 = {name:RecordsBS.someBusiness2[0], owner:(RecordsBS.someBusiness2[1] == null ? RecordsBS.someBusiness2[1] : {name:RecordsBS.someBusiness2[1][0], age:RecordsBS.someBusiness2[1][1], address:RecordsBS.someBusiness2[1][2]}), address2:RecordsBS.someBusiness2[2]};
 export const computeArea3: (_1:{x:number; y:number; z:(null | undefined | number)}) => number = RecordsBS.computeArea3;
 export const computeArea4: (_1:{x:number; y:number; z?:number}) => number = RecordsBS.computeArea4;
+// tslint:disable-next-line:interface-over-type-literal
+export type mix = {a:number; b:number; c?:{name:string; surname:string}};

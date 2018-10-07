@@ -470,6 +470,8 @@ let translateTypeDecl =
         | Option(t)
         | Nullable(t) => t |> isOpaque
         | Function(_) => false
+        | Record(_) => false
+        | Object(_) => false
         | _ => true
         };
       let opaque = typeExprTranslation.typ |> isOpaque;
