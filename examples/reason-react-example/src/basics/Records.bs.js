@@ -25,6 +25,34 @@ function computeArea2(param) {
                   })));
 }
 
+function computeArea3(o) {
+  return Caml_int32.imul(Caml_int32.imul(o.x, o.y), Belt_Option.mapWithDefault(Js_primitive.nullable_to_opt(o.z), 1, (function (n) {
+                    return n;
+                  })));
+}
+
+function computeArea4(o) {
+  return Caml_int32.imul(Caml_int32.imul(o.x, o.y), Belt_Option.mapWithDefault(o.z, 1, (function (n) {
+                    return n;
+                  })));
+}
+
+function computeNested() {
+  return 0;
+}
+
+function computeNestedNested() {
+  return 0;
+}
+
+function computeNestedNestedNullable() {
+  return 0;
+}
+
+function computeNestedNestedHalfNullable() {
+  return 0;
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -35,4 +63,10 @@ exports.origin = origin;
 exports.computeArea = computeArea;
 exports.coord2d = coord2d;
 exports.computeArea2 = computeArea2;
+exports.computeArea3 = computeArea3;
+exports.computeArea4 = computeArea4;
+exports.computeNested = computeNested;
+exports.computeNestedNested = computeNestedNested;
+exports.computeNestedNestedNullable = computeNestedNestedNullable;
+exports.computeNestedNestedHalfNullable = computeNestedNestedHalfNullable;
 /* No side effect */

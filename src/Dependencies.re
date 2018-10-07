@@ -292,6 +292,37 @@ and translateTypeExpr_ =
     let paramTranslation =
       param |> translateTypeExpr_(~language, ~typeVarsGen);
     {...paramTranslation, typ: Nullable(paramTranslation.typ)};
+  | Tconstr(
+      Pdot(Pident({name: "Js", _}), "t", _),
+      [{desc: Tobject(tObj, _), _}],
+      _,
+    ) =>
+    let rec getFieldTypes = (texp: Types.type_expr) =>
+      switch (texp.desc) {
+      | Tfield(s, _, t1, t2) => [
+          (s, t1 |> translateTypeExpr_(~language, ~typeVarsGen)),
+          ...t2 |> getFieldTypes,
+        ]
+      | _ => []
+      };
+    let fieldTranslations = tObj |> getFieldTypes;
+    let dependencies =
+      fieldTranslations
+      |> List.map(((_, {dependencies, _})) => dependencies)
+      |> List.concat;
+    let fields =
+      fieldTranslations |> List.map(((s, {typ, _})) => (s, Mandatory, typ));
+    let typ = Object(fields, JustAnObject);
+    {dependencies, typ};
+
+  | Tpoly(t, []) =>
+    t
+    |> translateTypeExpr_(
+         ~language,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies,
+       )
+
   | Tarrow(_) =>
     typeExpr
     |> extract_fun(

@@ -293,12 +293,18 @@ let translateMake =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
       | [] =>
-        Object([("children", NonMandatory, mixedOrUnknown(~language))])
+        Object(
+          [("children", NonMandatory, mixedOrUnknown(~language))],
+          GroupOfLabeledArgs,
+        )
       /* Then we had both props and children. */
       | [children, ..._] =>
         switch (propOrChildren) {
-        | Object(fields) =>
-          Object(fields @ [("children", NonMandatory, children)])
+        | Object(fields, GroupOfLabeledArgs) =>
+          Object(
+            fields @ [("children", NonMandatory, children)],
+            GroupOfLabeledArgs,
+          )
         | _ => propOrChildren
         }
       };

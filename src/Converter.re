@@ -5,6 +5,7 @@ type t =
   | OptionC(t)
   | NullableC(t)
   | ArrayC(t)
+  | ObjectC(fieldsC)
   | RecordC(fieldsC)
   | FunctionC((list(groupedArgConverter), t))
 and groupedArgConverter =
@@ -18,14 +19,21 @@ let rec toString = converter =>
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
   | NullableC(c) => "nullable(" ++ toString(c) ++ ")"
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
-  | RecordC(fieldsC) =>
+  | RecordC(fieldsC)
+  | ObjectC(fieldsC) =>
+    let dot =
+      switch (converter) {
+      | ObjectC(_) => ". "
+      | _ => ""
+      };
     "{"
+    ++ dot
     ++ (
       fieldsC
       |> List.map(((lbl, c)) => lbl ++ ":" ++ (c |> toString))
       |> String.concat(", ")
     )
-    ++ "}"
+    ++ "}";
   | FunctionC((groupedArgConverters, c)) =>
     let labelToString = label =>
       switch (label) {
@@ -101,7 +109,18 @@ let rec typToConverter_ =
     let converter =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
     ArrayC(converter);
-  | Object(_) => IdentC
+  | Object(_, GroupOfLabeledArgs) => IdentC
+  | Object(fields, JustAnObject) =>
+    ObjectC(
+      fields
+      |> List.map(((lbl, optionalness, t)) =>
+           (
+             lbl,
+             (optionalness == Mandatory ? t : Option(t))
+             |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles),
+           )
+         ),
+    )
   | Record(fields) =>
     RecordC(
       fields
@@ -125,7 +144,7 @@ let rec typToConverter_ =
   }
 and typToGroupedArgConverter_ = (~exportTypeMap, ~typesFromOtherFiles, typ) =>
   switch (typ) {
-  | Object(fields) =>
+  | Object(fields, GroupOfLabeledArgs) =>
     GroupConverter(
       fields
       |> List.map(((s, _optionalness, t)) =>
@@ -166,6 +185,9 @@ let rec converterIsIdentity = (~toJS, converter) =>
   | NullableC(c) => c |> converterIsIdentity(~toJS)
 
   | ArrayC(c) => c |> converterIsIdentity(~toJS)
+
+  | ObjectC(fieldsC) =>
+    fieldsC |> List.for_all(((_, c)) => c |> converterIsIdentity(~toJS))
 
   | RecordC(_) => false
 
@@ -221,6 +243,17 @@ let rec apply = (~converter, ~toJS, value) =>
     ++ ".map(function _element(x) { return "
     ++ ("x" |> apply(~converter=c, ~toJS))
     ++ "})"
+
+  | ObjectC(fieldsC) =>
+    let fieldValues =
+      fieldsC
+      |> List.map(((lbl, fieldConverter)) =>
+           lbl
+           ++ ":"
+           ++ (value ++ "." ++ lbl |> apply(~converter=fieldConverter, ~toJS))
+         )
+      |> String.concat(", ");
+    "{" ++ fieldValues ++ "}";
 
   | RecordC(fieldsC) =>
     let simplifyFieldConverted = fieldConverter =>

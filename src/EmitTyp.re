@@ -33,7 +33,7 @@ let rec renderString = (~language, typ) =>
       "Array<" ++ (typ |> renderString(~language)) ++ ">";
     };
   | Record(recordFields) => recordFields |> renderRecordType(~language)
-  | Object(fields) => fields |> renderObjType(~language)
+  | Object(fields, _) => fields |> renderObjType(~language)
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(~language, ~typeVars, argTypes, retType)
   }
