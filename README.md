@@ -85,11 +85,23 @@ Reason values of type e.g. `option(int)`, such as `None`, `Some(0)`, `Some(1)`, 
 The JS values are unboxed, and `null`/`undefined` are conflated.
 So they are mapped to JS values of type `null` or `undefined` or `number`.
 
+### nullables
+Reason values of type e.g. `Js.Nullable.t(int)`, such as `Js.Nullable.null`, `Js.Nullable.undefined`, `Js.Nullable.return(0)`, `Js.Nullable.return(1)`, `Js.Nullable.return(2)`, are mapped to JS values `null`, `undefined`,  `0`, `1`, `2`.
+The JS values are identical: there is no conversion unless the argument type needs conversion.
+
 ### records
 Reason record values of type e.g. `{x:int}` such as `{x:0}`, `{x:1}`, `{x:2}`, are mapped to JS object values `{x:0}`, `{x:1}`, `{x:2}`. This requires a change of runtime representation from arrays to objects.
 So they are mapped to JS values of type `{x:number}`.
 
 The `@genType.as` annotation can be used to change the name of a field on the JS side of things. So e.g. `{[@genType.as "y"] x:int}` is mapped to the JS type `{y:int}`.
+
+If one field of the Reason record has option type, this is represented as an optional JS field. So for example Reason type `{x: option(int)}` corresponds to the JS type `{x?: number}`.
+
+### objects
+Reason object values of type e.g. `{. "x":int}` such as `{"x": 0}`, `{"x": 1}`, `{"x": 2}`, are mapped to identical JS object values `{x:0}`, `{x:1}`, `{x:2}`. This requires no conversion. So they are mapped to JS values of type `{x:number}`.
+A conversion is required only when the type of some field requires conversions.
+
+It is possible to mix object and option types, so for example the Reason type `{. "x":int, "y":option(string)}` corresponds to JS type `{x:number, ?y: string}`, requires no conversion, and allows option pattern matching on the Reason side.
 
 ### variants
 Reason values of variant type e.g. `| A | B(int)` have the same representation in JS. Constructor functions with the same name as the variants are generated, so e.g. `A` and `B(3)` are valid JS programs to generate Reason values.
