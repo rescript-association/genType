@@ -1,4 +1,4 @@
-# master
+# 0.14.0
   Improve support for checking JS component used from Reason.
   Support for nullable types Js.Nullable.t.
   Avoid generation of type any: use mixed (Flow) or unknown (TS) instead.
