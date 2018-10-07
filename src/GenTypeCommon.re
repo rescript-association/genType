@@ -15,16 +15,22 @@ type module_ =
   | CommonJS
   | ES6;
 
+type importPath =
+  | Relative
+  | Node;
+
 type config = {
   language,
-  modulesMap: ModuleNameMap.t(ModuleName.t),
   module_,
+  importPath,
+  modulesMap: ModuleNameMap.t(ModuleName.t),
 };
 
 let defaultConfig = {
   language: Flow,
-  modulesMap: ModuleNameMap.empty,
   module_: ES6,
+  importPath: Relative,
+  modulesMap: ModuleNameMap.empty,
 };
 
 let projectRoot = ref("");

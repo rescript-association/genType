@@ -113,20 +113,10 @@ let relativePathFromBsLib = fileName =>
     );
   };
 
-let getLanguage = json =>
+let getString = (s, json) =>
   switch (json) {
   | Ext_json_types.Obj({map, _}) =>
-    switch (map |> String_map.find_opt("language")) {
-    | Some(Str({str, _})) => str
-    | _ => ""
-    }
-  | _ => ""
-  };
-
-let getModule = json =>
-  switch (json) {
-  | Ext_json_types.Obj({map, _}) =>
-    switch (map |> String_map.find_opt("module")) {
+    switch (map |> String_map.find_opt(s)) {
     | Some(Str({str, _})) => str
     | _ => ""
     }
@@ -157,8 +147,9 @@ let getShims = json => {
 let readConfig = () => {
   setProjectRoot();
   let fromJson = json => {
-    let languageString = json |> getLanguage;
-    let moduleString = json |> getModule;
+    let languageString = json |> getString("language");
+    let moduleString = json |> getString("module");
+    let importPathString = json |> getString("importPath");
     let modulesMap =
       json
       |> getShims
@@ -179,9 +170,10 @@ let readConfig = () => {
          );
     if (Debug.config) {
       logItem(
-        "Config language:%s module:%s modulesMap:%d entries\n",
+        "Config language:%s module:%s importPath:%s modulesMap:%d entries\n",
         languageString,
         moduleString,
+        importPathString,
         modulesMap |> ModuleNameMap.cardinal,
       );
     };
@@ -197,7 +189,13 @@ let readConfig = () => {
       | "es6" => ES6
       | _ => defaultConfig.module_
       };
-    {language, module_, modulesMap};
+    let importPath =
+      switch (importPathString) {
+      | "relative" => Relative
+      | "node" => Node
+      | _ => defaultConfig.importPath
+      };
+    {language, module_, importPath, modulesMap};
   };
 
   switch (getConfigFile()) {

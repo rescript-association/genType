@@ -1,14 +1,18 @@
+open GenTypeCommon;
+
 type t = string;
 
 let react = "react";
 let reasonReact = "reason-react/src/ReasonReact.js";
 let bsPlatformBlock = "bs-platform/lib/js/block.js";
 
-let fromModule = (~dir, ~importExtension, moduleName) =>
-  Filename.concat(
-    dir,
-    (moduleName |> ModuleName.toString) ++ importExtension,
-  );
+let fromModule = (~config, ~dir, ~importExtension, moduleName) => {
+  let withNoPath = (moduleName |> ModuleName.toString) ++ importExtension;
+  switch (config.importPath) {
+  | Relative => Filename.concat(dir, withNoPath)
+  | Node => withNoPath
+  };
+};
 
 let fromStringUnsafe = s => s;
 

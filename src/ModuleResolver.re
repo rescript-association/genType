@@ -96,7 +96,7 @@ let apply = (~resolver, moduleName) =>
 /* Resolve a reference to ModuleName, and produce a path suitable for require.
    E.g. require "../foo/bar/ModuleName.ext" where ext is ".re" or ".js". */
 let resolveModule =
-    (~outputFileRelative, ~resolver, ~importExtension, moduleName) => {
+    (~config, ~outputFileRelative, ~resolver, ~importExtension, moduleName) => {
   open Filename;
   let outputFileRelativeDir =
     /* e.g. src if we're generating src/File.re.js */
@@ -109,7 +109,7 @@ let resolveModule =
   let candidate =
     /* e.g. import "./Modulename.ext" */
     moduleName
-    |> ImportPath.fromModule(~dir=current_dir_name, ~importExtension);
+    |> ImportPath.fromModule(~config, ~dir=current_dir_name, ~importExtension);
   if (Sys.file_exists(moduleNameReFile)) {
     candidate;
   } else {
@@ -142,6 +142,7 @@ let resolveModule =
       /* e.g. import "../dst/ModuleName.ext" */
       moduleName
       |> ImportPath.fromModule(
+           ~config,
            ~dir=fromOutputDirToModuleDir,
            ~importExtension,
          );
@@ -160,7 +161,7 @@ let resolveSourceModule = (~importPath, moduleName) => {
 };
 
 let resolveGeneratedModule =
-    (~language, ~outputFileRelative, ~resolver, moduleName) => {
+    (~config, ~outputFileRelative, ~resolver, moduleName) => {
   if (Debug.moduleResolution) {
     logItem(
       "Resolve Generated Module: %s\n",
@@ -169,9 +170,11 @@ let resolveGeneratedModule =
   };
   let importPath =
     resolveModule(
+      ~config,
       ~outputFileRelative,
       ~resolver,
-      ~importExtension=EmitTyp.generatedModuleExtension(~language),
+      ~importExtension=
+        EmitTyp.generatedModuleExtension(~language=config.language),
       moduleName,
     );
   if (Debug.moduleResolution) {
@@ -184,17 +187,18 @@ let resolveGeneratedModule =
  * Returns the path to import a given Reason module name.
  */
 let importPathForReasonModuleName =
-    (~language, ~outputFileRelative, ~resolver, ~modulesMap, moduleName) => {
+    (~config, ~outputFileRelative, ~resolver, moduleName) => {
   if (Debug.moduleResolution) {
     logItem("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
   };
-  switch (modulesMap |> ModuleNameMap.find(moduleName)) {
+  switch (config.modulesMap |> ModuleNameMap.find(moduleName)) {
   | shimModuleName =>
     if (Debug.moduleResolution) {
       logItem("ShimModuleName: %s\n", shimModuleName |> ModuleName.toString);
     };
     let importPath =
       resolveModule(
+        ~config,
         ~outputFileRelative,
         ~resolver,
         ~importExtension=".shim",
@@ -206,6 +210,6 @@ let importPathForReasonModuleName =
     importPath;
   | exception Not_found =>
     moduleName
-    |> resolveGeneratedModule(~language, ~outputFileRelative, ~resolver)
+    |> resolveGeneratedModule(~config, ~outputFileRelative, ~resolver)
   };
 };

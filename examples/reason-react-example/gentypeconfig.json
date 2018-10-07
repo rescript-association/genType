@@ -1,6 +1,7 @@
 {
   "language" : "flow",
   "module" : "es6",
+  "importPath" : "relative",
   "shims": [
     "ReasonReact=ReactShim",
     "React=ReactShim",

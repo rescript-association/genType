@@ -518,13 +518,7 @@ let translateTypeDecl =
   | _ => {dependencies: [], codeItems: []}
   };
 
-let typePathToImport =
-    (
-      ~config as {modulesMap, language, _},
-      ~outputFileRelative,
-      ~resolver,
-      typePath,
-    ) =>
+let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
   switch (typePath) {
   | Path.Pident(id) when Ident.name(id) == "list" =>
     ImportTypeAs({
@@ -533,10 +527,9 @@ let typePathToImport =
       importPath:
         ModuleName.reasonPervasives
         |> ModuleResolver.importPathForReasonModuleName(
-             ~language,
+             ~config,
              ~outputFileRelative,
              ~resolver,
-             ~modulesMap,
            ),
       cmtFile: None,
     })
@@ -572,10 +565,9 @@ let typePathToImport =
     let importPath =
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
-           ~language,
+           ~config,
            ~outputFileRelative,
            ~resolver,
-           ~modulesMap,
          );
     let cmtFile = {
       let cmtFile =

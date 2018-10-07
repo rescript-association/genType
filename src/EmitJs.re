@@ -165,6 +165,7 @@ let emitCodeItems =
     | ValueBinding({moduleName, id, typ}) =>
       let importPath =
         ModuleResolver.resolveModule(
+          ~config,
           ~outputFileRelative,
           ~resolver,
           ~importExtension=".bs",
@@ -246,6 +247,7 @@ let emitCodeItems =
       let converter = typ |> typToConverter;
       let importPath =
         ModuleResolver.resolveModule(
+          ~config,
           ~outputFileRelative,
           ~resolver,
           ~importExtension=".bs",
