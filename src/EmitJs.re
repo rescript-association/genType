@@ -233,7 +233,7 @@ let emitCodeItems =
           env.requires
           |> ModuleNameMap.add(
                ModuleName.createBucklescriptBlock,
-               ImportPath.bsPlatformBlock,
+               ImportPath.bsBlockPath(~config),
              ),
       };
 
@@ -342,7 +342,10 @@ let emitCodeItems =
           moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
         let requiresWithReasonReact =
           requiresWithModule
-          |> ModuleNameMap.add(ModuleName.reasonReact, ImportPath.reasonReact);
+          |> ModuleNameMap.add(
+               ModuleName.reasonReact,
+               ImportPath.reasonReactPath(~config),
+             );
         {...env, requires: requiresWithReasonReact};
       };
 

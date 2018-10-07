@@ -23,6 +23,8 @@ type config = {
   language,
   module_,
   importPath,
+  reasonReactPath: string,
+  bsBlockPath: string,
   modulesMap: ModuleNameMap.t(ModuleName.t),
 };
 
@@ -30,6 +32,8 @@ let defaultConfig = {
   language: Flow,
   module_: ES6,
   importPath: Relative,
+  reasonReactPath: "reason-react/src/ReasonReact.js",
+  bsBlockPath: "bs-platform/lib/js/block.js",
   modulesMap: ModuleNameMap.empty,
 };
 

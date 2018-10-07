@@ -3,8 +3,8 @@ open GenTypeCommon;
 type t = string;
 
 let react = "react";
-let reasonReact = "reason-react/src/ReasonReact.js";
-let bsPlatformBlock = "bs-platform/lib/js/block.js";
+let reasonReactPath = (~config) => config.reasonReactPath;
+let bsBlockPath = (~config) => config.bsBlockPath;
 
 let fromModule = (~config, ~dir, ~importExtension, moduleName) => {
   let withNoPath = (moduleName |> ModuleName.toString) ++ importExtension;

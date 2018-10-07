@@ -2,6 +2,8 @@
   "language" : "flow",
   "module" : "es6",
   "importPath" : "relative",
+  "reasonReactPath" : "reason-react/src/ReasonReact.js",
+  "bsBlockPath" : "bs-platform/lib/js/block.js",
   "shims": [
     "ReasonReact=ReactShim",
     "React=ReactShim",

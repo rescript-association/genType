@@ -150,6 +150,8 @@ let readConfig = () => {
     let languageString = json |> getString("language");
     let moduleString = json |> getString("module");
     let importPathString = json |> getString("importPath");
+    let reasonReactPathString = json |> getString("reasonReactPath");
+    let bsBlockPathString = json |> getString("bsBlockPath");
     let modulesMap =
       json
       |> getShims
@@ -195,7 +197,17 @@ let readConfig = () => {
       | "node" => Node
       | _ => defaultConfig.importPath
       };
-    {language, module_, importPath, modulesMap};
+    let reasonReactPath =
+      switch (reasonReactPathString) {
+      | "" => defaultConfig.reasonReactPath
+      | _ => reasonReactPathString
+      };
+    let bsBlockPath =
+      switch (bsBlockPathString) {
+      | "" => defaultConfig.bsBlockPath
+      | _ => bsBlockPathString
+      };
+    {language, module_, importPath, reasonReactPath, bsBlockPath, modulesMap};
   };
 
   switch (getConfigFile()) {
