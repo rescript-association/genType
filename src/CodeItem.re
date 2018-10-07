@@ -214,6 +214,7 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Option(_)
   | Nullable(_)
   | Array(_)
+  | GroupOfLabeledArgs(_)
   | Object(_)
   | Record(_) => typ
   | Function({argTypes, retType, _}) =>
@@ -293,17 +294,15 @@ let translateMake =
       switch (childrenOrNil) {
       /* Then we only extracted a function that accepts children, no props */
       | [] =>
-        Object(
-          [("children", NonMandatory, mixedOrUnknown(~language))],
-          GroupOfLabeledArgs,
-        )
+        GroupOfLabeledArgs([
+          ("children", NonMandatory, mixedOrUnknown(~language)),
+        ])
       /* Then we had both props and children. */
       | [children, ..._] =>
         switch (propOrChildren) {
-        | Object(fields, GroupOfLabeledArgs) =>
-          Object(
+        | GroupOfLabeledArgs(fields) =>
+          GroupOfLabeledArgs(
             fields @ [("children", NonMandatory, children)],
-            GroupOfLabeledArgs,
           )
         | _ => propOrChildren
         }

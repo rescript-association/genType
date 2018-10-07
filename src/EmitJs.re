@@ -294,11 +294,11 @@ let emitCodeItems =
       if (checkJsWrapperType != "") {
         let exportTypeNoChildren =
           switch (exportType.typ) {
-          | Object(fields, GroupOfLabeledArgs) =>
+          | GroupOfLabeledArgs(fields) =>
             switch (fields |> List.rev) {
             | [_child, ...propFieldsRev] =>
               let typNoChildren =
-                Object(propFieldsRev |> List.rev, GroupOfLabeledArgs);
+                GroupOfLabeledArgs(propFieldsRev |> List.rev);
               {...exportType, typ: typNoChildren};
             | [] => exportType
             }

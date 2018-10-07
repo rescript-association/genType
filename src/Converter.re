@@ -109,8 +109,8 @@ let rec typToConverter_ =
     let converter =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
     ArrayC(converter);
-  | Object(_, GroupOfLabeledArgs) => IdentC
-  | Object(fields, JustAnObject) =>
+  | GroupOfLabeledArgs(_) => IdentC
+  | Object(fields) =>
     ObjectC(
       fields
       |> List.map(((lbl, optionalness, t)) =>
@@ -144,7 +144,7 @@ let rec typToConverter_ =
   }
 and typToGroupedArgConverter_ = (~exportTypeMap, ~typesFromOtherFiles, typ) =>
   switch (typ) {
-  | Object(fields, GroupOfLabeledArgs) =>
+  | GroupOfLabeledArgs(fields) =>
     GroupConverter(
       fields
       |> List.map(((s, _optionalness, t)) =>

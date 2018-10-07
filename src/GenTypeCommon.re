@@ -58,17 +58,14 @@ type optionalness =
   | NonMandatory
   | Mandatory;
 
-type objKind =
-  | JustAnObject
-  | GroupOfLabeledArgs;
-
 type typ =
   | Ident(string, list(typ))
   | TypeVar(string)
   | Option(typ)
   | Nullable(typ)
   | Array(typ)
-  | Object(fields, objKind)
+  | GroupOfLabeledArgs(fields)
+  | Object(fields)
   | Record(fields)
   | Function(function_)
 and fields = list((string, optionalness, typ))

@@ -50,13 +50,19 @@ let rec substitute = (~f, typ) =>
   | Option(typ) => Option(typ |> substitute(~f))
   | Nullable(typ) => Nullable(typ |> substitute(~f))
   | Array(typ) => Array(typ |> substitute(~f))
-  | Object(fields, objKind) =>
+  | GroupOfLabeledArgs(fields) =>
+    GroupOfLabeledArgs(
+      fields
+      |> List.map(((s, optionalness, t)) =>
+           (s, optionalness, t |> substitute(~f))
+         ),
+    )
+  | Object(fields) =>
     Object(
       fields
       |> List.map(((s, optionalness, t)) =>
            (s, optionalness, t |> substitute(~f))
          ),
-      objKind,
     )
   | Record(fields) =>
     Record(
@@ -85,7 +91,8 @@ let rec free_ = typ: StringSet.t =>
   | Option(typ) => typ |> free_
   | Nullable(typ) => typ |> free_
   | Array(typ) => typ |> free_
-  | Object(fields, _)
+  | GroupOfLabeledArgs(fields)
+  | Object(fields)
   | Record(fields) =>
     fields
     |> List.fold_left(

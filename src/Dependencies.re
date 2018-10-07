@@ -312,7 +312,7 @@ and translateTypeExpr_ =
       |> List.concat;
     let fields =
       fieldTranslations |> List.map(((s, {typ, _})) => (s, Mandatory, typ));
-    let typ = Object(fields, JustAnObject);
+    let typ = Object(fields);
     {dependencies, typ};
 
   | Tpoly(t, []) =>

@@ -46,10 +46,7 @@ let rec reverse = (~soFar=[], lst) =>
   | [] => soFar
   | [Arg(typ), ...tl] => reverse(~soFar=[typ, ...soFar], tl)
   | [Group(fields), ...tl] =>
-    reverse(
-      ~soFar=[Object(List.rev(fields), GroupOfLabeledArgs), ...soFar],
-      tl,
-    )
+    reverse(~soFar=[GroupOfLabeledArgs(List.rev(fields)), ...soFar], tl)
   };
 
 let group = labeledTypes =>
