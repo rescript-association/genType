@@ -1,5 +1,6 @@
 {
   "language" : "flow",
+  "module" : "es6",
   "shims": [
     "ReasonReact=ReactShim",
     "React=ReactShim",

@@ -21,6 +21,12 @@ type config = {
   module_,
 };
 
+let defaultConfig = {
+  language: Flow,
+  modulesMap: ModuleNameMap.empty,
+  module_: ES6,
+};
+
 let projectRoot = ref("");
 
 let logFile = ref(None);

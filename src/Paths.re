@@ -123,6 +123,16 @@ let getLanguage = json =>
   | _ => ""
   };
 
+let getModule = json =>
+  switch (json) {
+  | Ext_json_types.Obj({map, _}) =>
+    switch (map |> String_map.find_opt("module")) {
+    | Some(Str({str, _})) => str
+    | _ => ""
+    }
+  | _ => ""
+  };
+
 let getShims = json => {
   let shims = ref([]);
   switch (json) {
@@ -144,15 +154,11 @@ let getShims = json => {
   shims^;
 };
 
-let emptyConfig = {
-  language: Flow,
-  modulesMap: ModuleNameMap.empty,
-  module_: ES6,
-};
 let readConfig = () => {
   setProjectRoot();
   let fromJson = json => {
     let languageString = json |> getLanguage;
+    let moduleString = json |> getModule;
     let modulesMap =
       json
       |> getShims
@@ -173,8 +179,9 @@ let readConfig = () => {
          );
     if (Debug.config) {
       logItem(
-        "Config language:%s modulesMap:%d entries\n",
+        "Config language:%s module:%s modulesMap:%d entries\n",
         languageString,
+        moduleString,
         modulesMap |> ModuleNameMap.cardinal,
       );
     };
@@ -184,14 +191,20 @@ let readConfig = () => {
       | "untyped" => Untyped
       | _ => Flow
       };
-    {...emptyConfig, language, modulesMap};
+    let module_ =
+      switch (moduleString) {
+      | "commonjs" => CommonJS
+      | "es6" => ES6
+      | _ => defaultConfig.module_
+      };
+    {language, module_, modulesMap};
   };
 
   switch (getConfigFile()) {
-  | None => emptyConfig
+  | None => defaultConfig
   | Some(configFile) =>
     try (configFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
-    | _ => emptyConfig
+    | _ => defaultConfig
     }
   };
 };
