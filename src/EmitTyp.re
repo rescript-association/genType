@@ -32,9 +32,9 @@ let rec renderString = (~language, typ) =>
     } else {
       "Array<" ++ (typ |> renderString(~language)) ++ ">";
     };
-  | Record(recordFields) => recordFields |> renderRecordType(~language)
   | GroupOfLabeledArgs(fields)
-  | Object(fields) => fields |> renderObjType(~language)
+  | Object(fields)
+  | Record(fields) => fields |> renderFieldType(~language)
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(~language, ~typeVars, argTypes, retType)
   }
@@ -42,14 +42,7 @@ and renderField = (~language, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
   lbl ++ optMarker ++ ":" ++ (typ |> renderString(~language));
 }
-and renderObjType = (~language, fields) =>
-  (language == Flow ? "{|" : "{")
-  ++ String.concat(
-       language == Flow ? ", " : "; ",
-       List.map(renderField(~language), fields),
-     )
-  ++ (language == Flow ? "|}" : "}")
-and renderRecordType = (~language, fields) =>
+and renderFieldType = (~language, fields) =>
   (language == Flow ? "{|" : "{")
   ++ String.concat(", ", List.map(renderField(~language), fields))
   ++ (language == Flow ? "|}" : "}")
