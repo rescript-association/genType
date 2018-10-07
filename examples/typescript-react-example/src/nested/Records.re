@@ -98,3 +98,27 @@ let someBusiness2 = {
   owner: Js.Nullable.null,
   address2: Js.Nullable.null,
 };
+
+[@genType]
+let computeArea3 =
+    (
+      o: {
+        .
+        "x": int,
+        "y": int,
+        "z": Js.Nullable.t(int),
+      },
+    ) =>
+  o##x * o##y * o##z->Js.Nullable.toOption->Option.mapWithDefault(1, n => n);
+
+[@genType]
+let computeArea4 =
+    (
+      o: {
+        .
+        "x": int,
+        "y": int,
+        "z": option(int),
+      },
+    ) =>
+  o##x * o##y * o##z->Option.mapWithDefault(1, n => n);

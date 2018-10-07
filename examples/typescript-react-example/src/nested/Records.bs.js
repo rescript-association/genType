@@ -96,6 +96,18 @@ var someBusiness2 = /* record */[
   someBusiness2_002
 ];
 
+function computeArea3(o) {
+  return Caml_int32.imul(Caml_int32.imul(o.x, o.y), Belt_Option.mapWithDefault(Js_primitive.nullable_to_opt(o.z), 1, (function (n) {
+                    return n;
+                  })));
+}
+
+function computeArea4(o) {
+  return Caml_int32.imul(Caml_int32.imul(o.x, o.y), Belt_Option.mapWithDefault(o.z, 1, (function (n) {
+                    return n;
+                  })));
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -122,4 +134,6 @@ exports.payloadValue = payloadValue;
 exports.getPayloadRecordPlusOne = getPayloadRecordPlusOne;
 exports.findAddress2 = findAddress2;
 exports.someBusiness2 = someBusiness2;
+exports.computeArea3 = computeArea3;
+exports.computeArea4 = computeArea4;
 /* No side effect */

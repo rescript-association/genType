@@ -8,6 +8,8 @@
   Simplify converter for optional record fields.
   Support nullable types whose argument requires conversion.
   Support for object types: Js.t(...).
+  
+  [Treat optional(_) fields of object types as with records (no conversion JS <-> Reason)](https://github.com/cristianoc/genType/issues/48).
 
 # 0.13.0
   Stricter checks for FlowType.

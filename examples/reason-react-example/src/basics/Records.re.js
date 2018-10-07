@@ -17,8 +17,8 @@ export const coord2d: (number, number) => coord = function _(Arg1, Arg2) { const
 export type coord2 = {|a:number, b:number, c:?number|};
 export const computeArea2: (coord2) => number = function _(Arg1) { const result = RecordsBS.computeArea2([Arg1.a, Arg1.b, Arg1.c]); return result };
 export const computeArea3: ({|x:number, y:number, z:?number|}) => number = RecordsBS.computeArea3;
-export const computeArea4: ({|x:number, y:number, z:?number|}) => number = function _(Arg1) { const result = RecordsBS.computeArea4({x:Arg1.x, y:Arg1.y, z:(Arg1.z == null ? undefined : Arg1.z)}); return result };
-export const computeNested: ({|x:number, y:number, z:?{|x:number, y:number, z:?number|}|}) => number = function _(Arg1) { const result = RecordsBS.computeNested({x:Arg1.x, y:Arg1.y, z:(Arg1.z == null ? undefined : {x:Arg1.z.x, y:Arg1.z.y, z:(Arg1.z.z == null ? undefined : Arg1.z.z)})}); return result };
-export const computeNestedNested: ({|x:number, y:number, z:?{|x:number, y:number, z:?{|x:number, y:number, z:?number|}|}|}) => number = function _(Arg1) { const result = RecordsBS.computeNestedNested({x:Arg1.x, y:Arg1.y, z:(Arg1.z == null ? undefined : {x:Arg1.z.x, y:Arg1.z.y, z:(Arg1.z.z == null ? undefined : {x:Arg1.z.z.x, y:Arg1.z.z.y, z:(Arg1.z.z.z == null ? undefined : Arg1.z.z.z)})})}); return result };
+export const computeArea4: ({|x:number, y:number, z?:number|}) => number = RecordsBS.computeArea4;
+export const computeNested: ({|x:number, y:number, z?:{|x:number, y:number, z?:number|}|}) => number = RecordsBS.computeNested;
+export const computeNestedNested: ({|x:number, y:number, z?:{|x:number, y:number, z?:{|x:number, y:number, z?:number|}|}|}) => number = RecordsBS.computeNestedNested;
 export const computeNestedNestedNullable: ({|x:number, y:number, z:?{|x:number, y:number, z:?{|x:number, y:number, z:?number|}|}|}) => number = RecordsBS.computeNestedNestedNullable;
-export const computeNestedNestedHalfNullable: ({|x:number, y:number, z:?{|x:number, y:number, z:?{|x:number, y:number, z:?number|}|}|}) => number = function _(Arg1) { const result = RecordsBS.computeNestedNestedHalfNullable({x:Arg1.x, y:Arg1.y, z:(Arg1.z == null ? Arg1.z : {x:Arg1.z.x, y:Arg1.z.y, z:(Arg1.z.z == null ? undefined : Arg1.z.z)})}); return result };
+export const computeNestedNestedHalfNullable: ({|x:number, y:number, z:?{|x:number, y:number, z?:{|x:number, y:number, z:?number|}|}|}) => number = RecordsBS.computeNestedNestedHalfNullable;

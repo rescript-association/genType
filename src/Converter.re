@@ -187,7 +187,13 @@ let rec converterIsIdentity = (~toJS, converter) =>
   | ArrayC(c) => c |> converterIsIdentity(~toJS)
 
   | ObjectC(fieldsC) =>
-    fieldsC |> List.for_all(((_, c)) => c |> converterIsIdentity(~toJS))
+    fieldsC
+    |> List.for_all(((_, c)) =>
+         switch (c) {
+         | OptionC(c1) => c1 |> converterIsIdentity(~toJS)
+         | _ => c |> converterIsIdentity(~toJS)
+         }
+       )
 
   | RecordC(_) => false
 
@@ -245,12 +251,26 @@ let rec apply = (~converter, ~toJS, value) =>
     ++ "})"
 
   | ObjectC(fieldsC) =>
+    let simplifyFieldConverted = fieldConverter =>
+      switch (fieldConverter) {
+      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
+        IdentC
+      | _ => fieldConverter
+      };
     let fieldValues =
       fieldsC
       |> List.map(((lbl, fieldConverter)) =>
            lbl
            ++ ":"
-           ++ (value ++ "." ++ lbl |> apply(~converter=fieldConverter, ~toJS))
+           ++ (
+             value
+             ++ "."
+             ++ lbl
+             |> apply(
+                  ~converter=fieldConverter |> simplifyFieldConverted,
+                  ~toJS,
+                )
+           )
          )
       |> String.concat(", ");
     "{" ++ fieldValues ++ "}";

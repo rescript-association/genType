@@ -311,7 +311,15 @@ and translateTypeExpr_ =
       |> List.map(((_, {dependencies, _})) => dependencies)
       |> List.concat;
     let fields =
-      fieldTranslations |> List.map(((s, {typ, _})) => (s, Mandatory, typ));
+      fieldTranslations
+      |> List.map(((name, {typ, _})) => {
+           let (optionalNess, typ') =
+             switch (typ) {
+             | Option(typ') => (NonMandatory, typ')
+             | _ => (Mandatory, typ)
+             };
+           (name, optionalNess, typ');
+         });
     let typ = Object(fields);
     {dependencies, typ};
 

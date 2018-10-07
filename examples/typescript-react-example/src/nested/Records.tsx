@@ -37,3 +37,5 @@ export const getPayloadRecordPlusOne: (_1:payload<record>) => record = function 
 export type business2 = {name:string, owner:(null | undefined | person), address2:(null | undefined | string)};
 export const findAddress2: (_1:business2) => list<string> = function _(Arg1) { const result = RecordsBS.findAddress2([Arg1.name, (Arg1.owner == null ? Arg1.owner : [Arg1.owner.name, Arg1.owner.age, Arg1.owner.address]), Arg1.address2]); return result };
 export const someBusiness2: business2 = {name:RecordsBS.someBusiness2[0], owner:(RecordsBS.someBusiness2[1] == null ? RecordsBS.someBusiness2[1] : {name:RecordsBS.someBusiness2[1][0], age:RecordsBS.someBusiness2[1][1], address:RecordsBS.someBusiness2[1][2]}), address2:RecordsBS.someBusiness2[2]};
+export const computeArea3: (_1:{x:number; y:number; z:(null | undefined | number)}) => number = RecordsBS.computeArea3;
+export const computeArea4: (_1:{x:number; y:number; z?:number}) => number = RecordsBS.computeArea4;
