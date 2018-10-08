@@ -126,7 +126,7 @@ let computeNestedNestedHalfNullable =
         "x": int,
         "y": int,
         "z":
-          Js.Nullable.t({
+          Js.nullable({
             .
             "x": int,
             "y": int,
@@ -135,7 +135,7 @@ let computeNestedNestedHalfNullable =
                 .
                 "x": int,
                 "y": int,
-                "z": Js.Nullable.t(int),
+                "z": Js.nullable(int),
               }),
           }),
       },

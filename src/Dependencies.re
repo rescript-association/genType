@@ -288,7 +288,8 @@ and translateTypeExpr_ =
       Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
       [param],
       _,
-    ) =>
+    )
+  | Tconstr(Pdot(Pident({name: "Js", _}), "nullable", _), [param], _) =>
     let paramTranslation =
       param |> translateTypeExpr_(~language, ~typeVarsGen);
     {...paramTranslation, typ: Nullable(paramTranslation.typ)};

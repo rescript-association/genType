@@ -1,3 +1,6 @@
+# master
+  Support type Js.nullable in addition to Js.Nullable.t
+
 # 0.15.0
   Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.
   Print version information with -help and -version.
