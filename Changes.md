@@ -1,3 +1,7 @@
+# 0.15.0
+  Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.
+  Print version information with -help and -version.
+  
 # 0.14.0
   Improve support for checking JS component used from Reason.
   Support for nullable types Js.Nullable.t.
