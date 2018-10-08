@@ -1,5 +1,6 @@
 # master
-  Support type Js.nullable in addition to Js.Nullable.t
+  Support type Js.nullable in addition to Js.Nullable.t.
+  Fix import name compare which can lead to missing type imports with the same name from diffent files.
 
 # 0.15.0
   Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.

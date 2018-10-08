@@ -80,15 +80,23 @@ let combineTranslations = (translations: list(translation)): translation =>
     }
   );
 
-let getImportTypeName = importType =>
+let getImportTypeUniqueName = importType =>
   switch (importType) {
   | ImportComment(s) => s
-  | ImportTypeAs({typeName, _}) => typeName
+  | ImportTypeAs({typeName, asTypeName, _}) =>
+    typeName
+    ++ (
+      switch (asTypeName) {
+      | None => ""
+      | Some(s) => "_as_" ++ s
+      }
+    )
   };
 
 let toString = (~language, codeItem) =>
   switch (codeItem) {
-  | ImportType(importType) => "ImportType " ++ getImportTypeName(importType)
+  | ImportType(importType) =>
+    "ImportType " ++ getImportTypeUniqueName(importType)
   | ExternalReactClass(externalReactClass) =>
     "ExternalReactClass " ++ externalReactClass.componentName
   | ValueBinding({moduleName, id, typ}) =>
@@ -580,7 +588,7 @@ let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
   };
 
 let importTypeCompare = (i1, i2) =>
-  compare(i1 |> getImportTypeName, i2 |> getImportTypeName);
+  compare(i1 |> getImportTypeUniqueName, i2 |> getImportTypeUniqueName);
 
 let translateDependencies =
     (~config, ~outputFileRelative, ~resolver, dependencies): list(t) => {
