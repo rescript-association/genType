@@ -2,6 +2,11 @@
 - Support type Js.nullable in addition to Js.Nullable.t.
 - Fix import name compare which can lead to missing type imports with the same name from diffent files.
 - Add missing conversion from float to number.
+- Add initial shim for Js.Array.t.
+- Js.Null_undefined.t and Js.null_undefined are the same as nullable.
+- Array types are not opaque.
+- Shims for Obj.
+- New format form shims: {"fromModuleName": "toModuleName"}.
 
 # 0.15.0
 - Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.

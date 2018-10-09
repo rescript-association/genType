@@ -1,15 +1,15 @@
 {
-  "language" : "flow",
-  "module" : "es6",
-  "importPath" : "relative",
-  "reasonReactPath" : "reason-react/src/ReasonReact.js",
-  "bsBlockPath" : "bs-platform/lib/js/block.js",
-  "shims": [
-    "Js=Js",
-    "Obj=Obj",
-    "React=ReactShim",
-    "ReactEvent=ReactEvent",
-    "ReasonPervasives=ReasonPervasives",
-    "ReasonReact=ReactShim",
-  ]
+  "language": "flow",
+  "module": "es6",
+  "importPath": "relative",
+  "reasonReactPath": "reason-react/src/ReasonReact.js",
+  "bsBlockPath": "bs-platform/lib/js/block.js",
+  "shims": {
+    "Js": "Js",
+    "Obj": "Obj",
+    "React": "ReactShim",
+    "ReactEvent": "ReactEvent",
+    "ReasonPervasives": "ReasonPervasives",
+    "ReasonReact": "ReactShim",
+  }
 }

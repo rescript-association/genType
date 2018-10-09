@@ -54,9 +54,9 @@ Every genType powered project requires a configuration file in the root of the p
 ```ts
 {
   "language" : "typescript" | "flow" | "untyped",
-  "shims": [
-    "ReasonReact=ReactShim"
-  ]
+  "shims": {
+    "ReasonReact": "ReactShim"
+  }
 }
 ```
 

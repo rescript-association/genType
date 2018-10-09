@@ -128,7 +128,17 @@ let getShims = json => {
   switch (json) {
   | Ext_json_types.Obj({map, _}) =>
     switch (map |> String_map.find_opt("shims")) {
+    | Some(Ext_json_types.Obj({map: shimsMap, _})) =>
+      shimsMap
+      |> String_map.iter((fromModule, toModule) =>
+           switch (toModule) {
+           | Ext_json_types.Str({str, _}) =>
+             shims := [(fromModule, str), ...shims^]
+           | _ => ()
+           }
+         )
     | Some(Arr({content, _})) =>
+      /* To be deprecated: array of strings */
       content
       |> Array.iter(x =>
            switch (x) {
