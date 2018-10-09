@@ -10,6 +10,7 @@ const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 const TypesBS = require("./Types.bs");
 
 // No need to import locally visible type optionInt. Make sure it is also marked with @genType
+import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
 
 export opaque type TypeWithVarsA<x,y> = mixed;
 export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
@@ -24,3 +25,5 @@ export const consumeOption2: (optionInt) => number = function _(Arg1) { const re
 export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(x) { return (x == null ? undefined : x)})); return result };
 export type funType = (number) => number;
 export type myFloat = number;
+export opaque type arrayOfStrings1 = Array<string>;
+export opaque type arrayOfStrings2 = Js_Array_t<string>;

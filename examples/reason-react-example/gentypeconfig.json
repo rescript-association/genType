@@ -5,9 +5,10 @@
   "reasonReactPath" : "reason-react/src/ReasonReact.js",
   "bsBlockPath" : "bs-platform/lib/js/block.js",
   "shims": [
-    "ReasonReact=ReactShim",
+    "Js=Js",
     "React=ReactShim",
-    "ReasonPervasives=ReasonPervasives",
     "ReactEvent=ReactEvent",
+    "ReasonPervasives=ReasonPervasives",
+    "ReasonReact=ReactShim",
   ]
 }

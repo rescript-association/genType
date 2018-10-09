@@ -22,3 +22,9 @@ type funType = int => int;
 
 [@genType]
 type myFloat = float;
+
+[@genType]
+type arrayOfStrings1 = array(string);
+
+[@genType]
+type arrayOfStrings2 = Js.Array.t(string);
