@@ -91,7 +91,7 @@ jobs:
       - persist_to_workspace:
           root: dist
           paths:
-            - gentype.macos.tar.gz
+            - gentype-macos.tar.gz
 
   github_release:
     docker:
@@ -116,7 +116,7 @@ workflows:
   build_deploy:
     jobs:
       - build_linux
-      # - build_macos
+      - build_macos
       # - github_release:
       #   requires:
       #     - build_linux
