@@ -41,6 +41,7 @@ jobs:
           paths:
             - node_modules
 
+      - run: ls -l && ls -l dist
       # Tar things up
       - run: tar czvf dist/gentype-linux.tar.gz -C lib/bs/native gentype.native
 
