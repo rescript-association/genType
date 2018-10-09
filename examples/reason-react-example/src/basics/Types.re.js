@@ -25,8 +25,8 @@ export const consumeOption2: (optionInt) => number = function _(Arg1) { const re
 export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(x) { return (x == null ? undefined : x)})); return result };
 export type funType = (number) => number;
 export type myFloat = number;
-export opaque type arrayOfStrings1 = Array<string>;
+export type arrayOfStrings1 = Array<string>;
 export opaque type arrayOfStrings2 = Js_Array_t<string>;
 export type maybeString = ?string;
 export type maybeString2 = ?string;
-export opaque type peopleArray = Array<{|name:string, nickname:?string|}>;
+export type peopleArray = Array<{|name:string, nickname:?string|}>;

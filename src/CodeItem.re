@@ -473,14 +473,15 @@ let translateTypeDecl =
         |> Dependencies.translateTypeExpr(~language);
       let rec isOpaque = typ =>
         switch (typ) {
-        | Ident(_) when typ == booleanT || typ == numberT || typ == stringT =>
-          false
-        | Option(t)
+        | Ident(_) => !(typ == booleanT || typ == numberT || typ == stringT)
         | Nullable(t) => t |> isOpaque
+        | Option(t) => t |> isOpaque
         | Function(_) => false
         | Record(_) => false
         | Object(_) => false
-        | _ => true
+        | Array(_) => false
+        | TypeVar(_) => true
+        | GroupOfLabeledArgs(_) => true
         };
       let opaque = typeExprTranslation.typ |> isOpaque;
       let codeItems = [
