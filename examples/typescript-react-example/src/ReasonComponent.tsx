@@ -2,20 +2,23 @@
 
 // tslint:disable-next-line:no-var-requires
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
+
 // tslint:disable-next-line:no-var-requires
 const ReasonComponentBS = require("./ReasonComponent.bs");
+
 // tslint:disable-next-line:no-var-requires
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
-
 import {Mouse_t as ReactEvent_Mouse_t} from '../src/shims/ReactEvent.shim';
+
 
 import {coord as Records_coord} from '../src/nested/Records';
 
+
 import {list} from '../src/shims/ReasonPervasives.shim';
 
-import {t as Types_t} from '../src/nested/Types';
 
+import {t as Types_t} from '../src/nested/Types';
 // tslint:disable-next-line:interface-over-type-literal
 export type person<a> = {
   name: string, 
@@ -23,7 +26,9 @@ export type person<a> = {
   type: string, 
   polymorphicPayload: a
 };
+
 export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
+
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {
   message?: string, 
@@ -37,20 +42,31 @@ export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReas
      return ReasonComponentBS.make(jsProps.message, [jsProps.person.name, jsProps.person.surname, jsProps.person.type, jsProps.person.polymorphicPayload], jsProps.intList, jsProps.children);
   }));
 export default ReasonComponent;
+
 export const minus: (_1:{first?: number, second: number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };
+
 export const useTypeDefinedInAnotherModule: (_1:Types_t) => Types_t = ReasonComponentBS.useTypeDefinedInAnotherModule;
+
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TA { protected opaque: any }; /* simulate opaque types */
+
 export const A: TA = 0 as any;
+
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TB { protected opaque: any }; /* simulate opaque types */
+
 export const B: (_1:number) => TB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
+
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TC { protected opaque: any }; /* simulate opaque types */
+
 export const C: (_1:string) => TC = function _(Arg1) { return CreateBucklescriptBlock.__(1 as any, [Arg1]) }
+
 export type t =
   | TA
   | TB
   | TC;
+
 export const tToString: (_1:t) => string = ReasonComponentBS.tToString;
+
 export const useRecordsCoord: (_1:Records_coord) => number = function _(Arg1) { const result = ReasonComponentBS.useRecordsCoord([Arg1.x, Arg1.y, Arg1.z]); return result };

@@ -543,7 +543,7 @@ let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
         cmtFile: None,
       }),
     ]
-  | Path.Pident(id) => []
+  | Path.Pident(_) => []
   | Pdot(Papply(_, _), _, _)
   | Papply(_, _) => [ImportComment("// Cannot import type with Papply")]
 

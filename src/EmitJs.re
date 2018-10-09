@@ -63,6 +63,7 @@ let emitCodeItems =
     };
     Buffer.add_string(buffer, s);
   };
+  let newLine__ = buffer => Buffer.add_string(buffer, "\n");
   let require = line__(requireBuffer);
   let export = line__(exportBuffer);
 
@@ -151,15 +152,19 @@ let emitCodeItems =
     };
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
-      emitImportType(~language, ~env, importType)
+      let env1 = emitImportType(~language, ~env, importType);
+      newLine__(importTypeBuffer);
+      env1;
 
     | ExportType(exportType) =>
       emitExportType(~language, exportType);
+      newLine__(exportBuffer);
       env;
 
     | ExportVariantType({CodeItem.typeParams, leafTypes, name}) =>
       EmitTyp.emitExportVariantType(~language, ~name, ~typeParams, ~leafTypes)
       |> export;
+      newLine__(exportBuffer);
       env;
 
     | ValueBinding({moduleName, id, typ}) =>
@@ -185,6 +190,7 @@ let emitCodeItems =
       ++ ";"
       |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~config)
       |> export;
+      newLine__(exportBuffer);
       {...env, requires};
 
     | ConstructorBinding(
@@ -195,6 +201,8 @@ let emitCodeItems =
         recordValue,
       ) =>
       emitExportType(~language, exportType);
+      newLine__(exportBuffer);
+
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
       if (argTypes == []) {
         recordAsInt
@@ -205,6 +213,7 @@ let emitCodeItems =
              ~config,
            )
         |> export;
+        newLine__(exportBuffer);
       } else {
         let args =
           argTypes
@@ -226,6 +235,7 @@ let emitCodeItems =
              ~config,
            )
         |> export;
+        newLine__(exportBuffer);
       };
       {
         ...env,
@@ -308,6 +318,7 @@ let emitCodeItems =
           };
         emitExportType(~language, exportTypeNoChildren);
         checkJsWrapperType |> export;
+        newLine__(exportBuffer);
         env;
       } else {
         emitExportType(~language, exportType);
@@ -337,6 +348,8 @@ let emitCodeItems =
         |> export;
 
         EmitTyp.emitExportDefault(~config, name) |> export;
+
+        newLine__(exportBuffer);
 
         let requiresWithModule =
           moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
@@ -376,19 +389,17 @@ let emitCodeItems =
 
   if (finalEnv.externalReactClass != []) {
     EmitTyp.requireReact(~language) |> require;
+    newLine__(requireBuffer);
   };
   finalEnv.requires
-  |> ModuleNameMap.iter((moduleName, importPath) =>
-       EmitTyp.emitRequire(~language, moduleName, importPath) |> require
-     );
+  |> ModuleNameMap.iter((moduleName, importPath) => {
+       EmitTyp.emitRequire(~language, moduleName, importPath) |> require;
+       newLine__(requireBuffer);
+     });
 
   let requireString = requireBuffer |> Buffer.to_bytes;
   let importTypeString = importTypeBuffer |> Buffer.to_bytes;
   let exportString = exportBuffer |> Buffer.to_bytes;
-  let toList = s => s == "" ? [] : [s];
 
-  (requireString |> toList)
-  @ (importTypeString |> toList)
-  @ (exportString |> toList)
-  |> String.concat("\n\n");
+  requireString ++ importTypeString ++ exportString;
 };
