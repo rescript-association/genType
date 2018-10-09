@@ -42,3 +42,6 @@ type peopleArray =
     "name": string,
     "nickname": Js.nullable(string),
   });
+
+[@genType]
+type myObj = Obj.t;

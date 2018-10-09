@@ -11,6 +11,7 @@ const TypesBS = require("./Types.bs");
 
 // No need to import locally visible type optionInt. Make sure it is also marked with @genType
 import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
+import type {t as Obj_t} from '../../src/shims/Obj.shim';
 
 export opaque type TypeWithVarsA<x,y> = mixed;
 export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
@@ -30,3 +31,4 @@ export opaque type arrayOfStrings2 = Js_Array_t<string>;
 export type maybeString = ?string;
 export type maybeString2 = ?string;
 export type peopleArray = Array<{|name:string, nickname:?string|}>;
+export opaque type myObj = Obj_t;

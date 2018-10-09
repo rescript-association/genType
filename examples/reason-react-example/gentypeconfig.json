@@ -6,6 +6,7 @@
   "bsBlockPath" : "bs-platform/lib/js/block.js",
   "shims": [
     "Js=Js",
+    "Obj=Obj",
     "React=ReactShim",
     "ReactEvent=ReactEvent",
     "ReasonPervasives=ReasonPervasives",
