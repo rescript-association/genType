@@ -27,3 +27,6 @@ export type funType = (number) => number;
 export type myFloat = number;
 export opaque type arrayOfStrings1 = Array<string>;
 export opaque type arrayOfStrings2 = Js_Array_t<string>;
+export type maybeString = ?string;
+export type maybeString2 = ?string;
+export opaque type peopleArray = Array<{|name:string, nickname:?string|}>;

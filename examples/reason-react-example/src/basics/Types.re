@@ -28,3 +28,17 @@ type arrayOfStrings1 = array(string);
 
 [@genType]
 type arrayOfStrings2 = Js.Array.t(string);
+
+[@genType]
+type maybeString = Js.null_undefined(string);
+
+[@genType]
+type maybeString2 = Js.Null_undefined.t(string);
+
+[@genType]
+type peopleArray =
+  array({
+    .
+    "name": string,
+    "nickname": Js.nullable(string),
+  });
