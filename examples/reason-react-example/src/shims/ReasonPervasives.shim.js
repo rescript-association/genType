@@ -3,18 +3,15 @@
  * @nolint
  */
 
-// $FlowExpectedError: Reason checked type sufficiently
-export opaque type SafeReasonValueNotExportedToFlow = any;
+export opaque type SafeReasonValueNotExportedToFlow = mixed;
 'use strict';
 
 // $FlowExpectedError: Reason checked type sufficiently
 const $$Array = require('bs-platform/lib/js/array');
 
-// $FlowExpectedError: Reason checked type sufficiently
-export opaque type EmptyList = any;
+export opaque type EmptyList = mixed;
 
-// $FlowExpectedError: Reason checked type sufficiently
-export opaque type Cons<t> = any;
+export opaque type Cons<t> = mixed;
 
 export type list<t> = | Cons<t> | EmptyList;
 
