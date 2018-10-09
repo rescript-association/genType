@@ -1,18 +1,29 @@
+# We build artifacts to the `~/repo/dist` directory and attach it to the workspace
+# so that the release jobs can access all the build artifacts of the workspace
+# context.
+#
+# Therefore following mental directory model:
+# ~/repo: the actual gentype repo
+#  |- dist: contains all build artifacts
+#  |- src
+#  |- ...
+#  |- package.json
+#
+# All commands should all be run in the workdir `~/repo` to prevent confusion.
+
 version: 2
 jobs:
-  build:
+  build-linux:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.11
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
     working_directory: ~/repo
 
     steps:
+      - attach_workspace:
+        at: ~/repo/dist
+
       - checkout 
 
       # Download and cache dependencies
@@ -31,17 +42,28 @@ jobs:
           paths:
             - node_modules
 
+      # Tar things up
+      - run: tar czvf dist/gentype-linux.tar.gz -C lib/bs/native gentype.native
+
       - store_artifacts:
-          path: ./lib/bs/native/gentype.native
-          destination: gentype.linux.native
+          path: dist/gentype-linux.tar.gz
+          destination: gentype-linux.tar.gz
+
+      - persist_to_workspace:
+        root: dist
+        paths:
+          - gentype.linux.tar.gz
 
   build-macos:
     macos:
       xcode: "9.0"
 
-    working_directory: /Users/distiller/project
+    working_directory: ~/repo
 
     steps:
+      - attach_workspace:
+          at: ~/repo/dist
+
       - checkout 
 
       # Download and cache dependencies
@@ -60,16 +82,43 @@ jobs:
           paths:
             - node_modules
 
-      - store_artifacts:
-          path: ./lib/bs/native/gentype.native
-          destination: gentype.macos.native
+      # Tar things up
+      - run: tar czvf dist/gentype-macos.tar.gz -C lib/bs/native gentype.native
 
+      - store_artifacts:
+          path: dist/gentype-macos.tar.gz
+          destination: gentype-macos.tar.gz
+
+      - persist_to_workspace:
+        root: dist
+        paths:
+          - gentype.macos.tar.gz
+
+  github-release:
+    - image: appropriate/curl:latest
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+        at: ~/repo/dist
+      - run:
+        name: Upload Linux binary
+        command: .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.zip"
+      - run:
+        name: Upload MacOS binary
+        command: .circleci/github_upload.sh dist/gentype-macos.tar.gz "gentype-macos-$CIRCLE_TAG.zip"
 
 workflows:
   version: 2
   workflow:
     jobs:
-    - build
-    - build-macos
-
-# TODO: Github publish release
+      - build-linux
+      - build-macos
+      - github-relase
+        requires:
+          - build-linux
+          - build-macos
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            ignore: /.*/
