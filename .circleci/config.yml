@@ -123,6 +123,6 @@ workflows:
           - build_macos
         filters:
           tags:
-            only: /^v.*/
+              only: /^v.*/
           branches:
-            ignore: /.*/
+              ignore: /.*/
