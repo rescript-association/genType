@@ -117,12 +117,12 @@ workflows:
     jobs:
       - build_linux
       - build_macos
-      # - github_release:
-      #   requires:
-      #     - build_linux
-      #     - build_macos
-      #   filters:
-      #     tags:
-      #       only: /^v.*/
-      #     branches:
-      #       ignore: /.*/
+      - github_release:
+        requires:
+          - build_linux
+          - build_macos
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            ignore: /.*/
