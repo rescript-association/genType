@@ -3,21 +3,21 @@ open GenTypeCommon;
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
-let rec renderString = (~language, typ) =>
+let rec renderTyp = (~language, typ) =>
   switch (typ) {
   | Ident(identPath, typeArguments) =>
     identPath
     ++ genericsString(
-         ~typeVars=typeArguments |> List.map(renderString(~language)),
+         ~typeVars=typeArguments |> List.map(renderTyp(~language)),
        )
   | TypeVar(s) => s
   | Option(typ)
   | Nullable(typ) =>
     switch (language) {
     | Flow
-    | Untyped => "?" ++ (typ |> renderString(~language))
+    | Untyped => "?" ++ (typ |> renderTyp(~language))
     | Typescript =>
-      "(null | undefined | " ++ (typ |> renderString(~language)) ++ ")"
+      "(null | undefined | " ++ (typ |> renderTyp(~language)) ++ ")"
     }
   | Array(typ) =>
     let typIsSimple =
@@ -28,21 +28,21 @@ let rec renderString = (~language, typ) =>
       };
 
     if (language == Typescript && typIsSimple) {
-      (typ |> renderString(~language)) ++ "[]";
+      (typ |> renderTyp(~language)) ++ "[]";
     } else {
-      "Array<" ++ (typ |> renderString(~language)) ++ ">";
+      "Array<" ++ (typ |> renderTyp(~language)) ++ ">";
     };
   | GroupOfLabeledArgs(fields)
   | Object(fields)
-  | Record(fields) => fields |> renderFieldType(~language)
+  | Record(fields) => fields |> renderFields(~language)
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(~language, ~typeVars, argTypes, retType)
   }
 and renderField = (~language, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
-  lbl ++ optMarker ++ ":" ++ (typ |> renderString(~language));
+  lbl ++ optMarker ++ ":" ++ (typ |> renderTyp(~language));
 }
-and renderFieldType = (~language, fields) =>
+and renderFields = (~language, fields) =>
   (language == Flow ? "{|" : "{")
   ++ String.concat(", ", List.map(renderField(~language), fields))
   ++ (language == Flow ? "|}" : "}")
@@ -55,15 +55,15 @@ and renderFunType = (~language, ~typeVars, argTypes, retType) =>
          (i, t) => {
            let parameterName =
              language == Flow ? "" : "_" ++ string_of_int(i + 1) ++ ":";
-           parameterName ++ (t |> renderString(~language));
+           parameterName ++ (t |> renderTyp(~language));
          },
          argTypes,
        ),
      )
   ++ ") => "
-  ++ (retType |> renderString(~language));
+  ++ (retType |> renderTyp(~language));
 
-let typToString = (~language) => renderString(~language);
+let typToString = (~language) => renderTyp(~language);
 
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));

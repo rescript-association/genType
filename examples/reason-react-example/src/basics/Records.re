@@ -119,25 +119,24 @@ let computeNestedNestedNullable =
     : int => 0;
 
 [@genType]
-let computeNestedNestedHalfNullable =
-    (
-      _: {
-        .
-        "x": int,
-        "y": int,
-        "z":
-          Js.nullable({
-            .
-            "x": int,
-            "y": int,
-            "z":
-              option({
-                .
-                "x": int,
-                "y": int,
-                "z": Js.nullable(int),
-              }),
-          }),
-      },
-    )
-    : int => 0;
+type bigType = {
+  .
+  "x": int,
+  "y": int,
+  "z":
+    Js.nullable({
+      .
+      "x": int,
+      "y": int,
+      "z":
+        option({
+          .
+          "x": int,
+          "y": int,
+          "z": Js.nullable(int),
+        }),
+    }),
+};
+
+[@genType]
+let computeNestedNestedHalfNullable = (_: bigType): int => 0;

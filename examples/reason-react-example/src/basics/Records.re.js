@@ -7,6 +7,7 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const RecordsBS = require("./Records.bs");
 
+// No need to import locally visible type bigType. Make sure it is also marked with @genType
 // No need to import locally visible type coord. Make sure it is also marked with @genType
 // No need to import locally visible type coord2. Make sure it is also marked with @genType
 
@@ -21,4 +22,5 @@ export const computeArea4: ({|x:number, y:number, z?:number|}) => number = Recor
 export const computeNested: ({|x:number, y:number, z?:{|x:number, y:number, z?:number|}|}) => number = RecordsBS.computeNested;
 export const computeNestedNested: ({|x:number, y:number, z?:{|x:number, y:number, z?:{|x:number, y:number, z?:number|}|}|}) => number = RecordsBS.computeNestedNested;
 export const computeNestedNestedNullable: ({|x:number, y:number, z:?{|x:number, y:number, z:?{|x:number, y:number, z:?number|}|}|}) => number = RecordsBS.computeNestedNestedNullable;
-export const computeNestedNestedHalfNullable: ({|x:number, y:number, z:?{|x:number, y:number, z?:{|x:number, y:number, z:?number|}|}|}) => number = RecordsBS.computeNestedNestedHalfNullable;
+export type bigType = {|x:number, y:number, z:?{|x:number, y:number, z?:{|x:number, y:number, z:?number|}|}|};
+export const computeNestedNestedHalfNullable: (bigType) => number = RecordsBS.computeNestedNestedHalfNullable;
