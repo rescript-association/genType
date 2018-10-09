@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: ~/repo/dist
+          at: /dist
 
       - checkout 
 
@@ -43,14 +43,14 @@ jobs:
             - node_modules
 
       # Tar things up
-      - run: tar czvf dist/gentype-linux.tar.gz -C lib/bs/native gentype.native
+      - run: tar czvf /dist/gentype-linux.tar.gz -C lib/bs/native gentype.native
 
       - store_artifacts:
-          path: dist/gentype-linux.tar.gz
+          path: /dist/gentype-linux.tar.gz
           destination: gentype-linux.tar.gz
 
       - persist_to_workspace:
-          root: dist
+          root: /dist
           paths:
             - gentype.linux.tar.gz
 
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: ~/repo/dist
+          at: /dist
 
       - checkout 
 
@@ -83,14 +83,14 @@ jobs:
             - node_modules
 
       # Tar things up
-      - run: tar czvf dist/gentype-macos.tar.gz -C lib/bs/native gentype.native
+      - run: tar czvf /dist/gentype-macos.tar.gz -C lib/bs/native gentype.native
 
       - store_artifacts:
-          path: dist/gentype-macos.tar.gz
+          path: /dist/gentype-macos.tar.gz
           destination: gentype-macos.tar.gz
 
       - persist_to_workspace:
-          root: dist
+          root: /dist
           paths:
             - gentype.macos.tar.gz
 
@@ -102,15 +102,15 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: ~/repo/dist
+          at: /dist
 
       - run:
           name: Upload Linux binary
-          command: .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.zip"
+          command: .circleci/github_upload.sh /dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.zip"
         
       - run:
           name: Upload MacOS binary
-          command: .circleci/github_upload.sh dist/gentype-macos.tar.gz "gentype-macos-$CIRCLE_TAG.zip"
+          command: .circleci/github_upload.sh /dist/gentype-macos.tar.gz "gentype-macos-$CIRCLE_TAG.zip"
 
 workflows:
   version: 2
