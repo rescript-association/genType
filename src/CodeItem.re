@@ -474,14 +474,14 @@ let translateTypeDecl =
       let rec isOpaque = typ =>
         switch (typ) {
         | Ident(_) => !(typ == booleanT || typ == numberT || typ == stringT)
-        | Nullable(t) => t |> isOpaque
-        | Option(t) => t |> isOpaque
-        | Function(_) => false
-        | Record(_) => false
-        | Object(_) => false
-        | Array(_) => false
         | TypeVar(_) => true
+        | Option(t) => t |> isOpaque
+        | Nullable(t) => t |> isOpaque
+        | Array(t) => t |> isOpaque
         | GroupOfLabeledArgs(_) => true
+        | Object(_) => false
+        | Record(_) => false
+        | Function(_) => false
         };
       let opaque = typeExprTranslation.typ |> isOpaque;
       let codeItems = [
