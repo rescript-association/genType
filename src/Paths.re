@@ -132,7 +132,10 @@ let getShims = json => {
       content
       |> Array.iter(x =>
            switch (x) {
-           | Ext_json_types.Str({str, _}) => shims := [str, ...shims^]
+           | Ext_json_types.Str({str, _}) =>
+             let fromTo = Str.split(Str.regexp("="), str) |> Array.of_list;
+             assert(Array.length(fromTo) === 2);
+             shims := [(fromTo[0], fromTo[1]), ...shims^];
            | _ => ()
            }
          );
@@ -156,18 +159,12 @@ let readConfig = () => {
       json
       |> getShims
       |> List.fold_left(
-           (map, nextPairStr) =>
-             if (nextPairStr != "") {
-               let fromTo =
-                 Str.split(Str.regexp("="), nextPairStr) |> Array.of_list;
-               assert(Array.length(fromTo) === 2);
-               let moduleName: ModuleName.t =
-                 fromTo[0] |> ModuleName.fromStringUnsafe;
-               let shimModuleName = fromTo[1] |> ModuleName.fromStringUnsafe;
-               ModuleNameMap.add(moduleName, shimModuleName, map);
-             } else {
-               map;
-             },
+           (map, (fromModule, toModule)) => {
+             let moduleName: ModuleName.t =
+               fromModule |> ModuleName.fromStringUnsafe;
+             let shimModuleName = toModule |> ModuleName.fromStringUnsafe;
+             ModuleNameMap.add(moduleName, shimModuleName, map);
+           },
            ModuleNameMap.empty,
          );
     if (Debug.config) {
