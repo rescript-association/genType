@@ -13,7 +13,7 @@
 
 version: 2
 jobs:
-  build-linux:
+  build_linux:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.11
@@ -54,7 +54,7 @@ jobs:
         paths:
           - gentype.linux.tar.gz
 
-  build-macos:
+  build_macos:
     macos:
       xcode: "9.0"
 
@@ -94,7 +94,7 @@ jobs:
         paths:
           - gentype.macos.tar.gz
 
-  github-release:
+  github_release:
     docker:
       - image: appropriate/curl:latest
 
@@ -114,16 +114,16 @@ jobs:
 
 workflows:
   version: 2
-  build-deploy:
+  build_deploy:
     jobs:
-      - build-linux
-      - build-macos
-      - github-release:
+      - build_linux
+      - build_macos
+      - github_release:
         requires:
-          - build-linux
-          - build-macos
-        # filters:
-        #   tags:
-        #     only: /^v.*/
-        #   branches:
-        #     ignore: /.*/
+          - build_linux
+          - build_macos
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            ignore: /.*/
