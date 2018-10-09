@@ -7,10 +7,6 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const RecordsBS = require("./Records.bs");
 
-// No need to import locally visible type bigType. Make sure it is also marked with @genType
-// No need to import locally visible type coord. Make sure it is also marked with @genType
-// No need to import locally visible type coord2. Make sure it is also marked with @genType
-
 export type coord = {|
   x: number, 
   y: number, 

@@ -529,28 +529,23 @@ let translateTypeDecl =
 
 let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
   switch (typePath) {
-  | Path.Pident(id) when Ident.name(id) == "list" =>
-    ImportTypeAs({
-      typeName: "list",
-      asTypeName: None,
-      importPath:
-        ModuleName.reasonPervasives
-        |> ModuleResolver.importPathForReasonModuleName(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-           ),
-      cmtFile: None,
-    })
-  | Path.Pident(id) =>
-    ImportComment(
-      "// No need to import locally visible type "
-      ++ Ident.name(id)
-      ++ ". Make sure it is also marked with @genType",
-    )
-
+  | Path.Pident(id) when Ident.name(id) == "list" => [
+      ImportTypeAs({
+        typeName: "list",
+        asTypeName: None,
+        importPath:
+          ModuleName.reasonPervasives
+          |> ModuleResolver.importPathForReasonModuleName(
+               ~config,
+               ~outputFileRelative,
+               ~resolver,
+             ),
+        cmtFile: None,
+      }),
+    ]
+  | Path.Pident(id) => []
   | Pdot(Papply(_, _), _, _)
-  | Papply(_, _) => ImportComment("// Cannot import type with Papply")
+  | Papply(_, _) => [ImportComment("// Cannot import type with Papply")]
 
   | Pdot(_) =>
     let rec getOuterModuleName = path =>
@@ -585,7 +580,7 @@ let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
         |> Paths.getCmtFile;
       cmtFile == "" ? None : Some(cmtFile);
     };
-    ImportTypeAs({typeName, asTypeName, importPath, cmtFile});
+    [ImportTypeAs({typeName, asTypeName, importPath, cmtFile})];
   };
 
 let importTypeCompare = (i1, i2) =>
@@ -600,6 +595,7 @@ let translateDependencies =
     };
   dependencies
   |> List.map(dependencyToImportType)
+  |> List.concat
   |> List.sort_uniq(importTypeCompare)
   |> List.map(importType => ImportType(importType));
 };

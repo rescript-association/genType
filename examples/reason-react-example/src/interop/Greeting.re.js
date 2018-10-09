@@ -9,7 +9,6 @@ const GreetingBS = require("./Greeting.bs");
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
-// No need to import locally visible type foo. Make sure it is also marked with @genType
 import type {Mouse_t as ReactEvent_Mouse_t} from '../../src/shims/ReactEvent.shim';
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 

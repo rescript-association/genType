@@ -9,7 +9,6 @@ const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 // $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require("./Types.bs");
 
-// No need to import locally visible type optionInt. Make sure it is also marked with @genType
 import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
 import type {t as Obj_t} from '../../src/shims/Obj.shim';
 

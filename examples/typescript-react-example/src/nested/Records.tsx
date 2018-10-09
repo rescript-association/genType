@@ -3,12 +3,6 @@
 // tslint:disable-next-line:no-var-requires
 const RecordsBS = require("./Records.bs");
 
-// No need to import locally visible type business. Make sure it is also marked with @genType
-// No need to import locally visible type business2. Make sure it is also marked with @genType
-// No need to import locally visible type coord. Make sure it is also marked with @genType
-// No need to import locally visible type payload. Make sure it is also marked with @genType
-// No need to import locally visible type person. Make sure it is also marked with @genType
-// No need to import locally visible type record. Make sure it is also marked with @genType
 
 import {list} from '../../src/shims/ReasonPervasives.shim';
 

@@ -9,8 +9,6 @@ const Component2BS = require("./Component2.bs");
 // $FlowExpectedError: Reason checked type sufficiently
 const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 
-// No need to import locally visible type block. Make sure it is also marked with @genType
-
 export opaque type VariantA = mixed;
 export const A: VariantA = 0;
 export opaque type VariantB = mixed;
