@@ -50,9 +50,9 @@ jobs:
           destination: gentype-linux.tar.gz
 
       - persist_to_workspace:
-        root: dist
-        paths:
-          - gentype.linux.tar.gz
+          root: dist
+          paths:
+            - gentype.linux.tar.gz
 
   build_macos:
     macos:
@@ -90,9 +90,9 @@ jobs:
           destination: gentype-macos.tar.gz
 
       - persist_to_workspace:
-        root: dist
-        paths:
-          - gentype.macos.tar.gz
+          root: dist
+          paths:
+            - gentype.macos.tar.gz
 
   github_release:
     docker:
@@ -105,12 +105,12 @@ jobs:
           at: ~/repo/dist
 
       - run:
-        name: Upload Linux binary
-        command: .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.zip"
+          name: Upload Linux binary
+          command: .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.zip"
         
       - run:
-        name: Upload MacOS binary
-        command: .circleci/github_upload.sh dist/gentype-macos.tar.gz "gentype-macos-$CIRCLE_TAG.zip"
+          name: Upload MacOS binary
+          command: .circleci/github_upload.sh dist/gentype-macos.tar.gz "gentype-macos-$CIRCLE_TAG.zip"
 
 workflows:
   version: 2
