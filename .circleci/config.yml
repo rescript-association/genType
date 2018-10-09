@@ -95,8 +95,11 @@ jobs:
           - gentype.macos.tar.gz
 
   github-release:
-    - image: appropriate/curl:latest
+    docker:
+      - image: appropriate/curl:latest
+
     working_directory: ~/repo
+    
     steps:
       - attach_workspace:
         at: ~/repo/dist
