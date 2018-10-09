@@ -107,7 +107,7 @@ jobs:
 
       - run:
           name: Upload Linux binary
-          command: .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.zip"
+          command: bash -x .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.tar.gz"
 
       # - run:
       #     name: Upload MacOS binary
