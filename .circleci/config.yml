@@ -103,16 +103,18 @@ jobs:
     steps:
       - attach_workspace:
         at: ~/repo/dist
+
       - run:
         name: Upload Linux binary
         command: .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.zip"
+        
       - run:
         name: Upload MacOS binary
         command: .circleci/github_upload.sh dist/gentype-macos.tar.gz "gentype-macos-$CIRCLE_TAG.zip"
 
 workflows:
   version: 2
-  workflow:
+  build-deploy:
     jobs:
       - build-linux
       - build-macos
@@ -120,8 +122,8 @@ workflows:
         requires:
           - build-linux
           - build-macos
-        filters:
-          tags:
-            only: /^v.*/
-          branches:
-            ignore: /.*/
+        # filters:
+        #   tags:
+        #     only: /^v.*/
+        #   branches:
+        #     ignore: /.*/
