@@ -100,6 +100,8 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - checkout
+      
       - attach_workspace:
           at: ~/repo/dist
 
