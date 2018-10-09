@@ -30,5 +30,5 @@ export type arrayOfStrings1 = Array<string>;
 export opaque type arrayOfStrings2 = Js_Array_t<string>;
 export type maybeString = ?string;
 export type maybeString2 = ?string;
-export type peopleArray = Array<{|name:string, nickname:?string|}>;
+export type peopleArray = Array<{|name: string, nickname: ?string|}>;
 export opaque type myObj = Obj_t;

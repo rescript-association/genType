@@ -19,17 +19,27 @@ import {list} from '../src/shims/ReasonPervasives.shim';
 import {t as Types_t} from '../src/nested/Types';
 
 // tslint:disable-next-line:interface-over-type-literal
-export type person<a> = {name:string, surname:string, type:string, polymorphicPayload:a};
+export type person<a> = {
+  name: string, 
+  surname: string, 
+  type: string, 
+  polymorphicPayload: a
+};
 export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = {message?:string, person:person<unknown>, intList?:list<number>, children?:unknown};
+export type Props = {
+  message?: string, 
+  person: person<unknown>, 
+  intList?: list<number>, 
+  children?: unknown
+};
 export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
   ReasonComponentBS.component,
   (function _(jsProps: Props) {
      return ReasonComponentBS.make(jsProps.message, [jsProps.person.name, jsProps.person.surname, jsProps.person.type, jsProps.person.polymorphicPayload], jsProps.intList, jsProps.children);
   }));
 export default ReasonComponent;
-export const minus: (_1:{first?:number, second:number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };
+export const minus: (_1:{first?: number, second: number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };
 export const useTypeDefinedInAnotherModule: (_1:Types_t) => Types_t = ReasonComponentBS.useTypeDefinedInAnotherModule;
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TA { protected opaque: any }; /* simulate opaque types */

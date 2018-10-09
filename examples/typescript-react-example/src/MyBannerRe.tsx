@@ -5,7 +5,7 @@ import * as React from "react";
 const MyBanner = require("./MyBanner");
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = {show:boolean, message:string};
+export type Props = {show: boolean, message: string};
 export function checkJsWrapperType(props: Props) {
       return <MyBanner {...props}/>;
     }

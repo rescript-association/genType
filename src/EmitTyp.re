@@ -3,21 +3,38 @@ open GenTypeCommon;
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
-let rec renderTyp = (~language, typ) =>
+module Indent = {
+  let break = (~indent) =>
+    switch (indent) {
+    | None => ""
+    | Some(s) => "\n" ++ s
+    };
+
+  let more = (~indent) =>
+    switch (indent) {
+    | None => None
+    | Some(s) => Some("  " ++ s)
+    };
+
+  let heuristic = (~indent, fields) =>
+    fields |> List.length > 2 && indent == None ? Some("") : indent;
+};
+
+let rec renderTyp = (~language, ~indent=None, typ) =>
   switch (typ) {
   | Ident(identPath, typeArguments) =>
     identPath
     ++ genericsString(
-         ~typeVars=typeArguments |> List.map(renderTyp(~language)),
+         ~typeVars=typeArguments |> List.map(renderTyp(~language, ~indent)),
        )
   | TypeVar(s) => s
   | Option(typ)
   | Nullable(typ) =>
     switch (language) {
     | Flow
-    | Untyped => "?" ++ (typ |> renderTyp(~language))
+    | Untyped => "?" ++ (typ |> renderTyp(~language, ~indent))
     | Typescript =>
-      "(null | undefined | " ++ (typ |> renderTyp(~language)) ++ ")"
+      "(null | undefined | " ++ (typ |> renderTyp(~language, ~indent)) ++ ")"
     }
   | Array(typ) =>
     let typIsSimple =
@@ -28,25 +45,37 @@ let rec renderTyp = (~language, typ) =>
       };
 
     if (language == Typescript && typIsSimple) {
-      (typ |> renderTyp(~language)) ++ "[]";
+      (typ |> renderTyp(~language, ~indent)) ++ "[]";
     } else {
-      "Array<" ++ (typ |> renderTyp(~language)) ++ ">";
+      "Array<" ++ (typ |> renderTyp(~language, ~indent)) ++ ">";
     };
   | GroupOfLabeledArgs(fields)
   | Object(fields)
-  | Record(fields) => fields |> renderFields(~language)
+  | Record(fields) =>
+    let indent1 = fields |> Indent.heuristic(~indent);
+    fields |> renderFields(~language, ~indent=indent1);
   | Function({typeVars, argTypes, retType}) =>
-    renderFunType(~language, ~typeVars, argTypes, retType)
+    renderFunType(~language, ~indent, ~typeVars, argTypes, retType)
   }
-and renderField = (~language, (lbl, optness, typ)) => {
+and renderField = (~language, ~indent, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
-  lbl ++ optMarker ++ ":" ++ (typ |> renderTyp(~language));
+  Indent.break(~indent)
+  ++ lbl
+  ++ optMarker
+  ++ ": "
+  ++ (typ |> renderTyp(~language, ~indent));
 }
-and renderFields = (~language, fields) =>
+and renderFields = (~language, ~indent, fields) => {
+  let indent1 = Indent.more(~indent);
   (language == Flow ? "{|" : "{")
-  ++ String.concat(", ", List.map(renderField(~language), fields))
-  ++ (language == Flow ? "|}" : "}")
-and renderFunType = (~language, ~typeVars, argTypes, retType) =>
+  ++ String.concat(
+       ", ",
+       List.map(renderField(~language, ~indent=indent1), fields),
+     )
+  ++ Indent.break(~indent)
+  ++ (language == Flow ? "|}" : "}");
+}
+and renderFunType = (~language, ~indent, ~typeVars, argTypes, retType) =>
   genericsString(~typeVars)
   ++ "("
   ++ String.concat(
@@ -55,15 +84,15 @@ and renderFunType = (~language, ~typeVars, argTypes, retType) =>
          (i, t) => {
            let parameterName =
              language == Flow ? "" : "_" ++ string_of_int(i + 1) ++ ":";
-           parameterName ++ (t |> renderTyp(~language));
+           parameterName ++ (t |> renderTyp(~language, ~indent));
          },
          argTypes,
        ),
      )
   ++ ") => "
-  ++ (retType |> renderTyp(~language));
+  ++ (retType |> renderTyp(~language, ~indent));
 
-let typToString = (~language) => renderTyp(~language);
+let typToString = (~language, typ) => typ |> renderTyp(~language);
 
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
@@ -129,7 +158,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
     ++ typeName
     ++ typeParamsString
     ++ " = "
-    ++ (typ |> typToString(~language))
+    ++ (typ |> renderTyp(~language))
     ++ ";"
     ++ commentString
 
@@ -154,7 +183,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
       ++ typeName
       ++ typeParamsString
       ++ " = "
-      ++ (typ |> typToString(~language))
+      ++ (typ |> renderTyp(~language))
       ++ ";"
       ++ commentString;
     }
