@@ -99,7 +99,7 @@ jobs:
       - image: appropriate/curl:latest
 
     working_directory: ~/repo
-    
+
     steps:
       - attach_workspace:
         at: ~/repo/dist
@@ -116,7 +116,7 @@ workflows:
     jobs:
       - build-linux
       - build-macos
-      - github-relase
+      - github-relase:
         requires:
           - build-linux
           - build-macos
