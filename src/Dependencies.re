@@ -258,6 +258,11 @@ and translateTypeExpr_ =
       dependencies: [],
       typ: numberT,
     }
+  | Tconstr(Pdot(Pident({name: "FB", _}), "float", _), [], _)
+  | Tconstr(Pident({name: "float", _}), [], _) => {
+      dependencies: [],
+      typ: numberT,
+    }
   | Tconstr(Pdot(Pident({name: "FB", _}), "string", _), [], _)
   | Tconstr(Pident({name: "string", _}), [], _) => {
       dependencies: [],

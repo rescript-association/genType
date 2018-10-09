@@ -19,3 +19,6 @@ let testArray = (a: array(option(int))): array(option(int)) => a;
 
 [@genType]
 type funType = int => int;
+
+[@genType]
+type myFloat = float;
