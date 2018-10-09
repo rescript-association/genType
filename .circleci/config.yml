@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - attach_workspace:
-        at: ~/repo/dist
+          at: ~/repo/dist
 
       - checkout 
 
@@ -102,7 +102,7 @@ jobs:
 
     steps:
       - attach_workspace:
-        at: ~/repo/dist
+          at: ~/repo/dist
 
       - run:
         name: Upload Linux binary
