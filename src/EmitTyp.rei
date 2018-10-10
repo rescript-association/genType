@@ -25,8 +25,8 @@ let emitExportFunction: (~name: string, ~config: config, string) => string;
 
 let emitExportType:
   (
-    ~language: language,
     ~emitters: Emitters.t,
+    ~language: language,
     ~opaque: bool,
     ~typeName: string,
     ~typeVars: list(string),
@@ -37,8 +37,8 @@ let emitExportType:
 
 let emitExportVariantType:
   (
-    ~language: language,
     ~emitters: Emitters.t,
+    ~language: language,
     ~name: string,
     ~typeParams: list(typ),
     ~leafTypes: list(typ)
@@ -47,8 +47,8 @@ let emitExportVariantType:
 
 let emitImportTypeAs:
   (
-    ~language: language,
     ~emitters: Emitters.t,
+    ~language: language,
     ~typeName: string,
     ~asTypeName: option(string),
     ~importPath: ImportPath.t

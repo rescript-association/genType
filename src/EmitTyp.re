@@ -165,7 +165,7 @@ let emitExportDefault = (~config, name) =>
   };
 
 let emitExportType =
-    (~language, ~emitters, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
+    (~emitters, ~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
   let typeParamsString = genericsString(~typeVars);
   let commentString =
     switch (comment) {
@@ -218,7 +218,7 @@ let emitExportType =
 };
 
 let emitExportVariantType =
-    (~language, ~emitters, ~name, ~typeParams, ~leafTypes) =>
+    (~emitters, ~language, ~name, ~typeParams, ~leafTypes) =>
   switch (language) {
   | Flow
   | Typescript =>
@@ -269,7 +269,7 @@ let componentExportName = (~language, ~moduleName) =>
   language == Flow ? "component" : ModuleName.toString(moduleName);
 
 let emitImportTypeAs =
-    (~language, ~emitters, ~typeName, ~asTypeName, ~importPath) =>
+    (~emitters, ~language, ~typeName, ~asTypeName, ~importPath) =>
   switch (language) {
   | Flow
   | Typescript =>

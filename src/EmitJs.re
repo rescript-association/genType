@@ -52,8 +52,8 @@ let emitImportType =
   | ImportTypeAs({typeName, asTypeName, importPath, cmtFile}) =>
     let emitters =
       EmitTyp.emitImportTypeAs(
-        ~language,
         ~emitters,
+        ~language,
         ~typeName,
         ~asTypeName,
         ~importPath,
@@ -100,14 +100,14 @@ let emitImportType =
 
 let emitExportType =
     (
-      ~language,
       ~emitters,
+      ~language,
       {CodeItem.opaque, typeVars, typeName, comment, typ},
     ) =>
   typ
   |> EmitTyp.emitExportType(
-       ~language,
        ~emitters,
+       ~language,
        ~opaque,
        ~typeName,
        ~typeVars,
@@ -202,14 +202,14 @@ let emitCodeItem =
 
   | ExportType(exportType) => (
       env,
-      emitExportType(~language, ~emitters, exportType),
+      emitExportType(~emitters, ~language, exportType),
     )
 
   | ExportVariantType({CodeItem.typeParams, leafTypes, name}) => (
       env,
       EmitTyp.emitExportVariantType(
-        ~language,
         ~emitters,
+        ~language,
         ~name,
         ~typeParams,
         ~leafTypes,
@@ -254,7 +254,7 @@ let emitCodeItem =
       variantName,
       recordValue,
     ) =>
-    let emitters = emitExportType(~language, ~emitters, exportType);
+    let emitters = emitExportType(~emitters, ~language, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
     let emitters =
@@ -365,7 +365,7 @@ let emitCodeItem =
     ) {
     | Some(emitters) => (env, emitters)
     | None =>
-      let emitters = emitExportType(~language, ~emitters, exportType);
+      let emitters = emitExportType(~emitters, ~language, exportType);
       let emitters =
         EmitTyp.emitExportConstMany(
           ~emitters,
