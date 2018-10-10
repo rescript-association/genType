@@ -48,7 +48,7 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
 let emitImportType =
     (~language, ~emitters, ~inputCmtToTypeDeclarations, ~env, importType) =>
   switch (importType) {
-  | CodeItem.ImportComment(s) => (env, s |> Emitter.import(~emitters))
+  | CodeItem.ImportComment(s) => (env, s |> Emitters.import(~emitters))
   | ImportTypeAs({typeName, asTypeName, importPath, cmtFile}) =>
     let emitters =
       EmitTyp.emitImportTypeAs(
@@ -208,7 +208,7 @@ let emitCodeItem =
       )
       ++ ";"
       |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~config)
-      |> Emitter.export(~emitters);
+      |> Emitters.export(~emitters);
     ({...env, requires}, emitters);
 
   | ConstructorBinding(
@@ -230,7 +230,7 @@ let emitCodeItem =
              ~typ=constructorType,
              ~config,
            )
-        |> Emitter.export(~emitters);
+        |> Emitters.export(~emitters);
       } else {
         let args =
           argTypes
@@ -251,7 +251,7 @@ let emitCodeItem =
              ~typ=constructorType,
              ~config,
            )
-        |> Emitter.export(~emitters);
+        |> Emitters.export(~emitters);
       };
     let newEnv = {
       ...env,
@@ -335,7 +335,7 @@ let emitCodeItem =
         };
       let emitters =
         emitExportType(~language, ~emitters, exportTypeNoChildren);
-      let emitters = checkJsWrapperType |> Emitter.export(~emitters);
+      let emitters = checkJsWrapperType |> Emitters.export(~emitters);
       (env, emitters);
     } else {
       let emitters = emitExportType(~language, ~emitters, exportType);
@@ -363,10 +363,11 @@ let emitCodeItem =
             "  }));",
           ],
         )
-        |> Emitter.export(~emitters);
+        |> Emitters.export(~emitters);
 
       let emitters =
-        EmitTyp.emitExportDefault(~config, name) |> Emitter.export(~emitters);
+        EmitTyp.emitExportDefault(~config, name)
+        |> Emitters.export(~emitters);
 
       let requiresWithModule =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
@@ -425,7 +426,7 @@ let emitCodeItems =
              ~env,
              ~inputCmtToTypeDeclarations,
            ),
-         (initialEnv, Emitter.initial),
+         (initialEnv, Emitters.initial),
        );
   let emitters =
     finalEnv.externalReactClass != [] ?
@@ -434,10 +435,9 @@ let emitCodeItems =
     ModuleNameMap.fold(
       (moduleName, importPath, emitters) =>
         EmitTyp.emitRequire(~language, moduleName, importPath)
-        |> Emitter.require(~emitters),
+        |> Emitters.require(~emitters),
       finalEnv.requires,
       emitters,
     );
-
-  emitters |> Emitter.toString(~separator="\n\n");
+  emitters |> Emitters.toString(~separator="\n\n");
 };

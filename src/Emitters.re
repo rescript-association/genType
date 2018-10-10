@@ -22,8 +22,6 @@ let export = (~emitters, s) => {
   exportEmitter: s |> string(~emitter=emitters.exportEmitter),
 };
 
-let concat = emitters => emitters |> List.rev |> List.concat;
-
 let toString = (~separator, emitters) =>
   [
     emitters.requireEmitter |> List.rev,

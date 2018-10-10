@@ -179,7 +179,7 @@ let emitExportType =
     ++ (typ |> renderTyp(~language))
     ++ ";"
     ++ commentString
-    |> Emitter.export(~emitters)
+    |> Emitters.export(~emitters)
 
   | Typescript =>
     if (opaque) {
@@ -196,7 +196,7 @@ let emitExportType =
       ++ typeOfOpaqueField
       ++ " }; /* simulate opaque types */"
       ++ commentString
-      |> Emitter.export(~emitters);
+      |> Emitters.export(~emitters);
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
@@ -206,7 +206,7 @@ let emitExportType =
       ++ (typ |> renderTyp(~language))
       ++ ";"
       ++ commentString
-      |> Emitter.export(~emitters);
+      |> Emitters.export(~emitters);
     }
   | Untyped => emitters
   };
@@ -225,7 +225,7 @@ let emitExportVariantType =
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
     ++ ";"
-    |> Emitter.export(~emitters)
+    |> Emitters.export(~emitters)
   | Untyped => emitters
   };
 
@@ -248,9 +248,9 @@ let requireReact = (~language, ~emitters) =>
   switch (language) {
   | Flow =>
     emitRequire(~language, ModuleName.react, ImportPath.react)
-    |> Emitter.require(~emitters)
+    |> Emitters.require(~emitters)
   | Typescript =>
-    "import * as React from \"react\";" |> Emitter.require(~emitters)
+    "import * as React from \"react\";" |> Emitters.require(~emitters)
   | Untyped => emitters
   };
 
@@ -281,7 +281,7 @@ let emitImportTypeAs =
     ++ "} from '"
     ++ (importPath |> ImportPath.toString)
     ++ "';"
-    |> Emitter.import(~emitters)
+    |> Emitters.import(~emitters)
   | Untyped => emitters
   };
 
