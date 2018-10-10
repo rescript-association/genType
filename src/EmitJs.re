@@ -114,9 +114,16 @@ let emitExportType =
        ~comment,
      );
 
-let emitCheckJsWrapperType = (~config, ~env, ~propsTypeName) =>
+let emitCheckJsWrapperType =
+    (
+      ~emitters,
+      ~config,
+      ~env,
+      ~propsTypeName,
+      ~exportType: CodeItem.exportType,
+    ) =>
   switch (env.externalReactClass) {
-  | [] => ""
+  | [] => None
 
   | [{componentName, _}] =>
     let s =
@@ -131,9 +138,33 @@ let emitCheckJsWrapperType = (~config, ~env, ~propsTypeName) =>
       ++ ") {\n      return <"
       ++ componentName
       ++ " {...props}/>;\n    }";
-    EmitTyp.emitExportFunction(~name="checkJsWrapperType", ~config, s);
+    let exportTypeNoChildren =
+      switch (exportType.typ) {
+      | GroupOfLabeledArgs(fields) =>
+        switch (fields |> List.rev) {
+        | [_child, ...propFieldsRev] =>
+          let typNoChildren = GroupOfLabeledArgs(propFieldsRev |> List.rev);
+          {...exportType, typ: typNoChildren};
+        | [] => exportType
+        }
+      | _ => exportType
+      };
+    let emitters =
+      emitExportType(
+        ~language=config.language,
+        ~emitters,
+        exportTypeNoChildren,
+      );
+    let emitters =
+      EmitTyp.emitExportFunction(~name="checkJsWrapperType", ~config, s)
+      |> Emitters.export(~emitters);
+    Some(emitters);
 
-  | [_, ..._] => "// genType warning: found more than one external component annotated with @genType"
+  | [_, ..._] =>
+    Some(
+      "// genType warning: found more than one external component annotated with @genType"
+      |> Emitters.export(~emitters),
+    )
   };
 
 let emitCodeItem =
@@ -323,26 +354,17 @@ let emitCodeItem =
       | _ => [jsPropsDot("children")]
       };
 
-    let checkJsWrapperType =
-      emitCheckJsWrapperType(~config, ~env, ~propsTypeName);
-
-    if (checkJsWrapperType != "") {
-      let exportTypeNoChildren =
-        switch (exportType.typ) {
-        | GroupOfLabeledArgs(fields) =>
-          switch (fields |> List.rev) {
-          | [_child, ...propFieldsRev] =>
-            let typNoChildren = GroupOfLabeledArgs(propFieldsRev |> List.rev);
-            {...exportType, typ: typNoChildren};
-          | [] => exportType
-          }
-        | _ => exportType
-        };
-      let emitters =
-        emitExportType(~language, ~emitters, exportTypeNoChildren);
-      let emitters = checkJsWrapperType |> Emitters.export(~emitters);
-      (env, emitters);
-    } else {
+    switch (
+      emitCheckJsWrapperType(
+        ~emitters,
+        ~config,
+        ~env,
+        ~propsTypeName,
+        ~exportType,
+      )
+    ) {
+    | Some(emitters) => (env, emitters)
+    | None =>
       let emitters = emitExportType(~language, ~emitters, exportType);
       let emitters =
         EmitTyp.emitExportConstMany(
