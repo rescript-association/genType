@@ -1,6 +1,6 @@
 # Reason genType 0.14.0
 
-> **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, change the path to use `gentype.native`, and the config file to be `gentypeconfig.json`.
+> **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, change the path to use `gentype.native`, and the config file to be `genTypeConfig.json`.
 
 `genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript idiomatically. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components. Also, if you're using JavaScript components from Reason, it can check their type.
 
@@ -42,14 +42,14 @@ into bucklescript in future. The current requirement is `bs-platform 4.0.5` or l
 
 0. Build the gentype.native binary (`$GENTYPE_REPO/lib/bs/native/gentype.native`) or retrieve it from our prebuilt releases
 1. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENTYPE_REPO/lib/bs/native/gentype.native`, before building a project, or starting a watcher / vscode with bsb integration.
-2. Add a file [`gentypeconfig.json`](examples/reason-react-example/gentypeconfig.json) in the project root, and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/reason-react-example/src/shims). An example for a ReasonReact->React shim can be found [here](examples/reason-react-example/src/shims/ReactShim.shim.js).
+2. Add a file [`genTypeConfig.json`](examples/reason-react-example/genTypeConfig.json) in the project root, and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/reason-react-example/src/shims). An example for a ReasonReact->React shim can be found [here](examples/reason-react-example/src/shims/ReactShim.shim.js).
 3. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
 4. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re`  [example webpack.config.js](examples/reason-react-example/webpack.config.js).
 
 # genType Configuration
 
 
-Every genType powered project requires a configuration file in the root of the project, called `gentypeconfig.json`. The file has following structure:
+Every genType powered project requires a configuration file in the root of the project, called `genTypeConfig.json`. The file has following structure:
 
 ```ts
 {

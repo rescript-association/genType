@@ -76,11 +76,11 @@ let executable =
     concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
 
 let getConfigFile = () => {
-  let gentypeconfig = concat(projectRoot^, "gentypeconfig.json");
-  let genflowconfig = concat(projectRoot^, "genflowconfig.json");
-  gentypeconfig |> Sys.file_exists ?
-    Some(gentypeconfig) :
-    genflowconfig |> Sys.file_exists ? Some(genflowconfig) : None;
+  let genTypeConfig = concat(projectRoot^, "genTypeConfig.json");
+  let genFlowConfig = concat(projectRoot^, "genFlowConfig.json");
+  genTypeConfig |> Sys.file_exists ?
+    Some(genTypeConfig) :
+    genFlowConfig |> Sys.file_exists ? Some(genFlowConfig) : None;
 };
 
 /* Find the relative path from /.../bs/lib
