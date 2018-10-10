@@ -250,8 +250,7 @@ let emitImportTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
   switch (language) {
   | Flow
   | Typescript =>
-    (language == Flow ? "" : "\n")
-    ++ "import "
+    "import "
     ++ (language == Flow ? "type " : "")
     ++ "{"
     ++ typeName

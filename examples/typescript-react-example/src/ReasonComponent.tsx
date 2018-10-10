@@ -9,15 +9,11 @@ const ReasonComponentBS = require("./ReasonComponent.bs");
 // tslint:disable-next-line:no-var-requires
 const ReasonReact = require("reason-react/src/ReasonReact.js");
 
-
 import {Mouse_t as ReactEvent_Mouse_t} from '../src/shims/ReactEvent.shim';
-
 
 import {coord as Records_coord} from '../src/nested/Records';
 
-
 import {list} from '../src/shims/ReasonPervasives.shim';
-
 
 import {t as Types_t} from '../src/nested/Types';
 
