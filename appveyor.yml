@@ -19,6 +19,6 @@ build_script:
     - tar czvf artifacts\gentype-win.tar.gz -C lib\bs\native gentype.native.exe
 
 artifacts:
-    - path: artifacts/gentype.native.exe
+    - path: artifacts/gentype-win.tar.gz
       name: Windows Build
       type: File
