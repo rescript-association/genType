@@ -15,10 +15,20 @@ build_script:
     - npm run build
     # Validate binary
     - lib\bs\native\gentype.native.exe --help
-    - mkdir artifacts
-    - tar czvf artifacts\gentype-win.tar.gz -C lib\bs\native gentype.native.exe
+    - tar czvf gentype-win.tar.gz -C lib\bs\native gentype.native.exe
 
 artifacts:
-    - path: artifacts/gentype-win.tar.gz
+    - path: gentype-win.tar.gz
       name: Windows Build
       type: File
+
+deploy:
+    - provider: GitHub
+        repository: cristianoc/genType
+        auth_token:
+            secure: Lqg37AH0Hg/rThuUMuQbzJbgYVCVlUV6RnAgFWb8gNcjNjPcMs46+JPTXNyqyQkQ
+        draft: false
+        artifact: gentype-win.tar.gz
+        force_update: true
+        on:
+            appveyor_repo_tag: true
