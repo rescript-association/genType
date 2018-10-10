@@ -120,7 +120,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - build_macos
+      - build_macos:
           filters:
             tags:
               only: /.*/
