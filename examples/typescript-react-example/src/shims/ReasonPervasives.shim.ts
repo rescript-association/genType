@@ -8,7 +8,7 @@ export abstract class EmptyList {
 
 // tslint:disable-next-line:max-classes-per-file
 export abstract class Cons<T> {
-  protected opaque: T;
+  protected opaque!: T;
 }
 
 export type list<T> = Cons<T> | EmptyList;

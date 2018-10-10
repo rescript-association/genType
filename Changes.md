@@ -8,6 +8,7 @@
 - Shims for Obj.
 - New format form shims: {"fromModuleName": "toModuleName"}.
 - Cleaner generated output, with some basic pretty-printing heuristics.
+- Generate TS code compatible with --strictPropertyInitialization.
 
 # 0.15.0
 - Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.

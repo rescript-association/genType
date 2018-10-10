@@ -207,7 +207,7 @@ let emitExportType =
       ++ "export abstract class "
       ++ typeName
       ++ typeParamsString
-      ++ " { protected opaque: "
+      ++ " { protected opaque!: "
       ++ typeOfOpaqueField
       ++ " }; /* simulate opaque types */"
       ++ commentString
