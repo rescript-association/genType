@@ -6,7 +6,7 @@ type emitters = {
   exportEmitter: t,
 };
 
-let string = (~emitter, s) => s == "" ? emitter : [s, ...emitter];
+let string = (~emitter, s) =>  [s, ...emitter];
 
 let require = (~emitters, s) => {
   ...emitters,

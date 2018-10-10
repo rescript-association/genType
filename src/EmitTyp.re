@@ -159,7 +159,8 @@ let emitExportDefault = (~config, name) =>
   | (CommonJS, _) => "exports.default = " ++ name ++ ";"
   };
 
-let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
+let emitExportType =
+    (~language, ~emitters, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
   let typeParamsString = genericsString(~typeVars);
   let commentString =
     switch (comment) {
@@ -178,6 +179,7 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
     ++ (typ |> renderTyp(~language))
     ++ ";"
     ++ commentString
+    |> Emitter.export(~emitters)
 
   | Typescript =>
     if (opaque) {
@@ -193,7 +195,8 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
       ++ " { protected opaque: "
       ++ typeOfOpaqueField
       ++ " }; /* simulate opaque types */"
-      ++ commentString;
+      ++ commentString
+      |> Emitter.export(~emitters);
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
@@ -202,9 +205,10 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
       ++ " = "
       ++ (typ |> renderTyp(~language))
       ++ ";"
-      ++ commentString;
+      ++ commentString
+      |> Emitter.export(~emitters);
     }
-  | Untyped => ""
+  | Untyped => emitters
   };
 };
 

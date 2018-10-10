@@ -107,12 +107,12 @@ let emitExportType =
   typ
   |> EmitTyp.emitExportType(
        ~language,
+       ~emitters,
        ~opaque,
        ~typeName,
        ~typeVars,
        ~comment,
-     )
-  |> Emitter.export(~emitters);
+     );
 
 let emitCheckJsWrapperType = (~config, ~env, ~propsTypeName) =>
   switch (env.externalReactClass) {

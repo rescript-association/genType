@@ -18,13 +18,14 @@ let emitExportFunction: (~name: string, ~config: config, string) => string;
 let emitExportType:
   (
     ~language: language,
+    ~emitters: Emitter.emitters,
     ~opaque: bool,
     ~typeName: string,
     ~typeVars: list(string),
     ~comment: option(string),
     typ
   ) =>
-  string;
+  Emitter.emitters;
 
 let emitExportVariantType:
   (
