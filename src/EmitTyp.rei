@@ -10,11 +10,12 @@ let componentExportName:
 let emitExportVariantType:
   (
     ~language: language,
+    ~emitters: Emitter.emitters,
     ~name: string,
     ~typeParams: list(typ),
     ~leafTypes: list(typ)
   ) =>
-  string;
+  Emitter.emitters;
 
 let emitExportType:
   (
@@ -43,16 +44,18 @@ let generatedModuleExtension: (~language: language) => string;
 
 let genericsString: (~typeVars: list(string)) => string;
 
-let requireReact: (~language: language) => string;
+let requireReact:
+  (~language: language, ~emitters: Emitter.emitters) => Emitter.emitters;
 
 let emitImportTypeAs:
   (
     ~language: language,
+    ~emitters: Emitter.emitters,
     ~typeName: string,
     ~asTypeName: option(string),
     ~importPath: ImportPath.t
   ) =>
-  string;
+  Emitter.emitters;
 
 let emitRequire: (~language: language, ModuleName.t, ImportPath.t) => string;
 

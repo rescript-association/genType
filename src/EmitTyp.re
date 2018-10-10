@@ -183,7 +183,8 @@ let emitExportType = (~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) =
   };
 };
 
-let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
+let emitExportVariantType =
+    (~language, ~emitters, ~name, ~typeParams, ~leafTypes) =>
   switch (language) {
   | Flow
   | Typescript =>
@@ -195,7 +196,8 @@ let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
     ++ " =\n  | "
     ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
     ++ ";"
-  | Untyped => ""
+    |> Emitter.export(~emitters)
+  | Untyped => emitters
   };
 
 let flowExpectedError = "// $FlowExpectedError: Reason checked type sufficiently\n";
@@ -203,7 +205,7 @@ let commentBeforeRequire = (~language) =>
   switch (language) {
   | Typescript => "// tslint:disable-next-line:no-var-requires\n"
   | Flow => flowExpectedError
-  | _ => ""
+  | Untyped => ""
   };
 
 let emitRequire = (~language, moduleName, importPath) =>
@@ -214,11 +216,14 @@ let emitRequire = (~language, moduleName, importPath) =>
   ++ (importPath |> ImportPath.toString)
   ++ "\");";
 
-let requireReact = (~language) =>
+let requireReact = (~language, ~emitters) =>
   switch (language) {
-  | Flow => emitRequire(~language, ModuleName.react, ImportPath.react)
-  | Typescript => "import * as React from \"react\";"
-  | Untyped => ""
+  | Flow =>
+    emitRequire(~language, ModuleName.react, ImportPath.react)
+    |> Emitter.require(~emitters)
+  | Typescript =>
+    "import * as React from \"react\";" |> Emitter.require(~emitters)
+  | Untyped => emitters
   };
 
 let reactComponentType = (~language, ~propsTypeName) =>
@@ -246,7 +251,8 @@ let outputFileSuffix = (~language) =>
 
 let generatedModuleExtension = (~language) => language == Flow ? ".re" : "";
 
-let emitImportTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
+let emitImportTypeAs =
+    (~language, ~emitters, ~typeName, ~asTypeName, ~importPath) =>
   switch (language) {
   | Flow
   | Typescript =>
@@ -263,7 +269,8 @@ let emitImportTypeAs = (~language, ~typeName, ~asTypeName, ~importPath) =>
     ++ "} from '"
     ++ (importPath |> ImportPath.toString)
     ++ "';"
-  | Untyped => ""
+    |> Emitter.import(~emitters)
+  | Untyped => emitters
   };
 
 let blockTagValue = (~language, i) =>

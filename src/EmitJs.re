@@ -45,34 +45,19 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
   codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
-type emitters = {
-  requireEmitter: Emitter.t,
-  importEmitter: Emitter.t,
-  exportEmitter: Emitter.t,
-};
-
-let emitRequire = (~emitters, s) => {
-  ...emitters,
-  requireEmitter: s |> Emitter.string(~emitter=emitters.requireEmitter),
-};
-let emitImport = (~emitters, s) => {
-  ...emitters,
-  importEmitter: s |> Emitter.string(~emitter=emitters.importEmitter),
-};
-
-let emitExport = (~emitters, s) => {
-  ...emitters,
-  exportEmitter: s |> Emitter.string(~emitter=emitters.exportEmitter),
-};
-
 let emitImportType =
     (~language, ~emitters, ~inputCmtToTypeDeclarations, ~env, importType) =>
   switch (importType) {
-  | CodeItem.ImportComment(s) => (env, s |> emitImport(~emitters))
+  | CodeItem.ImportComment(s) => (env, s |> Emitter.import(~emitters))
   | ImportTypeAs({typeName, asTypeName, importPath, cmtFile}) =>
     let emitters =
-      EmitTyp.emitImportTypeAs(~language, ~typeName, ~asTypeName, ~importPath)
-      |> emitImport(~emitters);
+      EmitTyp.emitImportTypeAs(
+        ~language,
+        ~emitters,
+        ~typeName,
+        ~asTypeName,
+        ~importPath,
+      );
 
     switch (asTypeName, cmtFile) {
     | (None, _)
@@ -118,19 +103,16 @@ let emitExportType =
       ~language,
       ~emitters,
       {CodeItem.opaque, typeVars, typeName, comment, typ},
-    ) => {
-  ...emitters,
-  exportEmitter:
-    typ
-    |> EmitTyp.emitExportType(
-         ~language,
-         ~opaque,
-         ~typeName,
-         ~typeVars,
-         ~comment,
-       )
-    |> Emitter.string(~emitter=emitters.exportEmitter),
-};
+    ) =>
+  typ
+  |> EmitTyp.emitExportType(
+       ~language,
+       ~opaque,
+       ~typeName,
+       ~typeVars,
+       ~comment,
+     )
+  |> Emitter.export(~emitters);
 
 let emitCheckJsWrapperType = (~config, ~env, ~propsTypeName) =>
   switch (env.externalReactClass) {
@@ -194,8 +176,13 @@ let emitCodeItem =
 
   | ExportVariantType({CodeItem.typeParams, leafTypes, name}) => (
       env,
-      EmitTyp.emitExportVariantType(~language, ~name, ~typeParams, ~leafTypes)
-      |> emitExport(~emitters),
+      EmitTyp.emitExportVariantType(
+        ~language,
+        ~emitters,
+        ~name,
+        ~typeParams,
+        ~leafTypes,
+      ),
     )
 
   | ValueBinding({moduleName, id, typ}) =>
@@ -221,7 +208,7 @@ let emitCodeItem =
       )
       ++ ";"
       |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~config)
-      |> emitExport(~emitters);
+      |> Emitter.export(~emitters);
     ({...env, requires}, emitters);
 
   | ConstructorBinding(
@@ -243,7 +230,7 @@ let emitCodeItem =
              ~typ=constructorType,
              ~config,
            )
-        |> emitExport(~emitters);
+        |> Emitter.export(~emitters);
       } else {
         let args =
           argTypes
@@ -264,7 +251,7 @@ let emitCodeItem =
              ~typ=constructorType,
              ~config,
            )
-        |> emitExport(~emitters);
+        |> Emitter.export(~emitters);
       };
     let newEnv = {
       ...env,
@@ -348,7 +335,7 @@ let emitCodeItem =
         };
       let emitters =
         emitExportType(~language, ~emitters, exportTypeNoChildren);
-      let emitters = checkJsWrapperType |> emitExport(~emitters);
+      let emitters = checkJsWrapperType |> Emitter.export(~emitters);
       (env, emitters);
     } else {
       let emitters = emitExportType(~language, ~emitters, exportType);
@@ -376,10 +363,10 @@ let emitCodeItem =
             "  }));",
           ],
         )
-        |> emitExport(~emitters);
+        |> Emitter.export(~emitters);
 
       let emitters =
-        EmitTyp.emitExportDefault(~config, name) |> emitExport(~emitters);
+        EmitTyp.emitExportDefault(~config, name) |> Emitter.export(~emitters);
 
       let requiresWithModule =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
@@ -424,11 +411,12 @@ let emitCodeItems =
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let initialEmitters = {
-    requireEmitter: Emitter.initial,
-    importEmitter: Emitter.initial,
-    exportEmitter: Emitter.initial,
-  };
+  let initialEmitters =
+    Emitter.{
+      requireEmitter: Emitter.initial,
+      importEmitter: Emitter.initial,
+      exportEmitter: Emitter.initial,
+    };
   let exportTypeMap = codeItems |> createExportTypeMap(~language);
   let (finalEnv, emitters) =
     codeItems
@@ -447,12 +435,12 @@ let emitCodeItems =
        );
   let emitters =
     finalEnv.externalReactClass != [] ?
-      EmitTyp.requireReact(~language) |> emitRequire(~emitters) : emitters;
+      EmitTyp.requireReact(~language, ~emitters) : emitters;
   let emitters =
     ModuleNameMap.fold(
       (moduleName, importPath, emitters) =>
         EmitTyp.emitRequire(~language, moduleName, importPath)
-        |> emitRequire(~emitters),
+        |> Emitter.require(~emitters),
       finalEnv.requires,
       emitters,
     );
