@@ -7,15 +7,15 @@ let commentBeforeRequire: (~language: language) => string;
 let componentExportName:
   (~language: language, ~moduleName: ModuleName.t) => string;
 
-let emitExportVariantType:
-  (
-    ~language: language,
-    ~emitters: Emitter.emitters,
-    ~name: string,
-    ~typeParams: list(typ),
-    ~leafTypes: list(typ)
-  ) =>
-  Emitter.emitters;
+let emitExportConst:
+  (~name: string, ~typ: typ, ~config: config, string) => string;
+
+let emitExportConstMany:
+  (~name: string, ~typ: typ, ~config: config, list(string)) => string;
+
+let emitExportDefault: (~config: config, string) => string;
+
+let emitExportFunction: (~name: string, ~config: config, string) => string;
 
 let emitExportType:
   (
@@ -28,24 +28,15 @@ let emitExportType:
   ) =>
   string;
 
-let emitExportConst:
-  (~name: string, ~typ: typ, ~config: config, string) => string;
-
-let emitExportConstMany:
-  (~name: string, ~typ: typ, ~config: config, list(string)) => string;
-
-let emitExportFunction: (~name: string, ~config: config, string) => string;
-
-let emitExportDefault: (~config: config, string) => string;
-
-let fileHeader: (~language: language) => string;
-
-let generatedModuleExtension: (~language: language) => string;
-
-let genericsString: (~typeVars: list(string)) => string;
-
-let requireReact:
-  (~language: language, ~emitters: Emitter.emitters) => Emitter.emitters;
+let emitExportVariantType:
+  (
+    ~language: language,
+    ~emitters: Emitter.emitters,
+    ~name: string,
+    ~typeParams: list(typ),
+    ~leafTypes: list(typ)
+  ) =>
+  Emitter.emitters;
 
 let emitImportTypeAs:
   (
@@ -59,9 +50,18 @@ let emitImportTypeAs:
 
 let emitRequire: (~language: language, ModuleName.t, ImportPath.t) => string;
 
+let fileHeader: (~language: language) => string;
+
+let generatedModuleExtension: (~language: language) => string;
+
+let genericsString: (~typeVars: list(string)) => string;
+
 let ofType: (~language: language, ~typ: typ, string) => string;
 
 let outputFileSuffix: (~language: language) => string;
+
+let requireReact:
+  (~language: language, ~emitters: Emitter.emitters) => Emitter.emitters;
 
 let reactComponentType: (~language: language, ~propsTypeName: string) => typ;
 
