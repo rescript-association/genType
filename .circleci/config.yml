@@ -95,7 +95,8 @@ jobs:
 
   github_release:
     docker:
-      - image: appropriate/curl:latest
+      #- image: appropriate/curl:latest
+      - image: cibuilds/github:0.10
 
     working_directory: ~/repo
 
@@ -116,7 +117,6 @@ jobs:
       #     name: Upload MacOS binary
       #     command: .circleci/github_upload.sh dist/gentype-macos.tar.gz "gentype-macos-$CIRCLE_TAG.zip"
 
-      
 workflows:
   version: 2
   build_deploy:
@@ -128,7 +128,7 @@ workflows:
             - build_linux
             # - build_macos
           filters:
-            tags:
-              only: /^v.*/
             branches:
               ignore: /.*/
+            tags:
+              only: /^v.*/
