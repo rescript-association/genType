@@ -18,34 +18,34 @@ let emitExportFunction: (~name: string, ~config: config, string) => string;
 let emitExportType:
   (
     ~language: language,
-    ~emitters: Emitter.emitters,
+    ~emitters: Emitter.t,
     ~opaque: bool,
     ~typeName: string,
     ~typeVars: list(string),
     ~comment: option(string),
     typ
   ) =>
-  Emitter.emitters;
+  Emitter.t;
 
 let emitExportVariantType:
   (
     ~language: language,
-    ~emitters: Emitter.emitters,
+    ~emitters: Emitter.t,
     ~name: string,
     ~typeParams: list(typ),
     ~leafTypes: list(typ)
   ) =>
-  Emitter.emitters;
+  Emitter.t;
 
 let emitImportTypeAs:
   (
     ~language: language,
-    ~emitters: Emitter.emitters,
+    ~emitters: Emitter.t,
     ~typeName: string,
     ~asTypeName: option(string),
     ~importPath: ImportPath.t
   ) =>
-  Emitter.emitters;
+  Emitter.t;
 
 let emitRequire: (~language: language, ModuleName.t, ImportPath.t) => string;
 
@@ -59,8 +59,7 @@ let outputFileSuffix: (~language: language) => string;
 
 let reactComponentType: (~language: language, ~propsTypeName: string) => typ;
 
-let requireReact:
-  (~language: language, ~emitters: Emitter.emitters) => Emitter.emitters;
+let requireReact: (~language: language, ~emitters: Emitter.t) => Emitter.t;
 
 let shimExtension: (~language: language) => string;
 

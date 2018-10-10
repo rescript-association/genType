@@ -411,12 +411,6 @@ let emitCodeItems =
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let initialEmitters =
-    Emitter.{
-      requireEmitter: Emitter.initial,
-      importEmitter: Emitter.initial,
-      exportEmitter: Emitter.initial,
-    };
   let exportTypeMap = codeItems |> createExportTypeMap(~language);
   let (finalEnv, emitters) =
     codeItems
@@ -431,7 +425,7 @@ let emitCodeItems =
              ~env,
              ~inputCmtToTypeDeclarations,
            ),
-         (initialEnv, initialEmitters),
+         (initialEnv, Emitter.initial),
        );
   let emitters =
     finalEnv.externalReactClass != [] ?
@@ -445,7 +439,5 @@ let emitCodeItems =
       emitters,
     );
 
-  [emitters.requireEmitter, emitters.importEmitter, emitters.exportEmitter]
-  |> Emitter.concat
-  |> Emitter.toString(~separator="\n\n");
+  emitters |> Emitter.toString(~separator="\n\n");
 };

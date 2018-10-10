@@ -1,10 +1,10 @@
-type t = list(string);
-
-type emitters = {
-  requireEmitter: t,
-  importEmitter: t,
-  exportEmitter: t,
+type t = {
+  requireEmitter: list(string),
+  importEmitter: list(string),
+  exportEmitter: list(string),
 };
+
+let initial = {requireEmitter: [], importEmitter: [], exportEmitter: []};
 
 let string = (~emitter, s) => [s, ...emitter];
 
@@ -22,8 +22,13 @@ let export = (~emitters, s) => {
   exportEmitter: s |> string(~emitter=emitters.exportEmitter),
 };
 
-let initial = [];
-
 let concat = emitters => emitters |> List.rev |> List.concat;
-let toString = (~separator, emitter) =>
-  emitter |> List.rev |> String.concat(separator);
+
+let toString = (~separator, emitters) =>
+  [
+    emitters.requireEmitter |> List.rev,
+    emitters.importEmitter |> List.rev,
+    emitters.exportEmitter |> List.rev,
+  ]
+  |> List.concat
+  |> String.concat(separator);
