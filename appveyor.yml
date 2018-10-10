@@ -24,7 +24,7 @@ artifacts:
 
 deploy:
     - provider: GitHub
-      repository: cristianoc/genType
+      repository: ryyppy/genType
       auth_token:
         secure: Lqg37AH0Hg/rThuUMuQbzJbgYVCVlUV6RnAgFWb8gNcjNjPcMs46+JPTXNyqyQkQ
       draft: false
