@@ -4,7 +4,7 @@
 #
 # Therefore following mental directory model:
 # ~/repo: the actual gentype repo
-#  |- dist: contains all build artifacts
+#  |- artifacts: contains all build artifacts to be uploaded to github releases
 #  |- src
 #  |- ...
 #  |- package.json
@@ -23,7 +23,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/repo/dist
+          at: ~/repo/artifacts
 
       # Download and cache dependencies
       - restore_cache:
@@ -42,14 +42,14 @@ jobs:
             - node_modules
 
       # Tar things up
-      - run: tar czvf dist/gentype-linux.tar.gz -C lib/bs/native gentype.native
+      - run: tar czvf artifacts/gentype-linux.tar.gz -C lib/bs/native gentype.native
 
       - store_artifacts:
-          path: dist/gentype-linux.tar.gz
+          path: artifacts/gentype-linux.tar.gz
           destination: gentype-linux.tar.gz
 
       - persist_to_workspace:
-          root: dist
+          root: artifacts
           paths:
             - gentype-linux.tar.gz
 
@@ -63,7 +63,7 @@ jobs:
       - checkout
 
       - attach_workspace:
-          at: ~/repo/dist
+          at: ~/repo/artifacts
 
       # Download and cache dependencies
       - restore_cache:
@@ -82,14 +82,14 @@ jobs:
             - node_modules
 
       # Tar things up
-      - run: tar czvf dist/gentype-macos.tar.gz -C lib/bs/native gentype.native
+      - run: tar czvf artifacts/gentype-macos.tar.gz -C lib/bs/native gentype.native
 
       - store_artifacts:
-          path: dist/gentype-macos.tar.gz
+          path: artifacts/gentype-macos.tar.gz
           destination: gentype-macos.tar.gz
 
       - persist_to_workspace:
-          root: dist
+          root: artifacts
           paths:
             - gentype-macos.tar.gz
 
@@ -103,11 +103,15 @@ jobs:
       - checkout
 
       - attach_workspace:
-          at: ~/repo/dist
+          at: ~/repo/artifacts
 
       - run:
-          name: Upload Linux binary
-          command: sh -x .circleci/github_upload.sh dist/gentype-linux.tar.gz "gentype-linux-$CIRCLE_TAG.tar.gz"
+          name: Publish Release on Github
+          command: |
+            VERSION=$CIRCLE_TAG
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+            #ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+
 
       # - run:
       #     name: Upload MacOS binary
@@ -126,3 +130,5 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+              branches:
+                ignore: /.*/
