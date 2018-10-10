@@ -6,7 +6,7 @@ type emitters = {
   exportEmitter: t,
 };
 
-let string = (~emitter, s) =>  [s, ...emitter];
+let string = (~emitter, s) => [s, ...emitter];
 
 let require = (~emitters, s) => {
   ...emitters,
@@ -23,7 +23,6 @@ let export = (~emitters, s) => {
 };
 
 let initial = [];
-
 
 let concat = emitters => emitters |> List.rev |> List.concat;
 let toString = (~separator, emitter) =>
