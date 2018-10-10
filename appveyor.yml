@@ -24,11 +24,11 @@ artifacts:
 
 deploy:
     - provider: GitHub
-        repository: cristianoc/genType
-        auth_token:
-            secure: Lqg37AH0Hg/rThuUMuQbzJbgYVCVlUV6RnAgFWb8gNcjNjPcMs46+JPTXNyqyQkQ
-        draft: false
-        artifact: gentype-win.tar.gz
-        force_update: true
-        on:
-            appveyor_repo_tag: true
+      repository: cristianoc/genType
+      auth_token:
+        secure: Lqg37AH0Hg/rThuUMuQbzJbgYVCVlUV6RnAgFWb8gNcjNjPcMs46+JPTXNyqyQkQ
+      draft: false
+      artifact: gentype-win.tar.gz
+      force_update: true
+      on:
+        appveyor_repo_tag: true
