@@ -9,7 +9,9 @@ const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 
 // $FlowExpectedError: Reason checked type sufficiently
 const NestedBS = require("./Nested.bs");
+
 import type {variant as Component2_variant} from '../../src/basics/Component2.re';
+
 export opaque type VariantA = mixed;
 
 export const A: VariantA = 0;

@@ -97,14 +97,6 @@ let typToString = (~language, typ) => typ |> renderTyp(~language);
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
 
-let flowExpectedError = "// $FlowExpectedError: Reason checked type sufficiently\n";
-let commentBeforeRequire = (~language) =>
-  switch (language) {
-  | Typescript => "// tslint:disable-next-line:no-var-requires\n"
-  | Flow => flowExpectedError
-  | _ => ""
-  };
-
 let emitExportConst = (~name, ~typ, ~config, line) =>
   switch (config.module_, config.language) {
   | (_, Typescript)
@@ -204,6 +196,14 @@ let emitExportVariantType = (~language, ~name, ~typeParams, ~leafTypes) =>
     ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
     ++ ";"
   | Untyped => ""
+  };
+
+let flowExpectedError = "// $FlowExpectedError: Reason checked type sufficiently\n";
+let commentBeforeRequire = (~language) =>
+  switch (language) {
+  | Typescript => "// tslint:disable-next-line:no-var-requires\n"
+  | Flow => flowExpectedError
+  | _ => ""
   };
 
 let emitRequire = (~language, moduleName, importPath) =>

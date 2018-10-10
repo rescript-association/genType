@@ -9,9 +9,11 @@ const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
 
 // $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require("./Types.bs");
+
 import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
 
 import type {t as Obj_t} from '../../src/shims/Obj.shim';
+
 export opaque type TypeWithVarsA<x,y> = mixed;
 
 export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }

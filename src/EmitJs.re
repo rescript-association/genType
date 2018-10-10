@@ -45,6 +45,26 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
   codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
+type emitters = {
+  requireEmitter: Emitter.t,
+  importEmitter: Emitter.t,
+  exportEmitter: Emitter.t,
+};
+
+let emitRequire = (~emitters, s) => {
+  ...emitters,
+  requireEmitter: s |> Emitter.string(~emitter=emitters.requireEmitter),
+};
+let emitImport = (~emitters, s) => {
+  ...emitters,
+  importEmitter: s |> Emitter.string(~emitter=emitters.importEmitter),
+};
+
+let emitExport = (~emitters, s) => {
+  ...emitters,
+  exportEmitter: s |> Emitter.string(~emitter=emitters.exportEmitter),
+};
+
 let emitCodeItems =
     (
       ~config,
@@ -54,31 +74,23 @@ let emitCodeItems =
       codeItems,
     ) => {
   let language = config.language;
-  let requireBuffer = Buffer.create(100);
-  let importTypeBuffer = Buffer.create(100);
-  let exportBuffer = Buffer.create(100);
-  let line__ = (buffer, s) => {
-    if (Buffer.length(buffer) > 0) {
-      Buffer.add_string(buffer, "\n");
-    };
-    Buffer.add_string(buffer, s);
-  };
-  let newLine__ = buffer => Buffer.add_string(buffer, "\n");
-  let require = line__(requireBuffer);
-  let export = line__(exportBuffer);
 
-  let emitImportType = (~language, ~env, importType) =>
+  let emitImportType = (~language, ~emitters, ~env, importType) =>
     switch (importType) {
-    | CodeItem.ImportComment(s) =>
-      s |> line__(importTypeBuffer);
-      env;
+    | CodeItem.ImportComment(s) => (env, s |> emitImport(~emitters))
     | ImportTypeAs({typeName, asTypeName, importPath, cmtFile}) =>
-      EmitTyp.emitImportTypeAs(~language, ~typeName, ~asTypeName, ~importPath)
-      |> line__(importTypeBuffer);
+      let emitters =
+        EmitTyp.emitImportTypeAs(
+          ~language,
+          ~typeName,
+          ~asTypeName,
+          ~importPath,
+        )
+        |> emitImport(~emitters);
 
       switch (asTypeName, cmtFile) {
       | (None, _)
-      | (_, None) => env
+      | (_, None) => (env, emitters)
       | (Some(asType), Some(cmtFile)) =>
         let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
           switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
@@ -86,11 +98,14 @@ let emitCodeItems =
           | exception Not_found => exportTypeMapFromCmt
           };
         switch (env.cmtExportTypeMapCache |> StringMap.find(cmtFile)) {
-        | exportTypeMapFromCmt => {
-            ...env,
-            typesFromOtherFiles:
-              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-          }
+        | exportTypeMapFromCmt => (
+            {
+              ...env,
+              typesFromOtherFiles:
+                updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+            },
+            emitters,
+          )
         | exception Not_found =>
           let exportTypeMapFromCmt =
             Cmt_format.read_cmt(cmtFile)
@@ -99,27 +114,37 @@ let emitCodeItems =
           let cmtExportTypeMapCache =
             env.cmtExportTypeMapCache
             |> StringMap.add(cmtFile, exportTypeMapFromCmt);
-          {
-            ...env,
-            cmtExportTypeMapCache,
-            typesFromOtherFiles:
-              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-          };
+          (
+            {
+              ...env,
+              cmtExportTypeMapCache,
+              typesFromOtherFiles:
+                updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+            },
+            emitters,
+          );
         };
       };
     };
 
   let emitExportType =
-      (~language, {CodeItem.opaque, typeVars, typeName, comment, typ}) =>
-    typ
-    |> EmitTyp.emitExportType(
-         ~language,
-         ~opaque,
-         ~typeName,
-         ~typeVars,
-         ~comment,
-       )
-    |> export;
+      (
+        ~language,
+        ~emitters,
+        {CodeItem.opaque, typeVars, typeName, comment, typ},
+      ) => {
+    ...emitters,
+    exportEmitter:
+      typ
+      |> EmitTyp.emitExportType(
+           ~language,
+           ~opaque,
+           ~typeName,
+           ~typeVars,
+           ~comment,
+         )
+      |> Emitter.string(~emitter=emitters.exportEmitter),
+  };
 
   let emitCheckJsWrapperType = (~env, ~propsTypeName) =>
     switch (env.externalReactClass) {
@@ -139,7 +164,7 @@ let emitCodeItems =
     | [_, ..._] => "// genType warning: found more than one external component annotated with @genType"
     };
 
-  let emitCodeItem = (~exportTypeMap, env, codeItem) => {
+  let emitCodeItem = (~exportTypeMap, ~emitters, env, codeItem) => {
     let typToConverter = typ =>
       typ
       |> Converter.typToConverter(
@@ -150,22 +175,26 @@ let emitCodeItems =
     if (Debug.codeItems) {
       logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~language));
     };
+
     switch (codeItem) {
     | CodeItem.ImportType(importType) =>
-      let env1 = emitImportType(~language, ~env, importType);
-      newLine__(importTypeBuffer);
-      env1;
+      emitImportType(~language, ~emitters, ~env, importType)
 
-    | ExportType(exportType) =>
-      emitExportType(~language, exportType);
-      newLine__(exportBuffer);
-      env;
+    | ExportType(exportType) => (
+        env,
+        emitExportType(~language, ~emitters, exportType),
+      )
 
-    | ExportVariantType({CodeItem.typeParams, leafTypes, name}) =>
-      EmitTyp.emitExportVariantType(~language, ~name, ~typeParams, ~leafTypes)
-      |> export;
-      newLine__(exportBuffer);
-      env;
+    | ExportVariantType({CodeItem.typeParams, leafTypes, name}) => (
+        env,
+        EmitTyp.emitExportVariantType(
+          ~language,
+          ~name,
+          ~typeParams,
+          ~leafTypes,
+        )
+        |> emitExport(~emitters),
+      )
 
     | ValueBinding({moduleName, id, typ}) =>
       let importPath =
@@ -181,17 +210,17 @@ let emitCodeItems =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
       let converter = typ |> typToConverter;
 
-      (
-        ModuleName.toString(moduleNameBs)
-        ++ "."
-        ++ Ident.name(id)
-        |> Converter.toJS(~converter)
-      )
-      ++ ";"
-      |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~config)
-      |> export;
-      newLine__(exportBuffer);
-      {...env, requires};
+      let emitters =
+        (
+          ModuleName.toString(moduleNameBs)
+          ++ "."
+          ++ Ident.name(id)
+          |> Converter.toJS(~converter)
+        )
+        ++ ";"
+        |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~config)
+        |> emitExport(~emitters);
+      ({...env, requires}, emitters);
 
     | ConstructorBinding(
         exportType,
@@ -200,44 +229,42 @@ let emitCodeItems =
         variantName,
         recordValue,
       ) =>
-      emitExportType(~language, exportType);
-      newLine__(exportBuffer);
+      let emitters = emitExportType(~language, ~emitters, exportType);
 
       let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
-      if (argTypes == []) {
-        recordAsInt
-        ++ ";"
-        |> EmitTyp.emitExportConst(
-             ~name=variantName,
-             ~typ=constructorType,
-             ~config,
-           )
-        |> export;
-        newLine__(exportBuffer);
-      } else {
-        let args =
-          argTypes
-          |> List.mapi((i, typ) => {
-               let converter = typ |> typToConverter;
-               let arg = EmitText.argi(i + 1);
-               let v = arg |> Converter.toReason(~converter);
-               (arg, v);
-             });
-        let mkReturn = s => "return " ++ s;
-        let mkBody = args =>
-          recordValue
-          |> Runtime.emitRecordAsBlock(~language, ~args)
-          |> mkReturn;
-        EmitText.funDef(~args, ~mkBody, "")
-        |> EmitTyp.emitExportConst(
-             ~name=variantName,
-             ~typ=constructorType,
-             ~config,
-           )
-        |> export;
-        newLine__(exportBuffer);
-      };
-      {
+      let emitters =
+        if (argTypes == []) {
+          recordAsInt
+          ++ ";"
+          |> EmitTyp.emitExportConst(
+               ~name=variantName,
+               ~typ=constructorType,
+               ~config,
+             )
+          |> emitExport(~emitters);
+        } else {
+          let args =
+            argTypes
+            |> List.mapi((i, typ) => {
+                 let converter = typ |> typToConverter;
+                 let arg = EmitText.argi(i + 1);
+                 let v = arg |> Converter.toReason(~converter);
+                 (arg, v);
+               });
+          let mkReturn = s => "return " ++ s;
+          let mkBody = args =>
+            recordValue
+            |> Runtime.emitRecordAsBlock(~language, ~args)
+            |> mkReturn;
+          EmitText.funDef(~args, ~mkBody, "")
+          |> EmitTyp.emitExportConst(
+               ~name=variantName,
+               ~typ=constructorType,
+               ~config,
+             )
+          |> emitExport(~emitters);
+        };
+      let newEnv = {
         ...env,
         requires:
           env.requires
@@ -246,6 +273,7 @@ let emitCodeItems =
                ImportPath.bsBlockPath(~config),
              ),
       };
+      (newEnv, emitters);
 
     | ComponentBinding({
         exportType,
@@ -316,40 +344,40 @@ let emitCodeItems =
             }
           | _ => exportType
           };
-        emitExportType(~language, exportTypeNoChildren);
-        checkJsWrapperType |> export;
-        newLine__(exportBuffer);
-        env;
+        let emitters =
+          emitExportType(~language, ~emitters, exportTypeNoChildren);
+        let emitters = checkJsWrapperType |> emitExport(~emitters);
+        (env, emitters);
       } else {
-        emitExportType(~language, exportType);
-        EmitTyp.emitExportConstMany(
-          ~name,
-          ~typ=componentType,
-          ~config,
-          [
-            "ReasonReact.wrapReasonForJs(",
-            "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
-            "  (function _("
-            ++ EmitTyp.ofType(
-                 ~language,
-                 ~typ=Ident(propsTypeName, []),
-                 jsProps,
-               )
-            ++ ") {",
-            "     return "
-            ++ ModuleName.toString(moduleNameBs)
-            ++ "."
-            ++ "make"
-            ++ EmitText.parens(args)
-            ++ ";",
-            "  }));",
-          ],
-        )
-        |> export;
+        let emitters = emitExportType(~language, ~emitters, exportType);
+        let emitters =
+          EmitTyp.emitExportConstMany(
+            ~name,
+            ~typ=componentType,
+            ~config,
+            [
+              "ReasonReact.wrapReasonForJs(",
+              "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
+              "  (function _("
+              ++ EmitTyp.ofType(
+                   ~language,
+                   ~typ=Ident(propsTypeName, []),
+                   jsProps,
+                 )
+              ++ ") {",
+              "     return "
+              ++ ModuleName.toString(moduleNameBs)
+              ++ "."
+              ++ "make"
+              ++ EmitText.parens(args)
+              ++ ";",
+              "  }));",
+            ],
+          )
+          |> emitExport(~emitters);
 
-        EmitTyp.emitExportDefault(~config, name) |> export;
-
-        newLine__(exportBuffer);
+        let emitters =
+          EmitTyp.emitExportDefault(~config, name) |> emitExport(~emitters);
 
         let requiresWithModule =
           moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
@@ -359,7 +387,7 @@ let emitCodeItems =
                ModuleName.reasonReact,
                ImportPath.reasonReactPath(~config),
              );
-        {...env, requires: requiresWithReasonReact};
+        ({...env, requires: requiresWithReasonReact}, emitters);
       };
 
     | ExternalReactClass({componentName, importPath} as externalReactClass) =>
@@ -369,11 +397,12 @@ let emitCodeItems =
              ModuleName.fromStringUnsafe(componentName),
              importPath,
            );
-      {
+      let newEnv = {
         ...env,
         requires,
         externalReactClass: [externalReactClass, ...env.externalReactClass],
       };
+      (newEnv, emitters);
     };
   };
 
@@ -383,23 +412,31 @@ let emitCodeItems =
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let exportTypeMap = codeItems |> createExportTypeMap(~language);
-  let finalEnv =
-    codeItems |> List.fold_left(emitCodeItem(~exportTypeMap), initialEnv);
-
-  if (finalEnv.externalReactClass != []) {
-    EmitTyp.requireReact(~language) |> require;
-    newLine__(requireBuffer);
+  let initialEmitters = {
+    requireEmitter: Emitter.initial,
+    importEmitter: Emitter.initial,
+    exportEmitter: Emitter.initial,
   };
-  finalEnv.requires
-  |> ModuleNameMap.iter((moduleName, importPath) => {
-       EmitTyp.emitRequire(~language, moduleName, importPath) |> require;
-       newLine__(requireBuffer);
-     });
+  let exportTypeMap = codeItems |> createExportTypeMap(~language);
+  let (finalEnv, emitters) =
+    codeItems
+    |> List.fold_left(
+         ((env, emitters)) => emitCodeItem(~exportTypeMap, ~emitters, env),
+         (initialEnv, initialEmitters),
+       );
+  let emitters =
+    finalEnv.externalReactClass != [] ?
+      EmitTyp.requireReact(~language) |> emitRequire(~emitters) : emitters;
+  let emitters =
+    ModuleNameMap.fold(
+      (moduleName, importPath, emitters) =>
+        EmitTyp.emitRequire(~language, moduleName, importPath)
+        |> emitRequire(~emitters),
+      finalEnv.requires,
+      emitters,
+    );
 
-  let requireString = requireBuffer |> Buffer.to_bytes;
-  let importTypeString = importTypeBuffer |> Buffer.to_bytes;
-  let exportString = exportBuffer |> Buffer.to_bytes;
-
-  requireString ++ importTypeString ++ exportString;
+  [emitters.requireEmitter, emitters.importEmitter, emitters.exportEmitter]
+  |> Emitter.concat
+  |> Emitter.toString(~separator="\n\n");
 };

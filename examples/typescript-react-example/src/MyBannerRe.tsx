@@ -4,8 +4,10 @@ import * as React from "react";
 
 // tslint:disable-next-line:no-var-requires
 const MyBanner = require("./MyBanner");
+
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {show: boolean, message: string};
+
 export function checkJsWrapperType(props: Props) {
       return <MyBanner {...props}/>;
     }

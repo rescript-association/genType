@@ -9,15 +9,19 @@ const Component1BS = require("./Component1.bs");
 
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require("reason-react/src/ReasonReact.js");
+
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
 import type {variant as Component2_variant} from './Component2.re';
+
 export type Props = {|message?: string, children?: mixed|};
+
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   Component1BS.component,
   (function _(jsProps: Props) {
      return Component1BS.make(jsProps.message, jsProps.children);
   }));
+
 export default component;
 
 export const plus: <T1>(number, T1) => number = Component1BS.plus;

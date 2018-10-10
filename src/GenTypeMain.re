@@ -227,7 +227,7 @@ let emitCodeItems =
          ~inputCmtToTypeDeclarations,
        );
   let fileContents =
-    signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText);
+    signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText ++ "\n");
 
   GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
 };
