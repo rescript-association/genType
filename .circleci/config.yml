@@ -122,6 +122,9 @@ workflows:
   build_deploy:
     jobs:
       - build_linux
+        filters:
+          tags:
+            only: /.*/
       # - build_macos
       - github_release:
           requires:
