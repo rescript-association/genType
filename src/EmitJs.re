@@ -207,8 +207,13 @@ let emitCodeItem =
         |> Converter.toJS(~converter)
       )
       ++ ";"
-      |> EmitTyp.emitExportConst(~name=id |> Ident.name, ~typ, ~config)
-      |> Emitters.export(~emitters);
+      |> EmitTyp.emitExportConst(
+           ~emitters,
+           ~name=id |> Ident.name,
+           ~typ,
+           ~config,
+         );
+
     ({...env, requires}, emitters);
 
   | ConstructorBinding(
@@ -226,11 +231,11 @@ let emitCodeItem =
         recordAsInt
         ++ ";"
         |> EmitTyp.emitExportConst(
+             ~emitters,
              ~name=variantName,
              ~typ=constructorType,
              ~config,
-           )
-        |> Emitters.export(~emitters);
+           );
       } else {
         let args =
           argTypes
@@ -247,11 +252,11 @@ let emitCodeItem =
           |> mkReturn;
         EmitText.funDef(~args, ~mkBody, "")
         |> EmitTyp.emitExportConst(
+             ~emitters,
              ~name=variantName,
              ~typ=constructorType,
              ~config,
-           )
-        |> Emitters.export(~emitters);
+           );
       };
     let newEnv = {
       ...env,
@@ -341,6 +346,7 @@ let emitCodeItem =
       let emitters = emitExportType(~language, ~emitters, exportType);
       let emitters =
         EmitTyp.emitExportConstMany(
+          ~emitters,
           ~name,
           ~typ=componentType,
           ~config,
@@ -362,8 +368,7 @@ let emitCodeItem =
             ++ ";",
             "  }));",
           ],
-        )
-        |> Emitters.export(~emitters);
+        );
 
       let emitters =
         EmitTyp.emitExportDefault(~config, name)

@@ -122,27 +122,32 @@ let typToString = (~language, typ) => typ |> renderTyp(~language);
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
 
-let emitExportConst = (~name, ~typ, ~config, line) =>
-  switch (config.module_, config.language) {
-  | (_, Typescript)
-  | (ES6, _) =>
-    "export const "
-    ++ (name |> ofType(~language=config.language, ~typ))
-    ++ " = "
-    ++ line
-  | (CommonJS, _) =>
-    "const "
-    ++ (name |> ofType(~language=config.language, ~typ))
-    ++ " = "
-    ++ line
-    ++ ";\nexports."
-    ++ name
-    ++ " = "
-    ++ name
-  };
+let emitExportConst = (~emitters, ~name, ~typ, ~config, line) =>
+  (
+    switch (config.module_, config.language) {
+    | (_, Typescript)
+    | (ES6, _) =>
+      "export const "
+      ++ (name |> ofType(~language=config.language, ~typ))
+      ++ " = "
+      ++ line
+    | (CommonJS, _) =>
+      "const "
+      ++ (name |> ofType(~language=config.language, ~typ))
+      ++ " = "
+      ++ line
+      ++ ";\nexports."
+      ++ name
+      ++ " = "
+      ++ name
+    }
+  )
+  |> Emitters.export(~emitters);
 
-let emitExportConstMany = (~name, ~typ, ~config, lines) =>
-  lines |> String.concat("\n") |> emitExportConst(~name, ~typ, ~config);
+let emitExportConstMany = (~emitters, ~name, ~typ, ~config, lines) =>
+  lines
+  |> String.concat("\n")
+  |> emitExportConst(~emitters, ~name, ~typ, ~config);
 
 let emitExportFunction = (~name, ~config, line) =>
   switch (config.module_, config.language) {

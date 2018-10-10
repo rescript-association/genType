@@ -6,10 +6,18 @@ let componentExportName:
   (~language: language, ~moduleName: ModuleName.t) => string;
 
 let emitExportConst:
-  (~name: string, ~typ: typ, ~config: config, string) => string;
+  (~emitters: Emitters.t, ~name: string, ~typ: typ, ~config: config, string) =>
+  Emitters.t;
 
 let emitExportConstMany:
-  (~name: string, ~typ: typ, ~config: config, list(string)) => string;
+  (
+    ~emitters: Emitters.t,
+    ~name: string,
+    ~typ: typ,
+    ~config: config,
+    list(string)
+  ) =>
+  Emitters.t;
 
 let emitExportDefault: (~config: config, string) => string;
 
