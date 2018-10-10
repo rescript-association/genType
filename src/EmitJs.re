@@ -156,8 +156,13 @@ let emitCheckJsWrapperType =
         exportTypeNoChildren,
       );
     let emitters =
-      EmitTyp.emitExportFunction(~name="checkJsWrapperType", ~config, s)
-      |> Emitters.export(~emitters);
+      EmitTyp.emitExportFunction(
+        ~emitters,
+        ~name="checkJsWrapperType",
+        ~config,
+        s,
+      );
+
     Some(emitters);
 
   | [_, ..._] =>
@@ -392,9 +397,7 @@ let emitCodeItem =
           ],
         );
 
-      let emitters =
-        EmitTyp.emitExportDefault(~config, name)
-        |> Emitters.export(~emitters);
+      let emitters = EmitTyp.emitExportDefault(~emitters, ~config, name);
 
       let requiresWithModule =
         moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
@@ -457,12 +460,11 @@ let emitCodeItems =
        );
   let emitters =
     finalEnv.externalReactClass != [] ?
-      EmitTyp.requireReact(~language, ~emitters) : emitters;
+      EmitTyp.emitRequireReact(~emitters, ~language) : emitters;
   let emitters =
     ModuleNameMap.fold(
       (moduleName, importPath, emitters) =>
-        EmitTyp.emitRequire(~language, moduleName, importPath)
-        |> Emitters.require(~emitters),
+        EmitTyp.emitRequire(~emitters, ~language, moduleName, importPath),
       finalEnv.requires,
       emitters,
     );

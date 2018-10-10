@@ -19,9 +19,11 @@ let emitExportConstMany:
   ) =>
   Emitters.t;
 
-let emitExportDefault: (~config: config, string) => string;
+let emitExportDefault:
+  (~emitters: Emitters.t, ~config: config, string) => Emitters.t;
 
-let emitExportFunction: (~name: string, ~config: config, string) => string;
+let emitExportFunction:
+  (~emitters: Emitters.t, ~name: string, ~config: config, string) => Emitters.t;
 
 let emitExportType:
   (
@@ -55,7 +57,12 @@ let emitImportTypeAs:
   ) =>
   Emitters.t;
 
-let emitRequire: (~language: language, ModuleName.t, ImportPath.t) => string;
+let emitRequire:
+  (~emitters: Emitters.t, ~language: language, ModuleName.t, ImportPath.t) =>
+  Emitters.t;
+
+let emitRequireReact:
+  (~emitters: Emitters.t, ~language: language) => Emitters.t;
 
 let fileHeader: (~language: language) => string;
 
@@ -66,8 +73,6 @@ let ofType: (~language: language, ~typ: typ, string) => string;
 let outputFileSuffix: (~language: language) => string;
 
 let reactComponentType: (~language: language, ~propsTypeName: string) => typ;
-
-let requireReact: (~language: language, ~emitters: Emitters.t) => Emitters.t;
 
 let shimExtension: (~language: language) => string;
 

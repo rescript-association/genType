@@ -149,19 +149,29 @@ let emitExportConstMany = (~emitters, ~name, ~typ, ~config, lines) =>
   |> String.concat("\n")
   |> emitExportConst(~emitters, ~name, ~typ, ~config);
 
-let emitExportFunction = (~name, ~config, line) =>
+let emitExportFunction = (~emitters, ~name, ~config, line) =>
   switch (config.module_, config.language) {
   | (_, Typescript)
-  | (ES6, _) => "export function " ++ name ++ line
+  | (ES6, _) =>
+    "export function " ++ name ++ line |> Emitters.export(~emitters)
   | (CommonJS, _) =>
-    "function " ++ name ++ line ++ ";\nexports." ++ name ++ " = " ++ name
+    "function "
+    ++ name
+    ++ line
+    ++ ";\nexports."
+    ++ name
+    ++ " = "
+    ++ name
+    |> Emitters.export(~emitters)
   };
 
-let emitExportDefault = (~config, name) =>
+let emitExportDefault = (~emitters, ~config, name) =>
   switch (config.module_, config.language) {
   | (_, Typescript)
-  | (ES6, _) => "export default " ++ name ++ ";"
-  | (CommonJS, _) => "exports.default = " ++ name ++ ";"
+  | (ES6, _) =>
+    "export default " ++ name ++ ";" |> Emitters.export(~emitters)
+  | (CommonJS, _) =>
+    "exports.default = " ++ name ++ ";" |> Emitters.export(~emitters)
   };
 
 let emitExportType =
@@ -241,19 +251,19 @@ let commentBeforeRequire = (~language) =>
   | Untyped => ""
   };
 
-let emitRequire = (~language, moduleName, importPath) =>
+let emitRequire = (~emitters, ~language, moduleName, importPath) =>
   commentBeforeRequire(~language)
   ++ "const "
   ++ ModuleName.toString(moduleName)
   ++ " = require(\""
   ++ (importPath |> ImportPath.toString)
-  ++ "\");";
+  ++ "\");"
+  |> Emitters.require(~emitters);
 
-let requireReact = (~language, ~emitters) =>
+let emitRequireReact = (~emitters, ~language) =>
   switch (language) {
   | Flow =>
-    emitRequire(~language, ModuleName.react, ImportPath.react)
-    |> Emitters.require(~emitters)
+    emitRequire(~emitters, ~language, ModuleName.react, ImportPath.react)
   | Typescript =>
     "import * as React from \"react\";" |> Emitters.require(~emitters)
   | Untyped => emitters

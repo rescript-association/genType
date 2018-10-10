@@ -8,3 +8,4 @@ lib/
 node_modules/
 /_build
 /genType.install
+/yarn-error.log
