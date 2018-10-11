@@ -31,6 +31,10 @@ const businesses = [
 
 const addresses = Records.findAllAddresses(businesses);
 
+import {roundedNumber} from "./Test";
+// tslint:disable-next-line:no-console
+console.log("interopRoot.js roundedNumber:", roundedNumber);
+
 ReactDOM.render(
   <div>
     <App name={"Hello"} />
