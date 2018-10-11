@@ -68,6 +68,10 @@ let logItem = x => {
 let tagIsGenType = s => s == "genFlow" || s == "genType";
 let tagIsGenTypeAs = s =>
   s == "genFlow" || s == "genType" || s == "genFlow.as" || s == "genType.as";
+
+let tagIsGenTypeImport = s =>
+  s == "genType.import";
+
 let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "genFlow.opaque";
 
 type optionalness =

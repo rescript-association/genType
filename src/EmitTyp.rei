@@ -9,6 +9,10 @@ let emitExportConst:
   (~emitters: Emitters.t, ~name: string, ~typ: typ, ~config: config, string) =>
   Emitters.t;
 
+let emitExportConstEarly:
+  (~emitters: Emitters.t, ~name: string, ~typ: typ, ~config: config, string) =>
+  Emitters.t;
+
 let emitExportConstMany:
   (
     ~emitters: Emitters.t,
@@ -58,6 +62,10 @@ let emitImportTypeAs:
   Emitters.t;
 
 let emitRequire:
+  (~emitters: Emitters.t, ~language: language, ModuleName.t, ImportPath.t) =>
+  Emitters.t;
+
+let emitRequireEarly:
   (~emitters: Emitters.t, ~language: language, ModuleName.t, ImportPath.t) =>
   Emitters.t;
 

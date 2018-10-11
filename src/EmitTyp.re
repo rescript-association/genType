@@ -122,7 +122,7 @@ let typToString = (~language, typ) => typ |> renderTyp(~language);
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
 
-let emitExportConst = (~emitters, ~name, ~typ, ~config, line) =>
+let emitExportConst_ = (~early, ~emitters, ~name, ~typ, ~config, line) =>
   (
     switch (config.module_, config.language) {
     | (_, Typescript)
@@ -142,7 +142,11 @@ let emitExportConst = (~emitters, ~name, ~typ, ~config, line) =>
       ++ name
     }
   )
-  |> Emitters.export(~emitters);
+  |> (early ? Emitters.exportEarly : Emitters.export)(~emitters);
+
+let emitExportConst = emitExportConst_(~early=false);
+
+let emitExportConstEarly = emitExportConst_(~early=true);
 
 let emitExportConstMany = (~emitters, ~name, ~typ, ~config, lines) =>
   lines
@@ -251,14 +255,18 @@ let commentBeforeRequire = (~language) =>
   | Untyped => ""
   };
 
-let emitRequire = (~emitters, ~language, moduleName, importPath) =>
+let emitRequire_ = (~early, ~emitters, ~language, moduleName, importPath) =>
   commentBeforeRequire(~language)
   ++ "const "
   ++ ModuleName.toString(moduleName)
   ++ " = require(\""
   ++ (importPath |> ImportPath.toString)
   ++ "\");"
-  |> Emitters.require(~emitters);
+  |> (early ? Emitters.requireEarly : Emitters.require)(~emitters);
+
+let emitRequire = emitRequire_(~early=false);
+
+let emitRequireEarly = emitRequire_(~early=true);
 
 let emitRequireReact = (~emitters, ~language) =>
   switch (language) {
