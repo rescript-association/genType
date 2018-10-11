@@ -17,6 +17,9 @@ const helloWorld = GreetingRe.concat("++", helloWorldList);
 
 const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
+const TestRE = require("./Test.re");
+console.log("interopRoot.js roundedNumber:", TestRE.roundedNumber);
+
 const App = () => (
   <div>
     <PageReason
