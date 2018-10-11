@@ -1,4 +1,4 @@
-[@genType.import "./MyMath"] [@bs.module "./Test"]
+[@genType.import "./MyMath"] [@bs.module "./WrapJsValue.re"]
 external round: float => float = "";
 
 [@genType]

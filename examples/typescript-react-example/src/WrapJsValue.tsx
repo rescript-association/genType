@@ -6,6 +6,6 @@ const MyMath = require("./MyMath");
 export const round: (_1:number) => number = MyMath.round;
 
 // tslint:disable-next-line:no-var-requires
-const TestBS = require("./Test.bs");
+const WrapJsValueBS = require("./WrapJsValue.bs");
 
-export const roundedNumber: number = TestBS.roundedNumber;
+export const roundedNumber: number = WrapJsValueBS.roundedNumber;
