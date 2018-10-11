@@ -9,7 +9,8 @@ open GenTypeCommon;
 let getPriority = x =>
   switch (x) {
   | CodeItem.ImportType(_)
-  | ExternalReactClass(_) => "2low"
+  | WrapJsComponent(_)
+  | WrapJsValue(_) => "2low"
   | ValueBinding(_)
   | ConstructorBinding(_)
   | ComponentBinding(_)

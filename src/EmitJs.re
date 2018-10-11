@@ -3,8 +3,9 @@ open GenTypeCommon;
 type typeMap = StringMap.t((list(string), typ));
 
 type env = {
+  requiresEarly: ModuleNameMap.t(ImportPath.t),
   requires: ModuleNameMap.t(ImportPath.t),
-  externalReactClass: list(CodeItem.externalReactClass),
+  wrapJsComponent: list(CodeItem.wrapJsComponent),
   /* For each .cmt we import types from, keep the map of exported types. */
   cmtExportTypeMapCache: StringMap.t(typeMap),
   /* Map of types imported from other files. */
@@ -39,7 +40,8 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     | ImportType(_)
     | ExportVariantType(_)
     | ConstructorBinding(_)
-    | ExternalReactClass(_) => exportTypeMap
+    | WrapJsComponent(_)
+    | WrapJsValue(_) => exportTypeMap
     };
   };
   codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -122,7 +124,7 @@ let emitCheckJsWrapperType =
       ~propsTypeName,
       ~exportType: CodeItem.exportType,
     ) =>
-  switch (env.externalReactClass) {
+  switch (env.wrapJsComponent) {
   | [] => None
 
   | [{componentName, _}] =>
@@ -410,7 +412,7 @@ let emitCodeItem =
       ({...env, requires: requiresWithReasonReact}, emitters);
     };
 
-  | ExternalReactClass({componentName, importPath} as externalReactClass) =>
+  | WrapJsComponent({componentName, importPath} as wrapJsComponent) =>
     let requires =
       env.requires
       |> ModuleNameMap.add(
@@ -420,8 +422,25 @@ let emitCodeItem =
     let newEnv = {
       ...env,
       requires,
-      externalReactClass: [externalReactClass, ...env.externalReactClass],
+      wrapJsComponent: [wrapJsComponent, ...env.wrapJsComponent],
     };
+    (newEnv, emitters);
+
+  | WrapJsValue({valueName, moduleName, importPath, typ}) =>
+    let requiresEarly =
+      moduleName |> requireModule(~requires=env.requiresEarly, ~importPath);
+
+    let converter = typ |> typToConverter;
+    let emitters =
+      (
+        ModuleName.toString(moduleName)
+        ++ "."
+        ++ valueName
+        |> Converter.toJS(~converter)
+      )
+      ++ ";"
+      |> EmitTyp.emitExportConstEarly(~emitters, ~name=valueName, ~typ, ~config);
+    let newEnv = {...env, requiresEarly};
     (newEnv, emitters);
   };
 };
@@ -438,7 +457,8 @@ let emitCodeItems =
 
   let initialEnv = {
     requires: ModuleNameMap.empty,
-    externalReactClass: [],
+    requiresEarly: ModuleNameMap.empty,
+    wrapJsComponent: [],
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
@@ -459,7 +479,14 @@ let emitCodeItems =
          (initialEnv, Emitters.initial),
        );
   let emitters =
-    finalEnv.externalReactClass != [] ?
+    ModuleNameMap.fold(
+      (moduleName, importPath, emitters) =>
+        EmitTyp.emitRequireEarly(~emitters, ~language, moduleName, importPath),
+      finalEnv.requiresEarly,
+      emitters,
+    );
+  let emitters =
+    finalEnv.wrapJsComponent != [] ?
       EmitTyp.emitRequireReact(~emitters, ~language) : emitters;
   let emitters =
     ModuleNameMap.fold(

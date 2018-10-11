@@ -4,13 +4,10 @@
  * @nolint
  */
 
-// BEGIN: added by hand
+// $FlowExpectedError: Reason checked type sufficiently
 const MyMath = require("./MyMath");
 
-export const round = function _(x: number): number {
-  return MyMath.round(x);
-};
-// END: added by hand
+export const round: (number) => number = MyMath.round;
 
 // $FlowExpectedError: Reason checked type sufficiently
 const TestBS = require("./Test.bs");

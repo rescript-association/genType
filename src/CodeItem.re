@@ -33,9 +33,16 @@ type componentBinding = {
   typ,
 };
 
-type externalReactClass = {
+type wrapJsComponent = {
   componentName: string,
   importPath: ImportPath.t,
+};
+
+type wrapJsValue = {
+  valueName: string,
+  moduleName: ModuleName.t,
+  importPath: ImportPath.t,
+  typ,
 };
 
 type valueBinding = {
@@ -46,7 +53,8 @@ type valueBinding = {
 
 type t =
   | ImportType(importType)
-  | ExternalReactClass(externalReactClass)
+  | WrapJsComponent(wrapJsComponent)
+  | WrapJsValue(wrapJsValue)
   | ValueBinding(valueBinding)
   | ConstructorBinding(
       exportType,
@@ -97,8 +105,9 @@ let toString = (~language, codeItem) =>
   switch (codeItem) {
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | ExternalReactClass(externalReactClass) =>
-    "ExternalReactClass " ++ externalReactClass.componentName
+  | WrapJsComponent(externalReactClass) =>
+    "WrapJsComponent " ++ externalReactClass.componentName
+  | WrapJsValue(wrapJsValue) => "WrapJsValue " ++ wrapJsValue.valueName
   | ValueBinding({moduleName, id, typ}) =>
     "ValueBinding"
     ++ " id:"
@@ -378,23 +387,41 @@ let translateSignatureValue =
  */
 let translatePrimitive =
     (~language, valueDescription: Typedtree.value_description): translation => {
-  let componentName =
-    valueDescription.val_id |> Ident.name |> String.capitalize;
-  let path =
-    switch (valueDescription.val_prim) {
-    | [firstValPrim, ..._] => firstValPrim
-    | [] => ""
-    };
-  let importPath = path |> ImportPath.fromStringUnsafe;
+  let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type
     |> Dependencies.translateTypeExpr(~language);
-  let genTypeKind = getGenTypeKind(valueDescription.val_attributes);
-  switch (typeExprTranslation.typ, genTypeKind) {
-  | (Ident("ReasonReact_reactClass", []), GenType) when path != "" => {
+  let genTypeKind = valueDescription.val_attributes |> getGenTypeKind;
+  let genTypeImportPayload =
+    valueDescription.val_attributes |> getAttributePayload(tagIsGenTypeImport);
+  switch (
+    typeExprTranslation.typ,
+    valueDescription.val_prim,
+    genTypeImportPayload,
+  ) {
+  | (Ident("ReasonReact_reactClass", []), [path, ..._], _)
+      when path != "" && genTypeKind == GenType => {
       dependencies: [],
-      codeItems: [ExternalReactClass({componentName, importPath})],
+      codeItems: [
+        WrapJsComponent({
+          componentName: valueName |> String.capitalize,
+          importPath: path |> ImportPath.fromStringUnsafe,
+        }),
+      ],
     }
+
+  | (_, _, Some(StringPayload(path))) => {
+      dependencies: typeExprTranslation.dependencies,
+      codeItems: [
+        WrapJsValue({
+          valueName,
+          moduleName: path |> Filename.basename |> ModuleName.fromStringUnsafe,
+          importPath: path |> ImportPath.fromStringUnsafe,
+          typ: typeExprTranslation.typ,
+        }),
+      ],
+    }
+
   | _ => {dependencies: [], codeItems: []}
   };
 };
