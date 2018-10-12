@@ -1,3 +1,6 @@
+# master
+  - [Experimental feature: Typed wrappers for JS values](https://github.com/cristianoc/genType/pull/60).
+
 # 0.16.0
 - Support type Js.nullable in addition to Js.Nullable.t.
 - Fix import name compare which can lead to missing type imports with the same name from diffent files.
