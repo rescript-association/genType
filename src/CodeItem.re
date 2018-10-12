@@ -42,6 +42,7 @@ type wrapJsValue = {
   valueName: string,
   importString: string,
   typ,
+  moduleName: ModuleName.t,
 };
 
 type valueBinding = {
@@ -385,7 +386,8 @@ let translateSignatureValue =
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
 let translatePrimitive =
-    (~language, valueDescription: Typedtree.value_description): translation => {
+    (~language, ~moduleName, valueDescription: Typedtree.value_description)
+    : translation => {
   let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type
@@ -412,7 +414,12 @@ let translatePrimitive =
   | (_, _, Some(StringPayload(importString))) => {
       dependencies: typeExprTranslation.dependencies,
       codeItems: [
-        WrapJsValue({valueName, importString, typ: typeExprTranslation.typ}),
+        WrapJsValue({
+          valueName,
+          importString,
+          typ: typeExprTranslation.typ,
+          moduleName,
+        }),
       ],
     }
 

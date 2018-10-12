@@ -4,11 +4,13 @@ import {round as roundNotChecked} from'./MyMath';
 
 import {area as areaNotChecked} from'./MyMath';
 
+// In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.
 export const roundTypeChecked: (_1:number) => number = roundNotChecked;
 
 // Export 'round' early to allow circular import from the '.bs.js' file.
 export const round: (_1:number) => number = roundTypeChecked;
 
+// In case of type error, check the type of 'area' in 'WrapJsValue.re' and './MyMath'.
 export const areaTypeChecked: (_1:point) => number = areaNotChecked;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
