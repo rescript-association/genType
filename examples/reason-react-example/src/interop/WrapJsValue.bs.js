@@ -5,14 +5,10 @@ var WrapJsValueRe = require("./WrapJsValue.re");
 
 var roundedNumber = WrapJsValueRe.round(1.8);
 
-console.log("Test.re roundedNumber:", roundedNumber);
-
 var areaValue = WrapJsValueRe.area(/* record */[
       /* x */3,
       /* y */undefined
     ]);
-
-console.log("Test.re areaValue:", areaValue);
 
 exports.roundedNumber = roundedNumber;
 exports.areaValue = areaValue;

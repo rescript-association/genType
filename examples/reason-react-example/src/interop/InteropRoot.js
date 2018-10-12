@@ -19,6 +19,7 @@ const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
 const TestRE = require("./WrapJsValue.re");
 console.log("interopRoot.js roundedNumber:", TestRE.roundedNumber);
+console.log("interopRoot.js areaValue:", TestRE.areaValue);
 
 const App = () => (
   <div>
