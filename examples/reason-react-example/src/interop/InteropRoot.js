@@ -17,9 +17,9 @@ const helloWorld = GreetingRe.concat("++", helloWorldList);
 
 const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
-const TestRE = require("./WrapJsValue.re");
-console.log("interopRoot.js roundedNumber:", TestRE.roundedNumber);
-console.log("interopRoot.js areaValue:", TestRE.areaValue);
+const WrapJsValue = require("./WrapJsValue.re");
+console.log("interopRoot.js roundedNumber:", WrapJsValue.roundedNumber);
+console.log("interopRoot.js areaValue:", WrapJsValue.areaValue);
 
 const App = () => (
   <div>
