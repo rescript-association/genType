@@ -17,7 +17,7 @@ export const areaTypeChecked: (_1:point) => number = areaNotChecked;
 export const area: (_1:point) => number = function _(Arg1) { const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]}); return result };
 
 // tslint:disable-next-line:no-var-requires
-const WrapJsValueBS = require("./WrapJsValue.bs");
+const WrapJsValueBS = require('./WrapJsValue.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
 export type point = {x: number, y?: number};

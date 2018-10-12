@@ -5,10 +5,10 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const React = require("react");
+const React = require('react');
 
 // $FlowExpectedError: Reason checked type sufficiently
-const MyBanner = require("./MyBanner");
+const MyBanner = require('./MyBanner');
 
 export type Props = {|show: boolean, message: ?string|};
 

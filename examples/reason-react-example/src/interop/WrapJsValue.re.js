@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const MyMath = require("./MyMath");
+const MyMath = require('./MyMath');
 
 // In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.
 export const roundTypeChecked: (number) => number = MyMath.round;
@@ -20,7 +20,7 @@ export const areaTypeChecked: (point) => number = MyMath.area;
 export const area: (point) => number = function _(Arg1) { const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]}); return result };
 
 // $FlowExpectedError: Reason checked type sufficiently
-const WrapJsValueBS = require("./WrapJsValue.bs");
+const WrapJsValueBS = require('./WrapJsValue.bs');
 
 export type point = {|x: number, y?: number|};
 

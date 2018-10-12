@@ -5,10 +5,10 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const GreetingBS = require("./Greeting.bs");
+const GreetingBS = require('./Greeting.bs');
 
 // $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require("reason-react/src/ReasonReact.js");
+const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 import type {Mouse_t as ReactEvent_Mouse_t} from '../../src/shims/ReactEvent.shim';
 

@@ -5,10 +5,10 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const Component2BS = require("./Component2.bs");
+const Component2BS = require('./Component2.bs');
 
 // $FlowExpectedError: Reason checked type sufficiently
-const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
+const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
 
 export opaque type VariantA = mixed;
 

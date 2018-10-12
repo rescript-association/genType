@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const RecordsBS = require("./Records.bs");
+const RecordsBS = require('./Records.bs');
 
 export type coord = {|
   x: number, 

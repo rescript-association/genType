@@ -272,9 +272,9 @@ let emitRequire_ = (~early, ~emitters, ~language, ~moduleName, importPath) =>
   commentBeforeRequire(~language)
   ++ "const "
   ++ ModuleName.toString(moduleName)
-  ++ " = require(\""
+  ++ " = require('"
   ++ (importPath |> ImportPath.toString)
-  ++ "\");"
+  ++ "');"
   |> (early ? Emitters.requireEarly : Emitters.require)(~emitters);
 
 let emitRequire = emitRequire_(~early=false);

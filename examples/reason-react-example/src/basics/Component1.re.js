@@ -5,10 +5,10 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const Component1BS = require("./Component1.bs");
+const Component1BS = require('./Component1.bs');
 
 // $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require("reason-react/src/ReasonReact.js");
+const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 

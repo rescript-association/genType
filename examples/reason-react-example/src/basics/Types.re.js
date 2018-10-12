@@ -5,10 +5,10 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const CreateBucklescriptBlock = require("bs-platform/lib/js/block.js");
+const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
 
 // $FlowExpectedError: Reason checked type sufficiently
-const TypesBS = require("./Types.bs");
+const TypesBS = require('./Types.bs');
 
 import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
 
