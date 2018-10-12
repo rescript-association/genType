@@ -427,8 +427,6 @@ let emitCodeItem =
     (newEnv, emitters);
 
   | WrapJsValue({valueName, importString, typ}) =>
-    let moduleName =
-      importString |> Filename.basename |> ModuleName.fromStringUnsafe;
     let importPath = importString |> ImportPath.fromStringUnsafe;
 
     let (emitters, importedAsName, requiresEarly) =
@@ -447,10 +445,11 @@ let emitCodeItem =
       | Flow
       | Untyped =>
         /* add an early require(...)  */
-        let importedAsName =
-          ModuleName.toString(moduleName) ++ "." ++ valueName;
+        let importFile = importString |> Filename.basename;
+        let importedAsName = importFile ++ "." ++ valueName;
         let requiresEarly =
-          moduleName
+          importFile
+          |> ModuleName.fromStringUnsafe
           |> requireModule(~requires=env.requiresEarly, ~importPath);
         (emitters, importedAsName, requiresEarly);
       };
