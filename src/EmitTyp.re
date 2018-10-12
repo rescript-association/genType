@@ -122,8 +122,10 @@ let typToString = (~language, typ) => typ |> renderTyp(~language);
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
 
-let emitExportConst_ = (~early, ~emitters, ~name, ~typ, ~config, line) =>
-  (
+let emitExportConst_ =
+    (~early, ~comment="", ~emitters, ~name, ~typ, ~config, line) =>
+  (comment == "" ? comment : "// " ++ comment ++ "\n")
+  ++ (
     switch (config.module_, config.language) {
     | (_, Typescript)
     | (ES6, _) =>
@@ -255,7 +257,18 @@ let commentBeforeRequire = (~language) =>
   | Untyped => ""
   };
 
-let emitRequire_ = (~early, ~emitters, ~language, moduleName, importPath) =>
+let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
+  "import {"
+  ++ name
+  ++ " as "
+  ++ nameAs
+  ++ "} from"
+  ++ "'"
+  ++ (importPath |> ImportPath.toString)
+  ++ "';"
+  |> Emitters.requireEarly(~emitters);
+
+let emitRequire_ = (~early, ~emitters, ~language, ~moduleName, importPath) =>
   commentBeforeRequire(~language)
   ++ "const "
   ++ ModuleName.toString(moduleName)
@@ -271,7 +284,12 @@ let emitRequireEarly = emitRequire_(~early=true);
 let emitRequireReact = (~emitters, ~language) =>
   switch (language) {
   | Flow =>
-    emitRequire(~emitters, ~language, ModuleName.react, ImportPath.react)
+    emitRequire(
+      ~emitters,
+      ~language,
+      ~moduleName=ModuleName.react,
+      ImportPath.react,
+    )
   | Typescript =>
     "import * as React from \"react\";" |> Emitters.require(~emitters)
   | Untyped => emitters

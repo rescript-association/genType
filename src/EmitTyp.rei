@@ -6,11 +6,25 @@ let componentExportName:
   (~language: language, ~moduleName: ModuleName.t) => string;
 
 let emitExportConst:
-  (~emitters: Emitters.t, ~name: string, ~typ: typ, ~config: config, string) =>
+  (
+    ~comment: string=?,
+    ~emitters: Emitters.t,
+    ~name: string,
+    ~typ: typ,
+    ~config: config,
+    string
+  ) =>
   Emitters.t;
 
 let emitExportConstEarly:
-  (~emitters: Emitters.t, ~name: string, ~typ: typ, ~config: config, string) =>
+  (
+    ~comment: string=?,
+    ~emitters: Emitters.t,
+    ~name: string,
+    ~typ: typ,
+    ~config: config,
+    string
+  ) =>
   Emitters.t;
 
 let emitExportConstMany:
@@ -61,12 +75,26 @@ let emitImportTypeAs:
   ) =>
   Emitters.t;
 
+let emitImportValueAsEarly:
+  (~emitters: Emitters.t, ~name: string, ~nameAs: string, ImportPath.t) =>
+  Emitters.t;
+
 let emitRequire:
-  (~emitters: Emitters.t, ~language: language, ModuleName.t, ImportPath.t) =>
+  (
+    ~emitters: Emitters.t,
+    ~language: language,
+    ~moduleName: ModuleName.t,
+    ImportPath.t
+  ) =>
   Emitters.t;
 
 let emitRequireEarly:
-  (~emitters: Emitters.t, ~language: language, ModuleName.t, ImportPath.t) =>
+  (
+    ~emitters: Emitters.t,
+    ~language: language,
+    ~moduleName: ModuleName.t,
+    ImportPath.t
+  ) =>
   Emitters.t;
 
 let emitRequireReact:
