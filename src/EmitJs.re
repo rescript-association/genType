@@ -426,7 +426,11 @@ let emitCodeItem =
     };
     (newEnv, emitters);
 
-  | WrapJsValue({valueName, moduleName, importPath, typ}) =>
+  | WrapJsValue({valueName, importString, typ}) =>
+    let moduleName =
+      importString |> Filename.basename |> ModuleName.fromStringUnsafe;
+    let importPath = importString |> ImportPath.fromStringUnsafe;
+
     let (emitters, importedAsName, requiresEarly) =
       switch (language) {
       | Typescript =>
