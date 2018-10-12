@@ -33,7 +33,10 @@ const addresses = Records.findAllAddresses(businesses);
 
 import {roundedNumber} from "./WrapJsValue";
 // tslint:disable-next-line:no-console
-console.log("interopRoot.js roundedNumber:", roundedNumber);
+console.log("index.tsx roundedNumber:", roundedNumber);
+import {areaValue} from "./WrapJsValue";
+// tslint:disable-next-line:no-console
+console.log("index.tsx areaValue:", areaValue);
 
 ReactDOM.render(
   <div>
