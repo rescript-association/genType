@@ -427,19 +427,54 @@ let emitCodeItem =
     (newEnv, emitters);
 
   | WrapJsValue({valueName, moduleName, importPath, typ}) =>
-    let requiresEarly =
-      moduleName |> requireModule(~requires=env.requiresEarly, ~importPath);
-
+    let (emitters, importedAsName, requiresEarly) =
+      switch (language) {
+      | Typescript =>
+        /* emit an import {... as ...} immediately */
+        let valueNameNotChecked = valueName ++ "NotChecked";
+        let emitters =
+          importPath
+          |> EmitTyp.emitImportValueAsEarly(
+               ~emitters,
+               ~name=valueName,
+               ~nameAs=valueNameNotChecked,
+             );
+        (emitters, valueNameNotChecked, env.requiresEarly);
+      | Flow
+      | Untyped =>
+        /* add an early require(...)  */
+        let importedAsName =
+          ModuleName.toString(moduleName) ++ "." ++ valueName;
+        let requiresEarly =
+          moduleName
+          |> requireModule(~requires=env.requiresEarly, ~importPath);
+        (emitters, importedAsName, requiresEarly);
+      };
     let converter = typ |> typToConverter;
+    let valueNameTypeChecked = valueName ++ "TypeChecked";
+
     let emitters =
-      (
-        ModuleName.toString(moduleName)
-        ++ "."
-        ++ valueName
-        |> Converter.toJS(~converter)
-      )
+      importedAsName
       ++ ";"
-      |> EmitTyp.emitExportConstEarly(~emitters, ~name=valueName, ~typ, ~config);
+      |> EmitTyp.emitExportConstEarly(
+           ~emitters,
+           ~name=valueNameTypeChecked,
+           ~typ,
+           ~config,
+         );
+    let emitters =
+      (valueNameTypeChecked |> Converter.toReason(~converter))
+      ++ ";"
+      |> EmitTyp.emitExportConstEarly(
+           ~comment=
+             "Export '"
+             ++ valueName
+             ++ "' early to allow circular import from the '.bs.js' file.",
+           ~emitters,
+           ~name=valueName,
+           ~typ,
+           ~config,
+         );
     let newEnv = {...env, requiresEarly};
     (newEnv, emitters);
   };
@@ -481,7 +516,8 @@ let emitCodeItems =
   let emitters =
     ModuleNameMap.fold(
       (moduleName, importPath, emitters) =>
-        EmitTyp.emitRequireEarly(~emitters, ~language, moduleName, importPath),
+        importPath
+        |> EmitTyp.emitRequireEarly(~emitters, ~language, ~moduleName),
       finalEnv.requiresEarly,
       emitters,
     );
@@ -491,7 +527,7 @@ let emitCodeItems =
   let emitters =
     ModuleNameMap.fold(
       (moduleName, importPath, emitters) =>
-        EmitTyp.emitRequire(~emitters, ~language, moduleName, importPath),
+        EmitTyp.emitRequire(~emitters, ~language, ~moduleName, importPath),
       finalEnv.requires,
       emitters,
     );
