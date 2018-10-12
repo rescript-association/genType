@@ -40,8 +40,7 @@ type wrapJsComponent = {
 
 type wrapJsValue = {
   valueName: string,
-  moduleName: ModuleName.t,
-  importPath: ImportPath.t,
+  importString: string,
   typ,
 };
 
@@ -410,15 +409,10 @@ let translatePrimitive =
       ],
     }
 
-  | (_, _, Some(StringPayload(path))) => {
+  | (_, _, Some(StringPayload(importString))) => {
       dependencies: typeExprTranslation.dependencies,
       codeItems: [
-        WrapJsValue({
-          valueName,
-          moduleName: path |> Filename.basename |> ModuleName.fromStringUnsafe,
-          importPath: path |> ImportPath.fromStringUnsafe,
-          typ: typeExprTranslation.typ,
-        }),
+        WrapJsValue({valueName, importString, typ: typeExprTranslation.typ}),
       ],
     }
 
