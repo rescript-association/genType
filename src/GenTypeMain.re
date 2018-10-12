@@ -98,7 +98,7 @@ let translateStructItem =
 
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
-    valueDescription |> CodeItem.translatePrimitive(~language)
+    valueDescription |> CodeItem.translatePrimitive(~language, ~moduleName)
 
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   /* TODO: Support mapping of variant type definitions. */
@@ -115,7 +115,7 @@ let translateSignatureItem =
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {
-      valueDescription |> CodeItem.translatePrimitive(~language);
+      valueDescription |> CodeItem.translatePrimitive(~language, ~moduleName);
     } else {
       valueDescription
       |> CodeItem.translateSignatureValue(

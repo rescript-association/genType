@@ -426,7 +426,7 @@ let emitCodeItem =
     };
     (newEnv, emitters);
 
-  | WrapJsValue({valueName, importString, typ}) =>
+  | WrapJsValue({valueName, importString, typ, moduleName}) =>
     let importPath = importString |> ImportPath.fromStringUnsafe;
 
     let (emitters, importedAsName, requiresEarly) =
@@ -464,6 +464,15 @@ let emitCodeItem =
            ~name=valueNameTypeChecked,
            ~typ,
            ~config,
+           ~comment=
+             "In case of type error, check the type of '"
+             ++ valueName
+             ++ "' in '"
+             ++ (moduleName |> ModuleName.toString)
+             ++ ".re'"
+             ++ " and '"
+             ++ importString
+             ++ "'.",
          );
     let emitters =
       (valueNameTypeChecked |> Converter.toReason(~converter))

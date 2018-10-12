@@ -7,11 +7,13 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const MyMath = require("./MyMath");
 
+// In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.
 export const roundTypeChecked: (number) => number = MyMath.round;
 
 // Export 'round' early to allow circular import from the '.bs.js' file.
 export const round: (number) => number = roundTypeChecked;
 
+// In case of type error, check the type of 'area' in 'WrapJsValue.re' and './MyMath'.
 export const areaTypeChecked: (point) => number = MyMath.area;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
