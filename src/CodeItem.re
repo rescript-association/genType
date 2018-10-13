@@ -437,6 +437,7 @@ let translatePrimitive =
             "React_component",
             [_state, ..._],
           ),
+        _,
       }),
       _,
       Some(StringPayload(importString)),
@@ -468,7 +469,7 @@ let translatePrimitive =
 
     let (propsFields, childrenTyp) =
       switch (typ) {
-      | Function({argTypes: [propOrChildren, ...childrenOrNil]}) =>
+      | Function({argTypes: [propOrChildren, ...childrenOrNil], _}) =>
         switch (childrenOrNil) {
         | [] => ([], mixedOrUnknown(~language))
         | [children, ..._] =>
