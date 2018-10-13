@@ -1,4 +1,4 @@
-# master
+# 0.17.0
   - [Experimental feature: Typed wrappers for JS values](https://github.com/cristianoc/genType/pull/60).
   - [Add full support for wrapping JS component, and examples](https://github.com/cristianoc/genType/commit/50b8e87c0e8942b0de2620f9d24ba7baceb07067).
 
