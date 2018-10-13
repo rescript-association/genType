@@ -1,4 +1,4 @@
-# Reason genType 0.17.0
+# Reason genType 0.18.0
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, use `@genType` annotations, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
 
@@ -28,10 +28,10 @@ Wrappers for using ReasonReact components from JavaScript are generated when the
 # Will download and automatically untar the file in the current directory as gentype.native
 
 # MacOS
-curl -L https://github.com/cristianoc/genType/releases/download/v0.17.0/gentype-macos.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.18.0/gentype-macos.tar.gz | tar xz
 
 # Linux
-curl -L https://github.com/cristianoc/genType/releases/download/v0.17.0/gentype-linux.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.18.0/gentype-linux.tar.gz | tar xz
 ```
 
 # Quick Start: Set up genType in existing TypeScript / Flow / BuckleScript project

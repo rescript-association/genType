@@ -1,4 +1,4 @@
-# master
+# 0.18.0
   Move "gentypeconfig" inside bsconfig.json. Using a file gentypeconfig.json is deprecated.
   Remove support for deprecated @genFlow annotation, and genflowconfig.json file.
 
