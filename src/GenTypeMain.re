@@ -9,6 +9,7 @@ open GenTypeCommon;
 let getPriority = x =>
   switch (x) {
   | CodeItem.ImportType(_)
+  | WrapJsComponentDeprecated(_)
   | WrapJsComponent(_)
   | WrapJsValue(_) => "2low"
   | ValueBinding(_)
@@ -45,7 +46,9 @@ let sortcodeItemsByPriority = codeItems => {
 };
 
 let hasGenTypeAnnotation = attributes =>
-  CodeItem.getGenTypeKind(attributes) != NoGenType;
+  CodeItem.getGenTypeKind(attributes) != NoGenType
+  || attributes
+  |> CodeItem.getAttributePayload(tagIsGenTypeImport) != None;
 
 let structItemHasGenTypeAnnotation = structItem =>
   switch (structItem) {
@@ -98,7 +101,8 @@ let translateStructItem =
 
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
-    valueDescription |> CodeItem.translatePrimitive(~language, ~moduleName)
+    valueDescription
+    |> CodeItem.translatePrimitive(~language, ~moduleName, ~propsTypeGen)
 
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   /* TODO: Support mapping of variant type definitions. */
@@ -115,7 +119,8 @@ let translateSignatureItem =
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {
-      valueDescription |> CodeItem.translatePrimitive(~language, ~moduleName);
+      valueDescription
+      |> CodeItem.translatePrimitive(~language, ~moduleName, ~propsTypeGen);
     } else {
       valueDescription
       |> CodeItem.translateSignatureValue(

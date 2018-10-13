@@ -1,4 +1,4 @@
-let component = ReasonReact.statelessComponent("Component");
+let component = ReasonReact.statelessComponent("ReasonComponent");
 
 [@genType]
 type person('a) = {
@@ -32,6 +32,7 @@ let make =
         )
         ->ReasonReact.string
       }
+      <MyBannerRe show=true message={Some({text: "this is from ReasonComponent"})} />
     </div>,
 };
 

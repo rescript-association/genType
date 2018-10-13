@@ -14,7 +14,7 @@ class App extends React.Component<Props> {
       return React.createElement(
         "div",
         null,
-        "Here's the message from the owner: " +
+        "Here's the message from App in JS: " +
           (this.props.message != null ? this.props.message : "3")
       );
     } else {

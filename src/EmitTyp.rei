@@ -41,10 +41,19 @@ let emitExportDefault:
   (~emitters: Emitters.t, ~config: config, string) => Emitters.t;
 
 let emitExportFunction:
-  (~emitters: Emitters.t, ~name: string, ~config: config, string) => Emitters.t;
+  (
+    ~early: bool,
+    ~comment: string=?,
+    ~emitters: Emitters.t,
+    ~name: string,
+    ~config: config,
+    string
+  ) =>
+  Emitters.t;
 
 let emitExportType:
   (
+    ~early: bool,
     ~emitters: Emitters.t,
     ~language: language,
     ~opaque: bool,
@@ -76,20 +85,17 @@ let emitImportTypeAs:
   Emitters.t;
 
 let emitImportValueAsEarly:
-  (~emitters: Emitters.t, ~name: string, ~nameAs: string, ImportPath.t) =>
-  Emitters.t;
-
-let emitRequire:
   (
     ~emitters: Emitters.t,
-    ~language: language,
-    ~moduleName: ModuleName.t,
+    ~name: string,
+    ~nameAs: option(string),
     ImportPath.t
   ) =>
   Emitters.t;
 
-let emitRequireEarly:
+let emitRequire:
   (
+    ~early: bool,
     ~emitters: Emitters.t,
     ~language: language,
     ~moduleName: ModuleName.t,
@@ -98,13 +104,15 @@ let emitRequireEarly:
   Emitters.t;
 
 let emitRequireReact:
-  (~emitters: Emitters.t, ~language: language) => Emitters.t;
+  (~early: bool, ~emitters: Emitters.t, ~language: language) => Emitters.t;
 
 let fileHeader: (~language: language) => string;
 
 let generatedModuleExtension: (~language: language) => string;
 
 let ofType: (~language: language, ~typ: typ, string) => string;
+
+let ofTypeAny: (~language: language, string) => string;
 
 let outputFileSuffix: (~language: language) => string;
 

@@ -33,7 +33,7 @@ type componentBinding = {
   typ,
 };
 
-type wrapJsComponent = {
+type wrapJsComponentDeprecated = {
   componentName: string,
   importPath: ImportPath.t,
 };
@@ -45,6 +45,15 @@ type wrapJsValue = {
   moduleName: ModuleName.t,
 };
 
+type wrapJsComponent = {
+  exportType,
+  importString: string,
+  childrenTyp: typ,
+  propsFields: fields,
+  propsTypeName: string,
+  moduleName: ModuleName.t,
+};
+
 type valueBinding = {
   moduleName: ModuleName.t,
   id: Ident.t,
@@ -53,8 +62,9 @@ type valueBinding = {
 
 type t =
   | ImportType(importType)
-  | WrapJsComponent(wrapJsComponent)
+  | WrapJsComponentDeprecated(wrapJsComponentDeprecated)
   | WrapJsValue(wrapJsValue)
+  | WrapJsComponent(wrapJsComponent)
   | ValueBinding(valueBinding)
   | ConstructorBinding(
       exportType,
@@ -105,9 +115,11 @@ let toString = (~language, codeItem) =>
   switch (codeItem) {
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | WrapJsComponent(externalReactClass) =>
-    "WrapJsComponent " ++ externalReactClass.componentName
+  | WrapJsComponentDeprecated(externalReactClass) =>
+    "WrapJsComponentDeprecated " ++ externalReactClass.componentName
   | WrapJsValue(wrapJsValue) => "WrapJsValue " ++ wrapJsValue.valueName
+  | WrapJsComponent(wrapJsComponent) =>
+    "WrapJsComponent " ++ wrapJsComponent.importString
   | ValueBinding({moduleName, id, typ}) =>
     "ValueBinding"
     ++ " id:"
@@ -386,7 +398,12 @@ let translateSignatureValue =
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
  */
 let translatePrimitive =
-    (~language, ~moduleName, valueDescription: Typedtree.value_description)
+    (
+      ~language,
+      ~moduleName,
+      ~propsTypeGen,
+      valueDescription: Typedtree.value_description,
+    )
     : translation => {
   let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
@@ -404,12 +421,93 @@ let translatePrimitive =
       when path != "" && genTypeKind == GenType => {
       dependencies: [],
       codeItems: [
-        WrapJsComponent({
+        WrapJsComponentDeprecated({
           componentName: valueName |> String.capitalize,
           importPath: path |> ImportPath.fromStringUnsafe,
         }),
       ],
     }
+  | (
+      Function({
+        argTypes: [_, ..._],
+        retType:
+          Ident(
+            "ReasonReact_componentSpec" | "React_componentSpec" |
+            "ReasonReact_component" |
+            "React_component",
+            [_state, ..._],
+          ),
+      }),
+      _,
+      Some(StringPayload(importString)),
+    )
+      when valueName == "make" =>
+    let typeExprTranslation =
+      valueDescription.val_desc.ctyp_type
+      |> Dependencies.translateTypeExpr(
+           ~language,
+           /* Only get the dependencies for the prop types.
+              The return type is a ReasonReact component. */
+           ~noFunctionReturnDependencies=true,
+         );
+
+    let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
+
+    /* Replace type variables in props/children with any. */
+    let (typeVars, typ) = (
+      [],
+      typeExprTranslation.typ
+      |> TypeVars.substitute(~f=s =>
+           if (freeTypeVarsSet |> StringSet.mem(s)) {
+             Some(mixedOrUnknown(~language));
+           } else {
+             None;
+           }
+         ),
+    );
+
+    let (propsFields, childrenTyp) =
+      switch (typ) {
+      | Function({argTypes: [propOrChildren, ...childrenOrNil]}) =>
+        switch (childrenOrNil) {
+        | [] => ([], mixedOrUnknown(~language))
+        | [children, ..._] =>
+          switch (propOrChildren) {
+          | GroupOfLabeledArgs(fields) => (
+              fields
+              |> List.map(((s, optionalness, typ) as field) =>
+                   switch (typ, optionalness) {
+                   | (Option(typ1), NonMandatory) => (s, NonMandatory, typ1)
+                   | _ => field
+                   }
+                 ),
+              children,
+            )
+          | _ => ([], mixedOrUnknown(~language))
+          }
+        }
+      | _ => ([], mixedOrUnknown(~language))
+      };
+    let propsTyp = Object(propsFields);
+    let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
+
+    let codeItems = [
+      WrapJsComponent({
+        exportType:
+          exportType(
+            ~opaque=false,
+            ~typeVars,
+            ~typeName=propsTypeName,
+            propsTyp,
+          ),
+        importString,
+        childrenTyp,
+        propsFields,
+        propsTypeName,
+        moduleName,
+      }),
+    ];
+    {dependencies: typeExprTranslation.dependencies, codeItems};
 
   | (_, _, Some(StringPayload(importString))) => {
       dependencies: typeExprTranslation.dependencies,

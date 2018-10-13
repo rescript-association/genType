@@ -1,8 +1,9 @@
-/* This is the module to import from. */
-[@genType.import "./MyMath"]
-/* This must always be the name of the current module. */
-[@bs.module "./WrapJsValue"]
-/* This is the name and type of the JS value to bind to. */
+/**
+  * Wrap JS values to be used from Reason
+  */
+[@genType.import "./MyMath"] /* This is the module to import from. */
+[@bs.module "./WrapJsValue"] /* This must always be the name of the current module. */
+/* Name and type of the JS value to bind to. */
 external round: float => float = "";
 
 [@genType]
@@ -11,11 +12,9 @@ type point = {
   y: option(int),
 };
 
-/* This is the module to import from. */
-[@genType.import "./MyMath"]
-/* This must always be the name of the current module. */
-[@bs.module "./WrapJsValue"]
-/* This is the name and type of the JS value to bind to. */
+[@genType.import "./MyMath"] /* This is the module to import from. */
+[@bs.module "./WrapJsValue"] /* This must always be the name of the current module. */
+/* Name and type of the JS value to bind to. */
 external area: point => int = "";
 
 [@genType]

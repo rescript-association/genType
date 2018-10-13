@@ -5,7 +5,7 @@ type typeMap = StringMap.t((list(string), typ));
 type env = {
   requiresEarly: ModuleNameMap.t(ImportPath.t),
   requires: ModuleNameMap.t(ImportPath.t),
-  wrapJsComponent: list(CodeItem.wrapJsComponent),
+  wrapJsComponentDeprecated: list(CodeItem.wrapJsComponentDeprecated),
   /* For each .cmt we import types from, keep the map of exported types. */
   cmtExportTypeMapCache: StringMap.t(typeMap),
   /* Map of types imported from other files. */
@@ -40,6 +40,7 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     | ImportType(_)
     | ExportVariantType(_)
     | ConstructorBinding(_)
+    | WrapJsComponentDeprecated(_)
     | WrapJsComponent(_)
     | WrapJsValue(_) => exportTypeMap
     };
@@ -102,12 +103,14 @@ let emitImportType =
 
 let emitExportType =
     (
+      ~early=false,
       ~emitters,
       ~language,
       {CodeItem.opaque, typeVars, typeName, comment, typ},
     ) =>
   typ
   |> EmitTyp.emitExportType(
+       ~early,
        ~emitters,
        ~language,
        ~opaque,
@@ -124,7 +127,7 @@ let emitCheckJsWrapperType =
       ~propsTypeName,
       ~exportType: CodeItem.exportType,
     ) =>
-  switch (env.wrapJsComponent) {
+  switch (env.wrapJsComponentDeprecated) {
   | [] => None
 
   | [{componentName, _}] =>
@@ -159,6 +162,7 @@ let emitCheckJsWrapperType =
       );
     let emitters =
       EmitTyp.emitExportFunction(
+        ~early=false,
         ~emitters,
         ~name="checkJsWrapperType",
         ~config,
@@ -341,18 +345,17 @@ let emitCodeItem =
           (
             propConverters
             |> List.map(((s, argConverter)) =>
-                 jsPropsDot(s)
-                 |> Converter.apply(~converter=argConverter, ~toJS=false)
+                 jsPropsDot(s) |> Converter.toReason(~converter=argConverter)
                )
           )
           @ [
             jsPropsDot("children")
-            |> Converter.apply(~converter=childrenConverter, ~toJS=false),
+            |> Converter.toReason(~converter=childrenConverter),
           ]
 
         | [ArgConverter(_, childrenConverter), ..._] => [
             jsPropsDot("children")
-            |> Converter.apply(~converter=childrenConverter, ~toJS=false),
+            |> Converter.toReason(~converter=childrenConverter),
           ]
 
         | _ => [jsPropsDot("children")]
@@ -412,7 +415,9 @@ let emitCodeItem =
       ({...env, requires: requiresWithReasonReact}, emitters);
     };
 
-  | WrapJsComponent({componentName, importPath} as wrapJsComponent) =>
+  | WrapJsComponentDeprecated(
+      {componentName, importPath} as wrapJsComponentDeprecated,
+    ) =>
     let requires =
       env.requires
       |> ModuleNameMap.add(
@@ -422,7 +427,10 @@ let emitCodeItem =
     let newEnv = {
       ...env,
       requires,
-      wrapJsComponent: [wrapJsComponent, ...env.wrapJsComponent],
+      wrapJsComponentDeprecated: [
+        wrapJsComponentDeprecated,
+        ...env.wrapJsComponentDeprecated,
+      ],
     };
     (newEnv, emitters);
 
@@ -439,7 +447,7 @@ let emitCodeItem =
           |> EmitTyp.emitImportValueAsEarly(
                ~emitters,
                ~name=valueName,
-               ~nameAs=valueNameNotChecked,
+               ~nameAs=Some(valueNameNotChecked),
              );
         (emitters, valueNameNotChecked, env.requiresEarly);
       | Flow
@@ -489,6 +497,137 @@ let emitCodeItem =
          );
     let newEnv = {...env, requiresEarly};
     (newEnv, emitters);
+
+  | WrapJsComponent({
+      exportType,
+      importString,
+      childrenTyp,
+      propsFields,
+      propsTypeName,
+      moduleName,
+    }) =>
+    let importPath = importString |> ImportPath.fromStringUnsafe;
+    let componentName = importString |> Filename.basename;
+
+    let (emitters, requiresEarly) =
+      switch (language) {
+      | Typescript =>
+        /* emit an import {... as ...} immediately */
+        let emitters =
+          importPath
+          |> EmitTyp.emitImportValueAsEarly(
+               ~emitters,
+               ~name=componentName,
+               ~nameAs=None,
+             );
+        (emitters, env.requiresEarly);
+      | Flow
+      | Untyped =>
+        /* add an early require(...)  */
+        let requiresEarly =
+          componentName
+          |> ModuleName.fromStringUnsafe
+          |> requireModule(~requires=env.requiresEarly, ~importPath);
+        (emitters, requiresEarly);
+      };
+    let componentNameTypeChecked = componentName ++ "TypeChecked";
+
+    /* Check the type of the component */
+    let emitters =
+      EmitTyp.emitRequireReact(~early=true, ~emitters, ~language);
+    let emitters =
+      emitExportType(
+        ~early=true,
+        ~language=config.language,
+        ~emitters,
+        exportType,
+      );
+    let emitters =
+      "("
+      ++ (
+        "props"
+        |> EmitTyp.ofType(
+             ~language=config.language,
+             ~typ=Ident(propsTypeName, []),
+           )
+      )
+      ++ ") {\n  return <"
+      ++ componentName
+      ++ " {...props}/>;\n}"
+      |> EmitTyp.emitExportFunction(
+           ~early=true,
+           ~emitters,
+           ~name=componentNameTypeChecked,
+           ~config,
+           ~comment=
+             "In case of type error, check the type of '"
+             ++ "make"
+             ++ "' in '"
+             ++ (moduleName |> ModuleName.toString)
+             ++ ".re'"
+             ++ " and the props of '"
+             ++ importString
+             ++ "'.",
+         );
+
+    /* Wrap the component */
+    let emitters =
+      (
+        "function _"
+        ++ EmitText.parens(
+             (propsFields |> List.map(((propName, _, _)) => propName))
+             @ ["children"]
+             |> List.map(EmitTyp.ofTypeAny(~language)),
+           )
+        ++ " { return ReasonReact.wrapJsForReason"
+        ++ EmitText.parens([
+             componentName,
+             "{"
+             ++ (
+               propsFields
+               |> List.map(((propName, optionalness, propTyp)) =>
+                    propName
+                    ++ ": "
+                    ++ (
+                      propName
+                      |> Converter.toJS(
+                           ~converter=
+                             (
+                               optionalness == Mandatory ?
+                                 propTyp : Option(propTyp)
+                             )
+                             |> typToConverter,
+                         )
+                    )
+                  )
+               |> String.concat(", ")
+             )
+             ++ "}",
+             "children"
+             |> Converter.toJS(~converter=childrenTyp |> typToConverter),
+           ])
+        ++ "; }"
+      )
+      ++ ";"
+      |> EmitTyp.emitExportConstEarly(
+           ~comment=
+             "Export '"
+             ++ "make"
+             ++ "' early to allow circular import from the '.bs.js' file.",
+           ~emitters,
+           ~name="make",
+           ~typ=mixedOrUnknown(~language),
+           ~config,
+         );
+    let requiresEarlyWithReasonReact =
+      requiresEarly
+      |> ModuleNameMap.add(
+           ModuleName.reasonReact,
+           ImportPath.reasonReactPath(~config),
+         );
+
+    let newEnv = {...env, requiresEarly: requiresEarlyWithReasonReact};
+    (newEnv, emitters);
   };
 };
 
@@ -505,7 +644,7 @@ let emitCodeItems =
   let initialEnv = {
     requires: ModuleNameMap.empty,
     requiresEarly: ModuleNameMap.empty,
-    wrapJsComponent: [],
+    wrapJsComponentDeprecated: [],
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
@@ -529,17 +668,23 @@ let emitCodeItems =
     ModuleNameMap.fold(
       (moduleName, importPath, emitters) =>
         importPath
-        |> EmitTyp.emitRequireEarly(~emitters, ~language, ~moduleName),
+        |> EmitTyp.emitRequire(~early=true, ~emitters, ~language, ~moduleName),
       finalEnv.requiresEarly,
       emitters,
     );
   let emitters =
-    finalEnv.wrapJsComponent != [] ?
-      EmitTyp.emitRequireReact(~emitters, ~language) : emitters;
+    finalEnv.wrapJsComponentDeprecated != [] ?
+      EmitTyp.emitRequireReact(~early=false, ~emitters, ~language) : emitters;
   let emitters =
     ModuleNameMap.fold(
       (moduleName, importPath, emitters) =>
-        EmitTyp.emitRequire(~emitters, ~language, ~moduleName, importPath),
+        EmitTyp.emitRequire(
+          ~early=false,
+          ~emitters,
+          ~language,
+          ~moduleName,
+          importPath,
+        ),
       finalEnv.requires,
       emitters,
     );

@@ -1,23 +1,20 @@
 /**
- *  ReactJS used by ReasonReact
- * This component wraps a ReactJS one, so that ReasonReact components can consume it
- * Typing the myBanner.js component's output as a `reactClass`.
-*/
-[@genType]
-[@bs.module]
-external myBanner : ReasonReact.reactClass = "./MyBanner";
+  * Wrap component MyBanner to be used from Reason.
+  */
 
-[@bs.deriving abstract]
-type jsProps = {
-  show: bool,
-  message: string,
-};
-
-/** This is like declaring a normal ReasonReact component's `make` function, except the body is a the interop hook wrapJsForReason */
 [@genType]
-let make = (~show, ~message, children) =>
-  ReasonReact.wrapJsForReason(
-    ~reactClass=myBanner,
-    ~props=jsProps(~show, ~message),
-    children,
-  );
+type message = {text: string};
+
+[@genType.import "./MyBanner"] /* Module with the JS component to be wrapped. */
+[@bs.module "./MyBannerRe"] /* This must always be the name of the current module. */
+/* The make function will be automatically generated from the types below. */
+external make:
+  (~show: bool, ~message: option(message)=?, 'a) =>
+  ReasonReact.component(
+    ReasonReact.stateless,
+    ReasonReact.noRetainedProps,
+    ReasonReact.actionless,
+  ) =
+  "";
+
+let make = make;

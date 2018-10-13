@@ -155,21 +155,18 @@ let emitExportConstMany = (~emitters, ~name, ~typ, ~config, lines) =>
   |> String.concat("\n")
   |> emitExportConst(~emitters, ~name, ~typ, ~config);
 
-let emitExportFunction = (~emitters, ~name, ~config, line) =>
-  switch (config.module_, config.language) {
-  | (_, Typescript)
-  | (ES6, _) =>
-    "export function " ++ name ++ line |> Emitters.export(~emitters)
-  | (CommonJS, _) =>
-    "function "
-    ++ name
-    ++ line
-    ++ ";\nexports."
-    ++ name
-    ++ " = "
-    ++ name
-    |> Emitters.export(~emitters)
-  };
+let emitExportFunction =
+    (~early, ~comment="", ~emitters, ~name, ~config, line) =>
+  (comment == "" ? comment : "// " ++ comment ++ "\n")
+  ++ (
+    switch (config.module_, config.language) {
+    | (_, Typescript)
+    | (ES6, _) => "export function " ++ name ++ line
+    | (CommonJS, _) =>
+      "function " ++ name ++ line ++ ";\nexports." ++ name ++ " = " ++ name
+    }
+  )
+  |> (early ? Emitters.exportEarly : Emitters.export)(~emitters);
 
 let emitExportDefault = (~emitters, ~config, name) =>
   switch (config.module_, config.language) {
@@ -181,7 +178,17 @@ let emitExportDefault = (~emitters, ~config, name) =>
   };
 
 let emitExportType =
-    (~emitters, ~language, ~opaque, ~typeName, ~typeVars, ~comment, typ) => {
+    (
+      ~early,
+      ~emitters,
+      ~language,
+      ~opaque,
+      ~typeName,
+      ~typeVars,
+      ~comment,
+      typ,
+    ) => {
+  let export = early ? Emitters.exportEarly : Emitters.export;
   let typeParamsString = genericsString(~typeVars);
   let commentString =
     switch (comment) {
@@ -200,7 +207,7 @@ let emitExportType =
     ++ (typ |> renderTyp(~language))
     ++ ";"
     ++ commentString
-    |> Emitters.export(~emitters)
+    |> export(~emitters)
 
   | Typescript =>
     if (opaque) {
@@ -217,7 +224,7 @@ let emitExportType =
       ++ typeOfOpaqueField
       ++ " }; /* simulate opaque types */"
       ++ commentString
-      |> Emitters.export(~emitters);
+      |> export(~emitters);
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
@@ -227,7 +234,7 @@ let emitExportType =
       ++ (typ |> renderTyp(~language))
       ++ ";"
       ++ commentString
-      |> Emitters.export(~emitters);
+      |> export(~emitters);
     }
   | Untyped => emitters
   };
@@ -258,17 +265,20 @@ let commentBeforeRequire = (~language) =>
   };
 
 let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
-  "import {"
-  ++ name
-  ++ " as "
-  ++ nameAs
-  ++ "} from"
+  "import "
+  ++ (
+    switch (nameAs) {
+    | Some(nameAs) => "{" ++ name ++ " as " ++ nameAs ++ "}"
+    | None => name
+    }
+  )
+  ++ " from"
   ++ "'"
   ++ (importPath |> ImportPath.toString)
   ++ "';"
   |> Emitters.requireEarly(~emitters);
 
-let emitRequire_ = (~early, ~emitters, ~language, ~moduleName, importPath) =>
+let emitRequire = (~early, ~emitters, ~language, ~moduleName, importPath) =>
   commentBeforeRequire(~language)
   ++ "const "
   ++ ModuleName.toString(moduleName)
@@ -277,21 +287,20 @@ let emitRequire_ = (~early, ~emitters, ~language, ~moduleName, importPath) =>
   ++ "');"
   |> (early ? Emitters.requireEarly : Emitters.require)(~emitters);
 
-let emitRequire = emitRequire_(~early=false);
+let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
 
-let emitRequireEarly = emitRequire_(~early=true);
-
-let emitRequireReact = (~emitters, ~language) =>
+let emitRequireReact = (~early, ~emitters, ~language) =>
   switch (language) {
   | Flow =>
     emitRequire(
+      ~early,
       ~emitters,
       ~language,
       ~moduleName=ModuleName.react,
       ImportPath.react,
     )
   | Typescript =>
-    "import * as React from \"react\";" |> Emitters.require(~emitters)
+    "import * as React from \"react\";" |> require(~early, ~emitters)
   | Untyped => emitters
   };
 
@@ -328,3 +337,5 @@ let emitImportTypeAs =
 
 let blockTagValue = (~language, i) =>
   string_of_int(i) ++ (language == Typescript ? " as any" : "");
+
+let ofTypeAny = (~language, s) => language == Typescript ? s ++ ": any" : s;
