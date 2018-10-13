@@ -156,11 +156,18 @@ We prepared some examples to give you an idea on how to integrate `genType` in y
 - [untyped-react-example](examples/untyped-react-example/README.md)
 
 
-## Release Procedure for MacOS and Linux binaries
+## Manual Release Procedure for MacOS and Linux Binaries
 
-For now, this is a manual process to create `lib/gentype-macos.tar.gz` and  `lib/gentype-linux.tar.gz` on a Mac. The linux binaries are created using a docker container.
+All releases need to pass our integration test suite. We use `npm test` to run the tests, make sure this command passes to be able to build a release.
+
+You can create `lib/gentype-macos.tar.gz` and  `lib/gentype-linux.tar.gz` via our manual release procedure on a Mac. The linux binaries are created using a docker container.
 
 
 ```
 ./create-release.sh
 ```
+
+**Please note:**
+
+We use [CircleCI](https://circleci.com/gh/cristianoc/genType) and [Appveyor](https://ci.appveyor.com/project/ryyppy/gentype) to build and automatically release to Github. Your manually released binaries might be overwritten by the built artifacts from tagged triggered commit.
+

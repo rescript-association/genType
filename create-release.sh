@@ -1,9 +1,11 @@
+set -e
+
 # Cleanup
 rm -f lib/gentype-*.tar.gz
 
 # MacOS
 npm install
-npm run clean && npm run build
+npm run clean && npm run build && npm run test
 tar czvf lib/gentype-macos.tar.gz  -C lib/bs/native gentype.native
 
 
