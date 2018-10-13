@@ -1,4 +1,11 @@
 {
+  "gentypeconfig": {
+    "language": "typescript",
+    "shims": {
+      "ReasonPervasives": "ReasonPervasives",
+      "ReactEvent": "ReactEvent"
+    }
+  },
   "name": "sample-typescript-app",
   "reason": {
     "react-jsx": 2

@@ -1,4 +1,19 @@
 {
+  "gentypeconfig": {
+    "language": "flow",
+    "module": "es6",
+    "importPath": "relative",
+    "reasonReactPath": "reason-react/src/ReasonReact.js",
+    "bsBlockPath": "bs-platform/lib/js/block.js",
+    "shims": {
+      "Js": "Js",
+      "Obj": "Obj",
+      "React": "ReactShim",
+      "ReactEvent": "ReactEvent",
+      "ReasonPervasives": "ReasonPervasives",
+      "ReasonReact": "ReactShim"
+    }
+  },
   "name": "reason-react-example",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 2 },

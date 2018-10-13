@@ -1,4 +1,8 @@
 {
+  "gentypeconfig": {
+    "language": "untyped",
+    "shims": {}
+  },
   "name": "reason-react-example",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 2 },
