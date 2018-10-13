@@ -4,8 +4,8 @@
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var $$String = require("bs-platform/lib/js/string.js");
-var MyBannerRe = require("./MyBannerRe.bs.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var MyBannerWrapper = require("./MyBannerWrapper.bs.js");
 
 var component = ReasonReact.statelessComponent("PageReason");
 
@@ -30,7 +30,7 @@ function make(message, someNumber, extraGreeting, polymorphicProp, _) {
               var greeting = extraGreeting !== undefined ? extraGreeting : "How are you?";
               return React.createElement("div", {
                           onClick: onClick
-                        }, ReasonReact.element(undefined, undefined, MyBannerRe.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
+                        }, ReasonReact.element(undefined, undefined, MyBannerWrapper.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

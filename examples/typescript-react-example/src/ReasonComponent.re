@@ -32,7 +32,10 @@ let make =
         )
         ->ReasonReact.string
       }
-      <MyBannerRe show=true message={Some({text: "this is from ReasonComponent"})} />
+      <MyBannerWrapper
+        show=true
+        message={Some({text: "this is from ReasonComponent"})}
+      />
     </div>,
 };
 
