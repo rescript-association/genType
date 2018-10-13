@@ -132,7 +132,7 @@ If a Reason type contains a type variable, the corresponding value is not conver
 
 * **No nested modules**. Nested modules are not supported, and annotations will be ignored.
 
-* **Limited JS wrappers**. There must be only one `@genType` annotation on one external binding, and the component it binds is passed to `wrapJsForReason` (this is assumed, not checked). Also, `wrapJsForReason` in the `make` function must simply forward the props, without renaming/wrapping or modifying their values (again, this is assumed, not checked). See for example [MyBannerRe.re](examples/reason-react-example/src/interop/MyBannerRe.re).
+* **Limited JS wrappers**. There used to be a limited way to type check existing wrappers for JS components. This is now deprecated. A complete solution, which generates wrappers automatically for components as well as arbitrary values, is under development. For an early example, see [MyBannerWrapper.re](examples/typescript-react-example/src/MyBannerWrapper.re).
 
 # Development
 
