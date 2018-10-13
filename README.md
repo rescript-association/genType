@@ -1,6 +1,6 @@
 # Reason genType 0.17.0
 
-> **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
+> **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, use `@genType` annotations, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
 
 `genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript idiomatically. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components. Also, if you're using JavaScript components from Reason, it can check their type.
 

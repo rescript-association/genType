@@ -1,5 +1,6 @@
 # master
   Move "gentypeconfig" inside bsconfig.json. Using a file gentypeconfig.json is deprecated.
+  Remove support for deprecated @genFlow annotation, and genflowconfig.json file.
 
 # 0.17.0
 - [Experimental feature: Typed wrappers for JS values](https://github.com/cristianoc/genType/pull/60).

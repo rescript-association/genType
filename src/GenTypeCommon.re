@@ -65,14 +65,12 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-let tagIsGenType = s => s == "genFlow" || s == "genType";
-let tagIsGenTypeAs = s =>
-  s == "genFlow" || s == "genType" || s == "genFlow.as" || s == "genType.as";
+let tagIsGenType = s => s == "genType";
+let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
 
-let tagIsGenTypeImport = s =>
-  s == "genType.import";
+let tagIsGenTypeImport = s => s == "genType.import";
 
-let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "genFlow.opaque";
+let tagIsGenTypeOpaque = s => s == "genFlow.opaque";
 
 type optionalness =
   | NonMandatory

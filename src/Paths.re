@@ -77,10 +77,7 @@ let executable =
 
 let getConfigFile = () => {
   let gentypeconfig = concat(projectRoot^, "gentypeconfig.json");
-  let genflowconfig = concat(projectRoot^, "genflowconfig.json");
-  gentypeconfig |> Sys.file_exists ?
-    Some(gentypeconfig) :
-    genflowconfig |> Sys.file_exists ? Some(genflowconfig) : None;
+  gentypeconfig |> Sys.file_exists ? Some(gentypeconfig) : None;
 };
 let getBsConfigFile = () => {
   let bsconfig = concat(projectRoot^, "bsconfig.json");
