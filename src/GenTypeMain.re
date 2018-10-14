@@ -50,7 +50,8 @@ let hasGenTypeAnnotation = attributes =>
   || attributes
   |> CodeItem.getAttributePayload(tagIsGenTypeImport) != None;
 
-let structItemHasGenTypeAnnotation = structItem =>
+let rec structureItemHasGenTypeAnnotation =
+        (structItem: Typedtree.structure_item) =>
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
@@ -60,10 +61,31 @@ let structItemHasGenTypeAnnotation = structItem =>
     |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenTypeAnnotation)
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation
+  | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
+    moduleBinding |> moduleBindingHasGenTypeAnnotation
+  | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
+    moduleBindings |> List.exists(moduleBindingHasGenTypeAnnotation)
   | _ => false
-  };
+  }
+and moduleBindingHasGenTypeAnnotation =
+    ({mb_expr, mb_attributes}: Typedtree.module_binding) =>
+  mb_attributes
+  |> hasGenTypeAnnotation
+  || (
+    switch (mb_expr.mod_desc) {
+    | Tmod_structure(structure) => structure |> structureHasGenTypeAnnotation
+    | Tmod_ident(_)
+    | Tmod_functor(_)
+    | Tmod_apply(_)
+    | Tmod_constraint(_)
+    | Tmod_unpack(_) => false
+    }
+  )
+and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
+  structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
-let signatureItemHasGenTypeAnnotation = signatureItem =>
+let rec signatureItemHasGenTypeAnnotation =
+        (signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
@@ -71,16 +93,15 @@ let signatureItemHasGenTypeAnnotation = signatureItem =>
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation
   | _ => false
-  };
+  }
+and signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
+  signature.Typedtree.sig_items
+  |> List.exists(signatureItemHasGenTypeAnnotation);
 
 let cmtHasGenTypeAnnotations = inputCMT =>
   switch (inputCMT.Cmt_format.cmt_annots) {
-  | Implementation(structure) =>
-    structure.Typedtree.str_items
-    |> List.exists(structItemHasGenTypeAnnotation)
-  | Interface(signature) =>
-    signature.Typedtree.sig_items
-    |> List.exists(signatureItemHasGenTypeAnnotation)
+  | Implementation(structure) => structure |> structureHasGenTypeAnnotation
+  | Interface(signature) => signature |> signatureHasGenTypeAnnotation
   | _ => false
   };
 
