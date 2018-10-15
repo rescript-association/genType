@@ -83,7 +83,23 @@ and moduleBindingHasGenTypeAnnotation =
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
-let signatureItemHasGenTypeAnnotation =
+let rec moduleTypeHasGenTypeAnnotation =
+        ({mty_desc, _}: Typedtree.module_type) =>
+  switch (mty_desc) {
+  | Tmty_signature(signature) => signature |> signatureHasGenTypeAnnotation
+  | Tmty_ident(_)
+  | Tmty_functor(_)
+  | Tmty_with(_)
+  | Tmty_typeof(_)
+  | Tmty_alias(_) => false
+  }
+and moduleDeclarationHasGenTypeAnnotation =
+    (moduleDeclaration: Typedtree.module_declaration) =>
+  moduleDeclaration.md_attributes
+  |> hasGenTypeAnnotation
+  || moduleDeclaration.md_type
+  |> moduleTypeHasGenTypeAnnotation
+and signatureItemHasGenTypeAnnotation =
     (signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
@@ -91,9 +107,11 @@ let signatureItemHasGenTypeAnnotation =
     |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation
+  | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
+    moduleDeclaration |> moduleDeclarationHasGenTypeAnnotation
   | _ => false
-  };
-let signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
+  }
+and signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
   signature.Typedtree.sig_items
   |> List.exists(signatureItemHasGenTypeAnnotation);
 
