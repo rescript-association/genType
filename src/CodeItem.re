@@ -513,7 +513,7 @@ let hasSomeGADTLeaf = constructorDeclarations =>
     constructorDeclarations,
   );
 
-let translateTypeDecl =
+let translateTypeDeclaration =
     (~language, dec: Typedtree.type_declaration): translation =>
   switch (
     dec.typ_type.type_params,

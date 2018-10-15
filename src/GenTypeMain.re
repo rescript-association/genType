@@ -127,7 +127,7 @@ let translateStructItem =
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(CodeItem.translateTypeDecl(~language))
+    |> List.map(CodeItem.translateTypeDeclaration(~language))
     |> CodeItem.combineTranslations
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
