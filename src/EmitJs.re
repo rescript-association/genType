@@ -507,7 +507,8 @@ let emitCodeItem =
       moduleName,
     }) =>
     let importPath = importString |> ImportPath.fromStringUnsafe;
-    let componentName = importString |> Filename.basename;
+    let componentName =
+      importString |> Filename.basename |> Filename.chop_extension;
 
     let (emitters, requiresEarly) =
       switch (language) {
