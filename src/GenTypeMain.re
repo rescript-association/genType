@@ -133,7 +133,11 @@ let translateStructItem =
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
     |> List.map(
-         CodeItem.translateValueBinding(~language, ~propsTypeGen, ~moduleName),
+         CodeItem.translateValueBinding(
+           ~language,
+           ~propsTypeGen,
+           ~moduleName,
+         ),
        )
     |> CodeItem.combineTranslations
 
@@ -163,7 +167,7 @@ let translateSignatureItem =
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(CodeItem.translateTypeDecl(~language))
+    |> List.map(CodeItem.translateTypeDeclaration(~language))
     |> CodeItem.combineTranslations
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
@@ -224,7 +228,8 @@ let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
     |> List.concat;
   typeDeclarations
   |> List.map(typeDeclaration =>
-       (typeDeclaration |> CodeItem.translateTypeDecl(~language)).codeItems
+       (typeDeclaration |> CodeItem.translateTypeDeclaration(~language)).
+         codeItems
      )
   |> List.concat;
 };
