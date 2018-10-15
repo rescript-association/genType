@@ -293,8 +293,8 @@ let translateConstructorDeclaration =
 
   let typeVars = argTypes |> TypeVars.freeOfList;
 
-  let retType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
-  let constructorTyp = createFunctionType(typeVars, argTypes, retType);
+  let leafType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
+  let constructorTyp = createFunctionType(typeVars, argTypes, leafType);
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
@@ -312,7 +312,7 @@ let translateConstructorDeclaration =
       recordValue,
     }),
   ];
-  (retType, (dependencies, codeItems));
+  (leafType, (dependencies, codeItems));
 };
 
 /* Applies type parameters to types (for all) */
@@ -726,7 +726,7 @@ let translateTypeDeclaration =
   | (astTypeParams, Type_variant(constructorDeclarations), GenType)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
     let variantTypeName = dec.typ_id |> Ident.name;
-    let resultTypesDepsAndVariantLeafBindings = {
+    let leafTypesDepsAndVariantLeafBindings = {
       let recordGen = Runtime.recordGen();
       constructorDeclarations
       |> List.map(constructorDeclaration =>
@@ -738,8 +738,8 @@ let translateTypeDeclaration =
            )
          );
     };
-    let (resultTypes, depsAndVariantLeafBindings) =
-      resultTypesDepsAndVariantLeafBindings |> List.split;
+    let (leafTypes, depsAndVariantLeafBindings) =
+      leafTypesDepsAndVariantLeafBindings |> List.split;
     let (listListDeps, listListItems) =
       depsAndVariantLeafBindings |> List.split;
     let deps = listListDeps |> List.concat;
@@ -748,7 +748,7 @@ let translateTypeDeclaration =
     let unionType =
       ExportVariantType({
         typeParams,
-        leafTypes: resultTypes,
+        leafTypes: leafTypes,
         name: variantTypeName,
       });
     {dependencies: deps, codeItems: List.append(items, [unionType])};
