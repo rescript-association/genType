@@ -1,16 +1,5 @@
 open GenTypeCommon;
 
-type importTypeAs = {
-  typeName: string,
-  asTypeName: option(string),
-  importPath: ImportPath.t,
-  cmtFile: option(string),
-};
-
-type importType =
-  | ImportComment(string)
-  | ImportTypeAs(importTypeAs);
-
 type exportType = {
   opaque: bool,
   typeVars: list(string),
@@ -25,20 +14,16 @@ type exportVariantType = {
   name: string,
 };
 
-type wrapReasonComponent = {
-  exportType,
-  moduleName: ModuleName.t,
-  propsTypeName: string,
-  componentType: typ,
-  typ,
+type importTypeAs = {
+  typeName: string,
+  asTypeName: option(string),
+  importPath: ImportPath.t,
+  cmtFile: option(string),
 };
 
-type wrapJsValue = {
-  valueName: string,
-  importString: string,
-  typ,
-  moduleName: ModuleName.t,
-};
+type importType =
+  | ImportComment(string)
+  | ImportTypeAs(importTypeAs);
 
 type wrapJsComponent = {
   exportType,
@@ -49,21 +34,44 @@ type wrapJsComponent = {
   moduleName: ModuleName.t,
 };
 
+type wrapJsValue = {
+  valueName: string,
+  importString: string,
+  typ,
+  moduleName: ModuleName.t,
+};
+
+type wrapReasonComponent = {
+  exportType,
+  moduleName: ModuleName.t,
+  propsTypeName: string,
+  componentType: typ,
+  typ,
+};
+
 type wrapReasonValue = {
   moduleName: ModuleName.t,
   id: Ident.t,
   typ,
 };
 
+type wrapVariant = {
+  exportType,
+  constructorTyp: typ,
+  argTypes: list(typ),
+  variantName: string,
+  recordValue: Runtime.recordValue,
+};
+
 type t =
   | ExportType(exportType)
   | ExportVariantType(exportVariantType)
   | ImportType(importType)
-  | WrapJsValue(wrapJsValue)
   | WrapJsComponent(wrapJsComponent)
+  | WrapJsValue(wrapJsValue)
   | WrapReasonComponent(wrapReasonComponent)
   | WrapReasonValue(wrapReasonValue)
-  | WrapVariant(exportType, typ, list(typ), string, Runtime.recordValue);
+  | WrapVariant(wrapVariant);
 
 type genTypeKind =
   | NoGenType
@@ -101,10 +109,14 @@ let getImportTypeUniqueName = importType =>
 
 let toString = (~language, codeItem) =>
   switch (codeItem) {
+  | ExportType({typeName}) => "ExportType " ++ typeName
+  | ExportVariantType({name}) => "ExportVariantType " ++ name
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | WrapJsValue({valueName}) => "WrapJsValue " ++ valueName
   | WrapJsComponent({importString}) => "WrapJsComponent " ++ importString
+  | WrapJsValue({valueName}) => "WrapJsValue " ++ valueName
+  | WrapReasonComponent({moduleName}) =>
+    "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
   | WrapReasonValue({moduleName, id, typ}) =>
     "WrapReasonValue"
     ++ " id:"
@@ -113,11 +125,7 @@ let toString = (~language, codeItem) =>
     ++ ModuleName.toString(moduleName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
-  | ExportType({typeName}) => "ExportType " ++ typeName
-  | ExportVariantType({name}) => "ExportVariantType " ++ name
-  | WrapReasonComponent({moduleName}) =>
-    "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
-  | WrapVariant(_, _, _, variantName, _) => "WrapVariant " ++ variantName
+  | WrapVariant({variantName}) => "WrapVariant " ++ variantName
   };
 
 type attributePayload =
@@ -202,18 +210,19 @@ let translateConstructorDeclaration =
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
-    WrapVariant(
-      exportType(
-        ~opaque=true,
-        ~typeVars,
-        ~typeName=variantTypeName,
-        mixedOrUnknown(~language),
-      ),
+    WrapVariant({
+      exportType:
+        exportType(
+          ~opaque=true,
+          ~typeVars,
+          ~typeName=variantTypeName,
+          mixedOrUnknown(~language),
+        ),
       constructorTyp,
       argTypes,
       variantName,
       recordValue,
-    ),
+    }),
   ];
   (retType, (dependencies, codeItems));
 };

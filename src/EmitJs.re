@@ -205,13 +205,13 @@ let emitCodeItem =
 
     (envWithRequires, emitters);
 
-  | WrapVariant(
+  | WrapVariant({
       exportType,
-      constructorType,
+      constructorTyp,
       argTypes,
       variantName,
       recordValue,
-    ) =>
+    }) =>
     let emitters = emitExportType(~emitters, ~language, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
@@ -222,7 +222,7 @@ let emitCodeItem =
         |> EmitTyp.emitExportConst(
              ~emitters,
              ~name=variantName,
-             ~typ=constructorType,
+             ~typ=constructorTyp,
              ~config,
            );
       } else {
@@ -243,7 +243,7 @@ let emitCodeItem =
         |> EmitTyp.emitExportConst(
              ~emitters,
              ~name=variantName,
-             ~typ=constructorType,
+             ~typ=constructorTyp,
              ~config,
            );
       };
