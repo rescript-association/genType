@@ -50,8 +50,8 @@ let hasGenTypeAnnotation = attributes =>
   |> CodeItem.getAttributePayload(tagIsGenTypeImport) != None;
 
 let rec structureItemHasGenTypeAnnotation =
-        (structItem: Typedtree.structure_item) =>
-  switch (structItem) {
+        (structureItem: Typedtree.structure_item) =>
+  switch (structureItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
