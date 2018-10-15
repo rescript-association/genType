@@ -46,6 +46,7 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     | ExportVariantType(_)
     | WrapJsComponent(_)
     | WrapJsValue(_)
+    | WrapModule(_)
     | WrapReasonComponent(_)
     | WrapReasonValue(_)
     | WrapVariant(_) => exportTypeMap
@@ -125,17 +126,17 @@ let emitExportType =
        ~comment,
      );
 
-let emitCodeItem =
-    (
-      ~config,
-      ~outputFileRelative,
-      ~resolver,
-      ~exportTypeMap,
-      ~emitters,
-      ~env,
-      ~inputCmtToTypeDeclarations,
-      codeItem,
-    ) => {
+let rec emitCodeItem =
+        (
+          ~config,
+          ~outputFileRelative,
+          ~resolver,
+          ~exportTypeMap,
+          ~emitters,
+          ~env,
+          ~inputCmtToTypeDeclarations,
+          codeItem,
+        ) => {
   let language = config.language;
   let typToConverter = typ =>
     typ
@@ -547,8 +548,45 @@ let emitCodeItem =
            ~importPath=ImportPath.reasonReactPath(~config),
          );
     (env, emitters);
+
+  | WrapModule({codeItems}) =>
+    codeItems
+    |> emitCodeItems(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~exportTypeMap,
+         ~emitters,
+         ~env,
+         ~inputCmtToTypeDeclarations,
+       )
   };
-};
+}
+and emitCodeItems =
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~exportTypeMap,
+      ~emitters,
+      ~env,
+      ~inputCmtToTypeDeclarations,
+      codeItems,
+    ) =>
+  codeItems
+  |> List.fold_left(
+       ((env, emitters)) =>
+         emitCodeItem(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~exportTypeMap,
+           ~emitters,
+           ~env,
+           ~inputCmtToTypeDeclarations,
+         ),
+       (env, emitters),
+     );
 
 let emitRequires = (~early, ~language, ~requires, emitters) =>
   ModuleNameMap.fold(
@@ -565,7 +603,7 @@ let emitRequires = (~early, ~language, ~requires, emitters) =>
     emitters,
   );
 
-let emitCodeItems =
+let emitCodeItemsAsString =
     (
       ~config,
       ~outputFileRelative,
@@ -584,19 +622,16 @@ let emitCodeItems =
   let exportTypeMap = codeItems |> createExportTypeMap(~language);
   let (finalEnv, emitters) =
     codeItems
-    |> List.fold_left(
-         ((env, emitters)) =>
-           emitCodeItem(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-             ~exportTypeMap,
-             ~emitters,
-             ~env,
-             ~inputCmtToTypeDeclarations,
-           ),
-         (initialEnv, Emitters.initial),
+    |> emitCodeItems(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~exportTypeMap,
+         ~emitters=Emitters.initial,
+         ~env=initialEnv,
+         ~inputCmtToTypeDeclarations,
        );
+
   emitters
   |> emitRequires(~early=true, ~language, ~requires=finalEnv.requiresEarly)
   |> emitRequires(~early=false, ~language, ~requires=finalEnv.requires)

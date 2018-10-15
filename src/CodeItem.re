@@ -63,12 +63,18 @@ type wrapVariant = {
   recordValue: Runtime.recordValue,
 };
 
-type t =
+type wrapModule = {
+  moduleName: ModuleName.t,
+  isAnnotated: bool,
+  codeItems: list(t),
+}
+and t =
   | ExportType(exportType)
   | ExportVariantType(exportVariantType)
   | ImportType(importType)
   | WrapJsComponent(wrapJsComponent)
   | WrapJsValue(wrapJsValue)
+  | WrapModule(wrapModule)
   | WrapReasonComponent(wrapReasonComponent)
   | WrapReasonValue(wrapReasonValue)
   | WrapVariant(wrapVariant);
@@ -115,6 +121,8 @@ let toString = (~language, codeItem) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
   | WrapJsComponent({importString, _}) => "WrapJsComponent " ++ importString
   | WrapJsValue({valueName, _}) => "WrapJsValue " ++ valueName
+  | WrapModule({moduleName, _}) =>
+    "WrapModule " ++ (moduleName |> ModuleName.toString)
   | WrapReasonComponent({moduleName, _}) =>
     "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
   | WrapReasonValue({moduleName, id, typ}) =>
@@ -633,6 +641,89 @@ let translateTypeDeclaration =
       });
     {dependencies: deps, codeItems: List.append(items, [unionType])};
   | _ => {dependencies: [], codeItems: []}
+  };
+
+let hasGenTypeAnnotation = attributes =>
+  getGenTypeKind(attributes) != NoGenType
+  || attributes
+  |> getAttributePayload(tagIsGenTypeImport) != None;
+
+let rec translateStructItem =
+        (~config, ~propsTypeGen, ~moduleName, structItem): translation =>
+  switch (structItem) {
+  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
+    typeDeclarations
+    |> List.map(translateTypeDeclaration(~language=config.language))
+    |> combineTranslations
+
+  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
+    valueBindings
+    |> List.map(
+         translateValueBinding(
+           ~language=config.language,
+           ~propsTypeGen,
+           ~moduleName,
+         ),
+       )
+    |> combineTranslations
+
+  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
+    /* external declaration */
+    valueDescription
+    |> translatePrimitive(
+         ~language=config.language,
+         ~moduleName,
+         ~propsTypeGen,
+       )
+
+  | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
+    moduleBinding
+    |> translateModuleBinding(~config, ~moduleName, ~propsTypeGen)
+
+  | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
+    moduleBindings
+    |> List.map(translateModuleBinding(~config, ~moduleName, ~propsTypeGen))
+    |> combineTranslations
+
+  | _ => {dependencies: [], codeItems: []}
+  }
+and translateStructure =
+    (~config, ~propsTypeGen, ~moduleName, structure): list(translation) =>
+  structure.Typedtree.str_items
+  |> List.map(structItem =>
+       structItem |> translateStructItem(~config, ~propsTypeGen, ~moduleName)
+     )
+and translateModuleBinding =
+    (
+      ~config,
+      ~moduleName,
+      ~propsTypeGen,
+      {mb_id, mb_expr, mb_attributes, _}: Typedtree.module_binding,
+    )
+    : translation =>
+  switch (mb_expr.mod_desc) {
+  | Tmod_structure(structure) =>
+    let isAnnotated = mb_attributes |> hasGenTypeAnnotation;
+    let {dependencies, codeItems} =
+      structure
+      |> translateStructure(~config, ~propsTypeGen, ~moduleName)
+      |> combineTranslations;
+    {
+      dependencies,
+      codeItems: [
+        WrapModule({
+          moduleName: mb_id |> Ident.name |> ModuleName.fromStringUnsafe,
+          isAnnotated,
+          codeItems,
+        }),
+      ],
+    };
+
+  | Tmod_ident(_)
+  | Tmod_functor(_)
+  | Tmod_apply(_)
+  | Tmod_constraint(_)
+  | Tmod_unpack(_) => {dependencies: [], codeItems: []}
   };
 
 let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>

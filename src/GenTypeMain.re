@@ -13,6 +13,7 @@ let getPriority = x =>
   | WrapJsValue(_) => "2low"
   | ExportType(_)
   | ExportVariantType(_)
+  | WrapModule(_)
   | WrapReasonComponent(_)
   | WrapReasonValue(_)
   | WrapVariant(_) => "1med"
@@ -44,22 +45,21 @@ let sortcodeItemsByPriority = codeItems => {
   sortedCodeItems^;
 };
 
-let hasGenTypeAnnotation = attributes =>
-  CodeItem.getGenTypeKind(attributes) != NoGenType
-  || attributes
-  |> CodeItem.getAttributePayload(tagIsGenTypeImport) != None;
-
 let rec structureItemHasGenTypeAnnotation =
         (structureItem: Typedtree.structure_item) =>
   switch (structureItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
+    |> List.exists(dec =>
+         dec.Typedtree.typ_attributes |> CodeItem.(hasGenTypeAnnotation)
+       )
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
-    |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenTypeAnnotation)
+    |> List.exists(vb =>
+         vb.Typedtree.vb_attributes |> CodeItem.(hasGenTypeAnnotation)
+       )
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation
+    valueDescription.val_attributes |> CodeItem.(hasGenTypeAnnotation)
   | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
     moduleBinding |> moduleBindingHasGenTypeAnnotation
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
@@ -69,7 +69,7 @@ let rec structureItemHasGenTypeAnnotation =
 and moduleBindingHasGenTypeAnnotation =
     ({mb_expr, mb_attributes, _}: Typedtree.module_binding) =>
   mb_attributes
-  |> hasGenTypeAnnotation
+  |> CodeItem.(hasGenTypeAnnotation)
   || (
     switch (mb_expr.mod_desc) {
     | Tmod_structure(structure) => structure |> structureHasGenTypeAnnotation
@@ -96,7 +96,7 @@ let rec moduleTypeHasGenTypeAnnotation =
 and moduleDeclarationHasGenTypeAnnotation =
     (moduleDeclaration: Typedtree.module_declaration) =>
   moduleDeclaration.md_attributes
-  |> hasGenTypeAnnotation
+  |> CodeItem.(hasGenTypeAnnotation)
   || moduleDeclaration.md_type
   |> moduleTypeHasGenTypeAnnotation
 and signatureItemHasGenTypeAnnotation =
@@ -104,9 +104,11 @@ and signatureItemHasGenTypeAnnotation =
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
+    |> List.exists(dec =>
+         dec.Typedtree.typ_attributes |> CodeItem.(hasGenTypeAnnotation)
+       )
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation
+    valueDescription.val_attributes |> CodeItem.(hasGenTypeAnnotation)
   | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
     moduleDeclaration |> moduleDeclarationHasGenTypeAnnotation
   | _ => false
@@ -121,45 +123,6 @@ let cmtHasGenTypeAnnotations = inputCMT =>
   | Interface(signature) => signature |> signatureHasGenTypeAnnotation
   | _ => false
   };
-
-let translateStructItem =
-    (~language, ~propsTypeGen, ~moduleName, structItem): CodeItem.translation =>
-  switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> List.map(CodeItem.translateTypeDeclaration(~language))
-    |> CodeItem.combineTranslations
-
-  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
-    valueBindings
-    |> List.map(
-         CodeItem.translateValueBinding(
-           ~language,
-           ~propsTypeGen,
-           ~moduleName,
-         ),
-       )
-    |> CodeItem.combineTranslations
-
-  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
-    /* external declaration */
-    valueDescription
-    |> CodeItem.translatePrimitive(~language, ~moduleName, ~propsTypeGen)
-
-  | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
-  /* TODO: Support mapping of variant type definitions. */
-  };
-
-let translateStructure = (~config, ~propsTypeGen, ~moduleName, structure) =>
-  structure.Typedtree.str_items
-  |> List.map(structItem =>
-       structItem
-       |> translateStructItem(
-            ~language=config.language,
-            ~propsTypeGen,
-            ~moduleName,
-          )
-     );
 
 let translateSignatureItem =
     (~language, ~propsTypeGen, ~moduleName, signatureItem)
@@ -186,7 +149,9 @@ let translateSignatureItem =
   | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   };
 
-let translateSignature = (~config, ~propsTypeGen, ~moduleName, signature) =>
+let translateSignature =
+    (~config, ~propsTypeGen, ~moduleName, signature)
+    : list(CodeItem.translation) =>
   signature.Typedtree.sig_items
   |> List.map(signatureItem =>
        signatureItem
@@ -248,7 +213,8 @@ let cmtToCodeItems =
   let translationUnits =
     switch (cmt_annots) {
     | Implementation(structure) =>
-      structure |> translateStructure(~config, ~propsTypeGen, ~moduleName)
+      structure
+      |> CodeItem.translateStructure(~config, ~propsTypeGen, ~moduleName)
     | Interface(signature) =>
       signature |> translateSignature(~config, ~propsTypeGen, ~moduleName)
     | _ => []
@@ -273,7 +239,7 @@ let emitCodeItems =
   let language = config.language;
   let codeText =
     codeItems
-    |> EmitJs.emitCodeItems(
+    |> EmitJs.emitCodeItemsAsString(
          ~config,
          ~outputFileRelative,
          ~resolver,
