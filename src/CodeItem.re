@@ -33,11 +33,6 @@ type componentBinding = {
   typ,
 };
 
-type wrapJsComponentDeprecated = {
-  componentName: string,
-  importPath: ImportPath.t,
-};
-
 type wrapJsValue = {
   valueName: string,
   importString: string,
@@ -62,7 +57,6 @@ type valueBinding = {
 
 type t =
   | ImportType(importType)
-  | WrapJsComponentDeprecated(wrapJsComponentDeprecated)
   | WrapJsValue(wrapJsValue)
   | WrapJsComponent(wrapJsComponent)
   | ValueBinding(valueBinding)
@@ -115,8 +109,6 @@ let toString = (~language, codeItem) =>
   switch (codeItem) {
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | WrapJsComponentDeprecated(externalReactClass) =>
-    "WrapJsComponentDeprecated " ++ externalReactClass.componentName
   | WrapJsValue(wrapJsValue) => "WrapJsValue " ++ wrapJsValue.valueName
   | WrapJsComponent(wrapJsComponent) =>
     "WrapJsComponent " ++ wrapJsComponent.importString
@@ -409,7 +401,6 @@ let translatePrimitive =
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type
     |> Dependencies.translateTypeExpr(~language);
-  let genTypeKind = valueDescription.val_attributes |> getGenTypeKind;
   let genTypeImportPayload =
     valueDescription.val_attributes |> getAttributePayload(tagIsGenTypeImport);
   switch (
@@ -417,16 +408,6 @@ let translatePrimitive =
     valueDescription.val_prim,
     genTypeImportPayload,
   ) {
-  | (Ident("ReasonReact_reactClass", []), [path, ..._], _)
-      when path != "" && genTypeKind == GenType => {
-      dependencies: [],
-      codeItems: [
-        WrapJsComponentDeprecated({
-          componentName: valueName |> String.capitalize,
-          importPath: path |> ImportPath.fromStringUnsafe,
-        }),
-      ],
-    }
   | (
       Function({
         argTypes: [_, ..._],

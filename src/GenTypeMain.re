@@ -9,7 +9,6 @@ open GenTypeCommon;
 let getPriority = x =>
   switch (x) {
   | CodeItem.ImportType(_)
-  | WrapJsComponentDeprecated(_)
   | WrapJsComponent(_)
   | WrapJsValue(_) => "2low"
   | ValueBinding(_)
