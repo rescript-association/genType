@@ -477,6 +477,7 @@ let rec emitCodeItem =
     (env, emitters);
 
   | WrapReasonValue({moduleName, id, typ}) =>
+    let name = id |> Ident.name;
     let importPath =
       ModuleResolver.resolveModule(
         ~config,
@@ -494,16 +495,11 @@ let rec emitCodeItem =
       (
         ModuleName.toString(moduleNameBs)
         ++ "."
-        ++ Ident.name(id)
+        ++ name
         |> Converter.toJS(~converter)
       )
       ++ ";"
-      |> EmitTyp.emitExportConst(
-           ~emitters,
-           ~name=id |> Ident.name,
-           ~typ,
-           ~config,
-         );
+      |> EmitTyp.emitExportConst(~emitters, ~name, ~typ, ~config);
 
     (envWithRequires, emitters);
 
