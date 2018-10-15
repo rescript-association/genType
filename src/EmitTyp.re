@@ -271,11 +271,12 @@ let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
   ++ "';"
   |> Emitters.requireEarly(~emitters);
 
-let emitRequire = (~early, ~emitters, ~language, ~moduleName, importPath) => {
+let emitRequire =
+    (~early, ~emitters, ~language, ~moduleName, ~strict, importPath) => {
   let commentBeforeRequire =
     switch (language) {
     | Typescript => "// tslint:disable-next-line:no-var-requires\n"
-    | Flow => flowExpectedError
+    | Flow => strict ? "" : flowExpectedError
     | Untyped => ""
     };
   commentBeforeRequire
@@ -297,6 +298,7 @@ let emitRequireReact = (~early, ~emitters, ~language) =>
       ~emitters,
       ~language,
       ~moduleName=ModuleName.react,
+      ~strict=false,
       ImportPath.react,
     )
   | Typescript =>

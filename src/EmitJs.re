@@ -3,21 +3,24 @@ open GenTypeCommon;
 type typeMap = StringMap.t((list(string), typ));
 
 type env = {
-  requiresEarly: ModuleNameMap.t(ImportPath.t),
-  requires: ModuleNameMap.t(ImportPath.t),
+  requiresEarly: ModuleNameMap.t((ImportPath.t, bool)),
+  requires: ModuleNameMap.t((ImportPath.t, bool)),
   /* For each .cmt we import types from, keep the map of exported types. */
   cmtExportTypeMapCache: StringMap.t(typeMap),
   /* Map of types imported from other files. */
   typesFromOtherFiles: typeMap,
 };
 
-let requireModule = (~early, ~env, ~importPath, moduleName) => {
+let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
   let requires = early ? env.requiresEarly : env.requires;
   let requiresNew =
     requires
     |> ModuleNameMap.add(
          moduleName,
-         moduleName |> ModuleResolver.resolveSourceModule(~importPath),
+         (
+           moduleName |> ModuleResolver.resolveSourceModule(~importPath),
+           strict,
+         ),
        );
   early ?
     {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
@@ -335,15 +338,17 @@ let emitCodeItem =
 
     let emitters = EmitTyp.emitExportDefault(~emitters, ~config, name);
 
-    let envBs =
-      moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
-    let requiresWithReasonReact =
-      envBs.requires
-      |> ModuleNameMap.add(
-           ModuleName.reasonReact,
-           ImportPath.reasonReactPath(~config),
+    let env = moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
+
+    let env =
+      ModuleName.reasonReact
+      |> requireModule(
+           ~early=false,
+           ~env,
+           ~importPath=ImportPath.reasonReactPath(~config),
          );
-    ({...envBs, requires: requiresWithReasonReact}, emitters);
+
+    (env, emitters);
 
   | WrapJsValue({valueName, importString, typ, moduleName}) =>
     let importPath = importString |> ImportPath.fromStringUnsafe;
@@ -547,9 +552,15 @@ let emitCodeItem =
 
 let emitRequires = (~early, ~language, ~requires, emitters) =>
   ModuleNameMap.fold(
-    (moduleName, importPath, emitters) =>
+    (moduleName, (importPath, strict), emitters) =>
       importPath
-      |> EmitTyp.emitRequire(~early, ~emitters, ~language, ~moduleName),
+      |> EmitTyp.emitRequire(
+           ~early,
+           ~emitters,
+           ~language,
+           ~moduleName,
+           ~strict,
+         ),
     requires,
     emitters,
   );

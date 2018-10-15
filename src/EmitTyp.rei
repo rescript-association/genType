@@ -99,6 +99,7 @@ let emitRequire:
     ~emitters: Emitters.t,
     ~language: language,
     ~moduleName: ModuleName.t,
+    ~strict: bool,
     ImportPath.t
   ) =>
   Emitters.t;
