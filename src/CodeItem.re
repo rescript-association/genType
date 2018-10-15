@@ -57,6 +57,7 @@ type wrapReasonComponent = {
 type wrapReasonValue = {
   moduleName: ModuleName.t,
   id: Ident.t,
+  moduleItem: Runtime.moduleItem,
   typ,
 };
 
@@ -70,6 +71,7 @@ type wrapVariant = {
 
 type wrapModule = {
   moduleName: ModuleName.t,
+  moduleItem: Runtime.moduleItem,
   isAnnotated: bool,
   codeItems: list(t),
 }
@@ -328,12 +330,13 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
     Function({typeVars, argTypes, retType})
   };
 
-let translateId = (~language, ~moduleName, ~typeExpr, id): translation => {
+let translateId =
+    (~language, ~moduleName, ~moduleItem, ~typeExpr, id): translation => {
   let typeExprTranslation =
     typeExpr |> Dependencies.translateTypeExpr(~language);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let codeItems = [WrapReasonValue({moduleName, id, typ})];
+  let codeItems = [WrapReasonValue({moduleName, id, moduleItem, typ})];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
 
@@ -360,7 +363,8 @@ let translateId = (~language, ~moduleName, ~typeExpr, id): translation => {
  */
 
 let translateMake =
-    (~language, ~propsTypeGen, ~moduleName, ~typeExpr, id): translation => {
+    (~language, ~propsTypeGen, ~moduleName, ~moduleItem, ~typeExpr, id)
+    : translation => {
   let typeExprTranslation =
     typeExpr
     |> Dependencies.translateTypeExpr(
@@ -436,19 +440,28 @@ let translateMake =
 
   | _ =>
     /* not a component: treat make as a normal function */
-    id |> translateId(~language, ~moduleName, ~typeExpr)
+    id |> translateId(~language, ~moduleName, ~moduleItem, ~typeExpr)
   };
 };
 
 let translateValueBinding =
-    (~language, ~propsTypeGen, ~moduleName, valueBinding): translation => {
+    (~language, ~propsTypeGen, ~moduleItemGen, ~moduleName, valueBinding)
+    : translation => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
+  let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   let typeExpr = vb_expr.exp_type;
   switch (vb_pat.pat_desc, getGenTypeKind(vb_attributes)) {
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
-    id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
+    id
+    |> translateMake(
+         ~language,
+         ~propsTypeGen,
+         ~moduleName,
+         ~moduleItem,
+         ~typeExpr,
+       )
   | (Tpat_var(id, _), GenType) =>
-    id |> translateId(~language, ~moduleName, ~typeExpr)
+    id |> translateId(~language, ~moduleName, ~moduleItem, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -458,6 +471,7 @@ let translateSignatureValue =
       ~language,
       ~propsTypeGen,
       ~moduleName,
+      ~moduleItem,
       valueDescription: Typedtree.value_description,
     )
     : translation => {
@@ -465,8 +479,16 @@ let translateSignatureValue =
   let typeExpr = val_desc.ctyp_type;
   switch (val_id, getGenTypeKind(val_attributes)) {
   | (id, GenType) when Ident.name(id) == "make" =>
-    id |> translateMake(~language, ~propsTypeGen, ~moduleName, ~typeExpr)
-  | (id, GenType) => id |> translateId(~language, ~moduleName, ~typeExpr)
+    id
+    |> translateMake(
+         ~language,
+         ~propsTypeGen,
+         ~moduleName,
+         ~moduleItem,
+         ~typeExpr,
+       )
+  | (id, GenType) =>
+    id |> translateId(~language, ~moduleName, ~moduleItem, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -733,7 +755,8 @@ let translateTypeDeclaration =
   };
 
 let rec translateStructItem =
-        (~config, ~propsTypeGen, ~moduleName, structItem): translation =>
+        (~config, ~propsTypeGen, ~moduleItemGen, ~moduleName, structItem)
+        : translation =>
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
@@ -746,6 +769,7 @@ let rec translateStructItem =
          translateValueBinding(
            ~language=config.language,
            ~propsTypeGen,
+           ~moduleItemGen,
            ~moduleName,
          ),
        )
@@ -762,32 +786,53 @@ let rec translateStructItem =
 
   | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
     moduleBinding
-    |> translateModuleBinding(~config, ~moduleName, ~propsTypeGen)
-
+    |> translateModuleBinding(
+         ~config,
+         ~moduleName,
+         ~moduleItemGen,
+         ~propsTypeGen,
+       )
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings
-    |> List.map(translateModuleBinding(~config, ~moduleName, ~propsTypeGen))
+    |> List.map(
+         translateModuleBinding(
+           ~config,
+           ~moduleName,
+           ~propsTypeGen,
+           ~moduleItemGen,
+         ),
+       )
     |> combineTranslations
 
   | _ => {dependencies: [], codeItems: []}
   }
 and translateStructure =
-    (~config, ~propsTypeGen, ~moduleName, structure): list(translation) =>
+    (~config, ~propsTypeGen, ~moduleName, structure): list(translation) => {
+  let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
   |> List.map(structItem =>
-       structItem |> translateStructItem(~config, ~propsTypeGen, ~moduleName)
-     )
+       structItem
+       |> translateStructItem(
+            ~config,
+            ~propsTypeGen,
+            ~moduleItemGen,
+            ~moduleName,
+          )
+     );
+}
 and translateModuleBinding =
     (
       ~config,
       ~moduleName,
       ~propsTypeGen,
+      ~moduleItemGen,
       {mb_id, mb_expr, mb_attributes, _}: Typedtree.module_binding,
     )
     : translation =>
   switch (mb_expr.mod_desc) {
   | Tmod_structure(structure) =>
     let isAnnotated = mb_attributes |> hasGenTypeAnnotation;
+    let moduleItem = moduleItemGen |> Runtime.newModuleItem;
     let {dependencies, codeItems} =
       structure
       |> translateStructure(~config, ~propsTypeGen, ~moduleName)
@@ -797,6 +842,7 @@ and translateModuleBinding =
       codeItems: [
         WrapModule({
           moduleName: mb_id |> Ident.name |> ModuleName.fromStringUnsafe,
+          moduleItem,
           isAnnotated,
           codeItems,
         }),
@@ -814,6 +860,7 @@ let rec translateModuleDeclaration =
         (
           ~config,
           ~propsTypeGen,
+          ~moduleItem,
           ~moduleName,
           {md_id, md_attributes, md_type, _}: Typedtree.module_declaration,
         ) =>
@@ -829,6 +876,7 @@ let rec translateModuleDeclaration =
       codeItems: [
         WrapModule({
           moduleName: md_id |> Ident.name |> ModuleName.fromStringUnsafe,
+          moduleItem,
           isAnnotated,
           codeItems,
         }),
@@ -841,7 +889,8 @@ let rec translateModuleDeclaration =
   | Tmty_alias(_) => {dependencies: [], codeItems: []}
   }
 and translateSignatureItem =
-    (~config, ~propsTypeGen, ~moduleName, signatureItem): translation =>
+    (~config, ~propsTypeGen, ~moduleItemGen, ~moduleName, signatureItem)
+    : translation =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
@@ -857,27 +906,42 @@ and translateSignatureItem =
            ~propsTypeGen,
          );
     } else {
+      let moduleItem = moduleItemGen |> Runtime.newModuleItem;
       valueDescription
       |> translateSignatureValue(
            ~language=config.language,
            ~propsTypeGen,
+           ~moduleItem,
            ~moduleName,
          );
     }
 
   | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
+    let moduleItem = moduleItemGen |> Runtime.newModuleItem;
     moduleDeclaration
-    |> translateModuleDeclaration(~config, ~propsTypeGen, ~moduleName)
+    |> translateModuleDeclaration(
+         ~config,
+         ~propsTypeGen,
+         ~moduleItem,
+         ~moduleName,
+       );
 
   | _ => {dependencies: [], codeItems: []}
   }
 and translateSignature =
-    (~config, ~propsTypeGen, ~moduleName, signature): list(translation) =>
+    (~config, ~propsTypeGen, ~moduleName, signature): list(translation) => {
+  let moduleItemGen = Runtime.moduleItemGen();
   signature.Typedtree.sig_items
   |> List.map(signatureItem =>
        signatureItem
-       |> translateSignatureItem(~config, ~propsTypeGen, ~moduleName)
+       |> translateSignatureItem(
+            ~config,
+            ~propsTypeGen,
+            ~moduleItemGen,
+            ~moduleName,
+          )
      );
+};
 
 let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
   switch (typePath) {

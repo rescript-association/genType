@@ -3,4 +3,4 @@
 // tslint:disable-next-line:no-var-requires
 const NestedModulesInSignatureBS = require('./NestedModulesInSignature.bs');
 
-export const theAnswer: number = NestedModulesInSignatureBS.theAnswer;
+export const Universe_theAnswer: number = NestedModulesInSignatureBS.Universe[0];

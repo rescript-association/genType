@@ -7,6 +7,10 @@ type recordGen = {
 
 type recordValue = int;
 
+type moduleItemGen = {mutable itemValue: int};
+
+type moduleItem = int;
+
 let emitRecordAsInt = (~language, i) =>
   i |> EmitTyp.blockTagValue(~language);
 
@@ -31,3 +35,13 @@ let newRecordValue = (~unboxed, recordGen) =>
     recordGen.boxed = recordGen.boxed + 1;
     v;
   };
+
+let moduleItemGen = () => {itemValue: 0};
+
+let newModuleItem = moduleItemGen => {
+  let v = moduleItemGen.itemValue;
+  moduleItemGen.itemValue = moduleItemGen.itemValue + 1;
+  v;
+};
+
+let emitModuleItem = itemValue => itemValue |> string_of_int;

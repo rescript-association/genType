@@ -126,6 +126,36 @@ let emitExportType =
        ~comment,
      );
 
+let nameWithNamespace = (~namespace, id) =>
+  [
+    id |> Ident.name,
+    ...namespace
+       |> List.map(((moduleName, _)) => moduleName |> ModuleName.toString),
+  ]
+  |> List.rev
+  |> String.concat("_");
+
+let moduleElementWithNamespace = (~namespace, ~moduleName, ~moduleItem, id) =>
+  (moduleName |> ModuleName.toString)
+  ++ "."
+  ++ (
+    switch (namespace |> List.rev) {
+    | [] => id |> Ident.name
+    | [(firstNestedModule, _), ...rest] =>
+      let restModuleItems =
+        rest |> List.map(((_, moduleItem)) => moduleItem);
+      (firstNestedModule |> ModuleName.toString)
+      ++ (
+        restModuleItems
+        @ [moduleItem]
+        |> List.map(moduleItem =>
+             "[" ++ (moduleItem |> Runtime.emitModuleItem) ++ "]"
+           )
+        |> String.concat("")
+      );
+    }
+  );
+
 let rec emitCodeItem =
         (
           ~config,
@@ -369,7 +399,7 @@ let rec emitCodeItem =
          );
     (env, emitters);
 
-  | WrapModule({moduleName, codeItems, _}) =>
+  | WrapModule({moduleName, moduleItem, codeItems, _}) =>
     codeItems
     |> emitCodeItems(
          ~config,
@@ -379,7 +409,7 @@ let rec emitCodeItem =
          ~emitters,
          ~env,
          ~inputCmtToTypeDeclarations,
-         ~namespace=[moduleName, ...namespace],
+         ~namespace=[(moduleName, moduleItem), ...namespace],
        )
 
   | WrapReasonComponent({
@@ -476,8 +506,8 @@ let rec emitCodeItem =
 
     (env, emitters);
 
-  | WrapReasonValue({moduleName, id, typ}) =>
-    let name = id |> Ident.name;
+  | WrapReasonValue({moduleName, id, moduleItem, typ}) =>
+    let name = id |> nameWithNamespace(~namespace);
     let importPath =
       ModuleResolver.resolveModule(
         ~config,
@@ -493,9 +523,12 @@ let rec emitCodeItem =
 
     let emitters =
       (
-        ModuleName.toString(moduleNameBs)
-        ++ "."
-        ++ name
+        id
+        |> moduleElementWithNamespace(
+             ~moduleName=moduleNameBs,
+             ~namespace,
+             ~moduleItem,
+           )
         |> Converter.toJS(~converter)
       )
       ++ ";"

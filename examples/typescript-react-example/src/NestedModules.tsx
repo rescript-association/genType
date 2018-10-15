@@ -3,4 +3,12 @@
 // tslint:disable-next-line:no-var-requires
 const NestedModulesBS = require('./NestedModules.bs');
 
-export const theAnswer: number = NestedModulesBS.theAnswer;
+export const notNested: number = NestedModulesBS.notNested;
+
+export const Universe_theAnswer: number = NestedModulesBS.Universe[0];
+
+export const Universe_Nested2_nested2Value: number = NestedModulesBS.Universe[2][1];
+
+export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesBS.Universe[2][3][4];
+
+export const Universe_someString: string = NestedModulesBS.Universe[3];

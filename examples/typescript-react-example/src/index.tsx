@@ -4,6 +4,7 @@ import App from "./App";
 import "./index.css";
 import * as Records from "./nested/Records";
 import * as Types from "./nested/Types";
+import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules";
 import ReasonComponent from "./ReasonComponent";
 import { A, B, minus, tToString } from "./ReasonComponent";
 import { t, TA, TB } from "./ReasonComponent";
@@ -31,10 +32,10 @@ const businesses = [
 
 const addresses = Records.findAllAddresses(businesses);
 
-import {roundedNumber} from "./WrapJsValue";
+import { roundedNumber } from "./WrapJsValue";
 // tslint:disable-next-line:no-console
 console.log("index.tsx roundedNumber:", roundedNumber);
-import {areaValue} from "./WrapJsValue";
+import { areaValue } from "./WrapJsValue";
 // tslint:disable-next-line:no-console
 console.log("index.tsx areaValue:", areaValue);
 
@@ -69,3 +70,9 @@ const x3 = Records.payloadValue.payload.v;
 const x4 = Records.getPayloadRecordPlusOne(Records.payloadValue).v;
 // tslint:disable-next-line:no-console
 console.log("x1,x2,x3,x4 are", x1, x2, x3, x4);
+
+// tslint:disable-next-line:no-console
+console.log(
+  "Universe_Nested2_Nested3_nested3Value: ",
+  Universe_Nested2_Nested3_nested3Value
+);

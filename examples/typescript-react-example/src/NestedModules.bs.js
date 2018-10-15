@@ -2,7 +2,30 @@
 'use strict';
 
 
-var Universe = /* module */[/* theAnswer */42];
+var Nested3 = /* module */[
+  /* x */0,
+  /* y */1,
+  /* z */2,
+  /* w */3,
+  /* nested3Value */"nested3Value"
+];
 
+var Nested2 = /* module */[
+  /* x */0,
+  /* nested2Value */1,
+  /* y */2,
+  /* Nested3 */Nested3
+];
+
+var Universe = /* module */[
+  /* theAnswer */42,
+  /* notExported */33,
+  /* Nested2 */Nested2,
+  /* someString */"some exported string"
+];
+
+var notNested = 1;
+
+exports.notNested = notNested;
 exports.Universe = Universe;
 /* No side effect */
