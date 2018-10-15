@@ -59,6 +59,7 @@ let emitImportType =
     (~language, ~emitters, ~inputCmtToTypeDeclarations, ~env, importType) =>
   switch (importType) {
   | CodeItem.ImportComment(s) => (env, s |> Emitters.import(~emitters))
+
   | ImportTypeAs({typeName, asTypeName, importPath, cmtFile}) =>
     let emitters =
       EmitTyp.emitImportTypeAs(
@@ -68,7 +69,6 @@ let emitImportType =
         ~asTypeName,
         ~importPath,
       );
-
     switch (asTypeName, cmtFile) {
     | (None, _)
     | (_, None) => (env, emitters)
