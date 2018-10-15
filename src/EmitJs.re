@@ -351,9 +351,8 @@ let rec emitCodeItem =
 
     (env, emitters);
 
-  | WrapJsValue({valueName, importString, typ, moduleName}) =>
-    let importPath = importString |> ImportPath.fromStringUnsafe;
-
+  | WrapJsValue({valueName, importAnnotation, typ, moduleName}) =>
+    let importPath = importAnnotation.importPath;
     let (emitters, importedAsName, env) =
       switch (language) {
       | Typescript =>
@@ -370,12 +369,8 @@ let rec emitCodeItem =
       | Flow
       | Untyped =>
         /* add an early require(...)  */
-        let importFile = {
-          let base = importString |> Filename.basename;
-          try (base |> Filename.chop_extension) {
-          | Invalid_argument(_) => base
-          };
-        };
+        let importFile = importAnnotation.name;
+
         let importedAsName = importFile ++ "." ++ valueName;
         let env =
           importFile
@@ -401,7 +396,7 @@ let rec emitCodeItem =
              ++ (moduleName |> ModuleName.toString)
              ++ ".re'"
              ++ " and '"
-             ++ importString
+             ++ (importPath |> ImportPath.toString)
              ++ "'.",
          );
     let emitters =
@@ -421,19 +416,14 @@ let rec emitCodeItem =
 
   | WrapJsComponent({
       exportType,
-      importString,
+      importAnnotation,
       childrenTyp,
       propsFields,
       propsTypeName,
       moduleName,
     }) =>
-    let importPath = importString |> ImportPath.fromStringUnsafe;
-    let componentName = {
-      let base = importString |> Filename.basename;
-      try (base |> Filename.chop_extension) {
-      | Invalid_argument(_) => base
-      };
-    };
+    let importPath = importAnnotation.importPath;
+    let componentName = importAnnotation.name;
 
     let (emitters, env) =
       switch (language) {
@@ -492,7 +482,7 @@ let rec emitCodeItem =
              ++ (moduleName |> ModuleName.toString)
              ++ ".re'"
              ++ " and the props of '"
-             ++ importString
+             ++ (importPath |> ImportPath.toString)
              ++ "'.",
          );
 

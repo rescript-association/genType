@@ -25,9 +25,14 @@ type importType =
   | ImportComment(string)
   | ImportTypeAs(importTypeAs);
 
+type importAnnotation = {
+  name: string,
+  importPath: ImportPath.t,
+};
+
 type wrapJsComponent = {
   exportType,
-  importString: string,
+  importAnnotation,
   childrenTyp: typ,
   propsFields: fields,
   propsTypeName: string,
@@ -36,7 +41,7 @@ type wrapJsComponent = {
 
 type wrapJsValue = {
   valueName: string,
-  importString: string,
+  importAnnotation,
   typ,
   moduleName: ModuleName.t,
 };
@@ -119,8 +124,10 @@ let toString = (~language, codeItem) =>
   | ExportVariantType({name, _}) => "ExportVariantType " ++ name
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | WrapJsComponent({importString, _}) => "WrapJsComponent " ++ importString
-  | WrapJsValue({valueName, _}) => "WrapJsValue " ++ valueName
+  | WrapJsComponent({importAnnotation, _}) =>
+    "WrapJsComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
+  | WrapJsValue({importAnnotation, _}) =>
+    "WrapJsValue " ++ (importAnnotation.importPath |> ImportPath.toString)
   | WrapModule({moduleName, _}) =>
     "WrapModule " ++ (moduleName |> ModuleName.toString)
   | WrapReasonComponent({moduleName, _}) =>
@@ -464,6 +471,17 @@ let translateSignatureValue =
   };
 };
 
+let importAnnotationFromString = importString => {
+  let name = {
+    let base = importString |> Filename.basename;
+    try (base |> Filename.chop_extension) {
+    | Invalid_argument(_) => base
+    };
+  };
+  let importPath = ImportPath.fromStringUnsafe(importString);
+  {name, importPath};
+};
+
 /**
  * [@genType]
  * [@bs.module] external myBanner : ReasonReact.reactClass = "./MyBanner";
@@ -561,7 +579,7 @@ let translatePrimitive =
             ~typeName=propsTypeName,
             propsTyp,
           ),
-        importString,
+        importAnnotation: importString |> importAnnotationFromString,
         childrenTyp,
         propsFields,
         propsTypeName,
@@ -575,7 +593,7 @@ let translatePrimitive =
       codeItems: [
         WrapJsValue({
           valueName,
-          importString,
+          importAnnotation: importString |> importAnnotationFromString,
           typ: typeExprTranslation.typ,
           moduleName,
         }),
