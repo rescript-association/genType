@@ -70,7 +70,7 @@ let emitExportVariantType:
     ~language: language,
     ~name: string,
     ~typeParams: list(typ),
-    ~leafTypes: list(typ)
+    ~variants: list(variant)
   ) =>
   Emitters.t;
 

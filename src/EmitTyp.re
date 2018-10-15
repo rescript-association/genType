@@ -241,7 +241,7 @@ let emitExportType =
 };
 
 let emitExportVariantType =
-    (~emitters, ~language, ~name, ~typeParams, ~leafTypes) =>
+    (~emitters, ~language, ~name, ~typeParams, ~variants: list(variant)) =>
   switch (language) {
   | Flow
   | Typescript =>
@@ -252,8 +252,10 @@ let emitExportVariantType =
        )
     ++ " =\n  | "
     ++ (
-      leafTypes
-      |> List.map(typToString(~language))
+      variants
+      |> List.map(({name, params}) =>
+           Ident(name, params) |> typToString(~language)
+         )
       |> String.concat("\n  | ")
     )
     ++ ";"

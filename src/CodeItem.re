@@ -10,7 +10,7 @@ type exportType = {
 
 type exportVariantType = {
   typeParams: list(typ),
-  leafTypes: list(typ),
+  variants: list(variant),
   name: string,
 };
 
@@ -61,9 +61,15 @@ type wrapReasonValue = {
   typ,
 };
 
+type constructorTyp = {
+  typeVars: list(string),
+  argTypes: list(typ),
+  variant,
+};
+
 type wrapVariant = {
   exportType,
-  constructorTyp: typ,
+  constructorTyp,
   argTypes: list(typ),
   variantName: string,
   recordValue: Runtime.recordValue,
@@ -182,13 +188,6 @@ let getGenTypeKind = (attributes: Typedtree.attributes) =>
     NoGenType;
   };
 
-let createFunctionType = (typeVars, argTypes, retType) =>
-  if (argTypes === []) {
-    retType;
-  } else {
-    Function({typeVars, argTypes, retType});
-  };
-
 let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
   opaque,
   typeVars,
@@ -293,8 +292,8 @@ let translateConstructorDeclaration =
 
   let typeVars = argTypes |> TypeVars.freeOfList;
 
-  let leafType = Ident(variantTypeName, typeVars |> TypeVars.toTyp);
-  let constructorTyp = createFunctionType(typeVars, argTypes, leafType);
+  let variant = {name: variantTypeName, params: typeVars |> TypeVars.toTyp};
+  let constructorTyp = {typeVars, argTypes, variant};
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
@@ -312,7 +311,7 @@ let translateConstructorDeclaration =
       recordValue,
     }),
   ];
-  (leafType, (dependencies, codeItems));
+  (variant, (dependencies, codeItems));
 };
 
 /* Applies type parameters to types (for all) */
@@ -738,7 +737,7 @@ let translateTypeDeclaration =
            )
          );
     };
-    let (leafTypes, depsAndVariantLeafBindings) =
+    let (variants, depsAndVariantLeafBindings) =
       leafTypesDepsAndVariantLeafBindings |> List.split;
     let (listListDeps, listListItems) =
       depsAndVariantLeafBindings |> List.split;
@@ -746,11 +745,7 @@ let translateTypeDeclaration =
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let unionType =
-      ExportVariantType({
-        typeParams,
-        leafTypes: leafTypes,
-        name: variantTypeName,
-      });
+      ExportVariantType({typeParams, variants, name: variantTypeName});
     {dependencies: deps, codeItems: List.append(items, [unionType])};
 
   | _ => {dependencies: [], codeItems: []}

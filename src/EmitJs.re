@@ -188,8 +188,13 @@ let rec emitCodeItem =
     };
     (env, emitExportType(~emitters, ~language, exportType));
 
-  | ExportVariantType({CodeItem.typeParams, leafTypes, name}) =>
+  | ExportVariantType({CodeItem.typeParams, variants, name}) =>
     let name = name |> nameWithNamespace(~namespace);
+    let variants =
+      variants
+      |> List.map(({name} as variant) =>
+           {...variant, name: name |> nameWithNamespace(~namespace)}
+         );
     (
       env,
       EmitTyp.emitExportVariantType(
@@ -197,7 +202,7 @@ let rec emitCodeItem =
         ~language,
         ~name,
         ~typeParams,
-        ~leafTypes,
+        ~variants,
       ),
     );
 
@@ -549,6 +554,20 @@ let rec emitCodeItem =
       recordValue,
     }) =>
     let variantName = variantName |> nameWithNamespace(~namespace);
+    let createFunctionType =
+        ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
+      let retType = Ident(name |> nameWithNamespace(~namespace), params);
+      if (argTypes === []) {
+        retType;
+      } else {
+        Function({typeVars, argTypes, retType});
+      };
+    };
+
+    let exportType = {
+      ...exportType,
+      typeName: exportType.typeName |> nameWithNamespace(~namespace),
+    };
     let emitters = emitExportType(~emitters, ~language, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
@@ -559,7 +578,7 @@ let rec emitCodeItem =
         |> EmitTyp.emitExportConst(
              ~emitters,
              ~name=variantName,
-             ~typ=constructorTyp,
+             ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
       } else {
@@ -580,7 +599,7 @@ let rec emitCodeItem =
         |> EmitTyp.emitExportConst(
              ~emitters,
              ~name=variantName,
-             ~typ=constructorTyp,
+             ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
       };

@@ -24,17 +24,17 @@ export type Universe_Nested2_Nested3_nested3Type = Array<Array<string[]>>;
 export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesBS.Universe[2][3][4];
 
 // tslint:disable-next-line:max-classes-per-file 
-export abstract class VariantA { protected opaque!: any }; /* simulate opaque types */
+export abstract class Universe_VariantA { protected opaque!: any }; /* simulate opaque types */
 
-export const Universe_A: VariantA = 0 as any;
+export const Universe_A: Universe_VariantA = 0 as any;
 
 // tslint:disable-next-line:max-classes-per-file 
-export abstract class VariantB { protected opaque!: any }; /* simulate opaque types */
+export abstract class Universe_VariantB { protected opaque!: any }; /* simulate opaque types */
 
-export const Universe_B: (_1:string) => VariantB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
+export const Universe_B: (_1:string) => Universe_VariantB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
 
 export type Universe_variant =
-  | VariantA
-  | VariantB;
+  | Universe_VariantA
+  | Universe_VariantB;
 
 export const Universe_someString: string = NestedModulesBS.Universe[3];

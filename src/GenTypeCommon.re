@@ -93,6 +93,11 @@ and function_ = {
   retType: typ,
 };
 
+type variant = {
+  name: string,
+  params: list(typ),
+};
+
 type label =
   | Nolabel
   | Label(string)
