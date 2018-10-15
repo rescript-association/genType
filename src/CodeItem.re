@@ -725,26 +725,25 @@ let translateTypeDeclaration =
 
   | (astTypeParams, Type_variant(constructorDeclarations), GenType)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
-    let variantTypeName = Ident.name(dec.typ_id);
+    let variantTypeName = dec.typ_id |> Ident.name;
     let resultTypesDepsAndVariantLeafBindings = {
       let recordGen = Runtime.recordGen();
-      List.map(
-        constructorDeclaration =>
-          translateConstructorDeclaration(
-            ~language,
-            ~recordGen,
-            variantTypeName,
-            constructorDeclaration,
-          ),
-        constructorDeclarations,
-      );
+      constructorDeclarations
+      |> List.map(constructorDeclaration =>
+           translateConstructorDeclaration(
+             ~language,
+             ~recordGen,
+             variantTypeName,
+             constructorDeclaration,
+           )
+         );
     };
     let (resultTypes, depsAndVariantLeafBindings) =
-      List.split(resultTypesDepsAndVariantLeafBindings);
+      resultTypesDepsAndVariantLeafBindings |> List.split;
     let (listListDeps, listListItems) =
-      List.split(depsAndVariantLeafBindings);
-    let deps = List.concat(listListDeps);
-    let items = List.concat(listListItems);
+      depsAndVariantLeafBindings |> List.split;
+    let deps = listListDeps |> List.concat;
+    let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let unionType =
       ExportVariantType({
