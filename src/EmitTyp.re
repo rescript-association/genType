@@ -251,7 +251,11 @@ let emitExportVariantType =
          ~typeVars=typeParams |> List.map(typToString(~language)),
        )
     ++ " =\n  | "
-    ++ String.concat("\n  | ", List.map(typToString(~language), leafTypes))
+    ++ (
+      leafTypes
+      |> List.map(typToString(~language))
+      |> String.concat("\n  | ")
+    )
     ++ ";"
     |> Emitters.export(~emitters)
   | Untyped => emitters

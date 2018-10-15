@@ -7,6 +7,9 @@ module Universe = {
 
   let notExported = 33;
 
+  [@genType]
+  type nestedType = array(string);
+
   module Nested2 = {
     let x = 0;
 
@@ -15,6 +18,9 @@ module Universe = {
 
     let y = 2;
 
+    [@genType]
+    type nested2Type = array(array(string));
+
     module Nested3 = {
       let x = 0;
       let y = 1;
@@ -22,9 +28,19 @@ module Universe = {
       let w = 3;
 
       [@genType]
+      type nested3Type = array(array(array(string)));
+
+      [@genType]
       let nested3Value = "nested3Value";
     };
+    /* [@genType]
+       let nested2Function = (x: Nested3.nested3Type) => x; */
   };
+
+  [@genType]
+  type variant =
+    | A
+    | B(string);
 
   [@genType]
   let someString = "some exported string";

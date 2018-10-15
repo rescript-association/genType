@@ -126,21 +126,21 @@ let emitExportType =
        ~comment,
      );
 
-let nameWithNamespace = (~namespace, id) =>
+let nameWithNamespace = (~namespace, name) =>
   [
-    id |> Ident.name,
+    name,
     ...namespace
        |> List.map(((moduleName, _)) => moduleName |> ModuleName.toString),
   ]
   |> List.rev
   |> String.concat("_");
 
-let moduleElementWithNamespace = (~namespace, ~moduleName, ~moduleItem, id) =>
+let moduleElementWithNamespace = (~namespace, ~moduleName, ~moduleItem, name) =>
   (moduleName |> ModuleName.toString)
   ++ "."
   ++ (
     switch (namespace |> List.rev) {
-    | [] => id |> Ident.name
+    | [] => name
     | [(firstNestedModule, _), ...rest] =>
       let restModuleItems =
         rest |> List.map(((_, moduleItem)) => moduleItem);
@@ -181,12 +181,16 @@ let rec emitCodeItem =
   };
 
   switch (codeItem) {
-  | CodeItem.ExportType(exportType) => (
-      env,
-      emitExportType(~emitters, ~language, exportType),
-    )
+  | CodeItem.ExportType(exportType) =>
+    let exportType = {
+      ...exportType,
+      typeName: exportType.typeName |> nameWithNamespace(~namespace),
+    };
+    (env, emitExportType(~emitters, ~language, exportType));
 
-  | ExportVariantType({CodeItem.typeParams, leafTypes, name}) => (
+  | ExportVariantType({CodeItem.typeParams, leafTypes, name}) =>
+    let name = name |> nameWithNamespace(~namespace);
+    (
       env,
       EmitTyp.emitExportVariantType(
         ~emitters,
@@ -195,7 +199,7 @@ let rec emitCodeItem =
         ~typeParams,
         ~leafTypes,
       ),
-    )
+    );
 
   | ImportType(importType) =>
     emitImportType(
@@ -507,7 +511,7 @@ let rec emitCodeItem =
     (env, emitters);
 
   | WrapReasonValue({moduleName, id, moduleItem, typ}) =>
-    let name = id |> nameWithNamespace(~namespace);
+    let name = id |> Ident.name |> nameWithNamespace(~namespace);
     let importPath =
       ModuleResolver.resolveModule(
         ~config,
@@ -524,6 +528,7 @@ let rec emitCodeItem =
     let emitters =
       (
         id
+        |> Ident.name
         |> moduleElementWithNamespace(
              ~moduleName=moduleNameBs,
              ~namespace,
