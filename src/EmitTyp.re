@@ -257,13 +257,6 @@ let emitExportVariantType =
   | Untyped => emitters
   };
 
-let commentBeforeRequire = (~language) =>
-  switch (language) {
-  | Typescript => "// tslint:disable-next-line:no-var-requires\n"
-  | Flow => flowExpectedError
-  | Untyped => ""
-  };
-
 let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
   "import "
   ++ (
@@ -278,14 +271,21 @@ let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
   ++ "';"
   |> Emitters.requireEarly(~emitters);
 
-let emitRequire = (~early, ~emitters, ~language, ~moduleName, importPath) =>
-  commentBeforeRequire(~language)
+let emitRequire = (~early, ~emitters, ~language, ~moduleName, importPath) => {
+  let commentBeforeRequire =
+    switch (language) {
+    | Typescript => "// tslint:disable-next-line:no-var-requires\n"
+    | Flow => flowExpectedError
+    | Untyped => ""
+    };
+  commentBeforeRequire
   ++ "const "
   ++ ModuleName.toString(moduleName)
   ++ " = require('"
   ++ (importPath |> ImportPath.toString)
   ++ "');"
   |> (early ? Emitters.requireEarly : Emitters.require)(~emitters);
+};
 
 let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
 
