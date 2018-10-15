@@ -151,16 +151,7 @@ let rec emitCodeItem =
   };
 
   switch (codeItem) {
-  | CodeItem.ImportType(importType) =>
-    emitImportType(
-      ~language,
-      ~emitters,
-      ~inputCmtToTypeDeclarations,
-      ~env,
-      importType,
-    )
-
-  | ExportType(exportType) => (
+  | CodeItem.ExportType(exportType) => (
       env,
       emitExportType(~emitters, ~language, exportType),
     )
@@ -176,244 +167,14 @@ let rec emitCodeItem =
       ),
     )
 
-  | WrapReasonValue({moduleName, id, typ}) =>
-    let importPath =
-      ModuleResolver.resolveModule(
-        ~config,
-        ~outputFileRelative,
-        ~resolver,
-        ~importExtension=".bs",
-        moduleName,
-      );
-    let moduleNameBs = moduleName |> ModuleName.forBsFile;
-    let envWithRequires =
-      moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
-    let converter = typ |> typToConverter;
-
-    let emitters =
-      (
-        ModuleName.toString(moduleNameBs)
-        ++ "."
-        ++ Ident.name(id)
-        |> Converter.toJS(~converter)
-      )
-      ++ ";"
-      |> EmitTyp.emitExportConst(
-           ~emitters,
-           ~name=id |> Ident.name,
-           ~typ,
-           ~config,
-         );
-
-    (envWithRequires, emitters);
-
-  | WrapVariant({
-      exportType,
-      constructorTyp,
-      argTypes,
-      variantName,
-      recordValue,
-    }) =>
-    let emitters = emitExportType(~emitters, ~language, exportType);
-
-    let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
-    let emitters =
-      if (argTypes == []) {
-        recordAsInt
-        ++ ";"
-        |> EmitTyp.emitExportConst(
-             ~emitters,
-             ~name=variantName,
-             ~typ=constructorTyp,
-             ~config,
-           );
-      } else {
-        let args =
-          argTypes
-          |> List.mapi((i, typ) => {
-               let converter = typ |> typToConverter;
-               let arg = EmitText.argi(i + 1);
-               let v = arg |> Converter.toReason(~converter);
-               (arg, v);
-             });
-        let mkReturn = s => "return " ++ s;
-        let mkBody = args =>
-          recordValue
-          |> Runtime.emitRecordAsBlock(~language, ~args)
-          |> mkReturn;
-        EmitText.funDef(~args, ~mkBody, "")
-        |> EmitTyp.emitExportConst(
-             ~emitters,
-             ~name=variantName,
-             ~typ=constructorTyp,
-             ~config,
-           );
-      };
-    let env =
-      ModuleName.createBucklescriptBlock
-      |> requireModule(
-           ~early=false,
-           ~env,
-           ~importPath=ImportPath.bsBlockPath(~config),
-         );
-    (env, emitters);
-
-  | WrapReasonComponent({
-      exportType,
-      moduleName,
-      propsTypeName,
-      componentType,
-      typ,
-    }) =>
-    let converter = typ |> typToConverter;
-    let importPath =
-      ModuleResolver.resolveModule(
-        ~config,
-        ~outputFileRelative,
-        ~resolver,
-        ~importExtension=".bs",
-        moduleName,
-      );
-    let moduleNameBs = moduleName |> ModuleName.forBsFile;
-
-    let name = EmitTyp.componentExportName(~language, ~moduleName);
-    let jsProps = "jsProps";
-    let jsPropsDot = s => jsProps ++ "." ++ s;
-
-    let args =
-      switch (converter) {
-      | FunctionC((groupedArgConverters, _retConverter)) =>
-        switch (groupedArgConverters) {
-        | [
-            GroupConverter(propConverters),
-            ArgConverter(_, childrenConverter),
-            ..._,
-          ] =>
-          (
-            propConverters
-            |> List.map(((s, argConverter)) =>
-                 jsPropsDot(s) |> Converter.toReason(~converter=argConverter)
-               )
-          )
-          @ [
-            jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter),
-          ]
-
-        | [ArgConverter(_, childrenConverter), ..._] => [
-            jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter),
-          ]
-
-        | _ => [jsPropsDot("children")]
-        }
-
-      | _ => [jsPropsDot("children")]
-      };
-
-    let emitters = emitExportType(~emitters, ~language, exportType);
-    let emitters =
-      EmitTyp.emitExportConstMany(
-        ~emitters,
-        ~name,
-        ~typ=componentType,
-        ~config,
-        [
-          "ReasonReact.wrapReasonForJs(",
-          "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
-          "  (function _("
-          ++ EmitTyp.ofType(
-               ~language,
-               ~typ=Ident(propsTypeName, []),
-               jsProps,
-             )
-          ++ ") {",
-          "     return "
-          ++ ModuleName.toString(moduleNameBs)
-          ++ "."
-          ++ "make"
-          ++ EmitText.parens(args)
-          ++ ";",
-          "  }));",
-        ],
-      );
-
-    let emitters = EmitTyp.emitExportDefault(~emitters, ~config, name);
-
-    let env = moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
-
-    let env =
-      ModuleName.reasonReact
-      |> requireModule(
-           ~early=false,
-           ~env,
-           ~importPath=ImportPath.reasonReactPath(~config),
-         );
-
-    (env, emitters);
-
-  | WrapJsValue({valueName, importAnnotation, typ, moduleName}) =>
-    let importPath = importAnnotation.importPath;
-    let (emitters, importedAsName, env) =
-      switch (language) {
-      | Typescript =>
-        /* emit an import {... as ...} immediately */
-        let valueNameNotChecked = valueName ++ "NotChecked";
-        let emitters =
-          importPath
-          |> EmitTyp.emitImportValueAsEarly(
-               ~emitters,
-               ~name=valueName,
-               ~nameAs=Some(valueNameNotChecked),
-             );
-        (emitters, valueNameNotChecked, env);
-      | Flow
-      | Untyped =>
-        /* add an early require(...)  */
-        let importFile = importAnnotation.name;
-
-        let importedAsName = importFile ++ "." ++ valueName;
-        let env =
-          importFile
-          |> ModuleName.fromStringUnsafe
-          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
-        (emitters, importedAsName, env);
-      };
-    let converter = typ |> typToConverter;
-    let valueNameTypeChecked = valueName ++ "TypeChecked";
-
-    let emitters =
-      importedAsName
-      ++ ";"
-      |> EmitTyp.emitExportConstEarly(
-           ~emitters,
-           ~name=valueNameTypeChecked,
-           ~typ,
-           ~config,
-           ~comment=
-             "In case of type error, check the type of '"
-             ++ valueName
-             ++ "' in '"
-             ++ (moduleName |> ModuleName.toString)
-             ++ ".re'"
-             ++ " and '"
-             ++ (importPath |> ImportPath.toString)
-             ++ "'.",
-         );
-    let emitters =
-      (valueNameTypeChecked |> Converter.toReason(~converter))
-      ++ ";"
-      |> EmitTyp.emitExportConstEarly(
-           ~comment=
-             "Export '"
-             ++ valueName
-             ++ "' early to allow circular import from the '.bs.js' file.",
-           ~emitters,
-           ~name=valueName,
-           ~typ,
-           ~config,
-         );
-    (env, emitters);
+  | ImportType(importType) =>
+    emitImportType(
+      ~language,
+      ~emitters,
+      ~inputCmtToTypeDeclarations,
+      ~env,
+      importType,
+    )
 
   | WrapJsComponent({
       exportType,
@@ -545,6 +306,69 @@ let rec emitCodeItem =
          );
     (env, emitters);
 
+  | WrapJsValue({valueName, importAnnotation, typ, moduleName}) =>
+    let importPath = importAnnotation.importPath;
+    let (emitters, importedAsName, env) =
+      switch (language) {
+      | Typescript =>
+        /* emit an import {... as ...} immediately */
+        let valueNameNotChecked = valueName ++ "NotChecked";
+        let emitters =
+          importPath
+          |> EmitTyp.emitImportValueAsEarly(
+               ~emitters,
+               ~name=valueName,
+               ~nameAs=Some(valueNameNotChecked),
+             );
+        (emitters, valueNameNotChecked, env);
+      | Flow
+      | Untyped =>
+        /* add an early require(...)  */
+        let importFile = importAnnotation.name;
+
+        let importedAsName = importFile ++ "." ++ valueName;
+        let env =
+          importFile
+          |> ModuleName.fromStringUnsafe
+          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
+        (emitters, importedAsName, env);
+      };
+    let converter = typ |> typToConverter;
+    let valueNameTypeChecked = valueName ++ "TypeChecked";
+
+    let emitters =
+      importedAsName
+      ++ ";"
+      |> EmitTyp.emitExportConstEarly(
+           ~emitters,
+           ~name=valueNameTypeChecked,
+           ~typ,
+           ~config,
+           ~comment=
+             "In case of type error, check the type of '"
+             ++ valueName
+             ++ "' in '"
+             ++ (moduleName |> ModuleName.toString)
+             ++ ".re'"
+             ++ " and '"
+             ++ (importPath |> ImportPath.toString)
+             ++ "'.",
+         );
+    let emitters =
+      (valueNameTypeChecked |> Converter.toReason(~converter))
+      ++ ";"
+      |> EmitTyp.emitExportConstEarly(
+           ~comment=
+             "Export '"
+             ++ valueName
+             ++ "' early to allow circular import from the '.bs.js' file.",
+           ~emitters,
+           ~name=valueName,
+           ~typ,
+           ~config,
+         );
+    (env, emitters);
+
   | WrapModule({moduleName, codeItems, _}) =>
     codeItems
     |> emitCodeItems(
@@ -557,6 +381,182 @@ let rec emitCodeItem =
          ~inputCmtToTypeDeclarations,
          ~namespace=[moduleName, ...namespace],
        )
+
+  | WrapReasonComponent({
+      exportType,
+      moduleName,
+      propsTypeName,
+      componentType,
+      typ,
+    }) =>
+    let converter = typ |> typToConverter;
+    let importPath =
+      ModuleResolver.resolveModule(
+        ~config,
+        ~outputFileRelative,
+        ~resolver,
+        ~importExtension=".bs",
+        moduleName,
+      );
+    let moduleNameBs = moduleName |> ModuleName.forBsFile;
+
+    let name = EmitTyp.componentExportName(~language, ~moduleName);
+    let jsProps = "jsProps";
+    let jsPropsDot = s => jsProps ++ "." ++ s;
+
+    let args =
+      switch (converter) {
+      | FunctionC((groupedArgConverters, _retConverter)) =>
+        switch (groupedArgConverters) {
+        | [
+            GroupConverter(propConverters),
+            ArgConverter(_, childrenConverter),
+            ..._,
+          ] =>
+          (
+            propConverters
+            |> List.map(((s, argConverter)) =>
+                 jsPropsDot(s) |> Converter.toReason(~converter=argConverter)
+               )
+          )
+          @ [
+            jsPropsDot("children")
+            |> Converter.toReason(~converter=childrenConverter),
+          ]
+
+        | [ArgConverter(_, childrenConverter), ..._] => [
+            jsPropsDot("children")
+            |> Converter.toReason(~converter=childrenConverter),
+          ]
+
+        | _ => [jsPropsDot("children")]
+        }
+
+      | _ => [jsPropsDot("children")]
+      };
+
+    let emitters = emitExportType(~emitters, ~language, exportType);
+    let emitters =
+      EmitTyp.emitExportConstMany(
+        ~emitters,
+        ~name,
+        ~typ=componentType,
+        ~config,
+        [
+          "ReasonReact.wrapReasonForJs(",
+          "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
+          "  (function _("
+          ++ EmitTyp.ofType(
+               ~language,
+               ~typ=Ident(propsTypeName, []),
+               jsProps,
+             )
+          ++ ") {",
+          "     return "
+          ++ ModuleName.toString(moduleNameBs)
+          ++ "."
+          ++ "make"
+          ++ EmitText.parens(args)
+          ++ ";",
+          "  }));",
+        ],
+      );
+
+    let emitters = EmitTyp.emitExportDefault(~emitters, ~config, name);
+
+    let env = moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
+
+    let env =
+      ModuleName.reasonReact
+      |> requireModule(
+           ~early=false,
+           ~env,
+           ~importPath=ImportPath.reasonReactPath(~config),
+         );
+
+    (env, emitters);
+
+  | WrapReasonValue({moduleName, id, typ}) =>
+    let importPath =
+      ModuleResolver.resolveModule(
+        ~config,
+        ~outputFileRelative,
+        ~resolver,
+        ~importExtension=".bs",
+        moduleName,
+      );
+    let moduleNameBs = moduleName |> ModuleName.forBsFile;
+    let envWithRequires =
+      moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
+    let converter = typ |> typToConverter;
+
+    let emitters =
+      (
+        ModuleName.toString(moduleNameBs)
+        ++ "."
+        ++ Ident.name(id)
+        |> Converter.toJS(~converter)
+      )
+      ++ ";"
+      |> EmitTyp.emitExportConst(
+           ~emitters,
+           ~name=id |> Ident.name,
+           ~typ,
+           ~config,
+         );
+
+    (envWithRequires, emitters);
+
+  | WrapVariant({
+      exportType,
+      constructorTyp,
+      argTypes,
+      variantName,
+      recordValue,
+    }) =>
+    let emitters = emitExportType(~emitters, ~language, exportType);
+
+    let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
+    let emitters =
+      if (argTypes == []) {
+        recordAsInt
+        ++ ";"
+        |> EmitTyp.emitExportConst(
+             ~emitters,
+             ~name=variantName,
+             ~typ=constructorTyp,
+             ~config,
+           );
+      } else {
+        let args =
+          argTypes
+          |> List.mapi((i, typ) => {
+               let converter = typ |> typToConverter;
+               let arg = EmitText.argi(i + 1);
+               let v = arg |> Converter.toReason(~converter);
+               (arg, v);
+             });
+        let mkReturn = s => "return " ++ s;
+        let mkBody = args =>
+          recordValue
+          |> Runtime.emitRecordAsBlock(~language, ~args)
+          |> mkReturn;
+        EmitText.funDef(~args, ~mkBody, "")
+        |> EmitTyp.emitExportConst(
+             ~emitters,
+             ~name=variantName,
+             ~typ=constructorTyp,
+             ~config,
+           );
+      };
+    let env =
+      ModuleName.createBucklescriptBlock
+      |> requireModule(
+           ~early=false,
+           ~env,
+           ~importPath=ImportPath.bsBlockPath(~config),
+         );
+    (env, emitters);
   };
 }
 and emitCodeItems =
