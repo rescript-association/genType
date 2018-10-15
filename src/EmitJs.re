@@ -12,12 +12,17 @@ type env = {
   typesFromOtherFiles: typeMap,
 };
 
-let requireModule = (~requires, ~importPath, moduleName) =>
-  requires
-  |> ModuleNameMap.add(
-       moduleName,
-       moduleName |> ModuleResolver.resolveSourceModule(~importPath),
-     );
+let requireModule = (~early, ~env, ~importPath, moduleName) => {
+  let requires = early ? env.requiresEarly : env.requires;
+  let requiresNew =
+    requires
+    |> ModuleNameMap.add(
+         moduleName,
+         moduleName |> ModuleResolver.resolveSourceModule(~importPath),
+       );
+  early ?
+    {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
+};
 
 let createExportTypeMap = (~language, codeItems): typeMap => {
   let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
@@ -237,8 +242,8 @@ let emitCodeItem =
         moduleName,
       );
     let moduleNameBs = moduleName |> ModuleName.forBsFile;
-    let requires =
-      moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
+    let envWithRequires =
+      moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
     let converter = typ |> typToConverter;
 
     let emitters =
@@ -256,7 +261,7 @@ let emitCodeItem =
            ~config,
          );
 
-    ({...env, requires}, emitters);
+    (envWithRequires, emitters);
 
   | ConstructorBinding(
       exportType,
@@ -404,15 +409,15 @@ let emitCodeItem =
 
       let emitters = EmitTyp.emitExportDefault(~emitters, ~config, name);
 
-      let requiresWithModule =
-        moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
+      let envBs =
+        moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
       let requiresWithReasonReact =
-        requiresWithModule
+        envBs.requires
         |> ModuleNameMap.add(
              ModuleName.reasonReact,
              ImportPath.reasonReactPath(~config),
            );
-      ({...env, requires: requiresWithReasonReact}, emitters);
+      ({...envBs, requires: requiresWithReasonReact}, emitters);
     };
 
   | WrapJsComponentDeprecated(
@@ -437,7 +442,7 @@ let emitCodeItem =
   | WrapJsValue({valueName, importString, typ, moduleName}) =>
     let importPath = importString |> ImportPath.fromStringUnsafe;
 
-    let (emitters, importedAsName, requiresEarly) =
+    let (emitters, importedAsName, newEnv) =
       switch (language) {
       | Typescript =>
         /* emit an import {... as ...} immediately */
@@ -449,17 +454,17 @@ let emitCodeItem =
                ~name=valueName,
                ~nameAs=Some(valueNameNotChecked),
              );
-        (emitters, valueNameNotChecked, env.requiresEarly);
+        (emitters, valueNameNotChecked, env);
       | Flow
       | Untyped =>
         /* add an early require(...)  */
         let importFile = importString |> Filename.basename;
         let importedAsName = importFile ++ "." ++ valueName;
-        let requiresEarly =
+        let env =
           importFile
           |> ModuleName.fromStringUnsafe
-          |> requireModule(~requires=env.requiresEarly, ~importPath);
-        (emitters, importedAsName, requiresEarly);
+          |> requireModule(~early=true, ~env, ~importPath);
+        (emitters, importedAsName, env);
       };
     let converter = typ |> typToConverter;
     let valueNameTypeChecked = valueName ++ "TypeChecked";
@@ -495,7 +500,6 @@ let emitCodeItem =
            ~typ,
            ~config,
          );
-    let newEnv = {...env, requiresEarly};
     (newEnv, emitters);
 
   | WrapJsComponent({
@@ -507,10 +511,14 @@ let emitCodeItem =
       moduleName,
     }) =>
     let importPath = importString |> ImportPath.fromStringUnsafe;
-    let componentName =
-      importString |> Filename.basename |> Filename.chop_extension;
+    let componentName = {
+      let base = importString |> Filename.basename;
+      try (base |> Filename.chop_extension) {
+      | Invalid_argument(_) => base
+      };
+    };
 
-    let (emitters, requiresEarly) =
+    let (emitters, newEnv) =
       switch (language) {
       | Typescript =>
         /* emit an import {... as ...} immediately */
@@ -521,15 +529,15 @@ let emitCodeItem =
                ~name=componentName,
                ~nameAs=None,
              );
-        (emitters, env.requiresEarly);
+        (emitters, env);
       | Flow
       | Untyped =>
         /* add an early require(...)  */
-        let requiresEarly =
+        let newEnv =
           componentName
           |> ModuleName.fromStringUnsafe
-          |> requireModule(~requires=env.requiresEarly, ~importPath);
-        (emitters, requiresEarly);
+          |> requireModule(~early=true, ~env, ~importPath);
+        (emitters, newEnv);
       };
     let componentNameTypeChecked = componentName ++ "TypeChecked";
 
@@ -621,14 +629,13 @@ let emitCodeItem =
            ~config,
          );
     let requiresEarlyWithReasonReact =
-      requiresEarly
+      newEnv.requiresEarly
       |> ModuleNameMap.add(
            ModuleName.reasonReact,
            ImportPath.reasonReactPath(~config),
          );
 
-    let newEnv = {...env, requiresEarly: requiresEarlyWithReasonReact};
-    (newEnv, emitters);
+    ({...newEnv, requiresEarly: requiresEarlyWithReasonReact}, emitters);
   };
 };
 
