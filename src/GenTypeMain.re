@@ -67,7 +67,7 @@ let rec structureItemHasGenTypeAnnotation =
   | _ => false
   }
 and moduleBindingHasGenTypeAnnotation =
-    ({mb_expr, mb_attributes}: Typedtree.module_binding) =>
+    ({mb_expr, mb_attributes, _}: Typedtree.module_binding) =>
   mb_attributes
   |> hasGenTypeAnnotation
   || (

@@ -109,13 +109,13 @@ let getImportTypeUniqueName = importType =>
 
 let toString = (~language, codeItem) =>
   switch (codeItem) {
-  | ExportType({typeName}) => "ExportType " ++ typeName
-  | ExportVariantType({name}) => "ExportVariantType " ++ name
+  | ExportType({typeName, _}) => "ExportType " ++ typeName
+  | ExportVariantType({name, _}) => "ExportVariantType " ++ name
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | WrapJsComponent({importString}) => "WrapJsComponent " ++ importString
-  | WrapJsValue({valueName}) => "WrapJsValue " ++ valueName
-  | WrapReasonComponent({moduleName}) =>
+  | WrapJsComponent({importString, _}) => "WrapJsComponent " ++ importString
+  | WrapJsValue({valueName, _}) => "WrapJsValue " ++ valueName
+  | WrapReasonComponent({moduleName, _}) =>
     "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
   | WrapReasonValue({moduleName, id, typ}) =>
     "WrapReasonValue"
@@ -125,7 +125,7 @@ let toString = (~language, codeItem) =>
     ++ ModuleName.toString(moduleName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
-  | WrapVariant({variantName}) => "WrapVariant " ++ variantName
+  | WrapVariant({variantName, _}) => "WrapVariant " ++ variantName
   };
 
 type attributePayload =
