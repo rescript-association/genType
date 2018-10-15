@@ -374,7 +374,7 @@ let emitCodeItem =
         let env =
           importFile
           |> ModuleName.fromStringUnsafe
-          |> requireModule(~early=true, ~env, ~importPath);
+          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
         (emitters, importedAsName, env);
       };
     let converter = typ |> typToConverter;
@@ -447,7 +447,7 @@ let emitCodeItem =
         let env =
           componentName
           |> ModuleName.fromStringUnsafe
-          |> requireModule(~early=true, ~env, ~importPath);
+          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
         (emitters, env);
       };
     let componentNameTypeChecked = componentName ++ "TypeChecked";

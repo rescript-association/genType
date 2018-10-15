@@ -4,7 +4,6 @@
  * @nolint
  */
 
-// $FlowExpectedError: Reason checked type sufficiently
 const MyMath = require('./MyMath');
 
 // In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.

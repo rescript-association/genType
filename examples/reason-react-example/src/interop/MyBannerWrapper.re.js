@@ -7,7 +7,6 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const React = require('react');
 
-// $FlowExpectedError: Reason checked type sufficiently
 const MyBanner = require('./MyBanner.component');
 
 // $FlowExpectedError: Reason checked type sufficiently
