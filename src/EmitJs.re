@@ -545,6 +545,15 @@ let emitCodeItem =
   };
 };
 
+let emitRequires = (~early, ~language, ~requires, emitters) =>
+  ModuleNameMap.fold(
+    (moduleName, importPath, emitters) =>
+      importPath
+      |> EmitTyp.emitRequire(~early, ~emitters, ~language, ~moduleName),
+    requires,
+    emitters,
+  );
+
 let emitCodeItems =
     (
       ~config,
@@ -577,26 +586,8 @@ let emitCodeItems =
            ),
          (initialEnv, Emitters.initial),
        );
-  let emitters =
-    ModuleNameMap.fold(
-      (moduleName, importPath, emitters) =>
-        importPath
-        |> EmitTyp.emitRequire(~early=true, ~emitters, ~language, ~moduleName),
-      finalEnv.requiresEarly,
-      emitters,
-    );
-  let emitters =
-    ModuleNameMap.fold(
-      (moduleName, importPath, emitters) =>
-        EmitTyp.emitRequire(
-          ~early=false,
-          ~emitters,
-          ~language,
-          ~moduleName,
-          importPath,
-        ),
-      finalEnv.requires,
-      emitters,
-    );
-  emitters |> Emitters.toString(~separator="\n\n");
+  emitters
+  |> emitRequires(~early=true, ~language, ~requires=finalEnv.requiresEarly)
+  |> emitRequires(~early=false, ~language, ~requires=finalEnv.requires)
+  |> Emitters.toString(~separator="\n\n");
 };
