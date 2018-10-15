@@ -189,6 +189,28 @@ let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
   |> List.concat;
 };
 
+let translateStructure = (~config, ~propsTypeGen, ~moduleName, structure) =>
+  structure.Typedtree.str_items
+  |> List.map(structItem =>
+       structItem
+       |> translateStructItem(
+            ~language=config.language,
+            ~propsTypeGen,
+            ~moduleName,
+          )
+     );
+
+let translateSignature = (~config, ~propsTypeGen, ~moduleName, signature) =>
+  signature.Typedtree.sig_items
+  |> List.map(signatureItem =>
+       signatureItem
+       |> translateSignatureItem(
+            ~language=config.language,
+            ~propsTypeGen,
+            ~moduleName,
+          )
+     );
+
 let cmtToCodeItems =
     (
       ~config,
@@ -203,16 +225,7 @@ let cmtToCodeItems =
   let translationUnits =
     switch (cmt_annots) {
     | Implementation(structure) =>
-      structure.Typedtree.str_items
-      |> List.map(structItem =>
-           structItem
-           |> translateStructItem(
-                ~language=config.language,
-                ~propsTypeGen,
-                ~moduleName,
-              )
-         )
-
+      structure |> translateStructure(~config, ~propsTypeGen, ~moduleName)
     | Interface(signature) =>
       signature.Typedtree.sig_items
       |> List.map(signatureItem =>
