@@ -370,7 +370,12 @@ let rec emitCodeItem =
       | Flow
       | Untyped =>
         /* add an early require(...)  */
-        let importFile = importString |> Filename.basename;
+        let importFile = {
+          let base = importString |> Filename.basename;
+          try (base |> Filename.chop_extension) {
+          | Invalid_argument(_) => base
+          };
+        };
         let importedAsName = importFile ++ "." ++ valueName;
         let env =
           importFile
