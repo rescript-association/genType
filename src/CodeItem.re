@@ -354,7 +354,7 @@ let translateMake =
   };
 };
 
-let translateStructValue =
+let translateValueBinding =
     (~language, ~propsTypeGen, ~moduleName, valueBinding): translation => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let typeExpr = vb_expr.exp_type;

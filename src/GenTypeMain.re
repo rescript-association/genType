@@ -133,7 +133,7 @@ let translateStructItem =
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
     |> List.map(
-         CodeItem.translateStructValue(~language, ~propsTypeGen, ~moduleName),
+         CodeItem.translateValueBinding(~language, ~propsTypeGen, ~moduleName),
        )
     |> CodeItem.combineTranslations
 
