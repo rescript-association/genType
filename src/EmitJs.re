@@ -305,16 +305,14 @@ let emitCodeItem =
              ~config,
            );
       };
-    let newEnv = {
-      ...env,
-      requires:
-        env.requires
-        |> ModuleNameMap.add(
-             ModuleName.createBucklescriptBlock,
-             ImportPath.bsBlockPath(~config),
-           ),
-    };
-    (newEnv, emitters);
+    let env =
+      ModuleName.createBucklescriptBlock
+      |> requireModule(
+           ~early=false,
+           ~env,
+           ~importPath=ImportPath.bsBlockPath(~config),
+         );
+    (env, emitters);
 
   | ComponentBinding({
       exportType,
@@ -442,7 +440,7 @@ let emitCodeItem =
   | WrapJsValue({valueName, importString, typ, moduleName}) =>
     let importPath = importString |> ImportPath.fromStringUnsafe;
 
-    let (emitters, importedAsName, newEnv) =
+    let (emitters, importedAsName, env) =
       switch (language) {
       | Typescript =>
         /* emit an import {... as ...} immediately */
@@ -500,7 +498,7 @@ let emitCodeItem =
            ~typ,
            ~config,
          );
-    (newEnv, emitters);
+    (env, emitters);
 
   | WrapJsComponent({
       exportType,
@@ -518,7 +516,7 @@ let emitCodeItem =
       };
     };
 
-    let (emitters, newEnv) =
+    let (emitters, env) =
       switch (language) {
       | Typescript =>
         /* emit an import {... as ...} immediately */
@@ -533,11 +531,11 @@ let emitCodeItem =
       | Flow
       | Untyped =>
         /* add an early require(...)  */
-        let newEnv =
+        let env =
           componentName
           |> ModuleName.fromStringUnsafe
           |> requireModule(~early=true, ~env, ~importPath);
-        (emitters, newEnv);
+        (emitters, env);
       };
     let componentNameTypeChecked = componentName ++ "TypeChecked";
 
@@ -628,14 +626,14 @@ let emitCodeItem =
            ~typ=mixedOrUnknown(~language),
            ~config,
          );
-    let requiresEarlyWithReasonReact =
-      newEnv.requiresEarly
-      |> ModuleNameMap.add(
-           ModuleName.reasonReact,
-           ImportPath.reasonReactPath(~config),
+    let env =
+      ModuleName.reasonReact
+      |> requireModule(
+           ~early=true,
+           ~env,
+           ~importPath=ImportPath.reasonReactPath(~config),
          );
-
-    ({...newEnv, requiresEarly: requiresEarlyWithReasonReact}, emitters);
+    (env, emitters);
   };
 };
 
