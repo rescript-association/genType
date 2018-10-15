@@ -11,11 +11,11 @@ let getPriority = x =>
   | CodeItem.ImportType(_)
   | WrapJsComponent(_)
   | WrapJsValue(_) => "2low"
-  | ValueBinding(_)
-  | ConstructorBinding(_)
-  | ComponentBinding(_)
   | ExportType(_)
-  | ExportVariantType(_) => "1med"
+  | ExportVariantType(_)
+  | WrapReasonComponent(_)
+  | WrapReasonValue(_)
+  | WrapVariant(_) => "1med"
   };
 
 let sortcodeItemsByPriority = codeItems => {

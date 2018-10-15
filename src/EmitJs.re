@@ -42,13 +42,13 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     };
     switch (codeItem) {
     | CodeItem.ExportType(exportType) => exportType |> addExportType
-    | ValueBinding(_)
-    | ComponentBinding(_)
     | ImportType(_)
     | ExportVariantType(_)
-    | ConstructorBinding(_)
     | WrapJsComponent(_)
-    | WrapJsValue(_) => exportTypeMap
+    | WrapJsValue(_)
+    | WrapReasonComponent(_)
+    | WrapReasonValue(_)
+    | WrapVariant(_) => exportTypeMap
     };
   };
   codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -174,7 +174,7 @@ let emitCodeItem =
       ),
     )
 
-  | ValueBinding({moduleName, id, typ}) =>
+  | WrapReasonValue({moduleName, id, typ}) =>
     let importPath =
       ModuleResolver.resolveModule(
         ~config,
@@ -205,7 +205,7 @@ let emitCodeItem =
 
     (envWithRequires, emitters);
 
-  | ConstructorBinding(
+  | WrapVariant(
       exportType,
       constructorType,
       argTypes,
@@ -256,7 +256,7 @@ let emitCodeItem =
          );
     (env, emitters);
 
-  | ComponentBinding({
+  | WrapReasonComponent({
       exportType,
       moduleName,
       propsTypeName,

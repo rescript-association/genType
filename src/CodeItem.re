@@ -25,7 +25,7 @@ type exportVariantType = {
   name: string,
 };
 
-type componentBinding = {
+type wrapReasonComponent = {
   exportType,
   moduleName: ModuleName.t,
   propsTypeName: string,
@@ -49,27 +49,21 @@ type wrapJsComponent = {
   moduleName: ModuleName.t,
 };
 
-type valueBinding = {
+type wrapReasonValue = {
   moduleName: ModuleName.t,
   id: Ident.t,
   typ,
 };
 
 type t =
-  | ComponentBinding(componentBinding)
-  | ConstructorBinding(
-      exportType,
-      typ,
-      list(typ),
-      string,
-      Runtime.recordValue,
-    )
   | ExportType(exportType)
   | ExportVariantType(exportVariantType)
   | ImportType(importType)
-  | ValueBinding(valueBinding)
   | WrapJsValue(wrapJsValue)
-  | WrapJsComponent(wrapJsComponent);
+  | WrapJsComponent(wrapJsComponent)
+  | WrapReasonComponent(wrapReasonComponent)
+  | WrapReasonValue(wrapReasonValue)
+  | WrapVariant(exportType, typ, list(typ), string, Runtime.recordValue);
 
 type genTypeKind =
   | NoGenType
@@ -109,24 +103,21 @@ let toString = (~language, codeItem) =>
   switch (codeItem) {
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | WrapJsValue(wrapJsValue) => "WrapJsValue " ++ wrapJsValue.valueName
-  | WrapJsComponent(wrapJsComponent) =>
-    "WrapJsComponent " ++ wrapJsComponent.importString
-  | ValueBinding({moduleName, id, typ}) =>
-    "ValueBinding"
+  | WrapJsValue({valueName}) => "WrapJsValue " ++ valueName
+  | WrapJsComponent({importString}) => "WrapJsComponent " ++ importString
+  | WrapReasonValue({moduleName, id, typ}) =>
+    "WrapReasonValue"
     ++ " id:"
     ++ Ident.name(id)
     ++ " moduleName:"
     ++ ModuleName.toString(moduleName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
-  | ConstructorBinding(_, _, _, variantName, _) =>
-    "ConstructorBinding " ++ variantName
-  | ComponentBinding(componentBinding) =>
-    "ComponentBinding " ++ (componentBinding.moduleName |> ModuleName.toString)
-  | ExportType(exportType) => "ExportType " ++ exportType.typeName
-  | ExportVariantType(exportVariantType) =>
-    "ExportVariantType " ++ exportVariantType.name
+  | ExportType({typeName}) => "ExportType " ++ typeName
+  | ExportVariantType({name}) => "ExportVariantType " ++ name
+  | WrapReasonComponent({moduleName}) =>
+    "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
+  | WrapVariant(_, _, _, variantName, _) => "WrapVariant " ++ variantName
   };
 
 type attributePayload =
@@ -211,7 +202,7 @@ let translateConstructorDeclaration =
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
-    ConstructorBinding(
+    WrapVariant(
       exportType(
         ~opaque=true,
         ~typeVars,
@@ -247,7 +238,7 @@ let translateId = (~language, ~moduleName, ~typeExpr, id): translation => {
     typeExpr |> Dependencies.translateTypeExpr(~language);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let codeItems = [ValueBinding({moduleName, id, typ})];
+  let codeItems = [WrapReasonValue({moduleName, id, typ})];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
 
@@ -332,7 +323,7 @@ let translateMake =
     let componentType = EmitTyp.reactComponentType(~language, ~propsTypeName);
 
     let codeItems = [
-      ComponentBinding({
+      WrapReasonComponent({
         exportType:
           exportType(
             ~opaque=false,
