@@ -210,10 +210,10 @@ let rec moduleTypeHasGenTypeAnnotation =
   | Tmty_alias(_) => false
   }
 and moduleDeclarationHasGenTypeAnnotation =
-    (moduleDeclaration: Typedtree.module_declaration) =>
-  moduleDeclaration.md_attributes
+    ({md_attributes, md_type, _}: Typedtree.module_declaration) =>
+  md_attributes
   |> hasGenTypeAnnotation
-  || moduleDeclaration.md_type
+  || md_type
   |> moduleTypeHasGenTypeAnnotation
 and signatureItemHasGenTypeAnnotation =
     (signatureItem: Typedtree.signature_item) =>
@@ -792,36 +792,73 @@ and translateModuleBinding =
   | Tmod_unpack(_) => {dependencies: [], codeItems: []}
   };
 
-let translateSignatureItem =
-    (~language, ~propsTypeGen, ~moduleName, signatureItem): translation =>
+let rec translateModuleDeclaration =
+        (
+          ~config,
+          ~propsTypeGen,
+          ~moduleName,
+          {md_id, md_attributes, md_type, _}: Typedtree.module_declaration,
+        ) =>
+  switch (md_type.mty_desc) {
+  | Tmty_signature(signature) =>
+    let isAnnotated = md_attributes |> hasGenTypeAnnotation;
+    let {dependencies, codeItems} =
+      signature
+      |> translateSignature(~config, ~propsTypeGen, ~moduleName)
+      |> combineTranslations;
+    {
+      dependencies,
+      codeItems: [
+        WrapModule({
+          moduleName: md_id |> Ident.name |> ModuleName.fromStringUnsafe,
+          isAnnotated,
+          codeItems,
+        }),
+      ],
+    };
+  | Tmty_ident(_)
+  | Tmty_functor(_)
+  | Tmty_with(_)
+  | Tmty_typeof(_)
+  | Tmty_alias(_) => {dependencies: [], codeItems: []}
+  }
+and translateSignatureItem =
+    (~config, ~propsTypeGen, ~moduleName, signatureItem): translation =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(translateTypeDeclaration(~language))
+    |> List.map(translateTypeDeclaration(~language=config.language))
     |> combineTranslations
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {
       valueDescription
-      |> translatePrimitive(~language, ~moduleName, ~propsTypeGen);
+      |> translatePrimitive(
+           ~language=config.language,
+           ~moduleName,
+           ~propsTypeGen,
+         );
     } else {
       valueDescription
-      |> translateSignatureValue(~language, ~propsTypeGen, ~moduleName);
+      |> translateSignatureValue(
+           ~language=config.language,
+           ~propsTypeGen,
+           ~moduleName,
+         );
     }
 
-  | _ => {dependencies: [], codeItems: []}
-  };
+  | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
+    moduleDeclaration
+    |> translateModuleDeclaration(~config, ~propsTypeGen, ~moduleName)
 
-let translateSignature =
+  | _ => {dependencies: [], codeItems: []}
+  }
+and translateSignature =
     (~config, ~propsTypeGen, ~moduleName, signature): list(translation) =>
   signature.Typedtree.sig_items
   |> List.map(signatureItem =>
        signatureItem
-       |> translateSignatureItem(
-            ~language=config.language,
-            ~propsTypeGen,
-            ~moduleName,
-          )
+       |> translateSignatureItem(~config, ~propsTypeGen, ~moduleName)
      );
 
 let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
