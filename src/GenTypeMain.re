@@ -250,16 +250,7 @@ let cmtToCodeItems =
     | Implementation(structure) =>
       structure |> translateStructure(~config, ~propsTypeGen, ~moduleName)
     | Interface(signature) =>
-      signature.Typedtree.sig_items
-      |> List.map(signatureItem =>
-           signatureItem
-           |> translateSignatureItem(
-                ~language=config.language,
-                ~propsTypeGen,
-                ~moduleName,
-              )
-         )
-
+      signature |> translateSignature(~config, ~propsTypeGen, ~moduleName)
     | _ => []
     };
   let translationUnit = translationUnits |> CodeItem.combineTranslations;
