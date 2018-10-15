@@ -56,10 +56,7 @@ type valueBinding = {
 };
 
 type t =
-  | ImportType(importType)
-  | WrapJsValue(wrapJsValue)
-  | WrapJsComponent(wrapJsComponent)
-  | ValueBinding(valueBinding)
+  | ComponentBinding(componentBinding)
   | ConstructorBinding(
       exportType,
       typ,
@@ -67,9 +64,12 @@ type t =
       string,
       Runtime.recordValue,
     )
-  | ComponentBinding(componentBinding)
   | ExportType(exportType)
-  | ExportVariantType(exportVariantType);
+  | ExportVariantType(exportVariantType)
+  | ImportType(importType)
+  | ValueBinding(valueBinding)
+  | WrapJsValue(wrapJsValue)
+  | WrapJsComponent(wrapJsComponent);
 
 type genTypeKind =
   | NoGenType
