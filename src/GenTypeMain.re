@@ -83,8 +83,8 @@ and moduleBindingHasGenTypeAnnotation =
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
-let rec signatureItemHasGenTypeAnnotation =
-        (signatureItem: Typedtree.signature_item) =>
+let signatureItemHasGenTypeAnnotation =
+    (signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
@@ -92,8 +92,8 @@ let rec signatureItemHasGenTypeAnnotation =
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation
   | _ => false
-  }
-and signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
+  };
+let signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
   signature.Typedtree.sig_items
   |> List.exists(signatureItemHasGenTypeAnnotation);
 
