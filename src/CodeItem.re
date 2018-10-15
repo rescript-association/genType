@@ -673,6 +673,7 @@ let translateTypeDeclaration =
         translateExportType(~opaque=false, ~typeVars, ~typeName, typ),
       ],
     };
+
   /*
    * This case includes aliasings such as:
    *
@@ -721,6 +722,7 @@ let translateTypeDeclaration =
       ];
       {dependencies: typeExprTranslation.dependencies, codeItems};
     };
+
   | (astTypeParams, Type_variant(constructorDeclarations), GenType)
       when !hasSomeGADTLeaf(constructorDeclarations) =>
     let variantTypeName = Ident.name(dec.typ_id);
@@ -751,6 +753,7 @@ let translateTypeDeclaration =
         name: variantTypeName,
       });
     {dependencies: deps, codeItems: List.append(items, [unionType])};
+
   | _ => {dependencies: [], codeItems: []}
   };
 
