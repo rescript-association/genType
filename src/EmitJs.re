@@ -135,6 +135,7 @@ let rec emitCodeItem =
           ~emitters,
           ~env,
           ~inputCmtToTypeDeclarations,
+          ~namespace,
           codeItem,
         ) => {
   let language = config.language;
@@ -544,7 +545,7 @@ let rec emitCodeItem =
          );
     (env, emitters);
 
-  | WrapModule({codeItems}) =>
+  | WrapModule({moduleName, codeItems, _}) =>
     codeItems
     |> emitCodeItems(
          ~config,
@@ -554,6 +555,7 @@ let rec emitCodeItem =
          ~emitters,
          ~env,
          ~inputCmtToTypeDeclarations,
+         ~namespace=[moduleName, ...namespace],
        )
   };
 }
@@ -566,6 +568,7 @@ and emitCodeItems =
       ~emitters,
       ~env,
       ~inputCmtToTypeDeclarations,
+      ~namespace,
       codeItems,
     ) =>
   codeItems
@@ -579,6 +582,7 @@ and emitCodeItems =
            ~emitters,
            ~env,
            ~inputCmtToTypeDeclarations,
+           ~namespace,
          ),
        (env, emitters),
      );
@@ -625,6 +629,7 @@ let emitCodeItemsAsString =
          ~emitters=Emitters.initial,
          ~env=initialEnv,
          ~inputCmtToTypeDeclarations,
+         ~namespace=[],
        );
 
   emitters
