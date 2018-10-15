@@ -26,12 +26,12 @@ export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesBS.Uni
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class VariantA { protected opaque!: any }; /* simulate opaque types */
 
-export const A: VariantA = 0 as any;
+export const Universe_A: VariantA = 0 as any;
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class VariantB { protected opaque!: any }; /* simulate opaque types */
 
-export const B: (_1:string) => VariantB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
+export const Universe_B: (_1:string) => VariantB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
 
 export type Universe_variant =
   | VariantA

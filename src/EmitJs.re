@@ -548,6 +548,7 @@ let rec emitCodeItem =
       variantName,
       recordValue,
     }) =>
+    let variantName = variantName |> nameWithNamespace(~namespace);
     let emitters = emitExportType(~emitters, ~language, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
