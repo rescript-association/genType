@@ -2,6 +2,7 @@
 'use strict';
 
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
+var SomeFlowTypes = require("./SomeFlowTypes");
 
 function consumeOption(x) {
   return Belt_Option.mapWithDefault(x, 0, (function (n) {
@@ -23,8 +24,17 @@ function identity(x) {
   return x;
 }
 
+function isWeekend(day) {
+  if (day === SomeFlowTypes.SATURDAY) {
+    return true;
+  } else {
+    return day === SomeFlowTypes.SUNDAY;
+  }
+}
+
 exports.consumeOption = consumeOption;
 exports.consumeOption2 = consumeOption2;
 exports.testArray = testArray;
 exports.identity = identity;
-/* No side effect */
+exports.isWeekend = isWeekend;
+/* ./SomeFlowTypes Not a pure module */

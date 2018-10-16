@@ -126,9 +126,10 @@ ReasonReact components with props of Reason types `t1`, `t2`, `t3` are mapped to
 ### imported types
 It's possible to import an existing TS/Flow type as an opaque type in Reason. For example,
 ```reason
-[@genType.import "./SomeFlowTypes"] type anInterestingFlowType;
+[@genType.import "./SomeFlowTypes"] type weekday;
 ```
-defines a type which maps to `anInterestingFlowType` in `SomeFlowTypes.js`.
+defines a type which maps to `weekday` in `SomeFlowTypes.js`.
+See for example [Types.re](examples/reason-react-example/src/basics/Types.re) and [SomeFlowTypes.js](examples/reason-react-example/src/basics/SomeFlowTypes.js).
 
 ### polymorphic types
 If a Reason type contains a type variable, the corresponding value is not converted. In other words, the conversion is the identity function. For example, a Reason function of type `{payload: 'a} => 'a` must treat the value of the payload as a black box, as a consequence of parametric polymorphism. If a typed back-end is used, the reason type is mapped to the corresponding generic type.

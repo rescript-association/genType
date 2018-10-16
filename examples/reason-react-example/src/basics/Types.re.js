@@ -16,6 +16,8 @@ import type {t as Obj_t} from '../../src/shims/Obj.shim';
 
 import type {anInterestingFlowType} from './SomeFlowTypes';
 
+import type {weekday} from './SomeFlowTypes';
+
 export opaque type TypeWithVarsA<x,y> = mixed;
 
 export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
@@ -53,3 +55,7 @@ export type peopleArray = Array<{|name: string, nickname: ?string|}>;
 export opaque type myObj = Obj_t;
 
 export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesBS.identity;
+
+export opaque type t = weekday;
+
+export const isWeekend: (t) => boolean = TypesBS.isWeekend;
