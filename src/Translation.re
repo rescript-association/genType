@@ -418,7 +418,7 @@ let translateTypeDeclaration =
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
-    Annotation.getGenTypeKind(dec.typ_attributes),
+    dec.typ_attributes |> Annotation.getGenTypeKind,
   ) {
   | (typeParams, Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
     let fieldTranslations =
@@ -550,6 +550,27 @@ let translateTypeDeclaration =
         name: variantTypeNameResolved,
       });
     {dependencies: deps, codeItems: List.append(items, [unionType])};
+
+  | ([], Type_abstract, NoGenType) =>
+    switch (
+      dec.typ_attributes
+      |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
+    ) {
+    | Some(StringPayload(importString)) =>
+      let typeName = Ident.name(dec.typ_id);
+      let codeItems = [
+        CodeItem.ImportType(
+          ImportTypeAs({
+            typeName,
+            asTypeName: None,
+            importPath: importString |> ImportPath.fromStringUnsafe,
+            cmtFile: None,
+          }),
+        ),
+      ];
+      {dependencies: [], codeItems};
+    | _ => {dependencies: [], codeItems: []}
+    }
 
   | _ => {dependencies: [], codeItems: []}
   };

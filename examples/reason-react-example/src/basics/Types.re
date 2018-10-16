@@ -45,3 +45,10 @@ type peopleArray =
 
 [@genType]
 type myObj = Obj.t;
+
+/* Defines a type which maps to `anInterestingFlowType` in `SomeFlowTypes.js` */
+[@genType.import "./SomeFlowTypes"]
+type anInterestingFlowType;
+
+[@genType]
+let identity = (x: anInterestingFlowType) => x;

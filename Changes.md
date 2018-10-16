@@ -2,6 +2,7 @@
 - Add support for nested modules: translation of nested types and values, as well as cross references.
 - [Remove deprecated way of wrapping JS components](https://github.com/cristianoc/genType/commit/9c388826c43eb9507b07fd95a05eed3ce619297d).
 - [Use strict imports for wrapping JS values and components](https://github.com/cristianoc/genType/commit/81c6a7f062c87c141b734dd1bb338faf1afc8f5a).
+- [Generate opaque types corresponding to an existing Flow/TS type](https://github.com/cristianoc/genType/issues/63).
 
 # 0.18.0
 - Move "gentypeconfig" inside bsconfig.json. Using a file gentypeconfig.json is deprecated.

@@ -21,6 +21,8 @@ const WrapJsValue = require("./WrapJsValue.re");
 console.log("interopRoot.js roundedNumber:", WrapJsValue.roundedNumber);
 console.log("interopRoot.js areaValue:", WrapJsValue.areaValue);
 
+console.log("anInterestingFlowType ", require("../basics/SomeFlowTypes").c);
+
 const App = () => (
   <div>
     <PageReason

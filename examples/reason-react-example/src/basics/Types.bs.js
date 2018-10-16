@@ -19,7 +19,12 @@ function testArray(a) {
   return a;
 }
 
+function identity(x) {
+  return x;
+}
+
 exports.consumeOption = consumeOption;
 exports.consumeOption2 = consumeOption2;
 exports.testArray = testArray;
+exports.identity = identity;
 /* No side effect */
