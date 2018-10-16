@@ -8,7 +8,7 @@ let newModule: (~name: string, t) => t;
 
 let newType: (~name: string, t) => unit;
 
-let pathToRoot: (~name: string, t) => string;
+let resolveType: (~name: string, t) => string;
 
 let root: unit => t;
 

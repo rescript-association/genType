@@ -45,10 +45,10 @@ let rec lookup = (~name, x) =>
 
 let updateModuleItem = (~moduleItem, x) => x.moduleItem = moduleItem;
 
-let rec pathToRoot = (~name, x) =>
+let rec resolveType = (~name, x) =>
   switch (x.parent) {
   | None => name
-  | Some(parent) => parent |> pathToRoot(~name=x.name ++ "_" ++ name)
+  | Some(parent) => parent |> resolveType(~name=x.name ++ "_" ++ name)
   };
 
 let getValueAccessPath = (~name, x) => {

@@ -190,7 +190,7 @@ let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
 
 let translateExportType =
     (~opaque, ~typeVars, ~typeName, ~typeEnv, ~comment=?, typ) => {
-  let typeName = typeEnv |> TypeEnv.pathToRoot(~name=typeName);
+  let typeName = typeEnv |> TypeEnv.resolveType(~name=typeName);
   ExportType({opaque, typeVars, typeName, comment, typ});
 };
 
@@ -275,7 +275,7 @@ let translateConstructorDeclaration =
     (~language, ~recordGen, ~typeEnv, variantTypeName, constructorDeclaration) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
-  let leafNameResolved = typeEnv |> TypeEnv.pathToRoot(~name=leafName);
+  let leafNameResolved = typeEnv |> TypeEnv.resolveType(~name=leafName);
   let argsTranslation =
     Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
@@ -287,7 +287,7 @@ let translateConstructorDeclaration =
 
   let variantTypeNameResolved =
     typeEnv
-    |> TypeEnv.pathToRoot(
+    |> TypeEnv.resolveType(
          ~name=variantLeafTypeName(variantTypeName, leafName),
        );
 
@@ -339,7 +339,7 @@ let translateValue =
     typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let resolvedName = typeEnv |> TypeEnv.pathToRoot(~name);
+  let resolvedName = typeEnv |> TypeEnv.resolveType(~name);
 
   /* Access path for the value in the module.
      I can be the value name if the module is not nested.
@@ -790,7 +790,7 @@ let translateTypeDeclaration =
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let variantTypeNameResolved =
-      typeEnv |> TypeEnv.pathToRoot(~name=variantTypeName);
+      typeEnv |> TypeEnv.resolveType(~name=variantTypeName);
     let unionType =
       ExportVariantType({
         typeParams,
