@@ -5,7 +5,7 @@ type t = {
   codeItems: list(CodeItem.t),
 };
 
-let combineTranslations = (translations: list(t)): t =>
+let combine = (translations: list(t)): t =>
   translations
   |> List.map(({dependencies, codeItems}) => (dependencies, codeItems))
   |> List.split
@@ -584,7 +584,7 @@ let rec translateStructItem =
     |> List.map(
          translateTypeDeclaration(~language=config.language, ~typeEnv),
        )
-    |> combineTranslations
+    |> combine
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
@@ -597,7 +597,7 @@ let rec translateStructItem =
            ~typeEnv,
          ),
        )
-    |> combineTranslations
+    |> combine
 
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
@@ -629,7 +629,7 @@ let rec translateStructItem =
            ~moduleItemGen,
          ),
        )
-    |> combineTranslations
+    |> combine
 
   | _ => {dependencies: [], codeItems: []}
   }
@@ -672,7 +672,7 @@ and translateModuleBinding =
            ~moduleName,
            ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
          )
-      |> combineTranslations;
+      |> combine;
     {dependencies, codeItems};
 
   | Tmod_ident(_)
@@ -703,7 +703,7 @@ let rec translateModuleDeclaration =
            ~moduleName,
            ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
          )
-      |> combineTranslations;
+      |> combine;
     {dependencies, codeItems};
   | Tmty_ident(_)
   | Tmty_functor(_)
@@ -727,7 +727,7 @@ and translateSignatureItem =
     |> List.map(
          translateTypeDeclaration(~language=config.language, ~typeEnv),
        )
-    |> combineTranslations
+    |> combine
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {

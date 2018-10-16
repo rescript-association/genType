@@ -79,7 +79,7 @@ let cmtToCodeItems =
          )
     | _ => []
     };
-  let translationUnit = translationUnits |> Translation.combineTranslations;
+  let translationUnit = translationUnits |> Translation.combine;
   let imports =
     translationUnit.dependencies
     |> Translation.translateDependencies(
