@@ -3,7 +3,7 @@ let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
 
 let tagIsGenTypeImport = s => s == "genType.import";
 
-let tagIsGenTypeOpaque = s => s == "genFlow.opaque";
+let tagIsGenTypeOpaque = s => s == "genType.opaque";
 
 type attributePayload =
   | UnrecognizedPayload

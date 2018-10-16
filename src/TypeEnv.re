@@ -52,15 +52,15 @@ let rec resolveType = (~name, x) =>
   };
 
 let getValueAccessPath = (~name, x) => {
-  let rec accesPath = x =>
+  let rec accessPath = x =>
     switch (x.parent) {
     | None => ""
     | Some(parent) =>
-      (parent.parent == None ? x.name : parent |> accesPath)
+      (parent.parent == None ? x.name : parent |> accessPath)
       ++ "["
       ++ (x.moduleItem |> Runtime.emitModuleItem)
       ++ "]"
     };
   let notNested = x.parent == None;
-  notNested ? name : x |> accesPath;
+  notNested ? name : x |> accessPath;
 };
