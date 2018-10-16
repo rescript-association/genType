@@ -6,50 +6,12 @@ module StringSet = Set.Make(String);
 
 open GenTypeCommon;
 
-let getPriority = x =>
-  switch (x) {
-  | CodeItem.ImportType(_)
-  | WrapJsComponent(_)
-  | WrapJsValue(_) => "2low"
-  | ExportType(_)
-  | ExportVariantType(_)
-  | WrapReasonComponent(_)
-  | WrapReasonValue(_)
-  | WrapVariantLeaf(_) => "1med"
-  };
-
-let sortcodeItemsByPriority = codeItems => {
-  module M = StringMap;
-  let map =
-    codeItems
-    |> List.fold_left(
-         (map, codeItem) => {
-           let priority = codeItem |> getPriority;
-           let items =
-             try (map |> StringMap.find(priority)) {
-             | Not_found => []
-             };
-           map |> StringMap.add(priority, [codeItem, ...items]);
-         },
-         StringMap.empty,
-       );
-  let sortedCodeItems = ref([]);
-  map
-  |> StringMap.iter((_priority, codeItemsAtPriority) =>
-       codeItemsAtPriority
-       |> List.iter(codeItem =>
-            sortedCodeItems := [codeItem, ...sortedCodeItems^]
-          )
-     );
-  sortedCodeItems^;
-};
-
 let cmtHasGenTypeAnnotations = inputCMT =>
   switch (inputCMT.Cmt_format.cmt_annots) {
   | Implementation(structure) =>
-    structure |> CodeItem.structureHasGenTypeAnnotation
+    structure |> Translation.structureHasGenTypeAnnotation
   | Interface(signature) =>
-    signature |> CodeItem.signatureHasGenTypeAnnotation
+    signature |> Translation.signatureHasGenTypeAnnotation
   | _ => false
   };
 
@@ -84,7 +46,7 @@ let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
   |> List.map(typeDeclaration =>
        (
          typeDeclaration
-         |> CodeItem.translateTypeDeclaration(~language, ~typeEnv)
+         |> Translation.translateTypeDeclaration(~language, ~typeEnv)
        ).
          codeItems
      )
@@ -101,7 +63,7 @@ let cmtToCodeItems =
     switch (cmt_annots) {
     | Implementation(structure) =>
       structure
-      |> CodeItem.translateStructure(
+      |> Translation.translateStructure(
            ~config,
            ~propsTypeGen,
            ~moduleName,
@@ -109,7 +71,7 @@ let cmtToCodeItems =
          )
     | Interface(signature) =>
       signature
-      |> CodeItem.translateSignature(
+      |> Translation.translateSignature(
            ~config,
            ~propsTypeGen,
            ~moduleName,
@@ -117,11 +79,16 @@ let cmtToCodeItems =
          )
     | _ => []
     };
-  let translationUnit = translationUnits |> CodeItem.combineTranslations;
+  let translationUnit = translationUnits |> Translation.combineTranslations;
   let imports =
     translationUnit.dependencies
-    |> CodeItem.translateDependencies(~config, ~outputFileRelative, ~resolver);
-  let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
+    |> Translation.translateDependencies(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+       );
+  let sortedCodeItems =
+    translationUnit.codeItems |> CodeItem.sortcodeItemsByPriority;
   imports @ sortedCodeItems;
 };
 
