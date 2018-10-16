@@ -16,14 +16,6 @@ let combine = (translations: list(t)): t =>
     }
   );
 
-let exportType =
-    (~opaque, ~typeVars, ~resolvedTypeName, typ): CodeItem.exportType => {
-  opaque,
-  typeVars,
-  resolvedTypeName,
-  typ,
-};
-
 let translateExportType =
     (~opaque, ~typeVars, ~typeName, ~typeEnv, typ): CodeItem.t => {
   let resolvedTypeName = typeEnv |> TypeEnv.resolveType(~name=typeName);
@@ -67,13 +59,12 @@ let translateConstructorDeclaration =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
     CodeItem.WrapVariantLeaf({
-      exportType:
-        exportType(
-          ~opaque=true,
-          ~typeVars,
-          ~resolvedTypeName=variantTypeNameResolved,
-          mixedOrUnknown(~language),
-        ),
+      exportType: {
+        opaque: true,
+        typeVars,
+        resolvedTypeName: variantTypeNameResolved,
+        typ: mixedOrUnknown(~language),
+      },
       constructorTyp,
       argTypes,
       leafName: leafNameResolved,
@@ -205,13 +196,12 @@ let translateComponent =
 
     let codeItems = [
       CodeItem.WrapReasonComponent({
-        exportType:
-          exportType(
-            ~opaque=false,
-            ~typeVars,
-            ~resolvedTypeName=propsTypeName,
-            propsType,
-          ),
+        exportType: {
+          opaque: false,
+          typeVars,
+          resolvedTypeName: propsTypeName,
+          typ: propsType,
+        },
         moduleName,
         propsTypeName,
         componentType,
@@ -382,13 +372,12 @@ let translatePrimitive =
 
     let codeItems = [
       CodeItem.WrapJsComponent({
-        exportType:
-          exportType(
-            ~opaque=false,
-            ~typeVars,
-            ~resolvedTypeName=propsTypeName,
-            propsTyp,
-          ),
+        exportType: {
+          opaque: false,
+          typeVars,
+          resolvedTypeName: propsTypeName,
+          typ: propsTyp,
+        },
         importAnnotation:
           importString |> Annotation.importAnnotationFromString,
         childrenTyp,
