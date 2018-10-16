@@ -28,17 +28,17 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
 
 let createExportTypeMap = (~language, codeItems): typeMap => {
   let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
-    let addExportType = ({typeName, typeVars, typ, _}: CodeItem.exportType) => {
+    let addExportType = ({resolvedTypeName, typeVars, typ, _}: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
           "Export Type: %s%s = %s\n",
-          typeName,
+          resolvedTypeName,
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
           typ |> EmitTyp.typToString(~language),
         );
       };
-      exportTypeMap |> StringMap.add(typeName, (typeVars, typ));
+      exportTypeMap |> StringMap.add(resolvedTypeName, (typeVars, typ));
     };
     switch (codeItem) {
     | CodeItem.ExportType(exportType) => exportType |> addExportType
@@ -112,7 +112,7 @@ let emitExportType =
       ~early=false,
       ~emitters,
       ~language,
-      {CodeItem.opaque, typeVars, typeName, comment, typ},
+      {CodeItem.opaque, typeVars, resolvedTypeName, comment, typ},
     ) =>
   typ
   |> EmitTyp.emitExportType(
@@ -120,7 +120,7 @@ let emitExportType =
        ~emitters,
        ~language,
        ~opaque,
-       ~typeName,
+       ~resolvedTypeName,
        ~typeVars,
        ~comment,
      );

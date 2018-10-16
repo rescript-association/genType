@@ -183,7 +183,7 @@ let emitExportType =
       ~emitters,
       ~language,
       ~opaque,
-      ~typeName,
+      ~resolvedTypeName,
       ~typeVars,
       ~comment,
       typ,
@@ -201,7 +201,7 @@ let emitExportType =
     "export"
     ++ (opaque ? " opaque " : " ")
     ++ "type "
-    ++ typeName
+    ++ resolvedTypeName
     ++ typeParamsString
     ++ " = "
     ++ (typ |> renderTyp(~language))
@@ -218,7 +218,7 @@ let emitExportType =
         typeVars == [] ? "any" : typeVars |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ "export abstract class "
-      ++ typeName
+      ++ resolvedTypeName
       ++ typeParamsString
       ++ " { protected opaque!: "
       ++ typeOfOpaqueField
@@ -228,7 +228,7 @@ let emitExportType =
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
-      ++ typeName
+      ++ resolvedTypeName
       ++ typeParamsString
       ++ " = "
       ++ (typ |> renderTyp(~language))

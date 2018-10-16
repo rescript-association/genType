@@ -57,7 +57,7 @@ let emitExportType:
     ~emitters: Emitters.t,
     ~language: language,
     ~opaque: bool,
-    ~typeName: string,
+    ~resolvedTypeName: string,
     ~typeVars: list(string),
     ~comment: option(string),
     typ

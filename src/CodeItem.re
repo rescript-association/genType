@@ -3,7 +3,7 @@ open GenTypeCommon;
 type exportType = {
   opaque: bool,
   typeVars: list(string),
-  typeName: string,
+  resolvedTypeName: string,
   comment: option(string),
   typ,
 };
@@ -122,7 +122,7 @@ let getImportTypeUniqueName = importType =>
 
 let toString = (~language, codeItem) =>
   switch (codeItem) {
-  | ExportType({typeName, _}) => "ExportType " ++ typeName
+  | ExportType({resolvedTypeName, _}) => "ExportType " ++ resolvedTypeName
   | ExportVariantType({name, _}) => "ExportVariantType " ++ name
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
@@ -180,18 +180,18 @@ let getGenTypeKind = (attributes: Typedtree.attributes) =>
     NoGenType;
   };
 
-let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
+let exportType = (~opaque, ~typeVars, ~resolvedTypeName, ~comment=?, typ) => {
   opaque,
   typeVars,
-  typeName,
+  resolvedTypeName,
   comment,
   typ,
 };
 
 let translateExportType =
     (~opaque, ~typeVars, ~typeName, ~typeEnv, ~comment=?, typ) => {
-  let typeName = typeEnv |> TypeEnv.resolveType(~name=typeName);
-  ExportType({opaque, typeVars, typeName, comment, typ});
+  let resolvedTypeName = typeEnv |> TypeEnv.resolveType(~name=typeName);
+  ExportType({opaque, typeVars, resolvedTypeName, comment, typ});
 };
 
 let variantLeafTypeName = (typeName, leafName) =>
@@ -306,7 +306,7 @@ let translateConstructorDeclaration =
         exportType(
           ~opaque=true,
           ~typeVars,
-          ~typeName=variantTypeNameResolved,
+          ~resolvedTypeName=variantTypeNameResolved,
           mixedOrUnknown(~language),
         ),
       constructorTyp,
@@ -441,7 +441,7 @@ let translateComponent =
           exportType(
             ~opaque=false,
             ~typeVars,
-            ~typeName=propsTypeName,
+            ~resolvedTypeName=propsTypeName,
             propsType,
           ),
         moduleName,
@@ -628,7 +628,7 @@ let translatePrimitive =
           exportType(
             ~opaque=false,
             ~typeVars,
-            ~typeName=propsTypeName,
+            ~resolvedTypeName=propsTypeName,
             propsTyp,
           ),
         importAnnotation: importString |> importAnnotationFromString,
