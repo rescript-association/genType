@@ -112,7 +112,7 @@ let emitExportType =
       ~early=false,
       ~emitters,
       ~language,
-      {CodeItem.opaque, typeVars, resolvedTypeName, comment, typ},
+      {CodeItem.opaque, typeVars, resolvedTypeName, typ},
     ) =>
   typ
   |> EmitTyp.emitExportType(
@@ -122,7 +122,6 @@ let emitExportType =
        ~opaque,
        ~resolvedTypeName,
        ~typeVars,
-       ~comment,
      );
 
 let rec emitCodeItem =

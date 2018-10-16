@@ -17,19 +17,17 @@ let combine = (translations: list(t)): t =>
   );
 
 let exportType =
-    (~opaque, ~typeVars, ~resolvedTypeName, ~comment=?, typ)
-    : CodeItem.exportType => {
+    (~opaque, ~typeVars, ~resolvedTypeName, typ): CodeItem.exportType => {
   opaque,
   typeVars,
   resolvedTypeName,
-  comment,
   typ,
 };
 
 let translateExportType =
-    (~opaque, ~typeVars, ~typeName, ~typeEnv, ~comment=?, typ): CodeItem.t => {
+    (~opaque, ~typeVars, ~typeName, ~typeEnv, typ): CodeItem.t => {
   let resolvedTypeName = typeEnv |> TypeEnv.resolveType(~name=typeName);
-  ExportType({opaque, typeVars, resolvedTypeName, comment, typ});
+  ExportType({opaque, typeVars, resolvedTypeName, typ});
 };
 
 let variantLeafTypeName = (typeName, leafName) =>

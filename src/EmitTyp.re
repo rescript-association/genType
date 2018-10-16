@@ -178,23 +178,9 @@ let emitExportDefault = (~emitters, ~config, name) =>
   };
 
 let emitExportType =
-    (
-      ~early,
-      ~emitters,
-      ~language,
-      ~opaque,
-      ~resolvedTypeName,
-      ~typeVars,
-      ~comment,
-      typ,
-    ) => {
+    (~early, ~emitters, ~language, ~opaque, ~resolvedTypeName, ~typeVars, typ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
   let typeParamsString = genericsString(~typeVars);
-  let commentString =
-    switch (comment) {
-    | None => ""
-    | Some(s) => " /* " ++ s ++ " */"
-    };
 
   switch (language) {
   | Flow =>
@@ -206,7 +192,6 @@ let emitExportType =
     ++ " = "
     ++ (typ |> renderTyp(~language))
     ++ ";"
-    ++ commentString
     |> export(~emitters)
 
   | Typescript =>
@@ -223,7 +208,6 @@ let emitExportType =
       ++ " { protected opaque!: "
       ++ typeOfOpaqueField
       ++ " }; /* simulate opaque types */"
-      ++ commentString
       |> export(~emitters);
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
@@ -233,7 +217,6 @@ let emitExportType =
       ++ " = "
       ++ (typ |> renderTyp(~language))
       ++ ";"
-      ++ commentString
       |> export(~emitters);
     }
   | Untyped => emitters

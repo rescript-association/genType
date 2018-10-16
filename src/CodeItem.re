@@ -4,7 +4,6 @@ type exportType = {
   opaque: bool,
   typeVars: list(string),
   resolvedTypeName: string,
-  comment: option(string),
   typ,
 };
 

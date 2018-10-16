@@ -59,7 +59,6 @@ let emitExportType:
     ~opaque: bool,
     ~resolvedTypeName: string,
     ~typeVars: list(string),
-    ~comment: option(string),
     typ
   ) =>
   Emitters.t;
