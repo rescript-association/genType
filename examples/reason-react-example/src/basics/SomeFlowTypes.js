@@ -14,7 +14,7 @@ export const c: anInterestingFlowType = Types.identity({
   type: ""
 });
 
-export const MONDAY = 'monday';
-export const SATURDAY = 'saturday'
-export const SUNDAY = 'sunday'
-export type weekday = typeof MONDAY | typeof SUNDAY;
+export const MONDAY: weekday = "monday";
+export const SATURDAY: weekday = "saturday";
+export const SUNDAY: weekday = "sunday";
+export type weekday = "monday" | "saturday" | "sunday";
