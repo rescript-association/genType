@@ -779,8 +779,8 @@ and translateSignature =
      );
 };
 
-let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
-  switch (typePath) {
+let pathToImport = (~config, ~outputFileRelative, ~resolver, path) =>
+  switch (path) {
   | Dependencies.Pid(name) when name == "list" => [
       CodeItem.ImportTypeAs({
         typeName: "list",
@@ -814,10 +814,9 @@ let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
       | Pdot(Pid(_), s) => Dependencies.Pid(s)
       | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
       };
-    let moduleName = typePath |> getOuterModuleName;
-    let typeName =
-      typePath |> removeOuterModule |> Dependencies.typePathToName;
-    let nameFromPath = typePath |> Dependencies.typePathToName;
+    let moduleName = path |> getOuterModuleName;
+    let typeName = path |> removeOuterModule |> Dependencies.typePathToName;
+    let nameFromPath = path |> Dependencies.typePathToName;
     let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
     let importPath =
       moduleName
@@ -839,7 +838,7 @@ let typePathToImport = (~config, ~outputFileRelative, ~resolver, typePath) =>
 let translateDependencies =
     (~config, ~outputFileRelative, ~resolver, dependencies): list(CodeItem.t) =>
   dependencies
-  |> List.map(typePathToImport(~config, ~outputFileRelative, ~resolver))
+  |> List.map(pathToImport(~config, ~outputFileRelative, ~resolver))
   |> List.concat
   |> List.sort_uniq(CodeItem.importTypeCompare)
   |> List.map(importType => CodeItem.ImportType(importType));
