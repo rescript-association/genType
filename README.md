@@ -123,6 +123,13 @@ In case of mixed named and unnamed arguments, consecutive named arguments form s
 ### components
 ReasonReact components with props of Reason types `t1`, `t2`, `t3` are mapped to reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`.
 
+### imported types
+It's possible to import an existing TS/Flow type as an opaque type in Reason. For example,
+```reason
+[@genType.import "./SomeFlowTypes"] type anInterestingFlowType;
+```
+defines a type which maps to `anInterestingFlowType` in `SomeFlowTypes.js`.
+
 ### polymorphic types
 If a Reason type contains a type variable, the corresponding value is not converted. In other words, the conversion is the identity function. For example, a Reason function of type `{payload: 'a} => 'a` must treat the value of the payload as a black box, as a consequence of parametric polymorphism. If a typed back-end is used, the reason type is mapped to the corresponding generic type.
 
