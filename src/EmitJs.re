@@ -192,7 +192,7 @@ let rec emitCodeItem =
     let name = name |> nameWithNamespace(~namespace);
     let variants =
       variants
-      |> List.map(({name} as variant) =>
+      |> List.map(({name, _} as variant) =>
            {...variant, name: name |> nameWithNamespace(~namespace)}
          );
     (

@@ -1,24 +1,42 @@
 open GenTypeCommon;
 
-type t =
-  | TypeAtPath(Path.t);
+type path =
+  | Pid(string)
+  | Presolved(string)
+  | Pdot(path, string);
 
 type translation = {
-  dependencies: list(t),
+  dependencies: list(path),
   typ,
 };
 
-let rec typePathToName = typePath =>
+let rec resolveTypePath = (~typeEnv, typePath) =>
   switch (typePath) {
-  | Path.Pident(id) => Ident.name(id)
-  | Pdot(p, s, _pos) => typePathToName(p) ++ "_" ++ s
-  | Papply(p1, p2) =>
-    typePathToName(p1) ++ "__unsupported_genType__" ++ typePathToName(p2)
+  | Path.Pident(id) =>
+    switch (typeEnv |> TypeEnv.lookup(~name=id |> Ident.name)) {
+    | None => Pid(id |> Ident.name)
+    | Some(typeEnv1) =>
+      let resolvedName =
+        typeEnv1 |> TypeEnv.pathToRoot(~path=id |> Ident.name);
+      if (Debug.typeResolution) {
+        logItem(
+          "resolveTypePath id:%s env:%s resolvedName:%s\n",
+          id |> Ident.name,
+          typeEnv1 |> TypeEnv.toString,
+          resolvedName,
+        );
+      };
+      Presolved(resolvedName);
+    }
+  | Pdot(p, s, _pos) => Pdot(p |> resolveTypePath(~typeEnv), s)
+  | Papply(_) => Presolved("__Papply_unsupported_genType__")
   };
 
-let toString = dep =>
-  switch (dep) {
-  | TypeAtPath(path) => "TypeAtPath(" ++ typePathToName(path) ++ ")"
+let rec typePathToName = typePath =>
+  switch (typePath) {
+  | Pid(name) => name
+  | Presolved(name) => name
+  | Pdot(p, s) => typePathToName(p) ++ "_" ++ s
   };
 
 /*
@@ -163,6 +181,7 @@ let rec extract_fun =
           ~language,
           ~typeVarsGen,
           ~noFunctionReturnDependencies=false,
+          ~typeEnv,
           revArgDeps,
           revArgs,
           typeExpr: Types.type_expr,
@@ -173,18 +192,20 @@ let rec extract_fun =
       ~language,
       ~typeVarsGen,
       ~noFunctionReturnDependencies,
+      ~typeEnv,
       revArgDeps,
       revArgs,
       t,
     )
   | Tarrow("", typExpr1, typExpr2, _) =>
     let {dependencies, typ} =
-      typExpr1 |> translateTypeExpr_(~language, ~typeVarsGen);
+      typExpr1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
     extract_fun(
       ~language,
       ~typeVarsGen,
       ~noFunctionReturnDependencies,
+      ~typeEnv,
       nextRevDeps,
       [(Nolabel, typ), ...revArgs],
       typExpr2,
@@ -194,25 +215,27 @@ let rec extract_fun =
     | None =>
       /* TODO: Convert name to object, convert null to optional. */
       let {dependencies, typ: typ1} =
-        typExpr1 |> translateTypeExpr_(~language, ~typeVarsGen);
+        typExpr1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       typExpr2
       |> extract_fun(
            ~language,
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
+           ~typeEnv,
            nextRevDeps,
            [(Label(lbl), typ1), ...revArgs],
          );
     | Some((lbl, t1)) =>
       let {dependencies, typ: typ1} =
-        t1 |> translateTypeExpr_(~language, ~typeVarsGen);
+        t1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       /* TODO: Convert name to object, convert null to optional. */
       extract_fun(
         ~language,
         ~typeVarsGen,
         ~noFunctionReturnDependencies,
+        ~typeEnv,
         nextRevDeps,
         [(OptLabel(lbl), typ1), ...revArgs],
         typExpr2,
@@ -220,7 +243,7 @@ let rec extract_fun =
     }
   | _ =>
     let {dependencies, typ: retType} =
-      typeExpr |> translateTypeExpr_(~language, ~typeVarsGen);
+      typeExpr |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     let allDeps =
       List.rev_append(
         revArgDeps,
@@ -239,6 +262,7 @@ and translateTypeExpr_ =
       ~language,
       ~typeVarsGen,
       ~noFunctionReturnDependencies=false,
+      ~typeEnv,
       typeExpr: Types.type_expr,
     )
     : translation =>
@@ -282,12 +306,12 @@ and translateTypeExpr_ =
   | Tconstr(Pdot(Pident({name: "FB", _}), "array", _), [param], _)
   | Tconstr(Pident({name: "array", _}), [param], _) =>
     let paramTranslation =
-      param |> translateTypeExpr_(~language, ~typeVarsGen);
+      param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Array(paramTranslation.typ)};
   | Tconstr(Pdot(Pident({name: "FB", _}), "option", _), [param], _)
   | Tconstr(Pident({name: "option", _}), [param], _) =>
     let paramTranslation =
-      param |> translateTypeExpr_(~language, ~typeVarsGen);
+      param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Option(paramTranslation.typ)};
   | Tconstr(
       Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
@@ -302,7 +326,7 @@ and translateTypeExpr_ =
     )
   | Tconstr(Pdot(Pident({name: "Js", _}), "null_undefined", _), [param], _) =>
     let paramTranslation =
-      param |> translateTypeExpr_(~language, ~typeVarsGen);
+      param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Nullable(paramTranslation.typ)};
   | Tconstr(
       Pdot(Pident({name: "Js", _}), "t", _),
@@ -312,7 +336,7 @@ and translateTypeExpr_ =
     let rec getFieldTypes = (texp: Types.type_expr) =>
       switch (texp.desc) {
       | Tfield(s, _, t1, t2) => [
-          (s, t1 |> translateTypeExpr_(~language, ~typeVarsGen)),
+          (s, t1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv)),
           ...t2 |> getFieldTypes,
         ]
       | _ => []
@@ -341,6 +365,7 @@ and translateTypeExpr_ =
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
+         ~typeEnv,
        )
 
   | Tarrow(_) =>
@@ -349,6 +374,7 @@ and translateTypeExpr_ =
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
+         ~typeEnv,
          [],
          [],
        )
@@ -358,11 +384,14 @@ and translateTypeExpr_ =
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
+         ~typeEnv,
        )
-  | Tconstr(path, [], _) => {
-      dependencies: [TypeAtPath(path)],
-      typ: Ident(typePathToName(path), []),
-    }
+  | Tconstr(path, [], _) =>
+    let resolvedPath = path |> resolveTypePath(~typeEnv);
+    {
+      dependencies: [resolvedPath],
+      typ: Ident(resolvedPath |> typePathToName, []),
+    };
   /* This type doesn't have any built in converter. But what if it was a
    * genType variant type? */
   /*
@@ -375,23 +404,26 @@ and translateTypeExpr_ =
    */
   | Tconstr(path, typeParams, _) =>
     let paramsTranslation =
-      typeParams |> translateTypeExprs_(~language, ~typeVarsGen);
+      typeParams |> translateTypeExprs_(~language, ~typeVarsGen, ~typeEnv);
     let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
     let typeParamDeps =
       paramsTranslation
       |> List.map(({dependencies, _}) => dependencies)
       |> List.concat;
+    let resolvedPath = path |> resolveTypePath(~typeEnv);
     {
-      dependencies: [TypeAtPath(path), ...typeParamDeps],
-      typ: Ident(typePathToName(path), typeArgs),
+      dependencies: [resolvedPath, ...typeParamDeps],
+      typ: Ident(resolvedPath |> typePathToName, typeArgs),
     };
   | _ => {dependencies: [], typ: mixedOrUnknown(~language)}
   }
 and translateTypeExprs_ =
-    (~language, ~typeVarsGen, typeExprs): list(translation) =>
-  typeExprs |> List.map(translateTypeExpr_(~language, ~typeVarsGen));
+    (~language, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
+  typeExprs
+  |> List.map(translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv));
 
-let translateTypeExpr = (~language, ~noFunctionReturnDependencies=?, typeExpr) => {
+let translateTypeExpr =
+    (~language, ~noFunctionReturnDependencies=?, ~typeEnv, typeExpr) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
   let translation =
     typeExpr
@@ -399,24 +431,28 @@ let translateTypeExpr = (~language, ~noFunctionReturnDependencies=?, typeExpr) =
          ~language,
          ~typeVarsGen,
          ~noFunctionReturnDependencies?,
+         ~typeEnv,
        );
 
   if (Debug.dependencies) {
     translation.dependencies
-    |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString));
+    |> List.iter(dep => logItem("Dependency: %s\n", dep |> typePathToName));
   };
   translation;
 };
-let translateTypeExprs = (~language, typeExprs) => {
+
+let translateTypeExprs = (~language, ~typeEnv, typeExprs) => {
   let typeVarsGen = GenIdent.createTypeVarsGen();
   let translations =
-    typeExprs |> translateTypeExprs_(~language, ~typeVarsGen);
+    typeExprs |> translateTypeExprs_(~language, ~typeVarsGen, ~typeEnv);
 
   if (Debug.dependencies) {
     translations
     |> List.iter(translation =>
          translation.dependencies
-         |> List.iter(dep => logItem("Dependency: %s\n", dep |> toString))
+         |> List.iter(dep =>
+              logItem("Dependency: %s\n", dep |> typePathToName)
+            )
        );
   };
   translations;

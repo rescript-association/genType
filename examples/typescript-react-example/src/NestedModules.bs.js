@@ -2,19 +2,29 @@
 'use strict';
 
 
+function nested3Function(x) {
+  return x;
+}
+
 var Nested3 = /* module */[
   /* x */0,
   /* y */1,
   /* z */2,
   /* w */3,
-  /* nested3Value */"nested3Value"
+  /* nested3Value */"nested3Value",
+  /* nested3Function */nested3Function
 ];
+
+function nested2Function(x) {
+  return x;
+}
 
 var Nested2 = /* module */[
   /* x */0,
   /* nested2Value */1,
   /* y */2,
-  /* Nested3 */Nested3
+  /* Nested3 */Nested3,
+  /* nested2Function */nested2Function
 ];
 
 var Universe = /* module */[

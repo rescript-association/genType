@@ -32,9 +32,13 @@ module Universe = {
 
       [@genType]
       let nested3Value = "nested3Value";
+
+      [@genType]
+      let nested3Function = (x: nested2Type) => x;
     };
-    /* [@genType]
-       let nested2Function = (x: Nested3.nested3Type) => x; */
+
+    [@genType]
+    let nested2Function = (x: Nested3.nested3Type) => x;
   };
 
   [@genType]

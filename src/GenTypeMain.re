@@ -68,48 +68,54 @@ let typeDeclarationsOfSignature = signatureItem =>
 
 let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
+  let typeEnv = TypeEnv.root();
   let typeDeclarations =
     (
       switch (cmt_annots) {
       | Implementation(structure) =>
         structure.Typedtree.str_items
-        |> List.map(structItem => structItem |> typeDeclarationsOfStructItem)
+        |> List.map(typeDeclarationsOfStructItem)
       | Interface(signature) =>
-        signature.Typedtree.sig_items
-        |> List.map(signatureItem =>
-             signatureItem |> typeDeclarationsOfSignature
-           )
+        signature.Typedtree.sig_items |> List.map(typeDeclarationsOfSignature)
       | _ => []
       }
     )
     |> List.concat;
   typeDeclarations
   |> List.map(typeDeclaration =>
-       (typeDeclaration |> CodeItem.translateTypeDeclaration(~language)).
+       (
+         typeDeclaration
+         |> CodeItem.translateTypeDeclaration(~language, ~typeEnv)
+       ).
          codeItems
      )
   |> List.concat;
 };
 
 let cmtToCodeItems =
-    (
-      ~config,
-      ~propsTypeGen,
-      ~moduleName,
-      ~outputFileRelative,
-      ~resolver,
-      inputCMT,
-    )
+    (~config, ~moduleName, ~outputFileRelative, ~resolver, inputCMT)
     : list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
+  let propsTypeGen = GenIdent.createPropsTypeGen();
+  let typeEnv = TypeEnv.root();
   let translationUnits =
     switch (cmt_annots) {
     | Implementation(structure) =>
       structure
-      |> CodeItem.translateStructure(~config, ~propsTypeGen, ~moduleName)
+      |> CodeItem.translateStructure(
+           ~config,
+           ~propsTypeGen,
+           ~moduleName,
+           ~typeEnv,
+         )
     | Interface(signature) =>
       signature
-      |> CodeItem.translateSignature(~config, ~propsTypeGen, ~moduleName)
+      |> CodeItem.translateSignature(
+           ~config,
+           ~propsTypeGen,
+           ~moduleName,
+           ~typeEnv,
+         )
     | _ => []
     };
   let translationUnit = translationUnits |> CodeItem.combineTranslations;
@@ -147,7 +153,6 @@ let emitCodeItems =
 let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = cmt |> Paths.getCmtFile;
   if (cmtFile != "") {
-    let propsTypeGen = GenIdent.createPropsTypeGen();
     let inputCMT = Cmt_format.read_cmt(cmtFile);
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
     let outputFileRelative =
@@ -164,13 +169,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       );
     if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
-      |> cmtToCodeItems(
-           ~config,
-           ~propsTypeGen,
-           ~moduleName,
-           ~outputFileRelative,
-           ~resolver,
-         )
+      |> cmtToCodeItems(~config, ~moduleName, ~outputFileRelative, ~resolver)
       |> emitCodeItems(
            ~config,
            ~outputFile,

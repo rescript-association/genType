@@ -23,6 +23,10 @@ export type Universe_Nested2_Nested3_nested3Type = Array<Array<string[]>>;
 
 export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesBS.Universe[2][3][4];
 
+export const Universe_Nested2_Nested3_nested3Function: (_1:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type = NestedModulesBS.Universe[2][3][5];
+
+export const Universe_Nested2_nested2Function: (_1:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type = NestedModulesBS.Universe[2][4];
+
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class Universe_VariantA { protected opaque!: any }; /* simulate opaque types */
 
