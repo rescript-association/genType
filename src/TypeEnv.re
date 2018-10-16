@@ -4,17 +4,28 @@ type t = {
   name: string,
   parent: option(t),
   mutable map: StringMap.t(entry),
+  mutable moduleItem: Runtime.moduleItem,
 }
 and entry =
   | Module(t)
   | Type(string);
 
-let root = () => {name: "__root__", parent: None, map: StringMap.empty};
+let root = () => {
+  name: "__root__",
+  parent: None,
+  map: StringMap.empty,
+  moduleItem: Runtime.moduleItemGen() |> Runtime.newModuleItem,
+};
 
 let toString = x => x.name;
 
 let newModule = (~name, x) => {
-  let newModuleEnv = {name, map: StringMap.empty, parent: Some(x)};
+  let newModuleEnv = {
+    name,
+    parent: Some(x),
+    map: StringMap.empty,
+    moduleItem: Runtime.moduleItemGen() |> Runtime.newModuleItem,
+  };
   x.map = x.map |> StringMap.add(name, Module(newModuleEnv));
   newModuleEnv;
 };
@@ -32,8 +43,24 @@ let rec lookup = (~name, x) =>
     }
   };
 
-let rec pathToRoot = (~path, x) =>
+let updateModuleItem = (~moduleItem, x) => x.moduleItem = moduleItem;
+
+let rec pathToRoot = (~name, x) =>
   switch (x.parent) {
-  | None => path
-  | Some(parent) => parent |> pathToRoot(~path=x.name ++ "_" ++ path)
+  | None => name
+  | Some(parent) => parent |> pathToRoot(~name=x.name ++ "_" ++ name)
   };
+
+let getValueAccessPath = (~name, x) => {
+  let rec accesPath = x =>
+    switch (x.parent) {
+    | None => ""
+    | Some(parent) =>
+      (parent.parent == None ? x.name : parent |> accesPath)
+      ++ "["
+      ++ (x.moduleItem |> Runtime.emitModuleItem)
+      ++ "]"
+    };
+  let notNested = x.parent == None;
+  notNested ? name : x |> accesPath;
+};

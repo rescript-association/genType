@@ -57,7 +57,7 @@ type wrapReasonComponent = {
 type wrapReasonValue = {
   moduleName: ModuleName.t,
   resolvedName: string,
-  moduleItem: Runtime.moduleItem,
+  valueAccessPath: string,
   typ,
 };
 
@@ -198,7 +198,7 @@ let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
 
 let translateExportType =
     (~opaque, ~typeVars, ~typeName, ~typeEnv, ~comment=?, typ) => {
-  let typeName = typeEnv |> TypeEnv.pathToRoot(~path=typeName);
+  let typeName = typeEnv |> TypeEnv.pathToRoot(~name=typeName);
   ExportType({opaque, typeVars, typeName, comment, typ});
 };
 
@@ -283,7 +283,7 @@ let translateConstructorDeclaration =
     (~language, ~recordGen, ~typeEnv, variantTypeName, constructorDeclaration) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
-  let leafNameResolved = typeEnv |> TypeEnv.pathToRoot(~path=leafName);
+  let leafNameResolved = typeEnv |> TypeEnv.pathToRoot(~name=leafName);
   let argsTranslation =
     Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
@@ -296,7 +296,7 @@ let translateConstructorDeclaration =
   let variantTypeNameResolved =
     typeEnv
     |> TypeEnv.pathToRoot(
-         ~path=variantLeafTypeName(variantTypeName, leafName),
+         ~name=variantLeafTypeName(variantTypeName, leafName),
        );
 
   let typeVars = argTypes |> TypeVars.freeOfList;
@@ -341,16 +341,22 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
     Function({typeVars, argTypes, retType})
   };
 
-let translateId =
-    (~language, ~moduleName, ~moduleItem, ~typeEnv, ~typeExpr, id)
-    : translation => {
+let translateValue =
+    (~language, ~moduleName, ~typeEnv, ~typeExpr, name): translation => {
   let typeExprTranslation =
     typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let resolvedName = typeEnv |> TypeEnv.pathToRoot(~path=id |> Ident.name);
+  let resolvedName = typeEnv |> TypeEnv.pathToRoot(~name);
+
+  /* Access path for the value in the module.
+     I can be the value name if the module is not nested.
+     Or TopLevelModule[x][y] if accessing a value in a doubly nested module */
+  let valueAccessPath =
+    typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
+
   let codeItems = [
-    WrapReasonValue({moduleName, resolvedName, moduleItem, typ}),
+    WrapReasonValue({moduleName, resolvedName, valueAccessPath, typ}),
   ];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
@@ -377,16 +383,8 @@ let translateId =
  *     {named: number, args?: number}
  */
 
-let translateMake =
-    (
-      ~language,
-      ~propsTypeGen,
-      ~moduleName,
-      ~moduleItem,
-      ~typeEnv,
-      ~typeExpr,
-      id,
-    )
+let translateComponent =
+    (~language, ~propsTypeGen, ~moduleName, ~typeEnv, ~typeExpr, name)
     : translation => {
   let typeExprTranslation =
     typeExpr
@@ -464,8 +462,7 @@ let translateMake =
 
   | _ =>
     /* not a component: treat make as a normal function */
-    id
-    |> translateId(~language, ~moduleName, ~moduleItem, ~typeEnv, ~typeExpr)
+    name |> translateValue(~language, ~moduleName, ~typeEnv, ~typeExpr)
   };
 };
 
@@ -481,21 +478,23 @@ let translateValueBinding =
     : translation => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+  typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeExpr = vb_expr.exp_type;
   switch (vb_pat.pat_desc, getGenTypeKind(vb_attributes)) {
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id
-    |> translateMake(
+    |> Ident.name
+    |> translateComponent(
          ~language,
          ~propsTypeGen,
          ~moduleName,
-         ~moduleItem,
          ~typeEnv,
          ~typeExpr,
        )
   | (Tpat_var(id, _), GenType) =>
     id
-    |> translateId(~language, ~moduleName, ~moduleItem, ~typeEnv, ~typeExpr)
+    |> Ident.name
+    |> translateValue(~language, ~moduleName, ~typeEnv, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -505,7 +504,6 @@ let translateSignatureValue =
       ~language,
       ~propsTypeGen,
       ~moduleName,
-      ~moduleItem,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
     )
@@ -515,17 +513,18 @@ let translateSignatureValue =
   switch (val_id, getGenTypeKind(val_attributes)) {
   | (id, GenType) when Ident.name(id) == "make" =>
     id
-    |> translateMake(
+    |> Ident.name
+    |> translateComponent(
          ~language,
          ~propsTypeGen,
          ~moduleName,
-         ~moduleItem,
          ~typeEnv,
          ~typeExpr,
        )
   | (id, GenType) =>
     id
-    |> translateId(~language, ~moduleName, ~moduleItem, ~typeEnv, ~typeExpr)
+    |> Ident.name
+    |> translateValue(~language, ~moduleName, ~typeEnv, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
 };
@@ -799,7 +798,7 @@ let translateTypeDeclaration =
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let variantTypeNameResolved =
-      typeEnv |> TypeEnv.pathToRoot(~path=variantTypeName);
+      typeEnv |> TypeEnv.pathToRoot(~name=variantTypeName);
     let unionType =
       ExportVariantType({
         typeParams,
@@ -908,6 +907,7 @@ and translateModuleBinding =
   | Tmod_structure(structure) =>
     let isAnnotated = mb_attributes |> hasGenTypeAnnotation;
     let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+    typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     let {dependencies, codeItems} =
       structure
       |> translateStructure(
@@ -1005,11 +1005,11 @@ and translateSignatureItem =
          );
     } else {
       let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+      typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
       valueDescription
       |> translateSignatureValue(
            ~language=config.language,
            ~propsTypeGen,
-           ~moduleItem,
            ~moduleName,
            ~typeEnv,
          );
@@ -1017,6 +1017,7 @@ and translateSignatureItem =
 
   | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
     let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+    typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleDeclaration
     |> translateModuleDeclaration(
          ~config,

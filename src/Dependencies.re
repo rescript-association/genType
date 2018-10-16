@@ -13,21 +13,21 @@ type translation = {
 let rec resolveTypePath = (~typeEnv, typePath) =>
   switch (typePath) {
   | Path.Pident(id) =>
-    switch (typeEnv |> TypeEnv.lookup(~name=id |> Ident.name)) {
-    | None => Pid(id |> Ident.name)
+    let name = id |> Ident.name;
+    switch (typeEnv |> TypeEnv.lookup(~name)) {
+    | None => Pid(name)
     | Some(typeEnv1) =>
-      let resolvedName =
-        typeEnv1 |> TypeEnv.pathToRoot(~path=id |> Ident.name);
+      let resolvedName = typeEnv1 |> TypeEnv.pathToRoot(~name);
       if (Debug.typeResolution) {
         logItem(
-          "resolveTypePath id:%s env:%s resolvedName:%s\n",
-          id |> Ident.name,
+          "resolveTypePath name:%s env:%s resolvedName:%s\n",
+          name,
           typeEnv1 |> TypeEnv.toString,
           resolvedName,
         );
       };
       Presolved(resolvedName);
-    }
+    };
   | Pdot(p, s, _pos) => Pdot(p |> resolveTypePath(~typeEnv), s)
   | Papply(_) => Presolved("__Papply_unsupported_genType__")
   };

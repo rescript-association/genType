@@ -126,27 +126,6 @@ let emitExportType =
        ~comment,
      );
 
-let moduleElementWithNamespace = (~namespace, ~moduleName, ~moduleItem, name) =>
-  (moduleName |> ModuleName.toString)
-  ++ "."
-  ++ (
-    switch (namespace |> List.rev) {
-    | [] => name
-    | [(firstNestedModule, _), ...rest] =>
-      let restModuleItems =
-        rest |> List.map(((_, moduleItem)) => moduleItem);
-      (firstNestedModule |> ModuleName.toString)
-      ++ (
-        restModuleItems
-        @ [moduleItem]
-        |> List.map(moduleItem =>
-             "[" ++ (moduleItem |> Runtime.emitModuleItem) ++ "]"
-           )
-        |> String.concat("")
-      );
-    }
-  );
-
 let rec emitCodeItem =
         (
           ~config,
@@ -497,7 +476,7 @@ let rec emitCodeItem =
 
     (env, emitters);
 
-  | WrapReasonValue({moduleName, resolvedName, moduleItem, typ}) =>
+  | WrapReasonValue({moduleName, resolvedName, valueAccessPath, typ}) =>
     let importPath =
       ModuleResolver.resolveModule(
         ~config,
@@ -511,16 +490,13 @@ let rec emitCodeItem =
       moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
     let converter = typ |> typToConverter;
 
-    let moduleElementExpression =
-      resolvedName
-      |> moduleElementWithNamespace(
-           ~moduleName=moduleNameBs,
-           ~namespace,
-           ~moduleItem,
-         );
-
     let emitters =
-      (moduleElementExpression |> Converter.toJS(~converter))
+      (
+        (moduleNameBs |> ModuleName.toString)
+        ++ "."
+        ++ valueAccessPath
+        |> Converter.toJS(~converter)
+      )
       ++ ";"
       |> EmitTyp.emitExportConst(~emitters, ~name=resolvedName, ~typ, ~config);
 
