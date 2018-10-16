@@ -1,4 +1,4 @@
-# Reason genType 0.18.0
+# Reason genType 0.19.0
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, use `@genType` annotations, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
 
@@ -28,10 +28,10 @@ Wrappers for using ReasonReact components from JavaScript are generated when the
 # Will download and automatically untar the file in the current directory as gentype.native
 
 # MacOS
-curl -L https://github.com/cristianoc/genType/releases/download/v0.18.0/gentype-macos.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.19.0/gentype-macos.tar.gz | tar xz
 
 # Linux
-curl -L https://github.com/cristianoc/genType/releases/download/v0.18.0/gentype-linux.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.19.0/gentype-linux.tar.gz | tar xz
 ```
 
 # Quick Start: Set up genType in existing TypeScript / Flow / BuckleScript project
@@ -137,8 +137,6 @@ If a Reason type contains a type variable, the corresponding value is not conver
 # Limitations
 
 * **BuckleScript in-source = true**. Currently only supports bucklescript projects with [in-source generation](https://bucklescript.github.io/docs/en/build-configuration#package-specs) and `.bs.js` file suffix.
-
-* **No nested modules**. Nested modules are not supported, and annotations will be ignored.
 
 * **Limited JS wrappers**. There used to be a limited way to type check existing wrappers for JS components. This is now deprecated. A complete solution, which generates wrappers automatically for components as well as arbitrary values, is under development. For an early example, see [MyBannerWrapper.re](examples/typescript-react-example/src/MyBannerWrapper.re).
 
