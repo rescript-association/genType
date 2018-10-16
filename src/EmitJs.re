@@ -46,7 +46,6 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     | ExportVariantType(_)
     | WrapJsComponent(_)
     | WrapJsValue(_)
-    | WrapModule(_)
     | WrapReasonComponent(_)
     | WrapReasonValue(_)
     | WrapVariantLeaf(_) => exportTypeMap
@@ -135,7 +134,6 @@ let rec emitCodeItem =
           ~emitters,
           ~env,
           ~inputCmtToTypeDeclarations,
-          ~namespace,
           codeItem,
         ) => {
   let language = config.language;
@@ -369,19 +367,6 @@ let rec emitCodeItem =
          );
     (env, emitters);
 
-  | WrapModule({moduleName, moduleItem, codeItems, _}) =>
-    codeItems
-    |> emitCodeItems(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~exportTypeMap,
-         ~emitters,
-         ~env,
-         ~inputCmtToTypeDeclarations,
-         ~namespace=[(moduleName, moduleItem), ...namespace],
-       )
-
   | WrapReasonComponent({
       exportType,
       moduleName,
@@ -573,7 +558,6 @@ and emitCodeItems =
       ~emitters,
       ~env,
       ~inputCmtToTypeDeclarations,
-      ~namespace,
       codeItems,
     ) =>
   codeItems
@@ -587,7 +571,6 @@ and emitCodeItems =
            ~emitters,
            ~env,
            ~inputCmtToTypeDeclarations,
-           ~namespace,
          ),
        (env, emitters),
      );
@@ -634,7 +617,6 @@ let emitCodeItemsAsString =
          ~emitters=Emitters.initial,
          ~env=initialEnv,
          ~inputCmtToTypeDeclarations,
-         ~namespace=[],
        );
 
   emitters

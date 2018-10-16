@@ -75,19 +75,13 @@ type wrapVariantLeaf = {
   recordValue: Runtime.recordValue,
 };
 
-type wrapModule = {
-  moduleName: ModuleName.t,
-  moduleItem: Runtime.moduleItem,
-  isAnnotated: bool,
-  codeItems: list(t),
-}
+type wrapModule = {codeItems: list(t)}
 and t =
   | ExportType(exportType)
   | ExportVariantType(exportVariantType)
   | ImportType(importType)
   | WrapJsComponent(wrapJsComponent)
   | WrapJsValue(wrapJsValue)
-  | WrapModule(wrapModule)
   | WrapReasonComponent(wrapReasonComponent)
   | WrapReasonValue(wrapReasonValue)
   | WrapVariantLeaf(wrapVariantLeaf);
@@ -136,8 +130,6 @@ let toString = (~language, codeItem) =>
     "WrapJsComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
   | WrapJsValue({importAnnotation, _}) =>
     "WrapJsValue " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | WrapModule({moduleName, _}) =>
-    "WrapModule " ++ (moduleName |> ModuleName.toString)
   | WrapReasonComponent({moduleName, _}) =>
     "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
   | WrapReasonValue({moduleName, resolvedName, typ, _}) =>
@@ -905,7 +897,7 @@ and translateModuleBinding =
   let name = mb_id |> Ident.name;
   switch (mb_expr.mod_desc) {
   | Tmod_structure(structure) =>
-    let isAnnotated = mb_attributes |> hasGenTypeAnnotation;
+    let _isAnnotated = mb_attributes |> hasGenTypeAnnotation;
     let moduleItem = moduleItemGen |> Runtime.newModuleItem;
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     let {dependencies, codeItems} =
@@ -917,17 +909,7 @@ and translateModuleBinding =
            ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
          )
       |> combineTranslations;
-    {
-      dependencies,
-      codeItems: [
-        WrapModule({
-          moduleName: name |> ModuleName.fromStringUnsafe,
-          moduleItem,
-          isAnnotated,
-          codeItems,
-        }),
-      ],
-    };
+    {dependencies, codeItems};
 
   | Tmod_ident(_)
   | Tmod_functor(_)
@@ -941,7 +923,6 @@ let rec translateModuleDeclaration =
         (
           ~config,
           ~propsTypeGen,
-          ~moduleItem,
           ~moduleName,
           ~typeEnv,
           {md_id, md_attributes, md_type, _}: Typedtree.module_declaration,
@@ -949,7 +930,7 @@ let rec translateModuleDeclaration =
   switch (md_type.mty_desc) {
   | Tmty_signature(signature) =>
     let name = md_id |> Ident.name;
-    let isAnnotated = md_attributes |> hasGenTypeAnnotation;
+    let _isAnnotated = md_attributes |> hasGenTypeAnnotation;
     let {dependencies, codeItems} =
       signature
       |> translateSignature(
@@ -959,17 +940,7 @@ let rec translateModuleDeclaration =
            ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
          )
       |> combineTranslations;
-    {
-      dependencies,
-      codeItems: [
-        WrapModule({
-          moduleName: name |> ModuleName.fromStringUnsafe,
-          moduleItem,
-          isAnnotated,
-          codeItems,
-        }),
-      ],
-    };
+    {dependencies, codeItems};
   | Tmty_ident(_)
   | Tmty_functor(_)
   | Tmty_with(_)
@@ -1022,7 +993,6 @@ and translateSignatureItem =
     |> translateModuleDeclaration(
          ~config,
          ~propsTypeGen,
-         ~moduleItem,
          ~moduleName,
          ~typeEnv,
        );

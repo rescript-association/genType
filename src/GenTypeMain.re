@@ -13,7 +13,6 @@ let getPriority = x =>
   | WrapJsValue(_) => "2low"
   | ExportType(_)
   | ExportVariantType(_)
-  | WrapModule(_)
   | WrapReasonComponent(_)
   | WrapReasonValue(_)
   | WrapVariantLeaf(_) => "1med"
