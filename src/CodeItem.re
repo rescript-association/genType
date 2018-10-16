@@ -56,7 +56,7 @@ type wrapReasonComponent = {
 
 type wrapReasonValue = {
   moduleName: ModuleName.t,
-  id: Ident.t,
+  resolvedName: string,
   moduleItem: Runtime.moduleItem,
   typ,
 };
@@ -67,11 +67,11 @@ type constructorTyp = {
   variant,
 };
 
-type wrapVariant = {
+type wrapVariantLeaf = {
   exportType,
   constructorTyp,
   argTypes: list(typ),
-  variantName: string,
+  leafName: string,
   recordValue: Runtime.recordValue,
 };
 
@@ -90,7 +90,7 @@ and t =
   | WrapModule(wrapModule)
   | WrapReasonComponent(wrapReasonComponent)
   | WrapReasonValue(wrapReasonValue)
-  | WrapVariant(wrapVariant);
+  | WrapVariantLeaf(wrapVariantLeaf);
 
 type genTypeKind =
   | NoGenType
@@ -140,15 +140,15 @@ let toString = (~language, codeItem) =>
     "WrapModule " ++ (moduleName |> ModuleName.toString)
   | WrapReasonComponent({moduleName, _}) =>
     "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
-  | WrapReasonValue({moduleName, id, typ, _}) =>
+  | WrapReasonValue({moduleName, resolvedName, typ, _}) =>
     "WrapReasonValue"
-    ++ " id:"
-    ++ Ident.name(id)
+    ++ " resolvedName:"
+    ++ resolvedName
     ++ " moduleName:"
     ++ ModuleName.toString(moduleName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
-  | WrapVariant({variantName, _}) => "WrapVariant " ++ variantName
+  | WrapVariantLeaf({leafName, _}) => "WrapVariantLeaf " ++ leafName
   };
 
 type attributePayload =
@@ -196,8 +196,11 @@ let exportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) => {
   typ,
 };
 
-let translateExportType = (~opaque, ~typeVars, ~typeName, ~comment=?, typ) =>
+let translateExportType =
+    (~opaque, ~typeVars, ~typeName, ~typeEnv, ~comment=?, typ) => {
+  let typeName = typeEnv |> TypeEnv.pathToRoot(~path=typeName);
   ExportType({opaque, typeVars, typeName, comment, typ});
+};
 
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
@@ -279,7 +282,8 @@ and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
 let translateConstructorDeclaration =
     (~language, ~recordGen, ~typeEnv, variantTypeName, constructorDeclaration) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
-  let variantName = Ident.name(constructorDeclaration.Types.cd_id);
+  let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
+  let leafNameResolved = typeEnv |> TypeEnv.pathToRoot(~path=leafName);
   let argsTranslation =
     Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
@@ -288,26 +292,34 @@ let translateConstructorDeclaration =
     |> List.map(({Dependencies.dependencies, _}) => dependencies)
     |> List.concat;
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
-  let variantTypeName = variantLeafTypeName(variantTypeName, variantName);
+
+  let variantTypeNameResolved =
+    typeEnv
+    |> TypeEnv.pathToRoot(
+         ~path=variantLeafTypeName(variantTypeName, leafName),
+       );
 
   let typeVars = argTypes |> TypeVars.freeOfList;
 
-  let variant = {name: variantTypeName, params: typeVars |> TypeVars.toTyp};
+  let variant = {
+    name: variantTypeNameResolved,
+    params: typeVars |> TypeVars.toTyp,
+  };
   let constructorTyp = {typeVars, argTypes, variant};
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
-    WrapVariant({
+    WrapVariantLeaf({
       exportType:
         exportType(
           ~opaque=true,
           ~typeVars,
-          ~typeName=variantTypeName,
+          ~typeName=variantTypeNameResolved,
           mixedOrUnknown(~language),
         ),
       constructorTyp,
       argTypes,
-      variantName,
+      leafName: leafNameResolved,
       recordValue,
     }),
   ];
@@ -336,7 +348,10 @@ let translateId =
     typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let codeItems = [WrapReasonValue({moduleName, id, moduleItem, typ})];
+  let resolvedName = typeEnv |> TypeEnv.pathToRoot(~path=id |> Ident.name);
+  let codeItems = [
+    WrapReasonValue({moduleName, resolvedName, moduleItem, typ}),
+  ];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
 
@@ -699,7 +714,13 @@ let translateTypeDeclaration =
     {
       dependencies,
       codeItems: [
-        translateExportType(~opaque=false, ~typeVars, ~typeName, typ),
+        translateExportType(
+          ~opaque=false,
+          ~typeVars,
+          ~typeName,
+          ~typeEnv,
+          typ,
+        ),
       ],
     };
 
@@ -720,6 +741,7 @@ let translateTypeDeclaration =
             ~opaque=true,
             ~typeVars,
             ~typeName,
+            ~typeEnv,
             mixedOrUnknown(~language),
           ),
         ],
@@ -746,6 +768,7 @@ let translateTypeDeclaration =
           ~opaque,
           ~typeVars,
           ~typeName,
+          ~typeEnv,
           typeExprTranslation.typ,
         ),
       ];
@@ -775,8 +798,14 @@ let translateTypeDeclaration =
     let deps = listListDeps |> List.concat;
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
+    let variantTypeNameResolved =
+      typeEnv |> TypeEnv.pathToRoot(~path=variantTypeName);
     let unionType =
-      ExportVariantType({typeParams, variants, name: variantTypeName});
+      ExportVariantType({
+        typeParams,
+        variants,
+        name: variantTypeNameResolved,
+      });
     {dependencies: deps, codeItems: List.append(items, [unionType])};
 
   | _ => {dependencies: [], codeItems: []}

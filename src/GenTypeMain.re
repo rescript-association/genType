@@ -16,7 +16,7 @@ let getPriority = x =>
   | WrapModule(_)
   | WrapReasonComponent(_)
   | WrapReasonValue(_)
-  | WrapVariant(_) => "1med"
+  | WrapVariantLeaf(_) => "1med"
   };
 
 let sortcodeItemsByPriority = codeItems => {

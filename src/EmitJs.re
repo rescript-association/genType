@@ -49,7 +49,7 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     | WrapModule(_)
     | WrapReasonComponent(_)
     | WrapReasonValue(_)
-    | WrapVariant(_) => exportTypeMap
+    | WrapVariantLeaf(_) => exportTypeMap
     };
   };
   codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -126,15 +126,6 @@ let emitExportType =
        ~comment,
      );
 
-let nameWithNamespace = (~namespace, name) =>
-  [
-    name,
-    ...namespace
-       |> List.map(((moduleName, _)) => moduleName |> ModuleName.toString),
-  ]
-  |> List.rev
-  |> String.concat("_");
-
 let moduleElementWithNamespace = (~namespace, ~moduleName, ~moduleItem, name) =>
   (moduleName |> ModuleName.toString)
   ++ "."
@@ -181,21 +172,12 @@ let rec emitCodeItem =
   };
 
   switch (codeItem) {
-  | CodeItem.ExportType(exportType) =>
-    let exportType = {
-      ...exportType,
-      typeName: exportType.typeName |> nameWithNamespace(~namespace),
-    };
-    (env, emitExportType(~emitters, ~language, exportType));
+  | CodeItem.ExportType(exportType) => (
+      env,
+      emitExportType(~emitters, ~language, exportType),
+    )
 
-  | ExportVariantType({CodeItem.typeParams, variants, name}) =>
-    let name = name |> nameWithNamespace(~namespace);
-    let variants =
-      variants
-      |> List.map(({name, _} as variant) =>
-           {...variant, name: name |> nameWithNamespace(~namespace)}
-         );
-    (
+  | ExportVariantType({CodeItem.typeParams, variants, name}) => (
       env,
       EmitTyp.emitExportVariantType(
         ~emitters,
@@ -204,7 +186,7 @@ let rec emitCodeItem =
         ~typeParams,
         ~variants,
       ),
-    );
+    )
 
   | ImportType(importType) =>
     emitImportType(
@@ -515,8 +497,7 @@ let rec emitCodeItem =
 
     (env, emitters);
 
-  | WrapReasonValue({moduleName, id, moduleItem, typ}) =>
-    let name = id |> Ident.name |> nameWithNamespace(~namespace);
+  | WrapReasonValue({moduleName, resolvedName, moduleItem, typ}) =>
     let importPath =
       ModuleResolver.resolveModule(
         ~config,
@@ -530,33 +511,31 @@ let rec emitCodeItem =
       moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
     let converter = typ |> typToConverter;
 
+    let moduleElementExpression =
+      resolvedName
+      |> moduleElementWithNamespace(
+           ~moduleName=moduleNameBs,
+           ~namespace,
+           ~moduleItem,
+         );
+
     let emitters =
-      (
-        id
-        |> Ident.name
-        |> moduleElementWithNamespace(
-             ~moduleName=moduleNameBs,
-             ~namespace,
-             ~moduleItem,
-           )
-        |> Converter.toJS(~converter)
-      )
+      (moduleElementExpression |> Converter.toJS(~converter))
       ++ ";"
-      |> EmitTyp.emitExportConst(~emitters, ~name, ~typ, ~config);
+      |> EmitTyp.emitExportConst(~emitters, ~name=resolvedName, ~typ, ~config);
 
     (envWithRequires, emitters);
 
-  | WrapVariant({
+  | WrapVariantLeaf({
       exportType,
       constructorTyp,
       argTypes,
-      variantName,
+      leafName,
       recordValue,
     }) =>
-    let variantName = variantName |> nameWithNamespace(~namespace);
     let createFunctionType =
         ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
-      let retType = Ident(name |> nameWithNamespace(~namespace), params);
+      let retType = Ident(name, params);
       if (argTypes === []) {
         retType;
       } else {
@@ -564,10 +543,6 @@ let rec emitCodeItem =
       };
     };
 
-    let exportType = {
-      ...exportType,
-      typeName: exportType.typeName |> nameWithNamespace(~namespace),
-    };
     let emitters = emitExportType(~emitters, ~language, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
@@ -577,7 +552,7 @@ let rec emitCodeItem =
         ++ ";"
         |> EmitTyp.emitExportConst(
              ~emitters,
-             ~name=variantName,
+             ~name=leafName,
              ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
@@ -598,7 +573,7 @@ let rec emitCodeItem =
         EmitText.funDef(~args, ~mkBody, "")
         |> EmitTyp.emitExportConst(
              ~emitters,
-             ~name=variantName,
+             ~name=leafName,
              ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
