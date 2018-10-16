@@ -65,13 +65,6 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-let tagIsGenType = s => s == "genType";
-let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
-
-let tagIsGenTypeImport = s => s == "genType.import";
-
-let tagIsGenTypeOpaque = s => s == "genFlow.opaque";
-
 type optionalness =
   | NonMandatory
   | Mandatory;

@@ -9,9 +9,9 @@ open GenTypeCommon;
 let cmtHasGenTypeAnnotations = inputCMT =>
   switch (inputCMT.Cmt_format.cmt_annots) {
   | Implementation(structure) =>
-    structure |> Translation.structureHasGenTypeAnnotation
+    structure |> Annotation.structureHasGenTypeAnnotation
   | Interface(signature) =>
-    signature |> Translation.signatureHasGenTypeAnnotation
+    signature |> Annotation.signatureHasGenTypeAnnotation
   | _ => false
   };
 

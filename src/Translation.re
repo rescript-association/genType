@@ -16,43 +16,6 @@ let combineTranslations = (translations: list(t)): t =>
     }
   );
 
-type attributePayload =
-  | UnrecognizedPayload
-  | StringPayload(string);
-
-let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
-  switch (attributes) {
-  | [] => None
-  | [({Asttypes.txt, _}, payload), ..._tl] when checkText(txt) =>
-    switch (payload) {
-    | PStr([
-        {
-          pstr_desc:
-            Pstr_eval(
-              {pexp_desc: Pexp_constant(Const_string(s, _)), _},
-              _,
-            ),
-          _,
-        },
-      ]) =>
-      Some(StringPayload(s))
-    | _ => Some(UnrecognizedPayload)
-    }
-  | [_hd, ...tl] => getAttributePayload(checkText, tl)
-  };
-
-let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
-  getAttributePayload(checkText, attributes) != None;
-
-let getGenTypeKind = (attributes: Typedtree.attributes) =>
-  if (hasAttribute(tagIsGenType, attributes)) {
-    CodeItem.GenType;
-  } else if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
-    GenTypeOpaque;
-  } else {
-    NoGenType;
-  };
-
 let exportType =
     (~opaque, ~typeVars, ~resolvedTypeName, ~comment=?, typ)
     : CodeItem.exportType => {
@@ -71,77 +34,6 @@ let translateExportType =
 
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
-
-let hasGenTypeAnnotation = attributes =>
-  getGenTypeKind(attributes) != NoGenType
-  || attributes
-  |> getAttributePayload(tagIsGenTypeImport) != None;
-
-let rec moduleTypeHasGenTypeAnnotation =
-        ({mty_desc, _}: Typedtree.module_type) =>
-  switch (mty_desc) {
-  | Tmty_signature(signature) => signature |> signatureHasGenTypeAnnotation
-  | Tmty_ident(_)
-  | Tmty_functor(_)
-  | Tmty_with(_)
-  | Tmty_typeof(_)
-  | Tmty_alias(_) => false
-  }
-and moduleDeclarationHasGenTypeAnnotation =
-    ({md_attributes, md_type, _}: Typedtree.module_declaration) =>
-  md_attributes
-  |> hasGenTypeAnnotation
-  || md_type
-  |> moduleTypeHasGenTypeAnnotation
-and signatureItemHasGenTypeAnnotation =
-    (signatureItem: Typedtree.signature_item) =>
-  switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation
-  | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
-    moduleDeclaration |> moduleDeclarationHasGenTypeAnnotation
-  | _ => false
-  }
-and signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
-  signature.Typedtree.sig_items
-  |> List.exists(signatureItemHasGenTypeAnnotation);
-
-let rec structureItemHasGenTypeAnnotation =
-        (structureItem: Typedtree.structure_item) =>
-  switch (structureItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
-    valueBindings
-    |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation
-  | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
-    moduleBinding |> moduleBindingHasGenTypeAnnotation
-  | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
-    moduleBindings |> List.exists(moduleBindingHasGenTypeAnnotation)
-  | _ => false
-  }
-and moduleBindingHasGenTypeAnnotation =
-    ({mb_expr, mb_attributes, _}: Typedtree.module_binding) =>
-  mb_attributes
-  |> hasGenTypeAnnotation
-  || (
-    switch (mb_expr.mod_desc) {
-    | Tmod_structure(structure) => structure |> structureHasGenTypeAnnotation
-    | Tmod_ident(_)
-    | Tmod_functor(_)
-    | Tmod_apply(_)
-    | Tmod_constraint(_)
-    | Tmod_unpack(_) => false
-    }
-  )
-and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
-  structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
 /*
  * TODO: Make the types namespaced by nested Flow module.
@@ -350,7 +242,7 @@ let translateValueBinding =
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeExpr = vb_expr.exp_type;
-  switch (vb_pat.pat_desc, getGenTypeKind(vb_attributes)) {
+  switch (vb_pat.pat_desc, Annotation.getGenTypeKind(vb_attributes)) {
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name
@@ -380,7 +272,7 @@ let translateSignatureValue =
     : t => {
   let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
   let typeExpr = val_desc.ctyp_type;
-  switch (val_id, getGenTypeKind(val_attributes)) {
+  switch (val_id, Annotation.getGenTypeKind(val_attributes)) {
   | (id, GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name
@@ -397,17 +289,6 @@ let translateSignatureValue =
     |> translateValue(~language, ~moduleName, ~typeEnv, ~typeExpr)
   | _ => {dependencies: [], codeItems: []}
   };
-};
-
-let importAnnotationFromString = importString: CodeItem.importAnnotation => {
-  let name = {
-    let base = importString |> Filename.basename;
-    try (base |> Filename.chop_extension) {
-    | Invalid_argument(_) => base
-    };
-  };
-  let importPath = ImportPath.fromStringUnsafe(importString);
-  {name, importPath};
 };
 
 /**
@@ -428,7 +309,8 @@ let translatePrimitive =
     valueDescription.val_desc.ctyp_type
     |> Dependencies.translateTypeExpr(~language, ~typeEnv);
   let genTypeImportPayload =
-    valueDescription.val_attributes |> getAttributePayload(tagIsGenTypeImport);
+    valueDescription.val_attributes
+    |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport);
   switch (
     typeExprTranslation.typ,
     valueDescription.val_prim,
@@ -509,7 +391,8 @@ let translatePrimitive =
             ~resolvedTypeName=propsTypeName,
             propsTyp,
           ),
-        importAnnotation: importString |> importAnnotationFromString,
+        importAnnotation:
+          importString |> Annotation.importAnnotationFromString,
         childrenTyp,
         propsFields,
         propsTypeName,
@@ -523,7 +406,8 @@ let translatePrimitive =
       codeItems: [
         WrapJsValue({
           valueName,
-          importAnnotation: importString |> importAnnotationFromString,
+          importAnnotation:
+            importString |> Annotation.importAnnotationFromString,
           typ: typeExprTranslation.typ,
           moduleName,
         }),
@@ -547,14 +431,17 @@ let translateTypeDeclaration =
   switch (
     dec.typ_type.type_params,
     dec.typ_type.type_kind,
-    getGenTypeKind(dec.typ_attributes),
+    Annotation.getGenTypeKind(dec.typ_attributes),
   ) {
   | (typeParams, Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_type, ld_attributes, _}) => {
            let name =
-             switch (ld_attributes |> getAttributePayload(tagIsGenTypeAs)) {
+             switch (
+               ld_attributes
+               |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
+             ) {
              | Some(StringPayload(s)) => s
              | _ => ld_id |> Ident.name
              };
@@ -774,7 +661,7 @@ and translateModuleBinding =
   let name = mb_id |> Ident.name;
   switch (mb_expr.mod_desc) {
   | Tmod_structure(structure) =>
-    let _isAnnotated = mb_attributes |> hasGenTypeAnnotation;
+    let _isAnnotated = mb_attributes |> Annotation.hasGenTypeAnnotation;
     let moduleItem = moduleItemGen |> Runtime.newModuleItem;
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     let {dependencies, codeItems} =
@@ -807,7 +694,7 @@ let rec translateModuleDeclaration =
   switch (md_type.mty_desc) {
   | Tmty_signature(signature) =>
     let name = md_id |> Ident.name;
-    let _isAnnotated = md_attributes |> hasGenTypeAnnotation;
+    let _isAnnotated = md_attributes |> Annotation.hasGenTypeAnnotation;
     let {dependencies, codeItems} =
       signature
       |> translateSignature(
