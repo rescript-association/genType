@@ -34,6 +34,10 @@ function testConvert3(x) {
   return x;
 }
 
+function testConvert2to3(x) {
+  return x;
+}
+
 var monday = /* monday */-949852400;
 
 var saturday = /* saturday */-29784519;
@@ -55,4 +59,5 @@ exports.fortytwoOK = fortytwoOK;
 exports.fortytwoBAD = fortytwoBAD;
 exports.testConvert2 = testConvert2;
 exports.testConvert3 = testConvert3;
+exports.testConvert2to3 = testConvert2to3;
 /* No side effect */

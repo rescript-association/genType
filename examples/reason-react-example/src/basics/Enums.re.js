@@ -50,3 +50,5 @@ export const testConvert2: (testGenTypeAs2) => testGenTypeAs2 = function _(Arg1)
 export type testGenTypeAs3 = "type" | "module" | "XXX THIS IS DIFFERENT";
 
 export const testConvert3: (testGenTypeAs3) => testGenTypeAs3 = function _(Arg1) { const result = EnumsBS.testConvert3($$toRE66407473[Arg1]); return $$toJS66407473[result] };
+
+export const testConvert2to3: (testGenTypeAs2) => testGenTypeAs3 = function _(Arg1) { const result = EnumsBS.testConvert2to3($$toRE329149378[Arg1]); return $$toJS66407473[result] };

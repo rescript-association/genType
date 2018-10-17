@@ -47,7 +47,7 @@ let testConvert = (x: testGenTypeAs) => x;
 [@genType]
 let fortytwoOK: testGenTypeAs = `fortytwo;
 
-/* Exporting this is BAD: type inference misses the mapping to "42" */
+/* Exporting this is BAD: type inference means it's not mapped to "42" */
 [@genType]
 let fortytwoBAD = `fortytwo;
 
@@ -58,6 +58,8 @@ type testGenTypeAs2 = [
   | [@genType.as "42"] `fortytwo
 ];
 
+/* Since testGenTypeAs2 is the same type as testGenTypeAs1,
+   share the conversion map. */
 [@genType]
 let testConvert2 = (x: testGenTypeAs2) => x;
 
@@ -68,5 +70,11 @@ type testGenTypeAs3 = [
   | [@genType.as "XXX THIS IS DIFFERENT"] `fortytwo
 ];
 
+/* Since testGenTypeAs3 has a different representation:
+   use a new conversion map. */
 [@genType]
 let testConvert3 = (x: testGenTypeAs3) => x;
+
+/* This converts between testGenTypeAs2 and testGenTypeAs3 */
+[@genType]
+let testConvert2to3 = (x: testGenTypeAs2): testGenTypeAs3 => x;

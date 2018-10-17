@@ -23,9 +23,13 @@ console.log("interopRoot.js areaValue:", WrapJsValue.areaValue);
 
 console.log("anInterestingFlowType ", require("../basics/SomeFlowTypes").c);
 
-console.log("swap(sunday) =", require("../basics/Enums.re").swap("sunday"));
-console.log("fortytwoOK is", require("../basics/Enums.re").fortytwoOK);
-console.log("fortytwoBAD is", require("../basics/Enums.re").fortytwoBAD);
+const Enums = require("../basics/Enums.re");
+
+console.log("swap(sunday) =", Enums.swap("sunday"));
+console.log("fortytwoOK is", Enums.fortytwoOK);
+console.log("fortytwoBAD is", Enums.fortytwoBAD);
+console.log("testConvert3to2('module') =", Enums.testConvert2to3("module"));
+console.log("testConvert3to2('42') =", Enums.testConvert2to3("42"));
 
 const App = () => (
   <div>
