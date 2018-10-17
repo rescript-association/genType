@@ -62,7 +62,7 @@ export const isWeekend: (t) => boolean = TypesBS.isWeekend;
 
 export type Poly_weekday = "monday" | "saturday" | "sunday";
 
-export const Poly_isWeekend: ("saturday" | "sunday") => boolean = function _(Arg1) { const result = TypesBS.Poly[0](Arg1 /* TODO convert enum to Reason */); return result };
+export const Poly_isWeekend: ("saturday" | "sunday") => boolean = function _(Arg1) { const result = TypesBS.Poly[0](Arg1 /* TODO convert enum $$toRE656597115 */); return result };
 
 export const Poly_monday: "monday" = "monday";
 
@@ -71,3 +71,5 @@ export const Poly_saturday: "saturday" = "saturday";
 export const Poly_sunday: "sunday" = "sunday";
 
 export const Poly_onlySunday: ("sunday") => void = function _(Arg1) { const result = TypesBS.Poly[4](/* sunday */569248848); return result };
+
+export const Poly_swap: (Poly_weekday) => Poly_weekday = function _(Arg1) { const result = TypesBS.Poly[5](Arg1 /* TODO convert enum $$toRE794235762 */); return result /* TODO convert enum $$toJS794235762 */ };

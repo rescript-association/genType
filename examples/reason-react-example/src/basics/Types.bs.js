@@ -40,12 +40,25 @@ function onlySunday() {
   return /* () */0;
 }
 
+function swap(x) {
+  if (x !== -29784519) {
+    if (x !== 569248848) {
+      return x;
+    } else {
+      return /* saturday */-29784519;
+    }
+  } else {
+    return /* sunday */569248848;
+  }
+}
+
 var Poly = /* module */[
   /* isWeekend */isWeekend$1,
   /* monday : monday */-949852400,
   /* saturday : saturday */-29784519,
   /* sunday : sunday */569248848,
-  /* onlySunday */onlySunday
+  /* onlySunday */onlySunday,
+  /* swap */swap
 ];
 
 exports.consumeOption = consumeOption;

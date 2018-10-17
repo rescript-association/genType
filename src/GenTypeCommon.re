@@ -69,9 +69,15 @@ type optionalness =
   | NonMandatory
   | Mandatory;
 
+type enum = {
+  cases: list(string),
+  toJS: string,
+  toRE: string,
+};
+
 type typ =
   | Array(typ)
-  | Enum(list(string))
+  | Enum(enum)
   | Function(function_)
   | GroupOfLabeledArgs(fields)
   | Ident(string, list(typ))

@@ -2,7 +2,7 @@ open GenTypeCommon;
 
 type t =
   | ArrayC(t)
-  | EnumC(list(string))
+  | EnumC(enum)
   | FunctionC((list(groupedArgConverter), t))
   | IdentC
   | NullableC(t)
@@ -18,7 +18,7 @@ let rec toString = converter =>
   switch (converter) {
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
 
-  | EnumC(cases) => "enum(" ++ (cases |> String.concat(", ")) ++ ")"
+  | EnumC({cases}) => "enum(" ++ (cases |> String.concat(", ")) ++ ")"
 
   | FunctionC((groupedArgConverters, c)) =>
     let labelToString = label =>
@@ -242,12 +242,14 @@ let rec apply = (~converter, ~toJS, value) =>
     ++ ("x" |> apply(~converter=c, ~toJS))
     ++ "})"
 
-  | EnumC([singleCase]) =>
-    toJS ?
-      singleCase |> EmitText.quotes : singleCase |> Runtime.emitVariantLabel
+  | EnumC({cases: [case]}) =>
+    toJS ? case |> EmitText.quotes : case |> Runtime.emitVariantLabel
 
-  | EnumC(_) =>
-    value ++ " /* TODO convert enum to " ++ (toJS ? "JS" : "Reason") ++ " */"
+  | EnumC(enum) =>
+    value
+    ++ " /* TODO convert enum "
+    ++ (toJS ? enum.toJS : enum.toRE)
+    ++ " */"
 
   | FunctionC((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";

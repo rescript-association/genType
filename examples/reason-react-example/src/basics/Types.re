@@ -86,4 +86,12 @@ module Poly = {
 
   [@genType]
   let onlySunday = (_: [ | `sunday]) => ();
+
+  [@genType]
+  let swap = (x: weekday) =>
+    switch (x) {
+    | `sunday => `saturday
+    | `saturday => `sunday
+    | day => day
+    };
 };
