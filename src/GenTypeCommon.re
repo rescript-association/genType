@@ -70,15 +70,15 @@ type optionalness =
   | Mandatory;
 
 type typ =
-  | Ident(string, list(typ))
-  | TypeVar(string)
-  | Option(typ)
-  | Nullable(typ)
   | Array(typ)
-  | GroupOfLabeledArgs(fields)
-  | Object(fields)
-  | Record(fields)
   | Function(function_)
+  | GroupOfLabeledArgs(fields)
+  | Ident(string, list(typ))
+  | Nullable(typ)
+  | Object(fields)
+  | Option(typ)
+  | Record(fields)
+  | TypeVar(string)
 and fields = list((string, optionalness, typ))
 and function_ = {
   typeVars: list(string),
