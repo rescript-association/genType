@@ -2,6 +2,8 @@ let arg = x => "Arg" ++ x;
 let argi = i => i |> string_of_int |> arg;
 let parens = xs => "(" ++ (xs |> String.concat(", ")) ++ ")";
 let brackets = x => "{ " ++ x ++ " }";
+
+let quotes = x => "\"" ++ x ++ "\"";
 let array = xs => "[" ++ (xs |> String.concat(", ")) ++ "]";
 let funCall = (~args, name) =>
   name ++ "(" ++ (args |> String.concat(", ")) ++ ")";

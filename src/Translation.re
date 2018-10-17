@@ -77,16 +77,17 @@ let translateConstructorDeclaration =
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, typ) =>
   switch (typ) {
-  | Ident(_)
-  | TypeVar(_)
-  | Option(_)
-  | Nullable(_)
   | Array(_)
-  | GroupOfLabeledArgs(_)
-  | Object(_)
-  | Record(_) => typ
+  | Enum(_) => typ
   | Function({argTypes, retType, _}) =>
     Function({typeVars, argTypes, retType})
+  | GroupOfLabeledArgs(_)
+  | Ident(_)
+  | Nullable(_)
+  | Object(_)
+  | Option(_)
+  | Record(_)
+  | TypeVar(_) => typ
   };
 
 let translateValue = (~language, ~moduleName, ~typeEnv, ~typeExpr, name): t => {
@@ -495,15 +496,16 @@ let translateTypeDeclaration =
         |> Dependencies.translateTypeExpr(~language, ~typeEnv);
       let rec isOpaque = typ =>
         switch (typ) {
-        | Ident(_) => !(typ == booleanT || typ == numberT || typ == stringT)
-        | TypeVar(_) => true
-        | Option(t) => t |> isOpaque
-        | Nullable(t) => t |> isOpaque
         | Array(t) => t |> isOpaque
-        | GroupOfLabeledArgs(_) => true
-        | Object(_) => false
-        | Record(_) => false
+        | Enum(_) => false
         | Function(_) => false
+        | GroupOfLabeledArgs(_) => true
+        | Ident(_) => !(typ == booleanT || typ == numberT || typ == stringT)
+        | Nullable(t) => t |> isOpaque
+        | Object(_) => false
+        | Option(t) => t |> isOpaque
+        | Record(_) => false
+        | TypeVar(_) => true
         };
       let opaque = typeExprTranslation.typ |> isOpaque;
       let codeItems = [

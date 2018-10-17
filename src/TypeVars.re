@@ -39,17 +39,14 @@ let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
 let rec substitute = (~f, typ) =>
   switch (typ) {
-  | Ident(_, []) => typ
-  | Ident(name, typeArguments) =>
-    Ident(name, typeArguments |> List.map(substitute(~f)))
-  | TypeVar(s) =>
-    switch (f(s)) {
-    | None => typ
-    | Some(typ') => typ'
-    }
-  | Option(typ) => Option(typ |> substitute(~f))
-  | Nullable(typ) => Nullable(typ |> substitute(~f))
   | Array(typ) => Array(typ |> substitute(~f))
+  | Enum(_) => typ
+  | Function(function_) =>
+    Function({
+      ...function_,
+      argTypes: function_.argTypes |> List.map(substitute(~f)),
+      retType: function_.retType |> substitute(~f),
+    })
   | GroupOfLabeledArgs(fields) =>
     GroupOfLabeledArgs(
       fields
@@ -57,6 +54,10 @@ let rec substitute = (~f, typ) =>
            (s, optionalness, t |> substitute(~f))
          ),
     )
+  | Ident(_, []) => typ
+  | Ident(name, typeArguments) =>
+    Ident(name, typeArguments |> List.map(substitute(~f)))
+  | Nullable(typ) => Nullable(typ |> substitute(~f))
   | Object(fields) =>
     Object(
       fields
@@ -64,6 +65,7 @@ let rec substitute = (~f, typ) =>
            (s, optionalness, t |> substitute(~f))
          ),
     )
+  | Option(typ) => Option(typ |> substitute(~f))
   | Record(fields) =>
     Record(
       fields
@@ -71,26 +73,22 @@ let rec substitute = (~f, typ) =>
            (s, optionalness, t |> substitute(~f))
          ),
     )
-  | Function(function_) =>
-    Function({
-      ...function_,
-      argTypes: function_.argTypes |> List.map(substitute(~f)),
-      retType: function_.retType |> substitute(~f),
-    })
+  | TypeVar(s) =>
+    switch (f(s)) {
+    | None => typ
+    | Some(typ') => typ'
+    }
   };
 
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
-  | Ident(_, typeArgs) =>
-    typeArgs
-    |> List.fold_left(
-         (s, typeArg) => StringSet.union(s, typeArg |> free_),
-         StringSet.empty,
-       )
-  | TypeVar(s) => s |> StringSet.singleton
-  | Option(typ) => typ |> free_
-  | Nullable(typ) => typ |> free_
   | Array(typ) => typ |> free_
+  | Enum(_) => StringSet.empty
+  | Function({typeVars, argTypes, retType}) =>
+    StringSet.diff(
+      (argTypes |> freeOfList_) +++ (retType |> free_),
+      typeVars |> StringSet.of_list,
+    )
   | GroupOfLabeledArgs(fields)
   | Object(fields)
   | Record(fields) =>
@@ -99,11 +97,15 @@ let rec free_ = typ: StringSet.t =>
          (s, (_, _, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
-  | Function({typeVars, argTypes, retType}) =>
-    StringSet.diff(
-      (argTypes |> freeOfList_) +++ (retType |> free_),
-      typeVars |> StringSet.of_list,
-    )
+  | Ident(_, typeArgs) =>
+    typeArgs
+    |> List.fold_left(
+         (s, typeArg) => StringSet.union(s, typeArg |> free_),
+         StringSet.empty,
+       )
+  | Nullable(typ) => typ |> free_
+  | Option(typ) => typ |> free_
+  | TypeVar(s) => s |> StringSet.singleton
   }
 and freeOfList_ = typs =>
   typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)

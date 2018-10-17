@@ -79,6 +79,8 @@ let rec typToConverter_ =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
     ArrayC(converter);
 
+  | Enum(_) => IdentC
+
   | Function({argTypes, retType, _}) =>
     let argConverters =
       argTypes

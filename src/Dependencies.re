@@ -439,9 +439,8 @@ and translateTypeExpr_ =
              | _ => false
              }
            ) =>
-    let fieldNames = rowDesc.row_fields |> List.map(fst);
-    let _fieldType = fieldNames |> String.concat(" | ");
-    let typ = mixedOrUnknown(~language);
+    let cases = rowDesc.row_fields |> List.map(fst);
+    let typ = Enum(cases);
     {dependencies: [], typ};
 
   | _ => {dependencies: [], typ: mixedOrUnknown(~language)}

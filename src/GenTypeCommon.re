@@ -71,6 +71,7 @@ type optionalness =
 
 type typ =
   | Array(typ)
+  | Enum(list(string))
   | Function(function_)
   | GroupOfLabeledArgs(fields)
   | Ident(string, list(typ))

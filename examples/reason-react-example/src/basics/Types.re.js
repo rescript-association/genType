@@ -60,4 +60,4 @@ export opaque type t = weekday;
 
 export const isWeekend: (t) => boolean = TypesBS.isWeekend;
 
-export opaque type Poly_weekday = mixed;
+export type Poly_weekday = "monday" | "saturday" | "sunday";
