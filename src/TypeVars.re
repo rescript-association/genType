@@ -76,7 +76,7 @@ let rec substitute = (~f, typ) =>
   | TypeVar(s) =>
     switch (f(s)) {
     | None => typ
-    | Some(typ') => typ'
+    | Some(typ1) => typ1
     }
   };
 

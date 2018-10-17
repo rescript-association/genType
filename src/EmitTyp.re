@@ -298,7 +298,7 @@ let emitRequireReact = (~early, ~emitters, ~language) =>
       ImportPath.react,
     )
   | Typescript =>
-    "import * as React from \"react\";" |> require(~early, ~emitters)
+    "import * as React from 'react';" |> require(~early, ~emitters)
   | Untyped => emitters
   };
 

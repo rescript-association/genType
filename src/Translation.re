@@ -445,12 +445,12 @@ let translateTypeDeclaration =
     let fields =
       fieldTranslations
       |> List.map(((name, {Dependencies.typ, _})) => {
-           let (optionalNess, typ') =
+           let (optionalNess, typ1) =
              switch (typ) {
-             | Option(typ') => (NonMandatory, typ')
+             | Option(typ1) => (NonMandatory, typ1)
              | _ => (Mandatory, typ)
              };
-           (name, optionalNess, typ');
+           (name, optionalNess, typ1);
          });
     let typ = Record(fields);
     let typeVars = TypeVars.extract(typeParams);
