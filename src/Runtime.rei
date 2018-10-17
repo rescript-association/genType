@@ -8,17 +8,19 @@ type moduleItemGen;
 
 type moduleItem;
 
-let emitRecordAsInt: (~language: language, recordValue) => string;
+let emitModuleItem: moduleItem => string;
 
 let emitRecordAsBlock:
   (~language: language, ~args: list(string), recordValue) => string;
 
-let emitModuleItem: moduleItem => string;
+let emitRecordAsInt: (~language: language, recordValue) => string;
+
+let emitVariantLabel: string => int;
 
 let moduleItemGen: unit => moduleItemGen;
 
-let recordGen: unit => recordGen;
+let newModuleItem: moduleItemGen => moduleItem;
 
 let newRecordValue: (~unboxed: bool, recordGen) => recordValue;
 
-let newModuleItem: moduleItemGen => moduleItem;
+let recordGen: unit => recordGen;

@@ -45,3 +45,5 @@ let newModuleItem = moduleItemGen => {
 };
 
 let emitModuleItem = itemValue => itemValue |> string_of_int;
+
+let emitVariantLabel = Btype.hash_variant;
