@@ -74,6 +74,23 @@ let rec typToConverter_ =
           typ,
         ) =>
   switch (typ) {
+  | Array(t) =>
+    let converter =
+      t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
+    ArrayC(converter);
+
+  | Function({argTypes, retType, _}) =>
+    let argConverters =
+      argTypes
+      |> List.map(
+           typToGroupedArgConverter_(~exportTypeMap, ~typesFromOtherFiles),
+         );
+    let retConverter =
+      retType |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
+    FunctionC((argConverters, retConverter));
+
+  | GroupOfLabeledArgs(_) => IdentC
+
   | Ident(s, typeArguments) =>
     try (
       {
@@ -98,18 +115,12 @@ let rec typToConverter_ =
     ) {
     | Not_found => IdentC
     }
-  | TypeVar(_) => IdentC
-  | Option(t) =>
-    OptionC(t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles))
+
   | Nullable(t) =>
     let converter =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
     NullableC(converter);
-  | Array(t) =>
-    let converter =
-      t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    ArrayC(converter);
-  | GroupOfLabeledArgs(_) => IdentC
+
   | Object(fields) =>
     ObjectC(
       fields
@@ -121,6 +132,10 @@ let rec typToConverter_ =
            )
          ),
     )
+
+  | Option(t) =>
+    OptionC(t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles))
+
   | Record(fields) =>
     RecordC(
       fields
@@ -132,15 +147,8 @@ let rec typToConverter_ =
            )
          ),
     )
-  | Function({argTypes, retType, _}) =>
-    let argConverters =
-      argTypes
-      |> List.map(
-           typToGroupedArgConverter_(~exportTypeMap, ~typesFromOtherFiles),
-         );
-    let retConverter =
-      retType |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    FunctionC((argConverters, retConverter));
+
+  | TypeVar(_) => IdentC
   }
 and typToGroupedArgConverter_ = (~exportTypeMap, ~typesFromOtherFiles, typ) =>
   switch (typ) {

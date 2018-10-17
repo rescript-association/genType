@@ -47,20 +47,6 @@ module Indent = {
 
 let rec renderTyp = (~language, ~indent=None, typ) =>
   switch (typ) {
-  | Ident(identPath, typeArguments) =>
-    identPath
-    ++ genericsString(
-         ~typeVars=typeArguments |> List.map(renderTyp(~language, ~indent)),
-       )
-  | TypeVar(s) => s
-  | Option(typ)
-  | Nullable(typ) =>
-    switch (language) {
-    | Flow
-    | Untyped => "?" ++ (typ |> renderTyp(~language, ~indent))
-    | Typescript =>
-      "(null | undefined | " ++ (typ |> renderTyp(~language, ~indent)) ++ ")"
-    }
   | Array(typ) =>
     let typIsSimple =
       switch (typ) {
@@ -74,13 +60,31 @@ let rec renderTyp = (~language, ~indent=None, typ) =>
     } else {
       "Array<" ++ (typ |> renderTyp(~language, ~indent)) ++ ">";
     };
+
+  | Function({typeVars, argTypes, retType}) =>
+    renderFunType(~language, ~indent, ~typeVars, argTypes, retType)
+
   | GroupOfLabeledArgs(fields)
   | Object(fields)
   | Record(fields) =>
     let indent1 = fields |> Indent.heuristic(~indent);
     fields |> renderFields(~language, ~indent=indent1);
-  | Function({typeVars, argTypes, retType}) =>
-    renderFunType(~language, ~indent, ~typeVars, argTypes, retType)
+
+  | Ident(identPath, typeArguments) =>
+    identPath
+    ++ genericsString(
+         ~typeVars=typeArguments |> List.map(renderTyp(~language, ~indent)),
+       )
+  | Nullable(typ)
+  | Option(typ) =>
+    switch (language) {
+    | Flow
+    | Untyped => "?" ++ (typ |> renderTyp(~language, ~indent))
+    | Typescript =>
+      "(null | undefined | " ++ (typ |> renderTyp(~language, ~indent)) ++ ")"
+    }
+
+  | TypeVar(s) => s
   }
 and renderField = (~language, ~indent, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
