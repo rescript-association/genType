@@ -78,3 +78,15 @@ let testConvert3 = (x: testGenTypeAs3) => x;
 /* This converts between testGenTypeAs2 and testGenTypeAs3 */
 [@genType]
 let testConvert2to3 = (x: testGenTypeAs2): testGenTypeAs3 => x;
+
+[@genType]
+type x1 = [ | `x | [@genType.as "same"] `x1];
+
+[@genType]
+type x2 = [ | `x | [@genType.as "same"] `x2];
+
+[@genType]
+let id1 = (x: x1) => x;
+
+[@genType]
+let id2 = (x: x2) => x;

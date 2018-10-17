@@ -111,7 +111,7 @@ type label =
 let createEnum = cases => {
   let hash =
     cases
-    |> List.map(case => case.labelJS)
+    |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
     |> Hashtbl.hash
     |> string_of_int;
