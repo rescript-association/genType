@@ -1,3 +1,6 @@
+# 0.20.0
+- Add support for Enum types.
+
 # 0.19.0
 - Add support for nested modules: translation of nested types and values, as well as cross references.
 - [Remove deprecated way of wrapping JS components](https://github.com/cristianoc/genType/commit/9c388826c43eb9507b07fd95a05eed3ce619297d).

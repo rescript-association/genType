@@ -1,4 +1,4 @@
-# Reason genType 0.19.0
+# Reason genType 0.20.0
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, use `@genType` annotations, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
 
@@ -28,10 +28,10 @@ Wrappers for using ReasonReact components from JavaScript are generated when the
 # Will download and automatically untar the file in the current directory as gentype.native
 
 # MacOS
-curl -L https://github.com/cristianoc/genType/releases/download/v0.19.0/gentype-macos.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.20.0/gentype-macos.tar.gz | tar xz
 
 # Linux
-curl -L https://github.com/cristianoc/genType/releases/download/v0.19.0/gentype-linux.tar.gz | tar xz
+curl -L https://github.com/cristianoc/genType/releases/download/v0.20.0/gentype-linux.tar.gz | tar xz
 ```
 
 # Quick Start: Set up genType in existing TypeScript / Flow / BuckleScript project
@@ -122,6 +122,13 @@ In case of mixed named and unnamed arguments, consecutive named arguments form s
 
 ### components
 ReasonReact components with props of Reason types `t1`, `t2`, `t3` are mapped to reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`.
+
+### enums
+Enums are Reason polymorphic variants without payload: essentially flat sequences of identifiers. E.g. type ``[ | `monday | `tuesday ]``.
+The corresponding JS representation is `"monday"`, `"tuesday"`.
+
+The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. ``[ | [@genType.as "type"] `type_ ]`` maps the Reason value `` `type_`` to the JS value `"type"`.
+
 
 ### imported types
 It's possible to import an existing TS/Flow type as an opaque type in Reason. For example,
