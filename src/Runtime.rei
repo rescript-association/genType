@@ -15,7 +15,7 @@ let emitRecordAsBlock:
 
 let emitRecordAsInt: (~language: language, recordValue) => string;
 
-let emitVariantLabel: string => int;
+let emitVariantLabel: string => string;
 
 let moduleItemGen: unit => moduleItemGen;
 

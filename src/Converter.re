@@ -2,6 +2,7 @@ open GenTypeCommon;
 
 type t =
   | ArrayC(t)
+  | EnumC(list(string))
   | FunctionC((list(groupedArgConverter), t))
   | IdentC
   | NullableC(t)
@@ -16,6 +17,8 @@ and fieldsC = list((string, t));
 let rec toString = converter =>
   switch (converter) {
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
+
+  | EnumC(cases) => "enum(" ++ (cases |> String.concat(", ")) ++ ")"
 
   | FunctionC((groupedArgConverters, c)) =>
     let labelToString = label =>
@@ -84,7 +87,7 @@ let rec typToConverter_ =
       t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
     ArrayC(converter);
 
-  | Enum(_) => IdentC
+  | Enum(cases) => EnumC(cases)
 
   | Function({argTypes, retType, _}) =>
     let argConverters =
@@ -190,6 +193,8 @@ let rec converterIsIdentity = (~toJS, converter) =>
   switch (converter) {
   | ArrayC(c) => c |> converterIsIdentity(~toJS)
 
+  | EnumC(_) => false
+
   | FunctionC((groupedArgConverters, resultConverter)) =>
     resultConverter
     |> converterIsIdentity(~toJS)
@@ -236,6 +241,13 @@ let rec apply = (~converter, ~toJS, value) =>
     ++ ".map(function _element(x) { return "
     ++ ("x" |> apply(~converter=c, ~toJS))
     ++ "})"
+
+  | EnumC([singleCase]) =>
+    toJS ?
+      singleCase |> EmitText.quotes : singleCase |> Runtime.emitVariantLabel
+
+  | EnumC(_) =>
+    value ++ " /* TODO convert enum to " ++ (toJS ? "JS" : "Reason") ++ " */"
 
   | FunctionC((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";

@@ -70,13 +70,20 @@ module Poly = {
   [@genType]
   type weekday = [ | `monday | `saturday | `sunday];
 
+  [@genType]
   let isWeekend = x =>
     switch (x) {
     | `saturday
     | `sunday => true
     };
 
+  [@genType]
   let monday = `monday;
+  [@genType]
   let saturday = `saturday;
+  [@genType]
   let sunday = `sunday;
+
+  [@genType]
+  let onlySunday = (_: [ | `sunday]) => ();
 };

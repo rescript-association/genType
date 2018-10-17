@@ -36,11 +36,16 @@ function isWeekend$1() {
   return true;
 }
 
+function onlySunday() {
+  return /* () */0;
+}
+
 var Poly = /* module */[
   /* isWeekend */isWeekend$1,
   /* monday : monday */-949852400,
   /* saturday : saturday */-29784519,
-  /* sunday : sunday */569248848
+  /* sunday : sunday */569248848,
+  /* onlySunday */onlySunday
 ];
 
 exports.consumeOption = consumeOption;

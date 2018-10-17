@@ -61,3 +61,13 @@ export opaque type t = weekday;
 export const isWeekend: (t) => boolean = TypesBS.isWeekend;
 
 export type Poly_weekday = "monday" | "saturday" | "sunday";
+
+export const Poly_isWeekend: ("saturday" | "sunday") => boolean = function _(Arg1) { const result = TypesBS.Poly[0](Arg1 /* TODO convert enum to Reason */); return result };
+
+export const Poly_monday: "monday" = "monday";
+
+export const Poly_saturday: "saturday" = "saturday";
+
+export const Poly_sunday: "sunday" = "sunday";
+
+export const Poly_onlySunday: ("sunday") => void = function _(Arg1) { const result = TypesBS.Poly[4](569248848); return result };

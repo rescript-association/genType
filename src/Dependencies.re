@@ -435,7 +435,8 @@ and translateTypeExpr_ =
         rowDesc.row_fields
         |> List.for_all(field =>
              switch (field) {
-             | (_, Types.Rpresent(None)) => true
+             | (_, Types.Rpresent(/* no payload */ None)) => true
+             | (_, Reither(/* constant constructor */ true, _, _, _)) => true
              | _ => false
              }
            ) =>
