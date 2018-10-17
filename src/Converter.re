@@ -1,13 +1,13 @@
 open GenTypeCommon;
 
 type t =
-  | IdentC
-  | OptionC(t)
-  | NullableC(t)
   | ArrayC(t)
-  | ObjectC(fieldsC)
-  | RecordC(fieldsC)
   | FunctionC((list(groupedArgConverter), t))
+  | IdentC
+  | NullableC(t)
+  | ObjectC(fieldsC)
+  | OptionC(t)
+  | RecordC(fieldsC)
 and groupedArgConverter =
   | ArgConverter(label, t)
   | GroupConverter(list((string, t)))
@@ -15,25 +15,8 @@ and fieldsC = list((string, t));
 
 let rec toString = converter =>
   switch (converter) {
-  | IdentC => "id"
-  | OptionC(c) => "option(" ++ toString(c) ++ ")"
-  | NullableC(c) => "nullable(" ++ toString(c) ++ ")"
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
-  | RecordC(fieldsC)
-  | ObjectC(fieldsC) =>
-    let dot =
-      switch (converter) {
-      | ObjectC(_) => ". "
-      | _ => ""
-      };
-    "{"
-    ++ dot
-    ++ (
-      fieldsC
-      |> List.map(((lbl, c)) => lbl ++ ":" ++ (c |> toString))
-      |> String.concat(", ")
-    )
-    ++ "}";
+
   | FunctionC((groupedArgConverters, c)) =>
     let labelToString = label =>
       switch (label) {
@@ -65,6 +48,28 @@ let rec toString = converter =>
     ++ " -> "
     ++ toString(c)
     ++ ")";
+
+  | IdentC => "id"
+
+  | NullableC(c) => "nullable(" ++ toString(c) ++ ")"
+
+  | ObjectC(fieldsC)
+  | RecordC(fieldsC) =>
+    let dot =
+      switch (converter) {
+      | ObjectC(_) => ". "
+      | _ => ""
+      };
+    "{"
+    ++ dot
+    ++ (
+      fieldsC
+      |> List.map(((lbl, c)) => lbl ++ ":" ++ (c |> toString))
+      |> String.concat(", ")
+    )
+    ++ "}";
+
+  | OptionC(c) => "option(" ++ toString(c) ++ ")"
   };
 
 let rec typToConverter_ =
@@ -183,29 +188,7 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
 
 let rec converterIsIdentity = (~toJS, converter) =>
   switch (converter) {
-  | IdentC => true
-
-  | OptionC(c) =>
-    if (toJS) {
-      c |> converterIsIdentity(~toJS);
-    } else {
-      false;
-    }
-
-  | NullableC(c) => c |> converterIsIdentity(~toJS)
-
   | ArrayC(c) => c |> converterIsIdentity(~toJS)
-
-  | ObjectC(fieldsC) =>
-    fieldsC
-    |> List.for_all(((_, c)) =>
-         switch (c) {
-         | OptionC(c1) => c1 |> converterIsIdentity(~toJS)
-         | _ => c |> converterIsIdentity(~toJS)
-         }
-       )
-
-  | RecordC(_) => false
 
   | FunctionC((groupedArgConverters, resultConverter)) =>
     resultConverter
@@ -220,112 +203,39 @@ let rec converterIsIdentity = (~toJS, converter) =>
          | GroupConverter(_) => false
          }
        )
+
+  | IdentC => true
+
+  | NullableC(c) => c |> converterIsIdentity(~toJS)
+
+  | ObjectC(fieldsC) =>
+    fieldsC
+    |> List.for_all(((_, c)) =>
+         switch (c) {
+         | OptionC(c1) => c1 |> converterIsIdentity(~toJS)
+         | _ => c |> converterIsIdentity(~toJS)
+         }
+       )
+
+  | OptionC(c) =>
+    if (toJS) {
+      c |> converterIsIdentity(~toJS);
+    } else {
+      false;
+    }
+
+  | RecordC(_) => false
   };
 
 let rec apply = (~converter, ~toJS, value) =>
   switch (converter) {
   | _ when converter |> converterIsIdentity(~toJS) => value
 
-  | IdentC => value
-
-  | OptionC(c) =>
-    if (toJS) {
-      EmitText.parens([
-        value
-        ++ " == null ? "
-        ++ value
-        ++ " : "
-        ++ (value |> apply(~converter=c, ~toJS)),
-      ]);
-    } else {
-      EmitText.parens([
-        value
-        ++ " == null ? undefined : "
-        ++ (value |> apply(~converter=c, ~toJS)),
-      ]);
-    }
-
-  | NullableC(c) =>
-    EmitText.parens([
-      value
-      ++ " == null ? "
-      ++ value
-      ++ " : "
-      ++ (value |> apply(~converter=c, ~toJS)),
-    ])
-
   | ArrayC(c) =>
     value
     ++ ".map(function _element(x) { return "
     ++ ("x" |> apply(~converter=c, ~toJS))
     ++ "})"
-
-  | ObjectC(fieldsC) =>
-    let simplifyFieldConverted = fieldConverter =>
-      switch (fieldConverter) {
-      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
-        IdentC
-      | _ => fieldConverter
-      };
-    let fieldValues =
-      fieldsC
-      |> List.map(((lbl, fieldConverter)) =>
-           lbl
-           ++ ":"
-           ++ (
-             value
-             ++ "."
-             ++ lbl
-             |> apply(
-                  ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~toJS,
-                )
-           )
-         )
-      |> String.concat(", ");
-    "{" ++ fieldValues ++ "}";
-
-  | RecordC(fieldsC) =>
-    let simplifyFieldConverted = fieldConverter =>
-      switch (fieldConverter) {
-      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
-        IdentC
-      | _ => fieldConverter
-      };
-    if (toJS) {
-      let fieldValues =
-        fieldsC
-        |> List.mapi((i, (lbl, fieldConverter)) =>
-             lbl
-             ++ ":"
-             ++ (
-               value
-               ++ "["
-               ++ string_of_int(i)
-               ++ "]"
-               |> apply(
-                    ~converter=fieldConverter |> simplifyFieldConverted,
-                    ~toJS,
-                  )
-             )
-           )
-        |> String.concat(", ");
-      "{" ++ fieldValues ++ "}";
-    } else {
-      let fieldValues =
-        fieldsC
-        |> List.map(((lbl, fieldConverter)) =>
-             value
-             ++ "."
-             ++ lbl
-             |> apply(
-                  ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~toJS,
-                )
-           )
-        |> String.concat(", ");
-      "[" ++ fieldValues ++ "]";
-    };
 
   | FunctionC((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";
@@ -389,6 +299,101 @@ let rec apply = (~converter, ~toJS, value) =>
     };
     let mkBody = args => value |> EmitText.funCall(~args) |> mkReturn;
     EmitText.funDef(~args=convertedArgs, ~mkBody, "");
+
+  | IdentC => value
+
+  | NullableC(c) =>
+    EmitText.parens([
+      value
+      ++ " == null ? "
+      ++ value
+      ++ " : "
+      ++ (value |> apply(~converter=c, ~toJS)),
+    ])
+
+  | ObjectC(fieldsC) =>
+    let simplifyFieldConverted = fieldConverter =>
+      switch (fieldConverter) {
+      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
+        IdentC
+      | _ => fieldConverter
+      };
+    let fieldValues =
+      fieldsC
+      |> List.map(((lbl, fieldConverter)) =>
+           lbl
+           ++ ":"
+           ++ (
+             value
+             ++ "."
+             ++ lbl
+             |> apply(
+                  ~converter=fieldConverter |> simplifyFieldConverted,
+                  ~toJS,
+                )
+           )
+         )
+      |> String.concat(", ");
+    "{" ++ fieldValues ++ "}";
+
+  | OptionC(c) =>
+    if (toJS) {
+      EmitText.parens([
+        value
+        ++ " == null ? "
+        ++ value
+        ++ " : "
+        ++ (value |> apply(~converter=c, ~toJS)),
+      ]);
+    } else {
+      EmitText.parens([
+        value
+        ++ " == null ? undefined : "
+        ++ (value |> apply(~converter=c, ~toJS)),
+      ]);
+    }
+
+  | RecordC(fieldsC) =>
+    let simplifyFieldConverted = fieldConverter =>
+      switch (fieldConverter) {
+      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
+        IdentC
+      | _ => fieldConverter
+      };
+    if (toJS) {
+      let fieldValues =
+        fieldsC
+        |> List.mapi((i, (lbl, fieldConverter)) =>
+             lbl
+             ++ ":"
+             ++ (
+               value
+               ++ "["
+               ++ string_of_int(i)
+               ++ "]"
+               |> apply(
+                    ~converter=fieldConverter |> simplifyFieldConverted,
+                    ~toJS,
+                  )
+             )
+           )
+        |> String.concat(", ");
+      "{" ++ fieldValues ++ "}";
+    } else {
+      let fieldValues =
+        fieldsC
+        |> List.map(((lbl, fieldConverter)) =>
+             value
+             ++ "."
+             ++ lbl
+             |> apply(
+                  ~converter=fieldConverter |> simplifyFieldConverted,
+                  ~toJS,
+                )
+           )
+        |> String.concat(", ");
+      "[" ++ fieldValues ++ "]";
+    };
   };
 
 let toJS = (~converter, value) => value |> apply(~converter, ~toJS=true);
