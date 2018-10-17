@@ -15,7 +15,7 @@ let emitRecordAsBlock:
 
 let emitRecordAsInt: (~language: language, recordValue) => string;
 
-let emitVariantLabel: string => string;
+let emitVariantLabel: (~comment: bool=?, string) => string;
 
 let moduleItemGen: unit => moduleItemGen;
 

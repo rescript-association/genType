@@ -32,8 +32,12 @@ function isWeekend(day) {
   }
 }
 
-function isWeekend$1() {
-  return true;
+function isWeekend$1(x) {
+  if (x !== -29784519) {
+    return x === 569248848;
+  } else {
+    return true;
+  }
 }
 
 function onlySunday() {
@@ -41,18 +45,14 @@ function onlySunday() {
 }
 
 function swap(x) {
-  if (x !== -29784519) {
-    if (x !== 569248848) {
-      return x;
-    } else {
-      return /* saturday */-29784519;
-    }
+  if (x >= 569248848) {
+    return /* saturday */-29784519;
   } else {
     return /* sunday */569248848;
   }
 }
 
-var Poly = /* module */[
+var Enums = /* module */[
   /* isWeekend */isWeekend$1,
   /* monday : monday */-949852400,
   /* saturday : saturday */-29784519,
@@ -66,5 +66,5 @@ exports.consumeOption2 = consumeOption2;
 exports.testArray = testArray;
 exports.identity = identity;
 exports.isWeekend = isWeekend;
-exports.Poly = Poly;
+exports.Enums = Enums;
 /* ./SomeFlowTypes Not a pure module */

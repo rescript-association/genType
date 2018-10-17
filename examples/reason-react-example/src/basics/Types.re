@@ -66,15 +66,24 @@ type t = weekday;
 [@genType]
 let isWeekend = day => day === saturday || day === sunday;
 
-module Poly = {
+module Enums = {
   [@genType]
-  type weekday = [ | `monday | `saturday | `sunday];
+  type weekday = [
+    | `monday
+    | `tuesday
+    | `wednesday
+    | `thursday
+    | `friday
+    | `saturday
+    | `sunday
+  ];
 
   [@genType]
-  let isWeekend = x =>
+  let isWeekend = (x: weekday) =>
     switch (x) {
     | `saturday
     | `sunday => true
+    | _ => false
     };
 
   [@genType]
@@ -88,10 +97,9 @@ module Poly = {
   let onlySunday = (_: [ | `sunday]) => ();
 
   [@genType]
-  let swap = (x: weekday) =>
+  let swap = x =>
     switch (x) {
     | `sunday => `saturday
     | `saturday => `sunday
-    | day => day
     };
 };

@@ -28,7 +28,8 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
 
 let createExportTypeMap = (~language, codeItems): typeMap => {
   let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
-    let addExportType = ({resolvedTypeName, typeVars, typ, _}: CodeItem.exportType) => {
+    let addExportType =
+        ({resolvedTypeName, typeVars, typ, _}: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
           "Export Type: %s%s = %s\n",
@@ -133,6 +134,7 @@ let rec emitCodeItem =
           ~emitters,
           ~env,
           ~inputCmtToTypeDeclarations,
+          ~enumTables,
           codeItem,
         ) => {
   let language = config.language;
@@ -272,6 +274,7 @@ let rec emitCodeItem =
                                  propTyp : Option(propTyp)
                              )
                              |> typToConverter,
+                           ~enumTables,
                          )
                     )
                   )
@@ -279,7 +282,10 @@ let rec emitCodeItem =
              )
              ++ "}",
              "children"
-             |> Converter.toJS(~converter=childrenTyp |> typToConverter),
+             |> Converter.toJS(
+                  ~converter=childrenTyp |> typToConverter,
+                  ~enumTables,
+                ),
            ])
         ++ "; }"
       )
@@ -352,7 +358,7 @@ let rec emitCodeItem =
              ++ "'.",
          );
     let emitters =
-      (valueNameTypeChecked |> Converter.toReason(~converter))
+      (valueNameTypeChecked |> Converter.toReason(~converter, ~enumTables))
       ++ ";"
       |> EmitTyp.emitExportConstEarly(
            ~comment=
@@ -400,17 +406,18 @@ let rec emitCodeItem =
           (
             propConverters
             |> List.map(((s, argConverter)) =>
-                 jsPropsDot(s) |> Converter.toReason(~converter=argConverter)
+                 jsPropsDot(s)
+                 |> Converter.toReason(~converter=argConverter, ~enumTables)
                )
           )
           @ [
             jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter),
+            |> Converter.toReason(~converter=childrenConverter, ~enumTables),
           ]
 
         | [ArgConverter(_, childrenConverter), ..._] => [
             jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter),
+            |> Converter.toReason(~converter=childrenConverter, ~enumTables),
           ]
 
         | _ => [jsPropsDot("children")]
@@ -479,7 +486,7 @@ let rec emitCodeItem =
         (moduleNameBs |> ModuleName.toString)
         ++ "."
         ++ valueAccessPath
-        |> Converter.toJS(~converter)
+        |> Converter.toJS(~converter, ~enumTables)
       )
       ++ ";"
       |> EmitTyp.emitExportConst(~emitters, ~name=resolvedName, ~typ, ~config);
@@ -522,7 +529,7 @@ let rec emitCodeItem =
           |> List.mapi((i, typ) => {
                let converter = typ |> typToConverter;
                let arg = EmitText.argi(i + 1);
-               let v = arg |> Converter.toReason(~converter);
+               let v = arg |> Converter.toReason(~converter, ~enumTables);
                (arg, v);
              });
         let mkReturn = s => "return " ++ s;
@@ -557,6 +564,7 @@ and emitCodeItems =
       ~emitters,
       ~env,
       ~inputCmtToTypeDeclarations,
+      ~enumTables,
       codeItems,
     ) =>
   codeItems
@@ -570,6 +578,7 @@ and emitCodeItems =
            ~emitters,
            ~env,
            ~inputCmtToTypeDeclarations,
+           ~enumTables,
          ),
        (env, emitters),
      );
@@ -589,6 +598,29 @@ let emitRequires = (~early, ~language, ~requires, emitters) =>
     emitters,
   );
 
+let emitEnumTables = (~emitters, enumTables) => {
+  let emitTable = (~hash, ~toJS, enum) =>
+    "const "
+    ++ hash
+    ++ " = {"
+    ++ (
+      enum.cases
+      |> List.map(label => {
+           let js = label |> EmitText.quotes;
+           let re = label |> Runtime.emitVariantLabel(~comment=false);
+           toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
+         })
+      |> String.concat(", ")
+    )
+    ++ "};";
+  Hashtbl.fold(
+    (hash, (enum, toJS), emitters) =>
+      enum |> emitTable(~hash, ~toJS) |> Emitters.import(~emitters),
+    enumTables,
+    emitters,
+  );
+};
+
 let emitCodeItemsAsString =
     (
       ~config,
@@ -606,6 +638,7 @@ let emitCodeItemsAsString =
     typesFromOtherFiles: StringMap.empty,
   };
   let exportTypeMap = codeItems |> createExportTypeMap(~language);
+  let enumTables = Hashtbl.create(1);
   let (finalEnv, emitters) =
     codeItems
     |> emitCodeItems(
@@ -616,7 +649,10 @@ let emitCodeItemsAsString =
          ~emitters=Emitters.initial,
          ~env=initialEnv,
          ~inputCmtToTypeDeclarations,
+         ~enumTables,
        );
+
+  let emitters = enumTables |> emitEnumTables(~emitters);
 
   emitters
   |> emitRequires(~early=true, ~language, ~requires=finalEnv.requiresEarly)

@@ -23,6 +23,9 @@ console.log("interopRoot.js areaValue:", WrapJsValue.areaValue);
 
 console.log("anInterestingFlowType ", require("../basics/SomeFlowTypes").c);
 
+console.log("swap(sunday) =", require("../basics/Types.re").Enums_swap("sunday"));
+
+
 const App = () => (
   <div>
     <PageReason

@@ -232,24 +232,23 @@ let rec converterIsIdentity = (~toJS, converter) =>
   | RecordC(_) => false
   };
 
-let rec apply = (~converter, ~toJS, value) =>
+let rec apply = (~converter, ~enumTables, ~toJS, value) =>
   switch (converter) {
   | _ when converter |> converterIsIdentity(~toJS) => value
 
   | ArrayC(c) =>
     value
     ++ ".map(function _element(x) { return "
-    ++ ("x" |> apply(~converter=c, ~toJS))
+    ++ ("x" |> apply(~converter=c, ~enumTables, ~toJS))
     ++ "})"
 
   | EnumC({cases: [case]}) =>
     toJS ? case |> EmitText.quotes : case |> Runtime.emitVariantLabel
 
   | EnumC(enum) =>
-    value
-    ++ " /* TODO convert enum "
-    ++ (toJS ? enum.toJS : enum.toRE)
-    ++ " */"
+    let table = toJS ? enum.toJS : enum.toRE;
+    Hashtbl.replace(enumTables, table, (enum, toJS));
+    table ++ EmitText.array([value]);
 
   | FunctionC((groupedArgConverters, resultConverter)) =>
     let resultVar = "result";
@@ -259,7 +258,7 @@ let rec apply = (~converter, ~toJS, value) =>
       ++ " = "
       ++ x
       ++ "; return "
-      ++ apply(~converter=resultConverter, ~toJS, resultVar);
+      ++ apply(~converter=resultConverter, ~enumTables, ~toJS, resultVar);
     let convertedArgs = {
       let convertArg = (i, groupedArgConverter) =>
         switch (groupedArgConverter) {
@@ -273,7 +272,8 @@ let rec apply = (~converter, ~toJS, value) =>
           let notToJS = !toJS;
           (
             varName,
-            varName |> apply(~converter=argConverter, ~toJS=notToJS),
+            varName
+            |> apply(~converter=argConverter, ~enumTables, ~toJS=notToJS),
           );
         | GroupConverter(groupConverters) =>
           let notToJS = !toJS;
@@ -286,7 +286,11 @@ let rec apply = (~converter, ~toJS, value) =>
                    varName
                    ++ "."
                    ++ s
-                   |> apply(~converter=argConverter, ~toJS=notToJS)
+                   |> apply(
+                        ~converter=argConverter,
+                        ~enumTables,
+                        ~toJS=notToJS,
+                      )
                  )
               |> String.concat(", "),
             );
@@ -302,7 +306,11 @@ let rec apply = (~converter, ~toJS, value) =>
                    ++ ":"
                    ++ (
                      EmitText.arg(s)
-                     |> apply(~converter=argConverter, ~toJS=notToJS)
+                     |> apply(
+                          ~converter=argConverter,
+                          ~enumTables,
+                          ~toJS=notToJS,
+                        )
                    )
                  )
               |> String.concat(", ");
@@ -322,7 +330,7 @@ let rec apply = (~converter, ~toJS, value) =>
       ++ " == null ? "
       ++ value
       ++ " : "
-      ++ (value |> apply(~converter=c, ~toJS)),
+      ++ (value |> apply(~converter=c, ~enumTables, ~toJS)),
     ])
 
   | ObjectC(fieldsC) =>
@@ -343,6 +351,7 @@ let rec apply = (~converter, ~toJS, value) =>
              ++ lbl
              |> apply(
                   ~converter=fieldConverter |> simplifyFieldConverted,
+                  ~enumTables,
                   ~toJS,
                 )
            )
@@ -357,13 +366,13 @@ let rec apply = (~converter, ~toJS, value) =>
         ++ " == null ? "
         ++ value
         ++ " : "
-        ++ (value |> apply(~converter=c, ~toJS)),
+        ++ (value |> apply(~converter=c, ~toJS, ~enumTables)),
       ]);
     } else {
       EmitText.parens([
         value
         ++ " == null ? undefined : "
-        ++ (value |> apply(~converter=c, ~toJS)),
+        ++ (value |> apply(~converter=c, ~enumTables, ~toJS)),
       ]);
     }
 
@@ -387,6 +396,7 @@ let rec apply = (~converter, ~toJS, value) =>
                ++ "]"
                |> apply(
                     ~converter=fieldConverter |> simplifyFieldConverted,
+                    ~enumTables,
                     ~toJS,
                   )
              )
@@ -402,6 +412,7 @@ let rec apply = (~converter, ~toJS, value) =>
              ++ lbl
              |> apply(
                   ~converter=fieldConverter |> simplifyFieldConverted,
+                  ~enumTables,
                   ~toJS,
                 )
            )
@@ -410,7 +421,8 @@ let rec apply = (~converter, ~toJS, value) =>
     };
   };
 
-let toJS = (~converter, value) => value |> apply(~converter, ~toJS=true);
+let toJS = (~converter, ~enumTables, value) =>
+  value |> apply(~converter, ~enumTables, ~toJS=true);
 
-let toReason = (~converter, value) =>
-  value |> apply(~converter, ~toJS=false);
+let toReason = (~converter, ~enumTables, value) =>
+  value |> apply(~converter, ~enumTables, ~toJS=false);
