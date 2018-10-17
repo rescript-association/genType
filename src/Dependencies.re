@@ -440,9 +440,9 @@ and translateTypeExpr_ =
              | _ => false
              }
            ) =>
-    let cases = rowDesc.row_fields |> List.map(fst);
-    let hash = cases |> Array.of_list |> Hashtbl.hash |> string_of_int;
-    let typ = Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+    let labels = rowDesc.row_fields |> List.map(fst);
+    let cases = labels |> List.map(label => {label, labelJS: label});
+    let typ = cases |> createEnum;
     {dependencies: [], typ};
 
   | _ => {dependencies: [], typ: mixedOrUnknown(~language)}

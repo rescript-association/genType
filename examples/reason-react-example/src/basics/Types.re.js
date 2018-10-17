@@ -18,12 +18,6 @@ import type {anInterestingFlowType} from './SomeFlowTypes';
 
 import type {weekday} from './SomeFlowTypes';
 
-const $$toRE55793944 = {"thursday": 122883354, "friday": 835226847, "monday": -949852400, "wednesday": -863289194, "saturday": -29784519, "tuesday": 323181965, "sunday": 569248848};
-
-const $$toJS656597115 = {"-29784519": "saturday", "569248848": "sunday"};
-
-const $$toRE656597115 = {"saturday": -29784519, "sunday": 569248848};
-
 export opaque type TypeWithVarsA<x,y> = mixed;
 
 export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
@@ -65,17 +59,3 @@ export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesB
 export opaque type t = weekday;
 
 export const isWeekend: (t) => boolean = TypesBS.isWeekend;
-
-export type Enums_weekday = "thursday" | "friday" | "monday" | "wednesday" | "saturday" | "tuesday" | "sunday";
-
-export const Enums_isWeekend: (Enums_weekday) => boolean = function _(Arg1) { const result = TypesBS.Enums[0]($$toRE55793944[Arg1]); return result };
-
-export const Enums_monday: "monday" = "monday";
-
-export const Enums_saturday: "saturday" = "saturday";
-
-export const Enums_sunday: "sunday" = "sunday";
-
-export const Enums_onlySunday: ("sunday") => void = function _(Arg1) { const result = TypesBS.Enums[4](/* sunday */569248848); return result };
-
-export const Enums_swap: ("saturday" | "sunday") => "saturday" | "sunday" = function _(Arg1) { const result = TypesBS.Enums[5]($$toRE656597115[Arg1]); return $$toJS656597115[result] };

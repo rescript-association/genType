@@ -18,7 +18,10 @@ let rec toString = converter =>
   switch (converter) {
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
 
-  | EnumC({cases}) => "enum(" ++ (cases |> String.concat(", ")) ++ ")"
+  | EnumC({cases}) =>
+    "enum("
+    ++ (cases |> List.map(case => case.labelJS) |> String.concat(", "))
+    ++ ")"
 
   | FunctionC((groupedArgConverters, c)) =>
     let labelToString = label =>
@@ -243,7 +246,7 @@ let rec apply = (~converter, ~enumTables, ~toJS, value) =>
     ++ "})"
 
   | EnumC({cases: [case]}) =>
-    toJS ? case |> EmitText.quotes : case |> Runtime.emitVariantLabel
+    toJS ? case.labelJS |> EmitText.quotes : case.label |> Runtime.emitVariantLabel
 
   | EnumC(enum) =>
     let table = toJS ? enum.toJS : enum.toRE;

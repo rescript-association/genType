@@ -69,8 +69,13 @@ type optionalness =
   | NonMandatory
   | Mandatory;
 
+type case = {
+  label: string,
+  labelJS: string,
+};
+
 type enum = {
-  cases: list(string),
+  cases: list(case),
   toJS: string,
   toRE: string,
 };
@@ -102,6 +107,16 @@ type label =
   | Nolabel
   | Label(string)
   | OptLabel(string);
+
+let createEnum = cases => {
+  let hash =
+    cases
+    |> List.map(case => case.labelJS)
+    |> Array.of_list
+    |> Hashtbl.hash
+    |> string_of_int;
+  Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+};
 
 let mixedOrUnknown = (~language) =>
   Ident(

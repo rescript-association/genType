@@ -508,14 +508,35 @@ let translateTypeDeclaration =
         | TypeVar(_) => true
         };
       let opaque = typeExprTranslation.typ |> isOpaque;
+      let typ =
+        switch (dec.typ_manifest, typeExprTranslation.typ) {
+        | (Some({ctyp_desc: Ttyp_variant(rowFields, _, _)}), Enum(enum))
+            when rowFields |> List.length == (enum.cases |> List.length) =>
+          let cases =
+            List.combine(rowFields, enum.cases)
+            |> List.map(((field, case)) =>
+                 switch (field) {
+                 | Typedtree.Ttag(label, attributes, _, _) =>
+                   switch (
+                     attributes
+                     |> Annotation.getAttributePayload(
+                          Annotation.tagIsGenTypeAs,
+                        )
+                   ) {
+                   | Some(StringPayload(asLabel)) => {
+                       label,
+                       labelJS: asLabel,
+                     }
+                   | _ => {label, labelJS: label}
+                   }
+                 | Tinherit(_) => case
+                 }
+               );
+          cases |> createEnum;
+        | _ => typeExprTranslation.typ
+        };
       let codeItems = [
-        translateExportType(
-          ~opaque,
-          ~typeVars,
-          ~typeName,
-          ~typeEnv,
-          typeExprTranslation.typ,
-        ),
+        translateExportType(~opaque, ~typeVars, ~typeName, ~typeEnv, typ),
       ];
       {dependencies: typeExprTranslation.dependencies, codeItems};
     };

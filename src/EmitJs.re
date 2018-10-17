@@ -606,8 +606,8 @@ let emitEnumTables = (~emitters, enumTables) => {
     ++ (
       enum.cases
       |> List.map(label => {
-           let js = label |> EmitText.quotes;
-           let re = label |> Runtime.emitVariantLabel(~comment=false);
+           let js = label.labelJS |> EmitText.quotes;
+           let re = label.label |> Runtime.emitVariantLabel(~comment=false);
            toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
          })
       |> String.concat(", ")

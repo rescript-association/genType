@@ -62,7 +62,9 @@ let rec renderTyp = (~language, ~indent=None, typ) =>
     };
 
   | Enum({cases}) =>
-    cases |> List.map(EmitText.quotes) |> String.concat(" | ")
+    cases
+    |> List.map(case => case.labelJS |> EmitText.quotes)
+    |> String.concat(" | ")
 
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(~language, ~indent, ~typeVars, argTypes, retType)
