@@ -65,3 +65,18 @@ type t = weekday;
 
 [@genType]
 let isWeekend = day => day === saturday || day === sunday;
+
+module Poly = {
+  [@genType]
+  type weekday = [ | `monday | `saturday | `sunday];
+
+  let isWeekend = x =>
+    switch (x) {
+    | `saturday
+    | `sunday => true
+    };
+
+  let monday = `monday;
+  let saturday = `saturday;
+  let sunday = `sunday;
+};

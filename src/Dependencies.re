@@ -271,32 +271,39 @@ and translateTypeExpr_ =
     let typeName =
       GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, typeExpr.id);
     {dependencies: [], typ: TypeVar(typeName)};
+
   | Tvar(Some(s)) => {dependencies: [], typ: TypeVar(s)}
+
   | Tconstr(Pdot(Pident({name: "FB", _}), "bool", _), [], _)
   | Tconstr(Pident({name: "bool", _}), [], _) => {
       dependencies: [],
       typ: booleanT,
     }
+
   | Tconstr(Pdot(Pident({name: "FB", _}), "int", _), [], _)
   | Tconstr(Pident({name: "int", _}), [], _) => {
       dependencies: [],
       typ: numberT,
     }
+
   | Tconstr(Pdot(Pident({name: "FB", _}), "float", _), [], _)
   | Tconstr(Pident({name: "float", _}), [], _) => {
       dependencies: [],
       typ: numberT,
     }
+
   | Tconstr(Pdot(Pident({name: "FB", _}), "string", _), [], _)
   | Tconstr(Pident({name: "string", _}), [], _) => {
       dependencies: [],
       typ: stringT,
     }
+
   | Tconstr(Pdot(Pident({name: "FB", _}), "unit", _), [], _)
   | Tconstr(Pident({name: "unit", _}), [], _) => {
       dependencies: [],
       typ: unitT,
     }
+
   /*
    * Arrays do not experience any conversion, in order to retain referencial
    * equality. This poses a problem for Arrays that contain option types
@@ -308,11 +315,13 @@ and translateTypeExpr_ =
     let paramTranslation =
       param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Array(paramTranslation.typ)};
+
   | Tconstr(Pdot(Pident({name: "FB", _}), "option", _), [param], _)
   | Tconstr(Pident({name: "option", _}), [param], _) =>
     let paramTranslation =
       param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Option(paramTranslation.typ)};
+
   | Tconstr(
       Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
       [param],
@@ -328,6 +337,7 @@ and translateTypeExpr_ =
     let paramTranslation =
       param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Nullable(paramTranslation.typ)};
+
   | Tconstr(
       Pdot(Pident({name: "Js", _}), "t", _),
       [{desc: Tobject(tObj, _), _}],
@@ -378,6 +388,7 @@ and translateTypeExpr_ =
          [],
          [],
        )
+
   | Tlink(t) =>
     t
     |> translateTypeExpr_(
@@ -386,12 +397,14 @@ and translateTypeExpr_ =
          ~noFunctionReturnDependencies,
          ~typeEnv,
        )
+
   | Tconstr(path, [], _) =>
     let resolvedPath = path |> resolveTypePath(~typeEnv);
     {
       dependencies: [resolvedPath],
       typ: Ident(resolvedPath |> typePathToName, []),
     };
+
   /* This type doesn't have any built in converter. But what if it was a
    * genType variant type? */
   /*
@@ -415,6 +428,22 @@ and translateTypeExpr_ =
       dependencies: [resolvedPath, ...typeParamDeps],
       typ: Ident(resolvedPath |> typePathToName, typeArgs),
     };
+
+  | Tvariant(rowDesc)
+      /* only enums with no payloads */
+      when
+        rowDesc.row_fields
+        |> List.for_all(field =>
+             switch (field) {
+             | (_, Types.Rpresent(None)) => true
+             | _ => false
+             }
+           ) =>
+    let fieldNames = rowDesc.row_fields |> List.map(fst);
+    let _fieldType = fieldNames |> String.concat(" | ");
+    let typ = mixedOrUnknown(~language);
+    {dependencies: [], typ};
+
   | _ => {dependencies: [], typ: mixedOrUnknown(~language)}
   }
 and translateTypeExprs_ =

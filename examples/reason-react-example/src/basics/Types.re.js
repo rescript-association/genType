@@ -59,3 +59,5 @@ export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesB
 export opaque type t = weekday;
 
 export const isWeekend: (t) => boolean = TypesBS.isWeekend;
+
+export opaque type Poly_weekday = mixed;

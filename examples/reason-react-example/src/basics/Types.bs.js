@@ -32,9 +32,21 @@ function isWeekend(day) {
   }
 }
 
+function isWeekend$1() {
+  return true;
+}
+
+var Poly = /* module */[
+  /* isWeekend */isWeekend$1,
+  /* monday : monday */-949852400,
+  /* saturday : saturday */-29784519,
+  /* sunday : sunday */569248848
+];
+
 exports.consumeOption = consumeOption;
 exports.consumeOption2 = consumeOption2;
 exports.testArray = testArray;
 exports.identity = identity;
 exports.isWeekend = isWeekend;
+exports.Poly = Poly;
 /* ./SomeFlowTypes Not a pure module */
