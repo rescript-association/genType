@@ -46,4 +46,5 @@ let newModuleItem = moduleItemGen => {
 
 let emitModuleItem = itemValue => itemValue |> string_of_int;
 
-let emitVariantLabel = label => label |> Btype.hash_variant |> string_of_int;
+let emitVariantLabel = label =>
+  (label |> EmitText.comment) ++ (label |> Btype.hash_variant |> string_of_int);

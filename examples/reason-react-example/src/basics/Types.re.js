@@ -70,4 +70,4 @@ export const Poly_saturday: "saturday" = "saturday";
 
 export const Poly_sunday: "sunday" = "sunday";
 
-export const Poly_onlySunday: ("sunday") => void = function _(Arg1) { const result = TypesBS.Poly[4](569248848); return result };
+export const Poly_onlySunday: ("sunday") => void = function _(Arg1) { const result = TypesBS.Poly[4](/* sunday */569248848); return result };
