@@ -30,10 +30,27 @@ export type typeWithVars<x,y,z> =
   | TypeWithVarsB<z>;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type selfRecursive = {selfRecursive: selfRecursive};
+export type tree = {
+  label: string, 
+  left?: tree, 
+  right?: tree
+};
+
+export const swap: (_1:tree) => tree = TypesBS.swap;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type selfRecursive = {self: selfRecursive};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type mutuallyRecursiveA = {b: mutuallyRecursiveB};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type mutuallyRecursiveB = {a: mutuallyRecursiveA};
+
+export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = function _(Arg1) { const result = 
+/* WARNING: circular type selfRecursive. Only shallow converter applied. */
+  TypesBS.selfRecursiveConverter([Arg1.self]); return {self:result[0]} };
+
+export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = function _(Arg1) { const result = 
+/* WARNING: circular type mutuallyRecursiveB. Only shallow converter applied. */
+  TypesBS.mutuallyRecursiveConverter([[Arg1.b.a]]); return {a:{b:result[0][0]}} };

@@ -2,8 +2,9 @@ open GenTypeCommon;
 
 type t =
   | ArrayC(t)
+  | CircularC(string, t)
   | EnumC(enum)
-  | FunctionC((list(groupedArgConverter), t))
+  | FunctionC(list(groupedArgConverter), t)
   | IdentC
   | NullableC(t)
   | ObjectC(fieldsC)
@@ -18,12 +19,14 @@ let rec toString = converter =>
   switch (converter) {
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
 
+  | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
+
   | EnumC({cases, _}) =>
     "enum("
     ++ (cases |> List.map(case => case.labelJS) |> String.concat(", "))
     ++ ")"
 
-  | FunctionC((groupedArgConverters, c)) =>
+  | FunctionC(groupedArgConverters, c) =>
     let labelToString = label =>
       switch (label) {
       | Nolabel => "_"
@@ -78,110 +81,95 @@ let rec toString = converter =>
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
   };
 
-let rec typToConverter_ =
-        (
-          ~exportTypeMap: StringMap.t((list(string), typ)),
-          ~typesFromOtherFiles: StringMap.t((list(string), typ)),
-          typ,
-        ) =>
-  switch (typ) {
-  | Array(t) =>
-    let converter =
-      t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    ArrayC(converter);
-
-  | Enum(cases) => EnumC(cases)
-
-  | Function({argTypes, retType, _}) =>
-    let argConverters =
-      argTypes
-      |> List.map(
-           typToGroupedArgConverter_(~exportTypeMap, ~typesFromOtherFiles),
-         );
-    let retConverter =
-      retType |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    FunctionC((argConverters, retConverter));
-
-  | GroupOfLabeledArgs(_) => IdentC
-
-  | Ident(s, typeArguments) =>
-    try (
-      {
-        let (typeVars, t) =
-          try (exportTypeMap |> StringMap.find(s)) {
-          | Not_found => typesFromOtherFiles |> StringMap.find(s)
-          };
-        let pairs =
-          try (List.combine(typeVars, typeArguments)) {
-          | Invalid_argument(_) => []
-          };
-
-        let f = typeVar =>
-          switch (pairs |> List.find(((typeVar1, _)) => typeVar == typeVar1)) {
-          | (_, typeArgument) => Some(typeArgument)
-          | exception Not_found => None
-          };
-        t
-        |> TypeVars.substitute(~f)
-        |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-      }
-    ) {
-    | Not_found => IdentC
-    }
-
-  | Nullable(t) =>
-    let converter =
-      t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
-    NullableC(converter);
-
-  | Object(fields) =>
-    ObjectC(
-      fields
-      |> List.map(((lbl, optionalness, t)) =>
-           (
-             lbl,
-             (optionalness == Mandatory ? t : Option(t))
-             |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles),
-           )
-         ),
-    )
-
-  | Option(t) =>
-    OptionC(t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles))
-
-  | Record(fields) =>
-    RecordC(
-      fields
-      |> List.map(((lbl, optionalness, t)) =>
-           (
-             lbl,
-             (optionalness == Mandatory ? t : Option(t))
-             |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles),
-           )
-         ),
-    )
-
-  | TypeVar(_) => IdentC
-  }
-and typToGroupedArgConverter_ = (~exportTypeMap, ~typesFromOtherFiles, typ) =>
-  switch (typ) {
-  | GroupOfLabeledArgs(fields) =>
-    GroupConverter(
-      fields
-      |> List.map(((s, _optionalness, t)) =>
-           (s, t |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles))
-         ),
-    )
-  | _ =>
-    ArgConverter(
-      Nolabel,
-      typ |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles),
-    )
-  };
-
 let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
-  let converter =
-    typ |> typToConverter_(~exportTypeMap, ~typesFromOtherFiles);
+  let circular = ref("");
+  let rec visit = (~visited: StringSet.t, typ) =>
+    switch (typ) {
+    | Array(t) =>
+      let converter = t |> visit(~visited);
+      ArrayC(converter);
+
+    | Enum(cases) => EnumC(cases)
+
+    | Function({argTypes, retType, _}) =>
+      let argConverters =
+        argTypes |> List.map(typToGroupedArgConverter(~visited));
+      let retConverter = retType |> visit(~visited);
+      FunctionC(argConverters, retConverter);
+
+    | GroupOfLabeledArgs(_) => IdentC
+
+    | Ident(s, typeArguments) =>
+      if (visited |> StringSet.mem(s)) {
+        circular := s;
+        IdentC;
+      } else {
+        try (
+          {
+            let visited = visited |> StringSet.add(s);
+            let (typeVars, t) =
+              try (exportTypeMap |> StringMap.find(s)) {
+              | Not_found => typesFromOtherFiles |> StringMap.find(s)
+              };
+            let pairs =
+              try (List.combine(typeVars, typeArguments)) {
+              | Invalid_argument(_) => []
+              };
+
+            let f = typeVar =>
+              switch (
+                pairs |> List.find(((typeVar1, _)) => typeVar == typeVar1)
+              ) {
+              | (_, typeArgument) => Some(typeArgument)
+              | exception Not_found => None
+              };
+            t |> TypeVars.substitute(~f) |> visit(~visited);
+          }
+        ) {
+        | Not_found => IdentC
+        };
+      }
+    | Nullable(t) =>
+      let converter = t |> visit(~visited);
+      NullableC(converter);
+
+    | Object(fields) =>
+      ObjectC(
+        fields
+        |> List.map(((lbl, optionalness, t)) =>
+             (
+               lbl,
+               (optionalness == Mandatory ? t : Option(t)) |> visit(~visited),
+             )
+           ),
+      )
+
+    | Option(t) => OptionC(t |> visit(~visited))
+
+    | Record(fields) =>
+      RecordC(
+        fields
+        |> List.map(((lbl, optionalness, t)) =>
+             (
+               lbl,
+               (optionalness == Mandatory ? t : Option(t)) |> visit(~visited),
+             )
+           ),
+      )
+
+    | TypeVar(_) => IdentC
+    }
+  and typToGroupedArgConverter = (~visited, typ) =>
+    switch (typ) {
+    | GroupOfLabeledArgs(fields) =>
+      GroupConverter(
+        fields
+        |> List.map(((s, _optionalness, t)) => (s, t |> visit(~visited))),
+      )
+    | _ => ArgConverter(Nolabel, typ |> visit(~visited))
+    };
+
+  let converter = typ |> visit(~visited=StringSet.empty);
   if (Debug.converter) {
     logItem(
       "Converter typ:%s converter:%s\n",
@@ -189,16 +177,18 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
       converter |> toString,
     );
   };
-  converter;
+  circular^ != "" ? CircularC(circular^, converter) : converter;
 };
 
 let rec converterIsIdentity = (~toJS, converter) =>
   switch (converter) {
   | ArrayC(c) => c |> converterIsIdentity(~toJS)
 
+  | CircularC(_, c) => c |> converterIsIdentity(~toJS)
+
   | EnumC(_) => false
 
-  | FunctionC((groupedArgConverters, resultConverter)) =>
+  | FunctionC(groupedArgConverters, resultConverter) =>
     resultConverter
     |> converterIsIdentity(~toJS)
     && groupedArgConverters
@@ -245,6 +235,13 @@ let rec apply = (~converter, ~enumTables, ~toJS, value) =>
     ++ ("x" |> apply(~converter=c, ~enumTables, ~toJS))
     ++ "})"
 
+  | CircularC(s, c) =>
+    "\n/* WARNING: circular type "
+    ++ s
+    ++ ". Only shallow converter applied. */\n  "
+    ++ value
+    |> apply(~converter=c, ~enumTables, ~toJS)
+
   | EnumC({cases: [case], _}) =>
     toJS ?
       case.labelJS |> EmitText.quotes : case.label |> Runtime.emitVariantLabel
@@ -254,7 +251,7 @@ let rec apply = (~converter, ~enumTables, ~toJS, value) =>
     Hashtbl.replace(enumTables, table, (enum, toJS));
     table ++ EmitText.array([value]);
 
-  | FunctionC((groupedArgConverters, resultConverter)) =>
+  | FunctionC(groupedArgConverters, resultConverter) =>
     let resultVar = "result";
     let mkReturn = x =>
       "const "

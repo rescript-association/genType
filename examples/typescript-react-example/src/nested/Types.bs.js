@@ -2,6 +2,23 @@
 'use strict';
 
 var List = require("bs-platform/lib/js/list.js");
+var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
+
+function swap(tree) {
+  return {
+          label: tree.label,
+          left: Belt_Option.map(tree.right, swap),
+          right: Belt_Option.map(tree.left, swap)
+        };
+}
+
+function selfRecursiveConverter(param) {
+  return param[/* self */0];
+}
+
+function mutuallyRecursiveConverter(param) {
+  return param[/* b */0];
+}
 
 var someIntList = /* :: */[
   1,
@@ -18,4 +35,7 @@ var map = List.map;
 
 exports.someIntList = someIntList;
 exports.map = map;
+exports.swap = swap;
+exports.selfRecursiveConverter = selfRecursiveConverter;
+exports.mutuallyRecursiveConverter = mutuallyRecursiveConverter;
 /* No side effect */

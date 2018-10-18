@@ -13,8 +13,29 @@ type typeWithVars('x, 'y, 'z) =
   | B('z);
 
 [@genType]
-type selfRecursive = {selfRecursive};
+type tree = {
+  .
+  "label": string,
+  "left": option(tree),
+  "right": option(tree),
+};
+
+[@genType]
+let rec swap = (tree: tree) : tree => {
+  "label": tree##label,
+  "left": tree##right->(Belt.Option.map(swap)),
+  "right": tree##left->(Belt.Option.map(swap)),
+};
+
+[@genType]
+type selfRecursive = {self: selfRecursive};
 
 [@genType]
 type mutuallyRecursiveA = {b: mutuallyRecursiveB}
-and  mutuallyRecursiveB = {a: mutuallyRecursiveA};
+and mutuallyRecursiveB = {a: mutuallyRecursiveA};
+
+[@genType]
+let selfRecursiveConverter = ({self}) => self;
+
+[@genType]
+let mutuallyRecursiveConverter = ({b}) => b;

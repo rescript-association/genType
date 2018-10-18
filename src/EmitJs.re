@@ -397,7 +397,7 @@ let rec emitCodeItem =
 
     let args =
       switch (converter) {
-      | FunctionC((groupedArgConverters, _retConverter)) =>
+      | FunctionC(groupedArgConverters, _retConverter) =>
         switch (groupedArgConverters) {
         | [
             GroupConverter(propConverters),
