@@ -1,3 +1,6 @@
+# master
+- Support nested components. So it's possible to define several components in one file.
+
 # 0.20.0
 - Add support for Enum types.
 
