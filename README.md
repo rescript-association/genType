@@ -129,6 +129,8 @@ The corresponding JS representation is `"monday"`, `"tuesday"`.
 
 The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. ``[ | [@genType.as "type"] `type_ ]`` maps the Reason value `` `type_`` to the JS value `"type"`.
 
+See for example [Enums.re](examples/typescript-react-example/src/Enums.re).
+
 
 ### imported types
 It's possible to import an existing TS/Flow type as an opaque type in Reason. For example,
