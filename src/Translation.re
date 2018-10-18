@@ -385,14 +385,16 @@ let hasSomeGADTLeaf = constructorDeclarations =>
   );
 
 let translateTypeDeclaration =
-    (~language, ~typeEnv, dec: Typedtree.type_declaration): t => {
+    (
+      ~language,
+      ~typeEnv,
+      ~genTypeKind: CodeItem.genTypeKind,
+      dec: Typedtree.type_declaration,
+    )
+    : t => {
   typeEnv |> TypeEnv.newType(~name=dec.typ_id |> Ident.name);
 
-  switch (
-    dec.typ_type.type_params,
-    dec.typ_type.type_kind,
-    dec.typ_attributes |> Annotation.getGenTypeKind,
-  ) {
+  switch (dec.typ_type.type_params, dec.typ_type.type_kind, genTypeKind) {
   | (typeParams, Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
     let fieldTranslations =
       labelDeclarations
@@ -571,22 +573,24 @@ let translateTypeDeclaration =
   };
 };
 
+let translateTypeDeclarations =
+    (~language, ~typeEnv, typeDeclarations: list(Typedtree.type_declaration)) => {
+  let genTypeKind =
+    switch (typeDeclarations) {
+    | [dec, ..._] => dec.typ_attributes |> Annotation.getGenTypeKind
+    | [] => NoGenType
+    };
+  typeDeclarations
+  |> List.map(translateTypeDeclaration(~language, ~typeEnv, ~genTypeKind))
+  |> combine;
+};
+
 let rec translateStructItem =
-        (
-          ~config,
-          ~moduleItemGen,
-          ~fileName,
-          ~typeEnv,
-          structItem,
-        )
-        : t =>
+        (~config, ~moduleItemGen, ~fileName, ~typeEnv, structItem): t =>
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(
-         translateTypeDeclaration(~language=config.language, ~typeEnv),
-       )
-    |> combine
+    |> translateTypeDeclarations(~language=config.language, ~typeEnv)
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
@@ -607,38 +611,22 @@ let rec translateStructItem =
 
   | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
     moduleBinding
-    |> translateModuleBinding(
-         ~config,
-         ~fileName,
-         ~typeEnv,
-         ~moduleItemGen,
-       )
+    |> translateModuleBinding(~config, ~fileName, ~typeEnv, ~moduleItemGen)
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings
     |> List.map(
-         translateModuleBinding(
-           ~config,
-           ~fileName,
-           ~typeEnv,
-           ~moduleItemGen,
-         ),
+         translateModuleBinding(~config, ~fileName, ~typeEnv, ~moduleItemGen),
        )
     |> combine
 
   | _ => {dependencies: [], codeItems: []}
   }
-and translateStructure =
-    (~config, ~fileName, ~typeEnv, structure): list(t) => {
+and translateStructure = (~config, ~fileName, ~typeEnv, structure): list(t) => {
   let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
   |> List.map(structItem =>
        structItem
-       |> translateStructItem(
-            ~config,
-            ~moduleItemGen,
-            ~fileName,
-            ~typeEnv,
-          )
+       |> translateStructItem(~config, ~moduleItemGen, ~fileName, ~typeEnv)
      );
 }
 and translateModuleBinding =
@@ -705,10 +693,7 @@ and translateSignatureItem =
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
-    |> List.map(
-         translateTypeDeclaration(~language=config.language, ~typeEnv),
-       )
-    |> combine
+    |> translateTypeDeclarations(~language=config.language, ~typeEnv)
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {

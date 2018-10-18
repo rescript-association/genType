@@ -42,15 +42,11 @@ let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
       }
     )
     |> List.concat;
-  typeDeclarations
-  |> List.map(typeDeclaration =>
-       (
-         typeDeclaration
-         |> Translation.translateTypeDeclaration(~language, ~typeEnv)
-       ).
-         codeItems
-     )
-  |> List.concat;
+  (
+    typeDeclarations
+    |> Translation.translateTypeDeclarations(~language, ~typeEnv)
+  ).
+    codeItems;
 };
 
 let cmtToCodeItems =

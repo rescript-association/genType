@@ -28,3 +28,12 @@ export const B: <z>(_1:z) => TypeWithVarsB<z> = function _(Arg1) { return Create
 export type typeWithVars<x,y,z> =
   | TypeWithVarsA<x,y>
   | TypeWithVarsB<z>;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type selfRecursive = {selfRecursive: selfRecursive};
+
+// tslint:disable-next-line:interface-over-type-literal
+export type mutuallyRecursiveA = {b: mutuallyRecursiveB};
+
+// tslint:disable-next-line:interface-over-type-literal
+export type mutuallyRecursiveB = {a: mutuallyRecursiveA};
