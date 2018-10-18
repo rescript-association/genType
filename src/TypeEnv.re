@@ -43,6 +43,9 @@ let rec lookup = (~name, x) =>
     }
   };
 
+let getCurrentModuleName = (~fileName, x) =>
+  x.parent == None ? fileName : x.name |> ModuleName.fromStringUnsafe;
+
 let updateModuleItem = (~moduleItem, x) => x.moduleItem = moduleItem;
 
 let rec resolveType = (~name, x) =>

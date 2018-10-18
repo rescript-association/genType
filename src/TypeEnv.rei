@@ -1,5 +1,7 @@
 type t;
 
+let getCurrentModuleName: (~fileName: ModuleName.t, t) => ModuleName.t;
+
 let getValueAccessPath: (~name: string, t) => string;
 
 let lookup: (~name: string, t) => option(t);

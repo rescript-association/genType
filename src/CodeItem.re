@@ -48,6 +48,7 @@ type wrapJsValue = {
 type wrapReasonComponent = {
   exportType,
   fileName: ModuleName.t,
+  moduleName: ModuleName.t,
   propsTypeName: string,
   componentType: typ,
   typ,
@@ -154,8 +155,11 @@ let toString = (~language, codeItem: t) =>
     "WrapJsComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
   | WrapJsValue({importAnnotation, _}) =>
     "WrapJsValue " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | WrapReasonComponent({fileName, _}) =>
-    "WrapReasonComponent " ++ (fileName |> ModuleName.toString)
+  | WrapReasonComponent({fileName, moduleName, _}) =>
+    "WrapReasonComponent fileName:"
+    ++ (fileName |> ModuleName.toString)
+    ++ " moduleName:"
+    ++ (moduleName |> ModuleName.toString)
   | WrapReasonValue({fileName, resolvedName, typ, _}) =>
     "WrapReasonValue"
     ++ " resolvedName:"

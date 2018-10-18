@@ -189,6 +189,7 @@ let translateComponent =
       };
     let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
     let componentType = EmitTyp.reactComponentType(~language, ~propsTypeName);
+    let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
 
     let codeItems = [
       CodeItem.WrapReasonComponent({
@@ -199,6 +200,7 @@ let translateComponent =
           typ: propsType,
         },
         fileName,
+        moduleName,
         propsTypeName,
         componentType,
         typ,
