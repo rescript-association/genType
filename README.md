@@ -2,14 +2,14 @@
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, use `@genType` annotations, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
 
-`genType` lets you to use [Reason](https://reasonml.github.io/) values from JavaScript idiomatically. In particular, [ReasonReact](https://reasonml.github.io/reason-react/) components. Also, if you're using JavaScript components from Reason, it can check their type.
+`genType` lets you use [Reason](https://reasonml.github.io/) values from JavaScript, and JavaScript values from Reason, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
+In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-react/) components both ways is supported, with automatic generation of the wrappers.
 
-This article describes how to use `genType` as part of a migration strategy: [Adopting Reason: strategies, dual sources of truth, and why genType is a big deal](https://medium.com/p/c514265b466d).
+Here's article describing how to use `genType` as part of a migration strategy where a tree of components is gradually converted to Reason bottom-up: [Adopting Reason: strategies, dual sources of truth, and why genType is a big deal](https://medium.com/p/c514265b466d).
 
 The implementation performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is mapped to a JS function operating on the corresponding JS object `{x:3}`.
 
-There are 3 back-ends, to choose if generated JS code is untyped, or typed with either [TypeScript](https://www.typescriptlang.org/) or [Flow](https://flow.org/en/).
-If a typed back-end is used, `genType` generates typed JS wrappers. In the other direction, if you have ReasonReact wrappers for JS components, it generates code to check that they are well typed.
+The output of `genType` can be configured by using one of 3 back-ends: `untyped` to generate wrappers in vanilla JS,  `typescript` to generate [TypeScript](https://www.typescriptlang.org/), and `flow` to generate JS with [Flow](https://flow.org/en/) type annotations.
 
 
 ### Work in progress, only for early adopters. It is possible that the workflow will change in future.
@@ -40,11 +40,11 @@ There are some steps to set up `genType` in a project.
 Some of this might become simpler if `genType` gets integrated
 into bucklescript in future. The current requirement is `bs-platform 4.0.5` or later.
 
-0. Build the gentype.native binary (`$GENTYPE_REPO/lib/bs/native/gentype.native`) or retrieve it from our prebuilt releases
-1. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENTYPE_REPO/lib/bs/native/gentype.native`, before building a project, or starting a watcher / vscode with bsb integration.
-2. Add a `"gentypeconfig"` option in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example for a ReactEvent shim can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
-3. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
-4. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re`  [example webpack.config.js](examples/reason-react-example/webpack.config.js).
+1. Build the gentype.native binary (`$GENTYPE_REPO/lib/bs/native/gentype.native`) or retrieve it from our prebuilt releases
+2. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENTYPE_REPO/lib/bs/native/gentype.native`, before building a project, or starting a watcher / vscode with bsb integration.
+3. Add a `"gentypeconfig"` option in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example for a ReactEvent shim can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
+4. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
+5. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re`  [example webpack.config.js](examples/reason-react-example/webpack.config.js).
 
 # genType Configuration
 
@@ -62,12 +62,12 @@ Every `genType` powered project requires a configuration item `"gentypeconfig"` 
 ```
 
 - **language**
-  - "typescript" : Generate `*.tsx` files with TypeScript types.
-  - "flow": Generate `*.re.js` files with Flow types.
-  - "untyped": Generate `*.re.js` files with no type annotations.
+  - "typescript" : Generate `*.tsx` files written in TypeScript.
+  - "flow": Generate `*.re.js` files with Flow type annotations.
+  - "untyped": Generate `*.re.js` files in vanilla JavaScript.
 
 - **shims**
-  - `Array<string>` with following format: `"ReasonModule=JavaScriptModule"`
+  - e.g. `Array<string>` with format: `"ReasonModule=JavaScriptModule"`
   - Required to map certain basic TypeScript/ Flow data types & wrapping logic for Reason data types (e.g. mapping TypeScript lists to Reason lists)
 
 # Types Supported
@@ -154,8 +154,6 @@ If a Reason type contains a type variable, the corresponding value is not conver
 # Limitations
 
 * **BuckleScript in-source = true**. Currently only supports bucklescript projects with [in-source generation](https://bucklescript.github.io/docs/en/build-configuration#package-specs) and `.bs.js` file suffix.
-
-* **Limited JS wrappers**. There used to be a limited way to type check existing wrappers for JS components. This is now deprecated. A complete solution, which generates wrappers automatically for components as well as arbitrary values, is under development. For an early example, see [MyBannerWrapper.re](examples/typescript-react-example/src/MyBannerWrapper.re).
 
 # Development
 
