@@ -1,6 +1,7 @@
 # master
 - Support nested components. So it's possible to define several components in one file.
 - Support for recursive types. If a recursive type requires a conversion, only a shallow one is performed, and a warning comment is emitted.
+- Update README describing how genType works in both directions.
 
 # 0.20.0
 - Add support for Enum types.
