@@ -17,7 +17,7 @@ let rec resolveTypePath = (~typeEnv, typePath) =>
     switch (typeEnv |> TypeEnv.lookup(~name)) {
     | None => Pid(name)
     | Some(typeEnv1) =>
-      let resolvedName = typeEnv1 |> TypeEnv.addModulePath(~name);
+      let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
       if (Debug.typeResolution) {
         logItem(
           "resolveTypePath name:%s env:%s resolvedName:%s\n",

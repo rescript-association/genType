@@ -1,6 +1,6 @@
 type t;
 
-let addModulePath: (~name: string, t) => string;
+let addModulePath: (~typeEnv:t, string) => string;
 
 let getCurrentModuleName: (~fileName: ModuleName.t, t) => ModuleName.t;
 

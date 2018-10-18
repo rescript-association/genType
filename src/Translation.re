@@ -18,7 +18,7 @@ let combine = (translations: list(t)): t =>
 
 let translateExportType =
     (~opaque, ~typeVars, ~typeName, ~typeEnv, typ): CodeItem.t => {
-  let resolvedTypeName = typeEnv |> TypeEnv.addModulePath(~name=typeName);
+  let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
   ExportType({opaque, typeVars, resolvedTypeName, typ});
 };
 
@@ -32,7 +32,7 @@ let translateConstructorDeclaration =
     (~language, ~recordGen, ~typeEnv, variantTypeName, constructorDeclaration) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
-  let leafNameResolved = typeEnv |> TypeEnv.addModulePath(~name=leafName);
+  let leafNameResolved = leafName |> TypeEnv.addModulePath(~typeEnv);
   let argsTranslation =
     Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
@@ -43,10 +43,8 @@ let translateConstructorDeclaration =
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
 
   let variantTypeNameResolved =
-    typeEnv
-    |> TypeEnv.addModulePath(
-         ~name=variantLeafTypeName(variantTypeName, leafName),
-       );
+    variantLeafTypeName(variantTypeName, leafName)
+    |> TypeEnv.addModulePath(~typeEnv);
 
   let typeVars = argTypes |> TypeVars.freeOfList;
 
@@ -95,7 +93,7 @@ let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
     typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let resolvedName = typeEnv |> TypeEnv.addModulePath(~name);
+  let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
 
   /* Access path for the value in the module.
      I can be the value name if the module is not nested.
@@ -562,7 +560,7 @@ let translateTypeDeclaration =
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let variantTypeNameResolved =
-      typeEnv |> TypeEnv.addModulePath(~name=variantTypeName);
+      variantTypeName  |> TypeEnv.addModulePath(~typeEnv);
     let unionType =
       CodeItem.ExportVariantType({
         typeParams,

@@ -48,10 +48,11 @@ let getCurrentModuleName = (~fileName, x) =>
 
 let updateModuleItem = (~moduleItem, x) => x.moduleItem = moduleItem;
 
-let rec addModulePath = (~name, x) =>
-  switch (x.parent) {
+let rec addModulePath = (~typeEnv, name) =>
+  switch (typeEnv.parent) {
   | None => name
-  | Some(parent) => parent |> addModulePath(~name=x.name ++ "_" ++ name)
+  | Some(parent) =>
+    typeEnv.name ++ "_" ++ name |> addModulePath(~typeEnv=parent)
   };
 
 let getValueAccessPath = (~name, x) => {
