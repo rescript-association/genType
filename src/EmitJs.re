@@ -454,7 +454,10 @@ let rec emitCodeItem =
         ],
       );
 
-    let emitters = EmitTyp.emitExportDefault(~emitters, ~config, name);
+    let emitters =
+      /* only export default for the top level component in the file */
+      fileName == moduleName ?
+        EmitTyp.emitExportDefault(~emitters, ~config, name) : emitters;
 
     let env = moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
 

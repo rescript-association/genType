@@ -10,6 +10,7 @@ module InnerComponent = {
 
 let component = ReasonReact.statelessComponent("ManyComponents");
 
+[@genType]
 let make = _children => {
   ...component,
   render: _ =>

@@ -15,4 +15,13 @@ export const InnerComponent: React.ComponentClass<Props> = ReasonReact.wrapReaso
      return ManyComponentsBS.make(jsProps.children);
   }));
 
-export default InnerComponent;
+// tslint:disable-next-line:interface-over-type-literal
+export type Props2 = {children?: unknown};
+
+export const ManyComponents: React.ComponentClass<Props2> = ReasonReact.wrapReasonForJs(
+  ManyComponentsBS.component,
+  (function _(jsProps: Props2) {
+     return ManyComponentsBS.make(jsProps.children);
+  }));
+
+export default ManyComponents;
