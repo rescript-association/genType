@@ -54,7 +54,7 @@ let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
 };
 
 let cmtToCodeItems =
-    (~config, ~moduleName, ~outputFileRelative, ~resolver, inputCMT)
+    (~config, ~fileName, ~outputFileRelative, ~resolver, inputCMT)
     : list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let propsTypeGen = GenIdent.createPropsTypeGen();
@@ -66,7 +66,7 @@ let cmtToCodeItems =
       |> Translation.translateStructure(
            ~config,
            ~propsTypeGen,
-           ~moduleName,
+           ~fileName,
            ~typeEnv,
          )
     | Interface(signature) =>
@@ -74,7 +74,7 @@ let cmtToCodeItems =
       |> Translation.translateSignature(
            ~config,
            ~propsTypeGen,
-           ~moduleName,
+           ~fileName,
            ~typeEnv,
          )
     | _ => []
@@ -123,7 +123,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
     let outputFileRelative =
       cmt |> Paths.getOutputFileRelative(~language=config.language);
-    let moduleName = cmt |> Paths.getModuleName;
+    let fileName = cmt |> Paths.getModuleName;
     let resolver =
       ModuleResolver.createResolver(
         ~extensions=[
@@ -135,7 +135,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       );
     if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
-      |> cmtToCodeItems(~config, ~moduleName, ~outputFileRelative, ~resolver)
+      |> cmtToCodeItems(~config, ~fileName, ~outputFileRelative, ~resolver)
       |> emitCodeItems(
            ~config,
            ~outputFile,

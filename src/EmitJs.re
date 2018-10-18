@@ -181,7 +181,7 @@ let rec emitCodeItem =
       childrenTyp,
       propsFields,
       propsTypeName,
-      moduleName,
+      fileName,
     }) =>
     let importPath = importAnnotation.importPath;
     let componentName = importAnnotation.name;
@@ -240,7 +240,7 @@ let rec emitCodeItem =
              "In case of type error, check the type of '"
              ++ "make"
              ++ "' in '"
-             ++ (moduleName |> ModuleName.toString)
+             ++ (fileName |> ModuleName.toString)
              ++ ".re'"
              ++ " and the props of '"
              ++ (importPath |> ImportPath.toString)
@@ -309,7 +309,7 @@ let rec emitCodeItem =
          );
     (env, emitters);
 
-  | WrapJsValue({valueName, importAnnotation, typ, moduleName}) =>
+  | WrapJsValue({valueName, importAnnotation, typ, fileName}) =>
     let importPath = importAnnotation.importPath;
     let (emitters, importedAsName, env) =
       switch (language) {
@@ -351,7 +351,7 @@ let rec emitCodeItem =
              "In case of type error, check the type of '"
              ++ valueName
              ++ "' in '"
-             ++ (moduleName |> ModuleName.toString)
+             ++ (fileName |> ModuleName.toString)
              ++ ".re'"
              ++ " and '"
              ++ (importPath |> ImportPath.toString)
@@ -374,23 +374,23 @@ let rec emitCodeItem =
 
   | WrapReasonComponent({
       exportType,
-      moduleName,
+      fileName,
       propsTypeName,
       componentType,
       typ,
     }) =>
     let converter = typ |> typToConverter;
     let importPath =
-      ModuleResolver.resolveModule(
-        ~config,
-        ~outputFileRelative,
-        ~resolver,
-        ~importExtension=".bs",
-        moduleName,
-      );
-    let moduleNameBs = moduleName |> ModuleName.forBsFile;
+      fileName
+      |> ModuleResolver.resolveModule(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~importExtension=".bs",
+         );
+    let moduleNameBs = fileName |> ModuleName.forBsFile;
 
-    let name = EmitTyp.componentExportName(~language, ~moduleName);
+    let name = EmitTyp.componentExportName(~language, ~fileName);
     let jsProps = "jsProps";
     let jsPropsDot = s => jsProps ++ "." ++ s;
 
@@ -467,23 +467,23 @@ let rec emitCodeItem =
 
     (env, emitters);
 
-  | WrapReasonValue({moduleName, resolvedName, valueAccessPath, typ}) =>
+  | WrapReasonValue({fileName, resolvedName, valueAccessPath, typ}) =>
     let importPath =
-      ModuleResolver.resolveModule(
-        ~config,
-        ~outputFileRelative,
-        ~resolver,
-        ~importExtension=".bs",
-        moduleName,
-      );
-    let moduleNameBs = moduleName |> ModuleName.forBsFile;
+      fileName
+      |> ModuleResolver.resolveModule(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~importExtension=".bs",
+         );
+    let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =
-      moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
+      fileNameBs |> requireModule(~early=false, ~env, ~importPath);
     let converter = typ |> typToConverter;
 
     let emitters =
       (
-        (moduleNameBs |> ModuleName.toString)
+        (fileNameBs |> ModuleName.toString)
         ++ "."
         ++ valueAccessPath
         |> Converter.toJS(~converter, ~enumTables)

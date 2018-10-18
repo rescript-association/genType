@@ -35,26 +35,26 @@ type wrapJsComponent = {
   childrenTyp: typ,
   propsFields: fields,
   propsTypeName: string,
-  moduleName: ModuleName.t,
+  fileName: ModuleName.t,
 };
 
 type wrapJsValue = {
   valueName: string,
   importAnnotation,
   typ,
-  moduleName: ModuleName.t,
+  fileName: ModuleName.t,
 };
 
 type wrapReasonComponent = {
   exportType,
-  moduleName: ModuleName.t,
+  fileName: ModuleName.t,
   propsTypeName: string,
   componentType: typ,
   typ,
 };
 
 type wrapReasonValue = {
-  moduleName: ModuleName.t,
+  fileName: ModuleName.t,
   resolvedName: string,
   valueAccessPath: string,
   typ,
@@ -154,14 +154,14 @@ let toString = (~language, codeItem: t) =>
     "WrapJsComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
   | WrapJsValue({importAnnotation, _}) =>
     "WrapJsValue " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | WrapReasonComponent({moduleName, _}) =>
-    "WrapReasonComponent " ++ (moduleName |> ModuleName.toString)
-  | WrapReasonValue({moduleName, resolvedName, typ, _}) =>
+  | WrapReasonComponent({fileName, _}) =>
+    "WrapReasonComponent " ++ (fileName |> ModuleName.toString)
+  | WrapReasonValue({fileName, resolvedName, typ, _}) =>
     "WrapReasonValue"
     ++ " resolvedName:"
     ++ resolvedName
     ++ " moduleName:"
-    ++ ModuleName.toString(moduleName)
+    ++ ModuleName.toString(fileName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
   | WrapVariantLeaf({leafName, _}) => "WrapVariantLeaf " ++ leafName
