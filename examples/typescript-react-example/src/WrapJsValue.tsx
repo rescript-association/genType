@@ -19,7 +19,7 @@ export const area: (_1:point) => number = function _(Arg1) { const result = area
 // tslint:disable-next-line:no-var-requires
 const WrapJsValueBS = require('./WrapJsValue.bs');
 
-import {AbsoluteValue as absoluteVaue} from './MyMath';
+import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type point = {x: number, y?: number};
@@ -28,6 +28,6 @@ export const roundedNumber: number = WrapJsValueBS.roundedNumber;
 
 export const areaValue: number = WrapJsValueBS.areaValue;
 
-export const useGetProp: (_1:absoluteVaue) => number = WrapJsValueBS.useGetProp;
+export const useGetProp: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetProp;
 
-export const useGetAbs: (_1:absoluteVaue) => number = WrapJsValueBS.useGetAbs;
+export const useGetAbs: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetAbs;

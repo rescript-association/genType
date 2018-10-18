@@ -14,6 +14,8 @@ function getAbs(x) {
   return x.getAbs();
 }
 
+var AbsoluteValue = /* module */[/* getAbs */getAbs];
+
 function useGetProp(x) {
   return x.getProp() + 1 | 0;
 }
@@ -24,7 +26,7 @@ function useGetAbs(x) {
 
 exports.roundedNumber = roundedNumber;
 exports.areaValue = areaValue;
-exports.getAbs = getAbs;
+exports.AbsoluteValue = AbsoluteValue;
 exports.useGetProp = useGetProp;
 exports.useGetAbs = useGetAbs;
 /* roundedNumber Not a pure module */

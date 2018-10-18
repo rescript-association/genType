@@ -23,21 +23,23 @@ let roundedNumber = round(1.8);
 [@genType]
 let areaValue = area({x: 3, y: None});
 
-[@genType.import "./MyMath"]
-[@genType.as "AbsoluteValue"]
-type absoluteVaue = {. "getAbs": (. unit) => int};
+module AbsoluteValue = {
+  [@genType.import "./MyMath"]
+  [@genType.as "AbsoluteValue"]
+  type t = {. "getAbs": (. unit) => int};
 
-/* This is untyped */
-[@bs.send] external getProp: absoluteVaue => int = "getProp";
+  /* This is untyped */
+  [@bs.send] external getProp: t => int = "getProp";
 
-/* This is also untyped, as we "trust" the type declaration in absoluteVaue */
-let getAbs = (x: absoluteVaue) => {
-  let getAbs = x##getAbs;
-  getAbs(.);
+  /* This is also untyped, as we "trust" the type declaration in absoluteVaue */
+  let getAbs = (x: t) => {
+    let getAbs = x##getAbs;
+    getAbs(.);
+  };
 };
 
 [@genType]
-let useGetProp = (x: absoluteVaue) => x->getProp + 1;
+let useGetProp = (x: AbsoluteValue.t) => x->AbsoluteValue.getProp + 1;
 
 [@genType]
-let useGetAbs = (x: absoluteVaue) => x->getAbs + 1;
+let useGetAbs = (x: AbsoluteValue.t) => x->AbsoluteValue.getAbs + 1;

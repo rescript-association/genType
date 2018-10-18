@@ -554,6 +554,8 @@ let translateTypeDeclaration =
       |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
     ) {
     | Some(StringPayload(importString)) =>
+      let nameWithModulePath =
+        dec.typ_id |> Ident.name |> TypeEnv.addModulePath(~typeEnv);
       let (typeName, asTypeName) =
         switch (
           dec.typ_attributes
@@ -561,9 +563,12 @@ let translateTypeDeclaration =
         ) {
         | Some(StringPayload(asString)) => (
             asString,
-            Some(dec.typ_id |> Ident.name),
+            Some(nameWithModulePath),
           )
-        | _ => (Ident.name(dec.typ_id), None)
+        | _ => (
+            nameWithModulePath,
+            None,
+          )
         };
 
       let codeItems = [
