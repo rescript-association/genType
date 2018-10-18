@@ -48,10 +48,10 @@ let getCurrentModuleName = (~fileName, x) =>
 
 let updateModuleItem = (~moduleItem, x) => x.moduleItem = moduleItem;
 
-let rec resolveType = (~name, x) =>
+let rec addModulePath = (~name, x) =>
   switch (x.parent) {
   | None => name
-  | Some(parent) => parent |> resolveType(~name=x.name ++ "_" ++ name)
+  | Some(parent) => parent |> addModulePath(~name=x.name ++ "_" ++ name)
   };
 
 let getValueAccessPath = (~name, x) => {

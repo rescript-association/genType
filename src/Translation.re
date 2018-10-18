@@ -18,7 +18,7 @@ let combine = (translations: list(t)): t =>
 
 let translateExportType =
     (~opaque, ~typeVars, ~typeName, ~typeEnv, typ): CodeItem.t => {
-  let resolvedTypeName = typeEnv |> TypeEnv.resolveType(~name=typeName);
+  let resolvedTypeName = typeEnv |> TypeEnv.addModulePath(~name=typeName);
   ExportType({opaque, typeVars, resolvedTypeName, typ});
 };
 
@@ -32,7 +32,7 @@ let translateConstructorDeclaration =
     (~language, ~recordGen, ~typeEnv, variantTypeName, constructorDeclaration) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
-  let leafNameResolved = typeEnv |> TypeEnv.resolveType(~name=leafName);
+  let leafNameResolved = typeEnv |> TypeEnv.addModulePath(~name=leafName);
   let argsTranslation =
     Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
@@ -44,7 +44,7 @@ let translateConstructorDeclaration =
 
   let variantTypeNameResolved =
     typeEnv
-    |> TypeEnv.resolveType(
+    |> TypeEnv.addModulePath(
          ~name=variantLeafTypeName(variantTypeName, leafName),
        );
 
@@ -95,7 +95,7 @@ let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
     typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
-  let resolvedName = typeEnv |> TypeEnv.resolveType(~name);
+  let resolvedName = typeEnv |> TypeEnv.addModulePath(~name);
 
   /* Access path for the value in the module.
      I can be the value name if the module is not nested.
@@ -562,7 +562,7 @@ let translateTypeDeclaration =
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let variantTypeNameResolved =
-      typeEnv |> TypeEnv.resolveType(~name=variantTypeName);
+      typeEnv |> TypeEnv.addModulePath(~name=variantTypeName);
     let unionType =
       CodeItem.ExportVariantType({
         typeParams,
