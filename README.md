@@ -142,6 +142,11 @@ It's possible to import an existing TS/Flow type as an opaque type in Reason. Fo
 defines a type which maps to `weekday` in `SomeFlowTypes.js`.
 See for example [Types.re](examples/reason-react-example/src/basics/Types.re) and [SomeFlowTypes.js](examples/reason-react-example/src/basics/SomeFlowTypes.js).
 
+### recursive types
+Recursive types which do not require a conversion are fully supported.
+If a recursive type requires a conversion, only a shallow conversion is performed, and a warning comment is included in the output. (The alternative would be to perform an expensive conversion down a data structure of arbitrary size).
+See for example [Types.re](examples/typescript-react-example/src/nested/Types.re).
+
 ### polymorphic types
 If a Reason type contains a type variable, the corresponding value is not converted. In other words, the conversion is the identity function. For example, a Reason function of type `{payload: 'a} => 'a` must treat the value of the payload as a black box, as a consequence of parametric polymorphism. If a typed back-end is used, the reason type is mapped to the corresponding generic type.
 

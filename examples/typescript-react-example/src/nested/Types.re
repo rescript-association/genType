@@ -20,8 +20,12 @@ type tree = {
   "right": option(tree),
 };
 
+/*
+ * A tree is a recursive type which does not require any conversion (JS object).
+ * All is well.
+ */
 [@genType]
-let rec swap = (tree: tree) : tree => {
+let rec swap = (tree: tree): tree => {
   "label": tree##label,
   "left": tree##right->(Belt.Option.map(swap)),
   "right": tree##left->(Belt.Option.map(swap)),
@@ -34,8 +38,16 @@ type selfRecursive = {self: selfRecursive};
 type mutuallyRecursiveA = {b: mutuallyRecursiveB}
 and mutuallyRecursiveB = {a: mutuallyRecursiveA};
 
+/*
+ * This is a recursive type which requires conversion (a record).
+ * Only a shallow conversion of the top-level element is performed.
+ */
 [@genType]
 let selfRecursiveConverter = ({self}) => self;
 
+/*
+ * This is a mutually recursive type which requires conversion (a record).
+ * Only a shallow conversion of the two top-level elements is performed.
+ */
 [@genType]
 let mutuallyRecursiveConverter = ({b}) => b;
