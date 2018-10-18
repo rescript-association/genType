@@ -375,6 +375,7 @@ let rec emitCodeItem =
   | WrapReasonComponent({
       exportType,
       fileName,
+      moduleName,
       propsTypeName,
       componentType,
       typ,
@@ -390,7 +391,7 @@ let rec emitCodeItem =
          );
     let moduleNameBs = fileName |> ModuleName.forBsFile;
 
-    let name = EmitTyp.componentExportName(~language, ~fileName);
+    let name = EmitTyp.componentExportName(~language, ~fileName, ~moduleName);
     let jsProps = "jsProps";
     let jsPropsDot = s => jsProps ++ "." ++ s;
 

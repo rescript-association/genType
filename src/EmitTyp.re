@@ -310,8 +310,12 @@ let reactComponentType = (~language, ~propsTypeName) =>
     [Ident(propsTypeName, [])],
   );
 
-let componentExportName = (~language, ~fileName) =>
-  language == Flow ? "component" : fileName |> ModuleName.toString;
+let componentExportName = (~language, ~fileName, ~moduleName) =>
+  switch (language) {
+  | Flow =>
+    fileName == moduleName ? "component" : moduleName |> ModuleName.toString
+  | _ => moduleName |> ModuleName.toString
+  };
 
 let emitImportTypeAs =
     (~emitters, ~language, ~typeName, ~asTypeName, ~importPath) =>

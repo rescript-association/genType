@@ -9,10 +9,10 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {children?: unknown};
 
-export const ManyComponents: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
+export const InnerComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.component,
   (function _(jsProps: Props) {
      return ManyComponentsBS.make(jsProps.children);
   }));
 
-export default ManyComponents;
+export default InnerComponent;
