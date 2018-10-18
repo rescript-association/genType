@@ -565,10 +565,7 @@ let translateTypeDeclaration =
             asString,
             Some(nameWithModulePath),
           )
-        | _ => (
-            nameWithModulePath,
-            None,
-          )
+        | _ => (nameWithModulePath, None)
         };
 
       let codeItems = [
