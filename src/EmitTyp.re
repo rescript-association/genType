@@ -61,7 +61,7 @@ let rec renderTyp = (~language, ~indent=None, typ) =>
       "Array<" ++ (typ |> renderTyp(~language, ~indent)) ++ ">";
     };
 
-  | Enum({cases}) =>
+  | Enum({cases, _}) =>
     cases
     |> List.map(case => case.labelJS |> EmitText.quotes)
     |> String.concat(" | ")

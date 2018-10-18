@@ -505,7 +505,7 @@ let translateTypeDeclaration =
       let opaque = typeExprTranslation.typ |> isOpaque;
       let typ =
         switch (dec.typ_manifest, typeExprTranslation.typ) {
-        | (Some({ctyp_desc: Ttyp_variant(rowFields, _, _)}), Enum(enum))
+        | (Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}), Enum(enum))
             when rowFields |> List.length == (enum.cases |> List.length) =>
           let cases =
             List.combine(rowFields, enum.cases)
