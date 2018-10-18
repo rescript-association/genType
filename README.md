@@ -121,7 +121,9 @@ In case of mixed named and unnamed arguments, consecutive named arguments form s
 
 
 ### components
-ReasonReact components with props of Reason types `t1`, `t2`, `t3` are mapped to reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`.
+ReasonReact components with props of Reason types `t1`, `t2`, `t3` are mapped to reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
+
+A file can export many components by defining them in sub-modules. The toplevel component is also exported as default.
 
 ### enums
 Enums are Reason polymorphic variants without payload: essentially flat sequences of identifiers. E.g. type ``[ | `monday | `tuesday ]``.
