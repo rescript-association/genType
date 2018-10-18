@@ -7,20 +7,20 @@ const ManyComponentsBS = require('./ManyComponents.bs');
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = {children?: unknown};
+export type InnerComponent_Props = {children?: unknown};
 
-export const InnerComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
+export const InnerComponent: React.ComponentClass<InnerComponent_Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.component,
-  (function _(jsProps: Props) {
+  (function _(jsProps: InnerComponent_Props) {
      return ManyComponentsBS.make(jsProps.children);
   }));
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Props2 = {children?: unknown};
+export type Props = {children?: unknown};
 
-export const ManyComponents: React.ComponentClass<Props2> = ReasonReact.wrapReasonForJs(
+export const ManyComponents: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.component,
-  (function _(jsProps: Props2) {
+  (function _(jsProps: Props) {
      return ManyComponentsBS.make(jsProps.children);
   }));
 

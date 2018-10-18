@@ -129,8 +129,7 @@ let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
  *     {named: number, args?: number}
  */
 
-let translateComponent =
-    (~language, ~propsTypeGen, ~fileName, ~typeEnv, ~typeExpr, name): t => {
+let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
   let typeExprTranslation =
     typeExpr
     |> Dependencies.translateTypeExpr(
@@ -185,7 +184,7 @@ let translateComponent =
         | _ => propOrChildren
         }
       };
-    let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
+    let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
     let componentType = EmitTyp.reactComponentType(~language, ~propsTypeName);
     let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
 
@@ -213,15 +212,7 @@ let translateComponent =
 };
 
 let translateValueBinding =
-    (
-      ~language,
-      ~propsTypeGen,
-      ~moduleItemGen,
-      ~fileName,
-      ~typeEnv,
-      valueBinding,
-    )
-    : t => {
+    (~language, ~moduleItemGen, ~fileName, ~typeEnv, valueBinding): t => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
@@ -230,13 +221,7 @@ let translateValueBinding =
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name
-    |> translateComponent(
-         ~language,
-         ~propsTypeGen,
-         ~fileName,
-         ~typeEnv,
-         ~typeExpr,
-       )
+    |> translateComponent(~language, ~fileName, ~typeEnv, ~typeExpr)
   | (Tpat_var(id, _), GenType) =>
     id
     |> Ident.name
@@ -248,7 +233,6 @@ let translateValueBinding =
 let translateSignatureValue =
     (
       ~language,
-      ~propsTypeGen,
       ~fileName,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
@@ -260,13 +244,7 @@ let translateSignatureValue =
   | (id, GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name
-    |> translateComponent(
-         ~language,
-         ~propsTypeGen,
-         ~fileName,
-         ~typeEnv,
-         ~typeExpr,
-       )
+    |> translateComponent(~language, ~fileName, ~typeEnv, ~typeExpr)
   | (id, GenType) =>
     id
     |> Ident.name
@@ -284,7 +262,6 @@ let translatePrimitive =
       ~language,
       ~fileName,
       ~typeEnv,
-      ~propsTypeGen,
       valueDescription: Typedtree.value_description,
     )
     : t => {
@@ -364,7 +341,7 @@ let translatePrimitive =
       | _ => ([], mixedOrUnknown(~language))
       };
     let propsTyp = Object(propsFields);
-    let propsTypeName = GenIdent.propsTypeName(~propsTypeGen);
+    let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
 
     let codeItems = [
       CodeItem.WrapJsComponent({
@@ -597,7 +574,6 @@ let translateTypeDeclaration =
 let rec translateStructItem =
         (
           ~config,
-          ~propsTypeGen,
           ~moduleItemGen,
           ~fileName,
           ~typeEnv,
@@ -617,7 +593,6 @@ let rec translateStructItem =
     |> List.map(
          translateValueBinding(
            ~language=config.language,
-           ~propsTypeGen,
            ~moduleItemGen,
            ~fileName,
            ~typeEnv,
@@ -628,12 +603,7 @@ let rec translateStructItem =
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
     valueDescription
-    |> translatePrimitive(
-         ~language=config.language,
-         ~fileName,
-         ~propsTypeGen,
-         ~typeEnv,
-       )
+    |> translatePrimitive(~language=config.language, ~fileName, ~typeEnv)
 
   | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
     moduleBinding
@@ -642,7 +612,6 @@ let rec translateStructItem =
          ~fileName,
          ~typeEnv,
          ~moduleItemGen,
-         ~propsTypeGen,
        )
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings
@@ -651,7 +620,6 @@ let rec translateStructItem =
            ~config,
            ~fileName,
            ~typeEnv,
-           ~propsTypeGen,
            ~moduleItemGen,
          ),
        )
@@ -660,14 +628,13 @@ let rec translateStructItem =
   | _ => {dependencies: [], codeItems: []}
   }
 and translateStructure =
-    (~config, ~propsTypeGen, ~fileName, ~typeEnv, structure): list(t) => {
+    (~config, ~fileName, ~typeEnv, structure): list(t) => {
   let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
   |> List.map(structItem =>
        structItem
        |> translateStructItem(
             ~config,
-            ~propsTypeGen,
             ~moduleItemGen,
             ~fileName,
             ~typeEnv,
@@ -679,7 +646,6 @@ and translateModuleBinding =
       ~config,
       ~fileName,
       ~typeEnv,
-      ~propsTypeGen,
       ~moduleItemGen,
       {mb_id, mb_expr, mb_attributes, _}: Typedtree.module_binding,
     )
@@ -694,7 +660,6 @@ and translateModuleBinding =
       structure
       |> translateStructure(
            ~config,
-           ~propsTypeGen,
            ~fileName,
            ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
          )
@@ -712,7 +677,6 @@ and translateModuleBinding =
 let rec translateModuleDeclaration =
         (
           ~config,
-          ~propsTypeGen,
           ~fileName,
           ~typeEnv,
           {md_id, md_attributes, md_type, _}: Typedtree.module_declaration,
@@ -725,7 +689,6 @@ let rec translateModuleDeclaration =
       signature
       |> translateSignature(
            ~config,
-           ~propsTypeGen,
            ~fileName,
            ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
          )
@@ -738,15 +701,7 @@ let rec translateModuleDeclaration =
   | Tmty_alias(_) => {dependencies: [], codeItems: []}
   }
 and translateSignatureItem =
-    (
-      ~config,
-      ~propsTypeGen,
-      ~moduleItemGen,
-      ~fileName,
-      ~typeEnv,
-      signatureItem,
-    )
-    : t =>
+    (~config, ~moduleItemGen, ~fileName, ~typeEnv, signatureItem): t =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
@@ -758,19 +713,13 @@ and translateSignatureItem =
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {
       valueDescription
-      |> translatePrimitive(
-           ~language=config.language,
-           ~fileName,
-           ~typeEnv,
-           ~propsTypeGen,
-         );
+      |> translatePrimitive(~language=config.language, ~fileName, ~typeEnv);
     } else {
       let moduleItem = moduleItemGen |> Runtime.newModuleItem;
       typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
       valueDescription
       |> translateSignatureValue(
            ~language=config.language,
-           ~propsTypeGen,
            ~fileName,
            ~typeEnv,
          );
@@ -780,23 +729,16 @@ and translateSignatureItem =
     let moduleItem = moduleItemGen |> Runtime.newModuleItem;
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleDeclaration
-    |> translateModuleDeclaration(~config, ~propsTypeGen, ~fileName, ~typeEnv);
+    |> translateModuleDeclaration(~config, ~fileName, ~typeEnv);
 
   | _ => {dependencies: [], codeItems: []}
   }
-and translateSignature =
-    (~config, ~propsTypeGen, ~fileName, ~typeEnv, signature): list(t) => {
+and translateSignature = (~config, ~fileName, ~typeEnv, signature): list(t) => {
   let moduleItemGen = Runtime.moduleItemGen();
   signature.Typedtree.sig_items
   |> List.map(signatureItem =>
        signatureItem
-       |> translateSignatureItem(
-            ~config,
-            ~propsTypeGen,
-            ~moduleItemGen,
-            ~fileName,
-            ~typeEnv,
-          )
+       |> translateSignatureItem(~config, ~moduleItemGen, ~fileName, ~typeEnv)
      );
 };
 

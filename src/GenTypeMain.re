@@ -57,26 +57,15 @@ let cmtToCodeItems =
     (~config, ~fileName, ~outputFileRelative, ~resolver, inputCMT)
     : list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
-  let propsTypeGen = GenIdent.createPropsTypeGen();
   let typeEnv = TypeEnv.root();
   let translationUnits =
     switch (cmt_annots) {
     | Implementation(structure) =>
       structure
-      |> Translation.translateStructure(
-           ~config,
-           ~propsTypeGen,
-           ~fileName,
-           ~typeEnv,
-         )
+      |> Translation.translateStructure(~config, ~fileName, ~typeEnv)
     | Interface(signature) =>
       signature
-      |> Translation.translateSignature(
-           ~config,
-           ~propsTypeGen,
-           ~fileName,
-           ~typeEnv,
-         )
+      |> Translation.translateSignature(~config, ~fileName, ~typeEnv)
     | _ => []
     };
   let translationUnit = translationUnits |> Translation.combine;

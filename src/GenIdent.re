@@ -5,18 +5,6 @@ module IntMap =
     let compare = (x: int, y: int) => compare(x, y);
   });
 
-type propsTypeGen = {mutable propsType: int};
-
-let createPropsTypeGen = () => {propsType: 0};
-
-let propsTypeName = (~propsTypeGen) => {
-  propsTypeGen.propsType = propsTypeGen.propsType + 1;
-  "Props"
-  ++ (
-    propsTypeGen.propsType == 1 ? "" : string_of_int(propsTypeGen.propsType)
-  );
-};
-
 type typeVarsGen = {
   mutable typeNameMap: IntMap.t(string),
   mutable typeNameCounter: int,
