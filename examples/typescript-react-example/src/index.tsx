@@ -3,6 +3,7 @@ import * as ReactDOM from "react-dom";
 import App from "./App";
 import * as Enums from "./Enums";
 import "./index.css";
+import * as MyMath from "./MyMath";
 import * as Records from "./nested/Records";
 import * as Types from "./nested/Types";
 import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules";
@@ -10,6 +11,7 @@ import ReasonComponent from "./ReasonComponent";
 import { A, B, minus, tToString } from "./ReasonComponent";
 import { t, TA, TB } from "./ReasonComponent";
 import registerServiceWorker from "./registerServiceWorker";
+import * as WrapJsValue from "./WrapJsValue";
 
 const minusOne: number = minus({ second: 1 });
 
@@ -79,5 +81,17 @@ consoleLog(
 consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
 consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);
 consoleLog("Enums: fortytwoBAD is", Enums.fortytwoBAD);
-consoleLog("Enums: testConvert3to2('module') =", Enums.testConvert2to3("module"));
+consoleLog(
+  "Enums: testConvert3to2('module') =",
+  Enums.testConvert2to3("module")
+);
 consoleLog("Enums: testConvert3to2('42') =", Enums.testConvert2to3("42"));
+
+const absoluteValueInstance = new MyMath.AbsoluteValue();
+absoluteValueInstance.prop = -3;
+consoleLog("absoluteValueInstance", absoluteValueInstance);
+
+const propValue = WrapJsValue.useGetProp(absoluteValueInstance);
+const absValue = WrapJsValue.useGetAbs(absoluteValueInstance);
+consoleLog("WrapJsValue: getProp() =", propValue);
+consoleLog("WrapJsValue: getAbs() =", absValue);

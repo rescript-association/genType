@@ -554,12 +554,23 @@ let translateTypeDeclaration =
       |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
     ) {
     | Some(StringPayload(importString)) =>
-      let typeName = Ident.name(dec.typ_id);
+      let (typeName, asTypeName) =
+        switch (
+          dec.typ_attributes
+          |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
+        ) {
+        | Some(StringPayload(asString)) => (
+            asString,
+            Some(dec.typ_id |> Ident.name),
+          )
+        | _ => (Ident.name(dec.typ_id), None)
+        };
+
       let codeItems = [
         CodeItem.ImportType(
           ImportTypeAs({
             typeName,
-            asTypeName: None,
+            asTypeName,
             importPath: importString |> ImportPath.fromStringUnsafe,
             cmtFile: None,
           }),

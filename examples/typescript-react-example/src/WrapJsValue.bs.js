@@ -10,6 +10,21 @@ var areaValue = WrapJsValue.area(/* record */[
       /* y */undefined
     ]);
 
+function getAbs(x) {
+  return x.getAbs();
+}
+
+function useGetProp(x) {
+  return x.getProp() + 1 | 0;
+}
+
+function useGetAbs(x) {
+  return x.getAbs() + 1 | 0;
+}
+
 exports.roundedNumber = roundedNumber;
 exports.areaValue = areaValue;
+exports.getAbs = getAbs;
+exports.useGetProp = useGetProp;
+exports.useGetAbs = useGetAbs;
 /* roundedNumber Not a pure module */
