@@ -560,7 +560,7 @@ let translateTypeDeclaration =
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(astTypeParams |> extract |> toTyp);
     let variantTypeNameResolved =
-      variantTypeName  |> TypeEnv.addModulePath(~typeEnv);
+      variantTypeName |> TypeEnv.addModulePath(~typeEnv);
     let unionType =
       CodeItem.ExportVariantType({
         typeParams,
