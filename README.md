@@ -5,7 +5,7 @@
 `genType` lets you use [Reason](https://reasonml.github.io/) values from JavaScript, and JavaScript values from Reason, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
 In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-react/) components both ways is supported, with automatic generation of the wrappers.
 
-Here's article describing how to use `genType` as part of a migration strategy where a tree of components is gradually converted to Reason bottom-up: [Adopting Reason: strategies, dual sources of truth, and why genType is a big deal](https://medium.com/p/c514265b466d).
+Here's an article describing how to use `genType` as part of a migration strategy where a tree of components is gradually converted to Reason bottom-up: [Adopting Reason: strategies, dual sources of truth, and why genType is a big deal](https://medium.com/p/c514265b466d).
 
 The implementation performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is mapped to a JS function operating on the corresponding JS object `{x:3}`.
 
