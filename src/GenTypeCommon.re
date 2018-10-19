@@ -80,8 +80,12 @@ type enum = {
   toRE: string,
 };
 
+type arrayKind =
+  | Mutable
+  | Immutable;
+
 type typ =
-  | Array(typ)
+  | Array(typ, arrayKind)
   | Enum(enum)
   | Function(function_)
   | GroupOfLabeledArgs(fields)

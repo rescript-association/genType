@@ -47,7 +47,7 @@ module Indent = {
 
 let rec renderTyp = (~language, ~indent=None, typ) =>
   switch (typ) {
-  | Array(typ) =>
+  | Array(typ, arrayKind) =>
     let typIsSimple =
       switch (typ) {
       | Ident(_)
@@ -55,10 +55,13 @@ let rec renderTyp = (~language, ~indent=None, typ) =>
       | _ => false
       };
 
-    if (language == Typescript && typIsSimple) {
+    if (language == Typescript && typIsSimple && arrayKind == Mutable) {
       (typ |> renderTyp(~language, ~indent)) ++ "[]";
     } else {
-      "Array<" ++ (typ |> renderTyp(~language, ~indent)) ++ ">";
+      let arrayName =
+        arrayKind == Mutable ?
+          "Array" : language == Flow ? "$ReadOnlyArray" : "ReadonlyArray";
+      arrayName ++ "<" ++ (typ |> renderTyp(~language, ~indent)) ++ ">";
     };
 
   | Enum({cases, _}) =>

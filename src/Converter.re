@@ -85,7 +85,7 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
   let circular = ref("");
   let rec visit = (~visited: StringSet.t, typ) =>
     switch (typ) {
-    | Array(t) =>
+    | Array(t, _) =>
       let converter = t |> visit(~visited);
       ArrayC(converter);
 

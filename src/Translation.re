@@ -470,7 +470,7 @@ let translateTypeDeclaration =
         |> Dependencies.translateTypeExpr(~language, ~typeEnv);
       let rec isOpaque = typ =>
         switch (typ) {
-        | Array(t) => t |> isOpaque
+        | Array(t, _) => t |> isOpaque
         | Enum(_) => false
         | Function(_) => false
         | GroupOfLabeledArgs(_) => true
