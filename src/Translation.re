@@ -481,7 +481,8 @@ let translateTypeDeclaration =
         | Record(_) => false
         | TypeVar(_) => true
         };
-      let opaque = typeExprTranslation.typ |> isOpaque;
+      let opaque =
+        genTypeKind == GenTypeOpaque || typeExprTranslation.typ |> isOpaque;
       let typ =
         switch (dec.typ_manifest, typeExprTranslation.typ) {
         | (Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}), Enum(enum))
