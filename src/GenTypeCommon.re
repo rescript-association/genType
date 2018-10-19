@@ -25,6 +25,7 @@ type config = {
   importPath,
   reasonReactPath: string,
   bsBlockPath: string,
+  bsCurryPath: string,
   modulesMap: ModuleNameMap.t(ModuleName.t),
 };
 
@@ -34,6 +35,7 @@ let defaultConfig = {
   importPath: Relative,
   reasonReactPath: "reason-react/src/ReasonReact.js",
   bsBlockPath: "bs-platform/lib/js/block.js",
+  bsCurryPath: "bs-platform/lib/js/curry.js",
   modulesMap: ModuleNameMap.empty,
 };
 

@@ -5,6 +5,9 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
+const Curry = require('bs-platform/lib/js/curry.js');
+
+// $FlowExpectedError: Reason checked type sufficiently
 const GreetingBS = require('./Greeting.bs');
 
 // $FlowExpectedError: Reason checked type sufficiently
@@ -27,7 +30,7 @@ export type Props = {|
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   GreetingBS.component,
   (function _(jsProps: Props) {
-     return GreetingBS.make(jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.polymorphicProp, jsProps.children);
+     return Curry._5(GreetingBS.make, jsProps.message, jsProps.someNumber, jsProps.extraGreeting, jsProps.polymorphicProp, jsProps.children);
   }));
 
 export default component;

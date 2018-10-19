@@ -8,6 +8,9 @@
 const Component1BS = require('./Component1.bs');
 
 // $FlowExpectedError: Reason checked type sufficiently
+const Curry = require('bs-platform/lib/js/curry.js');
+
+// $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 import type {list} from '../../src/shims/ReasonPervasives.shim';
@@ -19,7 +22,7 @@ export type Props = {|message?: string, children?: mixed|};
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   Component1BS.component,
   (function _(jsProps: Props) {
-     return Component1BS.make(jsProps.message, jsProps.children);
+     return Curry._2(Component1BS.make, jsProps.message, jsProps.children);
   }));
 
 export default component;

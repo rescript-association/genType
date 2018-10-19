@@ -4,6 +4,9 @@
 const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
 
 // tslint:disable-next-line:no-var-requires
+const Curry = require('bs-platform/lib/js/curry.js');
+
+// tslint:disable-next-line:no-var-requires
 const ReasonComponentBS = require('./ReasonComponent.bs');
 
 // tslint:disable-next-line:no-var-requires
@@ -38,7 +41,7 @@ export type Props = {
 export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
   ReasonComponentBS.component,
   (function _(jsProps: Props) {
-     return ReasonComponentBS.make(jsProps.message, [jsProps.person.name, jsProps.person.surname, jsProps.person.type, jsProps.person.polymorphicPayload], jsProps.intList, jsProps.children);
+     return Curry._4(ReasonComponentBS.make, jsProps.message, [jsProps.person.name, jsProps.person.surname, jsProps.person.type, jsProps.person.polymorphicPayload], jsProps.intList, jsProps.children);
   }));
 
 export default ReasonComponent;

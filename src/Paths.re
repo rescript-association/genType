@@ -166,6 +166,7 @@ let readConfig = () => {
     let importPathString = json |> getString("importPath");
     let reasonReactPathString = json |> getString("reasonReactPath");
     let bsBlockPathString = json |> getString("bsBlockPath");
+    let bsCurryPathString = json |> getString("bsCurryPath");
     let modulesMap =
       json
       |> getShims
@@ -215,7 +216,20 @@ let readConfig = () => {
       | "" => defaultConfig.bsBlockPath
       | _ => bsBlockPathString
       };
-    {language, module_, importPath, reasonReactPath, bsBlockPath, modulesMap};
+    let bsCurryPath =
+      switch (bsCurryPathString) {
+      | "" => defaultConfig.bsCurryPath
+      | _ => bsCurryPathString
+      };
+    {
+      language,
+      module_,
+      importPath,
+      reasonReactPath,
+      bsBlockPath,
+      bsCurryPath,
+      modulesMap,
+    };
   };
   let fromBsConfig = json =>
     switch (json) {

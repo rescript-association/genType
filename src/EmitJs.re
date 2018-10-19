@@ -428,6 +428,19 @@ let rec emitCodeItem =
       };
 
     let emitters = emitExportType(~emitters, ~language, exportType);
+
+    let numArgs = args |> List.length;
+    let useCurry = numArgs >= 2;
+
+    let emitCurry = (~args, name) =>
+      switch (numArgs) {
+      | 0
+      | 1 => name ++ EmitText.parens(args)
+      | (2 | 3 | 4 | 5 | 6 | 7 | 8) as n =>
+        "Curry._" ++ (n |> string_of_int) ++ EmitText.parens([name] @ args)
+      | _ => "Curry.app" ++ EmitText.parens([name, args |> EmitText.array])
+      };
+
     let emitters =
       EmitTyp.emitExportConstMany(
         ~emitters,
@@ -445,10 +458,12 @@ let rec emitCodeItem =
              )
           ++ ") {",
           "     return "
-          ++ ModuleName.toString(moduleNameBs)
-          ++ "."
-          ++ "make"
-          ++ EmitText.parens(args)
+          ++ (
+            ModuleName.toString(moduleNameBs)
+            ++ "."
+            ++ "make"
+            |> emitCurry(~args)
+          )
           ++ ";",
           "  }));",
         ],
@@ -468,6 +483,16 @@ let rec emitCodeItem =
            ~env,
            ~importPath=ImportPath.reasonReactPath(~config),
          );
+
+    let env =
+      useCurry ?
+        ModuleName.curry
+        |> requireModule(
+             ~early=false,
+             ~env,
+             ~importPath=ImportPath.bsCurryPath(~config),
+           ) :
+        env;
 
     (env, emitters);
 
