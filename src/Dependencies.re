@@ -304,14 +304,13 @@ and translateTypeExpr_ =
       typ: unitT,
     }
 
-  /*
-   * Arrays do not experience any conversion, in order to retain referencial
-   * equality. This poses a problem for Arrays that contain option types
-   * which require conversion. The solution here could be to use the Reason
-   * representation of option for everything except named arguments.
-   */
   | Tconstr(Pdot(Pident({name: "FB", _}), "array", _), [param], _)
   | Tconstr(Pident({name: "array", _}), [param], _) =>
+    let paramTranslation =
+      param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
+    {...paramTranslation, typ: Array(paramTranslation.typ)};
+
+  | Tconstr(Pdot(Pident({name: "ImmutableArray", _}), "t", _), [param], _) =>
     let paramTranslation =
       param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Array(paramTranslation.typ)};

@@ -1,3 +1,4 @@
+[@genType]
 let testImmutableArrayGet = arr => ImmutableArray.(arr[3]);
 
 /*
