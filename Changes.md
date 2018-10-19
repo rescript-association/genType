@@ -1,3 +1,11 @@
+# master
+- Support the case where the `make` function of an exported Reason component could be curried.
+- Support `ImmutableArray.t` type for convesion to `ReadonlyArray` in TS/Flow.
+- Add library for immutable arrays.
+- Fix missing handling of `@genType.opaque`.
+- Allow importing types from within nested modules.
+- Allow a combination of `@genType.import` and `@genType.as` to specify an imported type.
+
 # 0.21.0
 - Support nested components. So it's possible to define several components in one file.
 - Support for recursive types. If a recursive type requires a conversion, only a shallow one is performed, and a warning comment is emitted.
