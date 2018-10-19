@@ -28,6 +28,9 @@ export const roundedNumber: number = WrapJsValueBS.roundedNumber;
 
 export const areaValue: number = WrapJsValueBS.areaValue;
 
+// tslint:disable-next-line:max-classes-per-file 
+export abstract class AbsoluteValue_imported { protected opaque!: any }; /* simulate opaque types */
+
 export const useGetProp: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetProp;
 
 export const useGetAbs: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetAbs;

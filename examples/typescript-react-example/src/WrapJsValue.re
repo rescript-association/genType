@@ -28,6 +28,9 @@ module AbsoluteValue = {
   [@genType.as "AbsoluteValue"]
   type t = {. "getAbs": (. unit) => int};
 
+  [@genType]
+  type imported = t;
+
   /* This is untyped */
   [@bs.send] external getProp: t => int = "getProp";
 
