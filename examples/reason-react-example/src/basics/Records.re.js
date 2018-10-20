@@ -92,3 +92,5 @@ export type bigType = {|
 |};
 
 export const computeNestedNestedHalfNullable: (bigType) => number = RecordsBS.computeNestedNestedHalfNullable;
+
+export type testMutable = {|mutableField: number, +immutableField: number|};

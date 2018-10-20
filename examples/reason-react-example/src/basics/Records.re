@@ -140,3 +140,9 @@ type bigType = {
 
 [@genType]
 let computeNestedNestedHalfNullable = (_: bigType): int => 0;
+
+[@genType]
+type testMutable = {
+  mutable mutableField: int,
+  immutableField: int,
+};
