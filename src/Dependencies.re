@@ -368,13 +368,13 @@ and translateTypeExpr_ =
     let fields =
       fieldTranslations
       |> checkMutableField
-      |> List.map(((name, typ, mutable_)) => {
-           let (optional, typ') =
-             switch (typ) {
-             | Option(typ') => (Optional, typ')
-             | _ => (Mandatory, typ)
+      |> List.map(((name, typ_, mutable_)) => {
+           let (optional, typ) =
+             switch (typ_) {
+             | Option(typ) => (Optional, typ)
+             | _ => (Mandatory, typ_)
              };
-           {name, optional, mutable_, typ: typ'};
+           {name, optional, mutable_, typ};
          });
     let typ = Object(fields);
     {dependencies, typ};
