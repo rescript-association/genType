@@ -136,11 +136,10 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
     | Object(fields) =>
       ObjectC(
         fields
-        |> List.map(({name, optionalness, typ}) =>
+        |> List.map(({name, optional, typ}) =>
              (
                name,
-               (optionalness == Mandatory ? typ : Option(typ))
-               |> visit(~visited),
+               (optional == Mandatory ? typ : Option(typ)) |> visit(~visited),
              )
            ),
       )
@@ -150,11 +149,10 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
     | Record(fields) =>
       RecordC(
         fields
-        |> List.map(({name, optionalness, typ}) =>
+        |> List.map(({name, optional, typ}) =>
              (
                name,
-               (optionalness == Mandatory ? typ : Option(typ))
-               |> visit(~visited),
+               (optional == Mandatory ? typ : Option(typ)) |> visit(~visited),
              )
            ),
       )

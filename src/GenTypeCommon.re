@@ -67,7 +67,7 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-type optionalness =
+type optional =
   | Mandatory
   | Optional;
 
@@ -100,7 +100,7 @@ type typ =
 and fields = list(field)
 and field = {
   name: string,
-  optionalness,
+  optional,
   mutable_,
   typ,
 }

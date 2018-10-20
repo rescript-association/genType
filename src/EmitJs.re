@@ -262,7 +262,7 @@ let rec emitCodeItem =
              "{"
              ++ (
                propsFields
-               |> List.map(({name: propName, optionalness, typ: propTyp}) =>
+               |> List.map(({name: propName, optional, typ: propTyp}) =>
                     propName
                     ++ ": "
                     ++ (
@@ -270,7 +270,7 @@ let rec emitCodeItem =
                       |> Converter.toJS(
                            ~converter=
                              (
-                               optionalness == Mandatory ?
+                               optional == Mandatory ?
                                  propTyp : Option(propTyp)
                              )
                              |> typToConverter,

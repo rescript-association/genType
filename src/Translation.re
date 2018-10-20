@@ -174,7 +174,7 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
         GroupOfLabeledArgs([
           {
             name: "children",
-            optionalness: Optional,
+            optional: Optional,
             mutable_: Immutable,
             typ: mixedOrUnknown(~language),
           },
@@ -188,7 +188,7 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
             @ [
               {
                 name: "children",
-                optionalness: Optional,
+                optional: Optional,
                 mutable_: Immutable,
                 typ: childrenTyp,
               },
@@ -340,11 +340,11 @@ let translatePrimitive =
           switch (propOrChildren) {
           | GroupOfLabeledArgs(fields) => (
               fields
-              |> List.map(({optionalness, typ} as field) =>
-                   switch (typ, optionalness) {
+              |> List.map(({optional, typ} as field) =>
+                   switch (typ, optional) {
                    | (Option(typ1), Optional) => {
                        ...field,
-                       optionalness: Optional,
+                       optional: Optional,
                        typ: typ1,
                      }
                    | _ => field
@@ -438,12 +438,12 @@ let translateTypeDeclaration =
     let fields =
       fieldTranslations
       |> List.map(((name, mutable_, {Dependencies.typ, _})) => {
-           let (optionalness, typ1) =
+           let (optional, typ1) =
              switch (typ) {
              | Option(typ1) => (Optional, typ1)
              | _ => (Mandatory, typ)
              };
-           {name, optionalness, mutable_, typ: typ1};
+           {name, optional, mutable_, typ: typ1};
          });
     let typ = Record(fields);
     let typeVars = TypeVars.extract(typeParams);
