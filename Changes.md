@@ -1,4 +1,4 @@
-# master
+# 0.22.0
 - Support the case where the `make` function of an exported Reason component could be curried.
 - Support `ImmutableArray.t` type for convesion to `ReadonlyArray` in TS/Flow.
 - Add library for immutable arrays.
