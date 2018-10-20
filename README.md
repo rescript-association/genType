@@ -155,6 +155,31 @@ See for example [Types.re](examples/typescript-react-example/src/nested/Types.re
 ### polymorphic types
 If a Reason type contains a type variable, the corresponding value is not converted. In other words, the conversion is the identity function. For example, a Reason function of type `{payload: 'a} => 'a` must treat the value of the payload as a black box, as a consequence of parametric polymorphism. If a typed back-end is used, the reason type is mapped to the corresponding generic type.
 
+#### exposing values from polymorphic types with hidden type variables
+
+For cases when a value that contains a hidden type variable needs to be converted, a function can be used to produce the appropriate output:
+
+**Doesn't work**
+
+```reason
+[@genType]
+let none = None;
+```
+
+```js
+export const none: ?T1 = OptionBS.none; // Errors out as T1 is not defined
+```
+
+**Works**
+
+```reason
+[@genType]
+let none = () => None;
+```
+
+```js
+const none = <T1>(a: T1): ?T1 => OptionBS.none;
+```
 
 # Limitations
 
