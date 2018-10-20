@@ -31,21 +31,21 @@ export type typeWithVars<x,y,z> =
 
 // tslint:disable-next-line:interface-over-type-literal
 export type tree = {
-  label: string, 
-  left?: tree, 
-  right?: tree
+  readonly label: string, 
+  readonly left?: tree, 
+  readonly right?: tree
 };
 
 export const swap: (_1:tree) => tree = TypesBS.swap;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type selfRecursive = {self: selfRecursive};
+export type selfRecursive = {readonly self: selfRecursive};
 
 // tslint:disable-next-line:interface-over-type-literal
-export type mutuallyRecursiveA = {b: mutuallyRecursiveB};
+export type mutuallyRecursiveA = {readonly b: mutuallyRecursiveB};
 
 // tslint:disable-next-line:interface-over-type-literal
-export type mutuallyRecursiveB = {a: mutuallyRecursiveA};
+export type mutuallyRecursiveB = {readonly a: mutuallyRecursiveA};
 
 export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = function _(Arg1) { const result = 
 /* WARNING: circular type selfRecursive. Only shallow converter applied. */

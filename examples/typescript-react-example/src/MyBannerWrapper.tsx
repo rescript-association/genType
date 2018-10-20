@@ -8,7 +8,7 @@ import * as React from 'react';
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = {show: boolean, message?: message};
+export type Props = {readonly show: boolean, readonly message?: message};
 
 // In case of type error, check the type of 'make' in 'MyBannerWrapper.re' and the props of './MyBanner'.
 export function MyBannerTypeChecked(props: Props) {
@@ -19,4 +19,4 @@ export function MyBannerTypeChecked(props: Props) {
 export const make: unknown = function _(show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, message: (message == null ? message : {text:message[0]})}, children); };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type message = {text: string};
+export type message = {readonly text: string};

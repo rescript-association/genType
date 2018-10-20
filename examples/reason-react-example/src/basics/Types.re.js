@@ -50,7 +50,7 @@ export type maybeString = ?string;
 
 export type maybeString2 = ?string;
 
-export type peopleArray = Array<{|name: string, nickname: ?string|}>;
+export type peopleArray = Array<{|+name: string, +nickname: ?string|}>;
 
 export opaque type myObj = Obj_t;
 
@@ -64,7 +64,7 @@ export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = f
 
 export type someMutableFields = {|
   mutable0: string, 
-  immutable: number, 
+  +immutable: number, 
   mutable1: string, 
   mutable2: string
 |};

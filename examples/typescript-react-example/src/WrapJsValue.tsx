@@ -22,7 +22,7 @@ const WrapJsValueBS = require('./WrapJsValue.bs');
 import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
 
 // tslint:disable-next-line:interface-over-type-literal
-export type point = {x: number, y?: number};
+export type point = {readonly x: number, readonly y?: number};
 
 export const roundedNumber: number = WrapJsValueBS.roundedNumber;
 

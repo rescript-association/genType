@@ -17,7 +17,7 @@ import type {list} from '../../src/shims/ReasonPervasives.shim';
 
 import type {variant as Component2_variant} from './Component2.re';
 
-export type Props = {|message?: string, children?: mixed|};
+export type Props = {|+message?: string, +children?: mixed|};
 
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   Component1BS.component,

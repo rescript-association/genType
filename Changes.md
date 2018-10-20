@@ -5,6 +5,7 @@
 - Fix missing handling of `@genType.opaque`.
 - Allow importing types from within nested modules.
 - Allow a combination of `@genType.import` and `@genType.as` to specify an imported type.
+- Object and record fields are now mapped to readonly propeties, unless they're mutable.
 
 # 0.21.0
 - Support nested components. So it's possible to define several components in one file.

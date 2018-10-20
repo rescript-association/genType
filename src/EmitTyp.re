@@ -109,9 +109,12 @@ let rec renderTyp = (~language, ~indent=None, ~inFunType, typ) =>
   | TypeVar(s) => s
   }
 and renderField =
-    (~language, ~indent, ~inFunType, {name: lbl, optional, typ}) => {
+    (~language, ~indent, ~inFunType, {name: lbl, optional, mutable_, typ}) => {
   let optMarker = optional === Optional ? "?" : "";
+  let mutMarker =
+    mutable_ == Immutable ? language == Flow ? "+" : "readonly " : "";
   Indent.break(~indent)
+  ++ mutMarker
   ++ lbl
   ++ optMarker
   ++ ": "
