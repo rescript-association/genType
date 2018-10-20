@@ -59,3 +59,5 @@ export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesB
 export opaque type t = weekday;
 
 export const isWeekend: (t) => boolean = TypesBS.isWeekend;
+
+export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };

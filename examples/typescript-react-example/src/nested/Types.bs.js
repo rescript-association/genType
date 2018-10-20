@@ -2,6 +2,7 @@
 'use strict';
 
 var List = require("bs-platform/lib/js/list.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
 
 function swap(tree) {
@@ -18,6 +19,10 @@ function selfRecursiveConverter(param) {
 
 function mutuallyRecursiveConverter(param) {
   return param[/* b */0];
+}
+
+function testFunctionOnOptionsAsArgument(a, foo) {
+  return Curry._1(foo, a);
 }
 
 var someIntList = /* :: */[
@@ -38,4 +43,5 @@ exports.map = map;
 exports.swap = swap;
 exports.selfRecursiveConverter = selfRecursiveConverter;
 exports.mutuallyRecursiveConverter = mutuallyRecursiveConverter;
+exports.testFunctionOnOptionsAsArgument = testFunctionOnOptionsAsArgument;
 /* No side effect */

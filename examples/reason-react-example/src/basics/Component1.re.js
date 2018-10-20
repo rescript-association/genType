@@ -35,4 +35,4 @@ export const consumeVariant: (Component2_variant) => number = Component1BS.consu
 
 export const l: list<number> = Component1BS.l;
 
-export const map: <T1,T2>((T1) => T2, list<T1>) => list<T2> = Component1BS.map;
+export const map: <T1,T2>(((T1) => T2), list<T1>) => list<T2> = Component1BS.map;

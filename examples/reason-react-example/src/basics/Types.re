@@ -65,3 +65,6 @@ type t = weekday;
 
 [@genType]
 let isWeekend = day => day === saturday || day === sunday;
+
+[@genType]
+let testFunctionOnOptionsAsArgument = (a: option('a), foo) => foo(a);

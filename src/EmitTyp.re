@@ -45,7 +45,7 @@ module Indent = {
     fields |> List.length > 2 && indent == None ? Some("") : indent;
 };
 
-let rec renderTyp = (~language, ~indent=None, typ) =>
+let rec renderTyp = (~language, ~indent=None, ~inFunType, typ) =>
   switch (typ) {
   | Array(typ, arrayKind) =>
     let typIsSimple =
@@ -56,12 +56,15 @@ let rec renderTyp = (~language, ~indent=None, typ) =>
       };
 
     if (language == Typescript && typIsSimple && arrayKind == Mutable) {
-      (typ |> renderTyp(~language, ~indent)) ++ "[]";
+      (typ |> renderTyp(~language, ~indent, ~inFunType)) ++ "[]";
     } else {
       let arrayName =
         arrayKind == Mutable ?
           "Array" : language == Flow ? "$ReadOnlyArray" : "ReadonlyArray";
-      arrayName ++ "<" ++ (typ |> renderTyp(~language, ~indent)) ++ ">";
+      arrayName
+      ++ "<"
+      ++ (typ |> renderTyp(~language, ~indent, ~inFunType))
+      ++ ">";
     };
 
   | Enum({cases, _}) =>
@@ -70,50 +73,63 @@ let rec renderTyp = (~language, ~indent=None, typ) =>
     |> String.concat(" | ")
 
   | Function({typeVars, argTypes, retType}) =>
-    renderFunType(~language, ~indent, ~typeVars, argTypes, retType)
+    renderFunType(
+      ~language,
+      ~indent,
+      ~inFunType,
+      ~typeVars,
+      argTypes,
+      retType,
+    )
 
   | GroupOfLabeledArgs(fields)
   | Object(fields)
   | Record(fields) =>
     let indent1 = fields |> Indent.heuristic(~indent);
-    fields |> renderFields(~language, ~indent=indent1);
+    fields |> renderFields(~language, ~indent=indent1, ~inFunType);
 
   | Ident(identPath, typeArguments) =>
     identPath
     ++ genericsString(
-         ~typeVars=typeArguments |> List.map(renderTyp(~language, ~indent)),
+         ~typeVars=
+           typeArguments
+           |> List.map(renderTyp(~language, ~indent, ~inFunType)),
        )
   | Nullable(typ)
   | Option(typ) =>
     switch (language) {
     | Flow
-    | Untyped => "?" ++ (typ |> renderTyp(~language, ~indent))
+    | Untyped => "?" ++ (typ |> renderTyp(~language, ~indent, ~inFunType))
     | Typescript =>
-      "(null | undefined | " ++ (typ |> renderTyp(~language, ~indent)) ++ ")"
+      "(null | undefined | "
+      ++ (typ |> renderTyp(~language, ~indent, ~inFunType))
+      ++ ")"
     }
 
   | TypeVar(s) => s
   }
-and renderField = (~language, ~indent, (lbl, optness, typ)) => {
+and renderField = (~language, ~indent, ~inFunType, (lbl, optness, typ)) => {
   let optMarker = optness === NonMandatory ? "?" : "";
   Indent.break(~indent)
   ++ lbl
   ++ optMarker
   ++ ": "
-  ++ (typ |> renderTyp(~language, ~indent));
+  ++ (typ |> renderTyp(~language, ~indent, ~inFunType));
 }
-and renderFields = (~language, ~indent, fields) => {
+and renderFields = (~language, ~indent, ~inFunType, fields) => {
   let indent1 = Indent.more(~indent);
   (language == Flow ? "{|" : "{")
   ++ String.concat(
        ", ",
-       List.map(renderField(~language, ~indent=indent1), fields),
+       List.map(renderField(~language, ~indent=indent1, ~inFunType), fields),
      )
   ++ Indent.break(~indent)
   ++ (language == Flow ? "|}" : "}");
 }
-and renderFunType = (~language, ~indent, ~typeVars, argTypes, retType) =>
-  genericsString(~typeVars)
+and renderFunType =
+    (~language, ~indent, ~inFunType, ~typeVars, argTypes, retType) =>
+  (inFunType ? "(" : "")
+  ++ genericsString(~typeVars)
   ++ "("
   ++ String.concat(
        ", ",
@@ -121,15 +137,18 @@ and renderFunType = (~language, ~indent, ~typeVars, argTypes, retType) =>
          (i, t) => {
            let parameterName =
              language == Flow ? "" : "_" ++ string_of_int(i + 1) ++ ":";
-           parameterName ++ (t |> renderTyp(~language, ~indent));
+           parameterName
+           ++ (t |> renderTyp(~language, ~indent, ~inFunType=true));
          },
          argTypes,
        ),
      )
   ++ ") => "
-  ++ (retType |> renderTyp(~language, ~indent));
+  ++ (retType |> renderTyp(~language, ~indent, ~inFunType))
+  ++ (inFunType ? ")" : "");
 
-let typToString = (~language, typ) => typ |> renderTyp(~language);
+let typToString = (~language, typ) =>
+  typ |> renderTyp(~language, ~inFunType=false);
 
 let ofType = (~language, ~typ, s) =>
   language == Untyped ? s : s ++ ": " ++ (typ |> typToString(~language));
@@ -202,7 +221,7 @@ let emitExportType =
     ++ resolvedTypeName
     ++ typeParamsString
     ++ " = "
-    ++ (typ |> renderTyp(~language))
+    ++ (typ |> typToString(~language))
     ++ ";"
     |> export(~emitters)
 
@@ -227,7 +246,7 @@ let emitExportType =
       ++ resolvedTypeName
       ++ typeParamsString
       ++ " = "
-      ++ (typ |> renderTyp(~language))
+      ++ (typ |> typToString(~language))
       ++ ";"
       |> export(~emitters);
     }

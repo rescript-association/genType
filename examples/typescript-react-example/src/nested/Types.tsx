@@ -13,7 +13,7 @@ export type t = number;
 
 export const someIntList: list<number> = TypesBS.someIntList;
 
-export const map: <T1,T2>(_1:(_1:T1) => T2, _2:list<T1>) => list<T2> = TypesBS.map;
+export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = TypesBS.map;
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TypeWithVarsA<x,y> { protected opaque!: x | y }; /* simulate opaque types */
@@ -54,3 +54,5 @@ export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = funct
 export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = function _(Arg1) { const result = 
 /* WARNING: circular type mutuallyRecursiveB. Only shallow converter applied. */
   TypesBS.mutuallyRecursiveConverter([[Arg1.b.a]]); return {a:{b:result[0][0]}} };
+
+export const testFunctionOnOptionsAsArgument: <T1,a>(_1:(null | undefined | a), _2:((_1:(null | undefined | a)) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };

@@ -51,3 +51,6 @@ let selfRecursiveConverter = ({self}) => self;
  */
 [@genType]
 let mutuallyRecursiveConverter = ({b}) => b;
+
+[@genType]
+let testFunctionOnOptionsAsArgument = (a: option('a), foo) => foo(a);
