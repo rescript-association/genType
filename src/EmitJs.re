@@ -252,7 +252,7 @@ let rec emitCodeItem =
       (
         "function _"
         ++ EmitText.parens(
-             (propsFields |> List.map(((propName, _, _)) => propName))
+             (propsFields |> List.map(({name}: field) => name))
              @ ["children"]
              |> List.map(EmitTyp.ofTypeAny(~language)),
            )
@@ -262,7 +262,7 @@ let rec emitCodeItem =
              "{"
              ++ (
                propsFields
-               |> List.map(((propName, optionalness, propTyp)) =>
+               |> List.map(({name: propName, optionalness, typ: propTyp}) =>
                     propName
                     ++ ": "
                     ++ (

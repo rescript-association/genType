@@ -15,13 +15,19 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
   /* Add it to the current group, not result. */
   | (_, [(OptLabel(name), typ), ...tl]) =>
     groupReversed(
-      ~revCurGroup=[(name, NonMandatory, typ), ...revCurGroup],
+      ~revCurGroup=[
+        {name, optionalness: Optional, mutable_: Immutable, typ},
+        ...revCurGroup,
+      ],
       ~revResult,
       tl,
     )
   | (_, [(Label(name), typ), ...tl]) =>
     groupReversed(
-      ~revCurGroup=[(name, Mandatory, typ), ...revCurGroup],
+      ~revCurGroup=[
+        {name, optionalness: Mandatory, mutable_: Immutable, typ},
+        ...revCurGroup,
+      ],
       ~revResult,
       tl,
     )

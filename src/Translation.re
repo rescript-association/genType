@@ -172,14 +172,27 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
       /* Then we only extracted a function that accepts children, no props */
       | [] =>
         GroupOfLabeledArgs([
-          ("children", NonMandatory, mixedOrUnknown(~language)),
+          {
+            name: "children",
+            optionalness: Optional,
+            mutable_: Immutable,
+            typ: mixedOrUnknown(~language),
+          },
         ])
       /* Then we had both props and children. */
-      | [children, ..._] =>
+      | [childrenTyp, ..._] =>
         switch (propOrChildren) {
         | GroupOfLabeledArgs(fields) =>
           GroupOfLabeledArgs(
-            fields @ [("children", NonMandatory, children)],
+            fields
+            @ [
+              {
+                name: "children",
+                optionalness: Optional,
+                mutable_: Immutable,
+                typ: childrenTyp,
+              },
+            ],
           )
         | _ => propOrChildren
         }
@@ -327,9 +340,13 @@ let translatePrimitive =
           switch (propOrChildren) {
           | GroupOfLabeledArgs(fields) => (
               fields
-              |> List.map(((s, optionalness, typ) as field) =>
+              |> List.map(({optionalness, typ} as field) =>
                    switch (typ, optionalness) {
-                   | (Option(typ1), NonMandatory) => (s, NonMandatory, typ1)
+                   | (Option(typ1), Optional) => {
+                       ...field,
+                       optionalness: Optional,
+                       typ: typ1,
+                     }
                    | _ => field
                    }
                  ),
@@ -398,7 +415,7 @@ let translateTypeDeclaration =
   | (typeParams, Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
     let fieldTranslations =
       labelDeclarations
-      |> List.map(({Types.ld_id, ld_type, ld_attributes, _}) => {
+      |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
            let name =
              switch (
                ld_attributes
@@ -407,24 +424,26 @@ let translateTypeDeclaration =
              | Some(StringPayload(s)) => s
              | _ => ld_id |> Ident.name
              };
+           let mutability = ld_mutable == Mutable ? Mutable : Immutable;
            (
              name,
+             mutability,
              ld_type |> Dependencies.translateTypeExpr(~language, ~typeEnv),
            );
          });
     let dependencies =
       fieldTranslations
-      |> List.map(((_, {Dependencies.dependencies, _})) => dependencies)
+      |> List.map(((_, _, {Dependencies.dependencies, _})) => dependencies)
       |> List.concat;
     let fields =
       fieldTranslations
-      |> List.map(((name, {Dependencies.typ, _})) => {
-           let (optionalNess, typ1) =
+      |> List.map(((name, mutable_, {Dependencies.typ, _})) => {
+           let (optionalness, typ1) =
              switch (typ) {
-             | Option(typ1) => (NonMandatory, typ1)
+             | Option(typ1) => (Optional, typ1)
              | _ => (Mandatory, typ)
              };
-           (name, optionalNess, typ1);
+           {name, optionalness, mutable_, typ: typ1};
          });
     let typ = Record(fields);
     let typeVars = TypeVars.extract(typeParams);

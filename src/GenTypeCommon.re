@@ -68,8 +68,12 @@ let logItem = x => {
 };
 
 type optionalness =
-  | NonMandatory
-  | Mandatory;
+  | Mandatory
+  | Optional;
+
+type mutable_ =
+  | Immutable
+  | Mutable;
 
 type case = {
   label: string,
@@ -82,12 +86,8 @@ type enum = {
   toRE: string,
 };
 
-type arrayKind =
-  | Mutable
-  | Immutable;
-
 type typ =
-  | Array(typ, arrayKind)
+  | Array(typ, mutable_)
   | Enum(enum)
   | Function(function_)
   | GroupOfLabeledArgs(fields)
@@ -97,7 +97,13 @@ type typ =
   | Option(typ)
   | Record(fields)
   | TypeVar(string)
-and fields = list((string, optionalness, typ))
+and fields = list(field)
+and field = {
+  name: string,
+  optionalness,
+  mutable_,
+  typ,
+}
 and function_ = {
   typeVars: list(string),
   argTypes: list(typ),

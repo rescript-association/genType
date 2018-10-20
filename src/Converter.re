@@ -136,10 +136,11 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
     | Object(fields) =>
       ObjectC(
         fields
-        |> List.map(((lbl, optionalness, t)) =>
+        |> List.map(({name, optionalness, typ}) =>
              (
-               lbl,
-               (optionalness == Mandatory ? t : Option(t)) |> visit(~visited),
+               name,
+               (optionalness == Mandatory ? typ : Option(typ))
+               |> visit(~visited),
              )
            ),
       )
@@ -149,10 +150,11 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
     | Record(fields) =>
       RecordC(
         fields
-        |> List.map(((lbl, optionalness, t)) =>
+        |> List.map(({name, optionalness, typ}) =>
              (
-               lbl,
-               (optionalness == Mandatory ? t : Option(t)) |> visit(~visited),
+               name,
+               (optionalness == Mandatory ? typ : Option(typ))
+               |> visit(~visited),
              )
            ),
       )
@@ -163,8 +165,7 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
     switch (typ) {
     | GroupOfLabeledArgs(fields) =>
       GroupConverter(
-        fields
-        |> List.map(((s, _optionalness, t)) => (s, t |> visit(~visited))),
+        fields |> List.map(({name, typ}) => (name, typ |> visit(~visited))),
       )
     | _ => ArgConverter(Nolabel, typ |> visit(~visited))
     };
