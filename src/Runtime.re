@@ -49,3 +49,9 @@ let emitModuleItem = itemValue => itemValue |> string_of_int;
 let emitVariantLabel = (~comment=true, label) =>
   (comment ? label |> EmitText.comment : "")
   ++ (label |> Btype.hash_variant |> string_of_int);
+
+/* Mutable fields, i.e. fields annotated "[@bs.set]"
+   are represented as extra fields called "fieldName#="
+   preceding the normal field. */
+let checkMutableObjectField = (~previousName, ~name) =>
+  previousName == name ++ "#=";

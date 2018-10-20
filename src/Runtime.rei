@@ -8,6 +8,8 @@ type moduleItemGen;
 
 type moduleItem;
 
+let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
+
 let emitModuleItem: moduleItem => string;
 
 let emitRecordAsBlock:

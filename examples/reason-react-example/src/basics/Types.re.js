@@ -12,6 +12,8 @@ const TypesBS = require('./Types.bs');
 
 import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
 
+import type {Internal_meth as Js_Internal_meth} from '../../src/shims/Js.shim';
+
 import type {t as Obj_t} from '../../src/shims/Obj.shim';
 
 import type {anInterestingFlowType} from './SomeFlowTypes';
@@ -61,3 +63,10 @@ export opaque type t = weekday;
 export const isWeekend: (t) => boolean = TypesBS.isWeekend;
 
 export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };
+
+export type someMutableFields = {|
+  mutable0: string, 
+  immutable: number, 
+  mutable1: string, 
+  mutable2: string
+|};

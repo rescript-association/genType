@@ -68,3 +68,12 @@ let isWeekend = day => day === saturday || day === sunday;
 
 [@genType]
 let testFunctionOnOptionsAsArgument = (a: option('a), foo) => foo(a);
+
+[@genType]
+type someMutableFields = {
+  .
+  [@bs.set] "mutable0": string,
+  "immutable": int,
+  [@bs.set] "mutable1": string,
+  [@bs.set] "mutable2": string,
+};

@@ -355,9 +355,20 @@ and translateTypeExpr_ =
       fieldTranslations
       |> List.map(((_, {dependencies, _})) => dependencies)
       |> List.concat;
+    let rec checkMutableField = (~acc=[], fields) =>
+      switch (fields) {
+      | [(previousName, {typ: _, _}), (name, {typ, _}), ...rest]
+          when Runtime.checkMutableObjectField(~previousName, ~name) =>
+        /* The field was annotated "@bs.set" */
+        rest |> checkMutableField(~acc=[(name, typ), ...acc])
+      | [(name, {typ, _}), ...rest] =>
+        rest |> checkMutableField(~acc=[(name, typ), ...acc])
+      | [] => acc |> List.rev
+      };
     let fields =
       fieldTranslations
-      |> List.map(((name, {typ, _})) => {
+      |> checkMutableField
+      |> List.map(((name, typ)) => {
            let (optionalNess, typ') =
              switch (typ) {
              | Option(typ') => (NonMandatory, typ')
