@@ -344,8 +344,13 @@ and translateTypeExpr_ =
     ) =>
     let rec getFieldTypes = (texp: Types.type_expr) =>
       switch (texp.desc) {
-      | Tfield(s, _, t1, t2) => [
-          (s, t1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv)),
+      | Tfield(name, _, t1, t2) => [
+          (
+            name,
+            name |> Runtime.isMutableObjectField ?
+              {dependencies: [], typ: Ident("", [])} :
+              t1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv),
+          ),
           ...t2 |> getFieldTypes,
         ]
       | _ => []

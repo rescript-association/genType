@@ -12,8 +12,6 @@ const TypesBS = require('./Types.bs');
 
 import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
 
-import type {Internal_meth as Js_Internal_meth} from '../../src/shims/Js.shim';
-
 import type {t as Obj_t} from '../../src/shims/Obj.shim';
 
 import type {anInterestingFlowType} from './SomeFlowTypes';

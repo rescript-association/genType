@@ -19,6 +19,8 @@ let emitRecordAsInt: (~language: language, recordValue) => string;
 
 let emitVariantLabel: (~comment: bool=?, string) => string;
 
+let isMutableObjectField: string => bool;
+
 let moduleItemGen: unit => moduleItemGen;
 
 let newModuleItem: moduleItemGen => moduleItem;
