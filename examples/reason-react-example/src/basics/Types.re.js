@@ -54,11 +54,13 @@ export type peopleArray = Array<{|+name: string, +nickname: ?string|}>;
 
 export opaque type myObj = Obj_t;
 
+export type { anInterestingFlowType };
+
 export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesBS.identity;
 
-export opaque type t = weekday;
+export type { weekday };
 
-export const isWeekend: (t) => boolean = TypesBS.isWeekend;
+export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
 
 export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };
 

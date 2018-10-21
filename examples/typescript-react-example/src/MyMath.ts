@@ -1,3 +1,4 @@
+
 /* @flow strict */
 
 export const round: ((_: number) => number) = Math.round;
@@ -16,3 +17,5 @@ export class AbsoluteValue {
     return this.prop < 0 ? -this.prop : this.prop;
   }
 }
+
+export type stringFunction = (_: string) => string;

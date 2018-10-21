@@ -21,6 +21,8 @@ const WrapJsValueBS = require('./WrapJsValue.bs');
 
 import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
 
+import {stringFunction} from './MyMath';
+
 // tslint:disable-next-line:interface-over-type-literal
 export type point = {readonly x: number, readonly y?: number};
 
@@ -28,9 +30,12 @@ export const roundedNumber: number = WrapJsValueBS.roundedNumber;
 
 export const areaValue: number = WrapJsValueBS.areaValue;
 
-// tslint:disable-next-line:max-classes-per-file 
-export abstract class AbsoluteValue_imported { protected opaque!: any }; /* simulate opaque types */
+// tslint:disable-next-line:interface-over-type-literal
+export type AbsoluteValue_t = AbsoluteValue_t;
 
 export const useGetProp: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetProp;
 
 export const useGetAbs: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetAbs;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type stringFunction = stringFunction;

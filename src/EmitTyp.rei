@@ -3,7 +3,8 @@ open GenTypeCommon;
 let blockTagValue: (~language: language, int) => string;
 
 let componentExportName:
-  (~language: language, ~fileName: ModuleName.t, ~moduleName: ModuleName.t) => string;
+  (~language: language, ~fileName: ModuleName.t, ~moduleName: ModuleName.t) =>
+  string;
 
 let emitExportConst:
   (
@@ -57,9 +58,9 @@ let emitExportType:
     ~emitters: Emitters.t,
     ~language: language,
     ~opaque: bool,
-    ~resolvedTypeName: string,
+    ~optTyp: option(typ),
     ~typeVars: list(string),
-    typ
+    string
   ) =>
   Emitters.t;
 

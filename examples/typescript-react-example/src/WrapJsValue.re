@@ -28,9 +28,6 @@ module AbsoluteValue = {
   [@genType.as "AbsoluteValue"]
   type t = {. "getAbs": (. unit) => int};
 
-  [@genType]
-  type imported = t;
-
   /* This is untyped */
   [@bs.send] external getProp: t => int = "getProp";
 
@@ -46,3 +43,6 @@ let useGetProp = (x: AbsoluteValue.t) => x->AbsoluteValue.getProp + 1;
 
 [@genType]
 let useGetAbs = (x: AbsoluteValue.t) => x->AbsoluteValue.getAbs + 1;
+
+[@genType.import "./MyMath"]
+type stringFunction;

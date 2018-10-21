@@ -4,7 +4,7 @@ type exportType = {
   opaque: bool,
   typeVars: list(string),
   resolvedTypeName: string,
-  typ,
+  optTyp: option(typ),
 };
 
 type exportVariantType = {

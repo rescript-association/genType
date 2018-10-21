@@ -56,12 +56,9 @@ let identity = (x: anInterestingFlowType) => x;
 [@genType.import "./SomeFlowTypes"]
 type weekday;
 
-[@genType]
-type t = weekday;
-
-[@bs.module "./SomeFlowTypes"] external saturday: t = "SATURDAY";
-[@bs.module "./SomeFlowTypes"] external sunday: t = "SUNDAY";
-[@bs.module "./SomeFlowTypes"] external monday: t = "MONDAY";
+[@bs.module "./SomeFlowTypes"] external saturday: weekday = "SATURDAY";
+[@bs.module "./SomeFlowTypes"] external sunday: weekday = "SUNDAY";
+[@bs.module "./SomeFlowTypes"] external monday: weekday = "MONDAY";
 
 [@genType]
 let isWeekend = day => day === saturday || day === sunday;

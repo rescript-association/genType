@@ -146,3 +146,6 @@ type testMutable = {
   mutable mutableField: int,
   immutableField: int,
 };
+
+[@genType]
+let useTypeImportedInOtherModule = (x: Types.weekday) => x;

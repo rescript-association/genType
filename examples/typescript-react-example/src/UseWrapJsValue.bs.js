@@ -6,5 +6,10 @@ function useGetProp(x) {
   return x.getProp() + 1 | 0;
 }
 
+function useTypeImportedInOtherModule(x) {
+  return x;
+}
+
 exports.useGetProp = useGetProp;
+exports.useTypeImportedInOtherModule = useTypeImportedInOtherModule;
 /* No side effect */

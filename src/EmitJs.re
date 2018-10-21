@@ -29,17 +29,24 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
 let createExportTypeMap = (~language, codeItems): typeMap => {
   let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
     let addExportType =
-        ({resolvedTypeName, typeVars, typ, _}: CodeItem.exportType) => {
+        ({resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType) => {
       if (Debug.codeItems) {
         logItem(
-          "Export Type: %s%s = %s\n",
+          "Export Type: %s%s%s\n",
           resolvedTypeName,
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
-          typ |> EmitTyp.typToString(~language),
+          switch (optTyp) {
+          | Some(typ) => " = %s" ++ (typ |> EmitTyp.typToString(~language))
+          | None => ""
+          },
         );
       };
-      exportTypeMap |> StringMap.add(resolvedTypeName, (typeVars, typ));
+      switch (optTyp) {
+      | Some(typ) =>
+        exportTypeMap |> StringMap.add(resolvedTypeName, (typeVars, typ))
+      | None => exportTypeMap
+      };
     };
     switch (codeItem) {
     | CodeItem.ExportType(exportType) => exportType |> addExportType
@@ -113,15 +120,15 @@ let emitExportType =
       ~early=false,
       ~emitters,
       ~language,
-      {CodeItem.opaque, typeVars, resolvedTypeName, typ},
+      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
     ) =>
-  typ
+  resolvedTypeName
   |> EmitTyp.emitExportType(
        ~early,
        ~emitters,
        ~language,
        ~opaque,
-       ~resolvedTypeName,
+       ~optTyp,
        ~typeVars,
      );
 

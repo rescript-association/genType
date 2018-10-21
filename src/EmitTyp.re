@@ -213,22 +213,39 @@ let emitExportDefault = (~emitters, ~config, name) =>
   };
 
 let emitExportType =
-    (~early, ~emitters, ~language, ~opaque, ~resolvedTypeName, ~typeVars, typ) => {
+    (
+      ~early,
+      ~emitters,
+      ~language,
+      ~opaque,
+      ~optTyp,
+      ~typeVars,
+      resolvedTypeName,
+    ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
   let typeParamsString = genericsString(~typeVars);
 
   switch (language) {
   | Flow =>
-    "export"
-    ++ (opaque ? " opaque " : " ")
-    ++ "type "
-    ++ resolvedTypeName
-    ++ typeParamsString
-    ++ " = "
-    ++ (typ |> typToString(~language))
-    ++ ";"
-    |> export(~emitters)
-
+    switch (optTyp) {
+    | Some(typ) =>
+      "export"
+      ++ (opaque ? " opaque " : " ")
+      ++ "type "
+      ++ resolvedTypeName
+      ++ typeParamsString
+      ++ " = "
+      ++ (typ |> typToString(~language))
+      ++ ";"
+      |> export(~emitters)
+    | None =>
+      "export"
+      ++ (opaque ? " opaque " : " ")
+      ++ "type "
+      ++ (resolvedTypeName |> EmitText.brackets)
+      ++ ";"
+      |> export(~emitters)
+    }
   | Typescript =>
     if (opaque) {
       /* Represent an opaque type as an absract class with a field called 'opaque'.
@@ -250,7 +267,12 @@ let emitExportType =
       ++ resolvedTypeName
       ++ typeParamsString
       ++ " = "
-      ++ (typ |> typToString(~language))
+      ++ (
+        switch (optTyp) {
+        | Some(typ) => typ |> typToString(~language)
+        | None => resolvedTypeName
+        }
+      )
       ++ ";"
       |> export(~emitters);
     }

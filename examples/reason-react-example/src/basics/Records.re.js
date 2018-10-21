@@ -7,6 +7,8 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const RecordsBS = require('./Records.bs');
 
+import type {weekday as Types_weekday} from './Types.re';
+
 export type coord = {|
   +x: number, 
   +y: number, 
@@ -94,3 +96,5 @@ export type bigType = {|
 export const computeNestedNestedHalfNullable: (bigType) => number = RecordsBS.computeNestedNestedHalfNullable;
 
 export type testMutable = {|mutableField: number, +immutableField: number|};
+
+export const useTypeImportedInOtherModule: (Types_weekday) => Types_weekday = RecordsBS.useTypeImportedInOtherModule;

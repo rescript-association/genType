@@ -53,6 +53,10 @@ function computeNestedNestedHalfNullable() {
   return 0;
 }
 
+function useTypeImportedInOtherModule(x) {
+  return x;
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -69,4 +73,5 @@ exports.computeNested = computeNested;
 exports.computeNestedNested = computeNestedNested;
 exports.computeNestedNestedNullable = computeNestedNestedNullable;
 exports.computeNestedNestedHalfNullable = computeNestedNestedHalfNullable;
+exports.useTypeImportedInOtherModule = useTypeImportedInOtherModule;
 /* No side effect */

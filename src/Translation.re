@@ -17,9 +17,9 @@ let combine = (translations: list(t)): t =>
   );
 
 let translateExportType =
-    (~opaque, ~typeVars, ~typeName, ~typeEnv, typ): CodeItem.t => {
+    (~opaque, ~typeVars, ~optTyp, ~typeEnv, typeName): CodeItem.t => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
-  ExportType({opaque, typeVars, resolvedTypeName, typ});
+  ExportType({opaque, typeVars, resolvedTypeName, optTyp});
 };
 
 let variantLeafTypeName = (typeName, leafName) =>
@@ -61,7 +61,7 @@ let translateConstructorDeclaration =
         opaque: true,
         typeVars,
         resolvedTypeName: variantTypeNameResolved,
-        typ: mixedOrUnknown(~language),
+        optTyp: Some(mixedOrUnknown(~language)),
       },
       constructorTyp,
       argTypes,
@@ -102,12 +102,7 @@ let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.ExportValue({
-      fileName,
-      resolvedName,
-      valueAccessPath,
-      typ,
-    }),
+    CodeItem.ExportValue({fileName, resolvedName, valueAccessPath, typ}),
   ];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
@@ -212,7 +207,7 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
           opaque: false,
           typeVars,
           resolvedTypeName: propsTypeName,
-          typ: propsType,
+          optTyp: Some(propsType),
         },
         fileName,
         moduleName,
@@ -371,7 +366,7 @@ let translatePrimitive =
           opaque: false,
           typeVars,
           resolvedTypeName: propsTypeName,
-          typ: propsTyp,
+          optTyp: Some(propsTyp),
         },
         importAnnotation:
           importString |> Annotation.importAnnotationFromString,
@@ -450,19 +445,14 @@ let translateTypeDeclaration =
              };
            {name, optional, mutable_, typ: typ1};
          });
-    let typ = Record(fields);
+    let optTyp = Some(Record(fields));
     let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
     {
       dependencies,
       codeItems: [
-        translateExportType(
-          ~opaque=false,
-          ~typeVars,
-          ~typeName,
-          ~typeEnv,
-          typ,
-        ),
+        typeName
+        |> translateExportType(~opaque=false, ~typeVars, ~optTyp, ~typeEnv),
       ],
     };
 
@@ -479,13 +469,13 @@ let translateTypeDeclaration =
     | None => {
         dependencies: [],
         codeItems: [
-          translateExportType(
-            ~opaque=true,
-            ~typeVars,
-            ~typeName,
-            ~typeEnv,
-            mixedOrUnknown(~language),
-          ),
+          typeName
+          |> translateExportType(
+               ~opaque=true,
+               ~typeVars,
+               ~optTyp=Some(mixedOrUnknown(~language)),
+               ~typeEnv,
+             ),
         ],
       }
     | Some(coreType) =>
@@ -535,7 +525,13 @@ let translateTypeDeclaration =
         | _ => typeExprTranslation.typ
         };
       let codeItems = [
-        translateExportType(~opaque, ~typeVars, ~typeName, ~typeEnv, typ),
+        typeName
+        |> translateExportType(
+             ~opaque,
+             ~typeVars,
+             ~optTyp=Some(typ),
+             ~typeEnv,
+           ),
       ];
       {dependencies: typeExprTranslation.dependencies, codeItems};
     };
@@ -602,6 +598,15 @@ let translateTypeDeclaration =
             cmtFile: None,
           }),
         ),
+        /* Make the imported type usable from other modules by exporting it too. */
+        dec.typ_id
+        |> Ident.name
+        |> translateExportType(
+             ~opaque=false,
+             ~typeVars=[],
+             ~optTyp=None,
+             ~typeEnv,
+           ),
       ];
       {dependencies: [], codeItems};
     | _ => {dependencies: [], codeItems: []}
