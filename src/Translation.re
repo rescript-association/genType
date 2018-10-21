@@ -85,6 +85,7 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Object(_)
   | Option(_)
   | Record(_)
+  | Tuple(_)
   | TypeVar(_) => typ
   };
 
@@ -498,6 +499,7 @@ let translateTypeDeclaration =
         | Object(_) => false
         | Option(t) => t |> isOpaque
         | Record(_) => false
+        | Tuple(innerTypes) => innerTypes |> List.exists(isOpaque)
         | TypeVar(_) => true
         };
       let opaque =

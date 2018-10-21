@@ -96,6 +96,7 @@ type typ =
   | Object(fields)
   | Option(typ)
   | Record(fields)
+  | Tuple(list(typ))
   | TypeVar(string)
 and fields = list(field)
 and field = {

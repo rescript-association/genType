@@ -105,7 +105,14 @@ let rec renderTyp = (~language, ~indent=None, ~inFunType, typ) =>
       ++ (typ |> renderTyp(~language, ~indent, ~inFunType))
       ++ ")"
     }
-
+  | Tuple(innerTypes) =>
+    "["
+    ++ (
+      innerTypes
+      |> List.map(typ => typ |> renderTyp(~language, ~indent, ~inFunType))
+      |> String.concat(", ")
+    )
+    ++ "]"
   | TypeVar(s) => s
   }
 and renderField =
