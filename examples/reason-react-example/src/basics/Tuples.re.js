@@ -25,7 +25,7 @@ export type coord2 = [number, number, ?number];
 
 export type person = {|+name: string, +age: number|};
 
-export type couple = [person, person];
+export opaque type couple = [person, person];
 
 export const getFirstName: (couple) => string = function _(Arg1) { const result = TuplesBS.getFirstName([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]); return result };
 
