@@ -361,7 +361,7 @@ let translatePrimitive =
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
 
     let codeItems = [
-      CodeItem.WrapJsComponent({
+      CodeItem.ImportComponent({
         exportType: {
           opaque: false,
           typeVars,
@@ -381,7 +381,7 @@ let translatePrimitive =
   | (_, _, Some(StringPayload(importString))) => {
       dependencies: typeExprTranslation.dependencies,
       codeItems: [
-        WrapJsValue({
+        ImportValue({
           valueName,
           importAnnotation:
             importString |> Annotation.importAnnotationFromString,

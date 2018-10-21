@@ -29,7 +29,7 @@ type importAnnotation = {
   importPath: ImportPath.t,
 };
 
-type wrapJsComponent = {
+type importComponent = {
   exportType,
   importAnnotation,
   childrenTyp: typ,
@@ -38,7 +38,7 @@ type wrapJsComponent = {
   fileName: ModuleName.t,
 };
 
-type wrapJsValue = {
+type importValue = {
   valueName: string,
   importAnnotation,
   typ,
@@ -79,9 +79,9 @@ type wrapModule = {codeItems: list(t)}
 and t =
   | ExportType(exportType)
   | ExportVariantType(exportVariantType)
+  | ImportComponent(importComponent)
   | ImportType(importType)
-  | WrapJsComponent(wrapJsComponent)
-  | WrapJsValue(wrapJsValue)
+  | ImportValue(importValue)
   | WrapReasonComponent(wrapReasonComponent)
   | WrapReasonValue(wrapReasonValue)
   | WrapVariantLeaf(wrapVariantLeaf);
@@ -93,9 +93,9 @@ type genTypeKind =
 
 let getPriority = x =>
   switch (x) {
+  | ImportComponent(_)
   | ImportType(_)
-  | WrapJsComponent(_)
-  | WrapJsValue(_) => "2low"
+  | ImportValue(_) => "2low"
   | ExportType(_)
   | ExportVariantType(_)
   | WrapReasonComponent(_)
@@ -149,12 +149,12 @@ let toString = (~language, codeItem: t) =>
   switch (codeItem) {
   | ExportType({resolvedTypeName, _}) => "ExportType " ++ resolvedTypeName
   | ExportVariantType({name, _}) => "ExportVariantType " ++ name
+  | ImportComponent({importAnnotation, _}) =>
+    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
   | ImportType(importType) =>
     "ImportType " ++ getImportTypeUniqueName(importType)
-  | WrapJsComponent({importAnnotation, _}) =>
-    "WrapJsComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | WrapJsValue({importAnnotation, _}) =>
-    "WrapJsValue " ++ (importAnnotation.importPath |> ImportPath.toString)
+  | ImportValue({importAnnotation, _}) =>
+    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
   | WrapReasonComponent({fileName, moduleName, _}) =>
     "WrapReasonComponent fileName:"
     ++ (fileName |> ModuleName.toString)

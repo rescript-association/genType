@@ -43,10 +43,10 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     };
     switch (codeItem) {
     | CodeItem.ExportType(exportType) => exportType |> addExportType
-    | ImportType(_)
     | ExportVariantType(_)
-    | WrapJsComponent(_)
-    | WrapJsValue(_)
+    | ImportType(_)
+    | ImportComponent(_)
+    | ImportValue(_)
     | WrapReasonComponent(_)
     | WrapReasonValue(_)
     | WrapVariantLeaf(_) => exportTypeMap
@@ -175,7 +175,7 @@ let rec emitCodeItem =
       importType,
     )
 
-  | WrapJsComponent({
+  | ImportComponent({
       exportType,
       importAnnotation,
       childrenTyp,
@@ -309,7 +309,7 @@ let rec emitCodeItem =
          );
     (env, emitters);
 
-  | WrapJsValue({valueName, importAnnotation, typ, fileName}) =>
+  | ImportValue({valueName, importAnnotation, typ, fileName}) =>
     let importPath = importAnnotation.importPath;
     let (emitters, importedAsName, env) =
       switch (language) {
