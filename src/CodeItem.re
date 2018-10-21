@@ -45,7 +45,7 @@ type importValue = {
   fileName: ModuleName.t,
 };
 
-type wrapReasonComponent = {
+type exportComponent = {
   exportType,
   fileName: ModuleName.t,
   moduleName: ModuleName.t,
@@ -54,7 +54,7 @@ type wrapReasonComponent = {
   typ,
 };
 
-type wrapReasonValue = {
+type exportValue = {
   fileName: ModuleName.t,
   resolvedName: string,
   valueAccessPath: string,
@@ -67,7 +67,7 @@ type constructorTyp = {
   variant,
 };
 
-type wrapVariantLeaf = {
+type exportVariantLeaf = {
   exportType,
   constructorTyp,
   argTypes: list(typ),
@@ -77,14 +77,14 @@ type wrapVariantLeaf = {
 
 type wrapModule = {codeItems: list(t)}
 and t =
+  | ExportComponent(exportComponent)
   | ExportType(exportType)
+  | ExportValue(exportValue)
+  | ExportVariantLeaf(exportVariantLeaf)
   | ExportVariantType(exportVariantType)
   | ImportComponent(importComponent)
   | ImportType(importType)
-  | ImportValue(importValue)
-  | WrapReasonComponent(wrapReasonComponent)
-  | WrapReasonValue(wrapReasonValue)
-  | WrapVariantLeaf(wrapVariantLeaf);
+  | ImportValue(importValue);
 
 type genTypeKind =
   | NoGenType
@@ -96,11 +96,11 @@ let getPriority = x =>
   | ImportComponent(_)
   | ImportType(_)
   | ImportValue(_) => "2low"
+  | ExportComponent(_)
+  | ExportValue(_)
   | ExportType(_)
-  | ExportVariantType(_)
-  | WrapReasonComponent(_)
-  | WrapReasonValue(_)
-  | WrapVariantLeaf(_) => "1med"
+  | ExportVariantLeaf(_)
+  | ExportVariantType(_) => "1med"
   };
 
 let sortcodeItemsByPriority = codeItems => {
@@ -147,20 +147,12 @@ let importTypeCompare = (i1, i2) =>
 
 let toString = (~language, codeItem: t) =>
   switch (codeItem) {
-  | ExportType({resolvedTypeName, _}) => "ExportType " ++ resolvedTypeName
-  | ExportVariantType({name, _}) => "ExportVariantType " ++ name
-  | ImportComponent({importAnnotation, _}) =>
-    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | ImportType(importType) =>
-    "ImportType " ++ getImportTypeUniqueName(importType)
-  | ImportValue({importAnnotation, _}) =>
-    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | WrapReasonComponent({fileName, moduleName, _}) =>
-    "WrapReasonComponent fileName:"
+  | ExportComponent({fileName, moduleName, _}) =>
+    "ExportComponent fileName:"
     ++ (fileName |> ModuleName.toString)
     ++ " moduleName:"
     ++ (moduleName |> ModuleName.toString)
-  | WrapReasonValue({fileName, resolvedName, typ, _}) =>
+  | ExportValue({fileName, resolvedName, typ, _}) =>
     "WrapReasonValue"
     ++ " resolvedName:"
     ++ resolvedName
@@ -168,5 +160,13 @@ let toString = (~language, codeItem: t) =>
     ++ ModuleName.toString(fileName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
-  | WrapVariantLeaf({leafName, _}) => "WrapVariantLeaf " ++ leafName
+  | ExportType({resolvedTypeName, _}) => "ExportType " ++ resolvedTypeName
+  | ExportVariantLeaf({leafName, _}) => "WrapVariantLeaf " ++ leafName
+  | ExportVariantType({name, _}) => "ExportVariantType " ++ name
+  | ImportComponent({importAnnotation, _}) =>
+    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
+  | ImportType(importType) =>
+    "ImportType " ++ getImportTypeUniqueName(importType)
+  | ImportValue({importAnnotation, _}) =>
+    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
   };

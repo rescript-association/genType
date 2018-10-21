@@ -43,13 +43,13 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     };
     switch (codeItem) {
     | CodeItem.ExportType(exportType) => exportType |> addExportType
+    | ExportComponent(_)
+    | ExportValue(_)
+    | ExportVariantLeaf(_)
     | ExportVariantType(_)
     | ImportType(_)
     | ImportComponent(_)
-    | ImportValue(_)
-    | WrapReasonComponent(_)
-    | WrapReasonValue(_)
-    | WrapVariantLeaf(_) => exportTypeMap
+    | ImportValue(_) => exportTypeMap
     };
   };
   codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -372,7 +372,7 @@ let rec emitCodeItem =
          );
     (env, emitters);
 
-  | WrapReasonComponent({
+  | ExportComponent({
       exportType,
       fileName,
       moduleName,
@@ -496,7 +496,7 @@ let rec emitCodeItem =
 
     (env, emitters);
 
-  | WrapReasonValue({fileName, resolvedName, valueAccessPath, typ}) =>
+  | ExportValue({fileName, resolvedName, valueAccessPath, typ}) =>
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
@@ -522,7 +522,7 @@ let rec emitCodeItem =
 
     (envWithRequires, emitters);
 
-  | WrapVariantLeaf({
+  | ExportVariantLeaf({
       exportType,
       constructorTyp,
       argTypes,

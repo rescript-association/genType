@@ -56,7 +56,7 @@ let translateConstructorDeclaration =
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItems = [
-    CodeItem.WrapVariantLeaf({
+    CodeItem.ExportVariantLeaf({
       exportType: {
         opaque: true,
         typeVars,
@@ -102,7 +102,12 @@ let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.WrapReasonValue({fileName, resolvedName, valueAccessPath, typ}),
+    CodeItem.ExportValue({
+      fileName,
+      resolvedName,
+      valueAccessPath,
+      typ,
+    }),
   ];
   {dependencies: typeExprTranslation.dependencies, codeItems};
 };
@@ -202,7 +207,7 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
     let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
 
     let codeItems = [
-      CodeItem.WrapReasonComponent({
+      CodeItem.ExportComponent({
         exportType: {
           opaque: false,
           typeVars,
