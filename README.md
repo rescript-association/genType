@@ -2,12 +2,12 @@
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, use `@genType` annotations, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
 
-`genType` lets you use [Reason](https://reasonml.github.io/) values from JavaScript, and JavaScript values from Reason, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
+`genType` lets you export [Reason](https://reasonml.github.io/) values and types to use in JavaScript, and import JavaScript values and types into Reason, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
 In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-react/) components both ways is supported, with automatic generation of the wrappers.
 
 Here's an article describing how to use `genType` as part of a migration strategy where a tree of components is gradually converted to Reason bottom-up: [Adopting Reason: strategies, dual sources of truth, and why genType is a big deal](https://medium.com/p/c514265b466d).
 
-The implementation performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is mapped to a JS function operating on the corresponding JS object `{x:3}`.
+The implementation of [@genType] performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is exported to a JS function operating on the corresponding JS object `{x:3}`.
 
 The output of `genType` can be configured by using one of 3 back-ends: `untyped` to generate wrappers in vanilla JS,  `typescript` to generate [TypeScript](https://www.typescriptlang.org/), and `flow` to generate JS with [Flow](https://flow.org/en/) type annotations.
 
@@ -16,7 +16,7 @@ The output of `genType` can be configured by using one of 3 back-ends: `untyped`
 
 -----
 
-Wrappers for using ReasonReact components from JavaScript are generated when the annotation `[@genType] let make ...` is added to the component definition.
+Wrappers to export ReasonReact components to JavaScript are generated when the annotation `[@genType] let make ...` is added to the component definition.
 
 [Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/EV12EbxCPjM)
 [![IMAGE ALT TEXT HERE](assets/genTypeDemo.png)](https://youtu.be/EV12EbxCPjM)
@@ -42,7 +42,7 @@ into bucklescript in future. The current requirement is `bs-platform 4.0.5` or l
 
 1. Build the gentype.native binary (`$GENTYPE_REPO/lib/bs/native/gentype.native`) or retrieve it from our prebuilt releases
 2. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENTYPE_REPO/lib/bs/native/gentype.native`, before building a project, or starting a watcher / vscode with bsb integration.
-3. Add a `"gentypeconfig"` option in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example for a ReactEvent shim can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
+3. Add a `"gentypeconfig"` option in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example shim to export ReactEvent can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
 4. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
 5. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re`  [example webpack.config.js](examples/reason-react-example/webpack.config.js).
 
@@ -68,65 +68,65 @@ Every `genType` powered project requires a configuration item `"gentypeconfig"` 
 
 - **shims**
   - e.g. `Array<string>` with format: `"ReasonModule=JavaScriptModule"`
-  - Required to map certain basic TypeScript/ Flow data types & wrapping logic for Reason data types (e.g. mapping TypeScript lists to Reason lists)
+  - Required to export certain basic Reason data types to JS when one cannot modify the sources to add annotations (e.g. exporting Reason lists)
 
 # Types Supported
 
 ### int
-Reason values e.g. `1`, `2`, `3` are unchanged. So they are mapped to JS values of type `number`.
+Reason values e.g. `1`, `2`, `3` are unchanged. So they are exported to JS values of type `number`.
 
 ### float
-Reason values e.g. `1.0`, `2.0`, `3.0` are unchanged. So they are mapped to JS values of type `number`.
+Reason values e.g. `1.0`, `2.0`, `3.0` are unchanged. So they are exported to JS values of type `number`.
 
 ### string
-Reason values e.g. `"a"`, `"b"`, `"c"` are unchanged. So they are mapped to JS values of type `string`.
+Reason values e.g. `"a"`, `"b"`, `"c"` are unchanged. So they are exported to JS values of type `string`.
 
 ### optionals
-Reason values of type e.g. `option(int)`, such as `None`, `Some(0)`, `Some(1)`, `Some(2)`, are mapped to JS values `null`, `undefined`,  `0`, `1`, `2`.
+Reason values of type e.g. `option(int)`, such as `None`, `Some(0)`, `Some(1)`, `Some(2)`, are exported to JS values `null`, `undefined`,  `0`, `1`, `2`.
 The JS values are unboxed, and `null`/`undefined` are conflated.
-So they are mapped to JS values of type `null` or `undefined` or `number`.
+So the option type is exported to JS type `null` or `undefined` or `number`.
 
 ### nullables
-Reason values of type e.g. `Js.Nullable.t(int)`, such as `Js.Nullable.null`, `Js.Nullable.undefined`, `Js.Nullable.return(0)`, `Js.Nullable.return(1)`, `Js.Nullable.return(2)`, are mapped to JS values `null`, `undefined`,  `0`, `1`, `2`.
+Reason values of type e.g. `Js.Nullable.t(int)`, such as `Js.Nullable.null`, `Js.Nullable.undefined`, `Js.Nullable.return(0)`, `Js.Nullable.return(1)`, `Js.Nullable.return(2)`, are exported to JS values `null`, `undefined`,  `0`, `1`, `2`.
 The JS values are identical: there is no conversion unless the argument type needs conversion.
 
 ### records
-Reason record values of type e.g. `{x:int}` such as `{x:0}`, `{x:1}`, `{x:2}`, are mapped to JS object values `{x:0}`, `{x:1}`, `{x:2}`. This requires a change of runtime representation from arrays to objects.
-So they are mapped to JS values of type `{x:number}`.
+Reason record values of type e.g. `{x:int}` such as `{x:0}`, `{x:1}`, `{x:2}`, are exported to JS object values `{x:0}`, `{x:1}`, `{x:2}`. This requires a change of runtime representation from arrays to objects.
+So they are exported to JS values of type `{x:number}`.
 
-Since records are immutable by default, their fields will be mapped to readonly property types in Flow/TS. Mutable fields are specified in Reason by e.g. `{mutable mutableField: string}`.
+Since records are immutable by default, their fields will be exported to readonly property types in Flow/TS. Mutable fields are specified in Reason by e.g. `{mutable mutableField: string}`.
 
 
-The `@genType.as` annotation can be used to change the name of a field on the JS side of things. So e.g. `{[@genType.as "y"] x:int}` is mapped to the JS type `{y:int}`.
+The `@genType.as` annotation can be used to change the name of a field on the JS side of things. So e.g. `{[@genType.as "y"] x:int}` is exported as JS type `{y:int}`.
 
-If one field of the Reason record has option type, this is represented as an optional JS field. So for example Reason type `{x: option(int)}` corresponds to the JS type `{x?: number}`.
+If one field of the Reason record has option type, this is exported to an optional JS field. So for example Reason type `{x: option(int)}` is exported as JS type `{x?: number}`.
 
 ### objects
-Reason object values of type e.g. `{. "x":int}` such as `{"x": 0}`, `{"x": 1}`, `{"x": 2}`, are mapped to identical JS object values `{x:0}`, `{x:1}`, `{x:2}`. This requires no conversion. So they are mapped to JS values of type `{x:number}`.
+Reason object values of type e.g. `{. "x":int}` such as `{"x": 0}`, `{"x": 1}`, `{"x": 2}`, are exported as identical JS object values `{x:0}`, `{x:1}`, `{x:2}`. This requires no conversion. So they are exported to JS values of type `{x:number}`.
 A conversion is required only when the type of some field requires conversions.
 
-Since objects are immutable by default, their fields will be mapped to readonly property types in Flow/TS. Mutable fields are specified in Reason by e.g. `{. [@bs.set] "mutableField": string }`.
+Since objects are immutable by default, their fields will be exported to readonly property types in Flow/TS. Mutable fields are specified in Reason by e.g. `{. [@bs.set] "mutableField": string }`.
 
-It is possible to mix object and option types, so for example the Reason type `{. "x":int, "y":option(string)}` corresponds to JS type `{x:number, ?y: string}`, requires no conversion, and allows option pattern matching on the Reason side.
+It is possible to mix object and option types, so for example the Reason type `{. "x":int, "y":option(string)}` exports to JS type `{x:number, ?y: string}`, requires no conversion, and allows option pattern matching on the Reason side.
 
 ### variants
-Reason values of variant type e.g. `| A | B(int)` have the same representation in JS. Constructor functions with the same name as the variants are generated, so e.g. `A` and `B(3)` are valid JS programs to generate Reason values.
+Reason values of variant type e.g. `| A | B(int)` have the same representation when exported to JS. Constructor functions with the same name as the variants are generated, so e.g. `A` and `B(3)` are valid JS programs to generate Reason values.
 
 
 ### arrays
-Arrays with elements of Reason type `t` are mapped to JS arrays with elements of the corresponding JS type. If a conversion is required, a copy of the array is performed.
+Arrays with elements of Reason type `t` are exported to JS arrays with elements of the corresponding JS type. If a conversion is required, a copy of the array is performed.
 
 ### functions
-Reason functions are represented as JS functions of the corresponding type.
-So for example a Reason function `foo : int => int` is represented as a JS function from numbers to numbers.
+Reason functions are exported as JS functions of the corresponding type.
+So for example a Reason function `foo : int => int` is exported as a JS function from numbers to numbers.
 
-If named arguments are present in the Reason type, they are grouped and represented as JS objects. For example `foo : (~x:int, ~y:int) => int` is represented as a JS function from objects of type `{x:number, y:number}` to numbers.
+If named arguments are present in the Reason type, they are grouped and exported as JS objects. For example `foo : (~x:int, ~y:int) => int` is exported as a JS function from objects of type `{x:number, y:number}` to numbers.
 
-In case of mixed named and unnamed arguments, consecutive named arguments form separate groups. So e.g. `foo : (int, ~x:int, ~y:int, int, ~z:int) => int` is mapped to a JS function of type `(number, {x:number, y:number}, number, {z:number}) => number`.
+In case of mixed named and unnamed arguments, consecutive named arguments form separate groups. So e.g. `foo : (int, ~x:int, ~y:int, int, ~z:int) => int` is exported to a JS function of type `(number, {x:number, y:number}, number, {z:number}) => number`.
 
 
 ### components
-ReasonReact components with props of Reason types `t1`, `t2`, `t3` are mapped to reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
+ReasonReact components with props of Reason types `t1`, `t2`, `t3` are exported as reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
 
 A file can export many components by defining them in sub-modules. The toplevel component is also exported as default.
 
@@ -134,7 +134,7 @@ A file can export many components by defining them in sub-modules. The toplevel 
 Enums are Reason polymorphic variants without payload: essentially flat sequences of identifiers. E.g. type ``[ | `monday | `tuesday ]``.
 The corresponding JS representation is `"monday"`, `"tuesday"`.
 
-The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. ``[ | [@genType.as "type"] `type_ ]`` maps the Reason value `` `type_`` to the JS value `"type"`.
+The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. ``[ | [@genType.as "type"] `type_ ]`` exports Reason value `` `type_`` to JS value `"type"`.
 
 See for example [Enums.re](examples/typescript-react-example/src/Enums.re).
 
@@ -153,9 +153,9 @@ If a recursive type requires a conversion, only a shallow conversion is performe
 See for example [Types.re](examples/typescript-react-example/src/nested/Types.re).
 
 ### polymorphic types
-If a Reason type contains a type variable, the corresponding value is not converted. In other words, the conversion is the identity function. For example, a Reason function of type `{payload: 'a} => 'a` must treat the value of the payload as a black box, as a consequence of parametric polymorphism. If a typed back-end is used, the reason type is mapped to the corresponding generic type.
+If a Reason type contains a type variable, the corresponding value is not converted. In other words, the conversion is the identity function. For example, a Reason function of type `{payload: 'a} => 'a` must treat the value of the payload as a black box, as a consequence of parametric polymorphism. If a typed back-end is used, the reason type is converted to the corresponding generic type.
 
-#### exposing values from polymorphic types with hidden type variables
+#### exporting values from polymorphic types with hidden type variables
 
 For cases when a value that contains a hidden type variable needs to be converted, a function can be used to produce the appropriate output:
 
