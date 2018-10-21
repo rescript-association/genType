@@ -1,6 +1,7 @@
 # master
 - Clean up terminology used in README.md. Following the cleanup plan on import/export in https://github.com/cristianoc/genType/issues/70.
 - Implement principle 1: an imported type is also exported to other modules.
+- Support tuple types.
 
 # 0.22.0
 - Support the case where the `make` function of an exported Reason component could be curried.

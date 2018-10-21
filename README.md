@@ -109,6 +109,10 @@ Since objects are immutable by default, their fields will be exported to readonl
 
 It is possible to mix object and option types, so for example the Reason type `{. "x":int, "y":option(string)}` exports to JS type `{x:number, ?y: string}`, requires no conversion, and allows option pattern matching on the Reason side.
 
+### tuples
+Reason tuple values of type e.g. `(int, string)` are exported as identical JS values of type `[number, string]`. This requires no conversion, unless one of types of the tuple items does.
+While the type of Reason tuples is immutable, there's currently no mature enforcement in TS/Flow, so they're currenty exported to mutable tuples.
+
 ### variants
 Reason values of variant type e.g. `| A | B(int)` have the same representation when exported to JS. Constructor functions with the same name as the variants are generated, so e.g. `A` and `B(3)` are valid JS programs to generate Reason values.
 
