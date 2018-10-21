@@ -32,7 +32,7 @@ type person = {
   age: int,
 };
 
-[@genType]
+/* [@genType]
 type couple = (person, person);
 
 [@genType]
@@ -45,4 +45,4 @@ let marry = (first, second): couple => (first, second);
 let changeSecondAge = ((first, second): couple): couple => (
   first,
   {...second, age: second.age + 1},
-);
+); */
