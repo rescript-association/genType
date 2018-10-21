@@ -403,6 +403,18 @@ and translateTypeExpr_ =
          [],
          [],
        )
+  | Ttuple(listExp) =>
+    let innerTypesTranslation =
+      listExp |> translateTypeExprs_(~language, ~typeVarsGen, ~typeEnv);
+    let innerTypes = innerTypesTranslation |> List.map(({typ, _}) => typ);
+    let innerTypesDeps =
+      innerTypesTranslation
+      |> List.map(({dependencies, _}) => dependencies)
+      |> List.concat;
+
+    let tupleType = Tuple(innerTypes);
+
+    {dependencies: innerTypesDeps, typ: tupleType};
 
   | Tlink(t) =>
     t

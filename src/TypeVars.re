@@ -67,6 +67,7 @@ let rec substitute = (~f, typ) =>
       fields
       |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
     )
+  | Tuple(innerTypes) => Tuple(innerTypes |> List.map(substitute(~f)))
   | TypeVar(s) =>
     switch (f(s)) {
     | None => typ
@@ -99,6 +100,12 @@ let rec free_ = typ: StringSet.t =>
        )
   | Nullable(typ) => typ |> free_
   | Option(typ) => typ |> free_
+  | Tuple(innerTypes) =>
+    innerTypes
+    |> List.fold_left(
+         (s, typeArg) => StringSet.union(s, typeArg |> free_),
+         StringSet.empty,
+       )
   | TypeVar(s) => s |> StringSet.singleton
   }
 and freeOfList_ = typs =>

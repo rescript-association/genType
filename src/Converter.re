@@ -10,6 +10,7 @@ type t =
   | ObjectC(fieldsC)
   | OptionC(t)
   | RecordC(fieldsC)
+  | TupleC(list(t))
 and groupedArgConverter =
   | ArgConverter(label, t)
   | GroupConverter(list((string, t)))
@@ -79,6 +80,8 @@ let rec toString = converter =>
     ++ "}";
 
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
+  | TupleC(innerTypesC) =>
+    "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
   };
 
 let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
@@ -157,6 +160,7 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
            ),
       )
 
+    | Tuple(innerTypes) => TupleC(innerTypes |> List.map(visit(~visited)))
     | TypeVar(_) => IdentC
     }
   and typToGroupedArgConverter = (~visited, typ) =>
@@ -222,6 +226,8 @@ let rec converterIsIdentity = (~toJS, converter) =>
     }
 
   | RecordC(_) => false
+  | TupleC(innerTypesC) =>
+    innerTypesC |> List.for_all(converterIsIdentity(~toJS))
   };
 
 let rec apply = (~converter, ~enumTables, ~toJS, value) =>
@@ -419,6 +425,20 @@ let rec apply = (~converter, ~enumTables, ~toJS, value) =>
         |> String.concat(", ");
       "[" ++ fieldValues ++ "]";
     };
+  | TupleC(innerTypesC) =>
+    "["
+    ++ (
+      innerTypesC
+      |> List.mapi((i, c) =>
+           value
+           ++ "["
+           ++ string_of_int(i)
+           ++ "]"
+           |> apply(~converter=c, ~enumTables, ~toJS)
+         )
+      |> String.concat(", ")
+    )
+    ++ "]"
   };
 
 let toJS = (~converter, ~enumTables, value) =>
