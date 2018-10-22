@@ -85,6 +85,10 @@ and translateSignatureItem =
          ~resolver,
          ~typeEnv,
        )
+    |> List.map(({TranslateTypeDeclarations.importTypes, codeItem}) =>
+         {Translation.importTypes, codeItems: [codeItem]}
+       )
+    |> Translation.combine
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {

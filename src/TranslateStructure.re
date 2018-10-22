@@ -60,6 +60,10 @@ let rec translateStructureItem =
          ~resolver,
          ~typeEnv,
        )
+    |> List.map(({TranslateTypeDeclarations.importTypes, codeItem}) =>
+         {Translation.importTypes, codeItems: [codeItem]}
+       )
+    |> Translation.combine
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings

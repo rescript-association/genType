@@ -126,8 +126,6 @@ type genTypeKind =
   | GenType
   | GenTypeOpaque;
 
-type typeMap = StringMap.t((list(string), typ, genTypeKind));
-
 let genTypeKindToString = genTypeKind =>
   switch (genTypeKind) {
   | NoGenType => "NoGenType"

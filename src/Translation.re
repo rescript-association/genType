@@ -7,6 +7,9 @@ type importType = {
   cmtFile: option(string),
 };
 
+type typeMap =
+  StringMap.t((list(string), typ, genTypeKind, list(importType)));
+
 type t = {
   importTypes: list(importType),
   codeItems: list(CodeItem.t),
@@ -34,60 +37,6 @@ let combine = (translations: list(t)): t =>
       codeItems: codeItems |> List.concat,
     }
   );
-
-let variantLeafTypeName = (typeName, leafName) =>
-  String.capitalize(typeName) ++ String.capitalize(leafName);
-
-let translateConstructorDeclaration =
-    (
-      ~language,
-      ~recordGen,
-      ~genTypeKind,
-      ~typeEnv,
-      variantTypeName,
-      constructorDeclaration,
-    ) => {
-  let constructorArgs = constructorDeclaration.Types.cd_args;
-  let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
-  let leafNameResolved = leafName |> TypeEnv.addModulePath(~typeEnv);
-  let argsTranslation =
-    Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
-  let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
-  let dependencies =
-    argsTranslation
-    |> List.map(({Dependencies.dependencies, _}) => dependencies)
-    |> List.concat;
-  /* A valid Reason identifier that we can point UpperCase JS exports to. */
-
-  let variantTypeNameResolved =
-    variantLeafTypeName(variantTypeName, leafName)
-    |> TypeEnv.addModulePath(~typeEnv);
-
-  let typeVars = argTypes |> TypeVars.freeOfList;
-
-  let variant = {
-    name: variantTypeNameResolved,
-    params: typeVars |> TypeVars.toTyp,
-  };
-  let constructorTyp: CodeItem.constructorTyp = {typeVars, argTypes, variant};
-  let recordValue =
-    recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
-  let codeItems = [
-    CodeItem.ExportVariantLeaf({
-      exportType: {
-        opaque: Some(true),
-        typeVars,
-        resolvedTypeName: variantTypeNameResolved,
-        optTyp: (Some(mixedOrUnknown(~language)), genTypeKind),
-      },
-      constructorTyp,
-      argTypes,
-      leafName: leafNameResolved,
-      recordValue,
-    }),
-  ];
-  (variant, (dependencies, codeItems));
-};
 
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, typ) =>

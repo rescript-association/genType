@@ -4,9 +4,9 @@ type env = {
   requiresEarly: ModuleNameMap.t((ImportPath.t, bool)),
   requires: ModuleNameMap.t((ImportPath.t, bool)),
   /* For each .cmt we import types from, keep the map of exported types. */
-  cmtExportTypeMapCache: StringMap.t(typeMap),
+  cmtExportTypeMapCache: StringMap.t(Translation.typeMap),
   /* Map of types imported from other files. */
-  typesFromOtherFiles: typeMap,
+  typesFromOtherFiles: Translation.typeMap,
 };
 
 let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
@@ -24,10 +24,20 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
     {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
 };
 
-let createExportTypeMap = (~language, translation: Translation.t): typeMap => {
-  let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
+let createExportTypeMap =
+    (~language, declarations: list(TranslateTypeDeclarations.declaration))
+    : Translation.typeMap => {
+  let updateExportTypeMap =
+      (
+        exportTypeMap: Translation.typeMap,
+        declaration: TranslateTypeDeclarations.declaration,
+      )
+      : Translation.typeMap => {
     let addExportType =
-        ({resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType) => {
+        (
+          ~importTypes,
+          {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
+        ) => {
       if (Debug.codeItems) {
         logItem(
           "Export Type: %s%s%s\n",
@@ -47,12 +57,13 @@ let createExportTypeMap = (~language, translation: Translation.t): typeMap => {
       switch (optTyp) {
       | (Some(typ), genTypeKind) =>
         exportTypeMap
-        |> StringMap.add(resolvedTypeName, (typeVars, typ, genTypeKind))
+        |> StringMap.add(resolvedTypeName, (typeVars, typ, genTypeKind, importTypes))
       | (None, _) => exportTypeMap
       };
     };
-    switch (codeItem) {
-    | CodeItem.ExportType(exportType) => exportType |> addExportType
+    switch (declaration.codeItem) {
+    | CodeItem.ExportType(exportType) =>
+      exportType |> addExportType(~importTypes=declaration.importTypes)
     | ExportComponent(_)
     | ExportValue(_)
     | ExportVariantLeaf(_)
@@ -61,8 +72,7 @@ let createExportTypeMap = (~language, translation: Translation.t): typeMap => {
     | ImportValue(_) => exportTypeMap
     };
   };
-  translation.codeItems
-  |> List.fold_left(updateExportTypeMap, StringMap.empty);
+  declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
 let emitImport =
@@ -739,7 +749,12 @@ let emitTranslationAsString =
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let exportTypeMap = translation |> createExportTypeMap(~language);
+  let exportTypeMap =
+    translation.codeItems
+    |> List.map(codeItem =>
+         {TranslateTypeDeclarations.codeItem, importTypes: []}
+       )
+    |> createExportTypeMap(~language);
   let enumTables = Hashtbl.create(1);
 
   let emitters = Emitters.initial
