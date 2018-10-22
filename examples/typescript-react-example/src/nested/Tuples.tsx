@@ -23,3 +23,7 @@ export type coord2 = [number, number, (null | undefined | number)];
 
 // tslint:disable-next-line:interface-over-type-literal
 export type person = {readonly name: string, readonly age: number};
+
+// tslint:disable-next-line:max-classes-per-file 
+// tslint:disable-next-line:class-name
+export abstract class couple { protected opaque!: any }; /* simulate opaque types */

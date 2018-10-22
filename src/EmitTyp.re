@@ -261,6 +261,10 @@ let emitExportType =
       let typeOfOpaqueField =
         typeVars == [] ? "any" : typeVars |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
+      ++ (
+        String.capitalize(resolvedTypeName) != resolvedTypeName ?
+          "// tslint:disable-next-line:class-name\n" : ""
+      )
       ++ "export abstract class "
       ++ resolvedTypeName
       ++ typeParamsString
