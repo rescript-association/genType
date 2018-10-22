@@ -242,7 +242,9 @@ let emitExportType =
       ++ resolvedTypeName
       ++ typeParamsString
       ++ " = "
-      ++ (typ |> typToString(~language))
+      ++ (
+        (opaque ? mixedOrUnknown(~language) : typ) |> typToString(~language)
+      )
       ++ ";"
       |> export(~emitters)
     | None =>

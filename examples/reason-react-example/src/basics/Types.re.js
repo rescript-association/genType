@@ -44,7 +44,7 @@ export type myFloat = number;
 
 export type arrayOfStrings1 = Array<string>;
 
-export opaque type arrayOfStrings2 = Js_Array_t<string>;
+export opaque type arrayOfStrings2 = mixed;
 
 export type maybeString = ?string;
 
@@ -52,7 +52,7 @@ export type maybeString2 = ?string;
 
 export type peopleArray = Array<{|+name: string, +nickname: ?string|}>;
 
-export opaque type myObj = Obj_t;
+export opaque type myObj = mixed;
 
 export type { anInterestingFlowType };
 

@@ -25,10 +25,4 @@ export type coord2 = [number, number, ?number];
 
 export type person = {|+name: string, +age: number|};
 
-export opaque type couple = [person, person];
-
-export const getFirstName: (couple) => string = function _(Arg1) { const result = TuplesBS.getFirstName([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]); return result };
-
-export const marry: (person, person) => couple = function _(Arg1, Arg2) { const result = TuplesBS.marry([Arg1.name, Arg1.age], [Arg2.name, Arg2.age]); return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}] };
-
-export const changeSecondAge: (couple) => couple = function _(Arg1) { const result = TuplesBS.changeSecondAge([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]); return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}] };
+export opaque type couple = mixed;
