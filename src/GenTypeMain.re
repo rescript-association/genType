@@ -72,9 +72,8 @@ let cmtToCodeItems =
          ~outputFileRelative,
          ~resolver,
        );
-  let sortedCodeItems =
-    translationUnit.codeItems |> CodeItem.sortcodeItemsByPriority;
-  imports @ sortedCodeItems;
+  imports /* imports go first to look up type definitions */
+  @ translationUnit.codeItems;
 };
 
 let emitCodeItems =

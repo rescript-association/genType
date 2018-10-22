@@ -86,44 +86,6 @@ and t =
   | ImportType(importType)
   | ImportValue(importValue);
 
-let getPriority = x =>
-  switch (x) {
-  | ImportComponent(_)
-  | ImportType(_)
-  | ImportValue(_) => "2low"
-  | ExportComponent(_)
-  | ExportValue(_)
-  | ExportType(_)
-  | ExportVariantLeaf(_)
-  | ExportVariantType(_) => "1med"
-  };
-
-let sortcodeItemsByPriority = codeItems => {
-  module M = StringMap;
-  let map =
-    codeItems
-    |> List.fold_left(
-         (map, codeItem) => {
-           let priority = codeItem |> getPriority;
-           let items =
-             try (map |> StringMap.find(priority)) {
-             | Not_found => []
-             };
-           map |> StringMap.add(priority, [codeItem, ...items]);
-         },
-         StringMap.empty,
-       );
-  let sortedCodeItems = ref([]);
-  map
-  |> StringMap.iter((_priority, codeItemsAtPriority) =>
-       codeItemsAtPriority
-       |> List.iter(codeItem =>
-            sortedCodeItems := [codeItem, ...sortedCodeItems^]
-          )
-     );
-  sortedCodeItems^;
-};
-
 let getImportTypeUniqueName = (importType: importType) =>
   switch (importType) {
   | ImportComment(s) => s
