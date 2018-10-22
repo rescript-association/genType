@@ -36,13 +36,13 @@ type person = {
 type couple = (person, person);
 
 [@genType]
-   let getFirstName = ((first, _second): couple) => first.name;
+let getFirstName = ((first, _second): couple) => first.name;
 
-   [@genType]
-   let marry = (first, second): couple => (first, second);
+[@genType]
+let marry = (first, second): couple => (first, second);
 
-   [@genType]
-   let changeSecondAge = ((first, second): couple): couple => (
-     first,
-     {...second, age: second.age + 1},
-   );
+[@genType]
+let changeSecondAge = ((first, second): couple): couple => (
+  first,
+  {...second, age: second.age + 1},
+);
