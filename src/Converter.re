@@ -104,7 +104,8 @@ let typToConverterOpaque =
     | GroupOfLabeledArgs(_) => (IdentC, true)
 
     | Ident(s, typeArguments) =>
-      let opaqueUnlessBase = !(typ == booleanT || typ == numberT || typ == stringT);
+      let opaqueUnlessBase =
+        !(typ == booleanT || typ == numberT || typ == stringT);
       if (visited |> StringSet.mem(s)) {
         circular := s;
         (IdentC, false);
@@ -131,12 +132,9 @@ let typToConverterOpaque =
             (t |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
           }
         ) {
-        | Not_found => (
-            IdentC,
-            opaqueUnlessBase,
-          )
+        | Not_found => (IdentC, opaqueUnlessBase)
         };
-      }
+      };
     | Nullable(t) =>
       let (converter, opaque) = t |> visit(~visited);
       (NullableC(converter), opaque);

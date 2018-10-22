@@ -149,20 +149,6 @@ let emitExportType =
       ~typIsOpaque,
       {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
     ) => {
-  let rec isOpaque = typ =>
-    switch (typ) {
-    | Array(t, _) => t |> isOpaque
-    | Enum(_) => false
-    | Function(_) => false
-    | GroupOfLabeledArgs(_) => true
-    | Ident(_) => !(typ == booleanT || typ == numberT || typ == stringT)
-    | Nullable(t) => t |> isOpaque
-    | Object(_) => false
-    | Option(t) => t |> isOpaque
-    | Record(_) => false
-    | Tuple(innerTypes) => innerTypes |> List.exists(isOpaque)
-    | TypeVar(_) => true
-    };
   let opaque =
     switch (opaque, optTyp) {
     | (Some(opaque), _) => opaque
