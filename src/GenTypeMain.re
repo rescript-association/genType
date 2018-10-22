@@ -27,7 +27,8 @@ let typeDeclarationsOfSignature = signatureItem =>
   | _ => []
   };
 
-let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
+let inputCmtToTypeDeclarations =
+    (~config, ~outputFileRelative, ~resolver, inputCMT): list(CodeItem.t) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
   let typeDeclarations =
@@ -44,22 +45,41 @@ let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
     |> List.concat;
   (
     typeDeclarations
-    |> Translation.translateTypeDeclarations(~language, ~typeEnv)
+    |> Translation.translateTypeDeclarations(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
   ).
     codeItems;
 };
 
-let translateCMT = (~config, ~fileName, inputCMT): Translation.t => {
+let translateCMT =
+    (~config, ~outputFileRelative, ~resolver, ~fileName, inputCMT)
+    : Translation.t => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
   let translations =
     switch (cmt_annots) {
     | Implementation(structure) =>
       structure
-      |> Translation.translateStructure(~config, ~fileName, ~typeEnv)
+      |> Translation.translateStructure(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+         )
     | Interface(signature) =>
       signature
-      |> Translation.translateSignature(~config, ~fileName, ~typeEnv)
+      |> Translation.translateSignature(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+         )
     | _ => []
     };
   translations |> Translation.combine;
@@ -108,7 +128,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       );
     if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
-      |> translateCMT(~config, ~fileName)
+      |> translateCMT(~config, ~outputFileRelative, ~resolver, ~fileName)
       |> emitTranslation(
            ~config,
            ~outputFile,

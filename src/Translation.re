@@ -1,17 +1,17 @@
 open GenTypeCommon;
 
 type t = {
-  dependencies: list(Dependencies.path),
+  importTypes: list(CodeItem.importType),
   codeItems: list(CodeItem.t),
 };
 
 let combine = (translations: list(t)): t =>
   translations
-  |> List.map(({dependencies, codeItems}) => (dependencies, codeItems))
+  |> List.map(({importTypes, codeItems}) => (importTypes, codeItems))
   |> List.split
   |> (
-    ((dependencies, codeItems)) => {
-      dependencies: dependencies |> List.concat,
+    ((importTypes, codeItems)) => {
+      importTypes: importTypes |> List.concat,
       codeItems: codeItems |> List.concat,
     }
   );
@@ -93,9 +93,83 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | TypeVar(_) => typ
   };
 
-let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
+let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
+  switch (path) {
+  | Dependencies.Pid(name) when name == "list" => [
+      CodeItem.ImportTypeAs({
+        typeName: "list",
+        asTypeName: None,
+        importPath:
+          ModuleName.reasonPervasives
+          |> ModuleResolver.importPathForReasonModuleName(
+               ~config,
+               ~outputFileRelative,
+               ~resolver,
+             ),
+        cmtFile: None,
+      }),
+    ]
+  | Pid(_) => []
+  | Presolved(_) => []
+
+  | Pdot(Presolved(_), _) => []
+
+  | Pdot(_) =>
+    let rec getOuterModuleName = path =>
+      switch (path) {
+      | Dependencies.Pid(name)
+      | Presolved(name) => name |> ModuleName.fromStringUnsafe
+      | Pdot(path1, _) => path1 |> getOuterModuleName
+      };
+    let rec removeOuterModule = path =>
+      switch (path) {
+      | Dependencies.Pid(_)
+      | Dependencies.Presolved(_) => path
+      | Pdot(Pid(_), s) => Dependencies.Pid(s)
+      | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
+      };
+    let moduleName = path |> getOuterModuleName;
+    let typeName = path |> removeOuterModule |> Dependencies.typePathToName;
+    let nameFromPath = path |> Dependencies.typePathToName;
+    let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
+    let importPath =
+      moduleName
+      |> ModuleResolver.importPathForReasonModuleName(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+         );
+    let cmtFile = {
+      let cmtFile =
+        importPath
+        |> ImportPath.toCmt(~outputFileRelative)
+        |> Paths.getCmtFile;
+      cmtFile == "" ? None : Some(cmtFile);
+    };
+    [ImportTypeAs({typeName, asTypeName, importPath, cmtFile})];
+  };
+
+let translateDependencies =
+    (~config, ~outputFileRelative, ~resolver, dependencies)
+    : list(CodeItem.importType) =>
+  dependencies
+  |> List.map(pathToImportType(~config, ~outputFileRelative, ~resolver))
+  |> List.concat;
+
+let translateValue =
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~fileName,
+      ~typeEnv,
+      ~typeExpr,
+      name,
+    )
+    : t => {
   let typeExprTranslation =
-    typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
+    typeExpr
+    |> Dependencies.translateTypeExpr(~language=config.language, ~typeEnv);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
   let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
@@ -109,7 +183,12 @@ let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
   let codeItems = [
     CodeItem.ExportValue({fileName, resolvedName, valueAccessPath, typ}),
   ];
-  {dependencies: typeExprTranslation.dependencies, codeItems};
+  {
+    importTypes:
+      typeExprTranslation.dependencies
+      |> translateDependencies(~config, ~outputFileRelative, ~resolver),
+    codeItems,
+  };
 };
 
 /*
@@ -134,7 +213,18 @@ let translateValue = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
  *     {named: number, args?: number}
  */
 
-let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t => {
+let translateComponent =
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~fileName,
+      ~typeEnv,
+      ~typeExpr,
+      name,
+    )
+    : t => {
+  let language = config.language;
   let typeExprTranslation =
     typeExpr
     |> Dependencies.translateTypeExpr(
@@ -221,16 +311,38 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
         typ,
       }),
     ];
-    {dependencies: typeExprTranslation.dependencies, codeItems};
+    {
+      importTypes:
+        typeExprTranslation.dependencies
+        |> translateDependencies(~config, ~outputFileRelative, ~resolver),
+      codeItems,
+    };
 
   | _ =>
     /* not a component: treat make as a normal function */
-    name |> translateValue(~language, ~fileName, ~typeEnv, ~typeExpr)
+    name
+    |> translateValue(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+         ~typeExpr,
+       )
   };
 };
 
 let translateValueBinding =
-    (~language, ~moduleItemGen, ~fileName, ~typeEnv, valueBinding): t => {
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~moduleItemGen,
+      ~fileName,
+      ~typeEnv,
+      valueBinding,
+    )
+    : t => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
@@ -239,18 +351,34 @@ let translateValueBinding =
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name
-    |> translateComponent(~language, ~fileName, ~typeEnv, ~typeExpr)
+    |> translateComponent(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+         ~typeExpr,
+       )
   | (Tpat_var(id, _), GenType) =>
     id
     |> Ident.name
-    |> translateValue(~language, ~fileName, ~typeEnv, ~typeExpr)
-  | _ => {dependencies: [], codeItems: []}
+    |> translateValue(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+         ~typeExpr,
+       )
+  | _ => {importTypes: [], codeItems: []}
   };
 };
 
 let translateSignatureValue =
     (
-      ~language,
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
       ~fileName,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
@@ -262,12 +390,26 @@ let translateSignatureValue =
   | (id, GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name
-    |> translateComponent(~language, ~fileName, ~typeEnv, ~typeExpr)
+    |> translateComponent(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+         ~typeExpr,
+       )
   | (id, GenType) =>
     id
     |> Ident.name
-    |> translateValue(~language, ~fileName, ~typeEnv, ~typeExpr)
-  | _ => {dependencies: [], codeItems: []}
+    |> translateValue(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+         ~typeExpr,
+       )
+  | _ => {importTypes: [], codeItems: []}
   };
 };
 
@@ -277,12 +419,15 @@ let translateSignatureValue =
  */
 let translatePrimitive =
     (
-      ~language,
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
       ~fileName,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
     )
     : t => {
+  let language = config.language;
   let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type
@@ -381,10 +526,18 @@ let translatePrimitive =
         fileName,
       }),
     ];
-    {dependencies: typeExprTranslation.dependencies, codeItems};
+    {
+      importTypes:
+        typeExprTranslation.dependencies
+        |> translateDependencies(~config, ~outputFileRelative, ~resolver),
+      codeItems,
+    };
 
   | (_, _, Some(StringPayload(importString))) => {
-      dependencies: typeExprTranslation.dependencies,
+      importTypes:
+        typeExprTranslation.dependencies
+        |> translateDependencies(~config, ~outputFileRelative, ~resolver),
+
       codeItems: [
         ImportValue({
           valueName,
@@ -396,7 +549,7 @@ let translatePrimitive =
       ],
     }
 
-  | _ => {dependencies: [], codeItems: []}
+  | _ => {importTypes: [], codeItems: []}
   };
 };
 
@@ -415,7 +568,9 @@ type declarationKind =
 
 let traslateDeclarationKind =
     (
-      ~language,
+      ~config as {language} as config,
+      ~outputFileRelative,
+      ~resolver,
       ~typeEnv,
       ~genTypeKind,
       ~typeName,
@@ -427,7 +582,7 @@ let traslateDeclarationKind =
   | GeneralDeclaration(optCoreType) =>
     switch (optCoreType) {
     | None => {
-        dependencies: [],
+        importTypes: [],
         codeItems: [
           typeName
           |> translateExportType(
@@ -479,7 +634,12 @@ let traslateDeclarationKind =
              ~typeEnv,
            ),
       ];
-      {dependencies: typeExprTranslation.dependencies, codeItems};
+      {
+        importTypes:
+          typeExprTranslation.dependencies
+          |> translateDependencies(~config, ~outputFileRelative, ~resolver),
+        codeItems,
+      };
     }
 
   | RecordDelaration(labelDeclarations) =>
@@ -519,7 +679,9 @@ let traslateDeclarationKind =
     let typeVars = TypeVars.extract(typeParams);
     let opaque = Some(genTypeKind == GenTypeOpaque);
     {
-      dependencies,
+      importTypes:
+        dependencies
+        |> translateDependencies(~config, ~outputFileRelative, ~resolver),
       codeItems: [
         typeName |> translateExportType(~opaque, ~typeVars, ~optTyp, ~typeEnv),
       ],
@@ -544,7 +706,7 @@ let traslateDeclarationKind =
       leafTypesDepsAndVariantLeafBindings |> List.split;
     let (listListDeps, listListItems) =
       depsAndVariantLeafBindings |> List.split;
-    let deps = listListDeps |> List.concat;
+    let dependencies = listListDeps |> List.concat;
     let items = listListItems |> List.concat;
     let typeParams = TypeVars.(typeParams |> extract |> toTyp);
     let variantTypeNameResolved = typeName |> TypeEnv.addModulePath(~typeEnv);
@@ -554,7 +716,12 @@ let traslateDeclarationKind =
         variants,
         name: variantTypeNameResolved,
       });
-    {dependencies: deps, codeItems: List.append(items, [unionType])};
+    {
+      importTypes:
+        dependencies
+        |> translateDependencies(~config, ~outputFileRelative, ~resolver),
+      codeItems: List.append(items, [unionType]),
+    };
 
   | ImportTypeDeclaration(importString, genTypeAsPayload) =>
     let typeName_ = typeName;
@@ -567,15 +734,15 @@ let traslateDeclarationKind =
         )
       | _ => (nameWithModulePath, None)
       };
+    let importTypes = [
+      CodeItem.ImportTypeAs({
+        typeName,
+        asTypeName,
+        importPath: importString |> ImportPath.fromStringUnsafe,
+        cmtFile: None,
+      }),
+    ];
     let codeItems = [
-      CodeItem.ImportType(
-        ImportTypeAs({
-          typeName,
-          asTypeName,
-          importPath: importString |> ImportPath.fromStringUnsafe,
-          cmtFile: None,
-        }),
-      ),
       /* Make the imported type usable from other modules by exporting it too. */
       typeName_
       |> translateExportType(
@@ -585,14 +752,20 @@ let traslateDeclarationKind =
            ~typeEnv,
          ),
     ];
-    {dependencies: [], codeItems};
+    {
+      importTypes,
 
-  | NoDeclaration => {dependencies: [], codeItems: []}
+      codeItems,
+    };
+
+  | NoDeclaration => {importTypes: [], codeItems: []}
   };
 
 let translateTypeDeclaration =
     (
-      ~language,
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
       ~typeEnv,
       ~genTypeKind: genTypeKind,
       dec: Typedtree.type_declaration,
@@ -635,7 +808,9 @@ let translateTypeDeclaration =
 
   declarationKind
   |> traslateDeclarationKind(
-       ~language,
+       ~config,
+       ~outputFileRelative,
+       ~resolver,
        ~typeEnv,
        ~genTypeKind,
        ~typeName,
@@ -645,29 +820,59 @@ let translateTypeDeclaration =
 };
 
 let translateTypeDeclarations =
-    (~language, ~typeEnv, typeDeclarations: list(Typedtree.type_declaration)) => {
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~typeEnv,
+      typeDeclarations: list(Typedtree.type_declaration),
+    ) => {
   let genTypeKind =
     switch (typeDeclarations) {
     | [dec, ..._] => dec.typ_attributes |> Annotation.getGenTypeKind
     | [] => NoGenType
     };
   typeDeclarations
-  |> List.map(translateTypeDeclaration(~language, ~typeEnv, ~genTypeKind))
+  |> List.map(
+       translateTypeDeclaration(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+         ~genTypeKind,
+       ),
+     )
   |> combine;
 };
 
 let rec translateStructItem =
-        (~config, ~moduleItemGen, ~fileName, ~typeEnv, structItem): t =>
+        (
+          ~config,
+          ~outputFileRelative,
+          ~resolver,
+          ~moduleItemGen,
+          ~fileName,
+          ~typeEnv,
+          structItem,
+        )
+        : t =>
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
-    |> translateTypeDeclarations(~language=config.language, ~typeEnv)
+    |> translateTypeDeclarations(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
     |> List.map(
          translateValueBinding(
-           ~language=config.language,
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
            ~moduleItemGen,
            ~fileName,
            ~typeEnv,
@@ -678,31 +883,62 @@ let rec translateStructItem =
   | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
     /* external declaration */
     valueDescription
-    |> translatePrimitive(~language=config.language, ~fileName, ~typeEnv)
+    |> translatePrimitive(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+       )
 
   | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
     moduleBinding
-    |> translateModuleBinding(~config, ~fileName, ~typeEnv, ~moduleItemGen)
+    |> translateModuleBinding(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+         ~moduleItemGen,
+       )
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings
     |> List.map(
-         translateModuleBinding(~config, ~fileName, ~typeEnv, ~moduleItemGen),
+         translateModuleBinding(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+           ~moduleItemGen,
+         ),
        )
     |> combine
 
-  | _ => {dependencies: [], codeItems: []}
+  | _ => {importTypes: [], codeItems: []}
   }
-and translateStructure = (~config, ~fileName, ~typeEnv, structure): list(t) => {
+and translateStructure =
+    (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
+    : list(t) => {
   let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
   |> List.map(structItem =>
        structItem
-       |> translateStructItem(~config, ~moduleItemGen, ~fileName, ~typeEnv)
+       |> translateStructItem(
+            ~config,
+            ~outputFileRelative,
+            ~resolver,
+            ~moduleItemGen,
+            ~fileName,
+            ~typeEnv,
+          )
      );
 }
 and translateModuleBinding =
     (
       ~config,
+      ~outputFileRelative,
+      ~resolver,
       ~fileName,
       ~typeEnv,
       ~moduleItemGen,
@@ -715,27 +951,29 @@ and translateModuleBinding =
     let _isAnnotated = mb_attributes |> Annotation.hasGenTypeAnnotation;
     let moduleItem = moduleItemGen |> Runtime.newModuleItem;
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
-    let {dependencies, codeItems} =
-      structure
-      |> translateStructure(
-           ~config,
-           ~fileName,
-           ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
-         )
-      |> combine;
-    {dependencies, codeItems};
+    structure
+    |> translateStructure(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
+       )
+    |> combine;
 
   | Tmod_ident(_)
   | Tmod_functor(_)
   | Tmod_apply(_)
   | Tmod_constraint(_)
-  | Tmod_unpack(_) => {dependencies: [], codeItems: []}
+  | Tmod_unpack(_) => {importTypes: [], codeItems: []}
   };
 };
 
 let rec translateModuleDeclaration =
         (
           ~config,
+          ~outputFileRelative,
+          ~resolver,
           ~fileName,
           ~typeEnv,
           {md_id, md_attributes, md_type, _}: Typedtree.module_declaration,
@@ -744,38 +982,60 @@ let rec translateModuleDeclaration =
   | Tmty_signature(signature) =>
     let name = md_id |> Ident.name;
     let _isAnnotated = md_attributes |> Annotation.hasGenTypeAnnotation;
-    let {dependencies, codeItems} =
-      signature
-      |> translateSignature(
-           ~config,
-           ~fileName,
-           ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
-         )
-      |> combine;
-    {dependencies, codeItems};
+    signature
+    |> translateSignature(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
+       )
+    |> combine;
   | Tmty_ident(_)
   | Tmty_functor(_)
   | Tmty_with(_)
   | Tmty_typeof(_)
-  | Tmty_alias(_) => {dependencies: [], codeItems: []}
+  | Tmty_alias(_) => {importTypes: [], codeItems: []}
   }
 and translateSignatureItem =
-    (~config, ~moduleItemGen, ~fileName, ~typeEnv, signatureItem): t =>
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~moduleItemGen,
+      ~fileName,
+      ~typeEnv,
+      signatureItem,
+    )
+    : t =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
     typeDeclarations
-    |> translateTypeDeclarations(~language=config.language, ~typeEnv)
+    |> translateTypeDeclarations(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {
       valueDescription
-      |> translatePrimitive(~language=config.language, ~fileName, ~typeEnv);
+      |> translatePrimitive(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+         );
     } else {
       let moduleItem = moduleItemGen |> Runtime.newModuleItem;
       typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
       valueDescription
       |> translateSignatureValue(
-           ~language=config.language,
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
            ~fileName,
            ~typeEnv,
          );
@@ -785,71 +1045,30 @@ and translateSignatureItem =
     let moduleItem = moduleItemGen |> Runtime.newModuleItem;
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleDeclaration
-    |> translateModuleDeclaration(~config, ~fileName, ~typeEnv);
+    |> translateModuleDeclaration(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+       );
 
-  | _ => {dependencies: [], codeItems: []}
+  | _ => {importTypes: [], codeItems: []}
   }
-and translateSignature = (~config, ~fileName, ~typeEnv, signature): list(t) => {
+and translateSignature =
+    (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, signature)
+    : list(t) => {
   let moduleItemGen = Runtime.moduleItemGen();
   signature.Typedtree.sig_items
   |> List.map(signatureItem =>
        signatureItem
-       |> translateSignatureItem(~config, ~moduleItemGen, ~fileName, ~typeEnv)
+       |> translateSignatureItem(
+            ~config,
+            ~outputFileRelative,
+            ~resolver,
+            ~moduleItemGen,
+            ~fileName,
+            ~typeEnv,
+          )
      );
 };
-
-let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
-  switch (path) {
-  | Dependencies.Pid(name) when name == "list" => [
-      CodeItem.ImportTypeAs({
-        typeName: "list",
-        asTypeName: None,
-        importPath:
-          ModuleName.reasonPervasives
-          |> ModuleResolver.importPathForReasonModuleName(
-               ~config,
-               ~outputFileRelative,
-               ~resolver,
-             ),
-        cmtFile: None,
-      }),
-    ]
-  | Pid(_) => []
-  | Presolved(_) => []
-
-  | Pdot(Presolved(_), _) => []
-
-  | Pdot(_) =>
-    let rec getOuterModuleName = path =>
-      switch (path) {
-      | Dependencies.Pid(name)
-      | Presolved(name) => name |> ModuleName.fromStringUnsafe
-      | Pdot(path1, _) => path1 |> getOuterModuleName
-      };
-    let rec removeOuterModule = path =>
-      switch (path) {
-      | Dependencies.Pid(_)
-      | Dependencies.Presolved(_) => path
-      | Pdot(Pid(_), s) => Dependencies.Pid(s)
-      | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
-      };
-    let moduleName = path |> getOuterModuleName;
-    let typeName = path |> removeOuterModule |> Dependencies.typePathToName;
-    let nameFromPath = path |> Dependencies.typePathToName;
-    let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
-    let importPath =
-      moduleName
-      |> ModuleResolver.importPathForReasonModuleName(
-           ~config,
-           ~outputFileRelative,
-           ~resolver,
-         );
-    let cmtFile = {
-      let cmtFile =
-        importPath
-        |> ImportPath.toCmt(~outputFileRelative)
-        |> Paths.getCmtFile;
-      cmtFile == "" ? None : Some(cmtFile);
-    };
-    [ImportTypeAs({typeName, asTypeName, importPath, cmtFile})];
-  };

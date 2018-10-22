@@ -66,7 +66,15 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
 };
 
 let emitImportType =
-    (~language, ~emitters, ~inputCmtToTypeDeclarations, ~env, importType) =>
+    (
+      ~config as {language} as config,
+      ~outputFileRelative,
+      ~resolver,
+      ~emitters,
+      ~inputCmtToTypeDeclarations,
+      ~env,
+      importType,
+    ) =>
   switch (importType) {
   | CodeItem.ImportComment(s) => (env, s |> Emitters.import(~emitters))
 
@@ -100,7 +108,11 @@ let emitImportType =
       | exception Not_found =>
         let exportTypeMapFromCmt =
           Cmt_format.read_cmt(cmtFile)
-          |> inputCmtToTypeDeclarations(~language)
+          |> inputCmtToTypeDeclarations(
+               ~config,
+               ~outputFileRelative,
+               ~resolver,
+             )
           |> createExportTypeMap(~language);
         let cmtExportTypeMapCache =
           env.cmtExportTypeMapCache
@@ -220,7 +232,9 @@ let rec emitCodeItem =
 
   | ImportType(importType) =>
     emitImportType(
-      ~language,
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
       ~emitters,
       ~inputCmtToTypeDeclarations,
       ~env,
@@ -705,23 +719,23 @@ let emitEnumTables = (~emitters, enumTables) => {
   );
 };
 
-let translateDependencies =
-    (~config, ~outputFileRelative, ~resolver, dependencies)
-    : list(CodeItem.importType) =>
-  dependencies
-  |> List.map(
-       Translation.pathToImportType(~config, ~outputFileRelative, ~resolver),
-     )
-  |> List.concat
-  |> List.sort_uniq(CodeItem.importTypeCompare);
-
 let emitImportTypes =
-    (~language, ~emitters, ~env, ~inputCmtToTypeDeclarations, importTypes) =>
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~emitters,
+      ~env,
+      ~inputCmtToTypeDeclarations,
+      importTypes,
+    ) =>
   importTypes
   |> List.fold_left(
        ((env, emitters)) =>
          emitImportType(
-           ~language,
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
            ~emitters,
            ~inputCmtToTypeDeclarations,
            ~env,
@@ -753,10 +767,12 @@ let emitTranslationAsString =
 
   let (env, emitters) =
     /* imports from dependencies go first to build up type tables */
-    translation.dependencies
-    |> translateDependencies(~config, ~outputFileRelative, ~resolver)
+    translation.importTypes
+    |> List.sort_uniq(CodeItem.importTypeCompare)
     |> emitImportTypes(
-         ~language,
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
          ~emitters,
          ~env,
          ~inputCmtToTypeDeclarations,

@@ -12,9 +12,9 @@ const TypesBS = require('./Types.bs');
 
 import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
 
-import type {t as Obj_t} from '../../src/shims/Obj.shim';
-
 import type {anInterestingFlowType} from './SomeFlowTypes';
+
+import type {t as Obj_t} from '../../src/shims/Obj.shim';
 
 import type {weekday} from './SomeFlowTypes';
 
