@@ -798,7 +798,7 @@ and translateSignature = (~config, ~fileName, ~typeEnv, signature): list(t) => {
      );
 };
 
-let pathToImport = (~config, ~outputFileRelative, ~resolver, path) =>
+let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
   switch (path) {
   | Dependencies.Pid(name) when name == "list" => [
       CodeItem.ImportTypeAs({
@@ -853,11 +853,3 @@ let pathToImport = (~config, ~outputFileRelative, ~resolver, path) =>
     };
     [ImportTypeAs({typeName, asTypeName, importPath, cmtFile})];
   };
-
-let translateDependencies =
-    (~config, ~outputFileRelative, ~resolver, dependencies): list(CodeItem.t) =>
-  dependencies
-  |> List.map(pathToImport(~config, ~outputFileRelative, ~resolver))
-  |> List.concat
-  |> List.sort_uniq(CodeItem.importTypeCompare)
-  |> List.map(importType => CodeItem.ImportType(importType));

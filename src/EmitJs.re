@@ -705,6 +705,30 @@ let emitEnumTables = (~emitters, enumTables) => {
   );
 };
 
+let translateDependencies =
+    (~config, ~outputFileRelative, ~resolver, dependencies)
+    : list(CodeItem.importType) =>
+  dependencies
+  |> List.map(
+       Translation.pathToImportType(~config, ~outputFileRelative, ~resolver),
+     )
+  |> List.concat
+  |> List.sort_uniq(CodeItem.importTypeCompare);
+
+let emitImportTypes =
+    (~language, ~emitters, ~env, ~inputCmtToTypeDeclarations, importTypes) =>
+  importTypes
+  |> List.fold_left(
+       ((env, emitters)) =>
+         emitImportType(
+           ~language,
+           ~emitters,
+           ~inputCmtToTypeDeclarations,
+           ~env,
+         ),
+       (env, emitters),
+     );
+
 let emitTranslationAsString =
     (
       ~config,
@@ -722,25 +746,31 @@ let emitTranslationAsString =
     typesFromOtherFiles: StringMap.empty,
   };
   let exportTypeMap = translation.codeItems |> createExportTypeMap(~language);
-
   let enumTables = Hashtbl.create(1);
-  let imports =
+
+  let emitters = Emitters.initial
+  and env = initialEnv;
+
+  let (env, emitters) =
+    /* imports from dependencies go first to build up type tables */
     translation.dependencies
-    |> Translation.translateDependencies(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
+    |> translateDependencies(~config, ~outputFileRelative, ~resolver)
+    |> emitImportTypes(
+         ~language,
+         ~emitters,
+         ~env,
+         ~inputCmtToTypeDeclarations,
        );
+
   let (finalEnv, emitters) =
-    imports  /* imports go first to build up type tables */
-    @ translation.codeItems
+    translation.codeItems
     |> emitCodeItems(
          ~config,
          ~outputFileRelative,
          ~resolver,
          ~exportTypeMap,
-         ~emitters=Emitters.initial,
-         ~env=initialEnv,
+         ~emitters,
+         ~env,
          ~inputCmtToTypeDeclarations,
          ~enumTables,
        );
