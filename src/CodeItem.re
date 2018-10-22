@@ -83,7 +83,6 @@ and t =
   | ExportVariantLeaf(exportVariantLeaf)
   | ExportVariantType(exportVariantType)
   | ImportComponent(importComponent)
-  | ImportType(importType)
   | ImportValue(importValue);
 
 let getImportTypeUniqueName = (importType: importType) =>

@@ -57,7 +57,6 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     | ExportValue(_)
     | ExportVariantLeaf(_)
     | ExportVariantType(_)
-    | ImportType(_)
     | ImportComponent(_)
     | ImportValue(_) => exportTypeMap
     };
@@ -150,8 +149,6 @@ let codeItemToString = (~language, codeItem: CodeItem.t) =>
   | ExportVariantType({name, _}) => "ExportVariantType " ++ name
   | ImportComponent({importAnnotation, _}) =>
     "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | ImportType(importType) =>
-    "ImportType " ++ CodeItem.getImportTypeUniqueName(importType)
   | ImportValue({importAnnotation, _}) =>
     "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
   };
@@ -189,7 +186,6 @@ let rec emitCodeItem =
           ~exportTypeMap,
           ~emitters,
           ~env,
-          ~inputCmtToTypeDeclarations,
           ~enumTables,
           codeItem,
         ) => {
@@ -228,17 +224,6 @@ let rec emitCodeItem =
         ~typeParams,
         ~variants,
       ),
-    )
-
-  | ImportType(importType) =>
-    emitImportType(
-      ~config,
-      ~outputFileRelative,
-      ~resolver,
-      ~emitters,
-      ~inputCmtToTypeDeclarations,
-      ~env,
-      importType,
     )
 
   | ImportComponent({
@@ -661,7 +646,6 @@ and emitCodeItems =
       ~exportTypeMap,
       ~emitters,
       ~env,
-      ~inputCmtToTypeDeclarations,
       ~enumTables,
       codeItems,
     ) =>
@@ -675,7 +659,6 @@ and emitCodeItems =
            ~exportTypeMap,
            ~emitters,
            ~env,
-           ~inputCmtToTypeDeclarations,
            ~enumTables,
          ),
        (env, emitters),
@@ -787,7 +770,6 @@ let emitTranslationAsString =
          ~exportTypeMap,
          ~emitters,
          ~env,
-         ~inputCmtToTypeDeclarations,
          ~enumTables,
        );
 
