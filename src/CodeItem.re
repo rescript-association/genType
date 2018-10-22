@@ -21,7 +21,6 @@ type importTypeAs = {
 };
 
 type importType =
-  | ImportComment(string)
   | ImportTypeAs(importTypeAs);
 
 type importAnnotation = {
@@ -87,7 +86,6 @@ and t =
 
 let getImportTypeUniqueName = (importType: importType) =>
   switch (importType) {
-  | ImportComment(s) => s
   | ImportTypeAs({typeName, asTypeName, _}) =>
     typeName
     ++ (
