@@ -128,7 +128,7 @@ let typToConverterOpaque =
               | (_, typeArgument) => Some(typeArgument)
               | exception Not_found => None
               };
-            (t |> TypeVars.substitute(~f) |> visit(~visited) |> fst, opaqueUnlessBase);
+            (t |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
           }
         ) {
         | Not_found => (

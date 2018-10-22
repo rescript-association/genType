@@ -32,6 +32,28 @@ function coord2d(x, y) {
         ];
 }
 
+function getFirstName(param) {
+  return param[0][/* name */0];
+}
+
+function marry(first, second) {
+  return /* tuple */[
+          first,
+          second
+        ];
+}
+
+function changeSecondAge(param) {
+  var second = param[1];
+  return /* tuple */[
+          param[0],
+          /* record */[
+            /* name */second[/* name */0],
+            /* age */second[/* age */1] + 1 | 0
+          ]
+        ];
+}
+
 var origin = /* tuple */[
   0,
   0,
@@ -44,4 +66,7 @@ exports.computeArea = computeArea;
 exports.computeAreaWithIdent = computeAreaWithIdent;
 exports.computeAreaNoConverters = computeAreaNoConverters;
 exports.coord2d = coord2d;
+exports.getFirstName = getFirstName;
+exports.marry = marry;
+exports.changeSecondAge = changeSecondAge;
 /* No side effect */
