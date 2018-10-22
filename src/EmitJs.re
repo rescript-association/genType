@@ -115,22 +115,31 @@ let emitImportType =
     };
   };
 
-let emitExportType =
-    (
-      ~early=false,
-      ~emitters,
-      ~language,
-      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
-    ) =>
-  resolvedTypeName
-  |> EmitTyp.emitExportType(
-       ~early,
-       ~emitters,
-       ~language,
-       ~opaque,
-       ~optTyp,
-       ~typeVars,
-     );
+let codeItemToString = (~language, codeItem: CodeItem.t) =>
+  switch (codeItem) {
+  | ExportComponent({fileName, moduleName, _}) =>
+    "ExportComponent fileName:"
+    ++ (fileName |> ModuleName.toString)
+    ++ " moduleName:"
+    ++ (moduleName |> ModuleName.toString)
+  | ExportValue({fileName, resolvedName, typ, _}) =>
+    "WrapReasonValue"
+    ++ " resolvedName:"
+    ++ resolvedName
+    ++ " moduleName:"
+    ++ ModuleName.toString(fileName)
+    ++ " typ:"
+    ++ EmitTyp.typToString(~language, typ)
+  | ExportType({resolvedTypeName, _}) => "ExportType " ++ resolvedTypeName
+  | ExportVariantLeaf({leafName, _}) => "WrapVariantLeaf " ++ leafName
+  | ExportVariantType({name, _}) => "ExportVariantType " ++ name
+  | ImportComponent({importAnnotation, _}) =>
+    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
+  | ImportType(importType) =>
+    "ImportType " ++ CodeItem.getImportTypeUniqueName(importType)
+  | ImportValue({importAnnotation, _}) =>
+    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
+  };
 
 let rec emitCodeItem =
         (
@@ -153,13 +162,13 @@ let rec emitCodeItem =
          ~typesFromOtherFiles=env.typesFromOtherFiles,
        );
   if (Debug.codeItems) {
-    logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~language));
+    logItem("Code Item: %s\n", codeItem |> codeItemToString(~language));
   };
 
   switch (codeItem) {
   | CodeItem.ExportType(exportType) => (
       env,
-      emitExportType(~emitters, ~language, exportType),
+      EmitTyp.emitExportType(~emitters, ~language, exportType),
     )
 
   | ExportVariantType({CodeItem.typeParams, variants, name}) => (
@@ -220,7 +229,7 @@ let rec emitCodeItem =
     let emitters =
       EmitTyp.emitRequireReact(~early=true, ~emitters, ~language);
     let emitters =
-      emitExportType(
+      EmitTyp.emitExportType(
         ~early=true,
         ~language=config.language,
         ~emitters,
@@ -434,7 +443,7 @@ let rec emitCodeItem =
       | _ => [jsPropsDot("children")]
       };
 
-    let emitters = emitExportType(~emitters, ~language, exportType);
+    let emitters = EmitTyp.emitExportType(~emitters, ~language, exportType);
 
     let numArgs = args |> List.length;
     let useCurry = numArgs >= 2;
@@ -546,7 +555,7 @@ let rec emitCodeItem =
       };
     };
 
-    let emitters = emitExportType(~emitters, ~language, exportType);
+    let emitters = EmitTyp.emitExportType(~emitters, ~language, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
     let emitters =

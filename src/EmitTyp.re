@@ -221,13 +221,10 @@ let emitExportDefault = (~emitters, ~config, name) =>
 
 let emitExportType =
     (
-      ~early,
+      ~early=false,
       ~emitters,
       ~language,
-      ~opaque,
-      ~optTyp,
-      ~typeVars,
-      resolvedTypeName,
+      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
     ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
   let typeParamsString = genericsString(~typeVars);
@@ -399,8 +396,5 @@ let emitImportTypeAs =
     |> Emitters.import(~emitters)
   | Untyped => emitters
   };
-
-let blockTagValue = (~language, i) =>
-  string_of_int(i) ++ (language == Typescript ? " as any" : "");
 
 let ofTypeAny = (~language, s) => language == Typescript ? s ++ ": any" : s;

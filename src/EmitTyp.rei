@@ -1,7 +1,5 @@
 open GenTypeCommon;
 
-let blockTagValue: (~language: language, int) => string;
-
 let componentExportName:
   (~language: language, ~fileName: ModuleName.t, ~moduleName: ModuleName.t) =>
   string;
@@ -54,13 +52,10 @@ let emitExportFunction:
 
 let emitExportType:
   (
-    ~early: bool,
+    ~early: bool=?,
     ~emitters: Emitters.t,
     ~language: language,
-    ~opaque: bool,
-    ~optTyp: option(typ),
-    ~typeVars: list(string),
-    string
+    CodeItem.exportType
   ) =>
   Emitters.t;
 

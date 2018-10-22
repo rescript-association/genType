@@ -144,29 +144,3 @@ let getImportTypeUniqueName = (importType: importType) =>
 
 let importTypeCompare = (i1, i2) =>
   compare(i1 |> getImportTypeUniqueName, i2 |> getImportTypeUniqueName);
-
-let toString = (~language, codeItem: t) =>
-  switch (codeItem) {
-  | ExportComponent({fileName, moduleName, _}) =>
-    "ExportComponent fileName:"
-    ++ (fileName |> ModuleName.toString)
-    ++ " moduleName:"
-    ++ (moduleName |> ModuleName.toString)
-  | ExportValue({fileName, resolvedName, typ, _}) =>
-    "WrapReasonValue"
-    ++ " resolvedName:"
-    ++ resolvedName
-    ++ " moduleName:"
-    ++ ModuleName.toString(fileName)
-    ++ " typ:"
-    ++ EmitTyp.typToString(~language, typ)
-  | ExportType({resolvedTypeName, _}) => "ExportType " ++ resolvedTypeName
-  | ExportVariantLeaf({leafName, _}) => "WrapVariantLeaf " ++ leafName
-  | ExportVariantType({name, _}) => "ExportVariantType " ++ name
-  | ImportComponent({importAnnotation, _}) =>
-    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
-  | ImportType(importType) =>
-    "ImportType " ++ getImportTypeUniqueName(importType)
-  | ImportValue({importAnnotation, _}) =>
-    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
-  };

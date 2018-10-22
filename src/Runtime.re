@@ -11,8 +11,10 @@ type moduleItemGen = {mutable itemValue: int};
 
 type moduleItem = int;
 
-let emitRecordAsInt = (~language, i) =>
-  i |> EmitTyp.blockTagValue(~language);
+let blockTagValue = (~language, i) =>
+  string_of_int(i) ++ (language == GenTypeCommon.Typescript ? " as any" : "");
+
+let emitRecordAsInt = (~language, i) => i |> blockTagValue(~language);
 
 let emitRecordAsBlock = (~language, ~args, recordValue) =>
   createBucklescriptBlock
