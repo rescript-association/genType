@@ -45,7 +45,7 @@ let inputCmtToTypeDeclarations =
     |> List.concat;
   (
     typeDeclarations
-    |> Translation.translateTypeDeclarations(
+    |> TranslateTypeDeclarations.translateTypeDeclarations(
          ~config,
          ~outputFileRelative,
          ~resolver,
@@ -64,7 +64,7 @@ let translateCMT =
     switch (cmt_annots) {
     | Implementation(structure) =>
       structure
-      |> Translation.translateStructure(
+      |> TranslateStructure.translateStructure(
            ~config,
            ~outputFileRelative,
            ~resolver,
@@ -73,7 +73,7 @@ let translateCMT =
          )
     | Interface(signature) =>
       signature
-      |> Translation.translateSignature(
+      |> TranslateSignature.translateSignature(
            ~config,
            ~outputFileRelative,
            ~resolver,
