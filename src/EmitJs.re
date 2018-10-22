@@ -705,13 +705,13 @@ let emitEnumTables = (~emitters, enumTables) => {
   );
 };
 
-let emitCodeItemsAsString =
+let emitTranslationAsString =
     (
       ~config,
       ~outputFileRelative,
       ~resolver,
       ~inputCmtToTypeDeclarations,
-      codeItems,
+      translation: Translation.t,
     ) => {
   let language = config.language;
 
@@ -721,10 +721,19 @@ let emitCodeItemsAsString =
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let exportTypeMap = codeItems |> createExportTypeMap(~language);
+  let exportTypeMap = translation.codeItems |> createExportTypeMap(~language);
+
   let enumTables = Hashtbl.create(1);
+  let imports =
+    translation.dependencies
+    |> Translation.translateDependencies(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+       );
   let (finalEnv, emitters) =
-    codeItems
+    imports  /* imports go first to build up type tables */
+    @ translation.codeItems
     |> emitCodeItems(
          ~config,
          ~outputFileRelative,

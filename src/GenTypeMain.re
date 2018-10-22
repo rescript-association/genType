@@ -49,12 +49,10 @@ let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
     codeItems;
 };
 
-let cmtToCodeItems =
-    (~config, ~fileName, ~outputFileRelative, ~resolver, inputCMT)
-    : list(CodeItem.t) => {
+let translateCMT = (~config, ~fileName, inputCMT): Translation.t => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
-  let translationUnits =
+  let translations =
     switch (cmt_annots) {
     | Implementation(structure) =>
       structure
@@ -64,31 +62,22 @@ let cmtToCodeItems =
       |> Translation.translateSignature(~config, ~fileName, ~typeEnv)
     | _ => []
     };
-  let translationUnit = translationUnits |> Translation.combine;
-  let imports =
-    translationUnit.dependencies
-    |> Translation.translateDependencies(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-       );
-  imports /* imports go first to look up type definitions */
-  @ translationUnit.codeItems;
+  translations |> Translation.combine;
 };
 
-let emitCodeItems =
+let emitTranslation =
     (
       ~config,
       ~outputFile,
       ~outputFileRelative,
       ~signFile,
       ~resolver,
-      codeItems,
+      translation,
     ) => {
   let language = config.language;
   let codeText =
-    codeItems
-    |> EmitJs.emitCodeItemsAsString(
+    translation
+    |> EmitJs.emitTranslationAsString(
          ~config,
          ~outputFileRelative,
          ~resolver,
@@ -119,8 +108,8 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       );
     if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
-      |> cmtToCodeItems(~config, ~fileName, ~outputFileRelative, ~resolver)
-      |> emitCodeItems(
+      |> translateCMT(~config, ~fileName)
+      |> emitTranslation(
            ~config,
            ~outputFile,
            ~outputFileRelative,
