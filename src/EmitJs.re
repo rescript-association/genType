@@ -72,7 +72,7 @@ let emitImport =
       ~emitters,
       ~inputCmtToTypeDeclarations,
       ~env,
-      {CodeItem.typeName, asTypeName, importPath, cmtFile},
+      {Translation.typeName, asTypeName, importPath, cmtFile},
     ) => {
   let emitters =
     EmitTyp.emitImportTypeAs(
@@ -747,7 +747,7 @@ let emitTranslationAsString =
   let (env, emitters) =
     /* imports from dependencies go first to build up type tables */
     translation.importTypes
-    |> List.sort_uniq(CodeItem.importTypeCompare)
+    |> List.sort_uniq(Translation.importTypeCompare)
     |> emitImportTypes(
          ~config,
          ~outputFileRelative,

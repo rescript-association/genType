@@ -1,9 +1,28 @@
 open GenTypeCommon;
 
+type importType = {
+  typeName: string,
+  asTypeName: option(string),
+  importPath: ImportPath.t,
+  cmtFile: option(string),
+};
+
 type t = {
-  importTypes: list(CodeItem.importType),
+  importTypes: list(importType),
   codeItems: list(CodeItem.t),
 };
+
+let getImportTypeUniqueName = ({typeName, asTypeName, _}: importType) =>
+  typeName
+  ++ (
+    switch (asTypeName) {
+    | None => ""
+    | Some(s) => "_as_" ++ s
+    }
+  );
+
+let importTypeCompare = (i1, i2) =>
+  compare(i1 |> getImportTypeUniqueName, i2 |> getImportTypeUniqueName);
 
 let combine = (translations: list(t)): t =>
   translations
@@ -97,7 +116,7 @@ let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
   switch (path) {
   | Dependencies.Pid(name) when name == "list" => [
       {
-        CodeItem.typeName: "list",
+        typeName: "list",
         asTypeName: None,
         importPath:
           ModuleName.reasonPervasives
@@ -150,8 +169,7 @@ let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
   };
 
 let translateDependencies =
-    (~config, ~outputFileRelative, ~resolver, dependencies)
-    : list(CodeItem.importType) =>
+    (~config, ~outputFileRelative, ~resolver, dependencies): list(importType) =>
   dependencies
   |> List.map(pathToImportType(~config, ~outputFileRelative, ~resolver))
   |> List.concat;
@@ -736,7 +754,7 @@ let traslateDeclarationKind =
       };
     let importTypes = [
       {
-        CodeItem.typeName,
+        typeName,
         asTypeName,
         importPath: importString |> ImportPath.fromStringUnsafe,
         cmtFile: None,

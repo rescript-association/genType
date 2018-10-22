@@ -13,13 +13,6 @@ type exportVariantType = {
   name: string,
 };
 
-type importType = {
-  typeName: string,
-  asTypeName: option(string),
-  importPath: ImportPath.t,
-  cmtFile: option(string),
-};
-
 type importAnnotation = {
   name: string,
   importPath: ImportPath.t,
@@ -80,15 +73,3 @@ and t =
   | ExportVariantType(exportVariantType)
   | ImportComponent(importComponent)
   | ImportValue(importValue);
-
-let getImportTypeUniqueName = ({typeName, asTypeName, _}: importType) =>
-  typeName
-  ++ (
-    switch (asTypeName) {
-    | None => ""
-    | Some(s) => "_as_" ++ s
-    }
-  );
-
-let importTypeCompare = (i1, i2) =>
-  compare(i1 |> getImportTypeUniqueName, i2 |> getImportTypeUniqueName);
