@@ -114,7 +114,8 @@ let typToConverterOpaque =
           | Not_found => typesFromOtherFiles |> StringMap.find(s)
           }
         ) {
-        | (typeVars, t, _genTypeKind) =>
+        | (_, _, GenTypeOpaque) => (IdentC, true)
+        | (typeVars, t, _) =>
           let pairs =
             try (List.combine(typeVars, typeArguments)) {
             | Invalid_argument(_) => []

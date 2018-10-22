@@ -98,3 +98,11 @@ export const computeNestedNestedHalfNullable: (bigType) => number = RecordsBS.co
 export type testMutable = {|mutableField: number, +immutableField: number|};
 
 export const useTypeImportedInOtherModule: (Types_weekday) => Types_weekday = RecordsBS.useTypeImportedInOtherModule;
+
+export opaque type innerRecord = mixed;
+
+export type outerRecord = {|+innerRecord: innerRecord|};
+
+export const convertInner: (innerRecord) => innerRecord = RecordsBS.convertInner;
+
+export const convertOuter: (outerRecord) => outerRecord = function _(Arg1) { const result = RecordsBS.convertOuter([Arg1.innerRecord]); return {innerRecord:result[0]} };

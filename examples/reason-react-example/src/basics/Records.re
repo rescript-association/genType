@@ -149,3 +149,15 @@ type testMutable = {
 
 [@genType]
 let useTypeImportedInOtherModule = (x: Types.weekday) => x;
+
+[@genType.opaque]
+type innerRecord = {inner: int};
+
+[@genType]
+type outerRecord = {innerRecord};
+
+[@genType]
+let convertInner = (x: innerRecord) => x;
+
+[@genType]
+let convertOuter = (x: outerRecord) => x;

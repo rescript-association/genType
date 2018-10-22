@@ -57,6 +57,14 @@ function useTypeImportedInOtherModule(x) {
   return x;
 }
 
+function convertInner(x) {
+  return x;
+}
+
+function convertOuter(x) {
+  return x;
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -74,4 +82,6 @@ exports.computeNestedNested = computeNestedNested;
 exports.computeNestedNestedNullable = computeNestedNestedNullable;
 exports.computeNestedNestedHalfNullable = computeNestedNestedHalfNullable;
 exports.useTypeImportedInOtherModule = useTypeImportedInOtherModule;
+exports.convertInner = convertInner;
+exports.convertOuter = convertOuter;
 /* No side effect */
