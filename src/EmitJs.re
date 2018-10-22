@@ -142,7 +142,12 @@ let codeItemToString = (~language, codeItem: CodeItem.t) =>
   };
 
 let emitExportType =
-    (~early=?, ~emitters, ~language, exportType: CodeItem.exportType) => {
+    (
+      ~early=?,
+      ~emitters,
+      ~language,
+      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
+    ) => {
   let rec isOpaque = typ =>
     switch (typ) {
     | Array(t, _) => t |> isOpaque
@@ -157,16 +162,21 @@ let emitExportType =
     | Tuple(innerTypes) => innerTypes |> List.exists(isOpaque)
     | TypeVar(_) => true
     };
-  let exportType = {
-    ...exportType,
-    CodeItem.opaque:
-      switch (exportType.opaque, exportType.optTyp) {
-      | (Some(_), _) => exportType.opaque
-      | (None, Some(typ)) => Some(typ |> isOpaque)
-      | (None, None) => Some(false)
-      },
-  };
-  exportType |> EmitTyp.emitExportType(~early?, ~emitters, ~language);
+  let opaque =
+    switch (opaque, optTyp) {
+    | (Some(opaque), _) => opaque
+    | (None, Some(typ)) => typ |> isOpaque
+    | (None, None) => false
+    };
+  resolvedTypeName
+  |> EmitTyp.emitExportType(
+       ~early?,
+       ~emitters,
+       ~language,
+       ~opaque,
+       ~typeVars,
+       ~optTyp,
+     );
 };
 
 let rec emitCodeItem =
@@ -296,7 +306,7 @@ let rec emitCodeItem =
       (
         "function _"
         ++ EmitText.parens(
-             (propsFields |> List.map(({name}: field) => name))
+             (propsFields |> List.map(({name, _}: field) => name))
              @ ["children"]
              |> List.map(EmitTyp.ofTypeAny(~language)),
            )
@@ -306,7 +316,7 @@ let rec emitCodeItem =
              "{"
              ++ (
                propsFields
-               |> List.map(({name: propName, optional, typ: propTyp}) =>
+               |> List.map(({name: propName, optional, typ: propTyp, _}) =>
                     propName
                     ++ ": "
                     ++ (

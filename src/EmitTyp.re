@@ -224,7 +224,10 @@ let emitExportType =
       ~early=false,
       ~emitters,
       ~language,
-      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
+      ~opaque,
+      ~typeVars,
+      ~optTyp,
+      resolvedTypeName,
     ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
   let typeParamsString = genericsString(~typeVars);
@@ -234,27 +237,26 @@ let emitExportType =
     switch (optTyp) {
     | Some(typ) =>
       "export"
-      ++ (opaque == Some(true) ? " opaque " : " ")
+      ++ (opaque ? " opaque " : " ")
       ++ "type "
       ++ resolvedTypeName
       ++ typeParamsString
       ++ " = "
       ++ (
-        (opaque == Some(true) ? mixedOrUnknown(~language) : typ)
-        |> typToString(~language)
+        (opaque ? mixedOrUnknown(~language) : typ) |> typToString(~language)
       )
       ++ ";"
       |> export(~emitters)
     | None =>
       "export"
-      ++ (opaque == Some(true) ? " opaque " : " ")
+      ++ (opaque ? " opaque " : " ")
       ++ "type "
       ++ (resolvedTypeName |> EmitText.brackets)
       ++ ";"
       |> export(~emitters)
     }
   | Typescript =>
-    if (opaque == Some(true)) {
+    if (opaque) {
       /* Represent an opaque type as an absract class with a field called 'opaque'.
          Any type parameters must occur in the type of opaque, so that different
          instantiations are considered different types. */

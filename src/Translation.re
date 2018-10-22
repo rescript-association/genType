@@ -341,7 +341,7 @@ let translatePrimitive =
           switch (propOrChildren) {
           | GroupOfLabeledArgs(fields) => (
               fields
-              |> List.map(({optional, typ} as field) =>
+              |> List.map(({optional, typ, _} as field) =>
                    switch (typ, optional) {
                    | (Option(typ1), Optional) => {
                        ...field,

@@ -89,7 +89,7 @@ let rec free_ = typ: StringSet.t =>
   | Record(fields) =>
     fields
     |> List.fold_left(
-         (s, {typ}) => StringSet.union(s, typ |> free_),
+         (s, {typ, _}) => StringSet.union(s, typ |> free_),
          StringSet.empty,
        )
   | Ident(_, typeArgs) =>

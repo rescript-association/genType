@@ -55,7 +55,10 @@ let emitExportType:
     ~early: bool=?,
     ~emitters: Emitters.t,
     ~language: language,
-    CodeItem.exportType
+    ~opaque: bool,
+    ~typeVars: list(string),
+    ~optTyp: option(typ),
+    string
   ) =>
   Emitters.t;
 
