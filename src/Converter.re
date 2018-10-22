@@ -104,37 +104,37 @@ let typToConverterOpaque =
     | GroupOfLabeledArgs(_) => (IdentC, true)
 
     | Ident(s, typeArguments) =>
-      let opaqueUnlessBase =
-        !(typ == booleanT || typ == numberT || typ == stringT);
       if (visited |> StringSet.mem(s)) {
         circular := s;
         (IdentC, false);
       } else {
-        try (
-          {
-            let visited = visited |> StringSet.add(s);
-            let (typeVars, t) =
-              try (exportTypeMap |> StringMap.find(s)) {
-              | Not_found => typesFromOtherFiles |> StringMap.find(s)
-              };
-            let pairs =
-              try (List.combine(typeVars, typeArguments)) {
-              | Invalid_argument(_) => []
-              };
-
-            let f = typeVar =>
-              switch (
-                pairs |> List.find(((typeVar1, _)) => typeVar == typeVar1)
-              ) {
-              | (_, typeArgument) => Some(typeArgument)
-              | exception Not_found => None
-              };
-            (t |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
+        let visited = visited |> StringSet.add(s);
+        switch (
+          try (exportTypeMap |> StringMap.find(s)) {
+          | Not_found => typesFromOtherFiles |> StringMap.find(s)
           }
         ) {
-        | Not_found => (IdentC, opaqueUnlessBase)
+        | (typeVars, t) =>
+          let pairs =
+            try (List.combine(typeVars, typeArguments)) {
+            | Invalid_argument(_) => []
+            };
+
+          let f = typeVar =>
+            switch (
+              pairs |> List.find(((typeVar1, _)) => typeVar == typeVar1)
+            ) {
+            | (_, typeArgument) => Some(typeArgument)
+            | exception Not_found => None
+            };
+          (t |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
+        | exception Not_found =>
+          let opaqueUnlessBase =
+            !(typ == booleanT || typ == numberT || typ == stringT);
+          (IdentC, opaqueUnlessBase);
         };
-      };
+      }
+
     | Nullable(t) =>
       let (converter, opaque) = t |> visit(~visited);
       (NullableC(converter), opaque);
