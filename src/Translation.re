@@ -35,7 +35,7 @@ let combine = (translations: list(t)): t =>
     }
   );
 
-let translateExportType =
+let createExportType =
     (~opaque, ~typeVars, ~optTyp, ~typeEnv, typeName): CodeItem.t => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
   ExportType({opaque, typeVars, resolvedTypeName, optTyp});
@@ -230,7 +230,6 @@ let translateValue =
  *
  *     {named: number, args?: number}
  */
-
 let translateComponent =
     (
       ~config,
@@ -603,7 +602,7 @@ let traslateDeclarationKind =
         importTypes: [],
         codeItems: [
           typeName
-          |> translateExportType(
+          |> createExportType(
                ~opaque=Some(true),
                ~typeVars,
                ~optTyp=(Some(mixedOrUnknown(~language)), genTypeKind),
@@ -645,7 +644,7 @@ let traslateDeclarationKind =
         };
       let codeItems = [
         typeName
-        |> translateExportType(
+        |> createExportType(
              ~opaque,
              ~typeVars,
              ~optTyp=(Some(typ), genTypeKind),
@@ -701,7 +700,7 @@ let traslateDeclarationKind =
         dependencies
         |> translateDependencies(~config, ~outputFileRelative, ~resolver),
       codeItems: [
-        typeName |> translateExportType(~opaque, ~typeVars, ~optTyp, ~typeEnv),
+        typeName |> createExportType(~opaque, ~typeVars, ~optTyp, ~typeEnv),
       ],
     };
 
@@ -763,7 +762,7 @@ let traslateDeclarationKind =
     let codeItems = [
       /* Make the imported type usable from other modules by exporting it too. */
       typeName_
-      |> translateExportType(
+      |> createExportType(
            ~opaque=Some(false),
            ~typeVars=[],
            ~optTyp=(None, genTypeKind),
