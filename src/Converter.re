@@ -85,7 +85,7 @@ let rec toString = converter =>
   };
 
 let typToConverterOpaque =
-    (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
+    (~language, ~exportTypeMap: typeMap, ~typesFromOtherFiles, typ) => {
   let circular = ref("");
   let rec visit = (~visited: StringSet.t, typ) =>
     switch (typ) {
@@ -114,7 +114,7 @@ let typToConverterOpaque =
           | Not_found => typesFromOtherFiles |> StringMap.find(s)
           }
         ) {
-        | (typeVars, t) =>
+        | (typeVars, t, _genTypeKind) =>
           let pairs =
             try (List.combine(typeVars, typeArguments)) {
             | Invalid_argument(_) => []

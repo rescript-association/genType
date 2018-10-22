@@ -1,7 +1,5 @@
 open GenTypeCommon;
 
-type typeMap = StringMap.t((list(string), typ));
-
 type env = {
   requiresEarly: ModuleNameMap.t((ImportPath.t, bool)),
   requires: ModuleNameMap.t((ImportPath.t, bool)),
@@ -37,15 +35,20 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
           switch (optTyp) {
-          | Some(typ) => " = %s" ++ (typ |> EmitTyp.typToString(~language))
-          | None => ""
+          | (Some(typ), genTypeKind) =>
+            " "
+            ++ (genTypeKind |> genTypeKindToString |> EmitText.comment)
+            ++ " = "
+            ++ (typ |> EmitTyp.typToString(~language))
+          | (None, _) => ""
           },
         );
       };
       switch (optTyp) {
-      | Some(typ) =>
-        exportTypeMap |> StringMap.add(resolvedTypeName, (typeVars, typ))
-      | None => exportTypeMap
+      | (Some(typ), genTypeKind) =>
+        exportTypeMap
+        |> StringMap.add(resolvedTypeName, (typeVars, typ, genTypeKind))
+      | (None, _) => exportTypeMap
       };
     };
     switch (codeItem) {
@@ -150,7 +153,7 @@ let emitExportType =
       {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
     ) => {
   let opaque =
-    switch (opaque, optTyp) {
+    switch (opaque, optTyp |> fst) {
     | (Some(opaque), _) => opaque
     | (None, Some(typ)) => typ |> typIsOpaque
     | (None, None) => false

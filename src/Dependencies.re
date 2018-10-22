@@ -213,7 +213,6 @@ let rec extract_fun =
   | Tarrow(lbl, typExpr1, typExpr2, _) =>
     switch (removeOption(lbl, typExpr1)) {
     | None =>
-      /* TODO: Convert name to object, convert null to optional. */
       let {dependencies, typ: typ1} =
         typExpr1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
@@ -230,7 +229,6 @@ let rec extract_fun =
       let {dependencies, typ: typ1} =
         t1 |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      /* TODO: Convert name to object, convert null to optional. */
       extract_fun(
         ~language,
         ~typeVarsGen,

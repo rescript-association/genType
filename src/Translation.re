@@ -25,11 +25,15 @@ let translateExportType =
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
 
-/*
- * TODO: Make the types namespaced by nested Flow module.
- */
 let translateConstructorDeclaration =
-    (~language, ~recordGen, ~typeEnv, variantTypeName, constructorDeclaration) => {
+    (
+      ~language,
+      ~recordGen,
+      ~genTypeKind,
+      ~typeEnv,
+      variantTypeName,
+      constructorDeclaration,
+    ) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
   let leafNameResolved = leafName |> TypeEnv.addModulePath(~typeEnv);
@@ -61,7 +65,7 @@ let translateConstructorDeclaration =
         opaque: Some(true),
         typeVars,
         resolvedTypeName: variantTypeNameResolved,
-        optTyp: Some(mixedOrUnknown(~language)),
+        optTyp: (Some(mixedOrUnknown(~language)), genTypeKind),
       },
       constructorTyp,
       argTypes,
@@ -208,7 +212,7 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
           opaque: Some(false),
           typeVars,
           resolvedTypeName: propsTypeName,
-          optTyp: Some(propsType),
+          optTyp: (Some(propsType), NoGenType),
         },
         fileName,
         moduleName,
@@ -367,7 +371,7 @@ let translatePrimitive =
           opaque: Some(false),
           typeVars,
           resolvedTypeName: propsTypeName,
-          optTyp: Some(propsTyp),
+          optTyp: (Some(propsTyp), NoGenType),
         },
         importAnnotation:
           importString |> Annotation.importAnnotationFromString,
@@ -406,7 +410,7 @@ let translateTypeDeclaration =
     (
       ~language,
       ~typeEnv,
-      ~genTypeKind: CodeItem.genTypeKind,
+      ~genTypeKind: genTypeKind,
       dec: Typedtree.type_declaration,
     )
     : t => {
@@ -446,7 +450,7 @@ let translateTypeDeclaration =
              };
            {name, optional, mutable_, typ: typ1};
          });
-    let optTyp = Some(Record(fields));
+    let optTyp = (Some(Record(fields)), genTypeKind);
     let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
     let opaque = Some(genTypeKind == GenTypeOpaque);
@@ -474,7 +478,7 @@ let translateTypeDeclaration =
           |> translateExportType(
                ~opaque=Some(true),
                ~typeVars,
-               ~optTyp=Some(mixedOrUnknown(~language)),
+               ~optTyp=(Some(mixedOrUnknown(~language)), genTypeKind),
                ~typeEnv,
              ),
         ],
@@ -516,7 +520,7 @@ let translateTypeDeclaration =
         |> translateExportType(
              ~opaque,
              ~typeVars,
-             ~optTyp=Some(typ),
+             ~optTyp=(Some(typ), genTypeKind),
              ~typeEnv,
            ),
       ];
@@ -533,6 +537,7 @@ let translateTypeDeclaration =
            translateConstructorDeclaration(
              ~language,
              ~recordGen,
+             ~genTypeKind,
              ~typeEnv,
              variantTypeName,
              constructorDeclaration,
@@ -591,7 +596,7 @@ let translateTypeDeclaration =
         |> translateExportType(
              ~opaque=Some(false),
              ~typeVars=[],
-             ~optTyp=None,
+             ~optTyp=(None, genTypeKind),
              ~typeEnv,
            ),
       ];

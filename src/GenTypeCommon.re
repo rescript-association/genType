@@ -121,6 +121,20 @@ type label =
   | Label(string)
   | OptLabel(string);
 
+type genTypeKind =
+  | NoGenType
+  | GenType
+  | GenTypeOpaque;
+
+type typeMap = StringMap.t((list(string), typ, genTypeKind));
+
+let genTypeKindToString = genTypeKind =>
+  switch (genTypeKind) {
+  | NoGenType => "NoGenType"
+  | GenType => "GenType"
+  | GenTypeOpaque => "GenTypeOpaque"
+  };
+
 let createEnum = cases => {
   let hash =
     cases

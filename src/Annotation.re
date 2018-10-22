@@ -1,3 +1,5 @@
+open GenTypeCommon;
+
 let tagIsGenType = s => s == "genType";
 let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
 
@@ -35,7 +37,7 @@ let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
 
 let getGenTypeKind = (attributes: Typedtree.attributes) =>
   if (hasAttribute(tagIsGenType, attributes)) {
-    CodeItem.GenType;
+    GenType;
   } else if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
     GenTypeOpaque;
   } else {

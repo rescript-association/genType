@@ -4,7 +4,7 @@ type exportType = {
   opaque: option(bool),
   typeVars: list(string),
   resolvedTypeName: string,
-  optTyp: option(typ),
+  optTyp: (option(typ), genTypeKind),
 };
 
 type exportVariantType = {
@@ -85,11 +85,6 @@ and t =
   | ImportComponent(importComponent)
   | ImportType(importType)
   | ImportValue(importValue);
-
-type genTypeKind =
-  | NoGenType
-  | GenType
-  | GenTypeOpaque;
 
 let getPriority = x =>
   switch (x) {
