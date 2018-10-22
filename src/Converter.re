@@ -84,28 +84,30 @@ let rec toString = converter =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
   };
 
-let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
+let typToConverterOpaque =
+    (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
   let circular = ref("");
   let rec visit = (~visited: StringSet.t, typ) =>
     switch (typ) {
     | Array(t, _) =>
-      let converter = t |> visit(~visited);
-      ArrayC(converter);
+      let (converter, opaque) = t |> visit(~visited);
+      (ArrayC(converter), opaque);
 
-    | Enum(cases) => EnumC(cases)
+    | Enum(cases) => (EnumC(cases), false)
 
     | Function({argTypes, retType, _}) =>
       let argConverters =
         argTypes |> List.map(typToGroupedArgConverter(~visited));
-      let retConverter = retType |> visit(~visited);
-      FunctionC(argConverters, retConverter);
+      let (retConverter, _) = retType |> visit(~visited);
+      (FunctionC(argConverters, retConverter), false);
 
-    | GroupOfLabeledArgs(_) => IdentC
+    | GroupOfLabeledArgs(_) => (IdentC, true)
 
     | Ident(s, typeArguments) =>
+      let opaqueUnlessBase = !(typ == booleanT || typ == numberT || typ == stringT);
       if (visited |> StringSet.mem(s)) {
         circular := s;
-        IdentC;
+        (IdentC, false);
       } else {
         try (
           {
@@ -126,54 +128,73 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
               | (_, typeArgument) => Some(typeArgument)
               | exception Not_found => None
               };
-            t |> TypeVars.substitute(~f) |> visit(~visited);
+            (t |> TypeVars.substitute(~f) |> visit(~visited) |> fst, opaqueUnlessBase);
           }
         ) {
-        | Not_found => IdentC
+        | Not_found => (
+            IdentC,
+            opaqueUnlessBase,
+          )
         };
       }
     | Nullable(t) =>
-      let converter = t |> visit(~visited);
-      NullableC(converter);
+      let (converter, opaque) = t |> visit(~visited);
+      (NullableC(converter), opaque);
 
-    | Object(fields) =>
-      ObjectC(
-        fields
-        |> List.map(({name, optional, typ, _}) =>
-             (
-               name,
-               (optional == Mandatory ? typ : Option(typ)) |> visit(~visited),
-             )
-           ),
+    | Object(fields) => (
+        ObjectC(
+          fields
+          |> List.map(({name, optional, typ, _}) =>
+               (
+                 name,
+                 (optional == Mandatory ? typ : Option(typ))
+                 |> visit(~visited)
+                 |> fst,
+               )
+             ),
+        ),
+        false,
       )
 
-    | Option(t) => OptionC(t |> visit(~visited))
+    | Option(t) =>
+      let (converter, opaque) = t |> visit(~visited);
+      (OptionC(converter), opaque);
 
-    | Record(fields) =>
-      RecordC(
-        fields
-        |> List.map(({name, optional, typ, _}) =>
-             (
-               name,
-               (optional == Mandatory ? typ : Option(typ)) |> visit(~visited),
-             )
-           ),
+    | Record(fields) => (
+        RecordC(
+          fields
+          |> List.map(({name, optional, typ, _}) =>
+               (
+                 name,
+                 (optional == Mandatory ? typ : Option(typ))
+                 |> visit(~visited)
+                 |> fst,
+               )
+             ),
+        ),
+        false,
       )
 
-    | Tuple(innerTypes) => TupleC(innerTypes |> List.map(visit(~visited)))
-    | TypeVar(_) => IdentC
+    | Tuple(innerTypes) =>
+      let (innerConversions, opaques) =
+        innerTypes |> List.map(visit(~visited)) |> List.split;
+      (TupleC(innerConversions), opaques |> List.mem(true));
+
+    | TypeVar(_) => (IdentC, true)
     }
   and typToGroupedArgConverter = (~visited, typ) =>
     switch (typ) {
     | GroupOfLabeledArgs(fields) =>
       GroupConverter(
         fields
-        |> List.map(({name, typ, _}) => (name, typ |> visit(~visited))),
+        |> List.map(({name, typ, _}) =>
+             (name, typ |> visit(~visited) |> fst)
+           ),
       )
-    | _ => ArgConverter(Nolabel, typ |> visit(~visited))
+    | _ => ArgConverter(Nolabel, typ |> visit(~visited) |> fst)
     };
 
-  let converter = typ |> visit(~visited=StringSet.empty);
+  let (converter, opaque) = typ |> visit(~visited=StringSet.empty);
   if (Debug.converter) {
     logItem(
       "Converter typ:%s converter:%s\n",
@@ -181,8 +202,15 @@ let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) => {
       converter |> toString,
     );
   };
-  circular^ != "" ? CircularC(circular^, converter) : converter;
+  let finalConverter =
+    circular^ != "" ? CircularC(circular^, converter) : converter;
+  (finalConverter, opaque);
 };
+
+let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) =>
+  typ
+  |> typToConverterOpaque(~language, ~exportTypeMap, ~typesFromOtherFiles)
+  |> fst;
 
 let rec converterIsIdentity = (~toJS, converter) =>
   switch (converter) {

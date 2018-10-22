@@ -146,6 +146,7 @@ let emitExportType =
       ~early=?,
       ~emitters,
       ~language,
+      ~typIsOpaque,
       {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
     ) => {
   let rec isOpaque = typ =>
@@ -165,7 +166,7 @@ let emitExportType =
   let opaque =
     switch (opaque, optTyp) {
     | (Some(opaque), _) => opaque
-    | (None, Some(typ)) => typ |> isOpaque
+    | (None, Some(typ)) => typ |> typIsOpaque
     | (None, None) => false
     };
   resolvedTypeName
@@ -199,6 +200,14 @@ let rec emitCodeItem =
          ~exportTypeMap,
          ~typesFromOtherFiles=env.typesFromOtherFiles,
        );
+  let typIsOpaque = typ =>
+    typ
+    |> Converter.typToConverterOpaque(
+         ~language,
+         ~exportTypeMap,
+         ~typesFromOtherFiles=env.typesFromOtherFiles,
+       )
+    |> snd;
   if (Debug.codeItems) {
     logItem("Code Item: %s\n", codeItem |> codeItemToString(~language));
   };
@@ -206,7 +215,7 @@ let rec emitCodeItem =
   switch (codeItem) {
   | CodeItem.ExportType(exportType) => (
       env,
-      emitExportType(~emitters, ~language, exportType),
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType),
     )
 
   | ExportVariantType({CodeItem.typeParams, variants, name}) => (
@@ -271,6 +280,7 @@ let rec emitCodeItem =
         ~early=true,
         ~language=config.language,
         ~emitters,
+        ~typIsOpaque,
         exportType,
       );
     let emitters =
@@ -481,7 +491,8 @@ let rec emitCodeItem =
       | _ => [jsPropsDot("children")]
       };
 
-    let emitters = emitExportType(~emitters, ~language, exportType);
+    let emitters =
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType);
 
     let numArgs = args |> List.length;
     let useCurry = numArgs >= 2;
@@ -593,7 +604,8 @@ let rec emitCodeItem =
       };
     };
 
-    let emitters = emitExportType(~emitters, ~language, exportType);
+    let emitters =
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
     let emitters =
