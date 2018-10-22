@@ -96,8 +96,8 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
 let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
   switch (path) {
   | Dependencies.Pid(name) when name == "list" => [
-      CodeItem.ImportTypeAs({
-        typeName: "list",
+      {
+        CodeItem.typeName: "list",
         asTypeName: None,
         importPath:
           ModuleName.reasonPervasives
@@ -107,7 +107,7 @@ let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
                ~resolver,
              ),
         cmtFile: None,
-      }),
+      },
     ]
   | Pid(_) => []
   | Presolved(_) => []
@@ -146,7 +146,7 @@ let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
         |> Paths.getCmtFile;
       cmtFile == "" ? None : Some(cmtFile);
     };
-    [ImportTypeAs({typeName, asTypeName, importPath, cmtFile})];
+    [{typeName, asTypeName, importPath, cmtFile}];
   };
 
 let translateDependencies =
@@ -735,12 +735,12 @@ let traslateDeclarationKind =
       | _ => (nameWithModulePath, None)
       };
     let importTypes = [
-      CodeItem.ImportTypeAs({
-        typeName,
+      {
+        CodeItem.typeName,
         asTypeName,
         importPath: importString |> ImportPath.fromStringUnsafe,
         cmtFile: None,
-      }),
+      },
     ];
     let codeItems = [
       /* Make the imported type usable from other modules by exporting it too. */
