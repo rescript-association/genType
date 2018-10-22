@@ -24,7 +24,7 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
     {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
 };
 
-let createExportTypeMap = (~language, codeItems): typeMap => {
+let createExportTypeMap = (~language, translation: Translation.t): typeMap => {
   let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
     let addExportType =
         ({resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType) => {
@@ -61,7 +61,8 @@ let createExportTypeMap = (~language, codeItems): typeMap => {
     | ImportValue(_) => exportTypeMap
     };
   };
-  codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
+  translation.codeItems
+  |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
 let emitImport =
@@ -70,7 +71,7 @@ let emitImport =
       ~outputFileRelative,
       ~resolver,
       ~emitters,
-      ~inputCmtToTypeDeclarations,
+      ~inputCmtTranslateTypeDeclarations,
       ~env,
       {Translation.typeName, asTypeName, importPath, cmtFile},
     ) => {
@@ -103,7 +104,7 @@ let emitImport =
     | exception Not_found =>
       let exportTypeMapFromCmt =
         Cmt_format.read_cmt(cmtFile)
-        |> inputCmtToTypeDeclarations(
+        |> inputCmtTranslateTypeDeclarations(
              ~config,
              ~outputFileRelative,
              ~resolver,
@@ -705,7 +706,7 @@ let emitImportTypes =
       ~resolver,
       ~emitters,
       ~env,
-      ~inputCmtToTypeDeclarations,
+      ~inputCmtTranslateTypeDeclarations,
       importTypes,
     ) =>
   importTypes
@@ -716,7 +717,7 @@ let emitImportTypes =
            ~outputFileRelative,
            ~resolver,
            ~emitters,
-           ~inputCmtToTypeDeclarations,
+           ~inputCmtTranslateTypeDeclarations,
            ~env,
          ),
        (env, emitters),
@@ -727,7 +728,7 @@ let emitTranslationAsString =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~inputCmtToTypeDeclarations,
+      ~inputCmtTranslateTypeDeclarations,
       translation: Translation.t,
     ) => {
   let language = config.language;
@@ -738,7 +739,7 @@ let emitTranslationAsString =
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let exportTypeMap = translation.codeItems |> createExportTypeMap(~language);
+  let exportTypeMap = translation |> createExportTypeMap(~language);
   let enumTables = Hashtbl.create(1);
 
   let emitters = Emitters.initial
@@ -754,7 +755,7 @@ let emitTranslationAsString =
          ~resolver,
          ~emitters,
          ~env,
-         ~inputCmtToTypeDeclarations,
+         ~inputCmtTranslateTypeDeclarations,
        );
 
   let (finalEnv, emitters) =

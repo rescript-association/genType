@@ -27,32 +27,26 @@ let typeDeclarationsOfSignature = signatureItem =>
   | _ => []
   };
 
-let inputCmtToTypeDeclarations =
-    (~config, ~outputFileRelative, ~resolver, inputCMT): list(CodeItem.t) => {
+let inputCmtTranslateTypeDeclarations =
+    (~config, ~outputFileRelative, ~resolver, inputCMT): Translation.t => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
-  let typeDeclarations =
-    (
-      switch (cmt_annots) {
-      | Implementation(structure) =>
-        structure.Typedtree.str_items
-        |> List.map(typeDeclarationsOfStructItem)
-      | Interface(signature) =>
-        signature.Typedtree.sig_items |> List.map(typeDeclarationsOfSignature)
-      | _ => []
-      }
-    )
-    |> List.concat;
   (
-    typeDeclarations
-    |> TranslateTypeDeclarations.translateTypeDeclarations(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-       )
-  ).
-    codeItems;
+    switch (cmt_annots) {
+    | Implementation(structure) =>
+      structure.Typedtree.str_items |> List.map(typeDeclarationsOfStructItem)
+    | Interface(signature) =>
+      signature.Typedtree.sig_items |> List.map(typeDeclarationsOfSignature)
+    | _ => []
+    }
+  )
+  |> List.concat
+  |> TranslateTypeDeclarations.translateTypeDeclarations(
+       ~config,
+       ~outputFileRelative,
+       ~resolver,
+       ~typeEnv,
+     );
 };
 
 let translateCMT =
@@ -101,7 +95,7 @@ let emitTranslation =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~inputCmtToTypeDeclarations,
+         ~inputCmtTranslateTypeDeclarations,
        );
   let fileContents =
     signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText ++ "\n");
