@@ -1,7 +1,7 @@
 open GenTypeCommon;
 
 type exportType = {
-  opaque: bool,
+  opaque: option(bool),
   typeVars: list(string),
   resolvedTypeName: string,
   optTyp: option(typ),

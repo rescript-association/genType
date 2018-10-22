@@ -58,7 +58,7 @@ let translateConstructorDeclaration =
   let codeItems = [
     CodeItem.ExportVariantLeaf({
       exportType: {
-        opaque: true,
+        opaque: Some(true),
         typeVars,
         resolvedTypeName: variantTypeNameResolved,
         optTyp: Some(mixedOrUnknown(~language)),
@@ -205,7 +205,7 @@ let translateComponent = (~language, ~fileName, ~typeEnv, ~typeExpr, name): t =>
     let codeItems = [
       CodeItem.ExportComponent({
         exportType: {
-          opaque: false,
+          opaque: Some(false),
           typeVars,
           resolvedTypeName: propsTypeName,
           optTyp: Some(propsType),
@@ -364,7 +364,7 @@ let translatePrimitive =
     let codeItems = [
       CodeItem.ImportComponent({
         exportType: {
-          opaque: false,
+          opaque: Some(false),
           typeVars,
           resolvedTypeName: propsTypeName,
           optTyp: Some(propsTyp),
@@ -449,11 +449,11 @@ let translateTypeDeclaration =
     let optTyp = Some(Record(fields));
     let typeVars = TypeVars.extract(typeParams);
     let typeName = Ident.name(dec.typ_id);
+    let opaque = Some(genTypeKind == GenTypeOpaque);
     {
       dependencies,
       codeItems: [
-        typeName
-        |> translateExportType(~opaque=false, ~typeVars, ~optTyp, ~typeEnv),
+        typeName |> translateExportType(~opaque, ~typeVars, ~optTyp, ~typeEnv),
       ],
     };
 
@@ -472,7 +472,7 @@ let translateTypeDeclaration =
         codeItems: [
           typeName
           |> translateExportType(
-               ~opaque=true,
+               ~opaque=Some(true),
                ~typeVars,
                ~optTyp=Some(mixedOrUnknown(~language)),
                ~typeEnv,
@@ -483,22 +483,7 @@ let translateTypeDeclaration =
       let typeExprTranslation =
         coreType.Typedtree.ctyp_type
         |> Dependencies.translateTypeExpr(~language, ~typeEnv);
-      let rec isOpaque = typ =>
-        switch (typ) {
-        | Array(t, _) => t |> isOpaque
-        | Enum(_) => false
-        | Function(_) => false
-        | GroupOfLabeledArgs(_) => true
-        | Ident(_) => !(typ == booleanT || typ == numberT || typ == stringT)
-        | Nullable(t) => t |> isOpaque
-        | Object(_) => false
-        | Option(t) => t |> isOpaque
-        | Record(_) => false
-        | Tuple(innerTypes) => innerTypes |> List.exists(isOpaque)
-        | TypeVar(_) => true
-        };
-      let opaque =
-        genTypeKind == GenTypeOpaque || typeExprTranslation.typ |> isOpaque;
+      let opaque = genTypeKind == GenTypeOpaque ? Some(true) : None /* None means don't know */;
       let typ =
         switch (dec.typ_manifest, typeExprTranslation.typ) {
         | (Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}), Enum(enum))
@@ -604,7 +589,7 @@ let translateTypeDeclaration =
         dec.typ_id
         |> Ident.name
         |> translateExportType(
-             ~opaque=false,
+             ~opaque=Some(false),
              ~typeVars=[],
              ~optTyp=None,
              ~typeEnv,

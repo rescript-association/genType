@@ -141,6 +141,34 @@ let codeItemToString = (~language, codeItem: CodeItem.t) =>
     "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
   };
 
+let emitExportType =
+    (~early=?, ~emitters, ~language, exportType: CodeItem.exportType) => {
+  let rec isOpaque = typ =>
+    switch (typ) {
+    | Array(t, _) => t |> isOpaque
+    | Enum(_) => false
+    | Function(_) => false
+    | GroupOfLabeledArgs(_) => true
+    | Ident(_) => !(typ == booleanT || typ == numberT || typ == stringT)
+    | Nullable(t) => t |> isOpaque
+    | Object(_) => false
+    | Option(t) => t |> isOpaque
+    | Record(_) => false
+    | Tuple(innerTypes) => innerTypes |> List.exists(isOpaque)
+    | TypeVar(_) => true
+    };
+  let exportType = {
+    ...exportType,
+    CodeItem.opaque:
+      switch (exportType.opaque, exportType.optTyp) {
+      | (Some(_), _) => exportType.opaque
+      | (None, Some(typ)) => Some(typ |> isOpaque)
+      | (None, None) => Some(false)
+      },
+  };
+  exportType |> EmitTyp.emitExportType(~early?, ~emitters, ~language);
+};
+
 let rec emitCodeItem =
         (
           ~config,
@@ -168,7 +196,7 @@ let rec emitCodeItem =
   switch (codeItem) {
   | CodeItem.ExportType(exportType) => (
       env,
-      EmitTyp.emitExportType(~emitters, ~language, exportType),
+      emitExportType(~emitters, ~language, exportType),
     )
 
   | ExportVariantType({CodeItem.typeParams, variants, name}) => (
@@ -229,7 +257,7 @@ let rec emitCodeItem =
     let emitters =
       EmitTyp.emitRequireReact(~early=true, ~emitters, ~language);
     let emitters =
-      EmitTyp.emitExportType(
+      emitExportType(
         ~early=true,
         ~language=config.language,
         ~emitters,
@@ -443,7 +471,7 @@ let rec emitCodeItem =
       | _ => [jsPropsDot("children")]
       };
 
-    let emitters = EmitTyp.emitExportType(~emitters, ~language, exportType);
+    let emitters = emitExportType(~emitters, ~language, exportType);
 
     let numArgs = args |> List.length;
     let useCurry = numArgs >= 2;
@@ -555,7 +583,7 @@ let rec emitCodeItem =
       };
     };
 
-    let emitters = EmitTyp.emitExportType(~emitters, ~language, exportType);
+    let emitters = emitExportType(~emitters, ~language, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
     let emitters =

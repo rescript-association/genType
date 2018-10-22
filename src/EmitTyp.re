@@ -234,26 +234,27 @@ let emitExportType =
     switch (optTyp) {
     | Some(typ) =>
       "export"
-      ++ (opaque ? " opaque " : " ")
+      ++ (opaque == Some(true) ? " opaque " : " ")
       ++ "type "
       ++ resolvedTypeName
       ++ typeParamsString
       ++ " = "
       ++ (
-        (opaque ? mixedOrUnknown(~language) : typ) |> typToString(~language)
+        (opaque == Some(true) ? mixedOrUnknown(~language) : typ)
+        |> typToString(~language)
       )
       ++ ";"
       |> export(~emitters)
     | None =>
       "export"
-      ++ (opaque ? " opaque " : " ")
+      ++ (opaque == Some(true) ? " opaque " : " ")
       ++ "type "
       ++ (resolvedTypeName |> EmitText.brackets)
       ++ ";"
       |> export(~emitters)
     }
   | Typescript =>
-    if (opaque) {
+    if (opaque == Some(true)) {
       /* Represent an opaque type as an absract class with a field called 'opaque'.
          Any type parameters must occur in the type of opaque, so that different
          instantiations are considered different types. */
