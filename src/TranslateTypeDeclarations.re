@@ -7,6 +7,12 @@ type declarationKind =
   | ImportTypeDeclaration(string, option(Annotation.attributePayload))
   | NoDeclaration;
 
+let createExportType =
+    (~opaque, ~typeVars, ~optTyp, ~typeEnv, typeName): CodeItem.t => {
+  let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
+  ExportType({opaque, typeVars, resolvedTypeName, optTyp});
+};
+
 let traslateDeclarationKind =
     (
       ~config as {language} as config,
@@ -26,7 +32,7 @@ let traslateDeclarationKind =
         Translation.importTypes: [],
         codeItems: [
           typeName
-          |> Translation.createExportType(
+          |> createExportType(
                ~opaque=Some(true),
                ~typeVars,
                ~optTyp=(Some(mixedOrUnknown(~language)), genTypeKind),
@@ -68,7 +74,7 @@ let traslateDeclarationKind =
         };
       let codeItems = [
         typeName
-        |> Translation.createExportType(
+        |> createExportType(
              ~opaque,
              ~typeVars,
              ~optTyp=(Some(typ), genTypeKind),
@@ -132,8 +138,7 @@ let traslateDeclarationKind =
              ~resolver,
            ),
       codeItems: [
-        typeName
-        |> Translation.createExportType(~opaque, ~typeVars, ~optTyp, ~typeEnv),
+        typeName |> createExportType(~opaque, ~typeVars, ~optTyp, ~typeEnv),
       ],
     };
 
@@ -199,7 +204,7 @@ let traslateDeclarationKind =
     let codeItems = [
       /* Make the imported type usable from other modules by exporting it too. */
       typeName_
-      |> Translation.createExportType(
+      |> createExportType(
            ~opaque=Some(false),
            ~typeVars=[],
            ~optTyp=(None, genTypeKind),

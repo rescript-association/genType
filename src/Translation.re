@@ -35,12 +35,6 @@ let combine = (translations: list(t)): t =>
     }
   );
 
-let createExportType =
-    (~opaque, ~typeVars, ~optTyp, ~typeEnv, typeName): CodeItem.t => {
-  let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
-  ExportType({opaque, typeVars, resolvedTypeName, optTyp});
-};
-
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
 
