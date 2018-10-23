@@ -319,10 +319,10 @@ let translateTypeDeclaration =
 
   let declarationKind =
     switch (dec.typ_type.type_kind, genTypeKind) {
-    | (Type_record(labelDeclarations, _), GenType | GenTypeOpaque) =>
+    | (Type_record(labelDeclarations, _), _) =>
       RecordDelaration(labelDeclarations)
 
-    | (Type_variant(constructorDeclarations), GenType)
+    | (Type_variant(constructorDeclarations), _)
         when !hasSomeGADTLeaf(constructorDeclarations) =>
       VariantDeclaration(constructorDeclarations)
 
@@ -338,10 +338,7 @@ let translateTypeDeclaration =
           |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs),
         )
 
-      | _ when genTypeKind != NoGenType =>
-        GeneralDeclaration(dec.typ_manifest)
-
-      | _ => NoDeclaration
+      | _ => GeneralDeclaration(dec.typ_manifest)
       }
 
     | _ => NoDeclaration
