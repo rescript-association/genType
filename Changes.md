@@ -4,6 +4,8 @@
 - Support tuple types.
 - In Flow, keep opaque types also opaque internally, so export erros are caught early like in TS.
 - Fix: Type names for types which are defined somewhere are not considered opaque.
+- Fix: no conversion generated for opaque types.
+- Generated code can be in a different order, because of refactoring how type declarations are processed.
 
 # 0.22.0
 - Support the case where the `make` function of an exported Reason component could be curried.
