@@ -303,7 +303,12 @@ and translateTypeExpr_ =
     }
 
   | Tconstr(Pdot(Pident({name: "FB", _}), "array", _), [param], _)
-  | Tconstr(Pident({name: "array", _}), [param], _) =>
+  | Tconstr(Pident({name: "array", _}), [param], _)
+  | Tconstr(
+      Pdot(Pdot(Pident({name: "Js", _}), "Array", _), "t", _),
+      [param],
+      _,
+    ) =>
     let paramTranslation =
       param |> translateTypeExpr_(~language, ~typeVarsGen, ~typeEnv);
     {...paramTranslation, typ: Array(paramTranslation.typ, Mutable)};

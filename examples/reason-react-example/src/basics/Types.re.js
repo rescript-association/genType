@@ -10,8 +10,6 @@ const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
 // $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
 
-import type {Array_t as Js_Array_t} from '../../src/shims/Js.shim';
-
 import type {anInterestingFlowType} from './SomeFlowTypes';
 
 import type {t as Obj_t} from '../../src/shims/Obj.shim';
@@ -38,7 +36,7 @@ export type myFloat = number;
 
 export type arrayOfStrings1 = Array<string>;
 
-export opaque type arrayOfStrings2 = mixed;
+export type arrayOfStrings2 = Array<string>;
 
 export type maybeString = ?string;
 
