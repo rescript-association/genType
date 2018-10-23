@@ -78,67 +78,6 @@ let createExportTypeMap =
   declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
-let emitImport =
-    (
-      ~config as {language} as config,
-      ~outputFileRelative,
-      ~resolver,
-      ~emitters,
-      ~inputCmtTranslateTypeDeclarations,
-      ~env,
-      {Translation.typeName, asTypeName, importPath, cmtFile},
-    ) => {
-  let emitters =
-    EmitTyp.emitImportTypeAs(
-      ~emitters,
-      ~language,
-      ~typeName,
-      ~asTypeName,
-      ~importPath,
-    );
-  switch (asTypeName, cmtFile) {
-  | (None, _)
-  | (_, None) => (env, emitters)
-  | (Some(asType), Some(cmtFile)) =>
-    let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
-      switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
-      | x => env.typesFromOtherFiles |> StringMap.add(asType, x)
-      | exception Not_found => exportTypeMapFromCmt
-      };
-    switch (env.cmtExportTypeMapCache |> StringMap.find(cmtFile)) {
-    | exportTypeMapFromCmt => (
-        {
-          ...env,
-          typesFromOtherFiles:
-            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-        },
-        emitters,
-      )
-    | exception Not_found =>
-      let exportTypeMapFromCmt =
-        Cmt_format.read_cmt(cmtFile)
-        |> inputCmtTranslateTypeDeclarations(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-           )
-        |> createExportTypeMap(~language);
-      let cmtExportTypeMapCache =
-        env.cmtExportTypeMapCache
-        |> StringMap.add(cmtFile, exportTypeMapFromCmt);
-      (
-        {
-          ...env,
-          cmtExportTypeMapCache,
-          typesFromOtherFiles:
-            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-        },
-        emitters,
-      );
-    };
-  };
-};
-
 let codeItemToString = (~language, codeItem: CodeItem.t) =>
   switch (codeItem) {
   | ExportComponent({fileName, moduleName, _}) =>
@@ -719,6 +658,67 @@ let emitEnumTables = (~emitters, enumTables) => {
     enumTables,
     emitters,
   );
+};
+
+let emitImport =
+    (
+      ~config as {language} as config,
+      ~outputFileRelative,
+      ~resolver,
+      ~emitters,
+      ~inputCmtTranslateTypeDeclarations,
+      ~env,
+      {Translation.typeName, asTypeName, importPath, cmtFile},
+    ) => {
+  let emitters =
+    EmitTyp.emitImportTypeAs(
+      ~emitters,
+      ~language,
+      ~typeName,
+      ~asTypeName,
+      ~importPath,
+    );
+  switch (asTypeName, cmtFile) {
+  | (None, _)
+  | (_, None) => (env, emitters)
+  | (Some(asType), Some(cmtFile)) =>
+    let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
+      switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
+      | x => env.typesFromOtherFiles |> StringMap.add(asType, x)
+      | exception Not_found => exportTypeMapFromCmt
+      };
+    switch (env.cmtExportTypeMapCache |> StringMap.find(cmtFile)) {
+    | exportTypeMapFromCmt => (
+        {
+          ...env,
+          typesFromOtherFiles:
+            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+        },
+        emitters,
+      )
+    | exception Not_found =>
+      let exportTypeMapFromCmt =
+        Cmt_format.read_cmt(cmtFile)
+        |> inputCmtTranslateTypeDeclarations(
+             ~config,
+             ~outputFileRelative,
+             ~resolver,
+           )
+        |> createExportTypeMap(~language);
+      let cmtExportTypeMapCache =
+        env.cmtExportTypeMapCache
+        |> StringMap.add(cmtFile, exportTypeMapFromCmt);
+      (
+        {
+          ...env,
+          cmtExportTypeMapCache,
+          typesFromOtherFiles:
+            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+        },
+        emitters,
+      );
+    };
+  };
 };
 
 let emitImportTypes =
