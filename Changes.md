@@ -1,4 +1,4 @@
-# master
+# 0.23.0
 - Clean up terminology used in README.md. Following the cleanup plan on import/export in https://github.com/cristianoc/genType/issues/70.
 - Implement principle 1: an imported type is also exported to other modules.
 - Support tuple types.
