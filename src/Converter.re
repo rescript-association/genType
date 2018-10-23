@@ -120,6 +120,7 @@ let typToConverterOpaque =
           }
         ) {
         | (_, _, GenTypeOpaque, _importTypes) => (IdentC, true)
+        | (_, _, NoGenType, _importTypes) => (IdentC, true)
         | (typeVars, t, _, _importTypes) =>
           let pairs =
             try (List.combine(typeVars, typeArguments)) {
