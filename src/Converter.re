@@ -85,7 +85,12 @@ let rec toString = converter =>
   };
 
 let typToConverterOpaque =
-    (~language, ~exportTypeMap: Translation.typeMap, ~typesFromOtherFiles, typ) => {
+    (
+      ~language,
+      ~exportTypeMap: Translation.typeMap,
+      ~typesFromOtherFiles,
+      typ,
+    ) => {
   let circular = ref("");
   let rec visit = (~visited: StringSet.t, typ) =>
     switch (typ) {

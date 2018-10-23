@@ -262,7 +262,7 @@ let translateComponent =
           opaque: Some(false),
           typeVars,
           resolvedTypeName: propsTypeName,
-          optTyp: (Some(propsType), NoGenType),
+          optTyp: (Some(propsType), Generated),
         },
         fileName,
         moduleName,
@@ -395,7 +395,7 @@ let translatePrimitive =
           opaque: Some(false),
           typeVars,
           resolvedTypeName: propsTypeName,
-          optTyp: (Some(propsTyp), NoGenType),
+          optTyp: (Some(propsTyp), Generated),
         },
         importAnnotation:
           importString |> Annotation.importAnnotationFromString,

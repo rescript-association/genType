@@ -122,15 +122,17 @@ type label =
   | OptLabel(string);
 
 type genTypeKind =
-  | NoGenType
+  | Generated
   | GenType
-  | GenTypeOpaque;
+  | GenTypeOpaque
+  | NoGenType;
 
 let genTypeKindToString = genTypeKind =>
   switch (genTypeKind) {
-  | NoGenType => "NoGenType"
+  | Generated => "Generated"
   | GenType => "GenType"
   | GenTypeOpaque => "GenTypeOpaque"
+  | NoGenType => "NoGenType"
   };
 
 let createEnum = cases => {

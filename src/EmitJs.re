@@ -57,7 +57,10 @@ let createExportTypeMap =
       switch (optTyp) {
       | (Some(typ), genTypeKind) =>
         exportTypeMap
-        |> StringMap.add(resolvedTypeName, (typeVars, typ, genTypeKind, importTypes))
+        |> StringMap.add(
+             resolvedTypeName,
+             (typeVars, typ, genTypeKind, importTypes),
+           )
       | (None, _) => exportTypeMap
       };
     };
@@ -174,15 +177,24 @@ let emitExportType =
     | (None, Some(typ)) => typ |> typIsOpaque
     | (None, None) => false
     };
-  resolvedTypeName
-  |> EmitTyp.emitExportType(
-       ~early?,
-       ~emitters,
-       ~language,
-       ~opaque,
-       ~typeVars,
-       ~optTyp,
-     );
+  let shouldEmit =
+    switch (optTyp |> snd) {
+    | NoGenType => false
+    | Generated
+    | GenType
+    | GenTypeOpaque => true
+    };
+  shouldEmit ?
+    resolvedTypeName
+    |> EmitTyp.emitExportType(
+         ~early?,
+         ~emitters,
+         ~language,
+         ~opaque,
+         ~typeVars,
+         ~optTyp,
+       ) :
+    emitters;
 };
 
 let rec emitCodeItem =

@@ -272,7 +272,7 @@ let traslateDeclarationKind =
       |> createExportType(
            ~opaque=Some(false),
            ~typeVars=[],
-           ~optTyp=(None, genTypeKind),
+           ~optTyp=(None, Generated),
            ~typeEnv,
          );
 

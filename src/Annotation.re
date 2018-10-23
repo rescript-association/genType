@@ -45,7 +45,8 @@ let getGenTypeKind = (attributes: Typedtree.attributes) =>
   };
 
 let hasGenTypeAnnotation = attributes =>
-  getGenTypeKind(attributes) != NoGenType
+  [GenType, GenTypeOpaque]
+  |> List.mem(getGenTypeKind(attributes))
   || attributes
   |> getAttributePayload(tagIsGenTypeImport) != None;
 
