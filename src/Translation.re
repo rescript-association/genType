@@ -8,7 +8,7 @@ type importType = {
 };
 
 type typeDeclaration = {
-  codeItem: CodeItem.t,
+  exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
   importTypes: list(importType),
 };
 

@@ -65,20 +65,11 @@ let createExportTypeMap =
       | None => exportTypeMap
       };
     };
-    switch (declaration.codeItem) {
-    | CodeItem.ExportFromTypeDeclaration({
-        exportKind: ExportType(exportType),
-        genTypeKind,
-      }) =>
+    switch (declaration.exportFromTypeDeclaration) {
+    | {exportKind: ExportType(exportType), genTypeKind} =>
       exportType
       |> addExportType(~genTypeKind, ~importTypes=declaration.importTypes)
-    | ExportComponent(_)
-    | ExportFromTypeDeclaration({
-        exportKind: ExportVariantLeaf(_) | ExportVariantType(_),
-      })
-    | ExportValue(_)
-    | ImportComponent(_)
-    | ImportValue(_) => exportTypeMap
+    | {exportKind: ExportVariantLeaf(_) | ExportVariantType(_)} => exportTypeMap
     };
   };
   declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -777,13 +768,11 @@ let emitTranslationAsString =
 
   let typeDeclarationsAnnotated =
     translation.typeDeclarations
-    |> List.filter((typeDeclaration: Translation.typeDeclaration) =>
-         switch (typeDeclaration.codeItem) {
-         | ExportFromTypeDeclaration({genTypeKind})
-             when genTypeKind == NoGenType =>
-           false
-         | _ => true
-         }
+    |> List.filter(
+         (
+           {exportFromTypeDeclaration: {genTypeKind}}: Translation.typeDeclaration,
+         ) =>
+         genTypeKind != NoGenType
        );
 
   let typeDeclarationsImportTypes =
@@ -796,7 +785,9 @@ let emitTranslationAsString =
   let typeDeclarationsCodeItems =
     typeDeclarationsAnnotated
     |> List.map((typeDeclaration: Translation.typeDeclaration) =>
-         typeDeclaration.codeItem
+         CodeItem.ExportFromTypeDeclaration(
+           typeDeclaration.exportFromTypeDeclaration,
+         )
        );
 
   let (env, emitters) =

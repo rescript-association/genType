@@ -9,12 +9,12 @@ type declarationKind =
 
 let createExportType =
     (~opaque, ~typeVars, ~optTyp, ~genTypeKind, ~typeEnv, typeName)
-    : CodeItem.t => {
+    : CodeItem.exportFromTypeDeclaration => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
-  ExportFromTypeDeclaration({
+  {
     exportKind: ExportType({opaque, typeVars, resolvedTypeName, optTyp}),
     genTypeKind,
-  });
+  };
 };
 
 let variantLeafTypeName = (typeName, leafName) =>
@@ -64,25 +64,24 @@ let translateConstructorDeclaration =
   let constructorTyp: CodeItem.constructorTyp = {typeVars, argTypes, variant};
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
-  let codeItem =
-    CodeItem.ExportFromTypeDeclaration({
-      exportKind:
-        ExportVariantLeaf({
-          exportType: {
-            opaque: Some(true),
-            typeVars,
-            resolvedTypeName: variantTypeNameResolved,
-            optTyp: Some(mixedOrUnknown(~language)),
-          },
-          constructorTyp,
-          argTypes,
-          leafName: leafNameResolved,
-          recordValue,
-        }),
-      genTypeKind,
-    });
+  let exportFromTypeDeclaration = {
+    CodeItem.exportKind:
+      ExportVariantLeaf({
+        exportType: {
+          opaque: Some(true),
+          typeVars,
+          resolvedTypeName: variantTypeNameResolved,
+          optTyp: Some(mixedOrUnknown(~language)),
+        },
+        constructorTyp,
+        argTypes,
+        leafName: leafNameResolved,
+        recordValue,
+      }),
+    genTypeKind,
+  };
 
-  (variant, {Translation.importTypes, codeItem});
+  (variant, {Translation.importTypes, exportFromTypeDeclaration});
 };
 
 let traslateDeclarationKind =
@@ -104,7 +103,7 @@ let traslateDeclarationKind =
     | None => [
         {
           importTypes: [],
-          codeItem:
+          exportFromTypeDeclaration:
             typeName
             |> createExportType(
                  ~opaque=Some(true),
@@ -147,7 +146,7 @@ let traslateDeclarationKind =
           cases |> createEnum;
         | _ => typeExprTranslation.typ
         };
-      let codeItem =
+      let exportFromTypeDeclaration =
         typeName
         |> createExportType(
              ~opaque,
@@ -166,7 +165,7 @@ let traslateDeclarationKind =
                  ~outputFileRelative,
                  ~resolver,
                ),
-          codeItem,
+          exportFromTypeDeclaration,
         },
       ];
     }
@@ -218,7 +217,7 @@ let traslateDeclarationKind =
     [
       {
         importTypes,
-        codeItem:
+        exportFromTypeDeclaration:
           typeName
           |> createExportType(
                ~opaque,
@@ -251,17 +250,16 @@ let traslateDeclarationKind =
       leafTypesDepsAndVariantLeafBindings |> List.split;
     let typeParams = TypeVars.(typeParams |> extract |> toTyp);
     let variantTypeNameResolved = typeName |> TypeEnv.addModulePath(~typeEnv);
-    let unionType =
-      CodeItem.ExportFromTypeDeclaration({
-        exportKind:
-          ExportVariantType({
-            typeParams,
-            variants,
-            name: variantTypeNameResolved,
-          }),
-        genTypeKind,
-      });
-    declarations @ [{codeItem: unionType, importTypes: []}];
+    let unionType = {
+      CodeItem.exportKind:
+        ExportVariantType({
+          typeParams,
+          variants,
+          name: variantTypeNameResolved,
+        }),
+      genTypeKind,
+    };
+    declarations @ [{exportFromTypeDeclaration: unionType, importTypes: []}];
 
   | ImportTypeDeclaration(importString, genTypeAsPayload) =>
     let typeName_ = typeName;
@@ -282,7 +280,7 @@ let traslateDeclarationKind =
         cmtFile: None,
       },
     ];
-    let codeItem =
+    let exportFromTypeDeclaration =
       /* Make the imported type usable from other modules by exporting it too. */
       typeName_
       |> createExportType(
@@ -293,7 +291,7 @@ let traslateDeclarationKind =
            ~typeEnv,
          );
 
-    [{importTypes, codeItem}];
+    [{importTypes, exportFromTypeDeclaration}];
 
   | NoDeclaration => []
   };
