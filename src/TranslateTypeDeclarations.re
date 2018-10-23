@@ -1,10 +1,5 @@
 open GenTypeCommon;
 
-type declaration = {
-  codeItem: CodeItem.t,
-  importTypes: list(Translation.importType),
-};
-
 type declarationKind =
   | RecordDelaration(list(Types.label_declaration))
   | GeneralDeclaration(option(Typedtree.core_type))
@@ -79,7 +74,7 @@ let translateConstructorDeclaration =
       recordValue,
     });
 
-  (variant, {importTypes, codeItem});
+  (variant, {Translation.importTypes, codeItem});
 };
 
 let traslateDeclarationKind =
@@ -94,7 +89,7 @@ let traslateDeclarationKind =
       ~typeParams,
       declarationKind,
     )
-    : list(declaration) =>
+    : list(Translation.declaration) =>
   switch (declarationKind) {
   | GeneralDeclaration(optCoreType) =>
     switch (optCoreType) {
@@ -296,7 +291,7 @@ let translateTypeDeclaration =
       ~genTypeKind: genTypeKind,
       dec: Typedtree.type_declaration,
     )
-    : list(declaration) => {
+    : list(Translation.declaration) => {
   typeEnv |> TypeEnv.newType(~name=dec.typ_id |> Ident.name);
   let typeName = Ident.name(dec.typ_id);
   let typeParams = dec.typ_type.type_params;
@@ -353,7 +348,7 @@ let translateTypeDeclarations =
       ~typeEnv,
       typeDeclarations: list(Typedtree.type_declaration),
     )
-    : list(declaration) => {
+    : list(Translation.declaration) => {
   let genTypeKind =
     switch (typeDeclarations) {
     | [dec, ..._] => dec.typ_attributes |> Annotation.getGenTypeKind

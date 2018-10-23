@@ -7,13 +7,18 @@ type importType = {
   cmtFile: option(string),
 };
 
-type typeMap =
-  StringMap.t((list(string), typ, genTypeKind, list(importType)));
+type declaration = {
+  codeItem: CodeItem.t,
+  importTypes: list(importType),
+};
 
 type t = {
   importTypes: list(importType),
   codeItems: list(CodeItem.t),
 };
+
+type typeMap =
+  StringMap.t((list(string), typ, genTypeKind, list(importType)));
 
 let getImportTypeUniqueName = ({typeName, asTypeName, _}: importType) =>
   typeName

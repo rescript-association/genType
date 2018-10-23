@@ -85,7 +85,7 @@ and translateSignatureItem =
          ~resolver,
          ~typeEnv,
        )
-    |> List.map(({TranslateTypeDeclarations.importTypes, codeItem}) =>
+    |> List.map(({Translation.importTypes, codeItem}) =>
          {Translation.importTypes, codeItems: [codeItem]}
        )
     |> Translation.combine

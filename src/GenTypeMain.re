@@ -29,7 +29,7 @@ let typeDeclarationsOfSignature = signatureItem =>
 
 let inputCmtTranslateTypeDeclarations =
     (~config, ~outputFileRelative, ~resolver, inputCMT)
-    : list(TranslateTypeDeclarations.declaration) => {
+    : list(Translation.declaration) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
   (

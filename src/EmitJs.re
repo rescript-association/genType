@@ -25,12 +25,12 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (~language, declarations: list(TranslateTypeDeclarations.declaration))
+    (~language, declarations: list(Translation.declaration))
     : Translation.typeMap => {
   let updateExportTypeMap =
       (
         exportTypeMap: Translation.typeMap,
-        declaration: TranslateTypeDeclarations.declaration,
+        declaration: Translation.declaration,
       )
       : Translation.typeMap => {
     let addExportType =
@@ -763,9 +763,7 @@ let emitTranslationAsString =
   };
   let exportTypeMap =
     translation.codeItems
-    |> List.map(codeItem =>
-         {TranslateTypeDeclarations.codeItem, importTypes: []}
-       )
+    |> List.map(codeItem => {Translation.codeItem, importTypes: []})
     |> createExportTypeMap(~language);
   let enumTables = Hashtbl.create(1);
 
