@@ -34,7 +34,7 @@ let defaultConfig = {
   bsBlockPath: "bs-platform/lib/js/block.js",
   bsCurryPath: "bs-platform/lib/js/curry.js",
   importPath: Relative,
-  inlineAnnotations: false,
+  inlineAnnotations: true,
   language: Flow,
   module_: ES6,
   modulesMap: ModuleNameMap.empty,

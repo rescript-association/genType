@@ -759,13 +759,13 @@ let emitImportTypes =
 
 let inlineAnnotatedTypes =
     (~config, ~typeDeclarations, typeMap: Translation.typeMap) => {
-  let visited = ref(StringSet.empty);
   let markedAsGenType = ref(StringSet.empty);
   let initialAnnotatedTypes =
     typeMap
     |> StringMap.bindings
     |> List.filter(((_, (_, _, genTypeKind, _))) => genTypeKind == GenType);
   let inlineTyp = ((_typeName, (_, typ, genTypeKind, _))) => {
+    let visited = ref(StringSet.empty);
     let rec visit = typ =>
       switch (typ) {
       | Ident(typeName, _) =>
@@ -777,7 +777,6 @@ let inlineAnnotatedTypes =
           | (_, _, GenType | GenTypeOpaque | Generated, _) => ()
           | (_, typ1, NoGenType, _) =>
             markedAsGenType := markedAsGenType^ |> StringSet.add(typeName);
-            logItem("Marking type %s as GenType\n", typeName);
             typ1 |> visit;
           | exception Not_found => ()
           };
