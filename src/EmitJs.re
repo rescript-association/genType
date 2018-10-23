@@ -30,7 +30,7 @@ let createExportTypeMap =
   let updateExportTypeMap =
       (
         exportTypeMap: Translation.typeMap,
-        declaration: Translation.typeDeclaration,
+        typeDeclaration: Translation.typeDeclaration,
       )
       : Translation.typeMap => {
     let addExportType =
@@ -65,10 +65,10 @@ let createExportTypeMap =
       | None => exportTypeMap
       };
     };
-    switch (declaration.exportFromTypeDeclaration) {
+    switch (typeDeclaration.exportFromTypeDeclaration) {
     | {exportKind: ExportType(exportType), genTypeKind} =>
       exportType
-      |> addExportType(~genTypeKind, ~importTypes=declaration.importTypes)
+      |> addExportType(~genTypeKind, ~importTypes=typeDeclaration.importTypes)
     | {exportKind: ExportVariantLeaf(_) | ExportVariantType(_)} => exportTypeMap
     };
   };
