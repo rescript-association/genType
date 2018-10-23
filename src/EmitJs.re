@@ -672,7 +672,7 @@ let emitEnumTables = (~emitters, enumTables) => {
   );
 };
 
-let emitImport =
+let emitImportType =
     (
       ~config as {language, _} as config,
       ~outputFileRelative,
@@ -746,7 +746,7 @@ let emitImportTypes =
   importTypes
   |> List.fold_left(
        ((env, emitters)) =>
-         emitImport(
+         emitImportType(
            ~config,
            ~outputFileRelative,
            ~resolver,
