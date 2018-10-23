@@ -66,8 +66,7 @@ type exportVariantLeaf = {
   recordValue: Runtime.recordValue,
 };
 
-type wrapModule = {codeItems: list(t)}
-and t =
+type t =
   | ExportComponent(exportComponent)
   | ExportType(exportType)
   | ExportValue(exportValue)
