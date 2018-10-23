@@ -222,6 +222,7 @@ let readConfig = () => {
       | _ => bsCurryPathString
       };
     {
+      ...defaultConfig,
       language,
       module_,
       importPath,

@@ -757,6 +757,97 @@ let emitImportTypes =
        (env, emitters),
      );
 
+let inlineAnnotatedTypes =
+    (~config, ~typeDeclarations, typeMap: Translation.typeMap) => {
+  let visited = ref(StringSet.empty);
+  let markedAsGenType = ref(StringSet.empty);
+  let initialAnnotatedTypes =
+    typeMap
+    |> StringMap.bindings
+    |> List.filter(((_, (_, _, genTypeKind, _))) => genTypeKind == GenType);
+  let inlineTyp = ((_typeName, (_, typ, genTypeKind, _))) => {
+    let rec visit = typ =>
+      switch (typ) {
+      | Ident(typeName, _) =>
+        if (visited^ |> StringSet.mem(typeName)) {
+          ();
+        } else {
+          visited := visited^ |> StringSet.add(typeName);
+          switch (typeMap |> StringMap.find(typeName)) {
+          | (_, _, GenType | GenTypeOpaque | Generated, _) => ()
+          | (_, typ1, NoGenType, _) =>
+            markedAsGenType := markedAsGenType^ |> StringSet.add(typeName);
+            logItem("Marking type %s as GenType\n", typeName);
+            typ1 |> visit;
+          | exception Not_found => ()
+          };
+        }
+      | Array(t, _) => t |> visit
+      | Enum(_) => ()
+      | Function({argTypes, retType}) =>
+        argTypes |> List.iter(visit);
+        retType |> visit;
+      | GroupOfLabeledArgs(fields)
+      | Object(fields)
+      | Record(fields) => fields |> List.iter(({typ}) => typ |> visit)
+      | Option(t)
+      | Nullable(t) => t |> visit
+      | Tuple(innerTypes) => innerTypes |> List.iter(visit)
+      | TypeVar(_) => ()
+      };
+    switch (genTypeKind) {
+    | GenType => typ |> visit
+    | Generated
+    | GenTypeOpaque
+    | NoGenType => ()
+    };
+  };
+  if (config.inlineAnnotations) {
+    initialAnnotatedTypes |> List.iter(inlineTyp);
+  };
+  let newTypeMap =
+    typeMap
+    |> StringMap.mapi((typeName, (args, typ, genTypeKind, importTypes)) =>
+         (
+           args,
+           typ,
+           markedAsGenType^ |> StringSet.mem(typeName) ?
+             GenType : genTypeKind,
+           importTypes,
+         )
+       );
+
+  let annotatedTypeDeclarations =
+    typeDeclarations
+    |> List.map(typeDeclaration =>
+         switch (
+           typeDeclaration.Translation.exportFromTypeDeclaration.exportKind
+         ) {
+         | ExportType(exportType) =>
+           if (markedAsGenType^ |> StringSet.mem(exportType.resolvedTypeName)) {
+             {
+               ...typeDeclaration,
+               exportFromTypeDeclaration: {
+                 ...typeDeclaration.exportFromTypeDeclaration,
+                 genTypeKind: GenType,
+               },
+             };
+           } else {
+             typeDeclaration;
+           }
+         | _ => typeDeclaration
+         }
+       )
+    |> List.filter(
+         (
+           {exportFromTypeDeclaration: {genTypeKind}}: Translation.typeDeclaration,
+         ) =>
+         genTypeKind != NoGenType
+       );
+
+  (newTypeMap, annotatedTypeDeclarations);
+};
+
 let emitTranslationAsString =
     (
       ~config,
@@ -773,28 +864,24 @@ let emitTranslationAsString =
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let exportTypeMap =
-    translation.typeDeclarations |> createExportTypeMap(~language);
   let enumTables = Hashtbl.create(1);
-
-  let typeDeclarationsAnnotated =
+  let (exportTypeMap, annotatedTypeDeclarations) =
     translation.typeDeclarations
-    |> List.filter(
-         (
-           {exportFromTypeDeclaration: {genTypeKind}}: Translation.typeDeclaration,
-         ) =>
-         genTypeKind != NoGenType
+    |> createExportTypeMap(~language)
+    |> inlineAnnotatedTypes(
+         ~config,
+         ~typeDeclarations=translation.typeDeclarations,
        );
 
   let importTypesFromTypeDeclarations =
-    typeDeclarationsAnnotated
+    annotatedTypeDeclarations
     |> List.map((typeDeclaration: Translation.typeDeclaration) =>
          typeDeclaration.importTypes
        )
     |> List.concat;
 
   let exportFromTypeDeclarations =
-    typeDeclarationsAnnotated
+    annotatedTypeDeclarations
     |> List.map((typeDeclaration: Translation.typeDeclaration) =>
          typeDeclaration.exportFromTypeDeclaration
        );
