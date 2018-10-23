@@ -129,6 +129,97 @@ let emitExportType =
      );
 };
 
+let emitexportFromTypeDeclaration =
+    (
+      ~config,
+      ~emitters,
+      ~language,
+      ~typIsOpaque,
+      ~env,
+      ~typToConverter,
+      ~enumTables,
+      exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
+    ) =>
+  switch (exportFromTypeDeclaration.exportKind) {
+  | ExportType(exportType) => (
+      env,
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType),
+    )
+
+  | ExportVariantType({CodeItem.typeParams, variants, name, _}) => (
+      env,
+      EmitTyp.emitExportVariantType(
+        ~emitters,
+        ~language,
+        ~name,
+        ~typeParams,
+        ~variants,
+      ),
+    )
+
+  | ExportVariantLeaf({
+      exportType,
+      constructorTyp,
+      argTypes,
+      leafName,
+      recordValue,
+    }) =>
+    let createFunctionType =
+        ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
+      let retType = Ident(name, params);
+      if (argTypes === []) {
+        retType;
+      } else {
+        Function({typeVars, argTypes, retType});
+      };
+    };
+
+    let emitters =
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType);
+
+    let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
+    let emitters =
+      if (argTypes == []) {
+        recordAsInt
+        ++ ";"
+        |> EmitTyp.emitExportConst(
+             ~emitters,
+             ~name=leafName,
+             ~typ=constructorTyp |> createFunctionType,
+             ~config,
+           );
+      } else {
+        let args =
+          argTypes
+          |> List.mapi((i, typ) => {
+               let converter = typ |> typToConverter;
+               let arg = EmitText.argi(i + 1);
+               let v = arg |> Converter.toReason(~converter, ~enumTables);
+               (arg, v);
+             });
+        let mkReturn = s => "return " ++ s;
+        let mkBody = args =>
+          recordValue
+          |> Runtime.emitRecordAsBlock(~language, ~args)
+          |> mkReturn;
+        EmitText.funDef(~args, ~mkBody, "")
+        |> EmitTyp.emitExportConst(
+             ~emitters,
+             ~name=leafName,
+             ~typ=constructorTyp |> createFunctionType,
+             ~config,
+           );
+      };
+    let env =
+      ModuleName.createBucklescriptBlock
+      |> requireModule(
+           ~early=false,
+           ~env,
+           ~importPath=ImportPath.bsBlockPath(~config),
+         );
+    (env, emitters);
+  };
+
 let rec emitCodeItem =
         (
           ~config,
@@ -161,23 +252,17 @@ let rec emitCodeItem =
   };
 
   switch (codeItem) {
-  | CodeItem.ExportFromTypeDeclaration({exportKind: ExportType(exportType)}) => (
-      env,
-      emitExportType(~emitters, ~language, ~typIsOpaque, exportType),
-    )
-
-  | ExportFromTypeDeclaration({
-      exportKind: ExportVariantType({CodeItem.typeParams, variants, name, _}),
-    }) => (
-      env,
-      EmitTyp.emitExportVariantType(
-        ~emitters,
-        ~language,
-        ~name,
-        ~typeParams,
-        ~variants,
-      ),
-    )
+  | CodeItem.ExportFromTypeDeclaration(exportFromTypeDeclaration) =>
+    exportFromTypeDeclaration
+    |> emitexportFromTypeDeclaration(
+         ~config,
+         ~emitters,
+         ~language,
+         ~typIsOpaque,
+         ~env,
+         ~typToConverter,
+         ~enumTables,
+       )
 
   | ImportComponent({
       exportType,
@@ -527,71 +612,6 @@ let rec emitCodeItem =
       |> EmitTyp.emitExportConst(~emitters, ~name=resolvedName, ~typ, ~config);
 
     (envWithRequires, emitters);
-
-  | ExportFromTypeDeclaration({
-      exportKind:
-        ExportVariantLeaf({
-          exportType,
-          constructorTyp,
-          argTypes,
-          leafName,
-          recordValue,
-        }),
-    }) =>
-    let createFunctionType =
-        ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
-      let retType = Ident(name, params);
-      if (argTypes === []) {
-        retType;
-      } else {
-        Function({typeVars, argTypes, retType});
-      };
-    };
-
-    let emitters =
-      emitExportType(~emitters, ~language, ~typIsOpaque, exportType);
-
-    let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
-    let emitters =
-      if (argTypes == []) {
-        recordAsInt
-        ++ ";"
-        |> EmitTyp.emitExportConst(
-             ~emitters,
-             ~name=leafName,
-             ~typ=constructorTyp |> createFunctionType,
-             ~config,
-           );
-      } else {
-        let args =
-          argTypes
-          |> List.mapi((i, typ) => {
-               let converter = typ |> typToConverter;
-               let arg = EmitText.argi(i + 1);
-               let v = arg |> Converter.toReason(~converter, ~enumTables);
-               (arg, v);
-             });
-        let mkReturn = s => "return " ++ s;
-        let mkBody = args =>
-          recordValue
-          |> Runtime.emitRecordAsBlock(~language, ~args)
-          |> mkReturn;
-        EmitText.funDef(~args, ~mkBody, "")
-        |> EmitTyp.emitExportConst(
-             ~emitters,
-             ~name=leafName,
-             ~typ=constructorTyp |> createFunctionType,
-             ~config,
-           );
-      };
-    let env =
-      ModuleName.createBucklescriptBlock
-      |> requireModule(
-           ~early=false,
-           ~env,
-           ~importPath=ImportPath.bsBlockPath(~config),
-         );
-    (env, emitters);
   };
 }
 and emitCodeItems =
