@@ -20,23 +20,23 @@ type importPath =
   | Node;
 
 type config = {
-  language,
-  module_,
-  importPath,
-  reasonReactPath: string,
   bsBlockPath: string,
   bsCurryPath: string,
+  importPath,
+  language,
+  module_,
   modulesMap: ModuleNameMap.t(ModuleName.t),
+  reasonReactPath: string,
 };
 
 let defaultConfig = {
-  language: Flow,
-  module_: ES6,
-  importPath: Relative,
-  reasonReactPath: "reason-react/src/ReasonReact.js",
   bsBlockPath: "bs-platform/lib/js/block.js",
   bsCurryPath: "bs-platform/lib/js/curry.js",
+  importPath: Relative,
+  language: Flow,
+  module_: ES6,
   modulesMap: ModuleNameMap.empty,
+  reasonReactPath: "reason-react/src/ReasonReact.js",
 };
 
 let projectRoot = ref("");
