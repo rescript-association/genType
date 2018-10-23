@@ -36,7 +36,8 @@ let createExportTypeMap =
     let addExportType =
         (
           ~importTypes,
-          {resolvedTypeName, typeVars, optTyp, genTypeKind, _}: CodeItem.exportType,
+          ~genTypeKind,
+          {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
         ) => {
       if (Debug.codeItems) {
         logItem(
@@ -65,12 +66,17 @@ let createExportTypeMap =
       };
     };
     switch (declaration.codeItem) {
-    | CodeItem.ExportType(exportType) =>
-      exportType |> addExportType(~importTypes=declaration.importTypes)
+    | CodeItem.ExportFromTypeDeclaration({
+        exportKind: ExportType(exportType),
+        genTypeKind,
+      }) =>
+      exportType
+      |> addExportType(~genTypeKind, ~importTypes=declaration.importTypes)
     | ExportComponent(_)
+    | ExportFromTypeDeclaration({
+        exportKind: ExportVariantLeaf(_) | ExportVariantType(_),
+      })
     | ExportValue(_)
-    | ExportVariantLeaf(_)
-    | ExportVariantType(_)
     | ImportComponent(_)
     | ImportValue(_) => exportTypeMap
     };
@@ -85,6 +91,14 @@ let codeItemToString = (~language, codeItem: CodeItem.t) =>
     ++ (fileName |> ModuleName.toString)
     ++ " moduleName:"
     ++ (moduleName |> ModuleName.toString)
+  | ExportFromTypeDeclaration({
+      exportKind: ExportType({resolvedTypeName, _}),
+    }) =>
+    "ExportType " ++ resolvedTypeName
+  | ExportFromTypeDeclaration({exportKind: ExportVariantLeaf({leafName, _})}) =>
+    "WrapVariantLeaf " ++ leafName
+  | ExportFromTypeDeclaration({exportKind: ExportVariantType({name, _})}) =>
+    "ExportVariantType " ++ name
   | ExportValue({fileName, resolvedName, typ, _}) =>
     "WrapReasonValue"
     ++ " resolvedName:"
@@ -93,9 +107,6 @@ let codeItemToString = (~language, codeItem: CodeItem.t) =>
     ++ ModuleName.toString(fileName)
     ++ " typ:"
     ++ EmitTyp.typToString(~language, typ)
-  | ExportType({resolvedTypeName, _}) => "ExportType " ++ resolvedTypeName
-  | ExportVariantLeaf({leafName, _}) => "WrapVariantLeaf " ++ leafName
-  | ExportVariantType({name, _}) => "ExportVariantType " ++ name
   | ImportComponent({importAnnotation, _}) =>
     "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
   | ImportValue({importAnnotation, _}) =>
@@ -159,12 +170,14 @@ let rec emitCodeItem =
   };
 
   switch (codeItem) {
-  | CodeItem.ExportType(exportType) => (
+  | CodeItem.ExportFromTypeDeclaration({exportKind: ExportType(exportType)}) => (
       env,
       emitExportType(~emitters, ~language, ~typIsOpaque, exportType),
     )
 
-  | ExportVariantType({CodeItem.typeParams, variants, name, _}) => (
+  | ExportFromTypeDeclaration({
+      exportKind: ExportVariantType({CodeItem.typeParams, variants, name, _}),
+    }) => (
       env,
       EmitTyp.emitExportVariantType(
         ~emitters,
@@ -524,12 +537,15 @@ let rec emitCodeItem =
 
     (envWithRequires, emitters);
 
-  | ExportVariantLeaf({
-      exportType,
-      constructorTyp,
-      argTypes,
-      leafName,
-      recordValue,
+  | ExportFromTypeDeclaration({
+      exportKind:
+        ExportVariantLeaf({
+          exportType,
+          constructorTyp,
+          argTypes,
+          leafName,
+          recordValue,
+        }),
     }) =>
     let createFunctionType =
         ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
@@ -761,7 +777,14 @@ let emitTranslationAsString =
 
   let typeDeclarationsAnnotated =
     translation.typeDeclarations
-    |> List.filter(TranslateTypeDeclarations.typeDeclarationHasAnnotation);
+    |> List.filter((typeDeclaration: Translation.typeDeclaration) =>
+         switch (typeDeclaration.codeItem) {
+         | ExportFromTypeDeclaration({genTypeKind})
+             when genTypeKind == NoGenType =>
+           false
+         | _ => true
+         }
+       );
 
   let typeDeclarationsImportTypes =
     typeDeclarationsAnnotated

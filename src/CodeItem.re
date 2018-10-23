@@ -5,14 +5,12 @@ type exportType = {
   typeVars: list(string),
   resolvedTypeName: string,
   optTyp: option(typ),
-  genTypeKind,
 };
 
 type exportVariantType = {
   typeParams: list(typ),
   variants: list(variant),
   name: string,
-  genTypeKind,
 };
 
 type importAnnotation = {
@@ -66,11 +64,19 @@ type exportVariantLeaf = {
   recordValue: Runtime.recordValue,
 };
 
+type exportKind =
+  | ExportType(exportType)
+  | ExportVariantLeaf(exportVariantLeaf)
+  | ExportVariantType(exportVariantType);
+
+type exportFromTypeDeclaration = {
+  exportKind,
+  genTypeKind,
+};
+
 type t =
   | ExportComponent(exportComponent)
-  | ExportType(exportType)
+  | ExportFromTypeDeclaration(exportFromTypeDeclaration)
   | ExportValue(exportValue)
-  | ExportVariantLeaf(exportVariantLeaf)
-  | ExportVariantType(exportVariantType)
   | ImportComponent(importComponent)
   | ImportValue(importValue);

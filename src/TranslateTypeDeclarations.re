@@ -7,22 +7,14 @@ type declarationKind =
   | ImportTypeDeclaration(string, option(Annotation.attributePayload))
   | NoDeclaration;
 
-/* NOTE: every code item emitted by a type declaration must be accounted
-   below, to determined if it was annotated or is onlt for the type map. */
-let typeDeclarationHasAnnotation =
-    (typeDeclaration: Translation.typeDeclaration) =>
-  switch (typeDeclaration.codeItem) {
-  | CodeItem.ExportType({genTypeKind, _})
-  | ExportVariantLeaf({exportType: {genTypeKind, _}, _})
-  | ExportVariantType({genTypeKind, _}) when genTypeKind == NoGenType => false
-  | _ => true
-  };
-
 let createExportType =
     (~opaque, ~typeVars, ~optTyp, ~genTypeKind, ~typeEnv, typeName)
     : CodeItem.t => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
-  ExportType({opaque, typeVars, resolvedTypeName, optTyp, genTypeKind});
+  ExportFromTypeDeclaration({
+    exportKind: ExportType({opaque, typeVars, resolvedTypeName, optTyp}),
+    genTypeKind,
+  });
 };
 
 let variantLeafTypeName = (typeName, leafName) =>
@@ -73,18 +65,21 @@ let translateConstructorDeclaration =
   let recordValue =
     recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
   let codeItem =
-    CodeItem.ExportVariantLeaf({
-      exportType: {
-        opaque: Some(true),
-        typeVars,
-        resolvedTypeName: variantTypeNameResolved,
-        optTyp: Some(mixedOrUnknown(~language)),
-        genTypeKind,
-      },
-      constructorTyp,
-      argTypes,
-      leafName: leafNameResolved,
-      recordValue,
+    CodeItem.ExportFromTypeDeclaration({
+      exportKind:
+        ExportVariantLeaf({
+          exportType: {
+            opaque: Some(true),
+            typeVars,
+            resolvedTypeName: variantTypeNameResolved,
+            optTyp: Some(mixedOrUnknown(~language)),
+          },
+          constructorTyp,
+          argTypes,
+          leafName: leafNameResolved,
+          recordValue,
+        }),
+      genTypeKind,
     });
 
   (variant, {Translation.importTypes, codeItem});
@@ -257,10 +252,13 @@ let traslateDeclarationKind =
     let typeParams = TypeVars.(typeParams |> extract |> toTyp);
     let variantTypeNameResolved = typeName |> TypeEnv.addModulePath(~typeEnv);
     let unionType =
-      CodeItem.ExportVariantType({
-        typeParams,
-        variants,
-        name: variantTypeNameResolved,
+      CodeItem.ExportFromTypeDeclaration({
+        exportKind:
+          ExportVariantType({
+            typeParams,
+            variants,
+            name: variantTypeNameResolved,
+          }),
         genTypeKind,
       });
     declarations @ [{codeItem: unionType, importTypes: []}];

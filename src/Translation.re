@@ -276,7 +276,6 @@ let translateComponent =
           typeVars,
           resolvedTypeName: propsTypeName,
           optTyp: Some(propsType),
-          genTypeKind: Generated,
         },
         fileName,
         moduleName,
@@ -411,7 +410,6 @@ let translatePrimitive =
           typeVars,
           resolvedTypeName: propsTypeName,
           optTyp: Some(propsTyp),
-          genTypeKind: Generated,
         },
         importAnnotation:
           importString |> Annotation.importAnnotationFromString,
