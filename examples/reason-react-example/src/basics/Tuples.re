@@ -46,3 +46,11 @@ let changeSecondAge = ((first, second): couple): couple => (
   first,
   {...second, age: second.age + 1},
 );
+
+/* This should not generate import from Types, though it would if annotated. */
+type checkThatThisDoesNotImportFromTypes = Types.anInterestingFlowType;
+
+/* This should not generate import from Types, though it would if annotated. */
+type checkThatThisDoesNotImportFromTypes2 = {
+  hello: Types.anInterestingFlowType,
+};

@@ -276,13 +276,7 @@ let traslateDeclarationKind =
            ~typeEnv,
          );
 
-    [
-      {
-        importTypes,
-
-        codeItem,
-      },
-    ];
+    [{importTypes, codeItem}];
 
   | NoDeclaration => []
   };
@@ -317,23 +311,23 @@ let translateTypeDeclaration =
         when !hasSomeGADTLeaf(constructorDeclarations) =>
       VariantDeclaration(constructorDeclarations)
 
-    | (Type_abstract, NoGenType) when typeParams == [] =>
+    | (Type_abstract, _) =>
       switch (
         dec.typ_attributes
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
       ) {
-      | Some(StringPayload(importString)) =>
+      | Some(StringPayload(importString)) when typeParams == [] =>
         ImportTypeDeclaration(
           importString,
           dec.typ_attributes
           |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs),
         )
 
+      | _ when genTypeKind != NoGenType =>
+        GeneralDeclaration(dec.typ_manifest)
+
       | _ => NoDeclaration
       }
-
-    | (Type_abstract, GenType | GenTypeOpaque) =>
-      GeneralDeclaration(dec.typ_manifest)
 
     | _ => NoDeclaration
     };
