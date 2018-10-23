@@ -36,7 +36,7 @@ let createExportTypeMap =
     let addExportType =
         (
           ~importTypes,
-          {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
+          {resolvedTypeName, typeVars, optTyp, genTypeKind, _}: CodeItem.exportType,
         ) => {
       if (Debug.codeItems) {
         logItem(
@@ -45,23 +45,23 @@ let createExportTypeMap =
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
           switch (optTyp) {
-          | (Some(typ), genTypeKind) =>
+          | Some(typ) =>
             " "
             ++ (genTypeKind |> genTypeKindToString |> EmitText.comment)
             ++ " = "
             ++ (typ |> EmitTyp.typToString(~language))
-          | (None, _) => ""
+          | None => ""
           },
         );
       };
       switch (optTyp) {
-      | (Some(typ), genTypeKind) =>
+      | Some(typ) =>
         exportTypeMap
         |> StringMap.add(
              resolvedTypeName,
              (typeVars, typ, genTypeKind, importTypes),
            )
-      | (None, _) => exportTypeMap
+      | None => exportTypeMap
       };
     };
     switch (declaration.codeItem) {
@@ -108,16 +108,16 @@ let emitExportType =
       ~emitters,
       ~language,
       ~typIsOpaque,
-      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp},
+      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp, genTypeKind},
     ) => {
   let opaque =
-    switch (opaque, optTyp |> fst) {
+    switch (opaque, optTyp) {
     | (Some(opaque), _) => opaque
     | (None, Some(typ)) => typ |> typIsOpaque
     | (None, None) => false
     };
   let shouldEmit =
-    switch (optTyp |> snd) {
+    switch (genTypeKind) {
     | NoGenType => false
     | Generated
     | GenType

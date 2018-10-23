@@ -57,7 +57,7 @@ let emitExportType:
     ~language: language,
     ~opaque: bool,
     ~typeVars: list(string),
-    ~optTyp: (option(typ), genTypeKind),
+    ~optTyp: option(typ),
     string
   ) =>
   Emitters.t;

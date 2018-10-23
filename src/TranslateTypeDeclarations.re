@@ -8,9 +8,10 @@ type declarationKind =
   | NoDeclaration;
 
 let createExportType =
-    (~opaque, ~typeVars, ~optTyp, ~typeEnv, typeName): CodeItem.t => {
+    (~opaque, ~typeVars, ~optTyp, ~genTypeKind, ~typeEnv, typeName)
+    : CodeItem.t => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
-  ExportType({opaque, typeVars, resolvedTypeName, optTyp});
+  ExportType({opaque, typeVars, resolvedTypeName, optTyp, genTypeKind});
 };
 
 let variantLeafTypeName = (typeName, leafName) =>
@@ -66,7 +67,8 @@ let translateConstructorDeclaration =
         opaque: Some(true),
         typeVars,
         resolvedTypeName: variantTypeNameResolved,
-        optTyp: (Some(mixedOrUnknown(~language)), genTypeKind),
+        optTyp: Some(mixedOrUnknown(~language)),
+        genTypeKind,
       },
       constructorTyp,
       argTypes,
@@ -101,7 +103,8 @@ let traslateDeclarationKind =
             |> createExportType(
                  ~opaque=Some(true),
                  ~typeVars,
-                 ~optTyp=(Some(mixedOrUnknown(~language)), genTypeKind),
+                 ~optTyp=Some(mixedOrUnknown(~language)),
+                 ~genTypeKind,
                  ~typeEnv,
                ),
         },
@@ -143,7 +146,8 @@ let traslateDeclarationKind =
         |> createExportType(
              ~opaque,
              ~typeVars,
-             ~optTyp=(Some(typ), genTypeKind),
+             ~optTyp=Some(typ),
+             ~genTypeKind,
              ~typeEnv,
            );
 
@@ -202,14 +206,21 @@ let traslateDeclarationKind =
              };
            {name, optional, mutable_, typ: typ1};
          });
-    let optTyp = (Some(Record(fields)), genTypeKind);
+    let optTyp = Some(Record(fields));
     let typeVars = TypeVars.extract(typeParams);
     let opaque = Some(genTypeKind == GenTypeOpaque);
     [
       {
         importTypes,
         codeItem:
-          typeName |> createExportType(~opaque, ~typeVars, ~optTyp, ~typeEnv),
+          typeName
+          |> createExportType(
+               ~opaque,
+               ~typeVars,
+               ~optTyp,
+               ~genTypeKind,
+               ~typeEnv,
+             ),
       },
     ];
 
@@ -267,7 +278,8 @@ let traslateDeclarationKind =
       |> createExportType(
            ~opaque=Some(false),
            ~typeVars=[],
-           ~optTyp=(None, Generated),
+           ~optTyp=None,
+           ~genTypeKind=Generated,
            ~typeEnv,
          );
 

@@ -234,7 +234,7 @@ let emitExportType =
 
   switch (language) {
   | Flow =>
-    switch (optTyp |> fst) {
+    switch (optTyp) {
     | Some(typ) =>
       "export"
       ++ (opaque ? " opaque " : " ")
@@ -281,7 +281,7 @@ let emitExportType =
       ++ typeParamsString
       ++ " = "
       ++ (
-        switch (optTyp |> fst) {
+        switch (optTyp) {
         | Some(typ) => typ |> typToString(~language)
         | None => resolvedTypeName
         }
