@@ -7,6 +7,17 @@ type declarationKind =
   | ImportTypeDeclaration(string, option(Annotation.attributePayload))
   | NoDeclaration;
 
+/* NOTE: every code item emitted by a type declaration must be accounted
+   below, to determined if it was annotated or is onlt for the type map. */
+let typeDeclarationHasAnnotation =
+    (typeDeclaration: Translation.typeDeclaration) =>
+  switch (typeDeclaration.codeItem) {
+  | CodeItem.ExportType({genTypeKind, _})
+  | ExportVariantLeaf({exportType: {genTypeKind, _}, _})
+  | ExportVariantType({genTypeKind, _}) when genTypeKind == NoGenType => false
+  | _ => true
+  };
+
 let createExportType =
     (~opaque, ~typeVars, ~optTyp, ~genTypeKind, ~typeEnv, typeName)
     : CodeItem.t => {
@@ -19,7 +30,7 @@ let variantLeafTypeName = (typeName, leafName) =>
 
 let translateConstructorDeclaration =
     (
-      ~config as {language} as config,
+      ~config as {language, _} as config,
       ~outputFileRelative,
       ~resolver,
       ~recordGen,
@@ -81,7 +92,7 @@ let translateConstructorDeclaration =
 
 let traslateDeclarationKind =
     (
-      ~config as {language} as config,
+      ~config as {language, _} as config,
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
@@ -250,6 +261,7 @@ let traslateDeclarationKind =
         typeParams,
         variants,
         name: variantTypeNameResolved,
+        genTypeKind,
       });
     declarations @ [{codeItem: unionType, importTypes: []}];
 

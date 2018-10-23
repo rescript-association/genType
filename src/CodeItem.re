@@ -12,6 +12,7 @@ type exportVariantType = {
   typeParams: list(typ),
   variants: list(variant),
   name: string,
+  genTypeKind,
 };
 
 type importAnnotation = {

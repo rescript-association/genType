@@ -108,7 +108,7 @@ let emitExportType =
       ~emitters,
       ~language,
       ~typIsOpaque,
-      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp, genTypeKind},
+      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp, _},
     ) => {
   let opaque =
     switch (opaque, optTyp) {
@@ -116,24 +116,15 @@ let emitExportType =
     | (None, Some(typ)) => typ |> typIsOpaque
     | (None, None) => false
     };
-  let shouldEmit =
-    switch (genTypeKind) {
-    | NoGenType => false
-    | Generated
-    | GenType
-    | GenTypeOpaque => true
-    };
-  shouldEmit ?
-    resolvedTypeName
-    |> EmitTyp.emitExportType(
-         ~early?,
-         ~emitters,
-         ~language,
-         ~opaque,
-         ~typeVars,
-         ~optTyp,
-       ) :
-    emitters;
+  resolvedTypeName
+  |> EmitTyp.emitExportType(
+       ~early?,
+       ~emitters,
+       ~language,
+       ~opaque,
+       ~typeVars,
+       ~optTyp,
+     );
 };
 
 let rec emitCodeItem =
@@ -173,7 +164,7 @@ let rec emitCodeItem =
       emitExportType(~emitters, ~language, ~typIsOpaque, exportType),
     )
 
-  | ExportVariantType({CodeItem.typeParams, variants, name}) => (
+  | ExportVariantType({CodeItem.typeParams, variants, name, _}) => (
       env,
       EmitTyp.emitExportVariantType(
         ~emitters,
@@ -662,7 +653,7 @@ let emitEnumTables = (~emitters, enumTables) => {
 
 let emitImport =
     (
-      ~config as {language} as config,
+      ~config as {language, _} as config,
       ~outputFileRelative,
       ~resolver,
       ~emitters,
@@ -768,18 +759,22 @@ let emitTranslationAsString =
   let emitters = Emitters.initial
   and env = initialEnv;
 
-  let typeDeclarationsImportTypes =
+  let typeDeclarationsAnnotated =
     translation.typeDeclarations
+    |> List.filter(TranslateTypeDeclarations.typeDeclarationHasAnnotation);
+
+  let typeDeclarationsImportTypes =
+    typeDeclarationsAnnotated
     |> List.map((typeDeclaration: Translation.typeDeclaration) =>
-         switch (typeDeclaration.codeItem) {
-         | CodeItem.ExportType(exportType) =>
-           /* only imports from annotated or generated declarations */
-           exportType.genTypeKind != NoGenType ?
-             typeDeclaration.importTypes : []
-         | _ => typeDeclaration.importTypes
-         }
+         typeDeclaration.importTypes
        )
     |> List.concat;
+
+  let typeDeclarationsCodeItems =
+    typeDeclarationsAnnotated
+    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
+         typeDeclaration.codeItem
+       );
 
   let (env, emitters) =
     /* imports from dependencies go first to build up type tables */
@@ -793,12 +788,6 @@ let emitTranslationAsString =
          ~emitters,
          ~env,
          ~inputCmtTranslateTypeDeclarations,
-       );
-
-  let typeDeclarationsCodeItems =
-    translation.typeDeclarations
-    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
-         typeDeclaration.codeItem
        );
 
   let (finalEnv, emitters) =
