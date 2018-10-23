@@ -76,7 +76,6 @@ type exportFromTypeDeclaration = {
 
 type t =
   | ExportComponent(exportComponent)
-  | ExportFromTypeDeclaration(exportFromTypeDeclaration)
   | ExportValue(exportValue)
   | ImportComponent(importComponent)
   | ImportValue(importValue);

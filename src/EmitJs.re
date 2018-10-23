@@ -82,14 +82,6 @@ let codeItemToString = (~language, codeItem: CodeItem.t) =>
     ++ (fileName |> ModuleName.toString)
     ++ " moduleName:"
     ++ (moduleName |> ModuleName.toString)
-  | ExportFromTypeDeclaration({
-      exportKind: ExportType({resolvedTypeName, _}),
-    }) =>
-    "ExportType " ++ resolvedTypeName
-  | ExportFromTypeDeclaration({exportKind: ExportVariantLeaf({leafName, _})}) =>
-    "WrapVariantLeaf " ++ leafName
-  | ExportFromTypeDeclaration({exportKind: ExportVariantType({name, _})}) =>
-    "ExportVariantType " ++ name
   | ExportValue({fileName, resolvedName, typ, _}) =>
     "WrapReasonValue"
     ++ " resolvedName:"
@@ -264,18 +256,6 @@ let rec emitCodeItem =
   };
 
   switch (codeItem) {
-  | CodeItem.ExportFromTypeDeclaration(exportFromTypeDeclaration) =>
-    exportFromTypeDeclaration
-    |> emitexportFromTypeDeclaration(
-         ~config,
-         ~emitters,
-         ~language,
-         ~typIsOpaque,
-         ~env,
-         ~typToConverter,
-         ~enumTables,
-       )
-
   | ImportComponent({
       exportType,
       importAnnotation,
