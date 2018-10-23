@@ -25,12 +25,12 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (~language, declarations: list(Translation.declaration))
+    (~language, declarations: list(Translation.typeDeclaration))
     : Translation.typeMap => {
   let updateExportTypeMap =
       (
         exportTypeMap: Translation.typeMap,
-        declaration: Translation.declaration,
+        declaration: Translation.typeDeclaration,
       )
       : Translation.typeMap => {
     let addExportType =

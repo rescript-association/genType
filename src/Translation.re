@@ -7,7 +7,7 @@ type importType = {
   cmtFile: option(string),
 };
 
-type declaration = {
+type typeDeclaration = {
   codeItem: CodeItem.t,
   importTypes: list(importType),
 };

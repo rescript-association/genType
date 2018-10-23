@@ -91,7 +91,7 @@ let traslateDeclarationKind =
       ~typeParams,
       declarationKind,
     )
-    : list(Translation.declaration) =>
+    : list(Translation.typeDeclaration) =>
   switch (declarationKind) {
   | GeneralDeclaration(optCoreType) =>
     switch (optCoreType) {
@@ -303,7 +303,7 @@ let translateTypeDeclaration =
       ~genTypeKind: genTypeKind,
       dec: Typedtree.type_declaration,
     )
-    : list(Translation.declaration) => {
+    : list(Translation.typeDeclaration) => {
   typeEnv |> TypeEnv.newType(~name=dec.typ_id |> Ident.name);
   let typeName = Ident.name(dec.typ_id);
   let typeParams = dec.typ_type.type_params;
@@ -360,7 +360,7 @@ let translateTypeDeclarations =
       ~typeEnv,
       typeDeclarations: list(Typedtree.type_declaration),
     )
-    : list(Translation.declaration) => {
+    : list(Translation.typeDeclaration) => {
   let genTypeKind =
     switch (typeDeclarations) {
     | [dec, ..._] => dec.typ_attributes |> Annotation.getGenTypeKind
