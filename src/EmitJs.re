@@ -220,33 +220,45 @@ let emitexportFromTypeDeclaration =
     (env, emitters);
   };
 
+let emitExportFromTypeDeclarations =
+    (
+      ~config,
+      ~emitters,
+      ~language,
+      ~typIsOpaque,
+      ~env,
+      ~typToConverter,
+      ~enumTables,
+      exportFromTypeDeclarations,
+    ) =>
+  exportFromTypeDeclarations
+  |> List.fold_left(
+       ((env, emitters)) =>
+         emitexportFromTypeDeclaration(
+           ~config,
+           ~emitters,
+           ~language,
+           ~typIsOpaque,
+           ~env,
+           ~typToConverter,
+           ~enumTables,
+         ),
+       (env, emitters),
+     );
+
 let rec emitCodeItem =
         (
           ~config,
           ~outputFileRelative,
           ~resolver,
-          ~exportTypeMap,
           ~emitters,
           ~env,
           ~enumTables,
+          ~typIsOpaque,
+          ~typToConverter,
           codeItem,
         ) => {
   let language = config.language;
-  let typToConverter = typ =>
-    typ
-    |> Converter.typToConverter(
-         ~language,
-         ~exportTypeMap,
-         ~typesFromOtherFiles=env.typesFromOtherFiles,
-       );
-  let typIsOpaque = typ =>
-    typ
-    |> Converter.typToConverterOpaque(
-         ~language,
-         ~exportTypeMap,
-         ~typesFromOtherFiles=env.typesFromOtherFiles,
-       )
-    |> snd;
   if (Debug.codeItems) {
     logItem("Code Item: %s\n", codeItem |> codeItemToString(~language));
   };
@@ -619,10 +631,11 @@ and emitCodeItems =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~exportTypeMap,
       ~emitters,
       ~env,
       ~enumTables,
+      ~typIsOpaque,
+      ~typToConverter,
       codeItems,
     ) =>
   codeItems
@@ -632,10 +645,11 @@ and emitCodeItems =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~exportTypeMap,
            ~emitters,
            ~env,
            ~enumTables,
+           ~typIsOpaque,
+           ~typToConverter,
          ),
        (env, emitters),
      );
@@ -783,9 +797,6 @@ let emitTranslationAsString =
     translation.typeDeclarations |> createExportTypeMap(~language);
   let enumTables = Hashtbl.create(1);
 
-  let emitters = Emitters.initial
-  and env = initialEnv;
-
   let typeDeclarationsAnnotated =
     translation.typeDeclarations
     |> List.filter(
@@ -795,24 +806,42 @@ let emitTranslationAsString =
          genTypeKind != NoGenType
        );
 
-  let typeDeclarationsImportTypes =
+  let importTypesFromTypeDeclarations =
     typeDeclarationsAnnotated
     |> List.map((typeDeclaration: Translation.typeDeclaration) =>
          typeDeclaration.importTypes
        )
     |> List.concat;
 
-  let typeDeclarationsCodeItems =
+  let exportFromTypeDeclarations =
     typeDeclarationsAnnotated
     |> List.map((typeDeclaration: Translation.typeDeclaration) =>
-         CodeItem.ExportFromTypeDeclaration(
-           typeDeclaration.exportFromTypeDeclaration,
-         )
+         typeDeclaration.exportFromTypeDeclaration
        );
 
+  let typIsOpaque_ = (~env, typ) =>
+    typ
+    |> Converter.typToConverterOpaque(
+         ~language,
+         ~exportTypeMap,
+         ~typesFromOtherFiles=env.typesFromOtherFiles,
+       )
+    |> snd;
+
+  let typToConverter_ = (~env, typ) =>
+    typ
+    |> Converter.typToConverter(
+         ~language,
+         ~exportTypeMap,
+         ~typesFromOtherFiles=env.typesFromOtherFiles,
+       );
+
+  let emitters = Emitters.initial
+  and env = initialEnv;
+
   let (env, emitters) =
-    /* imports from dependencies go first to build up type tables */
-    typeDeclarationsImportTypes
+    /* imports from type declarations go first to build up type tables */
+    importTypesFromTypeDeclarations
     @ translation.importTypes
     |> List.sort_uniq(Translation.importTypeCompare)
     |> emitImportTypes(
@@ -824,17 +853,29 @@ let emitTranslationAsString =
          ~inputCmtTranslateTypeDeclarations,
        );
 
+  let (env, emitters) =
+    exportFromTypeDeclarations
+    |> emitExportFromTypeDeclarations(
+         ~config,
+         ~emitters,
+         ~language,
+         ~typIsOpaque=typIsOpaque_(~env),
+         ~env,
+         ~typToConverter=typToConverter_(~env),
+         ~enumTables,
+       );
+
   let (finalEnv, emitters) =
-    typeDeclarationsCodeItems
-    @ translation.codeItems
+    translation.codeItems
     |> emitCodeItems(
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~exportTypeMap,
          ~emitters,
          ~env,
          ~enumTables,
+         ~typIsOpaque=typIsOpaque_(~env),
+         ~typToConverter=typToConverter_(~env),
        );
 
   let emitters = enumTables |> emitEnumTables(~emitters);
