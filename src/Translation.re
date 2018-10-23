@@ -15,10 +15,13 @@ type typeDeclaration = {
 type t = {
   importTypes: list(importType),
   codeItems: list(CodeItem.t),
+  typeDeclarations: list(typeDeclaration),
 };
 
 type typeMap =
   StringMap.t((list(string), typ, genTypeKind, list(importType)));
+
+let empty = {importTypes: [], codeItems: [], typeDeclarations: []};
 
 let getImportTypeUniqueName = ({typeName, asTypeName, _}: importType) =>
   typeName
@@ -34,12 +37,16 @@ let importTypeCompare = (i1, i2) =>
 
 let combine = (translations: list(t)): t =>
   translations
-  |> List.map(({importTypes, codeItems}) => (importTypes, codeItems))
+  |> List.map(({importTypes, codeItems, typeDeclarations}) =>
+       ((importTypes, codeItems), typeDeclarations)
+     )
   |> List.split
+  |> (((x, y)) => (x |> List.split, y))
   |> (
-    ((importTypes, codeItems)) => {
+    (((importTypes, codeItems), typeDeclarations)) => {
       importTypes: importTypes |> List.concat,
       codeItems: codeItems |> List.concat,
+      typeDeclarations: typeDeclarations |> List.concat,
     }
   );
 
@@ -154,6 +161,7 @@ let translateValue =
       typeExprTranslation.dependencies
       |> translateDependencies(~config, ~outputFileRelative, ~resolver),
     codeItems,
+    typeDeclarations: [],
   };
 };
 
@@ -282,6 +290,7 @@ let translateComponent =
         typeExprTranslation.dependencies
         |> translateDependencies(~config, ~outputFileRelative, ~resolver),
       codeItems,
+      typeDeclarations: [],
     };
 
   | _ =>
@@ -417,6 +426,7 @@ let translatePrimitive =
         typeExprTranslation.dependencies
         |> translateDependencies(~config, ~outputFileRelative, ~resolver),
       codeItems,
+      typeDeclarations: [],
     };
 
   | (_, _, Some(StringPayload(importString))) => {
@@ -433,8 +443,9 @@ let translatePrimitive =
           fileName,
         }),
       ],
+      typeDeclarations: [],
     }
 
-  | _ => {importTypes: [], codeItems: []}
+  | _ => {importTypes: [], codeItems: [], typeDeclarations: []}
   };
 };

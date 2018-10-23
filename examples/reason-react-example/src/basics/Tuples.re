@@ -54,3 +54,7 @@ type checkThatThisDoesNotImportFromTypes = Types.anInterestingFlowType;
 type checkThatThisDoesNotImportFromTypes2 = {
   hello: Types.anInterestingFlowType,
 };
+
+/* This should not generate import from Types, though it would if annotated. */
+type checkThatThisDoesNotImportFromTypes3 =
+  | Variant(Types.anInterestingFlowType);

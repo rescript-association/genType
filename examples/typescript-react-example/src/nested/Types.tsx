@@ -11,10 +11,6 @@ import {list} from '../../src/shims/ReasonPervasives.shim';
 // tslint:disable-next-line:interface-over-type-literal
 export type t = number;
 
-export const someIntList: list<number> = TypesBS.someIntList;
-
-export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = TypesBS.map;
-
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TypeWithVarsA<x,y> { protected opaque!: x | y }; /* simulate opaque types */
 
@@ -36,8 +32,6 @@ export type tree = {
   readonly right?: tree
 };
 
-export const swap: (_1:tree) => tree = TypesBS.swap;
-
 // tslint:disable-next-line:interface-over-type-literal
 export type selfRecursive = {readonly self: selfRecursive};
 
@@ -46,6 +40,12 @@ export type mutuallyRecursiveA = {readonly b: mutuallyRecursiveB};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type mutuallyRecursiveB = {readonly a: mutuallyRecursiveA};
+
+export const someIntList: list<number> = TypesBS.someIntList;
+
+export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = TypesBS.map;
+
+export const swap: (_1:tree) => tree = TypesBS.swap;
 
 export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = function _(Arg1) { const result = 
 /* WARNING: circular type selfRecursive. Only shallow converter applied. */

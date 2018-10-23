@@ -26,16 +26,16 @@ import {stringFunction} from './MyMath';
 // tslint:disable-next-line:interface-over-type-literal
 export type point = {readonly x: number, readonly y?: number};
 
+// tslint:disable-next-line:interface-over-type-literal
+export type AbsoluteValue_t = AbsoluteValue_t;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type stringFunction = stringFunction;
+
 export const roundedNumber: number = WrapJsValueBS.roundedNumber;
 
 export const areaValue: number = WrapJsValueBS.areaValue;
 
-// tslint:disable-next-line:interface-over-type-literal
-export type AbsoluteValue_t = AbsoluteValue_t;
-
 export const useGetProp: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetProp;
 
 export const useGetAbs: (_1:AbsoluteValue_t) => number = WrapJsValueBS.useGetAbs;
-
-// tslint:disable-next-line:interface-over-type-literal
-export type stringFunction = stringFunction;

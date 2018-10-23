@@ -33,7 +33,7 @@ let translateSignatureValue =
          ~typeEnv,
          ~typeExpr,
        )
-  | _ => {importTypes: [], codeItems: []}
+  | _ => Translation.empty
   };
 };
 
@@ -63,7 +63,7 @@ let rec translateModuleDeclaration =
   | Tmty_functor(_)
   | Tmty_with(_)
   | Tmty_typeof(_)
-  | Tmty_alias(_) => {importTypes: [], codeItems: []}
+  | Tmty_alias(_) => Translation.empty
   }
 and translateSignatureItem =
     (
@@ -77,18 +77,18 @@ and translateSignatureItem =
     )
     : Translation.t =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> TranslateTypeDeclarations.translateTypeDeclarations(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-       )
-    |> List.map(({Translation.importTypes, codeItem}) =>
-         {Translation.importTypes, codeItems: [codeItem]}
-       )
-    |> Translation.combine
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} => {
+      importTypes: [],
+      codeItems: [],
+      typeDeclarations:
+        typeDeclarations
+        |> TranslateTypeDeclarations.translateTypeDeclarations(
+             ~config,
+             ~outputFileRelative,
+             ~resolver,
+             ~typeEnv,
+           ),
+    }
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
     if (valueDescription.val_prim != []) {
@@ -125,7 +125,7 @@ and translateSignatureItem =
          ~typeEnv,
        );
 
-  | _ => {importTypes: [], codeItems: []}
+  | _ => Translation.empty
   }
 and translateSignature =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, signature)

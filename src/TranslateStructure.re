@@ -36,7 +36,7 @@ let translateValueBinding =
          ~typeEnv,
          ~typeExpr,
        )
-  | _ => {importTypes: [], codeItems: []}
+  | _ => Translation.empty
   };
 };
 
@@ -52,18 +52,18 @@ let rec translateStructureItem =
         )
         : Translation.t =>
   switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> TranslateTypeDeclarations.translateTypeDeclarations(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-       )
-    |> List.map(({Translation.importTypes, codeItem}) =>
-         {Translation.importTypes, codeItems: [codeItem]}
-       )
-    |> Translation.combine
+  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} => {
+      importTypes: [],
+      codeItems: [],
+      typeDeclarations:
+        typeDeclarations
+        |> TranslateTypeDeclarations.translateTypeDeclarations(
+             ~config,
+             ~outputFileRelative,
+             ~resolver,
+             ~typeEnv,
+           ),
+    }
 
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
@@ -114,7 +114,7 @@ let rec translateStructureItem =
        )
     |> Translation.combine
 
-  | _ => {importTypes: [], codeItems: []}
+  | _ => Translation.empty
   }
 and translateStructure =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
@@ -164,6 +164,6 @@ and translateModuleBinding =
   | Tmod_functor(_)
   | Tmod_apply(_)
   | Tmod_constraint(_)
-  | Tmod_unpack(_) => {importTypes: [], codeItems: []}
+  | Tmod_unpack(_) => Translation.empty
   };
 };

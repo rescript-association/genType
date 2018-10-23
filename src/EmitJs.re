@@ -762,17 +762,29 @@ let emitTranslationAsString =
     typesFromOtherFiles: StringMap.empty,
   };
   let exportTypeMap =
-    translation.codeItems
-    |> List.map(codeItem => {Translation.codeItem, importTypes: []})
-    |> createExportTypeMap(~language);
+    translation.typeDeclarations |> createExportTypeMap(~language);
   let enumTables = Hashtbl.create(1);
 
   let emitters = Emitters.initial
   and env = initialEnv;
 
+  let typeDeclarationsImportTypes =
+    translation.typeDeclarations
+    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
+         switch (typeDeclaration.codeItem) {
+         | CodeItem.ExportType(exportType) =>
+           /* only imports from annotated or generated declarations */
+           exportType.genTypeKind != NoGenType ?
+             typeDeclaration.importTypes : []
+         | _ => typeDeclaration.importTypes
+         }
+       )
+    |> List.concat;
+
   let (env, emitters) =
     /* imports from dependencies go first to build up type tables */
-    translation.importTypes
+    typeDeclarationsImportTypes
+    @ translation.importTypes
     |> List.sort_uniq(Translation.importTypeCompare)
     |> emitImportTypes(
          ~config,
@@ -783,8 +795,15 @@ let emitTranslationAsString =
          ~inputCmtTranslateTypeDeclarations,
        );
 
+  let typeDeclarationsCodeItems =
+    translation.typeDeclarations
+    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
+         typeDeclaration.codeItem
+       );
+
   let (finalEnv, emitters) =
-    translation.codeItems
+    typeDeclarationsCodeItems
+    @ translation.codeItems
     |> emitCodeItems(
          ~config,
          ~outputFileRelative,

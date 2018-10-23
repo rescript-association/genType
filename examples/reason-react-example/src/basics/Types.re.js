@@ -32,12 +32,6 @@ export type typeWithVars<x,y,z> =
 
 export type optionInt = ?number;
 
-export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
-
-export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };
-
-export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(x) { return (x == null ? undefined : x)})); return result };
-
 export type funType = (number) => number;
 
 export type myFloat = number;
@@ -56,13 +50,7 @@ export opaque type myObj = mixed;
 
 export type { anInterestingFlowType };
 
-export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesBS.identity;
-
 export type { weekday };
-
-export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
-
-export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };
 
 export type someMutableFields = {|
   mutable0: string, 
@@ -70,3 +58,15 @@ export type someMutableFields = {|
   mutable1: string, 
   mutable2: string
 |};
+
+export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
+
+export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };
+
+export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(x) { return (x == null ? undefined : x)})); return result };
+
+export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesBS.identity;
+
+export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
+
+export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };

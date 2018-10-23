@@ -28,6 +28,26 @@ export type person<a> = {
   readonly polymorphicPayload: a
 };
 
+// tslint:disable-next-line:max-classes-per-file 
+export abstract class TA { protected opaque!: any }; /* simulate opaque types */
+
+export const A: TA = 0 as any;
+
+// tslint:disable-next-line:max-classes-per-file 
+export abstract class TB { protected opaque!: any }; /* simulate opaque types */
+
+export const B: (_1:number) => TB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
+
+// tslint:disable-next-line:max-classes-per-file 
+export abstract class TC { protected opaque!: any }; /* simulate opaque types */
+
+export const C: (_1:string) => TC = function _(Arg1) { return CreateBucklescriptBlock.__(1 as any, [Arg1]) }
+
+export type t =
+  | TA
+  | TB
+  | TC;
+
 export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -49,26 +69,6 @@ export default ReasonComponent;
 export const minus: (_1:{readonly first?: number, readonly second: number}) => number = function _(Arg1) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };
 
 export const useTypeDefinedInAnotherModule: (_1:Types_t) => Types_t = ReasonComponentBS.useTypeDefinedInAnotherModule;
-
-// tslint:disable-next-line:max-classes-per-file 
-export abstract class TA { protected opaque!: any }; /* simulate opaque types */
-
-export const A: TA = 0 as any;
-
-// tslint:disable-next-line:max-classes-per-file 
-export abstract class TB { protected opaque!: any }; /* simulate opaque types */
-
-export const B: (_1:number) => TB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
-
-// tslint:disable-next-line:max-classes-per-file 
-export abstract class TC { protected opaque!: any }; /* simulate opaque types */
-
-export const C: (_1:string) => TC = function _(Arg1) { return CreateBucklescriptBlock.__(1 as any, [Arg1]) }
-
-export type t =
-  | TA
-  | TB
-  | TC;
 
 export const tToString: (_1:t) => string = ReasonComponentBS.tToString;
 
