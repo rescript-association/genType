@@ -766,7 +766,7 @@ let propagateAnnotationToSubTypes =
     |> List.filter(((_, (_, _, annotation, _))) =>
          annotation == Annotation.GenType
        );
-  let inlineTyp = ((_typeName, (_, typ, annotation, _))) => {
+  let visitTypAndUpdateMarked = ((_typeName, (_, typ, annotation, _))) => {
     let visited = ref(StringSet.empty);
     let rec visit = typ =>
       switch (typ) {
@@ -804,7 +804,7 @@ let propagateAnnotationToSubTypes =
     };
   };
   if (config.inlineAnnotations) {
-    initialAnnotatedTypes |> List.iter(inlineTyp);
+    initialAnnotatedTypes |> List.iter(visitTypAndUpdateMarked);
   };
   let newTypeMap =
     typeMap
