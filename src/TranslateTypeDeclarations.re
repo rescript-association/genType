@@ -1,8 +1,9 @@
 open GenTypeCommon;
 
 type declarationKind =
-  | RecordDelaration(list(Types.label_declaration))
+  | RecordDeclaration(list(Types.label_declaration))
   | GeneralDeclaration(option(Typedtree.core_type))
+  | GeneralDeclarationFromTypes(option(Types.type_expr)) /* As the above, but from Types not Typedtree */
   | VariantDeclaration(list(Types.constructor_declaration))
   | ImportTypeDeclaration(string, option(Annotation.attributePayload))
   | NoDeclaration;
@@ -98,6 +99,58 @@ let traslateDeclarationKind =
     )
     : list(Translation.typeDeclaration) =>
   switch (declarationKind) {
+  | GeneralDeclarationFromTypes(optTypeExpr) =>
+    switch (optTypeExpr) {
+    | None => [
+        {
+          importTypes: [],
+          exportFromTypeDeclaration:
+            typeName
+            |> createExportType(
+                 ~opaque=Some(true),
+                 ~typeVars,
+                 ~optTyp=Some(mixedOrUnknown(~language)),
+                 ~annotation,
+                 ~typeEnv,
+               ),
+        },
+      ]
+    | Some(typeExpr) =>
+      let typeExprTranslation =
+        typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
+      let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
+      let typ =
+        switch (optTypeExpr, typeExprTranslation.typ) {
+        | (Some({desc: Tvariant({row_fields: rowFields}), _}), Enum(enum))
+            when rowFields |> List.length == (enum.cases |> List.length) =>
+          let cases =
+            rowFields |> List.map(((label, _)) => {label, labelJS: label});
+          cases |> createEnum;
+        | _ => typeExprTranslation.typ
+        };
+      let exportFromTypeDeclaration =
+        typeName
+        |> createExportType(
+             ~opaque,
+             ~typeVars,
+             ~optTyp=Some(typ),
+             ~annotation,
+             ~typeEnv,
+           );
+      [
+        {
+          importTypes:
+            typeExprTranslation.dependencies
+            |> Translation.translateDependencies(
+                 ~config,
+                 ~outputFileRelative,
+                 ~resolver,
+               ),
+          exportFromTypeDeclaration,
+        },
+      ];
+    }
+
   | GeneralDeclaration(optCoreType) =>
     switch (optCoreType) {
     | None => [
@@ -170,7 +223,7 @@ let traslateDeclarationKind =
       ];
     }
 
-  | RecordDelaration(labelDeclarations) =>
+  | RecordDeclaration(labelDeclarations) =>
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
@@ -318,15 +371,15 @@ let translateTypeDeclaration =
   let typeVars = TypeVars.extract(typeParams);
 
   let declarationKind =
-    switch (typ_type.type_kind, annotation) {
-    | (Type_record(labelDeclarations, _), _) =>
-      RecordDelaration(labelDeclarations)
+    switch (typ_type.type_kind) {
+    | Type_record(labelDeclarations, _) =>
+      RecordDeclaration(labelDeclarations)
 
-    | (Type_variant(constructorDeclarations), _)
+    | Type_variant(constructorDeclarations)
         when !hasSomeGADTLeaf(constructorDeclarations) =>
       VariantDeclaration(constructorDeclarations)
 
-    | (Type_abstract, _) =>
+    | Type_abstract =>
       switch (
         typ_attributes
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)

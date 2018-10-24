@@ -46,12 +46,11 @@ let rec translateModuleDeclaration =
           ~resolver,
           ~fileName,
           ~typeEnv,
-          {md_id, md_attributes, md_type, _}: Typedtree.module_declaration,
+          {md_id, md_type, _}: Typedtree.module_declaration,
         ) =>
   switch (md_type.mty_desc) {
   | Tmty_signature(signature) =>
     let name = md_id |> Ident.name;
-    let _isAnnotated = md_attributes |> Annotation.hasGenTypeAnnotation;
     signature
     |> translateSignature(
          ~config,
@@ -170,15 +169,14 @@ and translateSignature =
     : list(Translation.t) => {
   let moduleItemGen = Runtime.moduleItemGen();
   signature.Typedtree.sig_items
-  |> List.map(signatureItem =>
-       signatureItem
-       |> translateSignatureItem(
-            ~config,
-            ~outputFileRelative,
-            ~resolver,
-            ~moduleItemGen,
-            ~fileName,
-            ~typeEnv,
-          )
+  |> List.map(
+       translateSignatureItem(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~moduleItemGen,
+         ~fileName,
+         ~typeEnv,
+       ),
      );
 };

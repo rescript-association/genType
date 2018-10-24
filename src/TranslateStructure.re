@@ -189,14 +189,31 @@ and translateModuleBinding =
        )
     |> Translation.combine;
 
+  | Tmod_apply(_) =>
+    /* Only look at the resulting type of the module */
+    switch (mb_expr.mod_type) {
+    | Mty_signature(signature) =>
+      let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+      typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
+      signature
+      |> TranslateSignatureFromTypes.translateSignatureFromTypes(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
+         )
+      |> Translation.combine;
+
+    | _ =>
+      logNotImplemented("Tmod_apply");
+      Translation.empty;
+    }
+
   | Tmod_ident(_) =>
     logNotImplemented("Tmod_ident");
     Translation.empty;
   | Tmod_functor(_) =>
     logNotImplemented("Tmod_functor");
-    Translation.empty;
-  | Tmod_apply(_) =>
-    logNotImplemented("Tmod_apply");
     Translation.empty;
   | Tmod_constraint(_) =>
     logNotImplemented("Tmod_constraint");
