@@ -11,3 +11,4 @@ let config = false || all;
 let converter = false || all;
 let dependencies = false || all;
 let moduleResolution = false || all;
+let typeResolution = false || all;

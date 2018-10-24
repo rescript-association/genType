@@ -6,131 +6,13 @@ module StringSet = Set.Make(String);
 
 open GenTypeCommon;
 
-let getPriority = x =>
-  switch (x) {
-  | CodeItem.ImportType(_)
-  | WrapJsComponentDeprecated(_)
-  | WrapJsComponent(_)
-  | WrapJsValue(_) => "2low"
-  | ValueBinding(_)
-  | ConstructorBinding(_)
-  | ComponentBinding(_)
-  | ExportType(_)
-  | ExportVariantType(_) => "1med"
-  };
-
-let sortcodeItemsByPriority = codeItems => {
-  module M = StringMap;
-  let map =
-    codeItems
-    |> List.fold_left(
-         (map, codeItem) => {
-           let priority = codeItem |> getPriority;
-           let items =
-             try (map |> StringMap.find(priority)) {
-             | Not_found => []
-             };
-           map |> StringMap.add(priority, [codeItem, ...items]);
-         },
-         StringMap.empty,
-       );
-  let sortedCodeItems = ref([]);
-  map
-  |> StringMap.iter((_priority, codeItemsAtPriority) =>
-       codeItemsAtPriority
-       |> List.iter(codeItem =>
-            sortedCodeItems := [codeItem, ...sortedCodeItems^]
-          )
-     );
-  sortedCodeItems^;
-};
-
-let hasGenTypeAnnotation = attributes =>
-  CodeItem.getGenTypeKind(attributes) != NoGenType
-  || attributes
-  |> CodeItem.getAttributePayload(tagIsGenTypeImport) != None;
-
-let structItemHasGenTypeAnnotation = structItem =>
-  switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
-    valueBindings
-    |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation
-  | _ => false
-  };
-
-let signatureItemHasGenTypeAnnotation = signatureItem =>
-  switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation
-  | _ => false
-  };
-
 let cmtHasGenTypeAnnotations = inputCMT =>
   switch (inputCMT.Cmt_format.cmt_annots) {
   | Implementation(structure) =>
-    structure.Typedtree.str_items
-    |> List.exists(structItemHasGenTypeAnnotation)
+    structure |> Annotation.structureHasGenTypeAnnotation
   | Interface(signature) =>
-    signature.Typedtree.sig_items
-    |> List.exists(signatureItemHasGenTypeAnnotation)
+    signature |> Annotation.signatureHasGenTypeAnnotation
   | _ => false
-  };
-
-let translateStructItem =
-    (~language, ~propsTypeGen, ~moduleName, structItem): CodeItem.translation =>
-  switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> List.map(CodeItem.translateTypeDecl(~language))
-    |> CodeItem.combineTranslations
-
-  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
-    valueBindings
-    |> List.map(
-         CodeItem.translateStructValue(~language, ~propsTypeGen, ~moduleName),
-       )
-    |> CodeItem.combineTranslations
-
-  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
-    /* external declaration */
-    valueDescription
-    |> CodeItem.translatePrimitive(~language, ~moduleName, ~propsTypeGen)
-
-  | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
-  /* TODO: Support mapping of variant type definitions. */
-  };
-
-let translateSignatureItem =
-    (~language, ~propsTypeGen, ~moduleName, signatureItem)
-    : CodeItem.translation =>
-  switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
-    typeDeclarations
-    |> List.map(CodeItem.translateTypeDecl(~language))
-    |> CodeItem.combineTranslations
-
-  | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
-    if (valueDescription.val_prim != []) {
-      valueDescription
-      |> CodeItem.translatePrimitive(~language, ~moduleName, ~propsTypeGen);
-    } else {
-      valueDescription
-      |> CodeItem.translateSignatureValue(
-           ~language,
-           ~propsTypeGen,
-           ~moduleName,
-         );
-    }
-
-  | _ => {CodeItem.dependencies: [], CodeItem.codeItems: []}
   };
 
 let typeDeclarationsOfStructItem = structItem =>
@@ -145,92 +27,76 @@ let typeDeclarationsOfSignature = signatureItem =>
   | _ => []
   };
 
-let inputCmtToTypeDeclarations = (~language, inputCMT): list(CodeItem.t) => {
+let inputCmtTranslateTypeDeclarations =
+    (~config, ~outputFileRelative, ~resolver, inputCMT)
+    : list(Translation.typeDeclaration) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
-  let typeDeclarations =
-    (
-      switch (cmt_annots) {
-      | Implementation(structure) =>
-        structure.Typedtree.str_items
-        |> List.map(structItem => structItem |> typeDeclarationsOfStructItem)
-      | Interface(signature) =>
-        signature.Typedtree.sig_items
-        |> List.map(signatureItem =>
-             signatureItem |> typeDeclarationsOfSignature
-           )
-      | _ => []
-      }
-    )
-    |> List.concat;
-  typeDeclarations
-  |> List.map(typeDeclaration =>
-       (typeDeclaration |> CodeItem.translateTypeDecl(~language)).codeItems
-     )
-  |> List.concat;
-};
-
-let cmtToCodeItems =
-    (
-      ~config,
-      ~propsTypeGen,
-      ~moduleName,
-      ~outputFileRelative,
-      ~resolver,
-      inputCMT,
-    )
-    : list(CodeItem.t) => {
-  let {Cmt_format.cmt_annots, _} = inputCMT;
-  let translationUnits =
+  let typeEnv = TypeEnv.root();
+  (
     switch (cmt_annots) {
     | Implementation(structure) =>
-      structure.Typedtree.str_items
-      |> List.map(structItem =>
-           structItem
-           |> translateStructItem(
-                ~language=config.language,
-                ~propsTypeGen,
-                ~moduleName,
-              )
-         )
-
+      structure.Typedtree.str_items |> List.map(typeDeclarationsOfStructItem)
     | Interface(signature) =>
-      signature.Typedtree.sig_items
-      |> List.map(signatureItem =>
-           signatureItem
-           |> translateSignatureItem(
-                ~language=config.language,
-                ~propsTypeGen,
-                ~moduleName,
-              )
-         )
-
+      signature.Typedtree.sig_items |> List.map(typeDeclarationsOfSignature)
     | _ => []
-    };
-  let translationUnit = translationUnits |> CodeItem.combineTranslations;
-  let imports =
-    translationUnit.dependencies
-    |> CodeItem.translateDependencies(~config, ~outputFileRelative, ~resolver);
-  let sortedCodeItems = translationUnit.codeItems |> sortcodeItemsByPriority;
-  imports @ sortedCodeItems;
+    }
+  )
+  |> List.concat
+  |> TranslateTypeDeclarations.translateTypeDeclarations(
+       ~config,
+       ~outputFileRelative,
+       ~resolver,
+       ~typeEnv,
+     );
 };
 
-let emitCodeItems =
+let translateCMT =
+    (~config, ~outputFileRelative, ~resolver, ~fileName, inputCMT)
+    : Translation.t => {
+  let {Cmt_format.cmt_annots, _} = inputCMT;
+  let typeEnv = TypeEnv.root();
+  let translations =
+    switch (cmt_annots) {
+    | Implementation(structure) =>
+      structure
+      |> TranslateStructure.translateStructure(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+         )
+    | Interface(signature) =>
+      signature
+      |> TranslateSignature.translateSignature(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+         )
+    | _ => []
+    };
+  translations |> Translation.combine;
+};
+
+let emitTranslation =
     (
       ~config,
       ~outputFile,
       ~outputFileRelative,
       ~signFile,
       ~resolver,
-      codeItems,
+      translation,
     ) => {
   let language = config.language;
   let codeText =
-    codeItems
-    |> EmitJs.emitCodeItems(
+    translation
+    |> EmitJs.emitTranslationAsString(
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~inputCmtToTypeDeclarations,
+         ~inputCmtTranslateTypeDeclarations,
        );
   let fileContents =
     signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText ++ "\n");
@@ -241,12 +107,11 @@ let emitCodeItems =
 let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = cmt |> Paths.getCmtFile;
   if (cmtFile != "") {
-    let propsTypeGen = GenIdent.createPropsTypeGen();
     let inputCMT = Cmt_format.read_cmt(cmtFile);
     let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
     let outputFileRelative =
       cmt |> Paths.getOutputFileRelative(~language=config.language);
-    let moduleName = cmt |> Paths.getModuleName;
+    let fileName = cmt |> Paths.getModuleName;
     let resolver =
       ModuleResolver.createResolver(
         ~extensions=[
@@ -258,14 +123,8 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       );
     if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
-      |> cmtToCodeItems(
-           ~config,
-           ~propsTypeGen,
-           ~moduleName,
-           ~outputFileRelative,
-           ~resolver,
-         )
-      |> emitCodeItems(
+      |> translateCMT(~config, ~outputFileRelative, ~resolver, ~fileName)
+      |> emitTranslation(
            ~config,
            ~outputFile,
            ~outputFileRelative,

@@ -2,6 +2,7 @@ type t = string;
 
 let createBucklescriptBlock = "CreateBucklescriptBlock";
 
+let curry = "Curry";
 let react = "React";
 
 let reasonPervasives = "ReasonPervasives";

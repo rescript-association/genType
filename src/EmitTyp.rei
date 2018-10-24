@@ -1,9 +1,8 @@
 open GenTypeCommon;
 
-let blockTagValue: (~language: language, int) => string;
-
 let componentExportName:
-  (~language: language, ~moduleName: ModuleName.t) => string;
+  (~language: language, ~fileName: ModuleName.t, ~moduleName: ModuleName.t) =>
+  string;
 
 let emitExportConst:
   (
@@ -53,14 +52,13 @@ let emitExportFunction:
 
 let emitExportType:
   (
-    ~early: bool,
+    ~early: bool=?,
     ~emitters: Emitters.t,
     ~language: language,
     ~opaque: bool,
-    ~typeName: string,
     ~typeVars: list(string),
-    ~comment: option(string),
-    typ
+    ~optTyp: option(typ),
+    string
   ) =>
   Emitters.t;
 
@@ -70,7 +68,7 @@ let emitExportVariantType:
     ~language: language,
     ~name: string,
     ~typeParams: list(typ),
-    ~leafTypes: list(typ)
+    ~variants: list(variant)
   ) =>
   Emitters.t;
 
@@ -99,6 +97,7 @@ let emitRequire:
     ~emitters: Emitters.t,
     ~language: language,
     ~moduleName: ModuleName.t,
+    ~strict: bool,
     ImportPath.t
   ) =>
   Emitters.t;

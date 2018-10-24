@@ -7,8 +7,14 @@ type recordGen = {
 
 type recordValue = int;
 
-let emitRecordAsInt = (~language, i) =>
-  i |> EmitTyp.blockTagValue(~language);
+type moduleItemGen = {mutable itemValue: int};
+
+type moduleItem = int;
+
+let blockTagValue = (~language, i) =>
+  string_of_int(i) ++ (language == GenTypeCommon.Typescript ? " as any" : "");
+
+let emitRecordAsInt = (~language, i) => i |> blockTagValue(~language);
 
 let emitRecordAsBlock = (~language, ~args, recordValue) =>
   createBucklescriptBlock
@@ -31,3 +37,27 @@ let newRecordValue = (~unboxed, recordGen) =>
     recordGen.boxed = recordGen.boxed + 1;
     v;
   };
+
+let moduleItemGen = () => {itemValue: 0};
+
+let newModuleItem = moduleItemGen => {
+  let v = moduleItemGen.itemValue;
+  moduleItemGen.itemValue = moduleItemGen.itemValue + 1;
+  v;
+};
+
+let emitModuleItem = itemValue => itemValue |> string_of_int;
+
+let emitVariantLabel = (~comment=true, label) =>
+  (comment ? label |> EmitText.comment : "")
+  ++ (label |> Btype.hash_variant |> string_of_int);
+
+let isMutableObjectField = name =>
+  String.length(name) >= 2
+  && String.sub(name, String.length(name) - 2, 2) == "#=";
+
+/* Mutable fields, i.e. fields annotated "[@bs.set]"
+   are represented as extra fields called "fieldName#="
+   preceding the normal field. */
+let checkMutableObjectField = (~previousName, ~name) =>
+  previousName == name ++ "#=";

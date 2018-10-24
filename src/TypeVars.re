@@ -39,71 +39,74 @@ let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
 let rec substitute = (~f, typ) =>
   switch (typ) {
-  | Ident(_, []) => typ
-  | Ident(name, typeArguments) =>
-    Ident(name, typeArguments |> List.map(substitute(~f)))
-  | TypeVar(s) =>
-    switch (f(s)) {
-    | None => typ
-    | Some(typ') => typ'
-    }
-  | Option(typ) => Option(typ |> substitute(~f))
-  | Nullable(typ) => Nullable(typ |> substitute(~f))
-  | Array(typ) => Array(typ |> substitute(~f))
-  | GroupOfLabeledArgs(fields) =>
-    GroupOfLabeledArgs(
-      fields
-      |> List.map(((s, optionalness, t)) =>
-           (s, optionalness, t |> substitute(~f))
-         ),
-    )
-  | Object(fields) =>
-    Object(
-      fields
-      |> List.map(((s, optionalness, t)) =>
-           (s, optionalness, t |> substitute(~f))
-         ),
-    )
-  | Record(fields) =>
-    Record(
-      fields
-      |> List.map(((s, optionalness, t)) =>
-           (s, optionalness, t |> substitute(~f))
-         ),
-    )
+  | Array(typ, arrayKind) => Array(typ |> substitute(~f), arrayKind)
+  | Enum(_) => typ
   | Function(function_) =>
     Function({
       ...function_,
       argTypes: function_.argTypes |> List.map(substitute(~f)),
       retType: function_.retType |> substitute(~f),
     })
+  | GroupOfLabeledArgs(fields) =>
+    GroupOfLabeledArgs(
+      fields
+      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+    )
+  | Ident(_, []) => typ
+  | Ident(name, typeArguments) =>
+    Ident(name, typeArguments |> List.map(substitute(~f)))
+  | Nullable(typ) => Nullable(typ |> substitute(~f))
+  | Object(fields) =>
+    Object(
+      fields
+      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+    )
+  | Option(typ) => Option(typ |> substitute(~f))
+  | Record(fields) =>
+    Record(
+      fields
+      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+    )
+  | Tuple(innerTypes) => Tuple(innerTypes |> List.map(substitute(~f)))
+  | TypeVar(s) =>
+    switch (f(s)) {
+    | None => typ
+    | Some(typ1) => typ1
+    }
   };
 
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
+  | Array(typ, _) => typ |> free_
+  | Enum(_) => StringSet.empty
+  | Function({typeVars, argTypes, retType}) =>
+    StringSet.diff(
+      (argTypes |> freeOfList_) +++ (retType |> free_),
+      typeVars |> StringSet.of_list,
+    )
+  | GroupOfLabeledArgs(fields)
+  | Object(fields)
+  | Record(fields) =>
+    fields
+    |> List.fold_left(
+         (s, {typ, _}) => StringSet.union(s, typ |> free_),
+         StringSet.empty,
+       )
   | Ident(_, typeArgs) =>
     typeArgs
     |> List.fold_left(
          (s, typeArg) => StringSet.union(s, typeArg |> free_),
          StringSet.empty,
        )
-  | TypeVar(s) => s |> StringSet.singleton
-  | Option(typ) => typ |> free_
   | Nullable(typ) => typ |> free_
-  | Array(typ) => typ |> free_
-  | GroupOfLabeledArgs(fields)
-  | Object(fields)
-  | Record(fields) =>
-    fields
+  | Option(typ) => typ |> free_
+  | Tuple(innerTypes) =>
+    innerTypes
     |> List.fold_left(
-         (s, (_, _, t)) => StringSet.union(s, t |> free_),
+         (s, typeArg) => StringSet.union(s, typeArg |> free_),
          StringSet.empty,
        )
-  | Function({typeVars, argTypes, retType}) =>
-    StringSet.diff(
-      (argTypes |> freeOfList_) +++ (retType |> free_),
-      typeVars |> StringSet.of_list,
-    )
+  | TypeVar(s) => s |> StringSet.singleton
   }
 and freeOfList_ = typs =>
   typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)

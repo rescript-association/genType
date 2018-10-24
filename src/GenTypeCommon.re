@@ -20,21 +20,25 @@ type importPath =
   | Node;
 
 type config = {
+  bsBlockPath: string,
+  bsCurryPath: string,
+  importPath,
+  inlineAnnotations: bool,
   language,
   module_,
-  importPath,
-  reasonReactPath: string,
-  bsBlockPath: string,
   modulesMap: ModuleNameMap.t(ModuleName.t),
+  reasonReactPath: string,
 };
 
 let defaultConfig = {
+  bsBlockPath: "bs-platform/lib/js/block.js",
+  bsCurryPath: "bs-platform/lib/js/curry.js",
+  importPath: Relative,
+  inlineAnnotations: true,
   language: Flow,
   module_: ES6,
-  importPath: Relative,
-  reasonReactPath: "reason-react/src/ReasonReact.js",
-  bsBlockPath: "bs-platform/lib/js/block.js",
   modulesMap: ModuleNameMap.empty,
+  reasonReactPath: "reason-react/src/ReasonReact.js",
 };
 
 let projectRoot = ref("");
@@ -65,40 +69,83 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-let tagIsGenType = s => s == "genFlow" || s == "genType";
-let tagIsGenTypeAs = s =>
-  s == "genFlow" || s == "genType" || s == "genFlow.as" || s == "genType.as";
+type optional =
+  | Mandatory
+  | Optional;
 
-let tagIsGenTypeImport = s =>
-  s == "genType.import";
+type mutable_ =
+  | Immutable
+  | Mutable;
 
-let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "genFlow.opaque";
+type case = {
+  label: string,
+  labelJS: string,
+};
 
-type optionalness =
-  | NonMandatory
-  | Mandatory;
+type enum = {
+  cases: list(case),
+  toJS: string,
+  toRE: string,
+};
 
 type typ =
-  | Ident(string, list(typ))
-  | TypeVar(string)
-  | Option(typ)
-  | Nullable(typ)
-  | Array(typ)
-  | GroupOfLabeledArgs(fields)
-  | Object(fields)
-  | Record(fields)
+  | Array(typ, mutable_)
+  | Enum(enum)
   | Function(function_)
-and fields = list((string, optionalness, typ))
+  | GroupOfLabeledArgs(fields)
+  | Ident(string, list(typ))
+  | Nullable(typ)
+  | Object(fields)
+  | Option(typ)
+  | Record(fields)
+  | Tuple(list(typ))
+  | TypeVar(string)
+and fields = list(field)
+and field = {
+  name: string,
+  optional,
+  mutable_,
+  typ,
+}
 and function_ = {
   typeVars: list(string),
   argTypes: list(typ),
   retType: typ,
 };
 
+type variant = {
+  name: string,
+  params: list(typ),
+};
+
 type label =
   | Nolabel
   | Label(string)
   | OptLabel(string);
+
+type genTypeKind =
+  | Generated
+  | GenType
+  | GenTypeOpaque
+  | NoGenType;
+
+let genTypeKindToString = genTypeKind =>
+  switch (genTypeKind) {
+  | Generated => "Generated"
+  | GenType => "GenType"
+  | GenTypeOpaque => "GenTypeOpaque"
+  | NoGenType => "NoGenType"
+  };
+
+let createEnum = cases => {
+  let hash =
+    cases
+    |> List.map(case => (case.label, case.labelJS))
+    |> Array.of_list
+    |> Hashtbl.hash
+    |> string_of_int;
+  Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+};
 
 let mixedOrUnknown = (~language) =>
   Ident(

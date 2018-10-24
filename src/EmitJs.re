@@ -1,271 +1,173 @@
 open GenTypeCommon;
 
-type typeMap = StringMap.t((list(string), typ));
-
 type env = {
-  requiresEarly: ModuleNameMap.t(ImportPath.t),
-  requires: ModuleNameMap.t(ImportPath.t),
-  wrapJsComponentDeprecated: list(CodeItem.wrapJsComponentDeprecated),
+  requiresEarly: ModuleNameMap.t((ImportPath.t, bool)),
+  requires: ModuleNameMap.t((ImportPath.t, bool)),
   /* For each .cmt we import types from, keep the map of exported types. */
-  cmtExportTypeMapCache: StringMap.t(typeMap),
+  cmtExportTypeMapCache: StringMap.t(Translation.typeMap),
   /* Map of types imported from other files. */
-  typesFromOtherFiles: typeMap,
+  typesFromOtherFiles: Translation.typeMap,
 };
 
-let requireModule = (~requires, ~importPath, moduleName) =>
-  requires
-  |> ModuleNameMap.add(
-       moduleName,
-       moduleName |> ModuleResolver.resolveSourceModule(~importPath),
-     );
+let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
+  let requires = early ? env.requiresEarly : env.requires;
+  let requiresNew =
+    requires
+    |> ModuleNameMap.add(
+         moduleName,
+         (
+           moduleName |> ModuleResolver.resolveSourceModule(~importPath),
+           strict,
+         ),
+       );
+  early ?
+    {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
+};
 
-let createExportTypeMap = (~language, codeItems): typeMap => {
-  let updateExportTypeMap = (exportTypeMap: typeMap, codeItem): typeMap => {
-    let addExportType = ({typeName, typeVars, typ, _}: CodeItem.exportType) => {
+let createExportTypeMap =
+    (~language, declarations: list(Translation.typeDeclaration))
+    : Translation.typeMap => {
+  let updateExportTypeMap =
+      (
+        exportTypeMap: Translation.typeMap,
+        typeDeclaration: Translation.typeDeclaration,
+      )
+      : Translation.typeMap => {
+    let addExportType =
+        (
+          ~importTypes,
+          ~genTypeKind,
+          {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
+        ) => {
       if (Debug.codeItems) {
         logItem(
-          "Export Type: %s%s = %s\n",
-          typeName,
+          "Export Type: %s%s%s\n",
+          resolvedTypeName,
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
-          typ |> EmitTyp.typToString(~language),
+          switch (optTyp) {
+          | Some(typ) =>
+            " "
+            ++ (genTypeKind |> genTypeKindToString |> EmitText.comment)
+            ++ " = "
+            ++ (typ |> EmitTyp.typToString(~language))
+          | None => ""
+          },
         );
       };
-      exportTypeMap |> StringMap.add(typeName, (typeVars, typ));
+      switch (optTyp) {
+      | Some(typ) =>
+        exportTypeMap
+        |> StringMap.add(
+             resolvedTypeName,
+             (typeVars, typ, genTypeKind, importTypes),
+           )
+      | None => exportTypeMap
+      };
     };
-    switch (codeItem) {
-    | CodeItem.ExportType(exportType) => exportType |> addExportType
-    | ValueBinding(_)
-    | ComponentBinding(_)
-    | ImportType(_)
-    | ExportVariantType(_)
-    | ConstructorBinding(_)
-    | WrapJsComponentDeprecated(_)
-    | WrapJsComponent(_)
-    | WrapJsValue(_) => exportTypeMap
+    switch (typeDeclaration.exportFromTypeDeclaration) {
+    | {exportKind: ExportType(exportType), genTypeKind} =>
+      exportType
+      |> addExportType(~genTypeKind, ~importTypes=typeDeclaration.importTypes)
+    | {exportKind: ExportVariantLeaf(_) | ExportVariantType(_)} => exportTypeMap
     };
   };
-  codeItems |> List.fold_left(updateExportTypeMap, StringMap.empty);
+  declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
-let emitImportType =
-    (~language, ~emitters, ~inputCmtToTypeDeclarations, ~env, importType) =>
-  switch (importType) {
-  | CodeItem.ImportComment(s) => (env, s |> Emitters.import(~emitters))
-  | ImportTypeAs({typeName, asTypeName, importPath, cmtFile}) =>
-    let emitters =
-      EmitTyp.emitImportTypeAs(
-        ~emitters,
-        ~language,
-        ~typeName,
-        ~asTypeName,
-        ~importPath,
-      );
-
-    switch (asTypeName, cmtFile) {
-    | (None, _)
-    | (_, None) => (env, emitters)
-    | (Some(asType), Some(cmtFile)) =>
-      let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
-        switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
-        | x => env.typesFromOtherFiles |> StringMap.add(asType, x)
-        | exception Not_found => exportTypeMapFromCmt
-        };
-      switch (env.cmtExportTypeMapCache |> StringMap.find(cmtFile)) {
-      | exportTypeMapFromCmt => (
-          {
-            ...env,
-            typesFromOtherFiles:
-              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-          },
-          emitters,
-        )
-      | exception Not_found =>
-        let exportTypeMapFromCmt =
-          Cmt_format.read_cmt(cmtFile)
-          |> inputCmtToTypeDeclarations(~language)
-          |> createExportTypeMap(~language);
-        let cmtExportTypeMapCache =
-          env.cmtExportTypeMapCache
-          |> StringMap.add(cmtFile, exportTypeMapFromCmt);
-        (
-          {
-            ...env,
-            cmtExportTypeMapCache,
-            typesFromOtherFiles:
-              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-          },
-          emitters,
-        );
-      };
-    };
+let codeItemToString = (~language, codeItem: CodeItem.t) =>
+  switch (codeItem) {
+  | ExportComponent({fileName, moduleName, _}) =>
+    "ExportComponent fileName:"
+    ++ (fileName |> ModuleName.toString)
+    ++ " moduleName:"
+    ++ (moduleName |> ModuleName.toString)
+  | ExportValue({fileName, resolvedName, typ, _}) =>
+    "WrapReasonValue"
+    ++ " resolvedName:"
+    ++ resolvedName
+    ++ " moduleName:"
+    ++ ModuleName.toString(fileName)
+    ++ " typ:"
+    ++ EmitTyp.typToString(~language, typ)
+  | ImportComponent({importAnnotation, _}) =>
+    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
+  | ImportValue({importAnnotation, _}) =>
+    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
   };
 
 let emitExportType =
     (
-      ~early=false,
+      ~early=?,
       ~emitters,
       ~language,
-      {CodeItem.opaque, typeVars, typeName, comment, typ},
-    ) =>
-  typ
+      ~typIsOpaque,
+      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp, _},
+    ) => {
+  let opaque =
+    switch (opaque, optTyp) {
+    | (Some(opaque), _) => opaque
+    | (None, Some(typ)) => typ |> typIsOpaque
+    | (None, None) => false
+    };
+  resolvedTypeName
   |> EmitTyp.emitExportType(
-       ~early,
+       ~early?,
        ~emitters,
        ~language,
        ~opaque,
-       ~typeName,
        ~typeVars,
-       ~comment,
+       ~optTyp,
      );
+};
 
-let emitCheckJsWrapperType =
-    (
-      ~emitters,
-      ~config,
-      ~env,
-      ~propsTypeName,
-      ~exportType: CodeItem.exportType,
-    ) =>
-  switch (env.wrapJsComponentDeprecated) {
-  | [] => None
-
-  | [{componentName, _}] =>
-    let s =
-      "("
-      ++ (
-        "props"
-        |> EmitTyp.ofType(
-             ~language=config.language,
-             ~typ=Ident(propsTypeName, []),
-           )
-      )
-      ++ ") {\n      return <"
-      ++ componentName
-      ++ " {...props}/>;\n    }";
-    let exportTypeNoChildren =
-      switch (exportType.typ) {
-      | GroupOfLabeledArgs(fields) =>
-        switch (fields |> List.rev) {
-        | [_child, ...propFieldsRev] =>
-          let typNoChildren = GroupOfLabeledArgs(propFieldsRev |> List.rev);
-          {...exportType, typ: typNoChildren};
-        | [] => exportType
-        }
-      | _ => exportType
-      };
-    let emitters =
-      emitExportType(
-        ~language=config.language,
-        ~emitters,
-        exportTypeNoChildren,
-      );
-    let emitters =
-      EmitTyp.emitExportFunction(
-        ~early=false,
-        ~emitters,
-        ~name="checkJsWrapperType",
-        ~config,
-        s,
-      );
-
-    Some(emitters);
-
-  | [_, ..._] =>
-    Some(
-      "// genType warning: found more than one external component annotated with @genType"
-      |> Emitters.export(~emitters),
-    )
-  };
-
-let emitCodeItem =
+let emitexportFromTypeDeclaration =
     (
       ~config,
-      ~outputFileRelative,
-      ~resolver,
-      ~exportTypeMap,
       ~emitters,
-      ~env,
-      ~inputCmtToTypeDeclarations,
-      codeItem,
-    ) => {
-  let language = config.language;
-  let typToConverter = typ =>
-    typ
-    |> Converter.typToConverter(
-         ~language,
-         ~exportTypeMap,
-         ~typesFromOtherFiles=env.typesFromOtherFiles,
-       );
-  if (Debug.codeItems) {
-    logItem("Code Item: %s\n", codeItem |> CodeItem.toString(~language));
-  };
-
-  switch (codeItem) {
-  | CodeItem.ImportType(importType) =>
-    emitImportType(
       ~language,
-      ~emitters,
-      ~inputCmtToTypeDeclarations,
+      ~typIsOpaque,
       ~env,
-      importType,
-    )
-
+      ~typToConverter,
+      ~enumTables,
+      exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
+    ) =>
+  switch (exportFromTypeDeclaration.exportKind) {
   | ExportType(exportType) => (
       env,
-      emitExportType(~emitters, ~language, exportType),
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType),
     )
 
-  | ExportVariantType({CodeItem.typeParams, leafTypes, name}) => (
+  | ExportVariantType({CodeItem.typeParams, variants, name, _}) => (
       env,
       EmitTyp.emitExportVariantType(
         ~emitters,
         ~language,
         ~name,
         ~typeParams,
-        ~leafTypes,
+        ~variants,
       ),
     )
 
-  | ValueBinding({moduleName, id, typ}) =>
-    let importPath =
-      ModuleResolver.resolveModule(
-        ~config,
-        ~outputFileRelative,
-        ~resolver,
-        ~importExtension=".bs",
-        moduleName,
-      );
-    let moduleNameBs = moduleName |> ModuleName.forBsFile;
-    let requires =
-      moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
-    let converter = typ |> typToConverter;
+  | ExportVariantLeaf({
+      exportType,
+      constructorTyp,
+      argTypes,
+      leafName,
+      recordValue,
+    }) =>
+    let createFunctionType =
+        ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
+      let retType = Ident(name, params);
+      if (argTypes === []) {
+        retType;
+      } else {
+        Function({typeVars, argTypes, retType});
+      };
+    };
 
     let emitters =
-      (
-        ModuleName.toString(moduleNameBs)
-        ++ "."
-        ++ Ident.name(id)
-        |> Converter.toJS(~converter)
-      )
-      ++ ";"
-      |> EmitTyp.emitExportConst(
-           ~emitters,
-           ~name=id |> Ident.name,
-           ~typ,
-           ~config,
-         );
-
-    ({...env, requires}, emitters);
-
-  | ConstructorBinding(
-      exportType,
-      constructorType,
-      argTypes,
-      variantName,
-      recordValue,
-    ) =>
-    let emitters = emitExportType(~emitters, ~language, exportType);
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType);
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~language);
     let emitters =
@@ -274,8 +176,8 @@ let emitCodeItem =
         ++ ";"
         |> EmitTyp.emitExportConst(
              ~emitters,
-             ~name=variantName,
-             ~typ=constructorType,
+             ~name=leafName,
+             ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
       } else {
@@ -284,7 +186,7 @@ let emitCodeItem =
           |> List.mapi((i, typ) => {
                let converter = typ |> typToConverter;
                let arg = EmitText.argi(i + 1);
-               let v = arg |> Converter.toReason(~converter);
+               let v = arg |> Converter.toReason(~converter, ~enumTables);
                (arg, v);
              });
         let mkReturn = s => "return " ++ s;
@@ -295,221 +197,77 @@ let emitCodeItem =
         EmitText.funDef(~args, ~mkBody, "")
         |> EmitTyp.emitExportConst(
              ~emitters,
-             ~name=variantName,
-             ~typ=constructorType,
+             ~name=leafName,
+             ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
       };
-    let newEnv = {
-      ...env,
-      requires:
-        env.requires
-        |> ModuleNameMap.add(
-             ModuleName.createBucklescriptBlock,
-             ImportPath.bsBlockPath(~config),
-           ),
-    };
-    (newEnv, emitters);
+    let env =
+      ModuleName.createBucklescriptBlock
+      |> requireModule(
+           ~early=false,
+           ~env,
+           ~importPath=ImportPath.bsBlockPath(~config),
+         );
+    (env, emitters);
+  };
 
-  | ComponentBinding({
-      exportType,
-      moduleName,
-      propsTypeName,
-      componentType,
-      typ,
-    }) =>
-    let converter = typ |> typToConverter;
-    let importPath =
-      ModuleResolver.resolveModule(
-        ~config,
-        ~outputFileRelative,
-        ~resolver,
-        ~importExtension=".bs",
-        moduleName,
-      );
-    let moduleNameBs = moduleName |> ModuleName.forBsFile;
-
-    let name = EmitTyp.componentExportName(~language, ~moduleName);
-    let jsProps = "jsProps";
-    let jsPropsDot = s => jsProps ++ "." ++ s;
-
-    let args =
-      switch (converter) {
-      | FunctionC((groupedArgConverters, _retConverter)) =>
-        switch (groupedArgConverters) {
-        | [
-            GroupConverter(propConverters),
-            ArgConverter(_, childrenConverter),
-            ..._,
-          ] =>
-          (
-            propConverters
-            |> List.map(((s, argConverter)) =>
-                 jsPropsDot(s) |> Converter.toReason(~converter=argConverter)
-               )
-          )
-          @ [
-            jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter),
-          ]
-
-        | [ArgConverter(_, childrenConverter), ..._] => [
-            jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter),
-          ]
-
-        | _ => [jsPropsDot("children")]
-        }
-
-      | _ => [jsPropsDot("children")]
-      };
-
-    switch (
-      emitCheckJsWrapperType(
-        ~emitters,
-        ~config,
-        ~env,
-        ~propsTypeName,
-        ~exportType,
-      )
-    ) {
-    | Some(emitters) => (env, emitters)
-    | None =>
-      let emitters = emitExportType(~emitters, ~language, exportType);
-      let emitters =
-        EmitTyp.emitExportConstMany(
-          ~emitters,
-          ~name,
-          ~typ=componentType,
-          ~config,
-          [
-            "ReasonReact.wrapReasonForJs(",
-            "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
-            "  (function _("
-            ++ EmitTyp.ofType(
-                 ~language,
-                 ~typ=Ident(propsTypeName, []),
-                 jsProps,
-               )
-            ++ ") {",
-            "     return "
-            ++ ModuleName.toString(moduleNameBs)
-            ++ "."
-            ++ "make"
-            ++ EmitText.parens(args)
-            ++ ";",
-            "  }));",
-          ],
-        );
-
-      let emitters = EmitTyp.emitExportDefault(~emitters, ~config, name);
-
-      let requiresWithModule =
-        moduleNameBs |> requireModule(~requires=env.requires, ~importPath);
-      let requiresWithReasonReact =
-        requiresWithModule
-        |> ModuleNameMap.add(
-             ModuleName.reasonReact,
-             ImportPath.reasonReactPath(~config),
-           );
-      ({...env, requires: requiresWithReasonReact}, emitters);
-    };
-
-  | WrapJsComponentDeprecated(
-      {componentName, importPath} as wrapJsComponentDeprecated,
+let emitExportFromTypeDeclarations =
+    (
+      ~config,
+      ~emitters,
+      ~language,
+      ~typIsOpaque,
+      ~env,
+      ~typToConverter,
+      ~enumTables,
+      exportFromTypeDeclarations,
     ) =>
-    let requires =
-      env.requires
-      |> ModuleNameMap.add(
-           ModuleName.fromStringUnsafe(componentName),
-           importPath,
-         );
-    let newEnv = {
-      ...env,
-      requires,
-      wrapJsComponentDeprecated: [
-        wrapJsComponentDeprecated,
-        ...env.wrapJsComponentDeprecated,
-      ],
-    };
-    (newEnv, emitters);
-
-  | WrapJsValue({valueName, importString, typ, moduleName}) =>
-    let importPath = importString |> ImportPath.fromStringUnsafe;
-
-    let (emitters, importedAsName, requiresEarly) =
-      switch (language) {
-      | Typescript =>
-        /* emit an import {... as ...} immediately */
-        let valueNameNotChecked = valueName ++ "NotChecked";
-        let emitters =
-          importPath
-          |> EmitTyp.emitImportValueAsEarly(
-               ~emitters,
-               ~name=valueName,
-               ~nameAs=Some(valueNameNotChecked),
-             );
-        (emitters, valueNameNotChecked, env.requiresEarly);
-      | Flow
-      | Untyped =>
-        /* add an early require(...)  */
-        let importFile = importString |> Filename.basename;
-        let importedAsName = importFile ++ "." ++ valueName;
-        let requiresEarly =
-          importFile
-          |> ModuleName.fromStringUnsafe
-          |> requireModule(~requires=env.requiresEarly, ~importPath);
-        (emitters, importedAsName, requiresEarly);
-      };
-    let converter = typ |> typToConverter;
-    let valueNameTypeChecked = valueName ++ "TypeChecked";
-
-    let emitters =
-      importedAsName
-      ++ ";"
-      |> EmitTyp.emitExportConstEarly(
-           ~emitters,
-           ~name=valueNameTypeChecked,
-           ~typ,
+  exportFromTypeDeclarations
+  |> List.fold_left(
+       ((env, emitters)) =>
+         emitexportFromTypeDeclaration(
            ~config,
-           ~comment=
-             "In case of type error, check the type of '"
-             ++ valueName
-             ++ "' in '"
-             ++ (moduleName |> ModuleName.toString)
-             ++ ".re'"
-             ++ " and '"
-             ++ importString
-             ++ "'.",
-         );
-    let emitters =
-      (valueNameTypeChecked |> Converter.toReason(~converter))
-      ++ ";"
-      |> EmitTyp.emitExportConstEarly(
-           ~comment=
-             "Export '"
-             ++ valueName
-             ++ "' early to allow circular import from the '.bs.js' file.",
            ~emitters,
-           ~name=valueName,
-           ~typ,
-           ~config,
-         );
-    let newEnv = {...env, requiresEarly};
-    (newEnv, emitters);
+           ~language,
+           ~typIsOpaque,
+           ~env,
+           ~typToConverter,
+           ~enumTables,
+         ),
+       (env, emitters),
+     );
 
-  | WrapJsComponent({
+let rec emitCodeItem =
+        (
+          ~config,
+          ~outputFileRelative,
+          ~resolver,
+          ~emitters,
+          ~env,
+          ~enumTables,
+          ~typIsOpaque,
+          ~typToConverter,
+          codeItem,
+        ) => {
+  let language = config.language;
+  if (Debug.codeItems) {
+    logItem("Code Item: %s\n", codeItem |> codeItemToString(~language));
+  };
+
+  switch (codeItem) {
+  | ImportComponent({
       exportType,
-      importString,
+      importAnnotation,
       childrenTyp,
       propsFields,
       propsTypeName,
-      moduleName,
+      fileName,
     }) =>
-    let importPath = importString |> ImportPath.fromStringUnsafe;
-    let componentName = importString |> Filename.basename;
+    let importPath = importAnnotation.importPath;
+    let componentName = importAnnotation.name;
 
-    let (emitters, requiresEarly) =
+    let (emitters, env) =
       switch (language) {
       | Typescript =>
         /* emit an import {... as ...} immediately */
@@ -520,15 +278,15 @@ let emitCodeItem =
                ~name=componentName,
                ~nameAs=None,
              );
-        (emitters, env.requiresEarly);
+        (emitters, env);
       | Flow
       | Untyped =>
         /* add an early require(...)  */
-        let requiresEarly =
+        let env =
           componentName
           |> ModuleName.fromStringUnsafe
-          |> requireModule(~requires=env.requiresEarly, ~importPath);
-        (emitters, requiresEarly);
+          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
+        (emitters, env);
       };
     let componentNameTypeChecked = componentName ++ "TypeChecked";
 
@@ -540,6 +298,7 @@ let emitCodeItem =
         ~early=true,
         ~language=config.language,
         ~emitters,
+        ~typIsOpaque,
         exportType,
       );
     let emitters =
@@ -563,10 +322,10 @@ let emitCodeItem =
              "In case of type error, check the type of '"
              ++ "make"
              ++ "' in '"
-             ++ (moduleName |> ModuleName.toString)
+             ++ (fileName |> ModuleName.toString)
              ++ ".re'"
              ++ " and the props of '"
-             ++ importString
+             ++ (importPath |> ImportPath.toString)
              ++ "'.",
          );
 
@@ -575,7 +334,7 @@ let emitCodeItem =
       (
         "function _"
         ++ EmitText.parens(
-             (propsFields |> List.map(((propName, _, _)) => propName))
+             (propsFields |> List.map(({name, _}: field) => name))
              @ ["children"]
              |> List.map(EmitTyp.ofTypeAny(~language)),
            )
@@ -585,7 +344,7 @@ let emitCodeItem =
              "{"
              ++ (
                propsFields
-               |> List.map(((propName, optionalness, propTyp)) =>
+               |> List.map(({name: propName, optional, typ: propTyp, _}) =>
                     propName
                     ++ ": "
                     ++ (
@@ -593,10 +352,11 @@ let emitCodeItem =
                       |> Converter.toJS(
                            ~converter=
                              (
-                               optionalness == Mandatory ?
+                               optional == Mandatory ?
                                  propTyp : Option(propTyp)
                              )
                              |> typToConverter,
+                           ~enumTables,
                          )
                     )
                   )
@@ -604,7 +364,10 @@ let emitCodeItem =
              )
              ++ "}",
              "children"
-             |> Converter.toJS(~converter=childrenTyp |> typToConverter),
+             |> Converter.toJS(
+                  ~converter=childrenTyp |> typToConverter,
+                  ~enumTables,
+                ),
            ])
         ++ "; }"
       )
@@ -619,74 +382,572 @@ let emitCodeItem =
            ~typ=mixedOrUnknown(~language),
            ~config,
          );
-    let requiresEarlyWithReasonReact =
-      requiresEarly
-      |> ModuleNameMap.add(
-           ModuleName.reasonReact,
-           ImportPath.reasonReactPath(~config),
+    let env =
+      ModuleName.reasonReact
+      |> requireModule(
+           ~early=true,
+           ~env,
+           ~importPath=ImportPath.reasonReactPath(~config),
+         );
+    (env, emitters);
+
+  | ImportValue({valueName, importAnnotation, typ, fileName}) =>
+    let importPath = importAnnotation.importPath;
+    let (emitters, importedAsName, env) =
+      switch (language) {
+      | Typescript =>
+        /* emit an import {... as ...} immediately */
+        let valueNameNotChecked = valueName ++ "NotChecked";
+        let emitters =
+          importPath
+          |> EmitTyp.emitImportValueAsEarly(
+               ~emitters,
+               ~name=valueName,
+               ~nameAs=Some(valueNameNotChecked),
+             );
+        (emitters, valueNameNotChecked, env);
+      | Flow
+      | Untyped =>
+        /* add an early require(...)  */
+        let importFile = importAnnotation.name;
+
+        let importedAsName = importFile ++ "." ++ valueName;
+        let env =
+          importFile
+          |> ModuleName.fromStringUnsafe
+          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
+        (emitters, importedAsName, env);
+      };
+    let converter = typ |> typToConverter;
+    let valueNameTypeChecked = valueName ++ "TypeChecked";
+
+    let emitters =
+      importedAsName
+      ++ ";"
+      |> EmitTyp.emitExportConstEarly(
+           ~emitters,
+           ~name=valueNameTypeChecked,
+           ~typ,
+           ~config,
+           ~comment=
+             "In case of type error, check the type of '"
+             ++ valueName
+             ++ "' in '"
+             ++ (fileName |> ModuleName.toString)
+             ++ ".re'"
+             ++ " and '"
+             ++ (importPath |> ImportPath.toString)
+             ++ "'.",
+         );
+    let emitters =
+      (valueNameTypeChecked |> Converter.toReason(~converter, ~enumTables))
+      ++ ";"
+      |> EmitTyp.emitExportConstEarly(
+           ~comment=
+             "Export '"
+             ++ valueName
+             ++ "' early to allow circular import from the '.bs.js' file.",
+           ~emitters,
+           ~name=valueName,
+           ~typ,
+           ~config,
+         );
+    (env, emitters);
+
+  | ExportComponent({
+      exportType,
+      fileName,
+      moduleName,
+      propsTypeName,
+      componentType,
+      typ,
+    }) =>
+    let converter = typ |> typToConverter;
+    let importPath =
+      fileName
+      |> ModuleResolver.resolveModule(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~importExtension=".bs",
+         );
+    let moduleNameBs = fileName |> ModuleName.forBsFile;
+
+    let name = EmitTyp.componentExportName(~language, ~fileName, ~moduleName);
+    let jsProps = "jsProps";
+    let jsPropsDot = s => jsProps ++ "." ++ s;
+
+    let args =
+      switch (converter) {
+      | FunctionC(groupedArgConverters, _retConverter) =>
+        switch (groupedArgConverters) {
+        | [
+            GroupConverter(propConverters),
+            ArgConverter(_, childrenConverter),
+            ..._,
+          ] =>
+          (
+            propConverters
+            |> List.map(((s, argConverter)) =>
+                 jsPropsDot(s)
+                 |> Converter.toReason(~converter=argConverter, ~enumTables)
+               )
+          )
+          @ [
+            jsPropsDot("children")
+            |> Converter.toReason(~converter=childrenConverter, ~enumTables),
+          ]
+
+        | [ArgConverter(_, childrenConverter), ..._] => [
+            jsPropsDot("children")
+            |> Converter.toReason(~converter=childrenConverter, ~enumTables),
+          ]
+
+        | _ => [jsPropsDot("children")]
+        }
+
+      | _ => [jsPropsDot("children")]
+      };
+
+    let emitters =
+      emitExportType(~emitters, ~language, ~typIsOpaque, exportType);
+
+    let numArgs = args |> List.length;
+    let useCurry = numArgs >= 2;
+
+    let emitCurry = (~args, name) =>
+      switch (numArgs) {
+      | 0
+      | 1 => name ++ EmitText.parens(args)
+      | (2 | 3 | 4 | 5 | 6 | 7 | 8) as n =>
+        "Curry._" ++ (n |> string_of_int) ++ EmitText.parens([name] @ args)
+      | _ => "Curry.app" ++ EmitText.parens([name, args |> EmitText.array])
+      };
+
+    let emitters =
+      EmitTyp.emitExportConstMany(
+        ~emitters,
+        ~name,
+        ~typ=componentType,
+        ~config,
+        [
+          "ReasonReact.wrapReasonForJs(",
+          "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
+          "  (function _("
+          ++ EmitTyp.ofType(
+               ~language,
+               ~typ=Ident(propsTypeName, []),
+               jsProps,
+             )
+          ++ ") {",
+          "     return "
+          ++ (
+            ModuleName.toString(moduleNameBs)
+            ++ "."
+            ++ "make"
+            |> emitCurry(~args)
+          )
+          ++ ";",
+          "  }));",
+        ],
+      );
+
+    let emitters =
+      /* only export default for the top level component in the file */
+      fileName == moduleName ?
+        EmitTyp.emitExportDefault(~emitters, ~config, name) : emitters;
+
+    let env = moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
+
+    let env =
+      ModuleName.reasonReact
+      |> requireModule(
+           ~early=false,
+           ~env,
+           ~importPath=ImportPath.reasonReactPath(~config),
          );
 
-    let newEnv = {...env, requiresEarly: requiresEarlyWithReasonReact};
-    (newEnv, emitters);
-  };
-};
+    let env =
+      useCurry ?
+        ModuleName.curry
+        |> requireModule(
+             ~early=false,
+             ~env,
+             ~importPath=ImportPath.bsCurryPath(~config),
+           ) :
+        env;
 
-let emitCodeItems =
+    (env, emitters);
+
+  | ExportValue({fileName, resolvedName, valueAccessPath, typ}) =>
+    let importPath =
+      fileName
+      |> ModuleResolver.resolveModule(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~importExtension=".bs",
+         );
+    let fileNameBs = fileName |> ModuleName.forBsFile;
+    let envWithRequires =
+      fileNameBs |> requireModule(~early=false, ~env, ~importPath);
+    let converter = typ |> typToConverter;
+
+    let emitters =
+      (
+        (fileNameBs |> ModuleName.toString)
+        ++ "."
+        ++ valueAccessPath
+        |> Converter.toJS(~converter, ~enumTables)
+      )
+      ++ ";"
+      |> EmitTyp.emitExportConst(~emitters, ~name=resolvedName, ~typ, ~config);
+
+    (envWithRequires, emitters);
+  };
+}
+and emitCodeItems =
     (
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~inputCmtToTypeDeclarations,
+      ~emitters,
+      ~env,
+      ~enumTables,
+      ~typIsOpaque,
+      ~typToConverter,
       codeItems,
+    ) =>
+  codeItems
+  |> List.fold_left(
+       ((env, emitters)) =>
+         emitCodeItem(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~emitters,
+           ~env,
+           ~enumTables,
+           ~typIsOpaque,
+           ~typToConverter,
+         ),
+       (env, emitters),
+     );
+
+let emitRequires = (~early, ~language, ~requires, emitters) =>
+  ModuleNameMap.fold(
+    (moduleName, (importPath, strict), emitters) =>
+      importPath
+      |> EmitTyp.emitRequire(
+           ~early,
+           ~emitters,
+           ~language,
+           ~moduleName,
+           ~strict,
+         ),
+    requires,
+    emitters,
+  );
+
+let emitEnumTables = (~emitters, enumTables) => {
+  let emitTable = (~hash, ~toJS, enum) =>
+    "const "
+    ++ hash
+    ++ " = {"
+    ++ (
+      enum.cases
+      |> List.map(label => {
+           let js = label.labelJS |> EmitText.quotes;
+           let re = label.label |> Runtime.emitVariantLabel(~comment=false);
+           toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
+         })
+      |> String.concat(", ")
+    )
+    ++ "};";
+  Hashtbl.fold(
+    (hash, (enum, toJS), emitters) =>
+      enum |> emitTable(~hash, ~toJS) |> Emitters.import(~emitters),
+    enumTables,
+    emitters,
+  );
+};
+
+let emitImportType =
+    (
+      ~config as {language, _} as config,
+      ~outputFileRelative,
+      ~resolver,
+      ~emitters,
+      ~inputCmtTranslateTypeDeclarations,
+      ~env,
+      {Translation.typeName, asTypeName, importPath, cmtFile},
+    ) => {
+  let emitters =
+    EmitTyp.emitImportTypeAs(
+      ~emitters,
+      ~language,
+      ~typeName,
+      ~asTypeName,
+      ~importPath,
+    );
+  switch (asTypeName, cmtFile) {
+  | (None, _)
+  | (_, None) => (env, emitters)
+  | (Some(asType), Some(cmtFile)) =>
+    let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
+      switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
+      | x => env.typesFromOtherFiles |> StringMap.add(asType, x)
+      | exception Not_found => exportTypeMapFromCmt
+      };
+    switch (env.cmtExportTypeMapCache |> StringMap.find(cmtFile)) {
+    | exportTypeMapFromCmt => (
+        {
+          ...env,
+          typesFromOtherFiles:
+            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+        },
+        emitters,
+      )
+    | exception Not_found =>
+      let exportTypeMapFromCmt =
+        Cmt_format.read_cmt(cmtFile)
+        |> inputCmtTranslateTypeDeclarations(
+             ~config,
+             ~outputFileRelative,
+             ~resolver,
+           )
+        |> createExportTypeMap(~language);
+      let cmtExportTypeMapCache =
+        env.cmtExportTypeMapCache
+        |> StringMap.add(cmtFile, exportTypeMapFromCmt);
+      (
+        {
+          ...env,
+          cmtExportTypeMapCache,
+          typesFromOtherFiles:
+            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+        },
+        emitters,
+      );
+    };
+  };
+};
+
+let emitImportTypes =
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~emitters,
+      ~env,
+      ~inputCmtTranslateTypeDeclarations,
+      importTypes,
+    ) =>
+  importTypes
+  |> List.fold_left(
+       ((env, emitters)) =>
+         emitImportType(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~emitters,
+           ~inputCmtTranslateTypeDeclarations,
+           ~env,
+         ),
+       (env, emitters),
+     );
+
+let inlineAnnotatedTypes =
+    (~config, ~typeDeclarations, typeMap: Translation.typeMap) => {
+  let markedAsGenType = ref(StringSet.empty);
+  let initialAnnotatedTypes =
+    typeMap
+    |> StringMap.bindings
+    |> List.filter(((_, (_, _, genTypeKind, _))) => genTypeKind == GenType);
+  let inlineTyp = ((_typeName, (_, typ, genTypeKind, _))) => {
+    let visited = ref(StringSet.empty);
+    let rec visit = typ =>
+      switch (typ) {
+      | Ident(typeName, _) =>
+        if (visited^ |> StringSet.mem(typeName)) {
+          ();
+        } else {
+          visited := visited^ |> StringSet.add(typeName);
+          switch (typeMap |> StringMap.find(typeName)) {
+          | (_, _, GenType | GenTypeOpaque | Generated, _) => ()
+          | (_, typ1, NoGenType, _) =>
+            markedAsGenType := markedAsGenType^ |> StringSet.add(typeName);
+            typ1 |> visit;
+          | exception Not_found => ()
+          };
+        }
+      | Array(t, _) => t |> visit
+      | Enum(_) => ()
+      | Function({argTypes, retType}) =>
+        argTypes |> List.iter(visit);
+        retType |> visit;
+      | GroupOfLabeledArgs(fields)
+      | Object(fields)
+      | Record(fields) => fields |> List.iter(({typ}) => typ |> visit)
+      | Option(t)
+      | Nullable(t) => t |> visit
+      | Tuple(innerTypes) => innerTypes |> List.iter(visit)
+      | TypeVar(_) => ()
+      };
+    switch (genTypeKind) {
+    | GenType => typ |> visit
+    | Generated
+    | GenTypeOpaque
+    | NoGenType => ()
+    };
+  };
+  if (config.inlineAnnotations) {
+    initialAnnotatedTypes |> List.iter(inlineTyp);
+  };
+  let newTypeMap =
+    typeMap
+    |> StringMap.mapi((typeName, (args, typ, genTypeKind, importTypes)) =>
+         (
+           args,
+           typ,
+           markedAsGenType^ |> StringSet.mem(typeName) ?
+             GenType : genTypeKind,
+           importTypes,
+         )
+       );
+
+  let annotatedTypeDeclarations =
+    typeDeclarations
+    |> List.map(typeDeclaration =>
+         switch (
+           typeDeclaration.Translation.exportFromTypeDeclaration.exportKind
+         ) {
+         | ExportType(exportType) =>
+           if (markedAsGenType^ |> StringSet.mem(exportType.resolvedTypeName)) {
+             {
+               ...typeDeclaration,
+               exportFromTypeDeclaration: {
+                 ...typeDeclaration.exportFromTypeDeclaration,
+                 genTypeKind: GenType,
+               },
+             };
+           } else {
+             typeDeclaration;
+           }
+         | _ => typeDeclaration
+         }
+       )
+    |> List.filter(
+         (
+           {exportFromTypeDeclaration: {genTypeKind}}: Translation.typeDeclaration,
+         ) =>
+         genTypeKind != NoGenType
+       );
+
+  (newTypeMap, annotatedTypeDeclarations);
+};
+
+let emitTranslationAsString =
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~inputCmtTranslateTypeDeclarations,
+      translation: Translation.t,
     ) => {
   let language = config.language;
 
   let initialEnv = {
     requires: ModuleNameMap.empty,
     requiresEarly: ModuleNameMap.empty,
-    wrapJsComponentDeprecated: [],
     cmtExportTypeMapCache: StringMap.empty,
     typesFromOtherFiles: StringMap.empty,
   };
-  let exportTypeMap = codeItems |> createExportTypeMap(~language);
-  let (finalEnv, emitters) =
-    codeItems
-    |> List.fold_left(
-         ((env, emitters)) =>
-           emitCodeItem(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-             ~exportTypeMap,
-             ~emitters,
-             ~env,
-             ~inputCmtToTypeDeclarations,
-           ),
-         (initialEnv, Emitters.initial),
+  let enumTables = Hashtbl.create(1);
+  let (exportTypeMap, annotatedTypeDeclarations) =
+    translation.typeDeclarations
+    |> createExportTypeMap(~language)
+    |> inlineAnnotatedTypes(
+         ~config,
+         ~typeDeclarations=translation.typeDeclarations,
        );
-  let emitters =
-    ModuleNameMap.fold(
-      (moduleName, importPath, emitters) =>
-        importPath
-        |> EmitTyp.emitRequire(~early=true, ~emitters, ~language, ~moduleName),
-      finalEnv.requiresEarly,
-      emitters,
-    );
-  let emitters =
-    finalEnv.wrapJsComponentDeprecated != [] ?
-      EmitTyp.emitRequireReact(~early=false, ~emitters, ~language) : emitters;
-  let emitters =
-    ModuleNameMap.fold(
-      (moduleName, importPath, emitters) =>
-        EmitTyp.emitRequire(
-          ~early=false,
-          ~emitters,
-          ~language,
-          ~moduleName,
-          importPath,
-        ),
-      finalEnv.requires,
-      emitters,
-    );
-  emitters |> Emitters.toString(~separator="\n\n");
+
+  let importTypesFromTypeDeclarations =
+    annotatedTypeDeclarations
+    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
+         typeDeclaration.importTypes
+       )
+    |> List.concat;
+
+  let exportFromTypeDeclarations =
+    annotatedTypeDeclarations
+    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
+         typeDeclaration.exportFromTypeDeclaration
+       );
+
+  let typIsOpaque_ = (~env, typ) =>
+    typ
+    |> Converter.typToConverterOpaque(
+         ~language,
+         ~exportTypeMap,
+         ~typesFromOtherFiles=env.typesFromOtherFiles,
+       )
+    |> snd;
+
+  let typToConverter_ = (~env, typ) =>
+    typ
+    |> Converter.typToConverter(
+         ~language,
+         ~exportTypeMap,
+         ~typesFromOtherFiles=env.typesFromOtherFiles,
+       );
+
+  let emitters = Emitters.initial
+  and env = initialEnv;
+
+  let (env, emitters) =
+    /* imports from type declarations go first to build up type tables */
+    importTypesFromTypeDeclarations
+    @ translation.importTypes
+    |> List.sort_uniq(Translation.importTypeCompare)
+    |> emitImportTypes(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~emitters,
+         ~env,
+         ~inputCmtTranslateTypeDeclarations,
+       );
+
+  let (env, emitters) =
+    exportFromTypeDeclarations
+    |> emitExportFromTypeDeclarations(
+         ~config,
+         ~emitters,
+         ~language,
+         ~typIsOpaque=typIsOpaque_(~env),
+         ~env,
+         ~typToConverter=typToConverter_(~env),
+         ~enumTables,
+       );
+
+  let (finalEnv, emitters) =
+    translation.codeItems
+    |> emitCodeItems(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~emitters,
+         ~env,
+         ~enumTables,
+         ~typIsOpaque=typIsOpaque_(~env),
+         ~typToConverter=typToConverter_(~env),
+       );
+
+  let emitters = enumTables |> emitEnumTables(~emitters);
+
+  emitters
+  |> emitRequires(~early=true, ~language, ~requires=finalEnv.requiresEarly)
+  |> emitRequires(~early=false, ~language, ~requires=finalEnv.requires)
+  |> Emitters.toString(~separator="\n\n");
 };

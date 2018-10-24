@@ -8,18 +8,21 @@
 const Component1BS = require('./Component1.bs');
 
 // $FlowExpectedError: Reason checked type sufficiently
+const Curry = require('bs-platform/lib/js/curry.js');
+
+// $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
 import type {variant as Component2_variant} from './Component2.re';
 
-export type Props = {|message?: string, children?: mixed|};
+export type Props = {|+message?: string, +children?: mixed|};
 
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   Component1BS.component,
   (function _(jsProps: Props) {
-     return Component1BS.make(jsProps.message, jsProps.children);
+     return Curry._2(Component1BS.make, jsProps.message, jsProps.children);
   }));
 
 export default component;
@@ -32,4 +35,4 @@ export const consumeVariant: (Component2_variant) => number = Component1BS.consu
 
 export const l: list<number> = Component1BS.l;
 
-export const map: <T1,T2>((T1) => T2, list<T1>) => list<T2> = Component1BS.map;
+export const map: <T1,T2>(((T1) => T2), list<T1>) => list<T2> = Component1BS.map;

@@ -140,3 +140,24 @@ type bigType = {
 
 [@genType]
 let computeNestedNestedHalfNullable = (_: bigType): int => 0;
+
+[@genType]
+type testMutable = {
+  mutable mutableField: int,
+  immutableField: int,
+};
+
+[@genType]
+let useTypeImportedInOtherModule = (x: Types.weekday) => x;
+
+[@genType.opaque]
+type innerRecord = {inner: int};
+
+[@genType]
+type outerRecord = {innerRecord};
+
+[@genType]
+let convertInner = (x: innerRecord) => x;
+
+[@genType]
+let convertOuter = (x: outerRecord) => x;

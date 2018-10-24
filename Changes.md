@@ -1,3 +1,39 @@
+# 0.23.0
+- Clean up terminology used in README.md. Following the cleanup plan on import/export in https://github.com/cristianoc/genType/issues/70.
+- Implement principle 1: an imported type is also exported to other modules.
+- Support tuple types.
+- In Flow, keep opaque types also opaque internally, so export erros are caught early like in TS.
+- Fix: Type names for types which are defined somewhere are not considered opaque.
+- Fix: no conversion generated for opaque types.
+- Generated code can be in a different order, because of refactoring how type declarations are processed.
+
+# 0.22.0
+- Support the case where the `make` function of an exported Reason component could be curried.
+- Support `ImmutableArray.t` type for convesion to `ReadonlyArray` in TS/Flow.
+- Add library for immutable arrays.
+- Fix missing handling of `@genType.opaque`.
+- Allow importing types from within nested modules.
+- Allow a combination of `@genType.import` and `@genType.as` to specify an imported type.
+- Object and record fields are now mapped to readonly propeties, unless they're mutable.
+
+# 0.21.0
+- Support nested components. So it's possible to define several components in one file.
+- Support for recursive types. If a recursive type requires a conversion, only a shallow one is performed, and a warning comment is emitted.
+- Update README describing how genType works in both directions.
+
+# 0.20.0
+- Add support for Enum types.
+
+# 0.19.0
+- Add support for nested modules: translation of nested types and values, as well as cross references.
+- [Remove deprecated way of wrapping JS components](https://github.com/cristianoc/genType/commit/9c388826c43eb9507b07fd95a05eed3ce619297d).
+- [Use strict imports for wrapping JS values and components](https://github.com/cristianoc/genType/commit/81c6a7f062c87c141b734dd1bb338faf1afc8f5a).
+- [Generate opaque types corresponding to an existing Flow/TS type](https://github.com/cristianoc/genType/issues/63).
+
+# 0.18.0
+- Move "gentypeconfig" inside bsconfig.json. Using a file gentypeconfig.json is deprecated.
+- Remove support for deprecated @genFlow annotation, and genflowconfig.json file.
+
 # 0.17.0
 - [Experimental feature: Typed wrappers for JS values](https://github.com/cristianoc/genType/pull/60).
 - [Add full support for wrapping JS component, and examples](https://github.com/cristianoc/genType/commit/50b8e87c0e8942b0de2620f9d24ba7baceb07067).

@@ -6,6 +6,8 @@ let react = "react";
 let reasonReactPath = (~config) => config.reasonReactPath;
 let bsBlockPath = (~config) => config.bsBlockPath;
 
+let bsCurryPath = (~config) => config.bsCurryPath;
+
 let fromModule = (~config, ~dir, ~importExtension, moduleName) => {
   let withNoPath = (moduleName |> ModuleName.toString) ++ importExtension;
   switch (config.importPath) {

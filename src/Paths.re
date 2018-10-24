@@ -77,10 +77,11 @@ let executable =
 
 let getConfigFile = () => {
   let gentypeconfig = concat(projectRoot^, "gentypeconfig.json");
-  let genflowconfig = concat(projectRoot^, "genflowconfig.json");
-  gentypeconfig |> Sys.file_exists ?
-    Some(gentypeconfig) :
-    genflowconfig |> Sys.file_exists ? Some(genflowconfig) : None;
+  gentypeconfig |> Sys.file_exists ? Some(gentypeconfig) : None;
+};
+let getBsConfigFile = () => {
+  let bsconfig = concat(projectRoot^, "bsconfig.json");
+  bsconfig |> Sys.file_exists ? Some(bsconfig) : None;
 };
 
 /* Find the relative path from /.../bs/lib
@@ -165,6 +166,7 @@ let readConfig = () => {
     let importPathString = json |> getString("importPath");
     let reasonReactPathString = json |> getString("reasonReactPath");
     let bsBlockPathString = json |> getString("bsBlockPath");
+    let bsCurryPathString = json |> getString("bsCurryPath");
     let modulesMap =
       json
       |> getShims
@@ -214,14 +216,43 @@ let readConfig = () => {
       | "" => defaultConfig.bsBlockPath
       | _ => bsBlockPathString
       };
-    {language, module_, importPath, reasonReactPath, bsBlockPath, modulesMap};
+    let bsCurryPath =
+      switch (bsCurryPathString) {
+      | "" => defaultConfig.bsCurryPath
+      | _ => bsCurryPathString
+      };
+    {
+      ...defaultConfig,
+      language,
+      module_,
+      importPath,
+      reasonReactPath,
+      bsBlockPath,
+      bsCurryPath,
+      modulesMap,
+    };
   };
-
+  let fromBsConfig = json =>
+    switch (json) {
+    | Ext_json_types.Obj({map, _}) =>
+      switch (map |> String_map.find_opt("gentypeconfig")) {
+      | Some(jsonGenFlowConfig) => jsonGenFlowConfig |> fromJson
+      | _ => defaultConfig
+      }
+    | _ => defaultConfig
+    };
   switch (getConfigFile()) {
-  | None => defaultConfig
   | Some(configFile) =>
     try (configFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
     | _ => defaultConfig
+    }
+  | None =>
+    switch (getBsConfigFile()) {
+    | Some(bsConfigFile) =>
+      try (bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromBsConfig) {
+      | _ => defaultConfig
+      }
+    | None => defaultConfig
     }
   };
 };

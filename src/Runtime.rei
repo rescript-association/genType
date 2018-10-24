@@ -4,11 +4,27 @@ type recordGen;
 
 type recordValue;
 
-let emitRecordAsInt: (~language: language, recordValue) => string;
+type moduleItemGen;
+
+type moduleItem;
+
+let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
+
+let emitModuleItem: moduleItem => string;
 
 let emitRecordAsBlock:
   (~language: language, ~args: list(string), recordValue) => string;
 
-let recordGen: unit => recordGen;
+let emitRecordAsInt: (~language: language, recordValue) => string;
+
+let emitVariantLabel: (~comment: bool=?, string) => string;
+
+let isMutableObjectField: string => bool;
+
+let moduleItemGen: unit => moduleItemGen;
+
+let newModuleItem: moduleItemGen => moduleItem;
 
 let newRecordValue: (~unboxed: bool, recordGen) => recordValue;
+
+let recordGen: unit => recordGen;
