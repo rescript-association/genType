@@ -18,10 +18,12 @@ const exampleDirPaths = [
   "untyped-react-example"
 ].map(exampleName => path.join(__dirname, "..", "examples", exampleName));
 
+
+const isWindows = /^win/i.test(process.platform);
+
 function getGenTypeFilePath() {
-  const os = process.platform;
   const base = path.join(__dirname, "..", "lib", "bs", "native");
-  if (/^win/i.test(os)) {
+  if (isWindows) {
     return path.join(base, "gentype.native.exe");
   } else {
     return path.join(base, "gentype.native");
@@ -116,8 +118,11 @@ async function checkSetup() {
 async function main() {
   try {
     await checkSetup();
-    await installExamples();
-    await buildExamples();
+    
+    if(!isWindows) {
+      await installExamples();
+      await buildExamples();
+    }
     await checkDiff();
     console.log("Test successful!");
   } catch (e) {
