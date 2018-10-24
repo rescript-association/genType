@@ -1,4 +1,4 @@
-# Reason genType 0.23.0
+# Reason genType
 
 > **Disclosure:** This project used to be called `genFlow` but has been renamed to `genType`. To migrate from an earlier version, use `@genType` annotations, change the path to use `gentype.native`, and move the config inside `bsconfig.json`.
 
@@ -220,6 +220,28 @@ You can create `lib/gentype-macos.tar.gz` and  `lib/gentype-linux.tar.gz` via ou
 
 ```
 ./create-release.sh
+```
+
+## Automated Releases (recommended - Maintainers only)
+
+We set up the project so it is compatible with the [`npm version`](https://docs.npmjs.com/cli/version) workflow. After using the `npm version [major|minor|patch|...]` command, npm will automatically tag the current commit, bump all the necessary version numbers (also the number in `src/Version.re`) and push it to the current remote branch.
+
+After a tag is pushed, our [CircleCI](https://circleci.com/gh/cristianoc/genType) and [Appveyor](https://ci.appveyor.com/project/cristianoc/gentype) projects will be built, tested and automatically released to the Github releases tab when all tests were successful.
+
+**Here are the concrete commands to run:**
+
+```
+# Make sure to commit all current changes, the working branch should be clean
+git status
+
+# For patches (0.0.X+1)
+npm version patch
+
+# For minor (0.X+1.0)
+npm version minor
+
+# For major (X+1.0.0)
+npm version major
 ```
 
 **Please note:**
