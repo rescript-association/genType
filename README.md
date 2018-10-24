@@ -231,7 +231,11 @@ After a tag is pushed, our [CircleCI](https://circleci.com/gh/cristianoc/genType
 **Here are the concrete commands to run:**
 
 ```
-# Make sure to commit all current changes, the working branch should be clean
+# Make sure to commit & push all current changes, the working branch should be clean
+# and synced up with your remote branch
+
+# Also make sure that your current branch is explicitly set to the relevant remote
+# (`git push` instead of `git push origin master`)
 git status
 
 # For patches (0.0.X+1)
