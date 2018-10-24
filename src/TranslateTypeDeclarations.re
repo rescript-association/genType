@@ -8,12 +8,12 @@ type declarationKind =
   | NoDeclaration;
 
 let createExportType =
-    (~opaque, ~typeVars, ~optTyp, ~genTypeKind, ~typeEnv, typeName)
+    (~opaque, ~typeVars, ~optTyp, ~annotation, ~typeEnv, typeName)
     : CodeItem.exportFromTypeDeclaration => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
   {
     exportKind: ExportType({opaque, typeVars, resolvedTypeName, optTyp}),
-    genTypeKind,
+    annotation,
   };
 };
 
@@ -26,7 +26,7 @@ let translateConstructorDeclaration =
       ~outputFileRelative,
       ~resolver,
       ~recordGen,
-      ~genTypeKind,
+      ~annotation,
       ~typeEnv,
       variantTypeName,
       constructorDeclaration,
@@ -78,7 +78,7 @@ let translateConstructorDeclaration =
         leafName: leafNameResolved,
         recordValue,
       }),
-    genTypeKind,
+    annotation,
   };
 
   (variant, {Translation.importTypes, exportFromTypeDeclaration});
@@ -90,7 +90,7 @@ let traslateDeclarationKind =
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
-      ~genTypeKind,
+      ~annotation,
       ~typeName,
       ~typeVars,
       ~typeParams,
@@ -109,7 +109,7 @@ let traslateDeclarationKind =
                  ~opaque=Some(true),
                  ~typeVars,
                  ~optTyp=Some(mixedOrUnknown(~language)),
-                 ~genTypeKind,
+                 ~annotation,
                  ~typeEnv,
                ),
         },
@@ -118,7 +118,7 @@ let traslateDeclarationKind =
       let typeExprTranslation =
         coreType.Typedtree.ctyp_type
         |> Dependencies.translateTypeExpr(~language, ~typeEnv);
-      let opaque = genTypeKind == GenTypeOpaque ? Some(true) : None /* None means don't know */;
+      let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
       let typ =
         switch (optCoreType, typeExprTranslation.typ) {
         | (Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}), Enum(enum))
@@ -152,7 +152,7 @@ let traslateDeclarationKind =
              ~opaque,
              ~typeVars,
              ~optTyp=Some(typ),
-             ~genTypeKind,
+             ~annotation,
              ~typeEnv,
            );
 
@@ -213,7 +213,7 @@ let traslateDeclarationKind =
          });
     let optTyp = Some(Record(fields));
     let typeVars = TypeVars.extract(typeParams);
-    let opaque = Some(genTypeKind == GenTypeOpaque);
+    let opaque = Some(annotation == GenTypeOpaque);
     [
       {
         importTypes,
@@ -223,7 +223,7 @@ let traslateDeclarationKind =
                ~opaque,
                ~typeVars,
                ~optTyp,
-               ~genTypeKind,
+               ~annotation,
                ~typeEnv,
              ),
       },
@@ -239,7 +239,7 @@ let traslateDeclarationKind =
              ~outputFileRelative,
              ~resolver,
              ~recordGen,
-             ~genTypeKind,
+             ~annotation,
              ~typeEnv,
              typeName,
              constructorDeclaration,
@@ -257,7 +257,7 @@ let traslateDeclarationKind =
           variants,
           name: variantTypeNameResolved,
         }),
-      genTypeKind,
+      annotation,
     };
     declarations @ [{exportFromTypeDeclaration: unionType, importTypes: []}];
 
@@ -287,7 +287,7 @@ let traslateDeclarationKind =
            ~opaque=Some(false),
            ~typeVars=[],
            ~optTyp=None,
-           ~genTypeKind=Generated,
+           ~annotation=Generated,
            ~typeEnv,
          );
 
@@ -308,7 +308,7 @@ let translateTypeDeclaration =
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
-      ~genTypeKind: Annotation.genTypeKind,
+      ~annotation: Annotation.t,
       dec: Typedtree.type_declaration,
     )
     : list(Translation.typeDeclaration) => {
@@ -318,7 +318,7 @@ let translateTypeDeclaration =
   let typeVars = TypeVars.extract(typeParams);
 
   let declarationKind =
-    switch (dec.typ_type.type_kind, genTypeKind) {
+    switch (dec.typ_type.type_kind, annotation) {
     | (Type_record(labelDeclarations, _), _) =>
       RecordDelaration(labelDeclarations)
 
@@ -350,7 +350,7 @@ let translateTypeDeclaration =
        ~outputFileRelative,
        ~resolver,
        ~typeEnv,
-       ~genTypeKind,
+       ~annotation,
        ~typeName,
        ~typeVars,
        ~typeParams,
@@ -366,9 +366,9 @@ let translateTypeDeclarations =
       typeDeclarations: list(Typedtree.type_declaration),
     )
     : list(Translation.typeDeclaration) => {
-  let genTypeKind =
+  let annotation =
     switch (typeDeclarations) {
-    | [dec, ..._] => dec.typ_attributes |> Annotation.getGenTypeKind
+    | [dec, ..._] => dec.typ_attributes |> Annotation.fromAttributes
     | [] => NoGenType
     };
   typeDeclarations
@@ -378,7 +378,7 @@ let translateTypeDeclarations =
          ~outputFileRelative,
          ~resolver,
          ~typeEnv,
-         ~genTypeKind,
+         ~annotation,
        ),
      )
   |> List.concat;

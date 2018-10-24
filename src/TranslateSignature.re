@@ -10,7 +10,7 @@ let translateSignatureValue =
     : Translation.t => {
   let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
   let typeExpr = val_desc.ctyp_type;
-  switch (val_id, Annotation.getGenTypeKind(val_attributes)) {
+  switch (val_id, Annotation.fromAttributes(val_attributes)) {
   | (id, GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name

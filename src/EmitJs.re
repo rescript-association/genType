@@ -36,7 +36,7 @@ let createExportTypeMap =
     let addExportType =
         (
           ~importTypes,
-          ~genTypeKind,
+          ~annotation,
           {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
         ) => {
       if (Debug.codeItems) {
@@ -48,9 +48,7 @@ let createExportTypeMap =
           switch (optTyp) {
           | Some(typ) =>
             " "
-            ++ (
-              genTypeKind |> Annotation.genTypeKindToString |> EmitText.comment
-            )
+            ++ (annotation |> Annotation.toString |> EmitText.comment)
             ++ " = "
             ++ (typ |> EmitTyp.typToString(~language))
           | None => ""
@@ -62,15 +60,15 @@ let createExportTypeMap =
         exportTypeMap
         |> StringMap.add(
              resolvedTypeName,
-             (typeVars, typ, genTypeKind, importTypes),
+             (typeVars, typ, annotation, importTypes),
            )
       | None => exportTypeMap
       };
     };
     switch (typeDeclaration.exportFromTypeDeclaration) {
-    | {exportKind: ExportType(exportType), genTypeKind} =>
+    | {exportKind: ExportType(exportType), annotation} =>
       exportType
-      |> addExportType(~genTypeKind, ~importTypes=typeDeclaration.importTypes)
+      |> addExportType(~annotation, ~importTypes=typeDeclaration.importTypes)
     | {exportKind: ExportVariantLeaf(_) | ExportVariantType(_)} => exportTypeMap
     };
   };
@@ -765,10 +763,10 @@ let propagateAnnotationToSubTypes =
   let initialAnnotatedTypes =
     typeMap
     |> StringMap.bindings
-    |> List.filter(((_, (_, _, genTypeKind, _))) =>
-         genTypeKind == Annotation.GenType
+    |> List.filter(((_, (_, _, annotation, _))) =>
+         annotation == Annotation.GenType
        );
-  let inlineTyp = ((_typeName, (_, typ, genTypeKind, _))) => {
+  let inlineTyp = ((_typeName, (_, typ, annotation, _))) => {
     let visited = ref(StringSet.empty);
     let rec visit = typ =>
       switch (typ) {
@@ -798,7 +796,7 @@ let propagateAnnotationToSubTypes =
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
       };
-    switch ((genTypeKind: Annotation.genTypeKind)) {
+    switch ((annotation: Annotation.t)) {
     | GenType => typ |> visit
     | Generated
     | GenTypeOpaque
@@ -832,7 +830,7 @@ let propagateAnnotationToSubTypes =
                ...typeDeclaration,
                exportFromTypeDeclaration: {
                  ...typeDeclaration.exportFromTypeDeclaration,
-                 genTypeKind: GenType,
+                 annotation: GenType,
                },
              };
            } else {
@@ -843,9 +841,9 @@ let propagateAnnotationToSubTypes =
        )
     |> List.filter(
          (
-           {exportFromTypeDeclaration: {genTypeKind}}: Translation.typeDeclaration,
+           {exportFromTypeDeclaration: {annotation}}: Translation.typeDeclaration,
          ) =>
-         genTypeKind != NoGenType
+         annotation != NoGenType
        );
 
   (newTypeMap, annotatedTypeDeclarations);

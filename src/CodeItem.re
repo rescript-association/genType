@@ -66,7 +66,7 @@ type exportKind =
 
 type exportFromTypeDeclaration = {
   exportKind,
-  genTypeKind: Annotation.genTypeKind,
+  annotation: Annotation.t,
 };
 
 type t =

@@ -7,14 +7,14 @@ type attributePayload =
   | UnrecognizedPayload
   | StringPayload(string);
 
-type genTypeKind =
+type t =
   | Generated
   | GenType
   | GenTypeOpaque
   | NoGenType;
 
-let genTypeKindToString = genTypeKind =>
-  switch (genTypeKind) {
+let toString = annotation =>
+  switch (annotation) {
   | Generated => "Generated"
   | GenType => "GenType"
   | GenTypeOpaque => "GenTypeOpaque"
@@ -52,7 +52,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
 let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
   getAttributePayload(checkText, attributes) != None;
 
-let getGenTypeKind = (attributes: Typedtree.attributes) =>
+let fromAttributes = (attributes: Typedtree.attributes) =>
   if (hasAttribute(tagIsGenType, attributes)) {
     GenType;
   } else if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
@@ -63,7 +63,7 @@ let getGenTypeKind = (attributes: Typedtree.attributes) =>
 
 let hasGenTypeAnnotation = attributes =>
   [GenType, GenTypeOpaque]
-  |> List.mem(getGenTypeKind(attributes))
+  |> List.mem(fromAttributes(attributes))
   || attributes
   |> getAttributePayload(tagIsGenTypeImport) != None;
 

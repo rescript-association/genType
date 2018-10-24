@@ -13,7 +13,7 @@ let translateValueBinding =
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeExpr = vb_expr.exp_type;
-  switch (vb_pat.pat_desc, Annotation.getGenTypeKind(vb_attributes)) {
+  switch (vb_pat.pat_desc, Annotation.fromAttributes(vb_attributes)) {
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name

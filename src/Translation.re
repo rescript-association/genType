@@ -19,9 +19,7 @@ type t = {
 };
 
 type typeMap =
-  StringMap.t(
-    (list(string), typ, Annotation.genTypeKind, list(importType)),
-  );
+  StringMap.t((list(string), typ, Annotation.t, list(importType)));
 
 let empty = {importTypes: [], codeItems: [], typeDeclarations: []};
 
