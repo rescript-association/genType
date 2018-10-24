@@ -26,7 +26,7 @@ deploy:
     - provider: GitHub
       repository: cristianoc/genType
       auth_token:
-        secure: Lqg37AH0Hg/rThuUMuQbzJbgYVCVlUV6RnAgFWb8gNcjNjPcMs46+JPTXNyqyQkQ
+        secure: h4ts/g/OSbN7Ol71eZWP2EXFvPaHaizMj3gpaAl7An4vO/2dYATb+r3PHcWD6nFp
       draft: false
       artifact: gentype-win.tar.gz
       force_update: true
