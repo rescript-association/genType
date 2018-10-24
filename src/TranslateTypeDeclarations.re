@@ -309,16 +309,16 @@ let translateTypeDeclaration =
       ~resolver,
       ~typeEnv,
       ~annotation: Annotation.t,
-      typeDeclaration: Typedtree.type_declaration,
+      {typ_id, typ_type, typ_attributes, typ_manifest, _}: Typedtree.type_declaration,
     )
     : list(Translation.typeDeclaration) => {
-  typeEnv |> TypeEnv.newType(~name=typeDeclaration.typ_id |> Ident.name);
-  let typeName = Ident.name(typeDeclaration.typ_id);
-  let typeParams = typeDeclaration.typ_type.type_params;
+  typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
+  let typeName = Ident.name(typ_id);
+  let typeParams = typ_type.type_params;
   let typeVars = TypeVars.extract(typeParams);
 
   let declarationKind =
-    switch (typeDeclaration.typ_type.type_kind, annotation) {
+    switch (typ_type.type_kind, annotation) {
     | (Type_record(labelDeclarations, _), _) =>
       RecordDelaration(labelDeclarations)
 
@@ -328,17 +328,17 @@ let translateTypeDeclaration =
 
     | (Type_abstract, _) =>
       switch (
-        typeDeclaration.typ_attributes
+        typ_attributes
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
       ) {
       | Some(StringPayload(importString)) when typeParams == [] =>
         ImportTypeDeclaration(
           importString,
-          typeDeclaration.typ_attributes
+          typ_attributes
           |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs),
         )
 
-      | _ => GeneralDeclaration(typeDeclaration.typ_manifest)
+      | _ => GeneralDeclaration(typ_manifest)
       }
 
     | _ => NoDeclaration
