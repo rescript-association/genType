@@ -74,7 +74,7 @@ async function buildExamples() {
 async function checkDiff() {
   try {
     console.log("Checking for changes in examples/");
-    await wrappedExecFile("git", ["diff-index", "HEAD", "examples"]);
+    await wrappedExecFile("git", ["diff-index", "--quiet", "HEAD", "--", "examples"]);
   } catch (code) {
     console.error(
       "Changed files detected in path examples/! Make sure genType is emitting the right code and commit the files to git"
@@ -94,7 +94,7 @@ async function checkSetup() {
   let output;
   /* Compare the --version output with the package.json version number (should match) */
   try {
-    output = child_process.execFileSync(genTypeFile, ["--version"], {
+    output = await wrappedExecFile(genTypeFile, ["--version"], {
       encoding: "utf8"
     });
   } catch (e) {
