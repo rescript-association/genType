@@ -82,6 +82,7 @@ async function checkDiff() {
 }
 
 async function checkSetup() {
+  console.log(`Check existing binary: ${genTypeFile}`);
   if (!fs.existsSync(genTypeFile)) {
     const filepath = path.relative(path.join(__dirname, ".."), genTypeFile);
     throw new Error(`${filepath} does not exist. Use \`npm run build\` first!`);
@@ -101,15 +102,13 @@ async function checkSetup() {
   }
 
   // For Unix / Windows
-  const stripNewlines =  (str) => str.replace(/[\n\r]+/g, '');
+  const stripNewlines = (str="") => str.replace(/[\n\r]+/g, "");
 
   if (output.indexOf(pjson.version) === -1) {
     throw new Error(
-      `${path.basename(
-        genTypeFile
-      )} --version doesn't contain the version number of package.json  ("${stripNewlines(output)}" should contain ${
-        pjson.version
-      }) - Run \`node scripts/bump_version_module.js\` and rebuild to sync version numbers`
+      `${path.basename(genTypeFile)} --version doesn't contain the version number of package.json` +
+      `("${stripNewlines(output)}" should contain ${pjson.version})` +
+      `- Run \`node scripts/bump_version_module.js\` and rebuild to sync version numbers`
     );
   }
 }
