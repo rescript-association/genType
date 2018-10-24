@@ -18,8 +18,8 @@ type t = {
   typeDeclarations: list(typeDeclaration),
 };
 
-type typeMap =
-  StringMap.t((list(string), typ, genTypeKind, list(importType)));
+type exportTypeMap =
+  StringMap.t((list(string), typ, Annotation.t, list(importType)));
 
 let empty = {importTypes: [], codeItems: [], typeDeclarations: []};
 
@@ -411,8 +411,7 @@ let translatePrimitive =
           resolvedTypeName: propsTypeName,
           optTyp: Some(propsTyp),
         },
-        importAnnotation:
-          importString |> Annotation.importAnnotationFromString,
+        importAnnotation: importString |> Annotation.importFromString,
         childrenTyp,
         propsFields,
         propsTypeName,
@@ -435,8 +434,7 @@ let translatePrimitive =
       codeItems: [
         ImportValue({
           valueName,
-          importAnnotation:
-            importString |> Annotation.importAnnotationFromString,
+          importAnnotation: importString |> Annotation.importFromString,
           typ: typeExprTranslation.typ,
           fileName,
         }),

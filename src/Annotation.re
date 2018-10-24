@@ -1,4 +1,25 @@
-open GenTypeCommon;
+type import = {
+  name: string,
+  importPath: ImportPath.t,
+};
+
+type attributePayload =
+  | UnrecognizedPayload
+  | StringPayload(string);
+
+type t =
+  | Generated
+  | GenType
+  | GenTypeOpaque
+  | NoGenType;
+
+let toString = annotation =>
+  switch (annotation) {
+  | Generated => "Generated"
+  | GenType => "GenType"
+  | GenTypeOpaque => "GenTypeOpaque"
+  | NoGenType => "NoGenType"
+  };
 
 let tagIsGenType = s => s == "genType";
 let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
@@ -6,10 +27,6 @@ let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
 let tagIsGenTypeImport = s => s == "genType.import";
 
 let tagIsGenTypeOpaque = s => s == "genType.opaque";
-
-type attributePayload =
-  | UnrecognizedPayload
-  | StringPayload(string);
 
 let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
   switch (attributes) {
@@ -35,7 +52,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
 let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
   getAttributePayload(checkText, attributes) != None;
 
-let getGenTypeKind = (attributes: Typedtree.attributes) =>
+let fromAttributes = (attributes: Typedtree.attributes) =>
   if (hasAttribute(tagIsGenType, attributes)) {
     GenType;
   } else if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
@@ -46,7 +63,7 @@ let getGenTypeKind = (attributes: Typedtree.attributes) =>
 
 let hasGenTypeAnnotation = attributes =>
   [GenType, GenTypeOpaque]
-  |> List.mem(getGenTypeKind(attributes))
+  |> List.mem(fromAttributes(attributes))
   || attributes
   |> getAttributePayload(tagIsGenTypeImport) != None;
 
@@ -116,7 +133,7 @@ and moduleBindingHasGenTypeAnnotation =
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
-let importAnnotationFromString = importString: CodeItem.importAnnotation => {
+let importFromString = importString: import => {
   let name = {
     let base = importString |> Filename.basename;
     try (base |> Filename.chop_extension) {

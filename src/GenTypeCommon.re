@@ -69,6 +69,11 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
+let logNotImplemented = x =>
+  if (Debug.notImplemented) {
+    logItem("Not Implemented: %s\n", x);
+  };
+
 type optional =
   | Mandatory
   | Optional;
@@ -122,20 +127,6 @@ type label =
   | Nolabel
   | Label(string)
   | OptLabel(string);
-
-type genTypeKind =
-  | Generated
-  | GenType
-  | GenTypeOpaque
-  | NoGenType;
-
-let genTypeKindToString = genTypeKind =>
-  switch (genTypeKind) {
-  | Generated => "Generated"
-  | GenType => "GenType"
-  | GenTypeOpaque => "GenTypeOpaque"
-  | NoGenType => "NoGenType"
-  };
 
 let createEnum = cases => {
   let hash =

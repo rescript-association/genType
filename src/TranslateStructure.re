@@ -1,3 +1,5 @@
+open GenTypeCommon;
+
 let translateValueBinding =
     (
       ~config,
@@ -13,7 +15,7 @@ let translateValueBinding =
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeExpr = vb_expr.exp_type;
-  switch (vb_pat.pat_desc, Annotation.getGenTypeKind(vb_attributes)) {
+  switch (vb_pat.pat_desc, Annotation.fromAttributes(vb_attributes)) {
   | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
     id
     |> Ident.name
@@ -100,6 +102,7 @@ let rec translateStructureItem =
          ~typeEnv,
          ~moduleItemGen,
        )
+
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings
     |> List.map(
@@ -114,7 +117,33 @@ let rec translateStructureItem =
        )
     |> Translation.combine
 
-  | _ => Translation.empty
+  | {Typedtree.str_desc: Tstr_eval(_), _} =>
+    logNotImplemented("Tstr_eval");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_typext(_), _} =>
+    logNotImplemented("Tstr_typext");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_exception(_), _} =>
+    logNotImplemented("Tstr_exception");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_modtype(_), _} =>
+    logNotImplemented("Tstr_modtype");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_open(_), _} =>
+    logNotImplemented("Tstr_open");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_class(_), _} =>
+    logNotImplemented("Tstr_class");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_class_type(_), _} =>
+    logNotImplemented("Tstr_class_type");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_include(_), _} =>
+    logNotImplemented("Tstr_include");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_attribute(_), _} =>
+    logNotImplemented("Tstr_attribute");
+    Translation.empty;
   }
 and translateStructure =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
@@ -160,10 +189,20 @@ and translateModuleBinding =
        )
     |> Translation.combine;
 
-  | Tmod_ident(_)
-  | Tmod_functor(_)
-  | Tmod_apply(_)
-  | Tmod_constraint(_)
-  | Tmod_unpack(_) => Translation.empty
+  | Tmod_ident(_) =>
+    logNotImplemented("Tmod_ident");
+    Translation.empty;
+  | Tmod_functor(_) =>
+    logNotImplemented("Tmod_functor");
+    Translation.empty;
+  | Tmod_apply(_) =>
+    logNotImplemented("Tmod_apply");
+    Translation.empty;
+  | Tmod_constraint(_) =>
+    logNotImplemented("Tmod_constraint");
+    Translation.empty;
+  | Tmod_unpack(_) =>
+    logNotImplemented("Tmod_unpack");
+    Translation.empty;
   };
 };
