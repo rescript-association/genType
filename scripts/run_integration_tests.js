@@ -87,6 +87,7 @@ async function checkSetup() {
     throw new Error(`${filepath} does not exist. Use \`npm run build\` first!`);
   }
 
+  console.log("Checking if --version outputs the right version");
   let output;
   /* Compare the --version output with the package.json version number (should match) */
   try {
@@ -99,11 +100,14 @@ async function checkSetup() {
     );
   }
 
-  if (output !== `genType version ${pjson.version}\n`) {
+  // For Unix / Windows
+  const stripNewlines =  (str) => str.replace(/[\n\r]+/g, '');
+
+  if (output.indexOf(pjson.version) === -1) {
     throw new Error(
       `${path.basename(
         genTypeFile
-      )} --version doesn't match the version number of package.json  (${output} != ${
+      )} --version doesn't contain the version number of package.json  ("${stripNewlines(output)}" should contain ${
         pjson.version
       }) - Run \`node scripts/bump_version_module.js\` and rebuild to sync version numbers`
     );
