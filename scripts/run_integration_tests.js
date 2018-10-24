@@ -148,6 +148,7 @@ async function main() {
     console.log("Test successful!");
   } catch (e) {
     console.error(`Test failed unexpectly: ${e.message}`);
+    console.error(e);
     debug(e);
     process.exit(1);
   }
