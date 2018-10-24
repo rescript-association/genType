@@ -4,9 +4,9 @@ type env = {
   requiresEarly: ModuleNameMap.t((ImportPath.t, bool)),
   requires: ModuleNameMap.t((ImportPath.t, bool)),
   /* For each .cmt we import types from, keep the map of exported types. */
-  cmtExportTypeMapCache: StringMap.t(Translation.exportTypeMap),
+  cmtToExportTypeMap: StringMap.t(Translation.exportTypeMap),
   /* Map of types imported from other files. */
-  typesFromOtherFiles: Translation.exportTypeMap,
+  exportTypeMapFromOtherFiles: Translation.exportTypeMap,
 };
 
 let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
@@ -696,14 +696,14 @@ let emitImportType =
   | (Some(asType), Some(cmtFile)) =>
     let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
       switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
-      | x => env.typesFromOtherFiles |> StringMap.add(asType, x)
+      | x => env.exportTypeMapFromOtherFiles |> StringMap.add(asType, x)
       | exception Not_found => exportTypeMapFromCmt
       };
-    switch (env.cmtExportTypeMapCache |> StringMap.find(cmtFile)) {
+    switch (env.cmtToExportTypeMap |> StringMap.find(cmtFile)) {
     | exportTypeMapFromCmt => (
         {
           ...env,
-          typesFromOtherFiles:
+          exportTypeMapFromOtherFiles:
             updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
         },
         emitters,
@@ -717,14 +717,13 @@ let emitImportType =
              ~resolver,
            )
         |> createExportTypeMap(~language);
-      let cmtExportTypeMapCache =
-        env.cmtExportTypeMapCache
-        |> StringMap.add(cmtFile, exportTypeMapFromCmt);
+      let cmtToExportTypeMap =
+        env.cmtToExportTypeMap |> StringMap.add(cmtFile, exportTypeMapFromCmt);
       (
         {
           ...env,
-          cmtExportTypeMapCache,
-          typesFromOtherFiles:
+          cmtToExportTypeMap,
+          exportTypeMapFromOtherFiles:
             updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
         },
         emitters,
@@ -862,8 +861,8 @@ let emitTranslationAsString =
   let initialEnv = {
     requires: ModuleNameMap.empty,
     requiresEarly: ModuleNameMap.empty,
-    cmtExportTypeMapCache: StringMap.empty,
-    typesFromOtherFiles: StringMap.empty,
+    cmtToExportTypeMap: StringMap.empty,
+    exportTypeMapFromOtherFiles: StringMap.empty,
   };
   let enumTables = Hashtbl.create(1);
 
@@ -894,7 +893,7 @@ let emitTranslationAsString =
     |> Converter.typToConverterOpaque(
          ~language,
          ~exportTypeMap,
-         ~typesFromOtherFiles=env.typesFromOtherFiles,
+         ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
        )
     |> snd;
 
@@ -903,7 +902,7 @@ let emitTranslationAsString =
     |> Converter.typToConverter(
          ~language,
          ~exportTypeMap,
-         ~typesFromOtherFiles=env.typesFromOtherFiles,
+         ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
        );
 
   let emitters = Emitters.initial

@@ -88,7 +88,7 @@ let typToConverterOpaque =
     (
       ~language,
       ~exportTypeMap: Translation.exportTypeMap,
-      ~typesFromOtherFiles,
+      ~exportTypeMapFromOtherFiles,
       typ,
     ) => {
   let circular = ref("");
@@ -116,7 +116,7 @@ let typToConverterOpaque =
         let visited = visited |> StringSet.add(s);
         switch (
           try (exportTypeMap |> StringMap.find(s)) {
-          | Not_found => typesFromOtherFiles |> StringMap.find(s)
+          | Not_found => exportTypeMapFromOtherFiles |> StringMap.find(s)
           }
         ) {
         | (_, _, GenTypeOpaque, _importTypes) => (IdentC, true)
@@ -212,9 +212,14 @@ let typToConverterOpaque =
   (finalConverter, opaque);
 };
 
-let typToConverter = (~language, ~exportTypeMap, ~typesFromOtherFiles, typ) =>
+let typToConverter =
+    (~language, ~exportTypeMap, ~exportTypeMapFromOtherFiles, typ) =>
   typ
-  |> typToConverterOpaque(~language, ~exportTypeMap, ~typesFromOtherFiles)
+  |> typToConverterOpaque(
+       ~language,
+       ~exportTypeMap,
+       ~exportTypeMapFromOtherFiles,
+     )
   |> fst;
 
 let rec converterIsIdentity = (~toJS, converter) =>
