@@ -74,7 +74,7 @@ async function buildExamples() {
 async function checkDiff() {
   try {
     console.log("Checking for changes in examples/");
-    await wrappedExecFile("git", ["diff-index", "--quiet", "HEAD", "--", "examples"]);
+    await wrappedExecFile("git", ["diff-index", "--quiet", "HEAD", "--", "*.re", "*.bs.js", "*.re.js", "*.ts"]);
   } catch (code) {
     console.error(
       "Changed files detected in path examples/! Make sure genType is emitting the right code and commit the files to git"
