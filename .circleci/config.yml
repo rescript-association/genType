@@ -28,9 +28,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v0-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-{{ checksum "package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
-            - v0-dependencies-
+            - v1-dependencies-
 
       # build & test
       - run: npm install
@@ -38,7 +38,7 @@ jobs:
       - run: npm test
 
       - save_cache:
-          key: v0-dependencies-{{ checksum "package-lock.json" }}
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
 
@@ -69,9 +69,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v0-macos-dependencies-{{ checksum "package-lock.json" }}
+            - v1-macos-dependencies-{{ checksum "package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
-            - v0-macos-dependencies-
+            - v1-macos-dependencies-
 
       # build & test
       - run: npm install
@@ -79,7 +79,7 @@ jobs:
       - run: npm test
 
       - save_cache:
-          key: v0-macos-dependencies-{{ checksum "package-lock.json" }}
+          key: v1-macos-dependencies-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
 
