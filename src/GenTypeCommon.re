@@ -69,6 +69,11 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
+let logNotImplemented = x =>
+  if (Debug.notImplemented) {
+    logItem("Not Implemented: %s\n", x);
+  };
+
 type optional =
   | Mandatory
   | Optional;

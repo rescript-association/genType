@@ -1,3 +1,5 @@
+open GenTypeCommon;
+
 let translateSignatureValue =
     (
       ~config,
@@ -59,11 +61,21 @@ let rec translateModuleDeclaration =
          ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
        )
     |> Translation.combine;
-  | Tmty_ident(_)
-  | Tmty_functor(_)
-  | Tmty_with(_)
-  | Tmty_typeof(_)
-  | Tmty_alias(_) => Translation.empty
+  | Tmty_ident(_) =>
+    logNotImplemented("Tmty_ident");
+    Translation.empty;
+  | Tmty_functor(_) =>
+    logNotImplemented("Tmty_functor");
+    Translation.empty;
+  | Tmty_with(_) =>
+    logNotImplemented("Tmty_with");
+    Translation.empty;
+  | Tmty_typeof(_) =>
+    logNotImplemented("Tmty_typeof");
+    Translation.empty;
+  | Tmty_alias(_) =>
+    logNotImplemented("Tmty_alias");
+    Translation.empty;
   }
 and translateSignatureItem =
     (
@@ -125,7 +137,33 @@ and translateSignatureItem =
          ~typeEnv,
        );
 
-  | _ => Translation.empty
+  | {Typedtree.sig_desc: Typedtree.Tsig_typext(_), _} =>
+    logNotImplemented("Tsig_typext");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_exception(_), _} =>
+    logNotImplemented("Tsig_exception");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_recmodule(_), _} =>
+    logNotImplemented("Tsig_recmodule");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_modtype(_), _} =>
+    logNotImplemented("Tsig_modtype");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_open(_), _} =>
+    logNotImplemented("Tsig_open");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_include(_), _} =>
+    logNotImplemented("Tsig_include");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_class(_), _} =>
+    logNotImplemented("Tsig_class");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_class_type(_), _} =>
+    logNotImplemented("Tsig_class_type");
+    Translation.empty;
+  | {Typedtree.sig_desc: Typedtree.Tsig_attribute(_), _} =>
+    logNotImplemented("Tsig_attribute");
+    Translation.empty;
   }
 and translateSignature =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, signature)

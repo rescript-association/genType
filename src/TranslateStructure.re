@@ -1,3 +1,5 @@
+open GenTypeCommon;
+
 let translateValueBinding =
     (
       ~config,
@@ -160,10 +162,20 @@ and translateModuleBinding =
        )
     |> Translation.combine;
 
-  | Tmod_ident(_)
-  | Tmod_functor(_)
-  | Tmod_apply(_)
-  | Tmod_constraint(_)
-  | Tmod_unpack(_) => Translation.empty
+  | Tmod_ident(_) =>
+    logNotImplemented("Tmod_ident");
+    Translation.empty;
+  | Tmod_functor(_) =>
+    logNotImplemented("Tmod_functor");
+    Translation.empty;
+  | Tmod_apply(_) =>
+    logNotImplemented("Tmod_apply");
+    Translation.empty;
+  | Tmod_constraint(_) =>
+    logNotImplemented("Tmod_constraint");
+    Translation.empty;
+  | Tmod_unpack(_) =>
+    logNotImplemented("Tmod_unpack");
+    Translation.empty;
   };
 };
