@@ -118,7 +118,8 @@ async function checkSetup() {
 async function main() {
   try {
     await checkSetup();
-    
+
+    // TODO: Remove this condition as soon as the examples' npm-scripts work for Windows
     if(!isWindows) {
       await installExamples();
       await buildExamples();
@@ -127,7 +128,6 @@ async function main() {
     console.log("Test successful!");
   } catch (e) {
     console.error(`Test failed unexpectly: ${e.message}`);
-    console.error(e);
     debug(e);
     process.exit(1);
   }
