@@ -4,9 +4,9 @@ type env = {
   requiresEarly: ModuleNameMap.t((ImportPath.t, bool)),
   requires: ModuleNameMap.t((ImportPath.t, bool)),
   /* For each .cmt we import types from, keep the map of exported types. */
-  cmtExportTypeMapCache: StringMap.t(Translation.typeMap),
+  cmtExportTypeMapCache: StringMap.t(Translation.exportTypeMap),
   /* Map of types imported from other files. */
-  typesFromOtherFiles: Translation.typeMap,
+  typesFromOtherFiles: Translation.exportTypeMap,
 };
 
 let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
@@ -26,13 +26,13 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
 
 let createExportTypeMap =
     (~language, declarations: list(Translation.typeDeclaration))
-    : Translation.typeMap => {
+    : Translation.exportTypeMap => {
   let updateExportTypeMap =
       (
-        exportTypeMap: Translation.typeMap,
+        exportTypeMap: Translation.exportTypeMap,
         typeDeclaration: Translation.typeDeclaration,
       )
-      : Translation.typeMap => {
+      : Translation.exportTypeMap => {
     let addExportType =
         (
           ~importTypes,
@@ -757,9 +757,37 @@ let emitImportTypes =
        (env, emitters),
      );
 
+let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
+  typeDeclarations
+  |> List.map(typeDeclaration =>
+       switch (
+         typeDeclaration.Translation.exportFromTypeDeclaration.exportKind
+       ) {
+       | ExportType(exportType) =>
+         if (annotatedSet |> StringSet.mem(exportType.resolvedTypeName)) {
+           {
+             ...typeDeclaration,
+             exportFromTypeDeclaration: {
+               ...typeDeclaration.exportFromTypeDeclaration,
+               annotation: GenType,
+             },
+           };
+         } else {
+           typeDeclaration;
+         }
+       | _ => typeDeclaration
+       }
+     )
+  |> List.filter(
+       (
+         {exportFromTypeDeclaration: {annotation}}: Translation.typeDeclaration,
+       ) =>
+       annotation != NoGenType
+     );
+
 let propagateAnnotationToSubTypes =
-    (~config, ~typeDeclarations, typeMap: Translation.typeMap) => {
-  let markedAsGenType = ref(StringSet.empty);
+    (~config, typeMap: Translation.exportTypeMap) => {
+  let annotatedSet = ref(StringSet.empty);
   let initialAnnotatedTypes =
     typeMap
     |> StringMap.bindings
@@ -778,7 +806,7 @@ let propagateAnnotationToSubTypes =
           switch (typeMap |> StringMap.find(typeName)) {
           | (_, _, GenType | GenTypeOpaque | Generated, _) => ()
           | (_, typ1, NoGenType, _) =>
-            markedAsGenType := markedAsGenType^ |> StringSet.add(typeName);
+            annotatedSet := annotatedSet^ |> StringSet.add(typeName);
             typ1 |> visit;
           | exception Not_found => ()
           };
@@ -812,41 +840,13 @@ let propagateAnnotationToSubTypes =
          (
            args,
            typ,
-           markedAsGenType^ |> StringSet.mem(typeName) ?
+           annotatedSet^ |> StringSet.mem(typeName) ?
              Annotation.GenType : genTypeKind,
            importTypes,
          )
        );
 
-  let annotatedTypeDeclarations =
-    typeDeclarations
-    |> List.map(typeDeclaration =>
-         switch (
-           typeDeclaration.Translation.exportFromTypeDeclaration.exportKind
-         ) {
-         | ExportType(exportType) =>
-           if (markedAsGenType^ |> StringSet.mem(exportType.resolvedTypeName)) {
-             {
-               ...typeDeclaration,
-               exportFromTypeDeclaration: {
-                 ...typeDeclaration.exportFromTypeDeclaration,
-                 annotation: GenType,
-               },
-             };
-           } else {
-             typeDeclaration;
-           }
-         | _ => typeDeclaration
-         }
-       )
-    |> List.filter(
-         (
-           {exportFromTypeDeclaration: {annotation}}: Translation.typeDeclaration,
-         ) =>
-         annotation != NoGenType
-       );
-
-  (newTypeMap, annotatedTypeDeclarations);
+  (newTypeMap, annotatedSet^);
 };
 
 let emitTranslationAsString =
@@ -866,13 +866,15 @@ let emitTranslationAsString =
     typesFromOtherFiles: StringMap.empty,
   };
   let enumTables = Hashtbl.create(1);
-  let (exportTypeMap, annotatedTypeDeclarations) =
+
+  let (exportTypeMap, annotatedSet) =
     translation.typeDeclarations
     |> createExportTypeMap(~language)
-    |> propagateAnnotationToSubTypes(
-         ~config,
-         ~typeDeclarations=translation.typeDeclarations,
-       );
+    |> propagateAnnotationToSubTypes(~config);
+
+  let annotatedTypeDeclarations =
+    translation.typeDeclarations
+    |> getAnnotatedTypedDeclarations(~annotatedSet);
 
   let importTypesFromTypeDeclarations =
     annotatedTypeDeclarations

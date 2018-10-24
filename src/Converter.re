@@ -87,7 +87,7 @@ let rec toString = converter =>
 let typToConverterOpaque =
     (
       ~language,
-      ~exportTypeMap: Translation.typeMap,
+      ~exportTypeMap: Translation.exportTypeMap,
       ~typesFromOtherFiles,
       typ,
     ) => {

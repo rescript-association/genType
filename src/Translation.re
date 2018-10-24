@@ -18,7 +18,7 @@ type t = {
   typeDeclarations: list(typeDeclaration),
 };
 
-type typeMap =
+type exportTypeMap =
   StringMap.t((list(string), typ, Annotation.t, list(importType)));
 
 let empty = {importTypes: [], codeItems: [], typeDeclarations: []};
