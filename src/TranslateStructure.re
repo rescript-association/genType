@@ -102,6 +102,7 @@ let rec translateStructureItem =
          ~typeEnv,
          ~moduleItemGen,
        )
+
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings
     |> List.map(
@@ -116,7 +117,33 @@ let rec translateStructureItem =
        )
     |> Translation.combine
 
-  | _ => Translation.empty
+  | {Typedtree.str_desc: Tstr_eval(_), _} =>
+    logNotImplemented("Tstr_eval");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_typext(_), _} =>
+    logNotImplemented("Tstr_typext");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_exception(_), _} =>
+    logNotImplemented("Tstr_exception");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_modtype(_), _} =>
+    logNotImplemented("Tstr_modtype");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_open(_), _} =>
+    logNotImplemented("Tstr_open");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_class(_), _} =>
+    logNotImplemented("Tstr_class");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_class_type(_), _} =>
+    logNotImplemented("Tstr_class_type");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_include(_), _} =>
+    logNotImplemented("Tstr_include");
+    Translation.empty;
+  | {Typedtree.str_desc: Tstr_attribute(_), _} =>
+    logNotImplemented("Tstr_attribute");
+    Translation.empty;
   }
 and translateStructure =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
