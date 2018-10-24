@@ -5,12 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "export BS_CMT_POST_PROCESS_CMD=\"$PWD/../../lib/bs/native/gentype.native\" && bsb -make-world",
-    "start": "export BS_CMT_POST_PROCESS_CMD=\"$PWD/../../lib/bs/native/gentype.native\" && bsb -make-world -w",
+    "build": "node ../run_bsb.js -make-world",
+    "start": "node ../run_bsb.js -make-world -w",
     "clean": "bsb -clean-world",
     "test": "exit 0",
     "webpack": "webpack -w",
-    "webpack:production": "NODE_ENV=production webpack"
+    "webpack:production": "webpack --env.NODE_ENV=production"
   },
   "keywords": [],
   "author": "",
