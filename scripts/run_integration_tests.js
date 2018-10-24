@@ -65,14 +65,14 @@ async function installExamples() {
 async function buildExamples() {
   exampleDirPaths.forEach(cwd => {
     console.log(`${cwd}: npm run build (takes a while)`);
-    child_process.spawnSync("npm", ["run", "build"], { cwd, stdio: [0,1,2] });
+    child_process.spawnSync("npm", ["run", "build"], { cwd, stdio: ["inherit", "inherit", "inherit"] });
   });
 }
 
 async function checkDiff() {
   try {
     console.log("Checking for changes in examples/");
-    child_process.execFileSync("git", ["diff-index", "--quiet", "HEAD", "--", "*.re", "*.bs.js", "*.re.js", "*.ts"]);
+    child_process.execFileSync("git", ["diff-index", "--quiet", "HEAD", "--", "*.re", "*.bs.js", "*.re.js", "*.ts"], { stdio: ["inherit", "inherit", "inherit"]});
   } catch (err) {
     console.error(
       "Changed files detected in path examples/! Make sure genType is emitting the right code and commit the files to git"
