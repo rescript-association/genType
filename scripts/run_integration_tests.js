@@ -138,9 +138,9 @@ async function checkSetup() {
 
 async function main() {
   try {
-    // await checkSetup();
-    // await installExamples();
-    // await buildExamples();
+    await checkSetup();
+    await installExamples();
+    await buildExamples();
     await checkDiff();
     console.log("Test successful!");
   } catch (e) {
