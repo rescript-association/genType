@@ -1,11 +1,3 @@
-/*
-  module type AConfig = { type configType; };
-  module A: { module Make: (Conf : AConfig) => { type a = Conf.configType; }; };
-  module B: { type a = int; };
-  module C: { type a = B.a; };
-  type c = C.a;
- */
-
 module type AConfig = {type configType;};
 
 module A = {
@@ -32,8 +24,8 @@ module C = {
 [@genType]
 type c = C.a;
 
-/* [@genType]
+[@genType]
 type d = C.Inner.inner;
 
 [@genType]
-type e = B.Inner.inner; */
+type e = B.Inner.inner;

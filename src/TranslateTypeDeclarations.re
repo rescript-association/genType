@@ -42,14 +42,11 @@ let translateConstructorDeclaration =
     argsTranslation
     |> List.map(({Dependencies.dependencies, _}) => dependencies)
     |> List.concat
-    |> List.map(
-         Translation.pathToImportType(
-           ~config,
-           ~outputFileRelative,
-           ~resolver,
-         ),
-       )
-    |> List.concat;
+    |> Translation.translateDependencies(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+       );
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
 
   let variantTypeNameResolved =
@@ -246,14 +243,12 @@ let traslateDeclarationKind =
       fieldTranslations
       |> List.map(((_, _, {Dependencies.dependencies, _})) => dependencies)
       |> List.concat
-      |> List.map(
-           Translation.pathToImportType(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-           ),
-         )
-      |> List.concat;
+      |> Translation.translateDependencies(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+         );
+
     let fields =
       fieldTranslations
       |> List.map(((name, mutable_, {Dependencies.typ, _})) => {

@@ -67,9 +67,18 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | TypeVar(_) => typ
   };
 
-let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
+let rec pathIsResolved = (path: Dependencies.path) =>
   switch (path) {
-  | Dependencies.Pid(name) when name == "list" => [
+  | Pid(_) => false
+  | Presolved(_) => true
+  | Pdot(p, _) => p |> pathIsResolved
+  };
+
+let pathToImportType =
+    (~config, ~outputFileRelative, ~resolver, path: Dependencies.path) =>
+  switch (path) {
+  | _ when path |> pathIsResolved => []
+  | Pid(name) when name == "list" => [
       {
         typeName: "list",
         asTypeName: None,
@@ -85,8 +94,6 @@ let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
     ]
   | Pid(_) => []
   | Presolved(_) => []
-
-  | Pdot(Presolved(_), _) => []
 
   | Pdot(_) =>
     let rec getOuterModuleName = path =>
