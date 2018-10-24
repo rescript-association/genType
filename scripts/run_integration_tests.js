@@ -79,6 +79,7 @@ async function checkDiff() {
       "git",
       [
         "diff-index",
+        "--name-only",
         "HEAD",
         "--",
         "examples/*.js",
