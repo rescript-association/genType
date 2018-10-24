@@ -118,12 +118,8 @@ async function checkSetup() {
 async function main() {
   try {
     await checkSetup();
-
-    // TODO: Remove this condition as soon as the examples' npm-scripts work for Windows
-    if(!isWindows) {
-      await installExamples();
-      await buildExamples();
-    }
+    await installExamples();
+    await buildExamples();
     await checkDiff();
     console.log("Test successful!");
   } catch (e) {
