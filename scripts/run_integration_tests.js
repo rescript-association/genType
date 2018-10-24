@@ -63,22 +63,21 @@ async function installExamples() {
 }
 
 async function buildExamples() {
-  const tasks = exampleDirPaths.map(cwd => {
+  exampleDirPaths.forEach(cwd => {
     console.log(`${cwd}: npm run build (takes a while)`);
-    return wrappedExecFile("npm", ["run", "build"], { cwd });
+    child_process.spawnSync("npm", ["run", "build"], { cwd, stdio: [0,1,2] });
   });
-
-  return Promise.all(tasks);
 }
 
 async function checkDiff() {
   try {
     console.log("Checking for changes in examples/");
-    await wrappedExecFile("git", ["diff-index", "--quiet", "HEAD", "--", "*.re", "*.bs.js", "*.re.js", "*.ts"]);
-  } catch (code) {
+    child_process.execFileSync("git", ["diff-index", "--quiet", "HEAD", "--", "*.re", "*.bs.js", "*.re.js", "*.ts"]);
+  } catch (err) {
     console.error(
       "Changed files detected in path examples/! Make sure genType is emitting the right code and commit the files to git"
     );
+    console.error(err)
     process.exit(1);
   }
 }
@@ -94,7 +93,7 @@ async function checkSetup() {
   let output;
   /* Compare the --version output with the package.json version number (should match) */
   try {
-    output = await wrappedExecFile(genTypeFile, ["--version"], {
+    output = child_process.execFileSync(genTypeFile, ["--version"], {
       encoding: "utf8"
     });
   } catch (e) {
