@@ -308,7 +308,7 @@ let translateTypeDeclaration =
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
-      ~genTypeKind: genTypeKind,
+      ~genTypeKind: Annotation.genTypeKind,
       dec: Typedtree.type_declaration,
     )
     : list(Translation.typeDeclaration) => {

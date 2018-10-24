@@ -123,20 +123,6 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-type genTypeKind =
-  | Generated
-  | GenType
-  | GenTypeOpaque
-  | NoGenType;
-
-let genTypeKindToString = genTypeKind =>
-  switch (genTypeKind) {
-  | Generated => "Generated"
-  | GenType => "GenType"
-  | GenTypeOpaque => "GenTypeOpaque"
-  | NoGenType => "NoGenType"
-  };
-
 let createEnum = cases => {
   let hash =
     cases

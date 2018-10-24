@@ -1,4 +1,25 @@
-open GenTypeCommon;
+type importAnnotation = {
+  name: string,
+  importPath: ImportPath.t,
+};
+
+type attributePayload =
+  | UnrecognizedPayload
+  | StringPayload(string);
+
+type genTypeKind =
+  | Generated
+  | GenType
+  | GenTypeOpaque
+  | NoGenType;
+
+let genTypeKindToString = genTypeKind =>
+  switch (genTypeKind) {
+  | Generated => "Generated"
+  | GenType => "GenType"
+  | GenTypeOpaque => "GenTypeOpaque"
+  | NoGenType => "NoGenType"
+  };
 
 let tagIsGenType = s => s == "genType";
 let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
@@ -6,10 +27,6 @@ let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
 let tagIsGenTypeImport = s => s == "genType.import";
 
 let tagIsGenTypeOpaque = s => s == "genType.opaque";
-
-type attributePayload =
-  | UnrecognizedPayload
-  | StringPayload(string);
 
 let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
   switch (attributes) {
@@ -116,7 +133,7 @@ and moduleBindingHasGenTypeAnnotation =
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
-let importAnnotationFromString = importString: CodeItem.importAnnotation => {
+let importAnnotationFromString = importString: importAnnotation => {
   let name = {
     let base = importString |> Filename.basename;
     try (base |> Filename.chop_extension) {

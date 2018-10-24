@@ -48,7 +48,9 @@ let createExportTypeMap =
           switch (optTyp) {
           | Some(typ) =>
             " "
-            ++ (genTypeKind |> genTypeKindToString |> EmitText.comment)
+            ++ (
+              genTypeKind |> Annotation.genTypeKindToString |> EmitText.comment
+            )
             ++ " = "
             ++ (typ |> EmitTyp.typToString(~language))
           | None => ""
@@ -757,13 +759,15 @@ let emitImportTypes =
        (env, emitters),
      );
 
-let inlineAnnotatedTypes =
+let propagateAnnotationToSubTypes =
     (~config, ~typeDeclarations, typeMap: Translation.typeMap) => {
   let markedAsGenType = ref(StringSet.empty);
   let initialAnnotatedTypes =
     typeMap
     |> StringMap.bindings
-    |> List.filter(((_, (_, _, genTypeKind, _))) => genTypeKind == GenType);
+    |> List.filter(((_, (_, _, genTypeKind, _))) =>
+         genTypeKind == Annotation.GenType
+       );
   let inlineTyp = ((_typeName, (_, typ, genTypeKind, _))) => {
     let visited = ref(StringSet.empty);
     let rec visit = typ =>
@@ -794,7 +798,7 @@ let inlineAnnotatedTypes =
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
       };
-    switch (genTypeKind) {
+    switch ((genTypeKind: Annotation.genTypeKind)) {
     | GenType => typ |> visit
     | Generated
     | GenTypeOpaque
@@ -811,7 +815,7 @@ let inlineAnnotatedTypes =
            args,
            typ,
            markedAsGenType^ |> StringSet.mem(typeName) ?
-             GenType : genTypeKind,
+             Annotation.GenType : genTypeKind,
            importTypes,
          )
        );
@@ -867,7 +871,7 @@ let emitTranslationAsString =
   let (exportTypeMap, annotatedTypeDeclarations) =
     translation.typeDeclarations
     |> createExportTypeMap(~language)
-    |> inlineAnnotatedTypes(
+    |> propagateAnnotationToSubTypes(
          ~config,
          ~typeDeclarations=translation.typeDeclarations,
        );
