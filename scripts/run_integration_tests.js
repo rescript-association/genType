@@ -120,6 +120,7 @@ async function main() {
   } catch (e) {
     console.error(`Test failed unexpectly: ${e.message}`);
     debug(e);
+    process.exit(1);
   }
 }
 
