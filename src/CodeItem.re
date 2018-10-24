@@ -15,7 +15,7 @@ type exportVariantType = {
 
 type importComponent = {
   exportType,
-  importAnnotation: Annotation.importAnnotation,
+  importAnnotation: Annotation.import,
   childrenTyp: typ,
   propsFields: fields,
   propsTypeName: string,
@@ -24,7 +24,7 @@ type importComponent = {
 
 type importValue = {
   valueName: string,
-  importAnnotation: Annotation.importAnnotation,
+  importAnnotation: Annotation.import,
   typ,
   fileName: ModuleName.t,
 };

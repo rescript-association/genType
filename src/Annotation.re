@@ -1,4 +1,4 @@
-type importAnnotation = {
+type import = {
   name: string,
   importPath: ImportPath.t,
 };
@@ -133,7 +133,7 @@ and moduleBindingHasGenTypeAnnotation =
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
-let importAnnotationFromString = importString: importAnnotation => {
+let importFromString = importString: import => {
   let name = {
     let base = importString |> Filename.basename;
     try (base |> Filename.chop_extension) {
