@@ -32,9 +32,10 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v0-dependencies-
 
-      # build
+      # build & test
       - run: npm install
       - run: npm run build
+      - run: npm test
 
       - save_cache:
           key: v0-dependencies-{{ checksum "package-lock.json" }}
@@ -72,9 +73,10 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v0-macos-dependencies-
 
-      # build
+      # build & test
       - run: npm install
       - run: npm run build
+      - run: npm test
 
       - save_cache:
           key: v0-macos-dependencies-{{ checksum "package-lock.json" }}
