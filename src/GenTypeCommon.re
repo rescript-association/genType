@@ -152,3 +152,29 @@ let booleanT = Ident("boolean", []);
 let numberT = Ident("number", []);
 let stringT = Ident("string", []);
 let unitT = Ident("void", []);
+
+module NodeFilename = {
+  include Filename;
+
+  /* Force "/" separator. */
+  let dir_sep = "/";
+
+  let concatWin32 = (dirname, filename) => {
+    let is_dir_sep = (s, i) => {
+      let c = s.[i];
+      c == '/' || c == '\\' || c == ':';
+    };
+    let l = String.length(dirname);
+    if (l == 0 || is_dir_sep(dirname, l - 1)) {
+      dirname ++ filename;
+    } else {
+      dirname ++ dir_sep ++ filename;
+    };
+  };
+
+  let concat = (dirname, filename) =>
+    switch (Sys.os_type) {
+    | "Win32" => filename |> concatWin32(dirname)
+    | _ => filename |> Filename.concat(dirname)
+    };
+};
