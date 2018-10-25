@@ -4,7 +4,7 @@
  * @nolint
  */
 
-const MyMath = require('./MyMath');
+import * as MyMath from './MyMath';
 
 // In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.
 export const roundTypeChecked: (number) => number = MyMath.round;
@@ -19,7 +19,7 @@ export const areaTypeChecked: (point) => number = MyMath.area;
 export const area: (point) => number = function _(Arg1) { const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]}); return result };
 
 // $FlowExpectedError: Reason checked type sufficiently
-const WrapJsValueBS = require('./WrapJsValue.bs');
+import * as WrapJsValueBS from './WrapJsValue.bs';
 
 export type point = {|+x: number, +y?: number|};
 

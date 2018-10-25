@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const TypeExpansionBS = require('./TypeExpansion.bs');
+import * as TypeExpansionBS from './TypeExpansion.bs';
 
 import type {person as Tuples_person} from '../src/basics/Tuples.re';
 

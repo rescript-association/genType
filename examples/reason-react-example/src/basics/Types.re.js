@@ -5,10 +5,10 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
+import * as CreateBucklescriptBlock from 'bs-platform/lib/js/block.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const TypesBS = require('./Types.bs');
+import * as TypesBS from './Types.bs';
 
 import type {anInterestingFlowType} from './SomeFlowTypes';
 

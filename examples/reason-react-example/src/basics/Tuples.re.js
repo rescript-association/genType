@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const TuplesBS = require('./Tuples.bs');
+import * as TuplesBS from './Tuples.bs';
 
 export type coord = [number, number, ?number];
 

@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const RecordsBS = require('./Records.bs');
+import * as RecordsBS from './Records.bs';
 
 import type {weekday as Types_weekday} from './Types.re';
 
