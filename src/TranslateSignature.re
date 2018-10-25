@@ -47,19 +47,39 @@ let rec translateModuleDeclaration =
           ~fileName,
           ~typeEnv,
           {md_id, md_type, _}: Typedtree.module_declaration,
-        ) =>
+        ) => {
+  let name = md_id |> Ident.name;
+  let typeEnv = typeEnv |> TypeEnv.newModule(~name);
+
   switch (md_type.mty_desc) {
   | Tmty_signature(signature) =>
-    let name = md_id |> Ident.name;
     signature
     |> translateSignature(
          ~config,
          ~outputFileRelative,
          ~resolver,
          ~fileName,
-         ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
+         ~typeEnv,
        )
-    |> Translation.combine;
+    |> Translation.combine
+
+  | Tmty_ident(Pident(id), _) =>
+    switch (
+      typeEnv |> TypeEnv.lookupModuleTypeSignature(~name=id |> Ident.name)
+    ) {
+    | None => Translation.empty
+    | Some(signature) =>
+      signature
+      |> translateSignature(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+         )
+      |> Translation.combine
+    };
+
   | Tmty_ident(_) =>
     logNotImplemented("Tmty_ident");
     Translation.empty;
@@ -75,6 +95,52 @@ let rec translateModuleDeclaration =
   | Tmty_alias(_) =>
     logNotImplemented("Tmty_alias");
     Translation.empty;
+  };
+}
+and translateModuleTypeDeclaration =
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~fileName,
+      ~typeEnv,
+      moduleTypeDeclaration: Typedtree.module_type_declaration,
+    ) =>
+  switch (moduleTypeDeclaration) {
+  | {mtd_type: None, _} => Translation.empty
+  | {mtd_id, mtd_type: Some(mtd_type), _} =>
+    switch (mtd_type.mty_desc) {
+    | Tmty_signature(signature) =>
+      let name = mtd_id |> Ident.name;
+      let translation =
+        signature
+        |> translateSignature(
+             ~config,
+             ~outputFileRelative,
+             ~resolver,
+             ~fileName,
+             ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
+           )
+        |> Translation.combine;
+      typeEnv |> TypeEnv.addModuleTypeSignature(~name, ~signature);
+      translation;
+
+    | Tmty_ident(_) =>
+      logNotImplemented("Tmty_ident");
+      Translation.empty;
+    | Tmty_functor(_) =>
+      logNotImplemented("Tmty_functor");
+      Translation.empty;
+    | Tmty_with(_) =>
+      logNotImplemented("Tmty_with");
+      Translation.empty;
+    | Tmty_typeof(_) =>
+      logNotImplemented("Tmty_typeof");
+      Translation.empty;
+    | Tmty_alias(_) =>
+      logNotImplemented("Tmty_alias");
+      Translation.empty;
+    }
   }
 and translateSignatureItem =
     (
@@ -125,10 +191,20 @@ and translateSignatureItem =
     }
 
   | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
-    let moduleItem = moduleItemGen |> Runtime.newModuleItem;
-    typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleDeclaration
     |> translateModuleDeclaration(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+       )
+
+  | {Typedtree.sig_desc: Typedtree.Tsig_modtype(moduleTypeDeclaration), _} =>
+    let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+    typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
+    moduleTypeDeclaration
+    |> translateModuleTypeDeclaration(
          ~config,
          ~outputFileRelative,
          ~resolver,
@@ -144,9 +220,6 @@ and translateSignatureItem =
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_recmodule(_), _} =>
     logNotImplemented("Tsig_recmodule");
-    Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_modtype(_), _} =>
-    logNotImplemented("Tsig_modtype");
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_open(_), _} =>
     logNotImplemented("Tsig_open");

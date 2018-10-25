@@ -14,4 +14,6 @@ let moduleResolution = false || all;
 
 let notImplemented = false || all;
 
+let typeEnv = false || all;
+
 let typeResolution = false || all;

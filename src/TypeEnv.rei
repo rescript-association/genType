@@ -1,12 +1,18 @@
 type t;
 
-let addModulePath: (~typeEnv:t, string) => string;
+let addModulePath: (~typeEnv: t, string) => string;
+
+let addModuleTypeSignature:
+  (~name: string, ~signature: Typedtree.signature, t) => unit;
 
 let getCurrentModuleName: (~fileName: ModuleName.t, t) => ModuleName.t;
 
 let getValueAccessPath: (~name: string, t) => string;
 
 let lookup: (~name: string, t) => option(t);
+
+let lookupModuleTypeSignature:
+  (~name: string, t) => option(Typedtree.signature);
 
 let newModule: (~name: string, t) => t;
 
