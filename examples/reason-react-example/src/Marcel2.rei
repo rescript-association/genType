@@ -1,7 +1,4 @@
-module type ModType = {
-  type t = string;
-};
-
+module type ModType = {type t = string;};
 
 module M: ModType;
 
