@@ -16,8 +16,14 @@ function testConversion(x) {
 
 var M = A;
 
+var n = N;
+
+var O = N;
+
 exports.A = A;
 exports.M = M;
 exports.N = N;
 exports.testConversion = testConversion;
+exports.n = n;
+exports.O = O;
 /* No side effect */

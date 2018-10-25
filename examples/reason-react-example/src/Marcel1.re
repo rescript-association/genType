@@ -34,4 +34,11 @@ type n = N.t;
 let testConversion = (x: n) => x;
 
 /* Without annotations, type w is never mentioned in the generated code */
-type o = N.w;
+type w = N.w;
+
+let n: module ModType = (module N);
+
+module O = (val n: ModType);
+
+[@genType]
+type o = O.t;
