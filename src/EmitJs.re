@@ -268,8 +268,9 @@ let rec emitCodeItem =
     let componentName = importAnnotation.name;
 
     let (emitters, env) =
-      switch (language) {
-      | Typescript =>
+      switch (language, config.module_) {
+      | (_, ES6)
+      | (Typescript, _) =>
         /* emit an import {... as ...} immediately */
         let emitters =
           importPath
@@ -279,8 +280,7 @@ let rec emitCodeItem =
                ~nameAs=None,
              );
         (emitters, env);
-      | Flow
-      | Untyped =>
+      | (Flow | Untyped, _) =>
         /* add an early require(...)  */
         let env =
           componentName
@@ -292,7 +292,7 @@ let rec emitCodeItem =
 
     /* Check the type of the component */
     let emitters =
-      EmitTyp.emitRequireReact(~early=true, ~emitters, ~language);
+      EmitTyp.emitRequireReact(~early=true, ~emitters, ~config);
     let emitters =
       emitExportType(
         ~early=true,
@@ -634,14 +634,14 @@ and emitCodeItems =
        (env, emitters),
      );
 
-let emitRequires = (~early, ~language, ~requires, emitters) =>
+let emitRequires = (~early, ~config, ~requires, emitters) =>
   ModuleNameMap.fold(
     (moduleName, (importPath, strict), emitters) =>
       importPath
       |> EmitTyp.emitRequire(
            ~early,
            ~emitters,
-           ~language,
+           ~config,
            ~moduleName,
            ~strict,
          ),
@@ -950,7 +950,7 @@ let emitTranslationAsString =
   let emitters = enumTables |> emitEnumTables(~emitters);
 
   emitters
-  |> emitRequires(~early=true, ~language, ~requires=finalEnv.requiresEarly)
-  |> emitRequires(~early=false, ~language, ~requires=finalEnv.requires)
+  |> emitRequires(~early=true, ~config, ~requires=finalEnv.requiresEarly)
+  |> emitRequires(~early=false, ~config, ~requires=finalEnv.requires)
   |> Emitters.toString(~separator="\n\n");
 };

@@ -95,7 +95,7 @@ let emitRequire:
   (
     ~early: bool,
     ~emitters: Emitters.t,
-    ~language: language,
+    ~config: config,
     ~moduleName: ModuleName.t,
     ~strict: bool,
     ImportPath.t
@@ -103,7 +103,7 @@ let emitRequire:
   Emitters.t;
 
 let emitRequireReact:
-  (~early: bool, ~emitters: Emitters.t, ~language: language) => Emitters.t;
+  (~early: bool, ~emitters: Emitters.t, ~config: config) => Emitters.t;
 
 let fileHeader: (~language: language) => string;
 

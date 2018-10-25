@@ -331,31 +331,43 @@ let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
   |> Emitters.requireEarly(~emitters);
 
 let emitRequire =
-    (~early, ~emitters, ~language, ~moduleName, ~strict, importPath) => {
+    (~early, ~emitters, ~config, ~moduleName, ~strict, importPath) => {
   let commentBeforeRequire =
-    switch (language) {
+    switch (config.language) {
     | Typescript => "// tslint:disable-next-line:no-var-requires\n"
     | Flow => strict ? "" : flowExpectedError
     | Untyped => ""
     };
-  commentBeforeRequire
-  ++ "const "
-  ++ ModuleName.toString(moduleName)
-  ++ " = require('"
-  ++ (importPath |> ImportPath.toString)
-  ++ "');"
-  |> (early ? Emitters.requireEarly : Emitters.require)(~emitters);
+  switch (config.module_) {
+  | CommonJS =>
+    commentBeforeRequire
+    ++ "const "
+    ++ ModuleName.toString(moduleName)
+    ++ " = require('"
+    ++ (importPath |> ImportPath.toString)
+    ++ "');"
+    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
+
+  | ES6 =>
+    commentBeforeRequire
+    ++ "import * as "
+    ++ ModuleName.toString(moduleName)
+    ++ " from '"
+    ++ (importPath |> ImportPath.toString)
+    ++ "';"
+    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
+  };
 };
 
 let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
 
-let emitRequireReact = (~early, ~emitters, ~language) =>
-  switch (language) {
+let emitRequireReact = (~early, ~emitters, ~config) =>
+  switch (config.language) {
   | Flow =>
     emitRequire(
       ~early,
       ~emitters,
-      ~language,
+      ~config,
       ~moduleName=ModuleName.react,
       ~strict=false,
       ImportPath.react,
