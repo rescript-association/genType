@@ -235,7 +235,7 @@ and translateStructureItem =
        )
     |> Translation.combine
 
-  | {Typedtree.str_desc: Tstr_include({incl_type: signature}), _} =>
+  | {Typedtree.str_desc: Tstr_include({incl_type: signature, _}), _} =>
     signature
     |> TranslateSignatureFromTypes.translateSignatureFromTypes(
          ~config,

@@ -118,7 +118,10 @@ let traslateDeclarationKind =
       let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
       let typ =
         switch (optTypeExpr, typeExprTranslation.typ) {
-        | (Some({desc: Tvariant({row_fields: rowFields}), _}), Enum(enum))
+        | (
+            Some({desc: Tvariant({row_fields: rowFields, _}), _}),
+            Enum(enum),
+          )
             when rowFields |> List.length == (enum.cases |> List.length) =>
           let cases =
             rowFields |> List.map(((label, _)) => {label, labelJS: label});

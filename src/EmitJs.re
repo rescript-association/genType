@@ -69,7 +69,7 @@ let createExportTypeMap =
     | {exportKind: ExportType(exportType), annotation} =>
       exportType
       |> addExportType(~annotation, ~importTypes=typeDeclaration.importTypes)
-    | {exportKind: ExportVariantLeaf(_) | ExportVariantType(_)} => exportTypeMap
+    | {exportKind: ExportVariantLeaf(_) | ExportVariantType(_), _} => exportTypeMap
     };
   };
   declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -757,7 +757,7 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
      )
   |> List.filter(
        (
-         {exportFromTypeDeclaration: {annotation}}: Translation.typeDeclaration,
+         {exportFromTypeDeclaration: {annotation, _}, _}: Translation.typeDeclaration,
        ) =>
        annotation != NoGenType
      );
@@ -793,12 +793,12 @@ let propagateAnnotationToSubTypes =
         }
       | Array(t, _) => t |> visit
       | Enum(_) => ()
-      | Function({argTypes, retType}) =>
+      | Function({argTypes, retType, _}) =>
         argTypes |> List.iter(visit);
         retType |> visit;
       | GroupOfLabeledArgs(fields)
       | Object(fields)
-      | Record(fields) => fields |> List.iter(({typ}) => typ |> visit)
+      | Record(fields) => fields |> List.iter(({typ, _}) => typ |> visit)
       | Option(t)
       | Nullable(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
