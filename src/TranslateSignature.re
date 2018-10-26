@@ -78,22 +78,22 @@ let rec translateModuleDeclaration =
            ~typeEnv,
          )
       |> Translation.combine
-    };
+    }
 
   | Tmty_ident(_) =>
-    logNotImplemented("Tmty_ident");
+    logNotImplemented("Tmty_ident" ++ __LOC__);
     Translation.empty;
   | Tmty_functor(_) =>
-    logNotImplemented("Tmty_functor");
+    logNotImplemented("Tmty_functor" ++ __LOC__);
     Translation.empty;
   | Tmty_with(_) =>
-    logNotImplemented("Tmty_with");
+    logNotImplemented("Tmty_with" ++ __LOC__);
     Translation.empty;
   | Tmty_typeof(_) =>
-    logNotImplemented("Tmty_typeof");
+    logNotImplemented("Tmty_typeof" ++ __LOC__);
     Translation.empty;
   | Tmty_alias(_) =>
-    logNotImplemented("Tmty_alias");
+    logNotImplemented("Tmty_alias" ++ __LOC__);
     Translation.empty;
   };
 }
@@ -126,19 +126,19 @@ and translateModuleTypeDeclaration =
       translation;
 
     | Tmty_ident(_) =>
-      logNotImplemented("Tmty_ident");
+      logNotImplemented("Tmty_ident" ++ __LOC__);
       Translation.empty;
     | Tmty_functor(_) =>
-      logNotImplemented("Tmty_functor");
+      logNotImplemented("Tmty_functor" ++ __LOC__);
       Translation.empty;
     | Tmty_with(_) =>
-      logNotImplemented("Tmty_with");
+      logNotImplemented("Tmty_with" ++ __LOC__);
       Translation.empty;
     | Tmty_typeof(_) =>
-      logNotImplemented("Tmty_typeof");
+      logNotImplemented("Tmty_typeof" ++ __LOC__);
       Translation.empty;
     | Tmty_alias(_) =>
-      logNotImplemented("Tmty_alias");
+      logNotImplemented("Tmty_alias" ++ __LOC__);
       Translation.empty;
     }
   }
@@ -213,28 +213,28 @@ and translateSignatureItem =
        );
 
   | {Typedtree.sig_desc: Typedtree.Tsig_typext(_), _} =>
-    logNotImplemented("Tsig_typext");
+    logNotImplemented("Tsig_typext" ++ __LOC__);
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_exception(_), _} =>
-    logNotImplemented("Tsig_exception");
+    logNotImplemented("Tsig_exception" ++ __LOC__);
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_recmodule(_), _} =>
-    logNotImplemented("Tsig_recmodule");
+    logNotImplemented("Tsig_recmodule" ++ __LOC__);
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_open(_), _} =>
-    logNotImplemented("Tsig_open");
+    logNotImplemented("Tsig_open" ++ __LOC__);
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_include(_), _} =>
-    logNotImplemented("Tsig_include");
+    logNotImplemented("Tsig_include" ++ __LOC__);
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_class(_), _} =>
-    logNotImplemented("Tsig_class");
+    logNotImplemented("Tsig_class" ++ __LOC__);
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_class_type(_), _} =>
-    logNotImplemented("Tsig_class_type");
+    logNotImplemented("Tsig_class_type" ++ __LOC__);
     Translation.empty;
   | {Typedtree.sig_desc: Typedtree.Tsig_attribute(_), _} =>
-    logNotImplemented("Tsig_attribute");
+    logNotImplemented("Tsig_attribute" ++ __LOC__);
     Translation.empty;
   }
 and translateSignature =

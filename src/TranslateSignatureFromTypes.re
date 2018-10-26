@@ -80,13 +80,13 @@ let rec translateModuleDeclarationFromTypes =
     |> Translation.combine;
 
   | Mty_ident(_) =>
-    logNotImplemented("Mty_ident");
+    logNotImplemented("Mty_ident" ++ __LOC__);
     Translation.empty;
   | Mty_functor(_) =>
-    logNotImplemented("Mty_functor");
+    logNotImplemented("Mty_functor" ++ __LOC__);
     Translation.empty;
   | Mty_alias(_) =>
-    logNotImplemented("Mty_alias");
+    logNotImplemented("Mty_alias" ++ __LOC__);
     Translation.empty;
   }
 /* Like translateSignatureItem but from Types not Typedtree */
@@ -128,19 +128,19 @@ and translateSignatureItemFromTypes =
        );
 
   | Types.Sig_value(_) =>
-    logNotImplemented("Sig_value");
+    logNotImplemented("Sig_value" ++ __LOC__);
     Translation.empty;
   | Types.Sig_typext(_) =>
-    logNotImplemented("Sig_typext");
+    logNotImplemented("Sig_typext" ++ __LOC__);
     Translation.empty;
   | Types.Sig_modtype(_) =>
-    logNotImplemented("Sig_modtype");
+    logNotImplemented("Sig_modtype" ++ __LOC__);
     Translation.empty;
   | Types.Sig_class(_) =>
-    logNotImplemented("Sig_class");
+    logNotImplemented("Sig_class" ++ __LOC__);
     Translation.empty;
   | Types.Sig_class_type(_) =>
-    logNotImplemented("Sig_class_type");
+    logNotImplemented("Sig_class_type" ++ __LOC__);
     Translation.empty;
   }
 /* Like translateSignature but from Types not Typedtree */
