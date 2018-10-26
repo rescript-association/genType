@@ -173,7 +173,7 @@ let rec removeOption = (label, typeExpr: Types.type_expr) =>
         && label.[0] == '?' =>
     Some((String.sub(label, 1, String.length(label) - 1), t))
   | Tlink(t) => removeOption(label, t)
-  | _ => None 
+  | _ => None
   };
 
 let rec extract_fun =
