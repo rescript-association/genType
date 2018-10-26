@@ -15,7 +15,8 @@
       "ReasonReact": "ReactShim"
     },
     "debug": {
-      "all": false
+      "all": false,
+      "basic": false
     }
   },
   "name": "reason-react-example",

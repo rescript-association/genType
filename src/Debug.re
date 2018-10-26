@@ -17,7 +17,7 @@ let typeEnv = ref(false);
 
 let typeResolution = ref(false);
 
-let all = () => {
+let setAll = () => {
   basic := true;
   codeItems := true;
   config := true;
@@ -27,4 +27,24 @@ let all = () => {
   notImplemented := true;
   typeEnv := true;
   typeResolution := true;
+};
+let setItem = (debugItem, debugValue) => {
+  let isOn =
+    switch (debugValue) {
+    | Ext_json_types.True(_) => true
+    | _ => false
+    };
+  switch (debugItem) {
+  | "all" when isOn => setAll()
+  | "basic" => basic := isOn
+  | "codeItems" => codeItems := isOn
+  | "config" => config := isOn
+  | "converter" => converter := isOn
+  | "dependencies" => dependencies := isOn
+  | "moduleResolution" => moduleResolution := isOn
+  | "notImplemented" => notImplemented := isOn
+  | "typeEnv" => typeEnv := isOn
+  | "typeResolution" => typeResolution := isOn
+  | _ => ()
+  };
 };

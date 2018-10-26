@@ -87,17 +87,7 @@ let getDebug = json =>
     switch (map |> String_map.find_opt("debug")) {
     | Some(Ext_json_types.Obj({map, _})) =>
       map
-      |> String_map.iter((debugItem, debugValue) => {
-           let isOn =
-             switch (debugValue) {
-             | Ext_json_types.True(_) => true
-             | _ => false
-             };
-           switch (debugItem) {
-           | "all" when isOn => Debug.all()
-           | _ => ()
-           };
-         })
+      |> String_map.iter(Debug.setItem)
     | _ => ()
     }
   | _ => ()

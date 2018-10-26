@@ -1,7 +1,11 @@
 {
   "gentypeconfig": {
     "language": "untyped",
-    "shims": {}
+    "shims": {},
+    "debug": {
+      "all": false,
+      "basic": false
+    }
   },
   "name": "reason-react-example",
   "bsc-flags": ["-bs-super-errors"],
