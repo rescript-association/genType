@@ -34,39 +34,46 @@ const genTypeFile = getGenTypeFilePath();
 /*
 Needed for wrapping the stdout pipe with a promise
 */
-function wrappedExecFile(command, args, options) {
+function wrappedSpawn(command, args, options) {
   return new Promise((resolve, reject) => {
-    const child = child_process.execFile(
+    const child = child_process.spawn(
       command,
       args,
-      options,
-      (err, stdout, stderr) => {
-        if (err) {
-          debug(`${command} ${args.join(" ")} exited with ${err.code}`);
-          return reject(err.code);
-        }
-        debug(`${command} ${args.join(" ")} exited with 0`);
-        resolve(stdout);
-      }
+      {env: process.env, ...options}
     );
+    
+    child.stdout.pipe(process.stdout);
+    child.stderr.pipe(process.stderr);
+
+    child.on('error', (err) => {
+      console.error(`${command} ${args.join(" ")} exited with ${err.code}`);
+      return reject(err.code);
+    });
   });
 }
 
 async function installExamples() {
   const tasks = exampleDirPaths.map(cwd => {
     console.log(`${cwd}: npm install (takes a while)`);
-    return wrappedExecFile("npm", ["install"], { cwd });
+
+    // The npm command is not an executable, but a cmd script on Windows
+    // Without the shell = true, Windows will not find the program and fail
+    // with ENOENT
+    const shell = isWindows ? true : false;
+    return wrappedSpawn("npm", ["ci"], { cwd, shell});
   });
 
   return Promise.all(tasks);
 }
 
 async function buildExamples() {
-  exampleDirPaths.forEach(cwd => {
+  exampleDirPaths.forEach(async (cwd) => {
     console.log(`${cwd}: npm run build (takes a while)`);
-    child_process.execFileSync("npm", ["run", "build"], {
+
+    const shell = isWindows ? true : false;
+    await wrappedSpawn("npm", ["run", "build"], {
       cwd,
-      stdio: ["inherit", "inherit", "inherit"]
+      shell,
     });
   });
 }
@@ -112,6 +119,7 @@ async function checkSetup() {
 
   console.log("Checking if --version outputs the right version");
   let output;
+
   /* Compare the --version output with the package.json version number (should match) */
   try {
     output = child_process.execFileSync(genTypeFile, ["--version"], {

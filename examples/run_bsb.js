@@ -23,7 +23,9 @@ process.env.BS_CMT_POST_PROCESS_CMD = genTypeNativePath();
 
 const input = (args = process.argv.slice(2));
 
-spawn("bsb", input, { stdio: "inherit", stderr: "inherit" }).on(
+const shell = isWindows ? true : false;
+
+spawn("bsb", input, { stdio: ["inherit", "inherit"], spawn }).on(
   "exit",
   code => process.exit(code)
 );
