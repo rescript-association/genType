@@ -5,35 +5,8 @@
 module StringMap = Map.Make(String);
 module StringSet = Set.Make(String);
 
-include Config_;
-
-let projectRoot = ref("");
-
-let logFile = ref(None);
-
-let getLogFile = () =>
-  switch (logFile^) {
-  | None =>
-    let f =
-      open_out_gen(
-        [Open_creat, Open_text, Open_append],
-        0o640,
-        Filename.concat(projectRoot^, ".genTypeLog"),
-      );
-    logFile := Some(f);
-    f;
-  | Some(f) => f
-  };
-
-let logItem = x => {
-  let outChannel =
-    switch (Debug.channel) {
-    | Stdout => stdout
-    | Logfile => getLogFile()
-    };
-  Printf.fprintf(outChannel, "  ");
-  Printf.fprintf(outChannel, x);
-};
+module Config = Config_;
+include Config;
 
 let logNotImplemented = x =>
   if (Debug.notImplemented^) {
