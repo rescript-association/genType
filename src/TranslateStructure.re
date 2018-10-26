@@ -116,10 +116,8 @@ let rec translateModuleBinding =
          )
       |> Translation.combine
 
-    | Mty_ident(Pident(id)) =>
-      switch (
-        typeEnv |> TypeEnv.lookupModuleTypeSignature(~name=id |> Ident.name)
-      ) {
+    | Mty_ident(path) =>
+      switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
       | None => Translation.empty
       | Some(signature) =>
         signature
@@ -133,9 +131,6 @@ let rec translateModuleBinding =
         |> Translation.combine
       }
 
-    | Mty_ident(_) =>
-      logNotImplemented("Mty_ident " ++ __LOC__);
-      Translation.empty;
     | Mty_functor(_) =>
       logNotImplemented("Mty_functor " ++ __LOC__);
       Translation.empty;

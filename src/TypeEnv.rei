@@ -12,7 +12,7 @@ let getValueAccessPath: (~name: string, t) => string;
 let lookup: (~name: string, t) => option(t);
 
 let lookupModuleTypeSignature:
-  (~name: string, t) => option(Typedtree.signature);
+  (~path: Path.t, t) => option(Typedtree.signature);
 
 let newModule: (~name: string, t) => t;
 
