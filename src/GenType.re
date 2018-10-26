@@ -14,10 +14,10 @@ let cli = () => {
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
+    let config = Paths.readConfig();
     if (Debug.basic^) {
       logItem("Add %s  %s\n", cmt, mlast);
     };
-    let config = Paths.readConfig();
     cmt |> GenTypeMain.processCmtFile(~signFile, ~config);
     exit(0);
   };

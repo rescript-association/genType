@@ -152,7 +152,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
     json |> getDebug;
     if (Debug.config^) {
       logItem(
-        "Config language:%s module:%s importPath:%s modulesMap:%d entries\n",
+        "Config language:%s module:%s importPath:%s shims:%d entries\n",
         languageString,
         moduleString,
         importPathString,
