@@ -1,7 +1,7 @@
 open GenTypeCommon;
 
 let componentExportName:
-  (~language: language, ~fileName: ModuleName.t, ~moduleName: ModuleName.t) =>
+  (~config: config, ~fileName: ModuleName.t, ~moduleName: ModuleName.t) =>
   string;
 
 let emitExportConst:
@@ -54,7 +54,7 @@ let emitExportType:
   (
     ~early: bool=?,
     ~emitters: Emitters.t,
-    ~language: language,
+    ~config: config,
     ~opaque: bool,
     ~typeVars: list(string),
     ~optTyp: option(typ),
@@ -65,7 +65,7 @@ let emitExportType:
 let emitExportVariantType:
   (
     ~emitters: Emitters.t,
-    ~language: language,
+    ~config: config,
     ~name: string,
     ~typeParams: list(typ),
     ~variants: list(variant)
@@ -75,7 +75,7 @@ let emitExportVariantType:
 let emitImportTypeAs:
   (
     ~emitters: Emitters.t,
-    ~language: language,
+    ~config: config,
     ~typeName: string,
     ~asTypeName: option(string),
     ~importPath: ImportPath.t
@@ -95,7 +95,7 @@ let emitRequire:
   (
     ~early: bool,
     ~emitters: Emitters.t,
-    ~language: language,
+    ~config: config,
     ~moduleName: ModuleName.t,
     ~strict: bool,
     ImportPath.t
@@ -103,20 +103,20 @@ let emitRequire:
   Emitters.t;
 
 let emitRequireReact:
-  (~early: bool, ~emitters: Emitters.t, ~language: language) => Emitters.t;
+  (~early: bool, ~emitters: Emitters.t, ~config: config) => Emitters.t;
 
-let fileHeader: (~language: language) => string;
+let fileHeader: (~config: config) => string;
 
-let generatedModuleExtension: (~language: language) => string;
+let generatedModuleExtension: (~config: config) => string;
 
-let ofType: (~language: language, ~typ: typ, string) => string;
+let ofType: (~config: config, ~typ: typ, string) => string;
 
-let ofTypeAny: (~language: language, string) => string;
+let ofTypeAny: (~config: config, string) => string;
 
-let outputFileSuffix: (~language: language) => string;
+let outputFileSuffix: (~config: config) => string;
 
-let reactComponentType: (~language: language, ~propsTypeName: string) => typ;
+let reactComponentType: (~config: config, ~propsTypeName: string) => typ;
 
-let shimExtension: (~language: language) => string;
+let shimExtension: (~config: config) => string;
 
-let typToString: (~language: language, typ) => string;
+let typToString: (~config: config, typ) => string;

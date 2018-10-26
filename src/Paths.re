@@ -43,12 +43,12 @@ let handleNamespace = cmt => {
 };
 
 /* Get the output file to be written, relative to the project root. */
-let getOutputFileRelative = (~language, cmt) =>
-  (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~language);
+let getOutputFileRelative = (~config, cmt) =>
+  (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~config);
 
 /* Get the output file to be written, as an absolute path. */
-let getOutputFile = (~language, cmt) =>
-  Filename.concat(projectRoot^, getOutputFileRelative(~language, cmt));
+let getOutputFile = (~config, cmt) =>
+  Filename.concat(projectRoot^, getOutputFileRelative(~config, cmt));
 
 let getModuleName = cmt =>
   cmt |> handleNamespace |> Filename.basename |> ModuleName.fromStringUnsafe;
@@ -114,145 +114,7 @@ let relativePathFromBsLib = fileName =>
     );
   };
 
-let getString = (s, json) =>
-  switch (json) {
-  | Ext_json_types.Obj({map, _}) =>
-    switch (map |> String_map.find_opt(s)) {
-    | Some(Str({str, _})) => str
-    | _ => ""
-    }
-  | _ => ""
-  };
-
-let getShims = json => {
-  let shims = ref([]);
-  switch (json) {
-  | Ext_json_types.Obj({map, _}) =>
-    switch (map |> String_map.find_opt("shims")) {
-    | Some(Ext_json_types.Obj({map: shimsMap, _})) =>
-      shimsMap
-      |> String_map.iter((fromModule, toModule) =>
-           switch (toModule) {
-           | Ext_json_types.Str({str, _}) =>
-             shims := [(fromModule, str), ...shims^]
-           | _ => ()
-           }
-         )
-    | Some(Arr({content, _})) =>
-      /* To be deprecated: array of strings */
-      content
-      |> Array.iter(x =>
-           switch (x) {
-           | Ext_json_types.Str({str, _}) =>
-             let fromTo = Str.split(Str.regexp("="), str) |> Array.of_list;
-             assert(Array.length(fromTo) === 2);
-             shims := [(fromTo[0], fromTo[1]), ...shims^];
-           | _ => ()
-           }
-         );
-      ();
-    | _ => ()
-    }
-  | _ => ()
-  };
-  shims^;
-};
-
 let readConfig = () => {
   setProjectRoot();
-  let fromJson = json => {
-    let languageString = json |> getString("language");
-    let moduleString = json |> getString("module");
-    let importPathString = json |> getString("importPath");
-    let reasonReactPathString = json |> getString("reasonReactPath");
-    let bsBlockPathString = json |> getString("bsBlockPath");
-    let bsCurryPathString = json |> getString("bsCurryPath");
-    let modulesMap =
-      json
-      |> getShims
-      |> List.fold_left(
-           (map, (fromModule, toModule)) => {
-             let moduleName: ModuleName.t =
-               fromModule |> ModuleName.fromStringUnsafe;
-             let shimModuleName = toModule |> ModuleName.fromStringUnsafe;
-             ModuleNameMap.add(moduleName, shimModuleName, map);
-           },
-           ModuleNameMap.empty,
-         );
-    if (Debug.config) {
-      logItem(
-        "Config language:%s module:%s importPath:%s modulesMap:%d entries\n",
-        languageString,
-        moduleString,
-        importPathString,
-        modulesMap |> ModuleNameMap.cardinal,
-      );
-    };
-    let language =
-      switch (languageString) {
-      | "typescript" => Typescript
-      | "untyped" => Untyped
-      | _ => Flow
-      };
-    let module_ =
-      switch (moduleString) {
-      | "commonjs" => CommonJS
-      | "es6" => ES6
-      | _ => defaultConfig.module_
-      };
-    let importPath =
-      switch (importPathString) {
-      | "relative" => Relative
-      | "node" => Node
-      | _ => defaultConfig.importPath
-      };
-    let reasonReactPath =
-      switch (reasonReactPathString) {
-      | "" => defaultConfig.reasonReactPath
-      | _ => reasonReactPathString
-      };
-    let bsBlockPath =
-      switch (bsBlockPathString) {
-      | "" => defaultConfig.bsBlockPath
-      | _ => bsBlockPathString
-      };
-    let bsCurryPath =
-      switch (bsCurryPathString) {
-      | "" => defaultConfig.bsCurryPath
-      | _ => bsCurryPathString
-      };
-    {
-      ...defaultConfig,
-      language,
-      module_,
-      importPath,
-      reasonReactPath,
-      bsBlockPath,
-      bsCurryPath,
-      modulesMap,
-    };
-  };
-  let fromBsConfig = json =>
-    switch (json) {
-    | Ext_json_types.Obj({map, _}) =>
-      switch (map |> String_map.find_opt("gentypeconfig")) {
-      | Some(jsonGenFlowConfig) => jsonGenFlowConfig |> fromJson
-      | _ => defaultConfig
-      }
-    | _ => defaultConfig
-    };
-  switch (getConfigFile()) {
-  | Some(configFile) =>
-    try (configFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
-    | _ => defaultConfig
-    }
-  | None =>
-    switch (getBsConfigFile()) {
-    | Some(bsConfigFile) =>
-      try (bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromBsConfig) {
-      | _ => defaultConfig
-      }
-    | None => defaultConfig
-    }
-  };
+  Config.readConfig(~getConfigFile, ~getBsConfigFile);
 };

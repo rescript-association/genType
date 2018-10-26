@@ -14,10 +14,10 @@ let cli = () => {
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
-    if (Debug.basic) {
+    let config = Paths.readConfig();
+    if (Debug.basic^) {
       logItem("Add %s  %s\n", cmt, mlast);
     };
-    let config = Paths.readConfig();
     cmt |> GenTypeMain.processCmtFile(~signFile, ~config);
     exit(0);
   };
@@ -28,8 +28,8 @@ let cli = () => {
     /* somehow the CMT hook is passing an absolute path here */
     let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
     let config = Paths.readConfig();
-    let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
-    if (Debug.basic) {
+    let outputFile = cmt |> Paths.getOutputFile(~config);
+    if (Debug.basic^) {
       logItem("Remove %s\n", cmt);
     };
     if (Sys.file_exists(outputFile)) {

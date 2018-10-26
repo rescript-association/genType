@@ -4,73 +4,12 @@
 
 module StringMap = Map.Make(String);
 module StringSet = Set.Make(String);
-module ModuleNameMap = Map.Make(ModuleName);
 
-type language =
-  | Flow
-  | Typescript
-  | Untyped;
-
-type module_ =
-  | CommonJS
-  | ES6;
-
-type importPath =
-  | Relative
-  | Node;
-
-type config = {
-  bsBlockPath: string,
-  bsCurryPath: string,
-  importPath,
-  inlineAnnotations: bool,
-  language,
-  module_,
-  modulesMap: ModuleNameMap.t(ModuleName.t),
-  reasonReactPath: string,
-};
-
-let defaultConfig = {
-  bsBlockPath: "bs-platform/lib/js/block.js",
-  bsCurryPath: "bs-platform/lib/js/curry.js",
-  importPath: Relative,
-  inlineAnnotations: true,
-  language: Flow,
-  module_: ES6,
-  modulesMap: ModuleNameMap.empty,
-  reasonReactPath: "reason-react/src/ReasonReact.js",
-};
-
-let projectRoot = ref("");
-
-let logFile = ref(None);
-
-let getLogFile = () =>
-  switch (logFile^) {
-  | None =>
-    let f =
-      open_out_gen(
-        [Open_creat, Open_text, Open_append],
-        0o640,
-        Filename.concat(projectRoot^, ".genTypeLog"),
-      );
-    logFile := Some(f);
-    f;
-  | Some(f) => f
-  };
-
-let logItem = x => {
-  let outChannel =
-    switch (Debug.channel) {
-    | Stdout => stdout
-    | Logfile => getLogFile()
-    };
-  Printf.fprintf(outChannel, "  ");
-  Printf.fprintf(outChannel, x);
-};
+module Config = Config_;
+include Config;
 
 let logNotImplemented = x =>
-  if (Debug.notImplemented) {
+  if (Debug.notImplemented^) {
     logItem("Not Implemented: %s\n", x);
   };
 
@@ -138,9 +77,9 @@ let createEnum = cases => {
   Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
 };
 
-let mixedOrUnknown = (~language) =>
+let mixedOrUnknown = (~config) =>
   Ident(
-    switch (language) {
+    switch (config.language) {
     | Flow => "mixed"
     | Typescript
     | Untyped => "unknown"
@@ -152,3 +91,29 @@ let booleanT = Ident("boolean", []);
 let numberT = Ident("number", []);
 let stringT = Ident("string", []);
 let unitT = Ident("void", []);
+
+module NodeFilename = {
+  include Filename;
+
+  /* Force "/" separator. */
+  let dir_sep = "/";
+
+  let concatWin32 = (dirname, filename) => {
+    let is_dir_sep = (s, i) => {
+      let c = s.[i];
+      c == '/' || c == '\\' || c == ':';
+    };
+    let l = String.length(dirname);
+    if (l == 0 || is_dir_sep(dirname, l - 1)) {
+      dirname ++ filename;
+    } else {
+      dirname ++ dir_sep ++ filename;
+    };
+  };
+
+  let concat = (dirname, filename) =>
+    switch (Sys.os_type) {
+    | "Win32" => filename |> concatWin32(dirname)
+    | _ => filename |> Filename.concat(dirname)
+    };
+};

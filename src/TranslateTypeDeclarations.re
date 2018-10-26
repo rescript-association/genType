@@ -1,8 +1,9 @@
 open GenTypeCommon;
 
 type declarationKind =
-  | RecordDelaration(list(Types.label_declaration))
+  | RecordDeclaration(list(Types.label_declaration))
   | GeneralDeclaration(option(Typedtree.core_type))
+  | GeneralDeclarationFromTypes(option(Types.type_expr)) /* As the above, but from Types not Typedtree */
   | VariantDeclaration(list(Types.constructor_declaration))
   | ImportTypeDeclaration(string, option(Annotation.attributePayload))
   | NoDeclaration;
@@ -22,7 +23,7 @@ let variantLeafTypeName = (typeName, leafName) =>
 
 let translateConstructorDeclaration =
     (
-      ~config as {language, _} as config,
+      ~config,
       ~outputFileRelative,
       ~resolver,
       ~recordGen,
@@ -35,20 +36,17 @@ let translateConstructorDeclaration =
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
   let leafNameResolved = leafName |> TypeEnv.addModulePath(~typeEnv);
   let argsTranslation =
-    Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
+    Dependencies.translateTypeExprs(~config, ~typeEnv, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
   let importTypes =
     argsTranslation
     |> List.map(({Dependencies.dependencies, _}) => dependencies)
     |> List.concat
-    |> List.map(
-         Translation.pathToImportType(
-           ~config,
-           ~outputFileRelative,
-           ~resolver,
-         ),
-       )
-    |> List.concat;
+    |> Translation.translateDependencies(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+       );
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
 
   let variantTypeNameResolved =
@@ -71,7 +69,7 @@ let translateConstructorDeclaration =
           opaque: Some(true),
           typeVars,
           resolvedTypeName: variantTypeNameResolved,
-          optTyp: Some(mixedOrUnknown(~language)),
+          optTyp: Some(mixedOrUnknown(~config)),
         },
         constructorTyp,
         argTypes,
@@ -86,7 +84,7 @@ let translateConstructorDeclaration =
 
 let traslateDeclarationKind =
     (
-      ~config as {language, _} as config,
+      ~config,
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
@@ -98,6 +96,58 @@ let traslateDeclarationKind =
     )
     : list(Translation.typeDeclaration) =>
   switch (declarationKind) {
+  | GeneralDeclarationFromTypes(optTypeExpr) =>
+    switch (optTypeExpr) {
+    | None => [
+        {
+          importTypes: [],
+          exportFromTypeDeclaration:
+            typeName
+            |> createExportType(
+                 ~opaque=Some(true),
+                 ~typeVars,
+                 ~optTyp=Some(mixedOrUnknown(~config)),
+                 ~annotation,
+                 ~typeEnv,
+               ),
+        },
+      ]
+    | Some(typeExpr) =>
+      let typeExprTranslation =
+        typeExpr |> Dependencies.translateTypeExpr(~config, ~typeEnv);
+      let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
+      let typ =
+        switch (optTypeExpr, typeExprTranslation.typ) {
+        | (Some({desc: Tvariant({row_fields: rowFields}), _}), Enum(enum))
+            when rowFields |> List.length == (enum.cases |> List.length) =>
+          let cases =
+            rowFields |> List.map(((label, _)) => {label, labelJS: label});
+          cases |> createEnum;
+        | _ => typeExprTranslation.typ
+        };
+      let exportFromTypeDeclaration =
+        typeName
+        |> createExportType(
+             ~opaque,
+             ~typeVars,
+             ~optTyp=Some(typ),
+             ~annotation,
+             ~typeEnv,
+           );
+      [
+        {
+          importTypes:
+            typeExprTranslation.dependencies
+            |> Translation.translateDependencies(
+                 ~config,
+                 ~outputFileRelative,
+                 ~resolver,
+               ),
+          exportFromTypeDeclaration,
+        },
+      ];
+    }
+
   | GeneralDeclaration(optCoreType) =>
     switch (optCoreType) {
     | None => [
@@ -108,7 +158,7 @@ let traslateDeclarationKind =
             |> createExportType(
                  ~opaque=Some(true),
                  ~typeVars,
-                 ~optTyp=Some(mixedOrUnknown(~language)),
+                 ~optTyp=Some(mixedOrUnknown(~config)),
                  ~annotation,
                  ~typeEnv,
                ),
@@ -117,7 +167,7 @@ let traslateDeclarationKind =
     | Some(coreType) =>
       let typeExprTranslation =
         coreType.Typedtree.ctyp_type
-        |> Dependencies.translateTypeExpr(~language, ~typeEnv);
+        |> Dependencies.translateTypeExpr(~config, ~typeEnv);
       let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
       let typ =
         switch (optCoreType, typeExprTranslation.typ) {
@@ -170,7 +220,7 @@ let traslateDeclarationKind =
       ];
     }
 
-  | RecordDelaration(labelDeclarations) =>
+  | RecordDeclaration(labelDeclarations) =>
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
@@ -186,21 +236,19 @@ let traslateDeclarationKind =
            (
              name,
              mutability,
-             ld_type |> Dependencies.translateTypeExpr(~language, ~typeEnv),
+             ld_type |> Dependencies.translateTypeExpr(~config, ~typeEnv),
            );
          });
     let importTypes =
       fieldTranslations
       |> List.map(((_, _, {Dependencies.dependencies, _})) => dependencies)
       |> List.concat
-      |> List.map(
-           Translation.pathToImportType(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-           ),
-         )
-      |> List.concat;
+      |> Translation.translateDependencies(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+         );
+
     let fields =
       fieldTranslations
       |> List.map(((name, mutable_, {Dependencies.typ, _})) => {
@@ -312,21 +360,24 @@ let translateTypeDeclaration =
       {typ_id, typ_type, typ_attributes, typ_manifest, _}: Typedtree.type_declaration,
     )
     : list(Translation.typeDeclaration) => {
+  if (Debug.translation^) {
+    logItem("Translate Type Declaration %s\n", typ_id |> Ident.name);
+  };
   typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
   let typeName = Ident.name(typ_id);
   let typeParams = typ_type.type_params;
   let typeVars = TypeVars.extract(typeParams);
 
   let declarationKind =
-    switch (typ_type.type_kind, annotation) {
-    | (Type_record(labelDeclarations, _), _) =>
-      RecordDelaration(labelDeclarations)
+    switch (typ_type.type_kind) {
+    | Type_record(labelDeclarations, _) =>
+      RecordDeclaration(labelDeclarations)
 
-    | (Type_variant(constructorDeclarations), _)
+    | Type_variant(constructorDeclarations)
         when !hasSomeGADTLeaf(constructorDeclarations) =>
       VariantDeclaration(constructorDeclarations)
 
-    | (Type_abstract, _) =>
+    | Type_abstract =>
       switch (
         typ_attributes
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)

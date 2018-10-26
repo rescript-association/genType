@@ -13,6 +13,13 @@
       "ReactEvent": "ReactEvent",
       "ReasonPervasives": "ReasonPervasives",
       "ReasonReact": "ReactShim"
+    },
+    "debug": {
+      "all": false,
+      "codeItems": false,
+      "basic": false,
+      "notImplemented": false,
+      "translation": false
     }
   },
   "name": "reason-react-example",

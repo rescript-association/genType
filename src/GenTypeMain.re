@@ -4,8 +4,6 @@
 
 module StringSet = Set.Make(String);
 
-open GenTypeCommon;
-
 let cmtHasGenTypeAnnotations = inputCMT =>
   switch (inputCMT.Cmt_format.cmt_annots) {
   | Implementation(structure) =>
@@ -89,7 +87,6 @@ let emitTranslation =
       ~resolver,
       translation,
     ) => {
-  let language = config.language;
   let codeText =
     translation
     |> EmitJs.emitTranslationAsString(
@@ -99,7 +96,7 @@ let emitTranslation =
          ~inputCmtTranslateTypeDeclarations,
        );
   let fileContents =
-    signFile(EmitTyp.fileHeader(~language) ++ "\n" ++ codeText ++ "\n");
+    signFile(EmitTyp.fileHeader(~config) ++ "\n" ++ codeText ++ "\n");
 
   GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
 };
@@ -108,16 +105,12 @@ let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = cmt |> Paths.getCmtFile;
   if (cmtFile != "") {
     let inputCMT = Cmt_format.read_cmt(cmtFile);
-    let outputFile = cmt |> Paths.getOutputFile(~language=config.language);
-    let outputFileRelative =
-      cmt |> Paths.getOutputFileRelative(~language=config.language);
+    let outputFile = cmt |> Paths.getOutputFile(~config);
+    let outputFileRelative = cmt |> Paths.getOutputFileRelative(~config);
     let fileName = cmt |> Paths.getModuleName;
     let resolver =
       ModuleResolver.createResolver(
-        ~extensions=[
-          ".re",
-          EmitTyp.shimExtension(~language=config.language),
-        ],
+        ~extensions=[".re", EmitTyp.shimExtension(~config)],
         ~excludeFile=fname =>
         fname == "React.re" || fname == "ReasonReact.re"
       );

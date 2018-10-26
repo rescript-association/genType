@@ -12,6 +12,13 @@ let translateValueBinding =
     )
     : Translation.t => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
+  if (Debug.translation^) {
+    switch (vb_pat.pat_desc) {
+    | Tpat_var(id, _) =>
+      logItem("Translate Value Binding %s\n", id |> Ident.name)
+    | _ => ()
+    };
+  };
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeExpr = vb_expr.exp_type;
@@ -42,17 +49,123 @@ let translateValueBinding =
   };
 };
 
-let rec translateStructureItem =
+let rec translateModuleBinding =
         (
           ~config,
           ~outputFileRelative,
           ~resolver,
-          ~moduleItemGen,
           ~fileName,
           ~typeEnv,
-          structItem,
+          ~moduleItemGen,
+          {mb_id, mb_expr, _}: Typedtree.module_binding,
         )
-        : Translation.t =>
+        : Translation.t => {
+  let name = mb_id |> Ident.name;
+  if (Debug.translation^) {
+    logItem("Translate Module Binding %s\n", name);
+  };
+  let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+  typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
+  let typeEnv = typeEnv |> TypeEnv.newModule(~name);
+
+  switch (mb_expr.mod_desc) {
+  | Tmod_structure(structure) =>
+    structure
+    |> translateStructure(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+       )
+    |> Translation.combine
+
+  | Tmod_apply(_) =>
+    /* Only look at the resulting type of the module */
+    switch (mb_expr.mod_type) {
+    | Mty_signature(signature) =>
+      signature
+      |> TranslateSignatureFromTypes.translateSignatureFromTypes(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+         )
+      |> Translation.combine
+
+    | Mty_ident(_) =>
+      logNotImplemented("Mty_ident " ++ __LOC__);
+      Translation.empty;
+    | Mty_functor(_) =>
+      logNotImplemented("Mty_functor " ++ __LOC__);
+      Translation.empty;
+    | Mty_alias(_) =>
+      logNotImplemented("Mty_alias " ++ __LOC__);
+      Translation.empty;
+    }
+
+  | Tmod_unpack(_, moduleType) =>
+    switch (moduleType) {
+    | Mty_signature(signature) =>
+      signature
+      |> TranslateSignatureFromTypes.translateSignatureFromTypes(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+         )
+      |> Translation.combine
+
+    | Mty_ident(Pident(id)) =>
+      switch (
+        typeEnv |> TypeEnv.lookupModuleTypeSignature(~name=id |> Ident.name)
+      ) {
+      | None => Translation.empty
+      | Some(signature) =>
+        signature
+        |> TranslateSignature.translateSignature(
+             ~config,
+             ~outputFileRelative,
+             ~resolver,
+             ~fileName,
+             ~typeEnv,
+           )
+        |> Translation.combine
+      }
+
+    | Mty_ident(_) =>
+      logNotImplemented("Mty_ident " ++ __LOC__);
+      Translation.empty;
+    | Mty_functor(_) =>
+      logNotImplemented("Mty_functor " ++ __LOC__);
+      Translation.empty;
+    | Mty_alias(_) =>
+      logNotImplemented("Mty_alias " ++ __LOC__);
+      Translation.empty;
+    }
+
+  | Tmod_ident(_) =>
+    logNotImplemented("Tmod_ident " ++ __LOC__);
+    Translation.empty;
+  | Tmod_functor(_) =>
+    logNotImplemented("Tmod_functor " ++ __LOC__);
+    Translation.empty;
+  | Tmod_constraint(_) =>
+    logNotImplemented("Tmod_constraint " ++ __LOC__);
+    Translation.empty;
+  };
+}
+and translateStructureItem =
+    (
+      ~config,
+      ~outputFileRelative,
+      ~resolver,
+      ~moduleItemGen,
+      ~fileName,
+      ~typeEnv,
+      structItem,
+    )
+    : Translation.t =>
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} => {
       importTypes: [],
@@ -103,6 +216,16 @@ let rec translateStructureItem =
          ~moduleItemGen,
        )
 
+  | {Typedtree.str_desc: Tstr_modtype(moduleTypeDeclaration), _} =>
+    moduleTypeDeclaration
+    |> TranslateSignature.translateModuleTypeDeclaration(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~fileName,
+         ~typeEnv,
+       )
+
   | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings
     |> List.map(
@@ -117,37 +240,44 @@ let rec translateStructureItem =
        )
     |> Translation.combine
 
+  | {Typedtree.str_desc: Tstr_include({incl_type: signature}), _} =>
+    signature
+    |> TranslateSignatureFromTypes.translateSignatureFromTypes(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
+    |> Translation.combine
+
   | {Typedtree.str_desc: Tstr_eval(_), _} =>
-    logNotImplemented("Tstr_eval");
+    logNotImplemented("Tstr_eval " ++ __LOC__);
     Translation.empty;
   | {Typedtree.str_desc: Tstr_typext(_), _} =>
-    logNotImplemented("Tstr_typext");
+    logNotImplemented("Tstr_typext " ++ __LOC__);
     Translation.empty;
   | {Typedtree.str_desc: Tstr_exception(_), _} =>
-    logNotImplemented("Tstr_exception");
-    Translation.empty;
-  | {Typedtree.str_desc: Tstr_modtype(_), _} =>
-    logNotImplemented("Tstr_modtype");
+    logNotImplemented("Tstr_exception " ++ __LOC__);
     Translation.empty;
   | {Typedtree.str_desc: Tstr_open(_), _} =>
-    logNotImplemented("Tstr_open");
+    logNotImplemented("Tstr_open " ++ __LOC__);
     Translation.empty;
   | {Typedtree.str_desc: Tstr_class(_), _} =>
-    logNotImplemented("Tstr_class");
+    logNotImplemented("Tstr_class " ++ __LOC__);
     Translation.empty;
   | {Typedtree.str_desc: Tstr_class_type(_), _} =>
-    logNotImplemented("Tstr_class_type");
-    Translation.empty;
-  | {Typedtree.str_desc: Tstr_include(_), _} =>
-    logNotImplemented("Tstr_include");
+    logNotImplemented("Tstr_class_type " ++ __LOC__);
     Translation.empty;
   | {Typedtree.str_desc: Tstr_attribute(_), _} =>
-    logNotImplemented("Tstr_attribute");
+    logNotImplemented("Tstr_attribute " ++ __LOC__);
     Translation.empty;
   }
 and translateStructure =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
     : list(Translation.t) => {
+  if (Debug.translation^) {
+    logItem("Translate Structure\n");
+  };
   let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
   |> List.map(structItem =>
@@ -161,48 +291,4 @@ and translateStructure =
             ~typeEnv,
           )
      );
-}
-and translateModuleBinding =
-    (
-      ~config,
-      ~outputFileRelative,
-      ~resolver,
-      ~fileName,
-      ~typeEnv,
-      ~moduleItemGen,
-      {mb_id, mb_expr, mb_attributes, _}: Typedtree.module_binding,
-    )
-    : Translation.t => {
-  let name = mb_id |> Ident.name;
-  switch (mb_expr.mod_desc) {
-  | Tmod_structure(structure) =>
-    let _isAnnotated = mb_attributes |> Annotation.hasGenTypeAnnotation;
-    let moduleItem = moduleItemGen |> Runtime.newModuleItem;
-    typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
-    structure
-    |> translateStructure(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~fileName,
-         ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
-       )
-    |> Translation.combine;
-
-  | Tmod_ident(_) =>
-    logNotImplemented("Tmod_ident");
-    Translation.empty;
-  | Tmod_functor(_) =>
-    logNotImplemented("Tmod_functor");
-    Translation.empty;
-  | Tmod_apply(_) =>
-    logNotImplemented("Tmod_apply");
-    Translation.empty;
-  | Tmod_constraint(_) =>
-    logNotImplemented("Tmod_constraint");
-    Translation.empty;
-  | Tmod_unpack(_) =>
-    logNotImplemented("Tmod_unpack");
-    Translation.empty;
-  };
 };

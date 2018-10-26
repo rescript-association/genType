@@ -2,16 +2,53 @@ type channel =
   | Stdout
   | Logfile;
 let channel = Stdout;
-let all = false;
 
 /* log Add and Remove and file actions to see that the cmt hook is working */
-let basic = false || all;
-let codeItems = false || all;
-let config = false || all;
-let converter = false || all;
-let dependencies = false || all;
-let moduleResolution = false || all;
+let basic = ref(false);
+let codeItems = ref(false);
+let config = ref(false);
+let converter = ref(false);
+let dependencies = ref(false);
+let moduleResolution = ref(false);
 
-let notImplemented = false || all;
+let notImplemented = ref(false);
 
-let typeResolution = false || all;
+let translation = ref(false);
+
+let typeEnv = ref(false);
+
+let typeResolution = ref(false);
+
+let setAll = () => {
+  basic := true;
+  codeItems := true;
+  config := true;
+  converter := true;
+  dependencies := true;
+  moduleResolution := true;
+  notImplemented := true;
+  translation := false;
+  typeEnv := true;
+  typeResolution := true;
+};
+let setItem = (debugItem, debugValue) => {
+  let isOn =
+    switch (debugValue) {
+    | Ext_json_types.True(_) => true
+    | _ => false
+    };
+  switch (debugItem) {
+  | "all" when isOn => setAll()
+  | "basic" => basic := isOn
+  | "codeItems" => codeItems := isOn
+  | "config" => config := isOn
+  | "converter" => converter := isOn
+  | "dependencies" => dependencies := isOn
+  | "moduleResolution" => moduleResolution := isOn
+  | "notImplemented" => notImplemented := isOn
+  | "translation" => translation := isOn
+  | "typeEnv" => typeEnv := isOn
+  | "typeResolution" => typeResolution := isOn
+  | _ => ()
+  };
+};

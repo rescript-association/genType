@@ -151,10 +151,10 @@ let resolveModule =
 };
 
 let resolveSourceModule = (~importPath, moduleName) => {
-  if (Debug.moduleResolution) {
+  if (Debug.moduleResolution^) {
     logItem("Resolve Source Module: %s\n", moduleName |> ModuleName.toString);
   };
-  if (Debug.moduleResolution) {
+  if (Debug.moduleResolution^) {
     logItem("Import Path: %s\n", importPath |> ImportPath.toString);
   };
   importPath;
@@ -162,7 +162,7 @@ let resolveSourceModule = (~importPath, moduleName) => {
 
 let resolveGeneratedModule =
     (~config, ~outputFileRelative, ~resolver, moduleName) => {
-  if (Debug.moduleResolution) {
+  if (Debug.moduleResolution^) {
     logItem(
       "Resolve Generated Module: %s\n",
       moduleName |> ModuleName.toString,
@@ -173,11 +173,10 @@ let resolveGeneratedModule =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~importExtension=
-        EmitTyp.generatedModuleExtension(~language=config.language),
+      ~importExtension=EmitTyp.generatedModuleExtension(~config),
       moduleName,
     );
-  if (Debug.moduleResolution) {
+  if (Debug.moduleResolution^) {
     logItem("Import Path: %s\n", importPath |> ImportPath.toString);
   };
   importPath;
@@ -188,12 +187,12 @@ let resolveGeneratedModule =
  */
 let importPathForReasonModuleName =
     (~config, ~outputFileRelative, ~resolver, moduleName) => {
-  if (Debug.moduleResolution) {
+  if (Debug.moduleResolution^) {
     logItem("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
   };
   switch (config.modulesMap |> ModuleNameMap.find(moduleName)) {
   | shimModuleName =>
-    if (Debug.moduleResolution) {
+    if (Debug.moduleResolution^) {
       logItem("ShimModuleName: %s\n", shimModuleName |> ModuleName.toString);
     };
     let importPath =
@@ -204,7 +203,7 @@ let importPathForReasonModuleName =
         ~importExtension=".shim",
         shimModuleName,
       );
-    if (Debug.moduleResolution) {
+    if (Debug.moduleResolution^) {
       logItem("Import Path: %s\n", importPath |> ImportPath.toString);
     };
     importPath;

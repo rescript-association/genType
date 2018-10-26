@@ -11,7 +11,7 @@ let bsCurryPath = (~config) => config.bsCurryPath;
 let fromModule = (~config, ~dir, ~importExtension, moduleName) => {
   let withNoPath = (moduleName |> ModuleName.toString) ++ importExtension;
   switch (config.importPath) {
-  | Relative => Filename.concat(dir, withNoPath)
+  | Relative => NodeFilename.concat(dir, withNoPath)
   | Node => withNoPath
   };
 };

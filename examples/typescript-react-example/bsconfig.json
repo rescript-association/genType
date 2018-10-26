@@ -4,6 +4,10 @@
     "shims": {
       "ReasonPervasives": "ReasonPervasives",
       "ReactEvent": "ReactEvent"
+    },
+    "debug": {
+      "all": false,
+      "basic": false
     }
   },
   "name": "sample-typescript-app",

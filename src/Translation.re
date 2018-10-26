@@ -67,9 +67,18 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | TypeVar(_) => typ
   };
 
-let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
+let rec pathIsResolved = (path: Dependencies.path) =>
   switch (path) {
-  | Dependencies.Pid(name) when name == "list" => [
+  | Pid(_) => false
+  | Presolved(_) => true
+  | Pdot(p, _) => p |> pathIsResolved
+  };
+
+let pathToImportType =
+    (~config, ~outputFileRelative, ~resolver, path: Dependencies.path) =>
+  switch (path) {
+  | _ when path |> pathIsResolved => []
+  | Pid(name) when name == "list" => [
       {
         typeName: "list",
         asTypeName: None,
@@ -85,8 +94,6 @@ let pathToImportType = (~config, ~outputFileRelative, ~resolver, path) =>
     ]
   | Pid(_) => []
   | Presolved(_) => []
-
-  | Pdot(Presolved(_), _) => []
 
   | Pdot(_) =>
     let rec getOuterModuleName = path =>
@@ -141,8 +148,7 @@ let translateValue =
     )
     : t => {
   let typeExprTranslation =
-    typeExpr
-    |> Dependencies.translateTypeExpr(~language=config.language, ~typeEnv);
+    typeExpr |> Dependencies.translateTypeExpr(~config, ~typeEnv);
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
   let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
@@ -197,11 +203,10 @@ let translateComponent =
       name,
     )
     : t => {
-  let language = config.language;
   let typeExprTranslation =
     typeExpr
     |> Dependencies.translateTypeExpr(
-         ~language,
+         ~config,
          /* Only get the dependencies for the prop types.
             The return type is a ReasonReact component. */
          ~noFunctionReturnDependencies=true,
@@ -216,7 +221,7 @@ let translateComponent =
     typeExprTranslation.typ
     |> TypeVars.substitute(~f=s =>
          if (freeTypeVarsSet |> StringSet.mem(s)) {
-           Some(mixedOrUnknown(~language));
+           Some(mixedOrUnknown(~config));
          } else {
            None;
          }
@@ -244,7 +249,7 @@ let translateComponent =
             name: "children",
             optional: Optional,
             mutable_: Immutable,
-            typ: mixedOrUnknown(~language),
+            typ: mixedOrUnknown(~config),
           },
         ])
       /* Then we had both props and children. */
@@ -266,7 +271,7 @@ let translateComponent =
         }
       };
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
-    let componentType = EmitTyp.reactComponentType(~language, ~propsTypeName);
+    let componentType = EmitTyp.reactComponentType(~config, ~propsTypeName);
     let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
 
     let codeItems = [
@@ -320,11 +325,13 @@ let translatePrimitive =
       valueDescription: Typedtree.value_description,
     )
     : t => {
-  let language = config.language;
+  if (Debug.translation^) {
+    logItem("Translate Primitive\n");
+  };
   let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type
-    |> Dependencies.translateTypeExpr(~language, ~typeEnv);
+    |> Dependencies.translateTypeExpr(~config, ~typeEnv);
   let genTypeImportPayload =
     valueDescription.val_attributes
     |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport);
@@ -352,7 +359,7 @@ let translatePrimitive =
     let typeExprTranslation =
       valueDescription.val_desc.ctyp_type
       |> Dependencies.translateTypeExpr(
-           ~language,
+           ~config,
            /* Only get the dependencies for the prop types.
               The return type is a ReasonReact component. */
            ~noFunctionReturnDependencies=true,
@@ -367,7 +374,7 @@ let translatePrimitive =
       typeExprTranslation.typ
       |> TypeVars.substitute(~f=s =>
            if (freeTypeVarsSet |> StringSet.mem(s)) {
-             Some(mixedOrUnknown(~language));
+             Some(mixedOrUnknown(~config));
            } else {
              None;
            }
@@ -378,7 +385,7 @@ let translatePrimitive =
       switch (typ) {
       | Function({argTypes: [propOrChildren, ...childrenOrNil], _}) =>
         switch (childrenOrNil) {
-        | [] => ([], mixedOrUnknown(~language))
+        | [] => ([], mixedOrUnknown(~config))
         | [children, ..._] =>
           switch (propOrChildren) {
           | GroupOfLabeledArgs(fields) => (
@@ -395,10 +402,10 @@ let translatePrimitive =
                  ),
               children,
             )
-          | _ => ([], mixedOrUnknown(~language))
+          | _ => ([], mixedOrUnknown(~config))
           }
         }
-      | _ => ([], mixedOrUnknown(~language))
+      | _ => ([], mixedOrUnknown(~config))
       };
     let propsTyp = Object(propsFields);
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
