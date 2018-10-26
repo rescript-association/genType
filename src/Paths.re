@@ -198,31 +198,31 @@ let readConfig = () => {
       switch (moduleString) {
       | "commonjs" => CommonJS
       | "es6" => ES6
-      | _ => defaultConfig.module_
+      | _ => Config_.default.module_
       };
     let importPath =
       switch (importPathString) {
       | "relative" => Relative
       | "node" => Node
-      | _ => defaultConfig.importPath
+      | _ => Config_.default.importPath
       };
     let reasonReactPath =
       switch (reasonReactPathString) {
-      | "" => defaultConfig.reasonReactPath
+      | "" => Config_.default.reasonReactPath
       | _ => reasonReactPathString
       };
     let bsBlockPath =
       switch (bsBlockPathString) {
-      | "" => defaultConfig.bsBlockPath
+      | "" => Config_.default.bsBlockPath
       | _ => bsBlockPathString
       };
     let bsCurryPath =
       switch (bsCurryPathString) {
-      | "" => defaultConfig.bsCurryPath
+      | "" => Config_.default.bsCurryPath
       | _ => bsCurryPathString
       };
     {
-      ...defaultConfig,
+      ...Config_.default,
       language,
       module_,
       importPath,
@@ -237,22 +237,22 @@ let readConfig = () => {
     | Ext_json_types.Obj({map, _}) =>
       switch (map |> String_map.find_opt("gentypeconfig")) {
       | Some(jsonGenFlowConfig) => jsonGenFlowConfig |> fromJson
-      | _ => defaultConfig
+      | _ => Config_.default
       }
-    | _ => defaultConfig
+    | _ => Config_.default
     };
   switch (getConfigFile()) {
   | Some(configFile) =>
     try (configFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
-    | _ => defaultConfig
+    | _ => Config_.default
     }
   | None =>
     switch (getBsConfigFile()) {
     | Some(bsConfigFile) =>
       try (bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromBsConfig) {
-      | _ => defaultConfig
+      | _ => Config_.default
       }
-    | None => defaultConfig
+    | None => Config_.default
     }
   };
 };
