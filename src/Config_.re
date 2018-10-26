@@ -81,6 +81,28 @@ let getShims = json => {
   shims^;
 };
 
+let getDebug = json =>
+  switch (json) {
+  | Ext_json_types.Obj({map, _}) =>
+    switch (map |> String_map.find_opt("debug")) {
+    | Some(Ext_json_types.Obj({map, _})) =>
+      map
+      |> String_map.iter((debugItem, debugValue) => {
+           let isOn =
+             switch (debugValue) {
+             | Ext_json_types.True(_) => true
+             | _ => false
+             };
+           switch (debugItem) {
+           | "all" when isOn => Debug.all()
+           | _ => ()
+           };
+         })
+    | _ => ()
+    }
+  | _ => ()
+  };
+
 let logFile = ref(None);
 
 let getLogFile = () =>
@@ -127,6 +149,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
            },
            ModuleNameMap.empty,
          );
+    json |> getDebug;
     if (Debug.config^) {
       logItem(
         "Config language:%s module:%s importPath:%s modulesMap:%d entries\n",

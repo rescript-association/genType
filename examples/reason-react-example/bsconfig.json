@@ -13,6 +13,9 @@
       "ReactEvent": "ReactEvent",
       "ReasonPervasives": "ReasonPervasives",
       "ReasonReact": "ReactShim"
+    },
+    "debug": {
+      "all": false
     }
   },
   "name": "reason-react-example",
