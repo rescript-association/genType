@@ -16,7 +16,9 @@
     },
     "debug": {
       "all": false,
-      "basic": false
+      "basic": false,
+      "notImplemented": false,
+      "translation": false
     }
   },
   "name": "reason-react-example",

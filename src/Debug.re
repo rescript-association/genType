@@ -13,6 +13,8 @@ let moduleResolution = ref(false);
 
 let notImplemented = ref(false);
 
+let translation = ref(false);
+
 let typeEnv = ref(false);
 
 let typeResolution = ref(false);
@@ -25,6 +27,7 @@ let setAll = () => {
   dependencies := true;
   moduleResolution := true;
   notImplemented := true;
+  translation := false;
   typeEnv := true;
   typeResolution := true;
 };
@@ -43,6 +46,7 @@ let setItem = (debugItem, debugValue) => {
   | "dependencies" => dependencies := isOn
   | "moduleResolution" => moduleResolution := isOn
   | "notImplemented" => notImplemented := isOn
+  | "translation" => translation := isOn
   | "typeEnv" => typeEnv := isOn
   | "typeResolution" => typeResolution := isOn
   | _ => ()

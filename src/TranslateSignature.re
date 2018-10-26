@@ -10,6 +10,9 @@ let translateSignatureValue =
       valueDescription: Typedtree.value_description,
     )
     : Translation.t => {
+  if (Debug.translation^) {
+    logItem("Translate Signature Value\n");
+  };
   let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
   let typeExpr = val_desc.ctyp_type;
   switch (val_id, Annotation.fromAttributes(val_attributes)) {
@@ -48,6 +51,9 @@ let rec translateModuleDeclaration =
           ~typeEnv,
           {md_id, md_type, _}: Typedtree.module_declaration,
         ) => {
+  if (Debug.translation^) {
+    logItem("Translate Module Declaration\n");
+  };
   let name = md_id |> Ident.name;
   let typeEnv = typeEnv |> TypeEnv.newModule(~name);
 
@@ -105,7 +111,10 @@ and translateModuleTypeDeclaration =
       ~fileName,
       ~typeEnv,
       moduleTypeDeclaration: Typedtree.module_type_declaration,
-    ) =>
+    ) => {
+  if (Debug.translation^) {
+    logItem("Translate Module Type Declaration\n");
+  };
   switch (moduleTypeDeclaration) {
   | {mtd_type: None, _} => Translation.empty
   | {mtd_id, mtd_type: Some(mtd_type), _} =>
@@ -141,7 +150,8 @@ and translateModuleTypeDeclaration =
       logNotImplemented("Tmty_alias" ++ __LOC__);
       Translation.empty;
     }
-  }
+  };
+}
 and translateSignatureItem =
     (
       ~config,
@@ -240,6 +250,9 @@ and translateSignatureItem =
 and translateSignature =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, signature)
     : list(Translation.t) => {
+  if (Debug.translation^) {
+    logItem("Translate Signature\n");
+  };
   let moduleItemGen = Runtime.moduleItemGen();
   signature.Typedtree.sig_items
   |> List.map(

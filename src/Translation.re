@@ -325,6 +325,9 @@ let translatePrimitive =
       valueDescription: Typedtree.value_description,
     )
     : t => {
+  if (Debug.translation^) {
+    logItem("Translate Primitive\n");
+  };
   let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type

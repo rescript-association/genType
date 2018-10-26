@@ -153,6 +153,9 @@ and translateSignatureFromTypes =
       signature: list(Types.signature_item),
     )
     : list(Translation.t) => {
+  if (Debug.translation^) {
+    logItem("Translate Types.singnature\n");
+  };
   let moduleItemGen = Runtime.moduleItemGen();
   signature
   |> List.map(

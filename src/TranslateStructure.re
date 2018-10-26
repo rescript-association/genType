@@ -11,6 +11,9 @@ let translateValueBinding =
       valueBinding,
     )
     : Translation.t => {
+  if (Debug.translation^) {
+    logItem("Translate Value Binding\n");
+  };
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
@@ -53,6 +56,9 @@ let rec translateModuleBinding =
           {mb_id, mb_expr, _}: Typedtree.module_binding,
         )
         : Translation.t => {
+  if (Debug.translation^) {
+    logItem("Translate Module Binding\n");
+  };
   let name = mb_id |> Ident.name;
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
@@ -265,6 +271,9 @@ and translateStructureItem =
 and translateStructure =
     (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
     : list(Translation.t) => {
+  if (Debug.translation^) {
+    logItem("Translate Structure\n");
+  };
   let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
   |> List.map(structItem =>
