@@ -60,23 +60,58 @@ let rec lookup = (~name, x) =>
     }
   };
 
-let rec lookupModuleTypeSignature = (~name, x) => {
+let rec lookupName = (~name, x) => {
   if (Debug.typeEnv^) {
-    logItem(
-      "TypeEnv.lookupModuleTypeTranslation %s %s\n",
-      x |> toString,
-      name,
-    );
+    logItem("Typenv.lookupName %s id:%s\n", x |> toString, name);
   };
   switch (x.mapModuleTypes |> StringMap.find(name)) {
-  | translation => Some(translation)
+  | signature => Some(signature)
   | exception Not_found =>
     switch (x.parent) {
     | None => None
-    | Some(parent) => parent |> lookupModuleTypeSignature(~name)
+    | Some(parent) => parent |> lookupName(~name)
     }
   };
 };
+
+let rec lookupPath = (~path, x) =>
+  switch (path) {
+  | Path.Pident(id) =>
+    let name = id |> Ident.name;
+    if (Debug.typeEnv^) {
+      logItem("Typenv.lookupPath %s id:%s\n", x |> toString, name);
+    };
+    switch (x.map |> StringMap.find(name)) {
+    | Module(y) => Some(y)
+    | Type(_) => None
+    | exception Not_found =>
+      switch (x.parent) {
+      | None => None
+      | Some(parent) => parent |> lookupPath(~path)
+      }
+    };
+  | Pdot(p, s, _) =>
+    switch (x |> lookupPath(~path=p)) {
+    | None => None
+    | Some(y) =>
+      if (Debug.typeEnv^) {
+        logItem("Typenv.lookupPath %s s:%s\n", y |> toString, s);
+      };
+      switch (y.map |> StringMap.find(s)) {
+      | Module(y) => Some(y)
+      | Type(_) => None
+      | exception Not_found => None
+      };
+    }
+  | Papply(_) => None
+  };
+
+let lookupModuleTypeSignature = (~path, x) =>
+  switch (x |> lookupPath(~path), path) {
+  | (Some(y), Pident(id)) => y |> lookupName(~name=id |> Ident.name)
+  | (Some(y), Pdot(_, s, _)) => y |> lookupName(~name=s)
+  | _ => None
+  };
 
 let getCurrentModuleName = (~fileName, x) =>
   x.parent == None ? fileName : x.name |> ModuleName.fromStringUnsafe;

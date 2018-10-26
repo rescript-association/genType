@@ -1,3 +1,13 @@
+# 0.24.0
+- Improved debug output and number of options, and made controllable from bsconfig.json.
+- Fixed issue with import strings containig `.\directory` on Windows.
+- Extended support for signatures and module types.
+- Module include is supported for Type Expansion.
+- First-orer modules are supported for Type Expansion.
+- Functor application supported for Type Expansion.
+- Annotating a type means all the types mentioned in it are also considered annotated. (Implemented via Type Expansion).
+- Add support for type expansion (https://github.com/cristianoc/genType/issues/70)
+
 # 0.23.0
 - Clean up terminology used in README.md. Following the cleanup plan on import/export in https://github.com/cristianoc/genType/issues/70.
 - Implement principle 1: an imported type is also exported to other modules.
