@@ -41,7 +41,7 @@ let createExportTypeMap =
         ) => {
       if (Debug.codeItems^) {
         logItem(
-          "Export Type: %s%s%s\n",
+          "Type Map: %s%s%s\n",
           resolvedTypeName,
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
@@ -783,6 +783,9 @@ let propagateAnnotationToSubTypes =
           switch (typeMap |> StringMap.find(typeName)) {
           | (_, _, GenType | GenTypeOpaque | Generated, _) => ()
           | (_, typ1, NoGenType, _) =>
+            if (Debug.translation^) {
+              logItem("Marking Type As Annotated %s\n", typeName);
+            };
             annotatedSet := annotatedSet^ |> StringSet.add(typeName);
             typ1 |> visit;
           | exception Not_found => ()

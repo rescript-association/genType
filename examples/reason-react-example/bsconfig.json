@@ -16,6 +16,7 @@
     },
     "debug": {
       "all": false,
+      "codeItems": false,
       "basic": false,
       "notImplemented": false,
       "translation": false
