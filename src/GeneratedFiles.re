@@ -7,7 +7,7 @@ type fileAction =
   | Write; /* File not present on disk. */
 
 let logFileAction = (fileAction, fileName) =>
-  if (Debug.basic) {
+  if (Debug.basic^) {
     logItem(
       "%s  %s\n",
       switch (fileAction) {

@@ -39,7 +39,7 @@ let createExportTypeMap =
           ~annotation,
           {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
         ) => {
-      if (Debug.codeItems) {
+      if (Debug.codeItems^) {
         logItem(
           "Export Type: %s%s%s\n",
           resolvedTypeName,
@@ -246,7 +246,7 @@ let rec emitCodeItem =
           codeItem,
         ) => {
   let language = config.language;
-  if (Debug.codeItems) {
+  if (Debug.codeItems^) {
     logItem("Code Item: %s\n", codeItem |> codeItemToString(~config));
   };
 

@@ -2,18 +2,29 @@ type channel =
   | Stdout
   | Logfile;
 let channel = Stdout;
-let all = false;
 
 /* log Add and Remove and file actions to see that the cmt hook is working */
-let basic = false || all;
-let codeItems = false || all;
-let config = false || all;
-let converter = false || all;
-let dependencies = false || all;
-let moduleResolution = false || all;
+let basic = ref(false);
+let codeItems = ref(false);
+let config = ref(false);
+let converter = ref(false);
+let dependencies = ref(false);
+let moduleResolution = ref(false);
 
-let notImplemented = false || all;
+let notImplemented = ref(false);
 
-let typeEnv = false || all;
+let typeEnv = ref(false);
 
-let typeResolution = false || all;
+let typeResolution = ref(false);
+
+let all = () => {
+  basic := true;
+  codeItems := true;
+  config := true;
+  converter := true;
+  dependencies := true;
+  moduleResolution := true;
+  notImplemented := true;
+  typeEnv := true;
+  typeResolution := true;
+};

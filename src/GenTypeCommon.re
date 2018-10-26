@@ -36,7 +36,7 @@ let logItem = x => {
 };
 
 let logNotImplemented = x =>
-  if (Debug.notImplemented) {
+  if (Debug.notImplemented^) {
     logItem("Not Implemented: %s\n", x);
   };
 

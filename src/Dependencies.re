@@ -18,7 +18,7 @@ let rec resolveTypePath = (~typeEnv, typePath) =>
     | None => Pid(name)
     | Some(typeEnv1) =>
       let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
-      if (Debug.typeResolution) {
+      if (Debug.typeResolution^) {
         logItem(
           "resolveTypePath name:%s env:%s resolvedName:%s\n",
           name,
@@ -493,7 +493,7 @@ let translateTypeExpr =
          ~typeEnv,
        );
 
-  if (Debug.dependencies) {
+  if (Debug.dependencies^) {
     translation.dependencies
     |> List.iter(dep => logItem("Dependency: %s\n", dep |> typePathToName));
   };
@@ -505,7 +505,7 @@ let translateTypeExprs = (~config, ~typeEnv, typeExprs) => {
   let translations =
     typeExprs |> translateTypeExprs_(~config, ~typeVarsGen, ~typeEnv);
 
-  if (Debug.dependencies) {
+  if (Debug.dependencies^) {
     translations
     |> List.iter(translation =>
          translation.dependencies

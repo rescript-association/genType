@@ -179,7 +179,7 @@ let readConfig = () => {
            },
            ModuleNameMap.empty,
          );
-    if (Debug.config) {
+    if (Debug.config^) {
       logItem(
         "Config language:%s module:%s importPath:%s modulesMap:%d entries\n",
         languageString,

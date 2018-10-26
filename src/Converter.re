@@ -200,7 +200,7 @@ let typToConverterOpaque =
     };
 
   let (converter, opaque) = typ |> visit(~visited=StringSet.empty);
-  if (Debug.converter) {
+  if (Debug.converter^) {
     logItem(
       "Converter typ:%s converter:%s\n",
       typ |> EmitTyp.typToString(~config),

@@ -22,7 +22,7 @@ let root = () => {
 let toString = x => x.name;
 
 let newModule = (~name, x) => {
-  if (Debug.typeEnv) {
+  if (Debug.typeEnv^) {
     logItem("TypeEnv.newModule %s %s\n", x |> toString, name);
   };
   let newModuleEnv = {
@@ -37,14 +37,14 @@ let newModule = (~name, x) => {
 };
 
 let addModuleTypeSignature = (~name, ~signature, x) => {
-  if (Debug.typeEnv) {
+  if (Debug.typeEnv^) {
     logItem("TypeEnv.addModuleTypeTranslation %s %s\n", x |> toString, name);
   };
   x.mapModuleTypes = x.mapModuleTypes |> StringMap.add(name, signature);
 };
 
 let newType = (~name, x) => {
-  if (Debug.typeEnv) {
+  if (Debug.typeEnv^) {
     logItem("TypeEnv.newType %s %s\n", x |> toString, name);
   };
   x.map = x.map |> StringMap.add(name, Type(name));
@@ -61,7 +61,7 @@ let rec lookup = (~name, x) =>
   };
 
 let rec lookupModuleTypeSignature = (~name, x) => {
-  if (Debug.typeEnv) {
+  if (Debug.typeEnv^) {
     logItem(
       "TypeEnv.lookupModuleTypeTranslation %s %s\n",
       x |> toString,
