@@ -104,9 +104,9 @@ let createEnum = cases => {
   Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
 };
 
-let mixedOrUnknown = (~language) =>
+let mixedOrUnknown = (~config) =>
   Ident(
-    switch (language) {
+    switch (config.language) {
     | Flow => "mixed"
     | Typescript
     | Untyped => "unknown"

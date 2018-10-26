@@ -13,9 +13,9 @@ let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
 let emitModuleItem: moduleItem => string;
 
 let emitRecordAsBlock:
-  (~language: language, ~args: list(string), recordValue) => string;
+  (~config: config, ~args: list(string), recordValue) => string;
 
-let emitRecordAsInt: (~language: language, recordValue) => string;
+let emitRecordAsInt: (~config: config, recordValue) => string;
 
 let emitVariantLabel: (~comment: bool=?, string) => string;
 

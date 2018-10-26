@@ -43,12 +43,12 @@ let handleNamespace = cmt => {
 };
 
 /* Get the output file to be written, relative to the project root. */
-let getOutputFileRelative = (~language, cmt) =>
-  (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~language);
+let getOutputFileRelative = (~config, cmt) =>
+  (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~config);
 
 /* Get the output file to be written, as an absolute path. */
-let getOutputFile = (~language, cmt) =>
-  Filename.concat(projectRoot^, getOutputFileRelative(~language, cmt));
+let getOutputFile = (~config, cmt) =>
+  Filename.concat(projectRoot^, getOutputFileRelative(~config, cmt));
 
 let getModuleName = cmt =>
   cmt |> handleNamespace |> Filename.basename |> ModuleName.fromStringUnsafe;

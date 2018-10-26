@@ -86,7 +86,7 @@ let rec toString = converter =>
 
 let typToConverterOpaque =
     (
-      ~language,
+      ~config,
       ~exportTypeMap: Translation.exportTypeMap,
       ~exportTypeMapFromOtherFiles,
       typ,
@@ -203,7 +203,7 @@ let typToConverterOpaque =
   if (Debug.converter) {
     logItem(
       "Converter typ:%s converter:%s\n",
-      typ |> EmitTyp.typToString(~language),
+      typ |> EmitTyp.typToString(~config),
       converter |> toString,
     );
   };
@@ -213,10 +213,10 @@ let typToConverterOpaque =
 };
 
 let typToConverter =
-    (~language, ~exportTypeMap, ~exportTypeMapFromOtherFiles, typ) =>
+    (~config, ~exportTypeMap, ~exportTypeMapFromOtherFiles, typ) =>
   typ
   |> typToConverterOpaque(
-       ~language,
+       ~config,
        ~exportTypeMap,
        ~exportTypeMapFromOtherFiles,
      )

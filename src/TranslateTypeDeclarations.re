@@ -23,7 +23,7 @@ let variantLeafTypeName = (typeName, leafName) =>
 
 let translateConstructorDeclaration =
     (
-      ~config as {language, _} as config,
+      ~config,
       ~outputFileRelative,
       ~resolver,
       ~recordGen,
@@ -36,7 +36,7 @@ let translateConstructorDeclaration =
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
   let leafNameResolved = leafName |> TypeEnv.addModulePath(~typeEnv);
   let argsTranslation =
-    Dependencies.translateTypeExprs(~language, ~typeEnv, constructorArgs);
+    Dependencies.translateTypeExprs(~config, ~typeEnv, constructorArgs);
   let argTypes = argsTranslation |> List.map(({Dependencies.typ, _}) => typ);
   let importTypes =
     argsTranslation
@@ -69,7 +69,7 @@ let translateConstructorDeclaration =
           opaque: Some(true),
           typeVars,
           resolvedTypeName: variantTypeNameResolved,
-          optTyp: Some(mixedOrUnknown(~language)),
+          optTyp: Some(mixedOrUnknown(~config)),
         },
         constructorTyp,
         argTypes,
@@ -84,7 +84,7 @@ let translateConstructorDeclaration =
 
 let traslateDeclarationKind =
     (
-      ~config as {language, _} as config,
+      ~config,
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
@@ -106,7 +106,7 @@ let traslateDeclarationKind =
             |> createExportType(
                  ~opaque=Some(true),
                  ~typeVars,
-                 ~optTyp=Some(mixedOrUnknown(~language)),
+                 ~optTyp=Some(mixedOrUnknown(~config)),
                  ~annotation,
                  ~typeEnv,
                ),
@@ -114,7 +114,7 @@ let traslateDeclarationKind =
       ]
     | Some(typeExpr) =>
       let typeExprTranslation =
-        typeExpr |> Dependencies.translateTypeExpr(~language, ~typeEnv);
+        typeExpr |> Dependencies.translateTypeExpr(~config, ~typeEnv);
       let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
       let typ =
         switch (optTypeExpr, typeExprTranslation.typ) {
@@ -158,7 +158,7 @@ let traslateDeclarationKind =
             |> createExportType(
                  ~opaque=Some(true),
                  ~typeVars,
-                 ~optTyp=Some(mixedOrUnknown(~language)),
+                 ~optTyp=Some(mixedOrUnknown(~config)),
                  ~annotation,
                  ~typeEnv,
                ),
@@ -167,7 +167,7 @@ let traslateDeclarationKind =
     | Some(coreType) =>
       let typeExprTranslation =
         coreType.Typedtree.ctyp_type
-        |> Dependencies.translateTypeExpr(~language, ~typeEnv);
+        |> Dependencies.translateTypeExpr(~config, ~typeEnv);
       let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
       let typ =
         switch (optCoreType, typeExprTranslation.typ) {
@@ -236,7 +236,7 @@ let traslateDeclarationKind =
            (
              name,
              mutability,
-             ld_type |> Dependencies.translateTypeExpr(~language, ~typeEnv),
+             ld_type |> Dependencies.translateTypeExpr(~config, ~typeEnv),
            );
          });
     let importTypes =

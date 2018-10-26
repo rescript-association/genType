@@ -1,3 +1,5 @@
+open GenTypeCommon;
+
 let createBucklescriptBlock = "CreateBucklescriptBlock" ++ ".__";
 
 type recordGen = {
@@ -11,16 +13,17 @@ type moduleItemGen = {mutable itemValue: int};
 
 type moduleItem = int;
 
-let blockTagValue = (~language, i) =>
-  string_of_int(i) ++ (language == GenTypeCommon.Typescript ? " as any" : "");
+let blockTagValue = (~config, i) =>
+  string_of_int(i)
+  ++ (config.language == GenTypeCommon.Typescript ? " as any" : "");
 
-let emitRecordAsInt = (~language, i) => i |> blockTagValue(~language);
+let emitRecordAsInt = (~config, i) => i |> blockTagValue(~config);
 
-let emitRecordAsBlock = (~language, ~args, recordValue) =>
+let emitRecordAsBlock = (~config, ~args, recordValue) =>
   createBucklescriptBlock
   |> EmitText.funCall(
        ~args=[
-         recordValue |> emitRecordAsInt(~language),
+         recordValue |> emitRecordAsInt(~config),
          EmitText.array(args),
        ],
      );
