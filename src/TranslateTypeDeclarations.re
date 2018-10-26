@@ -361,7 +361,7 @@ let translateTypeDeclaration =
     )
     : list(Translation.typeDeclaration) => {
   if (Debug.translation^) {
-    logItem("Translate Type Declaration\n");
+    logItem("Translate Type Declaration %s\n", typ_id |> Ident.name);
   };
   typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
   let typeName = Ident.name(typ_id);
@@ -417,9 +417,6 @@ let translateTypeDeclarations =
       typeDeclarations: list(Typedtree.type_declaration),
     )
     : list(Translation.typeDeclaration) => {
-  if (Debug.translation^) {
-    logItem("Translate Type Declarations\n");
-  };
   let annotation =
     switch (typeDeclarations) {
     | [dec, ..._] => dec.typ_attributes |> Annotation.fromAttributes

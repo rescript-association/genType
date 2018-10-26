@@ -10,10 +10,10 @@ let translateSignatureValue =
       valueDescription: Typedtree.value_description,
     )
     : Translation.t => {
-  if (Debug.translation^) {
-    logItem("Translate Signature Value\n");
-  };
   let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
+  if (Debug.translation^) {
+    logItem("Translate Signature Value %s\n", val_id |> Ident.name);
+  };
   let typeExpr = val_desc.ctyp_type;
   switch (val_id, Annotation.fromAttributes(val_attributes)) {
   | (id, GenType) when Ident.name(id) == "make" =>
@@ -51,10 +51,10 @@ let rec translateModuleDeclaration =
           ~typeEnv,
           {md_id, md_type, _}: Typedtree.module_declaration,
         ) => {
-  if (Debug.translation^) {
-    logItem("Translate Module Declaration\n");
-  };
   let name = md_id |> Ident.name;
+  if (Debug.translation^) {
+    logItem("Translate Module Declaration %s\n", name);
+  };
   let typeEnv = typeEnv |> TypeEnv.newModule(~name);
 
   switch (md_type.mty_desc) {
@@ -113,7 +113,10 @@ and translateModuleTypeDeclaration =
       moduleTypeDeclaration: Typedtree.module_type_declaration,
     ) => {
   if (Debug.translation^) {
-    logItem("Translate Module Type Declaration\n");
+    logItem(
+      "Translate Module Type Declaration %s\n",
+      moduleTypeDeclaration.mtd_id |> Ident.name,
+    );
   };
   switch (moduleTypeDeclaration) {
   | {mtd_type: None, _} => Translation.empty

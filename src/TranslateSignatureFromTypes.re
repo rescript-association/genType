@@ -14,6 +14,9 @@ let translateTypeDeclarationFromTypes =
   typeEnv |> TypeEnv.newType(~name=id |> Ident.name);
   let typeName = Ident.name(id);
   let typeVars = TypeVars.extract(typeParams);
+  if (Debug.translation^) {
+    logItem("Translate Types.type_declaration %s\n", typeName);
+  };
 
   let declarationKind =
     switch (type_kind) {

@@ -11,10 +11,14 @@ let translateValueBinding =
       valueBinding,
     )
     : Translation.t => {
-  if (Debug.translation^) {
-    logItem("Translate Value Binding\n");
-  };
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
+  if (Debug.translation^) {
+    switch (vb_pat.pat_desc) {
+    | Tpat_var(id, _) =>
+      logItem("Translate Value Binding %s\n", id |> Ident.name)
+    | _ => ()
+    };
+  };
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeExpr = vb_expr.exp_type;
@@ -56,10 +60,10 @@ let rec translateModuleBinding =
           {mb_id, mb_expr, _}: Typedtree.module_binding,
         )
         : Translation.t => {
-  if (Debug.translation^) {
-    logItem("Translate Module Binding\n");
-  };
   let name = mb_id |> Ident.name;
+  if (Debug.translation^) {
+    logItem("Translate Module Binding %s\n", name);
+  };
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeEnv = typeEnv |> TypeEnv.newModule(~name);
