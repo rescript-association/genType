@@ -4,7 +4,7 @@
 
 open GenTypeCommon;
 
-let version = "0.24.0";
+let version = Version.version;
 
 let signFile = s => s;
 

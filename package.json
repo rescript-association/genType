@@ -7,10 +7,17 @@
     "start": "bsb -make-world -backend native -w",
     "build": "bsb -make-world -backend native",
     "clean": "bsb -clean-world",
+    "test": "node ./scripts/run_integration_tests.js",
     "install:examples": "(cd examples/reason-react-example && npm install) & (cd examples/typescript-react-example && npm install) & (cd examples/untyped-react-example && npm install)",
-    "build:examples": "(cd examples/reason-react-example && npm run clean && npm run build) & (cd examples/typescript-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build)"
+    "build:examples": "(cd examples/reason-react-example && npm run clean && npm run build) & (cd examples/typescript-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build)",
+    "preversion": "npm test",
+    "version": "node scripts/bump_version_module.js && git add -A src/",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "bsb-native": "^4.0.6"
+  },
+  "devDependencies": {
+    "debug": "^4.1.0"
   }
 }
