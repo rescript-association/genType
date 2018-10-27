@@ -158,7 +158,7 @@ let rec typePathToName = typePath =>
   }
  */
 
-let rec removeOption = (label, typeExpr: Types.type_expr) =>
+let rec removeOption = (~label, typeExpr: Types.type_expr) =>
   switch (typeExpr.desc) {
   | Tconstr(Path.Pident(id), [t], _)
       /* This has a different representation in 4.03+ */
@@ -172,7 +172,7 @@ let rec removeOption = (label, typeExpr: Types.type_expr) =>
         && label != ""
         && label.[0] == '?' =>
     Some((String.sub(label, 1, String.length(label) - 1), t))
-  | Tlink(t) => removeOption(label, t)
+  | Tlink(t) => t |> removeOption(~label)
   | _ => None
   };
 
@@ -210,8 +210,8 @@ let rec translateArrowType =
          ~revArgDeps=nextRevDeps,
          ~revArgs=[(Nolabel, typ), ...revArgs],
        );
-  | Tarrow(lbl, typExpr1, typExpr2, _) =>
-    switch (removeOption(lbl, typExpr1)) {
+  | Tarrow(label, typExpr1, typExpr2, _) =>
+    switch (typExpr1 |> removeOption(~label)) {
     | None =>
       let {dependencies, typ: typ1} =
         typExpr1 |> translateTypeExpr_(~config, ~typeVarsGen, ~typeEnv);
@@ -223,7 +223,7 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(Label(lbl), typ1), ...revArgs],
+           ~revArgs=[(Label(label), typ1), ...revArgs],
          );
     | Some((lbl, t1)) =>
       let {dependencies, typ: typ1} =
