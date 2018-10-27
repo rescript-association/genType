@@ -176,7 +176,7 @@ let rec removeOption = (label, typeExpr: Types.type_expr) =>
   | _ => None
   };
 
-let rec extract_fun =
+let rec translateArrowType =
         (
           ~config,
           ~typeVarsGen,
@@ -188,7 +188,7 @@ let rec extract_fun =
         ) =>
   switch (typeExpr.desc) {
   | Tlink(t) =>
-    extract_fun(
+    translateArrowType(
       ~config,
       ~typeVarsGen,
       ~noFunctionReturnDependencies,
@@ -201,7 +201,7 @@ let rec extract_fun =
     let {dependencies, typ} =
       typExpr1 |> translateTypeExpr_(~config, ~typeVarsGen, ~typeEnv);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-    extract_fun(
+    translateArrowType(
       ~config,
       ~typeVarsGen,
       ~noFunctionReturnDependencies,
@@ -217,7 +217,7 @@ let rec extract_fun =
         typExpr1 |> translateTypeExpr_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       typExpr2
-      |> extract_fun(
+      |> translateArrowType(
            ~config,
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
@@ -229,7 +229,7 @@ let rec extract_fun =
       let {dependencies, typ: typ1} =
         t1 |> translateTypeExpr_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      extract_fun(
+      translateArrowType(
         ~config,
         ~typeVarsGen,
         ~noFunctionReturnDependencies,
@@ -398,7 +398,7 @@ and translateTypeExpr_ =
 
   | Tarrow(_) =>
     typeExpr
-    |> extract_fun(
+    |> translateArrowType(
          ~config,
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
