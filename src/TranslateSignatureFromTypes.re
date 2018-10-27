@@ -21,12 +21,12 @@ let translateTypeDeclarationFromTypes =
   let declarationKind =
     switch (type_kind) {
     | Type_record(labelDeclarations, _) =>
-      TranslateTypeDeclarations.RecordDeclaration(labelDeclarations)
+      TranslateTypeDeclarations.RecordDeclarationFromTypes(labelDeclarations)
 
     | Type_variant(constructorDeclarations)
         when
           !TranslateTypeDeclarations.hasSomeGADTLeaf(constructorDeclarations) =>
-      VariantDeclaration(constructorDeclarations)
+      VariantDeclarationFromTypes(constructorDeclarations)
 
     | Type_abstract =>
       switch (

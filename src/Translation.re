@@ -148,7 +148,11 @@ let translateValue =
     )
     : t => {
   let typeExprTranslation =
-    typeExpr |> Dependencies.translateTypeExpr(~config, ~typeEnv);
+    typeExpr
+    |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+         ~config,
+         ~typeEnv,
+       );
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
   let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
   let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
@@ -205,7 +209,7 @@ let translateComponent =
     : t => {
   let typeExprTranslation =
     typeExpr
-    |> Dependencies.translateTypeExpr(
+    |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
          ~config,
          /* Only get the dependencies for the prop types.
             The return type is a ReasonReact component. */
@@ -331,7 +335,10 @@ let translatePrimitive =
   let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
     valueDescription.val_desc.ctyp_type
-    |> Dependencies.translateTypeExpr(~config, ~typeEnv);
+    |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+         ~config,
+         ~typeEnv,
+       );
   let genTypeImportPayload =
     valueDescription.val_attributes
     |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport);
@@ -358,7 +365,7 @@ let translatePrimitive =
       when valueName == "make" =>
     let typeExprTranslation =
       valueDescription.val_desc.ctyp_type
-      |> Dependencies.translateTypeExpr(
+      |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
            ~config,
            /* Only get the dependencies for the prop types.
               The return type is a ReasonReact component. */

@@ -33,6 +33,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
   | [] => None
   | [({Asttypes.txt, _}, payload), ..._tl] when checkText(txt) =>
     switch (payload) {
+    | PStr([]) => Some(UnrecognizedPayload)
     | PStr([
         {
           pstr_desc:
@@ -42,9 +43,41 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
             ),
           _,
         },
+        ..._,
       ]) =>
       Some(StringPayload(s))
-    | _ => Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_eval(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_extension(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_value(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_primitive(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_type(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_typext(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_exception(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_module(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_recmodule(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_modtype(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_open(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_class(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_class_type(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_include(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_attribute(_), _}, ..._]) =>
+      Some(UnrecognizedPayload)
+    | PTyp(_) => Some(UnrecognizedPayload)
+    | PPat(_) => Some(UnrecognizedPayload)
     }
   | [_hd, ...tl] => getAttributePayload(checkText, tl)
   };
