@@ -180,8 +180,8 @@ let traslateDeclarationKind =
       ]
     | Some(coreType) =>
       let typeExprTranslation =
-        coreType.Typedtree.ctyp_type
-        |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+        coreType
+        |> TranslateCoreType.translateCoreType(
              ~config,
              ~typeEnv,
            );
