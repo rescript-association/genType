@@ -34,18 +34,26 @@ const genTypeFile = getGenTypeFilePath();
 /*
 Needed for wrapping the stdout pipe with a promise
 */
-function wrappedSpawn(command, args, options) {
+async function wrappedSpawn(command, args, options) {
   return new Promise((resolve, reject) => {
-    const child = child_process.spawn(
-      command,
-      args,
-      {env: process.env, ...options}
-    );
-    
+    const child = child_process.spawn(command, args, {
+      env: process.env,
+      ...options
+    });
+
     child.stdout.pipe(process.stdout);
     child.stderr.pipe(process.stderr);
 
-    child.on('error', (err) => {
+    child.on("exit", (code) => {
+      if(code == 0) {
+        resolve(code);
+      }
+      else {
+        reject(code);
+      }
+    })
+
+    child.on("error", err => {
       console.error(`${command} ${args.join(" ")} exited with ${err.code}`);
       return reject(err.code);
     });
@@ -54,28 +62,29 @@ function wrappedSpawn(command, args, options) {
 
 async function installExamples() {
   const tasks = exampleDirPaths.map(cwd => {
-    console.log(`${cwd}: npm install (takes a while)`);
+    const npmCommand = "ci";
+    console.log(`${cwd}: npm ${npmCommand} (takes a while)`);
 
     // The npm command is not an executable, but a cmd script on Windows
     // Without the shell = true, Windows will not find the program and fail
     // with ENOENT
     const shell = isWindows ? true : false;
-    return wrappedSpawn("npm", ["ci"], { cwd, shell});
+    return wrappedSpawn("npm", [npmCommand], { cwd, shell });
   });
 
   return Promise.all(tasks);
 }
 
 async function buildExamples() {
-  exampleDirPaths.forEach(async (cwd) => {
+  for (const cwd of exampleDirPaths) {
     console.log(`${cwd}: npm run build (takes a while)`);
 
     const shell = isWindows ? true : false;
     await wrappedSpawn("npm", ["run", "build"], {
       cwd,
-      shell,
+      shell
     });
-  });
+  }
 }
 
 async function checkDiff() {
@@ -98,8 +107,10 @@ async function checkDiff() {
       { encoding: "utf8" }
     );
 
-    if(output.length > 0) {
-      throw new Error(output)
+    console.log(output);
+
+    if (output.length > 0) {
+      throw new Error(output);
     }
   } catch (err) {
     console.error(
@@ -136,9 +147,7 @@ async function checkSetup() {
 
   if (output.indexOf(pjson.version) === -1) {
     throw new Error(
-      `${path.basename(
-        genTypeFile
-      )} --version doesn't contain the version number of package.json` +
+      `${path.basename(genTypeFile)} --version doesn't contain the version number of package.json` +
         `("${stripNewlines(output)}" should contain ${pjson.version})` +
         `- Run \`node scripts/bump_version_module.js\` and rebuild to sync version numbers`
     );
@@ -150,9 +159,9 @@ async function main() {
     await checkSetup();
     await installExamples();
     await buildExamples();
-    
+
     /* Git diffing is broken... we need a better way to test regressions */
-    //await checkDiff();
+    await checkDiff();
     console.log("Test successful!");
   } catch (e) {
     console.error(`Test failed unexpectly: ${e.message}`);
