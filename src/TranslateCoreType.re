@@ -47,6 +47,14 @@ let rec translateArrowType =
          ~revArgs=[(Nolabel, typ), ...revArgs],
        );
   | Ttyp_arrow(label, coreType1, coreType2) =>
+    let asLabel =
+      switch (
+        coreType.ctyp_attributes
+        |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
+      ) {
+      | Some(StringPayload(s)) => s
+      | _ => ""
+      };
     switch (coreType1 |> removeOption(~label)) {
     | None =>
       let {dependencies, typ: typ1} =
@@ -59,7 +67,10 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(Label(label), typ1), ...revArgs],
+           ~revArgs=[
+             (Label(asLabel == "" ? label : asLabel), typ1),
+             ...revArgs,
+           ],
          );
     | Some((lbl, t1)) =>
       let {dependencies, typ: typ1} =
@@ -72,9 +83,12 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(OptLabel(lbl), typ1), ...revArgs],
+           ~revArgs=[
+             (OptLabel(asLabel == "" ? lbl : asLabel), typ1),
+             ...revArgs,
+           ],
          );
-    }
+    };
   | _ =>
     let {dependencies, typ: retType} =
       coreType |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
