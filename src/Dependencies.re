@@ -182,8 +182,8 @@ let rec translateArrowType =
           ~typeVarsGen,
           ~noFunctionReturnDependencies=false,
           ~typeEnv,
-          revArgDeps,
-          revArgs,
+          ~revArgDeps,
+          ~revArgs,
           typeExpr: Types.type_expr,
         ) =>
   switch (typeExpr.desc) {
@@ -193,23 +193,23 @@ let rec translateArrowType =
       ~typeVarsGen,
       ~noFunctionReturnDependencies,
       ~typeEnv,
-      revArgDeps,
-      revArgs,
+      ~revArgDeps,
+      ~revArgs,
       t,
     )
   | Tarrow("", typExpr1, typExpr2, _) =>
     let {dependencies, typ} =
       typExpr1 |> translateTypeExpr_(~config, ~typeVarsGen, ~typeEnv);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-    translateArrowType(
-      ~config,
-      ~typeVarsGen,
-      ~noFunctionReturnDependencies,
-      ~typeEnv,
-      nextRevDeps,
-      [(Nolabel, typ), ...revArgs],
-      typExpr2,
-    );
+    typExpr2
+    |> translateArrowType(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies,
+         ~typeEnv,
+         ~revArgDeps=nextRevDeps,
+         ~revArgs=[(Nolabel, typ), ...revArgs],
+       );
   | Tarrow(lbl, typExpr1, typExpr2, _) =>
     switch (removeOption(lbl, typExpr1)) {
     | None =>
@@ -222,22 +222,22 @@ let rec translateArrowType =
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
            ~typeEnv,
-           nextRevDeps,
-           [(Label(lbl), typ1), ...revArgs],
+           ~revArgDeps=nextRevDeps,
+           ~revArgs=[(Label(lbl), typ1), ...revArgs],
          );
     | Some((lbl, t1)) =>
       let {dependencies, typ: typ1} =
         t1 |> translateTypeExpr_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      translateArrowType(
-        ~config,
-        ~typeVarsGen,
-        ~noFunctionReturnDependencies,
-        ~typeEnv,
-        nextRevDeps,
-        [(OptLabel(lbl), typ1), ...revArgs],
-        typExpr2,
-      );
+      typExpr2
+      |> translateArrowType(
+           ~config,
+           ~typeVarsGen,
+           ~noFunctionReturnDependencies,
+           ~typeEnv,
+           ~revArgDeps=nextRevDeps,
+           ~revArgs=[(OptLabel(lbl), typ1), ...revArgs],
+         );
     }
   | _ =>
     let {dependencies, typ: retType} =
@@ -403,8 +403,8 @@ and translateTypeExpr_ =
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
          ~typeEnv,
-         [],
-         [],
+         ~revArgDeps=[],
+         ~revArgs=[],
        )
   | Ttuple(listExp) =>
     let innerTypesTranslation =
