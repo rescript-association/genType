@@ -43,11 +43,6 @@ let cli = () => {
     exit(0);
   };
   let speclist = [
-    (
-      "--setProjectRoot",
-      Arg.String(_ => ()),
-      "This option is deprecated and is ignored (project root found automatically).",
-    ),
     ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt[i] file"),
     ("-version", Arg.Unit(version), "show version information"),
