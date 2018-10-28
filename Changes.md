@@ -1,3 +1,7 @@
+# master
+- Remove deprecated CLI option `—setProjectRoot`.
+- Support `@genType.as "name"` to rename how labeled arguments in functions are exported. Works for function definitions and function types declarations. In parcticular, the `make` function for components. In case of function definitions, the first argument can't be renamed because of a compiler bug. [See this issue](https://github.com/cristianoc/genType/issues/75).
+
 # 0.24.0
 - Improved debug output and number of options, and made controllable from bsconfig.json.
 - Fixed issue with import strings containig `.\directory` on Windows.
@@ -6,7 +10,7 @@
 - First-orer modules are supported for Type Expansion.
 - Functor application supported for Type Expansion.
 - Annotating a type means all the types mentioned in it are also considered annotated. (Implemented via Type Expansion).
-- Add support for type expansion (https://github.com/cristianoc/genType/issues/70)
+- Add support for type expansion [See this issue](https://github.com/cristianoc/genType/issues/70)
 
 # 0.23.0
 - Clean up terminology used in README.md. Following the cleanup plan on import/export in https://github.com/cristianoc/genType/issues/70.
