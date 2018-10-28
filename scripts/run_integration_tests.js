@@ -11,7 +11,9 @@ const fs = require("fs");
 const child_process = require("child_process");
 const path = require("path");
 const pjson = require("../package.json");
+const util = require('util');
 
+const execFile = require('util').promisify(child_process.execFile);
 const exampleDirPaths = [
   "reason-react-example",
   "typescript-react-example",
@@ -79,7 +81,7 @@ async function buildExamples() {
     console.log(`${cwd}: npm run build (takes a while)`);
 
     const shell = isWindows ? true : false;
-    await wrappedSpawn("npm", ["run", "build"], {
+    child_process.execFileSync("npm", ["run", "build"], {
       cwd,
       shell
     });
@@ -160,8 +162,8 @@ async function main() {
     await buildExamples();
 
     /* Git diffing is broken... we need a better way to test regressions */
-    // await checkDiff();
-    
+    await checkDiff();
+
     console.log("Test successful!");
   } catch (e) {
     console.error(`Test failed unexpectly: ${e.message}`);
