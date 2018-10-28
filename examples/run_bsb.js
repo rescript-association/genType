@@ -18,7 +18,7 @@ function genTypeNativePath() {
     return path.join(base, "gentype.native");
   }
 }
-console.log(process.env.PWD);
+
 process.env.BS_CMT_POST_PROCESS_CMD = genTypeNativePath();
 
 const input = (args = process.argv.slice(2));
