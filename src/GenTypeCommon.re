@@ -132,7 +132,6 @@ module NodeFilename {
         c == '/' || c == '\\' || c == ':';
       };
       let l = length(dirname);
-      logItem("%s", dirname);
       if (l == 0 || is_dir_sep(dirname, l - 1)) {
         dirname ++ filename;
       } else {
@@ -161,9 +160,6 @@ module NodeFilename {
     open Path;
       switch (Sys.os_type) {
       | "Win32" => {
-        logItem("%s\n", dirname);
-        logItem("%s\n", normalize(dirname) |> toString);
-
         Path.concat(normalize(dirname), filename) |> toString
       }
       | _ => filename |> Path.concat(normalize(dirname)) |> toString
