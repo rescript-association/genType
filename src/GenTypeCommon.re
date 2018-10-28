@@ -139,30 +139,9 @@ module NodeFilename {
       };
     }
   };
-
-  /* let concatWin32 = (dirname, filename) => {
-    let dirname = Path.normalize(dirname);
-    let is_dir_sep = (s, i) => {
-      let c = s.[i];
-      c == '/' || c == '\\' || c == ':';
-    };
-    let l = String.length(dirname);
-    logItem("%s", dirname);
-    if (l == 0 || is_dir_sep(dirname, l - 1)) {
-      dirname ++ filename;
-    } else {
-      dirname ++ dir_sep ++ filename;
-    };
-  }; */
-
   
   let concat = (dirname: string, filename) => {
     open Path;
-      switch (Sys.os_type) {
-      | "Win32" => {
-        Path.concat(normalize(dirname), filename) |> toString
-      }
-      | _ => filename |> Path.concat(normalize(dirname)) |> toString
-      };
-    }
+    Path.concat(normalize(dirname), filename) |> toString
+  }
 };
