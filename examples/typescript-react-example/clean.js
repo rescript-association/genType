@@ -11,6 +11,8 @@ glob.glob("src/**/*.bs.js", function(er, files) {
   });
 });
 
+const isWindows = /^win/i.test(process.platform);
+
 child_process
-  .spawn("bsb", ["-clean-world"], { stdio: "inherit", stderr: "inherit" })
+  .spawn("bsb", ["-clean-world"], { stdio: "inherit", stderr: "inherit", shell: isWindows })
   .on("exit", code => process.exit(code));
