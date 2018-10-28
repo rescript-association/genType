@@ -96,10 +96,11 @@ function cleanBuildExamples() {
 function checkDiff() {
   console.log("Checking for changes in examples/");
 
-  const output = child_process.execFileSync("git", ["diff", "examples"]);
+  const output = child_process.execFileSync("git", ["diff", "examples"], {
+    encoding: "utf8"
+  });
 
-  console.log(output.toString());
-
+  console.log(output);
   if (output.length > 0) {
     throw new Error(
       "Changed files detected in path examples/! Make sure genType is emitting the right code and commit the files to git" +
