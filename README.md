@@ -20,6 +20,9 @@ Wrappers to export ReasonReact components to JavaScript are generated when the a
 [Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/EV12EbxCPjM)
 [![IMAGE ALT TEXT HERE](assets/genTypeDemo.png)](https://youtu.be/EV12EbxCPjM)
 
+# What's new.
+See [Changes.md](Changes.md) for a complete list of changes per release.
+
 # Download genType from Prebuilt Releases
 
 ```
