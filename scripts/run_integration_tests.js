@@ -61,13 +61,13 @@ function wrappedSpawn(command, args, options) {
 
 async function installExamples() {
   const tasks = exampleDirPaths.map(cwd => {
-    console.log(`${cwd}: npm install --production --no-save (takes a while)`);
+    console.log(`${cwd}: npm install --no-save (takes a while)`);
 
     // The npm command is not an executable, but a cmd script on Windows
     // Without the shell = true, Windows will not find the program and fail
     // with ENOENT
     const shell = isWindows ? true : false;
-    return wrappedSpawn("npm", ["install", "--production", "--no-save"], {
+    return wrappedSpawn("npm", ["install", "--no-save"], {
       cwd,
       shell
     });
