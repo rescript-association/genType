@@ -144,6 +144,7 @@ let translateValue =
       ~fileName,
       ~typeEnv,
       ~typeExpr,
+      ~addAnnotationsToFunction: typ => typ,
       name,
     )
     : t => {
@@ -154,7 +155,10 @@ let translateValue =
          ~typeEnv,
        );
   let typeVars = typeExprTranslation.typ |> TypeVars.free;
-  let typ = typeExprTranslation.typ |> abstractTheTypeParameters(~typeVars);
+  let typ =
+    typeExprTranslation.typ
+    |> abstractTheTypeParameters(~typeVars)
+    |> addAnnotationsToFunction;
   let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
 
   /* Access path for the value in the module.
@@ -204,10 +208,11 @@ let translateComponent =
       ~fileName,
       ~typeEnv,
       ~typeExpr,
+      ~addAnnotationsToFunction: typ => typ,
       name,
     )
     : t => {
-  let typeExprTranslation =
+  let typeExprTranslation_ =
     typeExpr
     |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
          ~config,
@@ -216,6 +221,10 @@ let translateComponent =
          ~noFunctionReturnDependencies=true,
          ~typeEnv,
        );
+  let typeExprTranslation = {
+    ...typeExprTranslation_,
+    typ: typeExprTranslation_.typ |> addAnnotationsToFunction,
+  };
 
   let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
 
@@ -311,6 +320,7 @@ let translateComponent =
          ~fileName,
          ~typeEnv,
          ~typeExpr,
+         ~addAnnotationsToFunction,
        )
   };
 };

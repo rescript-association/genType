@@ -15,28 +15,21 @@ let translateSignatureValue =
     logItem("Translate Signature Value %s\n", val_id |> Ident.name);
   };
   let typeExpr = val_desc.ctyp_type;
+  let addAnnotationsToFunction = typ => typ;
   switch (val_id, Annotation.fromAttributes(val_attributes)) {
-  | (id, GenType) when Ident.name(id) == "make" =>
-    id
-    |> Ident.name
-    |> Translation.translateComponent(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~fileName,
-         ~typeEnv,
-         ~typeExpr,
-       )
   | (id, GenType) =>
     id
     |> Ident.name
-    |> Translation.translateValue(
+    |> Translation.(
+         Ident.name(id) == "make" ? translateComponent : translateValue
+       )(
          ~config,
          ~outputFileRelative,
          ~resolver,
          ~fileName,
          ~typeEnv,
          ~typeExpr,
+         ~addAnnotationsToFunction,
        )
   | _ => Translation.empty
   };

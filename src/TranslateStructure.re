@@ -1,5 +1,59 @@
 open GenTypeCommon;
 
+let rec addAnnotationsToTyps = (expr: Typedtree.expression, typs: list(typ)) =>
+  switch (expr.exp_desc, typs) {
+  | (_, [GroupOfLabeledArgs(fields), ...nextTyps]) =>
+    let (fields1, nextTyps1) =
+      addAnnotationsToFields(expr, fields, nextTyps);
+    [GroupOfLabeledArgs(fields1), ...nextTyps1];
+  | (Texp_function(_lbl, [{c_rhs}], _), [typ, ...nextTyps]) =>
+    let nextTyps1 = addAnnotationsToTyps(c_rhs, nextTyps);
+    [typ, ...nextTyps1];
+  | _ => typs
+  }
+and addAnnotationsToFields =
+    (expr: Typedtree.expression, fields: fields, typs: list(typ)) =>
+  switch (expr.exp_desc, fields, typs) {
+  | (_, [], _) => ([], addAnnotationsToTyps(expr, typs))
+  | (Texp_function(_lbl, [{c_rhs}], _), [field, ...nextFields], _) =>
+    let genTypeAsPayload =
+      expr.exp_attributes
+      |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
+    switch (genTypeAsPayload) {
+    | Some(StringPayload(s)) =>
+      let (nextFields1, typs1) =
+        addAnnotationsToFields(c_rhs, nextFields, typs);
+      ([{...field, name: s}, ...nextFields1], typs1);
+    | _ =>
+      let (nextFields1, typs1) =
+        addAnnotationsToFields(c_rhs, nextFields, typs);
+      ([field, ...nextFields1], typs1);
+    };
+  | _ => (fields, typs)
+  };
+
+/* Because of a bug in 4.03.2, the first attribute of a function type is lost.
+   This if fixed in newer versions. */
+let bugInOCaml4_02_3 = (expr: Typedtree.expression) =>
+  switch (expr.exp_desc) {
+  | Texp_function(lbl, [case], pt) => {
+      ...expr,
+      exp_desc: Texp_function(lbl, [{...case, c_rhs: expr}], pt),
+      exp_attributes: [],
+    }
+  | _ => expr
+  };
+
+/* Recover from expr the renaming annotations on named arguments. */
+let addAnnotationsToFunctionType = (expr: Typedtree.expression, typ: typ) =>
+  switch (typ) {
+  | Function(function_) =>
+    let argTypes =
+      function_.argTypes |> addAnnotationsToTyps(expr |> bugInOCaml4_02_3);
+    Function({...function_, argTypes});
+  | _ => typ
+  };
+
 let translateValueBinding =
     (
       ~config,
@@ -22,28 +76,21 @@ let translateValueBinding =
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeExpr = vb_expr.exp_type;
+
   switch (vb_pat.pat_desc, Annotation.fromAttributes(vb_attributes)) {
-  | (Tpat_var(id, _), GenType) when Ident.name(id) == "make" =>
-    id
-    |> Ident.name
-    |> Translation.translateComponent(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~fileName,
-         ~typeEnv,
-         ~typeExpr,
-       )
   | (Tpat_var(id, _), GenType) =>
     id
     |> Ident.name
-    |> Translation.translateValue(
+    |> Translation.(
+         Ident.name(id) == "make" ? translateComponent : translateValue
+       )(
          ~config,
          ~outputFileRelative,
          ~resolver,
          ~fileName,
          ~typeEnv,
          ~typeExpr,
+         ~addAnnotationsToFunction=addAnnotationsToFunctionType(vb_expr),
        )
   | _ => Translation.empty
   };
