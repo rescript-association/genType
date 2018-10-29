@@ -1,4 +1,4 @@
-# master
+# 0.25.0
 - Remove deprecated CLI option `—setProjectRoot`.
 - Support `@genType.as "name"` to rename how labeled arguments in functions are exported. Works for function definitions and function types declarations. In parcticular, the `make` function for components. In case of function definitions, the first argument can't be renamed because of a compiler bug. [See this issue](https://github.com/cristianoc/genType/issues/75).
 
