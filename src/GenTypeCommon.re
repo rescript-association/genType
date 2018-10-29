@@ -92,14 +92,13 @@ let numberT = Ident("number", []);
 let stringT = Ident("string", []);
 let unitT = Ident("void", []);
 
-
-module NodeFilename {
+module NodeFilename = {
   include Filename;
 
   /* Force "/" separator. */
-  let dir_sep = "/";
+  let dirSep = "/";
 
-  module Path: {  
+  module Path: {
     type t;
     let normalize: string => t;
     let concat: (t, string) => t;
@@ -108,40 +107,30 @@ module NodeFilename {
   } = {
     type t = string;
 
-    let normalize = (path): t => {
+    let normalize = path: t =>
       switch (Sys.os_type) {
-      | "Win32" => {
-          let exp = Str.regexp("\\");
-          List.fold_left((acc, next) => {
-            switch(acc) {
-              | "" => next
-              | _ => acc ++ dir_sep ++ next
-            }
-          }, "", Str.split(exp, path));
-        }
+      | "Win32" =>
+        path |> Str.split(Str.regexp("\\")) |> String.concat(dirSep)
       | _ => path
-      }
-    }
+      };
 
     let toString = path => path;
     let length = path => String.length(path);
 
     let concat = (dirname, filename) => {
-      let is_dir_sep = (s, i) => {
+      let isDirSep = (s, i) => {
         let c = s.[i];
         c == '/' || c == '\\' || c == ':';
       };
       let l = length(dirname);
-      if (l == 0 || is_dir_sep(dirname, l - 1)) {
+      if (l == 0 || isDirSep(dirname, l - 1)) {
         dirname ++ filename;
       } else {
-        dirname ++ dir_sep ++ filename;
+        dirname ++ dirSep ++ filename;
       };
-    }
+    };
   };
-  
-  let concat = (dirname: string, filename) => {
-    open Path;
-    Path.concat(normalize(dirname), filename) |> toString
-  }
+
+  let concat = (dirname: string, filename) =>
+    Path.(Path.concat(normalize(dirname), filename) |> toString);
 };
