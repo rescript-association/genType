@@ -21,7 +21,7 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 > **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
-# Download genType from Prebuilt Releases
+# Prebuilt Releases
 
 ```
 # Will download and automatically untar the file in the current directory as gentype.native
@@ -35,7 +35,7 @@ curl -L https://github.com/cristianoc/genType/releases/download/v0.X.X/gentype-m
 curl -L https://github.com/cristianoc/genType/releases/download/v0.X.X/gentype-linux.tar.gz | tar xz
 ```
 
-# Quick Start: Set up genType in existing TypeScript / Flow / BuckleScript project
+# Add genType to your existing project.
 
 There are some steps to set up `genType` in a project.
 Some of this might become simpler if `genType` gets integrated
@@ -47,7 +47,21 @@ into bucklescript in future. The current requirement is `bs-platform 4.0.5` or l
 4. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
 5. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re` [example webpack.config.js](examples/reason-react-example/webpack.config.js).
 
-# genType Configuration
+# Examples
+
+We prepared some examples to give you an idea on how to integrate `genType` in your own project. Check out the READMEs of the listed projects.
+
+**Please make sure to build genType before trying to build the examples.**
+
+- [reason-react-example](examples/reason-react-example/README.md)
+- [typescript-react-example](examples/typescript-react-example/README.md)
+- [untyped-react-example](examples/untyped-react-example/README.md)
+
+
+# Documentation
+
+
+## Configuration
 
 Every `genType` powered project requires a configuration item `"gentypeconfig"` at top level in the project's `bsconfig.json`. (The use of a separate file `gentypeconfig.json` is being deprecated). The option has following structure:
 
@@ -71,7 +85,7 @@ Every `genType` powered project requires a configuration item `"gentypeconfig"` 
   - e.g. `Array<string>` with format: `"ReasonModule=JavaScriptModule"`
   - Required to export certain basic Reason data types to JS when one cannot modify the sources to add annotations (e.g. exporting Reason lists)
 
-# Types Supported
+## Types Supported
 
 ### int
 
@@ -204,7 +218,7 @@ const none = <T1>(a: T1): ?T1 => OptionBS.none;
 
 - **BuckleScript in-source = true**. Currently only supports bucklescript projects with [in-source generation](https://bucklescript.github.io/docs/en/build-configuration#package-specs) and `.bs.js` file suffix.
 
-# Development
+# Development/Contributing
 
 ## Build genType
 
@@ -215,35 +229,11 @@ npm run build
 
 This will create the binary `lib/bs/native/gentype.native`, which is the executable that BuckleScript is supposed to use via `BS_CMT_POST_PROCESS_CMD`.
 
-## Examples
-
-We prepared some examples to give you an idea on how to integrate `genType` in your own project. Check out the README of the listed projects.
-
-**Please make sure to build genType before trying to build the examples.**
-
-- [reason-react-example](examples/reason-react-example/README.md)
-- [typescript-react-example](examples/typescript-react-example/README.md)
-- [untyped-react-example](examples/untyped-react-example/README.md)
-
-## Manual Release Procedure for MacOS and Linux Binaries
-
-All releases need to pass our integration test suite. We use `npm test` to run the tests, make sure this command passes to be able to build a release.
-
-You can create `lib/gentype-macos.tar.gz` and `lib/gentype-linux.tar.gz` via our manual release procedure on a Mac. The linux binaries are created using a docker container.
-
-```
-./create-release.sh
-```
-
-**Important:**
-
-We use [CircleCI](https://circleci.com/gh/cristianoc/genType) and [Appveyor](https://ci.appveyor.com/project/ryyppy/gentype) to build and automatically release to Github. Your manually released binaries might be overwritten by the built artifacts from tagged triggered commit.
-
 ## Automated Releases (recommended - Maintainers only)
 
-We set up the project so it is compatible with the [`npm version`](https://docs.npmjs.com/cli/version) workflow. After using the `npm version [major|minor|patch|...]` command, npm will automatically tag the current commit, bump all the necessary version numbers (also the number in `src/Version.re`) and push it to the current remote branch.
+The project is compatible with the [`npm version`](https://docs.npmjs.com/cli/version) workflow. After using the `npm version [major|minor|patch|...]` command, npm will automatically tag the current commit, bump all the necessary version numbers (also the number in `src/Version.re`) and push it to the current remote branch.
 
-After a tag is pushed, our [CircleCI](https://circleci.com/gh/cristianoc/genType) and [Appveyor](https://ci.appveyor.com/project/cristianoc/gentype) projects will be built, tested and automatically released to the Github releases tab when all tests were successful.
+When a tag is pushed, [CircleCI](https://circleci.com/gh/cristianoc/genType) and [Appveyor](https://ci.appveyor.com/project/cristianoc/gentype) projects will be built, tested and automatically released to the Github [releases](https://github.com/cristianoc/genType/releases) tab when all tests were successful.
 
 **Here are the concrete commands to run:**
 
@@ -264,3 +254,19 @@ npm version minor
 # For major (X+1.0.0)
 npm version major
 ```
+
+
+## Manual Releases (MacOS & Linux)
+
+All releases need to pass our integration test suite. We use `npm test` to run the tests, make sure this command passes to be able to build a release.
+
+You can create `lib/gentype-macos.tar.gz` and `lib/gentype-linux.tar.gz` via our manual release procedure on a Mac. The linux binaries are created using a docker container.
+
+```
+./create-release.sh
+```
+
+**Important:**
+
+We use [CircleCI](https://circleci.com/gh/cristianoc/genType) and [Appveyor](https://ci.appveyor.com/project/ryyppy/gentype) to build and automatically release to Github. Your manually released binaries might be overwritten by the built artifacts from tagged triggered commit.
+
