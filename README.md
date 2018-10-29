@@ -281,6 +281,10 @@ Reason values of variant type e.g. `| A | B(int)` have the same representation w
 
 Arrays with elements of Reason type `t` are exported to JS arrays with elements of the corresponding JS type. If a conversion is required, a copy of the array is performed.
 
+Immutable arrays are supported with the additional Reason library
+[ImmutableArray.re/.rei](examples/typescript-react-example/src/ImmutableArray.rei), which currently needs to be added to your project.
+The type `ImmutableArray.t(+'a)` is covariant, and is mapped to readonly array types in TS/Flow. As opposed to TS/Flow, `ImmutableArray.t` does not allow casting in either direction with normal arrays. Instead, a copy must be performed using `fromArray` and `toArray`.
+
 ### functions
 
 Reason functions are exported as JS functions of the corresponding type.
