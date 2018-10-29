@@ -152,7 +152,7 @@ type person = {name:name, surname:surname};
 type persons = array(person);
 ```
 
-If however you wish to hide from JS the fact that `name` and `surname` are strings, you can do it like this:
+If however you wish to hide from JS the fact that `name` and `surname` are strings, you can do it with the `@genType.opaque` annotation:
 
 ```reason
 [@genType.opaque]
