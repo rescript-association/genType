@@ -60,13 +60,12 @@ We prepared some examples to give you an idea on how to integrate `genType` in y
 
 # Documentation
 
-## Introduction
 
 `genType` operates on two kinds of entities: *types* and *values*.
 Each can be *exported* from Reason to JS, or *imported* into Reason from JS.
 The main annotation is `@genType`, which by default means *export*.
 
-#### Export and Import Types
+### Export and Import Types
 The following exports a function type `callback` to JS:
 
 ```reason
@@ -82,7 +81,7 @@ type complexNumber;
 ```
 This imported type will be treated as opaque by Reason.
 
-#### Export and Import Values
+### Export and Import Values
 
 To export a function `callback` to JS:
 
@@ -105,7 +104,7 @@ Because of the `external` keyword, it's clear from context that this is an impor
 
 **NOTE** The argument of `@bs.module` is different for the "typescript" and the "flow"/"untyped" back-ends. And must always be the name of the current file (In future, with compiler support, this could be automatically generated).
 
-#### Export and Import React Components
+### Export and Import React Components
 
 To export a ReasonReact component to JS, and automatically generate a wrapper for it, simply annotate the `make` function:
 
@@ -139,7 +138,7 @@ The type of `make` must have a named argument for each prop in the JS component.
 
 **NOTE** The argument of `@bs.module` is different for the "typescript" and the "flow"/"untyped" back-ends.
 
-#### Type Expansion and @genType.opaque
+### Type Expansion and @genType.opaque
 If an exported type `persons` references other types in its definition, those types are also exported by default, as long as they are defined in the same file:
 
 
@@ -169,7 +168,7 @@ type person = {
 type persons = array(person);
 ```
 
-#### Renaming and @genType.as
+### Renaming and @genType.as
 By default, entities with a given name are exported/imported with the same name. However, you might wish to change the appearence of the name on the JS side.
 For example, in the case of a Reason keyword, such as `type`:
 
