@@ -291,6 +291,23 @@ If named arguments are present in the Reason type, they are grouped and exported
 
 In case of mixed named and unnamed arguments, consecutive named arguments form separate groups. So e.g. `foo : (int, ~x:int, ~y:int, int, ~z:int) => int` is exported to a JS function of type `(number, {x:number, y:number}, number, {z:number}) => number`.
 
+
+To specify how a named argument is exported to JS, use the `[@genType.as "name"]` annotation:
+
+```reason
+[@genType]
+let make =
+  (~date: float) => [@genType.as "type"] (~type_: string) => ...
+```
+
+**NOTE** For technical reasons, it is not possible to rename the first argument of a function (it will be fixed once bucklescript supports OCaml 4.0.6).
+
+
+
+
+
+
+
 ### components
 
 ReasonReact components with props of Reason types `t1`, `t2`, `t3` are exported as reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
