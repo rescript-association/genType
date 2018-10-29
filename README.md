@@ -11,17 +11,15 @@ The implementation of [@genType] performs a type-directed transformation of Reas
 
 The output of `genType` can be configured by using one of 3 back-ends: `untyped` to generate wrappers in vanilla JS, `typescript` to generate [TypeScript](https://www.typescriptlang.org/), and `flow` to generate JS with [Flow](https://flow.org/en/) type annotations.
 
-### Work in progress, only for early adopters. It is possible that the workflow will change in future.
-
----
-
-Wrappers to export ReasonReact components to JavaScript are generated when the annotation `[@genType] let make ...` is added to the component definition.
 
 [Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/EV12EbxCPjM)
 [![IMAGE ALT TEXT HERE](assets/genTypeDemo.png)](https://youtu.be/EV12EbxCPjM)
 
-# What's new.
-See [Changes.md](Changes.md) for a complete list of changes per release.
+
+# Project status.
+See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
+
+> **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
 # Download genType from Prebuilt Releases
 
