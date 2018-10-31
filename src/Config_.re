@@ -4,7 +4,7 @@ let projectRoot = ref("");
 
 type language =
   | Flow
-  | Typescript
+  | TypeScript
   | Untyped;
 
 type module_ =
@@ -150,7 +150,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
     };
     let language =
       switch (languageString) {
-      | "typescript" => Typescript
+      | "typescript" => TypeScript
       | "untyped" => Untyped
       | _ => Flow
       };

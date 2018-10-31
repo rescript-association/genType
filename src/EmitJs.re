@@ -313,7 +313,7 @@ let rec emitCodeItem =
 
     let (emitters, env) =
       switch (language) {
-      | Typescript =>
+      | TypeScript =>
         /* emit an import {... as ...} immediately */
         let emitters =
           importPath
@@ -441,7 +441,7 @@ let rec emitCodeItem =
     let importPath = importAnnotation.importPath;
     let (emitters, importedAsName, env) =
       switch (language) {
-      | Typescript =>
+      | TypeScript =>
         /* emit an import {... as ...} immediately */
         let valueNameNotChecked = valueName ++ "NotChecked";
         let emitters =

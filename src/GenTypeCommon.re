@@ -81,7 +81,7 @@ let mixedOrUnknown = (~config) =>
   Ident(
     switch (config.language) {
     | Flow => "mixed"
-    | Typescript
+    | TypeScript
     | Untyped => "unknown"
     },
     [],

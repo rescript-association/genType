@@ -14,8 +14,7 @@ type moduleItemGen = {mutable itemValue: int};
 type moduleItem = int;
 
 let blockTagValue = (~config, i) =>
-  string_of_int(i)
-  ++ (config.language == GenTypeCommon.Typescript ? " as any" : "");
+  string_of_int(i) ++ (config.language == TypeScript ? " as any" : "");
 
 let emitRecordAsInt = (~config, i) => i |> blockTagValue(~config);
 
