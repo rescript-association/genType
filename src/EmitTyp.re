@@ -47,8 +47,7 @@ module Indent = {
 };
 
 let interfaceName = (~config, name) =>
-  config.exportInterfaces && config.language == TypeScript ?
-    "I" ++ name : name;
+  config.exportInterfaces ? "I" ++ name : name;
 
 let rec renderTyp =
         (~config, ~indent=None, ~typeNameIsInterface, ~inFunType, typ) =>
@@ -166,7 +165,7 @@ and renderField =
 and renderFields =
     (~config, ~indent, ~typeNameIsInterface, ~inFunType, fields) => {
   let indent1 = Indent.more(~indent);
-  (config.language == Flow ? "{|" : "{")
+  (config.language == Flow && !config.exportInterfaces ? "{|" : "{")
   ++ String.concat(
        ", ",
        List.map(
@@ -180,7 +179,7 @@ and renderFields =
        ),
      )
   ++ Indent.break(~indent)
-  ++ (config.language == Flow ? "|}" : "}");
+  ++ (config.language == Flow && !config.exportInterfaces ? "|}" : "}");
 }
 and renderFunType =
     (
@@ -307,10 +306,25 @@ let emitExportType =
     ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
   let typeParamsString = genericsString(~typeVars);
+  let isInterface = resolvedTypeName |> typeNameIsInterface;
+  let resolvedTypeName =
+    config.exportInterfaces && isInterface ?
+      resolvedTypeName |> interfaceName(~config) : resolvedTypeName;
 
   switch (config.language) {
   | Flow =>
     switch (optTyp) {
+    | Some(typ) when config.exportInterfaces && isInterface && !opaque =>
+      "export interface "
+      ++ resolvedTypeName
+      ++ typeParamsString
+      ++ " "
+      ++ (
+        (opaque ? mixedOrUnknown(~config) : typ)
+        |> typToString(~config, ~typeNameIsInterface)
+      )
+      ++ ";"
+      |> export(~emitters)
     | Some(typ) =>
       "export"
       ++ (opaque ? " opaque " : " ")
@@ -333,7 +347,6 @@ let emitExportType =
       |> export(~emitters)
     }
   | TypeScript =>
-    let isInterface = resolvedTypeName |> typeNameIsInterface;
     if (opaque) {
       /* Represent an opaque type as an absract class with a field called 'opaque'.
          Any type parameters must occur in the type of opaque, so that different
@@ -355,10 +368,7 @@ let emitExportType =
     } else {
       (
         if (isInterface && config.exportInterfaces) {
-          "export interface "
-          ++ (resolvedTypeName |> interfaceName(~config))
-          ++ typeParamsString
-          ++ " ";
+          "export interface " ++ resolvedTypeName ++ typeParamsString ++ " ";
         } else {
           "// tslint:disable-next-line:interface-over-type-literal\n"
           ++ "export type "
@@ -375,7 +385,7 @@ let emitExportType =
       )
       ++ ";"
       |> export(~emitters);
-    };
+    }
   | Untyped => emitters
   };
 };
