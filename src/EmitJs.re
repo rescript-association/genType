@@ -846,9 +846,7 @@ let propagateAnnotationToSubTypes =
     | NoGenType => ()
     };
   };
-  if (config.inlineAnnotations) {
-    initialAnnotatedTypes |> List.iter(visitTypAndUpdateMarked);
-  };
+  initialAnnotatedTypes |> List.iter(visitTypAndUpdateMarked);
   let newTypeMap =
     typeMap
     |> StringMap.mapi((typeName, (args, typ, genTypeKind, importTypes)) =>
