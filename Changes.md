@@ -1,4 +1,4 @@
-# master
+# 0.26.0
 - Support importing types with type parameters.
 - Prevent imported values from being used directly from JS.
 
