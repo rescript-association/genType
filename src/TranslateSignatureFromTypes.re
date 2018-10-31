@@ -10,7 +10,7 @@ let translateTypeDeclarationFromTypes =
       ~id,
       {type_params: typeParams, type_kind, type_attributes, type_manifest, _}: Types.type_declaration,
     )
-    : list(Translation.typeDeclaration) => {
+    : list(CodeItem.typeDeclaration) => {
   typeEnv |> TypeEnv.newType(~name=id |> Ident.name);
   let typeName = Ident.name(id);
   let typeVars = TypeVars.extract(typeParams);

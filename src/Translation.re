@@ -1,29 +1,15 @@
 open GenTypeCommon;
 
-type importType = {
-  typeName: string,
-  asTypeName: option(string),
-  importPath: ImportPath.t,
-  cmtFile: option(string),
-};
-
-type typeDeclaration = {
-  exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
-  importTypes: list(importType),
-};
-
 type t = {
-  importTypes: list(importType),
+  importTypes: list(CodeItem.importType),
   codeItems: list(CodeItem.t),
-  typeDeclarations: list(typeDeclaration),
+  typeDeclarations: list(CodeItem.typeDeclaration),
 };
-
-type exportTypeMap =
-  StringMap.t((list(string), typ, Annotation.t, list(importType)));
 
 let empty = {importTypes: [], codeItems: [], typeDeclarations: []};
 
-let getImportTypeUniqueName = ({typeName, asTypeName, _}: importType) =>
+let getImportTypeUniqueName =
+    ({typeName, asTypeName, _}: CodeItem.importType) =>
   typeName
   ++ (
     switch (asTypeName) {
@@ -80,7 +66,7 @@ let pathToImportType =
   | _ when path |> pathIsResolved => []
   | Pid(name) when name == "list" => [
       {
-        typeName: "list",
+        CodeItem.typeName: "list",
         asTypeName: None,
         importPath:
           ModuleName.reasonPervasives
@@ -131,7 +117,8 @@ let pathToImportType =
   };
 
 let translateDependencies =
-    (~config, ~outputFileRelative, ~resolver, dependencies): list(importType) =>
+    (~config, ~outputFileRelative, ~resolver, dependencies)
+    : list(CodeItem.importType) =>
   dependencies
   |> List.map(pathToImportType(~config, ~outputFileRelative, ~resolver))
   |> List.concat;

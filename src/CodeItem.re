@@ -69,6 +69,21 @@ type exportFromTypeDeclaration = {
   annotation: Annotation.t,
 };
 
+type importType = {
+  typeName: string,
+  asTypeName: option(string),
+  importPath: ImportPath.t,
+  cmtFile: option(string),
+};
+
+type exportTypeMap =
+  StringMap.t((list(string), typ, Annotation.t, list(importType)));
+
+type typeDeclaration = {
+  exportFromTypeDeclaration,
+  importTypes: list(importType),
+};
+
 type t =
   | ExportComponent(exportComponent)
   | ExportValue(exportValue)

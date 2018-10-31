@@ -86,7 +86,7 @@ let translateConstructorDeclarationFromTypes =
     annotation,
   };
 
-  (variant, {Translation.importTypes, exportFromTypeDeclaration});
+  (variant, {CodeItem.importTypes, exportFromTypeDeclaration});
 };
 
 let traslateDeclarationKind =
@@ -101,7 +101,7 @@ let traslateDeclarationKind =
       ~typeParams,
       declarationKind,
     )
-    : list(Translation.typeDeclaration) =>
+    : list(CodeItem.typeDeclaration) =>
   switch (declarationKind) {
   | GeneralDeclarationFromTypes(optTypeExpr) =>
     switch (optTypeExpr) {
@@ -341,7 +341,7 @@ let traslateDeclarationKind =
       };
     let importTypes = [
       {
-        Translation.typeName,
+        CodeItem.typeName,
         asTypeName,
         importPath: importString |> ImportPath.fromStringUnsafe,
         cmtFile: None,
@@ -378,7 +378,7 @@ let translateTypeDeclaration =
       ~annotation: Annotation.t,
       {typ_id, typ_type, typ_attributes, typ_manifest, _}: Typedtree.type_declaration,
     )
-    : list(Translation.typeDeclaration) => {
+    : list(CodeItem.typeDeclaration) => {
   if (Debug.translation^) {
     logItem("Translate Type Declaration %s\n", typ_id |> Ident.name);
   };
@@ -435,7 +435,7 @@ let translateTypeDeclarations =
       ~typeEnv,
       typeDeclarations: list(Typedtree.type_declaration),
     )
-    : list(Translation.typeDeclaration) => {
+    : list(CodeItem.typeDeclaration) => {
   let annotation =
     switch (typeDeclarations) {
     | [dec, ..._] => dec.typ_attributes |> Annotation.fromAttributes

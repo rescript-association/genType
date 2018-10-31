@@ -4,9 +4,9 @@ type env = {
   requiresEarly: ModuleNameMap.t((ImportPath.t, bool)),
   requires: ModuleNameMap.t((ImportPath.t, bool)),
   /* For each .cmt we import types from, keep the map of exported types. */
-  cmtToExportTypeMap: StringMap.t(Translation.exportTypeMap),
+  cmtToExportTypeMap: StringMap.t(CodeItem.exportTypeMap),
   /* Map of types imported from other files. */
-  exportTypeMapFromOtherFiles: Translation.exportTypeMap,
+  exportTypeMapFromOtherFiles: CodeItem.exportTypeMap,
 };
 
 let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
@@ -25,14 +25,14 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (~config, declarations: list(Translation.typeDeclaration))
-    : Translation.exportTypeMap => {
+    (~config, declarations: list(CodeItem.typeDeclaration))
+    : CodeItem.exportTypeMap => {
   let updateExportTypeMap =
       (
-        exportTypeMap: Translation.exportTypeMap,
-        typeDeclaration: Translation.typeDeclaration,
+        exportTypeMap: CodeItem.exportTypeMap,
+        typeDeclaration: CodeItem.typeDeclaration,
       )
-      : Translation.exportTypeMap => {
+      : CodeItem.exportTypeMap => {
     let addExportType =
         (
           ~importTypes,
@@ -124,7 +124,7 @@ let emitExportType =
 };
 
 let typeNameIsInterface =
-    (~config, ~exportTypeMap: Translation.exportTypeMap, typeName) =>
+    (~config, ~exportTypeMap: CodeItem.exportTypeMap, typeName) =>
   switch (exportTypeMap |> StringMap.find(typeName)) {
   | (_, Object(_) | Record(_), _, _) when config.emitInterfaces => true
   | _ => false
@@ -693,7 +693,7 @@ let emitImportType =
       ~emitters,
       ~inputCmtTranslateTypeDeclarations,
       ~env,
-      {Translation.typeName, asTypeName, importPath, cmtFile},
+      {CodeItem.typeName, asTypeName, importPath, cmtFile},
     ) => {
   let emitters =
     EmitTyp.emitImportTypeAs(
@@ -772,9 +772,7 @@ let emitImportTypes =
 let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
   typeDeclarations
   |> List.map(typeDeclaration =>
-       switch (
-         typeDeclaration.Translation.exportFromTypeDeclaration.exportKind
-       ) {
+       switch (typeDeclaration.CodeItem.exportFromTypeDeclaration.exportKind) {
        | ExportType(exportType) =>
          if (annotatedSet |> StringSet.mem(exportType.resolvedTypeName)) {
            {
@@ -792,12 +790,12 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
      )
   |> List.filter(
        (
-         {exportFromTypeDeclaration: {annotation, _}, _}: Translation.typeDeclaration,
+         {exportFromTypeDeclaration: {annotation, _}, _}: CodeItem.typeDeclaration,
        ) =>
        annotation != NoGenType
      );
 
-let propagateAnnotationToSubTypes = (typeMap: Translation.exportTypeMap) => {
+let propagateAnnotationToSubTypes = (typeMap: CodeItem.exportTypeMap) => {
   let annotatedSet = ref(StringSet.empty);
   let initialAnnotatedTypes =
     typeMap
@@ -888,14 +886,14 @@ let emitTranslationAsString =
 
   let importTypesFromTypeDeclarations =
     annotatedTypeDeclarations
-    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
+    |> List.map((typeDeclaration: CodeItem.typeDeclaration) =>
          typeDeclaration.importTypes
        )
     |> List.concat;
 
   let exportFromTypeDeclarations =
     annotatedTypeDeclarations
-    |> List.map((typeDeclaration: Translation.typeDeclaration) =>
+    |> List.map((typeDeclaration: CodeItem.typeDeclaration) =>
          typeDeclaration.exportFromTypeDeclaration
        );
 
