@@ -50,7 +50,10 @@ let createExportTypeMap =
             " "
             ++ (annotation |> Annotation.toString |> EmitText.comment)
             ++ " = "
-            ++ (typ |> EmitTyp.typToString(~config))
+            ++ (
+              typ
+              |> EmitTyp.typToString(~config, ~typeNameIsInterface=_ => false)
+            )
           | None => ""
           },
         );
@@ -75,7 +78,7 @@ let createExportTypeMap =
   declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
-let codeItemToString = (~config, codeItem: CodeItem.t) =>
+let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
   switch (codeItem) {
   | ExportComponent({fileName, moduleName, _}) =>
     "ExportComponent fileName:"
@@ -89,7 +92,7 @@ let codeItemToString = (~config, codeItem: CodeItem.t) =>
     ++ " moduleName:"
     ++ ModuleName.toString(fileName)
     ++ " typ:"
-    ++ EmitTyp.typToString(~config, typ)
+    ++ EmitTyp.typToString(~config, ~typeNameIsInterface, typ)
   | ImportComponent({importAnnotation, _}) =>
     "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
   | ImportValue({importAnnotation, _}) =>
@@ -124,12 +127,26 @@ let emitExportType =
 };
 
 let typeNameIsInterface =
-    (~config, ~exportTypeMap: CodeItem.exportTypeMap, typeName) =>
+    (
+      ~exportTypeMap: CodeItem.exportTypeMap,
+      ~exportTypeMapFromOtherFiles: CodeItem.exportTypeMap,
+      typeName,
+    ) => {
+  let typIsInterface = typ =>
+    switch (typ) {
+    | Object(_)
+    | Record(_) => true
+    | _ => false
+    };
   switch (exportTypeMap |> StringMap.find(typeName)) {
-  | {typ: Object(_) | Record(_)} when config.emitInterfaces => true
-  | _ => false
-  | exception Not_found => false
+  | {typ} => typ |> typIsInterface
+  | exception Not_found =>
+    switch (exportTypeMapFromOtherFiles |> StringMap.find(typeName)) {
+    | {typ} => typ |> typIsInterface
+    | exception Not_found => false
+    }
   };
+};
 
 let emitexportFromTypeDeclaration =
     (
@@ -160,6 +177,7 @@ let emitexportFromTypeDeclaration =
         ~emitters,
         ~config,
         ~name,
+        ~typeNameIsInterface,
         ~typeParams,
         ~variants,
       ),
@@ -199,6 +217,7 @@ let emitexportFromTypeDeclaration =
         |> EmitTyp.emitExportConst(
              ~emitters,
              ~name=leafName,
+             ~typeNameIsInterface,
              ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
@@ -218,6 +237,7 @@ let emitexportFromTypeDeclaration =
         |> EmitTyp.emitExportConst(
              ~emitters,
              ~name=leafName,
+             ~typeNameIsInterface,
              ~typ=constructorTyp |> createFunctionType,
              ~config,
            );
@@ -273,7 +293,10 @@ let rec emitCodeItem =
         ) => {
   let language = config.language;
   if (Debug.codeItems^) {
-    logItem("Code Item: %s\n", codeItem |> codeItemToString(~config));
+    logItem(
+      "Code Item: %s\n",
+      codeItem |> codeItemToString(~config, ~typeNameIsInterface),
+    );
   };
 
   switch (codeItem) {
@@ -324,7 +347,14 @@ let rec emitCodeItem =
       );
     let emitters =
       "("
-      ++ ("props" |> EmitTyp.ofType(~config, ~typ=Ident(propsTypeName, [])))
+      ++ (
+        "props"
+        |> EmitTyp.ofType(
+             ~config,
+             ~typeNameIsInterface,
+             ~typ=Ident(propsTypeName, []),
+           )
+      )
       ++ ") {\n  return <"
       ++ componentName
       ++ " {...props}/>;\n}"
@@ -394,6 +424,7 @@ let rec emitCodeItem =
              ++ "' early to allow circular import from the '.bs.js' file.",
            ~emitters,
            ~name="make",
+           ~typeNameIsInterface,
            ~typ=mixedOrUnknown(~config),
            ~config,
          );
@@ -442,6 +473,7 @@ let rec emitCodeItem =
       |> EmitTyp.emitExportConstEarly(
            ~emitters,
            ~name=valueNameTypeChecked,
+           ~typeNameIsInterface,
            ~typ,
            ~config,
            ~comment=
@@ -464,6 +496,7 @@ let rec emitCodeItem =
              ++ "' early to allow circular import from the '.bs.js' file.",
            ~emitters,
            ~name=valueName,
+           ~typeNameIsInterface,
            ~typ,
            ~config,
          );
@@ -549,13 +582,19 @@ let rec emitCodeItem =
       EmitTyp.emitExportConstMany(
         ~emitters,
         ~name,
+        ~typeNameIsInterface,
         ~typ=componentType,
         ~config,
         [
           "ReasonReact.wrapReasonForJs(",
           "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
           "  (function _("
-          ++ EmitTyp.ofType(~config, ~typ=Ident(propsTypeName, []), jsProps)
+          ++ EmitTyp.ofType(
+               ~config,
+               ~typeNameIsInterface,
+               ~typ=Ident(propsTypeName, []),
+               jsProps,
+             )
           ++ ") {",
           "     return "
           ++ (
@@ -618,7 +657,13 @@ let rec emitCodeItem =
         |> Converter.toJS(~converter, ~enumTables)
       )
       ++ ";"
-      |> EmitTyp.emitExportConst(~emitters, ~name=resolvedName, ~typ, ~config);
+      |> EmitTyp.emitExportConst(
+           ~emitters,
+           ~name=resolvedName,
+           ~typeNameIsInterface,
+           ~typ,
+           ~config,
+         );
 
     (envWithRequires, emitters);
   };
@@ -692,57 +737,63 @@ let emitImportType =
       ~resolver,
       ~emitters,
       ~inputCmtTranslateTypeDeclarations,
+      ~typeNameIsInterface,
       ~env,
       {CodeItem.typeName, asTypeName, importPath, cmtFile},
     ) => {
+  let (env, emitters) =
+    switch (asTypeName, cmtFile) {
+    | (None, _)
+    | (_, None) => (env, emitters)
+    | (Some(asType), Some(cmtFile)) =>
+      let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
+        switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
+        | x => env.exportTypeMapFromOtherFiles |> StringMap.add(asType, x)
+        | exception Not_found => exportTypeMapFromCmt
+        };
+      switch (env.cmtToExportTypeMap |> StringMap.find(cmtFile)) {
+      | exportTypeMapFromCmt => (
+          {
+            ...env,
+            exportTypeMapFromOtherFiles:
+              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+          },
+          emitters,
+        )
+      | exception Not_found =>
+        let exportTypeMapFromCmt =
+          Cmt_format.read_cmt(cmtFile)
+          |> inputCmtTranslateTypeDeclarations(
+               ~config,
+               ~outputFileRelative,
+               ~resolver,
+             )
+          |> createExportTypeMap(~config);
+        let cmtToExportTypeMap =
+          env.cmtToExportTypeMap
+          |> StringMap.add(cmtFile, exportTypeMapFromCmt);
+        (
+          {
+            ...env,
+            cmtToExportTypeMap,
+            exportTypeMapFromOtherFiles:
+              updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
+          },
+          emitters,
+        );
+      };
+    };
   let emitters =
     EmitTyp.emitImportTypeAs(
       ~emitters,
       ~config,
       ~typeName,
       ~asTypeName,
+      ~typeNameIsInterface=typeNameIsInterface(~env),
       ~importPath,
     );
-  switch (asTypeName, cmtFile) {
-  | (None, _)
-  | (_, None) => (env, emitters)
-  | (Some(asType), Some(cmtFile)) =>
-    let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
-      switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
-      | x => env.exportTypeMapFromOtherFiles |> StringMap.add(asType, x)
-      | exception Not_found => exportTypeMapFromCmt
-      };
-    switch (env.cmtToExportTypeMap |> StringMap.find(cmtFile)) {
-    | exportTypeMapFromCmt => (
-        {
-          ...env,
-          exportTypeMapFromOtherFiles:
-            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-        },
-        emitters,
-      )
-    | exception Not_found =>
-      let exportTypeMapFromCmt =
-        Cmt_format.read_cmt(cmtFile)
-        |> inputCmtTranslateTypeDeclarations(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-           )
-        |> createExportTypeMap(~config);
-      let cmtToExportTypeMap =
-        env.cmtToExportTypeMap |> StringMap.add(cmtFile, exportTypeMapFromCmt);
-      (
-        {
-          ...env,
-          cmtToExportTypeMap,
-          exportTypeMapFromOtherFiles:
-            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-        },
-        emitters,
-      );
-    };
-  };
+
+  (env, emitters);
 };
 
 let emitImportTypes =
@@ -753,6 +804,7 @@ let emitImportTypes =
       ~emitters,
       ~env,
       ~inputCmtTranslateTypeDeclarations,
+      ~typeNameIsInterface,
       importTypes,
     ) =>
   importTypes
@@ -764,6 +816,7 @@ let emitImportTypes =
            ~resolver,
            ~emitters,
            ~inputCmtTranslateTypeDeclarations,
+           ~typeNameIsInterface,
            ~env,
          ),
        (env, emitters),
@@ -896,12 +949,19 @@ let emitTranslationAsString =
          typeDeclaration.exportFromTypeDeclaration
        );
 
+  let typeNameIsInterface = (~env) =>
+    typeNameIsInterface(
+      ~exportTypeMap,
+      ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
+    );
+
   let typIsOpaque_ = (~env, typ) =>
     typ
     |> Converter.typToConverterOpaque(
          ~config,
          ~exportTypeMap,
          ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
+         ~typeNameIsInterface=typeNameIsInterface(~env),
        )
     |> snd;
 
@@ -911,6 +971,7 @@ let emitTranslationAsString =
          ~config,
          ~exportTypeMap,
          ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
+         ~typeNameIsInterface=typeNameIsInterface(~env),
        );
 
   let emitters = Emitters.initial
@@ -928,6 +989,7 @@ let emitTranslationAsString =
          ~emitters,
          ~env,
          ~inputCmtTranslateTypeDeclarations,
+         ~typeNameIsInterface,
        );
 
   let (env, emitters) =
@@ -939,7 +1001,7 @@ let emitTranslationAsString =
          ~env,
          ~typToConverter=typToConverter_(~env),
          ~enumTables,
-         ~typeNameIsInterface=typeNameIsInterface(~config, ~exportTypeMap),
+         ~typeNameIsInterface=typeNameIsInterface(~env),
        );
 
   let (finalEnv, emitters) =
@@ -953,7 +1015,7 @@ let emitTranslationAsString =
          ~enumTables,
          ~typIsOpaque=typIsOpaque_(~env),
          ~typToConverter=typToConverter_(~env),
-         ~typeNameIsInterface=typeNameIsInterface(~config, ~exportTypeMap),
+         ~typeNameIsInterface=typeNameIsInterface(~env),
        );
 
   let emitters = enumTables |> emitEnumTables(~emitters);

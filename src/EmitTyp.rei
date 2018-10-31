@@ -9,6 +9,7 @@ let emitExportConst:
     ~comment: string=?,
     ~emitters: Emitters.t,
     ~name: string,
+    ~typeNameIsInterface: string => bool,
     ~typ: typ,
     ~config: config,
     string
@@ -20,6 +21,7 @@ let emitExportConstEarly:
     ~comment: string=?,
     ~emitters: Emitters.t,
     ~name: string,
+    ~typeNameIsInterface: string => bool,
     ~typ: typ,
     ~config: config,
     string
@@ -30,6 +32,7 @@ let emitExportConstMany:
   (
     ~emitters: Emitters.t,
     ~name: string,
+    ~typeNameIsInterface: string => bool,
     ~typ: typ,
     ~config: config,
     list(string)
@@ -69,6 +72,7 @@ let emitExportVariantType:
     ~config: config,
     ~name: string,
     ~typeParams: list(typ),
+    ~typeNameIsInterface: string => bool,
     ~variants: list(variant)
   ) =>
   Emitters.t;
@@ -79,6 +83,7 @@ let emitImportTypeAs:
     ~config: config,
     ~typeName: string,
     ~asTypeName: option(string),
+    ~typeNameIsInterface: string => bool,
     ~importPath: ImportPath.t
   ) =>
   Emitters.t;
@@ -110,7 +115,9 @@ let fileHeader: (~config: config) => string;
 
 let generatedModuleExtension: (~config: config) => string;
 
-let ofType: (~config: config, ~typ: typ, string) => string;
+let ofType:
+  (~config: config, ~typeNameIsInterface: string => bool, ~typ: typ, string) =>
+  string;
 
 let ofTypeAny: (~config: config, string) => string;
 
@@ -120,4 +127,5 @@ let reactComponentType: (~config: config, ~propsTypeName: string) => typ;
 
 let shimExtension: (~config: config) => string;
 
-let typToString: (~config: config, typ) => string;
+let typToString:
+  (~config: config, ~typeNameIsInterface: string => bool, typ) => string;

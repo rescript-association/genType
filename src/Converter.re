@@ -89,6 +89,7 @@ let typToConverterOpaque =
       ~config,
       ~exportTypeMap: CodeItem.exportTypeMap,
       ~exportTypeMapFromOtherFiles,
+      ~typeNameIsInterface,
       typ,
     ) => {
   let circular = ref("");
@@ -203,7 +204,7 @@ let typToConverterOpaque =
   if (Debug.converter^) {
     logItem(
       "Converter typ:%s converter:%s\n",
-      typ |> EmitTyp.typToString(~config),
+      typ |> EmitTyp.typToString(~config, ~typeNameIsInterface),
       converter |> toString,
     );
   };
@@ -213,12 +214,19 @@ let typToConverterOpaque =
 };
 
 let typToConverter =
-    (~config, ~exportTypeMap, ~exportTypeMapFromOtherFiles, typ) =>
+    (
+      ~config,
+      ~exportTypeMap,
+      ~exportTypeMapFromOtherFiles,
+      ~typeNameIsInterface,
+      typ,
+    ) =>
   typ
   |> typToConverterOpaque(
        ~config,
        ~exportTypeMap,
        ~exportTypeMapFromOtherFiles,
+       ~typeNameIsInterface,
      )
   |> fst;
 
