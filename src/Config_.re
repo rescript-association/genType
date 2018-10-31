@@ -29,7 +29,7 @@ type config = {
 let default = {
   bsBlockPath: "bs-platform/lib/js/block.js",
   bsCurryPath: "bs-platform/lib/js/curry.js",
-  emitInterfaces:false,
+  emitInterfaces: false,
   importPath: Relative,
   language: Flow,
   module_: ES6,
@@ -86,8 +86,7 @@ let getDebug = json =>
   | Ext_json_types.Obj({map, _}) =>
     switch (map |> String_map.find_opt("debug")) {
     | Some(Ext_json_types.Obj({map, _})) =>
-      map
-      |> String_map.iter(Debug.setItem)
+      map |> String_map.iter(Debug.setItem)
     | _ => ()
     }
   | _ => ()

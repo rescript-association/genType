@@ -797,8 +797,7 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
        annotation != NoGenType
      );
 
-let propagateAnnotationToSubTypes =
-    (~config, typeMap: Translation.exportTypeMap) => {
+let propagateAnnotationToSubTypes = (typeMap: Translation.exportTypeMap) => {
   let annotatedSet = ref(StringSet.empty);
   let initialAnnotatedTypes =
     typeMap
@@ -881,7 +880,7 @@ let emitTranslationAsString =
   let (exportTypeMap, annotatedSet) =
     translation.typeDeclarations
     |> createExportTypeMap(~config)
-    |> propagateAnnotationToSubTypes(~config);
+    |> propagateAnnotationToSubTypes;
 
   let annotatedTypeDeclarations =
     translation.typeDeclarations
