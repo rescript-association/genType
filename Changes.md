@@ -1,5 +1,6 @@
 # master
 - Support importing types with type parameters.
+- Prevent imported values from being used directly from JS.
 
 # 0.25.0
 - Remove deprecated CLI option `—setProjectRoot`.
