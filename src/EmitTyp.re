@@ -47,7 +47,8 @@ module Indent = {
 };
 
 let interfaceName = (~config, name) =>
-  config.emitInterfaces && config.language == TypeScript ? "I" ++ name : name;
+  config.exportInterfaces && config.language == TypeScript ?
+    "I" ++ name : name;
 
 let rec renderTyp =
         (~config, ~indent=None, ~typeNameIsInterface, ~inFunType, typ) =>
@@ -106,7 +107,7 @@ let rec renderTyp =
 
   | Ident(identPath, typeArguments) =>
     (
-      config.emitInterfaces && identPath |> typeNameIsInterface ?
+      config.exportInterfaces && identPath |> typeNameIsInterface ?
         identPath |> interfaceName(~config) : identPath
     )
     ++ genericsString(
@@ -353,7 +354,7 @@ let emitExportType =
       |> export(~emitters);
     } else {
       (
-        if (isInterface && config.emitInterfaces) {
+        if (isInterface && config.exportInterfaces) {
           "export interface "
           ++ (resolvedTypeName |> interfaceName(~config))
           ++ typeParamsString

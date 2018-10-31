@@ -18,7 +18,7 @@ type importPath =
 type config = {
   bsBlockPath: string,
   bsCurryPath: string,
-  emitInterfaces: bool,
+  exportInterfaces: bool,
   importPath,
   language,
   module_,
@@ -29,13 +29,24 @@ type config = {
 let default = {
   bsBlockPath: "bs-platform/lib/js/block.js",
   bsCurryPath: "bs-platform/lib/js/curry.js",
-  emitInterfaces: false,
+  exportInterfaces: false,
   importPath: Relative,
   language: Flow,
   module_: ES6,
   modulesMap: ModuleNameMap.empty,
   reasonReactPath: "reason-react/src/ReasonReact.js",
 };
+
+let getBool = (s, json) =>
+  switch (json) {
+  | Ext_json_types.Obj({map, _}) =>
+    switch (map |> String_map.find_opt(s)) {
+    | Some(True(_)) => Some(true)
+    | Some(False(_)) => Some(false)
+    | _ => None
+    }
+  | _ => None
+  };
 
 let getString = (s, json) =>
   switch (json) {
@@ -126,6 +137,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
     let reasonReactPathString = json |> getString("reasonReactPath");
     let bsBlockPathString = json |> getString("bsBlockPath");
     let bsCurryPathString = json |> getString("bsCurryPath");
+    let exportInterfacesBool = json |> getBool("exportInterfaces");
     let modulesMap =
       json
       |> getShims
@@ -181,15 +193,20 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
       | "" => default.bsCurryPath
       | _ => bsCurryPathString
       };
+    let exportInterfaces =
+      switch (exportInterfacesBool) {
+      | None => default.exportInterfaces
+      | Some(b) => b
+      };
     {
-      ...default,
-      language,
-      module_,
-      importPath,
-      reasonReactPath,
       bsBlockPath,
       bsCurryPath,
+      exportInterfaces,
+      importPath,
+      language,
+      module_,
       modulesMap,
+      reasonReactPath,
     };
   };
 
