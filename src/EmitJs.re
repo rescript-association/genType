@@ -487,7 +487,11 @@ let rec emitCodeItem =
              ++ "'.",
          );
     let emitters =
-      (valueNameTypeChecked |> Converter.toReason(~converter, ~enumTables))
+      (
+        valueNameTypeChecked
+        |> Converter.toReason(~converter, ~enumTables)
+        |> EmitTyp.emitTypeCast(~config, ~typ, ~typeNameIsInterface)
+      )
       ++ ";"
       |> EmitTyp.emitExportConstEarly(
            ~comment=
@@ -497,7 +501,7 @@ let rec emitCodeItem =
            ~emitters,
            ~name=valueName,
            ~typeNameIsInterface,
-           ~typ,
+           ~typ=mixedOrUnknown(~config),
            ~config,
          );
     (env, emitters);

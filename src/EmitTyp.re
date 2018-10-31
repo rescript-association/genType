@@ -516,3 +516,11 @@ let emitImportTypeAs =
 
 let ofTypeAny = (~config, s) =>
   config.language == TypeScript ? s ++ ": any" : s;
+
+let emitTypeCast = (~config, ~typ, ~typeNameIsInterface, s) =>
+  switch (config.language) {
+  | TypeScript =>
+    s ++ " as " ++ (typ |> typToString(~config, ~typeNameIsInterface))
+  | Untyped
+  | Flow => s
+  };

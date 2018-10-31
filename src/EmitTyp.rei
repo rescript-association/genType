@@ -111,6 +111,10 @@ let emitRequire:
 let emitRequireReact:
   (~early: bool, ~emitters: Emitters.t, ~config: config) => Emitters.t;
 
+let emitTypeCast:
+  (~config: config, ~typ: typ, ~typeNameIsInterface: string => bool, string) =>
+  string;
+
 let fileHeader: (~config: config) => string;
 
 let generatedModuleExtension: (~config: config) => string;
