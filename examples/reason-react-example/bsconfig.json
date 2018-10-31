@@ -16,7 +16,8 @@
     },
     "debug": {
       "all": false
-    }
+    },
+    "exportInterfaces": false
   },
   "name": "reason-react-example",
   "bsc-flags": ["-bs-super-errors"],

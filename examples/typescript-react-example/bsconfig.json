@@ -8,7 +8,8 @@
     "debug": {
       "all": false,
       "basic": false
-    }
+    },
+    "exportInterfaces": false
   },
   "name": "sample-typescript-app",
   "reason": {
