@@ -119,9 +119,9 @@ let typToConverterOpaque =
           | Not_found => exportTypeMapFromOtherFiles |> StringMap.find(s)
           }
         ) {
-        | (_, _, GenTypeOpaque, _importTypes) => (IdentC, true)
-        | (_, _, NoGenType, _importTypes) => (IdentC, true)
-        | (typeVars, t, _, _importTypes) =>
+        | {annotation: GenTypeOpaque} => (IdentC, true)
+        | {annotation: NoGenType} => (IdentC, true)
+        | {typeVars, typ} =>
           let pairs =
             try (List.combine(typeVars, typeArguments)) {
             | Invalid_argument(_) => []
@@ -134,7 +134,7 @@ let typToConverterOpaque =
             | (_, typeArgument) => Some(typeArgument)
             | exception Not_found => None
             };
-          (t |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
+          (typ |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
         | exception Not_found =>
           let opaqueUnlessBase =
             !(typ == booleanT || typ == numberT || typ == stringT);

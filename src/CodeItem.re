@@ -76,8 +76,14 @@ type importType = {
   cmtFile: option(string),
 };
 
-type exportTypeMap =
-  StringMap.t((list(string), typ, Annotation.t, list(importType)));
+type exportTypeItem = {
+  typeVars: list(string),
+  typ,
+  annotation: Annotation.t,
+  importTypes: list(importType),
+};
+
+type exportTypeMap = StringMap.t(exportTypeItem);
 
 type typeDeclaration = {
   exportFromTypeDeclaration,

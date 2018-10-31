@@ -60,7 +60,7 @@ let createExportTypeMap =
         exportTypeMap
         |> StringMap.add(
              resolvedTypeName,
-             (typeVars, typ, annotation, importTypes),
+             {CodeItem.typeVars, typ, annotation, importTypes},
            )
       | None => exportTypeMap
       };
@@ -126,7 +126,7 @@ let emitExportType =
 let typeNameIsInterface =
     (~config, ~exportTypeMap: CodeItem.exportTypeMap, typeName) =>
   switch (exportTypeMap |> StringMap.find(typeName)) {
-  | (_, Object(_) | Record(_), _, _) when config.emitInterfaces => true
+  | {typ: Object(_) | Record(_)} when config.emitInterfaces => true
   | _ => false
   | exception Not_found => false
   };
@@ -800,10 +800,10 @@ let propagateAnnotationToSubTypes = (typeMap: CodeItem.exportTypeMap) => {
   let initialAnnotatedTypes =
     typeMap
     |> StringMap.bindings
-    |> List.filter(((_, (_, _, annotation, _))) =>
+    |> List.filter(((_, {CodeItem.annotation, _})) =>
          annotation == Annotation.GenType
        );
-  let visitTypAndUpdateMarked = ((_typeName, (_, typ, annotation, _))) => {
+  let visitTypAndUpdateMarked = ((_typeName, {CodeItem.typ, annotation, _})) => {
     let visited = ref(StringSet.empty);
     let rec visit = typ =>
       switch (typ) {
@@ -813,8 +813,8 @@ let propagateAnnotationToSubTypes = (typeMap: CodeItem.exportTypeMap) => {
         } else {
           visited := visited^ |> StringSet.add(typeName);
           switch (typeMap |> StringMap.find(typeName)) {
-          | (_, _, GenType | GenTypeOpaque | Generated, _) => ()
-          | (_, typ1, NoGenType, _) =>
+          | {annotation: GenType | GenTypeOpaque | Generated, _} => ()
+          | {typ: typ1, annotation: NoGenType, _} =>
             if (Debug.translation^) {
               logItem("Marking Type As Annotated %s\n", typeName);
             };
@@ -846,14 +846,13 @@ let propagateAnnotationToSubTypes = (typeMap: CodeItem.exportTypeMap) => {
   initialAnnotatedTypes |> List.iter(visitTypAndUpdateMarked);
   let newTypeMap =
     typeMap
-    |> StringMap.mapi((typeName, (args, typ, genTypeKind, importTypes)) =>
-         (
-           args,
-           typ,
-           annotatedSet^ |> StringSet.mem(typeName) ?
-             Annotation.GenType : genTypeKind,
-           importTypes,
-         )
+    |> StringMap.mapi((typeName, exportTypeItem: CodeItem.exportTypeItem) =>
+         {
+           ...exportTypeItem,
+           annotation:
+             annotatedSet^ |> StringSet.mem(typeName) ?
+               Annotation.GenType : exportTypeItem.annotation,
+         }
        );
 
   (newTypeMap, annotatedSet^);
