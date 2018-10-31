@@ -180,11 +180,7 @@ let traslateDeclarationKind =
       ]
     | Some(coreType) =>
       let typeExprTranslation =
-        coreType
-        |> TranslateCoreType.translateCoreType(
-             ~config,
-             ~typeEnv,
-           );
+        coreType |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
       let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
       let typ =
         switch (optCoreType, typeExprTranslation.typ) {
@@ -405,7 +401,7 @@ let translateTypeDeclaration =
         typ_attributes
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
       ) {
-      | Some(StringPayload(importString)) when typeParams == [] =>
+      | Some(StringPayload(importString)) =>
         ImportTypeDeclaration(
           importString,
           typ_attributes
