@@ -18,6 +18,7 @@ type importPath =
 type config = {
   bsBlockPath: string,
   bsCurryPath: string,
+  emitInterfaces: bool,
   importPath,
   inlineAnnotations: bool,
   language,
@@ -29,6 +30,7 @@ type config = {
 let default = {
   bsBlockPath: "bs-platform/lib/js/block.js",
   bsCurryPath: "bs-platform/lib/js/curry.js",
+  emitInterfaces:false,
   importPath: Relative,
   inlineAnnotations: true,
   language: Flow,

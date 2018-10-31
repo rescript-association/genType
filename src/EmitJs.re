@@ -102,6 +102,7 @@ let emitExportType =
       ~emitters,
       ~config,
       ~typIsOpaque,
+      ~typeNameIsInterface,
       {CodeItem.opaque, typeVars, resolvedTypeName, optTyp, _},
     ) => {
   let opaque =
@@ -118,8 +119,17 @@ let emitExportType =
        ~opaque,
        ~typeVars,
        ~optTyp,
+       ~typeNameIsInterface,
      );
 };
+
+let typeNameIsInterface =
+    (~config, ~exportTypeMap: Translation.exportTypeMap, typeName) =>
+  switch (exportTypeMap |> StringMap.find(typeName)) {
+  | (_, Object(_) | Record(_), _, _) when config.emitInterfaces => true
+  | _ => false
+  | exception Not_found => false
+  };
 
 let emitexportFromTypeDeclaration =
     (
@@ -129,12 +139,19 @@ let emitexportFromTypeDeclaration =
       ~env,
       ~typToConverter,
       ~enumTables,
+      ~typeNameIsInterface,
       exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
     ) =>
   switch (exportFromTypeDeclaration.exportKind) {
   | ExportType(exportType) => (
       env,
-      emitExportType(~emitters, ~config, ~typIsOpaque, exportType),
+      emitExportType(
+        ~emitters,
+        ~config,
+        ~typIsOpaque,
+        exportType,
+        ~typeNameIsInterface,
+      ),
     )
 
   | ExportVariantType({CodeItem.typeParams, variants, name, _}) => (
@@ -166,7 +183,13 @@ let emitexportFromTypeDeclaration =
     };
 
     let emitters =
-      emitExportType(~emitters, ~config, ~typIsOpaque, exportType);
+      emitExportType(
+        ~emitters,
+        ~config,
+        ~typIsOpaque,
+        ~typeNameIsInterface,
+        exportType,
+      );
 
     let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~config);
     let emitters =
@@ -217,6 +240,7 @@ let emitExportFromTypeDeclarations =
       ~env,
       ~typToConverter,
       ~enumTables,
+      ~typeNameIsInterface,
       exportFromTypeDeclarations,
     ) =>
   exportFromTypeDeclarations
@@ -228,6 +252,7 @@ let emitExportFromTypeDeclarations =
            ~typIsOpaque,
            ~env,
            ~typToConverter,
+           ~typeNameIsInterface,
            ~enumTables,
          ),
        (env, emitters),
@@ -243,6 +268,7 @@ let rec emitCodeItem =
           ~enumTables,
           ~typIsOpaque,
           ~typToConverter,
+          ~typeNameIsInterface,
           codeItem,
         ) => {
   let language = config.language;
@@ -293,6 +319,7 @@ let rec emitCodeItem =
         ~config,
         ~emitters,
         ~typIsOpaque,
+        ~typeNameIsInterface,
         exportType,
       );
     let emitters =
@@ -498,7 +525,13 @@ let rec emitCodeItem =
       };
 
     let emitters =
-      emitExportType(~emitters, ~config, ~typIsOpaque, exportType);
+      emitExportType(
+        ~emitters,
+        ~config,
+        ~typIsOpaque,
+        ~typeNameIsInterface,
+        exportType,
+      );
 
     let numArgs = args |> List.length;
     let useCurry = numArgs >= 2;
@@ -600,6 +633,7 @@ and emitCodeItems =
       ~enumTables,
       ~typIsOpaque,
       ~typToConverter,
+      ~typeNameIsInterface,
       codeItems,
     ) =>
   codeItems
@@ -614,6 +648,7 @@ and emitCodeItems =
            ~enumTables,
            ~typIsOpaque,
            ~typToConverter,
+           ~typeNameIsInterface,
          ),
        (env, emitters),
      );
@@ -910,6 +945,7 @@ let emitTranslationAsString =
          ~env,
          ~typToConverter=typToConverter_(~env),
          ~enumTables,
+         ~typeNameIsInterface=typeNameIsInterface(~config, ~exportTypeMap),
        );
 
   let (finalEnv, emitters) =
@@ -923,6 +959,7 @@ let emitTranslationAsString =
          ~enumTables,
          ~typIsOpaque=typIsOpaque_(~env),
          ~typToConverter=typToConverter_(~env),
+         ~typeNameIsInterface=typeNameIsInterface(~config, ~exportTypeMap),
        );
 
   let emitters = enumTables |> emitEnumTables(~emitters);

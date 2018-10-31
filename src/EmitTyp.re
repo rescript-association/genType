@@ -219,6 +219,7 @@ let emitExportType =
       ~opaque,
       ~typeVars,
       ~optTyp,
+      ~typeNameIsInterface,
       resolvedTypeName,
     ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
@@ -246,6 +247,7 @@ let emitExportType =
       |> export(~emitters)
     }
   | Typescript =>
+    let isInterface = resolvedTypeName |> typeNameIsInterface;
     if (opaque) {
       /* Represent an opaque type as an absract class with a field called 'opaque'.
          Any type parameters must occur in the type of opaque, so that different
@@ -264,6 +266,19 @@ let emitExportType =
       ++ typeOfOpaqueField
       ++ " }; /* simulate opaque types */"
       |> export(~emitters);
+    } else if (isInterface) {
+      "export interface "
+      ++ resolvedTypeName
+      ++ " "
+      ++ typeParamsString
+      ++ (
+        switch (optTyp) {
+        | Some(typ) => typ |> typToString(~config)
+        | None => resolvedTypeName
+        }
+      )
+      ++ ";"
+      |> export(~emitters);
     } else {
       "// tslint:disable-next-line:interface-over-type-literal\n"
       ++ "export type "
@@ -278,7 +293,7 @@ let emitExportType =
       )
       ++ ";"
       |> export(~emitters);
-    }
+    };
   | Untyped => emitters
   };
 };
