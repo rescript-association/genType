@@ -33,6 +33,8 @@ export type point = {|+x: number, +y?: number|};
 
 export type { myArray };
 
+export const myArea: (point) => number = function _(Arg1) { const result = WrapJsValueBS.myArea([Arg1.x, Arg1.y]); return result };
+
 export const roundedNumber: number = WrapJsValueBS.roundedNumber;
 
 export const areaValue: number = WrapJsValueBS.areaValue;

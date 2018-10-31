@@ -18,6 +18,9 @@ type point = {
 external area: point => int = "";
 
 [@genType]
+let myArea = area;
+
+[@genType]
 let roundedNumber = round(1.8);
 
 [@genType]

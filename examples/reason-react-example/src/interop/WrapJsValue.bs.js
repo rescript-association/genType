@@ -3,6 +3,10 @@
 
 var WrapJsValueRe = require("./WrapJsValue.re");
 
+function myArea(prim) {
+  return WrapJsValueRe.area(prim);
+}
+
 var roundedNumber = WrapJsValueRe.round(1.8);
 
 var areaValue = WrapJsValueRe.area(/* record */[
@@ -10,6 +14,7 @@ var areaValue = WrapJsValueRe.area(/* record */[
       /* y */undefined
     ]);
 
+exports.myArea = myArea;
 exports.roundedNumber = roundedNumber;
 exports.areaValue = areaValue;
 /* roundedNumber Not a pure module */

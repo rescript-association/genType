@@ -24,6 +24,13 @@ const WrapJsValue = require("./WrapJsValue.re");
 consoleLog("interopRoot.js roundedNumber:", WrapJsValue.roundedNumber);
 consoleLog("interopRoot.js areaValue:", WrapJsValue.areaValue);
 
+const callAreaDirectly = WrapJsValue.area({x:3,y:4});
+const callMyAreaDirectly = WrapJsValue.myArea({x:3,y:4});
+
+consoleLog("interopRoot.js callAreaDirectly:", callAreaDirectly);
+consoleLog("interopRoot.js callMyAreaDirectly:", callMyAreaDirectly);
+
+
 consoleLog("anInterestingFlowType ", require("../basics/SomeFlowTypes").c);
 
 const Enums = require("../basics/Enums.re");
