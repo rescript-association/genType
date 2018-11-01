@@ -139,10 +139,10 @@ let typeNameIsInterface =
     | _ => false
     };
   switch (exportTypeMap |> StringMap.find(typeName)) {
-  | {typ} => typ |> typIsInterface
+  | {typ, _} => typ |> typIsInterface
   | exception Not_found =>
     switch (exportTypeMapFromOtherFiles |> StringMap.find(typeName)) {
-    | {typ} => typ |> typIsInterface
+    | {typ,_} => typ |> typIsInterface
     | exception Not_found => false
     }
   };

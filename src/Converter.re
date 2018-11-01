@@ -120,9 +120,9 @@ let typToConverterOpaque =
           | Not_found => exportTypeMapFromOtherFiles |> StringMap.find(s)
           }
         ) {
-        | {annotation: GenTypeOpaque} => (IdentC, true)
-        | {annotation: NoGenType} => (IdentC, true)
-        | {typeVars, typ} =>
+        | {annotation: GenTypeOpaque, _} => (IdentC, true)
+        | {annotation: NoGenType, _} => (IdentC, true)
+        | {typeVars, typ, _} =>
           let pairs =
             try (List.combine(typeVars, typeArguments)) {
             | Invalid_argument(_) => []

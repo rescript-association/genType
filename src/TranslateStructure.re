@@ -6,7 +6,7 @@ let rec addAnnotationsToTyps = (expr: Typedtree.expression, typs: list(typ)) =>
     let (fields1, nextTyps1) =
       addAnnotationsToFields(expr, fields, nextTyps);
     [GroupOfLabeledArgs(fields1), ...nextTyps1];
-  | (Texp_function(_lbl, [{c_rhs}], _), [typ, ...nextTyps]) =>
+  | (Texp_function(_lbl, [{c_rhs, _}], _), [typ, ...nextTyps]) =>
     let nextTyps1 = addAnnotationsToTyps(c_rhs, nextTyps);
     [typ, ...nextTyps1];
   | _ => typs
@@ -15,7 +15,7 @@ and addAnnotationsToFields =
     (expr: Typedtree.expression, fields: fields, typs: list(typ)) =>
   switch (expr.exp_desc, fields, typs) {
   | (_, [], _) => ([], addAnnotationsToTyps(expr, typs))
-  | (Texp_function(_lbl, [{c_rhs}], _), [field, ...nextFields], _) =>
+  | (Texp_function(_lbl, [{c_rhs, _}], _), [field, ...nextFields], _) =>
     let genTypeAsPayload =
       expr.exp_attributes
       |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
