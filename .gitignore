@@ -9,3 +9,10 @@ node_modules/
 /_build
 /genType.install
 /yarn-error.log
+
+# dist related stuff
+dist/vendor-darwin/gentype.native
+dist/vendor-win32/gentype.native.exe
+dist/vendor-linux/gentype.native
+dist/package.json
+dist/gentype.exe

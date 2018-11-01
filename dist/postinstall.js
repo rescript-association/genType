@@ -3,7 +3,7 @@ var fs = require("fs");
 var platform = process.platform;
 
 /* We always use the .exe extension, no matter if unix / win32 */
-const targetPath = path.join(__dirname, "gentype.native.exe");
+const targetPath = path.join(__dirname, "gentype.exe");
 
 function fail(msg) {
     console.warn(msg);
