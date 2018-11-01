@@ -16,3 +16,4 @@ dist/vendor-win32/gentype.native.exe
 dist/vendor-linux/gentype.native
 dist/package.json
 dist/gentype.exe
+dist/package-json.lock
