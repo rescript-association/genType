@@ -90,7 +90,10 @@ const writePackageJson = () => {
   const packageJson = {
     name: pjson.name,
     bin: {
-      "gentype.exe": "gentype.exe"
+      gentype: "gentype.exe"
+    },
+    scripts: {
+      postinstall: "node postinstall.js"
     },
     version: pjson.version,
     description: pjson.description,
@@ -108,6 +111,8 @@ const writePackageJson = () => {
 const main = () => {
   downloadBinaries();
   writePackageJson();
+
+  console.log("Preparation successful!");
 };
 
 main();

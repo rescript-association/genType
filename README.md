@@ -414,6 +414,35 @@ npm version minor
 npm version major
 ```
 
+## Releasing to npm (Maintainers only)
+
+The releasing mechanism downloads the platform dependent artifacts stored on the Github releases tab, so make sure to first do an automated release as stated above (`npm version ...`).
+
+After the CIs are done releasing the built binaries, do following command on a unix-like system (no Windows supported):
+
+```
+node scripts/prepare_dist.js
+```
+
+This will set up a `dist/package.json` file and also download all relevant build artifacts in the appropriate `dist/vendor-*` directory. After running the preparation script successfully, you can publish dist as if it were any common npm package. Here are some examples:
+
+```
+# Dry run for testing
+npm publish dist --dry-run
+
+# Publish package as @latest
+npm publish dist
+
+# Publish package with @beta tag
+npm publish dist/ --tag beta dist
+```
+
+Consult the [npm publish](https://docs.npmjs.com/cli/publish) documentation for more options.
+In case you get an `ENEEDAUTH` error, use `npm adduser` and authenticate with your npm account first.
+
+
+**Pro tip:** If you want to publish a dist with a different version number (e.g. for testing the publishing process), you can also manually modify the `version` number in the `dist/package.json` file before releasing.
+
 
 ## Manual Releases (MacOS & Linux)
 
