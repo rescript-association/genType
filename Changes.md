@@ -1,3 +1,6 @@
+# master
+- Fix issue where pulling in types from files in other directories was not working.
+
 # 0.26.0
 - Support importing types with type parameters.
 - Prevent imported values from being used directly from JS.

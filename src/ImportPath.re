@@ -18,6 +18,13 @@ let fromModule = (~config, ~dir, ~importExtension, moduleName) => {
 
 let fromStringUnsafe = s => s;
 
+let chopExtensionSafe = s =>
+  try (s |> Filename.chop_extension) {
+  | Invalid_argument(_) => s
+  };
+
 let toCmt = (~outputFileRelative, s) =>
-  Filename.(concat(outputFileRelative |> dirname, s ++ ".cmt"));
+  Filename.(
+    concat(outputFileRelative |> dirname, (s |> chopExtensionSafe) ++ ".cmt")
+  );
 let toString = s => s;
