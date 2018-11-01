@@ -1,5 +1,6 @@
 # master
 - Fix issue where pulling in types from files in other directories was not working.
+- Add support for annotation @genType.importStrictLocal to generate strict-local Flow files.
 
 # 0.26.0
 - Support importing types with type parameters.
