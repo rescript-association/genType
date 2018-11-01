@@ -1,4 +1,2 @@
-#!/bin/sh
-
 echo "gentype was not installed correctly"
 exit 1
