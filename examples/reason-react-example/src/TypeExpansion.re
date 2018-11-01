@@ -1,3 +1,6 @@
+[@genType]
+type personFromTuples = Tuples.person;
+
 /* This type references module Tuple -- an import must be generated when this is expanded */
 type lowerType = {person: Tuples.person};
 

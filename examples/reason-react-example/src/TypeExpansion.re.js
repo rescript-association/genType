@@ -9,6 +9,8 @@ const TypeExpansionBS = require('./TypeExpansion.bs');
 
 import type {person as Tuples_person} from '../src/basics/Tuples.re';
 
+export opaque type personFromTuples = mixed;
+
 export type lowerType = {|+person: Tuples_person|};
 
 export type middleType = {|+lowerType: lowerType|};
