@@ -17,7 +17,7 @@
     "debug": {
       "all": false
     },
-    "exportInterfaces": false
+    "exportInterfaces": true
   },
   "name": "reason-react-example",
   "bsc-flags": ["-bs-super-errors"],

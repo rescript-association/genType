@@ -25,33 +25,29 @@ export type typeWithVars<x,y,z> =
   | TypeWithVarsA<x,y>
   | TypeWithVarsB<z>;
 
-// tslint:disable-next-line:interface-over-type-literal
-export type tree = {
+export interface Itree {
   readonly label: string, 
-  readonly left?: tree, 
-  readonly right?: tree
+  readonly left?: Itree, 
+  readonly right?: Itree
 };
 
-// tslint:disable-next-line:interface-over-type-literal
-export type selfRecursive = {readonly self: selfRecursive};
+export interface IselfRecursive {readonly self: IselfRecursive};
 
-// tslint:disable-next-line:interface-over-type-literal
-export type mutuallyRecursiveA = {readonly b: mutuallyRecursiveB};
+export interface ImutuallyRecursiveA {readonly b: ImutuallyRecursiveB};
 
-// tslint:disable-next-line:interface-over-type-literal
-export type mutuallyRecursiveB = {readonly a: mutuallyRecursiveA};
+export interface ImutuallyRecursiveB {readonly a: ImutuallyRecursiveA};
 
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = TypesBS.map;
 
-export const swap: (_1:tree) => tree = TypesBS.swap;
+export const swap: (_1:Itree) => Itree = TypesBS.swap;
 
-export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = function _(Arg1) { const result = 
+export const selfRecursiveConverter: (_1:IselfRecursive) => IselfRecursive = function _(Arg1) { const result = 
 /* WARNING: circular type selfRecursive. Only shallow converter applied. */
   TypesBS.selfRecursiveConverter([Arg1.self]); return {self:result[0]} };
 
-export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = function _(Arg1) { const result = 
+export const mutuallyRecursiveConverter: (_1:ImutuallyRecursiveA) => ImutuallyRecursiveB = function _(Arg1) { const result = 
 /* WARNING: circular type mutuallyRecursiveB. Only shallow converter applied. */
   TypesBS.mutuallyRecursiveConverter([[Arg1.b.a]]); return {a:{b:result[0][0]}} };
 

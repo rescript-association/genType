@@ -9,7 +9,7 @@
       "all": false,
       "basic": false
     },
-    "exportInterfaces": false
+    "exportInterfaces": true
   },
   "name": "sample-typescript-app",
   "reason": {

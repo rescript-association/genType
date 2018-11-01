@@ -13,7 +13,7 @@ export const roundTypeChecked: (number) => number = MyMath.round;
 export const round: mixed = roundTypeChecked;
 
 // In case of type error, check the type of 'area' in 'WrapJsValue.re' and './MyMath'.
-export const areaTypeChecked: (point) => number = MyMath.area;
+export const areaTypeChecked: (Ipoint) => number = MyMath.area;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
 export const area: mixed = function _(Arg1) { const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]}); return result };
@@ -29,11 +29,11 @@ const WrapJsValueBS = require('./WrapJsValue.bs');
 
 import type {myArray} from './MyMath';
 
-export type point = {|+x: number, +y?: number|};
+export interface Ipoint {+x: number, +y?: number};
 
 export type { myArray };
 
-export const myArea: (point) => number = function _(Arg1) { const result = WrapJsValueBS.myArea([Arg1.x, Arg1.y]); return result };
+export const myArea: (Ipoint) => number = function _(Arg1) { const result = WrapJsValueBS.myArea([Arg1.x, Arg1.y]); return result };
 
 export const roundedNumber: number = WrapJsValueBS.roundedNumber;
 

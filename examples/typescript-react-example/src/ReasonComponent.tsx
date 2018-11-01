@@ -14,14 +14,13 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 import {Mouse_t as ReactEvent_Mouse_t} from '../src/shims/ReactEvent.shim';
 
-import {coord as Records_coord} from '../src/nested/Records';
+import {Icoord as IRecords_coord} from '../src/nested/Records';
 
 import {list} from '../src/shims/ReasonPervasives.shim';
 
 import {t as Types_t} from '../src/nested/Types';
 
-// tslint:disable-next-line:interface-over-type-literal
-export type person<a> = {
+export interface Iperson<a> {
   readonly name: string, 
   readonly surname: string, 
   readonly type: string, 
@@ -53,7 +52,7 @@ export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClic
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {
   readonly message?: string, 
-  readonly person: person<unknown>, 
+  readonly person: Iperson<unknown>, 
   readonly intList?: list<number>, 
   readonly children?: unknown
 };
@@ -72,4 +71,4 @@ export const useTypeDefinedInAnotherModule: (_1:Types_t) => Types_t = ReasonComp
 
 export const tToString: (_1:t) => string = ReasonComponentBS.tToString;
 
-export const useRecordsCoord: (_1:Records_coord) => number = function _(Arg1) { const result = ReasonComponentBS.useRecordsCoord([Arg1.x, Arg1.y, Arg1.z]); return result };
+export const useRecordsCoord: (_1:IRecords_coord) => number = function _(Arg1) { const result = ReasonComponentBS.useRecordsCoord([Arg1.x, Arg1.y, Arg1.z]); return result };

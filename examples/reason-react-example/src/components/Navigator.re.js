@@ -13,11 +13,11 @@ const NavigatorBS = require('./Navigator.bs');
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
-export type Props = {|
+export type Props = {
   +history: mixed, 
   +match: mixed, 
   +children?: mixed
-|};
+};
 
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   NavigatorBS.component,

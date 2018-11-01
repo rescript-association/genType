@@ -13,7 +13,7 @@ const ManyComponentsBS = require('./ManyComponents.bs');
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
-export type InnerComponent_Props = {|+children?: mixed|};
+export type InnerComponent_Props = {+children?: mixed};
 
 export const InnerComponent: React$ComponentType<InnerComponent_Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.component,
@@ -21,7 +21,7 @@ export const InnerComponent: React$ComponentType<InnerComponent_Props> = ReasonR
      return ManyComponentsBS.make(jsProps.children);
   }));
 
-export type ManyProps_Props = {|
+export type ManyProps_Props = {
   +a: mixed, 
   +b: mixed, 
   +c: mixed, 
@@ -31,7 +31,7 @@ export type ManyProps_Props = {|
   +g: mixed, 
   +h: mixed, 
   +children?: mixed
-|};
+};
 
 export const ManyProps: React$ComponentType<ManyProps_Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.component,
@@ -39,7 +39,7 @@ export const ManyProps: React$ComponentType<ManyProps_Props> = ReasonReact.wrapR
      return Curry.app(ManyComponentsBS.make, [jsProps.a, jsProps.b, jsProps.c, jsProps.d, jsProps.e, jsProps.f, jsProps.g, jsProps.h, jsProps.children]);
   }));
 
-export type Props = {|+children?: mixed|};
+export type Props = {+children?: mixed};
 
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.component,

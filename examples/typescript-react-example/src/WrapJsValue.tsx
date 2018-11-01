@@ -11,10 +11,10 @@ export const roundTypeChecked: (_1:number) => number = roundNotChecked;
 export const round: unknown = roundTypeChecked as (_1:number) => number;
 
 // In case of type error, check the type of 'area' in 'WrapJsValue.re' and './MyMath'.
-export const areaTypeChecked: (_1:point) => number = areaNotChecked;
+export const areaTypeChecked: (_1:Ipoint) => number = areaNotChecked;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
-export const area: unknown = function _(Arg1) { const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]}); return result } as (_1:point) => number;
+export const area: unknown = function _(Arg1) { const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]}); return result } as (_1:Ipoint) => number;
 
 // tslint:disable-next-line:no-var-requires
 const WrapJsValueBS = require('./WrapJsValue.bs');
@@ -23,8 +23,7 @@ import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
 
 import {stringFunction} from './MyMath';
 
-// tslint:disable-next-line:interface-over-type-literal
-export type point = {readonly x: number, readonly y?: number};
+export interface Ipoint {readonly x: number, readonly y?: number};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type AbsoluteValue_t = AbsoluteValue_t;

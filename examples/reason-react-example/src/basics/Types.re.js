@@ -42,7 +42,7 @@ export type maybeString = ?string;
 
 export type maybeString2 = ?string;
 
-export type peopleArray = Array<{|+name: string, +nickname: ?string|}>;
+export type peopleArray = Array<{+name: string, +nickname: ?string}>;
 
 export opaque type myObj = mixed;
 
@@ -50,12 +50,12 @@ export type { anInterestingFlowType };
 
 export type { weekday };
 
-export type someMutableFields = {|
+export interface IsomeMutableFields {
   mutable0: string, 
   +immutable: number, 
   mutable1: string, 
   mutable2: string
-|};
+};
 
 export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
 
