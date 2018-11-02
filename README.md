@@ -21,31 +21,58 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 > **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
-# Prebuilt Releases
+# Requirements
+
+bs-platform 4.0.5 or higher
+
+# Installation
+
+Install the binaries via `npm`:
 
 ```
-# Will download and automatically untar the file in the current directory as gentype.native
-# Make sure to put in the right version number in the `v0.X.X` placeholders (you can find the relased versions in our
-# Github releases section)
+npm install --save-dev gentype
 
-# MacOS
-curl -L https://github.com/cristianoc/genType/releases/download/v0.X.X/gentype-macos.tar.gz | tar xz
-
-# Linux
-curl -L https://github.com/cristianoc/genType/releases/download/v0.X.X/gentype-linux.tar.gz | tar xz
+# Test running gentype
+npx gentype --help
 ```
 
-# Add genType to your existing project.
+Add a `gentypeconfig` section to your `bsconfig.json` (See [Configuration](#configuration) for details):
 
-There are some steps to set up `genType` in a project.
-Some of this might become simpler if `genType` gets integrated
-into bucklescript in future. The current requirement is `bs-platform 4.0.5` or later.
+```
+"gentypeconfig": {
+    "language": "untyped",
+    "shims": {},
+    "debug": {
+      "all": false,
+      "basic": false
+    }
+}
+```
 
-1. Build the gentype.native binary (`$GENTYPE_REPO/lib/bs/native/gentype.native`) or retrieve it from our prebuilt releases
-2. Set environment variable with `export BS_CMT_POST_PROCESS_CMD="$GENTYPE_REPO/lib/bs/native/gentype.native`, before building a project, or starting a watcher / vscode with bsb integration.
-3. Add a `"gentypeconfig"` option in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example shim to export ReactEvent can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
-4. Open your relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
-5. If using webpack and Flow, set up [extension-replace-loader](https://www.npmjs.com/package/extension-replace-loader) so webpack will pick up the appropriate `Foo.re.js` instead of `Foo.re` [example webpack.config.js](examples/reason-react-example/webpack.config.js).
+For running `gentype` with BuckleScript via `npm` workflow, add following script in your `package.json`:
+
+```
+scripts: {
+  "bs:build": "export BS_CMT_POST_PROCESS_CMD=\"gentype\" && bsb -make-world",
+  "bs:clean": "bsb -clean-world"
+}
+```
+
+For running `gentype` via different mechanics (global env variable etc.), you can set `BS_CMT_POST_PROCESS_CMD` to `node_modules/.bin/gentype` as well.
+
+With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world ` (otherwise there might be cached values and no `.re.js` files are generated).
+
+Check out the [Examples](#examples) for detailed setups (TypeScript, Flow and Plain JavaScript).
+
+## Adding shims (TypeScript & Flow)
+
+Configure your shim files in your `"gentypeconfig"` in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and add relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example shim to export ReactEvent can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
+
+## Testing the whole setup
+
+Open any relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Component1.re](examples/reason-react-example/src/basics/Component1.re).
+
+Save the file and rebuild the project with BuckleScript. You should now see a `*.re.js` file with the same name (e.g. `MyComponent.re` -> `MyComponent.re.js`).
 
 # Examples
 
