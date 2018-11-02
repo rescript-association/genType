@@ -29,21 +29,7 @@ let translateTypeDeclarationFromTypes =
       VariantDeclarationFromTypes(constructorDeclarations)
 
     | Type_abstract =>
-      switch (
-        type_attributes
-        |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
-      ) {
-      | Some(StringPayload(importString)) when typeParams == [] =>
-        ImportTypeDeclaration(
-          importString,
-          type_attributes
-          |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs),
-          type_attributes
-          |> Annotation.hasAttribute(Annotation.tagIsGenTypeImportStrictLocal),
-        )
-
-      | _ => GeneralDeclarationFromTypes(type_manifest)
-      }
+      GeneralDeclarationFromTypes(type_attributes, type_manifest)
 
     | _ => NoDeclaration
     };
@@ -159,7 +145,7 @@ and translateSignatureFromTypes =
     )
     : list(Translation.t) => {
   if (Debug.translation^) {
-    logItem("Translate Types.singnature\n");
+    logItem("Translate Types.signature\n");
   };
   let moduleItemGen = Runtime.moduleItemGen();
   signature
