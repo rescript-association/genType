@@ -174,7 +174,7 @@ let traslateDeclarationKind =
     |> handleTypeAttributes(
          ~optType=optTypeExpr,
          ~defaultCase=typeExpr => {
-           let typeExprTranslation =
+           let translation =
              typeExpr
              |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
                   ~config,
@@ -182,7 +182,7 @@ let traslateDeclarationKind =
                 );
            let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
            let typ =
-             switch (optTypeExpr, typeExprTranslation.typ) {
+             switch (optTypeExpr, translation.typ) {
              | (
                  Some({desc: Tvariant({row_fields: rowFields, _}), _}),
                  Enum(enum),
@@ -192,7 +192,7 @@ let traslateDeclarationKind =
                  rowFields
                  |> List.map(((label, _)) => {label, labelJS: label});
                cases |> createEnum;
-             | _ => typeExprTranslation.typ
+             | _ => translation.typ
              };
            let exportFromTypeDeclaration =
              typeName
@@ -206,7 +206,7 @@ let traslateDeclarationKind =
            [
              {
                importTypes:
-                 typeExprTranslation.dependencies
+                 translation.dependencies
                  |> Translation.translateDependencies(
                       ~config,
                       ~outputFileRelative,
@@ -223,12 +223,12 @@ let traslateDeclarationKind =
     |> handleTypeAttributes(
          ~optType=optCoreType,
          ~defaultCase=coreType => {
-           let typeExprTranslation =
+           let translation =
              coreType
              |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
            let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
            let typ =
-             switch (optCoreType, typeExprTranslation.typ) {
+             switch (optCoreType, translation.typ) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
                  Enum(enum),
@@ -255,7 +255,7 @@ let traslateDeclarationKind =
                       }
                     );
                cases |> createEnum;
-             | _ => typeExprTranslation.typ
+             | _ => translation.typ
              };
            let exportFromTypeDeclaration =
              typeName
@@ -270,7 +270,7 @@ let traslateDeclarationKind =
            [
              {
                importTypes:
-                 typeExprTranslation.dependencies
+                 translation.dependencies
                  |> Translation.translateDependencies(
                       ~config,
                       ~outputFileRelative,
