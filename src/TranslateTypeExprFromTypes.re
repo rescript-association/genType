@@ -142,7 +142,8 @@ let rec removeOption = (~label, typeExpr: Types.type_expr) =>
   | _ => None
   };
 
-let translateConstr = (~path: Path.t, ~paramsTranslation, ~typeEnv) =>
+let translateConstr =
+    (~path: Path.t, ~paramsTranslation, ~typeEnv, ~fieldsTranslations) =>
   switch (path, paramsTranslation) {
   | (Pdot(Pident({name: "FB", _}), "bool", _), [])
   | (Pident({name: "bool", _}), []) => {dependencies: [], typ: booleanT}
@@ -196,6 +197,35 @@ let translateConstr = (~path: Path.t, ~paramsTranslation, ~typeEnv) =>
       ...paramTranslation,
       typ: Nullable(paramTranslation.typ),
     }
+
+  | (Pdot(Pident({name: "Js", _}), "t", _), _) when fieldsTranslations != [] =>
+    let dependencies =
+      fieldsTranslations
+      |> List.map(((_, {dependencies, _})) => dependencies)
+      |> List.concat;
+    let rec checkMutableField = (~acc=[], fields) =>
+      switch (fields) {
+      | [(previousName, {typ: _, _}), (name, {typ, _}), ...rest]
+          when Runtime.checkMutableObjectField(~previousName, ~name) =>
+        /* The field was annotated "@bs.set" */
+        rest |> checkMutableField(~acc=[(name, typ, Mutable), ...acc])
+      | [(name, {typ, _}), ...rest] =>
+        rest |> checkMutableField(~acc=[(name, typ, Immutable), ...acc])
+      | [] => acc |> List.rev
+      };
+    let fields =
+      fieldsTranslations
+      |> checkMutableField
+      |> List.map(((name, typ_, mutable_)) => {
+           let (optional, typ) =
+             switch (typ_) {
+             | Option(typ) => (Optional, typ)
+             | _ => (Mandatory, typ_)
+             };
+           {name, optional, mutable_, typ};
+         });
+    let typ = Object(fields);
+    {dependencies, typ};
 
   | _ =>
     let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
@@ -307,7 +337,7 @@ and translateTypeExprFromTypes_ =
   | Tvar(Some(s)) => {dependencies: [], typ: TypeVar(s)}
 
   | Tconstr(
-      Pdot(Pident({name: "Js", _}), "t", _),
+      Pdot(Pident({name: "Js", _}), "t", _) as path,
       [{desc: Tobject(tObj, _), _}],
       _,
     ) =>
@@ -325,40 +355,24 @@ and translateTypeExprFromTypes_ =
         ]
       | _ => []
       };
-    let fieldTranslations = tObj |> getFieldTypes;
-    let dependencies =
-      fieldTranslations
-      |> List.map(((_, {dependencies, _})) => dependencies)
-      |> List.concat;
-    let rec checkMutableField = (~acc=[], fields) =>
-      switch (fields) {
-      | [(previousName, {typ: _, _}), (name, {typ, _}), ...rest]
-          when Runtime.checkMutableObjectField(~previousName, ~name) =>
-        /* The field was annotated "@bs.set" */
-        rest |> checkMutableField(~acc=[(name, typ, Mutable), ...acc])
-      | [(name, {typ, _}), ...rest] =>
-        rest |> checkMutableField(~acc=[(name, typ, Immutable), ...acc])
-      | [] => acc |> List.rev
-      };
-    let fields =
-      fieldTranslations
-      |> checkMutableField
-      |> List.map(((name, typ_, mutable_)) => {
-           let (optional, typ) =
-             switch (typ_) {
-             | Option(typ) => (Optional, typ)
-             | _ => (Mandatory, typ_)
-             };
-           {name, optional, mutable_, typ};
-         });
-    let typ = Object(fields);
-    {dependencies, typ};
+    let fieldsTranslations = tObj |> getFieldTypes;
+    translateConstr(
+      ~path,
+      ~paramsTranslation=[],
+      ~typeEnv,
+      ~fieldsTranslations,
+    );
 
   | Tconstr(path, typeParams, _) =>
     let paramsTranslation =
       typeParams
       |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    translateConstr(~path, ~paramsTranslation, ~typeEnv);
+    translateConstr(
+      ~path,
+      ~paramsTranslation,
+      ~typeEnv,
+      ~fieldsTranslations=[],
+    );
 
   | Tpoly(t, []) =>
     t

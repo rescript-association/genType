@@ -114,7 +114,7 @@ and translateCoreType_ =
   | Ttyp_var(s) => {dependencies: [], typ: TypeVar(s)}
 
   | Ttyp_constr(
-      Pdot(Pident({name: "Js", _}), "t", _),
+      Pdot(Pident({name: "Js", _}), "t", _) as path,
       _,
       [{ctyp_desc: Ttyp_object(tObj, _), _}],
     ) =>
@@ -124,34 +124,13 @@ and translateCoreType_ =
         {dependencies: [], typ: Ident("", [])} :
         t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
     );
-    let fieldTranslations = tObj |> List.map(getFieldType);
-    let dependencies =
-      fieldTranslations
-      |> List.map(((_, {dependencies, _})) => dependencies)
-      |> List.concat;
-    let rec checkMutableField = (~acc=[], fields) =>
-      switch (fields) {
-      | [(previousName, {typ: _, _}), (name, {typ, _}), ...rest]
-          when Runtime.checkMutableObjectField(~previousName, ~name) =>
-        /* The field was annotated "@bs.set" */
-        rest |> checkMutableField(~acc=[(name, typ, Mutable), ...acc])
-      | [(name, {typ, _}), ...rest] =>
-        rest |> checkMutableField(~acc=[(name, typ, Immutable), ...acc])
-      | [] => acc |> List.rev
-      };
-    let fields =
-      fieldTranslations
-      |> checkMutableField
-      |> List.map(((name, typ_, mutable_)) => {
-           let (optional, typ) =
-             switch (typ_) {
-             | Option(typ) => (Optional, typ)
-             | _ => (Mandatory, typ_)
-             };
-           {name, optional, mutable_, typ};
-         });
-    let typ = Object(fields);
-    {dependencies, typ};
+    let fieldsTranslations = tObj |> List.map(getFieldType);
+    translateConstr(
+      ~path,
+      ~paramsTranslation=[],
+      ~typeEnv,
+      ~fieldsTranslations,
+    );
 
   | Ttyp_constr(path, _, typeParams) =>
     let paramsTranslation =
@@ -160,6 +139,7 @@ and translateCoreType_ =
       ~path,
       ~paramsTranslation,
       ~typeEnv,
+      ~fieldsTranslations=[],
     );
 
   | Ttyp_poly(_, t) =>
