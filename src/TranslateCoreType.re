@@ -232,6 +232,37 @@ and translateCoreType_ =
     let typ = Object(fields);
     {dependencies, typ};
 
+  | Ttyp_constr(path, _, []) =>
+    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
+    {
+      dependencies: [resolvedPath],
+      typ: Ident(resolvedPath |> Dependencies.typePathToName, []),
+    };
+
+  /* This type doesn't have any built in converter. But what if it was a
+   * genType variant type? */
+  /*
+   * Built-in standard library parameterized types (aside from option) are
+   * like custom parameterized types in that they don't undergo conversion,
+   * and their type parameter's dependencies are tracked.  For example
+   * `list(int)` will be treated just like a custom type named List that.
+   * There is special treatment of TypeAtPath("list") to make sure the
+   * built-in JS type defs are brought in from the right location.
+   */
+  | Ttyp_constr(path, _, typeParams) =>
+    let paramsTranslation =
+      typeParams |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
+    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
+    let typeParamDeps =
+      paramsTranslation
+      |> List.map(({dependencies, _}) => dependencies)
+      |> List.concat;
+    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
+    {
+      dependencies: [resolvedPath, ...typeParamDeps],
+      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
+    };
+
   | Ttyp_poly(_, t) =>
     t
     |> translateCoreType_(
@@ -263,37 +294,6 @@ and translateCoreType_ =
     let tupleType = Tuple(innerTypes);
 
     {dependencies: innerTypesDeps, typ: tupleType};
-
-  | Ttyp_constr(path, _, []) =>
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, []),
-    };
-
-  /* This type doesn't have any built in converter. But what if it was a
-   * genType variant type? */
-  /*
-   * Built-in standard library parameterized types (aside from option) are
-   * like custom parameterized types in that they don't undergo conversion,
-   * and their type parameter's dependencies are tracked.  For example
-   * `list(int)` will be treated just like a custom type named List that.
-   * There is special treatment of TypeAtPath("list") to make sure the
-   * built-in JS type defs are brought in from the right location.
-   */
-  | Ttyp_constr(path, _, typeParams) =>
-    let paramsTranslation =
-      typeParams |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
-    let typeParamDeps =
-      paramsTranslation
-      |> List.map(({dependencies, _}) => dependencies)
-      |> List.concat;
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath, ...typeParamDeps],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
-    };
 
   | Ttyp_variant(rowFields, _, _)
       when

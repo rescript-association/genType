@@ -355,6 +355,28 @@ and translateTypeExprFromTypes_ =
     let typ = Object(fields);
     {dependencies, typ};
 
+  | Tconstr(path, [], _) =>
+    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
+    {
+      dependencies: [resolvedPath],
+      typ: Ident(resolvedPath |> Dependencies.typePathToName, []),
+    };
+
+  | Tconstr(path, typeParams, _) =>
+    let paramsTranslation =
+      typeParams
+      |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
+    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
+    let typeParamDeps =
+      paramsTranslation
+      |> List.map(({dependencies, _}) => dependencies)
+      |> List.concat;
+    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
+    {
+      dependencies: [resolvedPath, ...typeParamDeps],
+      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
+    };
+
   | Tpoly(t, []) =>
     t
     |> translateTypeExprFromTypes_(
@@ -395,38 +417,6 @@ and translateTypeExprFromTypes_ =
          ~noFunctionReturnDependencies,
          ~typeEnv,
        )
-
-  | Tconstr(path, [], _) =>
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, []),
-    };
-
-  /* This type doesn't have any built in converter. But what if it was a
-   * genType variant type? */
-  /*
-   * Built-in standard library parameterized types (aside from option) are
-   * like custom parameterized types in that they don't undergo conversion,
-   * and their type parameter's dependencies are tracked.  For example
-   * `list(int)` will be treated just like a custom type named List that.
-   * There is special treatment of TypeAtPath("list") to make sure the
-   * built-in JS type defs are brought in from the right location.
-   */
-  | Tconstr(path, typeParams, _) =>
-    let paramsTranslation =
-      typeParams
-      |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
-    let typeParamDeps =
-      paramsTranslation
-      |> List.map(({dependencies, _}) => dependencies)
-      |> List.concat;
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath, ...typeParamDeps],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
-    };
 
   | Tvariant(rowDesc)
       /* only enums with no payloads */
