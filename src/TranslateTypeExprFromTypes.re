@@ -427,7 +427,14 @@ and translateTypeExprFromTypes_ =
     let typ = cases |> createEnum;
     {dependencies: [], typ};
 
-  | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
+  | Tfield(_)
+  | Tnil
+  | Tobject(_)
+  | Tpackage(_)
+  | Tpoly(_)
+  | Tsubst(_)
+  | Tunivar(_)
+  | Tvariant(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
   }
 and translateTypeExprsFromTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>

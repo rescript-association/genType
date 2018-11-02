@@ -302,9 +302,12 @@ and translateCoreType_ =
     let typ = cases |> createEnum;
     {dependencies: [], typ};
 
+  | Ttyp_alias(_)
+  | Ttyp_any
+  | Ttyp_class(_)
+  | Ttyp_object(_)
+  | Ttyp_package(_)
   | Ttyp_variant(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
-
-  | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
   }
 and translateCoreTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
