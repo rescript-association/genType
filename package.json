@@ -1,6 +1,7 @@
 {
   "name": "gentype",
   "version": "0.27.1",
+  "private": true,
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
   "license": "MIT",
   "scripts": {
@@ -19,5 +20,12 @@
   },
   "devDependencies": {
     "debug": "^4.1.0"
-  }
+  },
+  "author": [
+    "Cristiano Calcagno"
+  ],
+  "bugs": {
+    "url": "https://github.com/cristianoc/gentype/issues"
+  },
+  "homepage": "https://github.com/cristianoc/gentype#readme"
 }
