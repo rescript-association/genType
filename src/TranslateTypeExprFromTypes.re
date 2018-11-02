@@ -355,13 +355,6 @@ and translateTypeExprFromTypes_ =
     let typ = Object(fields);
     {dependencies, typ};
 
-  | Tconstr(path, [], _) =>
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, []),
-    };
-
   | Tconstr(path, typeParams, _) =>
     let paramsTranslation =
       typeParams
