@@ -1,2 +1,2 @@
-[@genType.importStrictLocal "./SomeFlowTypes"]
-type anInterestingFlowType;
+[@genType.importStrictLocal "./SomeNonStrictTypes"]
+type someNonStrictType;

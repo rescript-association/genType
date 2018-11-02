@@ -5,7 +5,7 @@ let flowExpectedError = "// $FlowExpectedError: Reason checked type sufficiently
 let fileHeader = (~config) =>
   switch (config.language) {
   | Flow =>
-    let strictness = config.strictLocal ? "strict-local" : "strict";
+    let strictness = "strict";
     "/** \n * @flow "
     ++ strictness
     ++ "\n * @"
@@ -496,6 +496,7 @@ let emitImportTypeAs =
       ~asTypeName,
       ~typeNameIsInterface,
       ~importPath,
+      ~strictLocal,
     ) => {
   let (typeName, asTypeName) =
     switch (asTypeName) {
@@ -508,10 +509,13 @@ let emitImportTypeAs =
         (typeName, asTypeName)
     | None => (typeName, asTypeName)
     };
+  let strictLocalPrefix =
+    strictLocal ? "// flowlint-next-line nonstrict-import:off\n" : "";
   switch (config.language) {
   | Flow
   | TypeScript =>
-    "import "
+    strictLocalPrefix
+    ++ "import "
     ++ (config.language == Flow ? "type " : "")
     ++ "{"
     ++ typeName

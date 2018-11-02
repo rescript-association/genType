@@ -142,7 +142,7 @@ let typeNameIsInterface =
   | {typ, _} => typ |> typIsInterface
   | exception Not_found =>
     switch (exportTypeMapFromOtherFiles |> StringMap.find(typeName)) {
-    | {typ,_} => typ |> typIsInterface
+    | {typ, _} => typ |> typIsInterface
     | exception Not_found => false
     }
   };
@@ -743,7 +743,7 @@ let emitImportType =
       ~inputCmtTranslateTypeDeclarations,
       ~typeNameIsInterface,
       ~env,
-      {CodeItem.typeName, asTypeName, importPath, cmtFile},
+      {CodeItem.typeName, asTypeName, importPath, cmtFile, strictLocal},
     ) => {
   let (env, emitters) =
     switch (asTypeName, cmtFile) {
@@ -795,6 +795,7 @@ let emitImportType =
       ~asTypeName,
       ~typeNameIsInterface=typeNameIsInterface(~env),
       ~importPath,
+      ~strictLocal,
     );
 
   (env, emitters);

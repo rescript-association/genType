@@ -5,7 +5,7 @@ type declarationKind =
   | GeneralDeclaration(option(Typedtree.core_type))
   | GeneralDeclarationFromTypes(option(Types.type_expr)) /* As the above, but from Types not Typedtree */
   | VariantDeclarationFromTypes(list(Types.constructor_declaration))
-  | ImportTypeDeclaration(string, option(Annotation.attributePayload))
+  | ImportTypeDeclaration(string, option(Annotation.attributePayload), bool)
   | NoDeclaration;
 
 let createExportType =
@@ -328,7 +328,7 @@ let traslateDeclarationKind =
     };
     declarations @ [{exportFromTypeDeclaration: unionType, importTypes: []}];
 
-  | ImportTypeDeclaration(importString, genTypeAsPayload) =>
+  | ImportTypeDeclaration(importString, genTypeAsPayload, strictLocal) =>
     let typeName_ = typeName;
     let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
     let (typeName, asTypeName) =
@@ -345,6 +345,7 @@ let traslateDeclarationKind =
         asTypeName,
         importPath: importString |> ImportPath.fromStringUnsafe,
         cmtFile: None,
+        strictLocal,
       },
     ];
     let exportFromTypeDeclaration =
@@ -402,17 +403,13 @@ let translateTypeDeclaration =
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
       ) {
       | Some(StringPayload(importString)) =>
-        if (typ_attributes
-            |> Annotation.hasAttribute(
-                 Annotation.tagIsGenTypeImportStrictLocal,
-               )) {
-          config.strictLocal = true;
-        };
         ImportTypeDeclaration(
           importString,
           typ_attributes
           |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs),
-        );
+          typ_attributes
+          |> Annotation.hasAttribute(Annotation.tagIsGenTypeImportStrictLocal),
+        )
 
       | _ => GeneralDeclaration(typ_manifest)
       }

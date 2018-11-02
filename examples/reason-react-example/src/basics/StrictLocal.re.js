@@ -1,9 +1,10 @@
 /** 
- * @flow strict-local
+ * @flow strict
  * @generated 
  * @nolint
  */
 
-import type {anInterestingFlowType} from './SomeFlowTypes';
+// flowlint-next-line nonstrict-import:off
+import type {someNonStrictType} from './SomeNonStrictTypes';
 
-export type { anInterestingFlowType };
+export type { someNonStrictType };
