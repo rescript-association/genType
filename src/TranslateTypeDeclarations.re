@@ -104,7 +104,7 @@ let traslateDeclarationKind =
       declarationKind,
     )
     : list(CodeItem.typeDeclaration) => {
-  let handleTypeAttributes = (~defaultCase, typeAttributes) =>
+  let handleTypeAttributes = (~defaultCase, ~optType, typeAttributes) =>
     switch (
       typeAttributes
       |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
@@ -148,29 +148,32 @@ let traslateDeclarationKind =
 
       [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
-    | _ => defaultCase()
+    | _ =>
+      switch (optType) {
+      | None => [
+          {
+            importTypes: [],
+            exportFromTypeDeclaration:
+              typeName
+              |> createExportType(
+                   ~opaque=Some(true),
+                   ~typeVars,
+                   ~optTyp=Some(mixedOrUnknown(~config)),
+                   ~annotation,
+                   ~typeEnv,
+                 ),
+          },
+        ]
+      | Some(someType) => someType |> defaultCase
+      }
     };
 
   switch (declarationKind) {
   | GeneralDeclarationFromTypes(typeAttributes, optTypeExpr) =>
     typeAttributes
-    |> handleTypeAttributes(~defaultCase=() =>
-         switch (optTypeExpr) {
-         | None => [
-             {
-               importTypes: [],
-               exportFromTypeDeclaration:
-                 typeName
-                 |> createExportType(
-                      ~opaque=Some(true),
-                      ~typeVars,
-                      ~optTyp=Some(mixedOrUnknown(~config)),
-                      ~annotation,
-                      ~typeEnv,
-                    ),
-             },
-           ]
-         | Some(typeExpr) =>
+    |> handleTypeAttributes(
+         ~optType=optTypeExpr,
+         ~defaultCase=typeExpr => {
            let typeExprTranslation =
              typeExpr
              |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
@@ -212,28 +215,14 @@ let traslateDeclarationKind =
                exportFromTypeDeclaration,
              },
            ];
-         }
+         },
        )
 
   | GeneralDeclaration(typeAttributes, optCoreType) =>
     typeAttributes
-    |> handleTypeAttributes(~defaultCase=() =>
-         switch (optCoreType) {
-         | None => [
-             {
-               importTypes: [],
-               exportFromTypeDeclaration:
-                 typeName
-                 |> createExportType(
-                      ~opaque=Some(true),
-                      ~typeVars,
-                      ~optTyp=Some(mixedOrUnknown(~config)),
-                      ~annotation,
-                      ~typeEnv,
-                    ),
-             },
-           ]
-         | Some(coreType) =>
+    |> handleTypeAttributes(
+         ~optType=optCoreType,
+         ~defaultCase=coreType => {
            let typeExprTranslation =
              coreType
              |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
@@ -290,7 +279,7 @@ let traslateDeclarationKind =
                exportFromTypeDeclaration,
              },
            ];
-         }
+         },
        )
 
   | RecordDeclarationFromTypes(labelDeclarations) =>
