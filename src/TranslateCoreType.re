@@ -1,9 +1,6 @@
 open GenTypeCommon;
 
-type translation = {
-  dependencies: list(Dependencies.path),
-  typ,
-};
+open! TranslateTypeExprFromTypes;
 
 let removeOption = (~label, coreType: Typedtree.core_type) =>
   switch (coreType.ctyp_desc) {
@@ -116,82 +113,6 @@ and translateCoreType_ =
   switch (coreType.ctyp_desc) {
   | Ttyp_var(s) => {dependencies: [], typ: TypeVar(s)}
 
-  | Ttyp_constr(Pdot(Pident({name: "FB", _}), "bool", _), _, [])
-  | Ttyp_constr(Pident({name: "bool", _}), _, []) => {
-      dependencies: [],
-      typ: booleanT,
-    }
-
-  | Ttyp_constr(Pdot(Pident({name: "FB", _}), "int", _), _, [])
-  | Ttyp_constr(Pident({name: "int", _}), _, []) => {
-      dependencies: [],
-      typ: numberT,
-    }
-
-  | Ttyp_constr(Pdot(Pident({name: "FB", _}), "float", _), _, [])
-  | Ttyp_constr(Pident({name: "float", _}), _, []) => {
-      dependencies: [],
-      typ: numberT,
-    }
-
-  | Ttyp_constr(Pdot(Pident({name: "FB", _}), "string", _), _, [])
-  | Ttyp_constr(Pident({name: "string", _}), _, _) => {
-      dependencies: [],
-      typ: stringT,
-    }
-
-  | Ttyp_constr(Pdot(Pident({name: "FB", _}), "unit", _), _, [])
-  | Ttyp_constr(Pident({name: "unit", _}), _, []) => {
-      dependencies: [],
-      typ: unitT,
-    }
-
-  | Ttyp_constr(Pdot(Pident({name: "FB", _}), "array", _), _, [param])
-  | Ttyp_constr(Pident({name: "array", _}), _, [param])
-  | Ttyp_constr(
-      Pdot(Pdot(Pident({name: "Js", _}), "Array", _), "t", _),
-      _,
-      [param],
-    ) =>
-    let paramTranslation =
-      param |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Array(paramTranslation.typ, Mutable)};
-
-  | Ttyp_constr(
-      Pdot(Pident({name: "ImmutableArray", _}), "t", _),
-      _,
-      [param],
-    ) =>
-    let paramTranslation =
-      param |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Array(paramTranslation.typ, Immutable)};
-
-  | Ttyp_constr(Pdot(Pident({name: "FB", _}), "option", _), _, [param])
-  | Ttyp_constr(Pident({name: "option", _}), _, [param]) =>
-    let paramTranslation =
-      param |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Option(paramTranslation.typ)};
-
-  | Ttyp_constr(
-      Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
-      _,
-      [param],
-    )
-  | Ttyp_constr(Pdot(Pident({name: "Js", _}), "nullable", _), _, [param])
-  | Ttyp_constr(
-      Pdot(Pdot(Pident({name: "Js", _}), "Null_undefined", _), "t", _),
-      _,
-      [param],
-    )
-  | Ttyp_constr(
-      Pdot(Pident({name: "Js", _}), "null_undefined", _),
-      _,
-      [param],
-    ) =>
-    let paramTranslation =
-      param |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Nullable(paramTranslation.typ)};
-
   | Ttyp_constr(
       Pdot(Pident({name: "Js", _}), "t", _),
       _,
@@ -235,16 +156,11 @@ and translateCoreType_ =
   | Ttyp_constr(path, _, typeParams) =>
     let paramsTranslation =
       typeParams |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
-    let typeParamDeps =
-      paramsTranslation
-      |> List.map(({dependencies, _}) => dependencies)
-      |> List.concat;
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath, ...typeParamDeps],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
-    };
+    TranslateTypeExprFromTypes.translateConstr(
+      ~path,
+      ~paramsTranslation,
+      ~typeEnv,
+    );
 
   | Ttyp_poly(_, t) =>
     t

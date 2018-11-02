@@ -142,6 +142,73 @@ let rec removeOption = (~label, typeExpr: Types.type_expr) =>
   | _ => None
   };
 
+let translateConstr = (~path: Path.t, ~paramsTranslation, ~typeEnv) =>
+  switch (path, paramsTranslation) {
+  | (Pdot(Pident({name: "FB", _}), "bool", _), [])
+  | (Pident({name: "bool", _}), []) => {dependencies: [], typ: booleanT}
+
+  | (Pdot(Pident({name: "FB", _}), "int", _), [])
+  | (Pident({name: "int", _}), []) => {dependencies: [], typ: numberT}
+
+  | (Pdot(Pident({name: "FB", _}), "float", _), [])
+  | (Pident({name: "float", _}), []) => {dependencies: [], typ: numberT}
+
+  | (Pdot(Pident({name: "FB", _}), "string", _), [])
+  | (Pident({name: "string", _}), []) => {dependencies: [], typ: stringT}
+
+  | (Pdot(Pident({name: "FB", _}), "unit", _), [])
+  | (Pident({name: "unit", _}), []) => {dependencies: [], typ: unitT}
+
+  | (Pdot(Pident({name: "FB", _}), "array", _), [paramTranslation])
+  | (Pident({name: "array", _}), [paramTranslation])
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Array", _), "t", _),
+      [paramTranslation],
+    ) => {
+      ...paramTranslation,
+      typ: Array(paramTranslation.typ, Mutable),
+    }
+
+  | (Pdot(Pident({name: "ImmutableArray", _}), "t", _), [paramTranslation]) => {
+      ...paramTranslation,
+      typ: Array(paramTranslation.typ, Immutable),
+    }
+
+  | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])
+  | (Pident({name: "option", _}), [paramTranslation]) => {
+      ...paramTranslation,
+      typ: Option(paramTranslation.typ),
+    }
+
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
+      [paramTranslation],
+    )
+  | (Pdot(Pident({name: "Js", _}), "nullable", _), [paramTranslation])
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Null_undefined", _), "t", _),
+      [paramTranslation],
+    )
+  | (
+      Pdot(Pident({name: "Js", _}), "null_undefined", _),
+      [paramTranslation],
+    ) => {
+      ...paramTranslation,
+      typ: Nullable(paramTranslation.typ),
+    }
+
+  | _ =>
+    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
+    let typeParamDeps =
+      paramsTranslation
+      |> List.map(({dependencies, _}) => dependencies)
+      |> List.concat;
+    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
+    {
+      dependencies: [resolvedPath, ...typeParamDeps],
+      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
+    };
+  };
 let rec translateArrowType =
         (
           ~config,
@@ -239,74 +306,6 @@ and translateTypeExprFromTypes_ =
 
   | Tvar(Some(s)) => {dependencies: [], typ: TypeVar(s)}
 
-  | Tconstr(Pdot(Pident({name: "FB", _}), "bool", _), [], _)
-  | Tconstr(Pident({name: "bool", _}), [], _) => {
-      dependencies: [],
-      typ: booleanT,
-    }
-
-  | Tconstr(Pdot(Pident({name: "FB", _}), "int", _), [], _)
-  | Tconstr(Pident({name: "int", _}), [], _) => {
-      dependencies: [],
-      typ: numberT,
-    }
-
-  | Tconstr(Pdot(Pident({name: "FB", _}), "float", _), [], _)
-  | Tconstr(Pident({name: "float", _}), [], _) => {
-      dependencies: [],
-      typ: numberT,
-    }
-
-  | Tconstr(Pdot(Pident({name: "FB", _}), "string", _), [], _)
-  | Tconstr(Pident({name: "string", _}), [], _) => {
-      dependencies: [],
-      typ: stringT,
-    }
-
-  | Tconstr(Pdot(Pident({name: "FB", _}), "unit", _), [], _)
-  | Tconstr(Pident({name: "unit", _}), [], _) => {
-      dependencies: [],
-      typ: unitT,
-    }
-
-  | Tconstr(Pdot(Pident({name: "FB", _}), "array", _), [param], _)
-  | Tconstr(Pident({name: "array", _}), [param], _)
-  | Tconstr(
-      Pdot(Pdot(Pident({name: "Js", _}), "Array", _), "t", _),
-      [param],
-      _,
-    ) =>
-    let paramTranslation =
-      param |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Array(paramTranslation.typ, Mutable)};
-
-  | Tconstr(Pdot(Pident({name: "ImmutableArray", _}), "t", _), [param], _) =>
-    let paramTranslation =
-      param |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Array(paramTranslation.typ, Immutable)};
-
-  | Tconstr(Pdot(Pident({name: "FB", _}), "option", _), [param], _)
-  | Tconstr(Pident({name: "option", _}), [param], _) =>
-    let paramTranslation =
-      param |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Option(paramTranslation.typ)};
-
-  | Tconstr(
-      Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
-      [param],
-      _,
-    )
-  | Tconstr(Pdot(Pident({name: "Js", _}), "nullable", _), [param], _)
-  | Tconstr(
-      Pdot(Pdot(Pident({name: "Js", _}), "Null_undefined", _), "t", _),
-      [param],
-      _,
-    )
-  | Tconstr(Pdot(Pident({name: "Js", _}), "null_undefined", _), [param], _) =>
-    let paramTranslation =
-      param |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    {...paramTranslation, typ: Nullable(paramTranslation.typ)};
-
   | Tconstr(
       Pdot(Pident({name: "Js", _}), "t", _),
       [{desc: Tobject(tObj, _), _}],
@@ -359,16 +358,7 @@ and translateTypeExprFromTypes_ =
     let paramsTranslation =
       typeParams
       |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
-    let typeParamDeps =
-      paramsTranslation
-      |> List.map(({dependencies, _}) => dependencies)
-      |> List.concat;
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath, ...typeParamDeps],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
-    };
+    translateConstr(~path, ~paramsTranslation, ~typeEnv);
 
   | Tpoly(t, []) =>
     t
