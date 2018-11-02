@@ -34,17 +34,13 @@ let translateTypeDeclarationFromTypes =
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
       ) {
       | Some(StringPayload(importString)) when typeParams == [] =>
-        if (type_attributes
-            |> Annotation.hasAttribute(
-                 Annotation.tagIsGenTypeImportStrictLocal,
-               )) {
-          config.strictLocal = true;
-        };
         ImportTypeDeclaration(
           importString,
           type_attributes
           |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs),
-        );
+          type_attributes
+          |> Annotation.hasAttribute(Annotation.tagIsGenTypeImportStrictLocal),
+        )
 
       | _ => GeneralDeclarationFromTypes(type_manifest)
       }

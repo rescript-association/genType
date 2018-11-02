@@ -24,7 +24,6 @@ type config = {
   module_,
   modulesMap: ModuleNameMap.t(ModuleName.t),
   reasonReactPath: string,
-  mutable strictLocal: bool,
 };
 
 let default = {
@@ -36,7 +35,6 @@ let default = {
   module_: ES6,
   modulesMap: ModuleNameMap.empty,
   reasonReactPath: "reason-react/src/ReasonReact.js",
-  strictLocal: false,
 };
 
 let getBool = (s, json) =>
@@ -200,7 +198,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
       | None => default.exportInterfaces
       | Some(b) => b
       };
-    {... default,
+    {
       bsBlockPath,
       bsCurryPath,
       exportInterfaces,
