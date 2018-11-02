@@ -1,4 +1,7 @@
 # master
+- Make genType.importStrictLocal only affect the specific import, not the whole file.
+
+# 0.27.0
 - Fix issue where pulling in types from files in other directories was not working.
 - Add support for annotation @genType.importStrictLocal to generate strict-local Flow files.
 
