@@ -86,7 +86,7 @@ let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
     ++ " moduleName:"
     ++ (moduleName |> ModuleName.toString)
   | ExportValue({fileName, resolvedName, typ, _}) =>
-    "WrapReasonValue"
+    "ExportValue"
     ++ " resolvedName:"
     ++ resolvedName
     ++ " moduleName:"
