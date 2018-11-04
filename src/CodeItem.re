@@ -96,3 +96,9 @@ type t =
   | ExportValue(exportValue)
   | ImportComponent(importComponent)
   | ImportValue(importValue);
+
+type translation = {
+  importTypes: list(importType),
+  codeItems: list(t),
+  typeDeclarations: list(typeDeclaration),
+};

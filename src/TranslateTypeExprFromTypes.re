@@ -431,10 +431,71 @@ and translateTypeExprFromTypes_ =
     let typ = cases |> createEnum;
     {dependencies: [], typ};
 
+  | Tpackage(path, _ids, _typs) =>
+    let rec signatureToRecordType = signature => {
+      let dependenciesAndFields =
+        signature
+        |> List.map(signatureItem =>
+             switch (signatureItem) {
+             | Types.Sig_value(_id, {val_kind: Val_prim(_), _}) => ([], [])
+             | Types.Sig_value(id, {val_type: typeExpr, _}) =>
+               let {dependencies, typ} =
+                 typeExpr
+                 |> translateTypeExprFromTypes_(
+                      ~config,
+                      ~typeVarsGen,
+                      ~noFunctionReturnDependencies=false,
+                      ~typeEnv,
+                    );
+               let field = {
+                 name: id |> Ident.name,
+                 optional: Mandatory,
+                 mutable_: Immutable,
+                 typ,
+               };
+               (dependencies, [field]);
+
+             | Types.Sig_module(id, moduleDeclaration, _recStatus) =>
+               let (dependencies, typ) =
+                 switch (moduleDeclaration.md_type) {
+                 | Mty_signature(signature) =>
+                   signature |> signatureToRecordType
+                 | Mty_ident(_)
+                 | Mty_functor(_)
+                 | Mty_alias(_) => ([], mixedOrUnknown(~config))
+                 };
+               let field = {
+                 name: id |> Ident.name,
+                 optional: Mandatory,
+                 mutable_: Immutable,
+                 typ,
+               };
+               (dependencies, [field]);
+
+             | Types.Sig_type(_)
+             | Types.Sig_typext(_)
+             | Types.Sig_modtype(_)
+             | Types.Sig_class(_)
+             | Types.Sig_class_type(_) => ([], [])
+             }
+           );
+      let (dependencies, fields) = {
+        let (dl, fl) = dependenciesAndFields |> List.split;
+        (dl |> List.concat, fl |> List.concat);
+      };
+      (dependencies, Record(fields));
+    };
+
+    switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
+    | Some(signature) =>
+      let (dependencies, typ) = signature.sig_type |> signatureToRecordType;
+      {dependencies, typ};
+    | None => {dependencies: [], typ: mixedOrUnknown(~config)}
+    };
+
   | Tfield(_)
   | Tnil
   | Tobject(_)
-  | Tpackage(_)
   | Tpoly(_)
   | Tsubst(_)
   | Tunivar(_)

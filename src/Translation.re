@@ -1,12 +1,8 @@
 open GenTypeCommon;
 
-type t = {
-  importTypes: list(CodeItem.importType),
-  codeItems: list(CodeItem.t),
-  typeDeclarations: list(CodeItem.typeDeclaration),
-};
+type t = CodeItem.translation;
 
-let empty = {importTypes: [], codeItems: [], typeDeclarations: []};
+let empty: t = {importTypes: [], codeItems: [], typeDeclarations: []};
 
 let getImportTypeUniqueName =
     ({typeName, asTypeName, _}: CodeItem.importType) =>
@@ -23,14 +19,14 @@ let importTypeCompare = (i1, i2) =>
 
 let combine = (translations: list(t)): t =>
   translations
-  |> List.map(({importTypes, codeItems, typeDeclarations}) =>
+  |> List.map(({CodeItem.importTypes, codeItems, typeDeclarations}) =>
        ((importTypes, codeItems), typeDeclarations)
      )
   |> List.split
   |> (((x, y)) => (x |> List.split, y))
   |> (
     (((importTypes, codeItems), typeDeclarations)) => {
-      importTypes: importTypes |> List.concat,
+      CodeItem.importTypes: importTypes |> List.concat,
       codeItems: codeItems |> List.concat,
       typeDeclarations: typeDeclarations |> List.concat,
     }

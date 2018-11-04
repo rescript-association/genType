@@ -1,4 +1,7 @@
 # master
+- Export first-class modules as records. Also allows to call functors from JS.
+
+# 0.27.1
 - Make genType.importStrictLocal only affect the specific import, not the whole file.
 
 # 0.27.0
