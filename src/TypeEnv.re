@@ -38,7 +38,7 @@ let newModule = (~name, x) => {
 
 let addModuleTypeSignature = (~name, ~signature, x) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.addModuleTypeTranslation %s %s\n", x |> toString, name);
+    logItem("TypeEnv.addModuleTypeSignature %s %s\n", x |> toString, name);
   };
   x.mapModuleTypes = x.mapModuleTypes |> StringMap.add(name, signature);
 };
