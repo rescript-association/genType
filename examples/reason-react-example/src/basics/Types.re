@@ -74,3 +74,6 @@ type someMutableFields = {
   [@bs.set] "mutable1": string,
   [@bs.set] "mutable2": string,
 };
+
+[@genType.import "./name-with-dashes"] [@bs.module "./Types.re"]
+external foo: int => int = "";

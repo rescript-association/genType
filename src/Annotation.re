@@ -169,12 +169,18 @@ and moduleBindingHasGenTypeAnnotation =
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
+let sanitizeVariableName = name =>
+  name |> Str.global_replace(Str.regexp("-"), "_");
+
 let importFromString = importString: import => {
   let name = {
     let base = importString |> Filename.basename;
-    try (base |> Filename.chop_extension) {
-    | Invalid_argument(_) => base
-    };
+    (
+      try (base |> Filename.chop_extension) {
+      | Invalid_argument(_) => base
+      }
+    )
+    |> sanitizeVariableName;
   };
   let importPath = ImportPath.fromStringUnsafe(importString);
   {name, importPath};

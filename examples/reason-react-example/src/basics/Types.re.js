@@ -4,6 +4,14 @@
  * @nolint
  */
 
+const name_with_dashes = require('./name-with-dashes');
+
+// In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
+export const fooTypeChecked: (number) => number = name_with_dashes.foo;
+
+// Export 'foo' early to allow circular import from the '.bs.js' file.
+export const foo: mixed = fooTypeChecked;
+
 // $FlowExpectedError: Reason checked type sufficiently
 const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
 
