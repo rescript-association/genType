@@ -1,4 +1,4 @@
-# master
+# 0.28.1
 - Export first-class modules as records. Also allows to call functors from JS.
 - Sanitize name of JS variable when importing a value. (Replace "-" with "_").
 - Fix renaming of named argument when importing function type.
