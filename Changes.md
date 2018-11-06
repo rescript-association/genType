@@ -1,3 +1,6 @@
+# master
+- Don’t import type dependencies for opaque types.
+
 # 0.28.0
 - Export first-class modules as records. Also allows to call functors from JS.
 - Sanitize name of JS variable when importing a value. (Replace "-" with "_").
