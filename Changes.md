@@ -1,5 +1,6 @@
 # master
 - Don’t import type dependencies for opaque types.
+- Add `bsconfig.json` option "generatedFileExtension" to configure the extension used for generated files.
 
 # 0.28.0
 - Export first-class modules as records. Also allows to call functors from JS.
