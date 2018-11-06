@@ -19,6 +19,7 @@ type config = {
   bsBlockPath: string,
   bsCurryPath: string,
   exportInterfaces: bool,
+  generatedFileExtension: option(string),
   importPath,
   language,
   module_,
@@ -30,6 +31,7 @@ let default = {
   bsBlockPath: "bs-platform/lib/js/block.js",
   bsCurryPath: "bs-platform/lib/js/curry.js",
   exportInterfaces: false,
+  generatedFileExtension: None,
   importPath: Relative,
   language: Flow,
   module_: ES6,
@@ -56,6 +58,16 @@ let getString = (s, json) =>
     | _ => ""
     }
   | _ => ""
+  };
+
+let getStringOption = (s, json) =>
+  switch (json) {
+  | Ext_json_types.Obj({map, _}) =>
+    switch (map |> String_map.find_opt(s)) {
+    | Some(Str({str, _})) => Some(str)
+    | _ => None
+    }
+  | _ => None
   };
 
 let getShims = json => {
@@ -138,6 +150,8 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
     let bsBlockPathString = json |> getString("bsBlockPath");
     let bsCurryPathString = json |> getString("bsCurryPath");
     let exportInterfacesBool = json |> getBool("exportInterfaces");
+    let generatedFileExtensionStringOption =
+      json |> getStringOption("generatedFileExtension");
     let modulesMap =
       json
       |> getShims
@@ -198,10 +212,13 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
       | None => default.exportInterfaces
       | Some(b) => b
       };
+    let generatedFileExtension = generatedFileExtensionStringOption;
+
     {
       bsBlockPath,
       bsCurryPath,
       exportInterfaces,
+      generatedFileExtension,
       importPath,
       language,
       module_,
