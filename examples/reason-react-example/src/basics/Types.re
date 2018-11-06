@@ -77,3 +77,6 @@ type someMutableFields = {
 
 [@genType.import "./name-with-dashes"] [@bs.module "./Types.re"]
 external foo: int => int = "";
+
+[@genType.opaque]
+type exportOpaqueFromEnums = Enums.weekday;

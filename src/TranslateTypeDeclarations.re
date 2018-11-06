@@ -203,18 +203,17 @@ let traslateDeclarationKind =
                   ~annotation,
                   ~typeEnv,
                 );
-           [
-             {
-               importTypes:
-                 translation.dependencies
-                 |> Translation.translateDependencies(
-                      ~config,
-                      ~outputFileRelative,
-                      ~resolver,
-                    ),
-               exportFromTypeDeclaration,
-             },
-           ];
+
+           let importTypes =
+             opaque == Some(true) ?
+               [] :
+               translation.dependencies
+               |> Translation.translateDependencies(
+                    ~config,
+                    ~outputFileRelative,
+                    ~resolver,
+                  );
+           [{importTypes, exportFromTypeDeclaration}];
          },
        )
 
@@ -266,19 +265,16 @@ let traslateDeclarationKind =
                   ~annotation,
                   ~typeEnv,
                 );
-
-           [
-             {
-               importTypes:
-                 translation.dependencies
-                 |> Translation.translateDependencies(
-                      ~config,
-                      ~outputFileRelative,
-                      ~resolver,
-                    ),
-               exportFromTypeDeclaration,
-             },
-           ];
+           let importTypes =
+             opaque == Some(true) ?
+               [] :
+               translation.dependencies
+               |> Translation.translateDependencies(
+                    ~config,
+                    ~outputFileRelative,
+                    ~resolver,
+                  );
+           [{importTypes, exportFromTypeDeclaration}];
          },
        )
 
