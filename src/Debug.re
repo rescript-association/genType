@@ -27,7 +27,7 @@ let setAll = () => {
   dependencies := true;
   moduleResolution := true;
   notImplemented := true;
-  translation := false;
+  translation := true;
   typeEnv := true;
   typeResolution := true;
 };
