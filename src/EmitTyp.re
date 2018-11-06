@@ -33,7 +33,7 @@ let outputFileSuffix = (~config) =>
   };
 
 let generatedModuleExtension = (~config) =>
-  config.language == Flow ? ".re" : ".gt";
+  generatedFilesExtension(~config);
 
 let shimExtension = (~config) =>
   switch (config.language) {
