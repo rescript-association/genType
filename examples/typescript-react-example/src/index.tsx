@@ -1,17 +1,17 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
-import * as Enums from "./Enums";
+import * as Enums from "./Enums.re";
 import "./index.css";
 import * as MyMath from "./MyMath";
-import * as Records from "./nested/Records";
-import * as Types from "./nested/Types";
-import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules";
-import ReasonComponent from "./ReasonComponent";
-import { A, B, minus, tToString } from "./ReasonComponent";
-import { t, TA, TB } from "./ReasonComponent";
+import * as Records from "./nested/Records.re";
+import * as Types from "./nested/Types.re";
+import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules.re";
+import ReasonComponent from "./ReasonComponent.re";
+import { A, B, minus, tToString } from "./ReasonComponent.re";
+import { t, TA, TB } from "./ReasonComponent.re";
 import registerServiceWorker from "./registerServiceWorker";
-import * as WrapJsValue from "./WrapJsValue";
+import * as WrapJsValue from "./WrapJsValue.re";
 
 const minusOne: number = minus({ second: 1 });
 
@@ -37,9 +37,9 @@ const businesses = [
 
 const addresses = Records.findAllAddresses(businesses);
 
-import { roundedNumber } from "./WrapJsValue";
+import { roundedNumber } from "./WrapJsValue.re";
 consoleLog("index.tsx roundedNumber:", roundedNumber);
-import { areaValue } from "./WrapJsValue";
+import { areaValue } from "./WrapJsValue.re";
 consoleLog("index.tsx areaValue:", areaValue);
 
 ReactDOM.render(

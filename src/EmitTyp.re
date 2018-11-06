@@ -18,11 +18,11 @@ let outputFileSuffix = (~config) =>
   switch (config.language) {
   | Flow
   | Untyped => ".re.js"
-  | TypeScript => ".tsx"
+  | TypeScript => ".re.tsx"
   };
 
 let generatedModuleExtension = (~config) =>
-  config.language == Flow ? ".re" : "";
+  config.language == Flow ? ".re" : ".re";
 
 let shimExtension = (~config) =>
   switch (config.language) {
