@@ -1,6 +1,7 @@
 # master
 - Export first-class modules as records. Also allows to call functors from JS.
 - Sanitize name of JS variable when importing a value. (Replace "-" with "_").
+- Fix renaming of named argument when importing function type.
 
 # 0.27.1
 - Make genType.importStrictLocal only affect the specific import, not the whole file.

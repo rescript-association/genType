@@ -6,7 +6,7 @@
 const ReactDOM = require("react-dom");
 const React = require("react");
 
-export type Props = {| show: boolean, message: ?string |};
+export type Props = {| show: boolean, Message: ?string |};
 
 class App extends React.Component<Props> {
   render() {
@@ -15,7 +15,7 @@ class App extends React.Component<Props> {
         "div",
         null,
         "Here's the message from App in JS: " +
-          (this.props.message != null ? this.props.message : "3")
+          (this.props.Message != null ? this.props.Message : "3")
       );
     } else {
       return null;

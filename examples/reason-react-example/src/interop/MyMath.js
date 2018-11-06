@@ -16,3 +16,12 @@ export const getValueAtIndex: (myArray<string>, number) => string = function(
 ) {
   return myArray[i];
 };
+
+export const functionWithRenamedArgument: (
+  string,
+  {|
+    +ArgRenamed: string
+  |}
+) => string = function(_) {
+  return "";
+};

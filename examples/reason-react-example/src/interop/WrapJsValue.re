@@ -33,3 +33,10 @@ type myArray('a);
 [@bs.module "./WrapJsValue.re"] /* This must always be the name of the current module. */
 /* Name and type of the JS value to bind to. */
 external getValueAtIndex: (myArray(string), int) => string = "";
+
+[@genType.import "./MyMath"] /* This is the module to import from. */
+[@bs.module "./WrapJsValue.re"] /* This must always be the name of the current module. */
+/* Name and type of the JS value to bind to. */
+external functionWithRenamedArgument:
+  string => [@genType.as "ArgRenamed"] ((~argToRename: string) => string) =
+  "";

@@ -24,6 +24,12 @@ export const getValueAtIndexTypeChecked: (myArray<string>, number) => string = M
 // Export 'getValueAtIndex' early to allow circular import from the '.bs.js' file.
 export const getValueAtIndex: mixed = getValueAtIndexTypeChecked;
 
+// In case of type error, check the type of 'functionWithRenamedArgument' in 'WrapJsValue.re' and './MyMath'.
+export const functionWithRenamedArgumentTypeChecked: (string, {|+ArgRenamed: string|}) => string = MyMath.functionWithRenamedArgument;
+
+// Export 'functionWithRenamedArgument' early to allow circular import from the '.bs.js' file.
+export const functionWithRenamedArgument: mixed = function _(Arg1, ArgArgRenamed) { const result = functionWithRenamedArgumentTypeChecked(Arg1, {ArgRenamed:ArgArgRenamed}); return result };
+
 // $FlowExpectedError: Reason checked type sufficiently
 const WrapJsValueBS = require('./WrapJsValue.bs');
 

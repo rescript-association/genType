@@ -12,7 +12,7 @@ const MyBanner = require('./MyBanner.component');
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
-export type Props = {|+show: boolean, +message: ?string|};
+export type Props = {|+show: boolean, +Message: ?string|};
 
 // In case of type error, check the type of 'make' in 'MyBannerWrapper.re' and the props of './MyBanner.component'.
 export function MyBannerTypeChecked(props: Props) {
@@ -20,4 +20,4 @@ export function MyBannerTypeChecked(props: Props) {
 }
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: mixed = function _(show, message, children) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, message: message}, children); };
+export const make: mixed = function _(show, Message, children) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, Message: Message}, children); };

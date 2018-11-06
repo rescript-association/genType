@@ -328,11 +328,8 @@ let translatePrimitive =
   };
   let valueName = valueDescription.val_id |> Ident.name;
   let typeExprTranslation =
-    valueDescription.val_desc.ctyp_type
-    |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
-         ~config,
-         ~typeEnv,
-       );
+    valueDescription.val_desc
+    |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
   let genTypeImportPayload =
     valueDescription.val_attributes
     |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport);
@@ -358,8 +355,8 @@ let translatePrimitive =
     )
       when valueName == "make" =>
     let typeExprTranslation =
-      valueDescription.val_desc.ctyp_type
-      |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+      valueDescription.val_desc
+      |> TranslateCoreType.translateCoreType(
            ~config,
            /* Only get the dependencies for the prop types.
               The return type is a ReasonReact component. */
