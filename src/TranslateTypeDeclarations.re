@@ -164,7 +164,29 @@ let traslateDeclarationKind =
                  ),
           },
         ]
-      | Some(someType) => someType |> defaultCase
+      | Some(someType) =>
+        let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
+        let (translation: TranslateTypeExprFromTypes.translation, typ) =
+          someType |> defaultCase;
+        let exportFromTypeDeclaration =
+          typeName
+          |> createExportType(
+               ~opaque,
+               ~typeVars,
+               ~optTyp=Some(typ),
+               ~annotation,
+               ~typeEnv,
+             );
+        let importTypes =
+          opaque == Some(true) ?
+            [] :
+            translation.dependencies
+            |> Translation.translateDependencies(
+                 ~config,
+                 ~outputFileRelative,
+                 ~resolver,
+               );
+        [{importTypes, exportFromTypeDeclaration}];
       }
     };
 
@@ -180,7 +202,6 @@ let traslateDeclarationKind =
                   ~config,
                   ~typeEnv,
                 );
-           let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
            let typ =
              switch (optTypeExpr, translation.typ) {
              | (
@@ -194,26 +215,7 @@ let traslateDeclarationKind =
                cases |> createEnum;
              | _ => translation.typ
              };
-           let exportFromTypeDeclaration =
-             typeName
-             |> createExportType(
-                  ~opaque,
-                  ~typeVars,
-                  ~optTyp=Some(typ),
-                  ~annotation,
-                  ~typeEnv,
-                );
-
-           let importTypes =
-             opaque == Some(true) ?
-               [] :
-               translation.dependencies
-               |> Translation.translateDependencies(
-                    ~config,
-                    ~outputFileRelative,
-                    ~resolver,
-                  );
-           [{importTypes, exportFromTypeDeclaration}];
+           (translation, typ);
          },
        )
 
@@ -225,7 +227,6 @@ let traslateDeclarationKind =
            let translation =
              coreType
              |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
-           let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
            let typ =
              switch (optCoreType, translation.typ) {
              | (
@@ -256,25 +257,7 @@ let traslateDeclarationKind =
                cases |> createEnum;
              | _ => translation.typ
              };
-           let exportFromTypeDeclaration =
-             typeName
-             |> createExportType(
-                  ~opaque,
-                  ~typeVars,
-                  ~optTyp=Some(typ),
-                  ~annotation,
-                  ~typeEnv,
-                );
-           let importTypes =
-             opaque == Some(true) ?
-               [] :
-               translation.dependencies
-               |> Translation.translateDependencies(
-                    ~config,
-                    ~outputFileRelative,
-                    ~resolver,
-                  );
-           [{importTypes, exportFromTypeDeclaration}];
+           (translation, typ);
          },
        )
 
