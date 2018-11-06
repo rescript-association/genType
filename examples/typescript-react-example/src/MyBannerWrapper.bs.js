@@ -2,11 +2,11 @@
 'use strict';
 
 var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
-var MyBannerWrapper = require("./MyBannerWrapper");
+var MyBannerWrapperGt = require("./MyBannerWrapper.gt");
 
 function make(prim, prim$1, prim$2) {
-  return MyBannerWrapper.make(prim, prim$1 !== undefined ? Js_primitive.valFromOption(prim$1) : undefined, prim$2);
+  return MyBannerWrapperGt.make(prim, prim$1 !== undefined ? Js_primitive.valFromOption(prim$1) : undefined, prim$2);
 }
 
 exports.make = make;
-/* ./MyBannerWrapper Not a pure module */
+/* ./MyBannerWrapper.gt Not a pure module */
