@@ -10,7 +10,7 @@
       "basic": false
     },
     "exportInterfaces": false,
-    "generatedFileExtension": ".gt"
+    "generatedFileExtension": ""
   },
   "name": "sample-typescript-app",
   "reason": {
