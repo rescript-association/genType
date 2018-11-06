@@ -370,6 +370,26 @@ Recursive types which do not require a conversion are fully supported.
 If a recursive type requires a conversion, only a shallow conversion is performed, and a warning comment is included in the output. (The alternative would be to perform an expensive conversion down a data structure of arbitrary size).
 See for example [Types.re](examples/typescript-react-example/src/nested/Types.re).
 
+### first class modules
+
+Reason first class modules are converted from their array Reason runtime representation to JS Object types.
+For example,
+
+```reason
+module type MT = { let x: int; let y: string; };
+module M = { let y = "abc"; let x = 42; };
+[@genType] let firstClassModule: module MT = (module M);
+```
+
+is exported as a JS object of type
+
+```reason
+{x: number, y: string}
+```
+
+Notice how the order of elements in the exported JS object is determined by the module type `MT` and not the module implementation `M`.
+
+
 ### polymorphic types
 
 If a Reason type contains a type variable, the corresponding value is not converted. In other words, the conversion is the identity function. For example, a Reason function of type `{payload: 'a} => 'a` must treat the value of the payload as a black box, as a consequence of parametric polymorphism. If a typed back-end is used, the reason type is converted to the corresponding generic type.
