@@ -26,12 +26,6 @@ module.exports = {
             ]
           }
         }
-      },
-      {
-        loader: "extension-replace-loader",
-        query: {
-          exts: [{ from: ".re", to: ".re.js" }]
-        }
       }
     ]
   }
