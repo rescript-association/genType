@@ -94,7 +94,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WrapJsValue.re */ \"./src/interop/WrapJsValue.re.js\");\n\nconsole.log(\"interopRoot.js roundedNumber:\", _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_0__[\"roundedNumber\"]);\n\n//# sourceURL=webpack:///./src/interop/InteropRoot.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WrapJsValue.re */ \"./src/interop/WrapJsValue.re.js\");\n\nconsole.log(\"interopRoot.js roundedNumber:\", _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_1__[\"roundedNumber\"]);\n\n//# sourceURL=webpack:///./src/interop/InteropRoot.js?");
 
 /***/ }),
 
@@ -114,11 +114,11 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /*!***************************************!*\
   !*** ./src/interop/WrapJsValue.bs.js ***!
   \***************************************/
-/*! exports provided: roundedNumber */
+/*! exports provided: lazy */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"roundedNumber\", function() { return roundedNumber; });\n/* harmony import */ var _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WrapJsValue.re */ \"./src/interop/WrapJsValue.re.js\");\n\nvar roundedNumber = _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_0__[\"round\"](1.8);\n\n//# sourceURL=webpack:///./src/interop/WrapJsValue.bs.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"lazy\", function() { return lazy; });\n/* harmony import */ var _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WrapJsValue.re */ \"./src/interop/WrapJsValue.re.js\");\n\nvar lazy = function lazy() {\n  return {\n    roundedNumber: _WrapJsValue_re__WEBPACK_IMPORTED_MODULE_0__[\"round\"](1.8)\n  };\n};\n\n//# sourceURL=webpack:///./src/interop/WrapJsValue.bs.js?");
 
 /***/ }),
 
@@ -130,7 +130,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"round\", function() { return round; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"roundedNumber\", function() { return roundedNumber; });\n/* harmony import */ var _MyMath__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MyMath */ \"./src/interop/MyMath.js\");\n/* harmony import */ var _WrapJsValue_bs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WrapJsValue.bs */ \"./src/interop/WrapJsValue.bs.js\");\n // Export 'round' early to allow circular import from the '.bs.js' file.\n\nvar round = _MyMath__WEBPACK_IMPORTED_MODULE_0__[\"round\"];\n //const WrapJsValueBS = require('./WrapJsValue.bs');\n\nvar roundedNumber = _WrapJsValue_bs__WEBPACK_IMPORTED_MODULE_1__[\"roundedNumber\"];\n\n//# sourceURL=webpack:///./src/interop/WrapJsValue.re.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"round\", function() { return round; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"roundedNumber\", function() { return roundedNumber; });\n/* harmony import */ var _MyMath__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MyMath */ \"./src/interop/MyMath.js\");\n/* harmony import */ var _WrapJsValue_bs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WrapJsValue.bs */ \"./src/interop/WrapJsValue.bs.js\");\n // Export 'round' early to allow circular import from the '.bs.js' file.\n\nvar round = _MyMath__WEBPACK_IMPORTED_MODULE_0__[\"round\"];\n //const WrapJsValueBS = require('./WrapJsValue.bs');\n\nvar roundedNumber = _WrapJsValue_bs__WEBPACK_IMPORTED_MODULE_1__[\"lazy\"]().roundedNumber;\n\n//# sourceURL=webpack:///./src/interop/WrapJsValue.re.js?");
 
 /***/ })
 

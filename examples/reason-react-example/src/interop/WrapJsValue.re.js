@@ -6,4 +6,4 @@ export const round =  MyMath.round;
 import * as WrapJsValueBS from "./WrapJsValue.bs";
 //const WrapJsValueBS = require('./WrapJsValue.bs');
 
-export const roundedNumber: number = WrapJsValueBS.roundedNumber;
+export const roundedNumber: number = WrapJsValueBS.lazy().roundedNumber;
