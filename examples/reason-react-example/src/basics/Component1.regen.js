@@ -15,7 +15,7 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
-import type {variant as Component2_variant} from './Component2.re';
+import type {variant as Component2_variant} from './Component2.regen';
 
 export type Props = {|+message?: string, +children?: mixed|};
 

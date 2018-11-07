@@ -1,7 +1,7 @@
 const ReactDOM = require("react-dom");
 const React = require("react");
 
-const App = require("./App.re").default;
+const App = require("./App.regen").default;
 
 const Main = () => (
   <div>
