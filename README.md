@@ -121,7 +121,7 @@ To import a function `realValue` from  JS module `MyMath.ts` (or `MyMath.js`):
 
 ```reason
 [@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./WrapJsValue.regen"] /* Always the name of the current file. */
+[@bs.module "./WrapJsValue.gen"] /* Always the name of the current file. */
 /* Name and type of the JS value to import. */
 external realValue: complexNumber => float = "";
 
@@ -149,7 +149,7 @@ To import and wrap a ReactJS component for use by ReasonReact, the type of the `
 
 ```reason
 [@genType.import "./MyBanner"] /* Module with the JS component to be wrapped. */
-[@bs.module "./MyBannerWrapper.regen"] /* Always the name of the current file. */
+[@bs.module "./MyBannerWrapper.gen"] /* Always the name of the current file. */
 /* The make function will be automatically generated from the types below. */
 external make:
   (~show: bool, ~message: option(message)=?, 'a) =>

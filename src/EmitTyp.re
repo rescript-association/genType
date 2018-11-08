@@ -17,7 +17,7 @@ let fileHeader = (~config) =>
 let generatedFilesExtension = (~config) =>
   switch (config.generatedFileExtension) {
   | Some(s) => s
-  | None => ".regen"
+  | None => ".gen"
   };
 
 let outputFileSuffix = (~config) =>

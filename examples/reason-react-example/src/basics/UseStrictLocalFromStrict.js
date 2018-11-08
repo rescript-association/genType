@@ -1,3 +1,3 @@
 /* @flow strict */
 
-import type {someNonStrictType} from './StrictLocal.regen';
+import type {someNonStrictType} from './StrictLocal.gen';

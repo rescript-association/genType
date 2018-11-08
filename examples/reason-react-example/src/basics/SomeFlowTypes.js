@@ -1,6 +1,6 @@
 /* @flow strict */
 
-const Types = require("./Types.regen");
+const Types = require("./Types.gen");
 
 export type anInterestingFlowType = {
   an: string,

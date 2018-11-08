@@ -1,6 +1,6 @@
 /* @flow strict */
 
-const WrapJsValue = require("./WrapJsValue.regen");
+const WrapJsValue = require("./WrapJsValue.gen");
 
 export const round: number => number = Math.round;
 
