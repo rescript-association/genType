@@ -19,6 +19,10 @@ The output of `genType` can be configured by using one of 3 back-ends: `untyped`
 # Project status.
 See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
 
+> **Breaking Change:** From version 1.0.0, the extension of generated files is `.gen.tsx` (and `.gen.js`) instead of `.tsx` (and `.re.js`). You might need to adjust the argument of `@bs.module` when importing values and components to reflect this.
+Alternatively, to keep the old and now deprecated extensions, the extension of generated files is configurable by specifying `"generatedFileExtension"` in the `"gentypeconfig"` section of `bsconfig.json`. (The extension used in versions 0.XX.0 was `""` for TypeScript and `".re"` for Flow/Untyped).
+
+
 > **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
 # Requirements
