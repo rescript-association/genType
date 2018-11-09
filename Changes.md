@@ -1,4 +1,4 @@
-# master
+# 1.0.0
 - Don’t import type dependencies for opaque types.
 - Add `bsconfig.json` option "generatedFileExtension" to configure the extension used for generated files.
 - Change the extension of generated files to `.gen.tsx` (TS) and `.gen.js` (Flow/Untyped). [#90](https://github.com/cristianoc/genType/pull/90)  
