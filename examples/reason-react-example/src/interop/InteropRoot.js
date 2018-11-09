@@ -3,10 +3,10 @@
 const ReactDOM = require("react-dom");
 const React = require("react");
 
-const GreetingRe = require("./Greeting.re");
+const GreetingRe = require("./Greeting.gen");
 
 // Import a ReasonReact component!
-const PageReason = require("./Greeting.re").default;
+const PageReason = require("./Greeting.gen").default;
 
 const consoleLog = console.log;
 
@@ -19,7 +19,7 @@ const helloWorld = GreetingRe.concat("++", helloWorldList);
 
 const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
-const WrapJsValue = require("./WrapJsValue.re");
+const WrapJsValue = require("./WrapJsValue.gen");
 
 consoleLog("interopRoot.js roundedNumber:", WrapJsValue.roundedNumber);
 consoleLog("interopRoot.js areaValue:", WrapJsValue.areaValue);
@@ -34,7 +34,7 @@ consoleLog("interopRoot.js callMyAreaDirectly:", callMyAreaDirectly);
 
 consoleLog("anInterestingFlowType ", require("../basics/SomeFlowTypes").c);
 
-const Enums = require("../basics/Enums.re");
+const Enums = require("../basics/Enums.gen");
 
 consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
 consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);

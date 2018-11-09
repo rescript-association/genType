@@ -4,7 +4,7 @@ const child_process = require("child_process");
 
 glob.glob("src/**/*.bs.js", function(er, files) {
   files.forEach(fileBsJs => {
-    const fileTsx = fileBsJs.substring(0, fileBsJs.length - 6) + ".gen.tsx";
+    const fileTsx = fileBsJs.substring(0, fileBsJs.length - 6) + ".gen.js";
     fs.unlink(fileTsx, err => {
       return;
     });

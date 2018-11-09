@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node ../run_bsb.js -make-world",
     "start": "node ../run_bsb.js -make-world -w",
-    "clean": "bsb -clean-world",
+    "clean": "node clean.js",
     "test": "exit 0",
     "webpack": "webpack -w",
     "webpack:production": "webpack --env.NODE_ENV=production"
@@ -16,7 +16,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "extension-replace-loader": "^0.0.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "reason-react": "^0.5.3"

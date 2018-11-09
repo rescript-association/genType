@@ -17,12 +17,7 @@ let fileHeader = (~config) =>
 let generatedFilesExtension = (~config) =>
   switch (config.generatedFileExtension) {
   | Some(s) => s
-  | None =>
-    switch (config.language) {
-    | Flow
-    | Untyped => ".re"
-    | TypeScript => ""
-    }
+  | None => ".gen"
   };
 
 let outputFileSuffix = (~config) =>
@@ -32,8 +27,7 @@ let outputFileSuffix = (~config) =>
   | TypeScript => generatedFilesExtension(~config) ++ ".tsx"
   };
 
-let generatedModuleExtension = (~config) =>
-  generatedFilesExtension(~config);
+let generatedModuleExtension = (~config) => generatedFilesExtension(~config);
 
 let shimExtension = (~config) =>
   switch (config.language) {

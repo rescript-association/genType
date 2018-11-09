@@ -3,9 +3,9 @@
     "language": "untyped",
     "shims": {},
     "debug": {
-      "all": false,
-      "basic": false
-    }
+      "all": false
+    },
+    "exportInterfaces": false
   },
   "name": "reason-react-example",
   "bsc-flags": ["-bs-super-errors"],

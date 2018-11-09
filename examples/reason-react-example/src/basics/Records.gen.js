@@ -7,7 +7,7 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const RecordsBS = require('./Records.bs');
 
-import type {weekday as Types_weekday} from './Types.re';
+import type {weekday as Types_weekday} from './Types.gen';
 
 export type coord = {|
   +x: number, 
