@@ -5,13 +5,13 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const Component1BS = require('./Component1.bs');
+import * as Component1BS from './Component1.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const Curry = require('bs-platform/lib/js/curry.js');
+import * as Curry from 'bs-platform/lib/js/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require('reason-react/src/ReasonReact.js');
+import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // flowlint-next-line nonstrict-import:off
 import type {list} from '../../src/shims/ReasonPervasives.shim';

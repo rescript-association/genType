@@ -5,10 +5,10 @@
  */
 
 // flowlint-next-line nonstrict-import:off
-const name_with_dashes = require('./name-with-dashes');
+import {foo as fooNotChecked} from'./name-with-dashes';
 
 // In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
-export const fooTypeChecked: (number) => number = name_with_dashes.foo;
+export const fooTypeChecked: (number) => number = fooNotChecked;
 
 // Export 'foo' early to allow circular import from the '.bs.js' file.
 export const foo: mixed = fooTypeChecked;

@@ -5,13 +5,13 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const Curry = require('bs-platform/lib/js/curry.js');
+import * as Curry from 'bs-platform/lib/js/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const GreetingBS = require('./Greeting.bs');
+import * as GreetingBS from './Greeting.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require('reason-react/src/ReasonReact.js');
+import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // flowlint-next-line nonstrict-import:off
 import type {Mouse_t as ReactEvent_Mouse_t} from '../../src/shims/ReactEvent.shim';

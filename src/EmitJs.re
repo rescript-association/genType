@@ -7,6 +7,7 @@ type env = {
   cmtToExportTypeMap: StringMap.t(CodeItem.exportTypeMap),
   /* Map of types imported from other files. */
   exportTypeMapFromOtherFiles: CodeItem.exportTypeMap,
+  importedValueOrComponent: bool,
 };
 
 let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
@@ -312,19 +313,20 @@ let rec emitCodeItem =
     let componentName = importAnnotation.name;
 
     let (emitters, env) =
-      switch (language) {
-      | TypeScript =>
+      switch (language, config.module_) {
+      | (_, ES6)
+      | (TypeScript, _) =>
         /* emit an import {... as ...} immediately */
         let emitters =
           importPath
           |> EmitTyp.emitImportValueAsEarly(
+               ~config,
                ~emitters,
                ~name=componentName,
                ~nameAs=None,
              );
         (emitters, env);
-      | Flow
-      | Untyped =>
+      | (Flow | Untyped, _) =>
         /* add an early require(...)  */
         let env =
           componentName
@@ -435,25 +437,26 @@ let rec emitCodeItem =
            ~env,
            ~importPath=ImportPath.reasonReactPath(~config),
          );
-    (env, emitters);
+    ({...env, importedValueOrComponent: true}, emitters);
 
   | ImportValue({valueName, importAnnotation, typ, fileName}) =>
     let importPath = importAnnotation.importPath;
     let (emitters, importedAsName, env) =
-      switch (language) {
-      | TypeScript =>
+      switch (language, config.module_) {
+      | (_, ES6)
+      | (TypeScript, _) =>
         /* emit an import {... as ...} immediately */
         let valueNameNotChecked = valueName ++ "NotChecked";
         let emitters =
           importPath
           |> EmitTyp.emitImportValueAsEarly(
+               ~config,
                ~emitters,
                ~name=valueName,
                ~nameAs=Some(valueNameNotChecked),
              );
         (emitters, valueNameNotChecked, env);
-      | Flow
-      | Untyped =>
+      | (Flow | Untyped, _) =>
         /* add an early require(...)  */
         let importFile = importAnnotation.name;
 
@@ -504,7 +507,7 @@ let rec emitCodeItem =
            ~typ=mixedOrUnknown(~config),
            ~config,
          );
-    (env, emitters);
+    ({...env, importedValueOrComponent: true}, emitters);
 
   | ExportComponent({
       exportType,
@@ -702,11 +705,19 @@ and emitCodeItems =
        (env, emitters),
      );
 
-let emitRequires = (~early, ~config, ~requires, emitters) =>
+let emitRequires =
+    (~importedValueOrComponent, ~early, ~config, ~requires, emitters) =>
   ModuleNameMap.fold(
     (moduleName, (importPath, strict), emitters) =>
       importPath
-      |> EmitTyp.emitRequire(~early, ~emitters, ~config, ~moduleName, ~strict),
+      |> EmitTyp.emitRequire(
+           ~importedValueOrComponent,
+           ~early,
+           ~emitters,
+           ~config,
+           ~moduleName,
+           ~strict,
+         ),
     requires,
     emitters,
   );
@@ -928,6 +939,7 @@ let emitTranslationAsString =
     requiresEarly: ModuleNameMap.empty,
     cmtToExportTypeMap: StringMap.empty,
     exportTypeMapFromOtherFiles: StringMap.empty,
+    importedValueOrComponent: false,
   };
   let enumTables = Hashtbl.create(1);
 
@@ -1025,7 +1037,17 @@ let emitTranslationAsString =
   let emitters = enumTables |> emitEnumTables(~emitters);
 
   emitters
-  |> emitRequires(~early=true, ~config, ~requires=finalEnv.requiresEarly)
-  |> emitRequires(~early=false, ~config, ~requires=finalEnv.requires)
+  |> emitRequires(
+       ~importedValueOrComponent=false,
+       ~early=true,
+       ~config,
+       ~requires=finalEnv.requiresEarly,
+     )
+  |> emitRequires(
+       ~importedValueOrComponent=finalEnv.importedValueOrComponent,
+       ~early=false,
+       ~config,
+       ~requires=finalEnv.requires,
+     )
   |> Emitters.toString(~separator="\n\n");
 };

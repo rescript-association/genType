@@ -5,7 +5,7 @@ import MyBanner from'./MyBanner';
 import * as React from 'react';
 
 // tslint:disable-next-line:no-var-requires
-const ReasonReact = require('reason-react/src/ReasonReact.js');
+import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {readonly show: boolean, readonly message?: message};
