@@ -13,8 +13,10 @@ const Curry = require('bs-platform/lib/js/curry.js');
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
+// flowlint-next-line nonstrict-import:off
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
+// flowlint-next-line nonstrict-import:off
 import type {variant as Component2_variant} from './Component2.gen';
 
 export type Props = {|+message?: string, +children?: mixed|};

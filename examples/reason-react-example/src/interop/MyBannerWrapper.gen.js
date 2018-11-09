@@ -7,6 +7,7 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const React = require('react');
 
+// flowlint-next-line nonstrict-import:off
 const MyBanner = require('./MyBanner.component');
 
 // $FlowExpectedError: Reason checked type sufficiently

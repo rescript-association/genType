@@ -456,7 +456,10 @@ let emitRequire =
   let commentBeforeRequire =
     switch (config.language) {
     | TypeScript => "// tslint:disable-next-line:no-var-requires\n"
-    | Flow => strict ? "" : flowExpectedError
+    | Flow =>
+      strict ?
+        early ? "// flowlint-next-line nonstrict-import:off\n" : "" :
+        flowExpectedError
     | Untyped => ""
     };
   commentBeforeRequire
@@ -507,7 +510,6 @@ let emitImportTypeAs =
       ~asTypeName,
       ~typeNameIsInterface,
       ~importPath,
-      ~strictLocal,
     ) => {
   let (typeName, asTypeName) =
     switch (asTypeName) {
@@ -521,7 +523,8 @@ let emitImportTypeAs =
     | None => (typeName, asTypeName)
     };
   let strictLocalPrefix =
-    strictLocal ? "// flowlint-next-line nonstrict-import:off\n" : "";
+    config.language == Flow ?
+      "// flowlint-next-line nonstrict-import:off\n" : "";
   switch (config.language) {
   | Flow
   | TypeScript =>

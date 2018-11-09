@@ -113,9 +113,6 @@ let traslateDeclarationKind =
       let genTypeAsPayload =
         typeAttributes
         |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
-      let strictLocal =
-        typeAttributes
-        |> Annotation.hasAttribute(Annotation.tagIsGenTypeImportStrictLocal);
       let typeName_ = typeName;
       let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
       let (typeName, asTypeName) =
@@ -132,7 +129,6 @@ let traslateDeclarationKind =
           asTypeName,
           importPath: importString |> ImportPath.fromStringUnsafe,
           cmtFile: None,
-          strictLocal,
         },
       ];
       let exportFromTypeDeclaration =

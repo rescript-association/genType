@@ -24,10 +24,7 @@ let toString = annotation =>
 let tagIsGenType = s => s == "genType";
 let tagIsGenTypeAs = s => s == "genType" || s == "genType.as";
 
-let tagIsGenTypeImportStrictLocal = s => s == "genType.importStrictLocal";
-
-let tagIsGenTypeImport = s =>
-  s == "genType.import" || s |> tagIsGenTypeImportStrictLocal;
+let tagIsGenTypeImport = s => s == "genType.import";
 
 let tagIsGenTypeOpaque = s => s == "genType.opaque";
 

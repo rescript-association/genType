@@ -4,6 +4,7 @@
  * @nolint
  */
 
+// flowlint-next-line nonstrict-import:off
 const MyMath = require('./MyMath');
 
 // In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.
@@ -33,6 +34,7 @@ export const functionWithRenamedArgument: mixed = function _(Arg1, ArgArgRenamed
 // $FlowExpectedError: Reason checked type sufficiently
 const WrapJsValueBS = require('./WrapJsValue.bs');
 
+// flowlint-next-line nonstrict-import:off
 import type {myArray} from './MyMath';
 
 export type point = {|+x: number, +y?: number|};

@@ -85,7 +85,6 @@ let emitImportTypeAs:
     ~asTypeName: option(string),
     ~typeNameIsInterface: string => bool,
     ~importPath: ImportPath.t,
-    ~strictLocal: bool
   ) =>
   Emitters.t;
 

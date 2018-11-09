@@ -1,2 +1,2 @@
-[@genType.importStrictLocal "./SomeNonStrictTypes"]
+[@genType.import "./SomeNonStrictTypes"]
 type someNonStrictType;

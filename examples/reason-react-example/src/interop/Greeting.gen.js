@@ -13,8 +13,10 @@ const GreetingBS = require('./Greeting.bs');
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
+// flowlint-next-line nonstrict-import:off
 import type {Mouse_t as ReactEvent_Mouse_t} from '../../src/shims/ReactEvent.shim';
 
+// flowlint-next-line nonstrict-import:off
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
 export type foo = ({|+a: number, +b: number|}) => number;

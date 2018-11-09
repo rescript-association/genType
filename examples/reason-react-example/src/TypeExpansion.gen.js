@@ -7,6 +7,7 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const TypeExpansionBS = require('./TypeExpansion.bs');
 
+// flowlint-next-line nonstrict-import:off
 import type {person as Tuples_person} from '../src/basics/Tuples.gen';
 
 export type personFromTuples = Tuples_person;

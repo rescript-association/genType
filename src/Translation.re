@@ -72,7 +72,6 @@ let pathToImportType =
                ~resolver,
              ),
         cmtFile: None,
-        strictLocal: false,
       },
     ]
   | Pid(_) => []
@@ -110,7 +109,7 @@ let pathToImportType =
         |> Paths.getCmtFile;
       cmtFile == "" ? None : Some(cmtFile);
     };
-    [{typeName, asTypeName, importPath, cmtFile, strictLocal: false}];
+    [{typeName, asTypeName, importPath, cmtFile}];
   };
 
 let translateDependencies =

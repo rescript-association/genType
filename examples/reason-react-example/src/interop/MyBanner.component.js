@@ -1,4 +1,4 @@
-// @flow strict
+// @flow
 
 // This file isn't used directly by JS; it's used to myBanner.re, which is then
 // used by the ReasonReact component GreetingRe.

@@ -10,6 +10,7 @@ const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
 // $FlowExpectedError: Reason checked type sufficiently
 const NestedBS = require('./Nested.bs');
 
+// flowlint-next-line nonstrict-import:off
 import type {variant as Component2_variant} from '../../src/basics/Component2.gen';
 
 export opaque type VariantA = mixed;

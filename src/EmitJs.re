@@ -9,8 +9,8 @@ type env = {
   exportTypeMapFromOtherFiles: CodeItem.exportTypeMap,
 };
 
-let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
-  let requires = early ? env.requiresEarly : env.requires;
+let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
+  let requires = import ? env.requiresEarly : env.requires;
   let requiresNew =
     requires
     |> ModuleNameMap.add(
@@ -20,7 +20,7 @@ let requireModule = (~early, ~env, ~importPath, ~strict=false, moduleName) => {
            strict,
          ),
        );
-  early ?
+  import ?
     {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
 };
 
@@ -245,7 +245,7 @@ let emitexportFromTypeDeclaration =
     let env =
       ModuleName.createBucklescriptBlock
       |> requireModule(
-           ~early=false,
+           ~import=false,
            ~env,
            ~importPath=ImportPath.bsBlockPath(~config),
          );
@@ -329,7 +329,7 @@ let rec emitCodeItem =
         let env =
           componentName
           |> ModuleName.fromStringUnsafe
-          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
+          |> requireModule(~import=true, ~env, ~importPath, ~strict=true);
         (emitters, env);
       };
     let componentNameTypeChecked = componentName ++ "TypeChecked";
@@ -431,7 +431,7 @@ let rec emitCodeItem =
     let env =
       ModuleName.reasonReact
       |> requireModule(
-           ~early=true,
+           ~import=true,
            ~env,
            ~importPath=ImportPath.reasonReactPath(~config),
          );
@@ -461,7 +461,7 @@ let rec emitCodeItem =
         let env =
           importFile
           |> ModuleName.fromStringUnsafe
-          |> requireModule(~early=true, ~env, ~importPath, ~strict=true);
+          |> requireModule(~import=true, ~env, ~importPath, ~strict=true);
         (emitters, importedAsName, env);
       };
     let converter = typ |> typToConverter;
@@ -617,12 +617,12 @@ let rec emitCodeItem =
       fileName == moduleName ?
         EmitTyp.emitExportDefault(~emitters, ~config, name) : emitters;
 
-    let env = moduleNameBs |> requireModule(~early=false, ~env, ~importPath);
+    let env = moduleNameBs |> requireModule(~import=false, ~env, ~importPath);
 
     let env =
       ModuleName.reasonReact
       |> requireModule(
-           ~early=false,
+           ~import=false,
            ~env,
            ~importPath=ImportPath.reasonReactPath(~config),
          );
@@ -631,7 +631,7 @@ let rec emitCodeItem =
       useCurry ?
         ModuleName.curry
         |> requireModule(
-             ~early=false,
+             ~import=false,
              ~env,
              ~importPath=ImportPath.bsCurryPath(~config),
            ) :
@@ -650,7 +650,7 @@ let rec emitCodeItem =
          );
     let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =
-      fileNameBs |> requireModule(~early=false, ~env, ~importPath);
+      fileNameBs |> requireModule(~import=false, ~env, ~importPath);
     let converter = typ |> typToConverter;
 
     let emitters =
@@ -743,7 +743,7 @@ let emitImportType =
       ~inputCmtTranslateTypeDeclarations,
       ~typeNameIsInterface,
       ~env,
-      {CodeItem.typeName, asTypeName, importPath, cmtFile, strictLocal},
+      {CodeItem.typeName, asTypeName, importPath, cmtFile},
     ) => {
   let (env, emitters) =
     switch (asTypeName, cmtFile) {
@@ -795,7 +795,6 @@ let emitImportType =
       ~asTypeName,
       ~typeNameIsInterface=typeNameIsInterface(~env),
       ~importPath,
-      ~strictLocal,
     );
 
   (env, emitters);

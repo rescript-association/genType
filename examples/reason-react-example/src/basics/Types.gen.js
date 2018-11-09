@@ -4,6 +4,7 @@
  * @nolint
  */
 
+// flowlint-next-line nonstrict-import:off
 const name_with_dashes = require('./name-with-dashes');
 
 // In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
@@ -18,10 +19,13 @@ const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
 // $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
 
+// flowlint-next-line nonstrict-import:off
 import type {anInterestingFlowType} from './SomeFlowTypes';
 
+// flowlint-next-line nonstrict-import:off
 import type {t as Obj_t} from '../../src/shims/Obj.shim';
 
+// flowlint-next-line nonstrict-import:off
 import type {weekday} from './SomeFlowTypes';
 
 export opaque type TypeWithVarsA<x,y> = mixed;

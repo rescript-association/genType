@@ -7,6 +7,7 @@
 // $FlowExpectedError: Reason checked type sufficiently
 const RecordsBS = require('./Records.bs');
 
+// flowlint-next-line nonstrict-import:off
 import type {weekday as Types_weekday} from './Types.gen';
 
 export type coord = {|

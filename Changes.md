@@ -1,6 +1,8 @@
 # master
 - Don’t import type dependencies for opaque types.
 - Add `bsconfig.json` option "generatedFileExtension" to configure the extension used for generated files.
+- Change the extension of generated files to `.gen.tsx` (TS) and `.gen.js` (Flow/Untyped). [#90](https://github.com/cristianoc/genType/pull/90)  
+- Remove (undocumented) `genType.importStrictLocal` and always allow imports from non-scrict Flow types.
 
 # 0.28.0
 - Export first-class modules as records. Also allows to call functors from JS.
