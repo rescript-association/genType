@@ -30,7 +30,7 @@
     }
   ],
   "package-specs": {
-    "module": "es6-global",
+    "module": "es6",
     "in-source": true
   },
   "suffix": ".bs.js",
