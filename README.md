@@ -11,17 +11,15 @@ The implementation of [@genType] performs a type-directed transformation of Reas
 
 The output of `genType` can be configured by using one of 3 back-ends: `untyped` to generate wrappers in vanilla JS, `typescript` to generate [TypeScript](https://www.typescriptlang.org/), and `flow` to generate JS with [Flow](https://flow.org/en/) type annotations.
 
-
 [Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/EV12EbxCPjM)
 [![IMAGE ALT TEXT HERE](assets/genTypeDemo.png)](https://youtu.be/EV12EbxCPjM)
 
-
 # Project status.
+
 See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
 
 > **Breaking Change:** From version 1.0.0, the extension of generated files is `.gen.tsx` (and `.gen.js`) instead of `.tsx` (and `.re.js`). You might need to adjust the argument of `@bs.module` when importing values and components to reflect this.
-Alternatively, to keep the old and now deprecated extensions, the extension of generated files is configurable by specifying `"generatedFileExtension"` in the `"gentypeconfig"` section of `bsconfig.json`. (The extension used in versions 0.XX.0 was `""` for TypeScript and `".re"` for Flow/Untyped).
-
+> Alternatively, to keep the old and now deprecated extensions, the extension of generated files is configurable by specifying `"generatedFileExtension"` in the `"gentypeconfig"` section of `bsconfig.json`. (The extension used in versions 0.XX.0 was `""` for TypeScript and `".re"` for Flow/Untyped).
 
 > **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
@@ -64,7 +62,7 @@ scripts: {
 
 For running `gentype` via different mechanics (global env variable etc.), you can set `BS_CMT_POST_PROCESS_CMD` to `node_modules/.bin/gentype` as well.
 
-With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world ` (otherwise there might be cached values and no `.re.js` files are generated).
+With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.re.js` files are generated).
 
 Check out the [Examples](#examples) for detailed setups (TypeScript, Flow and Plain JavaScript).
 
@@ -84,19 +82,18 @@ We prepared some examples to give you an idea on how to integrate `genType` in y
 
 **Please make sure to build genType before trying to build the examples.**
 
-- [reason-react-example](examples/reason-react-example/README.md)
+- [flow-react-example](examples/flow-react-example/README.md)
 - [typescript-react-example](examples/typescript-react-example/README.md)
 - [untyped-react-example](examples/untyped-react-example/README.md)
 
-
 # Documentation
 
-
-`genType` operates on two kinds of entities: *types* and *values*.
-Each can be *exported* from Reason to JS, or *imported* into Reason from JS.
-The main annotation is `@genType`, which by default means *export*.
+`genType` operates on two kinds of entities: _types_ and _values_.
+Each can be _exported_ from Reason to JS, or _imported_ into Reason from JS.
+The main annotation is `@genType`, which by default means _export_.
 
 ### Export and Import Types
+
 The following exports a function type `callback` to JS:
 
 ```reason
@@ -110,6 +107,7 @@ To instead import a type called `complexNumber` from JS module `MyMath.ts` (or `
 [@genType.import "./MyMath"]
 type complexNumber;
 ```
+
 This imported type will be treated as opaque by Reason.
 
 ### Export and Import Values
@@ -121,7 +119,7 @@ To export a function `callback` to JS:
 let callback = _ => Js.log("Clicked");
 ```
 
-To import a function `realValue` from  JS module `MyMath.ts` (or `MyMath.js`):
+To import a function `realValue` from JS module `MyMath.ts` (or `MyMath.js`):
 
 ```reason
 [@genType.import "./MyMath"] /* This is the module to import from. */
@@ -139,7 +137,6 @@ Because of the `external` keyword, it's clear from context that this is an impor
 
 To export a ReasonReact component to JS, and automatically generate a wrapper for it, simply annotate the `make` function:
 
-
 ```reason
 [@genType]
 let make = (~onClick: callback, _children) => {
@@ -149,7 +146,6 @@ let make = (~onClick: callback, _children) => {
 ```
 
 To import and wrap a ReactJS component for use by ReasonReact, the type of the `make` function is the only information required:
-
 
 ```reason
 [@genType.import "./MyBanner"] /* Module with the JS component to be wrapped. */
@@ -169,10 +165,9 @@ The type of `make` must have a named argument for each prop in the JS component.
 
 **NOTE** The argument of `@bs.module`must always be the name of the current file plus `.gen` (In future, this could be automatically generated).
 
-
 ### Type Expansion and @genType.opaque
-If an exported type `persons` references other types in its definition, those types are also exported by default, as long as they are defined in the same file:
 
+If an exported type `persons` references other types in its definition, those types are also exported by default, as long as they are defined in the same file:
 
 ```reason
 type name = string;
@@ -201,6 +196,7 @@ type persons = array(person);
 ```
 
 ### Renaming and @genType.as
+
 By default, entities with a given name are exported/imported with the same name. However, you might wish to change the appearence of the name on the JS side.
 For example, in the case of a Reason keyword, such as `type`:
 
@@ -326,7 +322,6 @@ If named arguments are present in the Reason type, they are grouped and exported
 
 In case of mixed named and unnamed arguments, consecutive named arguments form separate groups. So e.g. `foo : (int, ~x:int, ~y:int, int, ~z:int) => int` is exported to a JS function of type `(number, {x:number, y:number}, number, {z:number}) => number`.
 
-
 To specify how a named argument is exported to JS, use the `[@genType.as "name"]` annotation:
 
 ```reason
@@ -336,12 +331,6 @@ let make =
 ```
 
 **NOTE** For technical reasons, it is not possible to rename the first argument of a function (it will be fixed once bucklescript supports OCaml 4.0.6).
-
-
-
-
-
-
 
 ### components
 
@@ -367,7 +356,7 @@ It's possible to import an existing TS/Flow type as an opaque type in Reason. Fo
 ```
 
 defines a type which maps to `weekday` in `SomeFlowTypes.js`.
-See for example [Types.re](examples/reason-react-example/src/basics/Types.re) and [SomeFlowTypes.js](examples/reason-react-example/src/basics/SomeFlowTypes.js).
+See for example [Types.re](examples/flow-react-example/src/basics/Types.re) and [SomeFlowTypes.js](examples/flow-react-example/src/basics/SomeFlowTypes.js).
 
 ### recursive types
 
@@ -393,7 +382,6 @@ is exported as a JS object of type
 ```
 
 Notice how the order of elements in the exported JS object is determined by the module type `MT` and not the module implementation `M`.
-
 
 ### polymorphic types
 
@@ -498,9 +486,7 @@ npm publish dist/ --tag beta dist
 Consult the [npm publish](https://docs.npmjs.com/cli/publish) documentation for more options.
 In case you get an `ENEEDAUTH` error, use `npm adduser` and authenticate with your npm account first.
 
-
 **Pro tip:** If you want to publish a dist with a different version number (e.g. for testing the publishing process), you can also manually modify the `version` number in the `dist/package.json` file before releasing.
-
 
 ## Manual Releases (MacOS & Linux)
 
@@ -515,4 +501,3 @@ You can create `lib/gentype-macos.tar.gz` and `lib/gentype-linux.tar.gz` via our
 **Important:**
 
 We use [CircleCI](https://circleci.com/gh/cristianoc/genType) and [Appveyor](https://ci.appveyor.com/project/ryyppy/gentype) to build and automatically release to Github. Your manually released binaries might be overwritten by the built artifacts from tagged triggered commit.
-
