@@ -425,6 +425,12 @@ let none = () => None;
 const none = <T1>(a: T1): ?T1 => OptionBS.none;
 ```
 
+# Experimental features
+
+These features are for experimentation only. They could be changed/removed any time, and not be considered breaking changes.
+
+- Export object and record types as interfaces. To activate, add `"exportInterfaces": true` to the configuration. The types are also renamed from `name` to `Iname`.
+
 # Limitations
 
 - **BuckleScript in-source = true**. Currently only supports bucklescript projects with [in-source generation](https://bucklescript.github.io/docs/en/build-configuration#package-specs) and `.bs.js` file suffix.

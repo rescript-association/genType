@@ -106,6 +106,11 @@ let rec renderTyp =
   | Object(fields)
   | Record(fields) =>
     let indent1 = fields |> Indent.heuristic(~indent);
+    let config =
+      switch (typ) {
+      | GroupOfLabeledArgs(_) => {...config, exportInterfaces: false}
+      | _ => config
+      };
     fields
     |> renderFields(
          ~config,
