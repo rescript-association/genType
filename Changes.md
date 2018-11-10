@@ -1,3 +1,6 @@
+# master
+- Emit `import` instead of `require` with ES6 modules in Flow/Untyped back-end, except when import cycles are possible (Reason importing JS values/components). [PR](https://github.com/cristianoc/genType/pull/92).
+
 # 1.0.0
 - Don’t import type dependencies for opaque types.
 - Add `bsconfig.json` option "generatedFileExtension" to configure the extension used for generated files.
