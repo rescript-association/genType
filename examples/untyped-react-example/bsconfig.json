@@ -7,7 +7,7 @@
     },
     "exportInterfaces": false
   },
-  "name": "reason-react-example",
+  "name": "untyped-react-example",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 2 },
   "bs-dependencies": ["reason-react"],
