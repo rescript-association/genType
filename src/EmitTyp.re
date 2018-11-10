@@ -475,23 +475,22 @@ let emitRequire =
         flowExpectedError
     | Untyped => ""
     };
-  switch (config.module_, importedValueOrComponent) {
-  | (CommonJS, _)
-  | (_, true) =>
-    commentBeforeRequire
-    ++ "const "
-    ++ ModuleName.toString(moduleName)
-    ++ " = require('"
-    ++ (importPath |> ImportPath.toString)
-    ++ "');"
-    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
-  | (ES6, _) =>
+  switch (config.module_) {
+  | ES6 when !importedValueOrComponent && config.language != TypeScript =>
     commentBeforeRequire
     ++ "import * as "
     ++ ModuleName.toString(moduleName)
     ++ " from '"
     ++ (importPath |> ImportPath.toString)
     ++ "';"
+    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
+  | _ =>
+    commentBeforeRequire
+    ++ "const "
+    ++ ModuleName.toString(moduleName)
+    ++ " = require('"
+    ++ (importPath |> ImportPath.toString)
+    ++ "');"
     |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
   };
 };
