@@ -5,10 +5,10 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const Component3BS = require('./Component3.bs');
+import * as Component3BS from './Component3.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require('reason-react/src/ReasonReact.js');
+import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 export type Props = {|+children?: mixed|};
 

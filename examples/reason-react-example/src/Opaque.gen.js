@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const OpaqueBS = require('./Opaque.bs');
+import * as OpaqueBS from './Opaque.bs';
 
 export opaque type t = mixed;
 

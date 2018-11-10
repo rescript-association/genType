@@ -437,8 +437,12 @@ let emitExportVariantType =
   | Untyped => emitters
   };
 
-let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
-  "import "
+let emitImportValueAsEarly = (~config, ~emitters, ~name, ~nameAs, importPath) => {
+  let commentBeforeImport =
+    config.language == Flow ?
+      "// flowlint-next-line nonstrict-import:off\n" : "";
+  commentBeforeImport
+  ++ "import "
   ++ (
     switch (nameAs) {
     | Some(nameAs) => "{" ++ name ++ " as " ++ nameAs ++ "}"
@@ -450,9 +454,18 @@ let emitImportValueAsEarly = (~emitters, ~name, ~nameAs, importPath) =>
   ++ (importPath |> ImportPath.toString)
   ++ "';"
   |> Emitters.requireEarly(~emitters);
+};
 
 let emitRequire =
-    (~early, ~emitters, ~config, ~moduleName, ~strict, importPath) => {
+    (
+      ~importedValueOrComponent,
+      ~early,
+      ~emitters,
+      ~config,
+      ~moduleName,
+      ~strict,
+      importPath,
+    ) => {
   let commentBeforeRequire =
     switch (config.language) {
     | TypeScript => "// tslint:disable-next-line:no-var-requires\n"
@@ -462,13 +475,24 @@ let emitRequire =
         flowExpectedError
     | Untyped => ""
     };
-  commentBeforeRequire
-  ++ "const "
-  ++ ModuleName.toString(moduleName)
-  ++ " = require('"
-  ++ (importPath |> ImportPath.toString)
-  ++ "');"
-  |> (early ? Emitters.requireEarly : Emitters.require)(~emitters);
+  switch (config.module_) {
+  | ES6 when !importedValueOrComponent && config.language != TypeScript =>
+    commentBeforeRequire
+    ++ "import * as "
+    ++ ModuleName.toString(moduleName)
+    ++ " from '"
+    ++ (importPath |> ImportPath.toString)
+    ++ "';"
+    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
+  | _ =>
+    commentBeforeRequire
+    ++ "const "
+    ++ ModuleName.toString(moduleName)
+    ++ " = require('"
+    ++ (importPath |> ImportPath.toString)
+    ++ "');"
+    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
+  };
 };
 
 let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
@@ -477,6 +501,7 @@ let emitRequireReact = (~early, ~emitters, ~config) =>
   switch (config.language) {
   | Flow =>
     emitRequire(
+      ~importedValueOrComponent=false,
       ~early,
       ~emitters,
       ~config,

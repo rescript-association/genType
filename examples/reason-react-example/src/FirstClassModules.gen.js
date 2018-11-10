@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const FirstClassModulesBS = require('./FirstClassModules.bs');
+import * as FirstClassModulesBS from './FirstClassModules.bs';
 
 export const firstClassModule: {|
   +x: number, 

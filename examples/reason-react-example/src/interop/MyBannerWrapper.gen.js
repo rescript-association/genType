@@ -4,14 +4,14 @@
  * @nolint
  */
 
-// $FlowExpectedError: Reason checked type sufficiently
-const React = require('react');
-
 // flowlint-next-line nonstrict-import:off
-const MyBanner = require('./MyBanner.component');
+import MyBanner from'./MyBanner.component';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require('reason-react/src/ReasonReact.js');
+import * as React from 'react';
+
+// $FlowExpectedError: Reason checked type sufficiently
+import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 export type Props = {|+show: boolean, +Message: ?string|};
 

@@ -5,13 +5,13 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const Curry = require('bs-platform/lib/js/curry.js');
+import * as Curry from 'bs-platform/lib/js/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require('reason-react/src/ReasonReact.js');
+import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-const RenamePropsBS = require('./RenameProps.bs');
+import * as RenamePropsBS from './RenameProps.bs';
 
 export type functionTypeWithGenTypeAs = ({|+type: string, +$number: number|}) => number;
 

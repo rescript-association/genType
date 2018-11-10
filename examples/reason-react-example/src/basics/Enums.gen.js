@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-const EnumsBS = require('./Enums.bs');
+import * as EnumsBS from './Enums.bs';
 
 const $$toRE175361521 = {"type": 449540197, "module": -134553037, "XXX THIS IS DIFFERENT": 23437694};
 

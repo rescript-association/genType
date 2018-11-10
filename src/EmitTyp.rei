@@ -90,6 +90,7 @@ let emitImportTypeAs:
 
 let emitImportValueAsEarly:
   (
+    ~config: config,
     ~emitters: Emitters.t,
     ~name: string,
     ~nameAs: option(string),
@@ -99,6 +100,7 @@ let emitImportValueAsEarly:
 
 let emitRequire:
   (
+    ~importedValueOrComponent: bool,
     ~early: bool,
     ~emitters: Emitters.t,
     ~config: config,
