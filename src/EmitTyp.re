@@ -454,7 +454,7 @@ let emitImportValueAsEarly = (~config, ~emitters, ~name, ~nameAs, importPath) =>
     | None => name
     }
   )
-  ++ " from"
+  ++ " from "
   ++ "'"
   ++ (importPath |> ImportPath.toString)
   ++ "';"

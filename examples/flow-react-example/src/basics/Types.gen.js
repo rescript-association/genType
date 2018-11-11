@@ -5,7 +5,7 @@
  */
 
 // flowlint-next-line nonstrict-import:off
-import {foo as fooNotChecked} from'./name-with-dashes';
+import {foo as fooNotChecked} from './name-with-dashes';
 
 // In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
 export const fooTypeChecked: (number) => number = fooNotChecked;

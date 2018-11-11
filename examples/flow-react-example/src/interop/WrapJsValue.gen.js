@@ -5,16 +5,16 @@
  */
 
 // flowlint-next-line nonstrict-import:off
-import {round as roundNotChecked} from'./MyMath';
+import {round as roundNotChecked} from './MyMath';
 
 // flowlint-next-line nonstrict-import:off
-import {area as areaNotChecked} from'./MyMath';
+import {area as areaNotChecked} from './MyMath';
 
 // flowlint-next-line nonstrict-import:off
-import {getValueAtIndex as getValueAtIndexNotChecked} from'./MyMath';
+import {getValueAtIndex as getValueAtIndexNotChecked} from './MyMath';
 
 // flowlint-next-line nonstrict-import:off
-import {functionWithRenamedArgument as functionWithRenamedArgumentNotChecked} from'./MyMath';
+import {functionWithRenamedArgument as functionWithRenamedArgumentNotChecked} from './MyMath';
 
 // In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.
 export const roundTypeChecked: (number) => number = roundNotChecked;

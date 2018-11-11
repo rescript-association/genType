@@ -5,7 +5,7 @@
  */
 
 // flowlint-next-line nonstrict-import:off
-import MyBanner from'./MyBanner.component';
+import MyBanner from './MyBanner.component';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as React from 'react';
