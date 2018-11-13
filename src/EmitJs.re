@@ -439,8 +439,17 @@ let rec emitCodeItem =
          );
     ({...env, importedValueOrComponent: true}, emitters);
 
-  | ImportValue({valueName, importAnnotation, typ, fileName}) =>
+  | ImportValue({valueName, asPath, importAnnotation, typ, fileName}) =>
     let importPath = importAnnotation.importPath;
+    let (firstNameInPath, restOfPath) =
+      valueName == asPath ?
+        (valueName, "") :
+        (
+          switch (asPath |> Str.split(Str.regexp("\\."))) {
+          | [x, ...y] => (x, ["", ...y] |> String.concat("."))
+          | _ => (asPath, "")
+          }
+        );
     let (emitters, importedAsName, env) =
       switch (language, config.module_) {
       | (_, ES6)
@@ -452,7 +461,7 @@ let rec emitCodeItem =
           |> EmitTyp.emitImportValueAsEarly(
                ~config,
                ~emitters,
-               ~name=valueName,
+               ~name=firstNameInPath,
                ~nameAs=Some(valueNameNotChecked),
              );
         (emitters, valueNameNotChecked, env);
@@ -460,7 +469,7 @@ let rec emitCodeItem =
         /* add an early require(...)  */
         let importFile = importAnnotation.name;
 
-        let importedAsName = importFile ++ "." ++ valueName;
+        let importedAsName = importFile ++ "." ++ firstNameInPath;
         let env =
           importFile
           |> ModuleName.fromStringUnsafe
@@ -471,7 +480,7 @@ let rec emitCodeItem =
     let valueNameTypeChecked = valueName ++ "TypeChecked";
 
     let emitters =
-      importedAsName
+      (importedAsName ++ restOfPath)
       ++ ";"
       |> EmitTyp.emitExportConstEarly(
            ~emitters,

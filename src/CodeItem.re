@@ -24,6 +24,7 @@ type importComponent = {
 
 type importValue = {
   valueName: string,
+  asPath: string,
   importAnnotation: Annotation.import,
   typ,
   fileName: ModuleName.t,

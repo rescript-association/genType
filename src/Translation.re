@@ -332,6 +332,9 @@ let translatePrimitive =
   let genTypeImportPayload =
     valueDescription.val_attributes
     |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport);
+  let genTypeAsPayload =
+    valueDescription.val_attributes
+    |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
   switch (
     typeExprTranslation.typ,
     valueDescription.val_prim,
@@ -430,7 +433,13 @@ let translatePrimitive =
       typeDeclarations: [],
     };
 
-  | (_, _, Some(StringPayload(importString))) => {
+  | (_, _, Some(StringPayload(importString))) =>
+    let asPath =
+      switch (genTypeAsPayload) {
+      | Some(StringPayload(asPath)) => asPath
+      | _ => valueName
+      };
+    {
       importTypes:
         typeExprTranslation.dependencies
         |> translateDependencies(~config, ~outputFileRelative, ~resolver),
@@ -438,13 +447,14 @@ let translatePrimitive =
       codeItems: [
         ImportValue({
           valueName,
+          asPath,
           importAnnotation: importString |> Annotation.importFromString,
           typ: typeExprTranslation.typ,
           fileName,
         }),
       ],
       typeDeclarations: [],
-    }
+    };
 
   | _ => {importTypes: [], codeItems: [], typeDeclarations: []}
   };
