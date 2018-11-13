@@ -1,6 +1,6 @@
 # 1.0.1
 - Emit `import` instead of `require` with ES6 modules in Flow/Untyped back-end, except when import cycles are possible (Reason importing JS values/components). [PR](https://github.com/cristianoc/genType/pull/92).
-- Add support for `@genTyep.as` when importing values from JS. This supports renaming, importing default values, and importing nested values via a path.
+- Add support for `@genType.as` when importing values from JS. This supports renaming, importing default values, and importing nested values via a path.
 
 # 1.0.0
 - Don’t import type dependencies for opaque types.
