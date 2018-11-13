@@ -10,6 +10,9 @@ import {TopLevelClass as innerStuffContentsNotChecked} from './exportNestedValue
 // flowlint-next-line nonstrict-import:off
 import {ValueStartingWithUpperCaseLetter as valueStartingWithUpperCaseLetterNotChecked} from './exportNestedValues';
 
+// flowlint-next-line nonstrict-import:off
+import {default as defaultValueNotChecked} from './exportNestedValues';
+
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.
 export const innerStuffContentsTypeChecked: {|+x: number|} = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;
 
@@ -21,3 +24,9 @@ export const valueStartingWithUpperCaseLetterTypeChecked: string = valueStarting
 
 // Export 'valueStartingWithUpperCaseLetter' early to allow circular import from the '.bs.js' file.
 export const valueStartingWithUpperCaseLetter: mixed = valueStartingWithUpperCaseLetterTypeChecked;
+
+// In case of type error, check the type of 'defaultValue' in 'TestImport.re' and './exportNestedValues'.
+export const defaultValueTypeChecked: number = defaultValueNotChecked;
+
+// Export 'defaultValue' early to allow circular import from the '.bs.js' file.
+export const defaultValue: mixed = defaultValueTypeChecked;

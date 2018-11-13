@@ -13,3 +13,5 @@ export class TopLevelClass {
 }
 
 export const ValueStartingWithUpperCaseLetter = "ValueStartingWithUpperCaseLetter";
+
+export default 42;

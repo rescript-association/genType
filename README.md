@@ -131,7 +131,7 @@ external realValue: complexNumber => float = "";
 
 Because of the `external` keyword, it's clear from context that this is an import, so you can also just use `@genType` and omit `.import`.
 
-To import nested values, e.g. `Some.Nested.value`, use `@genType.as "Some.Nested.value"`. Similarly, to import a value with a different JS name, use e.g. `@genType.as "ValueStartingWithUpperCaseLetter"`.
+To import a default JS export, use `@genType.as "default"`. Similarly, to import a value with a different JS name, use e.g. `@genType.as "ValueStartingWithUpperCaseLetter"`. To import nested values, e.g. `Some.Nested.value`, use `@genType.as "Some.Nested.value"`. 
 
 **NOTE** The argument of `@bs.module`must always be the name of the current file plus `.gen` (In future, this could be automatically generated).
 

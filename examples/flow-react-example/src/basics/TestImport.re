@@ -11,3 +11,9 @@ let innerStuffContents = innerStuffContents;
 [@genType.as "ValueStartingWithUpperCaseLetter"]
 [@bs.module "./TestImport.gen"]
 external valueStartingWithUpperCaseLetter: string = "";
+
+
+[@genType.import "./exportNestedValues"]
+[@genType.as "default"]
+[@bs.module "./TestImport.gen"]
+external defaultValue: int = "";
