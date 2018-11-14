@@ -1,5 +1,6 @@
 # master
 - Translate empty object types as `{}`. This avoids pulling it a shim for `Js.t`.
+- Support renaming via `[@genType.as "name"]` when exporting types.
 
 # 1.0.1
 - Emit `import` instead of `require` with ES6 modules in Flow/Untyped back-end, except when import cycles are possible (Reason importing JS values/components). [PR](https://github.com/cristianoc/genType/pull/92).

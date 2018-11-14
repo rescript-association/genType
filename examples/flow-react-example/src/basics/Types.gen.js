@@ -71,6 +71,8 @@ export type someMutableFields = {|
 
 export opaque type exportOpaqueFromEnums = mixed;
 
+export type DateKey = string;
+
 export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
 
 export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };

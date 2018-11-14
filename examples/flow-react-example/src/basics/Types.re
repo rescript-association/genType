@@ -80,3 +80,7 @@ external foo: int => int = "";
 
 [@genType.opaque]
 type exportOpaqueFromEnums = Enums.weekday;
+
+[@genType]
+[@genType.as "DateKey"]
+type dateKey = string;

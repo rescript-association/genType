@@ -145,12 +145,20 @@ let traslateDeclarationKind =
       [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
     | _ =>
+      let typeNameReanamed =
+        switch (
+          typeAttributes
+          |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
+        ) {
+        | Some(StringPayload(s)) => s
+        | _ => typeName
+        };
       switch (optType) {
       | None => [
           {
             importTypes: [],
             exportFromTypeDeclaration:
-              typeName
+              typeNameReanamed
               |> createExportType(
                    ~opaque=Some(true),
                    ~typeVars,
@@ -165,7 +173,7 @@ let traslateDeclarationKind =
         let (translation: TranslateTypeExprFromTypes.translation, typ) =
           someType |> defaultCase;
         let exportFromTypeDeclaration =
-          typeName
+          typeNameReanamed
           |> createExportType(
                ~opaque,
                ~typeVars,
@@ -183,7 +191,7 @@ let traslateDeclarationKind =
                  ~resolver,
                );
         [{importTypes, exportFromTypeDeclaration}];
-      }
+      };
     };
 
   switch (declarationKind) {
