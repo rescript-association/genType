@@ -198,7 +198,7 @@ let translateConstr =
       typ: Nullable(paramTranslation.typ),
     }
 
-  | (Pdot(Pident({name: "Js", _}), "t", _), _) when fieldsTranslations != [] =>
+  | (Pdot(Pident({name: "Js", _}), "t", _), _) =>
     let dependencies =
       fieldsTranslations
       |> List.map(((_, {dependencies, _})) => dependencies)
