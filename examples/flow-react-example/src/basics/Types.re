@@ -84,3 +84,7 @@ type exportOpaqueFromEnums = Enums.weekday;
 [@genType]
 [@genType.as "DateKey"]
 type dateKey = string;
+
+[@genType.opaque]
+[@genType.as "DateKeyOpaque"]
+type dateKeyOpaque = string;
