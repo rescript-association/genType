@@ -1,10 +1,11 @@
 open GenTypeCommon;
 
 type exportType = {
+  nameAs: option(string),
   opaque: option(bool),
+  optTyp: option(typ),
   typeVars: list(string),
   resolvedTypeName: string,
-  optTyp: option(typ),
 };
 
 type exportVariantType = {

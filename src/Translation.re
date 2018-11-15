@@ -273,10 +273,11 @@ let translateComponent =
     let codeItems = [
       CodeItem.ExportComponent({
         exportType: {
+          nameAs: None,
           opaque: Some(false),
+          optTyp: Some(propsType),
           typeVars,
           resolvedTypeName: propsTypeName,
-          optTyp: Some(propsType),
         },
         fileName,
         moduleName,
@@ -413,10 +414,11 @@ let translatePrimitive =
     let codeItems = [
       CodeItem.ImportComponent({
         exportType: {
+          nameAs: None,
           opaque: Some(false),
+          optTyp: Some(propsTyp),
           typeVars,
           resolvedTypeName: propsTypeName,
-          optTyp: Some(propsTyp),
         },
         importAnnotation: importString |> Annotation.importFromString,
         childrenTyp,

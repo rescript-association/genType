@@ -11,11 +11,17 @@ type declarationKind =
   | NoDeclaration;
 
 let createExportType =
-    (~opaque, ~typeVars, ~optTyp, ~annotation, ~typeEnv, typeName)
+    (~nameAs, ~opaque, ~typeVars, ~optTyp, ~annotation, ~typeEnv, typeName)
     : CodeItem.exportFromTypeDeclaration => {
-  let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
+  let typeNameRenamed =
+    switch (nameAs) {
+    | None => typeName
+    | Some(s) => s
+    };
+  let resolvedTypeName = typeNameRenamed |> TypeEnv.addModulePath(~typeEnv);
   {
-    exportKind: ExportType({opaque, typeVars, resolvedTypeName, optTyp}),
+    exportKind:
+      ExportType({nameAs, opaque, optTyp, typeVars, resolvedTypeName}),
     annotation,
   };
 };
@@ -75,10 +81,11 @@ let translateConstructorDeclarationFromTypes =
     CodeItem.exportKind:
       ExportVariantLeaf({
         exportType: {
+          nameAs: None,
           opaque: Some(true),
+          optTyp: Some(mixedOrUnknown(~config)),
           typeVars,
           resolvedTypeName: variantTypeNameResolved,
-          optTyp: Some(mixedOrUnknown(~config)),
         },
         constructorTyp,
         argTypes,
@@ -135,6 +142,7 @@ let traslateDeclarationKind =
         /* Make the imported type usable from other modules by exporting it too. */
         typeName_
         |> createExportType(
+             ~nameAs=None,
              ~opaque=Some(false),
              ~typeVars=[],
              ~optTyp=None,
@@ -145,21 +153,22 @@ let traslateDeclarationKind =
       [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
     | _ =>
-      let typeNameReanamed =
+      let nameAs =
         switch (
           typeAttributes
           |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
         ) {
-        | Some(StringPayload(s)) => s
-        | _ => typeName
+        | Some(StringPayload(s)) => Some(s)
+        | _ => None
         };
       switch (optType) {
       | None => [
           {
             importTypes: [],
             exportFromTypeDeclaration:
-              typeNameReanamed
+              typeName
               |> createExportType(
+                   ~nameAs,
                    ~opaque=Some(true),
                    ~typeVars,
                    ~optTyp=Some(mixedOrUnknown(~config)),
@@ -173,8 +182,9 @@ let traslateDeclarationKind =
         let (translation: TranslateTypeExprFromTypes.translation, typ) =
           someType |> defaultCase;
         let exportFromTypeDeclaration =
-          typeNameReanamed
+          typeName
           |> createExportType(
+               ~nameAs,
                ~opaque,
                ~typeVars,
                ~optTyp=Some(typ),
@@ -319,6 +329,7 @@ let traslateDeclarationKind =
         exportFromTypeDeclaration:
           typeName
           |> createExportType(
+               ~nameAs=None,
                ~opaque,
                ~typeVars,
                ~optTyp,

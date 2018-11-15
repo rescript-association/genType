@@ -107,7 +107,7 @@ let emitExportType =
       ~config,
       ~typIsOpaque,
       ~typeNameIsInterface,
-      {CodeItem.opaque, typeVars, resolvedTypeName, optTyp, _},
+      {CodeItem.opaque, optTyp, typeVars, resolvedTypeName, _},
     ) => {
   let opaque =
     switch (opaque, optTyp) {
