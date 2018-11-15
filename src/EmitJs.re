@@ -107,7 +107,7 @@ let emitExportType =
       ~config,
       ~typIsOpaque,
       ~typeNameIsInterface,
-      {CodeItem.opaque, optTyp, typeVars, resolvedTypeName, _},
+      {CodeItem.nameAs, opaque, optTyp, typeVars, resolvedTypeName, _},
     ) => {
   let opaque =
     switch (opaque, optTyp) {
@@ -118,12 +118,13 @@ let emitExportType =
   resolvedTypeName
   |> EmitTyp.emitExportType(
        ~early?,
-       ~emitters,
        ~config,
+       ~emitters,
+       ~nameAs,
        ~opaque,
-       ~typeVars,
        ~optTyp,
        ~typeNameIsInterface,
+       ~typeVars,
      );
 };
 

@@ -13,12 +13,7 @@ type declarationKind =
 let createExportType =
     (~nameAs, ~opaque, ~typeVars, ~optTyp, ~annotation, ~typeEnv, typeName)
     : CodeItem.exportFromTypeDeclaration => {
-  let typeNameRenamed =
-    switch (nameAs) {
-    | None => typeName
-    | Some(s) => s
-    };
-  let resolvedTypeName = typeNameRenamed |> TypeEnv.addModulePath(~typeEnv);
+  let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
   {
     exportKind:
       ExportType({nameAs, opaque, optTyp, typeVars, resolvedTypeName}),

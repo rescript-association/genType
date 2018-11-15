@@ -36,6 +36,10 @@ function testFunctionOnOptionsAsArgument(a, foo) {
   return Curry._1(foo, a);
 }
 
+function testDateKey(x) {
+  return x;
+}
+
 export {
   consumeOption ,
   consumeOption2 ,
@@ -43,6 +47,7 @@ export {
   identity ,
   isWeekend ,
   testFunctionOnOptionsAsArgument ,
+  testDateKey ,
   
 }
 /* ./SomeFlowTypes Not a pure module */

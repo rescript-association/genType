@@ -88,3 +88,6 @@ type dateKey = string;
 [@genType.opaque]
 [@genType.as "DateKeyOpaque"]
 type dateKeyOpaque = string;
+
+[@genType]
+let testDateKey = (x: dateKey) => x;

@@ -56,12 +56,13 @@ let emitExportFunction:
 let emitExportType:
   (
     ~early: bool=?,
-    ~emitters: Emitters.t,
     ~config: config,
+    ~emitters: Emitters.t,
+    ~nameAs: option(string),
     ~opaque: bool,
-    ~typeVars: list(string),
     ~optTyp: option(typ),
     ~typeNameIsInterface: string => bool,
+    ~typeVars: list(string),
     string
   ) =>
   Emitters.t;

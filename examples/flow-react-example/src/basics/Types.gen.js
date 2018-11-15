@@ -71,9 +71,11 @@ export type someMutableFields = {|
 
 export opaque type exportOpaqueFromEnums = mixed;
 
-export type DateKey = string;
+export type dateKey = string;
+export type DateKey = dateKey;
 
-export opaque type DateKeyOpaque = mixed;
+export opaque type dateKeyOpaque = mixed;
+export type DateKeyOpaque = dateKeyOpaque;
 
 export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
 
@@ -86,3 +88,5 @@ export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesB
 export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
 
 export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };
+
+export const testDateKey: (dateKey) => dateKey = TypesBS.testDateKey;

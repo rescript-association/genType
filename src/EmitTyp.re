@@ -317,12 +317,13 @@ let emitExportDefault = (~emitters, ~config, name) =>
 let emitExportType =
     (
       ~early=false,
-      ~emitters,
       ~config,
+      ~emitters,
+      ~nameAs,
       ~opaque,
-      ~typeVars,
       ~optTyp,
       ~typeNameIsInterface,
+      ~typeVars,
       resolvedTypeName,
     ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
@@ -331,6 +332,11 @@ let emitExportType =
   let resolvedTypeName =
     config.exportInterfaces && isInterface ?
       resolvedTypeName |> interfaceName(~config) : resolvedTypeName;
+  let exportNameAs =
+    switch (nameAs) {
+    | None => ""
+    | Some(s) => "\nexport type " ++ s ++ " = " ++ resolvedTypeName ++ ";"
+    };
 
   switch (config.language) {
   | Flow =>
@@ -345,6 +351,7 @@ let emitExportType =
         |> typToString(~config, ~typeNameIsInterface)
       )
       ++ ";"
+      ++ exportNameAs
       |> export(~emitters)
     | Some(typ) =>
       "export"
@@ -358,6 +365,7 @@ let emitExportType =
         |> typToString(~config, ~typeNameIsInterface)
       )
       ++ ";"
+      ++ exportNameAs
       |> export(~emitters)
     | None =>
       "export"
@@ -365,6 +373,7 @@ let emitExportType =
       ++ "type "
       ++ (resolvedTypeName |> EmitText.brackets)
       ++ ";"
+      ++ exportNameAs
       |> export(~emitters)
     }
   | TypeScript =>
@@ -385,6 +394,7 @@ let emitExportType =
       ++ " { protected opaque!: "
       ++ typeOfOpaqueField
       ++ " }; /* simulate opaque types */"
+      ++ exportNameAs
       |> export(~emitters);
     } else {
       (
@@ -405,6 +415,7 @@ let emitExportType =
         }
       )
       ++ ";"
+      ++ exportNameAs
       |> export(~emitters);
     }
   | Untyped => emitters
