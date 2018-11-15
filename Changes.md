@@ -1,3 +1,6 @@
+# master
+- Fix importing type via renaming. Need to export both the original and renamed type.
+
 # 1.2.0.
 - Translate empty object types as `{}`. This avoids pulling it a shim for `Js.t`.
 - Support renaming via `[@genType.as "name"]` when exporting types.
