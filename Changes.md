@@ -1,4 +1,4 @@
-# master
+# 1.2.1
 - Fix importing type via renaming. Need to export both the original and renamed type.
 
 # 1.2.0.
