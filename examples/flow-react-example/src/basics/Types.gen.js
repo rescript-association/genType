@@ -23,10 +23,13 @@ const TypesBS = require('./Types.bs');
 import type {anInterestingFlowType} from './SomeFlowTypes';
 
 // flowlint-next-line nonstrict-import:off
-import type {r as AutoAnnotate_r} from '../../src/AutoAnnotate.gen';
+import type {annotatedVariant as AutoAnnotate_annotatedVariant} from '../../src/AutoAnnotate.gen';
 
 // flowlint-next-line nonstrict-import:off
 import type {t as Obj_t} from '../../src/shims/Obj.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {variant as AutoAnnotate_variant} from '../../src/AutoAnnotate.gen';
 
 // flowlint-next-line nonstrict-import:off
 import type {weekday} from './SomeFlowTypes';
@@ -94,4 +97,6 @@ export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = f
 
 export const testDateKey: (dateKey) => dateKey = TypesBS.testDateKey;
 
-export const testAutoAnnotateVariants: (AutoAnnotate_r) => AutoAnnotate_r = TypesBS.testAutoAnnotateVariants;
+export const testAutoAnnotateVariants: (AutoAnnotate_variant) => AutoAnnotate_variant = TypesBS.testAutoAnnotateVariants;
+
+export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = TypesBS.testAutoAnnotateVariants2;

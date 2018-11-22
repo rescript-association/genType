@@ -44,6 +44,10 @@ function testAutoAnnotateVariants(x) {
   return x;
 }
 
+function testAutoAnnotateVariants2(x) {
+  return x;
+}
+
 export {
   consumeOption ,
   consumeOption2 ,
@@ -53,6 +57,7 @@ export {
   testFunctionOnOptionsAsArgument ,
   testDateKey ,
   testAutoAnnotateVariants ,
+  testAutoAnnotateVariants2 ,
   
 }
 /* ./SomeFlowTypes Not a pure module */

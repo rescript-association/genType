@@ -26,7 +26,11 @@ let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (~config, declarations: list(CodeItem.typeDeclaration))
+    (
+      ~config,
+      ~forTypePropagation,
+      declarations: list(CodeItem.typeDeclaration),
+    )
     : CodeItem.exportTypeMap => {
   let updateExportTypeMap =
       (
@@ -68,10 +72,36 @@ let createExportTypeMap =
       | None => exportTypeMap
       };
     };
+    let addExportVariantType =
+        (
+          ~annotation,
+          {resolvedTypeName, typeVars, leaves, _}: CodeItem.exportVariantType,
+        ) => {
+      let doLeaf = (typs, exportVariantLeaf: CodeItem.exportVariantLeaf) =>
+        typs @ exportVariantLeaf.constructorTyp.argTypes;
+      /* Tuple type only used for type propagation */
+      let typ = Tuple(leaves |> List.fold_left(doLeaf, []));
+      if (Debug.codeItems^) {
+        logItem(
+          "Type Map: %s%s Variant typ:%s\n",
+          resolvedTypeName,
+          typeVars == [] ?
+            "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
+          typ |> EmitTyp.typToString(~config, ~typeNameIsInterface=_ => false),
+        );
+      };
+      exportTypeMap
+      |> StringMap.add(
+           resolvedTypeName,
+           {CodeItem.typeVars, typ, annotation},
+         );
+    };
     switch (typeDeclaration.exportFromTypeDeclaration) {
     | {exportKind: ExportType(exportType), annotation} =>
       exportType |> addExportType(~annotation)
-    | {exportKind: ExportVariantType(_), _} => exportTypeMap
+    | {exportKind: ExportVariantType(exportVariantType), annotation} =>
+      forTypePropagation ?
+        exportVariantType |> addExportVariantType(~annotation) : exportTypeMap
     };
   };
   declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -806,7 +836,7 @@ let emitImportType =
                ~outputFileRelative,
                ~resolver,
              )
-          |> createExportTypeMap(~config);
+          |> createExportTypeMap(~config, ~forTypePropagation=false);
         let cmtToExportTypeMap =
           env.cmtToExportTypeMap
           |> StringMap.add(cmtFile, exportTypeMapFromCmt);
@@ -972,7 +1002,7 @@ let emitTranslationAsString =
 
   let (exportTypeMap, annotatedSet) =
     translation.typeDeclarations
-    |> createExportTypeMap(~config)
+    |> createExportTypeMap(~config, ~forTypePropagation=true)
     |> propagateAnnotationToSubTypes;
 
   let annotatedTypeDeclarations =
