@@ -40,6 +40,10 @@ function testDateKey(x) {
   return x;
 }
 
+function testAutoAnnotateVariants(x) {
+  return x;
+}
+
 export {
   consumeOption ,
   consumeOption2 ,
@@ -48,6 +52,7 @@ export {
   isWeekend ,
   testFunctionOnOptionsAsArgument ,
   testDateKey ,
+  testAutoAnnotateVariants ,
   
 }
 /* ./SomeFlowTypes Not a pure module */

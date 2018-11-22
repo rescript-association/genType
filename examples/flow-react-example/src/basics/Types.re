@@ -91,3 +91,6 @@ type dateKeyOpaque = string;
 
 [@genType]
 let testDateKey = (x: dateKey) => x;
+
+[@genType]
+let testAutoAnnotateVariants = (x: AutoAnnotate.r) => x;

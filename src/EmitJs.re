@@ -878,7 +878,18 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
          } else {
            typeDeclaration;
          }
-       | _ => typeDeclaration
+       | ExportVariantType(exportVariantType) =>
+         if (annotatedSet |> StringSet.mem(exportVariantType.resolvedTypeName)) {
+           {
+             ...typeDeclaration,
+             exportFromTypeDeclaration: {
+               ...typeDeclaration.exportFromTypeDeclaration,
+               annotation: GenType,
+             },
+           };
+         } else {
+           typeDeclaration;
+         }
        }
      )
   |> List.filter(
@@ -913,7 +924,8 @@ let propagateAnnotationToSubTypes = (typeMap: CodeItem.exportTypeMap) => {
             };
             annotatedSet := annotatedSet^ |> StringSet.add(typeName);
             typ1 |> visit;
-          | exception Not_found => ()
+          | exception Not_found =>
+            annotatedSet := annotatedSet^ |> StringSet.add(typeName)
           };
         }
       | Array(t, _) => t |> visit
