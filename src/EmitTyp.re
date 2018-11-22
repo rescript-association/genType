@@ -427,7 +427,7 @@ let emitExportVariantType =
       ~emitters,
       ~config,
       ~name,
-      ~typeParams,
+      ~typeVars,
       ~typeNameIsInterface,
       ~variants: list(variant),
     ) =>
@@ -436,10 +436,7 @@ let emitExportVariantType =
   | TypeScript =>
     "export type "
     ++ name
-    ++ genericsString(
-         ~typeVars=
-           typeParams |> List.map(typToString(~config, ~typeNameIsInterface)),
-       )
+    ++ genericsString(~typeVars)
     ++ " =\n  | "
     ++ (
       variants

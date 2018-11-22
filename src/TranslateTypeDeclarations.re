@@ -348,14 +348,14 @@ let traslateDeclarationKind =
       leafTypesDepsAndVariantLeafBindings |> List.split;
     let importTypes = importTypesAndLeaves |> List.map(fst) |> List.concat;
     let leaves = importTypesAndLeaves |> List.map(snd);
-    let typeParams = TypeVars.(typeParams |> extract |> toTyp);
+    let typeVars = TypeVars.(typeParams |> extract);
     let variantTypeNameResolved = typeName |> TypeEnv.addModulePath(~typeEnv);
     let unionType = {
       CodeItem.exportKind:
         ExportVariantType({
           leaves,
           name: variantTypeNameResolved,
-          typeParams,
+          typeVars,
           variants,
         }),
       annotation,

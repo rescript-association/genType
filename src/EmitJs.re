@@ -173,7 +173,7 @@ let emitexportFromTypeDeclaration =
       ),
     )
 
-  | ExportVariantType({CodeItem.name, typeParams, variants, leaves, _}) =>
+  | ExportVariantType({CodeItem.name, typeVars, variants, leaves, _}) =>
     let emitOneLeaf =
         (
           (env, emitters),
@@ -257,7 +257,7 @@ let emitexportFromTypeDeclaration =
         ~config,
         ~name,
         ~typeNameIsInterface,
-        ~typeParams,
+        ~typeVars,
         ~variants,
       ),
     );

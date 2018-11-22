@@ -72,7 +72,7 @@ let emitExportVariantType:
     ~emitters: Emitters.t,
     ~config: config,
     ~name: string,
-    ~typeParams: list(typ),
+    ~typeVars: list(string),
     ~typeNameIsInterface: string => bool,
     ~variants: list(variant)
   ) =>
