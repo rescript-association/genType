@@ -1,4 +1,4 @@
-# 1.3.1
+# 1.3.0
 - Auto propagate annotations to and from variant type declarations (not just normal type declarations).
 - Auto propagate annotations to types mentioned in exported values and components.
 
