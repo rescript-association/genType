@@ -15,7 +15,7 @@ import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 export type Props = {|+show: boolean, +Message: ?string|};
 
-// In case of type error, check the type of 'make' in 'MyBannerWrapper.re' and the props of './MyBanner.component'.
+// In case of type error, check the type of 'make' in 'ImportMyBanner.re' and the props of './MyBanner.component'.
 export function MyBannerTypeChecked(props: Props) {
   return <MyBanner {...props}/>;
 }

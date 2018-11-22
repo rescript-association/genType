@@ -4,7 +4,7 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as $$String from "bs-platform/lib/es6/string.js";
 import * as ReasonReact from "reason-react/src/ReasonReact.js";
-import * as MyBannerWrapper from "./MyBannerWrapper.bs.js";
+import * as ImportMyBanner from "./ImportMyBanner.bs.js";
 
 var component = ReasonReact.statelessComponent("PageReason");
 
@@ -29,7 +29,7 @@ function make(message, someNumber, extraGreeting, polymorphicProp, _children) {
               var greeting = extraGreeting !== undefined ? extraGreeting : "How are you?";
               return React.createElement("div", {
                           onClick: onClick
-                        }, ReasonReact.element(undefined, undefined, MyBannerWrapper.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
+                        }, ReasonReact.element(undefined, undefined, ImportMyBanner.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

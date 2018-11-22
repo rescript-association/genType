@@ -18,7 +18,7 @@ let make =
       | Some(g) => g
       };
     <div onClick>
-      <MyBannerWrapper
+      <ImportMyBanner
         show=true
         message={Js.Nullable.return(message ++ " " ++ greeting)}
       />
