@@ -36,7 +36,6 @@ let createExportTypeMap =
       : CodeItem.exportTypeMap => {
     let addExportType =
         (
-          ~importTypes,
           ~annotation,
           {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
         ) => {
@@ -64,15 +63,14 @@ let createExportTypeMap =
         exportTypeMap
         |> StringMap.add(
              resolvedTypeName,
-             {CodeItem.typeVars, typ, annotation, importTypes},
+             {CodeItem.typeVars, typ, annotation},
            )
       | None => exportTypeMap
       };
     };
     switch (typeDeclaration.exportFromTypeDeclaration) {
     | {exportKind: ExportType(exportType), annotation} =>
-      exportType
-      |> addExportType(~annotation, ~importTypes=typeDeclaration.importTypes)
+      exportType |> addExportType(~annotation)
     | {exportKind: ExportVariantType(_), _} => exportTypeMap
     };
   };

@@ -82,7 +82,6 @@ type exportTypeItem = {
   typeVars: list(string),
   typ,
   annotation: Annotation.t,
-  importTypes: list(importType),
 };
 
 type exportTypeMap = StringMap.t(exportTypeItem);
