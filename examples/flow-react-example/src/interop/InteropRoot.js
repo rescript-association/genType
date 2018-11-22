@@ -19,7 +19,7 @@ const helloWorld = GreetingRe.concat("++", helloWorldList);
 
 const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
-const WrapJsValue = require("./WrapJsValue.gen");
+const WrapJsValue = require("./ImportJsValue.gen");
 
 consoleLog("interopRoot.js roundedNumber:", WrapJsValue.roundedNumber);
 consoleLog("interopRoot.js areaValue:", WrapJsValue.areaValue);

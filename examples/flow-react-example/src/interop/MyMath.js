@@ -1,10 +1,10 @@
 /* @flow strict */
 
-const WrapJsValue = require("./WrapJsValue.gen");
+const ImportJsValue = require("./ImportJsValue.gen");
 
 export const round: number => number = Math.round;
 
-export const area = function(point: WrapJsValue.point): number {
+export const area = function(point: ImportJsValue.point): number {
   return point.x * (point.y === undefined ? 1 : point.y);
 };
 
