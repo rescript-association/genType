@@ -358,7 +358,7 @@ It's possible to import an existing TS/Flow type as an opaque type in Reason. Fo
 ```
 
 defines a type which maps to `weekday` in `SomeFlowTypes.js`.
-See for example [Types.re](examples/flow-react-example/src/basics/Types.re) and [SomeFlowTypes.js](examples/flow-react-example/src/basics/SomeFlowTypes.js).
+See for example [Types.re](examples/flow-react-example/src/Types.re) and [SomeFlowTypes.js](examples/flow-react-example/src/SomeFlowTypes.js).
 
 ### recursive types
 
