@@ -919,15 +919,18 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
        annotation != NoGenType
      );
 
-let propagateAnnotationToSubTypes = (typeMap: CodeItem.exportTypeMap) => {
+let propagateAnnotationToSubTypes =
+    (typeMap: CodeItem.exportTypeMap) => {
   let annotatedSet = ref(StringSet.empty);
   let initialAnnotatedTypes =
     typeMap
     |> StringMap.bindings
     |> List.filter(((_, {CodeItem.annotation, _})) =>
          annotation == Annotation.GenType
-       );
-  let visitTypAndUpdateMarked = ((_typeName, {CodeItem.typ, annotation, _})) => {
+       )
+    |> List.map(((_, {CodeItem.typ, _})) => typ);
+
+  let visitTypAndUpdateMarked = typ_ => {
     let visited = ref(StringSet.empty);
     let rec visit = typ =>
       switch (typ) {
@@ -961,12 +964,7 @@ let propagateAnnotationToSubTypes = (typeMap: CodeItem.exportTypeMap) => {
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
       };
-    switch ((annotation: Annotation.t)) {
-    | GenType => typ |> visit
-    | Generated
-    | GenTypeOpaque
-    | NoGenType => ()
-    };
+    typ_ |> visit;
   };
   initialAnnotatedTypes |> List.iter(visitTypAndUpdateMarked);
   let newTypeMap =
