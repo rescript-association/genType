@@ -920,7 +920,7 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
      );
 
 let propagateAnnotationToSubTypes =
-    (typeMap: CodeItem.exportTypeMap) => {
+    (~codeItems, typeMap: CodeItem.exportTypeMap) => {
   let annotatedSet = ref(StringSet.empty);
   let initialAnnotatedTypes =
     typeMap
@@ -929,6 +929,14 @@ let propagateAnnotationToSubTypes =
          annotation == Annotation.GenType
        )
     |> List.map(((_, {CodeItem.typ, _})) => typ);
+  let typesOfExportedValue = (codeItem: CodeItem.t) =>
+    switch (codeItem) {
+    | ExportValue({typ})
+    | ExportComponent({typ}) => [typ]
+    | _ => []
+    };
+  let typesOfExportedValues =
+    codeItems |> List.map(typesOfExportedValue) |> List.concat;
 
   let visitTypAndUpdateMarked = typ_ => {
     let visited = ref(StringSet.empty);
@@ -966,7 +974,9 @@ let propagateAnnotationToSubTypes =
       };
     typ_ |> visit;
   };
-  initialAnnotatedTypes |> List.iter(visitTypAndUpdateMarked);
+  initialAnnotatedTypes
+  @ typesOfExportedValues
+  |> List.iter(visitTypAndUpdateMarked);
   let newTypeMap =
     typeMap
     |> StringMap.mapi((typeName, exportTypeItem: CodeItem.exportTypeItem) =>
@@ -1001,7 +1011,7 @@ let emitTranslationAsString =
   let (exportTypeMap, annotatedSet) =
     translation.typeDeclarations
     |> createExportTypeMap(~config, ~forTypePropagation=true)
-    |> propagateAnnotationToSubTypes;
+    |> propagateAnnotationToSubTypes(~codeItems=translation.codeItems);
 
   let annotatedTypeDeclarations =
     translation.typeDeclarations

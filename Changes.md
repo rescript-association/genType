@@ -1,5 +1,6 @@
 # master
 - Auto propagate annotations to and from variant type declarations (not just normal type declarations).
+- Auto propagate annotations to types mentioned in exported values and components.
 
 # 1.2.1
 - Fix importing type via renaming. Need to export both the original and renamed type.

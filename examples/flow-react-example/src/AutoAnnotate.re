@@ -14,3 +14,18 @@ type r4 = {r4: int};
 type annotatedVariant =
   | R2(r2, r3)
   | R4(r4);
+
+type r5 = {r5: int};
+
+[@genType]
+let useR5 = (x: r5) => x;
+
+type r6 = {r6: int};
+
+let component = ReasonReact.statelessComponent(__MODULE__);
+
+[@genType]
+let make = (~r6 as _: r6, _children) => {
+  ...component,
+  render: _ => ReasonReact.null,
+};
