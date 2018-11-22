@@ -8,7 +8,7 @@
 import * as TypeExpansionBS from './TypeExpansion.bs';
 
 // flowlint-next-line nonstrict-import:off
-import type {person as Tuples_person} from '../src/basics/Tuples.gen';
+import type {person as Tuples_person} from './Tuples.gen';
 
 export type personFromTuples = Tuples_person;
 

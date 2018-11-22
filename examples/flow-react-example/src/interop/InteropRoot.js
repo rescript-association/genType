@@ -32,9 +32,9 @@ const callMyAreaDirectly = WrapJsValue.myArea({x:3,y:4});
 consoleLog("interopRoot.js callMyAreaDirectly:", callMyAreaDirectly);
 
 
-consoleLog("anInterestingFlowType ", require("../basics/SomeFlowTypes").c);
+consoleLog("anInterestingFlowType ", require("../SomeFlowTypes").c);
 
-const Enums = require("../basics/Enums.gen");
+const Enums = require("../Enums.gen");
 
 consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
 consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);

@@ -11,7 +11,7 @@ import * as CreateBucklescriptBlock from 'bs-platform/lib/js/block.js';
 import * as NestedBS from './Nested.bs';
 
 // flowlint-next-line nonstrict-import:off
-import type {variant as Component2_variant} from '../../src/basics/Component2.gen';
+import type {variant as Component2_variant} from '../../src/Component2.gen';
 
 export opaque type VariantA = mixed;
 
