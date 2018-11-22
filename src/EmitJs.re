@@ -864,34 +864,26 @@ let emitImportTypes =
 
 let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
   typeDeclarations
-  |> List.map(typeDeclaration =>
-       switch (typeDeclaration.CodeItem.exportFromTypeDeclaration.exportKind) {
-       | ExportType(exportType) =>
-         if (annotatedSet |> StringSet.mem(exportType.resolvedTypeName)) {
-           {
-             ...typeDeclaration,
-             exportFromTypeDeclaration: {
-               ...typeDeclaration.exportFromTypeDeclaration,
-               annotation: GenType,
-             },
-           };
-         } else {
-           typeDeclaration;
-         }
-       | ExportVariantType(exportVariantType) =>
-         if (annotatedSet |> StringSet.mem(exportVariantType.resolvedTypeName)) {
-           {
-             ...typeDeclaration,
-             exportFromTypeDeclaration: {
-               ...typeDeclaration.exportFromTypeDeclaration,
-               annotation: GenType,
-             },
-           };
-         } else {
-           typeDeclaration;
-         }
-       }
-     )
+  |> List.map(typeDeclaration => {
+       let nameInAnnotatedSet =
+         switch (typeDeclaration.CodeItem.exportFromTypeDeclaration.exportKind) {
+         | ExportType(exportType) =>
+           annotatedSet |> StringSet.mem(exportType.resolvedTypeName)
+         | ExportVariantType(exportVariantType) =>
+           annotatedSet |> StringSet.mem(exportVariantType.resolvedTypeName)
+         };
+       if (nameInAnnotatedSet) {
+         {
+           ...typeDeclaration,
+           exportFromTypeDeclaration: {
+             ...typeDeclaration.exportFromTypeDeclaration,
+             annotation: GenType,
+           },
+         };
+       } else {
+         typeDeclaration;
+       };
+     })
   |> List.filter(
        (
          {exportFromTypeDeclaration: {annotation, _}, _}: CodeItem.typeDeclaration,
