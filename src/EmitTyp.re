@@ -426,7 +426,7 @@ let emitExportVariantType =
     (
       ~emitters,
       ~config,
-      ~name,
+      ~resolvedTypeName,
       ~typeVars,
       ~typeNameIsInterface,
       ~variants: list(variant),
@@ -435,7 +435,7 @@ let emitExportVariantType =
   | Flow
   | TypeScript =>
     "export type "
-    ++ name
+    ++ resolvedTypeName
     ++ genericsString(~typeVars)
     ++ " =\n  | "
     ++ (

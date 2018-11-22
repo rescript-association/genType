@@ -349,15 +349,10 @@ let traslateDeclarationKind =
     let importTypes = importTypesAndLeaves |> List.map(fst) |> List.concat;
     let leaves = importTypesAndLeaves |> List.map(snd);
     let typeVars = TypeVars.(typeParams |> extract);
-    let variantTypeNameResolved = typeName |> TypeEnv.addModulePath(~typeEnv);
+    let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
     let unionType = {
       CodeItem.exportKind:
-        ExportVariantType({
-          leaves,
-          name: variantTypeNameResolved,
-          typeVars,
-          variants,
-        }),
+        ExportVariantType({leaves, resolvedTypeName, typeVars, variants}),
       annotation,
     };
     [{exportFromTypeDeclaration: unionType, importTypes}];

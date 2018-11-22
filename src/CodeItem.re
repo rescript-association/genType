@@ -24,7 +24,7 @@ type exportVariantLeaf = {
 
 type exportVariantType = {
   leaves: list(exportVariantLeaf),
-  name: string,
+  resolvedTypeName: string,
   typeVars: list(string),
   variants: list(variant),
 };
