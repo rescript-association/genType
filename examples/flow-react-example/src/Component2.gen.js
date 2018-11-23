@@ -8,7 +8,7 @@
 import * as Component2BS from './Component2.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as CreateBucklescriptBlock from 'bs-platform/lib/js/block.js';
+import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
 
 export opaque type VariantA = mixed;
 

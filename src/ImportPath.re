@@ -4,9 +4,9 @@ type t = string;
 
 let react = "react";
 let reasonReactPath = (~config) => config.reasonReactPath;
-let bsBlockPath = (~config) => config.bsBlockPath;
+let bsBlockPath = Config_.getBsBlockPath;
 
-let bsCurryPath = (~config) => config.bsCurryPath;
+let bsCurryPath = Config_.getBsCurryPath;
 
 let fromModule = (~config, ~dir, ~importExtension, moduleName) => {
   let withNoPath = (moduleName |> ModuleName.toString) ++ importExtension;

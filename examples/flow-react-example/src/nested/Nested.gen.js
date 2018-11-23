@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as CreateBucklescriptBlock from 'bs-platform/lib/js/block.js';
+import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as NestedBS from './Nested.bs';

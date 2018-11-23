@@ -5,7 +5,7 @@
  */
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/js/curry.js';
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as NavigatorBS from './Navigator.bs';

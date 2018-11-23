@@ -8,7 +8,7 @@
 import * as Component1BS from './Component1.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/js/curry.js';
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';

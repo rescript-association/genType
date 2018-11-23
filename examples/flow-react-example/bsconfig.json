@@ -4,8 +4,6 @@
     "module": "es6",
     "importPath": "relative",
     "reasonReactPath": "reason-react/src/ReasonReact.js",
-    "bsBlockPath": "bs-platform/lib/js/block.js",
-    "bsCurryPath": "bs-platform/lib/js/curry.js",
     "shims": {
       "Js": "Js",
       "Obj": "Obj",

@@ -16,8 +16,8 @@ type importPath =
   | Node;
 
 type config = {
-  bsBlockPath: string,
-  bsCurryPath: string,
+  bsBlockPath: option(string),
+  bsCurryPath: option(string),
   exportInterfaces: bool,
   generatedFileExtension: option(string),
   importPath,
@@ -28,8 +28,8 @@ type config = {
 };
 
 let default = {
-  bsBlockPath: "bs-platform/lib/js/block.js",
-  bsCurryPath: "bs-platform/lib/js/curry.js",
+  bsBlockPath: None,
+  bsCurryPath: None,
   exportInterfaces: false,
   generatedFileExtension: None,
   importPath: Relative,
@@ -38,6 +38,24 @@ let default = {
   modulesMap: ModuleNameMap.empty,
   reasonReactPath: "reason-react/src/ReasonReact.js",
 };
+
+let bsPlatformLib = (~config) =>
+  switch (config.module_) {
+  | ES6 => "bs-platform/lib/es6"
+  | CommonJS => "bs-platform/lib/js"
+  };
+
+let getBsBlockPath = (~config) =>
+  switch (config.bsBlockPath) {
+  | None => bsPlatformLib(~config) ++ "/block.js"
+  | Some(s) => s
+  };
+
+let getBsCurryPath = (~config) =>
+  switch (config.bsCurryPath) {
+  | None => bsPlatformLib(~config) ++ "/curry.js"
+  | Some(s) => s
+  };
 
 let getBool = (s, json) =>
   switch (json) {
@@ -199,13 +217,13 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
       };
     let bsBlockPath =
       switch (bsBlockPathString) {
-      | "" => default.bsBlockPath
-      | _ => bsBlockPathString
+      | "" => None
+      | _ => Some(bsBlockPathString)
       };
     let bsCurryPath =
       switch (bsCurryPathString) {
-      | "" => default.bsCurryPath
-      | _ => bsCurryPathString
+      | "" => None
+      | _ => Some(bsCurryPathString)
       };
     let exportInterfaces =
       switch (exportInterfacesBool) {

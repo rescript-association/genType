@@ -14,7 +14,7 @@ export const fooTypeChecked: (number) => number = fooNotChecked;
 export const foo: mixed = fooTypeChecked;
 
 // $FlowExpectedError: Reason checked type sufficiently
-const CreateBucklescriptBlock = require('bs-platform/lib/js/block.js');
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 
 // $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
