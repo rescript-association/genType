@@ -21,9 +21,7 @@
   "devDependencies": {
     "debug": "^4.1.0"
   },
-  "author": [
-    "Cristiano Calcagno"
-  ],
+  "author": "Cristiano Calcagno",
   "bugs": {
     "url": "https://github.com/cristianoc/gentype/issues"
   },
