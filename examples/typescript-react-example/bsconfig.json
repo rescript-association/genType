@@ -6,8 +6,7 @@
       "ReactEvent": "ReactEvent"
     },
     "debug": {
-      "all": false,
-      "basic": false
+      "all": false
     },
     "exportInterfaces": false
   },
