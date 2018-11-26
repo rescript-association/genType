@@ -13,7 +13,7 @@
     "start": "node ../run_bsb.js -make-world -w",
     "ts:watch": "react-scripts-ts start",
     "build": "node ../run_bsb.js -make-world",
-    "clean": "node clean.js",
+    "clean": "node ../clean_bsb.js",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },
