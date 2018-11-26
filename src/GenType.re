@@ -37,12 +37,44 @@ let cli = () => {
     };
     exit(0);
   };
+  let clean = () => {
+    let config = Paths.readConfig();
+    let dirs = ModuleResolver.readSourceDirs();
+    if (Debug.basic^) {
+      logItem("Clean %d dirs\n", dirs |> List.length);
+    };
+    let count = ref(0);
+    dirs
+    |> List.iter(dir => {
+         let files = Sys.readdir(dir);
+         files
+         |> Array.iter(file =>
+              if (Filename.check_suffix(file, ".re")) {
+                let extension = EmitTyp.outputFileSuffix(~config);
+                let generated =
+                  Filename.concat(
+                    dir,
+                    (file |> Filename.chop_extension) ++ extension,
+                  );
+                if (Sys.file_exists(generated)) {
+                  Unix.unlink(generated);
+                  incr(count);
+                };
+              }
+            );
+       });
+    if (Debug.basic^) {
+      logItem("Cleaned %d files\n", count^);
+    };
+    exit(0);
+  };
   let usage = "genType version " ++ version;
   let version = () => {
     print_endline(usage);
     exit(0);
   };
   let speclist = [
+    ("-clean", Arg.Unit(clean), "clean all the generated files"),
     ("-cmt-add", Arg.String(setCmtAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setCmtRm), "remove a .cmt[i] file"),
     ("-version", Arg.Unit(version), "show version information"),
