@@ -1,5 +1,6 @@
 # master
-- Adapt bs-platform lib import depending on the current module specified in config.
+- Adapt bs-platform lib import path depending on the module kind specified in config.
+- Add -clean command to delete all the generated files.
 
 # 1.3.0
 - Auto propagate annotations to and from variant type declarations (not just normal type declarations).
