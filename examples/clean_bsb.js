@@ -21,12 +21,13 @@ function genTypeNativePath() {
 
 const shell = isWindows ? true : false;
 
-spawn("bsb", ["-clean-world"], {
+child_process.spawnSync(genTypeNativePath(), ["-clean"], {
   stdio: ["inherit", "inherit"],
   shell
-}).on("exit", code => process.exit(code));
+});
 
-spawn(genTypeNativePath(), ["-clean"], {
+child_process.spawnSync("bsb", ["-clean-world"], {
   stdio: ["inherit", "inherit"],
   shell
-}).on("exit", code => process.exit(code));
+});
+
