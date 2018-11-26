@@ -2,10 +2,7 @@ open GenTypeCommon;
 
 module ModuleNameMap = Map.Make(ModuleName);
 
-/* Read the project's .sourcedirs.json file if it exists
-   and build a map of the files with the given extension
-   back to the directory where they belong.  */
-let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
+let readSourceDirs = () => {
   let sourceDirs =
     ["lib", "bs", ".sourcedirs.json"]
     |> List.fold_left(Filename.concat, projectRoot^);
@@ -31,6 +28,19 @@ let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
     dirs^;
   };
 
+  if (sourceDirs |> Sys.file_exists) {
+    try (sourceDirs |> Ext_json_parse.parse_json_from_file |> getDirs) {
+    | _ => []
+    };
+  } else {
+    [];
+  };
+};
+
+/* Read the project's .sourcedirs.json file if it exists
+   and build a map of the files with the given extension
+   back to the directory where they belong.  */
+let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
   let rec chopExtensions = fname =>
     switch (fname |> Filename.chop_extension) {
     | fnameChopped => fnameChopped |> chopExtensions
@@ -58,22 +68,12 @@ let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
     fileMap^;
   };
 
-  if (sourceDirs |> Sys.file_exists) {
-    try (
-      sourceDirs
-      |> Ext_json_parse.parse_json_from_file
-      |> getDirs
-      |> createFileMap(~filter=fileName =>
-           extensions
-           |> List.exists(ext => Filename.check_suffix(fileName, ext))
-           && !excludeFile(fileName)
-         )
-    ) {
-    | _ => ModuleNameMap.empty
-    };
-  } else {
-    ModuleNameMap.empty;
-  };
+  readSourceDirs()
+  |> createFileMap(~filter=fileName =>
+       extensions
+       |> List.exists(ext => Filename.check_suffix(fileName, ext))
+       && !excludeFile(fileName)
+     );
 };
 
 type resolver = {lazyFind: Lazy.t(ModuleName.t => option(string))};
