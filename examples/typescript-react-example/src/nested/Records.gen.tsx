@@ -59,7 +59,7 @@ export const findAddress: (_1:business) => list<string> = function _(Arg1: any) 
 
 export const someBusiness: business = {name:RecordsBS.someBusiness[0], owner:(RecordsBS.someBusiness[1] == null ? RecordsBS.someBusiness[1] : {name:RecordsBS.someBusiness[1][0], age:RecordsBS.someBusiness[1][1], address:RecordsBS.someBusiness[1][2]}), address:RecordsBS.someBusiness[2]};
 
-export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1: any) { const result = RecordsBS.findAllAddresses(Arg1.map(function _element(x: any) { return [x.name, (x.owner == null ? undefined : [x.owner.name, x.owner.age, x.owner.address]), x.address]})); return result };
+export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1: any) { const result = RecordsBS.findAllAddresses(Arg1.map(function _element(ArrayItem: any) { return [ArrayItem.name, (ArrayItem.owner == null ? undefined : [ArrayItem.owner.name, ArrayItem.owner.age, ArrayItem.owner.address]), ArrayItem.address]})); return result };
 
 export const getPayload: <T1>(_1:payload<T1>) => T1 = function _(Arg1: any) { const result = RecordsBS.getPayload([Arg1.num, Arg1.payload]); return result };
 

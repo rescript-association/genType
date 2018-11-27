@@ -87,7 +87,7 @@ export const consumeOption: (?number) => number = function _(Arg1) { const resul
 
 export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };
 
-export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(x) { return (x == null ? undefined : x)})); return result };
+export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(ArrayItem) { return (ArrayItem == null ? undefined : ArrayItem)})); return result };
 
 export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesBS.identity;
 

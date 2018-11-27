@@ -284,12 +284,13 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
   | _ when converter |> converterIsIdentity(~toJS) => value
 
   | ArrayC(c) =>
+    let x = "ArrayItem" |> EmitText.name(~nameGen);
     value
     ++ ".map(function _element("
-    ++ ("x" |> EmitTyp.ofTypeAnyTS(~config))
+    ++ (x |> EmitTyp.ofTypeAnyTS(~config))
     ++ ") { return "
-    ++ ("x" |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS))
-    ++ "})"
+    ++ (x |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS))
+    ++ "})";
 
   | CircularC(s, c) =>
     "\n/* WARNING: circular type "
