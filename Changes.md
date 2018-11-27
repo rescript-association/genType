@@ -1,4 +1,4 @@
-# master
+# 1.5.0
 - Hygiene: avoid variable capture for generated variable names (function arguments, return value, array items).
 
 # 1.4.0
