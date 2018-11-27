@@ -330,9 +330,9 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
         | ArgConverter(lbl, argConverter) =>
           let varName =
             switch (lbl) {
-            | Nolabel => EmitText.argi(i + 1)
+            | Nolabel => i + 1 |> EmitText.argi(~nameGen)
             | Label(l)
-            | OptLabel(l) => EmitText.arg(l)
+            | OptLabel(l) => l |> EmitText.arg(~nameGen)
             };
           let notToJS = !toJS;
           (
@@ -349,7 +349,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
         | GroupConverter(groupConverters) =>
           let notToJS = !toJS;
           if (toJS) {
-            let varName = EmitText.argi(i + 1);
+            let varName = i + 1 |> EmitText.argi(~nameGen);
             (
               varName |> EmitTyp.ofTypeAnyTS(~config),
               groupConverters
@@ -370,15 +370,18 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
           } else {
             let varNames =
               groupConverters
-              |> List.map(((s, _argConverter)) => EmitText.arg(s))
-              |> String.concat(", ");
+              |> List.map(((s, _argConverter)) =>
+                   s |> EmitText.arg(~nameGen)
+                 );
+
+            let varNamesArr = varNames |> Array.of_list;
             let fieldValues =
               groupConverters
-              |> List.map(((s, argConverter)) =>
+              |> List.mapi((i, (s, argConverter)) =>
                    s
                    ++ ":"
                    ++ (
-                     EmitText.arg(s)
+                     varNamesArr[i]
                      |> apply(
                           ~config,
                           ~converter=argConverter,
@@ -389,7 +392,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                    )
                  )
               |> String.concat(", ");
-            (varNames, "{" ++ fieldValues ++ "}");
+            (varNames |> String.concat(", "), "{" ++ fieldValues ++ "}");
           };
         };
       groupedArgConverters |> List.mapi(convertArg);

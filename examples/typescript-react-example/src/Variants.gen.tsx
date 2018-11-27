@@ -55,4 +55,4 @@ export type optionalBoolMapper = {readonly optionalBoolMapper: (_1:(null | undef
 
 export const actionToString: (_1:action) => string = VariantsBS.actionToString;
 
-export const converter: (_1:optionalBoolMapper) => optionalBoolMapper = function _(Arg1: any) { const result = VariantsBS.converter([function _(Arg1: any) { const result1 = Arg1.optionalBoolMapper(Arg1); return (result1 == null ? undefined : result1) }]); return {optionalBoolMapper:function _(Arg1: any) { const result2 = result[0]((Arg1 == null ? undefined : Arg1)); return result2 }} };
+export const converter: (_1:optionalBoolMapper) => optionalBoolMapper = function _(Arg1: any) { const result = VariantsBS.converter([function _(Arg11: any) { const result1 = Arg1.optionalBoolMapper(Arg11); return (result1 == null ? undefined : result1) }]); return {optionalBoolMapper:function _(Arg12: any) { const result2 = result[0]((Arg12 == null ? undefined : Arg12)); return result2 }} };

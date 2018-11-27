@@ -47,4 +47,8 @@ export type action =
   | ActionOptionalBooly
   | ActionOptionalBoolMapper;
 
+export type optionalBoolMapper = {|+optionalBoolMapper: (?boolean) => ?boolean|};
+
 export const actionToString: (action) => string = VariantsBS.actionToString;
+
+export const converter: (optionalBoolMapper) => optionalBoolMapper = function _(Arg1) { const result = VariantsBS.converter([function _(Arg11) { const result1 = Arg1.optionalBoolMapper(Arg11); return (result1 == null ? undefined : result1) }]); return {optionalBoolMapper:function _(Arg12) { const result2 = result[0]((Arg12 == null ? undefined : Arg12)); return result2 }} };

@@ -5,8 +5,13 @@ function actionToString(param) {
   return "";
 }
 
+function converter(x) {
+  return x;
+}
+
 export {
   actionToString ,
+  converter ,
   
 }
 /* No side effect */

@@ -179,7 +179,7 @@ let typeNameIsInterface =
   };
 };
 
-let emitexportFromTypeDeclaration =
+let emitExportFromTypeDeclaration =
     (
       ~config,
       ~emitters,
@@ -188,7 +188,6 @@ let emitexportFromTypeDeclaration =
       ~typToConverter,
       ~enumTables,
       ~typeNameIsInterface,
-      ~nameGen,
       exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
     ) =>
   switch (exportFromTypeDeclaration.exportKind) {
@@ -221,6 +220,7 @@ let emitexportFromTypeDeclaration =
             recordValue,
           },
         ) => {
+      let nameGen = EmitText.newNameGen();
       let createFunctionType =
           ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
         let retType = Ident(name, params);
@@ -257,7 +257,7 @@ let emitexportFromTypeDeclaration =
             argTypes
             |> List.mapi((i, typ) => {
                  let converter = typ |> typToConverter;
-                 let arg = EmitText.argiVariant(i + 1);
+                 let arg = i + 1 |> EmitText.argiVariant(~nameGen);
                  let v =
                    arg
                    |> Converter.toReason(
@@ -319,9 +319,8 @@ let emitExportFromTypeDeclarations =
     ) =>
   exportFromTypeDeclarations
   |> List.fold_left(
-       ((env, emitters)) => {
-         let nameGen = EmitText.newNameGen();
-         emitexportFromTypeDeclaration(
+       ((env, emitters)) =>
+         emitExportFromTypeDeclaration(
            ~config,
            ~emitters,
            ~typIsOpaque,
@@ -329,9 +328,7 @@ let emitExportFromTypeDeclarations =
            ~typToConverter,
            ~typeNameIsInterface,
            ~enumTables,
-           ~nameGen,
-         );
-       },
+         ),
        (env, emitters),
      );
 
