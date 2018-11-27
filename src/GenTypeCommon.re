@@ -44,6 +44,7 @@ type typ =
   | Record(fields)
   | Tuple(list(typ))
   | TypeVar(string)
+  | Variant(list(variantLeaf))
 and fields = list(field)
 and field = {
   name: string,
@@ -55,6 +56,10 @@ and function_ = {
   typeVars: list(string),
   argTypes: list(typ),
   retType: typ,
+}
+and variantLeaf = {
+  leafName: string,
+  argTypes: list(typ),
 };
 
 type variant = {

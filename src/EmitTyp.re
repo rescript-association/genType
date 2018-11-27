@@ -158,6 +158,31 @@ let rec renderTyp =
     )
     ++ "]"
   | TypeVar(s) => s
+  | Variant(leaves) =>
+    "{"
+    ++ (
+      leaves
+      |> List.map(leaf =>
+           leaf.leafName
+           ++ ":"
+           ++ "["
+           ++ (
+             leaf.argTypes
+             |> List.map(
+                  renderTyp(
+                    ~config,
+                    ~indent,
+                    ~typeNameIsInterface,
+                    ~inFunType,
+                  ),
+                )
+             |> String.concat(", ")
+           )
+           ++ "]"
+         )
+      |> String.concat(", ")
+    )
+    ++ "}"
   }
 and renderField =
     (

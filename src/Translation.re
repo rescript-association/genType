@@ -46,7 +46,8 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Option(_)
   | Record(_)
   | Tuple(_)
-  | TypeVar(_) => typ
+  | TypeVar(_)
+  | Variant(_) => typ
   };
 
 let rec pathIsResolved = (path: Dependencies.path) =>

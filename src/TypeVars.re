@@ -73,6 +73,13 @@ let rec substitute = (~f, typ) =>
     | None => typ
     | Some(typ1) => typ1
     }
+  | Variant(leaves) =>
+    Variant(
+      leaves
+      |> List.map(leaf =>
+           {...leaf, argTypes: leaf.argTypes |> List.map(substitute(~f))}
+         ),
+    )
   };
 
 let rec free_ = typ: StringSet.t =>
@@ -107,6 +114,12 @@ let rec free_ = typ: StringSet.t =>
          StringSet.empty,
        )
   | TypeVar(s) => s |> StringSet.singleton
+  | Variant(leaves) =>
+    leaves
+    |> List.fold_left(
+         (s, leaf) => StringSet.union(s, leaf.argTypes |> freeOfList_),
+         StringSet.empty,
+       )
   }
 and freeOfList_ = typs =>
   typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)

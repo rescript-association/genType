@@ -77,10 +77,11 @@ let createExportTypeMap =
           ~annotation,
           {resolvedTypeName, typeVars, leaves, _}: CodeItem.exportVariantType,
         ) => {
-      let doLeaf = (typs, exportVariantLeaf: CodeItem.exportVariantLeaf) =>
-        typs @ exportVariantLeaf.constructorTyp.argTypes;
-      /* Tuple type only used for type propagation */
-      let typ = Tuple(leaves |> List.fold_left(doLeaf, []));
+      let doLeaf = (exportVariantLeaf: CodeItem.exportVariantLeaf) => {
+        leafName: exportVariantLeaf.leafName,
+        argTypes: exportVariantLeaf.constructorTyp.argTypes,
+      };
+      let typ = Variant(leaves |> List.map(doLeaf));
       if (Debug.codeItems^) {
         logItem(
           "Type Map: %s%s Variant typ:%s\n",
@@ -971,6 +972,8 @@ let propagateAnnotationToSubTypes =
       | Nullable(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
+      | Variant(leaves) =>
+        leaves |> List.iter(leaf => leaf.argTypes |> List.iter(visit))
       };
     typ_ |> visit;
   };

@@ -187,6 +187,8 @@ let typToConverterOpaque =
       (TupleC(innerConversions), opaques |> List.mem(true));
 
     | TypeVar(_) => (IdentC, true)
+
+    | Variant(_) => (IdentC, true)
     }
   and typToGroupedArgConverter = (~visited, typ) =>
     switch (typ) {
