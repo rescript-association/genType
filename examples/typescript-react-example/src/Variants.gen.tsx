@@ -50,4 +50,9 @@ export type action =
   | ActionOptionalBooly
   | ActionOptionalBoolMapper;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type optionalBoolMapper = {readonly optionalBoolMapper: (_1:(null | undefined | boolean)) => (null | undefined | boolean)};
+
 export const actionToString: (_1:action) => string = VariantsBS.actionToString;
+
+export const converter: (_1:optionalBoolMapper) => optionalBoolMapper = function _(Arg1: any) { const result = VariantsBS.converter([function _(Arg1: any) { const result1 = Arg1.optionalBoolMapper(Arg1); return (result1 == null ? undefined : result1) }]); return {optionalBoolMapper:function _(Arg1: any) { const result2 = result[0]((Arg1 == null ? undefined : Arg1)); return result2 }} };

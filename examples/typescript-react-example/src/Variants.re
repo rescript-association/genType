@@ -10,3 +10,10 @@ type action =
 
 [@genType]
 let actionToString = (_: action) => "";
+
+type optionalBoolMapper = {
+  optionalBoolMapper: option(bool) => option(bool),
+};
+
+[@genType]
+let converter = (x: optionalBoolMapper) => x;

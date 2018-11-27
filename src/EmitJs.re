@@ -188,6 +188,7 @@ let emitexportFromTypeDeclaration =
       ~typToConverter,
       ~enumTables,
       ~typeNameIsInterface,
+      ~nameGen,
       exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
     ) =>
   switch (exportFromTypeDeclaration.exportKind) {
@@ -258,7 +259,13 @@ let emitexportFromTypeDeclaration =
                  let converter = typ |> typToConverter;
                  let arg = EmitText.argiVariant(i + 1);
                  let v =
-                   arg |> Converter.toReason(~config, ~converter, ~enumTables);
+                   arg
+                   |> Converter.toReason(
+                        ~config,
+                        ~converter,
+                        ~enumTables,
+                        ~nameGen,
+                      );
                  (arg, v);
                });
           let mkReturn = s => "return " ++ s;
@@ -312,7 +319,8 @@ let emitExportFromTypeDeclarations =
     ) =>
   exportFromTypeDeclarations
   |> List.fold_left(
-       ((env, emitters)) =>
+       ((env, emitters)) => {
+         let nameGen = EmitText.newNameGen();
          emitexportFromTypeDeclaration(
            ~config,
            ~emitters,
@@ -321,7 +329,9 @@ let emitExportFromTypeDeclarations =
            ~typToConverter,
            ~typeNameIsInterface,
            ~enumTables,
-         ),
+           ~nameGen,
+         );
+       },
        (env, emitters),
      );
 
@@ -358,6 +368,7 @@ let rec emitCodeItem =
     let importPath = importAnnotation.importPath;
     let componentName = importAnnotation.name;
 
+    let nameGen = EmitText.newNameGen();
     let (emitters, env) =
       switch (language, config.module_) {
       | (_, ES6)
@@ -451,6 +462,7 @@ let rec emitCodeItem =
                              )
                              |> typToConverter,
                            ~enumTables,
+                           ~nameGen,
                          )
                     )
                   )
@@ -462,6 +474,7 @@ let rec emitCodeItem =
                   ~config,
                   ~converter=childrenTyp |> typToConverter,
                   ~enumTables,
+                  ~nameGen,
                 ),
            ])
         ++ "; }"
@@ -488,6 +501,7 @@ let rec emitCodeItem =
     ({...env, importedValueOrComponent: true}, emitters);
 
   | ImportValue({valueName, asPath, importAnnotation, typ, fileName}) =>
+    let nameGen = EmitText.newNameGen();
     let importPath = importAnnotation.importPath;
     let (firstNameInPath, restOfPath) =
       valueName == asPath ?
@@ -549,7 +563,7 @@ let rec emitCodeItem =
     let emitters =
       (
         valueNameTypeChecked
-        |> Converter.toReason(~config, ~converter, ~enumTables)
+        |> Converter.toReason(~config, ~converter, ~enumTables, ~nameGen)
         |> EmitTyp.emitTypeCast(~config, ~typ, ~typeNameIsInterface)
       )
       ++ ";"
@@ -574,6 +588,7 @@ let rec emitCodeItem =
       componentType,
       typ,
     }) =>
+    let nameGen = EmitText.newNameGen();
     let converter = typ |> typToConverter;
     let importPath =
       fileName
@@ -606,6 +621,7 @@ let rec emitCodeItem =
                       ~config,
                       ~converter=argConverter,
                       ~enumTables,
+                      ~nameGen,
                     )
                )
           )
@@ -615,6 +631,7 @@ let rec emitCodeItem =
                  ~config,
                  ~converter=childrenConverter,
                  ~enumTables,
+                 ~nameGen,
                ),
           ]
 
@@ -624,6 +641,7 @@ let rec emitCodeItem =
                  ~config,
                  ~converter=childrenConverter,
                  ~enumTables,
+                 ~nameGen,
                ),
           ]
 
@@ -712,6 +730,7 @@ let rec emitCodeItem =
     (env, emitters);
 
   | ExportValue({fileName, resolvedName, valueAccessPath, typ}) =>
+    let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
@@ -730,7 +749,7 @@ let rec emitCodeItem =
         (fileNameBs |> ModuleName.toString)
         ++ "."
         ++ valueAccessPath
-        |> Converter.toJS(~config, ~converter, ~enumTables)
+        |> Converter.toJS(~config, ~converter, ~enumTables, ~nameGen)
       )
       ++ ";"
       |> EmitTyp.emitExportConst(

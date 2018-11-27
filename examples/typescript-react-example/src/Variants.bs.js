@@ -6,5 +6,10 @@ function actionToString(param) {
   return "";
 }
 
+function converter(x) {
+  return x;
+}
+
 exports.actionToString = actionToString;
+exports.converter = converter;
 /* No side effect */

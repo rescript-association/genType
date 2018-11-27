@@ -1,3 +1,18 @@
+type nameGen = Hashtbl.t(string, int);
+
+let newNameGen = () => Hashtbl.create(1);
+let name = (~nameGen, s) =>
+  switch (Hashtbl.find(nameGen, s)) {
+  | n =>
+    Hashtbl.replace(nameGen, s, n + 1);
+    s ++ string_of_int(n + 1);
+  | exception Not_found =>
+    Hashtbl.replace(nameGen, s, 0);
+    s;
+  };
+
+let resultName = (~nameGen) => "result" |> name(~nameGen);
+
 let arg = x => "Arg" ++ x;
 let argi = i => i |> string_of_int |> arg;
 let argiVariant = i => "V" ++ (i |> argi);

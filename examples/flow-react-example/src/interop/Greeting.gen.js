@@ -49,6 +49,6 @@ export const concat: (string, list<string>) => string = GreetingBS.concat;
 
 export const testNamedArgs: ({|+a: number, +b: number|}, number, {|+c: number, +d: number|}, number, {|+e: number|}) => number = function _(Arg1, Arg2, Arg3, Arg4, Arg5) { const result = GreetingBS.testNamedArgs(Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e); return result };
 
-export const testCallNamedArgs: (foo, number, number) => number = function _(Arg1, Arg2, Arg3) { const result = GreetingBS.testCallNamedArgs(function _(Arga, Argb) { const result = Arg1({a:Arga, b:Argb}); return result }, Arg2, Arg3); return result };
+export const testCallNamedArgs: (foo, number, number) => number = function _(Arg1, Arg2, Arg3) { const result = GreetingBS.testCallNamedArgs(function _(Arga, Argb) { const result1 = Arg1({a:Arga, b:Argb}); return result1 }, Arg2, Arg3); return result };
 
 export const testDefaultArgs: ({|+x?: number, +y: number|}) => number = function _(Arg1) { const result = GreetingBS.testDefaultArgs(Arg1.x, Arg1.y); return result };
