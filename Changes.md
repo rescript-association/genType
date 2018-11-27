@@ -3,6 +3,7 @@
 - Add -clean command to delete all the generated files.
 - Fix: translation of variant types should be the identity.
 - Avoid accidental variable name capture when generating constructors functions for variants.
+- TypeScript: avoid type errors when converting function types by giving arguments type `any`.
 
 # 1.3.0
 - Auto propagate annotations to and from variant type declarations (not just normal type declarations).
