@@ -1,3 +1,6 @@
+# master
+- Hygiene: avoid variable capture for generated variable names (function arguments, return value, array items).
+
 # 1.4.0
 - Adapt bs-platform lib import path depending on the module kind specified in config.
 - Add -clean command to delete all the generated files.
