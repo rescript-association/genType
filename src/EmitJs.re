@@ -257,7 +257,7 @@ let emitExportFromTypeDeclaration =
             argTypes
             |> List.mapi((i, typ) => {
                  let converter = typ |> typToConverter;
-                 let arg = i + 1 |> EmitText.argiVariant(~nameGen);
+                 let arg = i + 1 |> EmitText.argi(~nameGen);
                  let v =
                    arg
                    |> Converter.toReason(

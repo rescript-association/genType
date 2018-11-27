@@ -15,8 +15,6 @@ let resultName = (~nameGen) => "result" |> name(~nameGen);
 
 let arg = (~nameGen, x) => "Arg" ++ x |> name(~nameGen);
 let argi = (~nameGen, i) => "Arg" ++ (i |> string_of_int) |> name(~nameGen);
-let argiVariant = (~nameGen, i) =>
-  "VArg" ++ (i |> string_of_int) |> name(~nameGen);
 let parens = xs => "(" ++ (xs |> String.concat(", ")) ++ ")";
 let brackets = x => "{ " ++ x ++ " }";
 

@@ -23,7 +23,7 @@ export const Universe_A: Universe_VariantA = 0 as any;
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class Universe_VariantB { protected opaque!: any }; /* simulate opaque types */
 
-export const Universe_B: (_1:string) => Universe_VariantB = function _(VArg1) { return CreateBucklescriptBlock.__(0 as any, [VArg1]) }
+export const Universe_B: (_1:string) => Universe_VariantB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
 
 export type Universe_variant =
   | Universe_VariantA

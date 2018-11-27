@@ -14,32 +14,32 @@ export const NoOp: ActionNoOp = 0 as any;
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class ActionAdjustAge { protected opaque!: any }; /* simulate opaque types */
 
-export const AdjustAge: (_1:((_1:number) => number)) => ActionAdjustAge = function _(VArg1) { return CreateBucklescriptBlock.__(0 as any, [VArg1]) }
+export const AdjustAge: (_1:((_1:number) => number)) => ActionAdjustAge = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class ActionBooly { protected opaque!: any }; /* simulate opaque types */
 
-export const Booly: (_1:boolean) => ActionBooly = function _(VArg1) { return CreateBucklescriptBlock.__(1 as any, [VArg1]) }
+export const Booly: (_1:boolean) => ActionBooly = function _(Arg1) { return CreateBucklescriptBlock.__(1 as any, [Arg1]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class ActionOptionalInt { protected opaque!: any }; /* simulate opaque types */
 
-export const OptionalInt: (_1:(null | undefined | number)) => ActionOptionalInt = function _(VArg1) { return CreateBucklescriptBlock.__(2 as any, [(VArg1 == null ? undefined : VArg1)]) }
+export const OptionalInt: (_1:(null | undefined | number)) => ActionOptionalInt = function _(Arg1) { return CreateBucklescriptBlock.__(2 as any, [(Arg1 == null ? undefined : Arg1)]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class ActionUnity { protected opaque!: any }; /* simulate opaque types */
 
-export const Unity: (_1:void) => ActionUnity = function _(VArg1) { return CreateBucklescriptBlock.__(3 as any, [VArg1]) }
+export const Unity: (_1:void) => ActionUnity = function _(Arg1) { return CreateBucklescriptBlock.__(3 as any, [Arg1]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class ActionOptionalBooly { protected opaque!: any }; /* simulate opaque types */
 
-export const OptionalBooly: (_1:(null | undefined | boolean)) => ActionOptionalBooly = function _(VArg1) { return CreateBucklescriptBlock.__(4 as any, [(VArg1 == null ? undefined : VArg1)]) }
+export const OptionalBooly: (_1:(null | undefined | boolean)) => ActionOptionalBooly = function _(Arg1) { return CreateBucklescriptBlock.__(4 as any, [(Arg1 == null ? undefined : Arg1)]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class ActionOptionalBoolMapper { protected opaque!: any }; /* simulate opaque types */
 
-export const OptionalBoolMapper: (_1:((_1:(null | undefined | boolean)) => (null | undefined | boolean))) => ActionOptionalBoolMapper = function _(VArg1) { return CreateBucklescriptBlock.__(5 as any, [function _(Arg1: any) { const result = VArg1(Arg1); return (result == null ? undefined : result) }]) }
+export const OptionalBoolMapper: (_1:((_1:(null | undefined | boolean)) => (null | undefined | boolean))) => ActionOptionalBoolMapper = function _(Arg1) { return CreateBucklescriptBlock.__(5 as any, [function _(Arg11: any) { const result = Arg1(Arg11); return (result == null ? undefined : result) }]) }
 
 export type action =
   | ActionNoOp
