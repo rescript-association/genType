@@ -257,7 +257,8 @@ let emitexportFromTypeDeclaration =
             |> List.mapi((i, typ) => {
                  let converter = typ |> typToConverter;
                  let arg = EmitText.argiVariant(i + 1);
-                 let v = arg |> Converter.toReason(~converter, ~enumTables);
+                 let v =
+                   arg |> Converter.toReason(~config, ~converter, ~enumTables);
                  (arg, v);
                });
           let mkReturn = s => "return " ++ s;
@@ -442,6 +443,7 @@ let rec emitCodeItem =
                     ++ (
                       propName
                       |> Converter.toJS(
+                           ~config,
                            ~converter=
                              (
                                optional == Mandatory ?
@@ -457,6 +459,7 @@ let rec emitCodeItem =
              ++ "}",
              "children"
              |> Converter.toJS(
+                  ~config,
                   ~converter=childrenTyp |> typToConverter,
                   ~enumTables,
                 ),
@@ -546,7 +549,7 @@ let rec emitCodeItem =
     let emitters =
       (
         valueNameTypeChecked
-        |> Converter.toReason(~converter, ~enumTables)
+        |> Converter.toReason(~config, ~converter, ~enumTables)
         |> EmitTyp.emitTypeCast(~config, ~typ, ~typeNameIsInterface)
       )
       ++ ";"
@@ -599,17 +602,29 @@ let rec emitCodeItem =
             propConverters
             |> List.map(((s, argConverter)) =>
                  jsPropsDot(s)
-                 |> Converter.toReason(~converter=argConverter, ~enumTables)
+                 |> Converter.toReason(
+                      ~config,
+                      ~converter=argConverter,
+                      ~enumTables,
+                    )
                )
           )
           @ [
             jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter, ~enumTables),
+            |> Converter.toReason(
+                 ~config,
+                 ~converter=childrenConverter,
+                 ~enumTables,
+               ),
           ]
 
         | [ArgConverter(_, childrenConverter), ..._] => [
             jsPropsDot("children")
-            |> Converter.toReason(~converter=childrenConverter, ~enumTables),
+            |> Converter.toReason(
+                 ~config,
+                 ~converter=childrenConverter,
+                 ~enumTables,
+               ),
           ]
 
         | _ => [jsPropsDot("children")]
@@ -715,7 +730,7 @@ let rec emitCodeItem =
         (fileNameBs |> ModuleName.toString)
         ++ "."
         ++ valueAccessPath
-        |> Converter.toJS(~converter, ~enumTables)
+        |> Converter.toJS(~config, ~converter, ~enumTables)
       )
       ++ ";"
       |> EmitTyp.emitExportConst(

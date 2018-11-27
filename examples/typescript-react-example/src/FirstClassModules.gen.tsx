@@ -32,7 +32,7 @@ export const testConvert: (_1:{
   }, 
   readonly Z: unknown, 
   readonly y: string
-} = function _(Arg1) { const result = FirstClassModulesBS.testConvert([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]); return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, Z:result[3], y:result[4]} };
+} = function _(Arg1: any) { const result = FirstClassModulesBS.testConvert([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]); return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, Z:result[3], y:result[4]} };
 
 export const someFunctorAsFunction: (_1:{
   readonly x: number, 
@@ -43,4 +43,4 @@ export const someFunctorAsFunction: (_1:{
   }, 
   readonly Z: unknown, 
   readonly y: string
-}) => {readonly ww: string} = function _(Arg1) { const result = FirstClassModulesBS.someFunctorAsFunction([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]); return {ww:result[0]} };
+}) => {readonly ww: string} = function _(Arg1: any) { const result = FirstClassModulesBS.someFunctorAsFunction([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]); return {ww:result[0]} };
