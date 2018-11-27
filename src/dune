@@ -6,6 +6,8 @@
     ; The main module that will become the binary.
     (name GenType)
 
+    (flags "-w" "-30-40")
+
     ; Depends on:
     (libraries unix str compiler-libs.common)
 )
