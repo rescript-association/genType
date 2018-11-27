@@ -256,7 +256,7 @@ let emitexportFromTypeDeclaration =
             argTypes
             |> List.mapi((i, typ) => {
                  let converter = typ |> typToConverter;
-                 let arg = EmitText.argi(i + 1);
+                 let arg = EmitText.argiVariant(i + 1);
                  let v = arg |> Converter.toReason(~converter, ~enumTables);
                  (arg, v);
                });

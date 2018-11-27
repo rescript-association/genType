@@ -14,12 +14,12 @@ export type t = number;
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TypeWithVarsA<x,y> { protected opaque!: x | y }; /* simulate opaque types */
 
-export const A: <x,y>(_1:x, _2:y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0 as any, [Arg1, Arg2]) }
+export const A: <x,y>(_1:x, _2:y) => TypeWithVarsA<x,y> = function _(VArg1, VArg2) { return CreateBucklescriptBlock.__(0 as any, [VArg1, VArg2]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TypeWithVarsB<z> { protected opaque!: z }; /* simulate opaque types */
 
-export const B: <z>(_1:z) => TypeWithVarsB<z> = function _(Arg1) { return CreateBucklescriptBlock.__(1 as any, [Arg1]) }
+export const B: <z>(_1:z) => TypeWithVarsB<z> = function _(VArg1) { return CreateBucklescriptBlock.__(1 as any, [VArg1]) }
 
 export type typeWithVars<x,y,z> =
   | TypeWithVarsA<x,y>

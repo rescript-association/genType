@@ -36,11 +36,11 @@ import type {weekday} from './SomeFlowTypes';
 
 export opaque type TypeWithVarsA<x,y> = mixed;
 
-export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
+export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(VArg1, VArg2) { return CreateBucklescriptBlock.__(0, [VArg1, VArg2]) }
 
 export opaque type TypeWithVarsB<z> = mixed;
 
-export const B: <z>(z) => TypeWithVarsB<z> = function _(Arg1) { return CreateBucklescriptBlock.__(1, [Arg1]) }
+export const B: <z>(z) => TypeWithVarsB<z> = function _(VArg1) { return CreateBucklescriptBlock.__(1, [VArg1]) }
 
 export type typeWithVars<x,y,z> =
   | TypeWithVarsA<x,y>

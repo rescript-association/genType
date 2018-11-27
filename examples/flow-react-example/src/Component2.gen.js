@@ -16,11 +16,11 @@ export const A: VariantA = 0;
 
 export opaque type VariantB = mixed;
 
-export const B: (number, number) => VariantB = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
+export const B: (number, number) => VariantB = function _(VArg1, VArg2) { return CreateBucklescriptBlock.__(0, [VArg1, VArg2]) }
 
 export opaque type VariantC = mixed;
 
-export const C: (?number) => VariantC = function _(Arg1) { return CreateBucklescriptBlock.__(1, [(Arg1 == null ? undefined : Arg1)]) }
+export const C: (?number) => VariantC = function _(VArg1) { return CreateBucklescriptBlock.__(1, [(VArg1 == null ? undefined : VArg1)]) }
 
 export type variant =
   | VariantA

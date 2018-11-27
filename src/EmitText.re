@@ -1,5 +1,6 @@
 let arg = x => "Arg" ++ x;
 let argi = i => i |> string_of_int |> arg;
+let argiVariant = i => "V" ++ (i |> argi);
 let parens = xs => "(" ++ (xs |> String.concat(", ")) ++ ")";
 let brackets = x => "{ " ++ x ++ " }";
 

@@ -6,7 +6,7 @@ const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class VariantR { protected opaque!: any }; /* simulate opaque types */
 
-export const R: (_1:number) => VariantR = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
+export const R: (_1:number) => VariantR = function _(VArg1) { return CreateBucklescriptBlock.__(0 as any, [VArg1]) }
 
 export type variant =
   | VariantR;
@@ -26,12 +26,12 @@ export type r4 = {readonly r4: number};
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class AnnotatedVariantR2 { protected opaque!: any }; /* simulate opaque types */
 
-export const R2: (_1:r2, _2:r3) => AnnotatedVariantR2 = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0 as any, [[Arg1.r2], [Arg2.r3]]) }
+export const R2: (_1:r2, _2:r3) => AnnotatedVariantR2 = function _(VArg1, VArg2) { return CreateBucklescriptBlock.__(0 as any, [[VArg1.r2], [VArg2.r3]]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class AnnotatedVariantR4 { protected opaque!: any }; /* simulate opaque types */
 
-export const R4: (_1:r4) => AnnotatedVariantR4 = function _(Arg1) { return CreateBucklescriptBlock.__(1 as any, [[Arg1.r4]]) }
+export const R4: (_1:r4) => AnnotatedVariantR4 = function _(VArg1) { return CreateBucklescriptBlock.__(1 as any, [[VArg1.r4]]) }
 
 export type annotatedVariant =
   | AnnotatedVariantR2

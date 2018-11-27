@@ -36,12 +36,12 @@ export const A: TA = 0 as any;
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TB { protected opaque!: any }; /* simulate opaque types */
 
-export const B: (_1:number) => TB = function _(Arg1) { return CreateBucklescriptBlock.__(0 as any, [Arg1]) }
+export const B: (_1:number) => TB = function _(VArg1) { return CreateBucklescriptBlock.__(0 as any, [VArg1]) }
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class TC { protected opaque!: any }; /* simulate opaque types */
 
-export const C: (_1:string) => TC = function _(Arg1) { return CreateBucklescriptBlock.__(1 as any, [Arg1]) }
+export const C: (_1:string) => TC = function _(VArg1) { return CreateBucklescriptBlock.__(1 as any, [VArg1]) }
 
 export type t =
   | TA
