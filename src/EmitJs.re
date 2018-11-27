@@ -429,7 +429,7 @@ let rec emitCodeItem =
         ++ EmitText.parens(
              (propsFields |> List.map(({name, _}: field) => name))
              @ ["children"]
-             |> List.map(EmitTyp.ofTypeAny(~config)),
+             |> List.map(EmitTyp.ofTypeAnyTS(~config)),
            )
         ++ " { return ReasonReact.wrapJsForReason"
         ++ EmitText.parens([

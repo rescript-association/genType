@@ -286,7 +286,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~toJS, value) =>
   | ArrayC(c) =>
     value
     ++ ".map(function _element("
-    ++ ("x" |> EmitTyp.ofTypeAny(~config))
+    ++ ("x" |> EmitTyp.ofTypeAnyTS(~config))
     ++ ") { return "
     ++ ("x" |> apply(~config, ~converter=c, ~enumTables, ~toJS))
     ++ "})"
@@ -334,7 +334,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~toJS, value) =>
             };
           let notToJS = !toJS;
           (
-            varName |> EmitTyp.ofTypeAny(~config),
+            varName |> EmitTyp.ofTypeAnyTS(~config),
             varName
             |> apply(
                  ~config,
@@ -348,7 +348,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~toJS, value) =>
           if (toJS) {
             let varName = EmitText.argi(i + 1);
             (
-              varName |> EmitTyp.ofTypeAny(~config),
+              varName |> EmitTyp.ofTypeAnyTS(~config),
               groupConverters
               |> List.map(((s, argConverter)) =>
                    varName

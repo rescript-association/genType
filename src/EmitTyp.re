@@ -610,7 +610,7 @@ let emitImportTypeAs =
   };
 };
 
-let ofTypeAny = (~config, s) =>
+let ofTypeAnyTS = (~config, s) =>
   config.language == TypeScript ? s ++ ": any" : s;
 
 let emitTypeCast = (~config, ~typ, ~typeNameIsInterface, s) =>

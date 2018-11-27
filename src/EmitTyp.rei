@@ -126,7 +126,8 @@ let ofType:
   (~config: config, ~typeNameIsInterface: string => bool, ~typ: typ, string) =>
   string;
 
-let ofTypeAny: (~config: config, string) => string;
+/** Help TypeScript type-checking by making the argument of type any */
+let ofTypeAnyTS: (~config: config, string) => string;
 
 let outputFileSuffix: (~config: config) => string;
 
