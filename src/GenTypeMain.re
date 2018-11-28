@@ -15,13 +15,13 @@ let cmtHasGenTypeAnnotations = inputCMT =>
 
 let typeDeclarationsOfStructItem = structItem =>
   switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} => typeDeclarations
+  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations), _} => typeDeclarations
   | _ => []
   };
 
 let typeDeclarationsOfSignature = signatureItem =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} => typeDeclarations
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations), _} => typeDeclarations
   | _ => []
   };
 

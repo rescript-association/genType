@@ -38,7 +38,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
         {
           pstr_desc:
             Pstr_eval(
-              {pexp_desc: Pexp_constant(Const_string(s, _)), _},
+              {pexp_desc: Pexp_constant(Pconst_string(s, _)), _},
               _,
             ),
           _,
@@ -76,8 +76,9 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_attribute(_), _}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PTyp(_) => Some(UnrecognizedPayload)
     | PPat(_) => Some(UnrecognizedPayload)
+    | PSig(_) => Some(UnrecognizedPayload)
+    | PTyp(_) => Some(UnrecognizedPayload)
     }
   | [_hd, ...tl] => getAttributePayload(checkText, tl)
   };
@@ -119,7 +120,7 @@ and moduleDeclarationHasGenTypeAnnotation =
 and signatureItemHasGenTypeAnnotation =
     (signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
   | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
@@ -135,7 +136,7 @@ and signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
 let rec structureItemHasGenTypeAnnotation =
         (structureItem: Typedtree.structure_item) =>
   switch (structureItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
+  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
   | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
@@ -169,7 +170,7 @@ and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
 let sanitizeVariableName = name =>
   name |> Str.global_replace(Str.regexp("-"), "_");
 
-let importFromString = importString: import => {
+let importFromString = importString : import => {
   let name = {
     let base = importString |> Filename.basename;
     (

@@ -124,21 +124,15 @@ type translation = {
   }
  */
 
-let rec removeOption = (~label, typeExpr: Types.type_expr) =>
-  switch (typeExpr.desc) {
-  | Tconstr(Path.Pident(id), [t], _)
-      /* This has a different representation in 4.03+ */
-      when Ident.name(id) == "option" && label != "" && label.[0] == '?' =>
-    Some((String.sub(label, 1, String.length(label) - 1), t))
-  | Tconstr(Pdot(Path.Pident(nameSpace), id, _), [t], _)
-      /* This has a different representation in 4.03+ */
-      when
-        Ident.name(nameSpace) == "FB"
-        && id == "option"
-        && label != ""
-        && label.[0] == '?' =>
-    Some((String.sub(label, 1, String.length(label) - 1), t))
-  | Tlink(t) => t |> removeOption(~label)
+let rec removeOption = (~label: Asttypes.arg_label, typeExpr: Types.type_expr) =>
+  switch (typeExpr.desc, label) {
+  | (Tconstr(Path.Pident(id), [t], _), Optional(lbl))
+      when Ident.name(id) == "option" =>
+    Some((lbl, t))
+  | (Tconstr(Pdot(Path.Pident(nameSpace), id, _), [t], _), Optional(lbl))
+      when Ident.name(nameSpace) == "FB" && id == "option" =>
+    Some((lbl, t))
+  | (Tlink(t), _) => t |> removeOption(~label)
   | _ => None
   };
 
@@ -260,7 +254,7 @@ let rec translateArrowType =
       ~revArgs,
       t,
     )
-  | Tarrow("", typExpr1, typExpr2, _) =>
+  | Tarrow(Nolabel, typExpr1, typExpr2, _) =>
     let {dependencies, typ} =
       typExpr1
       |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv, _);
@@ -274,7 +268,7 @@ let rec translateArrowType =
          ~revArgDeps=nextRevDeps,
          ~revArgs=[(Nolabel, typ), ...revArgs],
        );
-  | Tarrow(label, typExpr1, typExpr2, _) =>
+  | Tarrow((Labelled(lbl) | Optional(lbl)) as label, typExpr1, typExpr2, _) =>
     switch (typExpr1 |> removeOption(~label)) {
     | None =>
       let {dependencies, typ: typ1} =
@@ -288,7 +282,7 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(Label(label), typ1), ...revArgs],
+           ~revArgs=[(Label(lbl), typ1), ...revArgs],
          );
     | Some((lbl, t1)) =>
       let {dependencies, typ: typ1} =
@@ -502,7 +496,8 @@ and translateTypeExprFromTypes_ =
   | Tvariant(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
   }
 and translateTypeExprsFromTypes_ =
-    (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
+    (~config, ~typeVarsGen, ~typeEnv, typeExprs)
+    : list(translation) =>
   typeExprs
   |> List.map(translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv));
 

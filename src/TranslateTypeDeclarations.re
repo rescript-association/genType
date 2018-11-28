@@ -22,7 +22,7 @@ let createExportType =
 };
 
 let variantLeafTypeName = (typeName, leafName) =>
-  String.capitalize(typeName) ++ String.capitalize(leafName);
+  String.capitalize_ascii(typeName) ++ String.capitalize_ascii(leafName);
 
 let translateConstructorDeclarationFromTypes =
     (
@@ -32,17 +32,21 @@ let translateConstructorDeclarationFromTypes =
       ~recordGen,
       ~typeEnv,
       variantTypeName,
-      constructorDeclaration,
+      constructorDeclaration: Types.constructor_declaration,
     ) => {
   let constructorArgs = constructorDeclaration.Types.cd_args;
   let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
   let leafNameResolved = leafName |> TypeEnv.addModulePath(~typeEnv);
   let argsTranslation =
-    constructorArgs
-    |> TranslateTypeExprFromTypes.translateTypeExprsFromTypes(
-         ~config,
-         ~typeEnv,
-       );
+    switch (constructorArgs) {
+    | Cstr_tuple(typeExprs) =>
+      typeExprs
+      |> TranslateTypeExprFromTypes.translateTypeExprsFromTypes(
+           ~config,
+           ~typeEnv,
+         )
+    | Cstr_record(labelDeclarations) => /* TODO */ assert(false)
+    };
   let argTypes =
     argsTranslation |> List.map(({TranslateTypeExprFromTypes.typ, _}) => typ);
   let importTypes =
@@ -70,7 +74,8 @@ let translateConstructorDeclarationFromTypes =
   };
   let constructorTyp: CodeItem.constructorTyp = {typeVars, argTypes, variant};
   let recordValue =
-    recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
+    recordGen
+    |> Runtime.newRecordValue(~unboxed=constructorArgs == Cstr_tuple([]));
   let exportVariantLeaf: CodeItem.exportVariantLeaf = {
     exportType: {
       nameAs: None,
@@ -241,7 +246,7 @@ let traslateDeclarationKind =
                  List.combine(rowFields, enum.cases)
                  |> List.map(((field, case)) =>
                       switch (field) {
-                      | Typedtree.Ttag(label, attributes, _, _) =>
+                      | Typedtree.Ttag({txt: label}, attributes, _, _) =>
                         switch (
                           attributes
                           |> Annotation.getAttributePayload(
@@ -391,7 +396,7 @@ let translateTypeDeclaration =
       RecordDeclarationFromTypes(labelDeclarations)
 
     | Type_variant(constructorDeclarations)
-        when !hasSomeGADTLeaf(constructorDeclarations) =>
+        when ! hasSomeGADTLeaf(constructorDeclarations) =>
       VariantDeclarationFromTypes(constructorDeclarations)
 
     | Type_abstract => GeneralDeclaration(typ_attributes, typ_manifest)

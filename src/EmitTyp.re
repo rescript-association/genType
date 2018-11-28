@@ -206,7 +206,7 @@ and renderFields =
     (~config, ~indent, ~typeNameIsInterface, ~inFunType, fields) => {
   let indent1 = Indent.more(~indent);
   (
-    config.language == Flow && !config.exportInterfaces && fields != [] ?
+    config.language == Flow && ! config.exportInterfaces && fields != [] ?
       "{|" : "{"
   )
   ++ String.concat(
@@ -223,7 +223,7 @@ and renderFields =
      )
   ++ Indent.break(~indent)
   ++ (
-    config.language == Flow && !config.exportInterfaces && fields != [] ?
+    config.language == Flow && ! config.exportInterfaces && fields != [] ?
       "|}" : "}"
   );
 }
@@ -366,7 +366,7 @@ let emitExportType =
   switch (config.language) {
   | Flow =>
     switch (optTyp) {
-    | Some(typ) when config.exportInterfaces && isInterface && !opaque =>
+    | Some(typ) when config.exportInterfaces && isInterface && ! opaque =>
       "export interface "
       ++ resolvedTypeName
       ++ typeParamsString
@@ -410,7 +410,7 @@ let emitExportType =
         typeVars == [] ? "any" : typeVars |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ (
-        String.capitalize(resolvedTypeName) != resolvedTypeName ?
+        String.capitalize_ascii(resolvedTypeName) != resolvedTypeName ?
           "// tslint:disable-next-line:class-name\n" : ""
       )
       ++ "export abstract class "
@@ -514,7 +514,7 @@ let emitRequire =
     | Untyped => ""
     };
   switch (config.module_) {
-  | ES6 when !importedValueOrComponent && config.language != TypeScript =>
+  | ES6 when ! importedValueOrComponent && config.language != TypeScript =>
     commentBeforeRequire
     ++ "import * as "
     ++ ModuleName.toString(moduleName)
