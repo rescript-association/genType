@@ -1,3 +1,6 @@
+# master
+- [Fix issue with access to the .bs.js file when exporting nested component](https://github.com/cristianoc/genType/issues/104).
+
 # 1.5.0
 - Hygiene: avoid variable capture for generated variable names (function arguments, return value, array items).
 
