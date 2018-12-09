@@ -46,3 +46,9 @@ let useGetAbs = (x: AbsoluteValue.t) => x->AbsoluteValue.getAbs + 1;
 
 [@genType.import "./MyMath"]
 type stringFunction;
+
+[@genType]
+type color = [ | `tomato | `gray];
+
+[@genType.import "./MyMath"] [@bs.module "./WrapJsValue.gen"]
+external useColor: color => int = "";
