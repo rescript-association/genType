@@ -125,16 +125,24 @@ let rec addModulePath = (~typeEnv, name) =>
     typeEnv.name ++ "_" ++ name |> addModulePath(~typeEnv=parent)
   };
 
-let getValueAccessPath = (~name, x) => {
+let getValueAccessPath = (~offset=None, ~name, x) => {
   let rec accessPath = x =>
     switch (x.parent) {
     | None => ""
     | Some(parent) =>
       (parent.parent == None ? x.name : parent |> accessPath)
       ++ "["
-      ++ (x.moduleItem |> Runtime.emitModuleItem)
+      ++ (
+        switch (offset) {
+        | Some(s) => s
+        | None => x.moduleItem |> Runtime.emitModuleItem
+        }
+      )
       ++ "]"
     };
   let notNested = x.parent == None;
   notNested ? name : x |> accessPath;
 };
+
+let getComponentAccessPath = x =>
+  x |> getValueAccessPath(~offset=Some("0"), ~name="component");

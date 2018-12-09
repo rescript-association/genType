@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
+import { InnerComponent } from "./components/ManyComponents.gen";
 import * as Enums from "./Enums.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
@@ -62,6 +63,7 @@ ReactDOM.render(
         type: ""
       }}
     />
+    <InnerComponent />
   </div>,
   document.getElementById("root") as HTMLElement
 );

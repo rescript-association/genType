@@ -578,12 +578,14 @@ let rec emitCodeItem =
     ({...env, importedValueOrComponent: true}, emitters);
 
   | ExportComponent({
+      componentAccessPath,
+      componentType,
       exportType,
       fileName,
       moduleName,
       propsTypeName,
-      componentType,
       typ,
+      valueAccessPath,
     }) =>
     let nameGen = EmitText.newNameGen();
     let converter = typ |> typToConverter;
@@ -678,7 +680,11 @@ let rec emitCodeItem =
         ~config,
         [
           "ReasonReact.wrapReasonForJs(",
-          "  " ++ ModuleName.toString(moduleNameBs) ++ ".component" ++ ",",
+          "  "
+          ++ ModuleName.toString(moduleNameBs)
+          ++ "."
+          ++ componentAccessPath
+          ++ ",",
           "  (function _("
           ++ EmitTyp.ofType(
                ~config,
@@ -691,7 +697,7 @@ let rec emitCodeItem =
           ++ (
             ModuleName.toString(moduleNameBs)
             ++ "."
-            ++ "make"
+            ++ valueAccessPath
             |> emitCurry(~args)
           )
           ++ ";",

@@ -4,7 +4,7 @@ module InnerComponent = {
   [@genType]
   let make = _children => {
     ...component,
-    render: _ => ReasonReact.string("Inner Component"),
+    render: _ => <div> "Inner Component"->ReasonReact.string </div>,
   };
 };
 

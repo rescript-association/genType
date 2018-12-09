@@ -10,9 +10,9 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 export type InnerComponent_Props = {readonly children?: unknown};
 
 export const InnerComponent: React.ComponentClass<InnerComponent_Props> = ReasonReact.wrapReasonForJs(
-  ManyComponentsBS.component,
+  ManyComponentsBS.InnerComponent[0],
   (function _(jsProps: InnerComponent_Props) {
-     return ManyComponentsBS.make(jsProps.children);
+     return ManyComponentsBS.InnerComponent[1](jsProps.children);
   }));
 
 // tslint:disable-next-line:interface-over-type-literal

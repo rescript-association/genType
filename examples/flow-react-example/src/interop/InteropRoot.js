@@ -6,7 +6,10 @@ const React = require("react");
 const GreetingRe = require("./Greeting.gen");
 
 // Import a ReasonReact component!
-const PageReason = require("./Greeting.gen").default;
+const Greeting = require("./Greeting.gen").default;
+
+const InnerComponent = require("../components/ManyComponents.gen")
+  .InnerComponent;
 
 const consoleLog = console.log;
 
@@ -27,10 +30,9 @@ consoleLog("interopRoot.js areaValue:", WrapJsValue.areaValue);
 // type error: can't call that directly
 //const callAreaDirectly = WrapJsValue.area({x:3,y:4});
 
-const callMyAreaDirectly = WrapJsValue.myArea({x:3,y:4});
+const callMyAreaDirectly = WrapJsValue.myArea({ x: 3, y: 4 });
 
 consoleLog("interopRoot.js callMyAreaDirectly:", callMyAreaDirectly);
-
 
 consoleLog("anInterestingFlowType ", require("../SomeFlowTypes").c);
 
@@ -39,16 +41,20 @@ const Enums = require("../Enums.gen");
 consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
 consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);
 consoleLog("Enums: fortytwoBAD is", Enums.fortytwoBAD);
-consoleLog("Enums: testConvert3to2('module') =", Enums.testConvert2to3("module"));
+consoleLog(
+  "Enums: testConvert3to2('module') =",
+  Enums.testConvert2to3("module")
+);
 consoleLog("Enums: testConvert3to2('42') =", Enums.testConvert2to3("42"));
 
 const App = () => (
   <div>
-    <PageReason
+    <Greeting
       message={helloWorld}
       someNumber={someNumber}
       polymorphicProp={[1, 2, 3]}
     />
+    <InnerComponent />
   </div>
 );
 App.displayName = "ExampleInteropRoot";

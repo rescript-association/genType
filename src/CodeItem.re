@@ -47,12 +47,14 @@ type importValue = {
 };
 
 type exportComponent = {
+  componentAccessPath: string,
+  componentType: typ,
   exportType,
   fileName: ModuleName.t,
   moduleName: ModuleName.t,
   propsTypeName: string,
-  componentType: typ,
   typ,
+  valueAccessPath: string,
 };
 
 type exportValue = {

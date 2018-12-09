@@ -145,9 +145,6 @@ let translateValue =
     |> addAnnotationsToFunction;
   let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
 
-  /* Access path for the value in the module.
-     I can be the value name if the module is not nested.
-     Or TopLevelModule[x][y] if accessing a value in a doubly nested module */
   let valueAccessPath =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
@@ -271,8 +268,13 @@ let translateComponent =
     let componentType = EmitTyp.reactComponentType(~config, ~propsTypeName);
     let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
 
+    let valueAccessPath = typeEnv |> TypeEnv.getValueAccessPath(~name="make");
+    let componentAccessPath = typeEnv |> TypeEnv.getComponentAccessPath;
+
     let codeItems = [
       CodeItem.ExportComponent({
+        componentAccessPath,
+        componentType,
         exportType: {
           nameAs: None,
           opaque: Some(false),
@@ -283,8 +285,8 @@ let translateComponent =
         fileName,
         moduleName,
         propsTypeName,
-        componentType,
         typ,
+        valueAccessPath,
       }),
     ];
     {
