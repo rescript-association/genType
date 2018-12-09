@@ -197,7 +197,33 @@ let translateConstr =
       ...paramTranslation,
       typ: Nullable(paramTranslation.typ),
     }
-
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      [{dependencies: argsDependencies, typ: Tuple(ts)}, ret],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      typ: Function({typeVars: [], argTypes: ts, retType: ret.typ}),
+    }
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      [
+        {
+          dependencies: argsDependencies,
+          typ: Enum({cases: [{label: "Arity_0", _}]}),
+        },
+        ret,
+      ],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      typ: Function({typeVars: [], argTypes: [], retType: ret.typ}),
+    }
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      [{dependencies: argsDependencies, typ: singleT}, ret],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      typ: Function({typeVars: [], argTypes: [singleT], retType: ret.typ}),
+    }
   | (Pdot(Pident({name: "Js", _}), "t", _), _) =>
     let dependencies =
       fieldsTranslations
@@ -492,6 +518,17 @@ and translateTypeExprFromTypes_ =
       {dependencies, typ};
     | None => {dependencies: [], typ: mixedOrUnknown(~config)}
     };
+
+  /* Handle bucklescript's "Arity_" encoding in first argument of Js.Internal.fn(_,_) for uncurried functions.
+     Return the argument tuple. */
+  | Tvariant({row_fields: [(_, Rpresent(Some(t)))], _}) =>
+    t
+    |> translateTypeExprFromTypes_(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies,
+         ~typeEnv,
+       )
 
   | Tfield(_)
   | Tnil

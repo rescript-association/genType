@@ -1,6 +1,7 @@
 # master
 - [Fix issue with access to the .bs.js file when exporting nested component](https://github.com/cristianoc/genType/issues/104).
 - Fix: [Emit enum conversion tables early, to avoid the case where they’re used before being defined](https://github.com/cristianoc/genType/issues/102).
+- Add support for exporting uncurried function types.
 
 # 1.5.0
 - Hygiene: avoid variable capture for generated variable names (function arguments, return value, array items).
