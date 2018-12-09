@@ -4,9 +4,6 @@
  * @nolint
  */
 
-// $FlowExpectedError: Reason checked type sufficiently
-import * as EnumsBS from './Enums.bs';
-
 const $$toRE175361521 = {"type": 449540197, "module": -134553037, "XXX THIS IS DIFFERENT": 23437694};
 
 const $$toJS18951405 = {"449540197": "type", "-134553037": "module", "23437694": "42"};
@@ -28,6 +25,9 @@ const $$toJS916593523 = {"-29784519": "saturday", "569248848": "sunday"};
 const $$toRE149274715 = {"x": 120, "same": 26809};
 
 const $$toJS175361521 = {"449540197": "type", "-134553037": "module", "23437694": "XXX THIS IS DIFFERENT"};
+
+// $FlowExpectedError: Reason checked type sufficiently
+import * as EnumsBS from './Enums.bs';
 
 export type weekday = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 

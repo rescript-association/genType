@@ -6,6 +6,8 @@ import {area as areaNotChecked} from './MyMath';
 
 import {useColor as useColorNotChecked} from './MyMath';
 
+const $$toJS479407683 = {"322339018": "tomato", "-999567389": "gray"};
+
 // In case of type error, check the type of 'round' in 'WrapJsValue.re' and './MyMath'.
 export const roundTypeChecked: (_1:number) => number = roundNotChecked;
 
@@ -30,8 +32,6 @@ const WrapJsValueBS = require('./WrapJsValue.bs');
 import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
 
 import {stringFunction} from './MyMath';
-
-const $$toJS479407683 = {"322339018": "tomato", "-999567389": "gray"};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type point = {readonly x: number, readonly y?: number};
