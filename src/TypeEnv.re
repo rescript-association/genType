@@ -1,22 +1,27 @@
 open GenTypeCommon;
 
 type t = {
-  name: string,
-  parent: option(t),
+  mutable componentModuleItem: Runtime.moduleItem,
   mutable map: StringMap.t(entry),
   mutable mapModuleTypes: StringMap.t(Typedtree.signature),
   mutable moduleItem: Runtime.moduleItem,
+  name: string,
+  parent: option(t),
 }
 and entry =
   | Module(t)
   | Type(string);
 
 let root = () => {
-  name: "__root__",
-  parent: None,
-  map: StringMap.empty,
-  mapModuleTypes: StringMap.empty,
-  moduleItem: Runtime.moduleItemGen() |> Runtime.newModuleItem,
+  let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem;
+  {
+    componentModuleItem: moduleItem,
+    map: StringMap.empty,
+    mapModuleTypes: StringMap.empty,
+    moduleItem,
+    name: "__root__",
+    parent: None,
+  };
 };
 
 let toString = x => x.name;
@@ -25,12 +30,14 @@ let newModule = (~name, x) => {
   if (Debug.typeEnv^) {
     logItem("TypeEnv.newModule %s %s\n", x |> toString, name);
   };
+  let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem;
   let newModuleEnv = {
-    name,
-    parent: Some(x),
+    componentModuleItem: moduleItem,
     map: StringMap.empty,
     mapModuleTypes: StringMap.empty,
-    moduleItem: Runtime.moduleItemGen() |> Runtime.newModuleItem,
+    moduleItem,
+    name,
+    parent: Some(x),
   };
   x.map = x.map |> StringMap.add(name, Module(newModuleEnv));
   newModuleEnv;
@@ -116,7 +123,13 @@ let lookupModuleTypeSignature = (~path, x) =>
 let getCurrentModuleName = (~fileName, x) =>
   x.parent == None ? fileName : x.name |> ModuleName.fromStringUnsafe;
 
-let updateModuleItem = (~moduleItem, x) => x.moduleItem = moduleItem;
+let updateModuleItem = (~nameOpt=None, ~moduleItem, x) => {
+  switch (nameOpt) {
+  | Some("component") => x.componentModuleItem = moduleItem
+  | _ => ()
+  };
+  x.moduleItem = moduleItem;
+};
 
 let rec addModulePath = (~typeEnv, name) =>
   switch (typeEnv.parent) {
@@ -125,7 +138,7 @@ let rec addModulePath = (~typeEnv, name) =>
     typeEnv.name ++ "_" ++ name |> addModulePath(~typeEnv=parent)
   };
 
-let getValueAccessPath = (~offset=None, ~name, x) => {
+let getValueAccessPath = (~component=false, ~name, x) => {
   let rec accessPath = x =>
     switch (x.parent) {
     | None => ""
@@ -133,16 +146,11 @@ let getValueAccessPath = (~offset=None, ~name, x) => {
       (parent.parent == None ? x.name : parent |> accessPath)
       ++ "["
       ++ (
-        switch (offset) {
-        | Some(s) => s
-        | None => x.moduleItem |> Runtime.emitModuleItem
-        }
+        (component ? x.componentModuleItem : x.moduleItem)
+        |> Runtime.emitModuleItem
       )
       ++ "]"
     };
   let notNested = x.parent == None;
   notNested ? name : x |> accessPath;
 };
-
-let getComponentAccessPath = x =>
-  x |> getValueAccessPath(~offset=Some("0"), ~name="component");

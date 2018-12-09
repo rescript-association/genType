@@ -269,7 +269,9 @@ let translateComponent =
     let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
 
     let valueAccessPath = typeEnv |> TypeEnv.getValueAccessPath(~name="make");
-    let componentAccessPath = typeEnv |> TypeEnv.getComponentAccessPath;
+    let componentAccessPath =
+      typeEnv
+      |> TypeEnv.getValueAccessPath(~component=true, ~name="component");
 
     let codeItems = [
       CodeItem.ExportComponent({

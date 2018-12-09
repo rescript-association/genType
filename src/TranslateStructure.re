@@ -66,15 +66,19 @@ let translateValueBinding =
     )
     : Translation.t => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
-  if (Debug.translation^) {
+  let nameOpt =
     switch (vb_pat.pat_desc) {
-    | Tpat_var(id, _) =>
-      logItem("Translate Value Binding %s\n", id |> Ident.name)
-    | _ => ()
+    | Tpat_var(id, _) => Some(id |> Ident.name)
+    | _ => None
+    };
+  if (Debug.translation^) {
+    switch (nameOpt) {
+    | Some(s) => logItem("Translate Value Binding %s\n", s)
+    | None => ()
     };
   };
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
-  typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
+  typeEnv |> TypeEnv.updateModuleItem(~nameOpt, ~moduleItem);
   let typeExpr = vb_expr.exp_type;
 
   switch (vb_pat.pat_desc, Annotation.fromAttributes(vb_attributes)) {

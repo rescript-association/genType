@@ -27,6 +27,7 @@ function make(_children) {
 }
 
 var InnerComponent = /* module */[
+  /* someValueSoModuleOffsetsAreShifted */77,
   /* component */component,
   /* make */make
 ];
@@ -45,7 +46,7 @@ function make$1(param, param$1, param$2, param$3, param$4, param$5, param$6, par
           /* willUpdate */component$1[/* willUpdate */7],
           /* shouldUpdate */component$1[/* shouldUpdate */8],
           /* render */(function (param) {
-              return "Inner Component";
+              return React.createElement("div", undefined, "Many Props");
             }),
           /* initialState */component$1[/* initialState */10],
           /* retainedProps */component$1[/* retainedProps */11],

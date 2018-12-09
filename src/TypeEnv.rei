@@ -7,13 +7,10 @@ let addModuleTypeSignature:
 
 let getCurrentModuleName: (~fileName: ModuleName.t, t) => ModuleName.t;
 
-let getComponentAccessPath: t => string;
-
 /* Access path for the value in the module.
    It can be the value name if the module is not nested.
    Or TopLevelModule[x][y] if accessing a value in a doubly nested module */
-let getValueAccessPath:
-  (~offset: option(string)=?, ~name: string, t) => string;
+let getValueAccessPath: (~component: bool=?, ~name: string, t) => string;
 
 let lookup: (~name: string, t) => option(t);
 
@@ -28,4 +25,5 @@ let root: unit => t;
 
 let toString: t => string;
 
-let updateModuleItem: (~moduleItem: Runtime.moduleItem, t) => unit;
+let updateModuleItem:
+  (~nameOpt: option(string)=?, ~moduleItem: Runtime.moduleItem, t) => unit;

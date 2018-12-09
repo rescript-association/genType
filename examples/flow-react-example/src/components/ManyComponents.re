@@ -1,4 +1,6 @@
 module InnerComponent = {
+  let someValueSoModuleOffsetsAreShifted = 77;
+
   let component = ReasonReact.statelessComponent("InnerComponent");
 
   [@genType]
@@ -25,7 +27,7 @@ module ManyProps = {
         _children,
       ) => {
     ...component,
-    render: _ => ReasonReact.string("Inner Component"),
+    render: _ => <div> "Many Props"->ReasonReact.string </div>,
   };
 };
 
@@ -35,5 +37,5 @@ let component = ReasonReact.statelessComponent("ManyComponents");
 let make = _children => {
   ...component,
   render: _ =>
-    <div> {ReasonReact.string("Outer Component")} <InnerComponent /> </div>,
+    <div> "Outer Component"->ReasonReact.string <InnerComponent /> </div>,
 };

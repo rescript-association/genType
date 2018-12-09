@@ -16,9 +16,9 @@ import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 export type InnerComponent_Props = {|+children?: mixed|};
 
 export const InnerComponent: React$ComponentType<InnerComponent_Props> = ReasonReact.wrapReasonForJs(
-  ManyComponentsBS.InnerComponent[0],
+  ManyComponentsBS.InnerComponent[1],
   (function _(jsProps: InnerComponent_Props) {
-     return ManyComponentsBS.InnerComponent[1](jsProps.children);
+     return ManyComponentsBS.InnerComponent[2](jsProps.children);
   }));
 
 export type ManyProps_Props = {|
