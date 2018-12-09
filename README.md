@@ -147,6 +147,9 @@ let make = (~onClick: callback, _children) => {
 };
 ```
 
+**NOTE** the value `component` must also be defined, above `make` in the same module (also in the case of components defined in nested modules).
+
+
 To import and wrap a ReactJS component for use by ReasonReact, the type of the `make` function is the only information required:
 
 ```reason
