@@ -10,7 +10,7 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {readonly show: boolean, readonly message?: message};
 
-// In case of type error, check the type of 'make' in 'MyBannerWrapper.re' and the props of './MyBanner'.
+// In case of type error, check the type of 'make' in 'ImportMyBanner.re' and the props of './MyBanner'.
 export function MyBannerTypeChecked(props: Props) {
   return <MyBanner {...props}/>;
 }

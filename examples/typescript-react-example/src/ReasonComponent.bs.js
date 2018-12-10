@@ -4,7 +4,7 @@ import * as List from "bs-platform/lib/es6/list.js";
 import * as React from "react";
 import * as $$String from "bs-platform/lib/es6/string.js";
 import * as ReasonReact from "reason-react/src/ReasonReact.js";
-import * as MyBannerWrapper from "./MyBannerWrapper.bs.js";
+import * as ImportMyBanner from "./ImportMyBanner.bs.js";
 
 var component = ReasonReact.statelessComponent("ReasonComponent");
 
@@ -35,7 +35,7 @@ function make($staropt$star, person, $staropt$star$1, _children) {
                           onClick: onClick
                         }, "ReasonReact " + (message + (" and intList: " + ($$String.concat(",", List.map((function (i) {
                                           return String(i);
-                                        }), intList)) + (" and person name: " + person[/* name */0])))), ReasonReact.element(undefined, undefined, MyBannerWrapper.make(true, /* record */[/* text */"this is from ReasonComponent"], /* array */[])));
+                                        }), intList)) + (" and person name: " + person[/* name */0])))), ReasonReact.element(undefined, undefined, ImportMyBanner.make(true, /* record */[/* text */"this is from ReasonComponent"], /* array */[])));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

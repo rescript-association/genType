@@ -32,7 +32,7 @@ let make =
         )
         ->ReasonReact.string
       }
-      <MyBannerWrapper
+      <ImportMyBanner
         show=true
         message={Some({text: "this is from ReasonComponent"})}
       />
