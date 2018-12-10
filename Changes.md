@@ -1,3 +1,6 @@
+# master
+- Fix missing import React when importing component in untyped back-end.
+
 # 1.6.0
 - [Fix issue with access to the .bs.js file when exporting nested component](https://github.com/cristianoc/genType/issues/104).
 - Fix: [Emit enum conversion tables early, to avoid the case where they’re used before being defined](https://github.com/cristianoc/genType/issues/102).
