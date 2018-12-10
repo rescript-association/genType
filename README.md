@@ -154,7 +154,7 @@ To import and wrap a ReactJS component for use by ReasonReact, the type of the `
 
 ```reason
 [@genType.import "./MyBanner"] /* Module with the JS component to be wrapped. */
-[@bs.module "./MyBannerWrapper.gen"] /* Always the name of the current file plus ".gen". */
+[@bs.module "./ImportMyBanner.gen"] /* Always the name of the current file plus ".gen". */
 /* The make function will be automatically generated from the types below. */
 external make:
   (~show: bool, ~message: option(message)=?, 'a) =>
