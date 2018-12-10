@@ -402,33 +402,35 @@ let rec emitCodeItem =
         exportType,
       );
     let emitters =
-      "("
-      ++ (
-        "props"
-        |> EmitTyp.ofType(
+      config.language == Untyped ?
+        emitters :
+        "("
+        ++ (
+          "props"
+          |> EmitTyp.ofType(
+               ~config,
+               ~typeNameIsInterface,
+               ~typ=Ident(propsTypeName, []),
+             )
+        )
+        ++ ") {\n  return <"
+        ++ componentName
+        ++ " {...props}/>;\n}"
+        |> EmitTyp.emitExportFunction(
+             ~early=true,
+             ~emitters,
+             ~name=componentNameTypeChecked,
              ~config,
-             ~typeNameIsInterface,
-             ~typ=Ident(propsTypeName, []),
-           )
-      )
-      ++ ") {\n  return <"
-      ++ componentName
-      ++ " {...props}/>;\n}"
-      |> EmitTyp.emitExportFunction(
-           ~early=true,
-           ~emitters,
-           ~name=componentNameTypeChecked,
-           ~config,
-           ~comment=
-             "In case of type error, check the type of '"
-             ++ "make"
-             ++ "' in '"
-             ++ (fileName |> ModuleName.toString)
-             ++ ".re'"
-             ++ " and the props of '"
-             ++ (importPath |> ImportPath.toString)
-             ++ "'.",
-         );
+             ~comment=
+               "In case of type error, check the type of '"
+               ++ "make"
+               ++ "' in '"
+               ++ (fileName |> ModuleName.toString)
+               ++ ".re'"
+               ++ " and the props of '"
+               ++ (importPath |> ImportPath.toString)
+               ++ "'.",
+           );
 
     /* Wrap the component */
     let emitters =
