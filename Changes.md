@@ -1,4 +1,4 @@
-# master
+# 1.6.1
 - Fix missing import React when importing component in untyped back-end.
 
 # 1.6.0
