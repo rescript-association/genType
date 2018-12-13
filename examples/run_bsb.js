@@ -25,7 +25,7 @@ const input = (args = process.argv.slice(2));
 
 const shell = isWindows ? true : false;
 
-spawn("bsb", input, { stdio: ["inherit", "inherit"], shell }).on(
+spawn("bsb", input, { stdio: ["inherit", "inherit"], shell, encoding: 'utf8' }).on(
   "exit",
   code => process.exit(code)
 );
