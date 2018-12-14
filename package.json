@@ -16,7 +16,7 @@
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
-    "bsb-native": "^4.0.7"
+    "bsb-native": "^4.0.14"
   },
   "devDependencies": {
     "debug": "^4.1.0"
