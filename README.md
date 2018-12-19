@@ -134,6 +134,7 @@ Because of the `external` keyword, it's clear from context that this is an impor
 To import a default JS export, use `@genType.as "default"`. Similarly, to import a value with a different JS name, use e.g. `@genType.as "ValueStartingWithUpperCaseLetter"`. To import nested values, e.g. `Some.Nested.value`, use `@genType.as "Some.Nested.value"`. 
 
 **NOTE** The argument of `@bs.module`must always be the name of the current file plus `.gen` (In future, this could be automatically generated).
+If the imported value is consumed directly from a module defined in another directory, the behaviour of bucklescript's `bs.module` annotation [can be surprising](https://github.com/cristianoc/genType/issues/106).
 
 ### Export and Import React Components
 
