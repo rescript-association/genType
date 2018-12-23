@@ -12,7 +12,7 @@ import ReasonComponent from "./ReasonComponent.gen";
 import { A, B, minus, tToString } from "./ReasonComponent.gen";
 import { t, TA, TB } from "./ReasonComponent.gen";
 import registerServiceWorker from "./registerServiceWorker";
-import * as WrapJsValue from "./WrapJsValue.gen";
+import * as ImportJsValue from "./ImportJsValue.gen";
 
 const minusOne: number = minus({ second: 1 });
 
@@ -38,9 +38,9 @@ const businesses = [
 
 const addresses = Records.findAllAddresses(businesses);
 
-import { roundedNumber } from "./WrapJsValue.gen";
+import { roundedNumber } from "./ImportJsValue.gen";
 consoleLog("index.tsx roundedNumber:", roundedNumber);
-import { areaValue } from "./WrapJsValue.gen";
+import { areaValue } from "./ImportJsValue.gen";
 consoleLog("index.tsx areaValue:", areaValue);
 
 ReactDOM.render(
@@ -93,7 +93,7 @@ const absoluteValueInstance = new MyMath.AbsoluteValue();
 absoluteValueInstance.prop = -3;
 consoleLog("absoluteValueInstance", absoluteValueInstance);
 
-const propValue = WrapJsValue.useGetProp(absoluteValueInstance);
-const absValue = WrapJsValue.useGetAbs(absoluteValueInstance);
-consoleLog("WrapJsValue: getProp() =", propValue);
-consoleLog("WrapJsValue: getAbs() =", absValue);
+const propValue = ImportJsValue.useGetProp(absoluteValueInstance);
+const absValue = ImportJsValue.useGetAbs(absoluteValueInstance);
+consoleLog("ImportJsValue: getProp() =", propValue);
+consoleLog("ImportJsValue: getAbs() =", absValue);
