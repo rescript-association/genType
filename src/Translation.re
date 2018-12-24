@@ -362,6 +362,11 @@ let translatePrimitive =
       Some(StringPayload(importString)),
     )
       when valueName == "make" =>
+    let asPath =
+      switch (genTypeAsPayload) {
+      | Some(StringPayload(asPath)) => asPath
+      | _ => ""
+      };
     let typeExprTranslation =
       valueDescription.val_desc
       |> TranslateCoreType.translateCoreType(
@@ -418,6 +423,7 @@ let translatePrimitive =
 
     let codeItems = [
       CodeItem.ImportComponent({
+        asPath,
         childrenTyp,
         exportType: {
           nameAs: None,

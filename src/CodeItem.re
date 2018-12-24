@@ -30,6 +30,7 @@ type exportVariantType = {
 };
 
 type importComponent = {
+  asPath: string,
   childrenTyp: typ,
   exportType,
   fileName: ModuleName.t,

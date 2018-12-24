@@ -1,3 +1,6 @@
+# master
+- Add support for paths in `@genType.as` when importing components from JS. Also, simply support renaming.
+
 # 1.6.1
 - Fix missing import React when importing component in untyped back-end.
 

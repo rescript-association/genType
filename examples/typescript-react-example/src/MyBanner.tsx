@@ -22,4 +22,10 @@ class App extends React.PureComponent<Props> {
   }
 }
 
+export class TopLevelClass {
+  static MiddleLevelElements = {
+    MyBannerInternal: App
+  };
+}
+
 export default App;

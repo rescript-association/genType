@@ -8,6 +8,13 @@ import {ValueStartingWithUpperCaseLetter as valueStartingWithUpperCaseLetterNotC
 
 import {default as defaultValueNotChecked} from './exportNestedValues';
 
+import {TopLevelClass as TopLevelClass} from './MyBanner';
+
+import * as React from 'react';
+
+// tslint:disable-next-line:no-var-requires
+const ReasonReact = require('reason-react/src/ReasonReact.js');
+
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.
 export const innerStuffContentsTypeChecked: {readonly x: number} = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;
 
@@ -31,3 +38,17 @@ export const defaultValueTypeChecked: number = defaultValueNotChecked;
 
 // Export 'defaultValue' early to allow circular import from the '.bs.js' file.
 export const defaultValue: unknown = defaultValueTypeChecked as number;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type Props = {readonly show: boolean, readonly message?: message};
+
+// In case of type error, check the type of 'make' in 'TestImport.re' and the props of './MyBanner'.
+export function MyBannerInternalTypeChecked(props: Props) {
+  return <TopLevelClass.MiddleLevelElements.MyBannerInternal {...props}/>;
+}
+
+// Export 'make' early to allow circular import from the '.bs.js' file.
+export const make: unknown = function _(show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, message: (message == null ? message : {text:message[0]})}, children); };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type message = {readonly text: string};

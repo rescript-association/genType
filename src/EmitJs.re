@@ -355,6 +355,7 @@ let rec emitCodeItem =
 
   switch (codeItem) {
   | ImportComponent({
+      asPath,
       childrenTyp,
       exportType,
       fileName,
@@ -363,32 +364,54 @@ let rec emitCodeItem =
       propsTypeName,
     }) =>
     let importPath = importAnnotation.importPath;
-    let componentName = importAnnotation.name;
+    let name = importAnnotation.name;
 
-    let nameGen = EmitText.newNameGen();
-    let (emitters, env) =
+    let es6 =
       switch (language, config.module_) {
       | (_, ES6)
-      | (TypeScript, _) =>
+      | (TypeScript, _) => true
+      | (Flow | Untyped, _) => false
+      };
+
+    let (firstNameInPath, restOfPath, lastNameInPath) =
+      switch (asPath |> Str.split(Str.regexp("\\."))) {
+      | [x, ...y] =>
+        let lastNameInPath =
+          switch (y |> List.rev) {
+          | [last, ..._] => last
+          | [] => x
+          };
+        es6 ?
+          (x, ["", ...y] |> String.concat("."), lastNameInPath) :
+          (name, ["", x, ...y] |> String.concat("."), lastNameInPath);
+      | _ => (name, es6 ? "" : ".default", name)
+      };
+
+    let componentPath = firstNameInPath ++ restOfPath;
+
+    let nameGen = EmitText.newNameGen();
+
+    let (emitters, env) =
+      if (es6) {
         /* emit an import {... as ...} immediately */
         let emitters =
           importPath
           |> EmitTyp.emitImportValueAsEarly(
                ~config,
                ~emitters,
-               ~name=componentName,
-               ~nameAs=None,
+               ~name=firstNameInPath,
+               ~nameAs=firstNameInPath == name ? None : Some(firstNameInPath),
              );
         (emitters, env);
-      | (Flow | Untyped, _) =>
+      } else {
         /* add an early require(...)  */
         let env =
-          componentName
+          firstNameInPath
           |> ModuleName.fromStringUnsafe
           |> requireModule(~import=true, ~env, ~importPath, ~strict=true);
         (emitters, env);
       };
-    let componentNameTypeChecked = componentName ++ "TypeChecked";
+    let componentNameTypeChecked = lastNameInPath ++ "TypeChecked";
 
     /* Check the type of the component */
     let emitters = EmitTyp.emitRequireReact(~early=true, ~emitters, ~config);
@@ -414,7 +437,7 @@ let rec emitCodeItem =
              )
         )
         ++ ") {\n  return <"
-        ++ componentName
+        ++ componentPath
         ++ " {...props}/>;\n}"
         |> EmitTyp.emitExportFunction(
              ~early=true,
@@ -443,7 +466,7 @@ let rec emitCodeItem =
            )
         ++ " { return ReasonReact.wrapJsForReason"
         ++ EmitText.parens([
-             componentName,
+             componentPath,
              "{"
              ++ (
                propsFields
