@@ -418,6 +418,7 @@ let translatePrimitive =
 
     let codeItems = [
       CodeItem.ImportComponent({
+        childrenTyp,
         exportType: {
           nameAs: None,
           opaque: Some(false),
@@ -425,11 +426,10 @@ let translatePrimitive =
           typeVars,
           resolvedTypeName: propsTypeName,
         },
+        fileName,
         importAnnotation: importString |> Annotation.importFromString,
-        childrenTyp,
         propsFields,
         propsTypeName,
-        fileName,
       }),
     ];
     {

@@ -30,12 +30,12 @@ type exportVariantType = {
 };
 
 type importComponent = {
-  exportType,
-  importAnnotation: Annotation.import,
   childrenTyp: typ,
+  exportType,
+  fileName: ModuleName.t,
+  importAnnotation: Annotation.import,
   propsFields: fields,
   propsTypeName: string,
-  fileName: ModuleName.t,
 };
 
 type importValue = {

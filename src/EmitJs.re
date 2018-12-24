@@ -355,12 +355,12 @@ let rec emitCodeItem =
 
   switch (codeItem) {
   | ImportComponent({
-      exportType,
-      importAnnotation,
       childrenTyp,
+      exportType,
+      fileName,
+      importAnnotation,
       propsFields,
       propsTypeName,
-      fileName,
     }) =>
     let importPath = importAnnotation.importPath;
     let componentName = importAnnotation.name;
