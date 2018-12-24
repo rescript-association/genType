@@ -60,8 +60,8 @@ type exportComponent = {
 type exportValue = {
   fileName: ModuleName.t,
   resolvedName: string,
-  valueAccessPath: string,
   typ,
+  valueAccessPath: string,
 };
 
 type exportKind =

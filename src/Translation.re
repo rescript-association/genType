@@ -149,7 +149,7 @@ let translateValue =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.ExportValue({fileName, resolvedName, valueAccessPath, typ}),
+    CodeItem.ExportValue({fileName, resolvedName, typ, valueAccessPath}),
   ];
   {
     importTypes:

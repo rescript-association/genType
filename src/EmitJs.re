@@ -734,7 +734,7 @@ let rec emitCodeItem =
 
     (env, emitters);
 
-  | ExportValue({fileName, resolvedName, valueAccessPath, typ}) =>
+  | ExportValue({fileName, resolvedName, typ, valueAccessPath}) =>
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
