@@ -453,11 +453,11 @@ let translatePrimitive =
 
       codeItems: [
         ImportValue({
-          valueName,
           asPath,
+          fileName,
           importAnnotation: importString |> Annotation.importFromString,
           typ: typeExprTranslation.typ,
-          fileName,
+          valueName,
         }),
       ],
       typeDeclarations: [],

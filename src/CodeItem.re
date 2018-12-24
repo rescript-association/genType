@@ -39,11 +39,11 @@ type importComponent = {
 };
 
 type importValue = {
-  valueName: string,
   asPath: string,
+  fileName: ModuleName.t,
   importAnnotation: Annotation.import,
   typ,
-  fileName: ModuleName.t,
+  valueName: string,
 };
 
 type exportComponent = {

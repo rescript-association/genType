@@ -499,7 +499,7 @@ let rec emitCodeItem =
          );
     ({...env, importedValueOrComponent: true}, emitters);
 
-  | ImportValue({valueName, asPath, importAnnotation, typ, fileName}) =>
+  | ImportValue({asPath, fileName, importAnnotation, typ, valueName}) =>
     let nameGen = EmitText.newNameGen();
     let importPath = importAnnotation.importPath;
     let (firstNameInPath, restOfPath) =
