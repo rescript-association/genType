@@ -266,8 +266,14 @@ let translateConstr =
     };
   };
 
+type processVariant = {
+  noPayloads: list(string),
+  payloads: list((string, Types.type_expr)),
+  unknowns: list(string),
+};
+
 let processVariant = rowFields => {
-  let rec loop = (~noPayloads, ~payloads, fields) =>
+  let rec loop = (~noPayloads, ~payloads, ~unknowns, fields) =>
     switch (fields) {
     | [
         (
@@ -277,15 +283,25 @@ let processVariant = rowFields => {
         ),
         ...otherFields,
       ] =>
-      otherFields |> loop(~noPayloads=[label, ...noPayloads], ~payloads)
+      otherFields
+      |> loop(~noPayloads=[label, ...noPayloads], ~payloads, ~unknowns)
     | [(label, Rpresent(Some(payload))), ...otherFields] =>
       otherFields
-      |> loop(~noPayloads, ~payloads=[(label, payload), ...payloads])
-    | [(_, Rabsent | Reither(false, _, _, _)), ...otherFields] =>
-      otherFields |> loop(~noPayloads, ~payloads)
-    | [] => (noPayloads |> List.rev, payloads |> List.rev)
+      |> loop(
+           ~noPayloads,
+           ~payloads=[(label, payload), ...payloads],
+           ~unknowns,
+         )
+    | [(label, Rabsent | Reither(false, _, _, _)), ...otherFields] =>
+      otherFields
+      |> loop(~noPayloads, ~payloads, ~unknowns=[label, ...unknowns])
+    | [] => {
+        noPayloads: noPayloads |> List.rev,
+        payloads: payloads |> List.rev,
+        unknowns: unknowns |> List.rev,
+      }
     };
-  rowFields |> loop(~noPayloads=[], ~payloads=[]);
+  rowFields |> loop(~noPayloads=[], ~payloads=[], ~unknowns=[]);
 };
 
 let rec translateArrowType =
@@ -466,13 +482,13 @@ and translateTypeExprFromTypes_ =
 
   | Tvariant(rowDesc) =>
     switch (rowDesc.row_fields |> processVariant) {
-    | (noPayloads, []) =>
+    | {noPayloads, payloads: [], unknowns: []} =>
       let cases =
         noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
       let typ = cases |> createEnum(~obj=None);
       {dependencies: [], typ};
 
-    | ([], [(_label, t)]) =>
+    | {noPayloads: [], payloads: [(_label, t)], unknowns: []} =>
       /* Handle bucklescript's "Arity_" encoding in first argument of Js.Internal.fn(_,_) for uncurried functions.
          Return the argument tuple. */
       t
@@ -483,7 +499,11 @@ and translateTypeExprFromTypes_ =
            ~typeEnv,
          )
 
-    | ([_, ..._] as noPayloads, [(label, payload)]) =>
+    | {
+        noPayloads: [_, ..._] as noPayloads,
+        payloads: [(label, payload)],
+        unknowns: [],
+      } =>
       let cases =
         noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
       let payloadTranslation =

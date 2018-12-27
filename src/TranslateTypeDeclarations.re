@@ -223,7 +223,7 @@ let traslateDeclarationKind =
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
                  Enum({obj}),
                ) =>
-               let (noPayloads, _payloads) =
+               let {TranslateCoreType.noPayloads} =
                  rowFields |> TranslateCoreType.processVariant;
                let cases =
                  noPayloads

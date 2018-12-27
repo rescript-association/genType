@@ -19,8 +19,14 @@ let removeOption = (~label, coreType: Typedtree.core_type) =>
   | _ => None
   };
 
+type processVariant = {
+  noPayloads: list((string, Typedtree.attributes)),
+  payloads: list((string, list(Typedtree.core_type))),
+  unknowns: list(string),
+};
+
 let processVariant = rowFields => {
-  let rec loop = (~noPayloads, ~payloads, fields) =>
+  let rec loop = (~noPayloads, ~payloads, ~unknowns, fields) =>
     switch (fields) {
     | [
         Typedtree.Ttag(
@@ -32,15 +38,28 @@ let processVariant = rowFields => {
         ...otherFields,
       ] =>
       otherFields
-      |> loop(~noPayloads=[(label, attributes), ...noPayloads], ~payloads)
+      |> loop(
+           ~noPayloads=[(label, attributes), ...noPayloads],
+           ~payloads,
+           ~unknowns,
+         )
     | [Ttag(label, _, _, payload), ...otherFields] =>
       otherFields
-      |> loop(~noPayloads, ~payloads=[(label, payload), ...payloads])
+      |> loop(
+           ~noPayloads,
+           ~payloads=[(label, payload), ...payloads],
+           ~unknowns,
+         )
     | [Tinherit(_), ...otherFields] =>
-      otherFields |> loop(~noPayloads, ~payloads)
-    | [] => (noPayloads |> List.rev, payloads |> List.rev)
+      otherFields
+      |> loop(~noPayloads, ~payloads, ~unknowns=["Tinherit", ...unknowns])
+    | [] => {
+        noPayloads: noPayloads |> List.rev,
+        payloads: payloads |> List.rev,
+        unknowns: unknowns |> List.rev,
+      }
     };
-  rowFields |> loop(~noPayloads=[], ~payloads=[]);
+  rowFields |> loop(~noPayloads=[], ~payloads=[], ~unknowns=[]);
 };
 
 let rec translateArrowType =
@@ -201,7 +220,7 @@ and translateCoreType_ =
 
   | Ttyp_variant(rowFields, _, _) =>
     switch (rowFields |> processVariant) {
-    | (noPayloads, []) =>
+    | {noPayloads, payloads: [], unknowns: []} =>
       let cases =
         noPayloads
         |> List.map(((label, _attibutes)) =>
@@ -210,7 +229,7 @@ and translateCoreType_ =
       let typ = cases |> createEnum(~obj=None);
       {dependencies: [], typ};
 
-    | (noPayloads, [(label, [payload])]) =>
+    | {noPayloads, payloads: [(label, [payload])], unknowns: []} =>
       let cases =
         noPayloads
         |> List.map(((label, _attibutes)) =>
