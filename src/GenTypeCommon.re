@@ -76,6 +76,22 @@ and enum = {
   toRE: string,
 };
 
+let typIsObject = typ =>
+  switch (typ) {
+  | Array(_) => true
+  | Enum(_) => false
+  | Function(_) => false
+  | GroupOfLabeledArgs(_) => false
+  | Ident(_) => false
+  | Nullable(_) => false
+  | Object(_) => true
+  | Option(_) => false
+  | Record(_) => true
+  | Tuple(_) => true
+  | TypeVar(_) => false
+  | Variant(_) => false
+  };
+
 type variant = {
   name: string,
   params: list(typ),

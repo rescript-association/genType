@@ -109,25 +109,39 @@ let typToConverterOpaque =
       typ,
     ) => {
   let circular = ref("");
+  let expandOneLevel = typ =>
+    switch (typ) {
+    | Ident(s, _) =>
+      switch (exportTypeMap |> StringMap.find(s)) {
+      | (t: CodeItem.exportTypeItem) => t.typ
+      | exception Not_found =>
+        switch (exportTypeMapFromOtherFiles |> StringMap.find(s)) {
+        | exception Not_found => typ
+        | (t: CodeItem.exportTypeItem) => t.typ
+        }
+      }
+    | _ => typ
+    };
   let rec visit = (~visited: StringSet.t, typ) =>
     switch (typ) {
     | Array(t, _) =>
       let (converter, opaque) = t |> visit(~visited);
       (ArrayC(converter), opaque);
 
-    | Enum(enum) => (
-        EnumC({
-          cases: enum.cases,
-          obj:
-            switch (enum.obj) {
-            | None => None
-            | Some((label, t)) => Some((label, t |> visit(~visited) |> fst))
-            },
-          toJS: enum.toJS,
-          toRE: enum.toRE,
-        }),
-        false,
-      )
+    | Enum(enum) =>
+      let (obj, opaque) =
+        switch (enum.obj) {
+        | None => (None, false)
+        | Some((label, t)) =>
+          let converter = t |> visit(~visited) |> fst;
+          let opaque = !(t |> expandOneLevel |> typIsObject);
+          (Some((label, converter)), opaque);
+        };
+      let converter =
+        opaque ?
+          IdentC :
+          EnumC({cases: enum.cases, obj, toJS: enum.toJS, toRE: enum.toRE});
+      (converter, opaque);
 
     | Function({argTypes, retType, _}) =>
       let argConverters =
