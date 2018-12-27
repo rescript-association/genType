@@ -40,7 +40,15 @@ let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 let rec substitute = (~f, typ) =>
   switch (typ) {
   | Array(typ, arrayKind) => Array(typ |> substitute(~f), arrayKind)
-  | Enum(_) => typ
+  | Enum(enum) =>
+    Enum({
+      ...enum,
+      obj:
+        switch (enum.obj) {
+        | None => None
+        | Some((case, t)) => Some((case, t |> substitute(~f)))
+        },
+    })
   | Function(function_) =>
     Function({
       ...function_,
@@ -85,7 +93,11 @@ let rec substitute = (~f, typ) =>
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
   | Array(typ, _) => typ |> free_
-  | Enum(_) => StringSet.empty
+  | Enum({obj}) =>
+    switch (obj) {
+    | None => StringSet.empty
+    | Some((_, t)) => t |> free_
+    }
   | Function({typeVars, argTypes, retType}) =>
     StringSet.diff(
       (argTypes |> freeOfList_) +++ (retType |> free_),

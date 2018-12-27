@@ -21,15 +21,25 @@ type mutable_ =
   | Immutable
   | Mutable;
 
-type case = {
-  label: string,
-  labelJS: string,
+type labelJS =
+  | BoolLabel(bool)
+  | FloatLabel(string)
+  | IntLabel(int)
+  | StringLabel(string);
+
+let labelJSToString = (~alwaysQuotes=false, labelJS) => {
+  let addQuotes = x => alwaysQuotes ? x |> EmitText.quotes : x;
+  switch (labelJS) {
+  | BoolLabel(b) => b |> string_of_bool |> addQuotes
+  | FloatLabel(s) => s |> addQuotes
+  | IntLabel(i) => i |> string_of_int |> addQuotes
+  | StringLabel(s) => s |> EmitText.quotes
+  };
 };
 
-type enum = {
-  cases: list(case),
-  toJS: string,
-  toRE: string,
+type case = {
+  label: string,
+  labelJS,
 };
 
 type typ =
@@ -60,7 +70,29 @@ and function_ = {
 and variantLeaf = {
   leafName: string,
   argTypes: list(typ),
+}
+and enum = {
+  cases: list(case),
+  obj: option((string, typ)),
+  toJS: string,
+  toRE: string,
 };
+
+let typIsObject = typ =>
+  switch (typ) {
+  | Array(_) => true
+  | Enum(_) => false
+  | Function(_) => false
+  | GroupOfLabeledArgs(_) => false
+  | Ident(_) => false
+  | Nullable(_) => false
+  | Object(_) => true
+  | Option(_) => false
+  | Record(_) => true
+  | Tuple(_) => true
+  | TypeVar(_) => false
+  | Variant(_) => false
+  };
 
 type variant = {
   name: string,
@@ -72,14 +104,14 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-let createEnum = cases => {
+let createEnum = (~obj, cases) => {
   let hash =
     cases
     |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
     |> Hashtbl.hash
     |> string_of_int;
-  Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+  Enum({cases, obj, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
 };
 
 let mixedOrUnknown = (~config) =>

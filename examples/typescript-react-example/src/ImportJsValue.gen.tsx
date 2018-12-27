@@ -6,7 +6,7 @@ import {area as areaNotChecked} from './MyMath';
 
 import {useColor as useColorNotChecked} from './MyMath';
 
-const $$toJS479407683 = {"322339018": "tomato", "-999567389": "gray"};
+const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
 export const roundTypeChecked: (_1:number) => number = roundNotChecked;
@@ -24,7 +24,7 @@ export const area: unknown = function _(Arg1: any) { const result = areaTypeChec
 export const useColorTypeChecked: (_1:color) => number = useColorNotChecked;
 
 // Export 'useColor' early to allow circular import from the '.bs.js' file.
-export const useColor: unknown = function _(Arg1: any) { const result = useColorTypeChecked($$toJS479407683[Arg1]); return result } as (_1:color) => number;
+export const useColor: unknown = function _(Arg1: any) { const result = useColorTypeChecked($$toJS580645844[Arg1]); return result } as (_1:color) => number;
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');

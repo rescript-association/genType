@@ -54,6 +54,11 @@ let emitVariantLabel = (~comment=true, label) =>
   (comment ? label |> EmitText.comment : "")
   ++ (label |> Btype.hash_variant |> string_of_int);
 
+let emitVariantGetPayload = x => x ++ EmitText.array(["1"]);
+
+let emitVariantWithPayload = (~label, x) =>
+  EmitText.array([label |> emitVariantLabel, x]);
+
 let isMutableObjectField = name =>
   String.length(name) >= 2
   && String.sub(name, String.length(name) - 2, 2) == "#=";

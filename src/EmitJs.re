@@ -839,14 +839,14 @@ let emitRequires =
   );
 
 let emitEnumTables = (~emitters, enumTables) => {
-  let emitTable = (~hash, ~toJS, enum) =>
+  let emitTable = (~hash, ~toJS, enum: Converter.enumC) =>
     "const "
     ++ hash
     ++ " = {"
     ++ (
       enum.cases
       |> List.map(label => {
-           let js = label.labelJS |> EmitText.quotes;
+           let js = label.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
            let re = label.label |> Runtime.emitVariantLabel(~comment=false);
            toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
          })
@@ -1023,7 +1023,12 @@ let propagateAnnotationToSubTypes =
           };
         }
       | Array(t, _) => t |> visit
-      | Enum(_) => ()
+      | Enum({obj}) =>
+        switch (obj) {
+        | None => ()
+        | Some((_, t)) => t |> visit
+        }
+
       | Function({argTypes, retType, _}) =>
         argTypes |> List.iter(visit);
         retType |> visit;

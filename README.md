@@ -348,12 +348,18 @@ A file can export many components by defining them in sub-modules. The toplevel 
 
 ### enums
 
-Enums are Reason polymorphic variants without payload: essentially flat sequences of identifiers. E.g. type `` [ | `monday | `tuesday ] ``.
+Enums are Reason polymorphic variants without payload: essentially flat sequences of identifiers. E.g. type ``[@genType] type days = [ | `monday | `tuesday ] ``.
 The corresponding JS representation is `"monday"`, `"tuesday"`.
 
-The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. `` [ | [@genType.as "type"] `type_ ] `` exports Reason value `` `type_ `` to JS value `"type"`.
+The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. ``` [ | [@genType.as "type"] `type_ ] ``` exports Reason value `` `type_ `` to JS value `"type"`.
+Boolean/integer/float constants can be expressed as ``` | [@genType.as true] `True ``` and ``` | [@genType.as 20] `Twenty ``` and ``` | [@genType.as 0.5] `Half ```.
 
-See for example [Enums.re](examples/typescript-react-example/src/Enums.re).
+At most one variant can have a payload, which must have object type, e.g.
+``` [ | `unnamed | `named({. "name": string, "surname": string}) ] ```. Object types are arrays, objects, records and tuples.
+
+See for example [Enums.re](examples/typescript-react-example/src/Enums.re) and [EnumsWithPayload.re](examples/typescript-react-example/src/EnumsWithPayload.re).
+
+**NOTE** When exporting/importing values that use enum types, you have to use type annotations for enums, and cannot rely on type inference. So instead of ```let monday = `monday```, use ```let monday : days = `monday```. The former does not work, as the type checker infers a tyoe without annotations.
 
 ### imported types
 

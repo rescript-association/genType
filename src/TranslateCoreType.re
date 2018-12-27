@@ -19,6 +19,49 @@ let removeOption = (~label, coreType: Typedtree.core_type) =>
   | _ => None
   };
 
+type processVariant = {
+  noPayloads: list((string, Typedtree.attributes)),
+  payloads: list((string, list(Typedtree.core_type))),
+  unknowns: list(string),
+};
+
+let processVariant = rowFields => {
+  let rec loop = (~noPayloads, ~payloads, ~unknowns, fields) =>
+    switch (fields) {
+    | [
+        Typedtree.Ttag(
+          label,
+          attributes,
+          _,
+          /* only enums with no payload */ [],
+        ),
+        ...otherFields,
+      ] =>
+      otherFields
+      |> loop(
+           ~noPayloads=[(label, attributes), ...noPayloads],
+           ~payloads,
+           ~unknowns,
+         )
+    | [Ttag(label, _, _, payload), ...otherFields] =>
+      otherFields
+      |> loop(
+           ~noPayloads,
+           ~payloads=[(label, payload), ...payloads],
+           ~unknowns,
+         )
+    | [Tinherit(_), ...otherFields] =>
+      otherFields
+      |> loop(~noPayloads, ~payloads, ~unknowns=["Tinherit", ...unknowns])
+    | [] => {
+        noPayloads: noPayloads |> List.rev,
+        payloads: payloads |> List.rev,
+        unknowns: unknowns |> List.rev,
+      }
+    };
+  rowFields |> loop(~noPayloads=[], ~payloads=[], ~unknowns=[]);
+};
+
 let rec translateArrowType =
         (
           ~config,
@@ -161,6 +204,7 @@ and translateCoreType_ =
          ~revArgDeps=[],
          ~revArgs=[],
        )
+
   | Ttyp_tuple(listExp) =>
     let innerTypesTranslation =
       listExp |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
@@ -174,36 +218,37 @@ and translateCoreType_ =
 
     {dependencies: innerTypesDeps, typ: tupleType};
 
-  | Ttyp_variant(rowFields, _, _)
-      when
-        rowFields
-        |> List.for_all(field =>
-             switch (field) {
-             | Typedtree.Ttag(_, _, _, /* only enums with no payloads */ []) =>
-               true
-             | _ => false
-             }
-           ) =>
-    let cases =
-      rowFields
-      |> List.map(field =>
-           switch (field) {
-           | Typedtree.Ttag(label, _attributes, _, _) => {
-               label,
-               labelJS: label,
-             }
-           | Tinherit(_) => /* impossible: checked above */ assert(false)
-           }
-         );
-    let typ = cases |> createEnum;
-    {dependencies: [], typ};
+  | Ttyp_variant(rowFields, _, _) =>
+    switch (rowFields |> processVariant) {
+    | {noPayloads, payloads: [], unknowns: []} =>
+      let cases =
+        noPayloads
+        |> List.map(((label, _attibutes)) =>
+             {label, labelJS: StringLabel(label)}
+           );
+      let typ = cases |> createEnum(~obj=None);
+      {dependencies: [], typ};
+
+    | {noPayloads, payloads: [(label, [payload])], unknowns: []} =>
+      let cases =
+        noPayloads
+        |> List.map(((label, _attibutes)) =>
+             {label, labelJS: StringLabel(label)}
+           );
+      let payloadTranslation =
+        payload |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
+      let typ =
+        cases |> createEnum(~obj=Some((label, payloadTranslation.typ)));
+      {dependencies: payloadTranslation.dependencies, typ};
+
+    | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
+    }
 
   | Ttyp_alias(_)
   | Ttyp_any
   | Ttyp_class(_)
   | Ttyp_object(_)
-  | Ttyp_package(_)
-  | Ttyp_variant(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
+  | Ttyp_package(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
   }
 and translateCoreTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
