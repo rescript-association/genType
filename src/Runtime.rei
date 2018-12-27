@@ -17,7 +17,11 @@ let emitRecordAsBlock:
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
+let emitVariantGetPayload: string => string;
+
 let emitVariantLabel: (~comment: bool=?, string) => string;
+
+let emitVariantWithPayload: (~label: string, string) => string;
 
 let isMutableObjectField: string => bool;
 

@@ -4,8 +4,10 @@ type import = {
 };
 
 type attributePayload =
-  | UnrecognizedPayload
-  | StringPayload(string);
+  | BoolPayload(bool)
+  | IntPayload(int)
+  | StringPayload(string)
+  | UnrecognizedPayload;
 
 type t =
   | Generated
@@ -46,6 +48,34 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
         ..._,
       ]) =>
       Some(StringPayload(s))
+
+    | PStr([
+        {
+          pstr_desc:
+            Pstr_eval({pexp_desc: Pexp_constant(Const_int(n)), _}, _),
+          _,
+        },
+        ..._,
+      ]) =>
+      Some(IntPayload(n))
+
+    | PStr([
+        {
+          pstr_desc:
+            Pstr_eval(
+              {
+                pexp_desc:
+                  Pexp_construct({txt: Lident(("true" | "false") as s)}, _),
+                _,
+              },
+              _,
+            ),
+          _,
+        },
+        ..._,
+      ]) =>
+      Some(BoolPayload(s == "true"))
+
     | PStr([{pstr_desc: Pstr_eval(_), _}, ..._]) =>
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_extension(_), _}, ..._]) =>

@@ -86,9 +86,16 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Enum({cases, _}) =>
-    cases
-    |> List.map(case => case.labelJS |> EmitText.quotes)
+  | Enum({cases, obj, _}) =>
+    (cases |> List.map(case => case.labelJS |> labelJSToString))
+    @ (
+      switch (obj) {
+      | Some((_, typ)) => [
+          typ |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType),
+        ]
+      | None => []
+      }
+    )
     |> String.concat(" | ")
 
   | Function({typeVars, argTypes, retType}) =>
@@ -537,7 +544,8 @@ let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
 
 let emitRequireReact = (~early, ~emitters, ~config) =>
   switch (config.language) {
-  | Flow | Untyped =>
+  | Flow
+  | Untyped =>
     emitRequire(
       ~importedValueOrComponent=false,
       ~early,

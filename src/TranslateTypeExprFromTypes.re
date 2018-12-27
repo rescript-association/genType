@@ -265,6 +265,29 @@ let translateConstr =
       typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
     };
   };
+
+let processVariant = rowFields => {
+  let rec loop = (~noPayloads, ~payloads, fields) =>
+    switch (fields) {
+    | [
+        (
+          label,
+          Types.Rpresent(/* no payload */ None) |
+          Reither(/* constant constructor */ true, _, _, _),
+        ),
+        ...otherFields,
+      ] =>
+      otherFields |> loop(~noPayloads=[label, ...noPayloads], ~payloads)
+    | [(label, Rpresent(Some(payload))), ...otherFields] =>
+      otherFields
+      |> loop(~noPayloads, ~payloads=[(label, payload), ...payloads])
+    | [(_, Rabsent | Reither(false, _, _, _)), ...otherFields] =>
+      otherFields |> loop(~noPayloads, ~payloads)
+    | [] => (noPayloads |> List.rev, payloads |> List.rev)
+    };
+  rowFields |> loop(~noPayloads=[], ~payloads=[]);
+};
+
 let rec translateArrowType =
         (
           ~config,
@@ -441,21 +464,37 @@ and translateTypeExprFromTypes_ =
          ~typeEnv,
        )
 
-  | Tvariant(rowDesc)
-      /* only enums with no payloads */
-      when
-        rowDesc.row_fields
-        |> List.for_all(field =>
-             switch (field) {
-             | (_, Types.Rpresent(/* no payload */ None)) => true
-             | (_, Reither(/* constant constructor */ true, _, _, _)) => true
-             | _ => false
-             }
-           ) =>
-    let labels = rowDesc.row_fields |> List.map(fst);
-    let cases = labels |> List.map(label => {label, labelJS: label});
-    let typ = cases |> createEnum;
-    {dependencies: [], typ};
+  | Tvariant(rowDesc) =>
+    switch (rowDesc.row_fields |> processVariant) {
+    | (noPayloads, []) =>
+      let cases =
+        noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
+      let typ = cases |> createEnum(~obj=None);
+      {dependencies: [], typ};
+
+    | ([], [(_label, t)]) =>
+      /* Handle bucklescript's "Arity_" encoding in first argument of Js.Internal.fn(_,_) for uncurried functions.
+         Return the argument tuple. */
+      t
+      |> translateTypeExprFromTypes_(
+           ~config,
+           ~typeVarsGen,
+           ~noFunctionReturnDependencies,
+           ~typeEnv,
+         )
+
+    | ([_, ..._] as noPayloads, [(label, payload)]) =>
+      let cases =
+        noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
+      let payloadTranslation =
+        payload
+        |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
+      let typ =
+        cases |> createEnum(~obj=Some((label, payloadTranslation.typ)));
+      {dependencies: payloadTranslation.dependencies, typ};
+
+    | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
+    }
 
   | Tpackage(path, _ids, _typs) =>
     let rec signatureToRecordType = signature => {
@@ -519,24 +558,12 @@ and translateTypeExprFromTypes_ =
     | None => {dependencies: [], typ: mixedOrUnknown(~config)}
     };
 
-  /* Handle bucklescript's "Arity_" encoding in first argument of Js.Internal.fn(_,_) for uncurried functions.
-     Return the argument tuple. */
-  | Tvariant({row_fields: [(_, Rpresent(Some(t)))], _}) =>
-    t
-    |> translateTypeExprFromTypes_(
-         ~config,
-         ~typeVarsGen,
-         ~noFunctionReturnDependencies,
-         ~typeEnv,
-       )
-
   | Tfield(_)
   | Tnil
   | Tobject(_)
   | Tpoly(_)
   | Tsubst(_)
-  | Tunivar(_)
-  | Tvariant(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
+  | Tunivar(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
   }
 and translateTypeExprsFromTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>

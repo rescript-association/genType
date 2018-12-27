@@ -205,20 +205,7 @@ let traslateDeclarationKind =
                   ~config,
                   ~typeEnv,
                 );
-           let typ =
-             switch (optTypeExpr, translation.typ) {
-             | (
-                 Some({desc: Tvariant({row_fields: rowFields, _}), _}),
-                 Enum(enum),
-               )
-                 when rowFields |> List.length == (enum.cases |> List.length) =>
-               let cases =
-                 rowFields
-                 |> List.map(((label, _)) => {label, labelJS: label});
-               cases |> createEnum;
-             | _ => translation.typ
-             };
-           (translation, typ);
+           (translation, translation.typ);
          },
        )
 
@@ -234,30 +221,32 @@ let traslateDeclarationKind =
              switch (optCoreType, translation.typ) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
-                 Enum(enum),
-               )
-                 when rowFields |> List.length == (enum.cases |> List.length) =>
+                 Enum({obj}),
+               ) =>
+               let (noPayloads, _payloads) =
+                 rowFields |> TranslateCoreType.processVariant;
                let cases =
-                 List.combine(rowFields, enum.cases)
-                 |> List.map(((field, case)) =>
-                      switch (field) {
-                      | Typedtree.Ttag(label, attributes, _, _) =>
-                        switch (
-                          attributes
-                          |> Annotation.getAttributePayload(
-                               Annotation.tagIsGenTypeAs,
-                             )
-                        ) {
-                        | Some(StringPayload(asLabel)) => {
-                            label,
-                            labelJS: asLabel,
-                          }
-                        | _ => {label, labelJS: label}
+                 noPayloads
+                 |> List.map(((label, attributes)) =>
+                      switch (
+                        attributes
+                        |> Annotation.getAttributePayload(
+                             Annotation.tagIsGenTypeAs,
+                           )
+                      ) {
+                      | Some(BoolPayload(b)) => {
+                          label,
+                          labelJS: BoolLabel(b),
                         }
-                      | Tinherit(_) => case
+                      | Some(IntPayload(i)) => {label, labelJS: IntLabel(i)}
+                      | Some(StringPayload(asLabel)) => {
+                          label,
+                          labelJS: StringLabel(asLabel),
+                        }
+                      | _ => {label, labelJS: StringLabel(label)}
                       }
                     );
-               cases |> createEnum;
+               cases |> createEnum(~obj);
              | _ => translation.typ
              };
            (translation, typ);

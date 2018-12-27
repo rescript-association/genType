@@ -3,7 +3,7 @@ open GenTypeCommon;
 type t =
   | ArrayC(t)
   | CircularC(string, t)
-  | EnumC(enum)
+  | EnumC(enumC)
   | FunctionC(list(groupedArgConverter), t)
   | IdentC
   | NullableC(t)
@@ -14,7 +14,13 @@ type t =
 and groupedArgConverter =
   | ArgConverter(label, t)
   | GroupConverter(list((string, t)))
-and fieldsC = list((string, t));
+and fieldsC = list((string, t))
+and enumC = {
+  cases: list(case),
+  obj: option((string, t)),
+  toJS: string,
+  toRE: string,
+};
 
 let rec toString = converter =>
   switch (converter) {
@@ -22,9 +28,19 @@ let rec toString = converter =>
 
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
 
-  | EnumC({cases, _}) =>
+  | EnumC({cases, obj, _}) =>
     "enum("
-    ++ (cases |> List.map(case => case.labelJS) |> String.concat(", "))
+    ++ (
+      cases
+      |> List.map(case => case.labelJS |> labelJSToString)
+      |> String.concat(", ")
+    )
+    ++ (
+      switch (obj) {
+      | None => ""
+      | Some((_, c)) => ", " ++ (c |> toString)
+      }
+    )
     ++ ")"
 
   | FunctionC(groupedArgConverters, c) =>
@@ -99,7 +115,19 @@ let typToConverterOpaque =
       let (converter, opaque) = t |> visit(~visited);
       (ArrayC(converter), opaque);
 
-    | Enum(cases) => (EnumC(cases), false)
+    | Enum(enum) => (
+        EnumC({
+          cases: enum.cases,
+          obj:
+            switch (enum.obj) {
+            | None => None
+            | Some((label, t)) => Some((label, t |> visit(~visited) |> fst))
+            },
+          toJS: enum.toJS,
+          toRE: enum.toRE,
+        }),
+        false,
+      )
 
     | Function({argTypes, retType, _}) =>
       let argConverters =
@@ -299,14 +327,62 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     ++ value
     |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
 
-  | EnumC({cases: [case], _}) =>
+  | EnumC({cases: [case], obj: None, _}) =>
     toJS ?
-      case.labelJS |> EmitText.quotes : case.label |> Runtime.emitVariantLabel
+      case.labelJS |> labelJSToString : case.label |> Runtime.emitVariantLabel
 
   | EnumC(enum) =>
     let table = toJS ? enum.toJS : enum.toRE;
     Hashtbl.replace(enumTables, table, (enum, toJS));
-    table ++ EmitText.array([value]);
+    let convertToString =
+      !toJS
+      && enum.cases
+      |> List.exists(({labelJS}) =>
+           labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
+         ) ?
+        ".toString()" : "";
+    let accessTable = table ++ EmitText.array([value ++ convertToString]);
+    switch (enum.obj) {
+    | None => accessTable
+    | Some((label, objConverter)) =>
+      if (toJS) {
+        "("
+        ++ (value |> EmitText.typeOfObject)
+        ++ " ? "
+        ++ (
+          value
+          |> Runtime.emitVariantGetPayload
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~enumTables,
+               ~nameGen,
+               ~toJS,
+             )
+        )
+        ++ " : "
+        ++ accessTable
+        ++ ")";
+      } else {
+        "("
+        ++ (value |> EmitText.typeOfObject)
+        ++ " ? "
+        ++ (
+          value
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~enumTables,
+               ~nameGen,
+               ~toJS,
+             )
+          |> Runtime.emitVariantWithPayload(~label)
+        )
+        ++ " : "
+        ++ accessTable
+        ++ ")";
+      }
+    };
 
   | FunctionC(groupedArgConverters, resultConverter) =>
     let resultName = EmitText.resultName(~nameGen);
@@ -316,14 +392,16 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
       ++ " = "
       ++ x
       ++ "; return "
-      ++ apply(
-           ~config,
-           ~converter=resultConverter,
-           ~enumTables,
-           ~nameGen,
-           ~toJS,
-           resultName,
-         );
+      ++ (
+        resultName
+        |> apply(
+             ~config,
+             ~converter=resultConverter,
+             ~enumTables,
+             ~nameGen,
+             ~toJS,
+           )
+      );
     let convertedArgs = {
       let convertArg = (i, groupedArgConverter) =>
         switch (groupedArgConverter) {

@@ -21,15 +21,23 @@ type mutable_ =
   | Immutable
   | Mutable;
 
-type case = {
-  label: string,
-  labelJS: string,
+type labelJS =
+  | BoolLabel(bool)
+  | IntLabel(int)
+  | StringLabel(string);
+
+let labelJSToString = (~alwaysQuotes=false, labelJS) => {
+  let addQuotes = x => alwaysQuotes ? x |> EmitText.quotes : x;
+  switch (labelJS) {
+  | BoolLabel(b) => b |> string_of_bool |> addQuotes
+  | IntLabel(i) => i |> string_of_int |> addQuotes
+  | StringLabel(s) => s |> EmitText.quotes
+  };
 };
 
-type enum = {
-  cases: list(case),
-  toJS: string,
-  toRE: string,
+type case = {
+  label: string,
+  labelJS,
 };
 
 type typ =
@@ -60,6 +68,12 @@ and function_ = {
 and variantLeaf = {
   leafName: string,
   argTypes: list(typ),
+}
+and enum = {
+  cases: list(case),
+  obj: option((string, typ)),
+  toJS: string,
+  toRE: string,
 };
 
 type variant = {
@@ -72,14 +86,14 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-let createEnum = cases => {
+let createEnum = (~obj, cases) => {
   let hash =
     cases
     |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
     |> Hashtbl.hash
     |> string_of_int;
-  Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+  Enum({cases, obj, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
 };
 
 let mixedOrUnknown = (~config) =>
