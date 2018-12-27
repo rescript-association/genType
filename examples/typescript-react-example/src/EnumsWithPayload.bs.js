@@ -5,20 +5,33 @@ function testWithPayload(x) {
   return x;
 }
 
-var a = /* a */97;
-
-var c = /* `c */[
-  99,
-  /* record */[
-    /* x */3,
-    /* y */undefined
-  ]
-];
+function printEnumValue(x) {
+  if (typeof x === "number") {
+    if (x >= 98) {
+      if (x >= 937218926) {
+        console.log("printEnumValue: True");
+        return /* () */0;
+      } else {
+        console.log("printEnumValue: b");
+        return /* () */0;
+      }
+    } else if (x >= 97) {
+      console.log("printEnumValue: a");
+      return /* () */0;
+    } else {
+      console.log("printEnumValue: Twenty");
+      return /* () */0;
+    }
+  } else {
+    var payload = x[1];
+    console.log("printEnumValue x:", payload[/* x */0], "y:", payload[/* y */1]);
+    return /* () */0;
+  }
+}
 
 export {
   testWithPayload ,
-  a ,
-  c ,
+  printEnumValue ,
   
 }
 /* No side effect */

@@ -5,20 +5,8 @@ function testWithPayload(x) {
   return x;
 }
 
-var a = /* a */97;
-
-var c = /* `c */[
-  99,
-  /* record */[
-    /* x */3,
-    /* y */undefined
-  ]
-];
-
 export {
   testWithPayload ,
-  a ,
-  c ,
   
 }
 /* No side effect */

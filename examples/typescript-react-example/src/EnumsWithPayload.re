@@ -1,4 +1,3 @@
-
 type payload = {
   x: int,
   y: option(string),
@@ -15,6 +14,12 @@ type withPayload = [
 [@genType]
 let testWithPayload = (x: withPayload) => x;
 
-let a = `a;
-
-let c = `c({x: 3, y: None});
+[@genType]
+let printEnumValue = (x: withPayload) =>
+  switch (x) {
+  | `a => Js.log("printEnumValue: a")
+  | `b => Js.log("printEnumValue: b")
+  | `True => Js.log("printEnumValue: True")
+  | `Twenty => Js.log("printEnumValue: Twenty")
+  | `c(payload) => Js.log4("printEnumValue x:", payload.x, "y:", payload.y)
+  };

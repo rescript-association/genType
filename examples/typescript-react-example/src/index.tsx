@@ -3,6 +3,8 @@ import * as ReactDOM from "react-dom";
 import App from "./App";
 import { InnerComponent } from "./components/ManyComponents.gen";
 import * as Enums from "./Enums.gen";
+import { printEnumValue, testWithPayload } from "./EnumsWithPayload.gen";
+import * as ImportJsValue from "./ImportJsValue.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
 import * as Records from "./nested/Records.gen";
@@ -12,7 +14,6 @@ import ReasonComponent from "./ReasonComponent.gen";
 import { A, B, minus, tToString } from "./ReasonComponent.gen";
 import { t, TA, TB } from "./ReasonComponent.gen";
 import registerServiceWorker from "./registerServiceWorker";
-import * as ImportJsValue from "./ImportJsValue.gen";
 
 const minusOne: number = minus({ second: 1 });
 
@@ -97,3 +98,9 @@ const propValue = ImportJsValue.useGetProp(absoluteValueInstance);
 const absValue = ImportJsValue.useGetAbs(absoluteValueInstance);
 consoleLog("ImportJsValue: getProp() =", propValue);
 consoleLog("ImportJsValue: getAbs() =", absValue);
+
+printEnumValue("a");
+printEnumValue("bRenamed");
+printEnumValue(true);
+printEnumValue(20);
+printEnumValue(testWithPayload({ x: 15 }));

@@ -1,4 +1,3 @@
-
 type payload = {
   x: int,
   y: option(string),
@@ -14,7 +13,3 @@ type withPayload = [
 
 [@genType]
 let testWithPayload = (x: withPayload) => x;
-
-let a = `a;
-
-let c = `c({x: 3, y: None});
