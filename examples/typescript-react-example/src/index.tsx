@@ -102,6 +102,6 @@ consoleLog("ImportJsValue: getAbs() =", absValue);
 printEnumValue("a");
 printEnumValue("bRenamed");
 printEnumValue(true);
-printEnumValue(.5);
 printEnumValue(20);
+printEnumValue(.5);
 printEnumValue(testWithPayload({ x: 15 }));
