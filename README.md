@@ -352,7 +352,7 @@ Enums are Reason polymorphic variants without payload: essentially flat sequence
 The corresponding JS representation is `"monday"`, `"tuesday"`.
 
 The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. ``` [ | [@genType.as "type"] `type_ ] ``` exports Reason value `` `type_ `` to JS value `"type"`.
-Boolean and numeric constants can be expressed as ``` | [@genType.as true] `True ``` and ``` | [@genType.as 20] `Twenty ```.
+Boolean/integer/float constants can be expressed as ``` | [@genType.as true] `True ``` and ``` | [@genType.as 20] `Twenty ``` and ``` | [@genType.as 0.5] `Half ```.
 
 At most one variant can have a payload, which must have object type, e.g.
 ``` [ | `unnamed | `named({. "name": string, "surname": string}) ] ```. Object types are arrays, objects, records and tuples.
