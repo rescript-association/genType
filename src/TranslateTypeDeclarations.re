@@ -238,6 +238,7 @@ let traslateDeclarationKind =
                           label,
                           labelJS: BoolLabel(b),
                         }
+                      | Some(FloatPayload(s)) => {label, labelJS: FloatLabel(s)}
                       | Some(IntPayload(i)) => {label, labelJS: IntLabel(i)}
                       | Some(StringPayload(asLabel)) => {
                           label,

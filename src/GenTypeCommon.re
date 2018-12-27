@@ -23,6 +23,7 @@ type mutable_ =
 
 type labelJS =
   | BoolLabel(bool)
+  | FloatLabel(string)
   | IntLabel(int)
   | StringLabel(string);
 
@@ -30,6 +31,7 @@ let labelJSToString = (~alwaysQuotes=false, labelJS) => {
   let addQuotes = x => alwaysQuotes ? x |> EmitText.quotes : x;
   switch (labelJS) {
   | BoolLabel(b) => b |> string_of_bool |> addQuotes
+  | FloatLabel(s) => s |> addQuotes
   | IntLabel(i) => i |> string_of_int |> addQuotes
   | StringLabel(s) => s |> EmitText.quotes
   };

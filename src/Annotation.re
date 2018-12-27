@@ -5,6 +5,7 @@ type import = {
 
 type attributePayload =
   | BoolPayload(bool)
+  | FloatPayload(string)
   | IntPayload(int)
   | StringPayload(string)
   | UnrecognizedPayload;
@@ -58,6 +59,17 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
         ..._,
       ]) =>
       Some(IntPayload(n))
+
+    | PStr([
+        {
+          pstr_desc:
+            Pstr_eval({pexp_desc: Pexp_constant(Const_float(s)), _}, _),
+          _,
+        },
+        ..._,
+      ]) =>
+      Some(FloatPayload(s))
+
 
     | PStr([
         {
