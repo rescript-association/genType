@@ -1,3 +1,6 @@
+# master
+- [Enums: support one object type, plus strings/booleans/integers](https://github.com/cristianoc/genType/pull/118).
+
 # 1.7.0
 - Add support for paths in `@genType.as` when importing components from JS. Also, simply support renaming.
 
