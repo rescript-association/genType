@@ -1,15 +1,18 @@
 /* @flow strict */
 
-const ReactDOM = require("react-dom");
-const React = require("react");
+import * as ReactDOM from "react-dom";
+import * as React from "react";
 
-const GreetingRe = require("./Greeting.gen");
+import * as GreetingRe from "./Greeting.gen";
 
 // Import a ReasonReact component!
-const Greeting = require("./Greeting.gen").default;
+import Greeting from "./Greeting.gen";
 
-const InnerComponent = require("../components/ManyComponents.gen")
-  .InnerComponent;
+import {InnerComponent} from "../components/ManyComponents.gen";
+
+import * as SomeFlowTypes from "../SomeFlowTypes";
+
+import * as Enums  from "../Enums.gen";
 
 const consoleLog = console.log;
 
@@ -22,21 +25,19 @@ const helloWorld = GreetingRe.concat("++", helloWorldList);
 
 const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
-const WrapJsValue = require("./ImportJsValue.gen");
+import * as WrapJsValue from "./ImportJsValue.gen";
 
 consoleLog("interopRoot.js roundedNumber:", WrapJsValue.roundedNumber);
 consoleLog("interopRoot.js areaValue:", WrapJsValue.areaValue);
 
 // type error: can't call that directly
-//const callAreaDirectly = WrapJsValue.area({x:3,y:4});
+//  const callAreaDirectly = WrapJsValue.area({x:3,y:4});
 
 const callMyAreaDirectly = WrapJsValue.myArea({ x: 3, y: 4 });
 
 consoleLog("interopRoot.js callMyAreaDirectly:", callMyAreaDirectly);
 
-consoleLog("anInterestingFlowType ", require("../SomeFlowTypes").c);
-
-const Enums = require("../Enums.gen");
+consoleLog("anInterestingFlowType ", SomeFlowTypes.c);
 
 consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
 consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);
