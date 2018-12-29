@@ -14,6 +14,8 @@ import * as SomeFlowTypes from "../SomeFlowTypes";
 
 import * as Enums  from "../Enums.gen";
 
+import { printEnumValue, testWithPayload } from "../EnumsWithPayload.gen";
+
 const consoleLog = console.log;
 
 const helloWorldList = GreetingRe.cons({
@@ -47,6 +49,13 @@ consoleLog(
   Enums.testConvert2to3("module")
 );
 consoleLog("Enums: testConvert3to2('42') =", Enums.testConvert2to3("42"));
+
+printEnumValue("a");
+printEnumValue("bRenamed");
+printEnumValue(true);
+printEnumValue(20);
+printEnumValue(.5);
+printEnumValue(testWithPayload({ x: 15 }));
 
 const App = () => (
   <div>
