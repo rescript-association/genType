@@ -1,7 +1,7 @@
-const ReactDOM = require("react-dom");
-const React = require("react");
+import * as ReactDOM from "react-dom";
+import * as React from "react";
 
-const App = require("./App.gen").default;
+import App from "./App.gen";
 
 const Main = () => (
   <div>

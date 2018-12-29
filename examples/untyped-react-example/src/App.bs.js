@@ -17,7 +17,7 @@ function make(_children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement("div", undefined, "Test");
+              return React.createElement("div", undefined, "Test Component");
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
