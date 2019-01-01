@@ -86,16 +86,20 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Enum({cases, withPayload, _}) =>
-    (cases |> List.map(case => case.labelJS |> labelJSToString))
-    @ (
+  | Enum({cases, withPayload, unboxed, _}) =>
+    let casesRendered =
+      cases |> List.map(case => case.labelJS |> labelJSToString);
+    let withPayloadRendered =
       withPayload
-      |> List.map(((_, typ)) =>
-           typ
-           |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType)
-         )
-    )
-    |> String.concat(" | ")
+      |> List.map(((case, typ)) => {
+           let typRendered =
+             typ
+             |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType);
+           unboxed ?
+             typRendered :
+             [case.labelJS |> labelJSToString, typRendered] |> EmitText.array;
+         });
+    casesRendered @ withPayloadRendered |> String.concat(" | ");
 
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(
