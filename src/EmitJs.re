@@ -134,15 +134,17 @@ let emitExportType =
       ~early=?,
       ~emitters,
       ~config,
-      ~typIsOpaque,
+      ~typGetNormalized,
       ~typeNameIsInterface,
       {CodeItem.nameAs, opaque, optTyp, typeVars, resolvedTypeName, _},
     ) => {
-  let opaque =
+  let (opaque, optTyp) =
     switch (opaque, optTyp) {
-    | (Some(opaque), _) => opaque
-    | (None, Some(typ)) => typ |> typIsOpaque
-    | (None, None) => false
+    | (Some(opaque), _) => (opaque, optTyp)
+    | (None, Some(typ)) =>
+      let normalized = typ |> typGetNormalized;
+      normalized == None ? (true, optTyp) : (false, normalized);
+    | (None, None) => (false, None)
     };
   resolvedTypeName
   |> EmitTyp.emitExportType(
@@ -183,7 +185,7 @@ let emitExportFromTypeDeclaration =
     (
       ~config,
       ~emitters,
-      ~typIsOpaque,
+      ~typGetNormalized,
       ~env,
       ~typToConverter,
       ~enumTables,
@@ -197,7 +199,7 @@ let emitExportFromTypeDeclaration =
       |> emitExportType(
            ~emitters,
            ~config,
-           ~typIsOpaque,
+           ~typGetNormalized,
            ~typeNameIsInterface,
          ),
     )
@@ -235,7 +237,7 @@ let emitExportFromTypeDeclaration =
         emitExportType(
           ~emitters,
           ~config,
-          ~typIsOpaque,
+          ~typGetNormalized,
           ~typeNameIsInterface,
           exportType,
         );
@@ -310,7 +312,7 @@ let emitExportFromTypeDeclarations =
     (
       ~config,
       ~emitters,
-      ~typIsOpaque,
+      ~typGetNormalized,
       ~env,
       ~typToConverter,
       ~enumTables,
@@ -323,7 +325,7 @@ let emitExportFromTypeDeclarations =
          emitExportFromTypeDeclaration(
            ~config,
            ~emitters,
-           ~typIsOpaque,
+           ~typGetNormalized,
            ~env,
            ~typToConverter,
            ~typeNameIsInterface,
@@ -340,7 +342,7 @@ let rec emitCodeItem =
           ~emitters,
           ~env,
           ~enumTables,
-          ~typIsOpaque,
+          ~typGetNormalized,
           ~typToConverter,
           ~typeNameIsInterface,
           codeItem,
@@ -420,7 +422,7 @@ let rec emitCodeItem =
         ~early=true,
         ~config,
         ~emitters,
-        ~typIsOpaque,
+        ~typGetNormalized,
         ~typeNameIsInterface,
         exportType,
       );
@@ -679,7 +681,7 @@ let rec emitCodeItem =
       emitExportType(
         ~emitters,
         ~config,
-        ~typIsOpaque,
+        ~typGetNormalized,
         ~typeNameIsInterface,
         exportType,
       );
@@ -799,7 +801,7 @@ and emitCodeItems =
       ~emitters,
       ~env,
       ~enumTables,
-      ~typIsOpaque,
+      ~typGetNormalized,
       ~typToConverter,
       ~typeNameIsInterface,
       codeItems,
@@ -814,7 +816,7 @@ and emitCodeItems =
            ~emitters,
            ~env,
            ~enumTables,
-           ~typIsOpaque,
+           ~typGetNormalized,
            ~typToConverter,
            ~typeNameIsInterface,
          ),
@@ -1102,9 +1104,9 @@ let emitTranslationAsString =
       ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
     );
 
-  let typIsOpaque_ = (~env, typ) =>
+  let typGetNormalized_ = (~env, typ) =>
     typ
-    |> Converter.typToConverterOpaque(
+    |> Converter.typToConverterNormalized(
          ~config,
          ~exportTypeMap,
          ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
@@ -1144,7 +1146,7 @@ let emitTranslationAsString =
     |> emitExportFromTypeDeclarations(
          ~config,
          ~emitters,
-         ~typIsOpaque=typIsOpaque_(~env),
+         ~typGetNormalized=typGetNormalized_(~env),
          ~env,
          ~typToConverter=typToConverter_(~env),
          ~enumTables,
@@ -1160,7 +1162,7 @@ let emitTranslationAsString =
          ~emitters,
          ~env,
          ~enumTables,
-         ~typIsOpaque=typIsOpaque_(~env),
+         ~typGetNormalized=typGetNormalized_(~env),
          ~typToConverter=typToConverter_(~env),
          ~typeNameIsInterface=typeNameIsInterface(~env),
        );

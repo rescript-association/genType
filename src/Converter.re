@@ -98,7 +98,7 @@ let rec toString = converter =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
   };
 
-let typToConverterOpaque =
+let typToConverterNormalized =
     (
       ~config,
       ~exportTypeMap: CodeItem.exportTypeMap,
@@ -120,33 +120,34 @@ let typToConverterOpaque =
       }
     | _ => typ
     };
-  let rec visit = (~visited: StringSet.t, typ) =>
+  let rec visit = (~visited: StringSet.t, typ) => {
+    let normalized_ = Some(typ);
     switch (typ) {
     | Array(t, _) =>
-      let (converter, opaque) = t |> visit(~visited);
-      (ArrayC(converter), opaque);
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (ArrayC(tConverter), tNormalized == None ? None : normalized_);
 
     | Enum(enum) =>
-      let (withPayload, opaque) =
+      let (withPayload, normalized) =
         switch (enum.withPayload) {
-        | [] => ([], false)
+        | [] => ([], normalized_)
         | [(case, t)] =>
           let converter = t |> visit(~visited) |> fst;
-          let opaque = !(t |> expandOneLevel |> typIsObject);
-          ([(case, converter)], opaque);
-        | [_, _, ..._] =>
-          let opaque = false;
-          (
+          let unboxed = t |> expandOneLevel |> typIsObject;
+          let normalized =
+            unboxed ? Some(Enum({...enum, unboxed: true})) : None;
+          ([(case, converter)], normalized);
+        | [_, _, ..._] => (
             enum.withPayload
             |> List.map(((case, t)) => {
                  let converter = t |> visit(~visited) |> fst;
                  (case, converter);
                }),
-            opaque,
-          );
+            normalized_,
+          )
         };
       let converter =
-        opaque ?
+        normalized == None ?
           IdentC :
           EnumC({
             cases: enum.cases,
@@ -154,20 +155,20 @@ let typToConverterOpaque =
             toJS: enum.toJS,
             toRE: enum.toRE,
           });
-      (converter, opaque);
+      (converter, normalized);
 
     | Function({argTypes, retType, _}) =>
       let argConverters =
         argTypes |> List.map(typToGroupedArgConverter(~visited));
       let (retConverter, _) = retType |> visit(~visited);
-      (FunctionC(argConverters, retConverter), false);
+      (FunctionC(argConverters, retConverter), normalized_);
 
-    | GroupOfLabeledArgs(_) => (IdentC, true)
+    | GroupOfLabeledArgs(_) => (IdentC, None)
 
     | Ident(s, typeArguments) =>
       if (visited |> StringSet.mem(s)) {
         circular := s;
-        (IdentC, false);
+        (IdentC, normalized_);
       } else {
         let visited = visited |> StringSet.add(s);
         switch (
@@ -175,8 +176,8 @@ let typToConverterOpaque =
           | Not_found => exportTypeMapFromOtherFiles |> StringMap.find(s)
           }
         ) {
-        | {annotation: GenTypeOpaque, _} => (IdentC, true)
-        | {annotation: NoGenType, _} => (IdentC, true)
+        | {annotation: GenTypeOpaque, _} => (IdentC, None)
+        | {annotation: NoGenType, _} => (IdentC, None)
         | {typeVars, typ, _} =>
           let pairs =
             try (List.combine(typeVars, typeArguments)) {
@@ -190,17 +191,19 @@ let typToConverterOpaque =
             | (_, typeArgument) => Some(typeArgument)
             | exception Not_found => None
             };
-          (typ |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
+          (
+            typ |> TypeVars.substitute(~f) |> visit(~visited) |> fst,
+            normalized_,
+          );
         | exception Not_found =>
-          let opaqueUnlessBase =
-            !(typ == booleanT || typ == numberT || typ == stringT);
-          (IdentC, opaqueUnlessBase);
+          let isBaseType = typ == booleanT || typ == numberT || typ == stringT;
+          (IdentC, isBaseType ? normalized_ : None);
         };
       }
 
     | Nullable(t) =>
-      let (converter, opaque) = t |> visit(~visited);
-      (NullableC(converter), opaque);
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (NullableC(tConverter), tNormalized == None ? None : normalized_);
 
     | Object(fields) => (
         ObjectC(
@@ -214,12 +217,12 @@ let typToConverterOpaque =
                )
              ),
         ),
-        false,
+        normalized_,
       )
 
     | Option(t) =>
-      let (converter, opaque) = t |> visit(~visited);
-      (OptionC(converter), opaque);
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (OptionC(tConverter), tNormalized == None ? None : normalized_);
 
     | Record(fields) => (
         RecordC(
@@ -233,18 +236,20 @@ let typToConverterOpaque =
                )
              ),
         ),
-        false,
+        normalized_,
       )
 
     | Tuple(innerTypes) =>
-      let (innerConversions, opaques) =
+      let (innerConversions, normalizedList) =
         innerTypes |> List.map(visit(~visited)) |> List.split;
-      (TupleC(innerConversions), opaques |> List.mem(true));
+      let innerHasNone = normalizedList |> List.mem(None);
+      (TupleC(innerConversions), innerHasNone ? None : normalized_);
 
-    | TypeVar(_) => (IdentC, true)
+    | TypeVar(_) => (IdentC, None)
 
-    | Variant(_) => (IdentC, true)
-    }
+    | Variant(_) => (IdentC, None)
+    };
+  }
   and typToGroupedArgConverter = (~visited, typ) =>
     switch (typ) {
     | GroupOfLabeledArgs(fields) =>
@@ -257,7 +262,7 @@ let typToConverterOpaque =
     | _ => ArgConverter(Nolabel, typ |> visit(~visited) |> fst)
     };
 
-  let (converter, opaque) = typ |> visit(~visited=StringSet.empty);
+  let (converter, normalized) = typ |> visit(~visited=StringSet.empty);
   if (Debug.converter^) {
     logItem(
       "Converter typ:%s converter:%s\n",
@@ -267,7 +272,7 @@ let typToConverterOpaque =
   };
   let finalConverter =
     circular^ != "" ? CircularC(circular^, converter) : converter;
-  (finalConverter, opaque);
+  (finalConverter, normalized);
 };
 
 let typToConverter =
@@ -279,7 +284,7 @@ let typToConverter =
       typ,
     ) =>
   typ
-  |> typToConverterOpaque(
+  |> typToConverterNormalized(
        ~config,
        ~exportTypeMap,
        ~exportTypeMapFromOtherFiles,

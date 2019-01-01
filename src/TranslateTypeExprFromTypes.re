@@ -499,29 +499,34 @@ and translateTypeExprFromTypes_ =
            ~typeEnv,
          )
 
-    | {
-        noPayloads: [_, ..._] as noPayloads,
-        payloads: [(label, payload)],
-        unknowns: [],
-      } =>
+    | {noPayloads, payloads, unknowns: []} =>
       let cases =
         noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
-      let payloadTranslation =
-        payload
-        |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-      let typ =
-        cases
-        |> createEnum(
-             ~withPayload=[
-               (
-                 {label, labelJS: StringLabel(label)},
-                 payloadTranslation.typ,
-               ),
-             ],
+      let payloadTranslations =
+        payloads
+        |> List.map(((label, payload)) =>
+             (
+               label,
+               payload
+               |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv),
+             )
            );
-      {dependencies: payloadTranslation.dependencies, typ};
+      let withPayload =
+        payloadTranslations
+        |> List.map(((label, translation)) =>
+             ({label, labelJS: StringLabel(label)}, translation.typ)
+           );
+      let typ = cases |> createEnum(~withPayload);
+      let dependencies =
+        payloadTranslations
+        |> List.map(((_, {dependencies, _})) => dependencies)
+        |> List.concat;
+      {dependencies, typ};
 
-    | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
+    | {unknowns: [_, ..._]} => {
+        dependencies: [],
+        typ: mixedOrUnknown(~config),
+      }
     }
 
   | Tpackage(path, _ids, _typs) =>

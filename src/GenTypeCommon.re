@@ -76,6 +76,7 @@ and enum = {
   withPayload: list((case, typ)),
   toJS: string,
   toRE: string,
+  unboxed: bool,
 };
 
 let typIsObject = typ =>
@@ -111,7 +112,8 @@ let createEnum = (~withPayload, cases) => {
     |> Array.of_list
     |> Hashtbl.hash
     |> string_of_int;
-  Enum({cases, withPayload, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+  let unboxed = withPayload == [];
+  Enum({cases, withPayload, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash, unboxed});
 };
 
 let mixedOrUnknown = (~config) =>
