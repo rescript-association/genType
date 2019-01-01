@@ -17,7 +17,7 @@ and groupedArgConverter =
 and fieldsC = list((string, t))
 and enumC = {
   cases: list(case),
-  obj: option((string, t)),
+  withPayload: list((case, t)),
   toJS: string,
   toRE: string,
 };
@@ -28,20 +28,18 @@ let rec toString = converter =>
 
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
 
-  | EnumC({cases, obj, _}) =>
+  | EnumC({cases, withPayload, _}) =>
     "enum("
     ++ (
-      cases
-      |> List.map(case => case.labelJS |> labelJSToString)
+      (cases |> List.map(case => case.labelJS |> labelJSToString))
+      @ (
+        withPayload
+        |> List.map(((case, c)) =>
+             (case.labelJS |> labelJSToString) ++ ":" ++ (c |> toString)
+           )
+      )
       |> String.concat(", ")
     )
-    ++ (
-      switch (obj) {
-      | None => ""
-      | Some((_, c)) => ", " ++ (c |> toString)
-      }
-    )
-    ++ ")"
 
   | FunctionC(groupedArgConverters, c) =>
     let labelToString = label =>
@@ -129,18 +127,33 @@ let typToConverterOpaque =
       (ArrayC(converter), opaque);
 
     | Enum(enum) =>
-      let (obj, opaque) =
-        switch (enum.obj) {
-        | None => (None, false)
-        | Some((label, t)) =>
+      let (withPayload, opaque) =
+        switch (enum.withPayload) {
+        | [] => ([], false)
+        | [(case, t)] =>
           let converter = t |> visit(~visited) |> fst;
           let opaque = !(t |> expandOneLevel |> typIsObject);
-          (Some((label, converter)), opaque);
+          ([(case, converter)], opaque);
+        | [_, _, ..._] =>
+          let opaque = false;
+          (
+            enum.withPayload
+            |> List.map(((case, t)) => {
+                 let converter = t |> visit(~visited) |> fst;
+                 (case, converter);
+               }),
+            opaque,
+          );
         };
       let converter =
         opaque ?
           IdentC :
-          EnumC({cases: enum.cases, obj, toJS: enum.toJS, toRE: enum.toRE});
+          EnumC({
+            cases: enum.cases,
+            withPayload,
+            toJS: enum.toJS,
+            toRE: enum.toRE,
+          });
       (converter, opaque);
 
     | Function({argTypes, retType, _}) =>
@@ -341,7 +354,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     ++ value
     |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
 
-  | EnumC({cases: [case], obj: None, _}) =>
+  | EnumC({cases: [case], withPayload: [], _}) =>
     toJS ?
       case.labelJS |> labelJSToString : case.label |> Runtime.emitVariantLabel
 
@@ -356,9 +369,10 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
          ) ?
         ".toString()" : "";
     let accessTable = table ++ EmitText.array([value ++ convertToString]);
-    switch (enum.obj) {
-    | None => accessTable
-    | Some((label, objConverter)) =>
+    switch (enum.withPayload) {
+    | [] => accessTable
+
+    | [(case, objConverter)] =>
       if (toJS) {
         "("
         ++ (value |> EmitText.typeOfObject)
@@ -390,12 +404,14 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                ~nameGen,
                ~toJS,
              )
-          |> Runtime.emitVariantWithPayload(~label)
+          |> Runtime.emitVariantWithPayload(~label=case.label)
         )
         ++ " : "
         ++ accessTable
         ++ ")";
       }
+
+    | [_, _, ..._] => assert(false)
     };
 
   | FunctionC(groupedArgConverters, resultConverter) =>

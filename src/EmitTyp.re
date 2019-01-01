@@ -86,15 +86,14 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Enum({cases, obj, _}) =>
+  | Enum({cases, withPayload, _}) =>
     (cases |> List.map(case => case.labelJS |> labelJSToString))
     @ (
-      switch (obj) {
-      | Some((_, typ)) => [
-          typ |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType),
-        ]
-      | None => []
-      }
+      withPayload
+      |> List.map(((_, typ)) =>
+           typ
+           |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType)
+         )
     )
     |> String.concat(" | ")
 

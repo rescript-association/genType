@@ -13,6 +13,9 @@ export type payload = {readonly x: number, readonly y?: string};
 // tslint:disable-next-line:interface-over-type-literal
 export type withPayload = "a" | "bRenamed" | true | 20 | 0.5 | payload;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type manyPayloads = number | [string, string];
+
 export const testWithPayload: (_1:withPayload) => withPayload = function _(Arg1: any) { const result = EnumsWithPayloadBS.testWithPayload((typeof(Arg1) === 'object' ? [/* c */99, [Arg1.x, Arg1.y]] : $$toRE542320962[Arg1.toString()])); return (typeof(result) === 'object' ? {x:result[1][0], y:result[1][1]} : $$toJS542320962[result]) };
 
 export const printEnumValue: (_1:withPayload) => void = function _(Arg1: any) { const result = EnumsWithPayloadBS.printEnumValue((typeof(Arg1) === 'object' ? [/* c */99, [Arg1.x, Arg1.y]] : $$toRE542320962[Arg1.toString()])); return result };

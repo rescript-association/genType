@@ -25,3 +25,6 @@ let printEnumValue = (x: withPayload) =>
   | `Half => Js.log("printEnumValue: Half")
   | `c(payload) => Js.log4("printEnumValue x:", payload.x, "y:", payload.y)
   };
+
+[@genType]
+type manyPayloads = [ | `one(int) | `two(string, string)];

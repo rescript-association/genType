@@ -43,11 +43,8 @@ let rec substitute = (~f, typ) =>
   | Enum(enum) =>
     Enum({
       ...enum,
-      obj:
-        switch (enum.obj) {
-        | None => None
-        | Some((case, t)) => Some((case, t |> substitute(~f)))
-        },
+      withPayload:
+        enum.withPayload |> List.map(((case, t)) => (case, t |> substitute(~f))),
     })
   | Function(function_) =>
     Function({
@@ -93,11 +90,12 @@ let rec substitute = (~f, typ) =>
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
   | Array(typ, _) => typ |> free_
-  | Enum({obj}) =>
-    switch (obj) {
-    | None => StringSet.empty
-    | Some((_, t)) => t |> free_
-    }
+  | Enum({withPayload}) =>
+    withPayload
+    |> List.fold_left(
+         (s, (_, t)) => StringSet.union(s, t |> free_),
+         StringSet.empty,
+       )
   | Function({typeVars, argTypes, retType}) =>
     StringSet.diff(
       (argTypes |> freeOfList_) +++ (retType |> free_),
