@@ -221,7 +221,7 @@ let traslateDeclarationKind =
              switch (optCoreType, translation.typ) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
-                 Enum({obj}),
+                 Enum({withPayload}),
                ) =>
                let {TranslateCoreType.noPayloads} =
                  rowFields |> TranslateCoreType.processVariant;
@@ -238,7 +238,10 @@ let traslateDeclarationKind =
                           label,
                           labelJS: BoolLabel(b),
                         }
-                      | Some(FloatPayload(s)) => {label, labelJS: FloatLabel(s)}
+                      | Some(FloatPayload(s)) => {
+                          label,
+                          labelJS: FloatLabel(s),
+                        }
                       | Some(IntPayload(i)) => {label, labelJS: IntLabel(i)}
                       | Some(StringPayload(asLabel)) => {
                           label,
@@ -247,7 +250,7 @@ let traslateDeclarationKind =
                       | _ => {label, labelJS: StringLabel(label)}
                       }
                     );
-               cases |> createEnum(~obj);
+               cases |> createEnum(~withPayload);
              | _ => translation.typ
              };
            (translation, typ);

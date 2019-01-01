@@ -193,13 +193,13 @@ let emitExportFromTypeDeclaration =
   switch (exportFromTypeDeclaration.exportKind) {
   | ExportType(exportType) => (
       env,
-      emitExportType(
-        ~emitters,
-        ~config,
-        ~typIsOpaque,
-        exportType,
-        ~typeNameIsInterface,
-      ),
+      exportType
+      |> emitExportType(
+           ~emitters,
+           ~config,
+           ~typIsOpaque,
+           ~typeNameIsInterface,
+         ),
     )
 
   | ExportVariantType({
@@ -1023,12 +1023,8 @@ let propagateAnnotationToSubTypes =
           };
         }
       | Array(t, _) => t |> visit
-      | Enum({obj}) =>
-        switch (obj) {
-        | None => ()
-        | Some((_, t)) => t |> visit
-        }
-
+      | Enum({withPayload}) =>
+        withPayload |> List.iter(((_, t)) => t |> visit)
       | Function({argTypes, retType, _}) =>
         argTypes |> List.iter(visit);
         retType |> visit;

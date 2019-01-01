@@ -485,7 +485,7 @@ and translateTypeExprFromTypes_ =
     | {noPayloads, payloads: [], unknowns: []} =>
       let cases =
         noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
-      let typ = cases |> createEnum(~obj=None);
+      let typ = cases |> createEnum(~withPayload=[]);
       {dependencies: [], typ};
 
     | {noPayloads: [], payloads: [(_label, t)], unknowns: []} =>
@@ -510,7 +510,15 @@ and translateTypeExprFromTypes_ =
         payload
         |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
       let typ =
-        cases |> createEnum(~obj=Some((label, payloadTranslation.typ)));
+        cases
+        |> createEnum(
+             ~withPayload=[
+               (
+                 {label, labelJS: StringLabel(label)},
+                 payloadTranslation.typ,
+               ),
+             ],
+           );
       {dependencies: payloadTranslation.dependencies, typ};
 
     | _ => {dependencies: [], typ: mixedOrUnknown(~config)}

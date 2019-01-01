@@ -73,7 +73,7 @@ and variantLeaf = {
 }
 and enum = {
   cases: list(case),
-  obj: option((string, typ)),
+  withPayload: list((case, typ)),
   toJS: string,
   toRE: string,
 };
@@ -104,14 +104,14 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-let createEnum = (~obj, cases) => {
+let createEnum = (~withPayload, cases) => {
   let hash =
     cases
     |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
     |> Hashtbl.hash
     |> string_of_int;
-  Enum({cases, obj, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+  Enum({cases, withPayload, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
 };
 
 let mixedOrUnknown = (~config) =>

@@ -21,7 +21,7 @@ let removeOption = (~label, coreType: Typedtree.core_type) =>
 
 type processVariant = {
   noPayloads: list((string, Typedtree.attributes)),
-  payloads: list((string, list(Typedtree.core_type))),
+  payloads: list((string, Typedtree.core_type)),
   unknowns: list(string),
 };
 
@@ -43,14 +43,14 @@ let processVariant = rowFields => {
            ~payloads,
            ~unknowns,
          )
-    | [Ttag(label, _, _, payload), ...otherFields] =>
+    | [Ttag(label, _, _, [payload]), ...otherFields] =>
       otherFields
       |> loop(
            ~noPayloads,
            ~payloads=[(label, payload), ...payloads],
            ~unknowns,
          )
-    | [Tinherit(_), ...otherFields] =>
+    | [Ttag(_, _, _, [_, _, ..._]) | Tinherit(_), ...otherFields] =>
       otherFields
       |> loop(~noPayloads, ~payloads, ~unknowns=["Tinherit", ...unknowns])
     | [] => {
@@ -226,20 +226,34 @@ and translateCoreType_ =
         |> List.map(((label, _attibutes)) =>
              {label, labelJS: StringLabel(label)}
            );
-      let typ = cases |> createEnum(~obj=None);
+      let typ = cases |> createEnum(~withPayload=[]);
       {dependencies: [], typ};
 
-    | {noPayloads, payloads: [(label, [payload])], unknowns: []} =>
+    | {noPayloads, payloads, unknowns: []} =>
       let cases =
         noPayloads
         |> List.map(((label, _attibutes)) =>
              {label, labelJS: StringLabel(label)}
            );
-      let payloadTranslation =
-        payload |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
-      let typ =
-        cases |> createEnum(~obj=Some((label, payloadTranslation.typ)));
-      {dependencies: payloadTranslation.dependencies, typ};
+      let payloadTranslations =
+        payloads
+        |> List.map(((label, payload)) =>
+             (
+               label,
+               payload |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+             )
+           );
+      let withPayload =
+        payloadTranslations
+        |> List.map(((label, translation)) =>
+             ({label, labelJS: StringLabel(label)}, translation.typ)
+           );
+      let typ = cases |> createEnum(~withPayload);
+      let dependencies =
+        payloadTranslations
+        |> List.map(((_, {dependencies, _})) => dependencies)
+        |> List.concat;
+      {dependencies, typ};
 
     | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
     }
