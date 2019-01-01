@@ -20,6 +20,7 @@ and enumC = {
   withPayload: list((case, t)),
   toJS: string,
   toRE: string,
+  unboxed: bool,
 };
 
 let rec toString = converter =>
@@ -128,15 +129,15 @@ let typToConverterNormalized =
       (ArrayC(tConverter), tNormalized == None ? None : normalized_);
 
     | Enum(enum) =>
-      let (withPayload, normalized) =
+      let (withPayload, normalized, unboxed) =
         switch (enum.withPayload) {
-        | [] => ([], normalized_)
+        | [] => ([], normalized_, enum.unboxed)
         | [(case, t)] =>
           let converter = t |> visit(~visited) |> fst;
           let unboxed = t |> expandOneLevel |> typIsObject;
           let normalized =
             unboxed ? Some(Enum({...enum, unboxed: true})) : None;
-          ([(case, converter)], normalized);
+          ([(case, converter)], normalized, unboxed);
         | [_, _, ..._] => (
             enum.withPayload
             |> List.map(((case, t)) => {
@@ -144,6 +145,7 @@ let typToConverterNormalized =
                  (case, converter);
                }),
             normalized_,
+            enum.unboxed,
           )
         };
       let converter =
@@ -154,6 +156,7 @@ let typToConverterNormalized =
             withPayload,
             toJS: enum.toJS,
             toRE: enum.toRE,
+            unboxed,
           });
       (converter, normalized);
 
@@ -363,26 +366,23 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     toJS ?
       case.labelJS |> labelJSToString : case.label |> Runtime.emitVariantLabel
 
-  | EnumC(enum) =>
-    let table = toJS ? enum.toJS : enum.toRE;
-    Hashtbl.replace(enumTables, table, (enum, toJS));
+  | EnumC(enumC) =>
+    let table = toJS ? enumC.toJS : enumC.toRE;
+    Hashtbl.replace(enumTables, table, (enumC, toJS));
     let convertToString =
       !toJS
-      && enum.cases
+      && enumC.cases
       |> List.exists(({labelJS}) =>
            labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
          ) ?
         ".toString()" : "";
-    let accessTable = table ++ EmitText.array([value ++ convertToString]);
-    switch (enum.withPayload) {
-    | [] => accessTable
+    let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
+    switch (enumC.withPayload) {
+    | [] => value |> accessTable
 
     | [(case, objConverter)] =>
       if (toJS) {
-        "("
-        ++ (value |> EmitText.typeOfObject)
-        ++ " ? "
-        ++ (
+        let convertedPayload =
           value
           |> Runtime.emitVariantGetPayload
           |> apply(
@@ -391,10 +391,20 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                ~enumTables,
                ~nameGen,
                ~toJS,
-             )
+             );
+        let convertedLabel =
+          value |> Runtime.emitVariantGetLabel |> accessTable;
+        "("
+        ++ (value |> EmitText.typeOfObject)
+        ++ " ? "
+        ++ (
+          enumC.unboxed ?
+            convertedPayload :
+            convertedPayload
+            |> Runtime.emitVariantWithPayload(~label=convertedLabel)
         )
         ++ " : "
-        ++ accessTable
+        ++ (value |> accessTable)
         ++ ")";
       } else {
         "("
@@ -412,7 +422,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
           |> Runtime.emitVariantWithPayload(~label=case.label)
         )
         ++ " : "
-        ++ accessTable
+        ++ (value |> accessTable)
         ++ ")";
       }
 

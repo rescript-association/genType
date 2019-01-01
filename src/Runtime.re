@@ -54,6 +54,8 @@ let emitVariantLabel = (~comment=true, label) =>
   (comment ? label |> EmitText.comment : "")
   ++ (label |> Btype.hash_variant |> string_of_int);
 
+let emitVariantGetLabel = x => x ++ EmitText.array(["0"]);
+
 let emitVariantGetPayload = x => x ++ EmitText.array(["1"]);
 
 let emitVariantWithPayload = (~label, x) =>
