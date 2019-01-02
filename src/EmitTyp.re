@@ -89,6 +89,15 @@ let rec renderTyp =
   | Enum({cases, withPayload, unboxed, _}) =>
     let casesRendered =
       cases |> List.map(case => case.labelJS |> labelJSToString);
+    let field = (~name, value) => {
+      name,
+      optional: Mandatory,
+      mutable_: Mutable,
+      typ: TypeVar(value),
+    };
+    let fields = fields =>
+      fields
+      |> renderFields(~config, ~indent, ~typeNameIsInterface, ~inFunType);
     let withPayloadRendered =
       withPayload
       |> List.map(((case, typ)) => {
@@ -97,7 +106,11 @@ let rec renderTyp =
              |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType);
            unboxed ?
              typRendered :
-             [case.labelJS |> labelJSToString, typRendered] |> EmitText.array;
+             [
+               case.labelJS |> labelJSToString |> field(~name="tag"),
+               typRendered |> field(~name="value"),
+             ]
+             |> fields;
          });
     casesRendered @ withPayloadRendered |> String.concat(" | ");
 
