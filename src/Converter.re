@@ -424,9 +424,13 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
              ~nameGen,
              ~toJS,
            )
-        |> Runtime.emitJSVariantWithPayload(
-             ~label=case.labelJS |> labelJSToString,
-           );
+        |> (
+          toJS ?
+            Runtime.emitJSVariantWithPayload(
+              ~label=case.labelJS |> labelJSToString,
+            ) :
+            Runtime.emitVariantWithPayload(~label=case.label)
+        );
       let switchCases =
         enumC.withPayload
         |> List.map(((case, objConverter)) =>
