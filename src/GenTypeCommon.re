@@ -74,6 +74,7 @@ and variantLeaf = {
 and enum = {
   cases: list(case),
   withPayload: list((case, typ)),
+  polyVariant: bool,
   toJS: string,
   toRE: string,
   unboxed: bool,
@@ -113,7 +114,14 @@ let createEnum = (~withPayload, cases) => {
     |> Hashtbl.hash
     |> string_of_int;
   let unboxed = withPayload == [];
-  Enum({cases, withPayload, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash, unboxed});
+  Enum({
+    cases,
+    withPayload,
+    polyVariant: false,
+    toJS: "$$toJS" ++ hash,
+    toRE: "$$toRE" ++ hash,
+    unboxed,
+  });
 };
 
 let mixedOrUnknown = (~config) =>

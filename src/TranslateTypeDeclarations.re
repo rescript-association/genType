@@ -359,6 +359,7 @@ let traslateDeclarationKind =
       Enum({
         cases,
         withPayload,
+        polyVariant: true,
         toJS: "XX",
         toRE: "XX",
         unboxed: withPayload == [],
@@ -387,7 +388,7 @@ let traslateDeclarationKind =
       annotation,
     };
 
-    let emitEnum = false;
+    let emitEnum = true;
 
     [
       {

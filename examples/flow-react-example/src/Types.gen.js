@@ -14,9 +14,6 @@ export const fooTypeChecked: (number) => number = fooNotChecked;
 export const foo: mixed = fooTypeChecked;
 
 // $FlowExpectedError: Reason checked type sufficiently
-const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
-
-// $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
 
 // flowlint-next-line nonstrict-import:off
@@ -34,17 +31,7 @@ import type {variant as AutoAnnotate_variant} from './AutoAnnotate.gen';
 // flowlint-next-line nonstrict-import:off
 import type {weekday} from './SomeFlowTypes';
 
-export opaque type TypeWithVarsA<x,y> = mixed;
-
-export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
-
-export opaque type TypeWithVarsB<z> = mixed;
-
-export const B: <z>(z) => TypeWithVarsB<z> = function _(Arg1) { return CreateBucklescriptBlock.__(1, [Arg1]) }
-
-export type typeWithVars<x,y,z> =
-  | TypeWithVarsA<x,y>
-  | TypeWithVarsB<z>;
+export type typeWithVars = {|tag: "TypeWithVarsA", value: [x, y]|} | {|tag: "TypeWithVarsB", value: z|};
 
 export type optionInt = ?number;
 
