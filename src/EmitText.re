@@ -40,4 +40,20 @@ let quotes = x => "\"" ++ x ++ "\"";
 
 let resultName = (~nameGen) => "result" |> name(~nameGen);
 
+let switch_ = (~cases, expr) => {
+  let lastCase = (cases |> List.length) - 1;
+  [
+    cases
+    |> List.mapi((i, (label, code)) =>
+         if (i == lastCase) {
+           code;
+         } else {
+           expr ++ "===" ++ label ++ " ? " ++ code ++ " : ";
+         }
+       )
+    |> String.concat(" "),
+  ]
+  |> parens;
+};
+
 let typeOfObject = x => "typeof(" ++ x ++ ")" ++ " === " ++ "\'object\'";

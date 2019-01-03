@@ -61,6 +61,24 @@ let emitVariantGetPayload = x => x ++ EmitText.array(["1"]);
 let emitVariantWithPayload = (~label, x) =>
   EmitText.array([label |> emitVariantLabel, x]);
 
+let jsVariantTag = "tag";
+let jsVariantValue = "value";
+
+let emitJSVariantGetLabel = x => x ++ "."  ++ jsVariantTag;
+
+let emitJSVariantGetPayload = x => x ++ "."  ++ jsVariantValue;
+
+let emitJSVariantWithPayload = (~label, x) =>
+  "{"
+  ++ jsVariantTag
+  ++ ":"
+  ++ label
+  ++ ", "
+  ++ jsVariantValue
+  ++ ":"
+  ++ x
+  ++ "}";
+
 let isMutableObjectField = name =>
   String.length(name) >= 2
   && String.sub(name, String.length(name) - 2, 2) == "#=";
