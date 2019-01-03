@@ -8,13 +8,18 @@ import * as GreetingRe from "./Greeting.gen";
 // Import a ReasonReact component!
 import Greeting from "./Greeting.gen";
 
-import {InnerComponent} from "../components/ManyComponents.gen";
+import { InnerComponent } from "../components/ManyComponents.gen";
 
 import * as SomeFlowTypes from "../SomeFlowTypes";
 
-import * as Enums  from "../Enums.gen";
+import * as Enums from "../Enums.gen";
 
-import { printEnumValue, testWithPayload } from "../EnumsWithPayload.gen";
+import {
+  printEnumValue,
+  printManyPayloads,
+  testManyPayloads,
+  testWithPayload
+} from "../EnumsWithPayload.gen";
 
 const consoleLog = console.log;
 
@@ -54,8 +59,12 @@ printEnumValue("a");
 printEnumValue("bRenamed");
 printEnumValue(true);
 printEnumValue(20);
-printEnumValue(.5);
+printEnumValue(0.5);
 printEnumValue(testWithPayload({ x: 15 }));
+
+printManyPayloads({ tag: "one", value: 34 });
+printManyPayloads({ tag: "two", value: ["hello", "world"] });
+printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));
 
 const App = () => (
   <div>
