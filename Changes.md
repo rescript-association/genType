@@ -1,3 +1,6 @@
+# master
+- Extend support for Enums to cover arbitrary polymorphic variants. If possible (at most one payload of objec type), use an unboxed representation. Otherwise use `{tag: label, value: ...}`.
+
 # 1.9.0
 - [Enums: support one object type, plus strings/booleans/integers](https://github.com/cristianoc/genType/pull/118).
 
