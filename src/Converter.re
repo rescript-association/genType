@@ -380,7 +380,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     switch (enumC.withPayload) {
     | [] => value |> accessTable
 
-    | [(case, objConverter)] =>
+    | [(case, objConverter)] when enumC.unboxed =>
       if (toJS) {
         let convertedPayload =
           value
@@ -392,17 +392,10 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                ~nameGen,
                ~toJS,
              );
-        let convertedLabel =
-          value |> Runtime.emitVariantGetLabel |> accessTable;
         "("
         ++ (value |> EmitText.typeOfObject)
         ++ " ? "
-        ++ (
-          enumC.unboxed ?
-            convertedPayload :
-            convertedPayload
-            |> Runtime.emitVariantWithPayload(~label=convertedLabel)
-        )
+        ++ convertedPayload
         ++ " : "
         ++ (value |> accessTable)
         ++ ")";
@@ -426,7 +419,68 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
         ++ ")";
       }
 
-    | [_, _, ..._] => assert(false)
+    | [_, ..._] =>
+      if (toJS) {
+        let convertedPayload = (case, objConverter) =>
+          value
+          |> Runtime.emitVariantGetPayload
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~enumTables,
+               ~nameGen,
+               ~toJS,
+             )
+          |> Runtime.emitJSVariantWithPayload(
+               ~label=case.labelJS |> labelJSToString,
+             );
+        let switchCases =
+          enumC.withPayload
+          |> List.map(((case, objConverter)) =>
+               (
+                 case.label |> Runtime.emitVariantLabel,
+                 convertedPayload(case, objConverter),
+               )
+             );
+        let reasonLabel = value |> Runtime.emitVariantGetLabel;
+        "("
+        ++ (value |> EmitText.typeOfObject)
+        ++ " ? "
+        ++ (reasonLabel |> EmitText.switch_(~cases=switchCases))
+        ++ " : "
+        ++ (value |> accessTable)
+        ++ ")";
+      } else {
+        let convertedPayload = (case, objConverter) =>
+          value
+          |> Runtime.emitJSVariantGetPayload
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~enumTables,
+               ~nameGen,
+               ~toJS,
+             )
+          |> Runtime.emitJSVariantWithPayload(
+               ~label=case.labelJS |> labelJSToString,
+             );
+        let switchCases =
+          enumC.withPayload
+          |> List.map(((case, objConverter)) =>
+               (
+                 case.labelJS |> labelJSToString,
+                 convertedPayload(case, objConverter),
+               )
+             );
+        let jsLabel = value |> Runtime.emitJSVariantGetLabel;
+        "("
+        ++ (value |> EmitText.typeOfObject)
+        ++ " ? "
+        ++ (jsLabel |> EmitText.switch_(~cases=switchCases))
+        ++ " : "
+        ++ (value |> accessTable)
+        ++ ")";
+      }
     };
 
   | FunctionC(groupedArgConverters, resultConverter) =>

@@ -34,9 +34,14 @@ function printEnumValue(x) {
   }
 }
 
+function testManyPayloads(x) {
+  return x;
+}
+
 export {
   testWithPayload ,
   printEnumValue ,
+  testManyPayloads ,
   
 }
 /* No side effect */

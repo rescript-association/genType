@@ -29,5 +29,5 @@ let printEnumValue = (x: withPayload) =>
 [@genType]
 type manyPayloads = [ | `one(int) | `two(string, string)];
 
-/* [@genType]
-let testManyPayloads = (x: manyPayloads) => x; */
+[@genType]
+let testManyPayloads = (x: manyPayloads) => x;

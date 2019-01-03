@@ -107,8 +107,10 @@ let rec renderTyp =
            unboxed ?
              typRendered :
              [
-               case.labelJS |> labelJSToString |> field(~name="tag"),
-               typRendered |> field(~name="value"),
+               case.labelJS
+               |> labelJSToString
+               |> field(~name=Runtime.jsVariantTag),
+               typRendered |> field(~name=Runtime.jsVariantValue),
              ]
              |> fields;
          });

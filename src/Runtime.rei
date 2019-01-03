@@ -10,6 +10,12 @@ type moduleItem;
 
 let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
 
+let emitJSVariantGetLabel: string => string;
+
+let emitJSVariantGetPayload: string => string;
+
+let emitJSVariantWithPayload: (~label: string, string) => string;
+
 let emitModuleItem: moduleItem => string;
 
 let emitRecordAsBlock:
@@ -34,3 +40,7 @@ let newModuleItem: moduleItemGen => moduleItem;
 let newRecordValue: (~unboxed: bool, recordGen) => recordValue;
 
 let recordGen: unit => recordGen;
+
+let jsVariantTag: string;
+
+let jsVariantValue: string;
