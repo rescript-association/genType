@@ -3,7 +3,12 @@ import * as ReactDOM from "react-dom";
 import App from "./App";
 import { InnerComponent } from "./components/ManyComponents.gen";
 import * as Enums from "./Enums.gen";
-import { printEnumValue, testWithPayload } from "./EnumsWithPayload.gen";
+import {
+  printEnumValue,
+  printManyPayloads,
+  testManyPayloads,
+  testWithPayload
+} from "./EnumsWithPayload.gen";
 import * as ImportJsValue from "./ImportJsValue.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
@@ -103,5 +108,9 @@ printEnumValue("a");
 printEnumValue("bRenamed");
 printEnumValue(true);
 printEnumValue(20);
-printEnumValue(.5);
+printEnumValue(0.5);
 printEnumValue(testWithPayload({ x: 15 }));
+
+printManyPayloads({ tag: "one", value: 34 });
+printManyPayloads({ tag: "two", value: ["hello", "world"] });
+printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));

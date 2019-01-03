@@ -31,3 +31,12 @@ type manyPayloads = [ | `one(int) | `two(string, string) | `three(payload)];
 
 [@genType]
 let testManyPayloads = (x: manyPayloads) => x;
+
+[@genType]
+let printManyPayloads = (x: manyPayloads) =>
+  switch (x) {
+  | `one(n) => Js.log2("printManyPayloads one:", n)
+  | `two(s1, s2) => Js.log3("printManyPayloads two:", s1, s2)
+  | `three(payload) =>
+    Js.log4("printManyPayloads x:", payload.x, "y:", payload.y)
+  };

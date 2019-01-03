@@ -38,10 +38,29 @@ function testManyPayloads(x) {
   return x;
 }
 
+function printManyPayloads(x) {
+  var variant = x[0];
+  if (variant !== 5795212) {
+    if (variant >= 261117022) {
+      var payload = x[1];
+      console.log("printManyPayloads x:", payload[/* x */0], "y:", payload[/* y */1]);
+      return /* () */0;
+    } else {
+      console.log("printManyPayloads one:", x[1]);
+      return /* () */0;
+    }
+  } else {
+    var match = x[1];
+    console.log("printManyPayloads two:", match[0], match[1]);
+    return /* () */0;
+  }
+}
+
 export {
   testWithPayload ,
   printEnumValue ,
   testManyPayloads ,
+  printManyPayloads ,
   
 }
 /* No side effect */
