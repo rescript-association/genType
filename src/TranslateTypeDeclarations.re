@@ -339,6 +339,32 @@ let traslateDeclarationKind =
     };
     let (variants, importTypesAndLeaves) =
       leafTypesDepsAndVariantLeafBindings |> List.split;
+
+    let enumTyp = {
+      let (variantsNoPayload, variantsWithPayload) =
+        variants |> List.partition(({params}) => params == []);
+      let cases =
+        variantsNoPayload
+        |> List.map(({name}) => {label: name, labelJS: StringLabel(name)});
+      let withPayload =
+        variantsWithPayload
+        |> List.map(({name, params}) => {
+             let typ =
+               switch (params) {
+               | [typ] => typ
+               | _ => Tuple(params)
+               };
+             ({label: name, labelJS: StringLabel(name)}, typ);
+           });
+      Enum({
+        cases,
+        withPayload,
+        toJS: "XX",
+        toRE: "XX",
+        unboxed: withPayload == [],
+      });
+    };
+
     let importTypes = importTypesAndLeaves |> List.map(fst) |> List.concat;
     let leaves = importTypesAndLeaves |> List.map(snd);
     let typeVars = TypeVars.(typeParams |> extract);
@@ -348,7 +374,28 @@ let traslateDeclarationKind =
         ExportVariantType({leaves, resolvedTypeName, typeVars, variants}),
       annotation,
     };
-    [{exportFromTypeDeclaration: unionType, importTypes}];
+
+    let exportFromTypeDeclarationEnum = {
+      CodeItem.exportKind:
+        ExportType({
+          nameAs: None,
+          opaque: None,
+          optTyp: Some(enumTyp),
+          typeVars: [],
+          resolvedTypeName,
+        }),
+      annotation,
+    };
+
+    let emitEnum = false;
+
+    [
+      {
+        exportFromTypeDeclaration:
+          emitEnum ? exportFromTypeDeclarationEnum : unionType,
+        importTypes,
+      },
+    ];
 
   | NoDeclaration => []
   };
