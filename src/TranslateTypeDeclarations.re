@@ -24,6 +24,8 @@ let createExportType =
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
 
+let emitVariantAsEnum = true;
+
 let translateConstructorDeclarationFromTypes =
     (
       ~config,
@@ -59,8 +61,10 @@ let translateConstructorDeclarationFromTypes =
   /* A valid Reason identifier that we can point UpperCase JS exports to. */
 
   let variantTypeNameResolved =
-    variantLeafTypeName(variantTypeName, leafName)
-    |> TypeEnv.addModulePath(~typeEnv);
+    emitVariantAsEnum ?
+      leafName :
+      variantLeafTypeName(variantTypeName, leafName)
+      |> TypeEnv.addModulePath(~typeEnv);
 
   let typeVars = argTypes |> TypeVars.freeOfList;
 
@@ -390,7 +394,7 @@ let traslateDeclarationKind =
       annotation,
     };
 
-    let exportFromTypeDeclarationEnum = {
+    let variantAsEnumType = {
       CodeItem.exportKind:
         ExportType({
           nameAs: None,
@@ -402,12 +406,10 @@ let traslateDeclarationKind =
       annotation,
     };
 
-    let emitEnum = true;
-
     [
       {
         exportFromTypeDeclaration:
-          emitEnum ? exportFromTypeDeclarationEnum : unionType,
+          emitVariantAsEnum ? variantAsEnumType : unionType,
         importTypes,
       },
     ];

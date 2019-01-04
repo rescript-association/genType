@@ -4,12 +4,12 @@
  * @nolint
  */
 
-const YY = {"ActionNoOp": 0, "ActionAdjustAge": 1, "ActionBooly": 2, "ActionOptionalInt": 3, "ActionUnity": 4, "ActionOptionalBooly": 5, "ActionOptionalBoolMapper": 6};
+const YY = {"NoOp": 0, "AdjustAge": 1, "Booly": 2, "OptionalInt": 3, "Unity": 4, "OptionalBooly": 5, "OptionalBoolMapper": 6};
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as VariantsBS from './Variants.bs';
 
-export type action = "ActionNoOp" | "ActionAdjustAge" | "ActionBooly" | "ActionOptionalInt" | "ActionUnity" | "ActionOptionalBooly" | "ActionOptionalBoolMapper";
+export type action = "NoOp" | "AdjustAge" | "Booly" | "OptionalInt" | "Unity" | "OptionalBooly" | "OptionalBoolMapper";
 
 export type optionalBoolMapper = {|+optionalBoolMapper: (?boolean) => ?boolean|};
 
