@@ -40,3 +40,12 @@ let printManyPayloads = (x: manyPayloads) =>
   | `three(payload) =>
     Js.log4("printManyPayloads x:", payload.x, "y:", payload.y)
   };
+
+[@genType]
+type simpleVariant =
+  | A
+  | B
+  | C;
+
+[@genType]
+let testSimpleVariant = (x: simpleVariant) => x;

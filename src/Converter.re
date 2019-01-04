@@ -18,6 +18,7 @@ and fieldsC = list((string, t))
 and enumC = {
   cases: list(case),
   withPayload: list((case, t)),
+  polyVariant: bool,
   toJS: string,
   toRE: string,
   unboxed: bool,
@@ -154,6 +155,7 @@ let typToConverterNormalized =
           EnumC({
             cases: enum.cases,
             withPayload,
+            polyVariant: enum.polyVariant,
             toJS: enum.toJS,
             toRE: enum.toRE,
             unboxed,

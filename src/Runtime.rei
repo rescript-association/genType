@@ -41,6 +41,8 @@ let newRecordValue: (~unboxed: bool, recordGen) => recordValue;
 
 let recordGen: unit => recordGen;
 
+let recordValueToString: recordValue => string;
+
 let jsVariantTag: string;
 
 let jsVariantValue: string;
