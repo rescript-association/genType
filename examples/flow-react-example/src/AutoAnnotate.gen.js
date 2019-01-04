@@ -13,11 +13,11 @@ import * as Curry from 'bs-platform/lib/es6/curry.js';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
-export type variant = "VariantR";
+export type variant = "R";
 
 export type record = {|+variant: variant|};
 
-export type annotatedVariant = "AnnotatedVariantR2" | "AnnotatedVariantR4";
+export type annotatedVariant = "R2" | "R4";
 
 export type r5 = {|+r5: number|};
 

@@ -13,7 +13,7 @@ export type Universe_Nested2_nested2Type = Array<string[]>;
 export type Universe_Nested2_Nested3_nested3Type = Array<Array<string[]>>;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Universe_variant = "Universe_VariantA" | "Universe_VariantB";
+export type Universe_variant = "A" | "B";
 
 export const notNested: number = NestedModulesBS.notNested;
 
