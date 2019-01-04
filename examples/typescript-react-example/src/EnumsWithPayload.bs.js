@@ -56,11 +56,16 @@ function printManyPayloads(x) {
   }
 }
 
+function testSimpleVariant(x) {
+  return x;
+}
+
 export {
   testWithPayload ,
   printEnumValue ,
   testManyPayloads ,
   printManyPayloads ,
+  testSimpleVariant ,
   
 }
 /* No side effect */

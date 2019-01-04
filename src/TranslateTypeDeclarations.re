@@ -341,27 +341,41 @@ let traslateDeclarationKind =
       leafTypesDepsAndVariantLeafBindings |> List.split;
 
     let enumTyp = {
+      let recordGen = Runtime.recordGen();
+      let variantsWithRecordValues =
+        variants
+        |> List.map(variant =>
+             (
+               variant,
+               recordGen
+               |> Runtime.newRecordValue(~unboxed=variant.params == [])
+               |> Runtime.recordValueToString,
+             )
+           );
       let (variantsNoPayload, variantsWithPayload) =
-        variants |> List.partition(({params}) => params == []);
+        variantsWithRecordValues
+        |> List.partition((({params}, _)) => params == []);
       let cases =
         variantsNoPayload
-        |> List.map(({name}) => {label: name, labelJS: StringLabel(name)});
+        |> List.map((({name}, recordValue)) =>
+             {label: recordValue, labelJS: StringLabel(name)}
+           );
       let withPayload =
         variantsWithPayload
-        |> List.map(({name, params}) => {
+        |> List.map((({name, params}, recordValue)) => {
              let typ =
                switch (params) {
                | [typ] => typ
                | _ => Tuple(params)
                };
-             ({label: name, labelJS: StringLabel(name)}, typ);
+             ({label: recordValue, labelJS: StringLabel(name)}, typ);
            });
       Enum({
         cases,
         withPayload,
         polyVariant: true,
         toJS: "XX",
-        toRE: "XX",
+        toRE: "YY",
         unboxed: withPayload == [],
       });
     };

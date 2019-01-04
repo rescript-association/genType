@@ -16,7 +16,10 @@ type moduleItem = int;
 let blockTagValue = (~config, i) =>
   string_of_int(i) ++ (config.language == TypeScript ? " as any" : "");
 
-let emitRecordAsInt = (~config, i) => i |> blockTagValue(~config);
+let emitRecordAsInt = (~config, recordValue) =>
+  recordValue |> blockTagValue(~config);
+
+let recordValueToString = recordValue => recordValue |> string_of_int;
 
 let emitRecordAsBlock = (~config, ~args, recordValue) =>
   createBucklescriptBlock
@@ -64,9 +67,9 @@ let emitVariantWithPayload = (~label, x) =>
 let jsVariantTag = "tag";
 let jsVariantValue = "value";
 
-let emitJSVariantGetLabel = x => x ++ "."  ++ jsVariantTag;
+let emitJSVariantGetLabel = x => x ++ "." ++ jsVariantTag;
 
-let emitJSVariantGetPayload = x => x ++ "."  ++ jsVariantValue;
+let emitJSVariantGetPayload = x => x ++ "." ++ jsVariantValue;
 
 let emitJSVariantWithPayload = (~label, x) =>
   "{"

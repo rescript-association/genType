@@ -841,15 +841,18 @@ let emitRequires =
   );
 
 let emitEnumTables = (~emitters, enumTables) => {
-  let emitTable = (~hash, ~toJS, enum: Converter.enumC) =>
+  let emitTable = (~hash, ~toJS, enumC: Converter.enumC) =>
     "const "
     ++ hash
     ++ " = {"
     ++ (
-      enum.cases
+      enumC.cases
       |> List.map(label => {
            let js = label.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
-           let re = label.label |> Runtime.emitVariantLabel(~comment=false);
+           let re =
+             enumC.polyVariant ?
+               label.label :
+               label.label |> Runtime.emitVariantLabel(~comment=false);
            toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
          })
       |> String.concat(", ")

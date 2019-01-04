@@ -11,4 +11,4 @@ export type variant = "VariantA" | "VariantB" | "VariantC";
 
 export type block = "BlockBlock";
 
-export const getBlock: (block) => number = function _(Arg1) { const result = Component2BS.getBlock(/* BlockBlock */51453152); return result };
+export const getBlock: (block) => number = function _(Arg1) { const result = Component2BS.getBlock(/* 0 */48); return result };
