@@ -254,7 +254,7 @@ let traslateDeclarationKind =
                       | _ => {label, labelJS: StringLabel(label)}
                       }
                     );
-               cases |> createEnum(~withPayload);
+               cases |> createEnum(~withPayload, ~polyVariant=true);
              | _ => translation.typ
              };
            (translation, typ);
@@ -373,14 +373,7 @@ let traslateDeclarationKind =
                Tuple(argTypes),
              )
            );
-      Enum({
-        cases,
-        withPayload,
-        polyVariant: true,
-        toJS: "XX",
-        toRE: "YY",
-        unboxed: withPayload == [],
-      });
+      cases |> createEnum(~withPayload, ~polyVariant=false);
     };
 
     let importTypes = importTypesAndLeaves |> List.map(fst) |> List.concat;

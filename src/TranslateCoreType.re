@@ -239,7 +239,7 @@ and translateCoreType_ =
         |> List.map(((label, translation)) =>
              ({label, labelJS: StringLabel(label)}, translation.typ)
            );
-      let typ = cases |> createEnum(~withPayload);
+      let typ = cases |> createEnum(~withPayload, ~polyVariant=true);
       let dependencies =
         payloadTranslations
         |> List.map(((_, {dependencies, _})) => dependencies)

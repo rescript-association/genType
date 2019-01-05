@@ -106,7 +106,7 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-let createEnum = (~withPayload, cases) => {
+let createEnum = (~withPayload, ~polyVariant, cases) => {
   let hash =
     cases
     |> List.map(case => (case.label, case.labelJS))
@@ -117,7 +117,7 @@ let createEnum = (~withPayload, cases) => {
   Enum({
     cases,
     withPayload,
-    polyVariant: false,
+    polyVariant,
     toJS: "$$toJS" ++ hash,
     toRE: "$$toRE" ++ hash,
     unboxed,
