@@ -3,6 +3,9 @@
 const $$toRE552311971 = {"A": 0};
 
 // tslint:disable-next-line:no-var-requires
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
+
+// tslint:disable-next-line:no-var-requires
 const Curry = require('bs-platform/lib/es6/curry.js');
 
 // tslint:disable-next-line:no-var-requires

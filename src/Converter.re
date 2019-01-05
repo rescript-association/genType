@@ -344,7 +344,16 @@ let rec converterIsIdentity = (~toJS, converter) =>
     innerTypesC |> List.for_all(converterIsIdentity(~toJS))
   };
 
-let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
+let rec apply =
+        (
+          ~config,
+          ~converter,
+          ~enumTables,
+          ~nameGen,
+          ~toJS,
+          ~useCreateBucklescriptBlock,
+          value,
+        ) =>
   switch (converter) {
   | _ when converter |> converterIsIdentity(~toJS) => value
 
@@ -354,7 +363,17 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     ++ ".map(function _element("
     ++ (x |> EmitTyp.ofTypeAnyTS(~config))
     ++ ") { return "
-    ++ (x |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS))
+    ++ (
+      x
+      |> apply(
+           ~config,
+           ~converter=c,
+           ~enumTables,
+           ~nameGen,
+           ~toJS,
+           ~useCreateBucklescriptBlock,
+         )
+    )
     ++ "})";
 
   | CircularC(s, c) =>
@@ -362,7 +381,14 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     ++ s
     ++ ". Only shallow converter applied. */\n  "
     ++ value
-    |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+    |> apply(
+         ~config,
+         ~converter=c,
+         ~enumTables,
+         ~nameGen,
+         ~toJS,
+         ~useCreateBucklescriptBlock,
+       )
 
   | EnumC({cases: [case], withPayload: [], polyVariant, _}) =>
     toJS ?
@@ -394,6 +420,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                ~enumTables,
                ~nameGen,
                ~toJS,
+               ~useCreateBucklescriptBlock,
              );
         } else {
           value
@@ -403,10 +430,12 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                ~enumTables,
                ~nameGen,
                ~toJS,
+               ~useCreateBucklescriptBlock,
              )
           |> Runtime.emitVariantWithPayload(
                ~label=case.label,
                ~polyVariant=enumC.polyVariant,
+               ~useCreateBucklescriptBlock,
              );
         };
       "("
@@ -430,6 +459,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
              ~enumTables,
              ~nameGen,
              ~toJS,
+             ~useCreateBucklescriptBlock,
            )
         |> (
           toJS ?
@@ -439,6 +469,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
             Runtime.emitVariantWithPayload(
               ~label=case.label,
               ~polyVariant=enumC.polyVariant,
+              ~useCreateBucklescriptBlock,
             )
         );
       let switchCases =
@@ -485,6 +516,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
              ~enumTables,
              ~nameGen,
              ~toJS,
+             ~useCreateBucklescriptBlock,
            )
       );
     let convertedArgs = {
@@ -507,6 +539,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                  ~enumTables,
                  ~nameGen,
                  ~toJS=notToJS,
+                 ~useCreateBucklescriptBlock,
                ),
           );
         | GroupConverter(groupConverters) =>
@@ -526,6 +559,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                         ~enumTables,
                         ~nameGen,
                         ~toJS=notToJS,
+                        ~useCreateBucklescriptBlock,
                       )
                  )
               |> String.concat(", "),
@@ -551,6 +585,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                           ~enumTables,
                           ~nameGen,
                           ~toJS=notToJS,
+                          ~useCreateBucklescriptBlock,
                         )
                    )
                  )
@@ -571,7 +606,17 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
       ++ " == null ? "
       ++ value
       ++ " : "
-      ++ (value |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)),
+      ++ (
+        value
+        |> apply(
+             ~config,
+             ~converter=c,
+             ~enumTables,
+             ~nameGen,
+             ~toJS,
+             ~useCreateBucklescriptBlock,
+           )
+      ),
     ])
 
   | ObjectC(fieldsC) =>
@@ -596,6 +641,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                   ~enumTables,
                   ~nameGen,
                   ~toJS,
+                  ~useCreateBucklescriptBlock,
                 )
            )
          )
@@ -610,7 +656,15 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
         ++ value
         ++ " : "
         ++ (
-          value |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+          value
+          |> apply(
+               ~config,
+               ~converter=c,
+               ~enumTables,
+               ~nameGen,
+               ~toJS,
+               ~useCreateBucklescriptBlock,
+             )
         ),
       ]);
     } else {
@@ -618,7 +672,15 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
         value
         ++ " == null ? undefined : "
         ++ (
-          value |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+          value
+          |> apply(
+               ~config,
+               ~converter=c,
+               ~enumTables,
+               ~nameGen,
+               ~toJS,
+               ~useCreateBucklescriptBlock,
+             )
         ),
       ]);
     }
@@ -647,6 +709,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                     ~enumTables,
                     ~nameGen,
                     ~toJS,
+                    ~useCreateBucklescriptBlock,
                   )
              )
            )
@@ -665,6 +728,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                   ~enumTables,
                   ~nameGen,
                   ~toJS,
+                  ~useCreateBucklescriptBlock,
                 )
            )
         |> String.concat(", ");
@@ -679,15 +743,54 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
            ++ "["
            ++ string_of_int(i)
            ++ "]"
-           |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+           |> apply(
+                ~config,
+                ~converter=c,
+                ~enumTables,
+                ~nameGen,
+                ~toJS,
+                ~useCreateBucklescriptBlock,
+              )
          )
       |> String.concat(", ")
     )
     ++ "]"
   };
 
-let toJS = (~config, ~converter, ~enumTables, ~nameGen, value) =>
-  value |> apply(~config, ~converter, ~enumTables, ~nameGen, ~toJS=true);
+let toJS =
+    (
+      ~config,
+      ~converter,
+      ~enumTables,
+      ~nameGen,
+      ~useCreateBucklescriptBlock,
+      value,
+    ) =>
+  value
+  |> apply(
+       ~config,
+       ~converter,
+       ~enumTables,
+       ~nameGen,
+       ~toJS=true,
+       ~useCreateBucklescriptBlock,
+     );
 
-let toReason = (~config, ~converter, ~enumTables, ~nameGen, value) =>
-  value |> apply(~config, ~converter, ~enumTables, ~nameGen, ~toJS=false);
+let toReason =
+    (
+      ~config,
+      ~converter,
+      ~enumTables,
+      ~nameGen,
+      ~useCreateBucklescriptBlock,
+      value,
+    ) =>
+  value
+  |> apply(
+       ~config,
+       ~converter,
+       ~enumTables,
+       ~nameGen,
+       ~toJS=false,
+       ~useCreateBucklescriptBlock,
+     );

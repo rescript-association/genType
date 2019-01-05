@@ -19,7 +19,13 @@ let emitJSVariantWithPayload: (~label: string, string) => string;
 let emitModuleItem: moduleItem => string;
 
 let emitRecordAsBlock:
-  (~config: config, ~args: list(string), recordValue) => string;
+  (
+    ~config: config,
+    ~args: list(string),
+    ~useCreateBucklescriptBlock: ref(bool),
+    recordValue
+  ) =>
+  string;
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
@@ -30,7 +36,13 @@ let emitVariantGetPayload: (~polyVariant: bool, string) => string;
 let emitVariantLabel: (~comment: bool=?, ~polyVariant: bool, string) => string;
 
 let emitVariantWithPayload:
-  (~label: string, ~polyVariant: bool, string) => string;
+  (
+    ~label: string,
+    ~polyVariant: bool,
+    ~useCreateBucklescriptBlock: ref(bool),
+    string
+  ) =>
+  string;
 
 let isMutableObjectField: string => bool;
 

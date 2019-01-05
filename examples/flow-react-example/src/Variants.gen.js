@@ -7,6 +7,9 @@
 const $$toRE102731832 = {"NoOp": 0};
 
 // $FlowExpectedError: Reason checked type sufficiently
+import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
+
+// $FlowExpectedError: Reason checked type sufficiently
 import * as VariantsBS from './Variants.bs';
 
 export type action = "NoOp" | {|tag: "AdjustAge", value: [(number) => number]|} | {|tag: "Booly", value: [boolean]|} | {|tag: "OptionalInt", value: [?number]|} | {|tag: "Unity", value: [void]|} | {|tag: "OptionalBooly", value: [?boolean]|} | {|tag: "OptionalBoolMapper", value: [(?boolean) => ?boolean]|};

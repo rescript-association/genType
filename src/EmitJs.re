@@ -190,6 +190,7 @@ let emitExportFromTypeDeclaration =
       ~typToConverter,
       ~enumTables,
       ~typeNameIsInterface,
+      ~useCreateBucklescriptBlock,
       exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
     ) =>
   switch (exportFromTypeDeclaration.exportKind) {
@@ -267,13 +268,18 @@ let emitExportFromTypeDeclaration =
                         ~converter,
                         ~enumTables,
                         ~nameGen,
+                        ~useCreateBucklescriptBlock,
                       );
                  (arg, v);
                });
           let mkReturn = s => "return " ++ s;
           let mkBody = args =>
             recordValue
-            |> Runtime.emitRecordAsBlock(~config, ~args)
+            |> Runtime.emitRecordAsBlock(
+                 ~config,
+                 ~args,
+                 ~useCreateBucklescriptBlock,
+               )
             |> mkReturn;
           EmitText.funDef(~args, ~mkBody, "")
           |> EmitTyp.emitExportConst(
@@ -284,13 +290,6 @@ let emitExportFromTypeDeclaration =
                ~config,
              );
         };
-      let env =
-        ModuleName.createBucklescriptBlock
-        |> requireModule(
-             ~import=false,
-             ~env,
-             ~importPath=ImportPath.bsBlockPath(~config),
-           );
       (env, emitters);
     };
     let (env, emitters) =
@@ -318,6 +317,7 @@ let emitExportFromTypeDeclarations =
       ~enumTables,
       ~typeNameIsInterface,
       exportFromTypeDeclarations,
+      ~useCreateBucklescriptBlock,
     ) =>
   exportFromTypeDeclarations
   |> List.fold_left(
@@ -330,6 +330,7 @@ let emitExportFromTypeDeclarations =
            ~typToConverter,
            ~typeNameIsInterface,
            ~enumTables,
+           ~useCreateBucklescriptBlock,
          ),
        (env, emitters),
      );
@@ -345,6 +346,7 @@ let rec emitCodeItem =
           ~typGetNormalized,
           ~typToConverter,
           ~typeNameIsInterface,
+          ~useCreateBucklescriptBlock,
           codeItem,
         ) => {
   let language = config.language;
@@ -487,6 +489,7 @@ let rec emitCodeItem =
                              |> typToConverter,
                            ~enumTables,
                            ~nameGen,
+                           ~useCreateBucklescriptBlock,
                          )
                     )
                   )
@@ -499,6 +502,7 @@ let rec emitCodeItem =
                   ~converter=childrenTyp |> typToConverter,
                   ~enumTables,
                   ~nameGen,
+                  ~useCreateBucklescriptBlock,
                 ),
            ])
         ++ "; }"
@@ -587,7 +591,13 @@ let rec emitCodeItem =
     let emitters =
       (
         valueNameTypeChecked
-        |> Converter.toReason(~config, ~converter, ~enumTables, ~nameGen)
+        |> Converter.toReason(
+             ~config,
+             ~converter,
+             ~enumTables,
+             ~nameGen,
+             ~useCreateBucklescriptBlock,
+           )
         |> EmitTyp.emitTypeCast(~config, ~typ, ~typeNameIsInterface)
       )
       ++ ";"
@@ -648,6 +658,7 @@ let rec emitCodeItem =
                       ~converter=argConverter,
                       ~enumTables,
                       ~nameGen,
+                      ~useCreateBucklescriptBlock,
                     )
                )
           )
@@ -658,6 +669,7 @@ let rec emitCodeItem =
                  ~converter=childrenConverter,
                  ~enumTables,
                  ~nameGen,
+                 ~useCreateBucklescriptBlock,
                ),
           ]
 
@@ -668,6 +680,7 @@ let rec emitCodeItem =
                  ~converter=childrenConverter,
                  ~enumTables,
                  ~nameGen,
+                 ~useCreateBucklescriptBlock,
                ),
           ]
 
@@ -779,7 +792,13 @@ let rec emitCodeItem =
         (fileNameBs |> ModuleName.toString)
         ++ "."
         ++ valueAccessPath
-        |> Converter.toJS(~config, ~converter, ~enumTables, ~nameGen)
+        |> Converter.toJS(
+             ~config,
+             ~converter,
+             ~enumTables,
+             ~nameGen,
+             ~useCreateBucklescriptBlock,
+           )
       )
       ++ ";"
       |> EmitTyp.emitExportConst(
@@ -804,6 +823,7 @@ and emitCodeItems =
       ~typGetNormalized,
       ~typToConverter,
       ~typeNameIsInterface,
+      ~useCreateBucklescriptBlock,
       codeItems,
     ) =>
   codeItems
@@ -819,6 +839,7 @@ and emitCodeItems =
            ~typGetNormalized,
            ~typToConverter,
            ~typeNameIsInterface,
+           ~useCreateBucklescriptBlock,
          ),
        (env, emitters),
      );
@@ -1146,6 +1167,8 @@ let emitTranslationAsString =
          ~typeNameIsInterface,
        );
 
+  let useCreateBucklescriptBlock = ref(false);
+
   let (env, emitters) =
     exportFromTypeDeclarations
     |> emitExportFromTypeDeclarations(
@@ -1156,9 +1179,10 @@ let emitTranslationAsString =
          ~typToConverter=typToConverter_(~env),
          ~enumTables,
          ~typeNameIsInterface=typeNameIsInterface(~env),
+         ~useCreateBucklescriptBlock,
        );
 
-  let (finalEnv, emitters) =
+  let (env, emitters) =
     translation.codeItems
     |> emitCodeItems(
          ~config,
@@ -1170,7 +1194,18 @@ let emitTranslationAsString =
          ~typGetNormalized=typGetNormalized_(~env),
          ~typToConverter=typToConverter_(~env),
          ~typeNameIsInterface=typeNameIsInterface(~env),
+         ~useCreateBucklescriptBlock,
        );
+
+  let finalEnv =
+    useCreateBucklescriptBlock^ ?
+      ModuleName.createBucklescriptBlock
+      |> requireModule(
+           ~import=false,
+           ~env,
+           ~importPath=ImportPath.bsBlockPath(~config),
+         ) :
+      env;
 
   let emitters = enumTables |> emitEnumTables(~emitters);
 
