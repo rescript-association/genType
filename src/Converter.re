@@ -387,7 +387,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
       let casesWithPayload =
         if (toJS) {
           value
-          |> Runtime.emitVariantGetPayload
+          |> Runtime.emitVariantGetPayload(~polyVariant=enumC.polyVariant)
           |> apply(
                ~config,
                ~converter=objConverter,
@@ -417,11 +417,12 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
       ++ (value |> accessTable)
       ++ ")";
     | [_, ..._] =>
-      let convertCaseWithPayload = (~polyVariant, ~objConverter, case) =>
+      let convertCaseWithPayload = (~objConverter, case) =>
         value
         |> (
           toJS ?
-            Runtime.emitVariantGetPayload : Runtime.emitJSVariantGetPayload
+            Runtime.emitVariantGetPayload(~polyVariant=enumC.polyVariant) :
+            Runtime.emitJSVariantGetPayload
         )
         |> apply(
              ~config,
@@ -435,7 +436,10 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
             Runtime.emitJSVariantWithPayload(
               ~label=case.labelJS |> labelJSToString,
             ) :
-            Runtime.emitVariantWithPayload(~label=case.label, ~polyVariant)
+            Runtime.emitVariantWithPayload(
+              ~label=case.label,
+              ~polyVariant=enumC.polyVariant,
+            )
         );
       let switchCases =
         enumC.withPayload
@@ -445,16 +449,16 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                  case.label
                  |> Runtime.emitVariantLabel(~polyVariant=enumC.polyVariant) :
                  case.labelJS |> labelJSToString,
-               case
-               |> convertCaseWithPayload(
-                    ~polyVariant=enumC.polyVariant,
-                    ~objConverter,
-                  ),
+               case |> convertCaseWithPayload(~objConverter),
              )
            );
       let casesWithPayload =
         value
-        |> Runtime.(toJS ? emitVariantGetLabel : emitJSVariantGetLabel)
+        |> Runtime.(
+             toJS ?
+               emitVariantGetLabel(~polyVariant=enumC.polyVariant) :
+               emitJSVariantGetLabel
+           )
         |> EmitText.switch_(~cases=switchCases);
       "("
       ++ (value |> EmitText.typeOfObject)

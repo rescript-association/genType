@@ -23,9 +23,9 @@ let emitRecordAsBlock:
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
-let emitVariantGetLabel: string => string;
+let emitVariantGetLabel: (~polyVariant: bool, string) => string;
 
-let emitVariantGetPayload: string => string;
+let emitVariantGetPayload: (~polyVariant: bool, string) => string;
 
 let emitVariantLabel: (~comment: bool=?, ~polyVariant: bool, string) => string;
 
