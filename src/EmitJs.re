@@ -851,8 +851,9 @@ let emitEnumTables = (~emitters, enumTables) => {
            let js = label.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
            let re =
              enumC.polyVariant ?
-               label.label :
-               label.label |> Runtime.emitVariantLabel(~comment=false);
+               label.label |> Runtime.emitVariantLabel(~comment=false) :
+               label.label;
+
            toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
          })
       |> String.concat(", ")
