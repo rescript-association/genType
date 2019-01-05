@@ -28,7 +28,7 @@ export type person<a> = {
 };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type t = "A" | {tag: "B", value: number} | {tag: "C", value: string};
+export type t = "A" | {tag: "B", value: [number]} | {tag: "C", value: [string]};
 
 export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
 
