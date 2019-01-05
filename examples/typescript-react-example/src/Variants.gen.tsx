@@ -6,11 +6,11 @@ const YY = {"NoOp": 0};
 const VariantsBS = require('./Variants.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
-export type action = "NoOp" | {tag: "AdjustAge", value: (_1:number) => number} | {tag: "Booly", value: boolean} | {tag: "OptionalInt", value: (null | undefined | number)} | {tag: "Unity", value: void} | {tag: "OptionalBooly", value: (null | undefined | boolean)} | {tag: "OptionalBoolMapper", value: (_1:(null | undefined | boolean)) => (null | undefined | boolean)};
+export type action = "NoOp" | {tag: "AdjustAge", value: [(_1:number) => number]} | {tag: "Booly", value: [boolean]} | {tag: "OptionalInt", value: [(null | undefined | number)]} | {tag: "Unity", value: [void]} | {tag: "OptionalBooly", value: [(null | undefined | boolean)]} | {tag: "OptionalBoolMapper", value: [(_1:(null | undefined | boolean)) => (null | undefined | boolean)]};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type optionalBoolMapper = {readonly optionalBoolMapper: (_1:(null | undefined | boolean)) => (null | undefined | boolean)};
 
-export const actionToString: (_1:action) => string = function _(Arg1: any) { const result = VariantsBS.actionToString((typeof(Arg1) === 'object' ? (Arg1.tag==="AdjustAge" ? [/* 0 */48, Arg1.value] :  Arg1.tag==="Booly" ? [/* 1 */49, Arg1.value] :  Arg1.tag==="OptionalInt" ? [/* 2 */50, (Arg1.value == null ? undefined : Arg1.value)] :  Arg1.tag==="Unity" ? [/* 3 */51, Arg1.value] :  Arg1.tag==="OptionalBooly" ? [/* 4 */52, (Arg1.value == null ? undefined : Arg1.value)] :  [/* 5 */53, function _(Arg11: any) { const result1 = Arg1.value(Arg11); return (result1 == null ? undefined : result1) }]) : YY[Arg1])); return result };
+export const actionToString: (_1:action) => string = function _(Arg1: any) { const result = VariantsBS.actionToString((typeof(Arg1) === 'object' ? (Arg1.tag==="AdjustAge" ? [/* 0 */48, Arg1.value] :  Arg1.tag==="Booly" ? [/* 1 */49, Arg1.value] :  Arg1.tag==="OptionalInt" ? [/* 2 */50, [(Arg1.value[0] == null ? undefined : Arg1.value[0])]] :  Arg1.tag==="Unity" ? [/* 3 */51, Arg1.value] :  Arg1.tag==="OptionalBooly" ? [/* 4 */52, [(Arg1.value[0] == null ? undefined : Arg1.value[0])]] :  [/* 5 */53, [function _(Arg11: any) { const result1 = Arg1.value[0](Arg11); return (result1 == null ? undefined : result1) }]]) : YY[Arg1])); return result };
 
 export const converter: (_1:optionalBoolMapper) => optionalBoolMapper = function _(Arg1: any) { const result = VariantsBS.converter([function _(Arg11: any) { const result1 = Arg1.optionalBoolMapper(Arg11); return (result1 == null ? undefined : result1) }]); return {optionalBoolMapper:function _(Arg12: any) { const result2 = result[0]((Arg12 == null ? undefined : Arg12)); return result2 }} };
