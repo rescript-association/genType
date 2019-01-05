@@ -7,7 +7,7 @@
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Component2BS from './Component2.bs';
 
-export type variant = "A" | "B" | "C";
+export type variant = "A" | {|tag: "B", value: [number, number]|} | {|tag: "C", value: ?number|};
 
 export type block = "Block";
 

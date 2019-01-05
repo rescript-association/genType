@@ -347,30 +347,31 @@ let traslateDeclarationKind =
     let enumTyp = {
       let recordGen = Runtime.recordGen();
       let variantsWithRecordValues =
-        variants
-        |> List.map(variant =>
+        leafTypesDepsAndVariantLeafBindings
+        |> List.map(((variant, (_, {CodeItem.argTypes}))) =>
              (
-               variant,
+               variant.name,
+               argTypes,
                recordGen
-               |> Runtime.newRecordValue(~unboxed=variant.params == [])
+               |> Runtime.newRecordValue(~unboxed=argTypes == [])
                |> Runtime.recordValueToString,
              )
            );
       let (variantsNoPayload, variantsWithPayload) =
         variantsWithRecordValues
-        |> List.partition((({params}, _)) => params == []);
+        |> List.partition(((_, argTypes, _)) => argTypes == []);
       let cases =
         variantsNoPayload
-        |> List.map((({name}, recordValue)) =>
+        |> List.map(((name, _argTypes, recordValue)) =>
              {label: recordValue, labelJS: StringLabel(name)}
            );
       let withPayload =
         variantsWithPayload
-        |> List.map((({name, params}, recordValue)) => {
+        |> List.map(((name, argTypes, recordValue)) => {
              let typ =
-               switch (params) {
+               switch (argTypes) {
                | [typ] => typ
-               | _ => Tuple(params)
+               | _ => Tuple(argTypes)
                };
              ({label: recordValue, labelJS: StringLabel(name)}, typ);
            });

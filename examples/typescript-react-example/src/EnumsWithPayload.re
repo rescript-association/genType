@@ -41,11 +41,23 @@ let printManyPayloads = (x: manyPayloads) =>
     Js.log4("printManyPayloads x:", payload.x, "y:", payload.y)
   };
 
-[@genType]
+/* [@genType]
 type simpleVariant =
   | A
   | B
   | C;
 
 [@genType]
-let testSimpleVariant = (x: simpleVariant) => x;
+let testSimpleVariant = (x: simpleVariant) => x; */
+
+[@genType]
+type simpleVariantWithPayloads =
+  | A(int, int)
+  | B((int, int))
+  | C;
+
+[@genType]
+let testSimpleVariantWithPayloads = (x: simpleVariantWithPayloads) => x;
+
+let a = A(1,2);
+let b = B((1,2,));
