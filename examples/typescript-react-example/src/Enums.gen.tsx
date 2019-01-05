@@ -51,7 +51,7 @@ export const saturday: "saturday" = "saturday";
 
 export const sunday: "sunday" = "sunday";
 
-export const onlySunday: (_1:"sunday") => void = function _(Arg1: any) { const result = EnumsBS.onlySunday(/* sunday */569248848); return result };
+export const onlySunday: (_1:"sunday") => void = function _(Arg1: any) { const result = EnumsBS.onlySunday(sunday); return result };
 
 export const swap: (_1:"saturday" | "sunday") => "saturday" | "sunday" = function _(Arg1: any) { const result = EnumsBS.swap($$toRE694113598[Arg1]); return $$toJS694113598[result] };
 

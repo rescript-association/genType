@@ -364,9 +364,10 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     ++ value
     |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
 
-  | EnumC({cases: [case], withPayload: [], _}) =>
+  | EnumC({cases: [case], withPayload: [], polyVariant, _}) =>
     toJS ?
-      case.labelJS |> labelJSToString : case.label |> Runtime.emitVariantLabel
+      case.labelJS |> labelJSToString :
+      case.label |> Runtime.emitVariantLabel(~polyVariant)
 
   | EnumC(enumC) =>
     let table = toJS ? enumC.toJS : enumC.toRE;
@@ -403,7 +404,10 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
                ~nameGen,
                ~toJS,
              )
-          |> Runtime.emitVariantWithPayload(~label=case.label);
+          |> Runtime.emitVariantWithPayload(
+               ~label=case.label,
+               ~polyVariant=enumC.polyVariant,
+             );
         };
       "("
       ++ (value |> EmitText.typeOfObject)
@@ -413,7 +417,7 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
       ++ (value |> accessTable)
       ++ ")";
     | [_, ..._] =>
-      let convertCaseWithPayload = (case, objConverter) =>
+      let convertCaseWithPayload = (~polyVariant, ~objConverter, case) =>
         value
         |> (
           toJS ?
@@ -431,16 +435,21 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
             Runtime.emitJSVariantWithPayload(
               ~label=case.labelJS |> labelJSToString,
             ) :
-            Runtime.emitVariantWithPayload(~label=case.label)
+            Runtime.emitVariantWithPayload(~label=case.label, ~polyVariant)
         );
       let switchCases =
         enumC.withPayload
         |> List.map(((case, objConverter)) =>
              (
                toJS ?
-                 case.label |> Runtime.emitVariantLabel :
+                 case.label
+                 |> Runtime.emitVariantLabel(~polyVariant=enumC.polyVariant) :
                  case.labelJS |> labelJSToString,
-               convertCaseWithPayload(case, objConverter),
+               case
+               |> convertCaseWithPayload(
+                    ~polyVariant=enumC.polyVariant,
+                    ~objConverter,
+                  ),
              )
            );
       let casesWithPayload =
