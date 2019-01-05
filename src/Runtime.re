@@ -61,9 +61,15 @@ let emitVariantLabel = (~comment=true, ~polyVariant, label) =>
     label;
   };
 
-let emitVariantGetLabel = x => x ++ EmitText.array(["0"]);
+let emitVariantGetLabel = (~polyVariant, x) =>
+  if (polyVariant) {
+    x ++ EmitText.array(["0"]);
+  } else {
+    x ++ "." ++ "tag";
+  };
 
-let emitVariantGetPayload = x => x ++ EmitText.array(["1"]);
+let emitVariantGetPayload = (~polyVariant as _, x) =>
+  x ++ EmitText.array(["1"]);
 
 let emitVariantWithPayload = (~label, ~polyVariant, x) =>
   if (polyVariant) {
