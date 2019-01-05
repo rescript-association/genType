@@ -16,7 +16,7 @@ import * as Records from "./nested/Records.gen";
 import * as Types from "./nested/Types.gen";
 import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules.gen";
 import ReasonComponent from "./ReasonComponent.gen";
-import { t, minus, tToString } from "./ReasonComponent.gen";
+import { minus, t, tToString } from "./ReasonComponent.gen";
 import registerServiceWorker from "./registerServiceWorker";
 
 const minusOne: number = minus({ second: 1 });
