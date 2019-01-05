@@ -52,9 +52,11 @@ let testSimpleVariant = (x: simpleVariant) => x;
 
 [@genType]
 type variantWithPayloads =
-  | A(int, int)
-  | B((int, int))
-  | C;
+  | A
+  | B(int)
+  | C(int, int)
+  | D((int, int))
+  | E(int, string, int);
 
 [@genType]
 let testVariantWithPayloads = (x: variantWithPayloads) => x;
