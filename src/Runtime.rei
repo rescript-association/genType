@@ -31,7 +31,8 @@ let emitRecordAsInt: (~config: config, recordValue) => string;
 
 let emitVariantGetLabel: (~polyVariant: bool, string) => string;
 
-let emitVariantGetPayload: (~polyVariant: bool, string) => string;
+let emitVariantGetPayload:
+  (~numArgs: int, ~polyVariant: bool, string) => string;
 
 let emitVariantLabel: (~comment: bool=?, ~polyVariant: bool, string) => string;
 

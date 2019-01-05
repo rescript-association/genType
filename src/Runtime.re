@@ -70,11 +70,16 @@ let emitVariantGetLabel = (~polyVariant, x) =>
     x ++ "." ++ "tag";
   };
 
-let emitVariantGetPayload = (~polyVariant, x) =>
+let emitVariantGetPayload = (~numArgs, ~polyVariant, x) =>
   if (polyVariant) {
     x ++ EmitText.array(["1"]);
-  } else {
+  } else if (numArgs == 1) {
     x ++ EmitText.array(["0"]);
+  } else {
+    Array.make(numArgs, ())
+    |> Array.to_list
+    |> List.mapi((i, ()) => x ++ "[" ++ string_of_int(i) ++ "]")
+    |> EmitText.array;
   };
 
 let emitVariantWithPayload =
