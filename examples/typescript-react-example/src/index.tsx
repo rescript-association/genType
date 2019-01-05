@@ -16,21 +16,18 @@ import * as Records from "./nested/Records.gen";
 import * as Types from "./nested/Types.gen";
 import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules.gen";
 import ReasonComponent from "./ReasonComponent.gen";
-import { A, B, minus, tToString } from "./ReasonComponent.gen";
-import { t, TA, TB } from "./ReasonComponent.gen";
+import { t, minus, tToString } from "./ReasonComponent.gen";
 import registerServiceWorker from "./registerServiceWorker";
 
 const minusOne: number = minus({ second: 1 });
 
-const a: TA = A;
-const b: TB = B(3);
-const thisIsOK: t = A;
-// const thisIsATypeError: TB = A;
+const a: t = "A";
+const b: t = {tag:"B", value:[3]};
 
 // tslint:disable-next-line:no-console
 const consoleLog = console.log;
 
-consoleLog(a, b, thisIsOK);
+consoleLog(a, b);
 
 const intList = Types.map(x => x + 1, Types.someIntList);
 
