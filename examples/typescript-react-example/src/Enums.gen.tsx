@@ -2,7 +2,7 @@
 
 const $$toJS1061900109 = {"120": "x", "26810": "same"};
 
-const $$toRE694113598 = {"saturday": saturday, "sunday": sunday};
+const $$toRE694113598 = {"saturday": -29784519, "sunday": 569248848};
 
 const $$toRE1061900109 = {"x": 120, "same": 26810};
 
@@ -18,7 +18,7 @@ const $$toRE508922110 = {"type": 449540197, "module": -134553037, "42": 23437694
 
 const $$toRE584768163 = {"type": 449540197, "module": -134553037, "XXX THIS IS DIFFERENT": 23437694};
 
-const $$toJS694113598 = {"saturday": "saturday", "sunday": "sunday"};
+const $$toJS694113598 = {"-29784519": "saturday", "569248848": "sunday"};
 
 const $$toRE288839514 = {"monday": -949852400, "tuesday": 323181965, "wednesday": -863289194, "thursday": 122883354, "friday": 835226847, "saturday": -29784519, "sunday": 569248848};
 
@@ -51,7 +51,7 @@ export const saturday: "saturday" = "saturday";
 
 export const sunday: "sunday" = "sunday";
 
-export const onlySunday: (_1:"sunday") => void = function _(Arg1: any) { const result = EnumsBS.onlySunday(sunday); return result };
+export const onlySunday: (_1:"sunday") => void = function _(Arg1: any) { const result = EnumsBS.onlySunday(/* sunday */569248848); return result };
 
 export const swap: (_1:"saturday" | "sunday") => "saturday" | "sunday" = function _(Arg1: any) { const result = EnumsBS.swap($$toRE694113598[Arg1]); return $$toJS694113598[result] };
 
