@@ -60,3 +60,44 @@ type variantWithPayloads =
 
 [@genType]
 let testVariantWithPayloads = (x: variantWithPayloads) => x;
+
+[@genType]
+let printVariantWithPayloads = x =>
+  switch (x) {
+  | A => "A"
+  | B(x) => "B(" ++ string_of_int(x) ++ ")"
+  | C(x, y) => "C(" ++ string_of_int(x) ++ ", " ++ string_of_int(y) ++ ")"
+  | D((x, y)) =>
+    "D((" ++ string_of_int(x) ++ ", " ++ string_of_int(y) ++ "))"
+  | E(x, s, y) =>
+    "E(" ++ string_of_int(x) ++ ", " ++ s ++ ", " ++ string_of_int(y) ++ ")"
+  };
+
+/*
+ [@genType]
+ type variant1 =
+   | R(int);
+
+ [@genType]
+ let testVariant1 = (x: variant1) => x;
+
+ [@genType]
+ type polyVariant1 = [ | `R(int)];
+
+ [@genType]
+ let testPolyVariant1 = (x: polyVariant1) => x;
+
+ [@genType]
+ type variant2 =
+   | R(int)
+   | S(int);
+
+ [@genType]
+ let testVariant2 = (x: variant2) => x;
+
+ [@genType]
+ type polyVariant2 = [ | `R(int) | `S(int)];
+
+ [@genType]
+ let testPolyVariant2 = (x: polyVariant2) => x;
+ */

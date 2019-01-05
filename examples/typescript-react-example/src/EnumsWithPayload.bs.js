@@ -64,6 +64,25 @@ function testVariantWithPayloads(x) {
   return x;
 }
 
+function printVariantWithPayloads(x) {
+  if (typeof x === "number") {
+    return "A";
+  } else {
+    switch (x.tag | 0) {
+      case 0 : 
+          return "B(" + (String(x[0]) + ")");
+      case 1 : 
+          return "C(" + (String(x[0]) + (", " + (String(x[1]) + ")")));
+      case 2 : 
+          var match = x[0];
+          return "D((" + (String(match[0]) + (", " + (String(match[1]) + "))")));
+      case 3 : 
+          return "E(" + (String(x[0]) + (", " + (x[1] + (", " + (String(x[2]) + ")")))));
+      
+    }
+  }
+}
+
 export {
   testWithPayload ,
   printEnumValue ,
@@ -71,6 +90,7 @@ export {
   printManyPayloads ,
   testSimpleVariant ,
   testVariantWithPayloads ,
+  printVariantWithPayloads ,
   
 }
 /* No side effect */
