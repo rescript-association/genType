@@ -367,12 +367,14 @@ let traslateDeclarationKind =
            );
       let withPayload =
         variantsWithPayload
-        |> List.map(((name, argTypes, recordValue)) =>
-             (
-               {label: recordValue, labelJS: StringLabel(name)},
-               Tuple(argTypes),
-             )
-           );
+        |> List.map(((name, argTypes, recordValue)) => {
+             let typ =
+               switch (argTypes) {
+               | [typ] => typ
+               | _ => Tuple(argTypes)
+               };
+             ({label: recordValue, labelJS: StringLabel(name)}, typ);
+           });
       cases |> createEnum(~withPayload, ~polyVariant=false);
     };
 
