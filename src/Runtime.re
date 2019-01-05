@@ -53,16 +53,20 @@ let newModuleItem = moduleItemGen => {
 
 let emitModuleItem = itemValue => itemValue |> string_of_int;
 
-let emitVariantLabel = (~comment=true, label) =>
-  (comment ? label |> EmitText.comment : "")
-  ++ (label |> Btype.hash_variant |> string_of_int);
+let emitVariantLabel = (~comment=true, ~polyVariant, label) =>
+  if (polyVariant) {
+    (comment ? label |> EmitText.comment : "")
+    ++ (label |> Btype.hash_variant |> string_of_int);
+  } else {
+    label;
+  };
 
 let emitVariantGetLabel = x => x ++ EmitText.array(["0"]);
 
 let emitVariantGetPayload = x => x ++ EmitText.array(["1"]);
 
-let emitVariantWithPayload = (~label, x) =>
-  EmitText.array([label |> emitVariantLabel, x]);
+let emitVariantWithPayload = (~label, ~polyVariant, x) =>
+  EmitText.array([label |> emitVariantLabel(~polyVariant), x]);
 
 let jsVariantTag = "tag";
 let jsVariantValue = "value";

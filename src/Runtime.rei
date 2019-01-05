@@ -27,9 +27,10 @@ let emitVariantGetLabel: string => string;
 
 let emitVariantGetPayload: string => string;
 
-let emitVariantLabel: (~comment: bool=?, string) => string;
+let emitVariantLabel: (~comment: bool=?, ~polyVariant: bool, string) => string;
 
-let emitVariantWithPayload: (~label: string, string) => string;
+let emitVariantWithPayload:
+  (~label: string, ~polyVariant: bool, string) => string;
 
 let isMutableObjectField: string => bool;
 
