@@ -2,7 +2,7 @@
 
 const $$toJS542320962 = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
 
-const XX = {"0": "C"};
+const XX = {"0": "A"};
 
 const $$toRE1058613066 = {};
 
@@ -10,7 +10,7 @@ const $$toJS1058613066 = {};
 
 const $$toRE542320962 = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
 
-const YY = {"C": 0};
+const YY = {"A": 0};
 
 // tslint:disable-next-line:no-var-requires
 const EnumsWithPayloadBS = require('./EnumsWithPayload.bs');
@@ -28,7 +28,7 @@ export type manyPayloads = {tag: "one", value: number} | {tag: "two", value: [st
 export type simpleVariant = "A" | "B" | "C";
 
 // tslint:disable-next-line:interface-over-type-literal
-export type variantWithPayloads = "C" | {tag: "A", value: [number, number]} | {tag: "B", value: [[number, number]]};
+export type variantWithPayloads = "A" | {tag: "B", value: [number]} | {tag: "C", value: [number, number]} | {tag: "D", value: [[number, number]]} | {tag: "E", value: [number, string, number]};
 
 export const testWithPayload: (_1:withPayload) => withPayload = function _(Arg1: any) { const result = EnumsWithPayloadBS.testWithPayload((typeof(Arg1) === 'object' ? [/* c */99, [Arg1.x, Arg1.y]] : $$toRE542320962[Arg1.toString()])); return (typeof(result) === 'object' ? {x:result[1][0], y:result[1][1]} : $$toJS542320962[result]) };
 
@@ -40,4 +40,4 @@ export const printManyPayloads: (_1:manyPayloads) => void = function _(Arg1: any
 
 export const testSimpleVariant: (_1:simpleVariant) => simpleVariant = function _(Arg1: any) { const result = EnumsWithPayloadBS.testSimpleVariant(YY[Arg1]); return XX[result] };
 
-export const testVariantWithPayloads: (_1:variantWithPayloads) => variantWithPayloads = function _(Arg1: any) { const result = EnumsWithPayloadBS.testVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="A" ? [/* 0 */48, Arg1.value] :  [/* 1 */49, Arg1.value]) : YY[Arg1])); return (typeof(result) === 'object' ? (result[0]===/* 0 */48 ? {tag:"A", value:result[1]} :  {tag:"B", value:result[1]}) : XX[result]) };
+export const testVariantWithPayloads: (_1:variantWithPayloads) => variantWithPayloads = function _(Arg1: any) { const result = EnumsWithPayloadBS.testVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? [/* 0 */48, Arg1.value] :  Arg1.tag==="C" ? [/* 1 */49, Arg1.value] :  Arg1.tag==="D" ? [/* 2 */50, Arg1.value] :  [/* 3 */51, Arg1.value]) : YY[Arg1])); return (typeof(result) === 'object' ? (result[0]===/* 0 */48 ? {tag:"B", value:result[1]} :  result[0]===/* 1 */49 ? {tag:"C", value:result[1]} :  result[0]===/* 2 */50 ? {tag:"D", value:result[1]} :  {tag:"E", value:result[1]}) : XX[result]) };
