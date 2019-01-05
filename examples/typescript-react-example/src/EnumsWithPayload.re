@@ -64,20 +64,31 @@ let testVariantWithPayloads = (x: variantWithPayloads) => x;
 [@genType]
 let printVariantWithPayloads = x =>
   switch (x) {
-  | A => "A"
-  | B(x) => "B(" ++ string_of_int(x) ++ ")"
-  | C(x, y) => "C(" ++ string_of_int(x) ++ ", " ++ string_of_int(y) ++ ")"
+  | A => Js.log2("printVariantWithPayloads", "A")
+  | B(x) =>
+    Js.log2("printVariantWithPayloads", "B(" ++ string_of_int(x) ++ ")")
+  | C(x, y) =>
+    Js.log2(
+      "printVariantWithPayloads",
+      "C(" ++ string_of_int(x) ++ ", " ++ string_of_int(y) ++ ")",
+    )
   | D((x, y)) =>
-    "D((" ++ string_of_int(x) ++ ", " ++ string_of_int(y) ++ "))"
+    Js.log2(
+      "printVariantWithPayloads",
+      "D((" ++ string_of_int(x) ++ ", " ++ string_of_int(y) ++ "))",
+    )
   | E(x, s, y) =>
-    "E(" ++ string_of_int(x) ++ ", " ++ s ++ ", " ++ string_of_int(y) ++ ")"
+    Js.log2(
+      "printVariantWithPayloads",
+      "E("
+      ++ string_of_int(x)
+      ++ ", "
+      ++ s
+      ++ ", "
+      ++ string_of_int(y)
+      ++ ")",
+    )
   };
-
-[@genType]
-let c = C(1, 2);
-
-[@genType]
-let d = D((1, 2));
 
 /*
  [@genType]
