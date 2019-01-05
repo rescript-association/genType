@@ -76,10 +76,8 @@ let emitVariantGetPayload = (~numArgs, ~polyVariant, x) =>
   } else if (numArgs == 1) {
     x ++ EmitText.array(["0"]);
   } else {
-    Array.make(numArgs, ())
-    |> Array.to_list
-    |> List.mapi((i, ()) => x ++ "[" ++ string_of_int(i) ++ "]")
-    |> EmitText.array;
+    /* use runtime block as a tuple, hopefully the tag is ignored */
+    x;
   };
 
 let emitVariantWithPayload =
