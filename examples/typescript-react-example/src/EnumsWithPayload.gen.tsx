@@ -17,6 +17,9 @@ const $$toJS1058613066 = {};
 const $$toRE542320962 = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
 
 // tslint:disable-next-line:no-var-requires
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
+
+// tslint:disable-next-line:no-var-requires
 const EnumsWithPayloadBS = require('./EnumsWithPayload.bs');
 
 // tslint:disable-next-line:interface-over-type-literal

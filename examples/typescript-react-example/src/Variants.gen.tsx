@@ -3,6 +3,9 @@
 const $$toRE102731832 = {"NoOp": 0};
 
 // tslint:disable-next-line:no-var-requires
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
+
+// tslint:disable-next-line:no-var-requires
 const VariantsBS = require('./Variants.bs');
 
 // tslint:disable-next-line:interface-over-type-literal

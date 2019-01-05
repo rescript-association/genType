@@ -21,7 +21,9 @@ let emitRecordAsInt = (~config, recordValue) =>
 
 let recordValueToString = recordValue => recordValue |> string_of_int;
 
-let emitRecordAsBlock = (~config, ~args, recordValue) =>
+let emitRecordAsBlock =
+    (~config, ~args, ~useCreateBucklescriptBlock, recordValue) => {
+  useCreateBucklescriptBlock := true;
   createBucklescriptBlock
   |> EmitText.funCall(
        ~args=[
@@ -29,7 +31,7 @@ let emitRecordAsBlock = (~config, ~args, recordValue) =>
          EmitText.array(args),
        ],
      );
-
+};
 let recordGen = () => {unboxed: 0, boxed: 0};
 
 let newRecordValue = (~unboxed, recordGen) =>
@@ -71,10 +73,12 @@ let emitVariantGetLabel = (~polyVariant, x) =>
 let emitVariantGetPayload = (~polyVariant as _, x) =>
   x ++ EmitText.array(["1"]);
 
-let emitVariantWithPayload = (~label, ~polyVariant, x) =>
+let emitVariantWithPayload =
+    (~label, ~polyVariant, ~useCreateBucklescriptBlock, x) =>
   if (polyVariant) {
     EmitText.array([label |> emitVariantLabel(~polyVariant), x]);
   } else {
+    useCreateBucklescriptBlock := true;
     createBucklescriptBlock |> EmitText.funCall(~args=[label, x]);
   };
 
