@@ -31,7 +31,7 @@ import type {variant as AutoAnnotate_variant} from './AutoAnnotate.gen';
 // flowlint-next-line nonstrict-import:off
 import type {weekday} from './SomeFlowTypes';
 
-export type typeWithVars = {|tag: "A", value: [x, y]|} | {|tag: "B", value: [z]|};
+export type typeWithVars<x,y,z> = {|tag: "A", value: [x, y]|} | {|tag: "B", value: [z]|};
 
 export type optionInt = ?number;
 

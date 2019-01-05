@@ -392,7 +392,7 @@ let traslateDeclarationKind =
           nameAs: None,
           opaque: None,
           optTyp: Some(enumTyp),
-          typeVars: [],
+          typeVars,
           resolvedTypeName,
         }),
       annotation,

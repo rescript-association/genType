@@ -9,7 +9,7 @@ import {list} from '../../src/shims/ReasonPervasives.shim';
 export type t = number;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type typeWithVars = {tag: "A", value: [x, y]} | {tag: "B", value: [z]};
+export type typeWithVars<x,y,z> = {tag: "A", value: [x, y]} | {tag: "B", value: [z]};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type tree = {
