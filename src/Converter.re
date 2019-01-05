@@ -417,7 +417,10 @@ let rec apply =
       let casesWithPayload =
         if (toJS) {
           value
-          |> Runtime.emitVariantGetPayload(~polyVariant=enumC.polyVariant)
+          |> Runtime.emitVariantGetPayload(
+               ~numArgs,
+               ~polyVariant=enumC.polyVariant,
+             )
           |> apply(
                ~config,
                ~converter=objConverter,
@@ -455,7 +458,10 @@ let rec apply =
         value
         |> (
           toJS ?
-            Runtime.emitVariantGetPayload(~polyVariant=enumC.polyVariant) :
+            Runtime.emitVariantGetPayload(
+              ~numArgs,
+              ~polyVariant=enumC.polyVariant,
+            ) :
             Runtime.emitJSVariantGetPayload
         )
         |> apply(
