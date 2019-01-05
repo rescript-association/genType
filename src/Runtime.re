@@ -70,8 +70,12 @@ let emitVariantGetLabel = (~polyVariant, x) =>
     x ++ "." ++ "tag";
   };
 
-let emitVariantGetPayload = (~polyVariant as _, x) =>
-  x ++ EmitText.array(["1"]);
+let emitVariantGetPayload = (~polyVariant, x) =>
+  if (polyVariant) {
+    x ++ EmitText.array(["1"]);
+  } else {
+    x ++ EmitText.array(["0"]);
+  };
 
 let emitVariantWithPayload =
     (~label, ~polyVariant, ~useCreateBucklescriptBlock, x) =>
@@ -79,7 +83,8 @@ let emitVariantWithPayload =
     EmitText.array([label |> emitVariantLabel(~polyVariant), x]);
   } else {
     useCreateBucklescriptBlock := true;
-    createBucklescriptBlock |> EmitText.funCall(~args=[label, x]);
+    createBucklescriptBlock
+    |> EmitText.funCall(~args=[label, [x] |> EmitText.array]);
   };
 
 let jsVariantTag = "tag";

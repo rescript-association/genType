@@ -22,7 +22,7 @@ import registerServiceWorker from "./registerServiceWorker";
 const minusOne: number = minus({ second: 1 });
 
 const a: t = "A";
-const b: t = {tag:"B", value:[3]};
+const b: t = {tag:"B", value:3};
 
 // tslint:disable-next-line:no-console
 const consoleLog = console.log;
