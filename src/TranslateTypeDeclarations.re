@@ -373,7 +373,12 @@ let traslateDeclarationKind =
                | [typ] => typ
                | _ => Tuple(argTypes)
                };
-             ({label: recordValue, labelJS: StringLabel(name)}, typ);
+             let numArgs = argTypes |> List.length;
+             (
+               {label: recordValue, labelJS: StringLabel(name)},
+               numArgs,
+               typ,
+             );
            });
       cases |> createEnum(~withPayload, ~polyVariant=false);
     };

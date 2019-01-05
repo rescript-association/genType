@@ -73,7 +73,7 @@ and variantLeaf = {
 }
 and enum = {
   cases: list(case),
-  withPayload: list((case, typ)),
+  withPayload: list((case, int, typ)),
   polyVariant: bool,
   toJS: string,
   toRE: string,

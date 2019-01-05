@@ -100,7 +100,7 @@ let rec renderTyp =
       |> renderFields(~config, ~indent, ~typeNameIsInterface, ~inFunType);
     let withPayloadRendered =
       withPayload
-      |> List.map(((case, typ)) => {
+      |> List.map(((case, _numArgs, typ)) => {
            let typRendered =
              typ
              |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType);

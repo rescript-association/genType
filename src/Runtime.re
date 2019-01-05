@@ -78,13 +78,13 @@ let emitVariantGetPayload = (~polyVariant, x) =>
   };
 
 let emitVariantWithPayload =
-    (~label, ~polyVariant, ~useCreateBucklescriptBlock, x) =>
+    (~label, ~numArgs, ~polyVariant, ~useCreateBucklescriptBlock, x) =>
   if (polyVariant) {
     EmitText.array([label |> emitVariantLabel(~polyVariant), x]);
   } else {
     useCreateBucklescriptBlock := true;
-    createBucklescriptBlock
-    |> EmitText.funCall(~args=[label, [x] |> EmitText.array]);
+    let args = numArgs == 1 ? [x] |> EmitText.array : x;
+    createBucklescriptBlock |> EmitText.funCall(~args=[label, args]);
   };
 
 let jsVariantTag = "tag";

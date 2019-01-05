@@ -1052,7 +1052,7 @@ let propagateAnnotationToSubTypes =
         }
       | Array(t, _) => t |> visit
       | Enum({withPayload}) =>
-        withPayload |> List.iter(((_, t)) => t |> visit)
+        withPayload |> List.iter(((_, _, t)) => t |> visit)
       | Function({argTypes, retType, _}) =>
         argTypes |> List.iter(visit);
         retType |> visit;
