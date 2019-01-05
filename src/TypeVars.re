@@ -44,7 +44,10 @@ let rec substitute = (~f, typ) =>
     Enum({
       ...enum,
       withPayload:
-        enum.withPayload |> List.map(((case, t)) => (case, t |> substitute(~f))),
+        enum.withPayload
+        |> List.map(((case, numArgs, t)) =>
+             (case, numArgs, t |> substitute(~f))
+           ),
     })
   | Function(function_) =>
     Function({
@@ -93,7 +96,7 @@ let rec free_ = typ: StringSet.t =>
   | Enum({withPayload}) =>
     withPayload
     |> List.fold_left(
-         (s, (_, t)) => StringSet.union(s, t |> free_),
+         (s, (_, _, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
   | Function({typeVars, argTypes, retType}) =>

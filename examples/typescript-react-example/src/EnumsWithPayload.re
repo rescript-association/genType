@@ -73,6 +73,12 @@ let printVariantWithPayloads = x =>
     "E(" ++ string_of_int(x) ++ ", " ++ s ++ ", " ++ string_of_int(y) ++ ")"
   };
 
+[@genType]
+let c = C(1, 2);
+
+[@genType]
+let d = D((1, 2));
+
 /*
  [@genType]
  type variant1 =

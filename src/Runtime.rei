@@ -38,6 +38,7 @@ let emitVariantLabel: (~comment: bool=?, ~polyVariant: bool, string) => string;
 let emitVariantWithPayload:
   (
     ~label: string,
+    ~numArgs: int,
     ~polyVariant: bool,
     ~useCreateBucklescriptBlock: ref(bool),
     string

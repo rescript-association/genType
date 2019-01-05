@@ -17,7 +17,7 @@ and groupedArgConverter =
 and fieldsC = list((string, t))
 and enumC = {
   cases: list(case),
-  withPayload: list((case, t)),
+  withPayload: list((case, int, t)),
   polyVariant: bool,
   toJS: string,
   toRE: string,
@@ -36,8 +36,12 @@ let rec toString = converter =>
       (cases |> List.map(case => case.labelJS |> labelJSToString))
       @ (
         withPayload
-        |> List.map(((case, c)) =>
-             (case.labelJS |> labelJSToString) ++ ":" ++ (c |> toString)
+        |> List.map(((case, numArgs, c)) =>
+             (case.labelJS |> labelJSToString)
+             ++ ":"
+             ++ string_of_int(numArgs)
+             ++ ":"
+             ++ (c |> toString)
            )
       )
       |> String.concat(", ")
@@ -133,17 +137,17 @@ let typToConverterNormalized =
       let (withPayload, normalized, unboxed) =
         switch (enum.withPayload) {
         | [] => ([], normalized_, enum.unboxed)
-        | [(case, t)] =>
+        | [(case, numArgs, t)] =>
           let converter = t |> visit(~visited) |> fst;
           let unboxed = t |> expandOneLevel |> typIsObject;
           let normalized =
             unboxed ? Some(Enum({...enum, unboxed: true})) : None;
-          ([(case, converter)], normalized, unboxed);
+          ([(case, numArgs, converter)], normalized, unboxed);
         | [_, _, ..._] => (
             enum.withPayload
-            |> List.map(((case, t)) => {
+            |> List.map(((case, numArgs, t)) => {
                  let converter = t |> visit(~visited) |> fst;
-                 (case, converter);
+                 (case, numArgs, converter);
                }),
             normalized_,
             enum.unboxed,
@@ -409,7 +413,7 @@ let rec apply =
     switch (enumC.withPayload) {
     | [] => value |> accessTable
 
-    | [(case, objConverter)] when enumC.unboxed =>
+    | [(case, numArgs, objConverter)] when enumC.unboxed =>
       let casesWithPayload =
         if (toJS) {
           value
@@ -434,6 +438,7 @@ let rec apply =
              )
           |> Runtime.emitVariantWithPayload(
                ~label=case.label,
+               ~numArgs,
                ~polyVariant=enumC.polyVariant,
                ~useCreateBucklescriptBlock,
              );
@@ -446,7 +451,7 @@ let rec apply =
       ++ (value |> accessTable)
       ++ ")";
     | [_, ..._] =>
-      let convertCaseWithPayload = (~objConverter, case) =>
+      let convertCaseWithPayload = (~objConverter, ~numArgs, case) =>
         value
         |> (
           toJS ?
@@ -468,19 +473,20 @@ let rec apply =
             ) :
             Runtime.emitVariantWithPayload(
               ~label=case.label,
+              ~numArgs,
               ~polyVariant=enumC.polyVariant,
               ~useCreateBucklescriptBlock,
             )
         );
       let switchCases =
         enumC.withPayload
-        |> List.map(((case, objConverter)) =>
+        |> List.map(((case, numArgs, objConverter)) =>
              (
                toJS ?
                  case.label
                  |> Runtime.emitVariantLabel(~polyVariant=enumC.polyVariant) :
                  case.labelJS |> labelJSToString,
-               case |> convertCaseWithPayload(~objConverter),
+               case |> convertCaseWithPayload(~objConverter, ~numArgs),
              )
            );
       let casesWithPayload =
