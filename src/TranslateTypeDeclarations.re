@@ -10,13 +10,18 @@ type declarationKind =
   | VariantDeclarationFromTypes(list(Types.constructor_declaration))
   | NoDeclaration;
 
-let createExportType =
+let createExportTypeFromTypeDeclaration =
     (~nameAs, ~opaque, ~typeVars, ~optTyp, ~annotation, ~typeEnv, typeName)
     : CodeItem.exportFromTypeDeclaration => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
   {
-    exportKind:
-      ExportType({nameAs, opaque, optTyp, typeVars, resolvedTypeName}),
+    exportType: {
+      nameAs,
+      opaque,
+      optTyp,
+      typeVars,
+      resolvedTypeName,
+    },
     annotation,
   };
 };
@@ -67,7 +72,7 @@ let traslateDeclarationKind =
       let exportFromTypeDeclaration =
         /* Make the imported type usable from other modules by exporting it too. */
         typeName_
-        |> createExportType(
+        |> createExportTypeFromTypeDeclaration(
              ~nameAs=None,
              ~opaque=Some(false),
              ~typeVars=[],
@@ -93,7 +98,7 @@ let traslateDeclarationKind =
             importTypes: [],
             exportFromTypeDeclaration:
               typeName
-              |> createExportType(
+              |> createExportTypeFromTypeDeclaration(
                    ~nameAs,
                    ~opaque=Some(true),
                    ~typeVars,
@@ -109,7 +114,7 @@ let traslateDeclarationKind =
           someType |> defaultCase;
         let exportFromTypeDeclaration =
           typeName
-          |> createExportType(
+          |> createExportTypeFromTypeDeclaration(
                ~nameAs,
                ~opaque,
                ~typeVars,
@@ -247,7 +252,7 @@ let traslateDeclarationKind =
         importTypes,
         exportFromTypeDeclaration:
           typeName
-          |> createExportType(
+          |> createExportTypeFromTypeDeclaration(
                ~nameAs=None,
                ~opaque,
                ~typeVars,
@@ -321,14 +326,13 @@ let traslateDeclarationKind =
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
     let variantAsEnumType = {
-      CodeItem.exportKind:
-        ExportType({
-          nameAs: None,
-          opaque: None,
-          optTyp: Some(enumTyp),
-          typeVars,
-          resolvedTypeName,
-        }),
+      CodeItem.exportType: {
+        nameAs: None,
+        opaque: None,
+        optTyp: Some(enumTyp),
+        typeVars,
+        resolvedTypeName,
+      },
       annotation,
     };
     let importTypes =
