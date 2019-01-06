@@ -272,15 +272,16 @@ let typToConverterNormalized =
     };
 
   let (converter, normalized) = typ |> visit(~visited=StringSet.empty);
-  if (Debug.converter^) {
-    logItem(
-      "Converter typ:%s converter:%s\n",
-      typ |> EmitTyp.typToString(~config, ~typeNameIsInterface),
-      converter |> toString,
-    );
-  };
   let finalConverter =
     circular^ != "" ? CircularC(circular^, converter) : converter;
+  if (Debug.converter^) {
+    logItem(
+      "Converter %s typ:%s converter:%s\n",
+      normalized == None ? " opaque " : "",
+      typ |> EmitTyp.typToString(~config, ~typeNameIsInterface),
+      finalConverter |> toString,
+    );
+  };
   (finalConverter, normalized);
 };
 
