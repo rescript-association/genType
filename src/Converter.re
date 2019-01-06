@@ -46,6 +46,7 @@ let rec toString = converter =>
       )
       |> String.concat(", ")
     )
+    ++ ")"
 
   | FunctionC(groupedArgConverters, c) =>
     let labelToString = label =>
@@ -141,7 +142,7 @@ let typToConverterNormalized =
           let converter = t |> visit(~visited) |> fst;
           let unboxed = t |> expandOneLevel |> typIsObject;
           let normalized =
-            unboxed ? Some(Enum({...enum, unboxed: true})) : None;
+            unboxed ? Some(Enum({...enum, unboxed: true})) : normalized_;
           ([(case, numArgs, converter)], normalized, unboxed);
         | [_, _, ..._] => (
             enum.withPayload

@@ -12,8 +12,8 @@ export type Universe_Nested2_nested2Type = Array<string[]>;
 // tslint:disable-next-line:interface-over-type-literal
 export type Universe_Nested2_Nested3_nested3Type = Array<Array<string[]>>;
 
-// tslint:disable-next-line:max-classes-per-file 
-export abstract class Universe_variant { protected opaque!: any }; /* simulate opaque types */
+// tslint:disable-next-line:interface-over-type-literal
+export type Universe_variant = "A" | {tag: "B", value: string};
 
 export const notNested: number = NestedModulesBS.notNested;
 

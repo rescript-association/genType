@@ -37,6 +37,12 @@ export type simpleVariant = "A" | "B" | "C";
 // tslint:disable-next-line:interface-over-type-literal
 export type variantWithPayloads = "A" | {tag: "B", value: number} | {tag: "C", value: [number, number]} | {tag: "D", value: [number, number]} | {tag: "E", value: [number, string, number]};
 
+// tslint:disable-next-line:interface-over-type-literal
+export type variant1Int = {tag: "R", value: number};
+
+// tslint:disable-next-line:interface-over-type-literal
+export type variant1Object = payload;
+
 export const testWithPayload: (_1:withPayload) => withPayload = function _(Arg1: any) { const result = EnumsWithPayloadBS.testWithPayload((typeof(Arg1) === 'object' ? [/* c */99, [Arg1.x, Arg1.y]] : $$toRE542320962[Arg1.toString()])); return (typeof(result) === 'object' ? {x:result[1][0], y:result[1][1]} : $$toJS542320962[result]) };
 
 export const printEnumValue: (_1:withPayload) => void = function _(Arg1: any) { const result = EnumsWithPayloadBS.printEnumValue((typeof(Arg1) === 'object' ? [/* c */99, [Arg1.x, Arg1.y]] : $$toRE542320962[Arg1.toString()])); return result };
@@ -50,3 +56,7 @@ export const testSimpleVariant: (_1:simpleVariant) => simpleVariant = function _
 export const testVariantWithPayloads: (_1:variantWithPayloads) => variantWithPayloads = function _(Arg1: any) { const result = EnumsWithPayloadBS.testVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? CreateBucklescriptBlock.__(0, [Arg1.value]) :  Arg1.tag==="C" ? CreateBucklescriptBlock.__(1, Arg1.value) :  Arg1.tag==="D" ? CreateBucklescriptBlock.__(2, [Arg1.value]) :  CreateBucklescriptBlock.__(3, Arg1.value)) : $$toRE552311971[Arg1])); return (typeof(result) === 'object' ? (result.tag===0 ? {tag:"B", value:result[0]} :  result.tag===1 ? {tag:"C", value:result.slice()} :  result.tag===2 ? {tag:"D", value:result[0]} :  {tag:"E", value:result.slice()}) : $$toJS552311971[result]) };
 
 export const printVariantWithPayloads: (_1:variantWithPayloads) => void = function _(Arg1: any) { const result = EnumsWithPayloadBS.printVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? CreateBucklescriptBlock.__(0, [Arg1.value]) :  Arg1.tag==="C" ? CreateBucklescriptBlock.__(1, Arg1.value) :  Arg1.tag==="D" ? CreateBucklescriptBlock.__(2, [Arg1.value]) :  CreateBucklescriptBlock.__(3, Arg1.value)) : $$toRE552311971[Arg1])); return result };
+
+export const testVariant1Int: (_1:variant1Int) => variant1Int = function _(Arg1: any) { const result = EnumsWithPayloadBS.testVariant1Int((typeof(Arg1) === 'object' ? (CreateBucklescriptBlock.__(0, [Arg1.value])) : $$toRE1058613066[Arg1])); return (typeof(result) === 'object' ? ({tag:"R", value:result[0]}) : $$toJS1058613066[result]) };
+
+export const testVariant1Object: (_1:variant1Object) => variant1Object = function _(Arg1: any) { const result = EnumsWithPayloadBS.testVariant1Object((typeof(Arg1) === 'object' ? CreateBucklescriptBlock.__(0, [[Arg1.x, Arg1.y]]) : $$toRE1058613066[Arg1])); return (typeof(result) === 'object' ? {x:result[0][0], y:result[0][1]} : $$toJS1058613066[result]) };
