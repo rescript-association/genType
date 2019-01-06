@@ -13,7 +13,7 @@ import * as Curry from 'bs-platform/lib/es6/curry.js';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
-export opaque type variant = mixed;
+export type variant = {|tag: "R", value: number|};
 
 export type record = {|+variant: variant|};
 

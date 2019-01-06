@@ -88,6 +88,14 @@ function printVariantWithPayloads(x) {
   }
 }
 
+function testVariant1Int(x) {
+  return x;
+}
+
+function testVariant1Object(x) {
+  return x;
+}
+
 export {
   testWithPayload ,
   printEnumValue ,
@@ -96,6 +104,8 @@ export {
   testSimpleVariant ,
   testVariantWithPayloads ,
   printVariantWithPayloads ,
+  testVariant1Int ,
+  testVariant1Object ,
   
 }
 /* No side effect */

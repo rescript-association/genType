@@ -90,31 +90,17 @@ let printVariantWithPayloads = x =>
     )
   };
 
-/*
- [@genType]
- type variant1 =
-   | R(int);
+[@genType]
+type variant1Int =
+  | R(int);
 
- [@genType]
- let testVariant1 = (x: variant1) => x;
+[@genType]
+let testVariant1Int = (x: variant1Int) => x;
 
- [@genType]
- type polyVariant1 = [ | `R(int)];
 
- [@genType]
- let testPolyVariant1 = (x: polyVariant1) => x;
+[@genType]
+type variant1Object =
+  | R(payload);
 
- [@genType]
- type variant2 =
-   | R(int)
-   | S(int);
-
- [@genType]
- let testVariant2 = (x: variant2) => x;
-
- [@genType]
- type polyVariant2 = [ | `R(int) | `S(int)];
-
- [@genType]
- let testPolyVariant2 = (x: polyVariant2) => x;
- */
+[@genType]
+let testVariant1Object = (x: variant1Object) => x;
