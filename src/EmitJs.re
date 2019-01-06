@@ -26,11 +26,7 @@ let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (
-      ~config,
-      ~forTypePropagation,
-      declarations: list(CodeItem.typeDeclaration),
-    )
+    (~config, declarations: list(CodeItem.typeDeclaration))
     : CodeItem.exportTypeMap => {
   let updateExportTypeMap =
       (
@@ -72,37 +68,8 @@ let createExportTypeMap =
       | None => exportTypeMap
       };
     };
-    let addExportVariantType =
-        (
-          ~annotation,
-          {resolvedTypeName, typeVars, leaves, _}: CodeItem.exportVariantType,
-        ) => {
-      let doLeaf = (exportVariantLeaf: CodeItem.exportVariantLeaf) => {
-        leafName: exportVariantLeaf.leafName,
-        argTypes: exportVariantLeaf.constructorTyp.argTypes,
-      };
-      let typ = Variant(leaves |> List.map(doLeaf));
-      if (Debug.codeItems^) {
-        logItem(
-          "Type Map: %s%s Variant typ:%s\n",
-          resolvedTypeName,
-          typeVars == [] ?
-            "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
-          typ |> EmitTyp.typToString(~config, ~typeNameIsInterface=_ => false),
-        );
-      };
-      exportTypeMap
-      |> StringMap.add(
-           resolvedTypeName,
-           {CodeItem.typeVars, typ, annotation},
-         );
-    };
     switch (typeDeclaration.exportFromTypeDeclaration) {
-    | {exportKind: ExportType(exportType), annotation} =>
-      exportType |> addExportType(~annotation)
-    | {exportKind: ExportVariantType(exportVariantType), annotation} =>
-      forTypePropagation ?
-        exportVariantType |> addExportVariantType(~annotation) : exportTypeMap
+    | {exportType, annotation} => exportType |> addExportType(~annotation)
     };
   };
   declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
@@ -187,125 +154,18 @@ let emitExportFromTypeDeclaration =
       ~emitters,
       ~typGetNormalized,
       ~env,
-      ~typToConverter,
-      ~enumTables,
       ~typeNameIsInterface,
-      ~useCreateBucklescriptBlock,
       exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
-    ) =>
-  switch (exportFromTypeDeclaration.exportKind) {
-  | ExportType(exportType) => (
-      env,
-      exportType
-      |> emitExportType(
-           ~emitters,
-           ~config,
-           ~typGetNormalized,
-           ~typeNameIsInterface,
-         ),
-    )
-
-  | ExportVariantType({
-      CodeItem.resolvedTypeName,
-      typeVars,
-      variants,
-      leaves,
-      _,
-    }) =>
-    let emitOneLeaf =
-        (
-          (env, emitters),
-          {
-            CodeItem.exportType,
-            constructorTyp,
-            argTypes,
-            leafName,
-            recordValue,
-          },
-        ) => {
-      let nameGen = EmitText.newNameGen();
-      let createFunctionType =
-          ({CodeItem.typeVars, argTypes, variant: {name, params}}) => {
-        let retType = Ident(name, params);
-        if (argTypes === []) {
-          retType;
-        } else {
-          Function({typeVars, argTypes, retType});
-        };
-      };
-
-      let emitters =
-        emitExportType(
-          ~emitters,
-          ~config,
-          ~typGetNormalized,
-          ~typeNameIsInterface,
-          exportType,
-        );
-
-      let recordAsInt = recordValue |> Runtime.emitRecordAsInt(~config);
-      let emitters =
-        if (argTypes == []) {
-          recordAsInt
-          ++ ";"
-          |> EmitTyp.emitExportConst(
-               ~emitters,
-               ~name=leafName,
-               ~typeNameIsInterface,
-               ~typ=constructorTyp |> createFunctionType,
-               ~config,
-             );
-        } else {
-          let args =
-            argTypes
-            |> List.mapi((i, typ) => {
-                 let converter = typ |> typToConverter;
-                 let arg = i + 1 |> EmitText.argi(~nameGen);
-                 let v =
-                   arg
-                   |> Converter.toReason(
-                        ~config,
-                        ~converter,
-                        ~enumTables,
-                        ~nameGen,
-                        ~useCreateBucklescriptBlock,
-                      );
-                 (arg, v);
-               });
-          let mkReturn = s => "return " ++ s;
-          let mkBody = args =>
-            recordValue
-            |> Runtime.emitRecordAsBlock(
-                 ~config,
-                 ~args,
-                 ~useCreateBucklescriptBlock,
-               )
-            |> mkReturn;
-          EmitText.funDef(~args, ~mkBody, "")
-          |> EmitTyp.emitExportConst(
-               ~emitters,
-               ~name=leafName,
-               ~typeNameIsInterface,
-               ~typ=constructorTyp |> createFunctionType,
-               ~config,
-             );
-        };
-      (env, emitters);
-    };
-    let (env, emitters) =
-      leaves |> List.fold_left(emitOneLeaf, (env, emitters));
-    (
-      env,
-      EmitTyp.emitExportVariantType(
-        ~emitters,
-        ~config,
-        ~resolvedTypeName,
-        ~typeNameIsInterface,
-        ~typeVars,
-        ~variants,
-      ),
-    );
-  };
+    ) => (
+  env,
+  exportFromTypeDeclaration.exportType
+  |> emitExportType(
+       ~emitters,
+       ~config,
+       ~typGetNormalized,
+       ~typeNameIsInterface,
+     ),
+);
 
 let emitExportFromTypeDeclarations =
     (
@@ -313,11 +173,8 @@ let emitExportFromTypeDeclarations =
       ~emitters,
       ~typGetNormalized,
       ~env,
-      ~typToConverter,
-      ~enumTables,
       ~typeNameIsInterface,
       exportFromTypeDeclarations,
-      ~useCreateBucklescriptBlock,
     ) =>
   exportFromTypeDeclarations
   |> List.fold_left(
@@ -327,10 +184,7 @@ let emitExportFromTypeDeclarations =
            ~emitters,
            ~typGetNormalized,
            ~env,
-           ~typToConverter,
            ~typeNameIsInterface,
-           ~enumTables,
-           ~useCreateBucklescriptBlock,
          ),
        (env, emitters),
      );
@@ -927,7 +781,7 @@ let emitImportType =
                ~outputFileRelative,
                ~resolver,
              )
-          |> createExportTypeMap(~config, ~forTypePropagation=false);
+          |> createExportTypeMap(~config);
         let cmtToExportTypeMap =
           env.cmtToExportTypeMap
           |> StringMap.add(cmtFile, exportTypeMapFromCmt);
@@ -985,12 +839,11 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
   typeDeclarations
   |> List.map(typeDeclaration => {
        let nameInAnnotatedSet =
-         switch (typeDeclaration.CodeItem.exportFromTypeDeclaration.exportKind) {
-         | ExportType(exportType) =>
-           annotatedSet |> StringSet.mem(exportType.resolvedTypeName)
-         | ExportVariantType(exportVariantType) =>
-           annotatedSet |> StringSet.mem(exportVariantType.resolvedTypeName)
-         };
+         annotatedSet
+         |> StringSet.mem(
+              typeDeclaration.CodeItem.exportFromTypeDeclaration.exportType.
+                resolvedTypeName,
+            );
        if (nameInAnnotatedSet) {
          {
            ...typeDeclaration,
@@ -1104,7 +957,7 @@ let emitTranslationAsString =
 
   let (exportTypeMap, annotatedSet) =
     translation.typeDeclarations
-    |> createExportTypeMap(~config, ~forTypePropagation=true)
+    |> createExportTypeMap(~config)
     |> propagateAnnotationToSubTypes(~codeItems=translation.codeItems);
 
   let annotatedTypeDeclarations =
@@ -1176,10 +1029,7 @@ let emitTranslationAsString =
          ~emitters,
          ~typGetNormalized=typGetNormalized_(~env),
          ~env,
-         ~typToConverter=typToConverter_(~env),
-         ~enumTables,
          ~typeNameIsInterface=typeNameIsInterface(~env),
-         ~useCreateBucklescriptBlock,
        );
 
   let (env, emitters) =

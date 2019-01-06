@@ -96,11 +96,6 @@ let typIsObject = typ =>
   | Variant(_) => false
   };
 
-type variant = {
-  name: string,
-  params: list(typ),
-};
-
 type label =
   | Nolabel
   | Label(string)

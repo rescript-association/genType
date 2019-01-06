@@ -67,17 +67,6 @@ let emitExportType:
   ) =>
   Emitters.t;
 
-let emitExportVariantType:
-  (
-    ~emitters: Emitters.t,
-    ~config: config,
-    ~resolvedTypeName: string,
-    ~typeVars: list(string),
-    ~typeNameIsInterface: string => bool,
-    ~variants: list(variant)
-  ) =>
-  Emitters.t;
-
 let emitImportTypeAs:
   (
     ~emitters: Emitters.t,

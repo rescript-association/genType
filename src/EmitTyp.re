@@ -472,34 +472,6 @@ let emitExportType =
   };
 };
 
-let emitExportVariantType =
-    (
-      ~emitters,
-      ~config,
-      ~resolvedTypeName,
-      ~typeVars,
-      ~typeNameIsInterface,
-      ~variants: list(variant),
-    ) =>
-  switch (config.language) {
-  | Flow
-  | TypeScript =>
-    "export type "
-    ++ resolvedTypeName
-    ++ genericsString(~typeVars)
-    ++ " =\n  | "
-    ++ (
-      variants
-      |> List.map(({name, params}) =>
-           Ident(name, params) |> typToString(~config, ~typeNameIsInterface)
-         )
-      |> String.concat("\n  | ")
-    )
-    ++ ";"
-    |> Emitters.export(~emitters)
-  | Untyped => emitters
-  };
-
 let emitImportValueAsEarly = (~config, ~emitters, ~name, ~nameAs, importPath) => {
   let commentBeforeImport =
     config.language == Flow ?

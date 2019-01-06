@@ -8,27 +8,6 @@ type exportType = {
   resolvedTypeName: string,
 };
 
-type constructorTyp = {
-  typeVars: list(string),
-  argTypes: list(typ),
-  variant,
-};
-
-type exportVariantLeaf = {
-  exportType,
-  constructorTyp,
-  argTypes: list(typ),
-  leafName: string,
-  recordValue: Runtime.recordValue,
-};
-
-type exportVariantType = {
-  leaves: list(exportVariantLeaf),
-  resolvedTypeName: string,
-  typeVars: list(string),
-  variants: list(variant),
-};
-
 type importComponent = {
   asPath: string,
   childrenTyp: typ,
@@ -65,12 +44,8 @@ type exportValue = {
   valueAccessPath: string,
 };
 
-type exportKind =
-  | ExportType(exportType)
-  | ExportVariantType(exportVariantType);
-
 type exportFromTypeDeclaration = {
-  exportKind,
+  exportType,
   annotation: Annotation.t,
 };
 
