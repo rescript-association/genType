@@ -34,6 +34,9 @@ let funDef = (~args, ~mkBody, functionName) => {
   ++ (vals |> mkBody |> brackets);
 };
 
+let ifThenElse = (if_, then_, else_) =>
+  "(" ++ if_ ++ " ? " ++ then_ ++ " : " ++ else_ ++ ")";
+
 let newNameGen = () => Hashtbl.create(1);
 
 let quotes = x => "\"" ++ x ++ "\"";

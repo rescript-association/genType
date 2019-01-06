@@ -97,7 +97,6 @@ type variant1Int =
 [@genType]
 let testVariant1Int = (x: variant1Int) => x;
 
-
 [@genType]
 type variant1Object =
   | R(payload);

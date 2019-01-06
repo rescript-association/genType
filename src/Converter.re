@@ -448,13 +448,12 @@ let rec apply =
                ~useCreateBucklescriptBlock,
              );
         };
-      "("
-      ++ (value |> EmitText.typeOfObject)
-      ++ " ? "
-      ++ casesWithPayload
-      ++ " : "
-      ++ (value |> accessTable)
-      ++ ")";
+      EmitText.ifThenElse(
+        value |> EmitText.typeOfObject,
+        casesWithPayload,
+        value |> accessTable,
+      );
+
     | [_, ..._] =>
       let convertCaseWithPayload = (~objConverter, ~numArgs, case) =>
         value
@@ -505,13 +504,11 @@ let rec apply =
                emitJSVariantGetLabel
            )
         |> EmitText.switch_(~cases=switchCases);
-      "("
-      ++ (value |> EmitText.typeOfObject)
-      ++ " ? "
-      ++ casesWithPayload
-      ++ " : "
-      ++ (value |> accessTable)
-      ++ ")";
+      EmitText.ifThenElse(
+        value |> EmitText.typeOfObject,
+        casesWithPayload,
+        value |> accessTable,
+      );
     };
 
   | FunctionC(groupedArgConverters, resultConverter) =>
