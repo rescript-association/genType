@@ -403,7 +403,9 @@ let rec apply =
 
   | EnumC(enumC) =>
     let table = toJS ? enumC.toJS : enumC.toRE;
-    Hashtbl.replace(enumTables, table, (enumC, toJS));
+    if (enumC.cases != []) {
+      Hashtbl.replace(enumTables, table, (enumC, toJS));
+    };
     let convertToString =
       !toJS
       && enumC.cases
@@ -448,11 +450,13 @@ let rec apply =
                ~useCreateBucklescriptBlock,
              );
         };
-      EmitText.ifThenElse(
-        value |> EmitText.typeOfObject,
-        casesWithPayload,
-        value |> accessTable,
-      );
+      enumC.cases == [] ?
+        casesWithPayload :
+        EmitText.ifThenElse(
+          value |> EmitText.typeOfObject,
+          casesWithPayload,
+          value |> accessTable,
+        );
 
     | [_, ..._] =>
       let convertCaseWithPayload = (~objConverter, ~numArgs, case) =>
@@ -504,11 +508,13 @@ let rec apply =
                emitJSVariantGetLabel
            )
         |> EmitText.switch_(~cases=switchCases);
-      EmitText.ifThenElse(
-        value |> EmitText.typeOfObject,
-        casesWithPayload,
-        value |> accessTable,
-      );
+      enumC.cases == [] ?
+        casesWithPayload :
+        EmitText.ifThenElse(
+          value |> EmitText.typeOfObject,
+          casesWithPayload,
+          value |> accessTable,
+        );
     };
 
   | FunctionC(groupedArgConverters, resultConverter) =>
