@@ -882,8 +882,8 @@ let emitEnumTables = (~emitters, enumTables) => {
     )
     ++ "};";
   Hashtbl.fold(
-    (hash, (enum, toJS), emitters) =>
-      enum |> emitTable(~hash, ~toJS) |> Emitters.requireEarly(~emitters),
+    (hash, (enumC, toJS), emitters) =>
+      enumC |> emitTable(~hash, ~toJS) |> Emitters.requireEarly(~emitters),
     enumTables,
     emitters,
   );
