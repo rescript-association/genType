@@ -18,7 +18,9 @@ import {
   printEnumValue,
   printManyPayloads,
   testManyPayloads,
-  testWithPayload
+  testWithPayload,
+  testVariantWithPayloads,
+  printVariantWithPayloads
 } from "../EnumsWithPayload.gen";
 
 const consoleLog = console.log;
@@ -65,6 +67,14 @@ printEnumValue(testWithPayload({ x: 15 }));
 printManyPayloads({ tag: "one", value: 34 });
 printManyPayloads({ tag: "two", value: ["hello", "world"] });
 printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));
+
+printVariantWithPayloads(testVariantWithPayloads("A"));
+printVariantWithPayloads(testVariantWithPayloads({ tag: "B", value: 4 }));
+printVariantWithPayloads(testVariantWithPayloads({ tag: "C", value: [1, 2] }));
+printVariantWithPayloads(testVariantWithPayloads({ tag: "D", value: [1, 2] }));
+printVariantWithPayloads(
+  testVariantWithPayloads({ tag: "E", value: [1, "hello", 2] })
+);
 
 const App = () => (
   <div>

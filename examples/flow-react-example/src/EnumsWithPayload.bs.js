@@ -56,11 +56,56 @@ function printManyPayloads(x) {
   }
 }
 
+function testSimpleVariant(x) {
+  return x;
+}
+
+function testVariantWithPayloads(x) {
+  return x;
+}
+
+function printVariantWithPayloads(x) {
+  if (typeof x === "number") {
+    console.log("printVariantWithPayloads", "A");
+    return /* () */0;
+  } else {
+    switch (x.tag | 0) {
+      case 0 : 
+          console.log("printVariantWithPayloads", "B(" + (String(x[0]) + ")"));
+          return /* () */0;
+      case 1 : 
+          console.log("printVariantWithPayloads", "C(" + (String(x[0]) + (", " + (String(x[1]) + ")"))));
+          return /* () */0;
+      case 2 : 
+          var match = x[0];
+          console.log("printVariantWithPayloads", "D((" + (String(match[0]) + (", " + (String(match[1]) + "))"))));
+          return /* () */0;
+      case 3 : 
+          console.log("printVariantWithPayloads", "E(" + (String(x[0]) + (", " + (x[1] + (", " + (String(x[2]) + ")"))))));
+          return /* () */0;
+      
+    }
+  }
+}
+
+function testVariant1Int(x) {
+  return x;
+}
+
+function testVariant1Object(x) {
+  return x;
+}
+
 export {
   testWithPayload ,
   printEnumValue ,
   testManyPayloads ,
   printManyPayloads ,
+  testSimpleVariant ,
+  testVariantWithPayloads ,
+  printVariantWithPayloads ,
+  testVariant1Int ,
+  testVariant1Object ,
   
 }
 /* No side effect */
