@@ -24,73 +24,6 @@ let createExportType =
 let variantLeafTypeName = (typeName, leafName) =>
   String.capitalize(typeName) ++ String.capitalize(leafName);
 
-let emitVariantAsEnum = true;
-
-let translateConstructorDeclarationFromTypes =
-    (
-      ~config,
-      ~outputFileRelative,
-      ~resolver,
-      ~recordGen,
-      ~typeEnv,
-      variantTypeName,
-      constructorDeclaration,
-    ) => {
-  let constructorArgs = constructorDeclaration.Types.cd_args;
-  let leafName = constructorDeclaration.Types.cd_id |> Ident.name;
-  let leafNameResolved = leafName |> TypeEnv.addModulePath(~typeEnv);
-  let argsTranslation =
-    constructorArgs
-    |> TranslateTypeExprFromTypes.translateTypeExprsFromTypes(
-         ~config,
-         ~typeEnv,
-       );
-  let argTypes =
-    argsTranslation |> List.map(({TranslateTypeExprFromTypes.typ, _}) => typ);
-  let importTypes =
-    argsTranslation
-    |> List.map(({TranslateTypeExprFromTypes.dependencies, _}) =>
-         dependencies
-       )
-    |> List.concat
-    |> Translation.translateDependencies(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-       );
-  /* A valid Reason identifier that we can point UpperCase JS exports to. */
-
-  let variantTypeNameResolved =
-    emitVariantAsEnum ?
-      leafName :
-      variantLeafTypeName(variantTypeName, leafName)
-      |> TypeEnv.addModulePath(~typeEnv);
-
-  let typeVars = argTypes |> TypeVars.freeOfList;
-
-  let variant = {
-    name: variantTypeNameResolved,
-    params: typeVars |> TypeVars.toTyp,
-  };
-  let constructorTyp: CodeItem.constructorTyp = {typeVars, argTypes, variant};
-  let recordValue =
-    recordGen |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
-  let exportVariantLeaf: CodeItem.exportVariantLeaf = {
-    exportType: {
-      nameAs: None,
-      opaque: Some(true),
-      optTyp: Some(mixedOrUnknown(~config)),
-      typeVars,
-      resolvedTypeName: variantTypeNameResolved,
-    },
-    constructorTyp,
-    argTypes,
-    leafName: leafNameResolved,
-    recordValue,
-  };
-  (variant, (importTypes, exportVariantLeaf));
-};
-
 let traslateDeclarationKind =
     (
       ~config,
@@ -326,72 +259,66 @@ let traslateDeclarationKind =
     ];
 
   | VariantDeclarationFromTypes(constructorDeclarations) =>
-    let leafTypesDepsAndVariantLeafBindings = {
-      let recordGen = Runtime.recordGen();
+    let recordGen = Runtime.recordGen();
+    let variants =
       constructorDeclarations
-      |> List.map(constructorDeclaration =>
-           translateConstructorDeclarationFromTypes(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-             ~recordGen,
-             ~typeEnv,
-             typeName,
-             constructorDeclaration,
-           )
+      |> List.map(constructorDeclaration => {
+           let constructorArgs = constructorDeclaration.Types.cd_args;
+           let name = constructorDeclaration.Types.cd_id |> Ident.name;
+           let argsTranslation =
+             constructorArgs
+             |> TranslateTypeExprFromTypes.translateTypeExprsFromTypes(
+                  ~config,
+                  ~typeEnv,
+                );
+           let argTypes =
+             argsTranslation
+             |> List.map(({TranslateTypeExprFromTypes.typ, _}) => typ);
+           let importTypes =
+             argsTranslation
+             |> List.map(({TranslateTypeExprFromTypes.dependencies, _}) =>
+                  dependencies
+                )
+             |> List.concat
+             |> Translation.translateDependencies(
+                  ~config,
+                  ~outputFileRelative,
+                  ~resolver,
+                );
+
+           let recordValue =
+             recordGen
+             |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
+           (
+             name,
+             argTypes,
+             importTypes,
+             recordValue |> Runtime.recordValueToString,
+           );
+         });
+    let (variantsNoPayload, variantsWithPayload) =
+      variants |> List.partition(((_, argTypes, _, _)) => argTypes == []);
+
+    let cases =
+      variantsNoPayload
+      |> List.map(((name, _argTypes, _importTypes, recordValue)) =>
+           {label: recordValue, labelJS: StringLabel(name)}
          );
-    };
-    let (variants, importTypesAndLeaves) =
-      leafTypesDepsAndVariantLeafBindings |> List.split;
+    let withPayload =
+      variantsWithPayload
+      |> List.map(((name, argTypes, _importTypes, recordValue)) => {
+           let typ =
+             switch (argTypes) {
+             | [typ] => typ
+             | _ => Tuple(argTypes)
+             };
+           let numArgs = argTypes |> List.length;
+           ({label: recordValue, labelJS: StringLabel(name)}, numArgs, typ);
+         });
 
-    let enumTyp = {
-      let recordGen = Runtime.recordGen();
-      let variantsWithRecordValues =
-        leafTypesDepsAndVariantLeafBindings
-        |> List.map(((variant, (_, {CodeItem.argTypes}))) =>
-             (
-               variant.name,
-               argTypes,
-               recordGen
-               |> Runtime.newRecordValue(~unboxed=argTypes == [])
-               |> Runtime.recordValueToString,
-             )
-           );
-      let (variantsNoPayload, variantsWithPayload) =
-        variantsWithRecordValues
-        |> List.partition(((_, argTypes, _)) => argTypes == []);
-      let cases =
-        variantsNoPayload
-        |> List.map(((name, _argTypes, recordValue)) =>
-             {label: recordValue, labelJS: StringLabel(name)}
-           );
-      let withPayload =
-        variantsWithPayload
-        |> List.map(((name, argTypes, recordValue)) => {
-             let typ =
-               switch (argTypes) {
-               | [typ] => typ
-               | _ => Tuple(argTypes)
-               };
-             let numArgs = argTypes |> List.length;
-             (
-               {label: recordValue, labelJS: StringLabel(name)},
-               numArgs,
-               typ,
-             );
-           });
-      cases |> createEnum(~withPayload, ~polyVariant=false);
-    };
-
-    let importTypes = importTypesAndLeaves |> List.map(fst) |> List.concat;
-    let leaves = importTypesAndLeaves |> List.map(snd);
+    let enumTyp = cases |> createEnum(~withPayload, ~polyVariant=false);
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
-    let unionType = {
-      CodeItem.exportKind:
-        ExportVariantType({leaves, resolvedTypeName, typeVars, variants}),
-      annotation,
-    };
 
     let variantAsEnumType = {
       CodeItem.exportKind:
@@ -404,14 +331,12 @@ let traslateDeclarationKind =
         }),
       annotation,
     };
+    let importTypes =
+      variants
+      |> List.map(((_, _, importTypes, _)) => importTypes)
+      |> List.concat;
 
-    [
-      {
-        exportFromTypeDeclaration:
-          emitVariantAsEnum ? variantAsEnumType : unionType,
-        importTypes,
-      },
-    ];
+    [{exportFromTypeDeclaration: variantAsEnumType, importTypes}];
 
   | NoDeclaration => []
   };
