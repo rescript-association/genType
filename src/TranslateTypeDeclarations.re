@@ -325,7 +325,7 @@ let traslateDeclarationKind =
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
-    let variantAsEnumType = {
+    let exportFromTypeDeclaration = {
       CodeItem.exportType: {
         nameAs: None,
         opaque: None,
@@ -340,7 +340,7 @@ let traslateDeclarationKind =
       |> List.map(((_, _, importTypes, _)) => importTypes)
       |> List.concat;
 
-    [{exportFromTypeDeclaration: variantAsEnumType, importTypes}];
+    [{exportFromTypeDeclaration, importTypes}];
 
   | NoDeclaration => []
   };
