@@ -1,6 +1,6 @@
-# master
-- New support for Enums to cover arbitrary polymorphic variants and arbitrary variants. If possible (at most one payload of object type), use an unboxed representation. Otherwise use `{tag: label, value: ...}`.
-- This is a **Breaking Change**: ordinary variant used to be represented as opaque types with construction functions. Now, ordinary variants have the same representation as polymorphic variants as enums.
+# 2.0.0
+- New unified support for polymorphic variants and ordinary variants. If possible (at most one case with payload of object type), use an unboxed representation. Otherwise use `{tag: label, value: ...}`.
+- This is a **Breaking Change**: ordinary variants used to be represented as opaque types with construction functions. Now, ordinary variants have the same representation as polymorphic variants.
 
 # 1.9.0
 - [Enums: support one object type, plus strings/booleans/integers](https://github.com/cristianoc/genType/pull/118).
