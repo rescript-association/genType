@@ -15,7 +15,7 @@ import * as SomeFlowTypes from "../SomeFlowTypes";
 import * as Variants from "../Variants.gen";
 
 import {
-  printEnumValue,
+  printVariantWithPayload,
   printManyPayloads,
   testManyPayloads,
   testWithPayload,
@@ -57,12 +57,12 @@ consoleLog(
 );
 consoleLog("Variants: testConvert3to2('42') =", Variants.testConvert2to3("42"));
 
-printEnumValue("a");
-printEnumValue("bRenamed");
-printEnumValue(true);
-printEnumValue(20);
-printEnumValue(0.5);
-printEnumValue(testWithPayload({ x: 15 }));
+printVariantWithPayload("a");
+printVariantWithPayload("bRenamed");
+printVariantWithPayload(true);
+printVariantWithPayload(20);
+printVariantWithPayload(0.5);
+printVariantWithPayload(testWithPayload({ x: 15 }));
 
 printManyPayloads({ tag: "oneRenamed", value: 34 });
 printManyPayloads({ tag: 2, value: ["hello", "world"] });

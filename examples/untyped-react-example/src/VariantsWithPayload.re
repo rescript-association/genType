@@ -16,14 +16,14 @@ type withPayload = [
 let testWithPayload = (x: withPayload) => x;
 
 [@genType]
-let printEnumValue = (x: withPayload) =>
+let printVariantWithPayload = (x: withPayload) =>
   switch (x) {
-  | `a => Js.log("printEnumValue: a")
-  | `b => Js.log("printEnumValue: b")
-  | `True => Js.log("printEnumValue: True")
-  | `Twenty => Js.log("printEnumValue: Twenty")
-  | `Half => Js.log("printEnumValue: Half")
-  | `c(payload) => Js.log4("printEnumValue x:", payload.x, "y:", payload.y)
+  | `a => Js.log("printVariantWithPayload: a")
+  | `b => Js.log("printVariantWithPayload: b")
+  | `True => Js.log("printVariantWithPayload: True")
+  | `Twenty => Js.log("printVariantWithPayload: Twenty")
+  | `Half => Js.log("printVariantWithPayload: Half")
+  | `c(payload) => Js.log4("printVariantWithPayload x:", payload.x, "y:", payload.y)
   };
 
 [@genType]

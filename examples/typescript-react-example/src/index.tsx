@@ -13,8 +13,8 @@ import { minus, t, tToString } from "./ReasonComponent.gen";
 import registerServiceWorker from "./registerServiceWorker";
 import * as Variants from "./Variants.gen";
 import {
-  printEnumValue,
   printManyPayloads,
+  printVariantWithPayload,
   printVariantWithPayloads,
   testManyPayloads,
   testVariantWithPayloads,
@@ -103,12 +103,12 @@ const absValue = ImportJsValue.useGetAbs(absoluteValueInstance);
 consoleLog("ImportJsValue: getProp() =", propValue);
 consoleLog("ImportJsValue: getAbs() =", absValue);
 
-printEnumValue("a");
-printEnumValue("bRenamed");
-printEnumValue(true);
-printEnumValue(20);
-printEnumValue(0.5);
-printEnumValue(testWithPayload({ x: 15 }));
+printVariantWithPayload("a");
+printVariantWithPayload("bRenamed");
+printVariantWithPayload(true);
+printVariantWithPayload(20);
+printVariantWithPayload(0.5);
+printVariantWithPayload(testWithPayload({ x: 15 }));
 
 printManyPayloads({ tag: "oneRenamed", value: 34 });
 printManyPayloads({ tag: 2, value: ["hello", "world"] });
