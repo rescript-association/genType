@@ -70,7 +70,6 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
       ]) =>
       Some(FloatPayload(s))
 
-
     | PStr([
         {
           pstr_desc:
