@@ -16,7 +16,7 @@ and groupedArgConverter =
   | GroupConverter(list((string, t)))
 and fieldsC = list((string, t))
 and enumC = {
-  cases: list(case),
+  noPayload: list(case),
   withPayload: list((case, int, t)),
   polyVariant: bool,
   toJS: string,
@@ -30,10 +30,10 @@ let rec toString = converter =>
 
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
 
-  | EnumC({cases, withPayload, _}) =>
+  | EnumC({noPayload, withPayload, _}) =>
     "enum("
     ++ (
-      (cases |> List.map(case => case.labelJS |> labelJSToString))
+      (noPayload |> List.map(case => case.labelJS |> labelJSToString))
       @ (
         withPayload
         |> List.map(((case, numArgs, c)) =>
@@ -158,7 +158,7 @@ let typToConverterNormalized =
         normalized == None ?
           IdentC :
           EnumC({
-            cases: enum.cases,
+            noPayload: enum.noPayload,
             withPayload,
             polyVariant: enum.polyVariant,
             toJS: enum.toJS,
@@ -396,19 +396,19 @@ let rec apply =
          ~useCreateBucklescriptBlock,
        )
 
-  | EnumC({cases: [case], withPayload: [], polyVariant, _}) =>
+  | EnumC({noPayload: [case], withPayload: [], polyVariant, _}) =>
     toJS ?
       case.labelJS |> labelJSToString :
       case.label |> Runtime.emitVariantLabel(~polyVariant)
 
   | EnumC(enumC) =>
     let table = toJS ? enumC.toJS : enumC.toRE;
-    if (enumC.cases != []) {
+    if (enumC.noPayload != []) {
       Hashtbl.replace(enumTables, table, (enumC, toJS));
     };
     let convertToString =
       !toJS
-      && enumC.cases
+      && enumC.noPayload
       |> List.exists(({labelJS}) =>
            labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
          ) ?
@@ -450,7 +450,7 @@ let rec apply =
                ~useCreateBucklescriptBlock,
              );
         };
-      enumC.cases == [] ?
+      enumC.noPayload == [] ?
         casesWithPayload :
         EmitText.ifThenElse(
           value |> EmitText.typeOfObject,
@@ -508,7 +508,7 @@ let rec apply =
                emitJSVariantGetLabel
            )
         |> EmitText.switch_(~cases=switchCases);
-      enumC.cases == [] ?
+      enumC.noPayload == [] ?
         casesWithPayload :
         EmitText.ifThenElse(
           value |> EmitText.typeOfObject,

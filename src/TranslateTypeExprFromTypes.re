@@ -209,7 +209,7 @@ let translateConstr =
       [
         {
           dependencies: argsDependencies,
-          typ: Enum({cases: [{label: "Arity_0", _}]}),
+          typ: Enum({noPayload: [{label: "Arity_0", _}]}),
         },
         ret,
       ],
