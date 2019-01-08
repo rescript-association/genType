@@ -64,8 +64,8 @@ printEnumValue(20);
 printEnumValue(0.5);
 printEnumValue(testWithPayload({ x: 15 }));
 
-printManyPayloads({ tag: "one", value: 34 });
-printManyPayloads({ tag: "two", value: ["hello", "world"] });
+printManyPayloads({ tag: "oneRenamed", value: 34 });
+printManyPayloads({ tag: 2, value: ["hello", "world"] });
 printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));
 
 printVariantWithPayloads(testVariantWithPayloads("A"));

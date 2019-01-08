@@ -25,7 +25,7 @@ export type payload = {readonly x: number, readonly y?: string};
 export type withPayload = "a" | "bRenamed" | true | 20 | 0.5 | payload;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type manyPayloads = {tag: "one", value: number} | {tag: "two", value: [string, string]} | {tag: "three", value: payload};
+export type manyPayloads = {tag: "oneRenamed", value: number} | {tag: 2, value: [string, string]} | {tag: "three", value: payload};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type simpleVariant = "A" | "B" | "C";
@@ -43,9 +43,9 @@ export const testWithPayload: (_1:withPayload) => withPayload = function _(Arg1:
 
 export const printEnumValue: (_1:withPayload) => void = function _(Arg1: any) { const result = EnumsWithPayloadBS.printEnumValue((typeof(Arg1) === 'object' ? [/* c */99, [Arg1.x, Arg1.y]] : $$toRE542320962[Arg1.toString()])); return result };
 
-export const testManyPayloads: (_1:manyPayloads) => manyPayloads = function _(Arg1: any) { const result = EnumsWithPayloadBS.testManyPayloads((Arg1.tag==="one" ? [/* one */5544550, Arg1.value] :  Arg1.tag==="two" ? [/* two */5795212, Arg1.value] :  [/* three */261117022, [Arg1.value.x, Arg1.value.y]])); return (result[0]===/* one */5544550 ? {tag:"one", value:result[1]} :  result[0]===/* two */5795212 ? {tag:"two", value:result[1]} :  {tag:"three", value:{x:result[1][0], y:result[1][1]}}) };
+export const testManyPayloads: (_1:manyPayloads) => manyPayloads = function _(Arg1: any) { const result = EnumsWithPayloadBS.testManyPayloads((Arg1.tag==="oneRenamed" ? [/* one */5544550, Arg1.value] :  Arg1.tag===2 ? [/* two */5795212, Arg1.value] :  [/* three */261117022, [Arg1.value.x, Arg1.value.y]])); return (result[0]===/* one */5544550 ? {tag:"oneRenamed", value:result[1]} :  result[0]===/* two */5795212 ? {tag:2, value:result[1]} :  {tag:"three", value:{x:result[1][0], y:result[1][1]}}) };
 
-export const printManyPayloads: (_1:manyPayloads) => void = function _(Arg1: any) { const result = EnumsWithPayloadBS.printManyPayloads((Arg1.tag==="one" ? [/* one */5544550, Arg1.value] :  Arg1.tag==="two" ? [/* two */5795212, Arg1.value] :  [/* three */261117022, [Arg1.value.x, Arg1.value.y]])); return result };
+export const printManyPayloads: (_1:manyPayloads) => void = function _(Arg1: any) { const result = EnumsWithPayloadBS.printManyPayloads((Arg1.tag==="oneRenamed" ? [/* one */5544550, Arg1.value] :  Arg1.tag===2 ? [/* two */5795212, Arg1.value] :  [/* three */261117022, [Arg1.value.x, Arg1.value.y]])); return result };
 
 export const testSimpleVariant: (_1:simpleVariant) => simpleVariant = function _(Arg1: any) { const result = EnumsWithPayloadBS.testSimpleVariant($$toRE346759412[Arg1]); return $$toJS346759412[result] };
 
