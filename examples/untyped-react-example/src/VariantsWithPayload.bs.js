@@ -10,26 +10,26 @@ function printVariantWithPayload(x) {
     if (x !== 97) {
       if (x >= 803296723) {
         if (x >= 937218926) {
-          console.log("printVariantValue: True");
+          console.log("printVariantWithPayload: True");
           return /* () */0;
         } else {
-          console.log("printVariantValue: Half");
+          console.log("printVariantWithPayload: Half");
           return /* () */0;
         }
       } else if (x >= 98) {
-        console.log("printVariantValue: b");
+        console.log("printVariantWithPayload: b");
         return /* () */0;
       } else {
-        console.log("printVariantValue: Twenty");
+        console.log("printVariantWithPayload: Twenty");
         return /* () */0;
       }
     } else {
-      console.log("printVariantValue: a");
+      console.log("printVariantWithPayload: a");
       return /* () */0;
     }
   } else {
     var payload = x[1];
-    console.log("printVariantValue x:", payload[/* x */0], "y:", payload[/* y */1]);
+    console.log("printVariantWithPayload x:", payload[/* x */0], "y:", payload[/* y */1]);
     return /* () */0;
   }
 }
