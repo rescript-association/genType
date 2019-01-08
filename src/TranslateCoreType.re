@@ -242,7 +242,7 @@ and translateCoreType_ =
                translation.typ,
              );
            });
-      let typ = createEnum(~noPayloads, ~payloads, ~polyVariant=true);
+      let typ = createEnum(~noPayloads, ~payloads, ~polymorphic=true);
       let dependencies =
         payloadsTranslations
         |> List.map(((_, _, {dependencies, _})) => dependencies)

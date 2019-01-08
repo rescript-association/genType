@@ -728,7 +728,7 @@ let emitEnumTables = (~emitters, enumTables) => {
              case.label
              |> Runtime.emitVariantLabel(
                   ~comment=false,
-                  ~polyVariant=enumC.polyVariant,
+                  ~polymorphic=enumC.polymorphic,
                 );
            toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
          })
