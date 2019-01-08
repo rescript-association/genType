@@ -721,11 +721,11 @@ let emitEnumTables = (~emitters, enumTables) => {
     ++ hash
     ++ " = {"
     ++ (
-      enumC.cases
-      |> List.map(label => {
-           let js = label.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
+      enumC.noPayload
+      |> List.map(case => {
+           let js = case.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
            let re =
-             label.label
+             case.label
              |> Runtime.emitVariantLabel(
                   ~comment=false,
                   ~polyVariant=enumC.polyVariant,

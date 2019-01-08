@@ -86,9 +86,9 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Enum({cases, withPayload, unboxed, _}) =>
-    let casesRendered =
-      cases |> List.map(case => case.labelJS |> labelJSToString);
+  | Enum({noPayload, withPayload, unboxed, _}) =>
+    let noPayloadRendered =
+      noPayload |> List.map(case => case.labelJS |> labelJSToString);
     let field = (~name, value) => {
       name,
       optional: Mandatory,
@@ -114,7 +114,7 @@ let rec renderTyp =
              ]
              |> fields;
          });
-    casesRendered @ withPayloadRendered |> String.concat(" | ");
+    noPayloadRendered @ withPayloadRendered |> String.concat(" | ");
 
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(
