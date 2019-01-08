@@ -21,7 +21,7 @@ let removeOption = (~label, coreType: Typedtree.core_type) =>
 
 type processVariant = {
   noPayloads: list((string, Typedtree.attributes)),
-  payloads: list((string, Typedtree.core_type)),
+  payloads: list((string, Typedtree.attributes, Typedtree.core_type)),
   unknowns: list(string),
 };
 
@@ -43,11 +43,11 @@ let processVariant = rowFields => {
            ~payloads,
            ~unknowns,
          )
-    | [Ttag(label, _, _, [payload]), ...otherFields] =>
+    | [Ttag(label, attributes, _, [payload]), ...otherFields] =>
       otherFields
       |> loop(
            ~noPayloads,
-           ~payloads=[(label, payload), ...payloads],
+           ~payloads=[(label, attributes, payload), ...payloads],
            ~unknowns,
          )
     | [Ttag(_, _, _, [_, _, ..._]) | Tinherit(_), ...otherFields] =>
@@ -228,15 +228,16 @@ and translateCoreType_ =
            );
       let payloadTranslations =
         payloads
-        |> List.map(((label, payload)) =>
+        |> List.map(((label, attributes, payload)) =>
              (
                label,
+               attributes,
                payload |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
              )
            );
-      let payload =
+      let payloads =
         payloadTranslations
-        |> List.map(((label, translation)) => {
+        |> List.map(((label, _attributes, translation)) => {
              let numArgs = 1;
              (
                {label, labelJS: StringLabel(label)},
@@ -244,10 +245,10 @@ and translateCoreType_ =
                translation.typ,
              );
            });
-      let typ = cases |> createEnum(~payload, ~polyVariant=true);
+      let typ = cases |> createEnum(~payloads, ~polyVariant=true);
       let dependencies =
         payloadTranslations
-        |> List.map(((_, {dependencies, _})) => dependencies)
+        |> List.map(((_, _, {dependencies, _})) => dependencies)
         |> List.concat;
       {dependencies, typ};
 

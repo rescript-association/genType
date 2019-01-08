@@ -163,36 +163,42 @@ let traslateDeclarationKind =
              switch (optCoreType, translation.typ) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
-                 Enum({payload}),
+                 Enum(enum),
                ) =>
-               let {TranslateCoreType.noPayloads} =
+               let rowFieldsVariants =
                  rowFields |> TranslateCoreType.processVariant;
-               let cases =
-                 noPayloads
-                 |> List.map(((label, attributes)) =>
-                      switch (
-                        attributes
-                        |> Annotation.getAttributePayload(
-                             Annotation.tagIsGenTypeAs,
-                           )
-                      ) {
-                      | Some(BoolPayload(b)) => {
-                          label,
-                          labelJS: BoolLabel(b),
-                        }
-                      | Some(FloatPayload(s)) => {
-                          label,
-                          labelJS: FloatLabel(s),
-                        }
-                      | Some(IntPayload(i)) => {label, labelJS: IntLabel(i)}
-                      | Some(StringPayload(asLabel)) => {
-                          label,
-                          labelJS: StringLabel(asLabel),
-                        }
-                      | _ => {label, labelJS: StringLabel(label)}
-                      }
-                    );
-               cases |> createEnum(~payload, ~polyVariant=true);
+               let createCase = ((label, attributes)) =>
+                 switch (
+                   attributes
+                   |> Annotation.getAttributePayload(
+                        Annotation.tagIsGenTypeAs,
+                      )
+                 ) {
+                 | Some(BoolPayload(b)) => {label, labelJS: BoolLabel(b)}
+                 | Some(FloatPayload(s)) => {label, labelJS: FloatLabel(s)}
+                 | Some(IntPayload(i)) => {label, labelJS: IntLabel(i)}
+                 | Some(StringPayload(asLabel)) => {
+                     label,
+                     labelJS: StringLabel(asLabel),
+                   }
+                 | _ => {label, labelJS: StringLabel(label)}
+                 };
+               let noPayload =
+                 rowFieldsVariants.noPayloads |> List.map(createCase);
+               let payloads =
+                 if (enum.payloads
+                     |> List.length
+                     == (rowFieldsVariants.payloads |> List.length)) {
+                   List.combine(enum.payloads, rowFieldsVariants.payloads)
+                   |> List.map((((_case, i, typ), (label, attributes, _))) => {
+                        let case = (label, attributes) |> createCase;
+                        (case, i, typ);
+                      });
+                 } else {
+                   enum.payloads;
+                 };
+
+               noPayload |> createEnum(~payloads, ~polyVariant=true);
              | _ => translation.typ
              };
            (translation, typ);
@@ -309,7 +315,7 @@ let traslateDeclarationKind =
       |> List.map(((name, _argTypes, _importTypes, recordValue)) =>
            {label: recordValue, labelJS: StringLabel(name)}
          );
-    let payload =
+    let payloads =
       variantsWithPayload
       |> List.map(((name, argTypes, _importTypes, recordValue)) => {
            let typ =
@@ -321,7 +327,7 @@ let traslateDeclarationKind =
            ({label: recordValue, labelJS: StringLabel(name)}, numArgs, typ);
          });
 
-    let enumTyp = cases |> createEnum(~payload, ~polyVariant=false);
+    let enumTyp = cases |> createEnum(~payloads, ~polyVariant=false);
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
