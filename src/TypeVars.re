@@ -43,8 +43,8 @@ let rec substitute = (~f, typ) =>
   | Enum(enum) =>
     Enum({
       ...enum,
-      payload:
-        enum.payload
+      payloads:
+        enum.payloads
         |> List.map(((case, numArgs, t)) =>
              (case, numArgs, t |> substitute(~f))
            ),
@@ -93,8 +93,8 @@ let rec substitute = (~f, typ) =>
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
   | Array(typ, _) => typ |> free_
-  | Enum({payload}) =>
-    payload
+  | Enum({payloads}) =>
+    payloads
     |> List.fold_left(
          (s, (_, _, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,

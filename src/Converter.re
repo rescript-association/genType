@@ -136,7 +136,7 @@ let typToConverterNormalized =
 
     | Enum(enum) =>
       let (withPayload, normalized, unboxed) =
-        switch (enum.payload) {
+        switch (enum.payloads) {
         | [] => ([], normalized_, enum.unboxed)
         | [(case, numArgs, t)] =>
           let converter = t |> visit(~visited) |> fst;
@@ -145,7 +145,7 @@ let typToConverterNormalized =
             unboxed ? Some(Enum({...enum, unboxed: true})) : normalized_;
           ([(case, numArgs, converter)], normalized, unboxed);
         | [_, _, ..._] => (
-            enum.payload
+            enum.payloads
             |> List.map(((case, numArgs, t)) => {
                  let converter = t |> visit(~visited) |> fst;
                  (case, numArgs, converter);
