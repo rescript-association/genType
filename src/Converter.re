@@ -3,7 +3,6 @@ open GenTypeCommon;
 type t =
   | ArrayC(t)
   | CircularC(string, t)
-  | EnumC(enumC)
   | FunctionC(list(groupedArgConverter), t)
   | IdentC
   | NullableC(t)
@@ -11,11 +10,12 @@ type t =
   | OptionC(t)
   | RecordC(fieldsC)
   | TupleC(list(t))
+  | VariantC(variantC)
 and groupedArgConverter =
   | ArgConverter(label, t)
   | GroupConverter(list((string, t)))
 and fieldsC = list((string, t))
-and enumC = {
+and variantC = {
   noPayloads: list(case),
   withPayload: list((case, int, t)),
   polymorphic: bool,
@@ -29,24 +29,6 @@ let rec toString = converter =>
   | ArrayC(c) => "array(" ++ toString(c) ++ ")"
 
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
-
-  | EnumC({noPayloads, withPayload, _}) =>
-    "enum("
-    ++ (
-      (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
-      @ (
-        withPayload
-        |> List.map(((case, numArgs, c)) =>
-             (case.labelJS |> labelJSToString)
-             ++ ":"
-             ++ string_of_int(numArgs)
-             ++ ":"
-             ++ (c |> toString)
-           )
-      )
-      |> String.concat(", ")
-    )
-    ++ ")"
 
   | FunctionC(groupedArgConverters, c) =>
     let labelToString = label =>
@@ -103,6 +85,24 @@ let rec toString = converter =>
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
   | TupleC(innerTypesC) =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
+
+  | VariantC({noPayloads, withPayload, _}) =>
+    "variant("
+    ++ (
+      (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
+      @ (
+        withPayload
+        |> List.map(((case, numArgs, c)) =>
+             (case.labelJS |> labelJSToString)
+             ++ ":"
+             ++ string_of_int(numArgs)
+             ++ ":"
+             ++ (c |> toString)
+           )
+      )
+      |> String.concat(", ")
+    )
+    ++ ")"
   };
 
 let typToConverterNormalized =
@@ -248,7 +248,7 @@ let typToConverterNormalized =
       let converter =
         normalized == None ?
           IdentC :
-          EnumC({
+          VariantC({
             noPayloads: variant.noPayloads,
             withPayload,
             polymorphic: variant.polymorphic,
@@ -308,8 +308,6 @@ let rec converterIsIdentity = (~toJS, converter) =>
 
   | CircularC(_, c) => c |> converterIsIdentity(~toJS)
 
-  | EnumC(_) => false
-
   | FunctionC(groupedArgConverters, resultConverter) =>
     resultConverter
     |> converterIsIdentity(~toJS)
@@ -345,18 +343,21 @@ let rec converterIsIdentity = (~toJS, converter) =>
     }
 
   | RecordC(_) => false
+
   | TupleC(innerTypesC) =>
     innerTypesC |> List.for_all(converterIsIdentity(~toJS))
+
+  | VariantC(_) => false
   };
 
 let rec apply =
         (
           ~config,
           ~converter,
-          ~enumTables,
           ~nameGen,
           ~toJS,
           ~useCreateBucklescriptBlock,
+          ~variantTables,
           value,
         ) =>
   switch (converter) {
@@ -373,10 +374,10 @@ let rec apply =
       |> apply(
            ~config,
            ~converter=c,
-           ~enumTables,
            ~nameGen,
            ~toJS,
            ~useCreateBucklescriptBlock,
+           ~variantTables,
          )
     )
     ++ "})";
@@ -389,45 +390,45 @@ let rec apply =
     |> apply(
          ~config,
          ~converter=c,
-         ~enumTables,
          ~nameGen,
          ~toJS,
          ~useCreateBucklescriptBlock,
+         ~variantTables,
        )
 
-  | EnumC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
+  | VariantC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
     toJS ?
       case.labelJS |> labelJSToString :
       case.label |> Runtime.emitVariantLabel(~polymorphic)
 
-  | EnumC(enumC) =>
-    let table = toJS ? enumC.toJS : enumC.toRE;
-    if (enumC.noPayloads != []) {
-      Hashtbl.replace(enumTables, table, (enumC, toJS));
+  | VariantC(variantC) =>
+    let table = toJS ? variantC.toJS : variantC.toRE;
+    if (variantC.noPayloads != []) {
+      Hashtbl.replace(variantTables, table, (variantC, toJS));
     };
     let convertToString =
       !toJS
-      && enumC.noPayloads
+      && variantC.noPayloads
       |> List.exists(({labelJS}) =>
            labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
          ) ?
         ".toString()" : "";
     let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
-    switch (enumC.withPayload) {
+    switch (variantC.withPayload) {
     | [] => value |> accessTable
 
-    | [(case, numArgs, objConverter)] when enumC.unboxed =>
+    | [(case, numArgs, objConverter)] when variantC.unboxed =>
       let casesWithPayload =
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
                ~numArgs,
-               ~polymorphic=enumC.polymorphic,
+               ~polymorphic=variantC.polymorphic,
              )
           |> apply(
                ~config,
                ~converter=objConverter,
-               ~enumTables,
+               ~variantTables,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
@@ -437,7 +438,7 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=objConverter,
-               ~enumTables,
+               ~variantTables,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
@@ -445,11 +446,11 @@ let rec apply =
           |> Runtime.emitVariantWithPayload(
                ~label=case.label,
                ~numArgs,
-               ~polymorphic=enumC.polymorphic,
+               ~polymorphic=variantC.polymorphic,
                ~useCreateBucklescriptBlock,
              );
         };
-      enumC.noPayloads == [] ?
+      variantC.noPayloads == [] ?
         casesWithPayload :
         EmitText.ifThenElse(
           value |> EmitText.typeOfObject,
@@ -464,14 +465,14 @@ let rec apply =
           toJS ?
             Runtime.emitVariantGetPayload(
               ~numArgs,
-              ~polymorphic=enumC.polymorphic,
+              ~polymorphic=variantC.polymorphic,
             ) :
             Runtime.emitJSVariantGetPayload
         )
         |> apply(
              ~config,
              ~converter=objConverter,
-             ~enumTables,
+             ~variantTables,
              ~nameGen,
              ~toJS,
              ~useCreateBucklescriptBlock,
@@ -484,17 +485,19 @@ let rec apply =
             Runtime.emitVariantWithPayload(
               ~label=case.label,
               ~numArgs,
-              ~polymorphic=enumC.polymorphic,
+              ~polymorphic=variantC.polymorphic,
               ~useCreateBucklescriptBlock,
             )
         );
       let switchCases =
-        enumC.withPayload
+        variantC.withPayload
         |> List.map(((case, numArgs, objConverter)) =>
              (
                toJS ?
                  case.label
-                 |> Runtime.emitVariantLabel(~polymorphic=enumC.polymorphic) :
+                 |> Runtime.emitVariantLabel(
+                      ~polymorphic=variantC.polymorphic,
+                    ) :
                  case.labelJS |> labelJSToString,
                case |> convertCaseWithPayload(~objConverter, ~numArgs),
              )
@@ -503,11 +506,11 @@ let rec apply =
         value
         |> Runtime.(
              toJS ?
-               emitVariantGetLabel(~polymorphic=enumC.polymorphic) :
+               emitVariantGetLabel(~polymorphic=variantC.polymorphic) :
                emitJSVariantGetLabel
            )
         |> EmitText.switch_(~cases=switchCases);
-      enumC.noPayloads == [] ?
+      variantC.noPayloads == [] ?
         casesWithPayload :
         EmitText.ifThenElse(
           value |> EmitText.typeOfObject,
@@ -529,7 +532,7 @@ let rec apply =
         |> apply(
              ~config,
              ~converter=resultConverter,
-             ~enumTables,
+             ~variantTables,
              ~nameGen,
              ~toJS,
              ~useCreateBucklescriptBlock,
@@ -552,7 +555,7 @@ let rec apply =
             |> apply(
                  ~config,
                  ~converter=argConverter,
-                 ~enumTables,
+                 ~variantTables,
                  ~nameGen,
                  ~toJS=notToJS,
                  ~useCreateBucklescriptBlock,
@@ -572,7 +575,7 @@ let rec apply =
                    |> apply(
                         ~config,
                         ~converter=argConverter,
-                        ~enumTables,
+                        ~variantTables,
                         ~nameGen,
                         ~toJS=notToJS,
                         ~useCreateBucklescriptBlock,
@@ -598,7 +601,7 @@ let rec apply =
                      |> apply(
                           ~config,
                           ~converter=argConverter,
-                          ~enumTables,
+                          ~variantTables,
                           ~nameGen,
                           ~toJS=notToJS,
                           ~useCreateBucklescriptBlock,
@@ -627,7 +630,7 @@ let rec apply =
         |> apply(
              ~config,
              ~converter=c,
-             ~enumTables,
+             ~variantTables,
              ~nameGen,
              ~toJS,
              ~useCreateBucklescriptBlock,
@@ -654,7 +657,7 @@ let rec apply =
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~enumTables,
+                  ~variantTables,
                   ~nameGen,
                   ~toJS,
                   ~useCreateBucklescriptBlock,
@@ -676,7 +679,7 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=c,
-               ~enumTables,
+               ~variantTables,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
@@ -692,7 +695,7 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=c,
-               ~enumTables,
+               ~variantTables,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
@@ -722,7 +725,7 @@ let rec apply =
                |> apply(
                     ~config,
                     ~converter=fieldConverter |> simplifyFieldConverted,
-                    ~enumTables,
+                    ~variantTables,
                     ~nameGen,
                     ~toJS,
                     ~useCreateBucklescriptBlock,
@@ -741,7 +744,7 @@ let rec apply =
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~enumTables,
+                  ~variantTables,
                   ~nameGen,
                   ~toJS,
                   ~useCreateBucklescriptBlock,
@@ -762,7 +765,7 @@ let rec apply =
            |> apply(
                 ~config,
                 ~converter=c,
-                ~enumTables,
+                ~variantTables,
                 ~nameGen,
                 ~toJS,
                 ~useCreateBucklescriptBlock,
@@ -777,16 +780,16 @@ let toJS =
     (
       ~config,
       ~converter,
-      ~enumTables,
       ~nameGen,
       ~useCreateBucklescriptBlock,
+      ~variantTables,
       value,
     ) =>
   value
   |> apply(
        ~config,
        ~converter,
-       ~enumTables,
+       ~variantTables,
        ~nameGen,
        ~toJS=true,
        ~useCreateBucklescriptBlock,
@@ -796,16 +799,16 @@ let toReason =
     (
       ~config,
       ~converter,
-      ~enumTables,
       ~nameGen,
       ~useCreateBucklescriptBlock,
+      ~variantTables,
       value,
     ) =>
   value
   |> apply(
        ~config,
        ~converter,
-       ~enumTables,
+       ~variantTables,
        ~nameGen,
        ~toJS=false,
        ~useCreateBucklescriptBlock,

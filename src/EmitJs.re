@@ -196,7 +196,7 @@ let rec emitCodeItem =
           ~resolver,
           ~emitters,
           ~env,
-          ~enumTables,
+          ~variantTables,
           ~typGetNormalized,
           ~typToConverter,
           ~typeNameIsInterface,
@@ -341,7 +341,7 @@ let rec emitCodeItem =
                                  propTyp : Option(propTyp)
                              )
                              |> typToConverter,
-                           ~enumTables,
+                           ~variantTables,
                            ~nameGen,
                            ~useCreateBucklescriptBlock,
                          )
@@ -354,7 +354,7 @@ let rec emitCodeItem =
              |> Converter.toJS(
                   ~config,
                   ~converter=childrenTyp |> typToConverter,
-                  ~enumTables,
+                  ~variantTables,
                   ~nameGen,
                   ~useCreateBucklescriptBlock,
                 ),
@@ -448,7 +448,7 @@ let rec emitCodeItem =
         |> Converter.toReason(
              ~config,
              ~converter,
-             ~enumTables,
+             ~variantTables,
              ~nameGen,
              ~useCreateBucklescriptBlock,
            )
@@ -510,7 +510,7 @@ let rec emitCodeItem =
                  |> Converter.toReason(
                       ~config,
                       ~converter=argConverter,
-                      ~enumTables,
+                      ~variantTables,
                       ~nameGen,
                       ~useCreateBucklescriptBlock,
                     )
@@ -521,7 +521,7 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
-                 ~enumTables,
+                 ~variantTables,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
                ),
@@ -532,7 +532,7 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
-                 ~enumTables,
+                 ~variantTables,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
                ),
@@ -649,7 +649,7 @@ let rec emitCodeItem =
         |> Converter.toJS(
              ~config,
              ~converter,
-             ~enumTables,
+             ~variantTables,
              ~nameGen,
              ~useCreateBucklescriptBlock,
            )
@@ -673,7 +673,7 @@ and emitCodeItems =
       ~resolver,
       ~emitters,
       ~env,
-      ~enumTables,
+      ~variantTables,
       ~typGetNormalized,
       ~typToConverter,
       ~typeNameIsInterface,
@@ -689,7 +689,7 @@ and emitCodeItems =
            ~resolver,
            ~emitters,
            ~env,
-           ~enumTables,
+           ~variantTables,
            ~typGetNormalized,
            ~typToConverter,
            ~typeNameIsInterface,
@@ -715,20 +715,20 @@ let emitRequires =
     emitters,
   );
 
-let emitEnumTables = (~emitters, enumTables) => {
-  let emitTable = (~hash, ~toJS, enumC: Converter.enumC) =>
+let emitVariantTables = (~emitters, variantTables) => {
+  let emitTable = (~hash, ~toJS, variantC: Converter.variantC) =>
     "const "
     ++ hash
     ++ " = {"
     ++ (
-      enumC.noPayloads
+      variantC.noPayloads
       |> List.map(case => {
            let js = case.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
            let re =
              case.label
              |> Runtime.emitVariantLabel(
                   ~comment=false,
-                  ~polymorphic=enumC.polymorphic,
+                  ~polymorphic=variantC.polymorphic,
                 );
            toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
          })
@@ -736,9 +736,9 @@ let emitEnumTables = (~emitters, enumTables) => {
     )
     ++ "};";
   Hashtbl.fold(
-    (hash, (enumC, toJS), emitters) =>
-      enumC |> emitTable(~hash, ~toJS) |> Emitters.requireEarly(~emitters),
-    enumTables,
+    (hash, (variantC, toJS), emitters) =>
+      variantC |> emitTable(~hash, ~toJS) |> Emitters.requireEarly(~emitters),
+    variantTables,
     emitters,
   );
 };
@@ -951,7 +951,7 @@ let emitTranslationAsString =
     exportTypeMapFromOtherFiles: StringMap.empty,
     importedValueOrComponent: false,
   };
-  let enumTables = Hashtbl.create(1);
+  let variantTables = Hashtbl.create(1);
 
   let (exportTypeMap, annotatedSet) =
     translation.typeDeclarations
@@ -1038,7 +1038,7 @@ let emitTranslationAsString =
          ~resolver,
          ~emitters,
          ~env,
-         ~enumTables,
+         ~variantTables,
          ~typGetNormalized=typGetNormalized_(~env),
          ~typToConverter=typToConverter_(~env),
          ~typeNameIsInterface=typeNameIsInterface(~env),
@@ -1055,7 +1055,7 @@ let emitTranslationAsString =
          ) :
       env;
 
-  let emitters = enumTables |> emitEnumTables(~emitters);
+  let emitters = variantTables |> emitVariantTables(~emitters);
 
   emitters
   |> emitRequires(
