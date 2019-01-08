@@ -86,9 +86,9 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Enum({noPayload, payloads, unboxed, _}) =>
-    let noPayloadRendered =
-      noPayload |> List.map(case => case.labelJS |> labelJSToString);
+  | Enum({noPayloads, payloads, unboxed, _}) =>
+    let noPayloadsRendered =
+      noPayloads |> List.map(case => case.labelJS |> labelJSToString);
     let field = (~name, value) => {
       name,
       optional: Mandatory,
@@ -114,7 +114,7 @@ let rec renderTyp =
              ]
              |> fields;
          });
-    noPayloadRendered @ payloadsRendered |> String.concat(" | ");
+    noPayloadsRendered @ payloadsRendered |> String.concat(" | ");
 
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(

@@ -114,7 +114,7 @@ printManyPayloads({ tag: "oneRenamed", value: 34 });
 printManyPayloads({ tag: 2, value: ["hello", "world"] });
 printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));
 
-printVariantWithPayloads(testVariantWithPayloads("A"));
+printVariantWithPayloads(testVariantWithPayloads("ARenamed"));
 printVariantWithPayloads(testVariantWithPayloads({ tag: "B", value: 4 }));
 printVariantWithPayloads(testVariantWithPayloads({ tag: "C", value: [1, 2] }));
 printVariantWithPayloads(testVariantWithPayloads({ tag: "D", value: [1, 2] }));
