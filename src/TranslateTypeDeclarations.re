@@ -163,7 +163,7 @@ let traslateDeclarationKind =
              switch (optCoreType, translation.typ) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
-                 Enum({withPayload}),
+                 Enum({payload}),
                ) =>
                let {TranslateCoreType.noPayloads} =
                  rowFields |> TranslateCoreType.processVariant;
@@ -192,7 +192,7 @@ let traslateDeclarationKind =
                       | _ => {label, labelJS: StringLabel(label)}
                       }
                     );
-               cases |> createEnum(~withPayload, ~polyVariant=true);
+               cases |> createEnum(~payload, ~polyVariant=true);
              | _ => translation.typ
              };
            (translation, typ);
@@ -309,7 +309,7 @@ let traslateDeclarationKind =
       |> List.map(((name, _argTypes, _importTypes, recordValue)) =>
            {label: recordValue, labelJS: StringLabel(name)}
          );
-    let withPayload =
+    let payload =
       variantsWithPayload
       |> List.map(((name, argTypes, _importTypes, recordValue)) => {
            let typ =
@@ -321,7 +321,7 @@ let traslateDeclarationKind =
            ({label: recordValue, labelJS: StringLabel(name)}, numArgs, typ);
          });
 
-    let enumTyp = cases |> createEnum(~withPayload, ~polyVariant=false);
+    let enumTyp = cases |> createEnum(~payload, ~polyVariant=false);
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
