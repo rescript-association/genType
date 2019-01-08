@@ -180,7 +180,7 @@ let traslateDeclarationKind =
                    enum.payloads;
                  };
 
-               createEnum(~noPayloads, ~payloads, ~polyVariant=true);
+               createEnum(~noPayloads, ~payloads, ~polymorphic=true);
              | _ => translation.typ
              };
            (translation, typ);
@@ -313,7 +313,7 @@ let traslateDeclarationKind =
            );
          });
 
-    let enumTyp = createEnum(~noPayloads, ~payloads, ~polyVariant=false);
+    let enumTyp = createEnum(~noPayloads, ~payloads, ~polymorphic=false);
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 

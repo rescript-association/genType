@@ -18,7 +18,7 @@ and fieldsC = list((string, t))
 and enumC = {
   noPayloads: list(case),
   withPayload: list((case, int, t)),
-  polyVariant: bool,
+  polymorphic: bool,
   toJS: string,
   toRE: string,
   unboxed: bool,
@@ -160,7 +160,7 @@ let typToConverterNormalized =
           EnumC({
             noPayloads: enum.noPayloads,
             withPayload,
-            polyVariant: enum.polyVariant,
+            polymorphic: enum.polymorphic,
             toJS: enum.toJS,
             toRE: enum.toRE,
             unboxed,
@@ -394,10 +394,10 @@ let rec apply =
          ~useCreateBucklescriptBlock,
        )
 
-  | EnumC({noPayloads: [case], withPayload: [], polyVariant, _}) =>
+  | EnumC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
     toJS ?
       case.labelJS |> labelJSToString :
-      case.label |> Runtime.emitVariantLabel(~polyVariant)
+      case.label |> Runtime.emitVariantLabel(~polymorphic)
 
   | EnumC(enumC) =>
     let table = toJS ? enumC.toJS : enumC.toRE;
@@ -421,7 +421,7 @@ let rec apply =
           value
           |> Runtime.emitVariantGetPayload(
                ~numArgs,
-               ~polyVariant=enumC.polyVariant,
+               ~polymorphic=enumC.polymorphic,
              )
           |> apply(
                ~config,
@@ -444,7 +444,7 @@ let rec apply =
           |> Runtime.emitVariantWithPayload(
                ~label=case.label,
                ~numArgs,
-               ~polyVariant=enumC.polyVariant,
+               ~polymorphic=enumC.polymorphic,
                ~useCreateBucklescriptBlock,
              );
         };
@@ -463,7 +463,7 @@ let rec apply =
           toJS ?
             Runtime.emitVariantGetPayload(
               ~numArgs,
-              ~polyVariant=enumC.polyVariant,
+              ~polymorphic=enumC.polymorphic,
             ) :
             Runtime.emitJSVariantGetPayload
         )
@@ -483,7 +483,7 @@ let rec apply =
             Runtime.emitVariantWithPayload(
               ~label=case.label,
               ~numArgs,
-              ~polyVariant=enumC.polyVariant,
+              ~polymorphic=enumC.polymorphic,
               ~useCreateBucklescriptBlock,
             )
         );
@@ -493,7 +493,7 @@ let rec apply =
              (
                toJS ?
                  case.label
-                 |> Runtime.emitVariantLabel(~polyVariant=enumC.polyVariant) :
+                 |> Runtime.emitVariantLabel(~polymorphic=enumC.polymorphic) :
                  case.labelJS |> labelJSToString,
                case |> convertCaseWithPayload(~objConverter, ~numArgs),
              )
@@ -502,7 +502,7 @@ let rec apply =
         value
         |> Runtime.(
              toJS ?
-               emitVariantGetLabel(~polyVariant=enumC.polyVariant) :
+               emitVariantGetLabel(~polymorphic=enumC.polymorphic) :
                emitJSVariantGetLabel
            )
         |> EmitText.switch_(~cases=switchCases);

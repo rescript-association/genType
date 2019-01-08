@@ -29,18 +29,18 @@ let emitRecordAsBlock:
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
-let emitVariantGetLabel: (~polyVariant: bool, string) => string;
+let emitVariantGetLabel: (~polymorphic: bool, string) => string;
 
 let emitVariantGetPayload:
-  (~numArgs: int, ~polyVariant: bool, string) => string;
+  (~numArgs: int, ~polymorphic: bool, string) => string;
 
-let emitVariantLabel: (~comment: bool=?, ~polyVariant: bool, string) => string;
+let emitVariantLabel: (~comment: bool=?, ~polymorphic: bool, string) => string;
 
 let emitVariantWithPayload:
   (
     ~label: string,
     ~numArgs: int,
-    ~polyVariant: bool,
+    ~polymorphic: bool,
     ~useCreateBucklescriptBlock: ref(bool),
     string
   ) =>

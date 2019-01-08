@@ -55,23 +55,23 @@ let newModuleItem = moduleItemGen => {
 
 let emitModuleItem = itemValue => itemValue |> string_of_int;
 
-let emitVariantLabel = (~comment=true, ~polyVariant, label) =>
-  if (polyVariant) {
+let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
+  if (polymorphic) {
     (comment ? label |> EmitText.comment : "")
     ++ (label |> Btype.hash_variant |> string_of_int);
   } else {
     label;
   };
 
-let emitVariantGetLabel = (~polyVariant, x) =>
-  if (polyVariant) {
+let emitVariantGetLabel = (~polymorphic, x) =>
+  if (polymorphic) {
     x ++ EmitText.array(["0"]);
   } else {
     x ++ "." ++ "tag";
   };
 
-let emitVariantGetPayload = (~numArgs, ~polyVariant, x) =>
-  if (polyVariant) {
+let emitVariantGetPayload = (~numArgs, ~polymorphic, x) =>
+  if (polymorphic) {
     x ++ EmitText.array(["1"]);
   } else if (numArgs == 1) {
     x ++ EmitText.array(["0"]);
@@ -81,9 +81,9 @@ let emitVariantGetPayload = (~numArgs, ~polyVariant, x) =>
   };
 
 let emitVariantWithPayload =
-    (~label, ~numArgs, ~polyVariant, ~useCreateBucklescriptBlock, x) =>
-  if (polyVariant) {
-    EmitText.array([label |> emitVariantLabel(~polyVariant), x]);
+    (~label, ~numArgs, ~polymorphic, ~useCreateBucklescriptBlock, x) =>
+  if (polymorphic) {
+    EmitText.array([label |> emitVariantLabel(~polymorphic), x]);
   } else {
     useCreateBucklescriptBlock := true;
     let args = numArgs == 1 ? [x] |> EmitText.array : x;
