@@ -62,7 +62,7 @@ export type someMutableFields = {|
   mutable2: string
 |};
 
-export opaque type exportOpaqueFromEnums = mixed;
+export opaque type exportOpaqueFromVariants = mixed;
 
 export type dateKey = string;
 export type DateKey = dateKey;

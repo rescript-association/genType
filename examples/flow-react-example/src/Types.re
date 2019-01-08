@@ -79,7 +79,7 @@ type someMutableFields = {
 external foo: int => int = "";
 
 [@genType.opaque]
-type exportOpaqueFromEnums = Enums.weekday;
+type exportOpaqueFromVariants = Variants.weekday;
 
 [@genType]
 [@genType.as "DateKey"]
