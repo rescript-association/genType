@@ -4,10 +4,6 @@
  * @nolint
  */
 
-const $$toRE552311971 = {"A": 0};
-
-const $$toJS552311971 = {"0": "A"};
-
 const $$toJS542320962 = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
 
 const $$toRE346759412 = {"A": 0, "B": 1, "C": 2};
@@ -15,6 +11,10 @@ const $$toRE346759412 = {"A": 0, "B": 1, "C": 2};
 const $$toJS346759412 = {"0": "A", "1": "B", "2": "C"};
 
 const $$toRE542320962 = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
+
+const $$toRE13337556 = {"ARenamed": 0};
+
+const $$toJS13337556 = {"0": "ARenamed"};
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
@@ -30,7 +30,7 @@ export type manyPayloads = {|tag: "oneRenamed", value: number|} | {|tag: 2, valu
 
 export type simpleVariant = "A" | "B" | "C";
 
-export type variantWithPayloads = "A" | {|tag: "B", value: number|} | {|tag: "C", value: [number, number]|} | {|tag: "D", value: [number, number]|} | {|tag: "E", value: [number, string, number]|};
+export type variantWithPayloads = "ARenamed" | {|tag: "B", value: number|} | {|tag: "C", value: [number, number]|} | {|tag: "D", value: [number, number]|} | {|tag: "E", value: [number, string, number]|};
 
 export type variant1Int = {|tag: "R", value: number|};
 
@@ -46,9 +46,9 @@ export const printManyPayloads: (manyPayloads) => void = function _(Arg1) { cons
 
 export const testSimpleVariant: (simpleVariant) => simpleVariant = function _(Arg1) { const result = EnumsWithPayloadBS.testSimpleVariant($$toRE346759412[Arg1]); return $$toJS346759412[result] };
 
-export const testVariantWithPayloads: (variantWithPayloads) => variantWithPayloads = function _(Arg1) { const result = EnumsWithPayloadBS.testVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? CreateBucklescriptBlock.__(0, [Arg1.value]) :  Arg1.tag==="C" ? CreateBucklescriptBlock.__(1, Arg1.value) :  Arg1.tag==="D" ? CreateBucklescriptBlock.__(2, [Arg1.value]) :  CreateBucklescriptBlock.__(3, Arg1.value)) : $$toRE552311971[Arg1])); return (typeof(result) === 'object' ? (result.tag===0 ? {tag:"B", value:result[0]} :  result.tag===1 ? {tag:"C", value:result.slice()} :  result.tag===2 ? {tag:"D", value:result[0]} :  {tag:"E", value:result.slice()}) : $$toJS552311971[result]) };
+export const testVariantWithPayloads: (variantWithPayloads) => variantWithPayloads = function _(Arg1) { const result = EnumsWithPayloadBS.testVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? CreateBucklescriptBlock.__(0, [Arg1.value]) :  Arg1.tag==="C" ? CreateBucklescriptBlock.__(1, Arg1.value) :  Arg1.tag==="D" ? CreateBucklescriptBlock.__(2, [Arg1.value]) :  CreateBucklescriptBlock.__(3, Arg1.value)) : $$toRE13337556[Arg1])); return (typeof(result) === 'object' ? (result.tag===0 ? {tag:"B", value:result[0]} :  result.tag===1 ? {tag:"C", value:result.slice()} :  result.tag===2 ? {tag:"D", value:result[0]} :  {tag:"E", value:result.slice()}) : $$toJS13337556[result]) };
 
-export const printVariantWithPayloads: (variantWithPayloads) => void = function _(Arg1) { const result = EnumsWithPayloadBS.printVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? CreateBucklescriptBlock.__(0, [Arg1.value]) :  Arg1.tag==="C" ? CreateBucklescriptBlock.__(1, Arg1.value) :  Arg1.tag==="D" ? CreateBucklescriptBlock.__(2, [Arg1.value]) :  CreateBucklescriptBlock.__(3, Arg1.value)) : $$toRE552311971[Arg1])); return result };
+export const printVariantWithPayloads: (variantWithPayloads) => void = function _(Arg1) { const result = EnumsWithPayloadBS.printVariantWithPayloads((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? CreateBucklescriptBlock.__(0, [Arg1.value]) :  Arg1.tag==="C" ? CreateBucklescriptBlock.__(1, Arg1.value) :  Arg1.tag==="D" ? CreateBucklescriptBlock.__(2, [Arg1.value]) :  CreateBucklescriptBlock.__(3, Arg1.value)) : $$toRE13337556[Arg1])); return result };
 
 export const testVariant1Int: (variant1Int) => variant1Int = function _(Arg1) { const result = EnumsWithPayloadBS.testVariant1Int((CreateBucklescriptBlock.__(0, [Arg1.value]))); return ({tag:"R", value:result[0]}) };
 

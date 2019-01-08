@@ -721,7 +721,7 @@ let emitEnumTables = (~emitters, enumTables) => {
     ++ hash
     ++ " = {"
     ++ (
-      enumC.noPayload
+      enumC.noPayloads
       |> List.map(case => {
            let js = case.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
            let re =

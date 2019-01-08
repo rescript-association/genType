@@ -221,12 +221,12 @@ and translateCoreType_ =
   | Ttyp_variant(rowFields, _, _) =>
     switch (rowFields |> processVariant) {
     | {noPayloads, payloads, unknowns: []} =>
-      let cases =
+      let noPayloads =
         noPayloads
         |> List.map(((label, _attibutes)) =>
              {label, labelJS: StringLabel(label)}
            );
-      let payloadTranslations =
+      let payloadsTranslations =
         payloads
         |> List.map(((label, attributes, payload)) =>
              (
@@ -236,7 +236,7 @@ and translateCoreType_ =
              )
            );
       let payloads =
-        payloadTranslations
+        payloadsTranslations
         |> List.map(((label, _attributes, translation)) => {
              let numArgs = 1;
              (
@@ -245,9 +245,9 @@ and translateCoreType_ =
                translation.typ,
              );
            });
-      let typ = cases |> createEnum(~payloads, ~polyVariant=true);
+      let typ = createEnum(~noPayloads, ~payloads, ~polyVariant=true);
       let dependencies =
-        payloadTranslations
+        payloadsTranslations
         |> List.map(((_, _, {dependencies, _})) => dependencies)
         |> List.concat;
       {dependencies, typ};

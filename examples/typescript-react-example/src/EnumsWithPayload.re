@@ -56,7 +56,7 @@ let testSimpleVariant = (x: simpleVariant) => x;
 
 [@genType]
 type variantWithPayloads =
-  | A
+  | [@genType.as "ARenamed"] A
   | B(int)
   | C(int, int)
   | D((int, int))

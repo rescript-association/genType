@@ -26,8 +26,16 @@ let createExportTypeFromTypeDeclaration =
   };
 };
 
-let variantLeafTypeName = (typeName, leafName) =>
-  String.capitalize(typeName) ++ String.capitalize(leafName);
+let createCase = ((label, attributes)) =>
+  switch (
+    attributes |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
+  ) {
+  | Some(BoolPayload(b)) => {label, labelJS: BoolLabel(b)}
+  | Some(FloatPayload(s)) => {label, labelJS: FloatLabel(s)}
+  | Some(IntPayload(i)) => {label, labelJS: IntLabel(i)}
+  | Some(StringPayload(asLabel)) => {label, labelJS: StringLabel(asLabel)}
+  | _ => {label, labelJS: StringLabel(label)}
+  };
 
 let traslateDeclarationKind =
     (
@@ -167,23 +175,7 @@ let traslateDeclarationKind =
                ) =>
                let rowFieldsVariants =
                  rowFields |> TranslateCoreType.processVariant;
-               let createCase = ((label, attributes)) =>
-                 switch (
-                   attributes
-                   |> Annotation.getAttributePayload(
-                        Annotation.tagIsGenTypeAs,
-                      )
-                 ) {
-                 | Some(BoolPayload(b)) => {label, labelJS: BoolLabel(b)}
-                 | Some(FloatPayload(s)) => {label, labelJS: FloatLabel(s)}
-                 | Some(IntPayload(i)) => {label, labelJS: IntLabel(i)}
-                 | Some(StringPayload(asLabel)) => {
-                     label,
-                     labelJS: StringLabel(asLabel),
-                   }
-                 | _ => {label, labelJS: StringLabel(label)}
-                 };
-               let noPayload =
+               let noPayloads =
                  rowFieldsVariants.noPayloads |> List.map(createCase);
                let payloads =
                  if (enum.payloads
@@ -198,7 +190,7 @@ let traslateDeclarationKind =
                    enum.payloads;
                  };
 
-               noPayload |> createEnum(~payloads, ~polyVariant=true);
+               createEnum(~noPayloads, ~payloads, ~polyVariant=true);
              | _ => translation.typ
              };
            (translation, typ);
@@ -276,6 +268,7 @@ let traslateDeclarationKind =
       |> List.map(constructorDeclaration => {
            let constructorArgs = constructorDeclaration.Types.cd_args;
            let name = constructorDeclaration.Types.cd_id |> Ident.name;
+           let attributes = constructorDeclaration.Types.cd_attributes;
            let argsTranslation =
              constructorArgs
              |> TranslateTypeExprFromTypes.translateTypeExprsFromTypes(
@@ -302,32 +295,37 @@ let traslateDeclarationKind =
              |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
            (
              name,
+             attributes,
              argTypes,
              importTypes,
              recordValue |> Runtime.recordValueToString,
            );
          });
     let (variantsNoPayload, variantsWithPayload) =
-      variants |> List.partition(((_, argTypes, _, _)) => argTypes == []);
+      variants |> List.partition(((_, _, argTypes, _, _)) => argTypes == []);
 
-    let cases =
+    let noPayloads =
       variantsNoPayload
-      |> List.map(((name, _argTypes, _importTypes, recordValue)) =>
-           {label: recordValue, labelJS: StringLabel(name)}
+      |> List.map(((name, attributes, _argTypes, _importTypes, recordValue)) =>
+           {...(name, attributes) |> createCase, label: recordValue}
          );
     let payloads =
       variantsWithPayload
-      |> List.map(((name, argTypes, _importTypes, recordValue)) => {
+      |> List.map(((name, attributes, argTypes, _importTypes, recordValue)) => {
            let typ =
              switch (argTypes) {
              | [typ] => typ
              | _ => Tuple(argTypes)
              };
            let numArgs = argTypes |> List.length;
-           ({label: recordValue, labelJS: StringLabel(name)}, numArgs, typ);
+           (
+             {...(name, attributes) |> createCase, label: recordValue},
+             numArgs,
+             typ,
+           );
          });
 
-    let enumTyp = cases |> createEnum(~payloads, ~polyVariant=false);
+    let enumTyp = createEnum(~noPayloads, ~payloads, ~polyVariant=false);
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
@@ -343,7 +341,7 @@ let traslateDeclarationKind =
     };
     let importTypes =
       variants
-      |> List.map(((_, _, importTypes, _)) => importTypes)
+      |> List.map(((_, _, _, importTypes, _)) => importTypes)
       |> List.concat;
 
     [{exportFromTypeDeclaration, importTypes}];
