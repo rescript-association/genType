@@ -12,7 +12,7 @@ import { InnerComponent } from "../components/ManyComponents.gen";
 
 import * as SomeFlowTypes from "../SomeFlowTypes";
 
-import * as Enums from "../Enums.gen";
+import * as Variants from "../Variants.gen";
 
 import {
   printEnumValue,
@@ -21,7 +21,7 @@ import {
   testWithPayload,
   testVariantWithPayloads,
   printVariantWithPayloads
-} from "../EnumsWithPayload.gen";
+} from "../VariantsWithPayload.gen";
 
 const consoleLog = console.log;
 
@@ -48,14 +48,14 @@ consoleLog("interopRoot.js callMyAreaDirectly:", callMyAreaDirectly);
 
 consoleLog("anInterestingFlowType ", SomeFlowTypes.c);
 
-consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
-consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);
-consoleLog("Enums: fortytwoBAD is", Enums.fortytwoBAD);
+consoleLog("Variants: swap(sunday) =", Variants.swap("sunday"));
+consoleLog("Variants: fortytwoOK is", Variants.fortytwoOK);
+consoleLog("Variants: fortytwoBAD is", Variants.fortytwoBAD);
 consoleLog(
-  "Enums: testConvert3to2('module') =",
-  Enums.testConvert2to3("module")
+  "Variants: testConvert3to2('module') =",
+  Variants.testConvert2to3("module")
 );
-consoleLog("Enums: testConvert3to2('42') =", Enums.testConvert2to3("42"));
+consoleLog("Variants: testConvert3to2('42') =", Variants.testConvert2to3("42"));
 
 printEnumValue("a");
 printEnumValue("bRenamed");

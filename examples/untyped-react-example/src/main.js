@@ -2,7 +2,7 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 
 import App from "./App.gen";
-import { printEnumValue, testWithPayload } from "./EnumsWithPayload.gen";
+import { printEnumValue, testWithPayload } from "./VariantsWithPayload.gen";
 
 const consoleLog = console.log;
 
