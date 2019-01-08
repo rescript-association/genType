@@ -18,8 +18,8 @@ The output of `genType` can be configured by using one of 3 back-ends: `untyped`
 
 See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
 
-> **Breaking Change:** From version 1.0.0, the extension of generated files is `.gen.tsx` (and `.gen.js`) instead of `.tsx` (and `.re.js`). You might need to adjust the argument of `@bs.module` when importing values and components to reflect this.
-> Alternatively, to keep the old and now deprecated extensions, the extension of generated files is configurable by specifying `"generatedFileExtension"` in the `"gentypeconfig"` section of `bsconfig.json`. (The extension used in versions 0.XX.0 was `""` for TypeScript and `".re"` for Flow/Untyped).
+## Breaking Change:
+> From version 2.0.0, ordinary variants (e.g. ``` | A | B(int) ```) are represented as Enums, so they use the same representation as polymorphic variants (e.g. ``` | `a | `b(int) ```). The construcor functions (e.g. ```A``` or ```B(42) ```) are not generated anymore. Instead, one can construct the Enum values directly in JS. Check out the [enums](#enums) section below for more details.
 
 > **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
@@ -309,9 +309,9 @@ It is possible to mix object and option types, so for example the Reason type `{
 Reason tuple values of type e.g. `(int, string)` are exported as identical JS values of type `[number, string]`. This requires no conversion, unless one of types of the tuple items does.
 While the type of Reason tuples is immutable, there's currently no mature enforcement in TS/Flow, so they're currenty exported to mutable tuples.
 
-### variants
+### variants and polymorphic variants
 
-Reason values of variant type e.g. `| A | B(int)` have the same representation when exported to JS. Constructor functions with the same name as the variants are generated, so e.g. `A` and `B(3)` are valid JS programs to generate Reason values.
+Variants (e.g. ``` | A | B(int) ```) and polymorphic variants (e.g. ``` | `a | `b(int) ```) are represented as enums. See [enums](#enums) below.
 
 ### arrays
 
@@ -348,16 +348,33 @@ A file can export many components by defining them in sub-modules. The toplevel 
 
 ### enums
 
-Enums are Reason polymorphic variants without payload: essentially flat sequences of identifiers. E.g. type ``[@genType] type days = [ | `monday | `tuesday ] ``.
-The corresponding JS representation is `"monday"`, `"tuesday"`.
+Enums are used to represent ordinary Reason variants as well as polymorphic variants. There's no difference from the point of view of JS.
 
-The `@genType.as` annotation can be used to change the name of an element on the JS side of things. So e.g. ``` [ | [@genType.as "type"] `type_ ] ``` exports Reason value `` `type_ `` to JS value `"type"`.
-Boolean/integer/float constants can be expressed as ``` | [@genType.as true] `True ``` and ``` | [@genType.as 20] `Twenty ``` and ``` | [@genType.as 0.5] `Half ```.
+Enums can have an unboxed, or a boxed representation. The unboxed representation is used if there is at most one case with payload, and that payload has object type. Object types are arrays, objects, records and tuples.
 
-At most one variant can have a payload, which must have object type, e.g.
-``` [ | `unnamed | `named({. "name": string, "surname": string}) ] ```. Object types are arrays, objects, records and tuples.
+Variants without payloads are essentially flats sequences of inentifiers.
+E.g. type ``[@genType] type days = | Monday | Tuesday``.
+The corresponding JS representation is `"Monday"`, `"Tuesday"`.
+Similarly, polymorphic variant type ``[@genType] type days = [ | `monday | `tuesday ] `` has JS representation as `"monday"`, `"tuesday"`.
 
-See for example [Enums.re](examples/typescript-react-example/src/Enums.re) and [EnumsWithPayload.re](examples/typescript-react-example/src/EnumsWithPayload.re).
+
+When at most one variant has payload, and if the payload is of object type, e.g.
+``` [ | Unnamed | Named({. "name": string, "surname": string}) ] ```
+then the representation is still unboxed: JS values are e.g. `"Unnamed"` and
+`{name: "hello", surname: "world"}`. And similarly for polymorphic variants.
+Note that this unboxed representation does not use the label `"Named"` of the variant with payload, because that value is distinguished from the other payload-less variants by its type: an object.
+
+If there is more than one variant with payload, or if the single payload has not type object, a boxed representation is used. The boxed representation has shape ```{tag: "someTag", value: someValue}```.
+For example, type ```| A | B(int) | C(string)``` has values such as ```"A"``` and 
+```{tag: "B", value: 42}``` and ```{tag: "C", value: "hello"}```.
+Polymorhphic variants are treated similarly. Notice that payloads for polymorphic variants are always unary: ``` `Pair(int,int) ``` has a single payload of type `(int,int)`. Instead, ordinary variants distinguish between unary ``` Pair((int,int)) ``` and binary ``` Pair(int,int) ```. All those cases are represented in JS as ```{tag: "Pair", value: [3, 4]}```, and the conversion functions take care of the different Reason representations.
+
+The `@genType.as` annotation can be used to change the name of a variant on the JS side of things. So e.g. ``` | [@genType.as "type"] Type``` exports Reason value `` Type `` to JS value `"type"`.
+Boolean/integer/float constants can be expressed as ``` | [@genType.as true] True ``` and ``` | [@genType.as 20] Twenty ``` and ``` | [@genType.as 0.5] Half ```. Similarly for polymorphic variants.
+The `@genType.as` annotation can also be used on variants with payloads to determine what appears in `{ tag: ... }`.
+
+
+For more examples, see [Enums.re](examples/typescript-react-example/src/Enums.re) and [EnumsWithPayload.re](examples/typescript-react-example/src/EnumsWithPayload.re).
 
 **NOTE** When exporting/importing values that use enum types, you have to use type annotations for enums, and cannot rely on type inference. So instead of ```let monday = `monday```, use ```let monday : days = `monday```. The former does not work, as the type checker infers a tyoe without annotations.
 
