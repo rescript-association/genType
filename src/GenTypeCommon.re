@@ -44,7 +44,6 @@ type case = {
 
 type typ =
   | Array(typ, mutable_)
-  | Enum(enum)
   | Function(function_)
   | GroupOfLabeledArgs(fields)
   | Ident(string, list(typ))
@@ -54,6 +53,7 @@ type typ =
   | Record(fields)
   | Tuple(list(typ))
   | TypeVar(string)
+  | Variant(variant)
 and fields = list(field)
 and field = {
   name: string,
@@ -66,11 +66,7 @@ and function_ = {
   argTypes: list(typ),
   retType: typ,
 }
-and variantLeaf = {
-  leafName: string,
-  argTypes: list(typ),
-}
-and enum = {
+and variant = {
   noPayloads: list(case),
   payloads: list((case, int, typ)),
   polymorphic: bool,
@@ -82,7 +78,6 @@ and enum = {
 let typIsObject = typ =>
   switch (typ) {
   | Array(_) => true
-  | Enum(_) => false
   | Function(_) => false
   | GroupOfLabeledArgs(_) => false
   | Ident(_) => false
@@ -92,6 +87,7 @@ let typIsObject = typ =>
   | Record(_) => true
   | Tuple(_) => true
   | TypeVar(_) => false
+  | Variant(_) => false
   };
 
 type label =
@@ -99,7 +95,7 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-let createEnum = (~noPayloads, ~payloads, ~polymorphic) => {
+let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
   let hash =
     noPayloads
     |> List.map(case => (case.label, case.labelJS))
@@ -107,7 +103,7 @@ let createEnum = (~noPayloads, ~payloads, ~polymorphic) => {
     |> Hashtbl.hash
     |> string_of_int;
   let unboxed = payloads == [];
-  Enum({
+  Variant({
     noPayloads,
     payloads,
     polymorphic,
@@ -116,7 +112,6 @@ let createEnum = (~noPayloads, ~payloads, ~polymorphic) => {
     unboxed,
   });
 };
-
 
 let mixedOrUnknown = (~config) =>
   Ident(

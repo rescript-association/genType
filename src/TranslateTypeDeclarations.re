@@ -161,26 +161,26 @@ let traslateDeclarationKind =
              switch (optCoreType, translation.typ) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
-                 Enum(enum),
+                 Variant(variant),
                ) =>
                let rowFieldsVariants =
                  rowFields |> TranslateCoreType.processVariant;
                let noPayloads =
                  rowFieldsVariants.noPayloads |> List.map(createCase);
                let payloads =
-                 if (enum.payloads
+                 if (variant.payloads
                      |> List.length
                      == (rowFieldsVariants.payloads |> List.length)) {
-                   List.combine(enum.payloads, rowFieldsVariants.payloads)
+                   List.combine(variant.payloads, rowFieldsVariants.payloads)
                    |> List.map((((_case, i, typ), (label, attributes, _))) => {
                         let case = (label, attributes) |> createCase;
                         (case, i, typ);
                       });
                  } else {
-                   enum.payloads;
+                   variant.payloads;
                  };
 
-               createEnum(~noPayloads, ~payloads, ~polymorphic=true);
+               createVariant(~noPayloads, ~payloads, ~polymorphic=true);
              | _ => translation.typ
              };
            (translation, typ);
@@ -313,7 +313,7 @@ let traslateDeclarationKind =
            );
          });
 
-    let enumTyp = createEnum(~noPayloads, ~payloads, ~polymorphic=false);
+    let variantTyp = createVariant(~noPayloads, ~payloads, ~polymorphic=false);
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
@@ -321,7 +321,7 @@ let traslateDeclarationKind =
       CodeItem.exportType: {
         nameAs,
         opaque: None,
-        optTyp: Some(enumTyp),
+        optTyp: Some(variantTyp),
         typeVars,
         resolvedTypeName,
       },
