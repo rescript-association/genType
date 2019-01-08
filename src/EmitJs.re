@@ -915,8 +915,6 @@ let propagateAnnotationToSubTypes =
       | Nullable(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
-      | Variant(leaves) =>
-        leaves |> List.iter(leaf => leaf.argTypes |> List.iter(visit))
       };
     typ_ |> visit;
   };

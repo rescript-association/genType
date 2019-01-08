@@ -54,7 +54,6 @@ type typ =
   | Record(fields)
   | Tuple(list(typ))
   | TypeVar(string)
-  | Variant(list(variantLeaf))
 and fields = list(field)
 and field = {
   name: string,
@@ -93,7 +92,6 @@ let typIsObject = typ =>
   | Record(_) => true
   | Tuple(_) => true
   | TypeVar(_) => false
-  | Variant(_) => false
   };
 
 type label =
