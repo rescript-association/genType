@@ -16,19 +16,16 @@ and addAnnotationsToFields =
   switch (expr.exp_desc, fields, typs) {
   | (_, [], _) => ([], addAnnotationsToTyps(expr, typs))
   | (Texp_function(_lbl, [{c_rhs, _}], _), [field, ...nextFields], _) =>
-    let genTypeAsPayload =
-      expr.exp_attributes
-      |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
-    switch (genTypeAsPayload) {
-    | Some(StringPayload(s)) =>
+    switch (expr.exp_attributes |> Annotation.getAttributeRenaming) {
+    | Some(s) =>
       let (nextFields1, typs1) =
         addAnnotationsToFields(c_rhs, nextFields, typs);
       ([{...field, name: s}, ...nextFields1], typs1);
-    | _ =>
+    | None =>
       let (nextFields1, typs1) =
         addAnnotationsToFields(c_rhs, nextFields, typs);
       ([field, ...nextFields1], typs1);
-    };
+    }
   | _ => (fields, typs)
   };
 
