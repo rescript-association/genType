@@ -86,7 +86,7 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Enum({noPayload, withPayload, unboxed, _}) =>
+  | Enum({noPayload, payload, unboxed, _}) =>
     let noPayloadRendered =
       noPayload |> List.map(case => case.labelJS |> labelJSToString);
     let field = (~name, value) => {
@@ -98,8 +98,8 @@ let rec renderTyp =
     let fields = fields =>
       fields
       |> renderFields(~config, ~indent, ~typeNameIsInterface, ~inFunType);
-    let withPayloadRendered =
-      withPayload
+    let payloadRendered =
+      payload
       |> List.map(((case, _numArgs, typ)) => {
            let typRendered =
              typ
@@ -114,7 +114,7 @@ let rec renderTyp =
              ]
              |> fields;
          });
-    noPayloadRendered @ withPayloadRendered |> String.concat(" | ");
+    noPayloadRendered @ payloadRendered |> String.concat(" | ");
 
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(

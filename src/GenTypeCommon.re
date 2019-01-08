@@ -73,7 +73,7 @@ and variantLeaf = {
 }
 and enum = {
   noPayload: list(case),
-  withPayload: list((case, int, typ)),
+  payload: list((case, int, typ)),
   polyVariant: bool,
   toJS: string,
   toRE: string,
@@ -101,17 +101,17 @@ type label =
   | Label(string)
   | OptLabel(string);
 
-let createEnum = (~withPayload, ~polyVariant, noPayload) => {
+let createEnum = (~payload, ~polyVariant, noPayload) => {
   let hash =
     noPayload
     |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
     |> Hashtbl.hash
     |> string_of_int;
-  let unboxed = withPayload == [];
+  let unboxed = payload == [];
   Enum({
     noPayload,
-    withPayload,
+    payload,
     polyVariant,
     toJS: "$$toJS" ++ hash,
     toRE: "$$toRE" ++ hash,

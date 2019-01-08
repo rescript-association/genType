@@ -234,7 +234,7 @@ and translateCoreType_ =
                payload |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
              )
            );
-      let withPayload =
+      let payload =
         payloadTranslations
         |> List.map(((label, translation)) => {
              let numArgs = 1;
@@ -244,7 +244,7 @@ and translateCoreType_ =
                translation.typ,
              );
            });
-      let typ = cases |> createEnum(~withPayload, ~polyVariant=true);
+      let typ = cases |> createEnum(~payload, ~polyVariant=true);
       let dependencies =
         payloadTranslations
         |> List.map(((_, {dependencies, _})) => dependencies)
