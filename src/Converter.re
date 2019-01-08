@@ -256,8 +256,6 @@ let typToConverterNormalized =
       (TupleC(innerConversions), innerHasNone ? None : normalized_);
 
     | TypeVar(_) => (IdentC, None)
-
-    | Variant(_) => (IdentC, None)
     };
   }
   and typToGroupedArgConverter = (~visited, typ) =>
