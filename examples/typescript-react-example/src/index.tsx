@@ -2,15 +2,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
 import { InnerComponent } from "./components/ManyComponents.gen";
-import * as Enums from "./Enums.gen";
-import {
-  printEnumValue,
-  printManyPayloads,
-  printVariantWithPayloads,
-  testManyPayloads,
-  testVariantWithPayloads,
-  testWithPayload
-} from "./EnumsWithPayload.gen";
 import * as ImportJsValue from "./ImportJsValue.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
@@ -20,6 +11,15 @@ import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules.gen";
 import ReasonComponent from "./ReasonComponent.gen";
 import { minus, t, tToString } from "./ReasonComponent.gen";
 import registerServiceWorker from "./registerServiceWorker";
+import * as Variants from "./Variants.gen";
+import {
+  printEnumValue,
+  printManyPayloads,
+  printVariantWithPayloads,
+  testManyPayloads,
+  testVariantWithPayloads,
+  testWithPayload
+} from "./VariantsWithPayload.gen";
 
 const minusOne: number = minus({ second: 1 });
 
@@ -85,14 +85,14 @@ consoleLog(
   Universe_Nested2_Nested3_nested3Value
 );
 
-consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
-consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);
-consoleLog("Enums: fortytwoBAD is", Enums.fortytwoBAD);
+consoleLog("Enums: swap(sunday) =", Variants.swap("sunday"));
+consoleLog("Enums: fortytwoOK is", Variants.fortytwoOK);
+consoleLog("Enums: fortytwoBAD is", Variants.fortytwoBAD);
 consoleLog(
-  "Enums: testConvert3to2('module') =",
-  Enums.testConvert2to3("module")
+  "Variants: testConvert3to2('module') =",
+  Variants.testConvert2to3("module")
 );
-consoleLog("Enums: testConvert3to2('42') =", Enums.testConvert2to3("42"));
+consoleLog("Variants: testConvert3to2('42') =", Variants.testConvert2to3("42"));
 
 const absoluteValueInstance = new MyMath.AbsoluteValue();
 absoluteValueInstance.prop = -3;
