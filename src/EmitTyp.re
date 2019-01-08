@@ -86,36 +86,6 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Enum({noPayloads, payloads, unboxed, _}) =>
-    let noPayloadsRendered =
-      noPayloads |> List.map(case => case.labelJS |> labelJSToString);
-    let field = (~name, value) => {
-      name,
-      optional: Mandatory,
-      mutable_: Mutable,
-      typ: TypeVar(value),
-    };
-    let fields = fields =>
-      fields
-      |> renderFields(~config, ~indent, ~typeNameIsInterface, ~inFunType);
-    let payloadsRendered =
-      payloads
-      |> List.map(((case, _numArgs, typ)) => {
-           let typRendered =
-             typ
-             |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType);
-           unboxed ?
-             typRendered :
-             [
-               case.labelJS
-               |> labelJSToString
-               |> field(~name=Runtime.jsVariantTag),
-               typRendered |> field(~name=Runtime.jsVariantValue),
-             ]
-             |> fields;
-         });
-    noPayloadsRendered @ payloadsRendered |> String.concat(" | ");
-
   | Function({typeVars, argTypes, retType}) =>
     renderFunType(
       ~config,
@@ -183,6 +153,36 @@ let rec renderTyp =
     )
     ++ "]"
   | TypeVar(s) => s
+
+  | Variant({noPayloads, payloads, unboxed, _}) =>
+    let noPayloadsRendered =
+      noPayloads |> List.map(case => case.labelJS |> labelJSToString);
+    let field = (~name, value) => {
+      name,
+      optional: Mandatory,
+      mutable_: Mutable,
+      typ: TypeVar(value),
+    };
+    let fields = fields =>
+      fields
+      |> renderFields(~config, ~indent, ~typeNameIsInterface, ~inFunType);
+    let payloadsRendered =
+      payloads
+      |> List.map(((case, _numArgs, typ)) => {
+           let typRendered =
+             typ
+             |> renderTyp(~config, ~indent, ~typeNameIsInterface, ~inFunType);
+           unboxed ?
+             typRendered :
+             [
+               case.labelJS
+               |> labelJSToString
+               |> field(~name=Runtime.jsVariantTag),
+               typRendered |> field(~name=Runtime.jsVariantValue),
+             ]
+             |> fields;
+         });
+    noPayloadsRendered @ payloadsRendered |> String.concat(" | ");
   }
 and renderField =
     (

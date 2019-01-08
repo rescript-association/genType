@@ -209,7 +209,7 @@ let translateConstr =
       [
         {
           dependencies: argsDependencies,
-          typ: Enum({noPayloads: [{label: "Arity_0", _}]}),
+          typ: Variant({noPayloads: [{label: "Arity_0", _}]}),
         },
         ret,
       ],
@@ -485,7 +485,7 @@ and translateTypeExprFromTypes_ =
     | {noPayloads, payloads: [], unknowns: []} =>
       let noPayloads =
         noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
-      let typ = createEnum(~noPayloads, ~payloads=[], ~polymorphic=true);
+      let typ = createVariant(~noPayloads, ~payloads=[], ~polymorphic=true);
       {dependencies: [], typ};
 
     | {noPayloads: [], payloads: [(_label, t)], unknowns: []} =>
@@ -521,7 +521,7 @@ and translateTypeExprFromTypes_ =
                translation.typ,
              );
            });
-      let typ = createEnum(~noPayloads, ~payloads, ~polymorphic=true);
+      let typ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
       let dependencies =
         payloadTranslations
         |> List.map(((_, {dependencies, _})) => dependencies)

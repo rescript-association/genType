@@ -40,15 +40,6 @@ let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 let rec substitute = (~f, typ) =>
   switch (typ) {
   | Array(typ, arrayKind) => Array(typ |> substitute(~f), arrayKind)
-  | Enum(enum) =>
-    Enum({
-      ...enum,
-      payloads:
-        enum.payloads
-        |> List.map(((case, numArgs, t)) =>
-             (case, numArgs, t |> substitute(~f))
-           ),
-    })
   | Function(function_) =>
     Function({
       ...function_,
@@ -81,17 +72,20 @@ let rec substitute = (~f, typ) =>
     | None => typ
     | Some(typ1) => typ1
     }
+  | Variant(variant) =>
+    Variant({
+      ...variant,
+      payloads:
+        variant.payloads
+        |> List.map(((case, numArgs, t)) =>
+             (case, numArgs, t |> substitute(~f))
+           ),
+    })
   };
 
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
   | Array(typ, _) => typ |> free_
-  | Enum({payloads}) =>
-    payloads
-    |> List.fold_left(
-         (s, (_, _, t)) => StringSet.union(s, t |> free_),
-         StringSet.empty,
-       )
   | Function({typeVars, argTypes, retType}) =>
     StringSet.diff(
       (argTypes |> freeOfList_) +++ (retType |> free_),
@@ -120,6 +114,12 @@ let rec free_ = typ: StringSet.t =>
          StringSet.empty,
        )
   | TypeVar(s) => s |> StringSet.singleton
+  | Variant({payloads}) =>
+    payloads
+    |> List.fold_left(
+         (s, (_, _, t)) => StringSet.union(s, t |> free_),
+         StringSet.empty,
+       )
   }
 and freeOfList_ = typs =>
   typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)

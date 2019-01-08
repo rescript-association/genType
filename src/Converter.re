@@ -134,39 +134,6 @@ let typToConverterNormalized =
       let (tConverter, tNormalized) = t |> visit(~visited);
       (ArrayC(tConverter), tNormalized == None ? None : normalized_);
 
-    | Enum(enum) =>
-      let (withPayload, normalized, unboxed) =
-        switch (enum.payloads) {
-        | [] => ([], normalized_, enum.unboxed)
-        | [(case, numArgs, t)] =>
-          let converter = t |> visit(~visited) |> fst;
-          let unboxed = t |> expandOneLevel |> typIsObject;
-          let normalized =
-            unboxed ? Some(Enum({...enum, unboxed: true})) : normalized_;
-          ([(case, numArgs, converter)], normalized, unboxed);
-        | [_, _, ..._] => (
-            enum.payloads
-            |> List.map(((case, numArgs, t)) => {
-                 let converter = t |> visit(~visited) |> fst;
-                 (case, numArgs, converter);
-               }),
-            normalized_,
-            enum.unboxed,
-          )
-        };
-      let converter =
-        normalized == None ?
-          IdentC :
-          EnumC({
-            noPayloads: enum.noPayloads,
-            withPayload,
-            polymorphic: enum.polymorphic,
-            toJS: enum.toJS,
-            toRE: enum.toRE,
-            unboxed,
-          });
-      (converter, normalized);
-
     | Function({argTypes, retType, _}) =>
       let argConverters =
         argTypes |> List.map(typToGroupedArgConverter(~visited));
@@ -256,6 +223,40 @@ let typToConverterNormalized =
       (TupleC(innerConversions), innerHasNone ? None : normalized_);
 
     | TypeVar(_) => (IdentC, None)
+
+    | Variant(variant) =>
+      let (withPayload, normalized, unboxed) =
+        switch (variant.payloads) {
+        | [] => ([], normalized_, variant.unboxed)
+        | [(case, numArgs, t)] =>
+          let converter = t |> visit(~visited) |> fst;
+          let unboxed = t |> expandOneLevel |> typIsObject;
+          let normalized =
+            unboxed ?
+              Some(Variant({...variant, unboxed: true})) : normalized_;
+          ([(case, numArgs, converter)], normalized, unboxed);
+        | [_, _, ..._] => (
+            variant.payloads
+            |> List.map(((case, numArgs, t)) => {
+                 let converter = t |> visit(~visited) |> fst;
+                 (case, numArgs, converter);
+               }),
+            normalized_,
+            variant.unboxed,
+          )
+        };
+      let converter =
+        normalized == None ?
+          IdentC :
+          EnumC({
+            noPayloads: variant.noPayloads,
+            withPayload,
+            polymorphic: variant.polymorphic,
+            toJS: variant.toJS,
+            toRE: variant.toRE,
+            unboxed,
+          });
+      (converter, normalized);
     };
   }
   and typToGroupedArgConverter = (~visited, typ) =>
