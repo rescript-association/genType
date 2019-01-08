@@ -26,7 +26,7 @@ let translateTypeDeclarationFromTypes =
     | Type_variant(constructorDeclarations)
         when
           !TranslateTypeDeclarations.hasSomeGADTLeaf(constructorDeclarations) =>
-      VariantDeclarationFromTypes(constructorDeclarations)
+      VariantDeclarationFromTypes(type_attributes, constructorDeclarations)
 
     | Type_abstract =>
       GeneralDeclarationFromTypes(type_attributes, type_manifest)

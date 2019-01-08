@@ -43,6 +43,10 @@ export type x1 = "x" | "same";
 // tslint:disable-next-line:interface-over-type-literal
 export type x2 = "x" | "same";
 
+// tslint:disable-next-line:interface-over-type-literal
+export type type_ = "type";
+export type type = type_;
+
 export const isWeekend: (_1:weekday) => boolean = function _(Arg1: any) { const result = EnumsBS.isWeekend($$toRE288839514[Arg1]); return result };
 
 export const monday: "monday" = "monday";

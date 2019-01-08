@@ -7,7 +7,10 @@ type declarationKind =
       Parsetree.attributes,
       option(Types.type_expr),
     ) /* As the above, but from Types not Typedtree */
-  | VariantDeclarationFromTypes(list(Types.constructor_declaration))
+  | VariantDeclarationFromTypes(
+      Parsetree.attributes,
+      list(Types.constructor_declaration),
+    )
   | NoDeclaration;
 
 let createExportTypeFromTypeDeclaration =
@@ -261,7 +264,15 @@ let traslateDeclarationKind =
       },
     ];
 
-  | VariantDeclarationFromTypes(constructorDeclarations) =>
+  | VariantDeclarationFromTypes(typeAttributes, constructorDeclarations) =>
+      let nameAs =
+        switch (
+          typeAttributes
+          |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
+        ) {
+        | Some(StringPayload(s)) => Some(s)
+        | _ => None
+        };
     let recordGen = Runtime.recordGen();
     let variants =
       constructorDeclarations
@@ -331,7 +342,7 @@ let traslateDeclarationKind =
 
     let exportFromTypeDeclaration = {
       CodeItem.exportType: {
-        nameAs: None,
+        nameAs,
         opaque: None,
         optTyp: Some(enumTyp),
         typeVars,
@@ -381,7 +392,7 @@ let translateTypeDeclaration =
 
     | Type_variant(constructorDeclarations)
         when !hasSomeGADTLeaf(constructorDeclarations) =>
-      VariantDeclarationFromTypes(constructorDeclarations)
+      VariantDeclarationFromTypes(typ_attributes, constructorDeclarations)
 
     | Type_abstract => GeneralDeclaration(typ_attributes, typ_manifest)
 
