@@ -59,18 +59,12 @@ let traslateDeclarationKind =
       |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
     ) {
     | Some(StringPayload(importString)) =>
-      let genTypeAsPayload =
-        typeAttributes
-        |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
       let typeName_ = typeName;
       let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
       let (typeName, asTypeName) =
-        switch (genTypeAsPayload) {
-        | Some(StringPayload(asString)) => (
-            asString,
-            Some(nameWithModulePath),
-          )
-        | _ => (nameWithModulePath, None)
+        switch (typeAttributes |> Annotation.getAttributeRenaming) {
+        | Some(asString) => (asString, Some(nameWithModulePath))
+        | None => (nameWithModulePath, None)
         };
       let importTypes = [
         {
@@ -95,14 +89,7 @@ let traslateDeclarationKind =
       [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
     | _ =>
-      let nameAs =
-        switch (
-          typeAttributes
-          |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
-        ) {
-        | Some(StringPayload(s)) => Some(s)
-        | _ => None
-        };
+      let nameAs = typeAttributes |> Annotation.getAttributeRenaming;
       switch (optType) {
       | None => [
           {
@@ -205,12 +192,9 @@ let traslateDeclarationKind =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
            let name =
-             switch (
-               ld_attributes
-               |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
-             ) {
-             | Some(StringPayload(s)) => s
-             | _ => ld_id |> Ident.name
+             switch (ld_attributes |> Annotation.getAttributeRenaming) {
+             | Some(s) => s
+             | None => ld_id |> Ident.name
              };
            let mutability = ld_mutable == Mutable ? Mutable : Immutable;
            (
@@ -265,14 +249,7 @@ let traslateDeclarationKind =
     ];
 
   | VariantDeclarationFromTypes(typeAttributes, constructorDeclarations) =>
-      let nameAs =
-        switch (
-          typeAttributes
-          |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
-        ) {
-        | Some(StringPayload(s)) => Some(s)
-        | _ => None
-        };
+    let nameAs = typeAttributes |> Annotation.getAttributeRenaming;
     let recordGen = Runtime.recordGen();
     let variants =
       constructorDeclarations

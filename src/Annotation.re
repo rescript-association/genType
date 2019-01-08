@@ -123,6 +123,12 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
   | [_hd, ...tl] => getAttributePayload(checkText, tl)
   };
 
+let getAttributeRenaming = attributes =>
+  switch (attributes |> getAttributePayload(tagIsGenTypeAs)) {
+  | Some(StringPayload(s)) => Some(s)
+  | _ => None
+  };
+
 let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
   getAttributePayload(checkText, attributes) != None;
 
