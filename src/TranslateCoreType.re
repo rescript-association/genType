@@ -33,7 +33,7 @@ let processVariant = rowFields => {
           label,
           attributes,
           _,
-          /* only enums with no payload */ [],
+          /* only variants with no payload */ [],
         ),
         ...otherFields,
       ] =>
