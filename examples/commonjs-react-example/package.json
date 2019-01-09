@@ -1,0 +1,35 @@
+{
+  "name": "flow-react-example",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ../run_bsb.js -make-world",
+    "start": "node ../run_bsb.js -make-world -w",
+    "clean": "node ../clean_bsb.js",
+    "test": "exit 0",
+    "webpack": "webpack -w",
+    "webpack:production": "webpack --env.NODE_ENV=production"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "reason-react": "^0.5.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "@babel/preset-flow": "^7.0.0-beta.54",
+    "@babel/preset-react": "^7.0.0-beta.54",
+    "babel-loader": "^8.0.0-beta.4",
+    "bs-platform": "^4.0.17",
+    "concurrently": "^3.5.0",
+    "webpack": "^4.0.1",
+    "webpack-cli": "^3.1.2"
+  }
+}
