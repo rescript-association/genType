@@ -1,3 +1,6 @@
+# master
+- In commonjs, import components simple as a `require` without ".default".
+
 # 2.0.0
 - New unified support for polymorphic variants and ordinary variants. If possible (at most one case with payload of object type), use an unboxed representation. Otherwise use `{tag: label, value: ...}`.
 - This is a **Breaking Change**: ordinary variants used to be represented as opaque types with construction functions. Now, ordinary variants have the same representation as polymorphic variants.
