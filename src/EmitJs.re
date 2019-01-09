@@ -242,7 +242,7 @@ let rec emitCodeItem =
         es6 ?
           (x, ["", ...y] |> String.concat("."), lastNameInPath) :
           (name, ["", x, ...y] |> String.concat("."), lastNameInPath);
-      | _ => (name, es6 ? "" : ".default", name)
+      | _ => (name, "", name)
       };
 
     let componentPath = firstNameInPath ++ restOfPath;

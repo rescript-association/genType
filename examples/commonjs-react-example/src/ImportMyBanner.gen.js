@@ -17,10 +17,10 @@ export type Props = {|+show: boolean, +Message: ?string|};
 
 // In case of type error, check the type of 'make' in 'ImportMyBanner.re' and the props of './MyBanner.component'.
 function MyBannerTypeChecked(props: Props) {
-  return <MyBanner.default {...props}/>;
+  return <MyBanner {...props}/>;
 };
 exports.MyBannerTypeChecked = MyBannerTypeChecked
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-const make: mixed = function _(show, Message, children) { return ReasonReact.wrapJsForReason(MyBanner.default, {show: show, Message: Message}, children); };;
+const make: mixed = function _(show, Message, children) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, Message: Message}, children); };;
 exports.make = make

@@ -8,7 +8,7 @@ const React = require("react");
 
 export type Props = {| show: boolean, Message: ?string |};
 
-class App extends React.Component<Props> {
+class MyBanner extends React.Component<Props> {
   render() {
     if (this.props.show) {
       return React.createElement(
@@ -23,4 +23,4 @@ class App extends React.Component<Props> {
   }
 }
 
-export default App;
+module.exports = MyBanner;
