@@ -16,6 +16,7 @@ const exampleDirPaths = [
   "flow-react-example",
   "typescript-react-example",
   "untyped-react-example"
+  "commonjs-react-example",
 ].map(exampleName => path.join(__dirname, "..", "examples", exampleName));
 
 const isWindows = /^win/i.test(process.platform);
