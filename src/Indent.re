@@ -12,5 +12,13 @@ let more = indent =>
   | Some(s) => Some("  " ++ s)
   };
 
-let heuristic = (~indent, fields) =>
-  fields |> List.length > 2 && indent == None ? Some("") : indent;
+let heuristicFields = (~indent, fields) => {
+  let threshold = 2;
+  fields |> List.length > threshold && indent == None ? Some("") : indent;
+};
+
+let heuristicVariants = (~indent, rendered) => {
+  let threshold = 40;
+  let break = rendered |> String.concat(" ") |> String.length > threshold;
+  break && indent == None ? Some("  ") : indent;
+};

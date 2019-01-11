@@ -83,7 +83,7 @@ let rec renderTyp =
   | GroupOfLabeledArgs(fields)
   | Object(fields)
   | Record(fields) =>
-    let indent1 = fields |> Indent.heuristic(~indent);
+    let indent1 = fields |> Indent.heuristicFields(~indent);
     let config =
       switch (typ) {
       | GroupOfLabeledArgs(_) => {...config, exportInterfaces: false}
@@ -165,7 +165,12 @@ let rec renderTyp =
              ]
              |> fields;
          });
-    noPayloadsRendered @ payloadsRendered |> String.concat(" | ");
+    let rendered = noPayloadsRendered @ payloadsRendered;
+    let indent1 = rendered |> Indent.heuristicVariants(~indent);
+    (indent1 == None ? rendered : ["", ...rendered])
+    |> String.concat(
+         (indent1 == None ? " " : Indent.break(~indent=indent1)) ++ "| ",
+       );
   }
 and renderField =
     (

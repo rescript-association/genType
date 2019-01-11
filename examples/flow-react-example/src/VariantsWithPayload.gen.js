@@ -26,11 +26,19 @@ export type payload = {|+x: number, +y?: string|};
 
 export type withPayload = "a" | "bRenamed" | true | 20 | 0.5 | payload;
 
-export type manyPayloads = {|tag: "oneRenamed", value: number|} | {|tag: 2, value: [string, string]|} | {|tag: "three", value: payload|};
+export type manyPayloads = 
+  | {|tag: "oneRenamed", value: number|}
+  | {|tag: 2, value: [string, string]|}
+  | {|tag: "three", value: payload|};
 
 export type simpleVariant = "A" | "B" | "C";
 
-export type variantWithPayloads = "ARenamed" | {|tag: "B", value: number|} | {|tag: "C", value: [number, number]|} | {|tag: "D", value: [number, number]|} | {|tag: "E", value: [number, string, number]|};
+export type variantWithPayloads = 
+  | "ARenamed"
+  | {|tag: "B", value: number|}
+  | {|tag: "C", value: [number, number]|}
+  | {|tag: "D", value: [number, number]|}
+  | {|tag: "E", value: [number, string, number]|};
 
 export type variant1Int = {|tag: "R", value: number|};
 

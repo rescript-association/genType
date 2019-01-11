@@ -25,13 +25,21 @@ export type payload = {readonly x: number, readonly y?: string};
 export type withPayload = "a" | "bRenamed" | true | 20 | 0.5 | payload;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type manyPayloads = {tag: "oneRenamed", value: number} | {tag: 2, value: [string, string]} | {tag: "three", value: payload};
+export type manyPayloads = 
+  | {tag: "oneRenamed", value: number}
+  | {tag: 2, value: [string, string]}
+  | {tag: "three", value: payload};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type simpleVariant = "A" | "B" | "C";
 
 // tslint:disable-next-line:interface-over-type-literal
-export type variantWithPayloads = "ARenamed" | {tag: "B", value: number} | {tag: "C", value: [number, number]} | {tag: "D", value: [number, number]} | {tag: "E", value: [number, string, number]};
+export type variantWithPayloads = 
+  | "ARenamed"
+  | {tag: "B", value: number}
+  | {tag: "C", value: [number, number]}
+  | {tag: "D", value: [number, number]}
+  | {tag: "E", value: [number, string, number]};
 
 // tslint:disable-next-line:interface-over-type-literal
 export type variant1Int = {tag: "R", value: number};

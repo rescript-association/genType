@@ -29,7 +29,14 @@ const $$toRE288839514 = {"monday": -949852400, "tuesday": 323181965, "wednesday"
 // $FlowExpectedError: Reason checked type sufficiently
 import * as VariantsBS from './Variants.bs';
 
-export type weekday = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
+export type weekday = 
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
 
 export type testGenTypeAs = "type" | "module" | "42";
 

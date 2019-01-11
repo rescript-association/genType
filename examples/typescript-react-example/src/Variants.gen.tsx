@@ -26,7 +26,14 @@ const $$toRE288839514 = {"monday": -949852400, "tuesday": 323181965, "wednesday"
 const VariantsBS = require('./Variants.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
-export type weekday = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
+export type weekday = 
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type testGenTypeAs = "type" | "module" | "42";

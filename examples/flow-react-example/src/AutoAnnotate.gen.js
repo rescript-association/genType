@@ -23,7 +23,9 @@ export type r3 = {|+r3: number|};
 
 export type r4 = {|+r4: number|};
 
-export type annotatedVariant = {|tag: "R2", value: [r2, r3]|} | {|tag: "R4", value: r4|};
+export type annotatedVariant = 
+  | {|tag: "R2", value: [r2, r3]|}
+  | {|tag: "R4", value: r4|};
 
 export type r5 = {|+r5: number|};
 
