@@ -25,17 +25,29 @@ let comment = x => "/* " ++ x ++ " */";
 let funCall = (~args, name) =>
   name ++ "(" ++ (args |> String.concat(", ")) ++ ")";
 
-let funDef = (~args, ~mkBody, functionName) => {
-  let (params, vals) = List.split(args);
+let funDef = (~args, ~indent, ~mkBody, functionName) => {
+  let indent1 = indent |> Indent.more;
+  let (params, vals) = List.split(args(~indent=indent1));
   "function "
   ++ (functionName == "" ? "_" : functionName)
   ++ (params |> parens)
-  ++ " "
-  ++ (vals |> mkBody |> brackets);
+  ++ " {"
+  ++ Indent.break(~indent=indent1)
+  ++ (vals |> mkBody(~indent=indent1))
+  ++ Indent.break(~indent)
+  ++ "}";
 };
 
-let ifThenElse = (if_, then_, else_) =>
-  "(" ++ if_ ++ " ? " ++ then_ ++ " : " ++ else_ ++ ")";
+let ifThenElse = (~indent, if_, then_, else_) => {
+  let indent1 = indent |> Indent.more;
+  if_(~indent=indent1)
+  ++ Indent.break(~indent)
+  ++ "? "
+  ++ then_(~indent=indent1)
+  ++ Indent.break(~indent)
+  ++ ": "
+  ++ else_(~indent=indent1);
+};
 
 let newNameGen = () => Hashtbl.create(1);
 
@@ -43,20 +55,25 @@ let quotes = x => "\"" ++ x ++ "\"";
 
 let resultName = (~nameGen) => "result" |> name(~nameGen);
 
-let switch_ = (~cases, expr) => {
+let switch_ = (~indent, ~cases, expr) => {
   let lastCase = (cases |> List.length) - 1;
-  [
-    cases
-    |> List.mapi((i, (label, code)) =>
-         if (i == lastCase) {
-           code;
-         } else {
-           expr ++ "===" ++ label ++ " ? " ++ code ++ " : ";
-         }
-       )
-    |> String.concat(" "),
-  ]
-  |> parens;
+
+  cases
+  |> List.mapi((i, (label, code)) =>
+       if (i == lastCase) {
+         code;
+       } else {
+         expr
+         ++ "==="
+         ++ label
+         ++ Indent.break(~indent)
+         ++ "? "
+         ++ code
+         ++ Indent.break(~indent)
+         ++ ": ";
+       }
+     )
+  |> String.concat("");
 };
 
 let typeOfObject = x => "typeof(" ++ x ++ ")" ++ " === " ++ "\'object\'";

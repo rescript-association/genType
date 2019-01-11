@@ -39,23 +39,6 @@ let shimExtension = (~config) =>
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
-module Indent = {
-  let break = (~indent) =>
-    switch (indent) {
-    | None => ""
-    | Some(s) => "\n" ++ s
-    };
-
-  let more = (~indent) =>
-    switch (indent) {
-    | None => None
-    | Some(s) => Some("  " ++ s)
-    };
-
-  let heuristic = (~indent, fields) =>
-    fields |> List.length > 2 && indent == None ? Some("") : indent;
-};
-
 let interfaceName = (~config, name) =>
   config.exportInterfaces ? "I" ++ name : name;
 
@@ -204,7 +187,7 @@ and renderField =
 }
 and renderFields =
     (~config, ~indent, ~typeNameIsInterface, ~inFunType, fields) => {
-  let indent1 = Indent.more(~indent);
+  let indent1 = indent |> Indent.more;
   (
     config.language == Flow && !config.exportInterfaces && fields != [] ?
       "{|" : "{"

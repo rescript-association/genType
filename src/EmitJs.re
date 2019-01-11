@@ -210,6 +210,7 @@ let rec emitCodeItem =
       codeItem |> codeItemToString(~config, ~typeNameIsInterface),
     );
   };
+  let indent = Some("");
 
   switch (codeItem) {
   | ImportComponent({
@@ -341,9 +342,10 @@ let rec emitCodeItem =
                                  propTyp : Option(propTyp)
                              )
                              |> typToConverter,
-                           ~variantTables,
+                           ~indent,
                            ~nameGen,
                            ~useCreateBucklescriptBlock,
+                           ~variantTables,
                          )
                     )
                   )
@@ -354,9 +356,10 @@ let rec emitCodeItem =
              |> Converter.toJS(
                   ~config,
                   ~converter=childrenTyp |> typToConverter,
-                  ~variantTables,
+                  ~indent,
                   ~nameGen,
                   ~useCreateBucklescriptBlock,
+                  ~variantTables,
                 ),
            ])
         ++ "; }"
@@ -448,9 +451,10 @@ let rec emitCodeItem =
         |> Converter.toReason(
              ~config,
              ~converter,
-             ~variantTables,
+             ~indent,
              ~nameGen,
              ~useCreateBucklescriptBlock,
+             ~variantTables,
            )
         |> EmitTyp.emitTypeCast(~config, ~typ, ~typeNameIsInterface)
       )
@@ -510,9 +514,10 @@ let rec emitCodeItem =
                  |> Converter.toReason(
                       ~config,
                       ~converter=argConverter,
-                      ~variantTables,
+                      ~indent,
                       ~nameGen,
                       ~useCreateBucklescriptBlock,
+                      ~variantTables,
                     )
                )
           )
@@ -521,9 +526,10 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
-                 ~variantTables,
+                 ~indent,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
+                 ~variantTables,
                ),
           ]
 
@@ -532,9 +538,10 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
-                 ~variantTables,
+                 ~indent,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
+                 ~variantTables,
                ),
           ]
 
@@ -649,9 +656,10 @@ let rec emitCodeItem =
         |> Converter.toJS(
              ~config,
              ~converter,
-             ~variantTables,
+             ~indent,
              ~nameGen,
              ~useCreateBucklescriptBlock,
+             ~variantTables,
            )
       )
       ++ ";"

@@ -33,12 +33,21 @@ export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = TypesBS
 
 export const swap: (_1:tree) => tree = TypesBS.swap;
 
-export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = function _(Arg1: any) { const result = 
+export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = function _(Arg1: any) {
+  const result = 
 /* WARNING: circular type selfRecursive. Only shallow converter applied. */
-  TypesBS.selfRecursiveConverter([Arg1.self]); return {self:result[0]} };
+  TypesBS.selfRecursiveConverter([Arg1.self]);
+  return {self:result[0]}
+};
 
-export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = function _(Arg1: any) { const result = 
+export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = function _(Arg1: any) {
+  const result = 
 /* WARNING: circular type mutuallyRecursiveB. Only shallow converter applied. */
-  TypesBS.mutuallyRecursiveConverter([[Arg1.b.a]]); return {a:{b:result[0][0]}} };
+  TypesBS.mutuallyRecursiveConverter([[Arg1.b.a]]);
+  return {a:{b:result[0][0]}}
+};
 
-export const testFunctionOnOptionsAsArgument: <T1,a>(_1:(null | undefined | a), _2:((_1:(null | undefined | a)) => T1)) => T1 = function _(Arg1: any, Arg2: any) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };
+export const testFunctionOnOptionsAsArgument: <T1,a>(_1:(null | undefined | a), _2:((_1:(null | undefined | a)) => T1)) => T1 = function _(Arg1: any, Arg2: any) {
+  const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2);
+  return result
+};

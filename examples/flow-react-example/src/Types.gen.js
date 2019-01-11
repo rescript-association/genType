@@ -70,17 +70,29 @@ export type DateKey = dateKey;
 export opaque type dateKeyOpaque = mixed;
 export type DateKeyOpaque = dateKeyOpaque;
 
-export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
+export const consumeOption: (?number) => number = function _(Arg1) {
+  const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
+  return result
+};
 
-export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };
+export const consumeOption2: (optionInt) => number = function _(Arg1) {
+  const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1));
+  return result
+};
 
-export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(ArrayItem) { return (ArrayItem == null ? undefined : ArrayItem)})); return result };
+export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) {
+  const result = TypesBS.testArray(Arg1.map(function _element(ArrayItem) { return (ArrayItem == null ? undefined : ArrayItem)}));
+  return result
+};
 
 export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesBS.identity;
 
 export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
 
-export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };
+export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) {
+  const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2);
+  return result
+};
 
 export const testDateKey: (dateKey) => dateKey = TypesBS.testDateKey;
 

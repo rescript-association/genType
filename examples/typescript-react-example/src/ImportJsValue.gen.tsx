@@ -18,13 +18,19 @@ export const round: unknown = roundTypeChecked as (_1:number) => number;
 export const areaTypeChecked: (_1:point) => number = areaNotChecked;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
-export const area: unknown = function _(Arg1: any) { const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]}); return result } as (_1:point) => number;
+export const area: unknown = function _(Arg1: any) {
+  const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]});
+  return result
+} as (_1:point) => number;
 
 // In case of type error, check the type of 'useColor' in 'ImportJsValue.re' and './MyMath'.
 export const useColorTypeChecked: (_1:color) => number = useColorNotChecked;
 
 // Export 'useColor' early to allow circular import from the '.bs.js' file.
-export const useColor: unknown = function _(Arg1: any) { const result = useColorTypeChecked($$toJS580645844[Arg1]); return result } as (_1:color) => number;
+export const useColor: unknown = function _(Arg1: any) {
+  const result = useColorTypeChecked($$toJS580645844[Arg1]);
+  return result
+} as (_1:color) => number;
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');

@@ -41,7 +41,10 @@ export type x1 = "x" | "same";
 
 export type x2 = "x" | "same";
 
-export const isWeekend: (weekday) => boolean = function _(Arg1) { const result = VariantsBS.isWeekend($$toRE288839514[Arg1]); return result };
+export const isWeekend: (weekday) => boolean = function _(Arg1) {
+  const result = VariantsBS.isWeekend($$toRE288839514[Arg1]);
+  return result
+};
 
 export const monday: "monday" = "monday";
 
@@ -49,22 +52,46 @@ export const saturday: "saturday" = "saturday";
 
 export const sunday: "sunday" = "sunday";
 
-export const onlySunday: ("sunday") => void = function _(Arg1) { const result = VariantsBS.onlySunday(/* sunday */569248848); return result };
+export const onlySunday: ("sunday") => void = function _(Arg1) {
+  const result = VariantsBS.onlySunday(/* sunday */569248848);
+  return result
+};
 
-export const swap: ("saturday" | "sunday") => "saturday" | "sunday" = function _(Arg1) { const result = VariantsBS.swap($$toRE694113598[Arg1]); return $$toJS694113598[result] };
+export const swap: ("saturday" | "sunday") => "saturday" | "sunday" = function _(Arg1) {
+  const result = VariantsBS.swap($$toRE694113598[Arg1]);
+  return $$toJS694113598[result]
+};
 
-export const testConvert: (testGenTypeAs) => testGenTypeAs = function _(Arg1) { const result = VariantsBS.testConvert($$toRE508922110[Arg1]); return $$toJS508922110[result] };
+export const testConvert: (testGenTypeAs) => testGenTypeAs = function _(Arg1) {
+  const result = VariantsBS.testConvert($$toRE508922110[Arg1]);
+  return $$toJS508922110[result]
+};
 
 export const fortytwoOK: testGenTypeAs = $$toJS508922110[VariantsBS.fortytwoOK];
 
 export const fortytwoBAD: "fortytwo" = "fortytwo";
 
-export const testConvert2: (testGenTypeAs2) => testGenTypeAs2 = function _(Arg1) { const result = VariantsBS.testConvert2($$toRE508922110[Arg1]); return $$toJS508922110[result] };
+export const testConvert2: (testGenTypeAs2) => testGenTypeAs2 = function _(Arg1) {
+  const result = VariantsBS.testConvert2($$toRE508922110[Arg1]);
+  return $$toJS508922110[result]
+};
 
-export const testConvert3: (testGenTypeAs3) => testGenTypeAs3 = function _(Arg1) { const result = VariantsBS.testConvert3($$toRE584768163[Arg1]); return $$toJS584768163[result] };
+export const testConvert3: (testGenTypeAs3) => testGenTypeAs3 = function _(Arg1) {
+  const result = VariantsBS.testConvert3($$toRE584768163[Arg1]);
+  return $$toJS584768163[result]
+};
 
-export const testConvert2to3: (testGenTypeAs2) => testGenTypeAs3 = function _(Arg1) { const result = VariantsBS.testConvert2to3($$toRE508922110[Arg1]); return $$toJS584768163[result] };
+export const testConvert2to3: (testGenTypeAs2) => testGenTypeAs3 = function _(Arg1) {
+  const result = VariantsBS.testConvert2to3($$toRE508922110[Arg1]);
+  return $$toJS584768163[result]
+};
 
-export const id1: (x1) => x1 = function _(Arg1) { const result = VariantsBS.id1($$toRE930788378[Arg1]); return $$toJS930788378[result] };
+export const id1: (x1) => x1 = function _(Arg1) {
+  const result = VariantsBS.id1($$toRE930788378[Arg1]);
+  return $$toJS930788378[result]
+};
 
-export const id2: (x2) => x2 = function _(Arg1) { const result = VariantsBS.id2($$toRE1061900109[Arg1]); return $$toJS1061900109[result] };
+export const id2: (x2) => x2 = function _(Arg1) {
+  const result = VariantsBS.id2($$toRE1061900109[Arg1]);
+  return $$toJS1061900109[result]
+};

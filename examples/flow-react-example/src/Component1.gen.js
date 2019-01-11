@@ -31,7 +31,10 @@ export default component;
 
 export const plus: <T1>(number, T1) => number = Component1BS.plus;
 
-export const concat: (string, ?string) => ?string = function _(Arg1, Arg2) { const result = Component1BS.concat(Arg1, (Arg2 == null ? undefined : Arg2)); return result };
+export const concat: (string, ?string) => ?string = function _(Arg1, Arg2) {
+  const result = Component1BS.concat(Arg1, (Arg2 == null ? undefined : Arg2));
+  return result
+};
 
 export const consumeVariant: (Component2_variant) => number = Component1BS.consumeVariant;
 

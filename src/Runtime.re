@@ -21,17 +21,6 @@ let emitRecordAsInt = (~config, recordValue) =>
 
 let recordValueToString = recordValue => recordValue |> string_of_int;
 
-let emitRecordAsBlock =
-    (~config, ~args, ~useCreateBucklescriptBlock, recordValue) => {
-  useCreateBucklescriptBlock := true;
-  createBucklescriptBlock
-  |> EmitText.funCall(
-       ~args=[
-         recordValue |> emitRecordAsInt(~config),
-         EmitText.array(args),
-       ],
-     );
-};
 let recordGen = () => {unboxed: 0, boxed: 0};
 
 let newRecordValue = (~unboxed, recordGen) =>
