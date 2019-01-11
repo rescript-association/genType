@@ -1,3 +1,6 @@
+# master
+- Indent function definitions and if-then-else's.
+
 # 2.1.0
 - In commonjs, import components simply as a `require` without ".default".
 
