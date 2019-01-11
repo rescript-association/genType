@@ -1,5 +1,8 @@
 # master
 - Indent function definitions and if-then-else's.
+- Indent variant declarations.
+- Spacing after/before brackets in object types.
+- In TypeScript, use the preferred semicolon in object types.
 
 # 2.1.0
 - In commonjs, import components simply as a `require` without ".default".
