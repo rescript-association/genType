@@ -3,7 +3,7 @@
 // tslint:disable-next-line:no-var-requires
 const RecordsBS = require('./Records.bs');
 
-import {list} from '../../src/shims/ReasonPervasives.shim';
+import {list} from '../src/shims/ReasonPervasives.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type coord = {

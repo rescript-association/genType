@@ -16,7 +16,7 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 import {Mouse_t as ReactEvent_Mouse_t} from '../src/shims/ReactEvent.shim';
 
-import {coord as Records_coord} from '../src/nested/Records.gen';
+import {coord as Records_coord} from './Records.gen';
 
 import {list} from '../src/shims/ReasonPervasives.shim';
 
