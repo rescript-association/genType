@@ -97,3 +97,8 @@ let testAutoAnnotateVariants = (x: AutoAnnotate.variant) => x;
 
 [@genType]
 let testAutoAnnotateVariants2 = (x: AutoAnnotate.annotatedVariant) => x;
+
+[@genType.opaque]
+type opaqueVariant =
+  | A
+  | B;

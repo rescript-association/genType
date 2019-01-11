@@ -29,6 +29,10 @@ export type mutuallyRecursiveA = { readonly b: mutuallyRecursiveB };
 // tslint:disable-next-line:interface-over-type-literal
 export type mutuallyRecursiveB = { readonly a: mutuallyRecursiveA };
 
+// tslint:disable-next-line:max-classes-per-file 
+// tslint:disable-next-line:class-name
+export abstract class opaqueVariant { protected opaque!: any }; /* simulate opaque types */
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = TypesBS.map;

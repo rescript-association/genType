@@ -250,6 +250,7 @@ let traslateDeclarationKind =
 
   | VariantDeclarationFromTypes(typeAttributes, constructorDeclarations) =>
     let nameAs = typeAttributes |> Annotation.getAttributeRenaming;
+    let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
     let recordGen = Runtime.recordGen();
     let variants =
       constructorDeclarations
@@ -313,14 +314,15 @@ let traslateDeclarationKind =
            );
          });
 
-    let variantTyp = createVariant(~noPayloads, ~payloads, ~polymorphic=false);
+    let variantTyp =
+      createVariant(~noPayloads, ~payloads, ~polymorphic=false);
     let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
     let exportFromTypeDeclaration = {
       CodeItem.exportType: {
         nameAs,
-        opaque: None,
+        opaque,
         optTyp: Some(variantTyp),
         typeVars,
         resolvedTypeName,

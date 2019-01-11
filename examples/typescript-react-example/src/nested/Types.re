@@ -54,3 +54,8 @@ let mutuallyRecursiveConverter = ({b}) => b;
 
 [@genType]
 let testFunctionOnOptionsAsArgument = (a: option('a), foo) => foo(a);
+
+[@genType.opaque]
+type opaqueVariant =
+  | A
+  | B;
