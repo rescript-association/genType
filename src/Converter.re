@@ -399,135 +399,6 @@ let rec apply =
          ~variantTables,
        )
 
-  | VariantC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
-    toJS ?
-      case.labelJS |> labelJSToString :
-      case.label |> Runtime.emitVariantLabel(~polymorphic)
-
-  | VariantC(variantC) =>
-    let table = toJS ? variantC.toJS : variantC.toRE;
-    if (variantC.noPayloads != []) {
-      Hashtbl.replace(variantTables, table, (variantC, toJS));
-    };
-    let convertToString =
-      !toJS
-      && variantC.noPayloads
-      |> List.exists(({labelJS}) =>
-           labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
-         ) ?
-        ".toString()" : "";
-    let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
-    switch (variantC.withPayload) {
-    | [] => value |> accessTable
-
-    | [(case, numArgs, objConverter)] when variantC.unboxed =>
-      let casesWithPayload = (~indent) =>
-        if (toJS) {
-          value
-          |> Runtime.emitVariantGetPayload(
-               ~numArgs,
-               ~polymorphic=variantC.polymorphic,
-             )
-          |> apply(
-               ~config,
-               ~converter=objConverter,
-               ~indent,
-               ~nameGen,
-               ~toJS,
-               ~useCreateBucklescriptBlock,
-               ~variantTables,
-             );
-        } else {
-          value
-          |> apply(
-               ~config,
-               ~converter=objConverter,
-               ~indent,
-               ~nameGen,
-               ~toJS,
-               ~useCreateBucklescriptBlock,
-               ~variantTables,
-             )
-          |> Runtime.emitVariantWithPayload(
-               ~label=case.label,
-               ~numArgs,
-               ~polymorphic=variantC.polymorphic,
-               ~useCreateBucklescriptBlock,
-             );
-        };
-      variantC.noPayloads == [] ?
-        casesWithPayload(~indent) :
-        EmitText.ifThenElse(
-          ~indent,
-          (~indent as _) => value |> EmitText.typeOfObject,
-          casesWithPayload,
-          (~indent as _) => value |> accessTable,
-        );
-
-    | [_, ..._] =>
-      let convertCaseWithPayload = (~indent, ~numArgs, ~objConverter, case) =>
-        value
-        |> (
-          toJS ?
-            Runtime.emitVariantGetPayload(
-              ~numArgs,
-              ~polymorphic=variantC.polymorphic,
-            ) :
-            Runtime.emitJSVariantGetPayload
-        )
-        |> apply(
-             ~config,
-             ~converter=objConverter,
-             ~indent,
-             ~nameGen,
-             ~toJS,
-             ~useCreateBucklescriptBlock,
-             ~variantTables,
-           )
-        |> (
-          toJS ?
-            Runtime.emitJSVariantWithPayload(
-              ~label=case.labelJS |> labelJSToString,
-            ) :
-            Runtime.emitVariantWithPayload(
-              ~label=case.label,
-              ~numArgs,
-              ~polymorphic=variantC.polymorphic,
-              ~useCreateBucklescriptBlock,
-            )
-        );
-      let switchCases = (~indent) =>
-        variantC.withPayload
-        |> List.map(((case, numArgs, objConverter)) =>
-             (
-               toJS ?
-                 case.label
-                 |> Runtime.emitVariantLabel(
-                      ~polymorphic=variantC.polymorphic,
-                    ) :
-                 case.labelJS |> labelJSToString,
-               case
-               |> convertCaseWithPayload(~indent, ~numArgs, ~objConverter),
-             )
-           );
-      let casesWithPayload = (~indent) =>
-        value
-        |> Runtime.(
-             toJS ?
-               emitVariantGetLabel(~polymorphic=variantC.polymorphic) :
-               emitJSVariantGetLabel
-           )
-        |> EmitText.switch_(~indent, ~cases=switchCases(~indent));
-      variantC.noPayloads == [] ?
-        casesWithPayload(~indent) :
-        EmitText.ifThenElse(
-          ~indent,
-          (~indent as _) => value |> EmitText.typeOfObject,
-          casesWithPayload,
-          (~indent as _) => value |> accessTable,
-        );
-    };
-
   | FunctionC(groupedArgConverters, resultConverter) =>
     let resultName = EmitText.resultName(~nameGen);
     let mkReturn = (~indent, x) => {
@@ -800,6 +671,135 @@ let rec apply =
       |> String.concat(", ")
     )
     ++ "]"
+
+  | VariantC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
+    toJS ?
+      case.labelJS |> labelJSToString :
+      case.label |> Runtime.emitVariantLabel(~polymorphic)
+
+  | VariantC(variantC) =>
+    let table = toJS ? variantC.toJS : variantC.toRE;
+    if (variantC.noPayloads != []) {
+      Hashtbl.replace(variantTables, table, (variantC, toJS));
+    };
+    let convertToString =
+      !toJS
+      && variantC.noPayloads
+      |> List.exists(({labelJS}) =>
+           labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
+         ) ?
+        ".toString()" : "";
+    let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
+    switch (variantC.withPayload) {
+    | [] => value |> accessTable
+
+    | [(case, numArgs, objConverter)] when variantC.unboxed =>
+      let casesWithPayload = (~indent) =>
+        if (toJS) {
+          value
+          |> Runtime.emitVariantGetPayload(
+               ~numArgs,
+               ~polymorphic=variantC.polymorphic,
+             )
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~indent,
+               ~nameGen,
+               ~toJS,
+               ~useCreateBucklescriptBlock,
+               ~variantTables,
+             );
+        } else {
+          value
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~indent,
+               ~nameGen,
+               ~toJS,
+               ~useCreateBucklescriptBlock,
+               ~variantTables,
+             )
+          |> Runtime.emitVariantWithPayload(
+               ~label=case.label,
+               ~numArgs,
+               ~polymorphic=variantC.polymorphic,
+               ~useCreateBucklescriptBlock,
+             );
+        };
+      variantC.noPayloads == [] ?
+        casesWithPayload(~indent) :
+        EmitText.ifThenElse(
+          ~indent,
+          (~indent as _) => value |> EmitText.typeOfObject,
+          casesWithPayload,
+          (~indent as _) => value |> accessTable,
+        );
+
+    | [_, ..._] =>
+      let convertCaseWithPayload = (~indent, ~numArgs, ~objConverter, case) =>
+        value
+        |> (
+          toJS ?
+            Runtime.emitVariantGetPayload(
+              ~numArgs,
+              ~polymorphic=variantC.polymorphic,
+            ) :
+            Runtime.emitJSVariantGetPayload
+        )
+        |> apply(
+             ~config,
+             ~converter=objConverter,
+             ~indent,
+             ~nameGen,
+             ~toJS,
+             ~useCreateBucklescriptBlock,
+             ~variantTables,
+           )
+        |> (
+          toJS ?
+            Runtime.emitJSVariantWithPayload(
+              ~label=case.labelJS |> labelJSToString,
+            ) :
+            Runtime.emitVariantWithPayload(
+              ~label=case.label,
+              ~numArgs,
+              ~polymorphic=variantC.polymorphic,
+              ~useCreateBucklescriptBlock,
+            )
+        );
+      let switchCases = (~indent) =>
+        variantC.withPayload
+        |> List.map(((case, numArgs, objConverter)) =>
+             (
+               toJS ?
+                 case.label
+                 |> Runtime.emitVariantLabel(
+                      ~polymorphic=variantC.polymorphic,
+                    ) :
+                 case.labelJS |> labelJSToString,
+               case
+               |> convertCaseWithPayload(~indent, ~numArgs, ~objConverter),
+             )
+           );
+      let casesWithPayload = (~indent) =>
+        value
+        |> Runtime.(
+             toJS ?
+               emitVariantGetLabel(~polymorphic=variantC.polymorphic) :
+               emitJSVariantGetLabel
+           )
+        |> EmitText.switch_(~indent, ~cases=switchCases(~indent));
+      variantC.noPayloads == [] ?
+        casesWithPayload(~indent) :
+        EmitText.ifThenElse(
+          ~indent,
+          (~indent as _) => value |> EmitText.typeOfObject,
+          casesWithPayload,
+          (~indent as _) => value |> accessTable,
+        );
+    };
   };
 
 let toJS =
