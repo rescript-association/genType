@@ -1,4 +1,4 @@
-# master
+# 2.1.0
 - In commonjs, import components simply as a `require` without ".default".
 
 # 2.0.0
