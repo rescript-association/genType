@@ -1,5 +1,6 @@
 # master
 - Fix issue where default function arguments of some type requiring conversion were not checked for undefined.
+- Add missing support for @genType.opaque in variants.
 
 # 2.2.0
 - Indent function definitions and if-then-else's.
