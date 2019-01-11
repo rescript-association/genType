@@ -12,7 +12,7 @@ type t =
   | TupleC(list(t))
   | VariantC(variantC)
 and groupedArgConverter =
-  | ArgConverter(label, t)
+  | ArgConverter(t)
   | GroupConverter(list((string, t)))
 and fieldsC = list((string, t))
 and variantC = {
@@ -31,19 +31,12 @@ let rec toString = converter =>
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
 
   | FunctionC(groupedArgConverters, c) =>
-    let labelToString = label =>
-      switch (label) {
-      | Nolabel => "_"
-      | Label(_) => "~l"
-      | OptLabel(l) => "~?" ++ l
-      };
     "fn("
     ++ (
       groupedArgConverters
       |> List.map(groupedArgConverter =>
            switch (groupedArgConverter) {
-           | ArgConverter(label, conv) =>
-             "(" ++ labelToString(label) ++ ":" ++ toString(conv) ++ ")"
+           | ArgConverter(conv) => "(" ++ "_" ++ ":" ++ toString(conv) ++ ")"
            | GroupConverter(groupConverters) =>
              "{|"
              ++ (
@@ -60,7 +53,7 @@ let rec toString = converter =>
     )
     ++ " -> "
     ++ toString(c)
-    ++ ")";
+    ++ ")"
 
   | IdentC => "id"
 
@@ -268,7 +261,7 @@ let typToConverterNormalized =
              (name, typ |> visit(~visited) |> fst)
            ),
       )
-    | _ => ArgConverter(Nolabel, typ |> visit(~visited) |> fst)
+    | _ => ArgConverter(typ |> visit(~visited) |> fst)
     };
 
   let (converter, normalized) = typ |> visit(~visited=StringSet.empty);
@@ -314,10 +307,8 @@ let rec converterIsIdentity = (~toJS, converter) =>
     && groupedArgConverters
     |> List.for_all(groupedArgConverter =>
          switch (groupedArgConverter) {
-         | ArgConverter(label, argConverter) =>
-           label == Nolabel
-           && argConverter
-           |> converterIsIdentity(~toJS=!toJS)
+         | ArgConverter(argConverter) =>
+           argConverter |> converterIsIdentity(~toJS=!toJS)
          | GroupConverter(_) => false
          }
        )
@@ -427,13 +418,8 @@ let rec apply =
       let indent1 = indent |> Indent.more;
       let convertArg = (i, groupedArgConverter) =>
         switch (groupedArgConverter) {
-        | ArgConverter(lbl, argConverter) =>
-          let varName =
-            switch (lbl) {
-            | Nolabel => i + 1 |> EmitText.argi(~nameGen)
-            | Label(l)
-            | OptLabel(l) => l |> EmitText.arg(~nameGen)
-            };
+        | ArgConverter(argConverter) =>
+          let varName = i + 1 |> EmitText.argi(~nameGen);
           let notToJS = !toJS;
           (
             varName |> EmitTyp.ofTypeAnyTS(~config),

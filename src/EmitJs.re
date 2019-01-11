@@ -504,7 +504,7 @@ let rec emitCodeItem =
         switch (groupedArgConverters) {
         | [
             GroupConverter(propConverters),
-            ArgConverter(_, childrenConverter),
+            ArgConverter(childrenConverter),
             ..._,
           ] =>
           (
@@ -533,7 +533,7 @@ let rec emitCodeItem =
                ),
           ]
 
-        | [ArgConverter(_, childrenConverter), ..._] => [
+        | [ArgConverter(childrenConverter), ..._] => [
             jsPropsDot("children")
             |> Converter.toReason(
                  ~config,
