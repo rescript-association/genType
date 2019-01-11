@@ -65,6 +65,18 @@ function testDefaultArgs($staropt$star, y) {
   return x + y | 0;
 }
 
+function testDefaultArgsWithRecordConversion(param, param$1) {
+  return 34;
+}
+
+function testDefaultArgsWithVariantConversion(param, param$1) {
+  return 34;
+}
+
+function testDefaultArgsWithVariantConversionContravariant(param, param$1) {
+  return 34;
+}
+
 var empty = /* [] */0;
 
 var concat = $$String.concat;
@@ -80,6 +92,9 @@ export {
   testNamedArgs ,
   testCallNamedArgs ,
   testDefaultArgs ,
+  testDefaultArgsWithRecordConversion ,
+  testDefaultArgsWithVariantConversion ,
+  testDefaultArgsWithVariantConversionContravariant ,
   
 }
 /* component Not a pure module */

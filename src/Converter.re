@@ -13,7 +13,7 @@ type t =
   | VariantC(variantC)
 and groupedArgConverter =
   | ArgConverter(t)
-  | GroupConverter(list((string, t)))
+  | GroupConverter(list((string, optional, t)))
 and fieldsC = list((string, t))
 and variantC = {
   noPayloads: list(case),
@@ -41,8 +41,11 @@ let rec toString = converter =>
              "{|"
              ++ (
                groupConverters
-               |> List.map(((s, argConverter)) =>
-                    s ++ ":" ++ toString(argConverter)
+               |> List.map(((s, optional, argConverter)) =>
+                    s
+                    ++ (optional == Optional ? "?" : "")
+                    ++ ":"
+                    ++ toString(argConverter)
                   )
                |> String.concat(", ")
              )
@@ -257,8 +260,8 @@ let typToConverterNormalized =
     | GroupOfLabeledArgs(fields) =>
       GroupConverter(
         fields
-        |> List.map(({name, typ, _}) =>
-             (name, typ |> visit(~visited) |> fst)
+        |> List.map(({name, typ, optional, _}) =>
+             (name, optional, typ |> visit(~visited) |> fst)
            ),
       )
     | _ => ArgConverter(typ |> visit(~visited) |> fst)
@@ -441,13 +444,16 @@ let rec apply =
             (
               varName |> EmitTyp.ofTypeAnyTS(~config),
               groupConverters
-              |> List.map(((s, argConverter)) =>
+              |> List.map(((s, optional, argConverter)) =>
                    varName
                    ++ "."
                    ++ s
                    |> apply(
                         ~config,
-                        ~converter=argConverter,
+                        ~converter=
+                          optional == Optional
+                          && !(argConverter |> converterIsIdentity(~toJS)) ?
+                            OptionC(argConverter) : argConverter,
                         ~indent=indent1,
                         ~nameGen,
                         ~toJS=notToJS,
@@ -460,14 +466,14 @@ let rec apply =
           } else {
             let varNames =
               groupConverters
-              |> List.map(((s, _argConverter)) =>
+              |> List.map(((s, optional, _argConverter)) =>
                    s |> EmitText.arg(~nameGen)
                  );
 
             let varNamesArr = varNames |> Array.of_list;
             let fieldValues =
               groupConverters
-              |> List.mapi((i, (s, argConverter)) =>
+              |> List.mapi((i, (s, optional, argConverter)) =>
                    s
                    ++ ":"
                    ++ (

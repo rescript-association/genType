@@ -4,6 +4,10 @@
  * @nolint
  */
 
+const $$toRE453167283 = {"A": 0, "B": 1};
+
+const $$toJS453167283 = {"0": "A", "1": "B"};
+
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
@@ -20,6 +24,10 @@ import type {Mouse_t as ReactEvent_Mouse_t} from '../../src/shims/ReactEvent.shi
 import type {list} from '../../src/shims/ReasonPervasives.shim';
 
 export type foo = ({| +a: number, +b: number |}) => number;
+
+export type someRecord = {| +x: number, +y: string |};
+
+export type someVariant = "A" | "B";
 
 export const onClick: (ReactEvent_Mouse_t) => void = GreetingBS.onClick;
 
@@ -68,5 +76,23 @@ export const testCallNamedArgs: (foo, number, number) => number = function _(Arg
 
 export const testDefaultArgs: ({| +x?: number, +y: number |}) => number = function _(Arg1) {
   const result = GreetingBS.testDefaultArgs(Arg1.x, Arg1.y);
+  return result
+};
+
+export const testDefaultArgsWithRecordConversion: ({| +size?: someRecord |}, void) => number = function _(Arg1, Arg2) {
+  const result = GreetingBS.testDefaultArgsWithRecordConversion((Arg1.size == null ? undefined : [Arg1.size.x, Arg1.size.y]), Arg2);
+  return result
+};
+
+export const testDefaultArgsWithVariantConversion: ({| +size?: someVariant |}, void) => number = function _(Arg1, Arg2) {
+  const result = GreetingBS.testDefaultArgsWithVariantConversion((Arg1.size == null ? undefined : $$toRE453167283[Arg1.size]), Arg2);
+  return result
+};
+
+export const testDefaultArgsWithVariantConversionContravariant: ((({| +size?: ?someVariant |}) => void), void) => number = function _(Arg1, Arg2) {
+  const result = GreetingBS.testDefaultArgsWithVariantConversionContravariant(function _(Argsize) {
+      const result1 = Arg1({size:(Argsize == null ? Argsize : $$toJS453167283[Argsize])});
+      return result1
+    }, Arg2);
   return result
 };
