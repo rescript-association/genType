@@ -40,7 +40,7 @@ export const defaultValueTypeChecked: number = defaultValueNotChecked;
 export const defaultValue: unknown = defaultValueTypeChecked as number;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = { readonly show: boolean, readonly message?: message };
+export type Props = { readonly show: boolean; readonly message?: message };
 
 // In case of type error, check the type of 'make' in 'TestImport.re' and the props of './MyBanner'.
 export function MyBannerInternalTypeChecked(props: Props) {

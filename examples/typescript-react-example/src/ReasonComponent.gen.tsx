@@ -24,25 +24,25 @@ import {t as Types_t} from '../src/nested/Types.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type person<a> = {
-  readonly name: string, 
-  readonly surname: string, 
-  readonly type: string, 
+  readonly name: string; 
+  readonly surname: string; 
+  readonly type: string; 
   readonly polymorphicPayload: a
 };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = 
   | "A"
-  | { tag: "B", value: number }
-  | { tag: "C", value: string };
+  | { tag: "B"; value: number }
+  | { tag: "C"; value: string };
 
 export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {
-  readonly message?: string, 
-  readonly person: person<unknown>, 
-  readonly intList?: list<number>, 
+  readonly message?: string; 
+  readonly person: person<unknown>; 
+  readonly intList?: list<number>; 
   readonly children?: unknown
 };
 
@@ -54,7 +54,7 @@ export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReas
 
 export default ReasonComponent;
 
-export const minus: (_1:{ readonly first?: number, readonly second: number }) => number = function _(Arg1: any) {
+export const minus: (_1:{ readonly first?: number; readonly second: number }) => number = function _(Arg1: any) {
   const result = ReasonComponentBS.minus(Arg1.first, Arg1.second);
   return result
 };

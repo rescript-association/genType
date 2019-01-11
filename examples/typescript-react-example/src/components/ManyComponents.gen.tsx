@@ -20,14 +20,14 @@ export const InnerComponent: React.ComponentClass<InnerComponent_Props> = Reason
 
 // tslint:disable-next-line:interface-over-type-literal
 export type ManyProps_Props = {
-  readonly a: unknown, 
-  readonly b: unknown, 
-  readonly c: unknown, 
-  readonly d: unknown, 
-  readonly e: unknown, 
-  readonly f: unknown, 
-  readonly g: unknown, 
-  readonly h: unknown, 
+  readonly a: unknown; 
+  readonly b: unknown; 
+  readonly c: unknown; 
+  readonly d: unknown; 
+  readonly e: unknown; 
+  readonly f: unknown; 
+  readonly g: unknown; 
+  readonly h: unknown; 
   readonly children?: unknown
 };
 

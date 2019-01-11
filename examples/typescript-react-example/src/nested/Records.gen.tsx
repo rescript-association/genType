@@ -7,44 +7,44 @@ import {list} from '../../src/shims/ReasonPervasives.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type coord = {
-  readonly x: number, 
-  readonly y: number, 
+  readonly x: number; 
+  readonly y: number; 
   readonly z?: number
 };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type person = {
-  readonly name: string, 
-  readonly age: number, 
+  readonly name: string; 
+  readonly age: number; 
   readonly address?: string
 };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type business = {
-  readonly name: string, 
-  readonly owner?: person, 
+  readonly name: string; 
+  readonly owner?: person; 
   readonly address?: string
 };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type payload<a> = { readonly num: number, readonly payload: a };
+export type payload<a> = { readonly num: number; readonly payload: a };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type record = { readonly v: number, readonly w: number };
+export type record = { readonly v: number; readonly w: number };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type business2 = {
-  readonly name: string, 
-  readonly owner: (null | undefined | person), 
+  readonly name: string; 
+  readonly owner: (null | undefined | person); 
   readonly address2: (null | undefined | string)
 };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type mix = {
-  readonly a: number, 
-  readonly b: number, 
+  readonly a: number; 
+  readonly b: number; 
   readonly c?: {
-    readonly name: string, 
+    readonly name: string; 
     readonly surname: string
   }
 };
@@ -100,13 +100,13 @@ export const findAddress2: (_1:business2) => list<string> = function _(Arg1: any
 export const someBusiness2: business2 = {name:RecordsBS.someBusiness2[0], owner:(RecordsBS.someBusiness2[1] == null ? RecordsBS.someBusiness2[1] : {name:RecordsBS.someBusiness2[1][0], age:RecordsBS.someBusiness2[1][1], address:RecordsBS.someBusiness2[1][2]}), address2:RecordsBS.someBusiness2[2]};
 
 export const computeArea3: (_1:{
-  readonly x: number, 
-  readonly y: number, 
+  readonly x: number; 
+  readonly y: number; 
   readonly z: (null | undefined | number)
 }) => number = RecordsBS.computeArea3;
 
 export const computeArea4: (_1:{
-  readonly x: number, 
-  readonly y: number, 
+  readonly x: number; 
+  readonly y: number; 
   readonly z?: number
 }) => number = RecordsBS.computeArea4;

@@ -40,7 +40,7 @@ import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
 import {stringFunction} from './MyMath';
 
 // tslint:disable-next-line:interface-over-type-literal
-export type point = { readonly x: number, readonly y?: number };
+export type point = { readonly x: number; readonly y?: number };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type AbsoluteValue_t = AbsoluteValue_t;
