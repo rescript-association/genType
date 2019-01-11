@@ -509,7 +509,7 @@ let rec emitCodeItem =
           ] =>
           (
             propConverters
-            |> List.map(((s, optional, argConverter)) =>
+            |> List.map(((s, _optional, argConverter)) =>
                  jsPropsDot(s)
                  |> Converter.toReason(
                       ~config,

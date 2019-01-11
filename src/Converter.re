@@ -466,14 +466,14 @@ let rec apply =
           } else {
             let varNames =
               groupConverters
-              |> List.map(((s, optional, _argConverter)) =>
+              |> List.map(((s, _optional, _argConverter)) =>
                    s |> EmitText.arg(~nameGen)
                  );
 
             let varNamesArr = varNames |> Array.of_list;
             let fieldValues =
               groupConverters
-              |> List.mapi((i, (s, optional, argConverter)) =>
+              |> List.mapi((i, (s, _optional, argConverter)) =>
                    s
                    ++ ":"
                    ++ (
