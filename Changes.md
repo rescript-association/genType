@@ -1,4 +1,4 @@
-# master
+# 2.2.0
 - Indent function definitions and if-then-else's.
 - Indent variant declarations.
 - Spacing after/before brackets in object types.
