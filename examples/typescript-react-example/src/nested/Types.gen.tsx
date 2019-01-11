@@ -10,8 +10,8 @@ export type t = number;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type typeWithVars<x,y,z> = 
-  | {tag: "A", value: [x, y]}
-  | {tag: "B", value: z};
+  | { tag: "A", value: [x, y] }
+  | { tag: "B", value: z };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type tree = {
@@ -21,13 +21,13 @@ export type tree = {
 };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type selfRecursive = {readonly self: selfRecursive};
+export type selfRecursive = { readonly self: selfRecursive };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type mutuallyRecursiveA = {readonly b: mutuallyRecursiveB};
+export type mutuallyRecursiveA = { readonly b: mutuallyRecursiveB };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type mutuallyRecursiveB = {readonly a: mutuallyRecursiveA};
+export type mutuallyRecursiveB = { readonly a: mutuallyRecursiveA };
 
 export const someIntList: list<number> = TypesBS.someIntList;
 

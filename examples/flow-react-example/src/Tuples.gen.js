@@ -11,7 +11,7 @@ export type coord = [number, number, ?number];
 
 export type coord2 = [number, number, ?number];
 
-export type person = {|+name: string, +age: number|};
+export type person = {| +name: string, +age: number |};
 
 export type couple = [person, person];
 

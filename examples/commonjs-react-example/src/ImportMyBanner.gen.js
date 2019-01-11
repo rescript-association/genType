@@ -13,7 +13,7 @@ const MyBanner = require('./MyBanner.component');
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
-export type Props = {|+show: boolean, +Message: ?string|};
+export type Props = {| +show: boolean, +Message: ?string |};
 
 // In case of type error, check the type of 'make' in 'ImportMyBanner.re' and the props of './MyBanner.component'.
 function MyBannerTypeChecked(props: Props) {

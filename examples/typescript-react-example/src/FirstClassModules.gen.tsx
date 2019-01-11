@@ -46,7 +46,7 @@ export const someFunctorAsFunction: (_1:{
   }, 
   readonly Z: unknown, 
   readonly y: string
-}) => {readonly ww: string} = function _(Arg1: any) {
+}) => { readonly ww: string } = function _(Arg1: any) {
   const result = FirstClassModulesBS.someFunctorAsFunction([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]);
   return {ww:result[0]}
 };

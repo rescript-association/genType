@@ -33,8 +33,8 @@ export type person<a> = {
 // tslint:disable-next-line:interface-over-type-literal
 export type t = 
   | "A"
-  | {tag: "B", value: number}
-  | {tag: "C", value: string};
+  | { tag: "B", value: number }
+  | { tag: "C", value: string };
 
 export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
 
@@ -54,7 +54,7 @@ export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReas
 
 export default ReasonComponent;
 
-export const minus: (_1:{readonly first?: number, readonly second: number}) => number = function _(Arg1: any) {
+export const minus: (_1:{ readonly first?: number, readonly second: number }) => number = function _(Arg1: any) {
   const result = ReasonComponentBS.minus(Arg1.first, Arg1.second);
   return result
 };

@@ -10,7 +10,7 @@ export type coord = [number, number, (null | undefined | number)];
 export type coord2 = [number, number, (null | undefined | number)];
 
 // tslint:disable-next-line:interface-over-type-literal
-export type person = {readonly name: string, readonly age: number};
+export type person = { readonly name: string, readonly age: number };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type couple = [person, person];

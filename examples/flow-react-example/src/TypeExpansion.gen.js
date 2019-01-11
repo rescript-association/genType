@@ -12,13 +12,13 @@ import type {person as Tuples_person} from './Tuples.gen';
 
 export type personFromTuples = Tuples_person;
 
-export type lowerType = {|+person: Tuples_person|};
+export type lowerType = {| +person: Tuples_person |};
 
-export type middleType = {|+lowerType: lowerType|};
+export type middleType = {| +lowerType: lowerType |};
 
 export type topType = [number, middleType];
 
-export type A_user = {|+name: string|};
+export type A_user = {| +name: string |};
 
 export type b = A_user;
 

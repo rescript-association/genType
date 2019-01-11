@@ -193,10 +193,10 @@ and renderField =
 and renderFields =
     (~config, ~indent, ~typeNameIsInterface, ~inFunType, fields) => {
   let indent1 = indent |> Indent.more;
-  (
-    config.language == Flow && !config.exportInterfaces && fields != [] ?
-      "{|" : "{"
-  )
+  let flow =
+    config.language == Flow && !config.exportInterfaces && fields != [];
+  let space = indent == None && fields != [] ? " " : "";
+  ((flow ? "{|" : "{") ++ space)
   ++ String.concat(
        ", ",
        List.map(
@@ -210,10 +210,8 @@ and renderFields =
        ),
      )
   ++ Indent.break(~indent)
-  ++ (
-    config.language == Flow && !config.exportInterfaces && fields != [] ?
-      "|}" : "}"
-  );
+  ++ space
+  ++ (flow ? "|}" : "}");
 }
 and renderFunType =
     (

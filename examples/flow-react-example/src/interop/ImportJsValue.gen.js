@@ -38,7 +38,7 @@ export const getValueAtIndexTypeChecked: (myArray<string>, number) => string = g
 export const getValueAtIndex: mixed = getValueAtIndexTypeChecked;
 
 // In case of type error, check the type of 'functionWithRenamedArgument' in 'ImportJsValue.re' and './MyMath'.
-export const functionWithRenamedArgumentTypeChecked: (string, {|+ArgRenamed: string|}) => string = functionWithRenamedArgumentNotChecked;
+export const functionWithRenamedArgumentTypeChecked: (string, {| +ArgRenamed: string |}) => string = functionWithRenamedArgumentNotChecked;
 
 // Export 'functionWithRenamedArgument' early to allow circular import from the '.bs.js' file.
 export const functionWithRenamedArgument: mixed = function _(Arg1, ArgArgRenamed) {
@@ -52,7 +52,7 @@ const ImportJsValueBS = require('./ImportJsValue.bs');
 // flowlint-next-line nonstrict-import:off
 import type {myArray} from './MyMath';
 
-export type point = {|+x: number, +y?: number|};
+export type point = {| +x: number, +y?: number |};
 
 export type { myArray };
 

@@ -50,7 +50,7 @@ export const someFunctorAsFunction: ({|
   |}, 
   +Z: mixed, 
   +y: string
-|}) => {|+ww: string|} = function _(Arg1) {
+|}) => {| +ww: string |} = function _(Arg1) {
   const result = FirstClassModulesBS.someFunctorAsFunction([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]);
   return {ww:result[0]}
 };

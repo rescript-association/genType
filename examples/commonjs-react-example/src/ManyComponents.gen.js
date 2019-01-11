@@ -13,7 +13,7 @@ const ManyComponentsBS = require('./ManyComponents.bs');
 // $FlowExpectedError: Reason checked type sufficiently
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
-export type InnerComponent_Props = {|+children?: mixed|};
+export type InnerComponent_Props = {| +children?: mixed |};
 
 const InnerComponent: React$ComponentType<InnerComponent_Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.InnerComponent[1],
@@ -41,7 +41,7 @@ const ManyProps: React$ComponentType<ManyProps_Props> = ReasonReact.wrapReasonFo
   }));;
 exports.ManyProps = ManyProps
 
-export type Props = {|+children?: mixed|};
+export type Props = {| +children?: mixed |};
 
 const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   ManyComponentsBS.component,

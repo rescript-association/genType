@@ -36,11 +36,11 @@ export type bigType = {|
   |}
 |};
 
-export type testMutable = {|mutableField: number, +immutableField: number|};
+export type testMutable = {| mutableField: number, +immutableField: number |};
 
 export opaque type innerRecord = mixed;
 
-export type outerRecord = {|+innerRecord: innerRecord|};
+export type outerRecord = {| +innerRecord: innerRecord |};
 
 export const origin: coord = {x:RecordsBS.origin[0], y:RecordsBS.origin[1], z:RecordsBS.origin[2]};
 

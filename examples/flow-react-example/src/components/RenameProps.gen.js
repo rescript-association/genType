@@ -13,7 +13,7 @@ import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as RenamePropsBS from './RenameProps.bs';
 
-export type functionTypeWithGenTypeAs = ({|+type: string, +$number: number|}) => number;
+export type functionTypeWithGenTypeAs = ({| +type: string, +$number: number |}) => number;
 
 export const functionWithGenTypeAs: ({|
   +firstNameArgumentCantBeRenamed: string, 
@@ -39,22 +39,22 @@ export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs
 
 export default component;
 
-export const firstIsIgnored: ({|+x: number|}) => number = function _(Arg1) {
+export const firstIsIgnored: ({| +x: number |}) => number = function _(Arg1) {
   const result = RenamePropsBS.firstIsIgnored(Arg1.x);
   return result
 };
 
-export const padding1: (number, {|+xRenamed: number|}) => number = function _(Arg1, Arg2) {
+export const padding1: (number, {| +xRenamed: number |}) => number = function _(Arg1, Arg2) {
   const result = RenamePropsBS.padding1(Arg1, Arg2.xRenamed);
   return result
 };
 
-export const padding2: ({|+pad: number, +xRenamed: number|}) => number = function _(Arg1) {
+export const padding2: ({| +pad: number, +xRenamed: number |}) => number = function _(Arg1) {
   const result = RenamePropsBS.padding2(Arg1.pad, Arg1.xRenamed);
   return result
 };
 
-export const padding3: (number, number, {|+xRenamed: number|}) => number = function _(Arg1, Arg2, Arg3) {
+export const padding3: (number, number, {| +xRenamed: number |}) => number = function _(Arg1, Arg2, Arg3) {
   const result = RenamePropsBS.padding3(Arg1, Arg2, Arg3.xRenamed);
   return result
 };
@@ -77,7 +77,7 @@ export const renameABunch2: (number, {|
   return result
 };
 
-export const renameABunch3: (number, {|+xRenamed: number|}, number, {|+zRenamed: number|}) => number = function _(Arg1, Arg2, Arg3, Arg4) {
+export const renameABunch3: (number, {| +xRenamed: number |}, number, {| +zRenamed: number |}) => number = function _(Arg1, Arg2, Arg3, Arg4) {
   const result = RenamePropsBS.renameABunch3(Arg1, Arg2.xRenamed, Arg3, Arg4.zRenamed);
   return result
 };

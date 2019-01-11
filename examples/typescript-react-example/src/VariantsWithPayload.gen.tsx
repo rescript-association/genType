@@ -19,16 +19,16 @@ const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 const VariantsWithPayloadBS = require('./VariantsWithPayload.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
-export type payload = {readonly x: number, readonly y?: string};
+export type payload = { readonly x: number, readonly y?: string };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type withPayload = "a" | "bRenamed" | true | 20 | 0.5 | payload;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type manyPayloads = 
-  | {tag: "oneRenamed", value: number}
-  | {tag: 2, value: [string, string]}
-  | {tag: "three", value: payload};
+  | { tag: "oneRenamed", value: number }
+  | { tag: 2, value: [string, string] }
+  | { tag: "three", value: payload };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type simpleVariant = "A" | "B" | "C";
@@ -36,13 +36,13 @@ export type simpleVariant = "A" | "B" | "C";
 // tslint:disable-next-line:interface-over-type-literal
 export type variantWithPayloads = 
   | "ARenamed"
-  | {tag: "B", value: number}
-  | {tag: "C", value: [number, number]}
-  | {tag: "D", value: [number, number]}
-  | {tag: "E", value: [number, string, number]};
+  | { tag: "B", value: number }
+  | { tag: "C", value: [number, number] }
+  | { tag: "D", value: [number, number] }
+  | { tag: "E", value: [number, string, number] };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type variant1Int = {tag: "R", value: number};
+export type variant1Int = { tag: "R", value: number };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type variant1Object = payload;

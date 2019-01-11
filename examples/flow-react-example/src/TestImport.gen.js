@@ -26,7 +26,7 @@ import * as React from 'react';
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.
-export const innerStuffContentsTypeChecked: {|+x: number|} = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;
+export const innerStuffContentsTypeChecked: {| +x: number |} = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;
 
 // Export 'innerStuffContents' early to allow circular import from the '.bs.js' file.
 export const innerStuffContents: mixed = innerStuffContentsTypeChecked;
@@ -49,7 +49,7 @@ export const defaultValueTypeChecked: number = defaultValueNotChecked;
 // Export 'defaultValue' early to allow circular import from the '.bs.js' file.
 export const defaultValue: mixed = defaultValueTypeChecked;
 
-export type Props = {|+show: boolean, +Message: ?string|};
+export type Props = {| +show: boolean, +Message: ?string |};
 
 // In case of type error, check the type of 'make' in 'TestImport.re' and the props of './interop/MyBanner.component'.
 export function MyBannerInternalTypeChecked(props: Props) {
@@ -59,4 +59,4 @@ export function MyBannerInternalTypeChecked(props: Props) {
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: mixed = function _(show, Message, children) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, Message: Message}, children); };
 
-export type message = {|+text: string|};
+export type message = {| +text: string |};

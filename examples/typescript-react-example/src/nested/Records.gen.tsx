@@ -27,10 +27,10 @@ export type business = {
 };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type payload<a> = {readonly num: number, readonly payload: a};
+export type payload<a> = { readonly num: number, readonly payload: a };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type record = {readonly v: number, readonly w: number};
+export type record = { readonly v: number, readonly w: number };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type business2 = {

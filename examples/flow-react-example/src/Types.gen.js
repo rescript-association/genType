@@ -32,8 +32,8 @@ import type {variant as AutoAnnotate_variant} from './AutoAnnotate.gen';
 import type {weekday} from './SomeFlowTypes';
 
 export type typeWithVars<x,y,z> = 
-  | {|tag: "A", value: [x, y]|}
-  | {|tag: "B", value: z|};
+  | {| tag: "A", value: [x, y] |}
+  | {| tag: "B", value: z |};
 
 export type optionInt = ?number;
 
@@ -49,7 +49,7 @@ export type maybeString = ?string;
 
 export type maybeString2 = ?string;
 
-export type peopleArray = Array<{|+name: string, +nickname: ?string|}>;
+export type peopleArray = Array<{| +name: string, +nickname: ?string |}>;
 
 export opaque type myObj = mixed;
 
