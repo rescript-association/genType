@@ -51,10 +51,23 @@ export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReas
 
 export default ReasonComponent;
 
-export const minus: (_1:{readonly first?: number, readonly second: number}) => number = function _(Arg1: any) { const result = ReasonComponentBS.minus(Arg1.first, Arg1.second); return result };
+export const minus: (_1:{readonly first?: number, readonly second: number}) => number = function _(Arg1: any) {
+  const result = ReasonComponentBS.minus(Arg1.first, Arg1.second);
+  return result
+};
 
 export const useTypeDefinedInAnotherModule: (_1:Types_t) => Types_t = ReasonComponentBS.useTypeDefinedInAnotherModule;
 
-export const tToString: (_1:t) => string = function _(Arg1: any) { const result = ReasonComponentBS.tToString((typeof(Arg1) === 'object' ? (Arg1.tag==="B" ? CreateBucklescriptBlock.__(0, [Arg1.value]) :  CreateBucklescriptBlock.__(1, [Arg1.value])) : $$toRE552311971[Arg1])); return result };
+export const tToString: (_1:t) => string = function _(Arg1: any) {
+  const result = ReasonComponentBS.tToString(typeof(Arg1) === 'object'
+    ? Arg1.tag==="B"
+      ? CreateBucklescriptBlock.__(0, [Arg1.value])
+      : CreateBucklescriptBlock.__(1, [Arg1.value])
+    : $$toRE552311971[Arg1]);
+  return result
+};
 
-export const useRecordsCoord: (_1:Records_coord) => number = function _(Arg1: any) { const result = ReasonComponentBS.useRecordsCoord([Arg1.x, Arg1.y, Arg1.z]); return result };
+export const useRecordsCoord: (_1:Records_coord) => number = function _(Arg1: any) {
+  const result = ReasonComponentBS.useRecordsCoord([Arg1.x, Arg1.y, Arg1.z]);
+  return result
+};

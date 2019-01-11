@@ -18,15 +18,6 @@ let emitJSVariantWithPayload: (~label: string, string) => string;
 
 let emitModuleItem: moduleItem => string;
 
-let emitRecordAsBlock:
-  (
-    ~config: config,
-    ~args: list(string),
-    ~useCreateBucklescriptBlock: ref(bool),
-    recordValue
-  ) =>
-  string;
-
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
 let emitVariantGetLabel: (~polymorphic: bool, string) => string;

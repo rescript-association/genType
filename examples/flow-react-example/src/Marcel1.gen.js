@@ -19,4 +19,7 @@ export type O_t = {|+name: string, +surname: string|};
 
 export type o = O_t;
 
-export const testConversion: (n) => n = function _(Arg1) { const result = Marcel1BS.testConversion([Arg1.name, Arg1.surname]); return {name:result[0], surname:result[1]} };
+export const testConversion: (n) => n = function _(Arg1) {
+  const result = Marcel1BS.testConversion([Arg1.name, Arg1.surname]);
+  return {name:result[0], surname:result[1]}
+};

@@ -354,6 +354,7 @@ let rec apply =
         (
           ~config,
           ~converter,
+          ~indent,
           ~nameGen,
           ~toJS,
           ~useCreateBucklescriptBlock,
@@ -374,6 +375,7 @@ let rec apply =
       |> apply(
            ~config,
            ~converter=c,
+           ~indent,
            ~nameGen,
            ~toJS,
            ~useCreateBucklescriptBlock,
@@ -390,6 +392,7 @@ let rec apply =
     |> apply(
          ~config,
          ~converter=c,
+         ~indent,
          ~nameGen,
          ~toJS,
          ~useCreateBucklescriptBlock,
@@ -418,7 +421,7 @@ let rec apply =
     | [] => value |> accessTable
 
     | [(case, numArgs, objConverter)] when variantC.unboxed =>
-      let casesWithPayload =
+      let casesWithPayload = (~indent) =>
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
@@ -428,20 +431,22 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=objConverter,
-               ~variantTables,
+               ~indent,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
+               ~variantTables,
              );
         } else {
           value
           |> apply(
                ~config,
                ~converter=objConverter,
-               ~variantTables,
+               ~indent,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
+               ~variantTables,
              )
           |> Runtime.emitVariantWithPayload(
                ~label=case.label,
@@ -451,15 +456,16 @@ let rec apply =
              );
         };
       variantC.noPayloads == [] ?
-        casesWithPayload :
+        casesWithPayload(~indent) :
         EmitText.ifThenElse(
-          value |> EmitText.typeOfObject,
+          ~indent,
+          (~indent as _) => value |> EmitText.typeOfObject,
           casesWithPayload,
-          value |> accessTable,
+          (~indent as _) => value |> accessTable,
         );
 
     | [_, ..._] =>
-      let convertCaseWithPayload = (~objConverter, ~numArgs, case) =>
+      let convertCaseWithPayload = (~indent, ~numArgs, ~objConverter, case) =>
         value
         |> (
           toJS ?
@@ -472,10 +478,11 @@ let rec apply =
         |> apply(
              ~config,
              ~converter=objConverter,
-             ~variantTables,
+             ~indent,
              ~nameGen,
              ~toJS,
              ~useCreateBucklescriptBlock,
+             ~variantTables,
            )
         |> (
           toJS ?
@@ -489,7 +496,7 @@ let rec apply =
               ~useCreateBucklescriptBlock,
             )
         );
-      let switchCases =
+      let switchCases = (~indent) =>
         variantC.withPayload
         |> List.map(((case, numArgs, objConverter)) =>
              (
@@ -499,46 +506,54 @@ let rec apply =
                       ~polymorphic=variantC.polymorphic,
                     ) :
                  case.labelJS |> labelJSToString,
-               case |> convertCaseWithPayload(~objConverter, ~numArgs),
+               case
+               |> convertCaseWithPayload(~indent, ~numArgs, ~objConverter),
              )
            );
-      let casesWithPayload =
+      let casesWithPayload = (~indent) =>
         value
         |> Runtime.(
              toJS ?
                emitVariantGetLabel(~polymorphic=variantC.polymorphic) :
                emitJSVariantGetLabel
            )
-        |> EmitText.switch_(~cases=switchCases);
+        |> EmitText.switch_(~indent, ~cases=switchCases(~indent));
       variantC.noPayloads == [] ?
-        casesWithPayload :
+        casesWithPayload(~indent) :
         EmitText.ifThenElse(
-          value |> EmitText.typeOfObject,
+          ~indent,
+          (~indent as _) => value |> EmitText.typeOfObject,
           casesWithPayload,
-          value |> accessTable,
+          (~indent as _) => value |> accessTable,
         );
     };
 
   | FunctionC(groupedArgConverters, resultConverter) =>
     let resultName = EmitText.resultName(~nameGen);
-    let mkReturn = x =>
+    let mkReturn = (~indent, x) => {
+      let indent1 = indent |> Indent.more;
       "const "
       ++ resultName
       ++ " = "
       ++ x
-      ++ "; return "
+      ++ ";"
+      ++ Indent.break(~indent)
+      ++ "return "
       ++ (
         resultName
         |> apply(
              ~config,
              ~converter=resultConverter,
-             ~variantTables,
+             ~indent=indent1,
              ~nameGen,
              ~toJS,
              ~useCreateBucklescriptBlock,
+             ~variantTables,
            )
       );
-    let convertedArgs = {
+    };
+    let convertedArgs = (~indent) => {
+      let indent1 = indent |> Indent.more;
       let convertArg = (i, groupedArgConverter) =>
         switch (groupedArgConverter) {
         | ArgConverter(lbl, argConverter) =>
@@ -555,10 +570,11 @@ let rec apply =
             |> apply(
                  ~config,
                  ~converter=argConverter,
-                 ~variantTables,
+                 ~indent=indent1,
                  ~nameGen,
                  ~toJS=notToJS,
                  ~useCreateBucklescriptBlock,
+                 ~variantTables,
                ),
           );
         | GroupConverter(groupConverters) =>
@@ -575,10 +591,11 @@ let rec apply =
                    |> apply(
                         ~config,
                         ~converter=argConverter,
-                        ~variantTables,
+                        ~indent=indent1,
                         ~nameGen,
                         ~toJS=notToJS,
                         ~useCreateBucklescriptBlock,
+                        ~variantTables,
                       )
                  )
               |> String.concat(", "),
@@ -601,10 +618,11 @@ let rec apply =
                      |> apply(
                           ~config,
                           ~converter=argConverter,
-                          ~variantTables,
+                          ~indent=indent1,
                           ~nameGen,
                           ~toJS=notToJS,
                           ~useCreateBucklescriptBlock,
+                          ~variantTables,
                         )
                    )
                  )
@@ -614,8 +632,9 @@ let rec apply =
         };
       groupedArgConverters |> List.mapi(convertArg);
     };
-    let mkBody = args => value |> EmitText.funCall(~args) |> mkReturn;
-    EmitText.funDef(~args=convertedArgs, ~mkBody, "");
+    let mkBody = (~indent, args) =>
+      value |> EmitText.funCall(~args) |> mkReturn(~indent);
+    EmitText.funDef(~args=convertedArgs, ~mkBody, ~indent, "");
 
   | IdentC => value
 
@@ -630,10 +649,11 @@ let rec apply =
         |> apply(
              ~config,
              ~converter=c,
-             ~variantTables,
+             ~indent,
              ~nameGen,
              ~toJS,
              ~useCreateBucklescriptBlock,
+             ~variantTables,
            )
       ),
     ])
@@ -657,10 +677,11 @@ let rec apply =
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~variantTables,
+                  ~indent,
                   ~nameGen,
                   ~toJS,
                   ~useCreateBucklescriptBlock,
+                  ~variantTables,
                 )
            )
          )
@@ -679,10 +700,11 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=c,
-               ~variantTables,
+               ~indent,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
+               ~variantTables,
              )
         ),
       ]);
@@ -695,10 +717,11 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=c,
-               ~variantTables,
+               ~indent,
                ~nameGen,
                ~toJS,
                ~useCreateBucklescriptBlock,
+               ~variantTables,
              )
         ),
       ]);
@@ -725,10 +748,11 @@ let rec apply =
                |> apply(
                     ~config,
                     ~converter=fieldConverter |> simplifyFieldConverted,
-                    ~variantTables,
+                    ~indent,
                     ~nameGen,
                     ~toJS,
                     ~useCreateBucklescriptBlock,
+                    ~variantTables,
                   )
              )
            )
@@ -744,10 +768,11 @@ let rec apply =
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~variantTables,
+                  ~indent,
                   ~nameGen,
                   ~toJS,
                   ~useCreateBucklescriptBlock,
+                  ~variantTables,
                 )
            )
         |> String.concat(", ");
@@ -765,10 +790,11 @@ let rec apply =
            |> apply(
                 ~config,
                 ~converter=c,
-                ~variantTables,
+                ~indent,
                 ~nameGen,
                 ~toJS,
                 ~useCreateBucklescriptBlock,
+                ~variantTables,
               )
          )
       |> String.concat(", ")
@@ -780,6 +806,7 @@ let toJS =
     (
       ~config,
       ~converter,
+      ~indent,
       ~nameGen,
       ~useCreateBucklescriptBlock,
       ~variantTables,
@@ -789,8 +816,9 @@ let toJS =
   |> apply(
        ~config,
        ~converter,
-       ~variantTables,
+       ~indent,
        ~nameGen,
+       ~variantTables,
        ~toJS=true,
        ~useCreateBucklescriptBlock,
      );
@@ -799,6 +827,7 @@ let toReason =
     (
       ~config,
       ~converter,
+      ~indent,
       ~nameGen,
       ~useCreateBucklescriptBlock,
       ~variantTables,
@@ -808,8 +837,9 @@ let toReason =
   |> apply(
        ~config,
        ~converter,
-       ~variantTables,
+       ~indent,
        ~nameGen,
        ~toJS=false,
        ~useCreateBucklescriptBlock,
+       ~variantTables,
      );

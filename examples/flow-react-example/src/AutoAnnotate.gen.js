@@ -29,7 +29,10 @@ export type r5 = {|+r5: number|};
 
 export type r6 = {|+r6: number|};
 
-export const useR5: (r5) => r5 = function _(Arg1) { const result = AutoAnnotateBS.useR5([Arg1.r5]); return {r5:result[0]} };
+export const useR5: (r5) => r5 = function _(Arg1) {
+  const result = AutoAnnotateBS.useR5([Arg1.r5]);
+  return {r5:result[0]}
+};
 
 export type Props = {|+r6: r6, +children?: mixed|};
 
