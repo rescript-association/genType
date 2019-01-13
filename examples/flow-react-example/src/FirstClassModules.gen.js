@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as FirstClassModulesBS from './FirstClassModules.bs';

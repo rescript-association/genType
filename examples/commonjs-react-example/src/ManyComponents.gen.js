@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
 const Curry = require('bs-platform/lib/js/curry.js');

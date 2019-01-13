@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 // flowlint-next-line nonstrict-import:off
 import {foo as fooNotChecked} from './name-with-dashes';

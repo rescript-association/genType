@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 const $$toJS1061900109 = {"120": "x", "26810": "same"};
 

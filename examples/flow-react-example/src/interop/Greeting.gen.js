@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 const $$toRE453167283 = {"A": 0, "B": 1};
 
