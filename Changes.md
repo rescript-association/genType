@@ -1,3 +1,6 @@
+# master
+- Flow mode: add eslint-disable.
+
 # 2.2.2
 - Fix issue where default function arguments of some type requiring conversion were not checked for undefined.
 - Add missing support for @genType.opaque in variants.
