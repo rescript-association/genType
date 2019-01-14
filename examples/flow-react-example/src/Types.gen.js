@@ -15,6 +15,9 @@ export const fooTypeChecked: (number) => number = fooNotChecked;
 export const foo: mixed = fooTypeChecked;
 
 // $FlowExpectedError: Reason checked type sufficiently
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
+
+// $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
 
 // flowlint-next-line nonstrict-import:off
@@ -103,4 +106,11 @@ export const testDateKey: (dateKey) => dateKey = TypesBS.testDateKey;
 
 export const testAutoAnnotateVariants: (AutoAnnotate_variant) => AutoAnnotate_variant = TypesBS.testAutoAnnotateVariants;
 
-export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = TypesBS.testAutoAnnotateVariants2;
+export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = function _(Arg1) {
+  const result = TypesBS.testAutoAnnotateVariants2(Arg1.tag==="R2"
+    ? CreateBucklescriptBlock.__(0, Arg1.value)
+    : CreateBucklescriptBlock.__(1, [Arg1.value]));
+  return result.tag===0
+    ? {tag:"R2", value:result.slice()}
+    : {tag:"R4", value:result[0]}
+};

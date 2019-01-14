@@ -1,3 +1,6 @@
+# master
+- Fix issue where conversion functions for types defined in other files would be missing if the first declararation in that other file is not annotated with @genType.
+
 # 2.3.0
 - Flow mode: add eslint-disable.
 - Fix missing conversion of optional arguments of components.

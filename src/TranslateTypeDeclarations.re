@@ -352,7 +352,6 @@ let translateTypeDeclaration =
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
-      ~annotation: Annotation.t,
       {typ_id, typ_type, typ_attributes, typ_manifest, _}: Typedtree.type_declaration,
     )
     : list(CodeItem.typeDeclaration) => {
@@ -360,6 +359,8 @@ let translateTypeDeclaration =
     logItem("Translate Type Declaration %s\n", typ_id |> Ident.name);
   };
   typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
+
+  let annotation = typ_attributes |> Annotation.fromAttributes;
   let typeName = Ident.name(typ_id);
   let typeParams = typ_type.type_params;
   let typeVars = TypeVars.extract(typeParams);
@@ -399,12 +400,7 @@ let translateTypeDeclarations =
       ~typeEnv,
       typeDeclarations: list(Typedtree.type_declaration),
     )
-    : list(CodeItem.typeDeclaration) => {
-  let annotation =
-    switch (typeDeclarations) {
-    | [dec, ..._] => dec.typ_attributes |> Annotation.fromAttributes
-    | [] => NoGenType
-    };
+    : list(CodeItem.typeDeclaration) =>
   typeDeclarations
   |> List.map(
        translateTypeDeclaration(
@@ -412,8 +408,6 @@ let translateTypeDeclarations =
          ~outputFileRelative,
          ~resolver,
          ~typeEnv,
-         ~annotation,
        ),
      )
   |> List.concat;
-};
