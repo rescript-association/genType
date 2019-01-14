@@ -31,10 +31,16 @@ module ManyProps = {
   };
 };
 
+[@genType]
+type size =
+  | Small
+  | Medium
+  | Large;
+
 let component = ReasonReact.statelessComponent("ManyComponents");
 
 [@genType]
-let make = _children => {
+let make = (~size as _=Small, _children) => {
   ...component,
   render: _ =>
     <div> "Outer Component"->ReasonReact.string <InnerComponent /> </div>,

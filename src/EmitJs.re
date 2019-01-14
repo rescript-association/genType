@@ -509,11 +509,17 @@ let rec emitCodeItem =
           ] =>
           (
             propConverters
-            |> List.map(((s, _optional, argConverter)) =>
+            |> List.map(((s, optional, argConverter)) =>
                  jsPropsDot(s)
                  |> Converter.toReason(
                       ~config,
-                      ~converter=argConverter,
+                      ~converter=
+                        optional == Optional
+                        && !(
+                             argConverter
+                             |> Converter.converterIsIdentity(~toJS=false)
+                           ) ?
+                          OptionC(argConverter) : argConverter,
                       ~indent,
                       ~nameGen,
                       ~useCreateBucklescriptBlock,
