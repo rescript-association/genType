@@ -1,4 +1,4 @@
-# master
+# 2.3.0
 - Flow mode: add eslint-disable.
 - Fix missing conversion of optional arguments of components.
 
