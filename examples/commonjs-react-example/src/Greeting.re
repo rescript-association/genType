@@ -26,4 +26,4 @@ let make = (~message, ~someNumber, ~extraGreeting=?, _children) => {
 };
 
 [@genType]
-let testBike = (x: ManyComponents.bike) => x;
+let testBike = (x: Bike.kind) => x;

@@ -17,7 +17,7 @@
     },
     "exportInterfaces": false
   },
-  "name": "flow-react-example",
+  "name": "commonjs-react-example",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 2 },
   "bs-dependencies": ["reason-react"],

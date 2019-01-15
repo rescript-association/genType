@@ -143,7 +143,13 @@ let rec removeOption = (~label, typeExpr: Types.type_expr) =>
   };
 
 let translateConstr =
-    (~path: Path.t, ~paramsTranslation, ~typeEnv, ~fieldsTranslations) =>
+    (
+      ~config,
+      ~path: Path.t,
+      ~paramsTranslation,
+      ~typeEnv,
+      ~fieldsTranslations,
+    ) =>
   switch (path, paramsTranslation) {
   | (Pdot(Pident({name: "FB", _}), "bool", _), [])
   | (Pident({name: "bool", _}), []) => {dependencies: [], typ: booleanT}
@@ -259,7 +265,8 @@ let translateConstr =
       paramsTranslation
       |> List.map(({dependencies, _}) => dependencies)
       |> List.concat;
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
+    let resolvedPath =
+      path |> Dependencies.resolveTypePath(~config, ~typeEnv);
     {
       dependencies: [resolvedPath, ...typeParamDeps],
       typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
@@ -422,6 +429,7 @@ and translateTypeExprFromTypes_ =
       };
     let fieldsTranslations = tObj |> getFieldTypes;
     translateConstr(
+      ~config,
       ~path,
       ~paramsTranslation=[],
       ~typeEnv,
@@ -433,6 +441,7 @@ and translateTypeExprFromTypes_ =
       typeParams
       |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
     translateConstr(
+      ~config,
       ~path,
       ~paramsTranslation,
       ~typeEnv,

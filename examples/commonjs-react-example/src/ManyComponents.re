@@ -39,7 +39,3 @@ let make = _children => {
   render: _ =>
     <div> "Outer Component"->ReasonReact.string <InnerComponent /> </div>,
 };
-
-type bike =
-  | Road
-  | Mountain;

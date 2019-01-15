@@ -5,7 +5,15 @@ type path =
   | Presolved(string)
   | Pdot(path, string);
 
-let rec resolveTypePath = (~typeEnv, typePath) =>
+let rec handleNamespace = (~name, path) =>
+  switch (path) {
+  | Pid(_)
+  | Presolved(_) => path
+  | Pdot(Pid(s), moduleName) when s == name => Pid(moduleName)
+  | Pdot(path1, s) => Pdot(path1 |> handleNamespace(~name), s)
+  };
+
+let rec resolveTypePath1 = (~typeEnv, typePath) =>
   switch (typePath) {
   | Path.Pident(id) =>
     let name = id |> Ident.name;
@@ -23,9 +31,17 @@ let rec resolveTypePath = (~typeEnv, typePath) =>
       };
       Presolved(resolvedName);
     };
-  | Pdot(p, s, _pos) => Pdot(p |> resolveTypePath(~typeEnv), s)
+  | Pdot(p, s, _pos) => Pdot(p |> resolveTypePath1(~typeEnv), s)
   | Papply(_) => Presolved("__Papply_unsupported_genType__")
   };
+
+let resolveTypePath = (~config, ~typeEnv, typePath) => {
+  let path = typePath |> resolveTypePath1(~typeEnv);
+  switch (config.namespace) {
+  | None => path
+  | Some(name) => path |> handleNamespace(~name)
+  };
+};
 
 let rec typePathToName = typePath =>
   switch (typePath) {
