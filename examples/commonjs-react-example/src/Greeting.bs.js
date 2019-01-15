@@ -3,7 +3,7 @@
 
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
-var ImportMyBanner$FlowReactExample = require("./ImportMyBanner.bs.js");
+var ImportMyBanner$CommonjsReactExample = require("./ImportMyBanner.bs.js");
 
 var component = ReasonReact.statelessComponent("PageReason");
 
@@ -27,7 +27,7 @@ function make(message, someNumber, extraGreeting, _children) {
               var greeting = extraGreeting !== undefined ? extraGreeting : "How are you?";
               return React.createElement("div", {
                           onClick: onClick
-                        }, ReasonReact.element(undefined, undefined, ImportMyBanner$FlowReactExample.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
+                        }, ReasonReact.element(undefined, undefined, ImportMyBanner$CommonjsReactExample.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

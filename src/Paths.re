@@ -42,6 +42,15 @@ let handleNamespace = cmt => {
   };
 };
 
+let findNameSpace = cmt => {
+  let keepAfterDash = s =>
+    switch (String.index(s, '-')) {
+    | n => Some(String.sub(s, n + 1, String.length(s) - n - 1))
+    | exception Not_found => None
+    };
+  cmt |> Filename.basename |> Filename.chop_extension |> keepAfterDash;
+};
+
 /* Get the output file to be written, relative to the project root. */
 let getOutputFileRelative = (~config, cmt) =>
   (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~config);
@@ -114,7 +123,7 @@ let relativePathFromBsLib = fileName =>
     );
   };
 
-let readConfig = () => {
+let readConfig = (~namespace) => {
   setProjectRoot();
-  Config.readConfig(~getConfigFile, ~getBsConfigFile);
+  Config.readConfig(~getConfigFile, ~getBsConfigFile, ~namespace);
 };

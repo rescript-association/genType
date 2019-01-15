@@ -166,6 +166,7 @@ and translateCoreType_ =
     );
     let fieldsTranslations = tObj |> List.map(getFieldType);
     translateConstr(
+      ~config,
       ~path,
       ~paramsTranslation=[],
       ~typeEnv,
@@ -176,6 +177,7 @@ and translateCoreType_ =
     let paramsTranslation =
       typeParams |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
     TranslateTypeExprFromTypes.translateConstr(
+      ~config,
       ~path,
       ~paramsTranslation,
       ~typeEnv,
