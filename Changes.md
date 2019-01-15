@@ -1,4 +1,4 @@
-# master
+# 2.3.1
 - Fix issue where conversion functions for types defined in other files would be missing if the first declararation in that other file is not annotated with @genType.
 
 # 2.3.0
