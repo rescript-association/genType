@@ -7,8 +7,7 @@ let component = ReasonReact.statelessComponent("PageReason");
 let onClick = (_: ReactEvent.Mouse.t): unit => Js.log("click");
 
 [@genType]
-let make =
-    (~message, ~someNumber, ~extraGreeting=?, _children) => {
+let make = (~message, ~someNumber, ~extraGreeting=?, _children) => {
   ...component,
   render: _self => {
     let greeting =
@@ -25,3 +24,6 @@ let make =
     </div>;
   },
 };
+
+[@genType]
+let testBike = (x: ManyComponents.bike) => x;

@@ -15,6 +15,9 @@ const GreetingBS = require('./Greeting.bs');
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
 // flowlint-next-line nonstrict-import:off
+import type {ManyComponents_bike as FlowReactExample_ManyComponents_bike} from './FlowReactExample.gen';
+
+// flowlint-next-line nonstrict-import:off
 import type {Mouse_t as ReactEvent_Mouse_t} from '../src/shims/ReactEvent.shim';
 
 const onClick: (ReactEvent_Mouse_t) => void = GreetingBS.onClick;;
@@ -35,3 +38,6 @@ const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
 exports.component = component
 
 exports.default = component;
+
+const testBike: (FlowReactExample_ManyComponents_bike) => FlowReactExample_ManyComponents_bike = GreetingBS.testBike;;
+exports.testBike = testBike
