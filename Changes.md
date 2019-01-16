@@ -1,4 +1,4 @@
-# master
+# 2.4.0
 - Restore support for namespaces, and make commonjs-react-example a namespace example.
 - Add support for genType.as for the type name, to record type declarations.
 
