@@ -105,7 +105,7 @@ let pathToImportType =
     let cmtFile = {
       let cmtFile =
         importPath
-        |> ImportPath.toCmt(~outputFileRelative)
+        |> ImportPath.toCmt(~config, ~outputFileRelative)
         |> Paths.getCmtFile;
       cmtFile == "" ? None : Some(cmtFile);
     };
