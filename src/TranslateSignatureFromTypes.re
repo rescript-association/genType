@@ -14,6 +14,7 @@ let translateTypeDeclarationFromTypes =
   typeEnv |> TypeEnv.newType(~name=id |> Ident.name);
   let typeName = Ident.name(id);
   let typeVars = TypeVars.extract(typeParams);
+  let nameAs = type_attributes |> Annotation.getAttributeRenaming;
   if (Debug.translation^) {
     logItem("Translate Types.type_declaration %s\n", typeName);
   };
@@ -22,14 +23,14 @@ let translateTypeDeclarationFromTypes =
     switch (type_kind) {
     | Type_record(labelDeclarations, _) =>
       TranslateTypeDeclarations.RecordDeclarationFromTypes(
-        type_attributes,
+        nameAs,
         labelDeclarations,
       )
 
     | Type_variant(constructorDeclarations)
         when
           !TranslateTypeDeclarations.hasSomeGADTLeaf(constructorDeclarations) =>
-      VariantDeclarationFromTypes(type_attributes, constructorDeclarations)
+      VariantDeclarationFromTypes(nameAs, constructorDeclarations)
 
     | Type_abstract =>
       GeneralDeclarationFromTypes(type_attributes, type_manifest)
