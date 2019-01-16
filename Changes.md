@@ -1,5 +1,6 @@
 # master
 - Restore support for namespaces, and make commonjs-react-example a namespace example.
+- Add support for genType.as for the type name, to record type declarations.
 
 # 2.3.1
 - Fix issue where conversion functions for types defined in other files would be missing if the first declararation in that other file is not annotated with @genType.

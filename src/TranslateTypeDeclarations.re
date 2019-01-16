@@ -1,7 +1,10 @@
 open GenTypeCommon;
 
 type declarationKind =
-  | RecordDeclarationFromTypes(list(Types.label_declaration))
+  | RecordDeclarationFromTypes(
+      Parsetree.attributes,
+      list(Types.label_declaration),
+    )
   | GeneralDeclaration(Parsetree.attributes, option(Typedtree.core_type))
   | GeneralDeclarationFromTypes(
       Parsetree.attributes,
@@ -187,7 +190,8 @@ let traslateDeclarationKind =
          },
        )
 
-  | RecordDeclarationFromTypes(labelDeclarations) =>
+  | RecordDeclarationFromTypes(typeAttributes, labelDeclarations) =>
+    let nameAs = typeAttributes |> Annotation.getAttributeRenaming;
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
@@ -238,7 +242,7 @@ let traslateDeclarationKind =
         exportFromTypeDeclaration:
           typeName
           |> createExportTypeFromTypeDeclaration(
-               ~nameAs=None,
+               ~nameAs,
                ~opaque,
                ~typeVars,
                ~optTyp,
@@ -368,7 +372,7 @@ let translateTypeDeclaration =
   let declarationKind =
     switch (typ_type.type_kind) {
     | Type_record(labelDeclarations, _) =>
-      RecordDeclarationFromTypes(labelDeclarations)
+      RecordDeclarationFromTypes(typ_attributes, labelDeclarations)
 
     | Type_variant(constructorDeclarations)
         when !hasSomeGADTLeaf(constructorDeclarations) =>

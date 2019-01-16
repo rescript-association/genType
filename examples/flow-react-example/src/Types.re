@@ -102,3 +102,10 @@ let testAutoAnnotateVariants2 = (x: AutoAnnotate.annotatedVariant) => x;
 type opaqueVariant =
   | A
   | B;
+
+[@genType]
+[@genType.as "Filter"]
+type filter = {
+  name: string,
+  values: array(string),
+};

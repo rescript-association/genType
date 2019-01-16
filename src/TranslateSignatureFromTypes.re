@@ -21,7 +21,10 @@ let translateTypeDeclarationFromTypes =
   let declarationKind =
     switch (type_kind) {
     | Type_record(labelDeclarations, _) =>
-      TranslateTypeDeclarations.RecordDeclarationFromTypes(labelDeclarations)
+      TranslateTypeDeclarations.RecordDeclarationFromTypes(
+        type_attributes,
+        labelDeclarations,
+      )
 
     | Type_variant(constructorDeclarations)
         when

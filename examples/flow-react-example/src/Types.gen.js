@@ -78,6 +78,9 @@ export type DateKeyOpaque = dateKeyOpaque;
 
 export opaque type opaqueVariant = mixed;
 
+export type filter = {| +name: string, +values: Array<string> |};
+export type Filter = filter;
+
 export const consumeOption: (?number) => number = function _(Arg1) {
   const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
   return result
