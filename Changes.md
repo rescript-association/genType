@@ -1,5 +1,5 @@
 # 2.4.1
-- Fix issue with namespaces where the correct .cmt files was not found.
+- Fix issue with namespace mode: conversion was not performed for types defined in other files, as the correct .cmt files was not found.
 
 # 2.4.0
 - Restore support for namespaces, and make commonjs-react-example a namespace example.
