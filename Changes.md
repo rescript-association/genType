@@ -1,4 +1,4 @@
-# master
+# 2.4.1
 - Fix issue with namespaces where the correct .cmt files was not found.
 
 # 2.4.0
