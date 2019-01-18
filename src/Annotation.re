@@ -8,6 +8,7 @@ type attributePayload =
   | FloatPayload(string)
   | IntPayload(int)
   | StringPayload(string)
+  | TuplePayload(list(attributePayload))
   | UnrecognizedPayload;
 
 type t =
@@ -31,64 +32,41 @@ let tagIsGenTypeImport = s => s == "genType.import";
 
 let tagIsGenTypeOpaque = s => s == "genType.opaque";
 
-let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
+let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
+  let rec fromExpr = (expr: Parsetree.expression) =>
+    switch (expr) {
+    | {pexp_desc: Pexp_constant(Const_string(s, _)), _} =>
+      Some(StringPayload(s))
+    | {pexp_desc: Pexp_constant(Const_int(n)), _} => Some(IntPayload(n))
+    | {pexp_desc: Pexp_constant(Const_float(s)), _} =>
+      Some(FloatPayload(s))
+    | {
+        pexp_desc: Pexp_construct({txt: Lident(("true" | "false") as s)}, _),
+        _,
+      } =>
+      Some(BoolPayload(s == "true"))
+    | {pexp_desc: Pexp_tuple(exprs), _} =>
+      let payloads =
+        exprs
+        |> List.rev
+        |> List.fold_left(
+             (payloads, expr) =>
+               switch (expr |> fromExpr) {
+               | Some(payload) => [payload, ...payloads]
+               | None => payloads
+               },
+             [],
+           );
+      Some(TuplePayload(payloads));
+    | _ => None
+    };
   switch (attributes) {
   | [] => None
   | [({Asttypes.txt, _}, payload), ..._tl] when checkText(txt) =>
     switch (payload) {
     | PStr([]) => Some(UnrecognizedPayload)
-    | PStr([
-        {
-          pstr_desc:
-            Pstr_eval(
-              {pexp_desc: Pexp_constant(Const_string(s, _)), _},
-              _,
-            ),
-          _,
-        },
-        ..._,
-      ]) =>
-      Some(StringPayload(s))
+    | PStr([{pstr_desc: Pstr_eval(expr, _), _}, ..._]) => expr |> fromExpr
 
-    | PStr([
-        {
-          pstr_desc:
-            Pstr_eval({pexp_desc: Pexp_constant(Const_int(n)), _}, _),
-          _,
-        },
-        ..._,
-      ]) =>
-      Some(IntPayload(n))
-
-    | PStr([
-        {
-          pstr_desc:
-            Pstr_eval({pexp_desc: Pexp_constant(Const_float(s)), _}, _),
-          _,
-        },
-        ..._,
-      ]) =>
-      Some(FloatPayload(s))
-
-    | PStr([
-        {
-          pstr_desc:
-            Pstr_eval(
-              {
-                pexp_desc:
-                  Pexp_construct({txt: Lident(("true" | "false") as s)}, _),
-                _,
-              },
-              _,
-            ),
-          _,
-        },
-        ..._,
-      ]) =>
-      Some(BoolPayload(s == "true"))
-
-    | PStr([{pstr_desc: Pstr_eval(_), _}, ..._]) =>
-      Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_extension(_), _}, ..._]) =>
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_value(_), _}, ..._]) =>
@@ -122,6 +100,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
     }
   | [_hd, ...tl] => getAttributePayload(checkText, tl)
   };
+};
 
 let getAttributeRenaming = attributes =>
   switch (attributes |> getAttributePayload(tagIsGenTypeAs)) {
