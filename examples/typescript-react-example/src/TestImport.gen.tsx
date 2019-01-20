@@ -12,6 +12,8 @@ import {TopLevelClass as TopLevelClass} from './MyBanner';
 
 import * as React from 'react';
 
+import {default as defaultValue2NotChecked} from './exportNestedValues';
+
 // tslint:disable-next-line:no-var-requires
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
@@ -49,6 +51,12 @@ export function MyBannerInternalTypeChecked(props: Props) {
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: unknown = function _(show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, message: (message == null ? message : {text:message[0]})}, children); };
+
+// In case of type error, check the type of 'defaultValue2' in 'TestImport.re' and './exportNestedValues'.
+export const defaultValue2TypeChecked: number = defaultValue2NotChecked;
+
+// Export 'defaultValue2' early to allow circular import from the '.bs.js' file.
+export const defaultValue2: unknown = defaultValue2TypeChecked as number;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type message = { readonly text: string };

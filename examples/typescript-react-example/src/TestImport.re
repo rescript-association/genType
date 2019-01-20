@@ -40,3 +40,7 @@ external make:
   "";
 
 let make = make;
+
+[@genType.import ("./exportNestedValues", "default")]
+[@bs.module "./TestImport.gen"]
+external defaultValue2: int = "";

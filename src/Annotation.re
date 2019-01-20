@@ -112,7 +112,22 @@ let getAttributeImportRenaming = attributes => {
   let attributeImport = attributes |> getAttributePayload(tagIsGenTypeImport);
   let attributeRenaming = attributes |> getAttributeRenaming;
   switch (attributeImport, attributeRenaming) {
-  | (Some(StringPayload(s)), _) => (Some(s), attributeRenaming)
+  | (Some(StringPayload(importString)), _) => (
+      Some(importString),
+      attributeRenaming,
+    )
+  | (
+      Some(
+        TuplePayload([
+          StringPayload(importString),
+          StringPayload(renameString),
+        ]),
+      ),
+      _,
+    ) => (
+      Some(importString),
+      Some(renameString),
+    )
   | _ => (None, attributeRenaming)
   };
 };
