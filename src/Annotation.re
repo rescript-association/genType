@@ -108,6 +108,15 @@ let getAttributeRenaming = attributes =>
   | _ => None
   };
 
+let getAttributeImportRenaming = attributes => {
+  let attributeImport = attributes |> getAttributePayload(tagIsGenTypeImport);
+  let attributeRenaming = attributes |> getAttributeRenaming;
+  switch (attributeImport, attributeRenaming) {
+  | (Some(StringPayload(s)), _) => (Some(s), attributeRenaming)
+  | _ => (None, attributeRenaming)
+  };
+};
+
 let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
   getAttributePayload(checkText, attributes) != None;
 

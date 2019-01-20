@@ -57,11 +57,8 @@ let traslateDeclarationKind =
     )
     : list(CodeItem.typeDeclaration) => {
   let handleTypeAttributes = (~defaultCase, ~optType, typeAttributes) =>
-    switch (
-      typeAttributes
-      |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
-    ) {
-    | Some(StringPayload(importString)) =>
+    switch (typeAttributes |> Annotation.getAttributeImportRenaming) {
+    | (Some(importString), nameAs) =>
       let typeName_ = typeName;
       let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
       let (typeName, asTypeName) =
@@ -81,7 +78,7 @@ let traslateDeclarationKind =
         /* Make the imported type usable from other modules by exporting it too. */
         typeName_
         |> createExportTypeFromTypeDeclaration(
-             ~nameAs=None,
+             ~nameAs,
              ~opaque=Some(false),
              ~typeVars=[],
              ~optTyp=None,
@@ -91,8 +88,7 @@ let traslateDeclarationKind =
 
       [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
-    | _ =>
-      let nameAs = typeAttributes |> Annotation.getAttributeRenaming;
+    | (_, nameAs) =>
       switch (optType) {
       | None => [
           {
@@ -133,7 +129,7 @@ let traslateDeclarationKind =
                  ~resolver,
                );
         [{importTypes, exportFromTypeDeclaration}];
-      };
+      }
     };
 
   switch (declarationKind) {

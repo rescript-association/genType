@@ -334,16 +334,10 @@ let translatePrimitive =
   let typeExprTranslation =
     valueDescription.val_desc
     |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
-  let genTypeImportPayload =
-    valueDescription.val_attributes
-    |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport);
-  let attributeRenaming =
-    valueDescription.val_attributes |> Annotation.getAttributeRenaming;
-  switch (
-    typeExprTranslation.typ,
-    valueDescription.val_prim,
-    genTypeImportPayload,
-  ) {
+
+  let (attributeImport, attributeRenaming) =
+    valueDescription.val_attributes |> Annotation.getAttributeImportRenaming;
+  switch (typeExprTranslation.typ, valueDescription.val_prim, attributeImport) {
   | (
       Function({
         argTypes: [_, ..._],
@@ -357,7 +351,7 @@ let translatePrimitive =
         _,
       }),
       _,
-      Some(StringPayload(importString)),
+      Some(importString),
     )
       when valueName == "make" =>
     let asPath =
@@ -444,7 +438,7 @@ let translatePrimitive =
       typeDeclarations: [],
     };
 
-  | (_, _, Some(StringPayload(importString))) =>
+  | (_, _, Some(importString)) =>
     let asPath =
       switch (attributeRenaming) {
       | Some(asPath) => asPath

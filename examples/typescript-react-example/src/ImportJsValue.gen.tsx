@@ -44,6 +44,7 @@ export type point = { readonly x: number; readonly y?: number };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type AbsoluteValue_t = AbsoluteValue_t;
+export type AbsoluteValue = AbsoluteValue_t;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type stringFunction = stringFunction;
