@@ -1,3 +1,17 @@
+# master
+- Add support for pairs in @genType.import to encode rename information.
+Instead of writing
+
+```
+[@genType.import "./js/MyBanner"]
+[@genType.as "TopLevelClass.MiddleLevelElements.MyBannerInternal"]
+```
+
+This can be used instead:
+```
+[@genType.import ("./js/MyBanner", "TopLevelClass.MiddleLevelElements.MyBannerInternal")]
+```
+
 # 2.4.1
 - Fix issue with namespace mode: conversion was not performed for types defined in other files, as the correct .cmt files was not found.
 
