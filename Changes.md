@@ -2,13 +2,13 @@
 - Add support for pairs in @genType.import to encode rename information.
 Instead of writing
 
-```
+```reason
 [@genType.import "./js/MyBanner"]
 [@genType.as "TopLevelClass.MiddleLevelElements.MyBannerInternal"]
 ```
 
 This can be used instead:
-```
+```reason
 [@genType.import ("./js/MyBanner", "TopLevelClass.MiddleLevelElements.MyBannerInternal")]
 ```
 
