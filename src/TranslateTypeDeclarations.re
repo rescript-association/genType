@@ -62,7 +62,7 @@ let traslateDeclarationKind =
       let typeName_ = typeName;
       let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
       let (typeName, asTypeName) =
-        switch (typeAttributes |> Annotation.getAttributeRenaming) {
+        switch (nameAs) {
         | Some(asString) => (asString, Some(nameWithModulePath))
         | None => (nameWithModulePath, None)
         };
