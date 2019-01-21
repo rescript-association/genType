@@ -1,4 +1,4 @@
-# 2.5.0
+# 2.5.1
 - Add support for pairs in @genType.import to encode rename information.
 Instead of writing
 
