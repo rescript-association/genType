@@ -59,3 +59,9 @@ let testFunctionOnOptionsAsArgument = (a: option('a), foo) => foo(a);
 type opaqueVariant =
   | A
   | B;
+
+[@genType]
+let stringT: String.t = "a";
+
+[@genType]
+let jsStringT: Js.String.t = "a";

@@ -57,3 +57,7 @@ export const testFunctionOnOptionsAsArgument: <T1,a>(_1:(null | undefined | a), 
   const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2);
   return result
 };
+
+export const stringT: string = TypesBS.stringT;
+
+export const jsStringT: string = TypesBS.jsStringT;

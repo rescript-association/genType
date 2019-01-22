@@ -37,6 +37,10 @@ var someIntList = /* :: */[
 
 var map = List.map;
 
+var stringT = "a";
+
+var jsStringT = "a";
+
 export {
   someIntList ,
   map ,
@@ -44,6 +48,8 @@ export {
   selfRecursiveConverter ,
   mutuallyRecursiveConverter ,
   testFunctionOnOptionsAsArgument ,
+  stringT ,
+  jsStringT ,
   
 }
 /* No side effect */

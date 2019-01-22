@@ -161,7 +161,12 @@ let translateConstr =
   | (Pident({name: "float", _}), []) => {dependencies: [], typ: numberT}
 
   | (Pdot(Pident({name: "FB", _}), "string", _), [])
-  | (Pident({name: "string", _}), []) => {dependencies: [], typ: stringT}
+  | (Pident({name: "string", _}), [])
+  | (Pdot(Pident({name: "String", _}), "t", _), [])
+  | (Pdot(Pdot(Pident({name: "Js", _}), "String", _), "t", _), []) => {
+      dependencies: [],
+      typ: stringT,
+    }
 
   | (Pdot(Pident({name: "FB", _}), "unit", _), [])
   | (Pident({name: "unit", _}), []) => {dependencies: [], typ: unitT}
