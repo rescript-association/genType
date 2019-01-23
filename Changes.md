@@ -1,4 +1,4 @@
-# master
+# 2.5.2
 - Add support for String.t and Js.String.t.
 - Avoid generating an extra type in renamed imports.
 
