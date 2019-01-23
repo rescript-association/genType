@@ -78,7 +78,7 @@ let traslateDeclarationKind =
         /* Make the imported type usable from other modules by exporting it too. */
         typeName_
         |> createExportTypeFromTypeDeclaration(
-             ~nameAs,
+             ~nameAs=None,
              ~opaque=Some(false),
              ~typeVars=[],
              ~optTyp=None,

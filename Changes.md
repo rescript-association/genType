@@ -1,5 +1,6 @@
 # master
 - Add support for String.t and Js.String.t.
+- Avoid generating an extra type in renamed imports.
 
 # 2.5.1
 - Add support for pairs in @genType.import to encode rename information.
