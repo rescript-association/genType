@@ -3,13 +3,17 @@ open GenTypeCommon;
 /**
   * Extracts type variables from dependencies.
   */
-let extractOne = (~typeVarsGen, soFar, typ) =>
-  switch (typ) {
+let rec extractOne = (~typeVarsGen, soFar, typeExpr) =>
+  switch (typeExpr) {
   | {Types.id, desc: Tvar(None), _} =>
     let typeName = GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, id);
     [typeName, ...soFar];
   | {desc: Tvar(Some(s)), _} =>
     let typeName = s;
+    [typeName, ...soFar];
+  | {desc: Tlink(te), _} => te |> extractOne(~typeVarsGen, soFar)
+  | {desc: Tobject(_), _} =>
+    let typeName = GenIdent.jsTypeNameForObject(~typeVarsGen);
     [typeName, ...soFar];
   | _ => soFar
   };

@@ -151,12 +151,26 @@ and translateCoreType_ =
       coreType: Typedtree.core_type,
     ) =>
   switch (coreType.ctyp_desc) {
-  | Ttyp_var(s) => {dependencies: [], typ: TypeVar(s)}
+  | Ttyp_alias(ct, _) =>
+    ct
+    |> translateCoreType_(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies=false,
+         ~typeEnv,
+       )
 
   | Ttyp_constr(
       Pdot(Pident({name: "Js", _}), "t", _) as path,
       _,
-      [{ctyp_desc: Ttyp_object(tObj, _), _}],
+      [
+        {
+          ctyp_desc:
+            Ttyp_object(tObj, _) |
+            Ttyp_alias({ctyp_desc: Ttyp_object(tObj, _)}, _),
+          _,
+        },
+      ],
     ) =>
     let getFieldType = ((name, _attibutes, t)) => (
       name,
@@ -217,6 +231,8 @@ and translateCoreType_ =
 
     {dependencies: innerTypesDeps, typ: tupleType};
 
+  | Ttyp_var(s) => {dependencies: [], typ: TypeVar(s)}
+
   | Ttyp_variant(rowFields, _, _) =>
     switch (rowFields |> processVariant) {
     | {noPayloads, payloads, unknowns: []} =>
@@ -254,7 +270,6 @@ and translateCoreType_ =
     | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
     }
 
-  | Ttyp_alias(_)
   | Ttyp_any
   | Ttyp_class(_)
   | Ttyp_object(_)

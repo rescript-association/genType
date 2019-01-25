@@ -430,6 +430,7 @@ and translateTypeExprFromTypes_ =
           ),
           ...t2 |> getFieldTypes,
         ]
+      | Tlink(te) => te |> getFieldTypes
       | _ => []
       };
     let fieldsTranslations = tObj |> getFieldTypes;
@@ -440,6 +441,15 @@ and translateTypeExprFromTypes_ =
       ~typeEnv,
       ~fieldsTranslations,
     );
+
+  | Tconstr(path, [{desc: Tlink(te), _}], r) =>
+    {...typeExpr, desc: Types.Tconstr(path, [te], r)}
+    |> translateTypeExprFromTypes_(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies=false,
+         ~typeEnv,
+       )
 
   | Tconstr(path, typeParams, _) =>
     let paramsTranslation =
