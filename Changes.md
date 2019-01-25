@@ -1,5 +1,6 @@
 # master
 - Add support for translation of inferred object types (using ##) and open object type declarations.
+- Add support for open object types.
 
 # 2.5.2
 - Add support for String.t and Js.String.t.

@@ -410,7 +410,7 @@ let translatePrimitive =
         }
       | _ => ([], mixedOrUnknown(~config))
       };
-    let propsTyp = Object(propsFields);
+    let propsTyp = Object(Closed, propsFields);
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
 
     let codeItems = [

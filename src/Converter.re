@@ -178,7 +178,7 @@ let typToConverterNormalized =
       let (tConverter, tNormalized) = t |> visit(~visited);
       (NullableC(tConverter), tNormalized == None ? None : normalized_);
 
-    | Object(fields) => (
+    | Object(_, fields) => (
         ObjectC(
           fields
           |> List.map(({name, optional, typ, _}) =>

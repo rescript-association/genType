@@ -166,8 +166,8 @@ and translateCoreType_ =
       [
         {
           ctyp_desc:
-            Ttyp_object(tObj, _) |
-            Ttyp_alias({ctyp_desc: Ttyp_object(tObj, _)}, _),
+            Ttyp_object(tObj, closedFlag) |
+            Ttyp_alias({ctyp_desc: Ttyp_object(tObj, closedFlag)}, _),
           _,
         },
       ],
@@ -181,10 +181,11 @@ and translateCoreType_ =
     let fieldsTranslations = tObj |> List.map(getFieldType);
     translateConstr(
       ~config,
-      ~path,
-      ~paramsTranslation=[],
-      ~typeEnv,
       ~fieldsTranslations,
+      ~closedFlag=closedFlag == Closed ? Closed : Open,
+      ~paramsTranslation=[],
+      ~path,
+      ~typeEnv,
     );
 
   | Ttyp_constr(path, _, typeParams) =>
@@ -192,10 +193,11 @@ and translateCoreType_ =
       typeParams |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
     TranslateTypeExprFromTypes.translateConstr(
       ~config,
-      ~path,
-      ~paramsTranslation,
-      ~typeEnv,
       ~fieldsTranslations=[],
+      ~closedFlag=Closed,
+      ~paramsTranslation,
+      ~path,
+      ~typeEnv,
     );
 
   | Ttyp_poly(_, t) =>

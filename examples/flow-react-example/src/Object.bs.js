@@ -9,9 +9,14 @@ function useProps(props) {
   return props.foo + 1 | 0;
 }
 
+function usePropsClosed(props) {
+  return props.fooClosed + 1 | 0;
+}
+
 export {
   foo ,
   useProps ,
+  usePropsClosed ,
   
 }
 /* No side effect */

@@ -59,8 +59,9 @@ let rec substitute = (~f, typ) =>
   | Ident(name, typeArguments) =>
     Ident(name, typeArguments |> List.map(substitute(~f)))
   | Nullable(typ) => Nullable(typ |> substitute(~f))
-  | Object(fields) =>
+  | Object(closedFlag, fields) =>
     Object(
+      closedFlag,
       fields
       |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
     )
@@ -96,7 +97,7 @@ let rec free_ = typ: StringSet.t =>
       typeVars |> StringSet.of_list,
     )
   | GroupOfLabeledArgs(fields)
-  | Object(fields)
+  | Object(_, fields)
   | Record(fields) =>
     fields
     |> List.fold_left(

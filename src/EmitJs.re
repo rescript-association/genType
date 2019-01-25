@@ -922,7 +922,7 @@ let propagateAnnotationToSubTypes =
         argTypes |> List.iter(visit);
         retType |> visit;
       | GroupOfLabeledArgs(fields)
-      | Object(fields)
+      | Object(_, fields)
       | Record(fields) => fields |> List.iter(({typ, _}) => typ |> visit)
       | Option(t)
       | Nullable(t) => t |> visit

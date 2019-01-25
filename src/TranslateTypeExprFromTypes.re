@@ -145,10 +145,11 @@ let rec removeOption = (~label, typeExpr: Types.type_expr) =>
 let translateConstr =
     (
       ~config,
-      ~path: Path.t,
-      ~paramsTranslation,
-      ~typeEnv,
       ~fieldsTranslations,
+      ~closedFlag,
+      ~paramsTranslation,
+      ~path: Path.t,
+      ~typeEnv,
     ) =>
   switch (path, paramsTranslation) {
   | (Pdot(Pident({name: "FB", _}), "bool", _), [])
@@ -261,7 +262,7 @@ let translateConstr =
              };
            {name, optional, mutable_, typ};
          });
-    let typ = Object(fields);
+    let typ = Object(closedFlag, fields);
     {dependencies, typ};
 
   | _ =>
@@ -420,26 +421,37 @@ and translateTypeExprFromTypes_ =
     ) =>
     let rec getFieldTypes = (texp: Types.type_expr) =>
       switch (texp.desc) {
-      | Tfield(name, _, t1, t2) => [
-          (
-            name,
-            name |> Runtime.isMutableObjectField ?
-              {dependencies: [], typ: Ident("", [])} :
-              t1
-              |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv),
-          ),
-          ...t2 |> getFieldTypes,
-        ]
+      | Tfield(name, _, t1, t2) =>
+        let (closedFlafg, fields) = t2 |> getFieldTypes;
+        (
+          closedFlafg,
+          [
+            (
+              name,
+              name |> Runtime.isMutableObjectField ?
+                {dependencies: [], typ: Ident("", [])} :
+                t1
+                |> translateTypeExprFromTypes_(
+                     ~config,
+                     ~typeVarsGen,
+                     ~typeEnv,
+                   ),
+            ),
+            ...fields,
+          ],
+        );
       | Tlink(te) => te |> getFieldTypes
-      | _ => []
+      | Tvar(None) => (Open, [])
+      | _ => (Closed, [])
       };
-    let fieldsTranslations = tObj |> getFieldTypes;
+    let (closedFlag, fieldsTranslations) = tObj |> getFieldTypes;
     translateConstr(
       ~config,
-      ~path,
-      ~paramsTranslation=[],
-      ~typeEnv,
       ~fieldsTranslations,
+      ~closedFlag,
+      ~paramsTranslation=[],
+      ~path,
+      ~typeEnv,
     );
 
   | Tconstr(path, [{desc: Tlink(te), _}], r) =>
@@ -457,10 +469,11 @@ and translateTypeExprFromTypes_ =
       |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
     translateConstr(
       ~config,
-      ~path,
-      ~paramsTranslation,
-      ~typeEnv,
       ~fieldsTranslations=[],
+      ~closedFlag=Closed,
+      ~paramsTranslation,
+      ~path,
+      ~typeEnv,
     );
 
   | Tpoly(t, []) =>

@@ -42,13 +42,17 @@ type case = {
   labelJS,
 };
 
+type closedFlag =
+  | Open
+  | Closed;
+
 type typ =
   | Array(typ, mutable_)
   | Function(function_)
   | GroupOfLabeledArgs(fields)
   | Ident(string, list(typ))
   | Nullable(typ)
-  | Object(fields)
+  | Object(closedFlag, fields)
   | Option(typ)
   | Record(fields)
   | Tuple(list(typ))
