@@ -193,6 +193,36 @@ let rec translateModuleBinding =
   | Tmod_functor(_) =>
     logNotImplemented("Tmod_functor " ++ __LOC__);
     Translation.empty;
+  | Tmod_constraint(_, Mty_ident(path), Tmodtype_explicit(_), Tcoerce_none) =>
+    switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
+    | None => Translation.empty
+    | Some(signature) =>
+      signature
+      |> TranslateSignature.translateSignature(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~fileName,
+           ~typeEnv,
+         )
+      |> Translation.combine
+    }
+
+  | Tmod_constraint(
+      _,
+      Mty_signature(signature),
+      Tmodtype_explicit(_),
+      Tcoerce_none,
+    ) =>
+    signature
+    |> TranslateSignatureFromTypes.translateSignatureFromTypes(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
+    |> Translation.combine
+
   | Tmod_constraint(_) =>
     logNotImplemented("Tmod_constraint " ++ __LOC__);
     Translation.empty;
