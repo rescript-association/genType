@@ -1,3 +1,6 @@
+# master
+- Support exporting types containing type variables at toplevel withoug making them opaque.
+
 # 2.6.0
 - Add support for translation of inferred object types (using ##) and open object type declarations.
 - Add support for open object types.

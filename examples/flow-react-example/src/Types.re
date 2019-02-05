@@ -109,3 +109,6 @@ type filter = {
   name: string,
   values: array(string),
 };
+
+[@genType]
+type twice('a) = ('a, 'a);

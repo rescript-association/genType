@@ -218,7 +218,7 @@ let typToConverterNormalized =
       let innerHasNone = normalizedList |> List.mem(None);
       (TupleC(innerConversions), innerHasNone ? None : normalized_);
 
-    | TypeVar(_) => (IdentC, None)
+    | TypeVar(_) => (IdentC, normalized_)
 
     | Variant(variant) =>
       let (withPayload, normalized, unboxed) =
