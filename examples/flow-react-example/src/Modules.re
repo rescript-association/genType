@@ -15,3 +15,8 @@ module M2: T2 with type t = int = {
 
 [@genType]
 type t2 = M2.t => int;
+
+module type MT = {let foo: int => int;};
+
+[@genType]
+type firstClassModule = (module MT);

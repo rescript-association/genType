@@ -272,10 +272,19 @@ and translateCoreType_ =
     | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
     }
 
+  | Ttyp_package({pack_path}) =>
+    switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path=pack_path)) {
+    | Some(signature) =>
+      let (dependencies, typ) =
+        signature.sig_type
+        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv);
+      {dependencies, typ};
+    | None => {dependencies: [], typ: mixedOrUnknown(~config)}
+    }
+
   | Ttyp_any
   | Ttyp_class(_)
-  | Ttyp_object(_)
-  | Ttyp_package(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
+  | Ttyp_object(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
   }
 and translateCoreTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
