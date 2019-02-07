@@ -4,8 +4,10 @@
     "module": "es6",
     "importPath": "relative",
     "shims": {
+      "React": "ReactShim",
+      "ReactEvent": "ReactEvent",
       "ReasonPervasives": "ReasonPervasives",
-      "ReactEvent": "ReactEvent"
+      "ReasonReact": "ReactShim"
     },
     "debug": {
       "all": false
