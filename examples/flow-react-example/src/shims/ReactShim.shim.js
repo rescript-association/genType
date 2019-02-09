@@ -9,7 +9,7 @@
 // external types. They may be replaced with a .flow.js interface file.
 
 // $FlowExpectedError: Reason checked type sufficiently.
-export opaque type reactElement = any;
+export type reactElement = React$Node;
 
 // $FlowExpectedError: Reason checked type sufficiently.
 export opaque type component = any;

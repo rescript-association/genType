@@ -8,6 +8,8 @@ import * as GreetingRe from "./Greeting.gen";
 // Import a ReasonReact component!
 import Greeting from "./Greeting.gen";
 
+import ComponentAsProp from "../components/ComponentAsProp.gen";
+
 import { InnerComponent } from "../components/ManyComponents.gen";
 
 import * as SomeFlowTypes from "../SomeFlowTypes";
@@ -84,6 +86,10 @@ const App = () => (
       polymorphicProp={[1, 2, 3]}
     />
     <InnerComponent />
+    <ComponentAsProp
+      title={<div>title</div>}
+      description={<div>description</div>}
+    />
   </div>
 );
 App.displayName = "ExampleInteropRoot";
