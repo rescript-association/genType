@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
-import { InnerComponent } from "./components/ManyComponents.gen";
 import ComponentAsProp from "./components/ComponentAsProp.gen";
+import { InnerComponent } from "./components/ManyComponents.gen";
 import * as ImportJsValue from "./ImportJsValue.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
