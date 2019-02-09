@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
 import { InnerComponent } from "./components/ManyComponents.gen";
+import ComponentAsProp from "./components/ComponentAsProp.gen";
 import * as ImportJsValue from "./ImportJsValue.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
@@ -69,6 +70,10 @@ ReactDOM.render(
       }}
     />
     <InnerComponent />
+    <ComponentAsProp
+      title={<div>title</div>}
+      description={<div>description</div>}
+    />
   </div>,
   document.getElementById("root") as HTMLElement
 );

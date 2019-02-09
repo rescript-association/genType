@@ -1,7 +1,6 @@
-// tslint:disable-next-line:max-classes-per-file
-export abstract class reactElement {
-  protected opaque: unknown
-}
+import { ReactNode } from "react";
+
+export type reactElement = ReactNode
 // tslint:disable-next-line:max-classes-per-file
 export abstract class component {
   protected opaque: unknown
