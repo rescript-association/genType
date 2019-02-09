@@ -83,6 +83,8 @@ export type Filter = filter;
 
 export type twice<a> = [a, a];
 
+export type gadt = "F";
+
 export const consumeOption: (?number) => number = function _(Arg1) {
   const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
   return result

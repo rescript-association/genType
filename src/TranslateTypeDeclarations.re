@@ -369,8 +369,7 @@ let translateTypeDeclaration =
     | Type_record(labelDeclarations, _) =>
       RecordDeclarationFromTypes(nameAs, labelDeclarations)
 
-    | Type_variant(constructorDeclarations)
-        when !hasSomeGADTLeaf(constructorDeclarations) =>
+    | Type_variant(constructorDeclarations) =>
       VariantDeclarationFromTypes(nameAs, constructorDeclarations)
 
     | Type_abstract => GeneralDeclaration(typ_attributes, typ_manifest)

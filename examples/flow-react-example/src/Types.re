@@ -112,3 +112,7 @@ type filter = {
 
 [@genType]
 type twice('a) = ('a, 'a);
+
+[@genType]
+type gadt =
+  | F: gadt;
