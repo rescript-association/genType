@@ -1,5 +1,5 @@
 # master
-- Allow mispelling "genType" as "gentype".
+- Allow misspelling "genType" as "gentype".
 
 # 2.7.0
 - Support exporting types containing type variables at toplevel withoug making them opaque.
