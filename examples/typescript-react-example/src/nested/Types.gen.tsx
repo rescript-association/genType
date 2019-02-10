@@ -36,6 +36,9 @@ export abstract class opaqueVariant { protected opaque!: any }; /* simulate opaq
 // tslint:disable-next-line:interface-over-type-literal
 export type twice<a> = [a, a];
 
+// tslint:disable-next-line:interface-over-type-literal
+export type genTypeMispelled = number;
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = TypesBS.map;

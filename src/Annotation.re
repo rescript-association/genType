@@ -25,12 +25,12 @@ let toString = annotation =>
   | NoGenType => "NoGenType"
   };
 
-let tagIsGenType = s => s == "genType";
-let tagIsGenTypeAs = s => s == "genType.as";
+let tagIsGenType = s => s == "genType" || s == "gentype";
+let tagIsGenTypeAs = s => s == "genType.as" || s == "gentype.as";
 
-let tagIsGenTypeImport = s => s == "genType.import";
+let tagIsGenTypeImport = s => s == "genType.import" || s == "gentype.import";
 
-let tagIsGenTypeOpaque = s => s == "genType.opaque";
+let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "gentype.opaque";
 
 let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
   let rec fromExpr = (expr: Parsetree.expression) =>

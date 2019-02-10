@@ -1,3 +1,6 @@
+# master
+- Allow mispelling "genType" as "gentype".
+
 # 2.7.0
 - Support exporting types containing type variables at toplevel withoug making them opaque.
 - Support exporting types defined in modules with type constraints.
