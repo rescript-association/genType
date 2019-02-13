@@ -44,10 +44,14 @@ const businesses = [
 
 const addresses = Records.findAllAddresses(businesses);
 
-import { roundedNumber } from "./ImportJsValue.gen";
-consoleLog("index.tsx roundedNumber:", roundedNumber);
-import { areaValue } from "./ImportJsValue.gen";
-consoleLog("index.tsx areaValue:", areaValue);
+consoleLog("index.tsx roundedNumber:", ImportJsValue.roundedNumber);
+consoleLog("index.tsx areaValue:", ImportJsValue.areaValue);
+
+consoleLog("index.tsx callback:", ImportJsValue.callback(() => 3));
+consoleLog(
+  "index.tsx callback2:",
+  ImportJsValue.callback2({ login: () => "hello" })
+);
 
 ReactDOM.render(
   <div>

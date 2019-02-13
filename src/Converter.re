@@ -14,6 +14,7 @@ type t =
 and groupedArgConverter =
   | ArgConverter(t)
   | GroupConverter(list((string, optional, t)))
+  | UnitConverter
 and fieldsC = list((string, t))
 and variantC = {
   noPayloads: list(case),
@@ -50,6 +51,7 @@ let rec toString = converter =>
                |> String.concat(", ")
              )
              ++ "|}"
+           | UnitConverter => "unit"
            }
          )
       |> String.concat(", ")
@@ -264,7 +266,9 @@ let typToConverterNormalized =
              (name, optional, typ |> visit(~visited) |> fst)
            ),
       )
-    | _ => ArgConverter(typ |> visit(~visited) |> fst)
+    | _ =>
+      typ == unitT ?
+        UnitConverter : ArgConverter(typ |> visit(~visited) |> fst)
     };
 
   let (converter, normalized) = typ |> visit(~visited=StringSet.empty);
@@ -313,6 +317,7 @@ let rec converterIsIdentity = (~toJS, converter) =>
          | ArgConverter(argConverter) =>
            argConverter |> converterIsIdentity(~toJS=!toJS)
          | GroupConverter(_) => false
+         | UnitConverter => toJS
          }
        )
 
@@ -492,6 +497,9 @@ let rec apply =
               |> String.concat(", ");
             (varNames |> String.concat(", "), "{" ++ fieldValues ++ "}");
           };
+        | UnitConverter =>
+          let varName = i + 1 |> EmitText.argi(~nameGen);
+          (varName |> EmitTyp.ofTypeAnyTS(~config), varName);
         };
       groupedArgConverters |> List.mapi(convertArg);
     };
