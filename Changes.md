@@ -1,5 +1,6 @@
 # master
 - Allow misspelling "genType" as "gentype".
+- Auto uncurry functions of type unit => ...
 
 # 2.7.0
 - Support exporting types containing type variables at toplevel withoug making them opaque.

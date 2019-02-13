@@ -51,3 +51,11 @@ type color = [ | `tomato | `gray];
 
 [@genType.import "./MyMath"] [@bs.module "./ImportJsValue.gen"]
 external useColor: color => int = "";
+
+[@genType]
+let callback = cb => cb() |> string_of_int;
+
+type auth = {login: unit => string};
+
+[@genType]
+let callback2 = auth => auth.login();
