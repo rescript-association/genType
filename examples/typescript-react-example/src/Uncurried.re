@@ -21,3 +21,11 @@ type auth = {login: unit => string};
 
 [@genType]
 let callback2 = auth => auth.login();
+
+[@genType]
+let sumCurried = n => {
+  Js.log2("sum 1st arg", n);
+  m => {
+    Js.log4("sum 2nd arg", m, "result", n + m);
+  };
+};

@@ -53,6 +53,7 @@ consoleLog(
   "index.tsx callback2:",
   Uncurried.callback2({ login: () => "hello" })
 );
+Uncurried.sumCurried(3, 4);
 
 ReactDOM.render(
   <div>
