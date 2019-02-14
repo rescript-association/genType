@@ -13,3 +13,11 @@ let uncurried3 =
 
 [@genType]
 let curried3 = (x, y, z) => (x |> string_of_int) ++ y ++ (z |> string_of_int);
+
+[@genType]
+let callback = cb => cb() |> string_of_int;
+
+type auth = {login: unit => string};
+
+[@genType]
+let callback2 = auth => auth.login();

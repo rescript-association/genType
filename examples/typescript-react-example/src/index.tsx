@@ -4,6 +4,7 @@ import App from "./App";
 import ComponentAsProp from "./components/ComponentAsProp.gen";
 import { InnerComponent } from "./components/ManyComponents.gen";
 import * as ImportJsValue from "./ImportJsValue.gen";
+import * as Uncurried from "./Uncurried.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
 import * as Types from "./nested/Types.gen";
@@ -47,10 +48,10 @@ const addresses = Records.findAllAddresses(businesses);
 consoleLog("index.tsx roundedNumber:", ImportJsValue.roundedNumber);
 consoleLog("index.tsx areaValue:", ImportJsValue.areaValue);
 
-consoleLog("index.tsx callback:", ImportJsValue.callback(() => 3));
+consoleLog("index.tsx callback:", Uncurried.callback(() => 3));
 consoleLog(
   "index.tsx callback2:",
-  ImportJsValue.callback2({ login: () => "hello" })
+  Uncurried.callback2({ login: () => "hello" })
 );
 
 ReactDOM.render(
