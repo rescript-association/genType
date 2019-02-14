@@ -70,7 +70,7 @@ let rec renderTyp =
       ++ ">";
     };
 
-  | Function({typeVars, argTypes, retType}) =>
+  | Function({argTypes, retType, typeVars}) =>
     renderFunType(
       ~config,
       ~indent,

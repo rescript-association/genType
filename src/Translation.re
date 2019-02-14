@@ -37,7 +37,7 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   switch (typ) {
   | Array(_) => typ
   | Function({argTypes, retType, _}) =>
-    Function({typeVars, argTypes, retType})
+    Function({argTypes, retType, typeVars})
   | GroupOfLabeledArgs(_)
   | Ident(_)
   | Nullable(_)
