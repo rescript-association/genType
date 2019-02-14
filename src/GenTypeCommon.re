@@ -67,8 +67,8 @@ and field = {
 }
 and function_ = {
   argTypes: list(typ),
-  typeVars: list(string),
   retType: typ,
+  typeVars: list(string),
 }
 and variant = {
   noPayloads: list(case),
