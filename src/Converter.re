@@ -313,7 +313,7 @@ let rec converterIsIdentity = (~toJS, converter) =>
 
   | CircularC(_, c) => c |> converterIsIdentity(~toJS)
 
-  | FunctionC({argConverters, retConverter}) =>
+  | FunctionC({argConverters, retConverter, uncurried}) =>
     retConverter
     |> converterIsIdentity(~toJS)
     && argConverters
@@ -322,7 +322,7 @@ let rec converterIsIdentity = (~toJS, converter) =>
          | ArgConverter(argConverter) =>
            argConverter |> converterIsIdentity(~toJS=!toJS)
          | GroupConverter(_) => false
-         | UnitConverter => toJS
+         | UnitConverter => uncurried || toJS
          }
        )
 

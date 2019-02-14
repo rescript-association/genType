@@ -30,6 +30,10 @@ function callback2(auth) {
   return Curry._1(auth[/* login */0], /* () */0);
 }
 
+function callback2U(auth) {
+  return auth[/* loginU */0]();
+}
+
 function sumCurried(n) {
   console.log("sum 1st arg", n);
   return (function (m) {
@@ -46,6 +50,7 @@ export {
   curried3 ,
   callback ,
   callback2 ,
+  callback2U ,
   sumCurried ,
   
 }

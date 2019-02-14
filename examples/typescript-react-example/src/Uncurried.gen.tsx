@@ -6,6 +6,9 @@ const UncurriedBS = require('./Uncurried.bs');
 // tslint:disable-next-line:interface-over-type-literal
 export type auth = { readonly login: (_1:void) => string };
 
+// tslint:disable-next-line:interface-over-type-literal
+export type authU = { readonly loginU: () => string };
+
 export const uncurried0: () => string = UncurriedBS.uncurried0;
 
 export const uncurried1: (_1:number) => string = UncurriedBS.uncurried1;
@@ -29,6 +32,11 @@ export const callback2: (_1:auth) => string = function _(Arg1: any) {
       const result1 = Arg1.login(Arg11);
       return result1
     }]);
+  return result
+};
+
+export const callback2U: (_1:authU) => string = function _(Arg1: any) {
+  const result = UncurriedBS.callback2U([Arg1.loginU]);
   return result
 };
 
