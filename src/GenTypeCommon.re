@@ -69,6 +69,7 @@ and function_ = {
   argTypes: list(typ),
   retType: typ,
   typeVars: list(string),
+  uncurried: bool,
 }
 and variant = {
   noPayloads: list(case),
