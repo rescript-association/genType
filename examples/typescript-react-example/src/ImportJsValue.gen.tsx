@@ -51,9 +51,6 @@ export type stringFunction = stringFunction;
 // tslint:disable-next-line:interface-over-type-literal
 export type color = "tomato" | "gray";
 
-// tslint:disable-next-line:interface-over-type-literal
-export type auth = { readonly login: (_1:void) => string };
-
 export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 
 export const areaValue: number = ImportJsValueBS.areaValue;
@@ -61,19 +58,3 @@ export const areaValue: number = ImportJsValueBS.areaValue;
 export const useGetProp: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGetProp;
 
 export const useGetAbs: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGetAbs;
-
-export const callback: (_1:((_1:void) => number)) => string = function _(Arg1: any) {
-  const result = ImportJsValueBS.callback(function _(Arg11: any) {
-      const result1 = Arg1(Arg11);
-      return result1
-    });
-  return result
-};
-
-export const callback2: (_1:auth) => string = function _(Arg1: any) {
-  const result = ImportJsValueBS.callback2([function _(Arg11: any) {
-      const result1 = Arg1.login(Arg11);
-      return result1
-    }]);
-  return result
-};
