@@ -214,7 +214,13 @@ let translateConstr =
       [{dependencies: argsDependencies, typ: Tuple(ts)}, ret],
     ) => {
       dependencies: argsDependencies @ ret.dependencies,
-      typ: Function({argTypes: ts, retType: ret.typ, typeVars: []}),
+      typ:
+        Function({
+          argTypes: ts,
+          retType: ret.typ,
+          typeVars: [],
+          uncurried: true,
+        }),
     }
   | (
       Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
@@ -227,14 +233,26 @@ let translateConstr =
       ],
     ) => {
       dependencies: argsDependencies @ ret.dependencies,
-      typ: Function({argTypes: [], retType: ret.typ, typeVars: []}),
+      typ:
+        Function({
+          argTypes: [],
+          retType: ret.typ,
+          typeVars: [],
+          uncurried: true,
+        }),
     }
   | (
       Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
       [{dependencies: argsDependencies, typ: singleT}, ret],
     ) => {
       dependencies: argsDependencies @ ret.dependencies,
-      typ: Function({argTypes: [singleT], retType: ret.typ, typeVars: []}),
+      typ:
+        Function({
+          argTypes: [singleT],
+          retType: ret.typ,
+          typeVars: [],
+          uncurried: true,
+        }),
     }
   | (Pdot(Pident({name: "Js", _}), "t", _), _) =>
     let dependencies =
@@ -394,7 +412,8 @@ let rec translateArrowType =
     let labeledConvertableTypes = revArgs |> List.rev;
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
-    let functionType = Function({argTypes, retType, typeVars: []});
+    let functionType =
+      Function({argTypes, retType, typeVars: [], uncurried: false});
 
     {dependencies: allDeps, typ: functionType};
   }

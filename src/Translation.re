@@ -36,8 +36,8 @@ let combine = (translations: list(t)): t =>
 let abstractTheTypeParameters = (~typeVars, typ) =>
   switch (typ) {
   | Array(_) => typ
-  | Function({argTypes, retType, _}) =>
-    Function({argTypes, retType, typeVars})
+  | Function({argTypes, retType, uncurried, _}) =>
+    Function({argTypes, retType, typeVars, uncurried})
   | GroupOfLabeledArgs(_)
   | Ident(_)
   | Nullable(_)
