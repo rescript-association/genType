@@ -226,7 +226,7 @@ let traslateDeclarationKind =
              | Option(typ1) => (Optional, typ1)
              | _ => (Mandatory, typ)
              };
-           {name, optional, mutable_, typ: typ1};
+           {mutable_, name, optional, typ: typ1};
          });
     let optTyp = Some(Record(fields));
     let typeVars = TypeVars.extract(typeParams);

@@ -60,9 +60,9 @@ type typ =
   | Variant(variant)
 and fields = list(field)
 and field = {
+  mutable_,
   name: string,
   optional,
-  mutable_,
   typ,
 }
 and function_ = {
