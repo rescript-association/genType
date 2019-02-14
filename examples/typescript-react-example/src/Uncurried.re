@@ -18,9 +18,13 @@ let curried3 = (x, y, z) => (x |> string_of_int) ++ y ++ (z |> string_of_int);
 let callback = cb => cb() |> string_of_int;
 
 type auth = {login: unit => string};
+type authU = {loginU: (. unit) => string};
 
 [@genType]
 let callback2 = auth => auth.login();
+
+[@genType]
+let callback2U = auth => auth.loginU(.);
 
 [@genType]
 let sumCurried = n => {
