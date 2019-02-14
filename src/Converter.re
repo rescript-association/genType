@@ -3,7 +3,7 @@ open GenTypeCommon;
 type t =
   | ArrayC(t)
   | CircularC(string, t)
-  | FunctionC(list(groupedArgConverter), t)
+  | FunctionC(functionC)
   | IdentC
   | NullableC(t)
   | ObjectC(fieldsC)
@@ -16,6 +16,10 @@ and groupedArgConverter =
   | GroupConverter(list((string, optional, t)))
   | UnitConverter
 and fieldsC = list((string, t))
+and functionC = {
+  argConverters: list(groupedArgConverter),
+  retConverter: t,
+}
 and variantC = {
   noPayloads: list(case),
   withPayload: list((case, int, t)),
@@ -31,10 +35,10 @@ let rec toString = converter =>
 
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
 
-  | FunctionC(groupedArgConverters, c) =>
+  | FunctionC({argConverters, retConverter}) =>
     "fn("
     ++ (
-      groupedArgConverters
+      argConverters
       |> List.map(groupedArgConverter =>
            switch (groupedArgConverter) {
            | ArgConverter(conv) => "(" ++ "_" ++ ":" ++ toString(conv) ++ ")"
@@ -57,7 +61,7 @@ let rec toString = converter =>
       |> String.concat(", ")
     )
     ++ " -> "
-    ++ toString(c)
+    ++ toString(retConverter)
     ++ ")"
 
   | IdentC => "id"
@@ -136,7 +140,7 @@ let typToConverterNormalized =
       let argConverters =
         argTypes |> List.map(typToGroupedArgConverter(~visited));
       let (retConverter, _) = retType |> visit(~visited);
-      (FunctionC(argConverters, retConverter), normalized_);
+      (FunctionC({argConverters, retConverter}), normalized_);
 
     | GroupOfLabeledArgs(_) => (IdentC, None)
 
@@ -308,10 +312,10 @@ let rec converterIsIdentity = (~toJS, converter) =>
 
   | CircularC(_, c) => c |> converterIsIdentity(~toJS)
 
-  | FunctionC(groupedArgConverters, resultConverter) =>
-    resultConverter
+  | FunctionC({argConverters, retConverter}) =>
+    retConverter
     |> converterIsIdentity(~toJS)
-    && groupedArgConverters
+    && argConverters
     |> List.for_all(groupedArgConverter =>
          switch (groupedArgConverter) {
          | ArgConverter(argConverter) =>
@@ -398,7 +402,7 @@ let rec apply =
          ~variantTables,
        )
 
-  | FunctionC(groupedArgConverters, resultConverter) =>
+  | FunctionC({argConverters, retConverter}) =>
     let resultName = EmitText.resultName(~nameGen);
     let mkReturn = (~indent, x) => {
       let indent1 = indent |> Indent.more;
@@ -413,7 +417,7 @@ let rec apply =
         resultName
         |> apply(
              ~config,
-             ~converter=resultConverter,
+             ~converter=retConverter,
              ~indent=indent1,
              ~nameGen,
              ~toJS,
@@ -501,7 +505,7 @@ let rec apply =
           let varName = i + 1 |> EmitText.argi(~nameGen);
           (varName |> EmitTyp.ofTypeAnyTS(~config), varName);
         };
-      groupedArgConverters |> List.mapi(convertArg);
+      argConverters |> List.mapi(convertArg);
     };
     let mkBody = (~indent, args) =>
       value |> EmitText.funCall(~args) |> mkReturn(~indent);
