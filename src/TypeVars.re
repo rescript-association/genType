@@ -91,7 +91,7 @@ let rec substitute = (~f, typ) =>
 let rec free_ = typ: StringSet.t =>
   switch (typ) {
   | Array(typ, _) => typ |> free_
-  | Function({typeVars, argTypes, retType}) =>
+  | Function({argTypes, retType, typeVars}) =>
     StringSet.diff(
       (argTypes |> freeOfList_) +++ (retType |> free_),
       typeVars |> StringSet.of_list,

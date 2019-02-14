@@ -138,7 +138,7 @@ let rec translateArrowType =
     let labeledConvertableTypes = revArgs |> List.rev;
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
-    let functionType = Function({typeVars: [], argTypes, retType});
+    let functionType = Function({argTypes, retType, typeVars: []});
 
     {dependencies: allDeps, typ: functionType};
   }

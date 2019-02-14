@@ -66,8 +66,8 @@ and field = {
   typ,
 }
 and function_ = {
-  typeVars: list(string),
   argTypes: list(typ),
+  typeVars: list(string),
   retType: typ,
 }
 and variant = {
