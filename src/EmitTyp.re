@@ -74,8 +74,8 @@ let rec renderTyp =
     renderFunType(
       ~config,
       ~indent,
-      ~typeNameIsInterface,
       ~inFunType,
+      ~typeNameIsInterface,
       ~typeVars,
       argTypes,
       retType,
@@ -233,8 +233,8 @@ and renderFunType =
     (
       ~config,
       ~indent,
-      ~typeNameIsInterface,
       ~inFunType,
+      ~typeNameIsInterface,
       ~typeVars,
       argTypes,
       retType,
