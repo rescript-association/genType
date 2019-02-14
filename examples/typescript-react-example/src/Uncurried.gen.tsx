@@ -31,3 +31,5 @@ export const callback2: (_1:auth) => string = function _(Arg1: any) {
     }]);
   return result
 };
+
+export const sumCurried: (_1:number, _2:number) => void = UncurriedBS.sumCurried;
