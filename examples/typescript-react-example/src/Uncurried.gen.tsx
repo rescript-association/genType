@@ -41,3 +41,8 @@ export const callback2U: (_1:authU) => string = function _(Arg1: any) {
 };
 
 export const sumCurried: (_1:number, _2:number) => void = UncurriedBS.sumCurried;
+
+export const sumLblCurried: (_1:string, _2:{ readonly n: number; readonly m: number }) => void = function _(Arg1: any, Arg2: any) {
+  const result = UncurriedBS.sumLblCurried(Arg1, Arg2.n, Arg2.m);
+  return result
+};

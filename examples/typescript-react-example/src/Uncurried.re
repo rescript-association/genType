@@ -28,8 +28,16 @@ let callback2U = auth => auth.loginU(.);
 
 [@genType]
 let sumCurried = n => {
-  Js.log2("sum 1st arg", n);
+  Js.log2("sumCurried 1st arg", n);
   m => {
-    Js.log4("sum 2nd arg", m, "result", n + m);
+    Js.log4("sumCurried 2nd arg", m, "result", n + m);
+  };
+};
+
+[@genType]
+let sumLblCurried = (s: string, ~n) => {
+  Js.log3(s, "sumLblCurried 1st arg", n);
+  (~m) => {
+    Js.log4("sumLblCurried 2nd arg", m, "result", n + m);
   };
 };

@@ -35,9 +35,17 @@ function callback2U(auth) {
 }
 
 function sumCurried(n) {
-  console.log("sum 1st arg", n);
+  console.log("sumCurried 1st arg", n);
   return (function (m) {
-      console.log("sum 2nd arg", m, "result", n + m | 0);
+      console.log("sumCurried 2nd arg", m, "result", n + m | 0);
+      return /* () */0;
+    });
+}
+
+function sumLblCurried(s, n) {
+  console.log(s, "sumLblCurried 1st arg", n);
+  return (function (m) {
+      console.log("sumLblCurried 2nd arg", m, "result", n + m | 0);
       return /* () */0;
     });
 }
@@ -52,6 +60,7 @@ export {
   callback2 ,
   callback2U ,
   sumCurried ,
+  sumLblCurried ,
   
 }
 /* No side effect */

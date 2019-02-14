@@ -58,6 +58,7 @@ consoleLog(
   Uncurried.callback2U({ loginU: () => "hello" })
 );
 Uncurried.sumCurried(3, 4);
+Uncurried.sumLblCurried("hello", { n: 3, m: 4 });
 
 ReactDOM.render(
   <div>
