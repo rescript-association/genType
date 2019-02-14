@@ -239,9 +239,9 @@ let translateComponent =
       | [] =>
         GroupOfLabeledArgs([
           {
+            mutable_: Immutable,
             name: "children",
             optional: Optional,
-            mutable_: Immutable,
             typ: mixedOrUnknown(~config),
           },
         ])
@@ -253,9 +253,9 @@ let translateComponent =
             fields
             @ [
               {
+                mutable_: Immutable,
                 name: "children",
                 optional: Optional,
-                mutable_: Immutable,
                 typ: childrenTyp,
               },
             ],

@@ -260,7 +260,7 @@ let translateConstr =
              | Option(typ) => (Optional, typ)
              | _ => (Mandatory, typ_)
              };
-           {name, optional, mutable_, typ};
+           {mutable_, name, optional, typ};
          });
     let typ = Object(closedFlag, fields);
     {dependencies, typ};
@@ -608,9 +608,9 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
                   ~typeEnv,
                 );
            let field = {
+             mutable_: Immutable,
              name: id |> Ident.name,
              optional: Mandatory,
-             mutable_: Immutable,
              typ,
            };
            (dependencies, [field]);
@@ -626,9 +626,9 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
              | Mty_alias(_) => ([], mixedOrUnknown(~config))
              };
            let field = {
+             mutable_: Immutable,
              name: id |> Ident.name,
              optional: Mandatory,
-             mutable_: Immutable,
              typ,
            };
            (dependencies, [field]);

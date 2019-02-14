@@ -148,9 +148,9 @@ let rec renderTyp =
     let noPayloadsRendered =
       noPayloads |> List.map(case => case.labelJS |> labelJSToString);
     let field = (~name, value) => {
+      mutable_: Mutable,
       name,
       optional: Mandatory,
-      mutable_: Mutable,
       typ: TypeVar(value),
     };
     let fields = fields =>
@@ -191,7 +191,7 @@ and renderField =
       ~indent,
       ~typeNameIsInterface,
       ~inFunType,
-      {name: lbl, optional, mutable_, typ},
+      {mutable_, name: lbl, optional, typ},
     ) => {
   let optMarker = optional === Optional ? "?" : "";
   let mutMarker =
