@@ -19,6 +19,7 @@ and fieldsC = list((string, t))
 and functionC = {
   argConverters: list(groupedArgConverter),
   retConverter: t,
+  uncurried: bool,
 }
 and variantC = {
   noPayloads: list(case),
@@ -136,11 +137,11 @@ let typToConverterNormalized =
       let (tConverter, tNormalized) = t |> visit(~visited);
       (ArrayC(tConverter), tNormalized == None ? None : normalized_);
 
-    | Function({argTypes, retType, _}) =>
+    | Function({argTypes, retType, uncurried, _}) =>
       let argConverters =
         argTypes |> List.map(typToGroupedArgConverter(~visited));
       let (retConverter, _) = retType |> visit(~visited);
-      (FunctionC({argConverters, retConverter}), normalized_);
+      (FunctionC({argConverters, retConverter, uncurried}), normalized_);
 
     | GroupOfLabeledArgs(_) => (IdentC, None)
 
