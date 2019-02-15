@@ -192,15 +192,16 @@ let emitExportFromTypeDeclarations =
 let rec emitCodeItem =
         (
           ~config,
-          ~outputFileRelative,
-          ~resolver,
           ~emitters,
           ~env,
-          ~variantTables,
+          ~importCurry,
+          ~outputFileRelative,
+          ~resolver,
           ~typGetNormalized,
-          ~typToConverter,
           ~typeNameIsInterface,
+          ~typToConverter,
           ~useCreateBucklescriptBlock,
+          ~variantTables,
           codeItem,
         ) => {
   let language = config.language;
@@ -342,6 +343,7 @@ let rec emitCodeItem =
                                  propTyp : Option(propTyp)
                              )
                              |> typToConverter,
+                           ~importCurry,
                            ~indent,
                            ~nameGen,
                            ~useCreateBucklescriptBlock,
@@ -356,6 +358,7 @@ let rec emitCodeItem =
              |> Converter.toJS(
                   ~config,
                   ~converter=childrenTyp |> typToConverter,
+                  ~importCurry,
                   ~indent,
                   ~nameGen,
                   ~useCreateBucklescriptBlock,
@@ -451,6 +454,7 @@ let rec emitCodeItem =
         |> Converter.toReason(
              ~config,
              ~converter,
+             ~importCurry,
              ~indent,
              ~nameGen,
              ~useCreateBucklescriptBlock,
@@ -520,6 +524,7 @@ let rec emitCodeItem =
                              |> Converter.converterIsIdentity(~toJS=false)
                            ) ?
                           OptionC(argConverter) : argConverter,
+                      ~importCurry,
                       ~indent,
                       ~nameGen,
                       ~useCreateBucklescriptBlock,
@@ -532,6 +537,7 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
+                 ~importCurry,
                  ~indent,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
@@ -544,6 +550,7 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
+                 ~importCurry,
                  ~indent,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
@@ -565,18 +572,6 @@ let rec emitCodeItem =
         ~typeNameIsInterface,
         exportType,
       );
-
-    let numArgs = args |> List.length;
-    let useCurry = numArgs >= 2;
-
-    let emitCurry = (~args, name) =>
-      switch (numArgs) {
-      | 0
-      | 1 => name ++ EmitText.parens(args)
-      | (2 | 3 | 4 | 5 | 6 | 7 | 8) as n =>
-        "Curry._" ++ (n |> string_of_int) ++ EmitText.parens([name] @ args)
-      | _ => "Curry.app" ++ EmitText.parens([name, args |> EmitText.array])
-      };
 
     let emitters =
       EmitTyp.emitExportConstMany(
@@ -605,7 +600,7 @@ let rec emitCodeItem =
             ModuleName.toString(moduleNameBs)
             ++ "."
             ++ valueAccessPath
-            |> emitCurry(~args)
+            |> EmitText.curry(~args, ~numArgs=args |> List.length)
           )
           ++ ";",
           "  }));",
@@ -627,16 +622,9 @@ let rec emitCodeItem =
            ~importPath=ImportPath.reasonReactPath(~config),
          );
 
-    let env =
-      useCurry ?
-        ModuleName.curry
-        |> requireModule(
-             ~import=false,
-             ~env,
-             ~importPath=ImportPath.bsCurryPath(~config),
-           ) :
-        env;
-
+    let numArgs = args |> List.length;
+    let useCurry = numArgs >= 2;
+    importCurry := importCurry^ || useCurry;
     (env, emitters);
 
   | ExportValue({fileName, resolvedName, typ, valueAccessPath}) =>
@@ -662,6 +650,7 @@ let rec emitCodeItem =
         |> Converter.toJS(
              ~config,
              ~converter,
+             ~importCurry,
              ~indent,
              ~nameGen,
              ~useCreateBucklescriptBlock,
@@ -684,14 +673,15 @@ and emitCodeItems =
     (
       ~config,
       ~outputFileRelative,
-      ~resolver,
       ~emitters,
       ~env,
-      ~variantTables,
+      ~importCurry,
+      ~resolver,
+      ~typeNameIsInterface,
       ~typGetNormalized,
       ~typToConverter,
-      ~typeNameIsInterface,
       ~useCreateBucklescriptBlock,
+      ~variantTables,
       codeItems,
     ) =>
   codeItems
@@ -699,15 +689,16 @@ and emitCodeItems =
        ((env, emitters)) =>
          emitCodeItem(
            ~config,
-           ~outputFileRelative,
-           ~resolver,
            ~emitters,
            ~env,
-           ~variantTables,
+           ~importCurry,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeNameIsInterface,
            ~typGetNormalized,
            ~typToConverter,
-           ~typeNameIsInterface,
            ~useCreateBucklescriptBlock,
+           ~variantTables,
          ),
        (env, emitters),
      );
@@ -1044,20 +1035,31 @@ let emitTranslationAsString =
          ~typeNameIsInterface=typeNameIsInterface(~env),
        );
 
+  let importCurry = ref(false);
   let (env, emitters) =
     translation.codeItems
     |> emitCodeItems(
          ~config,
-         ~outputFileRelative,
-         ~resolver,
          ~emitters,
          ~env,
-         ~variantTables,
+         ~importCurry,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeNameIsInterface=typeNameIsInterface(~env),
          ~typGetNormalized=typGetNormalized_(~env),
          ~typToConverter=typToConverter_(~env),
-         ~typeNameIsInterface=typeNameIsInterface(~env),
          ~useCreateBucklescriptBlock,
+         ~variantTables,
        );
+  let env =
+    importCurry^ ?
+      ModuleName.curry
+      |> requireModule(
+           ~import=false,
+           ~env,
+           ~importPath=ImportPath.bsCurryPath(~config),
+         ) :
+      env;
 
   let finalEnv =
     useCreateBucklescriptBlock^ ?

@@ -1,6 +1,7 @@
 # master
 - Allow misspelling "genType" as "gentype".
 - Auto uncurry functions of type unit => ...
+- Wrap functions exported to JS with Curry._n (arity n) unless the functions have uncurried type.
 
 # 2.7.0
 - Support exporting types containing type variables at toplevel withoug making them opaque.

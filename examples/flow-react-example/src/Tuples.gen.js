@@ -6,6 +6,9 @@
 /* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
+import * as Curry from 'bs-platform/lib/es6/curry.js';
+
+// $FlowExpectedError: Reason checked type sufficiently
 import * as TuplesBS from './Tuples.bs';
 
 export type coord = [number, number, ?number];
@@ -32,7 +35,10 @@ export const computeAreaWithIdent: (coord) => number = function _(Arg1) {
 
 export const computeAreaNoConverters: ([number, number]) => number = TuplesBS.computeAreaNoConverters;
 
-export const coord2d: <T1,T2,T3>(T1, T2) => [T1, T2, ?T3] = TuplesBS.coord2d;
+export const coord2d: <T1,T2,T3>(T1, T2) => [T1, T2, ?T3] = function _(Arg1, Arg2) {
+  const result = Curry._2(TuplesBS.coord2d, Arg1, Arg2);
+  return result
+};
 
 export const getFirstName: (couple) => string = function _(Arg1) {
   const result = TuplesBS.getFirstName([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]);
@@ -40,7 +46,7 @@ export const getFirstName: (couple) => string = function _(Arg1) {
 };
 
 export const marry: (person, person) => couple = function _(Arg1, Arg2) {
-  const result = TuplesBS.marry([Arg1.name, Arg1.age], [Arg2.name, Arg2.age]);
+  const result = Curry._2(TuplesBS.marry, [Arg1.name, Arg1.age], [Arg2.name, Arg2.age]);
   return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}]
 };
 

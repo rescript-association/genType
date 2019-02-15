@@ -18,6 +18,9 @@ export const foo: mixed = fooTypeChecked;
 const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 
 // $FlowExpectedError: Reason checked type sufficiently
+const Curry = require('bs-platform/lib/es6/curry.js');
+
+// $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
 
 // flowlint-next-line nonstrict-import:off
@@ -105,7 +108,7 @@ export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesB
 export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
 
 export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) {
-  const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2);
+  const result = Curry._2(TypesBS.testFunctionOnOptionsAsArgument, (Arg1 == null ? undefined : Arg1), Arg2);
   return result
 };
 
