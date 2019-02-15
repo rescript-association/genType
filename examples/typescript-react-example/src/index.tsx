@@ -57,6 +57,8 @@ consoleLog(
   "index.tsx callback2U:",
   Uncurried.callback2U({ loginU: () => "hello" })
 );
+Uncurried.sumU(3, 4);
+Uncurried.sumU2(3)(4);
 Uncurried.sumCurried(3, 4);
 Uncurried.sumLblCurried("hello", { n: 3, m: 4 });
 

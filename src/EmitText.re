@@ -22,8 +22,20 @@ let brackets = x => "{ " ++ x ++ " }";
 
 let comment = x => "/* " ++ x ++ " */";
 
-let funCall = (~args, name) =>
-  name ++ "(" ++ (args |> String.concat(", ")) ++ ")";
+let curry = (~args, ~numArgs, name) =>
+  switch (numArgs) {
+  | 0
+  | 1 => name ++ parens(args)
+  | (2 | 3 | 4 | 5 | 6 | 7 | 8) as n =>
+    "Curry._" ++ (n |> string_of_int) ++ parens([name] @ args)
+  | _ => "Curry.app" ++ parens([name, args |> array])
+  };
+
+let funCall = (~args, ~curryNumArgs=None, name) =>
+  switch (curryNumArgs) {
+  | Some(numArgs) => name |> curry(~args, ~numArgs)
+  | None => name ++ parens(args)
+  };
 
 let funDef = (~args, ~indent, ~mkBody, functionName) => {
   let indent1 = indent |> Indent.more;

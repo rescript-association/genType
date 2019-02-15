@@ -21,7 +21,7 @@ export const functionWithGenTypeAs: ({|
   +type: string, 
   +$$number: number
 |}) => string = function _(Arg1) {
-  const result = RenamePropsBS.functionWithGenTypeAs(Arg1.firstNameArgumentCantBeRenamed, Arg1.type, Arg1.$$number);
+  const result = Curry._3(RenamePropsBS.functionWithGenTypeAs, Arg1.firstNameArgumentCantBeRenamed, Arg1.type, Arg1.$$number);
   return result
 };
 
@@ -46,17 +46,17 @@ export const firstIsIgnored: ({| +x: number |}) => number = function _(Arg1) {
 };
 
 export const padding1: (number, {| +xRenamed: number |}) => number = function _(Arg1, Arg2) {
-  const result = RenamePropsBS.padding1(Arg1, Arg2.xRenamed);
+  const result = Curry._2(RenamePropsBS.padding1, Arg1, Arg2.xRenamed);
   return result
 };
 
 export const padding2: ({| +pad: number, +xRenamed: number |}) => number = function _(Arg1) {
-  const result = RenamePropsBS.padding2(Arg1.pad, Arg1.xRenamed);
+  const result = Curry._2(RenamePropsBS.padding2, Arg1.pad, Arg1.xRenamed);
   return result
 };
 
 export const padding3: (number, number, {| +xRenamed: number |}) => number = function _(Arg1, Arg2, Arg3) {
-  const result = RenamePropsBS.padding3(Arg1, Arg2, Arg3.xRenamed);
+  const result = Curry._3(RenamePropsBS.padding3, Arg1, Arg2, Arg3.xRenamed);
   return result
 };
 
@@ -65,7 +65,7 @@ export const renameABunch: (number, {|
   +yRenamed: number, 
   +zRenamed: number
 |}) => number = function _(Arg1, Arg2) {
-  const result = RenamePropsBS.renameABunch(Arg1, Arg2.xRenamed, Arg2.yRenamed, Arg2.zRenamed);
+  const result = Curry._4(RenamePropsBS.renameABunch, Arg1, Arg2.xRenamed, Arg2.yRenamed, Arg2.zRenamed);
   return result
 };
 
@@ -74,11 +74,11 @@ export const renameABunch2: (number, {|
   +y: number, 
   +zRenamed: number
 |}) => number = function _(Arg1, Arg2) {
-  const result = RenamePropsBS.renameABunch2(Arg1, Arg2.xRenamed, Arg2.y, Arg2.zRenamed);
+  const result = Curry._4(RenamePropsBS.renameABunch2, Arg1, Arg2.xRenamed, Arg2.y, Arg2.zRenamed);
   return result
 };
 
 export const renameABunch3: (number, {| +xRenamed: number |}, number, {| +zRenamed: number |}) => number = function _(Arg1, Arg2, Arg3, Arg4) {
-  const result = RenamePropsBS.renameABunch3(Arg1, Arg2.xRenamed, Arg3, Arg4.zRenamed);
+  const result = Curry._4(RenamePropsBS.renameABunch3, Arg1, Arg2.xRenamed, Arg3, Arg4.zRenamed);
   return result
 };

@@ -55,7 +55,7 @@ export const ReasonComponent: React.ComponentClass<Props> = ReasonReact.wrapReas
 export default ReasonComponent;
 
 export const minus: (_1:{ readonly first?: number; readonly second: number }) => number = function _(Arg1: any) {
-  const result = ReasonComponentBS.minus(Arg1.first, Arg1.second);
+  const result = Curry._2(ReasonComponentBS.minus, Arg1.first, Arg1.second);
   return result
 };
 

@@ -6,6 +6,9 @@
 /* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
+import * as Curry from 'bs-platform/lib/es6/curry.js';
+
+// $FlowExpectedError: Reason checked type sufficiently
 import * as RecordsBS from './Records.bs';
 
 // flowlint-next-line nonstrict-import:off
@@ -51,7 +54,7 @@ export const computeArea: (coord) => number = function _(Arg1) {
 };
 
 export const coord2d: (number, number) => coord = function _(Arg1, Arg2) {
-  const result = RecordsBS.coord2d(Arg1, Arg2);
+  const result = Curry._2(RecordsBS.coord2d, Arg1, Arg2);
   return {x:result[0], y:result[1], z:result[2]}
 };
 

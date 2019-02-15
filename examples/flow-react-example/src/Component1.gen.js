@@ -35,10 +35,13 @@ export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs
 
 export default component;
 
-export const plus: <T1>(number, T1) => number = Component1BS.plus;
+export const plus: <T1>(number, T1) => number = function _(Arg1, Arg2) {
+  const result = Curry._2(Component1BS.plus, Arg1, Arg2);
+  return result
+};
 
 export const concat: (string, ?string) => ?string = function _(Arg1, Arg2) {
-  const result = Component1BS.concat(Arg1, (Arg2 == null ? undefined : Arg2));
+  const result = Curry._2(Component1BS.concat, Arg1, (Arg2 == null ? undefined : Arg2));
   return result
 };
 
@@ -53,4 +56,7 @@ export const consumeVariant: (Component2_variant) => number = function _(Arg1) {
 
 export const l: list<number> = Component1BS.l;
 
-export const map: <T1,T2>(((T1) => T2), list<T1>) => list<T2> = Component1BS.map;
+export const map: <T1,T2>(((T1) => T2), list<T1>) => list<T2> = function _(Arg1, Arg2) {
+  const result = Curry._2(Component1BS.map, Arg1, Arg2);
+  return result
+};

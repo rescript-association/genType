@@ -34,6 +34,18 @@ function callback2U(auth) {
   return auth[/* loginU */0]();
 }
 
+function sumU(n, m) {
+  console.log("sumU 2nd arg", m, "result", n + m | 0);
+  return /* () */0;
+}
+
+function sumU2(n) {
+  return (function (m) {
+      console.log("sumU2 2nd arg", m, "result", n + m | 0);
+      return /* () */0;
+    });
+}
+
 function sumCurried(n) {
   console.log("sumCurried 1st arg", n);
   return (function (m) {
@@ -59,6 +71,8 @@ export {
   callback ,
   callback2 ,
   callback2U ,
+  sumU ,
+  sumU2 ,
   sumCurried ,
   sumLblCurried ,
   
