@@ -3,7 +3,8 @@
 // tslint:disable-next-line:no-var-requires
 const FirstClassModulesBS = require('./FirstClassModules.bs');
 
-export const firstClassModule: {
+// tslint:disable-next-line:interface-over-type-literal
+export type firstClassModule = {
   readonly x: number; 
   readonly EmptyInnerModule: {
   }; 
@@ -12,7 +13,9 @@ export const firstClassModule: {
   }; 
   readonly Z: unknown; 
   readonly y: string
-} = {x:FirstClassModulesBS.firstClassModule[0], EmptyInnerModule:{}, InnerModule2:{k:FirstClassModulesBS.firstClassModule[2][0]}, Z:FirstClassModulesBS.firstClassModule[3], y:FirstClassModulesBS.firstClassModule[4]};
+};
+
+export const firstClassModule: firstClassModule = {x:FirstClassModulesBS.firstClassModule[0], EmptyInnerModule:{}, InnerModule2:{k:FirstClassModulesBS.firstClassModule[2][0]}, Z:FirstClassModulesBS.firstClassModule[3], y:FirstClassModulesBS.firstClassModule[4]};
 
 export const testConvert: (_1:{
   readonly x: number; 

@@ -26,7 +26,10 @@ module M = {
 };
 
 [@genType]
-let firstClassModule: module MT = (module M);
+type firstClassModule = (module MT);
+
+[@genType]
+let firstClassModule: firstClassModule = (module M);
 
 [@genType]
 let testConvert = (m: (module MT)) => m;
