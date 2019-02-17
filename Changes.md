@@ -1,4 +1,4 @@
-# master
+# 2.8.0
 - Allow misspelling "genType" as "gentype".
 - Auto uncurry functions of type unit => ...
 - Wrap functions exported to JS with Curry._n (arity n) unless the functions have uncurried type.
