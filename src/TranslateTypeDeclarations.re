@@ -156,7 +156,7 @@ let traslateDeclarationKind =
            let translation =
              coreType
              |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
-           let typ =
+           let type_ =
              switch (optCoreType, translation.type_) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
@@ -182,7 +182,7 @@ let traslateDeclarationKind =
                createVariant(~noPayloads, ~payloads, ~polymorphic=true);
              | _ => translation.type_
              };
-           (translation, typ);
+           (translation, type_);
          },
        )
 
@@ -299,7 +299,7 @@ let traslateDeclarationKind =
     let payloads =
       variantsWithPayload
       |> List.map(((name, attributes, argTypes, _importTypes, recordValue)) => {
-           let typ =
+           let type_ =
              switch (argTypes) {
              | [typ] => typ
              | _ => Tuple(argTypes)
@@ -308,7 +308,7 @@ let traslateDeclarationKind =
            (
              {...(name, attributes) |> createCase, label: recordValue},
              numArgs,
-             typ,
+             type_,
            );
          });
 

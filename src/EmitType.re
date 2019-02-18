@@ -44,18 +44,18 @@ let interfaceName = (~config, name) =>
   config.exportInterfaces ? "I" ++ name : name;
 
 let rec renderType =
-        (~config, ~indent=None, ~typeNameIsInterface, ~inFunType, typ) =>
-  switch (typ) {
-  | Array(typ, arrayKind) =>
+        (~config, ~indent=None, ~typeNameIsInterface, ~inFunType, type0) =>
+  switch (type0) {
+  | Array(t, arrayKind) =>
     let typIsSimple =
-      switch (typ) {
+      switch (t) {
       | Ident(_)
       | TypeVar(_) => true
       | _ => false
       };
 
     if (config.language == TypeScript && typIsSimple && arrayKind == Mutable) {
-      (typ |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType))
+      (t |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType))
       ++ "[]";
     } else {
       let arrayName =
@@ -65,7 +65,7 @@ let rec renderType =
       arrayName
       ++ "<"
       ++ (
-        typ |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
+        t |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
       )
       ++ ">";
     };
@@ -86,12 +86,12 @@ let rec renderType =
   | Record(fields) =>
     let indent1 = fields |> Indent.heuristicFields(~indent);
     let config =
-      switch (typ) {
+      switch (type0) {
       | GroupOfLabeledArgs(_) => {...config, exportInterfaces: false}
       | _ => config
       };
     let closedFlag =
-      switch (typ) {
+      switch (type0) {
       | Object(closedFlag, _) => closedFlag
       | _ => Closed
       };
@@ -121,19 +121,21 @@ let rec renderType =
                 ),
               ),
        )
-  | Nullable(typ)
-  | Option(typ) =>
+  | Nullable(type_)
+  | Option(type_) =>
     switch (config.language) {
     | Flow
     | Untyped =>
       "?"
       ++ (
-        typ |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
+        type_
+        |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
       )
     | TypeScript =>
       "(null | undefined | "
       ++ (
-        typ |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
+        type_
+        |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
       )
       ++ ")"
     }
@@ -274,8 +276,8 @@ and renderFunType =
   )
   ++ (inFunType ? ")" : "");
 
-let typeToString = (~config, ~typeNameIsInterface, typ) =>
-  typ |> renderType(~config, ~typeNameIsInterface, ~inFunType=false);
+let typeToString = (~config, ~typeNameIsInterface, type_) =>
+  type_ |> renderType(~config, ~typeNameIsInterface, ~inFunType=false);
 
 let ofType = (~config, ~typeNameIsInterface, ~type_, s) =>
   config.language == Untyped ?
@@ -442,7 +444,7 @@ let emitExportType =
       )
       ++ (
         switch (optType) {
-        | Some(typ) => typ |> typeToString(~config, ~typeNameIsInterface)
+        | Some(type_) => type_ |> typeToString(~config, ~typeNameIsInterface)
         | None => resolvedTypeName
         }
       )

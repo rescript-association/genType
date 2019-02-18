@@ -7,9 +7,9 @@ let rec addAnnotationsToTyps =
     let (fields1, nextTyps1) =
       addAnnotationsToFields(expr, fields, nextTyps);
     [GroupOfLabeledArgs(fields1), ...nextTyps1];
-  | (Texp_function(_lbl, [{c_rhs, _}], _), [typ, ...nextTyps]) =>
+  | (Texp_function(_lbl, [{c_rhs, _}], _), [type_, ...nextTyps]) =>
     let nextTyps1 = addAnnotationsToTyps(c_rhs, nextTyps);
-    [typ, ...nextTyps1];
+    [type_, ...nextTyps1];
   | _ => typs
   }
 and addAnnotationsToFields =

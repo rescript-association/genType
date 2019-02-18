@@ -111,8 +111,8 @@ let emitExportType =
   let (opaque, optType) =
     switch (opaque, optType) {
     | (Some(opaque), _) => (opaque, optType)
-    | (None, Some(typ)) =>
-      let normalized = typ |> typeGetNormalized;
+    | (None, Some(type_)) =>
+      let normalized = type_ |> typeGetNormalized;
       normalized == None ? (true, optType) : (false, normalized);
     | (None, None) => (false, None)
     };
@@ -896,10 +896,10 @@ let propagateAnnotationToSubTypes =
   let typesOfExportedValues =
     codeItems |> List.map(typesOfExportedValue) |> List.concat;
 
-  let visitTypAndUpdateMarked = typ_ => {
+  let visitTypAndUpdateMarked = type0 => {
     let visited = ref(StringSet.empty);
-    let rec visit = typ =>
-      switch (typ) {
+    let rec visit = type_ =>
+      switch (type_) {
       | Ident(typeName, _) =>
         if (visited^ |> StringSet.mem(typeName)) {
           ();
@@ -931,7 +931,7 @@ let propagateAnnotationToSubTypes =
       | Variant({payloads}) =>
         payloads |> List.iter(((_, _, t)) => t |> visit)
       };
-    typ_ |> visit;
+    type0 |> visit;
   };
   initialAnnotatedTypes
   @ typesOfExportedValues

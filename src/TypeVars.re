@@ -41,9 +41,9 @@ let extract = typeParams => {
 let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
 let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
-let rec substitute = (~f, typ) =>
-  switch (typ) {
-  | Array(typ, arrayKind) => Array(typ |> substitute(~f), arrayKind)
+let rec substitute = (~f, type0) =>
+  switch (type0) {
+  | Array(t, arrayKind) => Array(t |> substitute(~f), arrayKind)
   | Function(function_) =>
     Function({
       ...function_,
@@ -55,17 +55,17 @@ let rec substitute = (~f, typ) =>
       fields
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
-  | Ident(_, []) => typ
+  | Ident(_, []) => type0
   | Ident(name, typeArguments) =>
     Ident(name, typeArguments |> List.map(substitute(~f)))
-  | Nullable(typ) => Nullable(typ |> substitute(~f))
+  | Nullable(type_) => Nullable(type_ |> substitute(~f))
   | Object(closedFlag, fields) =>
     Object(
       closedFlag,
       fields
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
-  | Option(typ) => Option(typ |> substitute(~f))
+  | Option(type_) => Option(type_ |> substitute(~f))
   | Record(fields) =>
     Record(
       fields
@@ -74,7 +74,7 @@ let rec substitute = (~f, typ) =>
   | Tuple(innerTypes) => Tuple(innerTypes |> List.map(substitute(~f)))
   | TypeVar(s) =>
     switch (f(s)) {
-    | None => typ
+    | None => type0
     | Some(typ1) => typ1
     }
   | Variant(variant) =>
@@ -88,9 +88,9 @@ let rec substitute = (~f, typ) =>
     })
   };
 
-let rec free_ = typ: StringSet.t =>
-  switch (typ) {
-  | Array(typ, _) => typ |> free_
+let rec free_ = type0: StringSet.t =>
+  switch (type0) {
+  | Array(t, _) => t |> free_
   | Function({argTypes, retType, typeVars}) =>
     StringSet.diff(
       (argTypes |> freeOfList_) +++ (retType |> free_),
@@ -110,8 +110,8 @@ let rec free_ = typ: StringSet.t =>
          (s, typeArg) => StringSet.union(s, typeArg |> free_),
          StringSet.empty,
        )
-  | Nullable(typ) => typ |> free_
-  | Option(typ) => typ |> free_
+  | Nullable(type_) => type_ |> free_
+  | Option(type_) => type_ |> free_
   | Tuple(innerTypes) =>
     innerTypes
     |> List.fold_left(
@@ -130,5 +130,5 @@ and freeOfList_ = typs =>
   typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)
 and (+++) = StringSet.union;
 
-let free = typ => typ |> free_ |> StringSet.elements;
-let freeOfList = typ => typ |> freeOfList_ |> StringSet.elements;
+let free = type_ => type_ |> free_ |> StringSet.elements;
+let freeOfList = type_ => type_ |> freeOfList_ |> StringSet.elements;

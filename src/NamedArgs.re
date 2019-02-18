@@ -11,7 +11,11 @@ type groupedArg =
 let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
   switch (revCurGroup, labeledTypes) {
   | ([], [(Nolabel, type_), ...tl]) =>
-    groupReversed(~revCurGroup=[], ~revResult=[Arg(type_), ...revResult], tl)
+    groupReversed(
+      ~revCurGroup=[],
+      ~revResult=[Arg(type_), ...revResult],
+      tl,
+    )
   /* Add it to the current group, not result. */
   | (_, [(OptLabel(name), type_), ...tl]) =>
     groupReversed(
@@ -50,7 +54,7 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
-  | [Arg(typ), ...tl] => reverse(~soFar=[typ, ...soFar], tl)
+  | [Arg(type_), ...tl] => reverse(~soFar=[type_, ...soFar], tl)
   | [Group(fields), ...tl] =>
     reverse(~soFar=[GroupOfLabeledArgs(List.rev(fields)), ...soFar], tl)
   };

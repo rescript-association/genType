@@ -14,7 +14,7 @@ let translateSignatureValue =
     logItem("Translate Signature Value %s\n", val_id |> Ident.name);
   };
   let typeExpr = val_desc.ctyp_type;
-  let addAnnotationsToFunction = typ => typ;
+  let addAnnotationsToFunction = type_ => type_;
   switch (val_id, Annotation.fromAttributes(val_attributes)) {
   | (id, GenType) =>
     id

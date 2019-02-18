@@ -116,25 +116,25 @@ let typeToConverterNormalized =
       ~exportTypeMap: CodeItem.exportTypeMap,
       ~exportTypeMapFromOtherFiles,
       ~typeNameIsInterface,
-      typ,
+      type0,
     ) => {
   let circular = ref("");
-  let expandOneLevel = typ =>
-    switch (typ) {
+  let expandOneLevel = type_ =>
+    switch (type_) {
     | Ident(s, _) =>
       switch (exportTypeMap |> StringMap.find(s)) {
       | (t: CodeItem.exportTypeItem) => t.type_
       | exception Not_found =>
         switch (exportTypeMapFromOtherFiles |> StringMap.find(s)) {
-        | exception Not_found => typ
+        | exception Not_found => type_
         | (t: CodeItem.exportTypeItem) => t.type_
         }
       }
-    | _ => typ
+    | _ => type_
     };
-  let rec visit = (~visited: StringSet.t, typ) => {
-    let normalized_ = Some(typ);
-    switch (typ) {
+  let rec visit = (~visited: StringSet.t, type_) => {
+    let normalized_ = Some(type_);
+    switch (type_) {
     | Array(t, _) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
       (ArrayC(tConverter), tNormalized == None ? None : normalized_);
@@ -178,7 +178,8 @@ let typeToConverterNormalized =
             normalized_,
           );
         | exception Not_found =>
-          let isBaseType = typ == booleanT || typ == numberT || typ == stringT;
+          let isBaseType =
+            type_ == booleanT || type_ == numberT || type_ == stringT;
           (IdentC, isBaseType ? normalized_ : None);
         };
       }
@@ -190,10 +191,10 @@ let typeToConverterNormalized =
     | Object(_, fields) => (
         ObjectC(
           fields
-          |> List.map(({name, optional, type_, _}) =>
+          |> List.map(({name, optional, type_: t, _}) =>
                (
                  name,
-                 (optional == Mandatory ? type_ : Option(type_))
+                 (optional == Mandatory ? t : Option(t))
                  |> visit(~visited)
                  |> fst,
                )
@@ -264,8 +265,8 @@ let typeToConverterNormalized =
       (converter, normalized);
     };
   }
-  and typToGroupedArgConverter = (~visited, typ) =>
-    switch (typ) {
+  and typToGroupedArgConverter = (~visited, type_) =>
+    switch (type_) {
     | GroupOfLabeledArgs(fields) =>
       GroupConverter(
         fields
@@ -274,18 +275,18 @@ let typeToConverterNormalized =
            ),
       )
     | _ =>
-      typ == unitT ?
-        UnitConverter : ArgConverter(typ |> visit(~visited) |> fst)
+      type_ == unitT ?
+        UnitConverter : ArgConverter(type_ |> visit(~visited) |> fst)
     };
 
-  let (converter, normalized) = typ |> visit(~visited=StringSet.empty);
+  let (converter, normalized) = type0 |> visit(~visited=StringSet.empty);
   let finalConverter =
     circular^ != "" ? CircularC(circular^, converter) : converter;
   if (Debug.converter^) {
     logItem(
-      "Converter %s typ:%s converter:%s\n",
+      "Converter %s type0:%s converter:%s\n",
       normalized == None ? " opaque " : "",
-      typ |> EmitType.typeToString(~config, ~typeNameIsInterface),
+      type0 |> EmitType.typeToString(~config, ~typeNameIsInterface),
       finalConverter |> toString,
     );
   };
@@ -298,9 +299,9 @@ let typeToConverter =
       ~exportTypeMap,
       ~exportTypeMapFromOtherFiles,
       ~typeNameIsInterface,
-      typ,
+      type_,
     ) =>
-  typ
+  type_
   |> typeToConverterNormalized(
        ~config,
        ~exportTypeMap,

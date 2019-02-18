@@ -80,8 +80,8 @@ and variant = {
   unboxed: bool,
 };
 
-let typIsObject = typ =>
-  switch (typ) {
+let typIsObject = type_ =>
+  switch (type_) {
   | Array(_) => true
   | Function(_) => false
   | GroupOfLabeledArgs(_) => false
