@@ -53,7 +53,7 @@ let rec substitute = (~f, typ) =>
   | GroupOfLabeledArgs(fields) =>
     GroupOfLabeledArgs(
       fields
-      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+      |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Ident(_, []) => typ
   | Ident(name, typeArguments) =>
@@ -63,13 +63,13 @@ let rec substitute = (~f, typ) =>
     Object(
       closedFlag,
       fields
-      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+      |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Option(typ) => Option(typ |> substitute(~f))
   | Record(fields) =>
     Record(
       fields
-      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+      |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Tuple(innerTypes) => Tuple(innerTypes |> List.map(substitute(~f)))
   | TypeVar(s) =>
@@ -101,7 +101,7 @@ let rec free_ = typ: StringSet.t =>
   | Record(fields) =>
     fields
     |> List.fold_left(
-         (s, {typ, _}) => StringSet.union(s, typ |> free_),
+         (s, {type_, _}) => StringSet.union(s, type_ |> free_),
          StringSet.empty,
        )
   | Ident(_, typeArgs) =>

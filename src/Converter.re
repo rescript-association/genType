@@ -110,7 +110,7 @@ let rec toString = converter =>
     ++ ")"
   };
 
-let typToConverterNormalized =
+let typeToConverterNormalized =
     (
       ~config,
       ~exportTypeMap: CodeItem.exportTypeMap,
@@ -123,11 +123,11 @@ let typToConverterNormalized =
     switch (typ) {
     | Ident(s, _) =>
       switch (exportTypeMap |> StringMap.find(s)) {
-      | (t: CodeItem.exportTypeItem) => t.typ
+      | (t: CodeItem.exportTypeItem) => t.type_
       | exception Not_found =>
         switch (exportTypeMapFromOtherFiles |> StringMap.find(s)) {
         | exception Not_found => typ
-        | (t: CodeItem.exportTypeItem) => t.typ
+        | (t: CodeItem.exportTypeItem) => t.type_
         }
       }
     | _ => typ
@@ -160,7 +160,7 @@ let typToConverterNormalized =
         ) {
         | {annotation: GenTypeOpaque, _} => (IdentC, None)
         | {annotation: NoGenType, _} => (IdentC, None)
-        | {typeVars, typ, _} =>
+        | {typeVars, type_, _} =>
           let pairs =
             try (List.combine(typeVars, typeArguments)) {
             | Invalid_argument(_) => []
@@ -174,7 +174,7 @@ let typToConverterNormalized =
             | exception Not_found => None
             };
           (
-            typ |> TypeVars.substitute(~f) |> visit(~visited) |> fst,
+            type_ |> TypeVars.substitute(~f) |> visit(~visited) |> fst,
             normalized_,
           );
         | exception Not_found =>
@@ -190,10 +190,10 @@ let typToConverterNormalized =
     | Object(_, fields) => (
         ObjectC(
           fields
-          |> List.map(({name, optional, typ, _}) =>
+          |> List.map(({name, optional, type_, _}) =>
                (
                  name,
-                 (optional == Mandatory ? typ : Option(typ))
+                 (optional == Mandatory ? type_ : Option(type_))
                  |> visit(~visited)
                  |> fst,
                )
@@ -209,10 +209,10 @@ let typToConverterNormalized =
     | Record(fields) => (
         RecordC(
           fields
-          |> List.map(({name, optional, typ, _}) =>
+          |> List.map(({name, optional, type_, _}) =>
                (
                  name,
-                 (optional == Mandatory ? typ : Option(typ))
+                 (optional == Mandatory ? type_ : Option(type_))
                  |> visit(~visited)
                  |> fst,
                )
@@ -269,8 +269,8 @@ let typToConverterNormalized =
     | GroupOfLabeledArgs(fields) =>
       GroupConverter(
         fields
-        |> List.map(({name, typ, optional, _}) =>
-             (name, optional, typ |> visit(~visited) |> fst)
+        |> List.map(({name, type_, optional, _}) =>
+             (name, optional, type_ |> visit(~visited) |> fst)
            ),
       )
     | _ =>
@@ -285,14 +285,14 @@ let typToConverterNormalized =
     logItem(
       "Converter %s typ:%s converter:%s\n",
       normalized == None ? " opaque " : "",
-      typ |> EmitTyp.typToString(~config, ~typeNameIsInterface),
+      typ |> EmitType.typeToString(~config, ~typeNameIsInterface),
       finalConverter |> toString,
     );
   };
   (finalConverter, normalized);
 };
 
-let typToConverter =
+let typeToConverter =
     (
       ~config,
       ~exportTypeMap,
@@ -301,7 +301,7 @@ let typToConverter =
       typ,
     ) =>
   typ
-  |> typToConverterNormalized(
+  |> typeToConverterNormalized(
        ~config,
        ~exportTypeMap,
        ~exportTypeMapFromOtherFiles,
@@ -376,7 +376,7 @@ let rec apply =
     let x = "ArrayItem" |> EmitText.name(~nameGen);
     value
     ++ ".map(function _element("
-    ++ (x |> EmitTyp.ofTypeAnyTS(~config))
+    ++ (x |> EmitType.ofTypeAnyTS(~config))
     ++ ") { return "
     ++ (
       x
@@ -442,7 +442,7 @@ let rec apply =
           let varName = i + 1 |> EmitText.argi(~nameGen);
           let notToJS = !toJS;
           (
-            varName |> EmitTyp.ofTypeAnyTS(~config),
+            varName |> EmitType.ofTypeAnyTS(~config),
             varName
             |> apply(
                  ~config,
@@ -461,7 +461,7 @@ let rec apply =
           if (toJS) {
             let varName = i + 1 |> EmitText.argi(~nameGen);
             (
-              varName |> EmitTyp.ofTypeAnyTS(~config),
+              varName |> EmitType.ofTypeAnyTS(~config),
               groupConverters
               |> List.map(((s, optional, argConverter)) =>
                    varName
@@ -516,7 +516,7 @@ let rec apply =
           };
         | UnitConverter =>
           let varName = i + 1 |> EmitText.argi(~nameGen);
-          (varName |> EmitTyp.ofTypeAnyTS(~config), varName, 1);
+          (varName |> EmitType.ofTypeAnyTS(~config), varName, 1);
         };
       argConverters |> List.mapi(convertArg);
     };

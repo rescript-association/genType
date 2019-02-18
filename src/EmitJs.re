@@ -37,7 +37,7 @@ let createExportTypeMap =
     let addExportType =
         (
           ~annotation,
-          {resolvedTypeName, typeVars, optTyp, _}: CodeItem.exportType,
+          {resolvedTypeName, typeVars, optType, _}: CodeItem.exportType,
         ) => {
       if (Debug.codeItems^) {
         logItem(
@@ -45,25 +45,27 @@ let createExportTypeMap =
           resolvedTypeName,
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
-          switch (optTyp) {
-          | Some(typ) =>
+          switch (optType) {
+          | Some(type_) =>
             " "
             ++ (annotation |> Annotation.toString |> EmitText.comment)
             ++ " = "
             ++ (
-              typ
-              |> EmitTyp.typToString(~config, ~typeNameIsInterface=_ => false)
+              type_
+              |> EmitType.typeToString(~config, ~typeNameIsInterface=_ =>
+                   false
+                 )
             )
           | None => ""
           },
         );
       };
-      switch (optTyp) {
-      | Some(typ) =>
+      switch (optType) {
+      | Some(type_) =>
         exportTypeMap
         |> StringMap.add(
              resolvedTypeName,
-             {CodeItem.typeVars, typ, annotation},
+             {CodeItem.typeVars, type_, annotation},
            )
       | None => exportTypeMap
       };
@@ -85,12 +87,12 @@ let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
       | None => ""
       }
     )
-  | ExportValue({resolvedName, typ, _}) =>
+  | ExportValue({resolvedName, type_, _}) =>
     "ExportValue"
     ++ " resolvedName:"
     ++ resolvedName
-    ++ " typ:"
-    ++ EmitTyp.typToString(~config, ~typeNameIsInterface, typ)
+    ++ " type:"
+    ++ EmitType.typeToString(~config, ~typeNameIsInterface, type_)
   | ImportComponent({importAnnotation, _}) =>
     "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
   | ImportValue({importAnnotation, _}) =>
@@ -102,26 +104,26 @@ let emitExportType =
       ~early=?,
       ~emitters,
       ~config,
-      ~typGetNormalized,
+      ~typeGetNormalized,
       ~typeNameIsInterface,
-      {CodeItem.nameAs, opaque, optTyp, typeVars, resolvedTypeName, _},
+      {CodeItem.nameAs, opaque, optType, typeVars, resolvedTypeName, _},
     ) => {
-  let (opaque, optTyp) =
-    switch (opaque, optTyp) {
-    | (Some(opaque), _) => (opaque, optTyp)
+  let (opaque, optType) =
+    switch (opaque, optType) {
+    | (Some(opaque), _) => (opaque, optType)
     | (None, Some(typ)) =>
-      let normalized = typ |> typGetNormalized;
-      normalized == None ? (true, optTyp) : (false, normalized);
+      let normalized = typ |> typeGetNormalized;
+      normalized == None ? (true, optType) : (false, normalized);
     | (None, None) => (false, None)
     };
   resolvedTypeName
-  |> EmitTyp.emitExportType(
+  |> EmitType.emitExportType(
        ~early?,
        ~config,
        ~emitters,
        ~nameAs,
        ~opaque,
-       ~optTyp,
+       ~optType,
        ~typeNameIsInterface,
        ~typeVars,
      );
@@ -133,17 +135,17 @@ let typeNameIsInterface =
       ~exportTypeMapFromOtherFiles: CodeItem.exportTypeMap,
       typeName,
     ) => {
-  let typIsInterface = typ =>
-    switch (typ) {
+  let typeIsInterface = type_ =>
+    switch (type_) {
     | Object(_)
     | Record(_) => true
     | _ => false
     };
   switch (exportTypeMap |> StringMap.find(typeName)) {
-  | {typ, _} => typ |> typIsInterface
+  | {type_, _} => type_ |> typeIsInterface
   | exception Not_found =>
     switch (exportTypeMapFromOtherFiles |> StringMap.find(typeName)) {
-    | {typ, _} => typ |> typIsInterface
+    | {type_, _} => type_ |> typeIsInterface
     | exception Not_found => false
     }
   };
@@ -153,7 +155,7 @@ let emitExportFromTypeDeclaration =
     (
       ~config,
       ~emitters,
-      ~typGetNormalized,
+      ~typeGetNormalized,
       ~env,
       ~typeNameIsInterface,
       exportFromTypeDeclaration: CodeItem.exportFromTypeDeclaration,
@@ -163,7 +165,7 @@ let emitExportFromTypeDeclaration =
   |> emitExportType(
        ~emitters,
        ~config,
-       ~typGetNormalized,
+       ~typeGetNormalized,
        ~typeNameIsInterface,
      ),
 );
@@ -172,7 +174,7 @@ let emitExportFromTypeDeclarations =
     (
       ~config,
       ~emitters,
-      ~typGetNormalized,
+      ~typeGetNormalized,
       ~env,
       ~typeNameIsInterface,
       exportFromTypeDeclarations,
@@ -183,7 +185,7 @@ let emitExportFromTypeDeclarations =
          emitExportFromTypeDeclaration(
            ~config,
            ~emitters,
-           ~typGetNormalized,
+           ~typeGetNormalized,
            ~env,
            ~typeNameIsInterface,
          ),
@@ -199,9 +201,9 @@ let rec emitCodeItem =
           ~importCurry,
           ~outputFileRelative,
           ~resolver,
-          ~typGetNormalized,
+          ~typeGetNormalized,
           ~typeNameIsInterface,
-          ~typToConverter,
+          ~typeToConverter,
           ~useCreateBucklescriptBlock,
           ~variantTables,
           codeItem,
@@ -257,7 +259,7 @@ let rec emitCodeItem =
         /* emit an import {... as ...} immediately */
         let emitters =
           importPath
-          |> EmitTyp.emitImportValueAsEarly(
+          |> EmitType.emitImportValueAsEarly(
                ~config,
                ~emitters,
                ~name=firstNameInPath,
@@ -275,13 +277,13 @@ let rec emitCodeItem =
     let componentNameTypeChecked = lastNameInPath ++ "TypeChecked";
 
     /* Check the type of the component */
-    let emitters = EmitTyp.emitRequireReact(~early=true, ~emitters, ~config);
+    let emitters = EmitType.emitRequireReact(~early=true, ~emitters, ~config);
     let emitters =
       emitExportType(
         ~early=true,
         ~config,
         ~emitters,
-        ~typGetNormalized,
+        ~typeGetNormalized,
         ~typeNameIsInterface,
         exportType,
       );
@@ -291,16 +293,16 @@ let rec emitCodeItem =
         "("
         ++ (
           "props"
-          |> EmitTyp.ofType(
+          |> EmitType.ofType(
                ~config,
                ~typeNameIsInterface,
-               ~typ=Ident(propsTypeName, []),
+               ~type_=Ident(propsTypeName, []),
              )
         )
         ++ ") {\n  return <"
         ++ componentPath
         ++ " {...props}/>;\n}"
-        |> EmitTyp.emitExportFunction(
+        |> EmitType.emitExportFunction(
              ~early=true,
              ~emitters,
              ~name=componentNameTypeChecked,
@@ -323,7 +325,7 @@ let rec emitCodeItem =
         ++ EmitText.parens(
              (propsFields |> List.map(({name, _}: field) => name))
              @ ["children"]
-             |> List.map(EmitTyp.ofTypeAnyTS(~config)),
+             |> List.map(EmitType.ofTypeAnyTS(~config)),
            )
         ++ " { return ReasonReact.wrapJsForReason"
         ++ EmitText.parens([
@@ -331,7 +333,7 @@ let rec emitCodeItem =
              "{"
              ++ (
                propsFields
-               |> List.map(({name: propName, optional, typ: propTyp, _}) =>
+               |> List.map(({name: propName, optional, type_: propTyp, _}) =>
                     propName
                     ++ ": "
                     ++ (
@@ -343,7 +345,7 @@ let rec emitCodeItem =
                                optional == Mandatory ?
                                  propTyp : Option(propTyp)
                              )
-                             |> typToConverter,
+                             |> typeToConverter,
                            ~importCurry,
                            ~indent,
                            ~nameGen,
@@ -358,7 +360,7 @@ let rec emitCodeItem =
              "children"
              |> Converter.toJS(
                   ~config,
-                  ~converter=childrenTyp |> typToConverter,
+                  ~converter=childrenTyp |> typeToConverter,
                   ~importCurry,
                   ~indent,
                   ~nameGen,
@@ -369,7 +371,7 @@ let rec emitCodeItem =
         ++ "; }"
       )
       ++ ";"
-      |> EmitTyp.emitExportConstEarly(
+      |> EmitType.emitExportConstEarly(
            ~comment=
              "Export '"
              ++ "make"
@@ -377,7 +379,7 @@ let rec emitCodeItem =
            ~config,
            ~emitters,
            ~name="make",
-           ~typ=mixedOrUnknown(~config),
+           ~type_=mixedOrUnknown(~config),
            ~typeNameIsInterface,
          );
     let env =
@@ -389,7 +391,7 @@ let rec emitCodeItem =
          );
     ({...env, importedValueOrComponent: true}, emitters);
 
-  | ImportValue({asPath, importAnnotation, typ, valueName}) =>
+  | ImportValue({asPath, importAnnotation, type_, valueName}) =>
     let nameGen = EmitText.newNameGen();
     let importPath = importAnnotation.importPath;
     let (firstNameInPath, restOfPath) =
@@ -409,7 +411,7 @@ let rec emitCodeItem =
         let valueNameNotChecked = valueName ++ "NotChecked";
         let emitters =
           importPath
-          |> EmitTyp.emitImportValueAsEarly(
+          |> EmitType.emitImportValueAsEarly(
                ~config,
                ~emitters,
                ~name=firstNameInPath,
@@ -427,13 +429,13 @@ let rec emitCodeItem =
           |> requireModule(~import=true, ~env, ~importPath, ~strict=true);
         (emitters, importedAsName, env);
       };
-    let converter = typ |> typToConverter;
+    let converter = type_ |> typeToConverter;
     let valueNameTypeChecked = valueName ++ "TypeChecked";
 
     let emitters =
       (importedAsName ++ restOfPath)
       ++ ";"
-      |> EmitTyp.emitExportConstEarly(
+      |> EmitType.emitExportConstEarly(
            ~config,
            ~comment=
              "In case of type error, check the type of '"
@@ -446,7 +448,7 @@ let rec emitCodeItem =
              ++ "'.",
            ~emitters,
            ~name=valueNameTypeChecked,
-           ~typ,
+           ~type_,
            ~typeNameIsInterface,
          );
     let emitters =
@@ -461,10 +463,10 @@ let rec emitCodeItem =
              ~useCreateBucklescriptBlock,
              ~variantTables,
            )
-        |> EmitTyp.emitTypeCast(~config, ~typ, ~typeNameIsInterface)
+        |> EmitType.emitTypeCast(~config, ~type_, ~typeNameIsInterface)
       )
       ++ ";"
-      |> EmitTyp.emitExportConstEarly(
+      |> EmitType.emitExportConstEarly(
            ~comment=
              "Export '"
              ++ valueName
@@ -472,7 +474,7 @@ let rec emitCodeItem =
            ~config,
            ~emitters,
            ~name=valueName,
-           ~typ=mixedOrUnknown(~config),
+           ~type_=mixedOrUnknown(~config),
            ~typeNameIsInterface,
          );
     ({...env, importedValueOrComponent: true}, emitters);
@@ -483,11 +485,11 @@ let rec emitCodeItem =
       exportType,
       nestedModuleName,
       propsTypeName,
-      typ,
+      type_,
       valueAccessPath,
     }) =>
     let nameGen = EmitText.newNameGen();
-    let converter = typ |> typToConverter;
+    let converter = type_ |> typeToConverter;
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
@@ -503,7 +505,7 @@ let rec emitCodeItem =
       | None => fileName
       };
 
-    let name = EmitTyp.componentExportName(~config, ~fileName, ~moduleName);
+    let name = EmitType.componentExportName(~config, ~fileName, ~moduleName);
     let jsProps = "jsProps";
     let jsPropsDot = s => jsProps ++ "." ++ s;
 
@@ -573,17 +575,17 @@ let rec emitCodeItem =
       emitExportType(
         ~emitters,
         ~config,
-        ~typGetNormalized,
+        ~typeGetNormalized,
         ~typeNameIsInterface,
         exportType,
       );
 
     let emitters =
-      EmitTyp.emitExportConstMany(
+      EmitType.emitExportConstMany(
         ~config,
         ~emitters,
         ~name,
-        ~typ=componentType,
+        ~type_=componentType,
         ~typeNameIsInterface,
         [
           "ReasonReact.wrapReasonForJs(",
@@ -593,10 +595,10 @@ let rec emitCodeItem =
           ++ componentAccessPath
           ++ ",",
           "  (function _("
-          ++ EmitTyp.ofType(
+          ++ EmitType.ofType(
                ~config,
                ~typeNameIsInterface,
-               ~typ=Ident(propsTypeName, []),
+               ~type_=Ident(propsTypeName, []),
                jsProps,
              )
           ++ ") {",
@@ -615,7 +617,7 @@ let rec emitCodeItem =
     let emitters =
       /* only export default for the top level component in the file */
       fileName == moduleName ?
-        EmitTyp.emitExportDefault(~emitters, ~config, name) : emitters;
+        EmitType.emitExportDefault(~emitters, ~config, name) : emitters;
 
     let env = moduleNameBs |> requireModule(~import=false, ~env, ~importPath);
 
@@ -632,7 +634,7 @@ let rec emitCodeItem =
     importCurry := importCurry^ || useCurry;
     (env, emitters);
 
-  | ExportValue({resolvedName, typ, valueAccessPath}) =>
+  | ExportValue({resolvedName, type_, valueAccessPath}) =>
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
@@ -645,7 +647,7 @@ let rec emitCodeItem =
     let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =
       fileNameBs |> requireModule(~import=false, ~env, ~importPath);
-    let converter = typ |> typToConverter;
+    let converter = type_ |> typeToConverter;
 
     let emitters =
       (
@@ -663,11 +665,11 @@ let rec emitCodeItem =
            )
       )
       ++ ";"
-      |> EmitTyp.emitExportConst(
+      |> EmitType.emitExportConst(
            ~config,
            ~emitters,
            ~name=resolvedName,
-           ~typ,
+           ~type_,
            ~typeNameIsInterface,
          );
 
@@ -684,8 +686,8 @@ and emitCodeItems =
       ~importCurry,
       ~resolver,
       ~typeNameIsInterface,
-      ~typGetNormalized,
-      ~typToConverter,
+      ~typeGetNormalized,
+      ~typeToConverter,
       ~useCreateBucklescriptBlock,
       ~variantTables,
       codeItems,
@@ -702,8 +704,8 @@ and emitCodeItems =
            ~outputFileRelative,
            ~resolver,
            ~typeNameIsInterface,
-           ~typGetNormalized,
-           ~typToConverter,
+           ~typeGetNormalized,
+           ~typeToConverter,
            ~useCreateBucklescriptBlock,
            ~variantTables,
          ),
@@ -715,7 +717,7 @@ let emitRequires =
   ModuleNameMap.fold(
     (moduleName, (importPath, strict), emitters) =>
       importPath
-      |> EmitTyp.emitRequire(
+      |> EmitType.emitRequire(
            ~importedValueOrComponent,
            ~early,
            ~emitters,
@@ -809,7 +811,7 @@ let emitImportType =
       };
     };
   let emitters =
-    EmitTyp.emitImportTypeAs(
+    EmitType.emitImportTypeAs(
       ~emitters,
       ~config,
       ~typeName,
@@ -884,11 +886,11 @@ let propagateAnnotationToSubTypes =
     |> List.filter(((_, {CodeItem.annotation, _})) =>
          annotation == Annotation.GenType
        )
-    |> List.map(((_, {CodeItem.typ, _})) => typ);
+    |> List.map(((_, {CodeItem.type_, _})) => type_);
   let typesOfExportedValue = (codeItem: CodeItem.t) =>
     switch (codeItem) {
-    | ExportValue({typ, _})
-    | ExportComponent({typ, _}) => [typ]
+    | ExportValue({type_, _})
+    | ExportComponent({type_, _}) => [type_]
     | _ => []
     };
   let typesOfExportedValues =
@@ -905,12 +907,12 @@ let propagateAnnotationToSubTypes =
           visited := visited^ |> StringSet.add(typeName);
           switch (typeMap |> StringMap.find(typeName)) {
           | {annotation: GenType | GenTypeOpaque | Generated, _} => ()
-          | {typ: typ1, annotation: NoGenType, _} =>
+          | {type_: type1, annotation: NoGenType, _} =>
             if (Debug.translation^) {
               logItem("Marking Type As Annotated %s\n", typeName);
             };
             annotatedSet := annotatedSet^ |> StringSet.add(typeName);
-            typ1 |> visit;
+            type1 |> visit;
           | exception Not_found =>
             annotatedSet := annotatedSet^ |> StringSet.add(typeName)
           };
@@ -921,7 +923,7 @@ let propagateAnnotationToSubTypes =
         retType |> visit;
       | GroupOfLabeledArgs(fields)
       | Object(_, fields)
-      | Record(fields) => fields |> List.iter(({typ, _}) => typ |> visit)
+      | Record(fields) => fields |> List.iter(({type_, _}) => type_ |> visit)
       | Option(t)
       | Nullable(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
@@ -994,9 +996,9 @@ let emitTranslationAsString =
       ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
     );
 
-  let typGetNormalized_ = (~env, typ) =>
+  let typeGetNormalized_ = (~env, typ) =>
     typ
-    |> Converter.typToConverterNormalized(
+    |> Converter.typeToConverterNormalized(
          ~config,
          ~exportTypeMap,
          ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
@@ -1004,9 +1006,9 @@ let emitTranslationAsString =
        )
     |> snd;
 
-  let typToConverter_ = (~env, typ) =>
+  let typeToConverter_ = (~env, typ) =>
     typ
-    |> Converter.typToConverter(
+    |> Converter.typeToConverter(
          ~config,
          ~exportTypeMap,
          ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
@@ -1038,7 +1040,7 @@ let emitTranslationAsString =
     |> emitExportFromTypeDeclarations(
          ~config,
          ~emitters,
-         ~typGetNormalized=typGetNormalized_(~env),
+         ~typeGetNormalized=typeGetNormalized_(~env),
          ~env,
          ~typeNameIsInterface=typeNameIsInterface(~env),
        );
@@ -1055,8 +1057,8 @@ let emitTranslationAsString =
          ~outputFileRelative,
          ~resolver,
          ~typeNameIsInterface=typeNameIsInterface(~env),
-         ~typGetNormalized=typGetNormalized_(~env),
-         ~typToConverter=typToConverter_(~env),
+         ~typeGetNormalized=typeGetNormalized_(~env),
+         ~typeToConverter=typeToConverter_(~env),
          ~useCreateBucklescriptBlock,
          ~variantTables,
        );

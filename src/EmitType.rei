@@ -10,7 +10,7 @@ let emitExportConst:
     ~config: config,
     ~emitters: Emitters.t,
     ~name: string,
-    ~typ: typ,
+    ~type_: type_,
     ~typeNameIsInterface: string => bool,
     string
   ) =>
@@ -22,7 +22,7 @@ let emitExportConstEarly:
     ~config: config,
     ~emitters: Emitters.t,
     ~name: string,
-    ~typ: typ,
+    ~type_: type_,
     ~typeNameIsInterface: string => bool,
     string
   ) =>
@@ -33,7 +33,7 @@ let emitExportConstMany:
     ~config: config,
     ~emitters: Emitters.t,
     ~name: string,
-    ~typ: typ,
+    ~type_: type_,
     ~typeNameIsInterface: string => bool,
     list(string)
   ) =>
@@ -60,7 +60,7 @@ let emitExportType:
     ~emitters: Emitters.t,
     ~nameAs: option(string),
     ~opaque: bool,
-    ~optTyp: option(typ),
+    ~optType: option(type_),
     ~typeNameIsInterface: string => bool,
     ~typeVars: list(string),
     string
@@ -104,7 +104,12 @@ let emitRequireReact:
   (~early: bool, ~emitters: Emitters.t, ~config: config) => Emitters.t;
 
 let emitTypeCast:
-  (~config: config, ~typ: typ, ~typeNameIsInterface: string => bool, string) =>
+  (
+    ~config: config,
+    ~type_: type_,
+    ~typeNameIsInterface: string => bool,
+    string
+  ) =>
   string;
 
 let fileHeader: (~config: config) => string;
@@ -112,7 +117,12 @@ let fileHeader: (~config: config) => string;
 let generatedModuleExtension: (~config: config) => string;
 
 let ofType:
-  (~config: config, ~typeNameIsInterface: string => bool, ~typ: typ, string) =>
+  (
+    ~config: config,
+    ~typeNameIsInterface: string => bool,
+    ~type_: type_,
+    string
+  ) =>
   string;
 
 /** Help TypeScript type-checking by making the argument of type any */
@@ -120,9 +130,9 @@ let ofTypeAnyTS: (~config: config, string) => string;
 
 let outputFileSuffix: (~config: config) => string;
 
-let reactComponentType: (~config: config, ~propsTypeName: string) => typ;
+let reactComponentType: (~config: config, ~propsTypeName: string) => type_;
 
 let shimExtension: (~config: config) => string;
 
-let typToString:
-  (~config: config, ~typeNameIsInterface: string => bool, typ) => string;
+let typeToString:
+  (~config: config, ~typeNameIsInterface: string => bool, type_) => string;

@@ -173,7 +173,7 @@ let resolveGeneratedModule =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~importExtension=EmitTyp.generatedModuleExtension(~config),
+      ~importExtension=EmitType.generatedModuleExtension(~config),
       moduleName,
     );
   if (Debug.moduleResolution^) {

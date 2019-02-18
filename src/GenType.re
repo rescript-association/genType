@@ -50,7 +50,7 @@ let cli = () => {
          files
          |> Array.iter(file =>
               if (Filename.check_suffix(file, ".re")) {
-                let extension = EmitTyp.outputFileSuffix(~config);
+                let extension = EmitType.outputFileSuffix(~config);
                 let generated =
                   Filename.concat(
                     dir,

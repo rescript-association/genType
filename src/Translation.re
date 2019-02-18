@@ -126,7 +126,7 @@ let translateValue =
       ~resolver,
       ~typeEnv,
       ~typeExpr,
-      ~addAnnotationsToFunction: typ => typ,
+      ~addAnnotationsToFunction: type_ => type_,
       name,
     )
     : t => {
@@ -136,9 +136,9 @@ let translateValue =
          ~config,
          ~typeEnv,
        );
-  let typeVars = typeExprTranslation.typ |> TypeVars.free;
-  let typ =
-    typeExprTranslation.typ
+  let typeVars = typeExprTranslation.type_ |> TypeVars.free;
+  let type_ =
+    typeExprTranslation.type_
     |> abstractTheTypeParameters(~typeVars)
     |> addAnnotationsToFunction;
   let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
@@ -147,7 +147,7 @@ let translateValue =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.ExportValue({resolvedName, typ, valueAccessPath}),
+    CodeItem.ExportValue({resolvedName, type_, valueAccessPath}),
   ];
   {
     importTypes:
@@ -186,7 +186,7 @@ let translateComponent =
       ~resolver,
       ~typeEnv,
       ~typeExpr,
-      ~addAnnotationsToFunction: typ => typ,
+      ~addAnnotationsToFunction: type_ => type_,
       name,
     )
     : t => {
@@ -201,15 +201,15 @@ let translateComponent =
        );
   let typeExprTranslation = {
     ...typeExprTranslation_,
-    typ: typeExprTranslation_.typ |> addAnnotationsToFunction,
+    type_: typeExprTranslation_.type_ |> addAnnotationsToFunction,
   };
 
-  let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
+  let freeTypeVarsSet = typeExprTranslation.type_ |> TypeVars.free_;
 
   /* Replace type variables in props/children with any. */
-  let (typeVars, typ) = (
+  let (typeVars, type_) = (
     [],
-    typeExprTranslation.typ
+    typeExprTranslation.type_
     |> TypeVars.substitute(~f=s =>
          if (freeTypeVarsSet |> StringSet.mem(s)) {
            Some(mixedOrUnknown(~config));
@@ -218,7 +218,7 @@ let translateComponent =
          }
        ),
   );
-  switch (typ) {
+  switch (type_) {
   | Function({
       argTypes: [propOrChildren, ...childrenOrNil],
       retType:
@@ -240,11 +240,11 @@ let translateComponent =
             mutable_: Immutable,
             name: "children",
             optional: Optional,
-            typ: mixedOrUnknown(~config),
+            type_: mixedOrUnknown(~config),
           },
         ])
       /* Then we had both props and children. */
-      | [childrenTyp, ..._] =>
+      | [childrenType, ..._] =>
         switch (propOrChildren) {
         | GroupOfLabeledArgs(fields) =>
           GroupOfLabeledArgs(
@@ -254,7 +254,7 @@ let translateComponent =
                 mutable_: Immutable,
                 name: "children",
                 optional: Optional,
-                typ: childrenTyp,
+                type_: childrenType,
               },
             ],
           )
@@ -262,8 +262,7 @@ let translateComponent =
         }
       };
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
-    let componentType = EmitTyp.reactComponentType(~config, ~propsTypeName);
-
+    let componentType = EmitType.reactComponentType(~config, ~propsTypeName);
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 
@@ -279,13 +278,13 @@ let translateComponent =
         exportType: {
           nameAs: None,
           opaque: Some(false),
-          optTyp: Some(propsType),
+          optType: Some(propsType),
           typeVars,
           resolvedTypeName: propsTypeName,
         },
         nestedModuleName,
         propsTypeName,
-        typ,
+        type_,
         valueAccessPath,
       }),
     ];
@@ -334,7 +333,11 @@ let translatePrimitive =
 
   let (attributeImport, attributeRenaming) =
     valueDescription.val_attributes |> Annotation.getAttributeImportRenaming;
-  switch (typeExprTranslation.typ, valueDescription.val_prim, attributeImport) {
+  switch (
+    typeExprTranslation.type_,
+    valueDescription.val_prim,
+    attributeImport,
+  ) {
   | (
       Function({
         argTypes: [_, ..._],
@@ -366,12 +369,12 @@ let translatePrimitive =
            ~typeEnv,
          );
 
-    let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
+    let freeTypeVarsSet = typeExprTranslation.type_ |> TypeVars.free_;
 
     /* Replace type variables in props/children with any. */
-    let (typeVars, typ) = (
+    let (typeVars, type_) = (
       [],
-      typeExprTranslation.typ
+      typeExprTranslation.type_
       |> TypeVars.substitute(~f=s =>
            if (freeTypeVarsSet |> StringSet.mem(s)) {
              Some(mixedOrUnknown(~config));
@@ -382,7 +385,7 @@ let translatePrimitive =
     );
 
     let (propsFields, childrenTyp) =
-      switch (typ) {
+      switch (type_) {
       | Function({argTypes: [propOrChildren, ...childrenOrNil], _}) =>
         switch (childrenOrNil) {
         | [] => ([], mixedOrUnknown(~config))
@@ -390,12 +393,12 @@ let translatePrimitive =
           switch (propOrChildren) {
           | GroupOfLabeledArgs(fields) => (
               fields
-              |> List.map(({optional, typ, _} as field) =>
-                   switch (typ, optional) {
+              |> List.map(({optional, type_, _} as field) =>
+                   switch (type_, optional) {
                    | (Option(typ1), Optional) => {
                        ...field,
                        optional: Optional,
-                       typ: typ1,
+                       type_: typ1,
                      }
                    | _ => field
                    }
@@ -417,7 +420,7 @@ let translatePrimitive =
         exportType: {
           nameAs: None,
           opaque: Some(false),
-          optTyp: Some(propsTyp),
+          optType: Some(propsTyp),
           typeVars,
           resolvedTypeName: propsTypeName,
         },
@@ -449,7 +452,7 @@ let translatePrimitive =
         ImportValue({
           asPath,
           importAnnotation: importString |> Annotation.importFromString,
-          typ: typeExprTranslation.typ,
+          type_: typeExprTranslation.type_,
           valueName,
         }),
       ],

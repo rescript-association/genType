@@ -1,6 +1,7 @@
 open GenTypeCommon;
 
-let rec addAnnotationsToTyps = (expr: Typedtree.expression, typs: list(typ)) =>
+let rec addAnnotationsToTyps =
+        (expr: Typedtree.expression, typs: list(type_)) =>
   switch (expr.exp_desc, typs) {
   | (_, [GroupOfLabeledArgs(fields), ...nextTyps]) =>
     let (fields1, nextTyps1) =
@@ -12,7 +13,7 @@ let rec addAnnotationsToTyps = (expr: Typedtree.expression, typs: list(typ)) =>
   | _ => typs
   }
 and addAnnotationsToFields =
-    (expr: Typedtree.expression, fields: fields, typs: list(typ)) =>
+    (expr: Typedtree.expression, fields: fields, typs: list(type_)) =>
   switch (expr.exp_desc, fields, typs) {
   | (_, [], _) => ([], addAnnotationsToTyps(expr, typs))
   | (Texp_function(_lbl, [{c_rhs, _}], _), [field, ...nextFields], _) =>
@@ -42,13 +43,13 @@ let bugInOCaml4_02_3 = (expr: Typedtree.expression) =>
   };
 
 /* Recover from expr the renaming annotations on named arguments. */
-let addAnnotationsToFunctionType = (expr: Typedtree.expression, typ: typ) =>
-  switch (typ) {
+let addAnnotationsToFunctionType = (expr: Typedtree.expression, type_: type_) =>
+  switch (type_) {
   | Function(function_) =>
     let argTypes =
       function_.argTypes |> addAnnotationsToTyps(expr |> bugInOCaml4_02_3);
     Function({...function_, argTypes});
-  | _ => typ
+  | _ => type_
   };
 
 let translateValueBinding =
@@ -116,12 +117,7 @@ let rec translateModuleBinding =
   switch (mb_expr.mod_desc) {
   | Tmod_structure(structure) =>
     structure
-    |> translateStructure(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-       )
+    |> translateStructure(~config, ~outputFileRelative, ~resolver, ~typeEnv)
     |> Translation.combine
 
   | Tmod_apply(_) =>

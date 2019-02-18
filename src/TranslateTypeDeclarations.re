@@ -17,14 +17,14 @@ type declarationKind =
   | NoDeclaration;
 
 let createExportTypeFromTypeDeclaration =
-    (~nameAs, ~opaque, ~typeVars, ~optTyp, ~annotation, ~typeEnv, typeName)
+    (~nameAs, ~opaque, ~typeVars, ~optType, ~annotation, ~typeEnv, typeName)
     : CodeItem.exportFromTypeDeclaration => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
   {
     exportType: {
       nameAs,
       opaque,
-      optTyp,
+      optType,
       typeVars,
       resolvedTypeName,
     },
@@ -81,7 +81,7 @@ let traslateDeclarationKind =
              ~nameAs=None,
              ~opaque=Some(false),
              ~typeVars=[],
-             ~optTyp=None,
+             ~optType=None,
              ~annotation=Generated,
              ~typeEnv,
            );
@@ -99,7 +99,7 @@ let traslateDeclarationKind =
                    ~nameAs,
                    ~opaque=Some(true),
                    ~typeVars,
-                   ~optTyp=Some(mixedOrUnknown(~config)),
+                   ~optType=Some(mixedOrUnknown(~config)),
                    ~annotation,
                    ~typeEnv,
                  ),
@@ -115,7 +115,7 @@ let traslateDeclarationKind =
                ~nameAs,
                ~opaque,
                ~typeVars,
-               ~optTyp=Some(typ),
+               ~optType=Some(typ),
                ~annotation,
                ~typeEnv,
              );
@@ -144,7 +144,7 @@ let traslateDeclarationKind =
                   ~config,
                   ~typeEnv,
                 );
-           (translation, translation.typ);
+           (translation, translation.type_);
          },
        )
 
@@ -157,7 +157,7 @@ let traslateDeclarationKind =
              coreType
              |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
            let typ =
-             switch (optCoreType, translation.typ) {
+             switch (optCoreType, translation.type_) {
              | (
                  Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
                  Variant(variant),
@@ -180,7 +180,7 @@ let traslateDeclarationKind =
                  };
 
                createVariant(~noPayloads, ~payloads, ~polymorphic=true);
-             | _ => translation.typ
+             | _ => translation.type_
              };
            (translation, typ);
          },
@@ -220,15 +220,15 @@ let traslateDeclarationKind =
 
     let fields =
       fieldTranslations
-      |> List.map(((name, mutable_, {TranslateTypeExprFromTypes.typ, _})) => {
-           let (optional, typ1) =
-             switch (typ) {
-             | Option(typ1) => (Optional, typ1)
-             | _ => (Mandatory, typ)
+      |> List.map(((name, mutable_, {TranslateTypeExprFromTypes.type_, _})) => {
+           let (optional, type1) =
+             switch (type_) {
+             | Option(type1) => (Optional, type1)
+             | _ => (Mandatory, type_)
              };
-           {mutable_, name, optional, typ: typ1};
+           {mutable_, name, optional, type_: type1};
          });
-    let optTyp = Some(Record(fields));
+    let optType = Some(Record(fields));
     let typeVars = TypeVars.extract(typeParams);
     let opaque = Some(annotation == GenTypeOpaque);
     [
@@ -240,7 +240,7 @@ let traslateDeclarationKind =
                ~nameAs,
                ~opaque,
                ~typeVars,
-               ~optTyp,
+               ~optType,
                ~annotation,
                ~typeEnv,
              ),
@@ -264,7 +264,7 @@ let traslateDeclarationKind =
                 );
            let argTypes =
              argsTranslation
-             |> List.map(({TranslateTypeExprFromTypes.typ, _}) => typ);
+             |> List.map(({TranslateTypeExprFromTypes.type_, _}) => type_);
            let importTypes =
              argsTranslation
              |> List.map(({TranslateTypeExprFromTypes.dependencies, _}) =>
@@ -321,7 +321,7 @@ let traslateDeclarationKind =
       CodeItem.exportType: {
         nameAs,
         opaque,
-        optTyp: Some(variantTyp),
+        optType: Some(variantTyp),
         typeVars,
         resolvedTypeName,
       },

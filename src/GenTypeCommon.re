@@ -46,16 +46,16 @@ type closedFlag =
   | Open
   | Closed;
 
-type typ =
-  | Array(typ, mutable_)
+type type_ =
+  | Array(type_, mutable_)
   | Function(function_)
   | GroupOfLabeledArgs(fields)
-  | Ident(string, list(typ))
-  | Nullable(typ)
+  | Ident(string, list(type_))
+  | Nullable(type_)
   | Object(closedFlag, fields)
-  | Option(typ)
+  | Option(type_)
   | Record(fields)
-  | Tuple(list(typ))
+  | Tuple(list(type_))
   | TypeVar(string)
   | Variant(variant)
 and fields = list(field)
@@ -63,17 +63,17 @@ and field = {
   mutable_,
   name: string,
   optional,
-  typ,
+  type_,
 }
 and function_ = {
-  argTypes: list(typ),
-  retType: typ,
+  argTypes: list(type_),
+  retType: type_,
   typeVars: list(string),
   uncurried: bool,
 }
 and variant = {
   noPayloads: list(case),
-  payloads: list((case, int, typ)),
+  payloads: list((case, int, type_)),
   polymorphic: bool,
   toJS: string,
   toRE: string,

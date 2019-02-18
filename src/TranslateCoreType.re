@@ -74,7 +74,7 @@ let rec translateArrowType =
         ) =>
   switch (coreType.ctyp_desc) {
   | Ttyp_arrow("", coreType1, coreType2) =>
-    let {dependencies, typ} =
+    let {dependencies, type_} =
       coreType1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv, _);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
     coreType2
@@ -84,7 +84,7 @@ let rec translateArrowType =
          ~noFunctionReturnDependencies,
          ~typeEnv,
          ~revArgDeps=nextRevDeps,
-         ~revArgs=[(Nolabel, typ), ...revArgs],
+         ~revArgs=[(Nolabel, type_), ...revArgs],
        );
   | Ttyp_arrow(label, coreType1, coreType2) =>
     let asLabel =
@@ -94,7 +94,7 @@ let rec translateArrowType =
       };
     switch (coreType1 |> removeOption(~label)) {
     | None =>
-      let {dependencies, typ: typ1} =
+      let {dependencies, type_: typ1} =
         coreType1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       coreType2
@@ -110,7 +110,7 @@ let rec translateArrowType =
            ],
          );
     | Some((lbl, t1)) =>
-      let {dependencies, typ: typ1} =
+      let {dependencies, type_: typ1} =
         t1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       coreType2
@@ -127,7 +127,7 @@ let rec translateArrowType =
          );
     };
   | _ =>
-    let {dependencies, typ: retType} =
+    let {dependencies, type_: retType} =
       coreType |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
     let allDeps =
       List.rev_append(
@@ -141,7 +141,7 @@ let rec translateArrowType =
     let functionType =
       Function({argTypes, retType, typeVars: [], uncurried: false});
 
-    {dependencies: allDeps, typ: functionType};
+    {dependencies: allDeps, type_: functionType};
   }
 and translateCoreType_ =
     (
@@ -176,7 +176,7 @@ and translateCoreType_ =
     let getFieldType = ((name, _attibutes, t)) => (
       name,
       name |> Runtime.isMutableObjectField ?
-        {dependencies: [], typ: Ident("", [])} :
+        {dependencies: [], type_: Ident("", [])} :
         t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
     );
     let fieldsTranslations = tObj |> List.map(getFieldType);
@@ -224,7 +224,8 @@ and translateCoreType_ =
   | Ttyp_tuple(listExp) =>
     let innerTypesTranslation =
       listExp |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let innerTypes = innerTypesTranslation |> List.map(({typ, _}) => typ);
+    let innerTypes =
+      innerTypesTranslation |> List.map(({type_, _}) => type_);
     let innerTypesDeps =
       innerTypesTranslation
       |> List.map(({dependencies, _}) => dependencies)
@@ -232,9 +233,9 @@ and translateCoreType_ =
 
     let tupleType = Tuple(innerTypes);
 
-    {dependencies: innerTypesDeps, typ: tupleType};
+    {dependencies: innerTypesDeps, type_: tupleType};
 
-  | Ttyp_var(s) => {dependencies: [], typ: TypeVar(s)}
+  | Ttyp_var(s) => {dependencies: [], type_: TypeVar(s)}
 
   | Ttyp_variant(rowFields, _, _) =>
     switch (rowFields |> processVariant) {
@@ -260,32 +261,32 @@ and translateCoreType_ =
              (
                {label, labelJS: StringLabel(label)},
                numArgs,
-               translation.typ,
+               translation.type_,
              );
            });
-      let typ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
       let dependencies =
         payloadsTranslations
         |> List.map(((_, _, {dependencies, _})) => dependencies)
         |> List.concat;
-      {dependencies, typ};
+      {dependencies, type_};
 
-    | _ => {dependencies: [], typ: mixedOrUnknown(~config)}
+    | _ => {dependencies: [], type_: mixedOrUnknown(~config)}
     }
 
   | Ttyp_package({pack_path}) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path=pack_path)) {
     | Some(signature) =>
-      let (dependencies, typ) =
+      let (dependencies, type_) =
         signature.sig_type
         |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv);
-      {dependencies, typ};
-    | None => {dependencies: [], typ: mixedOrUnknown(~config)}
+      {dependencies, type_};
+    | None => {dependencies: [], type_: mixedOrUnknown(~config)}
     }
 
   | Ttyp_any
   | Ttyp_class(_)
-  | Ttyp_object(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
+  | Ttyp_object(_) => {dependencies: [], type_: mixedOrUnknown(~config)}
   }
 and translateCoreTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>

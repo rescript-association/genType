@@ -53,7 +53,7 @@ let findNameSpace = cmt => {
 
 /* Get the output file to be written, relative to the project root. */
 let getOutputFileRelative = (~config, cmt) =>
-  (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~config);
+  (cmt |> handleNamespace) ++ EmitType.outputFileSuffix(~config);
 
 /* Get the output file to be written, as an absolute path. */
 let getOutputFile = (~config, cmt) =>

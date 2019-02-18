@@ -3,14 +3,14 @@ open GenTypeCommon;
 type exportType = {
   nameAs: option(string),
   opaque: option(bool),
-  optTyp: option(typ),
+  optType: option(type_),
   typeVars: list(string),
   resolvedTypeName: string,
 };
 
 type importComponent = {
   asPath: string,
-  childrenTyp: typ,
+  childrenTyp: type_,
   exportType,
   importAnnotation: Annotation.import,
   propsFields: fields,
@@ -20,23 +20,23 @@ type importComponent = {
 type importValue = {
   asPath: string,
   importAnnotation: Annotation.import,
-  typ,
+  type_,
   valueName: string,
 };
 
 type exportComponent = {
   componentAccessPath: string,
-  componentType: typ,
+  componentType: type_,
   exportType,
   nestedModuleName: option(ModuleName.t),
   propsTypeName: string,
-  typ,
+  type_,
   valueAccessPath: string,
 };
 
 type exportValue = {
   resolvedName: string,
-  typ,
+  type_,
   valueAccessPath: string,
 };
 
@@ -54,7 +54,7 @@ type importType = {
 
 type exportTypeItem = {
   typeVars: list(string),
-  typ,
+  type_,
   annotation: Annotation.t,
 };
 

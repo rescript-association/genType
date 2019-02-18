@@ -116,7 +116,7 @@ let emitTranslation =
          ~inputCmtTranslateTypeDeclarations,
        );
   let fileContents =
-    signFile(EmitTyp.fileHeader(~config) ++ "\n" ++ codeText ++ "\n");
+    signFile(EmitType.fileHeader(~config) ++ "\n" ++ codeText ++ "\n");
 
   GeneratedFiles.writeFileIfRequired(~outputFile, ~fileContents);
 };
@@ -130,7 +130,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let fileName = cmt |> Paths.getModuleName;
     let resolver =
       ModuleResolver.createResolver(
-        ~extensions=[".re", EmitTyp.shimExtension(~config)],
+        ~extensions=[".re", EmitType.shimExtension(~config)],
         ~excludeFile=fname =>
         fname == "React.re" || fname == "ReasonReact.re"
       );
