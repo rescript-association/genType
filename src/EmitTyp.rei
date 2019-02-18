@@ -30,11 +30,11 @@ let emitExportConstEarly:
 
 let emitExportConstMany:
   (
+    ~config: config,
     ~emitters: Emitters.t,
     ~name: string,
-    ~typeNameIsInterface: string => bool,
     ~typ: typ,
-    ~config: config,
+    ~typeNameIsInterface: string => bool,
     list(string)
   ) =>
   Emitters.t;
