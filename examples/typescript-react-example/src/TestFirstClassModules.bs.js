@@ -5,8 +5,18 @@ function convert(x) {
   return x;
 }
 
+function convertInterface(x) {
+  return x;
+}
+
+function convertRecord(x) {
+  return x;
+}
+
 export {
   convert ,
+  convertInterface ,
+  convertRecord ,
   
 }
 /* No side effect */

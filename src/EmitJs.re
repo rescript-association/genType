@@ -751,12 +751,13 @@ let emitVariantTables = (~emitters, variantTables) => {
 let emitImportType =
     (
       ~config,
+      ~emitters,
+      ~env,
+      ~fileName,
+      ~inputCmtTranslateTypeDeclarations,
       ~outputFileRelative,
       ~resolver,
-      ~emitters,
-      ~inputCmtTranslateTypeDeclarations,
       ~typeNameIsInterface,
-      ~env,
       {CodeItem.typeName, asTypeName, importPath, cmtFile},
     ) => {
   let (env, emitters) =
@@ -783,6 +784,7 @@ let emitImportType =
           Cmt_format.read_cmt(cmtFile)
           |> inputCmtTranslateTypeDeclarations(
                ~config,
+               ~fileName,
                ~outputFileRelative,
                ~resolver,
              )
@@ -817,11 +819,12 @@ let emitImportType =
 let emitImportTypes =
     (
       ~config,
-      ~outputFileRelative,
-      ~resolver,
       ~emitters,
       ~env,
+      ~fileName,
       ~inputCmtTranslateTypeDeclarations,
+      ~outputFileRelative,
+      ~resolver,
       ~typeNameIsInterface,
       importTypes,
     ) =>
@@ -830,12 +833,13 @@ let emitImportTypes =
        ((env, emitters)) =>
          emitImportType(
            ~config,
+           ~emitters,
+           ~env,
+           ~fileName,
+           ~inputCmtTranslateTypeDeclarations,
            ~outputFileRelative,
            ~resolver,
-           ~emitters,
-           ~inputCmtTranslateTypeDeclarations,
            ~typeNameIsInterface,
-           ~env,
          ),
        (env, emitters),
      );
@@ -944,9 +948,10 @@ let propagateAnnotationToSubTypes =
 let emitTranslationAsString =
     (
       ~config,
+      ~fileName,
+      ~inputCmtTranslateTypeDeclarations,
       ~outputFileRelative,
       ~resolver,
-      ~inputCmtTranslateTypeDeclarations,
       translation: Translation.t,
     ) => {
   let initialEnv = {
@@ -1015,11 +1020,12 @@ let emitTranslationAsString =
     |> List.sort_uniq(Translation.importTypeCompare)
     |> emitImportTypes(
          ~config,
-         ~outputFileRelative,
-         ~resolver,
          ~emitters,
          ~env,
+         ~fileName,
          ~inputCmtTranslateTypeDeclarations,
+         ~outputFileRelative,
+         ~resolver,
          ~typeNameIsInterface,
        );
 

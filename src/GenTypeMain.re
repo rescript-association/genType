@@ -13,39 +13,62 @@ let cmtHasGenTypeAnnotations = inputCMT =>
   | _ => false
   };
 
-let typeDeclarationsOfStructItem = structItem =>
-  switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} => typeDeclarations
-  | _ => []
+let structureItemIsDeclaration = structItem =>
+  switch (structItem.Typedtree.str_desc) {
+  | Typedtree.Tstr_type(_)
+  | Tstr_modtype(_) => true
+  | _ => false
   };
 
-let typeDeclarationsOfSignature = signatureItem =>
-  switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} => typeDeclarations
-  | _ => []
+let signatureItemIsDeclaration = signatureItem =>
+  switch (signatureItem.Typedtree.sig_desc) {
+  | Typedtree.Tsig_type(_)
+  | Tsig_modtype(_) => true
+  | _ => false
   };
 
 let inputCmtTranslateTypeDeclarations =
-    (~config, ~outputFileRelative, ~resolver, inputCMT)
+    (~config, ~fileName, ~outputFileRelative, ~resolver, inputCMT)
     : list(CodeItem.typeDeclaration) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
-  (
-    switch (cmt_annots) {
-    | Implementation(structure) =>
-      structure.Typedtree.str_items |> List.map(typeDeclarationsOfStructItem)
-    | Interface(signature) =>
-      signature.Typedtree.sig_items |> List.map(typeDeclarationsOfSignature)
-    | _ => []
+  switch (cmt_annots) {
+  | Implementation(structure) =>
+    {
+      ...structure,
+      str_items:
+        structure.str_items |> List.filter(structureItemIsDeclaration),
     }
-  )
-  |> List.concat
-  |> TranslateTypeDeclarations.translateTypeDeclarations(
-       ~config,
-       ~outputFileRelative,
-       ~resolver,
-       ~typeEnv,
-     );
+    |> TranslateStructure.translateStructure(
+         ~config,
+         ~fileName,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
+    |> List.map(x => x.CodeItem.typeDeclarations)
+    |> List.concat
+
+  | Interface(signature) =>
+    {
+      ...signature,
+      sig_items:
+        signature.sig_items |> List.filter(signatureItemIsDeclaration),
+    }
+    |> TranslateSignature.translateSignature(
+         ~config,
+         ~fileName,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
+    |> List.map(x => x.CodeItem.typeDeclarations)
+    |> List.concat
+
+  | Packed(_)
+  | Partial_implementation(_)
+  | Partial_interface(_) => []
+  };
 };
 
 let translateCMT =
@@ -81,16 +104,18 @@ let translateCMT =
 let emitTranslation =
     (
       ~config,
+      ~fileName,
       ~outputFile,
       ~outputFileRelative,
-      ~signFile,
       ~resolver,
+      ~signFile,
       translation,
     ) => {
   let codeText =
     translation
     |> EmitJs.emitTranslationAsString(
          ~config,
+         ~fileName,
          ~outputFileRelative,
          ~resolver,
          ~inputCmtTranslateTypeDeclarations,
@@ -119,10 +144,11 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       |> translateCMT(~config, ~outputFileRelative, ~resolver, ~fileName)
       |> emitTranslation(
            ~config,
+           ~fileName,
            ~outputFile,
            ~outputFileRelative,
-           ~signFile,
            ~resolver,
+           ~signFile,
          );
     } else {
       outputFile |> GeneratedFiles.logFileAction(NoMatch);

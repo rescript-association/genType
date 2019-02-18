@@ -1,3 +1,6 @@
+# master
+- Fix: convert first-class module types when defined in other files.
+
 # 2.8.0
 - Allow misspelling "genType" as "gentype".
 - Auto uncurry functions of type unit => ...

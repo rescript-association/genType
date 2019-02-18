@@ -3,6 +3,23 @@
 // tslint:disable-next-line:no-var-requires
 const TestFirstClassModulesBS = require('./TestFirstClassModules.bs');
 
+import {firstClassModule as FirstClassModulesInterface_firstClassModule} from './FirstClassModulesInterface.gen';
+
 import {firstClassModule as FirstClassModules_firstClassModule} from './FirstClassModules.gen';
 
-export const convert: (_1:FirstClassModules_firstClassModule) => FirstClassModules_firstClassModule = TestFirstClassModulesBS.convert;
+import {record as FirstClassModulesInterface_record} from './FirstClassModulesInterface.gen';
+
+export const convert: (_1:FirstClassModules_firstClassModule) => FirstClassModules_firstClassModule = function _(Arg1: any) {
+  const result = TestFirstClassModulesBS.convert([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]);
+  return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, Z:result[3], y:result[4]}
+};
+
+export const convertInterface: (_1:FirstClassModulesInterface_firstClassModule) => FirstClassModulesInterface_firstClassModule = function _(Arg1: any) {
+  const result = TestFirstClassModulesBS.convertInterface([Arg1.x]);
+  return {x:result[0]}
+};
+
+export const convertRecord: (_1:FirstClassModulesInterface_record) => FirstClassModulesInterface_record = function _(Arg1: any) {
+  const result = TestFirstClassModulesBS.convertRecord([Arg1.x, Arg1.y]);
+  return {x:result[0], y:result[1]}
+};
