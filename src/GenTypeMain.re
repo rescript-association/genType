@@ -118,7 +118,7 @@ let emitTranslation =
   let fileContents =
     signFile(EmitTyp.fileHeader(~config) ++ "\n" ++ codeText ++ "\n");
 
-  GeneratedFiles.writeFileIfRequired(~fileName=outputFile, ~fileContents);
+  GeneratedFiles.writeFileIfRequired(~outputFile, ~fileContents);
 };
 
 let processCmtFile = (~signFile, ~config, cmt) => {

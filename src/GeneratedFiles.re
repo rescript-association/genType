@@ -48,17 +48,17 @@ let writeFile = (filePath: string, contents: string) => {
   close_out(outFile);
 };
 
-let writeFileIfRequired = (~fileName, ~fileContents) =>
-  if (Sys.file_exists(fileName)) {
-    let oldContents = readFile(fileName);
+let writeFileIfRequired = (~outputFile, ~fileContents) =>
+  if (Sys.file_exists(outputFile)) {
+    let oldContents = readFile(outputFile);
     let identical = oldContents == fileContents;
     if (identical) {
-      fileName |> logFileAction(Identical);
+      outputFile |> logFileAction(Identical);
     } else {
-      fileName |> logFileAction(Replace);
-      writeFile(fileName, fileContents);
+      outputFile |> logFileAction(Replace);
+      writeFile(outputFile, fileContents);
     };
   } else {
-    fileName |> logFileAction(Write);
-    writeFile(fileName, fileContents);
+    outputFile |> logFileAction(Write);
+    writeFile(outputFile, fileContents);
   };
