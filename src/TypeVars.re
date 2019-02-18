@@ -131,4 +131,3 @@ and freeOfList_ = typs =>
 and (+++) = StringSet.union;
 
 let free = type_ => type_ |> free_ |> StringSet.elements;
-let freeOfList = type_ => type_ |> freeOfList_ |> StringSet.elements;
