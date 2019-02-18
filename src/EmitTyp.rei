@@ -7,11 +7,11 @@ let componentExportName:
 let emitExportConst:
   (
     ~comment: string=?,
+    ~config: config,
     ~emitters: Emitters.t,
     ~name: string,
-    ~typeNameIsInterface: string => bool,
     ~typ: typ,
-    ~config: config,
+    ~typeNameIsInterface: string => bool,
     string
   ) =>
   Emitters.t;
@@ -19,11 +19,11 @@ let emitExportConst:
 let emitExportConstEarly:
   (
     ~comment: string=?,
+    ~config: config,
     ~emitters: Emitters.t,
     ~name: string,
-    ~typeNameIsInterface: string => bool,
     ~typ: typ,
-    ~config: config,
+    ~typeNameIsInterface: string => bool,
     string
   ) =>
   Emitters.t;

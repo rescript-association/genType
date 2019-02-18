@@ -374,11 +374,11 @@ let rec emitCodeItem =
              "Export '"
              ++ "make"
              ++ "' early to allow circular import from the '.bs.js' file.",
+           ~config,
            ~emitters,
            ~name="make",
-           ~typeNameIsInterface,
            ~typ=mixedOrUnknown(~config),
-           ~config,
+           ~typeNameIsInterface,
          );
     let env =
       ModuleName.reasonReact
@@ -434,10 +434,6 @@ let rec emitCodeItem =
       (importedAsName ++ restOfPath)
       ++ ";"
       |> EmitTyp.emitExportConstEarly(
-           ~emitters,
-           ~name=valueNameTypeChecked,
-           ~typeNameIsInterface,
-           ~typ,
            ~config,
            ~comment=
              "In case of type error, check the type of '"
@@ -448,6 +444,10 @@ let rec emitCodeItem =
              ++ " and '"
              ++ (importPath |> ImportPath.toString)
              ++ "'.",
+           ~emitters,
+           ~name=valueNameTypeChecked,
+           ~typ,
+           ~typeNameIsInterface,
          );
     let emitters =
       (
@@ -469,11 +469,11 @@ let rec emitCodeItem =
              "Export '"
              ++ valueName
              ++ "' early to allow circular import from the '.bs.js' file.",
+           ~config,
            ~emitters,
            ~name=valueName,
-           ~typeNameIsInterface,
            ~typ=mixedOrUnknown(~config),
-           ~config,
+           ~typeNameIsInterface,
          );
     ({...env, importedValueOrComponent: true}, emitters);
 
@@ -580,11 +580,11 @@ let rec emitCodeItem =
 
     let emitters =
       EmitTyp.emitExportConstMany(
+        ~config,
         ~emitters,
         ~name,
-        ~typeNameIsInterface,
         ~typ=componentType,
-        ~config,
+        ~typeNameIsInterface,
         [
           "ReasonReact.wrapReasonForJs(",
           "  "
@@ -664,11 +664,11 @@ let rec emitCodeItem =
       )
       ++ ";"
       |> EmitTyp.emitExportConst(
+           ~config,
            ~emitters,
            ~name=resolvedName,
-           ~typeNameIsInterface,
            ~typ,
-           ~config,
+           ~typeNameIsInterface,
          );
 
     (envWithRequires, emitters);

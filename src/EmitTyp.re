@@ -280,11 +280,11 @@ let emitExportConst_ =
     (
       ~early,
       ~comment="",
+      ~config,
       ~emitters,
       ~name,
-      ~typeNameIsInterface,
       ~typ,
-      ~config,
+      ~typeNameIsInterface,
       line,
     ) =>
   (comment == "" ? comment : "// " ++ comment ++ "\n")
