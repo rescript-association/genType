@@ -923,7 +923,8 @@ let propagateAnnotationToSubTypes =
         retType |> visit;
       | GroupOfLabeledArgs(fields)
       | Object(_, fields)
-      | Record(fields) => fields |> List.iter(({type_, _}) => type_ |> visit)
+      | Record(fields) =>
+        fields |> List.iter(({type_, _}) => type_ |> visit)
       | Option(t)
       | Nullable(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
@@ -996,8 +997,8 @@ let emitTranslationAsString =
       ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
     );
 
-  let typeGetNormalized_ = (~env, typ) =>
-    typ
+  let typeGetNormalized_ = (~env, type_) =>
+    type_
     |> Converter.typeToConverterNormalized(
          ~config,
          ~exportTypeMap,
@@ -1006,8 +1007,8 @@ let emitTranslationAsString =
        )
     |> snd;
 
-  let typeToConverter_ = (~env, typ) =>
-    typ
+  let typeToConverter_ = (~env, type_) =>
+    type_
     |> Converter.typeToConverter(
          ~config,
          ~exportTypeMap,

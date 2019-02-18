@@ -33,9 +33,9 @@ let combine = (translations: list(t)): t =>
   );
 
 /* Applies type parameters to types (for all) */
-let abstractTheTypeParameters = (~typeVars, typ) =>
-  switch (typ) {
-  | Array(_) => typ
+let abstractTheTypeParameters = (~typeVars, type_) =>
+  switch (type_) {
+  | Array(_) => type_
   | Function({argTypes, retType, uncurried, _}) =>
     Function({argTypes, retType, typeVars, uncurried})
   | GroupOfLabeledArgs(_)
@@ -46,7 +46,7 @@ let abstractTheTypeParameters = (~typeVars, typ) =>
   | Record(_)
   | Tuple(_)
   | TypeVar(_)
-  | Variant(_) => typ
+  | Variant(_) => type_
   };
 
 let rec pathIsResolved = (path: Dependencies.path) =>

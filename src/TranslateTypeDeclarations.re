@@ -107,7 +107,7 @@ let traslateDeclarationKind =
         ]
       | Some(someType) =>
         let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
-        let (translation: TranslateTypeExprFromTypes.translation, typ) =
+        let (translation: TranslateTypeExprFromTypes.translation, type_) =
           someType |> defaultCase;
         let exportFromTypeDeclaration =
           typeName
@@ -115,7 +115,7 @@ let traslateDeclarationKind =
                ~nameAs,
                ~opaque,
                ~typeVars,
-               ~optType=Some(typ),
+               ~optType=Some(type_),
                ~annotation,
                ~typeEnv,
              );
@@ -171,9 +171,10 @@ let traslateDeclarationKind =
                      |> List.length
                      == (rowFieldsVariants.payloads |> List.length)) {
                    List.combine(variant.payloads, rowFieldsVariants.payloads)
-                   |> List.map((((_case, i, typ), (label, attributes, _))) => {
+                   |> List.map(
+                        (((_case, i, type_), (label, attributes, _))) => {
                         let case = (label, attributes) |> createCase;
-                        (case, i, typ);
+                        (case, i, type_);
                       });
                  } else {
                    variant.payloads;

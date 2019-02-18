@@ -171,9 +171,9 @@ let rec renderType =
          );
     let payloadsRendered =
       payloads
-      |> List.map(((case, _numArgs, typ)) => {
+      |> List.map(((case, _numArgs, type_)) => {
            let typRendered =
-             typ
+             type_
              |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType);
            unboxed ?
              typRendered :
@@ -375,19 +375,19 @@ let emitExportType =
   switch (config.language) {
   | Flow =>
     switch (optType) {
-    | Some(typ) when config.exportInterfaces && isInterface && !opaque =>
+    | Some(type_) when config.exportInterfaces && isInterface && !opaque =>
       "export interface "
       ++ resolvedTypeName
       ++ typeParamsString
       ++ " "
       ++ (
-        (opaque ? mixedOrUnknown(~config) : typ)
+        (opaque ? mixedOrUnknown(~config) : type_)
         |> typeToString(~config, ~typeNameIsInterface)
       )
       ++ ";"
       ++ exportNameAs
       |> export(~emitters)
-    | Some(typ) =>
+    | Some(type_) =>
       "export"
       ++ (opaque ? " opaque " : " ")
       ++ "type "
@@ -395,7 +395,7 @@ let emitExportType =
       ++ typeParamsString
       ++ " = "
       ++ (
-        (opaque ? mixedOrUnknown(~config) : typ)
+        (opaque ? mixedOrUnknown(~config) : type_)
         |> typeToString(~config, ~typeNameIsInterface)
       )
       ++ ";"
