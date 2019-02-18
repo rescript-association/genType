@@ -395,10 +395,10 @@ let translatePrimitive =
               fields
               |> List.map(({optional, type_, _} as field) =>
                    switch (type_, optional) {
-                   | (Option(typ1), Optional) => {
+                   | (Option(type1), Optional) => {
                        ...field,
                        optional: Optional,
-                       type_: typ1,
+                       type_: type1,
                      }
                    | _ => field
                    }

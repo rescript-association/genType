@@ -47,14 +47,14 @@ let rec renderType =
         (~config, ~indent=None, ~typeNameIsInterface, ~inFunType, type0) =>
   switch (type0) {
   | Array(t, arrayKind) =>
-    let typIsSimple =
+    let typeIsSimple =
       switch (t) {
       | Ident(_)
       | TypeVar(_) => true
       | _ => false
       };
 
-    if (config.language == TypeScript && typIsSimple && arrayKind == Mutable) {
+    if (config.language == TypeScript && typeIsSimple && arrayKind == Mutable) {
       (t |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType))
       ++ "[]";
     } else {
@@ -172,16 +172,16 @@ let rec renderType =
     let payloadsRendered =
       payloads
       |> List.map(((case, _numArgs, type_)) => {
-           let typRendered =
+           let typeRendered =
              type_
              |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType);
            unboxed ?
-             typRendered :
+             typeRendered :
              [
                case.labelJS
                |> labelJSToString
                |> field(~name=Runtime.jsVariantTag),
-               typRendered |> field(~name=Runtime.jsVariantValue),
+               typeRendered |> field(~name=Runtime.jsVariantValue),
              ]
              |> fields;
          });

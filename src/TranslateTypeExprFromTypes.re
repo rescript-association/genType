@@ -356,12 +356,12 @@ let rec translateArrowType =
       ~revArgs,
       t,
     )
-  | Tarrow("", typExpr1, typExpr2, _) =>
+  | Tarrow("", typeExpr1, typeExpr2, _) =>
     let {dependencies, type_} =
-      typExpr1
+      typeExpr1
       |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv, _);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-    typExpr2
+    typeExpr2
     |> translateArrowType(
          ~config,
          ~typeVarsGen,
@@ -370,34 +370,34 @@ let rec translateArrowType =
          ~revArgDeps=nextRevDeps,
          ~revArgs=[(Nolabel, type_), ...revArgs],
        );
-  | Tarrow(label, typExpr1, typExpr2, _) =>
-    switch (typExpr1 |> removeOption(~label)) {
+  | Tarrow(label, typeExpr1, typeExpr2, _) =>
+    switch (typeExpr1 |> removeOption(~label)) {
     | None =>
-      let {dependencies, type_: typ1} =
-        typExpr1
+      let {dependencies, type_: type1} =
+        typeExpr1
         |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      typExpr2
+      typeExpr2
       |> translateArrowType(
            ~config,
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(Label(label), typ1), ...revArgs],
+           ~revArgs=[(Label(label), type1), ...revArgs],
          );
     | Some((lbl, t1)) =>
-      let {dependencies, type_: typ1} =
+      let {dependencies, type_: type1} =
         t1 |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      typExpr2
+      typeExpr2
       |> translateArrowType(
            ~config,
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(OptLabel(lbl), typ1), ...revArgs],
+           ~revArgs=[(OptLabel(lbl), type1), ...revArgs],
          );
     }
   | _ =>
@@ -591,7 +591,7 @@ and translateTypeExprFromTypes_ =
       }
     }
 
-  | Tpackage(path, _ids, _typs) =>
+  | Tpackage(path, _ids, _types) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
     | Some(signature) =>
       let (dependencies, type_) =

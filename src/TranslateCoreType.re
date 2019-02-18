@@ -94,7 +94,7 @@ let rec translateArrowType =
       };
     switch (coreType1 |> removeOption(~label)) {
     | None =>
-      let {dependencies, type_: typ1} =
+      let {dependencies, type_: type1} =
         coreType1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       coreType2
@@ -105,12 +105,12 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (Label(asLabel == "" ? label : asLabel), typ1),
+             (Label(asLabel == "" ? label : asLabel), type1),
              ...revArgs,
            ],
          );
     | Some((lbl, t1)) =>
-      let {dependencies, type_: typ1} =
+      let {dependencies, type_: type1} =
         t1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       coreType2
@@ -121,7 +121,7 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (OptLabel(asLabel == "" ? lbl : asLabel), typ1),
+             (OptLabel(asLabel == "" ? lbl : asLabel), type1),
              ...revArgs,
            ],
          );

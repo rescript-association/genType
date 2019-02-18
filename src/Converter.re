@@ -141,7 +141,7 @@ let typeToConverterNormalized =
 
     | Function({argTypes, retType, uncurried, _}) =>
       let argConverters =
-        argTypes |> List.map(typToGroupedArgConverter(~visited));
+        argTypes |> List.map(typeToGroupedArgConverter(~visited));
       let (retConverter, _) = retType |> visit(~visited);
       (FunctionC({argConverters, retConverter, uncurried}), normalized_);
 
@@ -236,7 +236,7 @@ let typeToConverterNormalized =
         | [] => ([], normalized_, variant.unboxed)
         | [(case, numArgs, t)] =>
           let converter = t |> visit(~visited) |> fst;
-          let unboxed = t |> expandOneLevel |> typIsObject;
+          let unboxed = t |> expandOneLevel |> typeIsObject;
           let normalized =
             unboxed ?
               Some(Variant({...variant, unboxed: true})) : normalized_;
@@ -265,7 +265,7 @@ let typeToConverterNormalized =
       (converter, normalized);
     };
   }
-  and typToGroupedArgConverter = (~visited, type_) =>
+  and typeToGroupedArgConverter = (~visited, type_) =>
     switch (type_) {
     | GroupOfLabeledArgs(fields) =>
       GroupConverter(

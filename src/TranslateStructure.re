@@ -1,8 +1,8 @@
 open GenTypeCommon;
 
 let rec addAnnotationsToTyps =
-        (expr: Typedtree.expression, typs: list(type_)) =>
-  switch (expr.exp_desc, typs) {
+        (expr: Typedtree.expression, types: list(type_)) =>
+  switch (expr.exp_desc, types) {
   | (_, [GroupOfLabeledArgs(fields), ...nextTyps]) =>
     let (fields1, nextTyps1) =
       addAnnotationsToFields(expr, fields, nextTyps);
@@ -10,24 +10,24 @@ let rec addAnnotationsToTyps =
   | (Texp_function(_lbl, [{c_rhs, _}], _), [type_, ...nextTyps]) =>
     let nextTyps1 = addAnnotationsToTyps(c_rhs, nextTyps);
     [type_, ...nextTyps1];
-  | _ => typs
+  | _ => types
   }
 and addAnnotationsToFields =
-    (expr: Typedtree.expression, fields: fields, typs: list(type_)) =>
-  switch (expr.exp_desc, fields, typs) {
-  | (_, [], _) => ([], addAnnotationsToTyps(expr, typs))
+    (expr: Typedtree.expression, fields: fields, types: list(type_)) =>
+  switch (expr.exp_desc, fields, types) {
+  | (_, [], _) => ([], addAnnotationsToTyps(expr, types))
   | (Texp_function(_lbl, [{c_rhs, _}], _), [field, ...nextFields], _) =>
     switch (expr.exp_attributes |> Annotation.getAttributeRenaming) {
     | Some(s) =>
-      let (nextFields1, typs1) =
-        addAnnotationsToFields(c_rhs, nextFields, typs);
-      ([{...field, name: s}, ...nextFields1], typs1);
+      let (nextFields1, types1) =
+        addAnnotationsToFields(c_rhs, nextFields, types);
+      ([{...field, name: s}, ...nextFields1], types1);
     | None =>
-      let (nextFields1, typs1) =
-        addAnnotationsToFields(c_rhs, nextFields, typs);
-      ([field, ...nextFields1], typs1);
+      let (nextFields1, types1) =
+        addAnnotationsToFields(c_rhs, nextFields, types);
+      ([field, ...nextFields1], types1);
     }
-  | _ => (fields, typs)
+  | _ => (fields, types)
   };
 
 /* Because of a bug in 4.03.2, the first attribute of a function type is lost.

@@ -75,7 +75,7 @@ let rec substitute = (~f, type0) =>
   | TypeVar(s) =>
     switch (f(s)) {
     | None => type0
-    | Some(typ1) => typ1
+    | Some(type1) => type1
     }
   | Variant(variant) =>
     Variant({
@@ -126,8 +126,8 @@ let rec free_ = type0: StringSet.t =>
          StringSet.empty,
        )
   }
-and freeOfList_ = typs =>
-  typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)
+and freeOfList_ = types =>
+  types |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)
 and (+++) = StringSet.union;
 
 let free = type_ => type_ |> free_ |> StringSet.elements;

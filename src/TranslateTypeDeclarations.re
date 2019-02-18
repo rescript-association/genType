@@ -302,7 +302,7 @@ let traslateDeclarationKind =
       |> List.map(((name, attributes, argTypes, _importTypes, recordValue)) => {
            let type_ =
              switch (argTypes) {
-             | [typ] => typ
+             | [type_] => type_
              | _ => Tuple(argTypes)
              };
            let numArgs = argTypes |> List.length;
