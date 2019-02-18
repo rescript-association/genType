@@ -5,7 +5,7 @@ let addModulePath: (~typeEnv: t, string) => string;
 let addModuleTypeSignature:
   (~name: string, ~signature: Typedtree.signature, t) => unit;
 
-let getCurrentModuleName: (~fileName: ModuleName.t, t) => ModuleName.t;
+let getNestedModuleName: t => option(ModuleName.t);
 
 /* Access path for the value in the module.
    It can be the value name if the module is not nested.

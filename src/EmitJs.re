@@ -77,17 +77,18 @@ let createExportTypeMap =
 
 let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
   switch (codeItem) {
-  | ExportComponent({fileName, moduleName, _}) =>
-    "ExportComponent fileName:"
-    ++ (fileName |> ModuleName.toString)
-    ++ " moduleName:"
-    ++ (moduleName |> ModuleName.toString)
-  | ExportValue({fileName, resolvedName, typ, _}) =>
+  | ExportComponent({nestedModuleName, _}) =>
+    "ExportComponent nestedModuleName:"
+    ++ (
+      switch (nestedModuleName) {
+      | Some(moduleName) => moduleName |> ModuleName.toString
+      | None => ""
+      }
+    )
+  | ExportValue({resolvedName, typ, _}) =>
     "ExportValue"
     ++ " resolvedName:"
     ++ resolvedName
-    ++ " moduleName:"
-    ++ ModuleName.toString(fileName)
     ++ " typ:"
     ++ EmitTyp.typToString(~config, ~typeNameIsInterface, typ)
   | ImportComponent({importAnnotation, _}) =>
@@ -194,6 +195,7 @@ let rec emitCodeItem =
           ~config,
           ~emitters,
           ~env,
+          ~fileName,
           ~importCurry,
           ~outputFileRelative,
           ~resolver,
@@ -218,7 +220,6 @@ let rec emitCodeItem =
       asPath,
       childrenTyp,
       exportType,
-      fileName,
       importAnnotation,
       propsFields,
       propsTypeName,
@@ -388,7 +389,7 @@ let rec emitCodeItem =
          );
     ({...env, importedValueOrComponent: true}, emitters);
 
-  | ImportValue({asPath, fileName, importAnnotation, typ, valueName}) =>
+  | ImportValue({asPath, importAnnotation, typ, valueName}) =>
     let nameGen = EmitText.newNameGen();
     let importPath = importAnnotation.importPath;
     let (firstNameInPath, restOfPath) =
@@ -480,8 +481,7 @@ let rec emitCodeItem =
       componentAccessPath,
       componentType,
       exportType,
-      fileName,
-      moduleName,
+      nestedModuleName,
       propsTypeName,
       typ,
       valueAccessPath,
@@ -497,6 +497,11 @@ let rec emitCodeItem =
            ~importExtension=".bs",
          );
     let moduleNameBs = fileName |> ModuleName.forBsFile;
+    let moduleName =
+      switch (nestedModuleName) {
+      | Some(moduleName) => moduleName
+      | None => fileName
+      };
 
     let name = EmitTyp.componentExportName(~config, ~fileName, ~moduleName);
     let jsProps = "jsProps";
@@ -627,7 +632,7 @@ let rec emitCodeItem =
     importCurry := importCurry^ || useCurry;
     (env, emitters);
 
-  | ExportValue({fileName, resolvedName, typ, valueAccessPath}) =>
+  | ExportValue({resolvedName, typ, valueAccessPath}) =>
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
@@ -675,6 +680,7 @@ and emitCodeItems =
       ~outputFileRelative,
       ~emitters,
       ~env,
+      ~fileName,
       ~importCurry,
       ~resolver,
       ~typeNameIsInterface,
@@ -691,6 +697,7 @@ and emitCodeItems =
            ~config,
            ~emitters,
            ~env,
+           ~fileName,
            ~importCurry,
            ~outputFileRelative,
            ~resolver,
@@ -753,7 +760,6 @@ let emitImportType =
       ~config,
       ~emitters,
       ~env,
-      ~fileName,
       ~inputCmtTranslateTypeDeclarations,
       ~outputFileRelative,
       ~resolver,
@@ -784,7 +790,6 @@ let emitImportType =
           Cmt_format.read_cmt(cmtFile)
           |> inputCmtTranslateTypeDeclarations(
                ~config,
-               ~fileName,
                ~outputFileRelative,
                ~resolver,
              )
@@ -821,7 +826,6 @@ let emitImportTypes =
       ~config,
       ~emitters,
       ~env,
-      ~fileName,
       ~inputCmtTranslateTypeDeclarations,
       ~outputFileRelative,
       ~resolver,
@@ -835,7 +839,6 @@ let emitImportTypes =
            ~config,
            ~emitters,
            ~env,
-           ~fileName,
            ~inputCmtTranslateTypeDeclarations,
            ~outputFileRelative,
            ~resolver,
@@ -1022,7 +1025,6 @@ let emitTranslationAsString =
          ~config,
          ~emitters,
          ~env,
-         ~fileName,
          ~inputCmtTranslateTypeDeclarations,
          ~outputFileRelative,
          ~resolver,
@@ -1048,6 +1050,7 @@ let emitTranslationAsString =
          ~config,
          ~emitters,
          ~env,
+         ~fileName,
          ~importCurry,
          ~outputFileRelative,
          ~resolver,

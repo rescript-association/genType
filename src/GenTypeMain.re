@@ -28,7 +28,7 @@ let signatureItemIsDeclaration = signatureItem =>
   };
 
 let inputCmtTranslateTypeDeclarations =
-    (~config, ~fileName, ~outputFileRelative, ~resolver, inputCMT)
+    (~config, ~outputFileRelative, ~resolver, inputCMT)
     : list(CodeItem.typeDeclaration) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
@@ -41,7 +41,6 @@ let inputCmtTranslateTypeDeclarations =
     }
     |> TranslateStructure.translateStructure(
          ~config,
-         ~fileName,
          ~outputFileRelative,
          ~resolver,
          ~typeEnv,
@@ -57,7 +56,6 @@ let inputCmtTranslateTypeDeclarations =
     }
     |> TranslateSignature.translateSignature(
          ~config,
-         ~fileName,
          ~outputFileRelative,
          ~resolver,
          ~typeEnv,
@@ -72,8 +70,7 @@ let inputCmtTranslateTypeDeclarations =
 };
 
 let translateCMT =
-    (~config, ~outputFileRelative, ~resolver, ~fileName, inputCMT)
-    : Translation.t => {
+    (~config, ~outputFileRelative, ~resolver, inputCMT): Translation.t => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
   let translations =
@@ -84,7 +81,6 @@ let translateCMT =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          )
     | Interface(signature) =>
@@ -93,7 +89,6 @@ let translateCMT =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          )
     | _ => []
@@ -141,7 +136,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       );
     if (inputCMT |> cmtHasGenTypeAnnotations) {
       inputCMT
-      |> translateCMT(~config, ~outputFileRelative, ~resolver, ~fileName)
+      |> translateCMT(~config, ~outputFileRelative, ~resolver)
       |> emitTranslation(
            ~config,
            ~fileName,

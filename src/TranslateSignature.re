@@ -5,7 +5,6 @@ let translateSignatureValue =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
     )
@@ -26,7 +25,6 @@ let translateSignatureValue =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~typeExpr,
          ~addAnnotationsToFunction,
@@ -40,7 +38,6 @@ let rec translateModuleDeclaration =
           ~config,
           ~outputFileRelative,
           ~resolver,
-          ~fileName,
           ~typeEnv,
           {md_id, md_type, _}: Typedtree.module_declaration,
         ) => {
@@ -57,7 +54,6 @@ let rec translateModuleDeclaration =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
     |> Translation.combine
@@ -71,7 +67,6 @@ let rec translateModuleDeclaration =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          )
       |> Translation.combine
@@ -96,7 +91,6 @@ and translateModuleTypeDeclaration =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       moduleTypeDeclaration: Typedtree.module_type_declaration,
     ) => {
@@ -118,7 +112,6 @@ and translateModuleTypeDeclaration =
              ~config,
              ~outputFileRelative,
              ~resolver,
-             ~fileName,
              ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
            )
         |> Translation.combine;
@@ -149,7 +142,6 @@ and translateSignatureItem =
       ~outputFileRelative,
       ~resolver,
       ~moduleItemGen,
-      ~fileName,
       ~typeEnv,
       signatureItem,
     )
@@ -175,7 +167,6 @@ and translateSignatureItem =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          );
     } else {
@@ -186,7 +177,6 @@ and translateSignatureItem =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          );
     }
@@ -197,7 +187,6 @@ and translateSignatureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
 
@@ -209,7 +198,6 @@ and translateSignatureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        );
 
@@ -239,7 +227,7 @@ and translateSignatureItem =
     Translation.empty;
   }
 and translateSignature =
-    (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, signature)
+    (~config, ~outputFileRelative, ~resolver, ~typeEnv, signature)
     : list(Translation.t) => {
   if (Debug.translation^) {
     logItem("Translate Signature\n");
@@ -252,7 +240,6 @@ and translateSignature =
          ~outputFileRelative,
          ~resolver,
          ~moduleItemGen,
-         ~fileName,
          ~typeEnv,
        ),
      );

@@ -124,7 +124,6 @@ let translateValue =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       ~typeExpr,
       ~addAnnotationsToFunction: typ => typ,
@@ -148,7 +147,7 @@ let translateValue =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.ExportValue({fileName, resolvedName, typ, valueAccessPath}),
+    CodeItem.ExportValue({resolvedName, typ, valueAccessPath}),
   ];
   {
     importTypes:
@@ -185,7 +184,6 @@ let translateComponent =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       ~typeExpr,
       ~addAnnotationsToFunction: typ => typ,
@@ -265,7 +263,9 @@ let translateComponent =
       };
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
     let componentType = EmitTyp.reactComponentType(~config, ~propsTypeName);
-    let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
+
+
+    let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 
     let valueAccessPath = typeEnv |> TypeEnv.getValueAccessPath(~name="make");
     let componentAccessPath =
@@ -283,8 +283,7 @@ let translateComponent =
           typeVars,
           resolvedTypeName: propsTypeName,
         },
-        fileName,
-        moduleName,
+        nestedModuleName,
         propsTypeName,
         typ,
         valueAccessPath,
@@ -305,7 +304,6 @@ let translateComponent =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~typeExpr,
          ~addAnnotationsToFunction,
@@ -322,7 +320,6 @@ let translatePrimitive =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
     )
@@ -424,7 +421,6 @@ let translatePrimitive =
           typeVars,
           resolvedTypeName: propsTypeName,
         },
-        fileName,
         importAnnotation: importString |> Annotation.importFromString,
         propsFields,
         propsTypeName,
@@ -452,7 +448,6 @@ let translatePrimitive =
       codeItems: [
         ImportValue({
           asPath,
-          fileName,
           importAnnotation: importString |> Annotation.importFromString,
           typ: typeExprTranslation.typ,
           valueName,

@@ -57,7 +57,6 @@ let translateValueBinding =
       ~outputFileRelative,
       ~resolver,
       ~moduleItemGen,
-      ~fileName,
       ~typeEnv,
       valueBinding,
     )
@@ -88,7 +87,6 @@ let translateValueBinding =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~typeExpr,
          ~addAnnotationsToFunction=addAnnotationsToFunctionType(vb_expr),
@@ -102,7 +100,6 @@ let rec translateModuleBinding =
           ~config,
           ~outputFileRelative,
           ~resolver,
-          ~fileName,
           ~typeEnv,
           ~moduleItemGen,
           {mb_id, mb_expr, _}: Typedtree.module_binding,
@@ -123,7 +120,6 @@ let rec translateModuleBinding =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
     |> Translation.combine
@@ -173,7 +169,6 @@ let rec translateModuleBinding =
              ~config,
              ~outputFileRelative,
              ~resolver,
-             ~fileName,
              ~typeEnv,
            )
         |> Translation.combine
@@ -202,7 +197,6 @@ let rec translateModuleBinding =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          )
       |> Translation.combine
@@ -234,7 +228,6 @@ and translateStructureItem =
       ~outputFileRelative,
       ~resolver,
       ~moduleItemGen,
-      ~fileName,
       ~typeEnv,
       structItem,
     )
@@ -261,7 +254,6 @@ and translateStructureItem =
            ~outputFileRelative,
            ~resolver,
            ~moduleItemGen,
-           ~fileName,
            ~typeEnv,
          ),
        )
@@ -274,7 +266,6 @@ and translateStructureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
 
@@ -284,7 +275,6 @@ and translateStructureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~moduleItemGen,
        )
@@ -295,7 +285,6 @@ and translateStructureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
 
@@ -306,7 +295,6 @@ and translateStructureItem =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
            ~moduleItemGen,
          ),
@@ -346,7 +334,7 @@ and translateStructureItem =
     Translation.empty;
   }
 and translateStructure =
-    (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
+    (~config, ~outputFileRelative, ~resolver, ~typeEnv, structure)
     : list(Translation.t) => {
   if (Debug.translation^) {
     logItem("Translate Structure\n");
@@ -360,7 +348,6 @@ and translateStructure =
             ~outputFileRelative,
             ~resolver,
             ~moduleItemGen,
-            ~fileName,
             ~typeEnv,
           )
      );

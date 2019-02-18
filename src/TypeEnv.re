@@ -120,8 +120,8 @@ let lookupModuleTypeSignature = (~path, x) =>
   | _ => None
   };
 
-let getCurrentModuleName = (~fileName, x) =>
-  x.parent == None ? fileName : x.name |> ModuleName.fromStringUnsafe;
+let getNestedModuleName = x =>
+  x.parent == None ? None : Some(x.name |> ModuleName.fromStringUnsafe);
 
 let updateModuleItem = (~nameOpt=None, ~moduleItem, x) => {
   switch (nameOpt) {

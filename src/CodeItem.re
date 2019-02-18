@@ -12,7 +12,6 @@ type importComponent = {
   asPath: string,
   childrenTyp: typ,
   exportType,
-  fileName: ModuleName.t,
   importAnnotation: Annotation.import,
   propsFields: fields,
   propsTypeName: string,
@@ -20,7 +19,6 @@ type importComponent = {
 
 type importValue = {
   asPath: string,
-  fileName: ModuleName.t,
   importAnnotation: Annotation.import,
   typ,
   valueName: string,
@@ -30,15 +28,13 @@ type exportComponent = {
   componentAccessPath: string,
   componentType: typ,
   exportType,
-  fileName: ModuleName.t,
-  moduleName: ModuleName.t,
+  nestedModuleName: option(ModuleName.t),
   propsTypeName: string,
   typ,
   valueAccessPath: string,
 };
 
 type exportValue = {
-  fileName: ModuleName.t,
   resolvedName: string,
   typ,
   valueAccessPath: string,
