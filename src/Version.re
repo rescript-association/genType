@@ -1,4 +1,4 @@
 
 /* CREATED BY genType/scripts/bump_version_module.js */
 /* DO NOT MODIFY BY HAND, WILL BE AUTOMATICALLY UPDATED BY npm version */
-let version = "2.9.0";
+let version = "2.10.0";
