@@ -2,7 +2,7 @@
   "name": "refactor",
   "sources": [
     {
-      "dir": "src",
+      "dir": ".",
       "subdirs": true
     }
   ],

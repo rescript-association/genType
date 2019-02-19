@@ -22,7 +22,7 @@ const exampleDirPaths = [
 const isWindows = /^win/i.test(process.platform);
 
 function getGenTypeFilePath() {
-  const base = path.join(__dirname, "..", "lib", "bs", "native");
+  const base = path.join(__dirname, "..", "src", "lib", "bs", "native");
   if (isWindows) {
     return path.join(base, "gentype.native.exe");
   } else {
