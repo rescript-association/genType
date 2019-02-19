@@ -43,7 +43,7 @@ jobs:
             - node_modules
 
       # Tar things up
-      - run: tar czvf artifacts/gentype-linux.tar.gz -C lib/bs/native gentype.native
+      - run: tar czvf artifacts/gentype-linux.tar.gz -C src/lib/bs/native gentype.native
 
       - store_artifacts:
           path: artifacts/gentype-linux.tar.gz
@@ -84,7 +84,7 @@ jobs:
             - node_modules
 
       # Tar things up
-      - run: tar czvf artifacts/gentype-macos.tar.gz -C lib/bs/native gentype.native
+      - run: tar czvf artifacts/gentype-macos.tar.gz -C src/lib/bs/native gentype.native
 
       - store_artifacts:
           path: artifacts/gentype-macos.tar.gz
