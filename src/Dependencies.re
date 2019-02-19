@@ -49,3 +49,28 @@ let rec typePathToName = typePath =>
   | Presolved(name) => name
   | Pdot(p, s) => typePathToName(p) ++ "_" ++ s
   };
+
+let rec pathIsResolved = path =>
+  switch (path) {
+  | Pid(_) => false
+  | Presolved(_) => true
+  | Pdot(p, _) => p |> pathIsResolved
+  };
+
+let rec getOuterModuleName = path =>
+  switch (path) {
+  | Pid(name)
+  | Presolved(name) => name |> ModuleName.fromStringUnsafe
+  | Pdot(path1, _) => path1 |> getOuterModuleName
+  };
+
+let rec removeOuterModule = path =>
+  switch (path) {
+  | Pid(_)
+  | Presolved(_) => path
+  | Pdot(Pid(_), s) => Pid(s)
+  | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
+  };
+
+let pathIsShim = (~config, path) =>
+  config.modulesMap |> ModuleNameMap.mem(path |> getOuterModuleName);

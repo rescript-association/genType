@@ -296,7 +296,7 @@ let rec emitCodeItem =
           |> EmitType.ofType(
                ~config,
                ~typeNameIsInterface,
-               ~type_=Ident(propsTypeName, []),
+               ~type_=ident(propsTypeName),
              )
         )
         ++ ") {\n  return <"
@@ -598,7 +598,7 @@ let rec emitCodeItem =
           ++ EmitType.ofType(
                ~config,
                ~typeNameIsInterface,
-               ~type_=Ident(propsTypeName, []),
+               ~type_=ident(propsTypeName),
                jsProps,
              )
           ++ ") {",
@@ -900,7 +900,7 @@ let propagateAnnotationToSubTypes =
     let visited = ref(StringSet.empty);
     let rec visit = type_ =>
       switch (type_) {
-      | Ident(typeName, _) =>
+      | Ident({name: typeName}) =>
         if (visited^ |> StringSet.mem(typeName)) {
           ();
         } else {

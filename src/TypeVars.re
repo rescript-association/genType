@@ -55,9 +55,9 @@ let rec substitute = (~f, type0) =>
       fields
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
-  | Ident(_, []) => type0
-  | Ident(name, typeArguments) =>
-    Ident(name, typeArguments |> List.map(substitute(~f)))
+  | Ident({typeArgs: []}) => type0
+  | Ident({isShim, name, typeArgs}) =>
+    Ident({isShim, name, typeArgs: typeArgs |> List.map(substitute(~f))})
   | Nullable(type_) => Nullable(type_ |> substitute(~f))
   | Object(closedFlag, fields) =>
     Object(
@@ -104,7 +104,7 @@ let rec free_ = type0: StringSet.t =>
          (s, {type_, _}) => StringSet.union(s, type_ |> free_),
          StringSet.empty,
        )
-  | Ident(_, typeArgs) =>
+  | Ident({typeArgs}) =>
     typeArgs
     |> List.fold_left(
          (s, typeArg) => StringSet.union(s, typeArg |> free_),

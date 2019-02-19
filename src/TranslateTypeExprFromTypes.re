@@ -291,9 +291,15 @@ let translateConstr =
       |> List.concat;
     let resolvedPath =
       path |> Dependencies.resolveTypePath(~config, ~typeEnv);
+    let isShim = resolvedPath |> Dependencies.pathIsShim(~config);
     {
       dependencies: [resolvedPath, ...typeParamDeps],
-      type_: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
+      type_:
+        Ident({
+          isShim,
+          name: resolvedPath |> Dependencies.typePathToName,
+          typeArgs,
+        }),
     };
   };
 
@@ -448,7 +454,7 @@ and translateTypeExprFromTypes_ =
             (
               name,
               name |> Runtime.isMutableObjectField ?
-                {dependencies: [], type_: Ident("", [])} :
+                {dependencies: [], type_: ident("")} :
                 t1
                 |> translateTypeExprFromTypes_(
                      ~config,

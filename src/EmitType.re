@@ -104,14 +104,14 @@ let rec renderType =
          ~typeNameIsInterface,
        );
 
-  | Ident(identPath, typeArguments) =>
+  | Ident({name: identPath, typeArgs}) =>
     (
       config.exportInterfaces && identPath |> typeNameIsInterface ?
         identPath |> interfaceName(~config) : identPath
     )
     ++ genericsString(
          ~typeVars=
-           typeArguments
+           typeArgs
            |> List.map(
                 renderType(
                   ~config,
@@ -534,10 +534,8 @@ let emitRequireReact = (~early, ~emitters, ~config) =>
   };
 
 let reactComponentType = (~config, ~propsTypeName) =>
-  Ident(
-    config.language == Flow ? "React$ComponentType" : "React.ComponentClass",
-    [Ident(propsTypeName, [])],
-  );
+  (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
+  |> ident(~typeArgs=[ident(propsTypeName)]);
 
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {

@@ -50,7 +50,7 @@ type type_ =
   | Array(type_, mutable_)
   | Function(function_)
   | GroupOfLabeledArgs(fields)
-  | Ident(string, list(type_))
+  | Ident(ident)
   | Nullable(type_)
   | Object(closedFlag, fields)
   | Option(type_)
@@ -70,6 +70,11 @@ and function_ = {
   retType: type_,
   typeVars: list(string),
   uncurried: bool,
+}
+and ident = {
+  isShim: bool,
+  name: string,
+  typeArgs: list(type_),
 }
 and variant = {
   noPayloads: list(case),
@@ -118,20 +123,22 @@ let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
   });
 };
 
+let ident = (~isShim=false, ~typeArgs=[], name) =>
+  Ident({isShim, name, typeArgs});
+
 let mixedOrUnknown = (~config) =>
-  Ident(
+  ident(
     switch (config.language) {
     | Flow => "mixed"
     | TypeScript
     | Untyped => "unknown"
     },
-    [],
   );
 
-let booleanT = Ident("boolean", []);
-let numberT = Ident("number", []);
-let stringT = Ident("string", []);
-let unitT = Ident("void", []);
+let booleanT = ident("boolean");
+let numberT = ident("number");
+let stringT = ident("string");
+let unitT = ident("void");
 
 module NodeFilename = {
   include Filename;

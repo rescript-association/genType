@@ -49,17 +49,10 @@ let abstractTheTypeParameters = (~typeVars, type_) =>
   | Variant(_) => type_
   };
 
-let rec pathIsResolved = (path: Dependencies.path) =>
-  switch (path) {
-  | Pid(_) => false
-  | Presolved(_) => true
-  | Pdot(p, _) => p |> pathIsResolved
-  };
-
 let pathToImportType =
     (~config, ~outputFileRelative, ~resolver, path: Dependencies.path) =>
   switch (path) {
-  | _ when path |> pathIsResolved => []
+  | _ when path |> Dependencies.pathIsResolved => []
   | Pid(name) when name == "list" => [
       {
         CodeItem.typeName: "list",
@@ -78,21 +71,9 @@ let pathToImportType =
   | Presolved(_) => []
 
   | Pdot(_) =>
-    let rec getOuterModuleName = path =>
-      switch (path) {
-      | Dependencies.Pid(name)
-      | Presolved(name) => name |> ModuleName.fromStringUnsafe
-      | Pdot(path1, _) => path1 |> getOuterModuleName
-      };
-    let rec removeOuterModule = path =>
-      switch (path) {
-      | Dependencies.Pid(_)
-      | Dependencies.Presolved(_) => path
-      | Pdot(Pid(_), s) => Dependencies.Pid(s)
-      | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
-      };
-    let moduleName = path |> getOuterModuleName;
-    let typeName = path |> removeOuterModule |> Dependencies.typePathToName;
+    let moduleName = path |> Dependencies.getOuterModuleName;
+    let typeName =
+      path |> Dependencies.removeOuterModule |> Dependencies.typePathToName;
     let nameFromPath = path |> Dependencies.typePathToName;
     let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
     let importPath =
@@ -222,12 +203,13 @@ let translateComponent =
   | Function({
       argTypes: [propOrChildren, ...childrenOrNil],
       retType:
-        Ident(
-          "ReasonReact_componentSpec" | "React_componentSpec" |
-          "ReasonReact_component" |
-          "React_component",
-          [_state, ..._],
-        ),
+        Ident({
+          name:
+            "ReasonReact_componentSpec" | "React_componentSpec" |
+            "ReasonReact_component" |
+            "React_component",
+          typeArgs: [_state, ..._],
+        }),
       _,
     }) =>
     /* Add children?:any to props type */
@@ -342,12 +324,13 @@ let translatePrimitive =
       Function({
         argTypes: [_, ..._],
         retType:
-          Ident(
-            "ReasonReact_componentSpec" | "React_componentSpec" |
-            "ReasonReact_component" |
-            "React_component",
-            [_state, ..._],
-          ),
+          Ident({
+            name:
+              "ReasonReact_componentSpec" | "React_componentSpec" |
+              "ReasonReact_component" |
+              "React_component",
+            typeArgs: [_state, ..._],
+          }),
         _,
       }),
       _,

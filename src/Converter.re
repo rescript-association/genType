@@ -121,7 +121,7 @@ let typeToConverterNormalized =
   let circular = ref("");
   let expandOneLevel = type_ =>
     switch (type_) {
-    | Ident(s, _) =>
+    | Ident({name: s}) =>
       switch (exportTypeMap |> StringMap.find(s)) {
       | (t: CodeItem.exportTypeItem) => t.type_
       | exception Not_found =>
@@ -147,7 +147,7 @@ let typeToConverterNormalized =
 
     | GroupOfLabeledArgs(_) => (IdentC, None)
 
-    | Ident(s, typeArguments) =>
+    | Ident({isShim, name: s, typeArgs}) =>
       if (visited |> StringSet.mem(s)) {
         circular := s;
         (IdentC, normalized_);
@@ -162,7 +162,7 @@ let typeToConverterNormalized =
         | {annotation: NoGenType, _} => (IdentC, None)
         | {typeVars, type_, _} =>
           let pairs =
-            try (List.combine(typeVars, typeArguments)) {
+            try (List.combine(typeVars, typeArgs)) {
             | Invalid_argument(_) => []
             };
 
@@ -180,7 +180,7 @@ let typeToConverterNormalized =
         | exception Not_found =>
           let isBaseType =
             type_ == booleanT || type_ == numberT || type_ == stringT;
-          (IdentC, isBaseType ? normalized_ : None);
+          (IdentC, isShim || isBaseType ? normalized_ : None);
         };
       }
 

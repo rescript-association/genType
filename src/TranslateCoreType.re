@@ -176,7 +176,7 @@ and translateCoreType_ =
     let getFieldType = ((name, _attibutes, t)) => (
       name,
       name |> Runtime.isMutableObjectField ?
-        {dependencies: [], type_: Ident("", [])} :
+        {dependencies: [], type_: ident("")} :
         t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
     );
     let fieldsTranslations = tObj |> List.map(getFieldType);

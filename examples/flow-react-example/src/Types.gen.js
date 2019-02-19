@@ -58,7 +58,7 @@ export type maybeString2 = ?string;
 
 export type peopleArray = Array<{| +name: string, +nickname: ?string |}>;
 
-export opaque type myObj = mixed;
+export type myObj = Obj_t;
 
 export type { anInterestingFlowType };
 
