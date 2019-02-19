@@ -4,6 +4,7 @@
     "module": "es6",
     "importPath": "relative",
     "shims": {
+      "Js": "Js",
       "React": "ReactShim",
       "ReactEvent": "ReactEvent",
       "ReasonPervasives": "ReasonPervasives",

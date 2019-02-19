@@ -71,3 +71,6 @@ type twice('a) = ('a, 'a);
 
 [@gentype]
 type genTypeMispelled = int;
+
+[@genType]
+type dictString = Js.Dict.t(string);

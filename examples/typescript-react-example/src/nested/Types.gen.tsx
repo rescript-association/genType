@@ -6,6 +6,8 @@ const Curry = require('bs-platform/lib/es6/curry.js');
 // tslint:disable-next-line:no-var-requires
 const TypesBS = require('./Types.bs');
 
+import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
+
 import {list} from '../../src/shims/ReasonPervasives.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -41,6 +43,9 @@ export type twice<a> = [a, a];
 
 // tslint:disable-next-line:interface-over-type-literal
 export type genTypeMispelled = number;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type dictString = Js_Dict_t<string>;
 
 export const someIntList: list<number> = TypesBS.someIntList;
 
