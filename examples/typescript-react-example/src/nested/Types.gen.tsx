@@ -10,6 +10,8 @@ import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
 
 import {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
 
+import {Null_t as Js_Null_t} from '../../src/shims/Js.shim';
+
 import {list} from '../../src/shims/ReasonPervasives.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -48,6 +50,9 @@ export type genTypeMispelled = number;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type dictString = Js_Dict_t<string>;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type nullOrString = Js_Null_t<string>;
 
 export const someIntList: list<number> = TypesBS.someIntList;
 

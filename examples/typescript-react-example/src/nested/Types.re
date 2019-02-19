@@ -77,3 +77,6 @@ type dictString = Js.Dict.t(string);
 
 [@genType]
 let jsonStringify = Js.Json.stringify;
+
+[@genType]
+type nullOrString = Js.Null.t(string);
