@@ -8,6 +8,8 @@ const TypesBS = require('./Types.bs');
 
 import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
 
+import {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
+
 import {list} from '../../src/shims/ReasonPervasives.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -78,3 +80,5 @@ export const testFunctionOnOptionsAsArgument: <T1,a>(_1:(null | undefined | a), 
 export const stringT: string = TypesBS.stringT;
 
 export const jsStringT: string = TypesBS.jsStringT;
+
+export const jsonStringify: (_1:Js_Json_t) => string = TypesBS.jsonStringify;

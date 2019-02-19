@@ -74,3 +74,6 @@ type genTypeMispelled = int;
 
 [@genType]
 type dictString = Js.Dict.t(string);
+
+[@genType]
+let jsonStringify = Js.Json.stringify;

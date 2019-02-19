@@ -24,6 +24,10 @@ function testFunctionOnOptionsAsArgument(a, foo) {
   return Curry._1(foo, a);
 }
 
+function jsonStringify(prim) {
+  return JSON.stringify(prim);
+}
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -50,6 +54,7 @@ export {
   testFunctionOnOptionsAsArgument ,
   stringT ,
   jsStringT ,
+  jsonStringify ,
   
 }
 /* No side effect */
