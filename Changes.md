@@ -1,4 +1,4 @@
-# master
+# 2.10.0
 - Fix: convert first-class module types when defined in other files.
 
 # 2.8.0
