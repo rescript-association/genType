@@ -52,6 +52,12 @@ export type dictString = Js_Dict_t<string>;
 // tslint:disable-next-line:interface-over-type-literal
 export type nullOrString = (null | string);
 
+// tslint:disable-next-line:interface-over-type-literal
+export type nullOrString2 = (null | string);
+
+// tslint:disable-next-line:interface-over-type-literal
+export type record = { readonly i: number; readonly s: string };
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = function _(Arg1: any, Arg2: any) {
@@ -85,3 +91,8 @@ export const stringT: string = TypesBS.stringT;
 export const jsStringT: string = TypesBS.jsStringT;
 
 export const jsonStringify: (_1:Js_Json_t) => string = TypesBS.jsonStringify;
+
+export const testConvertNull: (_1:(null | record)) => (null | record) = function _(Arg1: any) {
+  const result = TypesBS.testConvertNull((Arg1 == null ? Arg1 : [Arg1.i, Arg1.s]));
+  return (result == null ? result : {i:result[0], s:result[1]})
+};

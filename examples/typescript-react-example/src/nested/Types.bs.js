@@ -28,6 +28,10 @@ function jsonStringify(prim) {
   return JSON.stringify(prim);
 }
 
+function testConvertNull(x) {
+  return x;
+}
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -55,6 +59,7 @@ export {
   stringT ,
   jsStringT ,
   jsonStringify ,
+  testConvertNull ,
   
 }
 /* No side effect */

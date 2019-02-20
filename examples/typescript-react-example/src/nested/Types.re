@@ -80,3 +80,14 @@ let jsonStringify = Js.Json.stringify;
 
 [@genType]
 type nullOrString = Js.Null.t(string);
+
+[@genType]
+type nullOrString2 = Js.null(string);
+
+type record = {
+  i: int,
+  s: string,
+};
+
+[@genType]
+let testConvertNull = (x: Js.Null.t(record)) => x;
