@@ -184,6 +184,10 @@ let typeToConverterNormalized =
         };
       }
 
+    | Null(t) =>
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (NullableC(tConverter), tNormalized == None ? None : normalized_);
+
     | Nullable(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
       (NullableC(tConverter), tNormalized == None ? None : normalized_);

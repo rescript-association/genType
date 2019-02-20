@@ -194,6 +194,15 @@ let translateConstr =
     }
 
   | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Null", _), "t", _),
+      [paramTranslation],
+    )
+  | (Pdot(Pident({name: "Js", _}), "null", _), [paramTranslation]) => {
+      ...paramTranslation,
+      type_: Null(paramTranslation.type_),
+    }
+
+  | (
       Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
       [paramTranslation],
     )
@@ -222,6 +231,7 @@ let translateConstr =
           uncurried: true,
         }),
     }
+
   | (
       Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
       [

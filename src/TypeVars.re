@@ -58,6 +58,7 @@ let rec substitute = (~f, type0) =>
   | Ident({typeArgs: []}) => type0
   | Ident({isShim, name, typeArgs}) =>
     Ident({isShim, name, typeArgs: typeArgs |> List.map(substitute(~f))})
+  | Null(type_) => Null(type_ |> substitute(~f))
   | Nullable(type_) => Nullable(type_ |> substitute(~f))
   | Object(closedFlag, fields) =>
     Object(
@@ -110,6 +111,7 @@ let rec free_ = type0: StringSet.t =>
          (s, typeArg) => StringSet.union(s, typeArg |> free_),
          StringSet.empty,
        )
+  | Null(type_) => type_ |> free_
   | Nullable(type_) => type_ |> free_
   | Option(type_) => type_ |> free_
   | Tuple(innerTypes) =>

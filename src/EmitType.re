@@ -121,6 +121,12 @@ let rec renderType =
                 ),
               ),
        )
+  | Null(type_) =>
+    "(null | "
+    ++ (
+      type_ |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
+    )
+    ++ ")"
   | Nullable(type_)
   | Option(type_) =>
     switch (config.language) {

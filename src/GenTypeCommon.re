@@ -51,6 +51,7 @@ type type_ =
   | Function(function_)
   | GroupOfLabeledArgs(fields)
   | Ident(ident)
+  | Null(type_)
   | Nullable(type_)
   | Object(closedFlag, fields)
   | Option(type_)
@@ -91,6 +92,7 @@ let typeIsObject = type_ =>
   | Function(_) => false
   | GroupOfLabeledArgs(_) => false
   | Ident(_) => false
+  | Null(_) => false
   | Nullable(_) => false
   | Object(_) => true
   | Option(_) => false

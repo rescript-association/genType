@@ -40,6 +40,7 @@ let abstractTheTypeParameters = (~typeVars, type_) =>
     Function({argTypes, retType, typeVars, uncurried})
   | GroupOfLabeledArgs(_)
   | Ident(_)
+  | Null(_)
   | Nullable(_)
   | Object(_)
   | Option(_)
