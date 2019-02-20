@@ -15,7 +15,7 @@ let getValueAccessPath: (~component: bool=?, ~name: string, t) => string;
 let lookup: (~name: string, t) => option(t);
 
 let lookupModuleTypeSignature:
-  (~path: Path.t, t) => option(Typedtree.signature);
+  (~path: Path.t, t) => option((Typedtree.signature, t));
 
 let newModule: (~name: string, t) => t;
 

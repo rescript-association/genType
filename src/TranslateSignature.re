@@ -50,18 +50,13 @@ let rec translateModuleDeclaration =
   switch (md_type.mty_desc) {
   | Tmty_signature(signature) =>
     signature
-    |> translateSignature(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-       )
+    |> translateSignature(~config, ~outputFileRelative, ~resolver, ~typeEnv)
     |> Translation.combine
 
   | Tmty_ident(path, _) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
     | None => Translation.empty
-    | Some(signature) =>
+    | Some((signature, _)) =>
       signature
       |> translateSignature(
            ~config,

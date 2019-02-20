@@ -159,7 +159,7 @@ let rec translateModuleBinding =
     | Mty_ident(path) =>
       switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
       | None => Translation.empty
-      | Some(signature) =>
+      | Some((signature, _)) =>
         signature
         |> TranslateSignature.translateSignature(
              ~config,
@@ -187,7 +187,7 @@ let rec translateModuleBinding =
   | Tmod_constraint(_, Mty_ident(path), Tmodtype_explicit(_), Tcoerce_none) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
     | None => Translation.empty
-    | Some(signature) =>
+    | Some((signature, _)) =>
       signature
       |> TranslateSignature.translateSignature(
            ~config,

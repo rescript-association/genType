@@ -4,7 +4,7 @@ module type MT = {
   [@bs.module "foo"] external f: int => int = "";
   module type XXX = {type tt = string;};
   module EmptyInnerModule: {};
-  module InnerModule2: {let k: int;};
+  module InnerModule2: {let k: t;};
   module type TT = {let u: (int, int);};
   module Z: TT;
   let y: string;

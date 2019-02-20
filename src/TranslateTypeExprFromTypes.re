@@ -609,7 +609,7 @@ and translateTypeExprFromTypes_ =
 
   | Tpackage(path, _ids, _types) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
-    | Some(signature) =>
+    | Some((signature, typeEnv)) =>
       let (dependencies, type_) =
         signature.sig_type
         |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv);

@@ -4,12 +4,15 @@
 const FirstClassModulesBS = require('./FirstClassModules.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
+export type MT_t = number;
+
+// tslint:disable-next-line:interface-over-type-literal
 export type firstClassModule = {
   readonly x: number; 
   readonly EmptyInnerModule: {
   }; 
   readonly InnerModule2: {
-    readonly k: number
+    readonly k: MT_t
   }; 
   readonly Z: unknown; 
   readonly y: string
@@ -22,7 +25,7 @@ export const testConvert: (_1:{
   readonly EmptyInnerModule: {
   }; 
   readonly InnerModule2: {
-    readonly k: number
+    readonly k: MT_t
   }; 
   readonly Z: unknown; 
   readonly y: string
@@ -31,7 +34,7 @@ export const testConvert: (_1:{
   readonly EmptyInnerModule: {
   }; 
   readonly InnerModule2: {
-    readonly k: number
+    readonly k: MT_t
   }; 
   readonly Z: unknown; 
   readonly y: string
@@ -45,7 +48,7 @@ export const someFunctorAsFunction: (_1:{
   readonly EmptyInnerModule: {
   }; 
   readonly InnerModule2: {
-    readonly k: number
+    readonly k: MT_t
   }; 
   readonly Z: unknown; 
   readonly y: string

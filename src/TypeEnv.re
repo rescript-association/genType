@@ -67,16 +67,16 @@ let rec lookup = (~name, x) =>
     }
   };
 
-let rec lookupModuleType = (~name, x) => {
+let rec lookupModuleType = (~name, ~previous, x) => {
   if (Debug.typeEnv^) {
-    logItem("Typenv.lookupName %s id:%s\n", x |> toString, name);
+    logItem("Typenv.lookupModuleType %s id:%s\n", x |> toString, name);
   };
   switch (x.mapModuleTypes |> StringMap.find(name)) {
-  | signature => Some(signature)
+  | signature => Some((signature, previous))
   | exception Not_found =>
     switch (x.parent) {
     | None => None
-    | Some(parent) => parent |> lookupModuleType(~name)
+    | Some(parent) => parent |> lookupModuleType(~name, ~previous=x)
     }
   };
 };
@@ -115,8 +115,9 @@ let rec lookupPath = (~path, x) =>
 
 let lookupModuleTypeSignature = (~path, x) =>
   switch (x |> lookupPath(~path), path) {
-  | (Some(y), Pident(id)) => y |> lookupModuleType(~name=id |> Ident.name)
-  | (Some(y), Pdot(_, s, _)) => y |> lookupModuleType(~name=s)
+  | (Some(y), Pident(id)) =>
+    y |> lookupModuleType(~name=id |> Ident.name, ~previous=y)
+  | (Some(y), Pdot(_, s, _)) => y |> lookupModuleType(~name=s, ~previous=y)
   | _ => None
   };
 

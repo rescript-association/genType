@@ -276,7 +276,7 @@ and translateCoreType_ =
 
   | Ttyp_package({pack_path}) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path=pack_path)) {
-    | Some(signature) =>
+    | Some((signature, typeEnv)) =>
       let (dependencies, type_) =
         signature.sig_type
         |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv);

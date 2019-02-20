@@ -1,3 +1,6 @@
+# master
+- Support type definitions in first-class module types.
+ 
 # 2.11.0
 - Fix: don't export types defined in shims as opaque. 
 - Add support for type Js.null (and Js.Null.t).
