@@ -1,3 +1,8 @@
+# master
+- Fix: don't export types defined in shims as opaque. 
+- Add support for type Js.null (and Js.Null.t).
+- Fix signature of ImmutableArray length and size.
+
 # 2.10.0
 - Fix: convert first-class module types when defined in other files.
 
