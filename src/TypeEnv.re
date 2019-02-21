@@ -24,7 +24,7 @@ let root = () => {
   };
 };
 
-let toString = x => x.name;
+let toString = typeEnv => typeEnv.name;
 
 let createTypeEnv = (~name, parent) => {
   let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem;
@@ -38,56 +38,56 @@ let createTypeEnv = (~name, parent) => {
   };
 };
 
-let newModule = (~name, x) => {
+let newModule = (~name, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.newModule %s %s\n", x |> toString, name);
+    logItem("TypeEnv.newModule %s %s\n", typeEnv |> toString, name);
   };
-  let newTypeEnv = x |> createTypeEnv(~name);
-  x.map = x.map |> StringMap.add(name, Module(newTypeEnv));
+  let newTypeEnv = typeEnv |> createTypeEnv(~name);
+  typeEnv.map = typeEnv.map |> StringMap.add(name, Module(newTypeEnv));
   newTypeEnv;
 };
 
-let newModuleType = (~name, ~signature, x) => {
+let newModuleType = (~name, ~signature, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.newModuleType %s %s\n", x |> toString, name);
+    logItem("TypeEnv.newModuleType %s %s\n", typeEnv |> toString, name);
   };
-  let newTypeEnv = x |> createTypeEnv(~name);
-  x.mapModuleTypes =
-    x.mapModuleTypes |> StringMap.add(name, (signature, newTypeEnv));
+  let newTypeEnv = typeEnv |> createTypeEnv(~name);
+  typeEnv.mapModuleTypes =
+    typeEnv.mapModuleTypes |> StringMap.add(name, (signature, newTypeEnv));
   newTypeEnv;
 };
 
-let newType = (~name, x) => {
+let newType = (~name, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.newType %s %s\n", x |> toString, name);
+    logItem("TypeEnv.newType %s %s\n", typeEnv |> toString, name);
   };
-  x.map = x.map |> StringMap.add(name, Type(name));
+  typeEnv.map = typeEnv.map |> StringMap.add(name, Type(name));
 };
 
-let rec lookup = (~name, x) =>
-  switch (x.map |> StringMap.find(name)) {
-  | _ => Some(x)
+let rec lookup = (~name, typeEnv) =>
+  switch (typeEnv.map |> StringMap.find(name)) {
+  | _ => Some(typeEnv)
   | exception Not_found =>
-    switch (x.parent) {
+    switch (typeEnv.parent) {
     | None => None
     | Some(parent) => parent |> lookup(~name)
     }
   };
 
-let rec lookupModuleType = (~path, x) =>
+let rec lookupModuleType = (~path, typeEnv) =>
   switch (path) {
   | [moduleTypeName] =>
     if (Debug.typeEnv^) {
       logItem(
         "Typenv.lookupModuleType %s moduleTypeName:%s\n",
-        x |> toString,
+        typeEnv |> toString,
         moduleTypeName,
       );
     };
-    switch (x.mapModuleTypes |> StringMap.find(moduleTypeName)) {
-    | (signature, y) => Some((signature, y))
+    switch (typeEnv.mapModuleTypes |> StringMap.find(moduleTypeName)) {
+    | x => Some(x)
     | exception Not_found =>
-      switch (x.parent) {
+      switch (typeEnv.parent) {
       | None => None
       | Some(parent) => parent |> lookupModuleType(~path)
       }
@@ -96,15 +96,15 @@ let rec lookupModuleType = (~path, x) =>
     if (Debug.typeEnv^) {
       logItem(
         "Typenv.lookupModuleType %s moduleName:%s\n",
-        x |> toString,
+        typeEnv |> toString,
         moduleName,
       );
     };
-    switch (x.map |> StringMap.find(moduleName)) {
-    | Module(y) => y |> lookupModuleType(~path=path1)
+    switch (typeEnv.map |> StringMap.find(moduleName)) {
+    | Module(typeEnv1) => typeEnv1 |> lookupModuleType(~path=path1)
     | Type(_) => None
     | exception Not_found =>
-      switch (x.parent) {
+      switch (typeEnv.parent) {
       | None => None
       | Some(parent) => parent |> lookupModuleType(~path)
       }
@@ -119,27 +119,28 @@ let rec pathToList = path =>
   | Path.Papply(_) => []
   };
 
-let lookupModuleTypeSignature = (~path, x) => {
+let lookupModuleTypeSignature = (~path, typeEnv) => {
   if (Debug.typeEnv^) {
     logItem(
       "TypeEnv.lookupModuleTypeSignature %s %s\n",
-      x |> toString,
+      typeEnv |> toString,
       path |> Path.name,
     );
   };
 
-  x |> lookupModuleType(~path=path |> pathToList |> List.rev);
+  typeEnv |> lookupModuleType(~path=path |> pathToList |> List.rev);
 };
 
-let getNestedModuleName = x =>
-  x.parent == None ? None : Some(x.name |> ModuleName.fromStringUnsafe);
+let getNestedModuleName = typeEnv =>
+  typeEnv.parent == None ?
+    None : Some(typeEnv.name |> ModuleName.fromStringUnsafe);
 
-let updateModuleItem = (~nameOpt=None, ~moduleItem, x) => {
+let updateModuleItem = (~nameOpt=None, ~moduleItem, typeEnv) => {
   switch (nameOpt) {
-  | Some("component") => x.componentModuleItem = moduleItem
+  | Some("component") => typeEnv.componentModuleItem = moduleItem
   | _ => ()
   };
-  x.moduleItem = moduleItem;
+  typeEnv.moduleItem = moduleItem;
 };
 
 let rec addModulePath = (~typeEnv, name) =>
@@ -149,19 +150,19 @@ let rec addModulePath = (~typeEnv, name) =>
     typeEnv.name ++ "_" ++ name |> addModulePath(~typeEnv=parent)
   };
 
-let getValueAccessPath = (~component=false, ~name, x) => {
-  let rec accessPath = x =>
-    switch (x.parent) {
+let getValueAccessPath = (~component=false, ~name, typeEnv) => {
+  let rec accessPath = typeEnv =>
+    switch (typeEnv.parent) {
     | None => ""
     | Some(parent) =>
-      (parent.parent == None ? x.name : parent |> accessPath)
+      (parent.parent == None ? typeEnv.name : parent |> accessPath)
       ++ "["
       ++ (
-        (component ? x.componentModuleItem : x.moduleItem)
+        (component ? typeEnv.componentModuleItem : typeEnv.moduleItem)
         |> Runtime.emitModuleItem
       )
       ++ "]"
     };
-  let notNested = x.parent == None;
-  notNested ? name : x |> accessPath;
+  let notNested = typeEnv.parent == None;
+  notNested ? name : typeEnv |> accessPath;
 };
