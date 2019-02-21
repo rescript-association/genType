@@ -10,8 +10,8 @@ import {firstClassModule as FirstClassModules_firstClassModule} from './FirstCla
 import {record as FirstClassModulesInterface_record} from './FirstClassModulesInterface.gen';
 
 export const convert: (_1:FirstClassModules_firstClassModule) => FirstClassModules_firstClassModule = function _(Arg1: any) {
-  const result = TestFirstClassModulesBS.convert([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]);
-  return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, Z:result[3], y:result[4]}
+  const result = TestFirstClassModulesBS.convert([Arg1.x, [], [Arg1.InnerModule2.k], [Arg1.InnerModule3.k3], Arg1.Z, Arg1.y]);
+  return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, InnerModule3:{k3:result[3][0]}, Z:result[4], y:result[5]}
 };
 
 export const convertInterface: (_1:FirstClassModulesInterface_firstClassModule) => FirstClassModulesInterface_firstClassModule = function _(Arg1: any) {

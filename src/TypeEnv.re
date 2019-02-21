@@ -64,6 +64,13 @@ let newType = (~name, typeEnv) => {
   typeEnv.map = typeEnv.map |> StringMap.add(name, Type(name));
 };
 
+let getModule = (~name, typeEnv) =>
+  switch (typeEnv.map |> StringMap.find(name)) {
+  | Module(typeEnv1) => Some(typeEnv1)
+  | Type(_) => None
+  | exception Not_found => None
+  };
+
 let rec lookup = (~name, typeEnv) =>
   switch (typeEnv.map |> StringMap.find(name)) {
   | _ => Some(typeEnv)

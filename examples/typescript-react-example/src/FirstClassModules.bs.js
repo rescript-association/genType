@@ -7,6 +7,12 @@ var EmptyInnerModule = /* module */[];
 
 var InnerModule2 = /* module */[/* k */4242];
 
+function k3(x) {
+  return x + 1 | 0;
+}
+
+var InnerModule3 = /* module */[/* k3 */k3];
+
 var Z = /* module */[/* u : tuple */[
     0,
     0
@@ -16,6 +22,7 @@ var M = /* module */[
   /* y */y,
   /* EmptyInnerModule */EmptyInnerModule,
   /* InnerModule2 */InnerModule2,
+  /* InnerModule3 */InnerModule3,
   /* Z */Z,
   /* x */42
 ];
@@ -24,6 +31,7 @@ var firstClassModule = [
   42,
   EmptyInnerModule,
   InnerModule2,
+  InnerModule3,
   Z,
   y
 ];
@@ -33,12 +41,12 @@ function testConvert(m) {
 }
 
 function SomeFunctor(X) {
-  var ww = X[/* y */4];
+  var ww = X[/* y */5];
   return /* module */[/* ww */ww];
 }
 
 function someFunctorAsFunction(x) {
-  var ww = x[/* y */4];
+  var ww = x[/* y */5];
   return /* module */[/* ww */ww];
 }
 

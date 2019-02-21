@@ -9,6 +9,8 @@ let getNestedModuleName: t => option(ModuleName.t);
    Or TopLevelModule[x][y] if accessing a value in a doubly nested module */
 let getValueAccessPath: (~component: bool=?, ~name: string, t) => string;
 
+let getModule: (~name: string, t) => option(t);
+
 let lookup: (~name: string, t) => option(t);
 
 let lookupModuleTypeSignature:

@@ -652,11 +652,16 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
            (dependencies, [field]);
 
          | Types.Sig_module(id, moduleDeclaration, _recStatus) =>
+           let typeEnv1 =
+             switch (typeEnv |> TypeEnv.getModule(~name=id |> Ident.name)) {
+             | Some(typeEnv1) => typeEnv1
+             | None => typeEnv
+             };
            let (dependencies, type_) =
              switch (moduleDeclaration.md_type) {
              | Mty_signature(signature) =>
                signature
-               |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv)
+               |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1)
              | Mty_ident(_)
              | Mty_functor(_)
              | Mty_alias(_) => ([], mixedOrUnknown(~config))
