@@ -3,7 +3,7 @@ open GenTypeCommon;
 type t = {
   mutable componentModuleItem: Runtime.moduleItem,
   mutable map: StringMap.t(entry),
-  mutable mapModuleTypes: StringMap.t(Typedtree.signature),
+  mutable mapModuleTypes: StringMap.t((Typedtree.signature, t)),
   mutable moduleItem: Runtime.moduleItem,
   name: string,
   parent: option(t),
@@ -26,28 +26,35 @@ let root = () => {
 
 let toString = x => x.name;
 
-let newModule = (~name, x) => {
-  if (Debug.typeEnv^) {
-    logItem("TypeEnv.newModule %s %s\n", x |> toString, name);
-  };
+let createTypeEnv = (~name, parent) => {
   let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem;
-  let newModuleEnv = {
+  {
     componentModuleItem: moduleItem,
     map: StringMap.empty,
     mapModuleTypes: StringMap.empty,
     moduleItem,
     name,
-    parent: Some(x),
+    parent: Some(parent),
   };
-  x.map = x.map |> StringMap.add(name, Module(newModuleEnv));
-  newModuleEnv;
 };
 
-let addModuleTypeSignature = (~name, ~signature, x) => {
+let newModule = (~name, x) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.addModuleTypeSignature %s %s\n", x |> toString, name);
+    logItem("TypeEnv.newModule %s %s\n", x |> toString, name);
   };
-  x.mapModuleTypes = x.mapModuleTypes |> StringMap.add(name, signature);
+  let newTypeEnv = x |> createTypeEnv(~name);
+  x.map = x.map |> StringMap.add(name, Module(newTypeEnv));
+  newTypeEnv;
+};
+
+let newModuleType = (~name, ~signature, x) => {
+  if (Debug.typeEnv^) {
+    logItem("TypeEnv.newModuleType %s %s\n", x |> toString, name);
+  };
+  let newTypeEnv = x |> createTypeEnv(~name);
+  x.mapModuleTypes =
+    x.mapModuleTypes |> StringMap.add(name, (signature, newTypeEnv));
+  newTypeEnv;
 };
 
 let newType = (~name, x) => {
@@ -67,59 +74,62 @@ let rec lookup = (~name, x) =>
     }
   };
 
-let rec lookupModuleType = (~name, ~previous, x) => {
-  if (Debug.typeEnv^) {
-    logItem("Typenv.lookupModuleType %s id:%s\n", x |> toString, name);
-  };
-  switch (x.mapModuleTypes |> StringMap.find(name)) {
-  | signature => Some((signature, previous))
-  | exception Not_found =>
-    switch (x.parent) {
-    | None => None
-    | Some(parent) => parent |> lookupModuleType(~name, ~previous=x)
-    }
-  };
-};
-
-let rec lookupPath = (~path, x) =>
+let rec lookupModuleType = (~path, x) =>
   switch (path) {
-  | Path.Pident(id) =>
-    let name = id |> Ident.name;
+  | [moduleTypeName] =>
     if (Debug.typeEnv^) {
-      logItem("Typenv.lookupPath %s id:%s\n", x |> toString, name);
+      logItem(
+        "Typenv.lookupModuleType %s moduleTypeName:%s\n",
+        x |> toString,
+        moduleTypeName,
+      );
     };
-    switch (x.map |> StringMap.find(name)) {
-    | Module(y) => Some(y)
+    switch (x.mapModuleTypes |> StringMap.find(moduleTypeName)) {
+    | (signature, y) => Some((signature, y))
+    | exception Not_found =>
+      switch (x.parent) {
+      | None => None
+      | Some(parent) => parent |> lookupModuleType(~path)
+      }
+    };
+  | [moduleName, ...path1] =>
+    if (Debug.typeEnv^) {
+      logItem(
+        "Typenv.lookupModuleType %s moduleName:%s\n",
+        x |> toString,
+        moduleName,
+      );
+    };
+    switch (x.map |> StringMap.find(moduleName)) {
+    | Module(y) => y |> lookupModuleType(~path=path1)
     | Type(_) => None
     | exception Not_found =>
       switch (x.parent) {
       | None => None
-      | Some(parent) => parent |> lookupPath(~path)
+      | Some(parent) => parent |> lookupModuleType(~path)
       }
     };
-  | Pdot(p, s, _) =>
-    switch (x |> lookupPath(~path=p)) {
-    | None => None
-    | Some(y) =>
-      if (Debug.typeEnv^) {
-        logItem("Typenv.lookupPath %s s:%s\n", y |> toString, s);
-      };
-      switch (y.map |> StringMap.find(s)) {
-      | Module(y) => Some(y)
-      | Type(_) => None
-      | exception Not_found => None
-      };
-    }
-  | Papply(_) => None
+  | [] => None
   };
 
-let lookupModuleTypeSignature = (~path, x) =>
-  switch (x |> lookupPath(~path), path) {
-  | (Some(y), Pident(id)) =>
-    y |> lookupModuleType(~name=id |> Ident.name, ~previous=y)
-  | (Some(y), Pdot(_, s, _)) => y |> lookupModuleType(~name=s, ~previous=y)
-  | _ => None
+let rec pathToList = path =>
+  switch (path) {
+  | Path.Pident(id) => [id |> Ident.name]
+  | Path.Pdot(p, s, _) => [s, ...p |> pathToList]
+  | Path.Papply(_) => []
   };
+
+let lookupModuleTypeSignature = (~path, x) => {
+  if (Debug.typeEnv^) {
+    logItem(
+      "TypeEnv.lookupModuleTypeSignature %s %s\n",
+      x |> toString,
+      path |> Path.name,
+    );
+  };
+
+  x |> lookupModuleType(~path=path |> pathToList |> List.rev);
+};
 
 let getNestedModuleName = x =>
   x.parent == None ? None : Some(x.name |> ModuleName.fromStringUnsafe);

@@ -2,9 +2,6 @@ type t;
 
 let addModulePath: (~typeEnv: t, string) => string;
 
-let addModuleTypeSignature:
-  (~name: string, ~signature: Typedtree.signature, t) => unit;
-
 let getNestedModuleName: t => option(ModuleName.t);
 
 /* Access path for the value in the module.
@@ -18,6 +15,8 @@ let lookupModuleTypeSignature:
   (~path: Path.t, t) => option((Typedtree.signature, t));
 
 let newModule: (~name: string, t) => t;
+
+let newModuleType: (~name: string, ~signature: Typedtree.signature, t) => t;
 
 let newType: (~name: string, t) => unit;
 

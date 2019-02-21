@@ -107,10 +107,9 @@ and translateModuleTypeDeclaration =
              ~config,
              ~outputFileRelative,
              ~resolver,
-             ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
+             ~typeEnv=typeEnv |> TypeEnv.newModuleType(~name, ~signature),
            )
         |> Translation.combine;
-      typeEnv |> TypeEnv.addModuleTypeSignature(~name, ~signature);
       translation;
 
     | Tmty_ident(_) =>
