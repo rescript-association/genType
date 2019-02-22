@@ -1,5 +1,7 @@
 # master
 - Support type definitions in first-class module types.
+- Handle correctly first-class module types with nested modules inside.
+- Add support for first-class module types with type equations.
  
 # 2.11.0
 - Fix: don't export types defined in shims as opaque. 
