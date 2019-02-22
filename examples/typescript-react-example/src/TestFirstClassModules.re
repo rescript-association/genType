@@ -6,3 +6,18 @@ let convertInterface = (x: FirstClassModulesInterface.firstClassModule) => x;
 
 [@genType]
 let convertRecord = (x: FirstClassModulesInterface.record) => x;
+
+module type MT = {
+  type outer;
+  let out: outer => outer;
+
+  module Inner: {
+    type inner;
+    let inn: inner => inner;
+  };
+};
+
+[@genType]
+type firstClassModuleWithTypeEquations('i, 'o) = (module MT with
+                                                     type Inner.inner = 'i and
+                                                     type outer = 'o);

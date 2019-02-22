@@ -274,13 +274,33 @@ and translateCoreType_ =
     | _ => {dependencies: [], type_: mixedOrUnknown(~config)}
     }
 
-  | Ttyp_package({pack_path}) =>
+  | Ttyp_package({pack_path, pack_fields}) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path=pack_path)) {
     | Some((signature, typeEnv)) =>
-      let (dependencies, type_) =
+      let typeEquationsTranslation =
+        pack_fields
+        |> List.map(((x, t)) =>
+             (
+               x.Asttypes.txt,
+               t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+             )
+           );
+      let typeEquations =
+        typeEquationsTranslation
+        |> List.map(((x, translation)) => (x, translation.type_));
+      let dependenciesFromTypeEquations =
+        typeEquationsTranslation
+        |> List.map(((_, translation)) => translation.dependencies)
+        |> List.flatten;
+      let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
+      let (dependenciesFromRecordType, type_) =
         signature.sig_type
-        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv);
-      {dependencies, type_};
+        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+      {
+        dependencies:
+          dependenciesFromTypeEquations @ dependenciesFromRecordType,
+        type_,
+      };
     | None => {dependencies: [], type_: mixedOrUnknown(~config)}
     }
 

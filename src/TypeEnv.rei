@@ -1,6 +1,12 @@
+open GenTypeCommon;
+
 type t;
 
 let addModulePath: (~typeEnv: t, string) => string;
+
+let addTypeEquations: (~typeEquations: list((Longident.t, type_)), t) => t;
+
+let applyTypeEquations: (~config: config, ~path: Path.t, t) => option(type_);
 
 let getNestedModuleName: t => option(ModuleName.t);
 

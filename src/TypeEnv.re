@@ -7,24 +7,11 @@ type t = {
   mutable moduleItem: Runtime.moduleItem,
   name: string,
   parent: option(t),
+  typeEquations: StringMap.t(type_),
 }
 and entry =
   | Module(t)
   | Type(string);
-
-let root = () => {
-  let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem;
-  {
-    componentModuleItem: moduleItem,
-    map: StringMap.empty,
-    mapModuleTypes: StringMap.empty,
-    moduleItem,
-    name: "__root__",
-    parent: None,
-  };
-};
-
-let toString = typeEnv => typeEnv.name;
 
 let createTypeEnv = (~name, parent) => {
   let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem;
@@ -34,15 +21,20 @@ let createTypeEnv = (~name, parent) => {
     mapModuleTypes: StringMap.empty,
     moduleItem,
     name,
-    parent: Some(parent),
+    parent,
+    typeEquations: StringMap.empty,
   };
 };
+
+let root = () => None |> createTypeEnv(~name="__root__");
+
+let toString = typeEnv => typeEnv.name;
 
 let newModule = (~name, typeEnv) => {
   if (Debug.typeEnv^) {
     logItem("TypeEnv.newModule %s %s\n", typeEnv |> toString, name);
   };
-  let newTypeEnv = typeEnv |> createTypeEnv(~name);
+  let newTypeEnv = Some(typeEnv) |> createTypeEnv(~name);
   typeEnv.map = typeEnv.map |> StringMap.add(name, Module(newTypeEnv));
   newTypeEnv;
 };
@@ -51,7 +43,7 @@ let newModuleType = (~name, ~signature, typeEnv) => {
   if (Debug.typeEnv^) {
     logItem("TypeEnv.newModuleType %s %s\n", typeEnv |> toString, name);
   };
-  let newTypeEnv = typeEnv |> createTypeEnv(~name);
+  let newTypeEnv = Some(typeEnv) |> createTypeEnv(~name);
   typeEnv.mapModuleTypes =
     typeEnv.mapModuleTypes |> StringMap.add(name, (signature, newTypeEnv));
   newTypeEnv;
@@ -69,6 +61,58 @@ let getModule = (~name, typeEnv) =>
   | Module(typeEnv1) => Some(typeEnv1)
   | Type(_) => None
   | exception Not_found => None
+  };
+
+let rec addTypeEquation = (~flattened, ~type_, typeEnv) =>
+  switch (flattened) {
+  | [name] => {
+      ...typeEnv,
+      typeEquations: typeEnv.typeEquations |> StringMap.add(name, type_),
+    }
+  | [moduleName, ...rest] =>
+    switch (typeEnv |> getModule(~name=moduleName)) {
+    | Some(typeEnv1) => {
+        ...typeEnv,
+        map:
+          typeEnv.map
+          |> StringMap.add(
+               moduleName,
+               Module(typeEnv1 |> addTypeEquation(~flattened=rest, ~type_)),
+             ),
+      }
+    | None => typeEnv
+    }
+  | [] => typeEnv
+  };
+
+let addTypeEquations = (~typeEquations, typeEnv) =>
+  typeEquations
+  |> List.fold_left(
+       (te, (longIdent, type_)) =>
+         te
+         |> addTypeEquation(~flattened=longIdent |> Longident.flatten, ~type_),
+       typeEnv,
+     );
+
+let applyTypeEquations = (~config, ~path, typeEnv) =>
+  switch (path) {
+  | Path.Pident(id) =>
+    switch (typeEnv.typeEquations |> StringMap.find(id |> Ident.name)) {
+    | type_ =>
+      if (Debug.typeResolution^) {
+        logItem(
+          "Typenv.applyTypeEquations %s name:%s type_:%s\n",
+          typeEnv |> toString,
+          id |> Ident.name,
+          type_
+          |> EmitType.typeToString(~config, ~typeNameIsInterface=_ => false),
+        );
+      };
+
+      Some(type_);
+    | exception Not_found => None
+    }
+  | _ => None
   };
 
 let rec lookup = (~name, typeEnv) =>

@@ -299,17 +299,22 @@ let translateConstr =
       paramsTranslation
       |> List.map(({dependencies, _}) => dependencies)
       |> List.concat;
-    let resolvedPath =
-      path |> Dependencies.resolveTypePath(~config, ~typeEnv);
-    let isShim = resolvedPath |> Dependencies.pathIsShim(~config);
-    {
-      dependencies: [resolvedPath, ...typeParamDeps],
-      type_:
-        Ident({
-          isShim,
-          name: resolvedPath |> Dependencies.typePathToName,
-          typeArgs,
-        }),
+
+    switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
+    | Some(type_) => {dependencies: typeParamDeps, type_}
+    | None =>
+      let resolvedPath =
+        path |> Dependencies.resolveTypePath(~config, ~typeEnv);
+      let isShim = resolvedPath |> Dependencies.pathIsShim(~config);
+      {
+        dependencies: [resolvedPath, ...typeParamDeps],
+        type_:
+          Ident({
+            isShim,
+            name: resolvedPath |> Dependencies.typePathToName,
+            typeArgs,
+          }),
+      };
     };
   };
 
@@ -661,7 +666,11 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
              switch (moduleDeclaration.md_type) {
              | Mty_signature(signature) =>
                signature
-               |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1)
+               |> signatureToRecordType(
+                    ~config,
+                    ~typeVarsGen,
+                    ~typeEnv=typeEnv1,
+                  )
              | Mty_ident(_)
              | Mty_functor(_)
              | Mty_alias(_) => ([], mixedOrUnknown(~config))
