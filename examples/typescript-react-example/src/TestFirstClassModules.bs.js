@@ -13,10 +13,15 @@ function convertRecord(x) {
   return x;
 }
 
+function convertFirstClassModuleWithTypeEquations(x) {
+  return x;
+}
+
 export {
   convert ,
   convertInterface ,
   convertRecord ,
+  convertFirstClassModuleWithTypeEquations ,
   
 }
 /* No side effect */

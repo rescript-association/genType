@@ -612,13 +612,34 @@ and translateTypeExprFromTypes_ =
       }
     }
 
-  | Tpackage(path, _ids, _types) =>
+  | Tpackage(path, ids, types) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
     | Some((signature, typeEnv)) =>
-      let (dependencies, type_) =
+      let typeEquationsTranslation =
+        List.combine(ids, types)
+        |> List.map(((x, t)) =>
+             (
+               x,
+               t
+               |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv),
+             )
+           );
+      let typeEquations =
+        typeEquationsTranslation
+        |> List.map(((x, translation)) => (x, translation.type_));
+      let dependenciesFromTypeEquations =
+        typeEquationsTranslation
+        |> List.map(((_, translation)) => translation.dependencies)
+        |> List.flatten;
+      let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
+      let (dependenciesFromRecordType, type_) =
         signature.sig_type
-        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv);
-      {dependencies, type_};
+        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+      {
+        dependencies:
+          dependenciesFromTypeEquations @ dependenciesFromRecordType,
+        type_,
+      };
     | None => {dependencies: [], type_: mixedOrUnknown(~config)}
     }
 

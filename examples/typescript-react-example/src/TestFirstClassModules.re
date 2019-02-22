@@ -21,3 +21,11 @@ module type MT = {
 type firstClassModuleWithTypeEquations('i, 'o) = (module MT with
                                                      type Inner.inner = 'i and
                                                      type outer = 'o);
+
+[@genType]
+let convertFirstClassModuleWithTypeEquations =
+    (
+      type o,
+      type i,
+      x: (module MT with type Inner.inner = i and type outer = o),
+    ) => x;
