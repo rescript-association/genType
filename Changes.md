@@ -1,4 +1,4 @@
-# master
+# 2.12.0.
 - Support type definitions in first-class module types.
 - Handle correctly first-class module types with nested modules inside.
 - Add support for first-class module types with type equations.
