@@ -3,6 +3,7 @@
 - Handle correctly first-class module types with nested modules inside.
 - Add support for first-class module types with type equations.
 - Add support for functions with first-class module types and type equations.
+- Fix support for type parameters in type declarations with constraints.
  
 # 2.11.0
 - Fix: don't export types defined in shims as opaque. 

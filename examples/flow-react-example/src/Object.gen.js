@@ -8,7 +8,7 @@
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ObjectBS from './Object.bs';
 
-export type openObject<T1> = { +foo: number };
+export type openObject<a> = { +foo: number };
 
 export const foo: (openObject<mixed>) => openObject<mixed> = ObjectBS.foo;
 

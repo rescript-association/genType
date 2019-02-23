@@ -58,6 +58,9 @@ export type nullOrString2 = (null | string);
 // tslint:disable-next-line:interface-over-type-literal
 export type record = { readonly i: number; readonly s: string };
 
+// tslint:disable-next-line:interface-over-type-literal
+export type decorator<a,b> = (_1:a) => b;
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = function _(Arg1: any, Arg2: any) {

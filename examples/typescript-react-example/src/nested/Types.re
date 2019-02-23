@@ -91,3 +91,6 @@ type record = {
 
 [@genType]
 let testConvertNull = (x: Js.Null.t(record)) => x;
+
+[@genType]
+type decorator('a, 'b) = 'a => 'b constraint 'a = int constraint 'b = _ => _;

@@ -8,12 +8,12 @@ let translateTypeDeclarationFromTypes =
       ~resolver,
       ~typeEnv,
       ~id,
-      {type_params: typeParams, type_kind, type_attributes, type_manifest, _}: Types.type_declaration,
+      {type_params, type_kind, type_attributes, type_manifest, _}: Types.type_declaration,
     )
     : list(CodeItem.typeDeclaration) => {
   typeEnv |> TypeEnv.newType(~name=id |> Ident.name);
   let typeName = Ident.name(id);
-  let typeVars = TypeVars.extract(typeParams);
+  let typeVars = type_params |> TypeVars.extractFromTypeExpr;
   let nameAs = type_attributes |> Annotation.getAttributeRenaming;
   if (Debug.translation^) {
     logItem("Translate Types.type_declaration %s\n", typeName);
@@ -47,7 +47,6 @@ let translateTypeDeclarationFromTypes =
        ~annotation=NoGenType,
        ~typeName,
        ~typeVars,
-       ~typeParams,
      );
 };
 

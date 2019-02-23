@@ -1,42 +1,33 @@
 open GenTypeCommon;
 
-/**
-  * Extracts type variables from dependencies.
-  */
-let rec extractOne = (~typeVarsGen, soFar, typeExpr) =>
-  switch (typeExpr) {
-  | {Types.id, desc: Tvar(None), _} =>
-    let typeName = GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, id);
-    [typeName, ...soFar];
-  | {desc: Tvar(Some(s)), _} =>
-    let typeName = s;
-    [typeName, ...soFar];
-  | {desc: Tlink(te), _} => te |> extractOne(~typeVarsGen, soFar)
-  | {desc: Tobject(_), _} =>
-    let typeName = GenIdent.jsTypeNameForObject(~typeVarsGen);
-    [typeName, ...soFar];
-  | _ => soFar
-  };
+let extractFromTypeExpr = typeParams =>
+  typeParams
+  |> List.fold_left(
+       (soFar, typeExpr) =>
+         switch (typeExpr) {
+         | {Types.desc: Tvar(Some(s)), _} =>
+           let typeName = s;
+           [typeName, ...soFar];
+         | _ => assert(false)
+         },
+       [],
+     )
+  |> List.rev;
 
-/*
- * Utility for extracting results of compiling to output.
- * Input:
- *
- *     [
- *       ([dep, dep], [itm, itm]),
- *       ([dep, dep], [itm, itm])
- *     ]
- *
- * Output:
- *
- * List.merge
- *     ([dep, dep, dep, dep], [itm, itm, itm, itm])
- */
+let extractFromCoreType = typeParams =>
+  typeParams
+  |> List.fold_left(
+       (soFar, typeExpr) =>
+         switch (typeExpr.Typedtree.ctyp_desc) {
+         | Ttyp_var(s) =>
+           let typeName = s;
+           [typeName, ...soFar];
+         | _ => soFar
+         },
+       [],
+     )
+  |> List.rev;
 
-let extract = typeParams => {
-  let typeVarsGen = GenIdent.createTypeVarsGen();
-  typeParams |> List.fold_left(extractOne(~typeVarsGen), []) |> List.rev;
-};
 
 let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
 let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));

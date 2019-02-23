@@ -12,12 +12,6 @@ type typeVarsGen = {
 
 let createTypeVarsGen = () => {typeNameMap: IntMap.empty, typeNameCounter: 0};
 
-let jsTypeNameForObject = (~typeVarsGen) => {
-  typeVarsGen.typeNameCounter = typeVarsGen.typeNameCounter + 1;
-  let name = "T" ++ string_of_int(typeVarsGen.typeNameCounter);
-  name;
-};
-
 let jsTypeNameForAnonymousTypeID = (~typeVarsGen, id) =>
   try (typeVarsGen.typeNameMap |> IntMap.find(id)) {
   | Not_found =>

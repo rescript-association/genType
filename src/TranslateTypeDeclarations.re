@@ -52,7 +52,6 @@ let traslateDeclarationKind =
       ~annotation,
       ~typeName,
       ~typeVars,
-      ~typeParams,
       declarationKind,
     )
     : list(CodeItem.typeDeclaration) => {
@@ -230,7 +229,6 @@ let traslateDeclarationKind =
            {mutable_, name, optional, type_: type1};
          });
     let optType = Some(Record(fields));
-    let typeVars = TypeVars.extract(typeParams);
     let opaque = Some(annotation == GenTypeOpaque);
     [
       {
@@ -315,7 +313,6 @@ let traslateDeclarationKind =
 
     let variantTyp =
       createVariant(~noPayloads, ~payloads, ~polymorphic=false);
-    let typeVars = TypeVars.(typeParams |> extract);
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
     let exportFromTypeDeclaration = {
@@ -351,7 +348,7 @@ let translateTypeDeclaration =
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
-      {typ_id, typ_type, typ_attributes, typ_manifest, _}: Typedtree.type_declaration,
+      {typ_attributes, typ_id, typ_manifest, typ_params, typ_type, _}: Typedtree.type_declaration,
     )
     : list(CodeItem.typeDeclaration) => {
   if (Debug.translation^) {
@@ -361,8 +358,12 @@ let translateTypeDeclaration =
 
   let annotation = typ_attributes |> Annotation.fromAttributes;
   let typeName = Ident.name(typ_id);
-  let typeParams = typ_type.type_params;
-  let typeVars = TypeVars.extract(typeParams);
+  
+  let typeVars =
+    typ_params
+    |> List.map(((coreType, _)) => coreType)
+    |> TypeVars.extractFromCoreType;
+
   let nameAs = typ_attributes |> Annotation.getAttributeRenaming;
 
   let declarationKind =
@@ -387,7 +388,6 @@ let translateTypeDeclaration =
        ~annotation,
        ~typeName,
        ~typeVars,
-       ~typeParams,
      );
 };
 
