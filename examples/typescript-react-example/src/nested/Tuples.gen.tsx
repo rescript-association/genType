@@ -34,7 +34,7 @@ export const computeAreaWithIdent: (_1:coord) => number = function _(Arg1: any) 
 
 export const computeAreaNoConverters: (_1:[number, number]) => number = TuplesBS.computeAreaNoConverters;
 
-export const coord2d: <T1,T2,T3>(_1:T1, _2:T2) => [T1, T2, (null | undefined | T3)] = function _(Arg1: any, Arg2: any) {
+export const coord2d: <T1,T2,T3>(_1:T1, _2:T2) => [T1, T2, (null | undefined | T3)] = function _<T1,T2,T3>(Arg1: any, Arg2: any) {
   const result = Curry._2(TuplesBS.coord2d, Arg1, Arg2);
   return result
 };

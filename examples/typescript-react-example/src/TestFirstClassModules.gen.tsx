@@ -27,7 +27,7 @@ export const convertRecord: (_1:FirstClassModulesInterface_record) => FirstClass
   return {x:result[0], y:result[1]}
 };
 
-export const convertFirstClassModuleWithTypeEquations: <T1,T2>(_1:{ readonly out: ((_1:T1) => T1); readonly Inner: { readonly inn: ((_1:T2) => T2) } }) => { readonly out: (_1:T1) => T1; readonly Inner: { readonly inn: (_1:T2) => T2 } } = function _(Arg1: any) {
+export const convertFirstClassModuleWithTypeEquations: <T1,T2>(_1:{ readonly out: ((_1:T1) => T1); readonly Inner: { readonly inn: ((_1:T2) => T2) } }) => { readonly out: (_1:T1) => T1; readonly Inner: { readonly inn: (_1:T2) => T2 } } = function _<T1,T2>(Arg1: any) {
   const result = TestFirstClassModulesBS.convertFirstClassModuleWithTypeEquations([Arg1.out, [Arg1.Inner.inn]]);
   return {out:result[0], Inner:{inn:result[1][0]}}
 };

@@ -50,12 +50,12 @@ export default component;
 
 export const empty: list<string> = GreetingBS.empty;
 
-export const cons: <T1>({| +x: T1, +l: list<T1> |}) => list<T1> = function _(Arg1) {
+export const cons: <T1>({| +x: T1, +l: list<T1> |}) => list<T1> = function _<T1>(Arg1) {
   const result = Curry._2(GreetingBS.cons, Arg1.x, Arg1.l);
   return result
 };
 
-export const cons2: <T1>({| +l: list<T1>, +x: T1 |}) => list<T1> = function _(Arg1) {
+export const cons2: <T1>({| +l: list<T1>, +x: T1 |}) => list<T1> = function _<T1>(Arg1) {
   const result = Curry._2(GreetingBS.cons2, Arg1.l, Arg1.x);
   return result
 };

@@ -37,11 +37,15 @@ let funCall = (~args, ~curryNumArgs=None, name) =>
   | None => name ++ parens(args)
   };
 
-let funDef = (~args, ~indent, ~mkBody, functionName) => {
+let genericsString = (~typeVars) =>
+  typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
+
+let funDef = (~args, ~indent, ~mkBody, ~typeVars, functionName) => {
   let indent1 = indent |> Indent.more;
   let (params, vals) = List.split(args(~indent=indent1));
   "function "
   ++ (functionName == "" ? "_" : functionName)
+  ++ genericsString(~typeVars)
   ++ (params |> parens)
   ++ " {"
   ++ Indent.break(~indent=indent1)

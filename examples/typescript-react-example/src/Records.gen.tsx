@@ -76,7 +76,7 @@ export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1: an
   return result
 };
 
-export const getPayload: <T1>(_1:payload<T1>) => T1 = function _(Arg1: any) {
+export const getPayload: <T1>(_1:payload<T1>) => T1 = function _<T1>(Arg1: any) {
   const result = RecordsBS.getPayload([Arg1.num, Arg1.payload]);
   return result
 };

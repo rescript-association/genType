@@ -37,9 +37,6 @@ let shimExtension = (~config) =>
   | Untyped => ".shim.not.used"
   };
 
-let genericsString = (~typeVars) =>
-  typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
-
 let interfaceName = (~config, name) =>
   config.exportInterfaces ? "I" ++ name : name;
 
@@ -109,7 +106,7 @@ let rec renderType =
       config.exportInterfaces && identPath |> typeNameIsInterface ?
         identPath |> interfaceName(~config) : identPath
     )
-    ++ genericsString(
+    ++ EmitText.genericsString(
          ~typeVars=
            typeArgs
            |> List.map(
@@ -253,7 +250,7 @@ and renderFunType =
       retType,
     ) =>
   (inFunType ? "(" : "")
-  ++ genericsString(~typeVars)
+  ++ EmitText.genericsString(~typeVars)
   ++ "("
   ++ String.concat(
        ", ",
@@ -367,7 +364,7 @@ let emitExportType =
       resolvedTypeName,
     ) => {
   let export = early ? Emitters.exportEarly : Emitters.export;
-  let typeParamsString = genericsString(~typeVars);
+  let typeParamsString = EmitText.genericsString(~typeVars);
   let isInterface = resolvedTypeName |> typeNameIsInterface;
   let resolvedTypeName =
     config.exportInterfaces && isInterface ?

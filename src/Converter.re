@@ -19,6 +19,7 @@ and fieldsC = list((string, t))
 and functionC = {
   argConverters: list(groupedArgConverter),
   retConverter: t,
+  typeVars: list(string),
   uncurried: bool,
 }
 and variantC = {
@@ -139,11 +140,14 @@ let typeToConverterNormalized =
       let (tConverter, tNormalized) = t |> visit(~visited);
       (ArrayC(tConverter), tNormalized == None ? None : normalized_);
 
-    | Function({argTypes, retType, uncurried, _}) =>
+    | Function({argTypes, retType, typeVars, uncurried, _}) =>
       let argConverters =
         argTypes |> List.map(typeToGroupedArgConverter(~visited));
       let (retConverter, _) = retType |> visit(~visited);
-      (FunctionC({argConverters, retConverter, uncurried}), normalized_);
+      (
+        FunctionC({argConverters, retConverter, typeVars, uncurried}),
+        normalized_,
+      );
 
     | GroupOfLabeledArgs(_) => (IdentC, None)
 
@@ -414,7 +418,7 @@ let rec apply =
          ~variantTables,
        )
 
-  | FunctionC({argConverters, retConverter, uncurried}) =>
+  | FunctionC({argConverters, retConverter, typeVars, uncurried}) =>
     let resultName = EmitText.resultName(~nameGen);
     let mkReturn = (~indent, x) => {
       let indent1 = indent |> Indent.more;
@@ -544,6 +548,7 @@ let rec apply =
           },
         ~mkBody,
         ~indent,
+        ~typeVars,
         "",
       );
     importCurry := importCurry^ || useCurry();
