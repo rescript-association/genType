@@ -30,7 +30,7 @@ and addAnnotationsToFields =
   | _ => (fields, types)
   };
 
-/* Because of a bug in 4.03.2, the first attribute of a function type is lost.
+/* Because of a bug in 4.02.3, the first attribute of a function type is lost.
    This if fixed in newer versions. */
 let bugInOCaml4_02_3 = (expr: Typedtree.expression) =>
   switch (expr.exp_desc) {
