@@ -1,21 +1,21 @@
 open GenTypeCommon;
 
 let rec addAnnotationsToTyps =
-        (expr: Typedtree.expression, types: list(type_)) =>
+        (~expr: Typedtree.expression, types: list(type_)) =>
   switch (expr.exp_desc, types) {
   | (_, [GroupOfLabeledArgs(fields), ...nextTyps]) =>
     let (fields1, nextTyps1) =
       addAnnotationsToFields(expr, fields, nextTyps);
     [GroupOfLabeledArgs(fields1), ...nextTyps1];
   | (Texp_function(_lbl, [{c_rhs, _}], _), [type_, ...nextTyps]) =>
-    let nextTyps1 = addAnnotationsToTyps(c_rhs, nextTyps);
+    let nextTyps1 = nextTyps |> addAnnotationsToTyps(~expr=c_rhs);
     [type_, ...nextTyps1];
   | _ => types
   }
 and addAnnotationsToFields =
     (expr: Typedtree.expression, fields: fields, types: list(type_)) =>
   switch (expr.exp_desc, fields, types) {
-  | (_, [], _) => ([], addAnnotationsToTyps(expr, types))
+  | (_, [], _) => ([], types |> addAnnotationsToTyps(~expr))
   | (Texp_function(_lbl, [{c_rhs, _}], _), [field, ...nextFields], _) =>
     switch (expr.exp_attributes |> Annotation.getAttributeRenaming) {
     | Some(s) =>
@@ -47,7 +47,8 @@ let addAnnotationsToFunctionType = (expr: Typedtree.expression, type_: type_) =>
   switch (type_) {
   | Function(function_) =>
     let argTypes =
-      function_.argTypes |> addAnnotationsToTyps(expr |> bugInOCaml4_02_3);
+      function_.argTypes
+      |> addAnnotationsToTyps(~expr=expr |> bugInOCaml4_02_3);
     Function({...function_, argTypes});
   | _ => type_
   };
