@@ -1,4 +1,4 @@
-# master
+# 2.12.1
 - Emit type parametes when generating polymorphic conversion functions. 
 
 # 2.12.0
