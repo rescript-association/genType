@@ -376,19 +376,20 @@ let rec apply =
           ~toJS,
           ~useCreateBucklescriptBlock,
           ~variantTables,
-          value,
+          value: Value.t,
         ) =>
   switch (converter) {
-  | _ when converter |> converterIsIdentity(~toJS) => value
+  | _ when converter |> converterIsIdentity(~toJS) => value |> Value.toString
 
   | ArrayC(c) =>
     let x = "ArrayItem" |> EmitText.name(~nameGen);
-    value
+    (value |> Value.toString)
     ++ ".map(function _element("
     ++ (x |> EmitType.ofTypeAnyTS(~config))
     ++ ") { return "
     ++ (
       x
+      |> Value.fromString
       |> apply(
            ~config,
            ~converter=c,
@@ -403,10 +404,13 @@ let rec apply =
     ++ "})";
 
   | CircularC(s, c) =>
-    "\n/* WARNING: circular type "
-    ++ s
-    ++ ". Only shallow converter applied. */\n  "
-    ++ value
+    value
+    |> Value.addComment(
+         ~comment=
+           "WARNING: circular type "
+           ++ s
+           ++ ". Only shallow converter applied.",
+       )
     |> apply(
          ~config,
          ~converter=c,
@@ -431,6 +435,7 @@ let rec apply =
       ++ "return "
       ++ (
         resultName
+        |> Value.fromString
         |> apply(
              ~config,
              ~converter=retConverter,
@@ -453,6 +458,7 @@ let rec apply =
           (
             varName |> EmitType.ofTypeAnyTS(~config),
             varName
+            |> Value.fromString
             |> apply(
                  ~config,
                  ~converter=argConverter,
@@ -472,10 +478,10 @@ let rec apply =
             (
               varName |> EmitType.ofTypeAnyTS(~config),
               groupConverters
-              |> List.map(((s, optional, argConverter)) =>
+              |> List.map(((label, optional, argConverter)) =>
                    varName
-                   ++ "."
-                   ++ s
+                   |> Value.fromString
+                   |> Value.fieldAccess(~label)
                    |> apply(
                         ~config,
                         ~converter=
@@ -508,6 +514,7 @@ let rec apply =
                    ++ ":"
                    ++ (
                      varNamesArr[i]
+                     |> Value.fromString
                      |> apply(
                           ~config,
                           ~converter=argConverter,
@@ -533,6 +540,7 @@ let rec apply =
     let useCurry = () => !uncurried && toJS && numArgs^ > 1;
     let mkBody = (~indent, args) =>
       value
+      |> Value.toString
       |> EmitText.funCall(
            ~args,
            ~curryNumArgs=useCurry() ? Some(numArgs^) : None,
@@ -554,13 +562,13 @@ let rec apply =
     importCurry := importCurry^ || useCurry();
     res;
 
-  | IdentC => value
+  | IdentC => value |> Value.toString
 
   | NullableC(c) =>
     EmitText.parens([
-      value
+      (value |> Value.toString)
       ++ " == null ? "
-      ++ value
+      ++ (value |> Value.toString)
       ++ " : "
       ++ (
         value
@@ -586,13 +594,12 @@ let rec apply =
       };
     let fieldValues =
       fieldsC
-      |> List.map(((lbl, fieldConverter)) =>
-           lbl
+      |> List.map(((label, fieldConverter)) =>
+           label
            ++ ":"
            ++ (
              value
-             ++ "."
-             ++ lbl
+             |> Value.fieldAccess(~label)
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
@@ -611,9 +618,9 @@ let rec apply =
   | OptionC(c) =>
     if (toJS) {
       EmitText.parens([
-        value
+        (value |> Value.nullChecked)
         ++ " == null ? "
-        ++ value
+        ++ (value |> Value.toString)
         ++ " : "
         ++ (
           value
@@ -631,7 +638,7 @@ let rec apply =
       ]);
     } else {
       EmitText.parens([
-        value
+        (value |> Value.nullChecked)
         ++ " == null ? undefined : "
         ++ (
           value
@@ -659,14 +666,12 @@ let rec apply =
     if (toJS) {
       let fieldValues =
         fieldsC
-        |> List.mapi((i, (lbl, fieldConverter)) =>
+        |> List.mapi((index, (lbl, fieldConverter)) =>
              lbl
              ++ ":"
              ++ (
                value
-               ++ "["
-               ++ string_of_int(i)
-               ++ "]"
+               |> Value.arrayAccess(~index)
                |> apply(
                     ~config,
                     ~converter=fieldConverter |> simplifyFieldConverted,
@@ -684,10 +689,9 @@ let rec apply =
     } else {
       let fieldValues =
         fieldsC
-        |> List.map(((lbl, fieldConverter)) =>
+        |> List.map(((label, fieldConverter)) =>
              value
-             ++ "."
-             ++ lbl
+             |> Value.fieldAccess(~label)
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
@@ -706,11 +710,9 @@ let rec apply =
     "["
     ++ (
       innerTypesC
-      |> List.mapi((i, c) =>
+      |> List.mapi((index, c) =>
            value
-           ++ "["
-           ++ string_of_int(i)
-           ++ "]"
+           |> Value.arrayAccess(~index)
            |> apply(
                 ~config,
                 ~converter=c,
@@ -743,7 +745,8 @@ let rec apply =
            labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
          ) ?
         ".toString()" : "";
-    let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
+    let accessTable = v =>
+      table ++ EmitText.array([(v |> Value.toString) ++ convertToString]);
     switch (variantC.withPayload) {
     | [] => value |> accessTable
 
@@ -788,7 +791,7 @@ let rec apply =
         casesWithPayload(~indent) :
         EmitText.ifThenElse(
           ~indent,
-          (~indent as _) => value |> EmitText.typeOfObject,
+          (~indent as _) => value |> Value.toString |> EmitText.typeOfObject,
           casesWithPayload,
           (~indent as _) => value |> accessTable,
         );
@@ -847,12 +850,13 @@ let rec apply =
                emitVariantGetLabel(~polymorphic=variantC.polymorphic) :
                emitJSVariantGetLabel
            )
+        |> Value.toString
         |> EmitText.switch_(~indent, ~cases=switchCases(~indent));
       variantC.noPayloads == [] ?
         casesWithPayload(~indent) :
         EmitText.ifThenElse(
           ~indent,
-          (~indent as _) => value |> EmitText.typeOfObject,
+          (~indent as _) => value |> Value.toString |> EmitText.typeOfObject,
           casesWithPayload,
           (~indent as _) => value |> accessTable,
         );
@@ -871,6 +875,7 @@ let toJS =
       value,
     ) =>
   value
+  |> Value.fromString
   |> apply(
        ~config,
        ~converter,
@@ -894,6 +899,7 @@ let toReason =
       value,
     ) =>
   value
+  |> Value.fromString
   |> apply(
        ~config,
        ~converter,
