@@ -776,7 +776,7 @@ let emitImportType =
       let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
         switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
         | x => env.exportTypeMapFromOtherFiles |> StringMap.add(asType, x)
-        | exception Not_found => exportTypeMapFromCmt
+        | exception Not_found => env.exportTypeMapFromOtherFiles
         };
       switch (env.cmtToExportTypeMap |> StringMap.find(cmtFile)) {
       | exportTypeMapFromCmt => (
