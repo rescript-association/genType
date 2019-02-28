@@ -142,6 +142,29 @@ let numberT = ident("number");
 let stringT = ident("string");
 let unitT = ident("void");
 
+module Value: {
+  type t;
+  let addComment : (~comment:string, t) => t;
+  let arrayAccess: (~index: int, t) => t;
+  let arraySlice: t => t;
+  let fieldAccess: (~label: string, t) => t;
+  let fromString: string => t;
+  let nullChecked: t => string;
+  let toString: t => string;
+} = {
+  type t = string;
+  let addComment = (~comment, value) =>
+    "\n/* " ++ comment ++ " */\n  "
+    ++ value;
+  let arrayAccess = (~index, value) =>
+    value ++ "[" ++ string_of_int(index) ++ "]";
+  let arraySlice = value => value ++ ".slice()";
+  let fieldAccess = (~label, value) => value ++ "." ++ label;
+  let fromString = x => x;
+  let nullChecked = x => x;
+  let toString = x => x;
+};
+
 module NodeFilename = {
   include Filename;
 
