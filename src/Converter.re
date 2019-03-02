@@ -424,14 +424,16 @@ let rec apply =
 
   | FunctionC({argConverters, retConverter, typeVars, uncurried}) =>
     let resultName = EmitText.resultName(~nameGen);
-    let mkReturn = (~indent, x) => {
-      let indent1 = indent |> Indent.more;
+    let indent1 = indent |> Indent.more;
+    let indent2 = indent1 |> Indent.more;
+
+    let mkReturn = x =>
       "const "
       ++ resultName
       ++ " = "
       ++ x
       ++ ";"
-      ++ Indent.break(~indent)
+      ++ Indent.break(~indent=indent1)
       ++ "return "
       ++ (
         resultName
@@ -440,16 +442,14 @@ let rec apply =
              ~config,
              ~converter=retConverter,
              ~importCurry,
-             ~indent=indent1,
+             ~indent=indent2,
              ~nameGen,
              ~toJS,
              ~useCreateBucklescriptBlock,
              ~variantTables,
            )
       );
-    };
 
-    let indent2 = indent |> Indent.more |> Indent.more;
     let convertArg = (i, groupedArgConverter) =>
       switch (groupedArgConverter) {
       | ArgConverter(argConverter) =>
@@ -535,13 +535,16 @@ let rec apply =
         ([varName |> Value.fromString], [varName]);
       };
 
-    let mkBody = (~indent, bodyArgs) => {
+    let mkBody = bodyArgs => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       importCurry := importCurry^ || useCurry;
-      value
-      |> Value.toString
-      |> EmitText.funCall(~args=bodyArgs, ~useCurry)
-      |> mkReturn(~indent);
+      Indent.break(~indent=indent1)
+      ++ (
+        value
+        |> Value.toString
+        |> EmitText.funCall(~args=bodyArgs, ~useCurry)
+        |> mkReturn
+      );
     };
 
     let convertedArgs = argConverters |> List.mapi(convertArg);
@@ -550,7 +553,7 @@ let rec apply =
       args
       |> List.map(v => v |> Value.toString |> EmitType.ofTypeAnyTS(~config));
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
-    EmitText.funDef(~bodyArgs, ~funParams, ~mkBody, ~indent, ~typeVars, "");
+    EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, "");
 
   | IdentC => value |> Value.toString
 
