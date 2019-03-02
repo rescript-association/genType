@@ -448,7 +448,7 @@ let rec apply =
            )
       );
     };
-    let convertedArgs = (~indent) => {
+    let convertArgs = (~indent) => {
       let indent1 = indent |> Indent.more;
       let convertArg = (i, groupedArgConverter) =>
         switch (groupedArgConverter) {
@@ -537,34 +537,31 @@ let rec apply =
         };
       argConverters |> List.mapi(convertArg);
     };
-    let numArgs = ref(0);
-    let useCurry = () => !uncurried && toJS && numArgs^ > 1;
+    let numBodyArgs = ref(0);
+    let useCurry = () => !uncurried && toJS && numBodyArgs^ > 1;
     let mkBody = (~indent, args) =>
       value
       |> Value.toString
       |> EmitText.funCall(
            ~args,
-           ~curryNumArgs=useCurry() ? Some(numArgs^) : None,
+           ~curryNumArgs=useCurry() ? Some(numBodyArgs^) : None,
          )
       |> mkReturn(~indent);
     let res =
       EmitText.funDef(
         ~args=
           (~indent) => {
-            let args = convertedArgs(~indent);
-            numArgs :=
-              args |> List.fold_left((x, (_, y)) => x + List.length(y), 0);
-            args
-            |> List.map(((values, y)) =>
-                 (
-                   values
-                   |> List.map(v =>
-                        v |> Value.toString |> EmitType.ofTypeAnyTS(~config)
-                      )
-                   |> String.concat(", "),
-                   y |> String.concat(", "),
-                 )
-               );
+            let convertedArgs = convertArgs(~indent);
+            numBodyArgs :=
+              convertedArgs |> List.fold_left((x, (_, y)) => x + List.length(y), 0);
+            let args = convertedArgs |> List.map(fst) |> List.concat;
+            let funParams =
+              args
+              |> List.map(v =>
+                   v |> Value.toString |> EmitType.ofTypeAnyTS(~config)
+                 );
+            let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
+            (funParams, bodyArgs);
           },
         ~mkBody,
         ~indent,
