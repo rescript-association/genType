@@ -40,14 +40,12 @@ let genericsString = (~typeVars) =>
 
 let funDef =
     (~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, functionName) => {
-  let indent1 = indent |> Indent.more;
   "function "
   ++ (functionName == "" ? "_" : functionName)
   ++ genericsString(~typeVars)
   ++ (funParams |> parens)
   ++ " {"
-  ++ Indent.break(~indent=indent1)
-  ++ (bodyArgs |> mkBody(~indent=indent1))
+  ++ (bodyArgs |> mkBody)
   ++ Indent.break(~indent)
   ++ "}";
 };
