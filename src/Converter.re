@@ -448,95 +448,93 @@ let rec apply =
            )
       );
     };
-    let convertArgs = (~indent) => {
-      let indent1 = indent |> Indent.more;
-      let convertArg = (i, groupedArgConverter) =>
-        switch (groupedArgConverter) {
-        | ArgConverter(argConverter) =>
+
+    let indent2 = indent |> Indent.more |> Indent.more;
+    let convertArg = (i, groupedArgConverter) =>
+      switch (groupedArgConverter) {
+      | ArgConverter(argConverter) =>
+        let varName = i + 1 |> EmitText.argi(~nameGen) |> Value.fromString;
+        let notToJS = !toJS;
+        (
+          [varName],
+          [
+            varName
+            |> apply(
+                 ~config,
+                 ~converter=argConverter,
+                 ~importCurry,
+                 ~indent=indent2,
+                 ~nameGen,
+                 ~toJS=notToJS,
+                 ~useCreateBucklescriptBlock,
+                 ~variantTables,
+               ),
+          ],
+        );
+      | GroupConverter(groupConverters) =>
+        let notToJS = !toJS;
+        if (toJS) {
           let varName = i + 1 |> EmitText.argi(~nameGen) |> Value.fromString;
-          let notToJS = !toJS;
           (
             [varName],
-            [
-              varName
-              |> apply(
-                   ~config,
-                   ~converter=argConverter,
-                   ~importCurry,
-                   ~indent=indent1,
-                   ~nameGen,
-                   ~toJS=notToJS,
-                   ~useCreateBucklescriptBlock,
-                   ~variantTables,
-                 ),
-            ],
+            groupConverters
+            |> List.map(((label, optional, argConverter)) =>
+                 varName
+                 |> Value.fieldAccess(~label)
+                 |> apply(
+                      ~config,
+                      ~converter=
+                        optional == Optional
+                        && !(argConverter |> converterIsIdentity(~toJS)) ?
+                          OptionC(argConverter) : argConverter,
+                      ~importCurry,
+                      ~indent=indent2,
+                      ~nameGen,
+                      ~toJS=notToJS,
+                      ~useCreateBucklescriptBlock,
+                      ~variantTables,
+                    )
+               ),
           );
-        | GroupConverter(groupConverters) =>
-          let notToJS = !toJS;
-          if (toJS) {
-            let varName =
-              i + 1 |> EmitText.argi(~nameGen) |> Value.fromString;
-            (
-              [varName],
-              groupConverters
-              |> List.map(((label, optional, argConverter)) =>
-                   varName
-                   |> Value.fieldAccess(~label)
+        } else {
+          let varNames =
+            groupConverters
+            |> List.map(((s, _optional, _argConverter)) =>
+                 s |> EmitText.arg(~nameGen)
+               );
+
+          let varNamesArr = varNames |> Array.of_list;
+          let fieldValues =
+            groupConverters
+            |> List.mapi((i, (s, _optional, argConverter)) =>
+                 s
+                 ++ ":"
+                 ++ (
+                   varNamesArr[i]
+                   |> Value.fromString
                    |> apply(
                         ~config,
-                        ~converter=
-                          optional == Optional
-                          && !(argConverter |> converterIsIdentity(~toJS)) ?
-                            OptionC(argConverter) : argConverter,
+                        ~converter=argConverter,
+                        ~indent=indent2,
                         ~importCurry,
-                        ~indent=indent1,
                         ~nameGen,
                         ~toJS=notToJS,
                         ~useCreateBucklescriptBlock,
                         ~variantTables,
                       )
-                 ),
-            );
-          } else {
-            let varNames =
-              groupConverters
-              |> List.map(((s, _optional, _argConverter)) =>
-                   s |> EmitText.arg(~nameGen)
-                 );
-
-            let varNamesArr = varNames |> Array.of_list;
-            let fieldValues =
-              groupConverters
-              |> List.mapi((i, (s, _optional, argConverter)) =>
-                   s
-                   ++ ":"
-                   ++ (
-                     varNamesArr[i]
-                     |> Value.fromString
-                     |> apply(
-                          ~config,
-                          ~converter=argConverter,
-                          ~indent=indent1,
-                          ~importCurry,
-                          ~nameGen,
-                          ~toJS=notToJS,
-                          ~useCreateBucklescriptBlock,
-                          ~variantTables,
-                        )
-                   )
                  )
-              |> String.concat(", ");
-            (
-              varNames |> List.map(Value.fromString),
-              ["{" ++ fieldValues ++ "}"],
-            );
-          };
-        | UnitConverter =>
-          let varName = i + 1 |> EmitText.argi(~nameGen);
-          ([varName |> Value.fromString], [varName]);
+               )
+            |> String.concat(", ");
+          (
+            varNames |> List.map(Value.fromString),
+            ["{" ++ fieldValues ++ "}"],
+          );
         };
-      argConverters |> List.mapi(convertArg);
-    };
+      | UnitConverter =>
+        let varName = i + 1 |> EmitText.argi(~nameGen);
+        ([varName |> Value.fromString], [varName]);
+      };
+
     let mkBody = (~indent, bodyArgs) => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       importCurry := importCurry^ || useCurry;
@@ -546,7 +544,7 @@ let rec apply =
       |> mkReturn(~indent);
     };
 
-    let convertedArgs = convertArgs(~indent=indent |> Indent.more);
+    let convertedArgs = argConverters |> List.mapi(convertArg);
     let args = convertedArgs |> List.map(fst) |> List.concat;
     let funParams =
       args
