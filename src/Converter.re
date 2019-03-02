@@ -537,23 +537,19 @@ let rec apply =
         };
       argConverters |> List.mapi(convertArg);
     };
-    let numBodyArgs = ref(0);
-    let useCurry = () => !uncurried && toJS && numBodyArgs^ > 1;
-    let mkBody = (~indent, args) =>
+    let mkBody = (~indent, bodyArgs) => {
+      let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
+      importCurry := importCurry^ || useCurry;
       value
       |> Value.toString
-      |> EmitText.funCall(
-           ~args,
-           ~curryNumArgs=useCurry() ? Some(numBodyArgs^) : None,
-         )
+      |> EmitText.funCall(~args=bodyArgs, ~useCurry)
       |> mkReturn(~indent);
+    };
     let res =
       EmitText.funDef(
         ~args=
           (~indent) => {
             let convertedArgs = convertArgs(~indent);
-            numBodyArgs :=
-              convertedArgs |> List.fold_left((x, (_, y)) => x + List.length(y), 0);
             let args = convertedArgs |> List.map(fst) |> List.concat;
             let funParams =
               args
@@ -568,7 +564,6 @@ let rec apply =
         ~typeVars,
         "",
       );
-    importCurry := importCurry^ || useCurry();
     res;
 
   | IdentC => value |> Value.toString
