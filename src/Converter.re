@@ -545,26 +545,14 @@ let rec apply =
       |> EmitText.funCall(~args=bodyArgs, ~useCurry)
       |> mkReturn(~indent);
     };
-    let res =
-      EmitText.funDef(
-        ~args=
-          (~indent) => {
-            let convertedArgs = convertArgs(~indent);
-            let args = convertedArgs |> List.map(fst) |> List.concat;
-            let funParams =
-              args
-              |> List.map(v =>
-                   v |> Value.toString |> EmitType.ofTypeAnyTS(~config)
-                 );
-            let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
-            (funParams, bodyArgs);
-          },
-        ~mkBody,
-        ~indent,
-        ~typeVars,
-        "",
-      );
-    res;
+
+    let convertedArgs = convertArgs(~indent=indent |> Indent.more);
+    let args = convertedArgs |> List.map(fst) |> List.concat;
+    let funParams =
+      args
+      |> List.map(v => v |> Value.toString |> EmitType.ofTypeAnyTS(~config));
+    let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
+    EmitText.funDef(~bodyArgs, ~funParams, ~mkBody, ~indent, ~typeVars, "");
 
   | IdentC => value |> Value.toString
 

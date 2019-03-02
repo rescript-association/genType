@@ -38,9 +38,9 @@ let funCall = (~args, ~useCurry=false, name) =>
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
-let funDef = (~args, ~indent, ~mkBody, ~typeVars, functionName) => {
+let funDef =
+    (~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, functionName) => {
   let indent1 = indent |> Indent.more;
-  let (funParams, bodyArgs) = args(~indent=indent1);
   "function "
   ++ (functionName == "" ? "_" : functionName)
   ++ genericsString(~typeVars)
