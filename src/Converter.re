@@ -457,18 +457,19 @@ let rec apply =
           let notToJS = !toJS;
           (
             [varName],
-            varName
-            |> apply(
-                 ~config,
-                 ~converter=argConverter,
-                 ~importCurry,
-                 ~indent=indent1,
-                 ~nameGen,
-                 ~toJS=notToJS,
-                 ~useCreateBucklescriptBlock,
-                 ~variantTables,
-               ),
-            1,
+            [
+              varName
+              |> apply(
+                   ~config,
+                   ~converter=argConverter,
+                   ~importCurry,
+                   ~indent=indent1,
+                   ~nameGen,
+                   ~toJS=notToJS,
+                   ~useCreateBucklescriptBlock,
+                   ~variantTables,
+                 ),
+            ],
           );
         | GroupConverter(groupConverters) =>
           let notToJS = !toJS;
@@ -494,9 +495,7 @@ let rec apply =
                         ~useCreateBucklescriptBlock,
                         ~variantTables,
                       )
-                 )
-              |> String.concat(", "),
-              groupConverters |> List.length,
+                 ),
             );
           } else {
             let varNames =
@@ -529,13 +528,12 @@ let rec apply =
               |> String.concat(", ");
             (
               varNames |> List.map(Value.fromString),
-              "{" ++ fieldValues ++ "}",
-              1,
+              ["{" ++ fieldValues ++ "}"],
             );
           };
         | UnitConverter =>
           let varName = i + 1 |> EmitText.argi(~nameGen);
-          ([varName |> Value.fromString], varName, 1);
+          ([varName |> Value.fromString], [varName]);
         };
       argConverters |> List.mapi(convertArg);
     };
@@ -554,16 +552,17 @@ let rec apply =
         ~args=
           (~indent) => {
             let args = convertedArgs(~indent);
-            numArgs := args |> List.fold_left((x, (_, _, y)) => x + y, 0);
+            numArgs :=
+              args |> List.fold_left((x, (_, y)) => x + List.length(y), 0);
             args
-            |> List.map(((values, y, _)) =>
+            |> List.map(((values, y)) =>
                  (
                    values
                    |> List.map(v =>
                         v |> Value.toString |> EmitType.ofTypeAnyTS(~config)
                       )
                    |> String.concat(", "),
-                   y,
+                   y |> String.concat(", "),
                  )
                );
           },
