@@ -453,12 +453,11 @@ let rec apply =
       let convertArg = (i, groupedArgConverter) =>
         switch (groupedArgConverter) {
         | ArgConverter(argConverter) =>
-          let varName = i + 1 |> EmitText.argi(~nameGen);
+          let varName = i + 1 |> EmitText.argi(~nameGen) |> Value.fromString;
           let notToJS = !toJS;
           (
-            varName |> EmitType.ofTypeAnyTS(~config),
+            [varName],
             varName
-            |> Value.fromString
             |> apply(
                  ~config,
                  ~converter=argConverter,
@@ -474,13 +473,13 @@ let rec apply =
         | GroupConverter(groupConverters) =>
           let notToJS = !toJS;
           if (toJS) {
-            let varName = i + 1 |> EmitText.argi(~nameGen);
+            let varName =
+              i + 1 |> EmitText.argi(~nameGen) |> Value.fromString;
             (
-              varName |> EmitType.ofTypeAnyTS(~config),
+              [varName],
               groupConverters
               |> List.map(((label, optional, argConverter)) =>
                    varName
-                   |> Value.fromString
                    |> Value.fieldAccess(~label)
                    |> apply(
                         ~config,
@@ -528,11 +527,15 @@ let rec apply =
                    )
                  )
               |> String.concat(", ");
-            (varNames |> String.concat(", "), "{" ++ fieldValues ++ "}", 1);
+            (
+              varNames |> List.map(Value.fromString),
+              "{" ++ fieldValues ++ "}",
+              1,
+            );
           };
         | UnitConverter =>
           let varName = i + 1 |> EmitText.argi(~nameGen);
-          (varName |> EmitType.ofTypeAnyTS(~config), varName, 1);
+          ([varName |> Value.fromString], varName, 1);
         };
       argConverters |> List.mapi(convertArg);
     };
@@ -552,7 +555,17 @@ let rec apply =
           (~indent) => {
             let args = convertedArgs(~indent);
             numArgs := args |> List.fold_left((x, (_, _, y)) => x + y, 0);
-            args |> List.map(((x, y, _)) => (x, y));
+            args
+            |> List.map(((values, y, _)) =>
+                 (
+                   values
+                   |> List.map(v =>
+                        v |> Value.toString |> EmitType.ofTypeAnyTS(~config)
+                      )
+                   |> String.concat(", "),
+                   y,
+                 )
+               );
           },
         ~mkBody,
         ~indent,
@@ -616,9 +629,10 @@ let rec apply =
     "{" ++ fieldValues ++ "}";
 
   | OptionC(c) =>
+    let valueNullChecked = value |> Value.nullChecked;
     if (toJS) {
       EmitText.parens([
-        (value |> Value.nullChecked)
+        valueNullChecked
         ++ " == null ? "
         ++ (value |> Value.toString)
         ++ " : "
@@ -638,7 +652,7 @@ let rec apply =
       ]);
     } else {
       EmitText.parens([
-        (value |> Value.nullChecked)
+        valueNullChecked
         ++ " == null ? undefined : "
         ++ (
           value
@@ -654,7 +668,7 @@ let rec apply =
              )
         ),
       ]);
-    }
+    };
 
   | RecordC(fieldsC) =>
     let simplifyFieldConverted = fieldConverter =>
