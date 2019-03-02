@@ -31,11 +31,9 @@ let curry = (~args, ~numArgs, name) =>
   | _ => "Curry.app" ++ parens([name, args |> array])
   };
 
-let funCall = (~args, ~curryNumArgs=None, name) =>
-  switch (curryNumArgs) {
-  | Some(numArgs) => name |> curry(~args, ~numArgs)
-  | None => name ++ parens(args)
-  };
+let funCall = (~args, ~useCurry=false, name) =>
+  useCurry ?
+    name |> curry(~args, ~numArgs=args |> List.length) : name ++ parens(args);
 
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
