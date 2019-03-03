@@ -39,7 +39,7 @@ let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
 let funDef =
-    (~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, functionName) => {
+    (~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, functionName) =>
   "function "
   ++ (functionName == "" ? "_" : functionName)
   ++ genericsString(~typeVars)
@@ -48,7 +48,6 @@ let funDef =
   ++ (bodyArgs |> mkBody)
   ++ Indent.break(~indent)
   ++ "}";
-};
 
 let ifThenElse = (~indent, if_, then_, else_) => {
   let indent1 = indent |> Indent.more;
@@ -89,3 +88,12 @@ let switch_ = (~indent, ~cases, expr) => {
 };
 
 let typeOfObject = x => "typeof(" ++ x ++ ")" ++ " === " ++ "\'object\'";
+
+let addComment = (~comment, x) => "\n/* " ++ comment ++ " */\n  " ++ x;
+
+let arrayAccess = (~index, value) =>
+  value ++ "[" ++ string_of_int(index) ++ "]";
+
+let arraySlice = value => value ++ ".slice()";
+
+let fieldAccess = (~label, value) => value ++ "." ++ label;

@@ -10,9 +10,9 @@ type moduleItem;
 
 let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
 
-let emitJSVariantGetLabel: Value.t => Value.t;
+let emitJSVariantGetLabel: string => string;
 
-let emitJSVariantGetPayload: Value.t => Value.t;
+let emitJSVariantGetPayload: string => string;
 
 let emitJSVariantWithPayload: (~label: string, string) => string;
 
@@ -20,10 +20,10 @@ let emitModuleItem: moduleItem => string;
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
-let emitVariantGetLabel: (~polymorphic: bool, Value.t) => Value.t;
+let emitVariantGetLabel: (~polymorphic: bool, string) => string;
 
 let emitVariantGetPayload:
-  (~numArgs: int, ~polymorphic: bool, Value.t) => Value.t;
+  (~numArgs: int, ~polymorphic: bool, string) => string;
 
 let emitVariantLabel: (~comment: bool=?, ~polymorphic: bool, string) => string;
 
