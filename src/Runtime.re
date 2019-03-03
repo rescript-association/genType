@@ -54,19 +54,19 @@ let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
 
 let emitVariantGetLabel = (~polymorphic, x) =>
   if (polymorphic) {
-    x |> Value.arrayAccess(~index=0);
+    x |> EmitText.arrayAccess(~index=0);
   } else {
-    x |> Value.fieldAccess(~label="tag");
+    x |> EmitText.fieldAccess(~label="tag");
   };
 
 let emitVariantGetPayload = (~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
-    x |> Value.arrayAccess(~index=1);
+    x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
-    x |> Value.arrayAccess(~index=0);
+    x |> EmitText.arrayAccess(~index=0);
   } else {
     /* to convert a runtime block to a tuple, remove the tag */
-    x |> Value.arraySlice;
+    x |> EmitText.arraySlice;
   };
 
 let emitVariantWithPayload =
@@ -82,10 +82,11 @@ let emitVariantWithPayload =
 let jsVariantTag = "tag";
 let jsVariantValue = "value";
 
-let emitJSVariantGetLabel = x => x |> Value.fieldAccess(~label=jsVariantTag);
+let emitJSVariantGetLabel = x =>
+  x |> EmitText.fieldAccess(~label=jsVariantTag);
 
 let emitJSVariantGetPayload = x =>
-  x |> Value.fieldAccess(~label=jsVariantValue);
+  x |> EmitText.fieldAccess(~label=jsVariantValue);
 
 let emitJSVariantWithPayload = (~label, x) =>
   "{"
