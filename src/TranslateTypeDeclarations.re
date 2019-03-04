@@ -48,11 +48,12 @@ let traslateDeclarationKind =
     : list(CodeItem.typeDeclaration) => {
   let annotation = typeAttributes |> Annotation.fromAttributes;
   let opaque = annotation == Annotation.GenTypeOpaque ? Some(true) : None /* None means don't know */;
-  let nameAs = typeAttributes |> Annotation.getAttributeRenaming;
+  let (importStringOpt, nameAs) =
+    typeAttributes |> Annotation.getAttributeImportRenaming;
 
   let handleTypeAttributes = (~defaultCase, ~optType) =>
-    switch (typeAttributes |> Annotation.getAttributeImportRenaming) {
-    | (Some(importString), nameAs) =>
+    switch (importStringOpt) {
+    | Some(importString) =>
       let typeName_ = typeName;
       let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
       let (typeName, asTypeName) =
@@ -82,7 +83,7 @@ let traslateDeclarationKind =
 
       [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
-    | (_, nameAs) =>
+    | None =>
       switch (optType) {
       | None => [
           {
