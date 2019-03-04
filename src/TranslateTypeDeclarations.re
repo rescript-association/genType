@@ -108,21 +108,22 @@ let traslateDeclarationKind =
          );
     [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
-  | (GeneralDeclarationFromTypes(None) | GeneralDeclaration(None), None) => [
-      {
-        CodeItem.importTypes: [],
-        exportFromTypeDeclaration:
-          typeName
-          |> createExportTypeFromTypeDeclaration(
-               ~nameAs,
-               ~opaque=Some(true),
-               ~typeVars,
-               ~optType=Some(mixedOrUnknown(~config)),
-               ~annotation,
-               ~typeEnv,
-             ),
-      },
-    ]
+  | (GeneralDeclarationFromTypes(None) | GeneralDeclaration(None), None) =>
+    {
+      CodeItem.importTypes: [],
+      exportFromTypeDeclaration:
+        typeName
+        |> createExportTypeFromTypeDeclaration(
+             ~nameAs,
+             ~opaque=Some(true),
+             ~typeVars,
+             ~optType=Some(mixedOrUnknown(~config)),
+             ~annotation,
+             ~typeEnv,
+           ),
+    }
+    |> returnTypeDeclaration
+
   | (GeneralDeclarationFromTypes(Some(typeExpr)), None) =>
     let translation =
       typeExpr
@@ -202,21 +203,21 @@ let traslateDeclarationKind =
            {mutable_, name, optional, type_: type1};
          });
     let optType = Some(Record(fields));
-    [
-      {
-        importTypes,
-        exportFromTypeDeclaration:
-          typeName
-          |> createExportTypeFromTypeDeclaration(
-               ~nameAs,
-               ~opaque,
-               ~typeVars,
-               ~optType,
-               ~annotation,
-               ~typeEnv,
-             ),
-      },
-    ];
+
+    {
+      CodeItem.importTypes,
+      exportFromTypeDeclaration:
+        typeName
+        |> createExportTypeFromTypeDeclaration(
+             ~nameAs,
+             ~opaque,
+             ~typeVars,
+             ~optType,
+             ~annotation,
+             ~typeEnv,
+           ),
+    }
+    |> returnTypeDeclaration;
 
   | (VariantDeclarationFromTypes(constructorDeclarations), None) =>
     let recordGen = Runtime.recordGen();
@@ -301,7 +302,7 @@ let traslateDeclarationKind =
       |> List.map(((_, _, _, importTypes, _)) => importTypes)
       |> List.concat;
 
-    [{exportFromTypeDeclaration, importTypes}];
+    {CodeItem.exportFromTypeDeclaration, importTypes} |> returnTypeDeclaration;
 
   | (NoDeclaration, None) => []
   };

@@ -1,6 +1,7 @@
 # 2.12.2
 - Fix issue where importing a type which has no definition from other files could reset the type enironment.
   Resetting the type environment causes failures depending on the order of type arguments in https://github.com/cristianoc/genType/issues/158.
+- 
 
 # 2.12.1
 - Emit type parametes when generating polymorphic conversion functions. 
