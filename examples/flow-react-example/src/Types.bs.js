@@ -48,6 +48,10 @@ function testAutoAnnotateVariants2(x) {
   return x;
 }
 
+function convertObjectWithCallback(x) {
+  return x;
+}
+
 export {
   consumeOption ,
   consumeOption2 ,
@@ -58,6 +62,7 @@ export {
   testDateKey ,
   testAutoAnnotateVariants ,
   testAutoAnnotateVariants2 ,
+  convertObjectWithCallback ,
   
 }
 /* ./SomeFlowTypes Not a pure module */

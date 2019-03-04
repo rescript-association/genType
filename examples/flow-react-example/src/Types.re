@@ -116,3 +116,12 @@ type twice('a) = ('a, 'a);
 [@genType]
 type gadt =
   | F: gadt;
+
+type objectWithCallback = {
+  .
+  "y": option({. "z": option(unit => int)}),
+  "x": option(unit => int),
+};
+
+[@genType]
+let convertObjectWithCallback = (x: objectWithCallback) => x;

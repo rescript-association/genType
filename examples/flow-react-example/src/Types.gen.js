@@ -90,6 +90,8 @@ export type twice<a> = [a, a];
 
 export type gadt = "F";
 
+export type objectWithCallback = {| +y?: {| +z?: (void) => number |}, +x?: (void) => number |};
+
 export const consumeOption: (?number) => number = function _(Arg1: $any) {
   const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
   return result
@@ -125,4 +127,15 @@ export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoA
   return result.tag===0
     ? {tag:"R2", value:result.slice()}
     : {tag:"R4", value:result[0]}
+};
+
+export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = function _(Arg1: $any) {
+  const result = TypesBS.convertObjectWithCallback({y:(Arg1.y == null ? undefined : {z:(Arg1.y.z == null ? undefined : function _(Arg11: $any) {
+      const result1 = Arg1.y.z(Arg11);
+      return result1
+    })}), x:(Arg1.x == null ? undefined : function _(Arg12: $any) {
+      const result2 = Arg1.x(Arg12);
+      return result2
+    })});
+  return result
 };
