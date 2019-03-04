@@ -42,7 +42,6 @@ let createCase = ((label, attributes)) =>
 
 let traslateDeclarationKind =
     (
-      ~annotation,
       ~config,
       ~outputFileRelative,
       ~resolver,
@@ -53,6 +52,7 @@ let traslateDeclarationKind =
       declarationKind,
     )
     : list(CodeItem.typeDeclaration) => {
+  let annotation = typeAttributes |> Annotation.fromAttributes;
   let opaque = annotation == Annotation.GenTypeOpaque ? Some(true) : None /* None means don't know */;
 
   let handleTypeAttributes = (~defaultCase, ~optType) =>
@@ -348,7 +348,6 @@ let translateTypeDeclaration =
   };
   typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
 
-  let annotation = typ_attributes |> Annotation.fromAttributes;
   let typeName = Ident.name(typ_id);
 
   let typeVars =
@@ -373,7 +372,6 @@ let translateTypeDeclaration =
 
   declarationKind
   |> traslateDeclarationKind(
-       ~annotation,
        ~config,
        ~outputFileRelative,
        ~resolver,

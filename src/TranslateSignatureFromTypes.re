@@ -39,7 +39,6 @@ let translateTypeDeclarationFromTypes =
 
   declarationKind
   |> TranslateTypeDeclarations.traslateDeclarationKind(
-       ~annotation=NoGenType,
        ~config,
        ~outputFileRelative,
        ~resolver,
