@@ -32,8 +32,7 @@ let translateTypeDeclarationFromTypes =
           !TranslateTypeDeclarations.hasSomeGADTLeaf(constructorDeclarations) =>
       VariantDeclarationFromTypes(nameAs, constructorDeclarations)
 
-    | Type_abstract =>
-      GeneralDeclarationFromTypes(type_attributes, type_manifest)
+    | Type_abstract => GeneralDeclarationFromTypes(type_manifest)
 
     | _ => NoDeclaration
     };
@@ -45,6 +44,7 @@ let translateTypeDeclarationFromTypes =
        ~resolver,
        ~typeEnv,
        ~annotation=NoGenType,
+       ~typeAttributes=type_attributes,
        ~typeName,
        ~typeVars,
      );
