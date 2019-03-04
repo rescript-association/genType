@@ -1,3 +1,6 @@
+# master
+- In flow, annotate function parameters with type any just, like for TypeScript.
+
 # 2.12.2
 - Fix issue where importing a type which has no definition from other files could reset the type enironment.
   Resetting the type environment causes failures depending on the order of type arguments in https://github.com/cristianoc/genType/issues/158.
