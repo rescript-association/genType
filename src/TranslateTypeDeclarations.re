@@ -51,16 +51,15 @@ let traslateDeclarationKind =
   let (importStringOpt, nameAs) =
     typeAttributes |> Annotation.getAttributeImportRenaming;
 
-  let handleGeneralDeclaration = (~defaultCase, someType) => {
-    let (translation: TranslateTypeExprFromTypes.translation, type_) =
-      someType |> defaultCase;
+  let handleGeneralDeclaration =
+      (~translation: TranslateTypeExprFromTypes.translation) => {
     let exportFromTypeDeclaration =
       typeName
       |> createExportTypeFromTypeDeclaration(
            ~nameAs,
            ~opaque,
            ~typeVars,
-           ~optType=Some(type_),
+           ~optType=Some(translation.type_),
            ~annotation,
            ~typeEnv,
          );
@@ -123,50 +122,38 @@ let traslateDeclarationKind =
       },
     ]
   | (GeneralDeclarationFromTypes(Some(typeExpr)), None) =>
-    typeExpr
-    |> handleGeneralDeclaration(~defaultCase=typeExpr => {
-         let translation =
-           typeExpr
-           |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
-                ~config,
-                ~typeEnv,
-              );
-         (translation, translation.type_);
-       })
+    let translation =
+      typeExpr
+      |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+           ~config,
+           ~typeEnv,
+         );
+    handleGeneralDeclaration(~translation);
 
   | (GeneralDeclaration(Some(coreType)), None) =>
-    coreType
-    |> handleGeneralDeclaration(~defaultCase=coreType => {
-         let translation =
-           coreType |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
-         let type_ =
-           switch (coreType, translation.type_) {
-           | (
-               {ctyp_desc: Ttyp_variant(rowFields, _, _), _},
-               Variant(variant),
-             ) =>
-             let rowFieldsVariants =
-               rowFields |> TranslateCoreType.processVariant;
-             let noPayloads =
-               rowFieldsVariants.noPayloads |> List.map(createCase);
-             let payloads =
-               if (variant.payloads
-                   |> List.length
-                   == (rowFieldsVariants.payloads |> List.length)) {
-                 List.combine(variant.payloads, rowFieldsVariants.payloads)
-                 |> List.map((((_case, i, type_), (label, attributes, _))) => {
-                      let case = (label, attributes) |> createCase;
-                      (case, i, type_);
-                    });
-               } else {
-                 variant.payloads;
-               };
+    let translation =
+      coreType |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
+    let type_ =
+      switch (coreType, translation.type_) {
+      | ({ctyp_desc: Ttyp_variant(rowFields, _, _), _}, Variant(variant)) =>
+        let rowFieldsVariants = rowFields |> TranslateCoreType.processVariant;
+        let noPayloads = rowFieldsVariants.noPayloads |> List.map(createCase);
+        let payloads =
+          if (variant.payloads
+              |> List.length == (rowFieldsVariants.payloads |> List.length)) {
+            List.combine(variant.payloads, rowFieldsVariants.payloads)
+            |> List.map((((_case, i, type_), (label, attributes, _))) => {
+                 let case = (label, attributes) |> createCase;
+                 (case, i, type_);
+               });
+          } else {
+            variant.payloads;
+          };
 
-             createVariant(~noPayloads, ~payloads, ~polymorphic=true);
-           | _ => translation.type_
-           };
-         (translation, type_);
-       })
+        createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      | _ => translation.type_
+      };
+    handleGeneralDeclaration(~translation={...translation, type_});
 
   | (RecordDeclarationFromTypes(labelDeclarations), None) =>
     let fieldTranslations =
