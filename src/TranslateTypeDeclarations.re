@@ -51,8 +51,12 @@ let traslateDeclarationKind =
   let (importStringOpt, nameAs) =
     typeAttributes |> Annotation.getAttributeImportRenaming;
 
+  let returnTypeDeclaration = (typeDeclaration: CodeItem.typeDeclaration) =>
+    opaque == Some(true) ?
+      [{...typeDeclaration, importTypes: []}] : [typeDeclaration];
+
   let handleGeneralDeclaration =
-      (~translation: TranslateTypeExprFromTypes.translation) => {
+      (translation: TranslateTypeExprFromTypes.translation) => {
     let exportFromTypeDeclaration =
       typeName
       |> createExportTypeFromTypeDeclaration(
@@ -64,15 +68,13 @@ let traslateDeclarationKind =
            ~typeEnv,
          );
     let importTypes =
-      opaque == Some(true) ?
-        [] :
-        translation.dependencies
-        |> Translation.translateDependencies(
-             ~config,
-             ~outputFileRelative,
-             ~resolver,
-           );
-    [{CodeItem.importTypes, exportFromTypeDeclaration}];
+      translation.dependencies
+      |> Translation.translateDependencies(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+         );
+    {CodeItem.importTypes, exportFromTypeDeclaration};
   };
 
   switch (declarationKind, importStringOpt) {
@@ -128,7 +130,7 @@ let traslateDeclarationKind =
            ~config,
            ~typeEnv,
          );
-    handleGeneralDeclaration(~translation);
+    translation |> handleGeneralDeclaration |> returnTypeDeclaration;
 
   | (GeneralDeclaration(Some(coreType)), None) =>
     let translation =
@@ -153,7 +155,9 @@ let traslateDeclarationKind =
         createVariant(~noPayloads, ~payloads, ~polymorphic=true);
       | _ => translation.type_
       };
-    handleGeneralDeclaration(~translation={...translation, type_});
+    {...translation, type_}
+    |> handleGeneralDeclaration
+    |> returnTypeDeclaration;
 
   | (RecordDeclarationFromTypes(labelDeclarations), None) =>
     let fieldTranslations =
