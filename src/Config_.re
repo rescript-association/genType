@@ -18,6 +18,7 @@ type importPath =
 type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
+  mutable emitFlowAny: bool,
   exportInterfaces: bool,
   generatedFileExtension: option(string),
   importPath,
@@ -31,6 +32,7 @@ type config = {
 let default = {
   bsBlockPath: None,
   bsCurryPath: None,
+  emitFlowAny: false,
   exportInterfaces: false,
   generatedFileExtension: None,
   importPath: Relative,
@@ -237,6 +239,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
     {
       bsBlockPath,
       bsCurryPath,
+      emitFlowAny: false,
       exportInterfaces,
       generatedFileExtension,
       importPath,

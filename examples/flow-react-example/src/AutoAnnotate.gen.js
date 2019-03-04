@@ -4,6 +4,8 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as AutoAnnotateBS from './AutoAnnotate.bs';
@@ -32,7 +34,7 @@ export type r5 = {| +r5: number |};
 
 export type r6 = {| +r6: number |};
 
-export const useR5: (r5) => r5 = function _(Arg1) {
+export const useR5: (r5) => r5 = function _(Arg1: $any) {
   const result = AutoAnnotateBS.useR5([Arg1.r5]);
   return {r5:result[0]}
 };

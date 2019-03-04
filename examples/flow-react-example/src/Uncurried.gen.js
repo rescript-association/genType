@@ -4,6 +4,8 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
@@ -19,7 +21,7 @@ export const uncurried2: (number, string) => string = UncurriedBS.uncurried2;
 
 export const uncurried3: (number, string, number) => string = UncurriedBS.uncurried3;
 
-export const curried3: (number, string, number) => string = function _(Arg1, Arg2, Arg3) {
+export const curried3: (number, string, number) => string = function _(Arg1: $any, Arg2: $any, Arg3: $any) {
   const result = Curry._3(UncurriedBS.curried3, Arg1, Arg2, Arg3);
   return result
 };

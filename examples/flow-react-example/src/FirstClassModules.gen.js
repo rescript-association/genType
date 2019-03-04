@@ -4,6 +4,8 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as FirstClassModulesBS from './FirstClassModules.bs';
@@ -37,7 +39,7 @@ export const testConvert: ({|
   |}, 
   +Z: mixed, 
   +y: string
-|} = function _(Arg1) {
+|} = function _(Arg1: $any) {
   const result = FirstClassModulesBS.testConvert([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]);
   return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, Z:result[3], y:result[4]}
 };
@@ -51,7 +53,7 @@ export const someFunctorAsFunction: ({|
   |}, 
   +Z: mixed, 
   +y: string
-|}) => {| +ww: string |} = function _(Arg1) {
+|}) => {| +ww: string |} = function _(Arg1: $any) {
   const result = FirstClassModulesBS.someFunctorAsFunction([Arg1.x, [], [Arg1.InnerModule2.k], Arg1.Z, Arg1.y]);
   return {ww:result[0]}
 };

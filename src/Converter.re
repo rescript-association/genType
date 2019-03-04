@@ -385,7 +385,7 @@ let rec apply =
     let x = "ArrayItem" |> EmitText.name(~nameGen);
     value
     ++ ".map(function _element("
-    ++ (x |> EmitType.ofTypeAnyTS(~config))
+    ++ (x |> EmitType.ofTypeAny(~config))
     ++ ") { return "
     ++ (
       x
@@ -538,7 +538,7 @@ let rec apply =
 
     let convertedArgs = argConverters |> List.mapi(convertArg);
     let args = convertedArgs |> List.map(fst) |> List.concat;
-    let funParams = args |> List.map(v => v |> EmitType.ofTypeAnyTS(~config));
+    let funParams = args |> List.map(v => v |> EmitType.ofTypeAny(~config));
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
     EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, "");
 

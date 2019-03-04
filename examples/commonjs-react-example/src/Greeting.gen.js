@@ -4,6 +4,8 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 const $$toJS393171197 = {"0": "Road", "1": "Mountain"};
 
@@ -43,7 +45,7 @@ exports.component = component
 
 exports.default = component;
 
-const testBike: (Bike_kind) => Bike_kind = function _(Arg1) {
+const testBike: (Bike_kind) => Bike_kind = function _(Arg1: $any) {
   const result = GreetingBS.testBike($$toRE393171197[Arg1]);
   return $$toJS393171197[result]
 };;
