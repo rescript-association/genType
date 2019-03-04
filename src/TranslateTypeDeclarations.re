@@ -55,6 +55,8 @@ let traslateDeclarationKind =
       declarationKind,
     )
     : list(CodeItem.typeDeclaration) => {
+  let opaque = annotation == Annotation.GenTypeOpaque ? Some(true) : None /* None means don't know */;
+
   let handleTypeAttributes = (~defaultCase, ~optType, typeAttributes) =>
     switch (typeAttributes |> Annotation.getAttributeImportRenaming) {
     | (Some(importString), nameAs) =>
@@ -105,7 +107,6 @@ let traslateDeclarationKind =
           },
         ]
       | Some(someType) =>
-        let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
         let (translation: TranslateTypeExprFromTypes.translation, type_) =
           someType |> defaultCase;
         let exportFromTypeDeclaration =
@@ -229,7 +230,6 @@ let traslateDeclarationKind =
            {mutable_, name, optional, type_: type1};
          });
     let optType = Some(Record(fields));
-    let opaque = Some(annotation == GenTypeOpaque);
     [
       {
         importTypes,
@@ -247,7 +247,6 @@ let traslateDeclarationKind =
     ];
 
   | VariantDeclarationFromTypes(nameAs, constructorDeclarations) =>
-    let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
     let recordGen = Runtime.recordGen();
     let variants =
       constructorDeclarations
@@ -358,7 +357,7 @@ let translateTypeDeclaration =
 
   let annotation = typ_attributes |> Annotation.fromAttributes;
   let typeName = Ident.name(typ_id);
-  
+
   let typeVars =
     typ_params
     |> List.map(((coreType, _)) => coreType)
