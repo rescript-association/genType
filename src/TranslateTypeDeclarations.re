@@ -52,82 +52,79 @@ let traslateDeclarationKind =
     typeAttributes |> Annotation.getAttributeImportRenaming;
 
   let handleTypeAttributes = (~defaultCase, ~optType) =>
-    switch (importStringOpt) {
-    | Some(importString) =>
-      let typeName_ = typeName;
-      let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
-      let (typeName, asTypeName) =
-        switch (nameAs) {
-        | Some(asString) => (asString, Some(nameWithModulePath))
-        | None => (nameWithModulePath, None)
-        };
-      let importTypes = [
+    switch (optType) {
+    | None => [
         {
-          CodeItem.typeName,
-          asTypeName,
-          importPath: importString |> ImportPath.fromStringUnsafe,
-          cmtFile: None,
+          CodeItem.importTypes: [],
+          exportFromTypeDeclaration:
+            typeName
+            |> createExportTypeFromTypeDeclaration(
+                 ~nameAs,
+                 ~opaque=Some(true),
+                 ~typeVars,
+                 ~optType=Some(mixedOrUnknown(~config)),
+                 ~annotation,
+                 ~typeEnv,
+               ),
         },
-      ];
+      ]
+    | Some(someType) =>
+      let (translation: TranslateTypeExprFromTypes.translation, type_) =
+        someType |> defaultCase;
       let exportFromTypeDeclaration =
-        /* Make the imported type usable from other modules by exporting it too. */
-        typeName_
+        typeName
         |> createExportTypeFromTypeDeclaration(
-             ~nameAs=None,
-             ~opaque=Some(false),
-             ~typeVars=[],
-             ~optType=None,
-             ~annotation=Generated,
+             ~nameAs,
+             ~opaque,
+             ~typeVars,
+             ~optType=Some(type_),
+             ~annotation,
              ~typeEnv,
            );
-
-      [{CodeItem.importTypes, exportFromTypeDeclaration}];
-
-    | None =>
-      switch (optType) {
-      | None => [
-          {
-            importTypes: [],
-            exportFromTypeDeclaration:
-              typeName
-              |> createExportTypeFromTypeDeclaration(
-                   ~nameAs,
-                   ~opaque=Some(true),
-                   ~typeVars,
-                   ~optType=Some(mixedOrUnknown(~config)),
-                   ~annotation,
-                   ~typeEnv,
-                 ),
-          },
-        ]
-      | Some(someType) =>
-        let (translation: TranslateTypeExprFromTypes.translation, type_) =
-          someType |> defaultCase;
-        let exportFromTypeDeclaration =
-          typeName
-          |> createExportTypeFromTypeDeclaration(
-               ~nameAs,
-               ~opaque,
-               ~typeVars,
-               ~optType=Some(type_),
-               ~annotation,
-               ~typeEnv,
+      let importTypes =
+        opaque == Some(true) ?
+          [] :
+          translation.dependencies
+          |> Translation.translateDependencies(
+               ~config,
+               ~outputFileRelative,
+               ~resolver,
              );
-        let importTypes =
-          opaque == Some(true) ?
-            [] :
-            translation.dependencies
-            |> Translation.translateDependencies(
-                 ~config,
-                 ~outputFileRelative,
-                 ~resolver,
-               );
-        [{importTypes, exportFromTypeDeclaration}];
-      }
+      [{importTypes, exportFromTypeDeclaration}];
     };
 
-  switch (declarationKind) {
-  | GeneralDeclarationFromTypes(optTypeExpr) =>
+  switch (declarationKind, importStringOpt) {
+  | (_, Some(importString)) =>
+    /* import type */
+    let typeName_ = typeName;
+    let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
+    let (typeName, asTypeName) =
+      switch (nameAs) {
+      | Some(asString) => (asString, Some(nameWithModulePath))
+      | None => (nameWithModulePath, None)
+      };
+    let importTypes = [
+      {
+        CodeItem.typeName,
+        asTypeName,
+        importPath: importString |> ImportPath.fromStringUnsafe,
+        cmtFile: None,
+      },
+    ];
+    let exportFromTypeDeclaration =
+      /* Make the imported type usable from other modules by exporting it too. */
+      typeName_
+      |> createExportTypeFromTypeDeclaration(
+           ~nameAs=None,
+           ~opaque=Some(false),
+           ~typeVars=[],
+           ~optType=None,
+           ~annotation=Generated,
+           ~typeEnv,
+         );
+    [{CodeItem.importTypes, exportFromTypeDeclaration}];
+
+  | (GeneralDeclarationFromTypes(optTypeExpr), None) =>
     handleTypeAttributes(
       ~optType=optTypeExpr,
       ~defaultCase=typeExpr => {
@@ -141,7 +138,7 @@ let traslateDeclarationKind =
       },
     )
 
-  | GeneralDeclaration(optCoreType) =>
+  | (GeneralDeclaration(optCoreType), None) =>
     handleTypeAttributes(
       ~optType=optCoreType,
       ~defaultCase=coreType => {
@@ -176,7 +173,7 @@ let traslateDeclarationKind =
       },
     )
 
-  | RecordDeclarationFromTypes(labelDeclarations) =>
+  | (RecordDeclarationFromTypes(labelDeclarations), None) =>
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
@@ -235,7 +232,7 @@ let traslateDeclarationKind =
       },
     ];
 
-  | VariantDeclarationFromTypes(constructorDeclarations) =>
+  | (VariantDeclarationFromTypes(constructorDeclarations), None) =>
     let recordGen = Runtime.recordGen();
     let variants =
       constructorDeclarations
@@ -320,7 +317,7 @@ let traslateDeclarationKind =
 
     [{exportFromTypeDeclaration, importTypes}];
 
-  | NoDeclaration => []
+  | (NoDeclaration, None) => []
   };
 };
 
