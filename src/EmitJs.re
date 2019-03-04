@@ -198,7 +198,6 @@ let rec emitCodeItem =
           ~emitters,
           ~env,
           ~fileName,
-          ~importCurry,
           ~outputFileRelative,
           ~resolver,
           ~typeGetNormalized,
@@ -325,7 +324,7 @@ let rec emitCodeItem =
         ++ EmitText.parens(
              (propsFields |> List.map(({name, _}: field) => name))
              @ ["children"]
-             |> List.map(EmitType.ofTypeAnyTS(~config)),
+             |> List.map(EmitType.ofTypeAny(~config)),
            )
         ++ " { return ReasonReact.wrapJsForReason"
         ++ EmitText.parens([
@@ -346,7 +345,6 @@ let rec emitCodeItem =
                                  propTyp : Option(propTyp)
                              )
                              |> typeToConverter,
-                           ~importCurry,
                            ~indent,
                            ~nameGen,
                            ~useCreateBucklescriptBlock,
@@ -361,7 +359,6 @@ let rec emitCodeItem =
              |> Converter.toJS(
                   ~config,
                   ~converter=childrenTyp |> typeToConverter,
-                  ~importCurry,
                   ~indent,
                   ~nameGen,
                   ~useCreateBucklescriptBlock,
@@ -457,7 +454,6 @@ let rec emitCodeItem =
         |> Converter.toReason(
              ~config,
              ~converter,
-             ~importCurry,
              ~indent,
              ~nameGen,
              ~useCreateBucklescriptBlock,
@@ -531,7 +527,6 @@ let rec emitCodeItem =
                              |> Converter.converterIsIdentity(~toJS=false)
                            ) ?
                           OptionC(argConverter) : argConverter,
-                      ~importCurry,
                       ~indent,
                       ~nameGen,
                       ~useCreateBucklescriptBlock,
@@ -544,7 +539,6 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
-                 ~importCurry,
                  ~indent,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
@@ -557,7 +551,6 @@ let rec emitCodeItem =
             |> Converter.toReason(
                  ~config,
                  ~converter=childrenConverter,
-                 ~importCurry,
                  ~indent,
                  ~nameGen,
                  ~useCreateBucklescriptBlock,
@@ -631,7 +624,7 @@ let rec emitCodeItem =
 
     let numArgs = args |> List.length;
     let useCurry = numArgs >= 2;
-    importCurry := importCurry^ || useCurry;
+    config.emitImportCurry = config.emitImportCurry || useCurry;
     (env, emitters);
 
   | ExportValue({resolvedName, type_, valueAccessPath}) =>
@@ -657,7 +650,6 @@ let rec emitCodeItem =
         |> Converter.toJS(
              ~config,
              ~converter,
-             ~importCurry,
              ~indent,
              ~nameGen,
              ~useCreateBucklescriptBlock,
@@ -683,7 +675,6 @@ and emitCodeItems =
       ~emitters,
       ~env,
       ~fileName,
-      ~importCurry,
       ~resolver,
       ~typeNameIsInterface,
       ~typeGetNormalized,
@@ -700,7 +691,6 @@ and emitCodeItems =
            ~emitters,
            ~env,
            ~fileName,
-           ~importCurry,
            ~outputFileRelative,
            ~resolver,
            ~typeNameIsInterface,
@@ -1047,7 +1037,6 @@ let emitTranslationAsString =
          ~typeNameIsInterface=typeNameIsInterface(~env),
        );
 
-  let importCurry = ref(false);
   let (env, emitters) =
     translation.codeItems
     |> emitCodeItems(
@@ -1055,7 +1044,6 @@ let emitTranslationAsString =
          ~emitters,
          ~env,
          ~fileName,
-         ~importCurry,
          ~outputFileRelative,
          ~resolver,
          ~typeNameIsInterface=typeNameIsInterface(~env),
@@ -1065,7 +1053,7 @@ let emitTranslationAsString =
          ~variantTables,
        );
   let env =
-    importCurry^ ?
+    config.emitImportCurry ?
       ModuleName.curry
       |> requireModule(
            ~import=false,

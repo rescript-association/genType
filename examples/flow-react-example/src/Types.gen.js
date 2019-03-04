@@ -4,6 +4,8 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // flowlint-next-line nonstrict-import:off
 import {foo as fooNotChecked} from './name-with-dashes';
@@ -88,18 +90,20 @@ export type twice<a> = [a, a];
 
 export type gadt = "F";
 
-export const consumeOption: (?number) => number = function _(Arg1) {
+export type objectWithCallback = {| +y?: {| +z?: (void) => number |}, +x?: (void) => number |};
+
+export const consumeOption: (?number) => number = function _(Arg1: $any) {
   const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
   return result
 };
 
-export const consumeOption2: (optionInt) => number = function _(Arg1) {
+export const consumeOption2: (optionInt) => number = function _(Arg1: $any) {
   const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1));
   return result
 };
 
-export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) {
-  const result = TypesBS.testArray(Arg1.map(function _element(ArrayItem) { return (ArrayItem == null ? undefined : ArrayItem)}));
+export const testArray: (Array<?number>) => Array<?number> = function _(Arg1: $any) {
+  const result = TypesBS.testArray(Arg1.map(function _element(ArrayItem: $any) { return (ArrayItem == null ? undefined : ArrayItem)}));
   return result
 };
 
@@ -107,7 +111,7 @@ export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesB
 
 export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
 
-export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _<T1,a>(Arg1, Arg2) {
+export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _<T1,a>(Arg1: $any, Arg2: $any) {
   const result = Curry._2(TypesBS.testFunctionOnOptionsAsArgument, (Arg1 == null ? undefined : Arg1), Arg2);
   return result
 };
@@ -116,11 +120,22 @@ export const testDateKey: (dateKey) => dateKey = TypesBS.testDateKey;
 
 export const testAutoAnnotateVariants: (AutoAnnotate_variant) => AutoAnnotate_variant = TypesBS.testAutoAnnotateVariants;
 
-export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = function _(Arg1) {
+export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = function _(Arg1: $any) {
   const result = TypesBS.testAutoAnnotateVariants2(Arg1.tag==="R2"
     ? CreateBucklescriptBlock.__(0, Arg1.value)
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
   return result.tag===0
     ? {tag:"R2", value:result.slice()}
     : {tag:"R4", value:result[0]}
+};
+
+export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = function _(Arg1: $any) {
+  const result = TypesBS.convertObjectWithCallback({y:(Arg1.y == null ? undefined : {z:(Arg1.y.z == null ? undefined : function _(Arg11: $any) {
+      const result1 = Arg1.y.z(Arg11);
+      return result1
+    })}), x:(Arg1.x == null ? undefined : function _(Arg12: $any) {
+      const result2 = Arg1.x(Arg12);
+      return result2
+    })});
+  return result
 };

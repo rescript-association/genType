@@ -1,5 +1,7 @@
 # master
 - Fix missing cases (records and variants): Don't import referenced types with genType.opaque.
+- In flow, annotate function parameters with type any, just as for TypeScript.
+  This helps typing conversion functions with nested null checks.
 
 # 2.12.2
 - Fix issue where importing a type which has no definition from other files could reset the type enironment.

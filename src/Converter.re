@@ -370,7 +370,6 @@ let rec apply =
         (
           ~config,
           ~converter,
-          ~importCurry,
           ~indent,
           ~nameGen,
           ~toJS,
@@ -385,14 +384,13 @@ let rec apply =
     let x = "ArrayItem" |> EmitText.name(~nameGen);
     value
     ++ ".map(function _element("
-    ++ (x |> EmitType.ofTypeAnyTS(~config))
+    ++ (x |> EmitType.ofTypeAny(~config))
     ++ ") { return "
     ++ (
       x
       |> apply(
            ~config,
            ~converter=c,
-           ~importCurry,
            ~indent,
            ~nameGen,
            ~toJS,
@@ -413,7 +411,6 @@ let rec apply =
     |> apply(
          ~config,
          ~converter=c,
-         ~importCurry,
          ~indent,
          ~nameGen,
          ~toJS,
@@ -439,7 +436,6 @@ let rec apply =
         |> apply(
              ~config,
              ~converter=retConverter,
-             ~importCurry,
              ~indent=indent2,
              ~nameGen,
              ~toJS,
@@ -460,7 +456,6 @@ let rec apply =
             |> apply(
                  ~config,
                  ~converter=argConverter,
-                 ~importCurry,
                  ~indent=indent2,
                  ~nameGen,
                  ~toJS=notToJS,
@@ -485,7 +480,6 @@ let rec apply =
                         optional == Optional
                         && !(argConverter |> converterIsIdentity(~toJS)) ?
                           OptionC(argConverter) : argConverter,
-                      ~importCurry,
                       ~indent=indent2,
                       ~nameGen,
                       ~toJS=notToJS,
@@ -513,7 +507,6 @@ let rec apply =
                         ~config,
                         ~converter=argConverter,
                         ~indent=indent2,
-                        ~importCurry,
                         ~nameGen,
                         ~toJS=notToJS,
                         ~useCreateBucklescriptBlock,
@@ -531,14 +524,14 @@ let rec apply =
 
     let mkBody = bodyArgs => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
-      importCurry := importCurry^ || useCurry;
+      config.emitImportCurry = config.emitImportCurry || useCurry;
       Indent.break(~indent=indent1)
       ++ (value |> EmitText.funCall(~args=bodyArgs, ~useCurry) |> mkReturn);
     };
 
     let convertedArgs = argConverters |> List.mapi(convertArg);
     let args = convertedArgs |> List.map(fst) |> List.concat;
-    let funParams = args |> List.map(v => v |> EmitType.ofTypeAnyTS(~config));
+    let funParams = args |> List.map(v => v |> EmitType.ofTypeAny(~config));
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
     EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, "");
 
@@ -555,7 +548,6 @@ let rec apply =
         |> apply(
              ~config,
              ~converter=c,
-             ~importCurry,
              ~indent,
              ~nameGen,
              ~toJS,
@@ -583,7 +575,6 @@ let rec apply =
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~importCurry,
                   ~indent,
                   ~nameGen,
                   ~toJS,
@@ -607,7 +598,6 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=c,
-               ~importCurry,
                ~indent,
                ~nameGen,
                ~toJS,
@@ -625,7 +615,6 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=c,
-               ~importCurry,
                ~indent,
                ~nameGen,
                ~toJS,
@@ -655,7 +644,6 @@ let rec apply =
                |> apply(
                     ~config,
                     ~converter=fieldConverter |> simplifyFieldConverted,
-                    ~importCurry,
                     ~indent,
                     ~nameGen,
                     ~toJS,
@@ -675,7 +663,6 @@ let rec apply =
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~importCurry,
                   ~indent,
                   ~nameGen,
                   ~toJS,
@@ -696,7 +683,6 @@ let rec apply =
            |> apply(
                 ~config,
                 ~converter=c,
-                ~importCurry,
                 ~indent,
                 ~nameGen,
                 ~toJS,
@@ -740,7 +726,6 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=objConverter,
-               ~importCurry,
                ~indent,
                ~nameGen,
                ~toJS,
@@ -752,7 +737,6 @@ let rec apply =
           |> apply(
                ~config,
                ~converter=objConverter,
-               ~importCurry,
                ~indent,
                ~nameGen,
                ~toJS,
@@ -789,7 +773,6 @@ let rec apply =
         |> apply(
              ~config,
              ~converter=objConverter,
-             ~importCurry,
              ~indent,
              ~nameGen,
              ~toJS,
@@ -845,7 +828,6 @@ let toJS =
     (
       ~config,
       ~converter,
-      ~importCurry,
       ~indent,
       ~nameGen,
       ~useCreateBucklescriptBlock,
@@ -856,7 +838,6 @@ let toJS =
   |> apply(
        ~config,
        ~converter,
-       ~importCurry,
        ~indent,
        ~nameGen,
        ~variantTables,
@@ -868,7 +849,6 @@ let toReason =
     (
       ~config,
       ~converter,
-      ~importCurry,
       ~indent,
       ~nameGen,
       ~useCreateBucklescriptBlock,
@@ -879,7 +859,6 @@ let toReason =
   |> apply(
        ~config,
        ~converter,
-       ~importCurry,
        ~indent,
        ~nameGen,
        ~toJS=false,

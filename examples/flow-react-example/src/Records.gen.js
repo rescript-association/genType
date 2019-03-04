@@ -4,6 +4,8 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
@@ -48,17 +50,17 @@ export type outerRecord = {| +innerRecord: innerRecord |};
 
 export const origin: coord = {x:RecordsBS.origin[0], y:RecordsBS.origin[1], z:RecordsBS.origin[2]};
 
-export const computeArea: (coord) => number = function _(Arg1) {
+export const computeArea: (coord) => number = function _(Arg1: $any) {
   const result = RecordsBS.computeArea([Arg1.x, Arg1.y, Arg1.z]);
   return result
 };
 
-export const coord2d: (number, number) => coord = function _(Arg1, Arg2) {
+export const coord2d: (number, number) => coord = function _(Arg1: $any, Arg2: $any) {
   const result = Curry._2(RecordsBS.coord2d, Arg1, Arg2);
   return {x:result[0], y:result[1], z:result[2]}
 };
 
-export const computeArea2: (coord2) => number = function _(Arg1) {
+export const computeArea2: (coord2) => number = function _(Arg1: $any) {
   const result = RecordsBS.computeArea2([Arg1.a, Arg1.b, Arg1.c]);
   return result
 };
@@ -119,7 +121,7 @@ export const useTypeImportedInOtherModule: (Types_weekday) => Types_weekday = Re
 
 export const convertInner: (innerRecord) => innerRecord = RecordsBS.convertInner;
 
-export const convertOuter: (outerRecord) => outerRecord = function _(Arg1) {
+export const convertOuter: (outerRecord) => outerRecord = function _(Arg1: $any) {
   const result = RecordsBS.convertOuter([Arg1.innerRecord]);
   return {innerRecord:result[0]}
 };

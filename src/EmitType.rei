@@ -125,8 +125,8 @@ let ofType:
   ) =>
   string;
 
-/** Help TypeScript type-checking by making the argument of type any */
-let ofTypeAnyTS: (~config: config, string) => string;
+/** Help type-checking by making the argument of type any */
+let ofTypeAny: (~config: config, string) => string;
 
 let outputFileSuffix: (~config: config) => string;
 

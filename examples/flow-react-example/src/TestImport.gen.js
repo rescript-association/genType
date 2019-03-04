@@ -4,6 +4,8 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // flowlint-next-line nonstrict-import:off
 import {TopLevelClass as innerStuffContentsNotChecked} from './exportNestedValues';
@@ -58,6 +60,6 @@ export function MyBannerInternalTypeChecked(props: Props) {
 }
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: mixed = function _(show, Message, children) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, Message: Message}, children); };
+export const make: mixed = function _(show: $any, Message: $any, children: $any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, Message: Message}, children); };
 
 export type message = {| +text: string |};
