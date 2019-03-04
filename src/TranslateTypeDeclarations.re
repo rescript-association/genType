@@ -51,7 +51,7 @@ let traslateDeclarationKind =
   let (importStringOpt, nameAs) =
     typeAttributes |> Annotation.getAttributeImportRenaming;
 
-  let handleTypeAttributes = (~defaultCase, ~optType) =>
+  let handleGeneralDeclaration = (~defaultCase, ~optType) =>
     switch (optType) {
     | None => [
         {
@@ -125,7 +125,7 @@ let traslateDeclarationKind =
     [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
   | (GeneralDeclarationFromTypes(optTypeExpr), None) =>
-    handleTypeAttributes(
+    handleGeneralDeclaration(
       ~optType=optTypeExpr,
       ~defaultCase=typeExpr => {
         let translation =
@@ -139,7 +139,7 @@ let traslateDeclarationKind =
     )
 
   | (GeneralDeclaration(optCoreType), None) =>
-    handleTypeAttributes(
+    handleGeneralDeclaration(
       ~optType=optCoreType,
       ~defaultCase=coreType => {
         let translation =
