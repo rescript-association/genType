@@ -42,12 +42,12 @@ let createCase = ((label, attributes)) =>
 
 let traslateDeclarationKind =
     (
+      ~annotation,
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~typeEnv,
-      ~annotation,
       ~typeAttributes,
+      ~typeEnv,
       ~typeName,
       ~typeVars,
       declarationKind,
@@ -373,12 +373,12 @@ let translateTypeDeclaration =
 
   declarationKind
   |> traslateDeclarationKind(
+       ~annotation,
        ~config,
        ~outputFileRelative,
        ~resolver,
-       ~typeEnv,
-       ~annotation,
        ~typeAttributes=typ_attributes,
+       ~typeEnv,
        ~typeName,
        ~typeVars,
      );

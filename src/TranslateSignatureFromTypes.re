@@ -39,12 +39,12 @@ let translateTypeDeclarationFromTypes =
 
   declarationKind
   |> TranslateTypeDeclarations.traslateDeclarationKind(
+       ~annotation=NoGenType,
        ~config,
        ~outputFileRelative,
        ~resolver,
-       ~typeEnv,
-       ~annotation=NoGenType,
        ~typeAttributes=type_attributes,
+       ~typeEnv,
        ~typeName,
        ~typeVars,
      );
