@@ -1,16 +1,10 @@
 open GenTypeCommon;
 
 type declarationKind =
-  | RecordDeclarationFromTypes(
-      option(string),
-      list(Types.label_declaration),
-    )
+  | RecordDeclarationFromTypes(list(Types.label_declaration))
   | GeneralDeclaration(option(Typedtree.core_type))
   | GeneralDeclarationFromTypes(option(Types.type_expr)) /* As the above, but from Types not Typedtree */
-  | VariantDeclarationFromTypes(
-      option(string),
-      list(Types.constructor_declaration),
-    )
+  | VariantDeclarationFromTypes(list(Types.constructor_declaration))
   | NoDeclaration;
 
 let createExportTypeFromTypeDeclaration =
@@ -54,6 +48,7 @@ let traslateDeclarationKind =
     : list(CodeItem.typeDeclaration) => {
   let annotation = typeAttributes |> Annotation.fromAttributes;
   let opaque = annotation == Annotation.GenTypeOpaque ? Some(true) : None /* None means don't know */;
+  let nameAs = typeAttributes |> Annotation.getAttributeRenaming;
 
   let handleTypeAttributes = (~defaultCase, ~optType) =>
     switch (typeAttributes |> Annotation.getAttributeImportRenaming) {
@@ -180,7 +175,7 @@ let traslateDeclarationKind =
       },
     )
 
-  | RecordDeclarationFromTypes(nameAs, labelDeclarations) =>
+  | RecordDeclarationFromTypes(labelDeclarations) =>
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
@@ -239,7 +234,7 @@ let traslateDeclarationKind =
       },
     ];
 
-  | VariantDeclarationFromTypes(nameAs, constructorDeclarations) =>
+  | VariantDeclarationFromTypes(constructorDeclarations) =>
     let recordGen = Runtime.recordGen();
     let variants =
       constructorDeclarations
@@ -355,15 +350,13 @@ let translateTypeDeclaration =
     |> List.map(((coreType, _)) => coreType)
     |> TypeVars.extractFromCoreType;
 
-  let nameAs = typ_attributes |> Annotation.getAttributeRenaming;
-
   let declarationKind =
     switch (typ_type.type_kind) {
     | Type_record(labelDeclarations, _) =>
-      RecordDeclarationFromTypes(nameAs, labelDeclarations)
+      RecordDeclarationFromTypes(labelDeclarations)
 
     | Type_variant(constructorDeclarations) =>
-      VariantDeclarationFromTypes(nameAs, constructorDeclarations)
+      VariantDeclarationFromTypes(constructorDeclarations)
 
     | Type_abstract => GeneralDeclaration(typ_manifest)
 
