@@ -1,19 +1,10 @@
 open GenTypeCommon;
 
 type declarationKind =
-  | RecordDeclarationFromTypes(
-      option(string),
-      list(Types.label_declaration),
-    )
-  | GeneralDeclaration(Parsetree.attributes, option(Typedtree.core_type))
-  | GeneralDeclarationFromTypes(
-      Parsetree.attributes,
-      option(Types.type_expr),
-    ) /* As the above, but from Types not Typedtree */
-  | VariantDeclarationFromTypes(
-      option(string),
-      list(Types.constructor_declaration),
-    )
+  | RecordDeclarationFromTypes(list(Types.label_declaration))
+  | GeneralDeclaration(option(Typedtree.core_type))
+  | GeneralDeclarationFromTypes(option(Types.type_expr)) /* As the above, but from Types not Typedtree */
+  | VariantDeclarationFromTypes(list(Types.constructor_declaration))
   | NoDeclaration;
 
 let createExportTypeFromTypeDeclaration =
@@ -48,145 +39,128 @@ let traslateDeclarationKind =
       ~config,
       ~outputFileRelative,
       ~resolver,
+      ~typeAttributes,
       ~typeEnv,
-      ~annotation,
       ~typeName,
       ~typeVars,
       declarationKind,
     )
     : list(CodeItem.typeDeclaration) => {
-  let handleTypeAttributes = (~defaultCase, ~optType, typeAttributes) =>
-    switch (typeAttributes |> Annotation.getAttributeImportRenaming) {
-    | (Some(importString), nameAs) =>
-      let typeName_ = typeName;
-      let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
-      let (typeName, asTypeName) =
-        switch (nameAs) {
-        | Some(asString) => (asString, Some(nameWithModulePath))
-        | None => (nameWithModulePath, None)
-        };
-      let importTypes = [
-        {
-          CodeItem.typeName,
-          asTypeName,
-          importPath: importString |> ImportPath.fromStringUnsafe,
-          cmtFile: None,
-        },
-      ];
-      let exportFromTypeDeclaration =
-        /* Make the imported type usable from other modules by exporting it too. */
-        typeName_
+  let annotation = typeAttributes |> Annotation.fromAttributes;
+  let opaque = annotation == Annotation.GenTypeOpaque ? Some(true) : None /* None means don't know */;
+  let (importStringOpt, nameAs) =
+    typeAttributes |> Annotation.getAttributeImportRenaming;
+
+  let returnTypeDeclaration = (typeDeclaration: CodeItem.typeDeclaration) =>
+    opaque == Some(true) ?
+      [{...typeDeclaration, importTypes: []}] : [typeDeclaration];
+
+  let handleGeneralDeclaration =
+      (translation: TranslateTypeExprFromTypes.translation) => {
+    let exportFromTypeDeclaration =
+      typeName
+      |> createExportTypeFromTypeDeclaration(
+           ~nameAs,
+           ~opaque,
+           ~typeVars,
+           ~optType=Some(translation.type_),
+           ~annotation,
+           ~typeEnv,
+         );
+    let importTypes =
+      translation.dependencies
+      |> Translation.translateDependencies(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+         );
+    {CodeItem.importTypes, exportFromTypeDeclaration};
+  };
+
+  switch (declarationKind, importStringOpt) {
+  | (_, Some(importString)) =>
+    /* import type */
+    let typeName_ = typeName;
+    let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
+    let (typeName, asTypeName) =
+      switch (nameAs) {
+      | Some(asString) => (asString, Some(nameWithModulePath))
+      | None => (nameWithModulePath, None)
+      };
+    let importTypes = [
+      {
+        CodeItem.typeName,
+        asTypeName,
+        importPath: importString |> ImportPath.fromStringUnsafe,
+        cmtFile: None,
+      },
+    ];
+    let exportFromTypeDeclaration =
+      /* Make the imported type usable from other modules by exporting it too. */
+      typeName_
+      |> createExportTypeFromTypeDeclaration(
+           ~nameAs=None,
+           ~opaque=Some(false),
+           ~typeVars=[],
+           ~optType=None,
+           ~annotation=Generated,
+           ~typeEnv,
+         );
+    [{CodeItem.importTypes, exportFromTypeDeclaration}];
+
+  | (GeneralDeclarationFromTypes(None) | GeneralDeclaration(None), None) =>
+    {
+      CodeItem.importTypes: [],
+      exportFromTypeDeclaration:
+        typeName
         |> createExportTypeFromTypeDeclaration(
-             ~nameAs=None,
-             ~opaque=Some(false),
-             ~typeVars=[],
-             ~optType=None,
-             ~annotation=Generated,
+             ~nameAs,
+             ~opaque=Some(true),
+             ~typeVars,
+             ~optType=Some(mixedOrUnknown(~config)),
+             ~annotation,
              ~typeEnv,
-           );
+           ),
+    }
+    |> returnTypeDeclaration
 
-      [{CodeItem.importTypes, exportFromTypeDeclaration}];
+  | (GeneralDeclarationFromTypes(Some(typeExpr)), None) =>
+    let translation =
+      typeExpr
+      |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+           ~config,
+           ~typeEnv,
+         );
+    translation |> handleGeneralDeclaration |> returnTypeDeclaration;
 
-    | (_, nameAs) =>
-      switch (optType) {
-      | None => [
-          {
-            importTypes: [],
-            exportFromTypeDeclaration:
-              typeName
-              |> createExportTypeFromTypeDeclaration(
-                   ~nameAs,
-                   ~opaque=Some(true),
-                   ~typeVars,
-                   ~optType=Some(mixedOrUnknown(~config)),
-                   ~annotation,
-                   ~typeEnv,
-                 ),
-          },
-        ]
-      | Some(someType) =>
-        let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
-        let (translation: TranslateTypeExprFromTypes.translation, type_) =
-          someType |> defaultCase;
-        let exportFromTypeDeclaration =
-          typeName
-          |> createExportTypeFromTypeDeclaration(
-               ~nameAs,
-               ~opaque,
-               ~typeVars,
-               ~optType=Some(type_),
-               ~annotation,
-               ~typeEnv,
-             );
-        let importTypes =
-          opaque == Some(true) ?
-            [] :
-            translation.dependencies
-            |> Translation.translateDependencies(
-                 ~config,
-                 ~outputFileRelative,
-                 ~resolver,
-               );
-        [{importTypes, exportFromTypeDeclaration}];
-      }
-    };
+  | (GeneralDeclaration(Some(coreType)), None) =>
+    let translation =
+      coreType |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
+    let type_ =
+      switch (coreType, translation.type_) {
+      | ({ctyp_desc: Ttyp_variant(rowFields, _, _), _}, Variant(variant)) =>
+        let rowFieldsVariants = rowFields |> TranslateCoreType.processVariant;
+        let noPayloads = rowFieldsVariants.noPayloads |> List.map(createCase);
+        let payloads =
+          if (variant.payloads
+              |> List.length == (rowFieldsVariants.payloads |> List.length)) {
+            List.combine(variant.payloads, rowFieldsVariants.payloads)
+            |> List.map((((_case, i, type_), (label, attributes, _))) => {
+                 let case = (label, attributes) |> createCase;
+                 (case, i, type_);
+               });
+          } else {
+            variant.payloads;
+          };
 
-  switch (declarationKind) {
-  | GeneralDeclarationFromTypes(typeAttributes, optTypeExpr) =>
-    typeAttributes
-    |> handleTypeAttributes(
-         ~optType=optTypeExpr,
-         ~defaultCase=typeExpr => {
-           let translation =
-             typeExpr
-             |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
-                  ~config,
-                  ~typeEnv,
-                );
-           (translation, translation.type_);
-         },
-       )
+        createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      | _ => translation.type_
+      };
+    {...translation, type_}
+    |> handleGeneralDeclaration
+    |> returnTypeDeclaration;
 
-  | GeneralDeclaration(typeAttributes, optCoreType) =>
-    typeAttributes
-    |> handleTypeAttributes(
-         ~optType=optCoreType,
-         ~defaultCase=coreType => {
-           let translation =
-             coreType
-             |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
-           let type_ =
-             switch (optCoreType, translation.type_) {
-             | (
-                 Some({ctyp_desc: Ttyp_variant(rowFields, _, _), _}),
-                 Variant(variant),
-               ) =>
-               let rowFieldsVariants =
-                 rowFields |> TranslateCoreType.processVariant;
-               let noPayloads =
-                 rowFieldsVariants.noPayloads |> List.map(createCase);
-               let payloads =
-                 if (variant.payloads
-                     |> List.length
-                     == (rowFieldsVariants.payloads |> List.length)) {
-                   List.combine(variant.payloads, rowFieldsVariants.payloads)
-                   |> List.map(
-                        (((_case, i, type_), (label, attributes, _))) => {
-                        let case = (label, attributes) |> createCase;
-                        (case, i, type_);
-                      });
-                 } else {
-                   variant.payloads;
-                 };
-
-               createVariant(~noPayloads, ~payloads, ~polymorphic=true);
-             | _ => translation.type_
-             };
-           (translation, type_);
-         },
-       )
-
-  | RecordDeclarationFromTypes(nameAs, labelDeclarations) =>
+  | (RecordDeclarationFromTypes(labelDeclarations), None) =>
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
@@ -229,25 +203,23 @@ let traslateDeclarationKind =
            {mutable_, name, optional, type_: type1};
          });
     let optType = Some(Record(fields));
-    let opaque = Some(annotation == GenTypeOpaque);
-    [
-      {
-        importTypes,
-        exportFromTypeDeclaration:
-          typeName
-          |> createExportTypeFromTypeDeclaration(
-               ~nameAs,
-               ~opaque,
-               ~typeVars,
-               ~optType,
-               ~annotation,
-               ~typeEnv,
-             ),
-      },
-    ];
 
-  | VariantDeclarationFromTypes(nameAs, constructorDeclarations) =>
-    let opaque = annotation == GenTypeOpaque ? Some(true) : None /* None means don't know */;
+    {
+      CodeItem.importTypes,
+      exportFromTypeDeclaration:
+        typeName
+        |> createExportTypeFromTypeDeclaration(
+             ~nameAs,
+             ~opaque,
+             ~typeVars,
+             ~optType,
+             ~annotation,
+             ~typeEnv,
+           ),
+    }
+    |> returnTypeDeclaration;
+
+  | (VariantDeclarationFromTypes(constructorDeclarations), None) =>
     let recordGen = Runtime.recordGen();
     let variants =
       constructorDeclarations
@@ -330,9 +302,9 @@ let traslateDeclarationKind =
       |> List.map(((_, _, _, importTypes, _)) => importTypes)
       |> List.concat;
 
-    [{exportFromTypeDeclaration, importTypes}];
+    {CodeItem.exportFromTypeDeclaration, importTypes} |> returnTypeDeclaration;
 
-  | NoDeclaration => []
+  | (NoDeclaration, None) => []
   };
 };
 
@@ -356,25 +328,22 @@ let translateTypeDeclaration =
   };
   typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
 
-  let annotation = typ_attributes |> Annotation.fromAttributes;
   let typeName = Ident.name(typ_id);
-  
+
   let typeVars =
     typ_params
     |> List.map(((coreType, _)) => coreType)
     |> TypeVars.extractFromCoreType;
 
-  let nameAs = typ_attributes |> Annotation.getAttributeRenaming;
-
   let declarationKind =
     switch (typ_type.type_kind) {
     | Type_record(labelDeclarations, _) =>
-      RecordDeclarationFromTypes(nameAs, labelDeclarations)
+      RecordDeclarationFromTypes(labelDeclarations)
 
     | Type_variant(constructorDeclarations) =>
-      VariantDeclarationFromTypes(nameAs, constructorDeclarations)
+      VariantDeclarationFromTypes(constructorDeclarations)
 
-    | Type_abstract => GeneralDeclaration(typ_attributes, typ_manifest)
+    | Type_abstract => GeneralDeclaration(typ_manifest)
 
     | _ => NoDeclaration
     };
@@ -384,8 +353,8 @@ let translateTypeDeclaration =
        ~config,
        ~outputFileRelative,
        ~resolver,
+       ~typeAttributes=typ_attributes,
        ~typeEnv,
-       ~annotation,
        ~typeName,
        ~typeVars,
      );

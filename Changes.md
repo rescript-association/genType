@@ -1,4 +1,5 @@
 # master
+- Fix missing cases (records and variants): Don't import referenced types with genType.opaque.
 - In flow, annotate function parameters with type any, just as for TypeScript.
   This helps typing conversion functions with nested null checks.
 
