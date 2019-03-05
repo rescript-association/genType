@@ -57,3 +57,10 @@ external higherOrder: ((int, int) => int) => int = "";
 
 [@genType]
 let returnedFromHigherOrder = higherOrder((+));
+
+type variant =
+  | I(int)
+  | S(string);
+
+[@genType.import "./MyMath"] [@bs.module "./ImportJsValue.gen"]
+external convertVariant: variant => variant = "";

@@ -8,6 +8,8 @@ import {useColor as useColorNotChecked} from './MyMath';
 
 import {higherOrder as higherOrderNotChecked} from './MyMath';
 
+import {convertVariant as convertVariantNotChecked} from './MyMath';
+
 const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
 
 // tslint:disable-next-line:no-var-requires
@@ -48,6 +50,12 @@ export const higherOrder: unknown = function _(Arg1: any) {
     });
   return result
 } as (_1:((_1:number, _2:number) => number)) => number;
+
+// In case of type error, check the type of 'convertVariant' in 'ImportJsValue.re' and './MyMath'.
+export const convertVariantTypeChecked: (_1:variant) => variant = convertVariantNotChecked;
+
+// Export 'convertVariant' early to allow circular import from the '.bs.js' file.
+export const convertVariant: unknown = convertVariantTypeChecked as (_1:variant) => variant;
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');
