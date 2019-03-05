@@ -1,6 +1,8 @@
 # master
 - Import Curry early, so it's available if needed for an import conversion.
 - Automatically export types referenced by an imported value.
+- Import CreateBuckescriptBlock early, so it's available if needed for an import conversion.
+
 
 # 2.13.0
 - Fix missing cases (records and variants): Don't import referenced types with genType.opaque.

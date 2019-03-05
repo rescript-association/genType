@@ -11,6 +11,9 @@ type $any = any;
 import {foo as fooNotChecked} from './name-with-dashes';
 
 // $FlowExpectedError: Reason checked type sufficiently
+import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
+
+// $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
@@ -18,9 +21,6 @@ export const fooTypeChecked: (number) => number = fooNotChecked;
 
 // Export 'foo' early to allow circular import from the '.bs.js' file.
 export const foo: mixed = fooTypeChecked;
-
-// $FlowExpectedError: Reason checked type sufficiently
-const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 
 // $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
