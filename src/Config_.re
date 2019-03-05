@@ -18,6 +18,7 @@ type importPath =
 type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
+  mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
   exportInterfaces: bool,
@@ -33,6 +34,7 @@ type config = {
 let default = {
   bsBlockPath: None,
   bsCurryPath: None,
+  emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
   exportInterfaces: false,
@@ -241,6 +243,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
     {
       bsBlockPath,
       bsCurryPath,
+      emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
       emitImportCurry: false,
       exportInterfaces,

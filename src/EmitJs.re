@@ -203,7 +203,6 @@ let rec emitCodeItem =
           ~typeGetNormalized,
           ~typeNameIsInterface,
           ~typeToConverter,
-          ~useCreateBucklescriptBlock,
           ~variantTables,
           codeItem,
         ) => {
@@ -347,7 +346,6 @@ let rec emitCodeItem =
                              |> typeToConverter,
                            ~indent,
                            ~nameGen,
-                           ~useCreateBucklescriptBlock,
                            ~variantTables,
                          )
                     )
@@ -361,7 +359,6 @@ let rec emitCodeItem =
                   ~converter=childrenTyp |> typeToConverter,
                   ~indent,
                   ~nameGen,
-                  ~useCreateBucklescriptBlock,
                   ~variantTables,
                 ),
            ])
@@ -456,7 +453,6 @@ let rec emitCodeItem =
              ~converter,
              ~indent,
              ~nameGen,
-             ~useCreateBucklescriptBlock,
              ~variantTables,
            )
         |> EmitType.emitTypeCast(~config, ~type_, ~typeNameIsInterface)
@@ -529,7 +525,6 @@ let rec emitCodeItem =
                           OptionC(argConverter) : argConverter,
                       ~indent,
                       ~nameGen,
-                      ~useCreateBucklescriptBlock,
                       ~variantTables,
                     )
                )
@@ -541,7 +536,6 @@ let rec emitCodeItem =
                  ~converter=childrenConverter,
                  ~indent,
                  ~nameGen,
-                 ~useCreateBucklescriptBlock,
                  ~variantTables,
                ),
           ]
@@ -553,7 +547,6 @@ let rec emitCodeItem =
                  ~converter=childrenConverter,
                  ~indent,
                  ~nameGen,
-                 ~useCreateBucklescriptBlock,
                  ~variantTables,
                ),
           ]
@@ -652,7 +645,6 @@ let rec emitCodeItem =
              ~converter,
              ~indent,
              ~nameGen,
-             ~useCreateBucklescriptBlock,
              ~variantTables,
            )
       )
@@ -679,7 +671,6 @@ and emitCodeItems =
       ~typeNameIsInterface,
       ~typeGetNormalized,
       ~typeToConverter,
-      ~useCreateBucklescriptBlock,
       ~variantTables,
       codeItems,
     ) =>
@@ -696,7 +687,6 @@ and emitCodeItems =
            ~typeNameIsInterface,
            ~typeGetNormalized,
            ~typeToConverter,
-           ~useCreateBucklescriptBlock,
            ~variantTables,
          ),
        (env, emitters),
@@ -1026,8 +1016,6 @@ let emitTranslationAsString =
          ~typeNameIsInterface,
        );
 
-  let useCreateBucklescriptBlock = ref(false);
-
   let (env, emitters) =
     exportFromTypeDeclarations
     |> emitExportFromTypeDeclarations(
@@ -1050,7 +1038,6 @@ let emitTranslationAsString =
          ~typeNameIsInterface=typeNameIsInterface(~env),
          ~typeGetNormalized=typeGetNormalized_(~env),
          ~typeToConverter=typeToConverter_(~env),
-         ~useCreateBucklescriptBlock,
          ~variantTables,
        );
   let env =
@@ -1064,7 +1051,7 @@ let emitTranslationAsString =
       env;
 
   let finalEnv =
-    useCreateBucklescriptBlock^ ?
+    config.emitCreateBucklescriptBlock ?
       ModuleName.createBucklescriptBlock
       |> requireModule(
            ~import=false,
