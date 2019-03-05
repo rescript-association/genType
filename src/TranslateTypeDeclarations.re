@@ -103,7 +103,7 @@ let traslateDeclarationKind =
            ~opaque=Some(false),
            ~typeVars=[],
            ~optType=None,
-           ~annotation=Generated,
+           ~annotation=GenType,
            ~typeEnv,
          );
     [{CodeItem.importTypes, exportFromTypeDeclaration}];
