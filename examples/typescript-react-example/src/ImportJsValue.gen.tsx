@@ -6,6 +6,8 @@ import {area as areaNotChecked} from './MyMath';
 
 import {useColor as useColorNotChecked} from './MyMath';
 
+import {higherOrder as higherOrderNotChecked} from './MyMath';
+
 const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
@@ -31,6 +33,21 @@ export const useColor: unknown = function _(Arg1: any) {
   const result = useColorTypeChecked($$toJS580645844[Arg1]);
   return result
 } as (_1:color) => number;
+
+// In case of type error, check the type of 'higherOrder' in 'ImportJsValue.re' and './MyMath'.
+export const higherOrderTypeChecked: (_1:((_1:number, _2:number) => number)) => number = higherOrderNotChecked;
+
+// Export 'higherOrder' early to allow circular import from the '.bs.js' file.
+export const higherOrder: unknown = function _(Arg1: any) {
+  const result = higherOrderTypeChecked(function _(Arg11: any, Arg2: any) {
+      const result1 = Curry._2(Arg1, Arg11, Arg2);
+      return result1
+    });
+  return result
+} as (_1:((_1:number, _2:number) => number)) => number;
+
+// tslint:disable-next-line:no-var-requires
+const Curry = require('bs-platform/lib/es6/curry.js');
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');
@@ -58,3 +75,5 @@ export const areaValue: number = ImportJsValueBS.areaValue;
 export const useGetProp: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGetProp;
 
 export const useGetAbs: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGetAbs;
+
+export const returnedFromHigherOrder: number = ImportJsValueBS.returnedFromHigherOrder;

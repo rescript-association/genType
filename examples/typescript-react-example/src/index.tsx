@@ -47,6 +47,7 @@ const addresses = Records.findAllAddresses(businesses);
 
 consoleLog("index.tsx roundedNumber:", ImportJsValue.roundedNumber);
 consoleLog("index.tsx areaValue:", ImportJsValue.areaValue);
+consoleLog("index.tsx returnedFromHigherOrder:", ImportJsValue.returnedFromHigherOrder);
 
 consoleLog("index.tsx callback:", Uncurried.callback(() => 3));
 consoleLog(

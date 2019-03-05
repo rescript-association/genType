@@ -23,3 +23,6 @@ export type stringFunction = (_: string) => string;
 export const useColor = function(x: "tomato" | "gray"): number {
   return 0;
 };
+
+
+export const higherOrder = (foo: (_1:number, _2:number) => number) => foo(3,4);
