@@ -10,6 +10,9 @@ import {higherOrder as higherOrderNotChecked} from './MyMath';
 
 const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
 
+// tslint:disable-next-line:no-var-requires
+const Curry = require('bs-platform/lib/es6/curry.js');
+
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
 export const roundTypeChecked: (_1:number) => number = roundNotChecked;
 
@@ -45,9 +48,6 @@ export const higherOrder: unknown = function _(Arg1: any) {
     });
   return result
 } as (_1:((_1:number, _2:number) => number)) => number;
-
-// tslint:disable-next-line:no-var-requires
-const Curry = require('bs-platform/lib/es6/curry.js');
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');
