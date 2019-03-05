@@ -55,7 +55,17 @@ export const higherOrder: unknown = function _(Arg1: any) {
 export const convertVariantTypeChecked: (_1:variant) => variant = convertVariantNotChecked;
 
 // Export 'convertVariant' early to allow circular import from the '.bs.js' file.
-export const convertVariant: unknown = convertVariantTypeChecked as (_1:variant) => variant;
+export const convertVariant: unknown = function _(Arg1: any) {
+  const result = convertVariantTypeChecked(Arg1.tag===0
+    ? {tag:"I", value:Arg1[0]}
+    : {tag:"S", value:Arg1[0]});
+  return result.tag==="I"
+    ? CreateBucklescriptBlock.__(0, [result.value])
+    : CreateBucklescriptBlock.__(1, [result.value])
+} as (_1:variant) => variant;
+
+// tslint:disable-next-line:no-var-requires
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');
@@ -75,6 +85,11 @@ export type stringFunction = stringFunction;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type color = "tomato" | "gray";
+
+// tslint:disable-next-line:interface-over-type-literal
+export type variant = 
+  | { tag: "I"; value: number }
+  | { tag: "S"; value: string };
 
 export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 

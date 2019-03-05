@@ -1,3 +1,7 @@
+# master
+- Import Curry early, so it's available if needed for an import conversion.
+- Automatically export types referenced by an imported value.
+
 # 2.13.0
 - Fix missing cases (records and variants): Don't import referenced types with genType.opaque.
 - In flow, annotate function parameters with type any, just as for TypeScript.
