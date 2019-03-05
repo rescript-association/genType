@@ -8,10 +8,10 @@
 type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as AutoAnnotateBS from './AutoAnnotate.bs';
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as AutoAnnotateBS from './AutoAnnotate.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';

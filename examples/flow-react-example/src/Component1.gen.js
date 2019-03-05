@@ -10,13 +10,13 @@ type $any = any;
 const $$toRE552311971 = {"A": 0};
 
 // $FlowExpectedError: Reason checked type sufficiently
+import * as Curry from 'bs-platform/lib/es6/curry.js';
+
+// $FlowExpectedError: Reason checked type sufficiently
 import * as Component1BS from './Component1.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
-
-// $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';

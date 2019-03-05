@@ -6,10 +6,10 @@
 /* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as ComponentAsPropBS from './ComponentAsProp.bs';
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as ComponentAsPropBS from './ComponentAsProp.bs';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';

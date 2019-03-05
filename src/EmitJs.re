@@ -1056,7 +1056,7 @@ let emitTranslationAsString =
     config.emitImportCurry ?
       ModuleName.curry
       |> requireModule(
-           ~import=false,
+           ~import=true,
            ~env,
            ~importPath=ImportPath.bsCurryPath(~config),
          ) :
