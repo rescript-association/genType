@@ -51,3 +51,9 @@ type color = [ | `tomato | `gray];
 
 [@genType.import "./MyMath"] [@bs.module "./ImportJsValue.gen"]
 external useColor: color => int = "";
+
+[@genType.import "./MyMath"] [@bs.module "./ImportJsValue.gen"]
+external higherOrder: ((int, int) => int) => int = "";
+
+[@genType]
+let returnedFromHigherOrder = higherOrder((+));

@@ -23,12 +23,17 @@ function useGetAbs(x) {
   return x.getAbs() + 1 | 0;
 }
 
+var returnedFromHigherOrder = ImportJsValueGen.higherOrder((function (prim, prim$1) {
+        return prim + prim$1 | 0;
+      }));
+
 export {
   roundedNumber ,
   areaValue ,
   AbsoluteValue ,
   useGetProp ,
   useGetAbs ,
+  returnedFromHigherOrder ,
   
 }
 /* roundedNumber Not a pure module */
