@@ -26,3 +26,5 @@ export const useColor = function(x: "tomato" | "gray"): number {
 
 
 export const higherOrder = (foo: (_1:number, _2:number) => number) => foo(3,4);
+
+export const convertVariant = (x:any) => x;
