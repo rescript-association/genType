@@ -12,14 +12,12 @@ type attributePayload =
   | UnrecognizedPayload;
 
 type t =
-  | Generated
   | GenType
   | GenTypeOpaque
   | NoGenType;
 
 let toString = annotation =>
   switch (annotation) {
-  | Generated => "Generated"
   | GenType => "GenType"
   | GenTypeOpaque => "GenTypeOpaque"
   | NoGenType => "NoGenType"

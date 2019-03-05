@@ -896,7 +896,7 @@ let propagateAnnotationToSubTypes =
         } else {
           visited := visited^ |> StringSet.add(typeName);
           switch (typeMap |> StringMap.find(typeName)) {
-          | {annotation: GenType | GenTypeOpaque | Generated, _} => ()
+          | {annotation: GenType | GenTypeOpaque, _} => ()
           | {type_: type1, annotation: NoGenType, _} =>
             if (Debug.translation^) {
               logItem("Marking Type As Annotated %s\n", typeName);
