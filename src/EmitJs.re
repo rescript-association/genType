@@ -879,8 +879,9 @@ let propagateAnnotationToSubTypes =
     |> List.map(((_, {CodeItem.type_, _})) => type_);
   let typesOfExportedValue = (codeItem: CodeItem.t) =>
     switch (codeItem) {
+    | ExportComponent({type_, _})
     | ExportValue({type_, _})
-    | ExportComponent({type_, _}) => [type_]
+    | ImportValue({type_, _}) => [type_]
     | _ => []
     };
   let typesOfExportedValues =
