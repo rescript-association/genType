@@ -29,10 +29,10 @@ let emitVariantLabel: (~comment: bool=?, ~polymorphic: bool, string) => string;
 
 let emitVariantWithPayload:
   (
+    ~config: config,
     ~label: string,
     ~numArgs: int,
     ~polymorphic: bool,
-    ~useCreateBucklescriptBlock: ref(bool),
     string
   ) =>
   string;

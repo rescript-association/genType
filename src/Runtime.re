@@ -69,12 +69,11 @@ let emitVariantGetPayload = (~numArgs, ~polymorphic, x) =>
     x |> EmitText.arraySlice;
   };
 
-let emitVariantWithPayload =
-    (~label, ~numArgs, ~polymorphic, ~useCreateBucklescriptBlock, x) =>
+let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     EmitText.array([label |> emitVariantLabel(~polymorphic), x]);
   } else {
-    useCreateBucklescriptBlock := true;
+    config.emitCreateBucklescriptBlock = true;
     let args = numArgs == 1 ? [x] |> EmitText.array : x;
     createBucklescriptBlock |> EmitText.funCall(~args=[label, args]);
   };

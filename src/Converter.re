@@ -367,16 +367,7 @@ let rec converterIsIdentity = (~toJS, converter) =>
   };
 
 let rec apply =
-        (
-          ~config,
-          ~converter,
-          ~indent,
-          ~nameGen,
-          ~toJS,
-          ~useCreateBucklescriptBlock,
-          ~variantTables,
-          value,
-        ) =>
+        (~config, ~converter, ~indent, ~nameGen, ~toJS, ~variantTables, value) =>
   switch (converter) {
   | _ when converter |> converterIsIdentity(~toJS) => value
 
@@ -394,7 +385,6 @@ let rec apply =
            ~indent,
            ~nameGen,
            ~toJS,
-           ~useCreateBucklescriptBlock,
            ~variantTables,
          )
     )
@@ -408,15 +398,7 @@ let rec apply =
            ++ s
            ++ ". Only shallow converter applied.",
        )
-    |> apply(
-         ~config,
-         ~converter=c,
-         ~indent,
-         ~nameGen,
-         ~toJS,
-         ~useCreateBucklescriptBlock,
-         ~variantTables,
-       )
+    |> apply(~config, ~converter=c, ~indent, ~nameGen, ~toJS, ~variantTables)
 
   | FunctionC({argConverters, retConverter, typeVars, uncurried}) =>
     let resultName = EmitText.resultName(~nameGen);
@@ -439,7 +421,6 @@ let rec apply =
              ~indent=indent2,
              ~nameGen,
              ~toJS,
-             ~useCreateBucklescriptBlock,
              ~variantTables,
            )
       );
@@ -459,7 +440,6 @@ let rec apply =
                  ~indent=indent2,
                  ~nameGen,
                  ~toJS=notToJS,
-                 ~useCreateBucklescriptBlock,
                  ~variantTables,
                ),
           ],
@@ -483,7 +463,6 @@ let rec apply =
                       ~indent=indent2,
                       ~nameGen,
                       ~toJS=notToJS,
-                      ~useCreateBucklescriptBlock,
                       ~variantTables,
                     )
                ),
@@ -509,7 +488,6 @@ let rec apply =
                         ~indent=indent2,
                         ~nameGen,
                         ~toJS=notToJS,
-                        ~useCreateBucklescriptBlock,
                         ~variantTables,
                       )
                  )
@@ -551,7 +529,6 @@ let rec apply =
              ~indent,
              ~nameGen,
              ~toJS,
-             ~useCreateBucklescriptBlock,
              ~variantTables,
            )
       ),
@@ -578,7 +555,6 @@ let rec apply =
                   ~indent,
                   ~nameGen,
                   ~toJS,
-                  ~useCreateBucklescriptBlock,
                   ~variantTables,
                 )
            )
@@ -601,7 +577,6 @@ let rec apply =
                ~indent,
                ~nameGen,
                ~toJS,
-               ~useCreateBucklescriptBlock,
                ~variantTables,
              )
         ),
@@ -618,7 +593,6 @@ let rec apply =
                ~indent,
                ~nameGen,
                ~toJS,
-               ~useCreateBucklescriptBlock,
                ~variantTables,
              )
         ),
@@ -647,7 +621,6 @@ let rec apply =
                     ~indent,
                     ~nameGen,
                     ~toJS,
-                    ~useCreateBucklescriptBlock,
                     ~variantTables,
                   )
              )
@@ -666,7 +639,6 @@ let rec apply =
                   ~indent,
                   ~nameGen,
                   ~toJS,
-                  ~useCreateBucklescriptBlock,
                   ~variantTables,
                 )
            )
@@ -686,7 +658,6 @@ let rec apply =
                 ~indent,
                 ~nameGen,
                 ~toJS,
-                ~useCreateBucklescriptBlock,
                 ~variantTables,
               )
          )
@@ -729,7 +700,6 @@ let rec apply =
                ~indent,
                ~nameGen,
                ~toJS,
-               ~useCreateBucklescriptBlock,
                ~variantTables,
              );
         } else {
@@ -740,14 +710,13 @@ let rec apply =
                ~indent,
                ~nameGen,
                ~toJS,
-               ~useCreateBucklescriptBlock,
                ~variantTables,
              )
           |> Runtime.emitVariantWithPayload(
+               ~config,
                ~label=case.label,
                ~numArgs,
                ~polymorphic=variantC.polymorphic,
-               ~useCreateBucklescriptBlock,
              );
         };
       variantC.noPayloads == [] ?
@@ -776,7 +745,6 @@ let rec apply =
              ~indent,
              ~nameGen,
              ~toJS,
-             ~useCreateBucklescriptBlock,
              ~variantTables,
            )
         |> (
@@ -785,10 +753,10 @@ let rec apply =
               ~label=case.labelJS |> labelJSToString,
             ) :
             Runtime.emitVariantWithPayload(
+              ~config,
               ~label=case.label,
               ~numArgs,
               ~polymorphic=variantC.polymorphic,
-              ~useCreateBucklescriptBlock,
             )
         );
       let switchCases = (~indent) =>
@@ -824,37 +792,11 @@ let rec apply =
     };
   };
 
-let toJS =
-    (
-      ~config,
-      ~converter,
-      ~indent,
-      ~nameGen,
-      ~useCreateBucklescriptBlock,
-      ~variantTables,
-      value,
-    ) =>
+let toJS = (~config, ~converter, ~indent, ~nameGen, ~variantTables, value) =>
   value
-  |> apply(
-       ~config,
-       ~converter,
-       ~indent,
-       ~nameGen,
-       ~variantTables,
-       ~toJS=true,
-       ~useCreateBucklescriptBlock,
-     );
+  |> apply(~config, ~converter, ~indent, ~nameGen, ~variantTables, ~toJS=true);
 
-let toReason =
-    (
-      ~config,
-      ~converter,
-      ~indent,
-      ~nameGen,
-      ~useCreateBucklescriptBlock,
-      ~variantTables,
-      value,
-    ) =>
+let toReason = (~config, ~converter, ~indent, ~nameGen, ~variantTables, value) =>
   value
   |> apply(
        ~config,
@@ -862,6 +804,5 @@ let toReason =
        ~indent,
        ~nameGen,
        ~toJS=false,
-       ~useCreateBucklescriptBlock,
        ~variantTables,
      );
