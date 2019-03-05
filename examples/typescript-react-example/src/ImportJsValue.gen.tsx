@@ -13,6 +13,9 @@ import {convertVariant as convertVariantNotChecked} from './MyMath';
 const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
 
 // tslint:disable-next-line:no-var-requires
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
+
+// tslint:disable-next-line:no-var-requires
 const Curry = require('bs-platform/lib/es6/curry.js');
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
@@ -63,9 +66,6 @@ export const convertVariant: unknown = function _(Arg1: any) {
     ? CreateBucklescriptBlock.__(0, [result.value])
     : CreateBucklescriptBlock.__(1, [result.value])
 } as (_1:variant) => variant;
-
-// tslint:disable-next-line:no-var-requires
-const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');

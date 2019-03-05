@@ -1054,7 +1054,7 @@ let emitTranslationAsString =
     config.emitCreateBucklescriptBlock ?
       ModuleName.createBucklescriptBlock
       |> requireModule(
-           ~import=false,
+           ~import=true,
            ~env,
            ~importPath=ImportPath.bsBlockPath(~config),
          ) :
