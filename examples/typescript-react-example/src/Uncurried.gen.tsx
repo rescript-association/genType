@@ -20,28 +20,28 @@ export const uncurried2: (_1:number, _2:string) => string = UncurriedBS.uncurrie
 
 export const uncurried3: (_1:number, _2:string, _3:number) => string = UncurriedBS.uncurried3;
 
-export const curried3: (_1:number, _2:string, _3:number) => string = function _(Arg1: any, Arg2: any, Arg3: any) {
+export const curried3: (_1:number, _2:string, _3:number) => string = function (Arg1: any, Arg2: any, Arg3: any) {
   const result = Curry._3(UncurriedBS.curried3, Arg1, Arg2, Arg3);
   return result
 };
 
-export const callback: (_1:((_1:void) => number)) => string = function _(Arg1: any) {
-  const result = UncurriedBS.callback(function _(Arg11: any) {
+export const callback: (_1:((_1:void) => number)) => string = function (Arg1: any) {
+  const result = UncurriedBS.callback(function (Arg11: any) {
       const result1 = Arg1(Arg11);
       return result1
     });
   return result
 };
 
-export const callback2: (_1:auth) => string = function _(Arg1: any) {
-  const result = UncurriedBS.callback2([function _(Arg11: any) {
+export const callback2: (_1:auth) => string = function (Arg1: any) {
+  const result = UncurriedBS.callback2([function (Arg11: any) {
       const result1 = Arg1.login(Arg11);
       return result1
     }]);
   return result
 };
 
-export const callback2U: (_1:authU) => string = function _(Arg1: any) {
+export const callback2U: (_1:authU) => string = function (Arg1: any) {
   const result = UncurriedBS.callback2U([Arg1.loginU]);
   return result
 };
@@ -50,12 +50,12 @@ export const sumU: (_1:number, _2:number) => void = UncurriedBS.sumU;
 
 export const sumU2: (_1:number) => (_1:number) => void = UncurriedBS.sumU2;
 
-export const sumCurried: (_1:number, _2:number) => void = function _(Arg1: any, Arg2: any) {
+export const sumCurried: (_1:number, _2:number) => void = function (Arg1: any, Arg2: any) {
   const result = Curry._2(UncurriedBS.sumCurried, Arg1, Arg2);
   return result
 };
 
-export const sumLblCurried: (_1:string, _2:{ readonly n: number; readonly m: number }) => void = function _(Arg1: any, Arg2: any) {
+export const sumLblCurried: (_1:string, _2:{ readonly n: number; readonly m: number }) => void = function (Arg1: any, Arg2: any) {
   const result = Curry._3(UncurriedBS.sumLblCurried, Arg1, Arg2.n, Arg2.m);
   return result
 };

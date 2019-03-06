@@ -45,7 +45,7 @@ exports.component = component
 
 exports.default = component;
 
-const testBike: (Bike_kind) => Bike_kind = function _(Arg1: $any) {
+const testBike: (Bike_kind) => Bike_kind = function (Arg1: $any) {
   const result = GreetingBS.testBike($$toRE393171197[Arg1]);
   return $$toJS393171197[result]
 };;

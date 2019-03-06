@@ -511,7 +511,7 @@ let rec apply =
     let args = convertedArgs |> List.map(fst) |> List.concat;
     let funParams = args |> List.map(v => v |> EmitType.ofTypeAny(~config));
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
-    EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, "");
+    EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars);
 
   | IdentC => value
 

@@ -25,7 +25,7 @@ export type A_user = {| +name: string |};
 
 export type b = A_user;
 
-export const testConversion: (topType) => topType = function _(Arg1: $any) {
+export const testConversion: (topType) => topType = function (Arg1: $any) {
   const result = TypeExpansionBS.testConversion([Arg1[0], {lowerType:[[Arg1[1].lowerType.person.name, Arg1[1].lowerType.person.age]]}]);
   return [result[0], {lowerType:{person:{name:result[1].lowerType[0][0], age:result[1].lowerType[0][1]}}}]
 };

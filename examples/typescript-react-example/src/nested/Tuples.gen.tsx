@@ -22,34 +22,34 @@ export const testTuple: (_1:[number, number]) => number = TuplesBS.testTuple;
 
 export const origin: [number, number, (null | undefined | number)] = TuplesBS.origin;
 
-export const computeArea: (_1:[number, number, (null | undefined | number)]) => number = function _(Arg1: any) {
+export const computeArea: (_1:[number, number, (null | undefined | number)]) => number = function (Arg1: any) {
   const result = TuplesBS.computeArea([Arg1[0], Arg1[1], (Arg1[2] == null ? undefined : Arg1[2])]);
   return result
 };
 
-export const computeAreaWithIdent: (_1:coord) => number = function _(Arg1: any) {
+export const computeAreaWithIdent: (_1:coord) => number = function (Arg1: any) {
   const result = TuplesBS.computeAreaWithIdent([Arg1[0], Arg1[1], (Arg1[2] == null ? undefined : Arg1[2])]);
   return result
 };
 
 export const computeAreaNoConverters: (_1:[number, number]) => number = TuplesBS.computeAreaNoConverters;
 
-export const coord2d: <T1,T2,T3>(_1:T1, _2:T2) => [T1, T2, (null | undefined | T3)] = function _<T1,T2,T3>(Arg1: any, Arg2: any) {
+export const coord2d: <T1,T2,T3>(_1:T1, _2:T2) => [T1, T2, (null | undefined | T3)] = function <T1,T2,T3>(Arg1: any, Arg2: any) {
   const result = Curry._2(TuplesBS.coord2d, Arg1, Arg2);
   return result
 };
 
-export const getFirstName: (_1:couple) => string = function _(Arg1: any) {
+export const getFirstName: (_1:couple) => string = function (Arg1: any) {
   const result = TuplesBS.getFirstName([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]);
   return result
 };
 
-export const marry: (_1:person, _2:person) => couple = function _(Arg1: any, Arg2: any) {
+export const marry: (_1:person, _2:person) => couple = function (Arg1: any, Arg2: any) {
   const result = Curry._2(TuplesBS.marry, [Arg1.name, Arg1.age], [Arg2.name, Arg2.age]);
   return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}]
 };
 
-export const changeSecondAge: (_1:couple) => couple = function _(Arg1: any) {
+export const changeSecondAge: (_1:couple) => couple = function (Arg1: any) {
   const result = TuplesBS.changeSecondAge([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]);
   return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}]
 };

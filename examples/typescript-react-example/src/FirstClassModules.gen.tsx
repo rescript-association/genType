@@ -50,7 +50,7 @@ export const testConvert: (_1:{
   }; 
   readonly Z: unknown; 
   readonly y: string
-} = function _(Arg1: any) {
+} = function (Arg1: any) {
   const result = FirstClassModulesBS.testConvert([Arg1.x, [], [Arg1.InnerModule2.k], [Arg1.InnerModule3.k3], Arg1.Z, Arg1.y]);
   return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, InnerModule3:{k3:result[3][0]}, Z:result[4], y:result[5]}
 };
@@ -67,7 +67,7 @@ export const someFunctorAsFunction: (_1:{
   }; 
   readonly Z: unknown; 
   readonly y: string
-}) => { readonly ww: string } = function _(Arg1: any) {
+}) => { readonly ww: string } = function (Arg1: any) {
   const result = FirstClassModulesBS.someFunctorAsFunction([Arg1.x, [], [Arg1.InnerModule2.k], [Arg1.InnerModule3.k3], Arg1.Z, Arg1.y]);
   return {ww:result[0]}
 };

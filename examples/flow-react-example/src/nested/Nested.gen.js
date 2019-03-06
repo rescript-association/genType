@@ -23,7 +23,7 @@ export type variant =
   | {| tag: "B", value: [number, number] |}
   | {| tag: "C", value: ?number |};
 
-export const consumeVariant: (Component2_variant) => number = function _(Arg1: $any) {
+export const consumeVariant: (Component2_variant) => number = function (Arg1: $any) {
   const result = NestedBS.consumeVariant(typeof(Arg1) === 'object'
     ? Arg1.tag==="B"
       ? CreateBucklescriptBlock.__(0, Arg1.value)

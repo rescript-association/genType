@@ -22,7 +22,7 @@ export type O_t = {| +name: string, +surname: string |};
 
 export type o = O_t;
 
-export const testConversion: (n) => n = function _(Arg1: $any) {
+export const testConversion: (n) => n = function (Arg1: $any) {
   const result = Marcel1BS.testConversion([Arg1.name, Arg1.surname]);
   return {name:result[0], surname:result[1]}
 };

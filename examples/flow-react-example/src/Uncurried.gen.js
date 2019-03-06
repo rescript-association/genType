@@ -21,7 +21,7 @@ export const uncurried2: (number, string) => string = UncurriedBS.uncurried2;
 
 export const uncurried3: (number, string, number) => string = UncurriedBS.uncurried3;
 
-export const curried3: (number, string, number) => string = function _(Arg1: $any, Arg2: $any, Arg3: $any) {
+export const curried3: (number, string, number) => string = function (Arg1: $any, Arg2: $any, Arg3: $any) {
   const result = Curry._3(UncurriedBS.curried3, Arg1, Arg2, Arg3);
   return result
 };

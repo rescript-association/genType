@@ -12,22 +12,22 @@ import {record as FirstClassModulesInterface_record} from './FirstClassModulesIn
 // tslint:disable-next-line:interface-over-type-literal
 export type firstClassModuleWithTypeEquations<i,o> = { readonly out: (_1:o) => o; readonly Inner: { readonly inn: (_1:i) => i } };
 
-export const convert: (_1:FirstClassModules_firstClassModule) => FirstClassModules_firstClassModule = function _(Arg1: any) {
+export const convert: (_1:FirstClassModules_firstClassModule) => FirstClassModules_firstClassModule = function (Arg1: any) {
   const result = TestFirstClassModulesBS.convert([Arg1.x, [], [Arg1.InnerModule2.k], [Arg1.InnerModule3.k3], Arg1.Z, Arg1.y]);
   return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, InnerModule3:{k3:result[3][0]}, Z:result[4], y:result[5]}
 };
 
-export const convertInterface: (_1:FirstClassModulesInterface_firstClassModule) => FirstClassModulesInterface_firstClassModule = function _(Arg1: any) {
+export const convertInterface: (_1:FirstClassModulesInterface_firstClassModule) => FirstClassModulesInterface_firstClassModule = function (Arg1: any) {
   const result = TestFirstClassModulesBS.convertInterface([Arg1.x]);
   return {x:result[0]}
 };
 
-export const convertRecord: (_1:FirstClassModulesInterface_record) => FirstClassModulesInterface_record = function _(Arg1: any) {
+export const convertRecord: (_1:FirstClassModulesInterface_record) => FirstClassModulesInterface_record = function (Arg1: any) {
   const result = TestFirstClassModulesBS.convertRecord([Arg1.x, Arg1.y]);
   return {x:result[0], y:result[1]}
 };
 
-export const convertFirstClassModuleWithTypeEquations: <T1,T2>(_1:{ readonly out: ((_1:T1) => T1); readonly Inner: { readonly inn: ((_1:T2) => T2) } }) => { readonly out: (_1:T1) => T1; readonly Inner: { readonly inn: (_1:T2) => T2 } } = function _<T1,T2>(Arg1: any) {
+export const convertFirstClassModuleWithTypeEquations: <T1,T2>(_1:{ readonly out: ((_1:T1) => T1); readonly Inner: { readonly inn: ((_1:T2) => T2) } }) => { readonly out: (_1:T1) => T1; readonly Inner: { readonly inn: (_1:T2) => T2 } } = function <T1,T2>(Arg1: any) {
   const result = TestFirstClassModulesBS.convertFirstClassModuleWithTypeEquations([Arg1.out, [Arg1.Inner.inn]]);
   return {out:result[0], Inner:{inn:result[1][0]}}
 };

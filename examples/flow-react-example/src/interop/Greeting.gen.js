@@ -52,51 +52,51 @@ export default component;
 
 export const empty: list<string> = GreetingBS.empty;
 
-export const cons: <T1>({| +x: T1, +l: list<T1> |}) => list<T1> = function _<T1>(Arg1: $any) {
+export const cons: <T1>({| +x: T1, +l: list<T1> |}) => list<T1> = function <T1>(Arg1: $any) {
   const result = Curry._2(GreetingBS.cons, Arg1.x, Arg1.l);
   return result
 };
 
-export const cons2: <T1>({| +l: list<T1>, +x: T1 |}) => list<T1> = function _<T1>(Arg1: $any) {
+export const cons2: <T1>({| +l: list<T1>, +x: T1 |}) => list<T1> = function <T1>(Arg1: $any) {
   const result = Curry._2(GreetingBS.cons2, Arg1.l, Arg1.x);
   return result
 };
 
-export const concat: (string, list<string>) => string = function _(Arg1: $any, Arg2: $any) {
+export const concat: (string, list<string>) => string = function (Arg1: $any, Arg2: $any) {
   const result = Curry._2(GreetingBS.concat, Arg1, Arg2);
   return result
 };
 
-export const testNamedArgs: ({| +a: number, +b: number |}, number, {| +c: number, +d: number |}, number, {| +e: number |}) => number = function _(Arg1: $any, Arg2: $any, Arg3: $any, Arg4: $any, Arg5: $any) {
+export const testNamedArgs: ({| +a: number, +b: number |}, number, {| +c: number, +d: number |}, number, {| +e: number |}) => number = function (Arg1: $any, Arg2: $any, Arg3: $any, Arg4: $any, Arg5: $any) {
   const result = Curry._7(GreetingBS.testNamedArgs, Arg1.a, Arg1.b, Arg2, Arg3.c, Arg3.d, Arg4, Arg5.e);
   return result
 };
 
-export const testCallNamedArgs: (foo, number, number) => number = function _(Arg1: $any, Arg2: $any, Arg3: $any) {
-  const result = Curry._3(GreetingBS.testCallNamedArgs, function _(Arga: $any, Argb: $any) {
+export const testCallNamedArgs: (foo, number, number) => number = function (Arg1: $any, Arg2: $any, Arg3: $any) {
+  const result = Curry._3(GreetingBS.testCallNamedArgs, function (Arga: $any, Argb: $any) {
       const result1 = Arg1({a:Arga, b:Argb});
       return result1
     }, Arg2, Arg3);
   return result
 };
 
-export const testDefaultArgs: ({| +x?: number, +y: number |}) => number = function _(Arg1: $any) {
+export const testDefaultArgs: ({| +x?: number, +y: number |}) => number = function (Arg1: $any) {
   const result = Curry._2(GreetingBS.testDefaultArgs, Arg1.x, Arg1.y);
   return result
 };
 
-export const testDefaultArgsWithRecordConversion: ({| +size?: someRecord |}, void) => number = function _(Arg1: $any, Arg2: $any) {
+export const testDefaultArgsWithRecordConversion: ({| +size?: someRecord |}, void) => number = function (Arg1: $any, Arg2: $any) {
   const result = Curry._2(GreetingBS.testDefaultArgsWithRecordConversion, (Arg1.size == null ? undefined : [Arg1.size.x, Arg1.size.y]), Arg2);
   return result
 };
 
-export const testDefaultArgsWithVariantConversion: ({| +size?: someVariant |}, void) => number = function _(Arg1: $any, Arg2: $any) {
+export const testDefaultArgsWithVariantConversion: ({| +size?: someVariant |}, void) => number = function (Arg1: $any, Arg2: $any) {
   const result = Curry._2(GreetingBS.testDefaultArgsWithVariantConversion, (Arg1.size == null ? undefined : $$toRE453167283[Arg1.size]), Arg2);
   return result
 };
 
-export const testDefaultArgsWithVariantConversionContravariant: ((({| +size?: ?someVariant |}) => void), void) => number = function _(Arg1: $any, Arg2: $any) {
-  const result = Curry._2(GreetingBS.testDefaultArgsWithVariantConversionContravariant, function _(Argsize: $any) {
+export const testDefaultArgsWithVariantConversionContravariant: ((({| +size?: ?someVariant |}) => void), void) => number = function (Arg1: $any, Arg2: $any) {
+  const result = Curry._2(GreetingBS.testDefaultArgsWithVariantConversionContravariant, function (Argsize: $any) {
       const result1 = Arg1({size:(Argsize == null ? Argsize : $$toJS453167283[Argsize])});
       return result1
     }, Arg2);

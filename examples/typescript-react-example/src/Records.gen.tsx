@@ -54,34 +54,34 @@ export type mix = {
 
 export const origin: coord = {x:RecordsBS.origin[0], y:RecordsBS.origin[1], z:RecordsBS.origin[2]};
 
-export const computeArea: (_1:coord) => number = function _(Arg1: any) {
+export const computeArea: (_1:coord) => number = function (Arg1: any) {
   const result = RecordsBS.computeArea([Arg1.x, Arg1.y, Arg1.z]);
   return result
 };
 
-export const coord2d: (_1:number, _2:number) => coord = function _(Arg1: any, Arg2: any) {
+export const coord2d: (_1:number, _2:number) => coord = function (Arg1: any, Arg2: any) {
   const result = Curry._2(RecordsBS.coord2d, Arg1, Arg2);
   return {x:result[0], y:result[1], z:result[2]}
 };
 
-export const findAddress: (_1:business) => list<string> = function _(Arg1: any) {
+export const findAddress: (_1:business) => list<string> = function (Arg1: any) {
   const result = RecordsBS.findAddress([Arg1.name, (Arg1.owner == null ? undefined : [Arg1.owner.name, Arg1.owner.age, Arg1.owner.address]), Arg1.address]);
   return result
 };
 
 export const someBusiness: business = {name:RecordsBS.someBusiness[0], owner:(RecordsBS.someBusiness[1] == null ? RecordsBS.someBusiness[1] : {name:RecordsBS.someBusiness[1][0], age:RecordsBS.someBusiness[1][1], address:RecordsBS.someBusiness[1][2]}), address:RecordsBS.someBusiness[2]};
 
-export const findAllAddresses: (_1:business[]) => string[] = function _(Arg1: any) {
+export const findAllAddresses: (_1:business[]) => string[] = function (Arg1: any) {
   const result = RecordsBS.findAllAddresses(Arg1.map(function _element(ArrayItem: any) { return [ArrayItem.name, (ArrayItem.owner == null ? undefined : [ArrayItem.owner.name, ArrayItem.owner.age, ArrayItem.owner.address]), ArrayItem.address]}));
   return result
 };
 
-export const getPayload: <T1>(_1:payload<T1>) => T1 = function _<T1>(Arg1: any) {
+export const getPayload: <T1>(_1:payload<T1>) => T1 = function <T1>(Arg1: any) {
   const result = RecordsBS.getPayload([Arg1.num, Arg1.payload]);
   return result
 };
 
-export const getPayloadRecord: (_1:payload<record>) => record = function _(Arg1: any) {
+export const getPayloadRecord: (_1:payload<record>) => record = function (Arg1: any) {
   const result = RecordsBS.getPayloadRecord([Arg1.num, [Arg1.payload.v, Arg1.payload.w]]);
   return {v:result[0], w:result[1]}
 };
@@ -90,12 +90,12 @@ export const recordValue: record = {v:RecordsBS.recordValue[0], w:RecordsBS.reco
 
 export const payloadValue: payload<record> = {num:RecordsBS.payloadValue[0], payload:{v:RecordsBS.payloadValue[1][0], w:RecordsBS.payloadValue[1][1]}};
 
-export const getPayloadRecordPlusOne: (_1:payload<record>) => record = function _(Arg1: any) {
+export const getPayloadRecordPlusOne: (_1:payload<record>) => record = function (Arg1: any) {
   const result = RecordsBS.getPayloadRecordPlusOne([Arg1.num, [Arg1.payload.v, Arg1.payload.w]]);
   return {v:result[0], w:result[1]}
 };
 
-export const findAddress2: (_1:business2) => list<string> = function _(Arg1: any) {
+export const findAddress2: (_1:business2) => list<string> = function (Arg1: any) {
   const result = RecordsBS.findAddress2([Arg1.name, (Arg1.owner == null ? Arg1.owner : [Arg1.owner.name, Arg1.owner.age, Arg1.owner.address]), Arg1.address2]);
   return result
 };

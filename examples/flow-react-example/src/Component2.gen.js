@@ -17,7 +17,7 @@ export type variant =
 
 export type block = "Block";
 
-export const getBlock: (block) => number = function _(Arg1: $any) {
+export const getBlock: (block) => number = function (Arg1: $any) {
   const result = Component2BS.getBlock(0);
   return result
 };

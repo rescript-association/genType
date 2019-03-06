@@ -28,7 +28,7 @@ export const round: unknown = roundTypeChecked as (_1:number) => number;
 export const areaTypeChecked: (_1:point) => number = areaNotChecked;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
-export const area: unknown = function _(Arg1: any) {
+export const area: unknown = function (Arg1: any) {
   const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]});
   return result
 } as (_1:point) => number;
@@ -37,7 +37,7 @@ export const area: unknown = function _(Arg1: any) {
 export const useColorTypeChecked: (_1:color) => number = useColorNotChecked;
 
 // Export 'useColor' early to allow circular import from the '.bs.js' file.
-export const useColor: unknown = function _(Arg1: any) {
+export const useColor: unknown = function (Arg1: any) {
   const result = useColorTypeChecked($$toJS580645844[Arg1]);
   return result
 } as (_1:color) => number;
@@ -46,8 +46,8 @@ export const useColor: unknown = function _(Arg1: any) {
 export const higherOrderTypeChecked: (_1:((_1:number, _2:number) => number)) => number = higherOrderNotChecked;
 
 // Export 'higherOrder' early to allow circular import from the '.bs.js' file.
-export const higherOrder: unknown = function _(Arg1: any) {
-  const result = higherOrderTypeChecked(function _(Arg11: any, Arg2: any) {
+export const higherOrder: unknown = function (Arg1: any) {
+  const result = higherOrderTypeChecked(function (Arg11: any, Arg2: any) {
       const result1 = Curry._2(Arg1, Arg11, Arg2);
       return result1
     });
@@ -58,7 +58,7 @@ export const higherOrder: unknown = function _(Arg1: any) {
 export const convertVariantTypeChecked: (_1:variant) => variant = convertVariantNotChecked;
 
 // Export 'convertVariant' early to allow circular import from the '.bs.js' file.
-export const convertVariant: unknown = function _(Arg1: any) {
+export const convertVariant: unknown = function (Arg1: any) {
   const result = convertVariantTypeChecked(Arg1.tag===0
     ? {tag:"I", value:Arg1[0]}
     : {tag:"S", value:Arg1[0]});

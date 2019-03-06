@@ -39,9 +39,8 @@ let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
 
 let funDef =
-    (~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars, functionName) =>
+    (~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars) =>
   "function "
-  ++ (functionName == "" ? "_" : functionName)
   ++ genericsString(~typeVars)
   ++ (funParams |> parens)
   ++ " {"

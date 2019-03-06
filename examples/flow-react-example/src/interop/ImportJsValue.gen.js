@@ -29,7 +29,7 @@ export const round: mixed = roundTypeChecked;
 export const areaTypeChecked: (point) => number = areaNotChecked;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
-export const area: mixed = function _(Arg1: $any) {
+export const area: mixed = function (Arg1: $any) {
   const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]});
   return result
 };
@@ -44,7 +44,7 @@ export const getValueAtIndex: mixed = getValueAtIndexTypeChecked;
 export const functionWithRenamedArgumentTypeChecked: (string, {| +ArgRenamed: string |}) => string = functionWithRenamedArgumentNotChecked;
 
 // Export 'functionWithRenamedArgument' early to allow circular import from the '.bs.js' file.
-export const functionWithRenamedArgument: mixed = function _(Arg1: $any, ArgArgRenamed: $any) {
+export const functionWithRenamedArgument: mixed = function (Arg1: $any, ArgArgRenamed: $any) {
   const result = functionWithRenamedArgumentTypeChecked(Arg1, {ArgRenamed:ArgArgRenamed});
   return result
 };
@@ -59,7 +59,7 @@ export type point = {| +x: number, +y?: number |};
 
 export type { myArray };
 
-export const myArea: (point) => number = function _(Arg1: $any) {
+export const myArea: (point) => number = function (Arg1: $any) {
   const result = ImportJsValueBS.myArea([Arg1.x, Arg1.y]);
   return result
 };

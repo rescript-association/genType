@@ -25,34 +25,34 @@ export const testTuple: ([number, number]) => number = TuplesBS.testTuple;
 
 export const origin: [number, number, ?number] = TuplesBS.origin;
 
-export const computeArea: ([number, number, ?number]) => number = function _(Arg1: $any) {
+export const computeArea: ([number, number, ?number]) => number = function (Arg1: $any) {
   const result = TuplesBS.computeArea([Arg1[0], Arg1[1], (Arg1[2] == null ? undefined : Arg1[2])]);
   return result
 };
 
-export const computeAreaWithIdent: (coord) => number = function _(Arg1: $any) {
+export const computeAreaWithIdent: (coord) => number = function (Arg1: $any) {
   const result = TuplesBS.computeAreaWithIdent([Arg1[0], Arg1[1], (Arg1[2] == null ? undefined : Arg1[2])]);
   return result
 };
 
 export const computeAreaNoConverters: ([number, number]) => number = TuplesBS.computeAreaNoConverters;
 
-export const coord2d: <T1,T2,T3>(T1, T2) => [T1, T2, ?T3] = function _<T1,T2,T3>(Arg1: $any, Arg2: $any) {
+export const coord2d: <T1,T2,T3>(T1, T2) => [T1, T2, ?T3] = function <T1,T2,T3>(Arg1: $any, Arg2: $any) {
   const result = Curry._2(TuplesBS.coord2d, Arg1, Arg2);
   return result
 };
 
-export const getFirstName: (couple) => string = function _(Arg1: $any) {
+export const getFirstName: (couple) => string = function (Arg1: $any) {
   const result = TuplesBS.getFirstName([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]);
   return result
 };
 
-export const marry: (person, person) => couple = function _(Arg1: $any, Arg2: $any) {
+export const marry: (person, person) => couple = function (Arg1: $any, Arg2: $any) {
   const result = Curry._2(TuplesBS.marry, [Arg1.name, Arg1.age], [Arg2.name, Arg2.age]);
   return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}]
 };
 
-export const changeSecondAge: (couple) => couple = function _(Arg1: $any) {
+export const changeSecondAge: (couple) => couple = function (Arg1: $any) {
   const result = TuplesBS.changeSecondAge([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]);
   return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}]
 };
