@@ -1,3 +1,6 @@
+# master
+- Avoid underscore when emitting conversion function for wrapJsForReason.
+
 # 2.15.0
 - Omit underscore as function name when emitting conversions.
 
