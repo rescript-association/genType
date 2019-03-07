@@ -25,5 +25,5 @@ function MyBannerTypeChecked(props: Props) {
 exports.MyBannerTypeChecked = MyBannerTypeChecked
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-const make: mixed = function _(show: $any, Message: $any, children: $any) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, Message: Message}, children); };;
+const make: mixed = function (show: $any, Message: $any, children: $any) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, Message: Message}, children); };;
 exports.make = make

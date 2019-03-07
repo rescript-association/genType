@@ -319,7 +319,7 @@ let rec emitCodeItem =
     /* Wrap the component */
     let emitters =
       (
-        "function _"
+        "function "
         ++ EmitText.parens(
              (propsFields |> List.map(({name, _}: field) => name))
              @ ["children"]

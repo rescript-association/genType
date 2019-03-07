@@ -16,7 +16,7 @@ export function MyBannerTypeChecked(props: Props) {
 }
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function _(show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, message: (message == null ? message : {text:message[0]})}, children); };
+export const make: unknown = function (show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, message: (message == null ? message : {text:message[0]})}, children); };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type message = { readonly text: string };

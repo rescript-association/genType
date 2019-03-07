@@ -60,6 +60,6 @@ export function MyBannerInternalTypeChecked(props: Props) {
 }
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: mixed = function _(show: $any, Message: $any, children: $any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, Message: Message}, children); };
+export const make: mixed = function (show: $any, Message: $any, children: $any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, Message: Message}, children); };
 
 export type message = {| +text: string |};
