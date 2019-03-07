@@ -26,8 +26,11 @@ let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (~config, declarations: list(CodeItem.typeDeclaration))
+    (~config, ~file, declarations: list(CodeItem.typeDeclaration))
     : CodeItem.exportTypeMap => {
+  if (Debug.codeItems^) {
+    logItem("Create Type Map for %s\n", file);
+  };
   let updateExportTypeMap =
       (
         exportTypeMap: CodeItem.exportTypeMap,
@@ -775,7 +778,10 @@ let emitImportType =
                ~outputFileRelative,
                ~resolver,
              )
-          |> createExportTypeMap(~config);
+          |> createExportTypeMap(
+               ~config,
+               ~file=cmtFile |> Filename.basename |> Filename.chop_extension,
+             );
         let cmtToExportTypeMap =
           env.cmtToExportTypeMap
           |> StringMap.add(cmtFile, exportTypeMapFromCmt);
@@ -953,7 +959,7 @@ let emitTranslationAsString =
 
   let (exportTypeMap, annotatedSet) =
     translation.typeDeclarations
-    |> createExportTypeMap(~config)
+    |> createExportTypeMap(~config, ~file=fileName |> ModuleName.toString)
     |> propagateAnnotationToSubTypes(~codeItems=translation.codeItems);
 
   let annotatedTypeDeclarations =
