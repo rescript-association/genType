@@ -65,7 +65,6 @@ let pathToImportType =
                ~outputFileRelative,
                ~resolver,
              ),
-        cmtFile: None,
       },
     ]
   | Pid(_) => []
@@ -84,14 +83,7 @@ let pathToImportType =
            ~outputFileRelative,
            ~resolver,
          );
-    let cmtFile = {
-      let cmtFile =
-        importPath
-        |> ImportPath.toCmt(~config, ~outputFileRelative)
-        |> Paths.getCmtFile;
-      cmtFile == "" ? None : Some(cmtFile);
-    };
-    [{typeName, asTypeName, importPath, cmtFile}];
+    [{typeName, asTypeName, importPath}];
   };
 
 let translateDependencies =

@@ -49,7 +49,6 @@ type importType = {
   typeName: string,
   asTypeName: option(string),
   importPath: ImportPath.t,
-  cmtFile: option(string),
 };
 
 type exportTypeItem = {

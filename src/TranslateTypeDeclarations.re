@@ -92,7 +92,6 @@ let traslateDeclarationKind =
         CodeItem.typeName,
         asTypeName,
         importPath: importString |> ImportPath.fromStringUnsafe,
-        cmtFile: None,
       },
     ];
     let exportFromTypeDeclaration =

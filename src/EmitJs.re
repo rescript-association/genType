@@ -749,13 +749,15 @@ let emitImportType =
       ~outputFileRelative,
       ~resolver,
       ~typeNameIsInterface,
-      {CodeItem.typeName, asTypeName, importPath, cmtFile},
+      {CodeItem.typeName, asTypeName, importPath},
     ) => {
+  let cmtFile =
+    importPath
+    |> ImportPath.toCmt(~config, ~outputFileRelative)
+    |> Paths.getCmtFile;
   let (env, emitters) =
-    switch (asTypeName, cmtFile) {
-    | (None, _)
-    | (_, None) => (env, emitters)
-    | (Some(asType), Some(cmtFile)) =>
+    switch (asTypeName) {
+    | Some(asType) when cmtFile != "" =>
       let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
         switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
         | x => env.exportTypeMapFromOtherFiles |> StringMap.add(asType, x)
@@ -795,6 +797,7 @@ let emitImportType =
           emitters,
         );
       };
+    | _ => (env, emitters)
     };
   let emitters =
     EmitType.emitImportTypeAs(

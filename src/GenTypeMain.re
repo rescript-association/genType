@@ -45,7 +45,7 @@ let inputCmtTranslateTypeDeclarations =
          ~resolver,
          ~typeEnv,
        )
-    |> List.map(x => x.CodeItem.typeDeclarations)
+    |> List.map((x: CodeItem.translation) => x.typeDeclarations)
     |> List.concat
 
   | Interface(signature) =>
