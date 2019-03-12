@@ -5,14 +5,11 @@
  * @nolint
  */
 
-// The following FlowExpectedErrors are safe - they are kind of like abstract
-// external types. They may be replaced with a .flow.js interface file.
+import * as React from 'react';
 
-// $FlowExpectedError: Reason checked type sufficiently.
-export type reactElement = React$Node;
+export type reactElement = React.Node;
 
-// $FlowExpectedError: Reason checked type sufficiently.
-export opaque type component = any;
+export type component<t> = React.ComponentType<t>;
 
 // $FlowExpectedError: Reason checked type sufficiently.
 export opaque type componentSpec = any;
