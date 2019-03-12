@@ -97,6 +97,48 @@ let translateValueBinding =
   };
 };
 
+let rec removeDuplicateValueBindings =
+        (structureItems: list(Typedtree.structure_item)) =>
+  switch (structureItems) {
+  | [
+      {Typedtree.str_desc: Tstr_value(loc, valueBindings), _} as structureItem,
+      ...rest,
+    ] =>
+    let (boundInRest, filteredRest) = rest |> removeDuplicateValueBindings;
+    let valueBindingsFiltered =
+      valueBindings
+      |> List.filter(valueBinding =>
+           switch (valueBinding) {
+           | {Typedtree.vb_pat: {pat_desc: Tpat_var(id, _)}} =>
+             !(boundInRest |> StringSet.mem(id |> Ident.name))
+           | _ => true
+           }
+         );
+    let bound =
+      valueBindings
+      |> List.fold_left(
+           (bound, valueBinding: Typedtree.value_binding) =>
+             switch (valueBinding) {
+             | {vb_pat: {pat_desc: Tpat_var(id, _)}} =>
+               bound |> StringSet.add(id |> Ident.name)
+             | _ => bound
+             },
+           boundInRest,
+         );
+    (
+      bound,
+      [
+        {...structureItem, str_desc: Tstr_value(loc, valueBindingsFiltered)},
+        ...filteredRest,
+      ],
+    );
+  | [structureItem, ...rest] =>
+    let (boundInRest, filteredRest) = rest |> removeDuplicateValueBindings;
+    (boundInRest, [structureItem, ...filteredRest]);
+
+  | [] => (StringSet.empty, [])
+  };
+
 let rec translateModuleBinding =
         (
           ~config,
@@ -213,6 +255,19 @@ let rec translateModuleBinding =
          ~typeEnv,
        )
     |> Translation.combine
+
+  | Tmod_constraint(
+      {mod_desc: Tmod_structure(structure)},
+      _,
+      Tmodtype_implicit,
+      Tcoerce_structure(_),
+    ) =>
+    {
+      ...structure,
+      str_items: structure.str_items |> removeDuplicateValueBindings |> snd,
+    }
+    |> translateStructure(~config, ~outputFileRelative, ~resolver, ~typeEnv)
+    |> Translation.combine;
 
   | Tmod_constraint(_) =>
     logNotImplemented("Tmod_constraint " ++ __LOC__);

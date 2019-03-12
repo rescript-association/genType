@@ -203,11 +203,13 @@ and moduleBindingHasGenTypeAnnotation =
   |> hasGenTypeAnnotation
   || (
     switch (mb_expr.mod_desc) {
-    | Tmod_structure(structure) => structure |> structureHasGenTypeAnnotation
+    | Tmod_structure(structure)
+    | Tmod_constraint({mod_desc: Tmod_structure(structure)}, _, _, _) =>
+      structure |> structureHasGenTypeAnnotation
+    | Tmod_constraint(_)
     | Tmod_ident(_)
     | Tmod_functor(_)
     | Tmod_apply(_)
-    | Tmod_constraint(_)
     | Tmod_unpack(_) => false
     }
   )
