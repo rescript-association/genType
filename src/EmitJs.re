@@ -758,17 +758,20 @@ let emitImportType =
   let env =
     switch (asTypeName) {
     | Some(asType) when cmtFile != "" =>
-      let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt) =>
+      let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt, env) =>
         switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
-        | x => env.exportTypeMapFromOtherFiles |> StringMap.add(asType, x)
-        | exception Not_found => env.exportTypeMapFromOtherFiles
+        | exportTypeItem => {
+            ...env,
+            exportTypeMapFromOtherFiles:
+              env.exportTypeMapFromOtherFiles
+              |> StringMap.add(asType, exportTypeItem),
+          }
+        | exception Not_found => env
         };
       switch (env.cmtToExportTypeMap |> StringMap.find(cmtFile)) {
-      | exportTypeMapFromCmt => {
-          ...env,
-          exportTypeMapFromOtherFiles:
-            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-        }
+      | exportTypeMapFromCmt =>
+        env |> updateTypeMapFromOtherFiles(~exportTypeMapFromCmt)
+
       | exception Not_found =>
         let exportTypeMapFromCmt =
           Cmt_format.read_cmt(cmtFile)
@@ -784,12 +787,8 @@ let emitImportType =
         let cmtToExportTypeMap =
           env.cmtToExportTypeMap
           |> StringMap.add(cmtFile, exportTypeMapFromCmt);
-        {
-          ...env,
-          cmtToExportTypeMap,
-          exportTypeMapFromOtherFiles:
-            updateTypeMapFromOtherFiles(~exportTypeMapFromCmt),
-        };
+        {...env, cmtToExportTypeMap}
+        |> updateTypeMapFromOtherFiles(~exportTypeMapFromCmt);
       };
     | _ => env
     };
