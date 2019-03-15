@@ -799,7 +799,7 @@ let rec readCmtFilesRecursively =
            )
         |> List.concat;
 
-      []
+      newImportTypes
       |> List.fold_left(
            (env, newImportType) =>
              newImportType
