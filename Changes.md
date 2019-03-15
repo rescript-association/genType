@@ -1,4 +1,4 @@
-# master
+# 2.16.0
 - Avoid underscore when emitting conversion function for wrapJsForReason.
 - Support inner modules with shadowed values.
 - Fix: support transitive reachability of type definitions of arbitrary length.
