@@ -740,6 +740,83 @@ let emitVariantTables = (~emitters, variantTables) => {
   );
 };
 
+/* Read the cmt file referenced in an import type,
+   and recursively for the import types obtained from reading the cmt file. */
+let rec readCmtFilesRecursively =
+        (
+          ~config,
+          ~env,
+          ~inputCmtTranslateTypeDeclarations,
+          ~outputFileRelative,
+          ~resolver,
+          {CodeItem.typeName, asTypeName, importPath},
+        ) => {
+  let updateTypeMapFromOtherFiles = (~asType, ~exportTypeMapFromCmt, env) =>
+    switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
+    | exportTypeItem => {
+        ...env,
+        exportTypeMapFromOtherFiles:
+          env.exportTypeMapFromOtherFiles
+          |> StringMap.add(asType, exportTypeItem),
+      }
+    | exception Not_found => env
+    };
+  let cmtFile =
+    importPath
+    |> ImportPath.toCmt(~config, ~outputFileRelative)
+    |> Paths.getCmtFile;
+  switch (asTypeName) {
+  | Some(asType) when cmtFile != "" =>
+    switch (env.cmtToExportTypeMap |> StringMap.find(cmtFile)) {
+    | exportTypeMapFromCmt =>
+      env |> updateTypeMapFromOtherFiles(~asType, ~exportTypeMapFromCmt)
+
+    | exception Not_found =>
+      /* cmt file not read before: this ensures termination */
+      let typeDeclarations =
+        Cmt_format.read_cmt(cmtFile)
+        |> inputCmtTranslateTypeDeclarations(
+             ~config,
+             ~outputFileRelative,
+             ~resolver,
+           );
+      let exportTypeMapFromCmt =
+        typeDeclarations
+        |> createExportTypeMap(
+             ~config,
+             ~file=cmtFile |> Filename.basename |> Filename.chop_extension,
+           );
+      let cmtToExportTypeMap =
+        env.cmtToExportTypeMap |> StringMap.add(cmtFile, exportTypeMapFromCmt);
+      let env =
+        {...env, cmtToExportTypeMap}
+        |> updateTypeMapFromOtherFiles(~asType, ~exportTypeMapFromCmt);
+
+      let newImportTypes =
+        typeDeclarations
+        |> List.map((typeDeclaration: CodeItem.typeDeclaration) =>
+             typeDeclaration.importTypes
+           )
+        |> List.concat;
+
+      []
+      |> List.fold_left(
+           (env, newImportType) =>
+             newImportType
+             |> readCmtFilesRecursively(
+                  ~config,
+                  ~env,
+                  ~inputCmtTranslateTypeDeclarations,
+                  ~outputFileRelative,
+                  ~resolver,
+                ),
+           env,
+         );
+    }
+  | _ => env
+  };
+};
+
 let emitImportType =
     (
       ~config,
@@ -749,49 +826,17 @@ let emitImportType =
       ~outputFileRelative,
       ~resolver,
       ~typeNameIsInterface,
-      {CodeItem.typeName, asTypeName, importPath},
+      {CodeItem.typeName, asTypeName, importPath} as importType,
     ) => {
-  let cmtFile =
-    importPath
-    |> ImportPath.toCmt(~config, ~outputFileRelative)
-    |> Paths.getCmtFile;
   let env =
-    switch (asTypeName) {
-    | Some(asType) when cmtFile != "" =>
-      let updateTypeMapFromOtherFiles = (~exportTypeMapFromCmt, env) =>
-        switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
-        | exportTypeItem => {
-            ...env,
-            exportTypeMapFromOtherFiles:
-              env.exportTypeMapFromOtherFiles
-              |> StringMap.add(asType, exportTypeItem),
-          }
-        | exception Not_found => env
-        };
-      switch (env.cmtToExportTypeMap |> StringMap.find(cmtFile)) {
-      | exportTypeMapFromCmt =>
-        env |> updateTypeMapFromOtherFiles(~exportTypeMapFromCmt)
-
-      | exception Not_found =>
-        let exportTypeMapFromCmt =
-          Cmt_format.read_cmt(cmtFile)
-          |> inputCmtTranslateTypeDeclarations(
-               ~config,
-               ~outputFileRelative,
-               ~resolver,
-             )
-          |> createExportTypeMap(
-               ~config,
-               ~file=cmtFile |> Filename.basename |> Filename.chop_extension,
-             );
-        let cmtToExportTypeMap =
-          env.cmtToExportTypeMap
-          |> StringMap.add(cmtFile, exportTypeMapFromCmt);
-        {...env, cmtToExportTypeMap}
-        |> updateTypeMapFromOtherFiles(~exportTypeMapFromCmt);
-      };
-    | _ => env
-    };
+    importType
+    |> readCmtFilesRecursively(
+         ~config,
+         ~env,
+         ~inputCmtTranslateTypeDeclarations,
+         ~outputFileRelative,
+         ~resolver,
+       );
   let emitters =
     EmitType.emitImportTypeAs(
       ~emitters,
@@ -801,7 +846,6 @@ let emitImportType =
       ~typeNameIsInterface=typeNameIsInterface(~env),
       ~importPath,
     );
-
   (env, emitters);
 };
 

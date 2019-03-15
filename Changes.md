@@ -1,6 +1,9 @@
 # master
 - Avoid underscore when emitting conversion function for wrapJsForReason.
 - Support inner modules with shadowed values.
+- Fix: support transitive reachability of type definitions of arbitrary length.
+  Before this, only paths of level 2 were available to generate conversion functions.
+  E.g. this was not supported: A uses a type defined in B which uses a type defined in C.
 
 # 2.15.0
 - Omit underscore as function name when emitting conversions.
