@@ -15,8 +15,9 @@
     "debug": {
       "all": false
     },
-    "exportInterfaces": false
-  },
+    "exportInterfaces": false,
+    "path": "../../src/lib/bs/native/gentype.native"
+},
   "name": "flow-react-example",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 2 },
