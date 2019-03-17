@@ -13,7 +13,8 @@
     "debug": {
       "all": false
     },
-    "exportInterfaces": false
+    "exportInterfaces": false,
+    "path": "../../src/lib/bs/native/gentype.native"
   },
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],
