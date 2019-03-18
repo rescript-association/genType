@@ -183,36 +183,42 @@ and signatureHasGenTypeAnnotation = (signature: Typedtree.signature) =>
 let rec structureItemHasGenTypeAnnotation =
         (structureItem: Typedtree.structure_item) =>
   switch (structureItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
+  | {str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
+  | {str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
     |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
+  | {str_desc: Tstr_primitive(valueDescription), _} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation
-  | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
+  | {str_desc: Tstr_module(moduleBinding), _} =>
     moduleBinding |> moduleBindingHasGenTypeAnnotation
-  | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
+  | {str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings |> List.exists(moduleBindingHasGenTypeAnnotation)
+  | {str_desc: Tstr_include({incl_attributes, incl_mod}), _} =>
+    incl_attributes
+    |> hasGenTypeAnnotation
+    || incl_mod
+    |> moduleExprHasGenTypeAnnotation
   | _ => false
+  }
+and moduleExprHasGenTypeAnnotation = (moduleExpr: Typedtree.module_expr) =>
+  switch (moduleExpr.mod_desc) {
+  | Tmod_structure(structure)
+  | Tmod_constraint({mod_desc: Tmod_structure(structure)}, _, _, _) =>
+    structure |> structureHasGenTypeAnnotation
+  | Tmod_constraint(_)
+  | Tmod_ident(_)
+  | Tmod_functor(_)
+  | Tmod_apply(_)
+  | Tmod_unpack(_) => false
   }
 and moduleBindingHasGenTypeAnnotation =
     ({mb_expr, mb_attributes, _}: Typedtree.module_binding) =>
   mb_attributes
   |> hasGenTypeAnnotation
-  || (
-    switch (mb_expr.mod_desc) {
-    | Tmod_structure(structure)
-    | Tmod_constraint({mod_desc: Tmod_structure(structure)}, _, _, _) =>
-      structure |> structureHasGenTypeAnnotation
-    | Tmod_constraint(_)
-    | Tmod_ident(_)
-    | Tmod_functor(_)
-    | Tmod_apply(_)
-    | Tmod_unpack(_) => false
-    }
-  )
+  || mb_expr
+  |> moduleExprHasGenTypeAnnotation
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
