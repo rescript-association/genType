@@ -308,11 +308,7 @@ let translatePrimitive =
 
   let (attributeImport, attributeRenaming) =
     valueDescription.val_attributes |> Annotation.getAttributeImportRenaming;
-  switch (
-    typeExprTranslation.type_,
-    valueDescription.val_prim,
-    attributeImport,
-  ) {
+  switch (typeExprTranslation.type_, attributeImport) {
   | (
       Function({
         argTypes: [_, ..._],
@@ -326,7 +322,6 @@ let translatePrimitive =
           }),
         _,
       }),
-      _,
       Some(importString),
     )
       when valueName == "make" =>
@@ -413,7 +408,7 @@ let translatePrimitive =
       typeDeclarations: [],
     };
 
-  | (_, _, Some(importString)) =>
+  | (_, Some(importString)) =>
     let asPath =
       switch (attributeRenaming) {
       | Some(asPath) => asPath

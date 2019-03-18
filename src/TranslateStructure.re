@@ -267,7 +267,7 @@ let rec translateModuleBinding =
       str_items: structure.str_items |> removeDuplicateValueBindings |> snd,
     }
     |> translateStructure(~config, ~outputFileRelative, ~resolver, ~typeEnv)
-    |> Translation.combine;
+    |> Translation.combine
 
   | Tmod_constraint(_) =>
     logNotImplemented("Tmod_constraint " ++ __LOC__);
@@ -352,6 +352,39 @@ and translateStructureItem =
          ),
        )
     |> Translation.combine
+
+  | {
+      /* Bucklescript's encoding of bs.module: include with constraint. */
+      Typedtree.str_desc:
+        Tstr_include({
+          incl_mod: {
+            mod_desc:
+              Tmod_constraint(
+                {
+                  mod_desc:
+                    Tmod_structure({
+                      str_items: [
+                        {str_desc: Tstr_primitive(_)} as structItem1,
+                      ],
+                    }),
+                },
+                _,
+                _,
+                _,
+              ),
+          },
+          _,
+        }),
+      _,
+    } =>
+    structItem1
+    |> translateStructureItem(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~moduleItemGen,
+         ~typeEnv,
+       )
 
   | {Typedtree.str_desc: Tstr_include({incl_type: signature, _}), _} =>
     signature
