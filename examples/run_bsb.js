@@ -12,8 +12,8 @@ const isWindows = /^win/i.test(process.platform);
 
 function copyWindowsExe() {
   const base = path.join(__dirname, "..", "src", "lib", "bs", "native");
-  if (isWindows) {
-    fs.copyFileSync(path.join(base, "gentype.native.exe"), path.join(base, "gentype.native"));
+  if (!isWindows) {
+    fs.copyFileSync(path.join(base, "gentype.native"), path.join(base, "gentype.native.exe"));
   }
 }
 
