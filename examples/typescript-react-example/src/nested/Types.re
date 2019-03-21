@@ -94,3 +94,6 @@ let testConvertNull = (x: Js.Null.t(record)) => x;
 
 [@genType]
 type decorator('a, 'b) = 'a => 'b constraint 'a = int constraint 'b = _ => _;
+
+[@genType]
+let testConvertLocation = (x: Location.t) => x;

@@ -12,6 +12,8 @@ import {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
 
 import {list} from '../../src/shims/ReasonPervasives.shim';
 
+import {t as Location_t} from '../../src/location/Location.gen';
+
 // tslint:disable-next-line:interface-over-type-literal
 export type t = number;
 
@@ -98,4 +100,9 @@ export const jsonStringify: (_1:Js_Json_t) => string = TypesBS.jsonStringify;
 export const testConvertNull: (_1:(null | record)) => (null | record) = function (Arg1: any) {
   const result = TypesBS.testConvertNull((Arg1 == null ? Arg1 : [Arg1.i, Arg1.s]));
   return (result == null ? result : {i:result[0], s:result[1]})
+};
+
+export const testConvertLocation: (_1:Location_t) => Location_t = function (Arg1: any) {
+  const result = TypesBS.testConvertLocation([Arg1.id, Arg1.name, Arg1.address, Arg1.distance]);
+  return {id:result[0], name:result[1], address:result[2], distance:result[3]}
 };

@@ -32,6 +32,10 @@ function testConvertNull(x) {
   return x;
 }
 
+function testConvertLocation(x) {
+  return x;
+}
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -60,6 +64,7 @@ export {
   jsStringT ,
   jsonStringify ,
   testConvertNull ,
+  testConvertLocation ,
   
 }
 /* No side effect */
