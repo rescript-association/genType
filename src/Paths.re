@@ -64,11 +64,23 @@ let getModuleName = cmt =>
 
 let getCmtFile = cmt => {
   let pathCmt = Filename.concat(Sys.getcwd(), cmt);
+
   let cmtFile =
     if (Filename.check_suffix(pathCmt, ".cmt")) {
+      let pathCmtLowerCase = {
+        let dirName = pathCmt |> Filename.dirname;
+        let baseName = pathCmt |> Filename.basename;
+        Filename.concat(dirName, baseName |> String.uncapitalize);
+      };
       let pathCmti = Filename.chop_extension(pathCmt) ++ ".cmti";
-      if (Sys.file_exists(pathCmti)) {
+      let pathCmtiLowerCase =
+        Filename.chop_extension(pathCmtLowerCase) ++ ".cmti";
+      if (Sys.file_exists(pathCmtiLowerCase)) {
+        pathCmtiLowerCase;
+      } else if (Sys.file_exists(pathCmti)) {
         pathCmti;
+      } else if (Sys.file_exists(pathCmtLowerCase)) {
+        pathCmtLowerCase;
       } else if (Sys.file_exists(pathCmt)) {
         pathCmt;
       } else {

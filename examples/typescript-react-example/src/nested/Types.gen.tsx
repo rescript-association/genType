@@ -103,6 +103,6 @@ export const testConvertNull: (_1:(null | record)) => (null | record) = function
 };
 
 export const testConvertLocation: (_1:Location_t) => Location_t = function (Arg1: any) {
-  const result = TypesBS.testConvertLocation([Arg1.id, Arg1.name, Arg1.address, Arg1.distance]);
-  return {id:result[0], name:result[1], address:result[2], distance:result[3]}
+  const result = TypesBS.testConvertLocation([Arg1.id, Arg1.name]);
+  return {id:result[0], name:result[1]}
 };

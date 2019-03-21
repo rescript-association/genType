@@ -4,6 +4,6 @@
 type t = {
   id: string,
   name: string,
-  address: option(string),
-  distance: option(string),
 };
+
+let x = 42;
