@@ -1,3 +1,6 @@
+# master
+- Add support for bucklescript version 5 (AST for bs.module has changed).
+
 # 2.16.0
 - Avoid underscore when emitting conversion function for wrapJsForReason.
 - Support inner modules with shadowed values.
