@@ -2,6 +2,12 @@
 - Add support for bucklescript version 5 (AST for bs.module has changed).
 - Support file names starting with lower case letter.
 
+If using bucklescript >= 5.0.0:
+
+- It is not necessary anymore to set up `BS_CMT_POST_PROCESS_CMD`.
+- The line `[@bs.module "./ThisFileName.gen"]` in value imports can be omitted, and will be added internally by bucklescript.
+
+
 # 2.16.0
 - Avoid underscore when emitting conversion function for wrapJsForReason.
 - Support inner modules with shadowed values.

@@ -19,7 +19,7 @@ The output of `genType` can be configured by using one of 3 back-ends: `untyped`
 See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
 
 ## Breaking Change:
-> From version 2.0.0, ordinary variants (e.g. ``` | A | B(int) ```) use the same representation as polymorphic variants (e.g. ``` | `a | `b(int) ```). The construcor functions (e.g. ```A``` or ```B(42) ```) are not generated anymore. Instead, one can construct the variant values directly in JS. Check out the [variants](#variants) section below for more details.
+> Since genType version 2.0.0, ordinary variants (e.g. ``` | A | B(int) ```) use the same representation as polymorphic variants (e.g. ``` | `a | `b(int) ```). The construcor functions (e.g. ```A``` or ```B(42) ```) are not generated anymore. Instead, one can construct the variant values directly in JS. Check out the [variants](#variants) section below for more details.
 
 > **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
@@ -60,7 +60,10 @@ scripts: {
 }
 ```
 
+> **Note:** With genType >= 2.17.0 and bucklescript >= 5.0.0, it is not necessary anymore to set up `BS_CMT_POST_PROCESS_CMD`.
+
 For running `gentype` via different mechanics (global env variable etc.), you can set `BS_CMT_POST_PROCESS_CMD` to `node_modules/.bin/gentype` as well.
+
 
 With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.re.js` files are generated).
 
@@ -128,6 +131,10 @@ To import a function `realValue` from JS module `MyMath.ts` (or `MyMath.js`):
 external realValue: complexNumber => float = "";
 
 ```
+
+> **Note:** With genType >= 2.17.0 and bucklescript >= 5.0.0, the line with `@bs.module` and the current file name can be omitted: it will be added internally by bucklescript.
+
+
 
 Because of the `external` keyword, it's clear from context that this is an import, so you can also just use `@genType` and omit `.import`.
 
