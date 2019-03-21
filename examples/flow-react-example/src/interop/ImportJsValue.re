@@ -2,7 +2,6 @@
   * Wrap JS values to be used from Reason
   */
 [@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./ImportJsValue.gen"] /* This must always be the name of the current module. */
 /* Name and type of the JS value to bind to. */
 external round: float => float = "";
 
@@ -13,7 +12,6 @@ type point = {
 };
 
 [@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./ImportJsValue.gen"] /* This must always be the name of the current module. */
 /* Name and type of the JS value to bind to. */
 external area: point => int = "";
 
@@ -30,12 +28,10 @@ let areaValue = area({x: 3, y: None});
 type myArray('a);
 
 [@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./ImportJsValue.gen"] /* This must always be the name of the current module. */
 /* Name and type of the JS value to bind to. */
 external getValueAtIndex: (myArray(string), int) => string = "";
 
 [@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./ImportJsValue.gen"] /* This must always be the name of the current module. */
 /* Name and type of the JS value to bind to. */
 external functionWithRenamedArgument:
   string => [@genType.as "ArgRenamed"] ((~argToRename: string) => string) =
