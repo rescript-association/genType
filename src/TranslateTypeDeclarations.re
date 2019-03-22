@@ -77,6 +77,47 @@ let traslateDeclarationKind =
     {CodeItem.importTypes, exportFromTypeDeclaration};
   };
 
+  let translateLabelDeclarations = labelDeclarations => {
+    let fieldTranslations =
+      labelDeclarations
+      |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
+           let name =
+             switch (ld_attributes |> Annotation.getAttributeRenaming) {
+             | Some(s) => s
+             | None => ld_id |> Ident.name
+             };
+           let mutability = ld_mutable == Mutable ? Mutable : Immutable;
+           (
+             name,
+             mutability,
+             ld_type
+             |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+                  ~config,
+                  ~typeEnv,
+                ),
+           );
+         });
+
+    let dependencies =
+      fieldTranslations
+      |> List.map(((_, _, {TranslateTypeExprFromTypes.dependencies, _})) =>
+           dependencies
+         )
+      |> List.concat;
+
+    let fields =
+      fieldTranslations
+      |> List.map(((name, mutable_, {TranslateTypeExprFromTypes.type_, _})) => {
+           let (optional, type1) =
+             switch (type_) {
+             | Option(type1) => (Optional, type1)
+             | _ => (Mandatory, type_)
+             };
+           {mutable_, name, optional, type_: type1};
+         });
+    {TranslateTypeExprFromTypes.dependencies, type_: Record(fields)};
+  };
+
   switch (declarationKind, importStringOpt) {
   | (_, Some(importString)) =>
     /* import type */
@@ -160,48 +201,16 @@ let traslateDeclarationKind =
     |> returnTypeDeclaration;
 
   | (RecordDeclarationFromTypes(labelDeclarations), None) =>
-    let fieldTranslations =
-      labelDeclarations
-      |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
-           let name =
-             switch (ld_attributes |> Annotation.getAttributeRenaming) {
-             | Some(s) => s
-             | None => ld_id |> Ident.name
-             };
-           let mutability = ld_mutable == Mutable ? Mutable : Immutable;
-           (
-             name,
-             mutability,
-             ld_type
-             |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
-                  ~config,
-                  ~typeEnv,
-                ),
-           );
-         });
+    let {TranslateTypeExprFromTypes.dependencies, type_} =
+      labelDeclarations |> translateLabelDeclarations;
+    let optType = Some(type_);
     let importTypes =
-      fieldTranslations
-      |> List.map(((_, _, {TranslateTypeExprFromTypes.dependencies, _})) =>
-           dependencies
-         )
-      |> List.concat
+      dependencies
       |> Translation.translateDependencies(
            ~config,
            ~outputFileRelative,
            ~resolver,
          );
-
-    let fields =
-      fieldTranslations
-      |> List.map(((name, mutable_, {TranslateTypeExprFromTypes.type_, _})) => {
-           let (optional, type1) =
-             switch (type_) {
-             | Option(type1) => (Optional, type1)
-             | _ => (Mandatory, type_)
-             };
-           {mutable_, name, optional, type_: type1};
-         });
-    let optType = Some(Record(fields));
 
     {
       CodeItem.importTypes,
@@ -234,6 +243,9 @@ let traslateDeclarationKind =
                     ~config,
                     ~typeEnv,
                   )
+             | Cstr_record(labelDeclarations) => [
+                 labelDeclarations |> translateLabelDeclarations,
+               ]
              };
 
            let argTypes =
