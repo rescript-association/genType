@@ -2,7 +2,6 @@
   * Wrap JS values to be used from Reason
   */
 [@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./ImportJsValue.gen"] /* This must always be the name of the current module. */
 /* Name and type of the JS value to bind to. */
 external round: float => float = "";
 
@@ -13,7 +12,6 @@ type point = {
 };
 
 [@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./ImportJsValue.gen"] /* This must always be the name of the current module. */
 /* Name and type of the JS value to bind to. */
 external area: point => int = "";
 
@@ -49,10 +47,9 @@ type stringFunction;
 [@genType]
 type color = [ | `tomato | `gray];
 
-[@genType.import "./MyMath"] [@bs.module "./ImportJsValue.gen"]
-external useColor: color => int = "";
+[@genType.import "./MyMath"] external useColor: color => int = "";
 
-[@genType.import "./MyMath"] [@bs.module "./ImportJsValue.gen"]
+[@genType.import "./MyMath"]
 external higherOrder: ((int, int) => int) => int = "";
 
 [@genType]
@@ -62,5 +59,4 @@ type variant =
   | I(int)
   | S(string);
 
-[@genType.import "./MyMath"] [@bs.module "./ImportJsValue.gen"]
-external convertVariant: variant => variant = "";
+[@genType.import "./MyMath"] external convertVariant: variant => variant = "";
