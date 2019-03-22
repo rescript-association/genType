@@ -3,52 +3,105 @@
  * @generated
  * @nolint
  */
-
+/* eslint-disable */
 // $FlowExpectedError: Reason checked type sufficiently
-import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
+type $any = any;
+
+const $$toJS1061900109 = {"120": "x", "26810": "same"};
+
+const $$toRE694113598 = {"saturday": -29784519, "sunday": 569248848};
+
+const $$toRE1061900109 = {"x": 120, "same": 26810};
+
+const $$toJS584768163 = {"449540197": "type", "-134553037": "module", "23437694": "XXX THIS IS DIFFERENT"};
+
+const $$toJS930788378 = {"120": "x", "26809": "same"};
+
+const $$toJS508922110 = {"449540197": "type", "-134553037": "module", "23437694": "42"};
+
+const $$toRE930788378 = {"x": 120, "same": 26809};
+
+const $$toRE508922110 = {"type": 449540197, "module": -134553037, "42": 23437694};
+
+const $$toRE584768163 = {"type": 449540197, "module": -134553037, "XXX THIS IS DIFFERENT": 23437694};
+
+const $$toJS694113598 = {"-29784519": "saturday", "569248848": "sunday"};
+
+const $$toRE288839514 = {"monday": -949852400, "tuesday": 323181965, "wednesday": -863289194, "thursday": 122883354, "friday": 835226847, "saturday": -29784519, "sunday": 569248848};
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as VariantsBS from './Variants.bs';
 
-export opaque type ActionNoOp = mixed;
+export type weekday = 
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
 
-export const NoOp: ActionNoOp = 0;
+export type testGenTypeAs = "type" | "module" | "42";
 
-export opaque type ActionAdjustAge = mixed;
+export type testGenTypeAs2 = "type" | "module" | "42";
 
-export const AdjustAge: (((number) => number)) => ActionAdjustAge = function _(Arg1) { return CreateBucklescriptBlock.__(0, [Arg1]) }
+export type testGenTypeAs3 = "type" | "module" | "XXX THIS IS DIFFERENT";
 
-export opaque type ActionBooly = mixed;
+export type x1 = "x" | "same";
 
-export const Booly: (boolean) => ActionBooly = function _(Arg1) { return CreateBucklescriptBlock.__(1, [Arg1]) }
+export type x2 = "x" | "same";
 
-export opaque type ActionOptionalInt = mixed;
+export const isWeekend: (weekday) => boolean = function (Arg1: $any) {
+  const result = VariantsBS.isWeekend($$toRE288839514[Arg1]);
+  return result
+};
 
-export const OptionalInt: (?number) => ActionOptionalInt = function _(Arg1) { return CreateBucklescriptBlock.__(2, [(Arg1 == null ? undefined : Arg1)]) }
+export const monday: "monday" = "monday";
 
-export opaque type ActionUnity = mixed;
+export const saturday: "saturday" = "saturday";
 
-export const Unity: (void) => ActionUnity = function _(Arg1) { return CreateBucklescriptBlock.__(3, [Arg1]) }
+export const sunday: "sunday" = "sunday";
 
-export opaque type ActionOptionalBooly = mixed;
+export const onlySunday: ("sunday") => void = function (Arg1: $any) {
+  const result = VariantsBS.onlySunday(/* sunday */569248848);
+  return result
+};
 
-export const OptionalBooly: (?boolean) => ActionOptionalBooly = function _(Arg1) { return CreateBucklescriptBlock.__(4, [(Arg1 == null ? undefined : Arg1)]) }
+export const swap: ("saturday" | "sunday") => "saturday" | "sunday" = function (Arg1: $any) {
+  const result = VariantsBS.swap($$toRE694113598[Arg1]);
+  return $$toJS694113598[result]
+};
 
-export opaque type ActionOptionalBoolMapper = mixed;
+export const testConvert: (testGenTypeAs) => testGenTypeAs = function (Arg1: $any) {
+  const result = VariantsBS.testConvert($$toRE508922110[Arg1]);
+  return $$toJS508922110[result]
+};
 
-export const OptionalBoolMapper: (((?boolean) => ?boolean)) => ActionOptionalBoolMapper = function _(Arg1) { return CreateBucklescriptBlock.__(5, [function _(Arg11) { const result = Arg1(Arg11); return (result == null ? undefined : result) }]) }
+export const fortytwoOK: testGenTypeAs = $$toJS508922110[VariantsBS.fortytwoOK];
 
-export type action =
-  | ActionNoOp
-  | ActionAdjustAge
-  | ActionBooly
-  | ActionOptionalInt
-  | ActionUnity
-  | ActionOptionalBooly
-  | ActionOptionalBoolMapper;
+export const fortytwoBAD: "fortytwo" = "fortytwo";
 
-export type optionalBoolMapper = {|+optionalBoolMapper: (?boolean) => ?boolean|};
+export const testConvert2: (testGenTypeAs2) => testGenTypeAs2 = function (Arg1: $any) {
+  const result = VariantsBS.testConvert2($$toRE508922110[Arg1]);
+  return $$toJS508922110[result]
+};
 
-export const actionToString: (action) => string = VariantsBS.actionToString;
+export const testConvert3: (testGenTypeAs3) => testGenTypeAs3 = function (Arg1: $any) {
+  const result = VariantsBS.testConvert3($$toRE584768163[Arg1]);
+  return $$toJS584768163[result]
+};
 
-export const converter: (optionalBoolMapper) => optionalBoolMapper = function _(Arg1) { const result = VariantsBS.converter([function _(Arg11) { const result1 = Arg1.optionalBoolMapper(Arg11); return (result1 == null ? undefined : result1) }]); return {optionalBoolMapper:function _(Arg12) { const result2 = result[0]((Arg12 == null ? undefined : Arg12)); return result2 }} };
+export const testConvert2to3: (testGenTypeAs2) => testGenTypeAs3 = function (Arg1: $any) {
+  const result = VariantsBS.testConvert2to3($$toRE508922110[Arg1]);
+  return $$toJS584768163[result]
+};
+
+export const id1: (x1) => x1 = function (Arg1: $any) {
+  const result = VariantsBS.id1($$toRE930788378[Arg1]);
+  return $$toJS930788378[result]
+};
+
+export const id2: (x2) => x2 = function (Arg1: $any) {
+  const result = VariantsBS.id2($$toRE1061900109[Arg1]);
+  return $$toJS1061900109[result]
+};

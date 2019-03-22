@@ -2,7 +2,7 @@ open GenTypeCommon;
 
 type groupedArg =
   | Group(fields)
-  | Arg(typ);
+  | Arg(type_);
 
 /**
  * For convenient processing turns consecutive named arguments into a
@@ -10,22 +10,26 @@ type groupedArg =
  */
 let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
   switch (revCurGroup, labeledTypes) {
-  | ([], [(Nolabel, typ), ...tl]) =>
-    groupReversed(~revCurGroup=[], ~revResult=[Arg(typ), ...revResult], tl)
+  | ([], [(Nolabel, type_), ...tl]) =>
+    groupReversed(
+      ~revCurGroup=[],
+      ~revResult=[Arg(type_), ...revResult],
+      tl,
+    )
   /* Add it to the current group, not result. */
-  | (_, [(OptLabel(name), typ), ...tl]) =>
+  | (_, [(OptLabel(name), type_), ...tl]) =>
     groupReversed(
       ~revCurGroup=[
-        {name, optional: Optional, mutable_: Immutable, typ},
+        {mutable_: Immutable, name, optional: Optional, type_},
         ...revCurGroup,
       ],
       ~revResult,
       tl,
     )
-  | (_, [(Label(name), typ), ...tl]) =>
+  | (_, [(Label(name), type_), ...tl]) =>
     groupReversed(
       ~revCurGroup=[
-        {name, optional: Mandatory, mutable_: Immutable, typ},
+        {mutable_: Immutable, name, optional: Mandatory, type_},
         ...revCurGroup,
       ],
       ~revResult,
@@ -50,7 +54,7 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
-  | [Arg(typ), ...tl] => reverse(~soFar=[typ, ...soFar], tl)
+  | [Arg(type_), ...tl] => reverse(~soFar=[type_, ...soFar], tl)
   | [Group(fields), ...tl] =>
     reverse(~soFar=[GroupOfLabeledArgs(List.rev(fields)), ...soFar], tl)
   };

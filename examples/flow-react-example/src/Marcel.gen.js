@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 export type B_a = number;
 

@@ -23,8 +23,18 @@ let chopExtensionSafe = s =>
   | Invalid_argument(_) => s
   };
 
-let toCmt = (~outputFileRelative, s) =>
+let toCmt = (~config, ~outputFileRelative, s) =>
   Filename.(
-    concat(outputFileRelative |> dirname, (s |> chopExtensionSafe) ++ ".cmt")
+    concat(
+      outputFileRelative |> dirname,
+      (s |> chopExtensionSafe)
+      ++ (
+        switch (config.namespace) {
+        | None => ""
+        | Some(name) => "-" ++ name
+        }
+      )
+      ++ ".cmt",
+    )
   );
 let toString = s => s;

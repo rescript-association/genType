@@ -17,6 +17,49 @@ let removeOption = (~label: Asttypes.arg_label, coreType: Typedtree.core_type) =
   | _ => None
   };
 
+type processVariant = {
+  noPayloads: list((string, Typedtree.attributes)),
+  payloads: list((string, Typedtree.attributes, Typedtree.core_type)),
+  unknowns: list(string),
+};
+
+let processVariant = rowFields => {
+  let rec loop = (~noPayloads, ~payloads, ~unknowns, fields) =>
+    switch (fields) {
+    | [
+        Typedtree.Ttag(
+          {txt: label},
+          attributes,
+          _,
+          /* only variants with no payload */ [],
+        ),
+        ...otherFields,
+      ] =>
+      otherFields
+      |> loop(
+           ~noPayloads=[(label, attributes), ...noPayloads],
+           ~payloads,
+           ~unknowns,
+         )
+    | [Ttag({txt: label}, attributes, _, [payload]), ...otherFields] =>
+      otherFields
+      |> loop(
+           ~noPayloads,
+           ~payloads=[(label, attributes, payload), ...payloads],
+           ~unknowns,
+         )
+    | [Ttag(_, _, _, [_, _, ..._]) | Tinherit(_), ...otherFields] =>
+      otherFields
+      |> loop(~noPayloads, ~payloads, ~unknowns=["Tinherit", ...unknowns])
+    | [] => {
+        noPayloads: noPayloads |> List.rev,
+        payloads: payloads |> List.rev,
+        unknowns: unknowns |> List.rev,
+      }
+    };
+  rowFields |> loop(~noPayloads=[], ~payloads=[], ~unknowns=[]);
+};
+
 let rec translateArrowType =
         (
           ~config,
@@ -29,7 +72,7 @@ let rec translateArrowType =
         ) =>
   switch (coreType.ctyp_desc) {
   | Ttyp_arrow(Nolabel, coreType1, coreType2) =>
-    let {dependencies, typ} =
+    let {dependencies, type_} =
       coreType1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv, _);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
     coreType2
@@ -39,20 +82,17 @@ let rec translateArrowType =
          ~noFunctionReturnDependencies,
          ~typeEnv,
          ~revArgDeps=nextRevDeps,
-         ~revArgs=[(Nolabel, typ), ...revArgs],
+         ~revArgs=[(Nolabel, type_), ...revArgs],
        );
   | Ttyp_arrow((Labelled(lbl) | Optional(lbl)) as label, coreType1, coreType2) =>
     let asLabel =
-      switch (
-        coreType.ctyp_attributes
-        |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs)
-      ) {
-      | Some(StringPayload(s)) => s
-      | _ => ""
+      switch (coreType.ctyp_attributes |> Annotation.getAttributeRenaming) {
+      | Some(s) => s
+      | None => ""
       };
     switch (coreType1 |> removeOption(~label)) {
     | None =>
-      let {dependencies, typ: typ1} =
+      let {dependencies, type_: type1} =
         coreType1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       coreType2
@@ -63,12 +103,12 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (Label(asLabel == "" ? lbl : asLabel), typ1),
+             (Label(asLabel == "" ? lbl : asLabel), type1),
              ...revArgs,
            ],
          );
     | Some((lbl, t1)) =>
-      let {dependencies, typ: typ1} =
+      let {dependencies, type_: type1} =
         t1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
       coreType2
@@ -79,13 +119,13 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (OptLabel(asLabel == "" ? lbl : asLabel), typ1),
+             (OptLabel(asLabel == "" ? lbl : asLabel), type1),
              ...revArgs,
            ],
          );
     };
   | _ =>
-    let {dependencies, typ: retType} =
+    let {dependencies, type_: retType} =
       coreType |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv);
     let allDeps =
       List.rev_append(
@@ -96,9 +136,10 @@ let rec translateArrowType =
     let labeledConvertableTypes = revArgs |> List.rev;
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
-    let functionType = Function({typeVars: [], argTypes, retType});
+    let functionType =
+      Function({argTypes, retType, typeVars: [], uncurried: false});
 
-    {dependencies: allDeps, typ: functionType};
+    {dependencies: allDeps, type_: functionType};
   }
 and translateCoreType_ =
     (
@@ -109,19 +150,33 @@ and translateCoreType_ =
       coreType: Typedtree.core_type,
     ) =>
   switch (coreType.ctyp_desc) {
-  | Ttyp_var(s) => {dependencies: [], typ: TypeVar(s)}
+  | Ttyp_alias(ct, _) =>
+    ct
+    |> translateCoreType_(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies=false,
+         ~typeEnv,
+       )
 
   | Ttyp_constr(
       Pdot(Pident({name: "Js", _}), "t", _) as path,
       _,
-      [{ctyp_desc: Ttyp_object(tObj, _), _}],
+      [
+        {
+          ctyp_desc:
+            Ttyp_object(tObj, closedFlag) |
+            Ttyp_alias({ctyp_desc: Ttyp_object(tObj, closedFlag)}, _),
+          _,
+        },
+      ],
     ) =>
     let getFieldType = objectField =>
       switch (objectField) {
       | Typedtree.OTtag({txt: name}, _, t) => (
           name,
           name |> Runtime.isMutableObjectField ?
-            {dependencies: [], typ: Ident("", [])} :
+            {dependencies: [], type_: ident("")} :
             t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
         )
       | OTinherit(t) => (
@@ -129,23 +184,26 @@ and translateCoreType_ =
           t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
         )
       };
-
     let fieldsTranslations = tObj |> List.map(getFieldType);
     translateConstr(
-      ~path,
-      ~paramsTranslation=[],
-      ~typeEnv,
+      ~config,
       ~fieldsTranslations,
+      ~closedFlag=closedFlag == Closed ? Closed : Open,
+      ~paramsTranslation=[],
+      ~path,
+      ~typeEnv,
     );
 
   | Ttyp_constr(path, _, typeParams) =>
     let paramsTranslation =
       typeParams |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
     TranslateTypeExprFromTypes.translateConstr(
-      ~path,
-      ~paramsTranslation,
-      ~typeEnv,
+      ~config,
       ~fieldsTranslations=[],
+      ~closedFlag=Closed,
+      ~paramsTranslation,
+      ~path,
+      ~typeEnv,
     );
 
   | Ttyp_poly(_, t) =>
@@ -167,10 +225,12 @@ and translateCoreType_ =
          ~revArgDeps=[],
          ~revArgs=[],
        )
+
   | Ttyp_tuple(listExp) =>
     let innerTypesTranslation =
       listExp |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let innerTypes = innerTypesTranslation |> List.map(({typ, _}) => typ);
+    let innerTypes =
+      innerTypesTranslation |> List.map(({type_, _}) => type_);
     let innerTypesDeps =
       innerTypesTranslation
       |> List.map(({dependencies, _}) => dependencies)
@@ -178,42 +238,83 @@ and translateCoreType_ =
 
     let tupleType = Tuple(innerTypes);
 
-    {dependencies: innerTypesDeps, typ: tupleType};
+    {dependencies: innerTypesDeps, type_: tupleType};
 
-  | Ttyp_variant(rowFields, _, _)
-      when
-        rowFields
-        |> List.for_all(field =>
-             switch (field) {
-             | Typedtree.Ttag(_, _, _, /* only enums with no payloads */ []) =>
-               true
-             | _ => false
-             }
-           ) =>
-    let cases =
-      rowFields
-      |> List.map(field =>
-           switch (field) {
-           | Typedtree.Ttag({txt: label}, _attributes, _, _) => {
+  | Ttyp_var(s) => {dependencies: [], type_: TypeVar(s)}
+
+  | Ttyp_variant(rowFields, _, _) =>
+    switch (rowFields |> processVariant) {
+    | {noPayloads, payloads, unknowns: []} =>
+      let noPayloads =
+        noPayloads
+        |> List.map(((label, _attibutes)) =>
+             {label, labelJS: StringLabel(label)}
+           );
+      let payloadsTranslations =
+        payloads
+        |> List.map(((label, attributes, payload)) =>
+             (
                label,
-               labelJS: label,
-             }
-           | Tinherit(_) => /* impossible: checked above */ assert(false)
-           }
-         );
-    let typ = cases |> createEnum;
-    {dependencies: [], typ};
+               attributes,
+               payload |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+             )
+           );
+      let payloads =
+        payloadsTranslations
+        |> List.map(((label, _attributes, translation)) => {
+             let numArgs = 1;
+             (
+               {label, labelJS: StringLabel(label)},
+               numArgs,
+               translation.type_,
+             );
+           });
+      let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      let dependencies =
+        payloadsTranslations
+        |> List.map(((_, _, {dependencies, _})) => dependencies)
+        |> List.concat;
+      {dependencies, type_};
 
-  | Ttyp_alias(_)
+    | _ => {dependencies: [], type_: mixedOrUnknown(~config)}
+    }
+
+  | Ttyp_package({pack_path, pack_fields}) =>
+    switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path=pack_path)) {
+    | Some((signature, typeEnv)) =>
+      let typeEquationsTranslation =
+        pack_fields
+        |> List.map(((x, t)) =>
+             (
+               x.Asttypes.txt,
+               t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+             )
+           );
+      let typeEquations =
+        typeEquationsTranslation
+        |> List.map(((x, translation)) => (x, translation.type_));
+      let dependenciesFromTypeEquations =
+        typeEquationsTranslation
+        |> List.map(((_, translation)) => translation.dependencies)
+        |> List.flatten;
+      let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
+      let (dependenciesFromRecordType, type_) =
+        signature.sig_type
+        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+      {
+        dependencies:
+          dependenciesFromTypeEquations @ dependenciesFromRecordType,
+        type_,
+      };
+    | None => {dependencies: [], type_: mixedOrUnknown(~config)}
+    }
+
   | Ttyp_any
   | Ttyp_class(_)
-  | Ttyp_object(_)
-  | Ttyp_package(_)
-  | Ttyp_variant(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
+  | Ttyp_object(_) => {dependencies: [], type_: mixedOrUnknown(~config)}
   }
 and translateCoreTypes_ =
-    (~config, ~typeVarsGen, ~typeEnv, typeExprs)
-    : list(translation) =>
+    (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
   typeExprs |> List.map(translateCoreType_(~config, ~typeVarsGen, ~typeEnv));
 
 let translateCoreType =

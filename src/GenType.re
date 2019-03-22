@@ -14,7 +14,7 @@ let cli = () => {
     assert(Array.length(splitColon) === 2);
     let cmt: string = splitColon[0];
     let mlast: string = splitColon[1];
-    let config = Paths.readConfig();
+    let config = Paths.readConfig(~namespace=cmt |> Paths.findNameSpace);
     if (Debug.basic^) {
       logItem("Add %s  %s\n", cmt, mlast);
     };
@@ -27,7 +27,7 @@ let cli = () => {
     let cmtAbsolutePath: string = splitColon[0];
     /* somehow the CMT hook is passing an absolute path here */
     let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
-    let config = Paths.readConfig();
+    let config = Paths.readConfig(~namespace=cmt |> Paths.findNameSpace);
     let outputFile = cmt |> Paths.getOutputFile(~config);
     if (Debug.basic^) {
       logItem("Remove %s\n", cmt);
@@ -38,7 +38,7 @@ let cli = () => {
     exit(0);
   };
   let clean = () => {
-    let config = Paths.readConfig();
+    let config = Paths.readConfig(~namespace=None);
     let dirs = ModuleResolver.readSourceDirs();
     if (Debug.basic^) {
       logItem("Clean %d dirs\n", dirs |> List.length);
@@ -50,7 +50,7 @@ let cli = () => {
          files
          |> Array.iter(file =>
               if (Filename.check_suffix(file, ".re")) {
-                let extension = EmitTyp.outputFileSuffix(~config);
+                let extension = EmitType.outputFileSuffix(~config);
                 let generated =
                   Filename.concat(
                     dir,

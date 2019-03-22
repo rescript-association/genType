@@ -15,6 +15,6 @@ let reasonReactPath: (~config: config) => t;
 
 let react: t;
 
-let toCmt: (~outputFileRelative: string, t) => string;
+let toCmt: (~config: config, ~outputFileRelative: string, t) => string;
 
 let toString: t => string;

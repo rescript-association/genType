@@ -1,3 +1,132 @@
+# 2.17.0
+- Add support for bucklescript version 5 (AST for bs.module has changed).
+- Support file names starting with lower case letter.
+
+If using bucklescript >= 5.0.0:
+
+- It is not necessary anymore to set up `BS_CMT_POST_PROCESS_CMD`.
+- The line `[@bs.module "./ThisFileName.gen"]` in value imports can be omitted, and will be added internally by bucklescript.
+
+# 2.16.0
+- Avoid underscore when emitting conversion function for wrapJsForReason.
+- Support inner modules with shadowed values.
+- Fix: support transitive reachability of type definitions of arbitrary length.
+  Before this, only paths of level 2 were available to generate conversion functions.
+  E.g. this was not supported: A uses a type defined in B which uses a type defined in C.
+
+# 2.15.0
+- Omit underscore as function name when emitting conversions.
+
+# 2.14.0
+- Import Curry early, so it's available if needed for an import conversion.
+- Automatically export types referenced by an imported value.
+- Import CreateBuckescriptBlock early, so it's available if needed for an import conversion.
+
+# 2.13.0
+- Fix missing cases (records and variants): Don't import referenced types with genType.opaque.
+- In flow, annotate function parameters with type any, just as for TypeScript.
+  This helps typing conversion functions with nested null checks.
+
+# 2.12.2
+- Fix issue where importing a type which has no definition from other files could reset the type enironment.
+  Resetting the type environment causes failures depending on the order of type arguments in https://github.com/cristianoc/genType/issues/158.
+
+# 2.12.1
+- Emit type parametes when generating polymorphic conversion functions. 
+
+# 2.12.0
+- Support type definitions in first-class module types.
+- Handle correctly first-class module types with nested modules inside.
+- Add support for first-class module types with type equations.
+- Add support for functions with first-class module types and type equations.
+- Fix support for type parameters in type declarations with constraints.
+ 
+# 2.11.0
+- Fix: don't export types defined in shims as opaque. 
+- Add support for type Js.null (and Js.Null.t).
+- Fix signature of ImmutableArray length and size.
+
+# 2.10.0
+- Fix: convert first-class module types when defined in other files.
+
+# 2.8.0
+- Allow misspelling "genType" as "gentype".
+- Auto uncurry functions of type unit => ...
+- Wrap functions exported to JS with Curry._n (arity n) unless the functions have uncurried type.
+
+# 2.7.0
+- Support exporting types containing type variables at toplevel withoug making them opaque.
+- Support exporting types defined in modules with type constraints.
+- Extend support of first class modules to type declarations.
+- Treat GADT declarations like normal ADT declarations.
+
+# 2.6.0
+- Add support for translation of inferred object types (using ##) and open object type declarations.
+- Add support for open object types.
+
+# 2.5.2
+- Add support for String.t and Js.String.t.
+- Avoid generating an extra type in renamed imports.
+
+# 2.5.1
+- Add support for pairs in @genType.import to encode rename information.
+Instead of writing
+
+```reason
+[@genType.import "./js/MyBanner"]
+[@genType.as "TopLevelClass.MiddleLevelElements.MyBannerInternal"]
+```
+
+This can be used instead:
+```reason
+[@genType.import ("./js/MyBanner", "TopLevelClass.MiddleLevelElements.MyBannerInternal")]
+```
+
+# 2.4.1
+- Fix issue with namespace mode: conversion was not performed for types defined in other files, as the correct .cmt files was not found.
+
+# 2.4.0
+- Restore support for namespaces, and make commonjs-react-example a namespace example.
+- Add support for genType.as for the type name, to record type declarations.
+
+# 2.3.1
+- Fix issue where conversion functions for types defined in other files would be missing if the first declararation in that other file is not annotated with @genType.
+
+# 2.3.0
+- Flow mode: add eslint-disable.
+- Fix missing conversion of optional arguments of components.
+
+# 2.2.2
+- Fix issue where default function arguments of some type requiring conversion were not checked for undefined.
+- Add missing support for @genType.opaque in variants.
+
+# 2.2.0
+- Indent function definitions and if-then-else's.
+- Indent variant declarations.
+- Spacing after/before brackets in object types.
+- In TypeScript, use the preferred semicolon in object types.
+
+# 2.1.0
+- In commonjs, import components simply as a `require` without ".default".
+
+# 2.0.0
+- New unified support for polymorphic variants and ordinary variants. If possible (at most one case with payload of object type), use an unboxed representation. Otherwise use `{tag: label, value: ...}`.
+- This is a **Breaking Change**: ordinary variants used to be represented as opaque types with construction functions. Now, ordinary variants have the same representation as polymorphic variants.
+
+# 1.9.0
+- [Enums: support one object type, plus strings/booleans/integers](https://github.com/cristianoc/genType/pull/118).
+
+# 1.7.0
+- Add support for paths in `@genType.as` when importing components from JS. Also, simply support renaming.
+
+# 1.6.1
+- Fix missing import React when importing component in untyped back-end.
+
+# 1.6.0
+- [Fix issue with access to the .bs.js file when exporting nested component](https://github.com/cristianoc/genType/issues/104).
+- Fix: [Emit enum conversion tables early, to avoid the case where they’re used before being defined](https://github.com/cristianoc/genType/issues/102).
+- Add support for exporting uncurried function types.
+
 # 1.5.0
 - Hygiene: avoid variable capture for generated variable names (function arguments, return value, array items).
 

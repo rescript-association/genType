@@ -1,29 +1,37 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
-import * as Enums from "./Enums.gen";
+import ComponentAsProp from "./components/ComponentAsProp.gen";
+import { InnerComponent } from "./components/ManyComponents.gen";
+import * as ImportJsValue from "./ImportJsValue.gen";
+import * as Uncurried from "./Uncurried.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
-import * as Records from "./nested/Records.gen";
 import * as Types from "./nested/Types.gen";
 import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules.gen";
 import ReasonComponent from "./ReasonComponent.gen";
-import { A, B, minus, tToString } from "./ReasonComponent.gen";
-import { t, TA, TB } from "./ReasonComponent.gen";
+import { minus, t, tToString } from "./ReasonComponent.gen";
+import * as Records from "./Records.gen";
 import registerServiceWorker from "./registerServiceWorker";
-import * as WrapJsValue from "./WrapJsValue.gen";
+import * as Variants from "./Variants.gen";
+import {
+  printManyPayloads,
+  printVariantWithPayload,
+  printVariantWithPayloads,
+  testManyPayloads,
+  testVariantWithPayloads,
+  testWithPayload
+} from "./VariantsWithPayload.gen";
 
 const minusOne: number = minus({ second: 1 });
 
-const a: TA = A;
-const b: TB = B(3);
-const thisIsOK: t = A;
-// const thisIsATypeError: TB = A;
+const a: t = "A";
+const b: t = { tag: "B", value: 3 };
 
 // tslint:disable-next-line:no-console
 const consoleLog = console.log;
 
-consoleLog(a, b, thisIsOK);
+consoleLog(a, b);
 
 const intList = Types.map(x => x + 1, Types.someIntList);
 
@@ -37,10 +45,23 @@ const businesses = [
 
 const addresses = Records.findAllAddresses(businesses);
 
-import { roundedNumber } from "./WrapJsValue.gen";
-consoleLog("index.tsx roundedNumber:", roundedNumber);
-import { areaValue } from "./WrapJsValue.gen";
-consoleLog("index.tsx areaValue:", areaValue);
+consoleLog("index.tsx roundedNumber:", ImportJsValue.roundedNumber);
+consoleLog("index.tsx areaValue:", ImportJsValue.areaValue);
+consoleLog("index.tsx returnedFromHigherOrder:", ImportJsValue.returnedFromHigherOrder);
+
+consoleLog("index.tsx callback:", Uncurried.callback(() => 3));
+consoleLog(
+  "index.tsx callback2:",
+  Uncurried.callback2({ login: () => "hello" })
+);
+consoleLog(
+  "index.tsx callback2U:",
+  Uncurried.callback2U({ loginU: () => "hello" })
+);
+Uncurried.sumU(3, 4);
+Uncurried.sumU2(3)(4);
+Uncurried.sumCurried(3, 4);
+Uncurried.sumLblCurried("hello", { n: 3, m: 4 });
 
 ReactDOM.render(
   <div>
@@ -62,6 +83,11 @@ ReactDOM.render(
         type: ""
       }}
     />
+    <InnerComponent />
+    <ComponentAsProp
+      title={<div>title</div>}
+      description={<div>description</div>}
+    />
   </div>,
   document.getElementById("root") as HTMLElement
 );
@@ -78,20 +104,39 @@ consoleLog(
   Universe_Nested2_Nested3_nested3Value
 );
 
-consoleLog("Enums: swap(sunday) =", Enums.swap("sunday"));
-consoleLog("Enums: fortytwoOK is", Enums.fortytwoOK);
-consoleLog("Enums: fortytwoBAD is", Enums.fortytwoBAD);
+consoleLog("Enums: swap(sunday) =", Variants.swap("sunday"));
+consoleLog("Enums: fortytwoOK is", Variants.fortytwoOK);
+consoleLog("Enums: fortytwoBAD is", Variants.fortytwoBAD);
 consoleLog(
-  "Enums: testConvert3to2('module') =",
-  Enums.testConvert2to3("module")
+  "Variants: testConvert3to2('module') =",
+  Variants.testConvert2to3("module")
 );
-consoleLog("Enums: testConvert3to2('42') =", Enums.testConvert2to3("42"));
+consoleLog("Variants: testConvert3to2('42') =", Variants.testConvert2to3("42"));
 
 const absoluteValueInstance = new MyMath.AbsoluteValue();
 absoluteValueInstance.prop = -3;
 consoleLog("absoluteValueInstance", absoluteValueInstance);
 
-const propValue = WrapJsValue.useGetProp(absoluteValueInstance);
-const absValue = WrapJsValue.useGetAbs(absoluteValueInstance);
-consoleLog("WrapJsValue: getProp() =", propValue);
-consoleLog("WrapJsValue: getAbs() =", absValue);
+const propValue = ImportJsValue.useGetProp(absoluteValueInstance);
+const absValue = ImportJsValue.useGetAbs(absoluteValueInstance);
+consoleLog("ImportJsValue: getProp() =", propValue);
+consoleLog("ImportJsValue: getAbs() =", absValue);
+
+printVariantWithPayload("a");
+printVariantWithPayload("bRenamed");
+printVariantWithPayload(true);
+printVariantWithPayload(20);
+printVariantWithPayload(0.5);
+printVariantWithPayload(testWithPayload({ x: 15 }));
+
+printManyPayloads({ tag: "oneRenamed", value: 34 });
+printManyPayloads({ tag: 2, value: ["hello", "world"] });
+printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));
+
+printVariantWithPayloads(testVariantWithPayloads("ARenamed"));
+printVariantWithPayloads(testVariantWithPayloads({ tag: "B", value: 4 }));
+printVariantWithPayloads(testVariantWithPayloads({ tag: "C", value: [1, 2] }));
+printVariantWithPayloads(testVariantWithPayloads({ tag: "D", value: [1, 2] }));
+printVariantWithPayloads(
+  testVariantWithPayloads({ tag: "E", value: [1, "hello", 2] })
+);

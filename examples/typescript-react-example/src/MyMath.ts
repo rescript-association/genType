@@ -1,4 +1,3 @@
-
 /* @flow strict */
 
 export const round: ((_: number) => number) = Math.round;
@@ -19,3 +18,13 @@ export class AbsoluteValue {
 }
 
 export type stringFunction = (_: string) => string;
+
+// tslint:disable-next-line:only-arrow-functions
+export const useColor = function(x: "tomato" | "gray"): number {
+  return 0;
+};
+
+
+export const higherOrder = (foo: (_1:number, _2:number) => number) => foo(3,4);
+
+export const convertVariant = (x:any) => x;

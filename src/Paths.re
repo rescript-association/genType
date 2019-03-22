@@ -42,9 +42,18 @@ let handleNamespace = cmt => {
   };
 };
 
+let findNameSpace = cmt => {
+  let keepAfterDash = s =>
+    switch (String.index(s, '-')) {
+    | n => Some(String.sub(s, n + 1, String.length(s) - n - 1))
+    | exception Not_found => None
+    };
+  cmt |> Filename.basename |> Filename.chop_extension |> keepAfterDash;
+};
+
 /* Get the output file to be written, relative to the project root. */
 let getOutputFileRelative = (~config, cmt) =>
-  (cmt |> handleNamespace) ++ EmitTyp.outputFileSuffix(~config);
+  (cmt |> handleNamespace) ++ EmitType.outputFileSuffix(~config);
 
 /* Get the output file to be written, as an absolute path. */
 let getOutputFile = (~config, cmt) =>
@@ -55,11 +64,23 @@ let getModuleName = cmt =>
 
 let getCmtFile = cmt => {
   let pathCmt = Filename.concat(Sys.getcwd(), cmt);
+
   let cmtFile =
     if (Filename.check_suffix(pathCmt, ".cmt")) {
+      let pathCmtLowerCase = {
+        let dirName = pathCmt |> Filename.dirname;
+        let baseName = pathCmt |> Filename.basename;
+        Filename.concat(dirName, baseName |> String.uncapitalize_ascii);
+      };
       let pathCmti = Filename.chop_extension(pathCmt) ++ ".cmti";
-      if (Sys.file_exists(pathCmti)) {
+      let pathCmtiLowerCase =
+        Filename.chop_extension(pathCmtLowerCase) ++ ".cmti";
+      if (Sys.file_exists(pathCmtiLowerCase)) {
+        pathCmtiLowerCase;
+      } else if (Sys.file_exists(pathCmti)) {
         pathCmti;
+      } else if (Sys.file_exists(pathCmtLowerCase)) {
+        pathCmtLowerCase;
       } else if (Sys.file_exists(pathCmt)) {
         pathCmt;
       } else {
@@ -114,7 +135,7 @@ let relativePathFromBsLib = fileName =>
     );
   };
 
-let readConfig = () => {
+let readConfig = (~namespace) => {
   setProjectRoot();
-  Config.readConfig(~getConfigFile, ~getBsConfigFile);
+  Config.readConfig(~getConfigFile, ~getBsConfigFile, ~namespace);
 };

@@ -11,9 +11,9 @@ let toArray: t('a) => array('a);
 
 /** Subset of the Belt.Array oprerations that do not mutate the array. */
 
-let length: array('a) => int;
+let length: t('a) => int;
 
-let size: array('a) => int;
+let size: t('a) => int;
 
 let get: (t('a), int) => option('a);
 

@@ -59,7 +59,10 @@ let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
                 fileMap :=
                   fileMap^
                   |> ModuleNameMap.add(
-                       fname |> chopExtensions |> ModuleName.fromStringUnsafe,
+                       fname
+                       |> chopExtensions
+                       |> String.capitalize_ascii
+                       |> ModuleName.fromStringUnsafe,
                        dir,
                      );
               }
@@ -98,6 +101,7 @@ let apply = (~resolver, moduleName) =>
 let resolveModule =
     (~config, ~outputFileRelative, ~resolver, ~importExtension, moduleName) => {
   open Filename;
+
   let outputFileRelativeDir =
     /* e.g. src if we're generating src/File.re.js */
     dirname(outputFileRelative);
@@ -173,7 +177,7 @@ let resolveGeneratedModule =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~importExtension=EmitTyp.generatedModuleExtension(~config),
+      ~importExtension=EmitType.generatedModuleExtension(~config),
       moduleName,
     );
   if (Debug.moduleResolution^) {

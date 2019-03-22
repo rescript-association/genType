@@ -3,71 +3,45 @@ open GenTypeCommon;
 type exportType = {
   nameAs: option(string),
   opaque: option(bool),
-  optTyp: option(typ),
+  optType: option(type_),
   typeVars: list(string),
   resolvedTypeName: string,
-};
-
-type constructorTyp = {
-  typeVars: list(string),
-  argTypes: list(typ),
-  variant,
-};
-
-type exportVariantLeaf = {
-  exportType,
-  constructorTyp,
-  argTypes: list(typ),
-  leafName: string,
-  recordValue: Runtime.recordValue,
-};
-
-type exportVariantType = {
-  leaves: list(exportVariantLeaf),
-  resolvedTypeName: string,
-  typeVars: list(string),
-  variants: list(variant),
 };
 
 type importComponent = {
+  asPath: string,
+  childrenTyp: type_,
   exportType,
   importAnnotation: Annotation.import,
-  childrenTyp: typ,
   propsFields: fields,
   propsTypeName: string,
-  fileName: ModuleName.t,
 };
 
 type importValue = {
-  valueName: string,
   asPath: string,
   importAnnotation: Annotation.import,
-  typ,
-  fileName: ModuleName.t,
+  type_,
+  valueName: string,
 };
 
 type exportComponent = {
+  componentAccessPath: string,
+  componentType: type_,
   exportType,
-  fileName: ModuleName.t,
-  moduleName: ModuleName.t,
+  nestedModuleName: option(ModuleName.t),
   propsTypeName: string,
-  componentType: typ,
-  typ,
+  type_,
+  valueAccessPath: string,
 };
 
 type exportValue = {
-  fileName: ModuleName.t,
   resolvedName: string,
+  type_,
   valueAccessPath: string,
-  typ,
 };
 
-type exportKind =
-  | ExportType(exportType)
-  | ExportVariantType(exportVariantType);
-
 type exportFromTypeDeclaration = {
-  exportKind,
+  exportType,
   annotation: Annotation.t,
 };
 
@@ -75,12 +49,11 @@ type importType = {
   typeName: string,
   asTypeName: option(string),
   importPath: ImportPath.t,
-  cmtFile: option(string),
 };
 
 type exportTypeItem = {
   typeVars: list(string),
-  typ,
+  type_,
   annotation: Annotation.t,
 };
 

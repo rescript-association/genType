@@ -3,18 +3,24 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // flowlint-next-line nonstrict-import:off
 import {foo as fooNotChecked} from './name-with-dashes';
+
+// $FlowExpectedError: Reason checked type sufficiently
+import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
+
+// $FlowExpectedError: Reason checked type sufficiently
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
 export const fooTypeChecked: (number) => number = fooNotChecked;
 
 // Export 'foo' early to allow circular import from the '.bs.js' file.
 export const foo: mixed = fooTypeChecked;
-
-// $FlowExpectedError: Reason checked type sufficiently
-const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
 
 // $FlowExpectedError: Reason checked type sufficiently
 const TypesBS = require('./Types.bs');
@@ -34,17 +40,9 @@ import type {variant as AutoAnnotate_variant} from './AutoAnnotate.gen';
 // flowlint-next-line nonstrict-import:off
 import type {weekday} from './SomeFlowTypes';
 
-export opaque type TypeWithVarsA<x,y> = mixed;
-
-export const A: <x,y>(x, y) => TypeWithVarsA<x,y> = function _(Arg1, Arg2) { return CreateBucklescriptBlock.__(0, [Arg1, Arg2]) }
-
-export opaque type TypeWithVarsB<z> = mixed;
-
-export const B: <z>(z) => TypeWithVarsB<z> = function _(Arg1) { return CreateBucklescriptBlock.__(1, [Arg1]) }
-
-export type typeWithVars<x,y,z> =
-  | TypeWithVarsA<x,y>
-  | TypeWithVarsB<z>;
+export type typeWithVars<x,y,z> = 
+  | {| tag: "A", value: [x, y] |}
+  | {| tag: "B", value: z |};
 
 export type optionInt = ?number;
 
@@ -60,9 +58,9 @@ export type maybeString = ?string;
 
 export type maybeString2 = ?string;
 
-export type peopleArray = Array<{|+name: string, +nickname: ?string|}>;
+export type peopleArray = Array<{| +name: string, +nickname: ?string |}>;
 
-export opaque type myObj = mixed;
+export type myObj = Obj_t;
 
 export type { anInterestingFlowType };
 
@@ -75,7 +73,7 @@ export type someMutableFields = {|
   mutable2: string
 |};
 
-export opaque type exportOpaqueFromEnums = mixed;
+export opaque type exportOpaqueFromVariants = mixed;
 
 export type dateKey = string;
 export type DateKey = dateKey;
@@ -83,20 +81,61 @@ export type DateKey = dateKey;
 export opaque type dateKeyOpaque = mixed;
 export type DateKeyOpaque = dateKeyOpaque;
 
-export const consumeOption: (?number) => number = function _(Arg1) { const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1)); return result };
+export opaque type opaqueVariant = mixed;
 
-export const consumeOption2: (optionInt) => number = function _(Arg1) { const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1)); return result };
+export type filter = {| +name: string, +values: Array<string> |};
+export type Filter = filter;
 
-export const testArray: (Array<?number>) => Array<?number> = function _(Arg1) { const result = TypesBS.testArray(Arg1.map(function _element(ArrayItem) { return (ArrayItem == null ? undefined : ArrayItem)})); return result };
+export type twice<a> = [a, a];
+
+export type gadt = "F";
+
+export type objectWithCallback = {| +y?: {| +z?: (void) => number |}, +x?: (void) => number |};
+
+export const consumeOption: (?number) => number = function (Arg1: $any) {
+  const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
+  return result
+};
+
+export const consumeOption2: (optionInt) => number = function (Arg1: $any) {
+  const result = TypesBS.consumeOption2((Arg1 == null ? undefined : Arg1));
+  return result
+};
+
+export const testArray: (Array<?number>) => Array<?number> = function (Arg1: $any) {
+  const result = TypesBS.testArray(Arg1.map(function _element(ArrayItem: $any) { return (ArrayItem == null ? undefined : ArrayItem)}));
+  return result
+};
 
 export const identity: (anInterestingFlowType) => anInterestingFlowType = TypesBS.identity;
 
 export const isWeekend: (weekday) => boolean = TypesBS.isWeekend;
 
-export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function _(Arg1, Arg2) { const result = TypesBS.testFunctionOnOptionsAsArgument((Arg1 == null ? undefined : Arg1), Arg2); return result };
+export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = function <T1,a>(Arg1: $any, Arg2: $any) {
+  const result = Curry._2(TypesBS.testFunctionOnOptionsAsArgument, (Arg1 == null ? undefined : Arg1), Arg2);
+  return result
+};
 
 export const testDateKey: (dateKey) => dateKey = TypesBS.testDateKey;
 
 export const testAutoAnnotateVariants: (AutoAnnotate_variant) => AutoAnnotate_variant = TypesBS.testAutoAnnotateVariants;
 
-export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = TypesBS.testAutoAnnotateVariants2;
+export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = function (Arg1: $any) {
+  const result = TypesBS.testAutoAnnotateVariants2(Arg1.tag==="R2"
+    ? CreateBucklescriptBlock.__(0, Arg1.value)
+    : CreateBucklescriptBlock.__(1, [Arg1.value]));
+  return result.tag===0
+    ? {tag:"R2", value:result.slice()}
+    : {tag:"R4", value:result[0]}
+};
+
+export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = function (Arg1: $any) {
+  const result = TypesBS.convertObjectWithCallback({y:(Arg1.y == null ? undefined : {z:(Arg1.y.z == null ? undefined : function (Arg11: $any) {
+      const result1 = Arg1.y.z(Arg11);
+      return result1
+    })}), x:(Arg1.x == null ? undefined : function (Arg12: $any) {
+      const result2 = Arg1.x(Arg12);
+      return result2
+    })});
+  return result
+};

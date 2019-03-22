@@ -21,81 +21,126 @@ type mutable_ =
   | Immutable
   | Mutable;
 
+type labelJS =
+  | BoolLabel(bool)
+  | FloatLabel(string)
+  | IntLabel(string)
+  | StringLabel(string);
+
+let labelJSToString = (~alwaysQuotes=false, labelJS) => {
+  let addQuotes = x => alwaysQuotes ? x |> EmitText.quotes : x;
+  switch (labelJS) {
+  | BoolLabel(b) => b |> string_of_bool |> addQuotes
+  | FloatLabel(s) => s |> addQuotes
+  | IntLabel(i) => i |> addQuotes
+  | StringLabel(s) => s |> EmitText.quotes
+  };
+};
+
 type case = {
   label: string,
-  labelJS: string,
+  labelJS,
 };
 
-type enum = {
-  cases: list(case),
-  toJS: string,
-  toRE: string,
-};
+type closedFlag =
+  | Open
+  | Closed;
 
-type typ =
-  | Array(typ, mutable_)
-  | Enum(enum)
+type type_ =
+  | Array(type_, mutable_)
   | Function(function_)
   | GroupOfLabeledArgs(fields)
-  | Ident(string, list(typ))
-  | Nullable(typ)
-  | Object(fields)
-  | Option(typ)
+  | Ident(ident)
+  | Null(type_)
+  | Nullable(type_)
+  | Object(closedFlag, fields)
+  | Option(type_)
   | Record(fields)
-  | Tuple(list(typ))
+  | Tuple(list(type_))
   | TypeVar(string)
-  | Variant(list(variantLeaf))
+  | Variant(variant)
 and fields = list(field)
 and field = {
+  mutable_,
   name: string,
   optional,
-  mutable_,
-  typ,
+  type_,
 }
 and function_ = {
+  argTypes: list(type_),
+  retType: type_,
   typeVars: list(string),
-  argTypes: list(typ),
-  retType: typ,
+  uncurried: bool,
 }
-and variantLeaf = {
-  leafName: string,
-  argTypes: list(typ),
+and ident = {
+  isShim: bool,
+  name: string,
+  typeArgs: list(type_),
+}
+and variant = {
+  noPayloads: list(case),
+  payloads: list((case, int, type_)),
+  polymorphic: bool,
+  toJS: string,
+  toRE: string,
+  unboxed: bool,
 };
 
-type variant = {
-  name: string,
-  params: list(typ),
-};
+let typeIsObject = type_ =>
+  switch (type_) {
+  | Array(_) => true
+  | Function(_) => false
+  | GroupOfLabeledArgs(_) => false
+  | Ident(_) => false
+  | Null(_) => false
+  | Nullable(_) => false
+  | Object(_) => true
+  | Option(_) => false
+  | Record(_) => true
+  | Tuple(_) => true
+  | TypeVar(_) => false
+  | Variant(_) => false
+  };
 
 type label =
   | Nolabel
   | Label(string)
   | OptLabel(string);
 
-let createEnum = cases => {
+let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
   let hash =
-    cases
+    noPayloads
     |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
     |> Hashtbl.hash
     |> string_of_int;
-  Enum({cases, toJS: "$$toJS" ++ hash, toRE: "$$toRE" ++ hash});
+  let unboxed = payloads == [];
+  Variant({
+    noPayloads,
+    payloads,
+    polymorphic,
+    toJS: "$$toJS" ++ hash,
+    toRE: "$$toRE" ++ hash,
+    unboxed,
+  });
 };
 
+let ident = (~isShim=false, ~typeArgs=[], name) =>
+  Ident({isShim, name, typeArgs});
+
 let mixedOrUnknown = (~config) =>
-  Ident(
+  ident(
     switch (config.language) {
     | Flow => "mixed"
     | TypeScript
     | Untyped => "unknown"
     },
-    [],
   );
 
-let booleanT = Ident("boolean", []);
-let numberT = Ident("number", []);
-let stringT = Ident("string", []);
-let unitT = Ident("void", []);
+let booleanT = ident("boolean");
+let numberT = ident("number");
+let stringT = ident("string");
+let unitT = ident("void");
 
 module NodeFilename = {
   include Filename;

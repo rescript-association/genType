@@ -2,7 +2,7 @@ open GenTypeCommon;
 
 type translation = {
   dependencies: list(Dependencies.path),
-  typ,
+  type_,
 };
 
 /*
@@ -137,22 +137,34 @@ let rec removeOption = (~label: Asttypes.arg_label, typeExpr: Types.type_expr) =
   };
 
 let translateConstr =
-    (~path: Path.t, ~paramsTranslation, ~typeEnv, ~fieldsTranslations) =>
+    (
+      ~config,
+      ~fieldsTranslations,
+      ~closedFlag,
+      ~paramsTranslation,
+      ~path: Path.t,
+      ~typeEnv,
+    ) =>
   switch (path, paramsTranslation) {
   | (Pdot(Pident({name: "FB", _}), "bool", _), [])
-  | (Pident({name: "bool", _}), []) => {dependencies: [], typ: booleanT}
+  | (Pident({name: "bool", _}), []) => {dependencies: [], type_: booleanT}
 
   | (Pdot(Pident({name: "FB", _}), "int", _), [])
-  | (Pident({name: "int", _}), []) => {dependencies: [], typ: numberT}
+  | (Pident({name: "int", _}), []) => {dependencies: [], type_: numberT}
 
   | (Pdot(Pident({name: "FB", _}), "float", _), [])
-  | (Pident({name: "float", _}), []) => {dependencies: [], typ: numberT}
+  | (Pident({name: "float", _}), []) => {dependencies: [], type_: numberT}
 
   | (Pdot(Pident({name: "FB", _}), "string", _), [])
-  | (Pident({name: "string", _}), []) => {dependencies: [], typ: stringT}
+  | (Pident({name: "string", _}), [])
+  | (Pdot(Pident({name: "String", _}), "t", _), [])
+  | (Pdot(Pdot(Pident({name: "Js", _}), "String", _), "t", _), []) => {
+      dependencies: [],
+      type_: stringT,
+    }
 
   | (Pdot(Pident({name: "FB", _}), "unit", _), [])
-  | (Pident({name: "unit", _}), []) => {dependencies: [], typ: unitT}
+  | (Pident({name: "unit", _}), []) => {dependencies: [], type_: unitT}
 
   | (Pdot(Pident({name: "FB", _}), "array", _), [paramTranslation])
   | (Pident({name: "array", _}), [paramTranslation])
@@ -161,18 +173,27 @@ let translateConstr =
       [paramTranslation],
     ) => {
       ...paramTranslation,
-      typ: Array(paramTranslation.typ, Mutable),
+      type_: Array(paramTranslation.type_, Mutable),
     }
 
   | (Pdot(Pident({name: "ImmutableArray", _}), "t", _), [paramTranslation]) => {
       ...paramTranslation,
-      typ: Array(paramTranslation.typ, Immutable),
+      type_: Array(paramTranslation.type_, Immutable),
     }
 
   | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])
   | (Pident({name: "option", _}), [paramTranslation]) => {
       ...paramTranslation,
-      typ: Option(paramTranslation.typ),
+      type_: Option(paramTranslation.type_),
+    }
+
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Null", _), "t", _),
+      [paramTranslation],
+    )
+  | (Pdot(Pident({name: "Js", _}), "null", _), [paramTranslation]) => {
+      ...paramTranslation,
+      type_: Null(paramTranslation.type_),
     }
 
   | (
@@ -189,9 +210,54 @@ let translateConstr =
       [paramTranslation],
     ) => {
       ...paramTranslation,
-      typ: Nullable(paramTranslation.typ),
+      type_: Nullable(paramTranslation.type_),
+    }
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      [{dependencies: argsDependencies, type_: Tuple(ts)}, ret],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      type_:
+        Function({
+          argTypes: ts,
+          retType: ret.type_,
+          typeVars: [],
+          uncurried: true,
+        }),
     }
 
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      [
+        {
+          dependencies: argsDependencies,
+          type_: Variant({noPayloads: [{label: "Arity_0", _}]}),
+        },
+        ret,
+      ],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      type_:
+        Function({
+          argTypes: [],
+          retType: ret.type_,
+          typeVars: [],
+          uncurried: true,
+        }),
+    }
+  | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      [{dependencies: argsDependencies, type_: singleT}, ret],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      type_:
+        Function({
+          argTypes: [singleT],
+          retType: ret.type_,
+          typeVars: [],
+          uncurried: true,
+        }),
+    }
   | (Pdot(Pident({name: "Js", _}), "t", _), _) =>
     let dependencies =
       fieldsTranslations
@@ -199,40 +265,91 @@ let translateConstr =
       |> List.concat;
     let rec checkMutableField = (~acc=[], fields) =>
       switch (fields) {
-      | [(previousName, {typ: _, _}), (name, {typ, _}), ...rest]
+      | [(previousName, {type_: _, _}), (name, {type_, _}), ...rest]
           when Runtime.checkMutableObjectField(~previousName, ~name) =>
         /* The field was annotated "@bs.set" */
-        rest |> checkMutableField(~acc=[(name, typ, Mutable), ...acc])
-      | [(name, {typ, _}), ...rest] =>
-        rest |> checkMutableField(~acc=[(name, typ, Immutable), ...acc])
+        rest |> checkMutableField(~acc=[(name, type_, Mutable), ...acc])
+      | [(name, {type_, _}), ...rest] =>
+        rest |> checkMutableField(~acc=[(name, type_, Immutable), ...acc])
       | [] => acc |> List.rev
       };
     let fields =
       fieldsTranslations
       |> checkMutableField
-      |> List.map(((name, typ_, mutable_)) => {
-           let (optional, typ) =
-             switch (typ_) {
-             | Option(typ) => (Optional, typ)
-             | _ => (Mandatory, typ_)
+      |> List.map(((name, t, mutable_)) => {
+           let (optional, type_) =
+             switch (t) {
+             | Option(t) => (Optional, t)
+             | _ => (Mandatory, t)
              };
-           {name, optional, mutable_, typ};
+           {mutable_, name, optional, type_};
          });
-    let typ = Object(fields);
-    {dependencies, typ};
+    let type_ = Object(closedFlag, fields);
+    {dependencies, type_};
 
   | _ =>
-    let typeArgs = paramsTranslation |> List.map(({typ, _}) => typ);
+    let typeArgs = paramsTranslation |> List.map(({type_, _}) => type_);
     let typeParamDeps =
       paramsTranslation
       |> List.map(({dependencies, _}) => dependencies)
       |> List.concat;
-    let resolvedPath = path |> Dependencies.resolveTypePath(~typeEnv);
-    {
-      dependencies: [resolvedPath, ...typeParamDeps],
-      typ: Ident(resolvedPath |> Dependencies.typePathToName, typeArgs),
+
+    switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
+    | Some(type_) => {dependencies: typeParamDeps, type_}
+    | None =>
+      let resolvedPath =
+        path |> Dependencies.resolveTypePath(~config, ~typeEnv);
+      let isShim = resolvedPath |> Dependencies.pathIsShim(~config);
+      {
+        dependencies: [resolvedPath, ...typeParamDeps],
+        type_:
+          Ident({
+            isShim,
+            name: resolvedPath |> Dependencies.typePathToName,
+            typeArgs,
+          }),
+      };
     };
   };
+
+type processVariant = {
+  noPayloads: list(string),
+  payloads: list((string, Types.type_expr)),
+  unknowns: list(string),
+};
+
+let processVariant = rowFields => {
+  let rec loop = (~noPayloads, ~payloads, ~unknowns, fields) =>
+    switch (fields) {
+    | [
+        (
+          label,
+          Types.Rpresent(/* no payload */ None) |
+          Reither(/* constant constructor */ true, _, _, _),
+        ),
+        ...otherFields,
+      ] =>
+      otherFields
+      |> loop(~noPayloads=[label, ...noPayloads], ~payloads, ~unknowns)
+    | [(label, Rpresent(Some(payload))), ...otherFields] =>
+      otherFields
+      |> loop(
+           ~noPayloads,
+           ~payloads=[(label, payload), ...payloads],
+           ~unknowns,
+         )
+    | [(label, Rabsent | Reither(false, _, _, _)), ...otherFields] =>
+      otherFields
+      |> loop(~noPayloads, ~payloads, ~unknowns=[label, ...unknowns])
+    | [] => {
+        noPayloads: noPayloads |> List.rev,
+        payloads: payloads |> List.rev,
+        unknowns: unknowns |> List.rev,
+      }
+    };
+  rowFields |> loop(~noPayloads=[], ~payloads=[], ~unknowns=[]);
+};
+
 let rec translateArrowType =
         (
           ~config,
@@ -254,52 +371,52 @@ let rec translateArrowType =
       ~revArgs,
       t,
     )
-  | Tarrow(Nolabel, typExpr1, typExpr2, _) =>
-    let {dependencies, typ} =
-      typExpr1
+  | Tarrow(Nolabel, typeExpr1, typeExpr2, _) =>
+    let {dependencies, type_} =
+      typeExpr1
       |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv, _);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-    typExpr2
+    typeExpr2
     |> translateArrowType(
          ~config,
          ~typeVarsGen,
          ~noFunctionReturnDependencies,
          ~typeEnv,
          ~revArgDeps=nextRevDeps,
-         ~revArgs=[(Nolabel, typ), ...revArgs],
+         ~revArgs=[(Nolabel, type_), ...revArgs],
        );
-  | Tarrow((Labelled(lbl) | Optional(lbl)) as label, typExpr1, typExpr2, _) =>
-    switch (typExpr1 |> removeOption(~label)) {
+  | Tarrow((Labelled(lbl) | Optional(lbl)) as label, typeExpr1, typeExpr2, _) =>
+    switch (typeExpr1 |> removeOption(~label)) {
     | None =>
-      let {dependencies, typ: typ1} =
-        typExpr1
+      let {dependencies, type_: type1} =
+        typeExpr1
         |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      typExpr2
+      typeExpr2
       |> translateArrowType(
            ~config,
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(Label(lbl), typ1), ...revArgs],
+           ~revArgs=[(Label(lbl), type1), ...revArgs],
          );
     | Some((lbl, t1)) =>
-      let {dependencies, typ: typ1} =
+      let {dependencies, type_: type1} =
         t1 |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
       let nextRevDeps = List.rev_append(dependencies, revArgDeps);
-      typExpr2
+      typeExpr2
       |> translateArrowType(
            ~config,
            ~typeVarsGen,
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(OptLabel(lbl), typ1), ...revArgs],
+           ~revArgs=[(OptLabel(lbl), type1), ...revArgs],
          );
     }
   | _ =>
-    let {dependencies, typ: retType} =
+    let {dependencies, type_: retType} =
       typeExpr |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv);
     let allDeps =
       List.rev_append(
@@ -310,9 +427,10 @@ let rec translateArrowType =
     let labeledConvertableTypes = revArgs |> List.rev;
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
-    let functionType = Function({typeVars: [], argTypes, retType});
+    let functionType =
+      Function({argTypes, retType, typeVars: [], uncurried: false});
 
-    {dependencies: allDeps, typ: functionType};
+    {dependencies: allDeps, type_: functionType};
   }
 and translateTypeExprFromTypes_ =
     (
@@ -326,9 +444,9 @@ and translateTypeExprFromTypes_ =
   | Tvar(None) =>
     let typeName =
       GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, typeExpr.id);
-    {dependencies: [], typ: TypeVar(typeName)};
+    {dependencies: [], type_: TypeVar(typeName)};
 
-  | Tvar(Some(s)) => {dependencies: [], typ: TypeVar(s)}
+  | Tvar(Some(s)) => {dependencies: [], type_: TypeVar(s)}
 
   | Tconstr(
       Pdot(Pident({name: "Js", _}), "t", _) as path,
@@ -337,35 +455,59 @@ and translateTypeExprFromTypes_ =
     ) =>
     let rec getFieldTypes = (texp: Types.type_expr) =>
       switch (texp.desc) {
-      | Tfield(name, _, t1, t2) => [
-          (
-            name,
-            name |> Runtime.isMutableObjectField ?
-              {dependencies: [], typ: Ident("", [])} :
-              t1
-              |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv),
-          ),
-          ...t2 |> getFieldTypes,
-        ]
-      | _ => []
+      | Tfield(name, _, t1, t2) =>
+        let (closedFlafg, fields) = t2 |> getFieldTypes;
+        (
+          closedFlafg,
+          [
+            (
+              name,
+              name |> Runtime.isMutableObjectField ?
+                {dependencies: [], type_: ident("")} :
+                t1
+                |> translateTypeExprFromTypes_(
+                     ~config,
+                     ~typeVarsGen,
+                     ~typeEnv,
+                   ),
+            ),
+            ...fields,
+          ],
+        );
+      | Tlink(te) => te |> getFieldTypes
+      | Tvar(None) => (Open, [])
+      | _ => (Closed, [])
       };
-    let fieldsTranslations = tObj |> getFieldTypes;
+    let (closedFlag, fieldsTranslations) = tObj |> getFieldTypes;
     translateConstr(
-      ~path,
-      ~paramsTranslation=[],
-      ~typeEnv,
+      ~config,
       ~fieldsTranslations,
+      ~closedFlag,
+      ~paramsTranslation=[],
+      ~path,
+      ~typeEnv,
     );
+
+  | Tconstr(path, [{desc: Tlink(te), _}], r) =>
+    {...typeExpr, desc: Types.Tconstr(path, [te], r)}
+    |> translateTypeExprFromTypes_(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies=false,
+         ~typeEnv,
+       )
 
   | Tconstr(path, typeParams, _) =>
     let paramsTranslation =
       typeParams
       |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
     translateConstr(
-      ~path,
-      ~paramsTranslation,
-      ~typeEnv,
+      ~config,
       ~fieldsTranslations=[],
+      ~closedFlag=Closed,
+      ~paramsTranslation,
+      ~path,
+      ~typeEnv,
     );
 
   | Tpoly(t, []) =>
@@ -390,7 +532,8 @@ and translateTypeExprFromTypes_ =
   | Ttuple(listExp) =>
     let innerTypesTranslation =
       listExp |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let innerTypes = innerTypesTranslation |> List.map(({typ, _}) => typ);
+    let innerTypes =
+      innerTypesTranslation |> List.map(({type_, _}) => type_);
     let innerTypesDeps =
       innerTypesTranslation
       |> List.map(({dependencies, _}) => dependencies)
@@ -398,7 +541,7 @@ and translateTypeExprFromTypes_ =
 
     let tupleType = Tuple(innerTypes);
 
-    {dependencies: innerTypesDeps, typ: tupleType};
+    {dependencies: innerTypesDeps, type_: tupleType};
 
   | Tlink(t) =>
     t
@@ -409,97 +552,165 @@ and translateTypeExprFromTypes_ =
          ~typeEnv,
        )
 
-  | Tvariant(rowDesc)
-      /* only enums with no payloads */
-      when
-        rowDesc.row_fields
-        |> List.for_all(field =>
-             switch (field) {
-             | (_, Types.Rpresent(/* no payload */ None)) => true
-             | (_, Reither(/* constant constructor */ true, _, _, _)) => true
-             | _ => false
-             }
-           ) =>
-    let labels = rowDesc.row_fields |> List.map(fst);
-    let cases = labels |> List.map(label => {label, labelJS: label});
-    let typ = cases |> createEnum;
-    {dependencies: [], typ};
+  | Tvariant(rowDesc) =>
+    switch (rowDesc.row_fields |> processVariant) {
+    | {noPayloads, payloads: [], unknowns: []} =>
+      let noPayloads =
+        noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
+      let type_ = createVariant(~noPayloads, ~payloads=[], ~polymorphic=true);
+      {dependencies: [], type_};
 
-  | Tpackage(path, _ids, _typs) =>
-    let rec signatureToRecordType = signature => {
-      let dependenciesAndFields =
-        signature
-        |> List.map(signatureItem =>
-             switch (signatureItem) {
-             | Types.Sig_value(_id, {val_kind: Val_prim(_), _}) => ([], [])
-             | Types.Sig_value(id, {val_type: typeExpr, _}) =>
-               let {dependencies, typ} =
-                 typeExpr
-                 |> translateTypeExprFromTypes_(
-                      ~config,
-                      ~typeVarsGen,
-                      ~noFunctionReturnDependencies=false,
-                      ~typeEnv,
-                    );
-               let field = {
-                 name: id |> Ident.name,
-                 optional: Mandatory,
-                 mutable_: Immutable,
-                 typ,
-               };
-               (dependencies, [field]);
+    | {noPayloads: [], payloads: [(_label, t)], unknowns: []} =>
+      /* Handle bucklescript's "Arity_" encoding in first argument of Js.Internal.fn(_,_) for uncurried functions.
+         Return the argument tuple. */
+      t
+      |> translateTypeExprFromTypes_(
+           ~config,
+           ~typeVarsGen,
+           ~noFunctionReturnDependencies,
+           ~typeEnv,
+         )
 
-             | Types.Sig_module(id, moduleDeclaration, _recStatus) =>
-               let (dependencies, typ) =
-                 switch (moduleDeclaration.md_type) {
-                 | Mty_signature(signature) =>
-                   signature |> signatureToRecordType
-                 | Mty_ident(_)
-                 | Mty_functor(_)
-                 | Mty_alias(_) => ([], mixedOrUnknown(~config))
-                 };
-               let field = {
-                 name: id |> Ident.name,
-                 optional: Mandatory,
-                 mutable_: Immutable,
-                 typ,
-               };
-               (dependencies, [field]);
-
-             | Types.Sig_type(_)
-             | Types.Sig_typext(_)
-             | Types.Sig_modtype(_)
-             | Types.Sig_class(_)
-             | Types.Sig_class_type(_) => ([], [])
-             }
+    | {noPayloads, payloads, unknowns: []} =>
+      let noPayloads =
+        noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
+      let payloadTranslations =
+        payloads
+        |> List.map(((label, payload)) =>
+             (
+               label,
+               payload
+               |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv),
+             )
            );
-      let (dependencies, fields) = {
-        let (dl, fl) = dependenciesAndFields |> List.split;
-        (dl |> List.concat, fl |> List.concat);
-      };
-      (dependencies, Record(fields));
-    };
+      let payloads =
+        payloadTranslations
+        |> List.map(((label, translation)) => {
+             let numArgs = 1;
+             (
+               {label, labelJS: StringLabel(label)},
+               numArgs,
+               translation.type_,
+             );
+           });
+      let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      let dependencies =
+        payloadTranslations
+        |> List.map(((_, {dependencies, _})) => dependencies)
+        |> List.concat;
+      {dependencies, type_};
 
+    | {unknowns: [_, ..._]} => {
+        dependencies: [],
+        type_: mixedOrUnknown(~config),
+      }
+    }
+
+  | Tpackage(path, ids, types) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
-    | Some(signature) =>
-      let (dependencies, typ) = signature.sig_type |> signatureToRecordType;
-      {dependencies, typ};
-    | None => {dependencies: [], typ: mixedOrUnknown(~config)}
-    };
+    | Some((signature, typeEnv)) =>
+      let typeEquationsTranslation =
+        List.combine(ids, types)
+        |> List.map(((x, t)) =>
+             (
+               x,
+               t
+               |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv),
+             )
+           );
+      let typeEquations =
+        typeEquationsTranslation
+        |> List.map(((x, translation)) => (x, translation.type_));
+      let dependenciesFromTypeEquations =
+        typeEquationsTranslation
+        |> List.map(((_, translation)) => translation.dependencies)
+        |> List.flatten;
+      let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
+      let (dependenciesFromRecordType, type_) =
+        signature.sig_type
+        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+      {
+        dependencies:
+          dependenciesFromTypeEquations @ dependenciesFromRecordType,
+        type_,
+      };
+    | None => {dependencies: [], type_: mixedOrUnknown(~config)}
+    }
 
   | Tfield(_)
   | Tnil
   | Tobject(_)
   | Tpoly(_)
   | Tsubst(_)
-  | Tunivar(_)
-  | Tvariant(_) => {dependencies: [], typ: mixedOrUnknown(~config)}
+  | Tunivar(_) => {dependencies: [], type_: mixedOrUnknown(~config)}
   }
 and translateTypeExprsFromTypes_ =
-    (~config, ~typeVarsGen, ~typeEnv, typeExprs)
-    : list(translation) =>
+    (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
   typeExprs
-  |> List.map(translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv));
+  |> List.map(translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv))
+and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
+  let dependenciesAndFields =
+    signature
+    |> List.map(signatureItem =>
+         switch (signatureItem) {
+         | Types.Sig_value(_id, {val_kind: Val_prim(_), _}) => ([], [])
+         | Types.Sig_value(id, {val_type: typeExpr, _}) =>
+           let {dependencies, type_} =
+             typeExpr
+             |> translateTypeExprFromTypes_(
+                  ~config,
+                  ~typeVarsGen,
+                  ~noFunctionReturnDependencies=false,
+                  ~typeEnv,
+                );
+           let field = {
+             mutable_: Immutable,
+             name: id |> Ident.name,
+             optional: Mandatory,
+             type_,
+           };
+           (dependencies, [field]);
+
+         | Types.Sig_module(id, moduleDeclaration, _recStatus) =>
+           let typeEnv1 =
+             switch (typeEnv |> TypeEnv.getModule(~name=id |> Ident.name)) {
+             | Some(typeEnv1) => typeEnv1
+             | None => typeEnv
+             };
+           let (dependencies, type_) =
+             switch (moduleDeclaration.md_type) {
+             | Mty_signature(signature) =>
+               signature
+               |> signatureToRecordType(
+                    ~config,
+                    ~typeVarsGen,
+                    ~typeEnv=typeEnv1,
+                  )
+             | Mty_ident(_)
+             | Mty_functor(_)
+             | Mty_alias(_) => ([], mixedOrUnknown(~config))
+             };
+           let field = {
+             mutable_: Immutable,
+             name: id |> Ident.name,
+             optional: Mandatory,
+             type_,
+           };
+           (dependencies, [field]);
+
+         | Types.Sig_type(_)
+         | Types.Sig_typext(_)
+         | Types.Sig_modtype(_)
+         | Types.Sig_class(_)
+         | Types.Sig_class_type(_) => ([], [])
+         }
+       );
+  let (dependencies, fields) = {
+    let (dl, fl) = dependenciesAndFields |> List.split;
+    (dl |> List.concat, fl |> List.concat);
+  };
+  (dependencies, Record(fields));
+};
 
 let translateTypeExprFromTypes =
     (~config, ~noFunctionReturnDependencies=?, ~typeEnv, typeExpr) => {

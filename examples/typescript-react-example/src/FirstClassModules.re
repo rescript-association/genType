@@ -4,7 +4,11 @@ module type MT = {
   [@bs.module "foo"] external f: int => int = "";
   module type XXX = {type tt = string;};
   module EmptyInnerModule: {};
-  module InnerModule2: {let k: int;};
+  module InnerModule2: {let k: t;};
+  module InnerModule3: {
+    type inner = int;
+    let k3: inner => inner;
+  };
   module type TT = {let u: (int, int);};
   module Z: TT;
   let y: string;
@@ -16,6 +20,11 @@ module M = {
   module InnerModule2 = {
     let k = 4242;
   };
+  module InnerModule3 = {
+    type inner = int;
+    let k3 = x => x + 1;
+  };
+
   module type TT = {let u: (int, int);};
   module Z = {
     let u = (0, 0);
@@ -26,7 +35,10 @@ module M = {
 };
 
 [@genType]
-let firstClassModule: module MT = (module M);
+type firstClassModule = (module MT);
+
+[@genType]
+let firstClassModule: firstClassModule = (module M);
 
 [@genType]
 let testConvert = (m: (module MT)) => m;

@@ -50,3 +50,24 @@ let testCallNamedArgs = (foo: foo, a, b) => foo(~a, ~b);
 
 [@genType]
 let testDefaultArgs = (~x=3, ~y) => x + y;
+
+type someRecord = {
+  x: int,
+  y: string,
+};
+
+[@genType]
+let testDefaultArgsWithRecordConversion =
+    (~size as _: option(someRecord)=?, ()) => 34;
+
+type someVariant =
+  | A
+  | B;
+
+[@genType]
+let testDefaultArgsWithVariantConversion =
+    (~size as _: option(someVariant)=?, ()) => 34;
+
+[@genType]
+let testDefaultArgsWithVariantConversionContravariant =
+    (_: (~size: option(someVariant)=?) => unit, ()) => 34;

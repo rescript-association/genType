@@ -4,50 +4,67 @@ type import = {
 };
 
 type attributePayload =
-  | UnrecognizedPayload
-  | StringPayload(string);
+  | BoolPayload(bool)
+  | FloatPayload(string)
+  | IntPayload(string)
+  | StringPayload(string)
+  | TuplePayload(list(attributePayload))
+  | UnrecognizedPayload;
 
 type t =
-  | Generated
   | GenType
   | GenTypeOpaque
   | NoGenType;
 
 let toString = annotation =>
   switch (annotation) {
-  | Generated => "Generated"
   | GenType => "GenType"
   | GenTypeOpaque => "GenTypeOpaque"
   | NoGenType => "NoGenType"
   };
 
-let tagIsGenType = s => s == "genType";
-let tagIsGenTypeAs = s => s == "genType.as";
+let tagIsGenType = s => s == "genType" || s == "gentype";
+let tagIsGenTypeAs = s => s == "genType.as" || s == "gentype.as";
 
-let tagIsGenTypeImport = s => s == "genType.import";
+let tagIsGenTypeImport = s => s == "genType.import" || s == "gentype.import";
 
-let tagIsGenTypeOpaque = s => s == "genType.opaque";
+let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "gentype.opaque";
 
-let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
+let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
+  let rec fromExpr = (expr: Parsetree.expression) =>
+    switch (expr) {
+    | {pexp_desc: Pexp_constant(Pconst_string(s, _)), _} =>
+      Some(StringPayload(s))
+    | {pexp_desc: Pexp_constant(Pconst_integer(n, _)), _} =>
+      Some(IntPayload(n))
+    | {pexp_desc: Pexp_constant(Pconst_float(s, _)), _} =>
+      Some(FloatPayload(s))
+    | {
+        pexp_desc: Pexp_construct({txt: Lident(("true" | "false") as s)}, _),
+        _,
+      } =>
+      Some(BoolPayload(s == "true"))
+    | {pexp_desc: Pexp_tuple(exprs), _} =>
+      let payloads =
+        exprs
+        |> List.rev
+        |> List.fold_left(
+             (payloads, expr) =>
+               switch (expr |> fromExpr) {
+               | Some(payload) => [payload, ...payloads]
+               | None => payloads
+               },
+             [],
+           );
+      Some(TuplePayload(payloads));
+    | _ => None
+    };
   switch (attributes) {
   | [] => None
   | [({Asttypes.txt, _}, payload), ..._tl] when checkText(txt) =>
     switch (payload) {
     | PStr([]) => Some(UnrecognizedPayload)
-    | PStr([
-        {
-          pstr_desc:
-            Pstr_eval(
-              {pexp_desc: Pexp_constant(Pconst_string(s, _)), _},
-              _,
-            ),
-          _,
-        },
-        ..._,
-      ]) =>
-      Some(StringPayload(s))
-    | PStr([{pstr_desc: Pstr_eval(_), _}, ..._]) =>
-      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_eval(expr, _), _}, ..._]) => expr |> fromExpr
     | PStr([{pstr_desc: Pstr_extension(_), _}, ..._]) =>
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_value(_), _}, ..._]) =>
@@ -82,6 +99,37 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) =>
     }
   | [_hd, ...tl] => getAttributePayload(checkText, tl)
   };
+};
+
+let getAttributeRenaming = attributes =>
+  switch (attributes |> getAttributePayload(tagIsGenTypeAs)) {
+  | Some(StringPayload(s)) => Some(s)
+  | _ => None
+  };
+
+let getAttributeImportRenaming = attributes => {
+  let attributeImport = attributes |> getAttributePayload(tagIsGenTypeImport);
+  let attributeRenaming = attributes |> getAttributeRenaming;
+  switch (attributeImport, attributeRenaming) {
+  | (Some(StringPayload(importString)), _) => (
+      Some(importString),
+      attributeRenaming,
+    )
+  | (
+      Some(
+        TuplePayload([
+          StringPayload(importString),
+          StringPayload(renameString),
+        ]),
+      ),
+      _,
+    ) => (
+      Some(importString),
+      Some(renameString),
+    )
+  | _ => (None, attributeRenaming)
+  };
+};
 
 let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
   getAttributePayload(checkText, attributes) != None;
@@ -139,38 +187,46 @@ let rec structureItemHasGenTypeAnnotation =
   | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec => dec.Typedtree.typ_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
+  | {str_desc: Tstr_value(_loc, valueBindings), _} =>
     valueBindings
     |> List.exists(vb => vb.Typedtree.vb_attributes |> hasGenTypeAnnotation)
-  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
+  | {str_desc: Tstr_primitive(valueDescription), _} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation
-  | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
+  | {str_desc: Tstr_module(moduleBinding), _} =>
     moduleBinding |> moduleBindingHasGenTypeAnnotation
-  | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
+  | {str_desc: Tstr_recmodule(moduleBindings), _} =>
     moduleBindings |> List.exists(moduleBindingHasGenTypeAnnotation)
+  | {str_desc: Tstr_include({incl_attributes, incl_mod}), _} =>
+    incl_attributes
+    |> hasGenTypeAnnotation
+    || incl_mod
+    |> moduleExprHasGenTypeAnnotation
   | _ => false
+  }
+and moduleExprHasGenTypeAnnotation = (moduleExpr: Typedtree.module_expr) =>
+  switch (moduleExpr.mod_desc) {
+  | Tmod_structure(structure)
+  | Tmod_constraint({mod_desc: Tmod_structure(structure)}, _, _, _) =>
+    structure |> structureHasGenTypeAnnotation
+  | Tmod_constraint(_)
+  | Tmod_ident(_)
+  | Tmod_functor(_)
+  | Tmod_apply(_)
+  | Tmod_unpack(_) => false
   }
 and moduleBindingHasGenTypeAnnotation =
     ({mb_expr, mb_attributes, _}: Typedtree.module_binding) =>
   mb_attributes
   |> hasGenTypeAnnotation
-  || (
-    switch (mb_expr.mod_desc) {
-    | Tmod_structure(structure) => structure |> structureHasGenTypeAnnotation
-    | Tmod_ident(_)
-    | Tmod_functor(_)
-    | Tmod_apply(_)
-    | Tmod_constraint(_)
-    | Tmod_unpack(_) => false
-    }
-  )
+  || mb_expr
+  |> moduleExprHasGenTypeAnnotation
 and structureHasGenTypeAnnotation = (structure: Typedtree.structure) =>
   structure.str_items |> List.exists(structureItemHasGenTypeAnnotation);
 
 let sanitizeVariableName = name =>
   name |> Str.global_replace(Str.regexp("-"), "_");
 
-let importFromString = importString : import => {
+let importFromString = importString: import => {
   let name = {
     let base = importString |> Filename.basename;
     (

@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 export type M_Inner_t = string;
 

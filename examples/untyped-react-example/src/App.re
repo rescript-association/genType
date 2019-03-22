@@ -4,6 +4,6 @@ let component = ReasonReact.statelessComponent("App");
 let make = (_children) => {
     ...component,
     render: _self => {
-        <div>(ReasonReact.string("Test"))</div>
+        <div>(ReasonReact.string("Test Component"))</div>
     }
 };

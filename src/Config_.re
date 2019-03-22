@@ -18,24 +18,32 @@ type importPath =
 type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
+  mutable emitCreateBucklescriptBlock: bool,
+  mutable emitFlowAny: bool,
+  mutable emitImportCurry: bool,
   exportInterfaces: bool,
   generatedFileExtension: option(string),
   importPath,
   language,
   module_,
   modulesMap: ModuleNameMap.t(ModuleName.t),
+  namespace: option(string),
   reasonReactPath: string,
 };
 
 let default = {
   bsBlockPath: None,
   bsCurryPath: None,
+  emitCreateBucklescriptBlock: false,
+  emitFlowAny: false,
+  emitImportCurry: false,
   exportInterfaces: false,
   generatedFileExtension: None,
   importPath: Relative,
   language: Flow,
   module_: ES6,
   modulesMap: ModuleNameMap.empty,
+  namespace: None,
   reasonReactPath: "reason-react/src/ReasonReact.js",
 };
 
@@ -159,7 +167,7 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-let readConfig = (~getConfigFile, ~getBsConfigFile) => {
+let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
   let fromJson = json => {
     let languageString = json |> getString("language");
     let moduleString = json |> getString("module");
@@ -235,12 +243,16 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
     {
       bsBlockPath,
       bsCurryPath,
+      emitCreateBucklescriptBlock: false,
+      emitFlowAny: false,
+      emitImportCurry: false,
       exportInterfaces,
       generatedFileExtension,
       importPath,
       language,
       module_,
       modulesMap,
+      namespace: None,
       reasonReactPath,
     };
   };
@@ -248,10 +260,15 @@ let readConfig = (~getConfigFile, ~getBsConfigFile) => {
   let fromBsConfig = json =>
     switch (json) {
     | Ext_json_types.Obj({map, _}) =>
-      switch (map |> String_map.find_opt("gentypeconfig")) {
-      | Some(jsonGenFlowConfig) => jsonGenFlowConfig |> fromJson
-      | _ => default
-      }
+      let config =
+        switch (map |> String_map.find_opt("gentypeconfig")) {
+        | Some(jsonGenFlowConfig) => jsonGenFlowConfig |> fromJson
+        | _ => default
+        };
+      switch (map |> String_map.find_opt("namespace")) {
+      | Some(True(_)) => {...config, namespace}
+      | _ => config
+      };
     | _ => default
     };
   switch (getConfigFile()) {

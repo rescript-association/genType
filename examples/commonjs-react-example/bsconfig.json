@@ -1,0 +1,38 @@
+{
+  "gentypeconfig": {
+    "language": "flow",
+    "module": "commonjs",
+    "importPath": "relative",
+    "reasonReactPath": "reason-react/src/ReasonReact.js",
+    "shims": {
+      "Js": "Js",
+      "Obj": "Obj",
+      "React": "ReactShim",
+      "ReactEvent": "ReactEvent",
+      "ReasonPervasives": "ReasonPervasives",
+      "ReasonReact": "ReactShim"
+    },
+    "debug": {
+      "all": false
+    },
+    "exportInterfaces": false,
+    "path": "../../src/lib/bs/native/gentype.native.exe"
+  },
+  "name": "commonjs-react-example",
+  "bsc-flags": ["-bs-super-errors"],
+  "reason": { "react-jsx": 2 },
+  "bs-dependencies": ["reason-react"],
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "namespace": true,
+  "refmt": 3
+}

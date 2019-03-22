@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 export type M3_M2_M1_t = string;
 

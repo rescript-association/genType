@@ -8,12 +8,12 @@ let translateTypeDeclarationFromTypes =
       ~resolver,
       ~typeEnv,
       ~id,
-      {type_params: typeParams, type_kind, type_attributes, type_manifest, _}: Types.type_declaration,
+      {type_params, type_kind, type_attributes, type_manifest, _}: Types.type_declaration,
     )
     : list(CodeItem.typeDeclaration) => {
   typeEnv |> TypeEnv.newType(~name=id |> Ident.name);
   let typeName = Ident.name(id);
-  let typeVars = TypeVars.extract(typeParams);
+  let typeVars = type_params |> TypeVars.extractFromTypeExpr;
   if (Debug.translation^) {
     logItem("Translate Types.type_declaration %s\n", typeName);
   };
@@ -28,8 +28,7 @@ let translateTypeDeclarationFromTypes =
           !TranslateTypeDeclarations.hasSomeGADTLeaf(constructorDeclarations) =>
       VariantDeclarationFromTypes(constructorDeclarations)
 
-    | Type_abstract =>
-      GeneralDeclarationFromTypes(type_attributes, type_manifest)
+    | Type_abstract => GeneralDeclarationFromTypes(type_manifest)
 
     | _ => NoDeclaration
     };
@@ -39,11 +38,10 @@ let translateTypeDeclarationFromTypes =
        ~config,
        ~outputFileRelative,
        ~resolver,
+       ~typeAttributes=type_attributes,
        ~typeEnv,
-       ~annotation=NoGenType,
        ~typeName,
        ~typeVars,
-       ~typeParams,
      );
 };
 

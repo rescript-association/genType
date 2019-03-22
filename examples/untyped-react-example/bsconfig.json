@@ -5,7 +5,8 @@
     "debug": {
       "all": false
     },
-    "exportInterfaces": false
+    "exportInterfaces": false,
+    "path": "../../src/lib/bs/native/gentype.native.exe"
   },
   "name": "untyped-react-example",
   "bsc-flags": ["-bs-super-errors"],
@@ -18,7 +19,7 @@
     }
   ],
   "package-specs": {
-    "module": "commonjs",
+    "module": "es6",
     "in-source": true
   },
   "suffix": ".bs.js",

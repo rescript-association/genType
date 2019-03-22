@@ -15,8 +15,8 @@ build_script:
     - npm run build
     - npm test
     # Validate binary
-    - lib\bs\native\gentype.native.exe --help
-    - tar czvf gentype-win.tar.gz -C lib\bs\native gentype.native.exe
+    - src\lib\bs\native\gentype.native.exe --help
+    - tar czvf gentype-win.tar.gz -C src\lib\bs\native gentype.native.exe
 
 artifacts:
     - path: gentype-win.tar.gz

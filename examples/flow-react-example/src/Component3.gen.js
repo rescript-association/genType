@@ -3,6 +3,7 @@
  * @generated
  * @nolint
  */
+/* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Component3BS from './Component3.bs';
@@ -10,7 +11,7 @@ import * as Component3BS from './Component3.bs';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
-export type Props = {|+children?: mixed|};
+export type Props = {| +children?: mixed |};
 
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   Component3BS.component,

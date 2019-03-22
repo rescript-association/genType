@@ -1,44 +1,45 @@
 open GenTypeCommon;
 
-let rec addAnnotationsToTyps = (expr: Typedtree.expression, typs: list(typ)) =>
-  switch (expr.exp_desc, typs) {
-  | (_, [GroupOfLabeledArgs(fields), ...nextTyps]) =>
-    let (fields1, nextTyps1) =
-      addAnnotationsToFields(expr, fields, nextTyps);
-    [GroupOfLabeledArgs(fields1), ...nextTyps1];
-  | (Texp_function({cases: [{c_rhs, _}]}), [typ, ...nextTyps]) =>
-    let nextTyps1 = addAnnotationsToTyps(c_rhs, nextTyps);
-    [typ, ...nextTyps1];
-  | _ => typs
+let rec addAnnotationsToTypes =
+        (~expr: Typedtree.expression, types: list(type_)) =>
+  switch (expr.exp_desc, types) {
+  | (_, [GroupOfLabeledArgs(fields), ...nextTypes]) =>
+    let (fields1, nextTypes1) =
+      addAnnotationsToFields(expr, fields, nextTypes);
+    [GroupOfLabeledArgs(fields1), ...nextTypes1];
+  | (Texp_function({cases: [{c_rhs, _}]}), [type_, ...nextTypes]) =>
+    let nextTypes1 = nextTypes |> addAnnotationsToTypes(~expr=c_rhs);
+    [type_, ...nextTypes1];
+  | _ => types
   }
 and addAnnotationsToFields =
-    (expr: Typedtree.expression, fields: fields, typs: list(typ)) =>
-  switch (expr.exp_desc, fields, typs) {
-  | (_, [], _) => ([], addAnnotationsToTyps(expr, typs))
+    (expr: Typedtree.expression, fields: fields, types: list(type_)) =>
+  switch (expr.exp_desc, fields, types) {
+  | (_, [], _) => ([], types |> addAnnotationsToTypes(~expr))
   | (Texp_function({cases: [{c_rhs, _}]}), [field, ...nextFields], _) =>
     let genTypeAsPayload =
       expr.exp_attributes
       |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
     switch (genTypeAsPayload) {
     | Some(StringPayload(s)) =>
-      let (nextFields1, typs1) =
-        addAnnotationsToFields(c_rhs, nextFields, typs);
-      ([{...field, name: s}, ...nextFields1], typs1);
+      let (nextFields1, types1) =
+        addAnnotationsToFields(c_rhs, nextFields, types);
+      ([{...field, name: s}, ...nextFields1], types1);
     | _ =>
-      let (nextFields1, typs1) =
-        addAnnotationsToFields(c_rhs, nextFields, typs);
-      ([field, ...nextFields1], typs1);
+      let (nextFields1, types1) =
+        addAnnotationsToFields(c_rhs, nextFields, types);
+      ([field, ...nextFields1], types1);
     };
-  | _ => (fields, typs)
+  | _ => (fields, types)
   };
 
 /* Recover from expr the renaming annotations on named arguments. */
-let addAnnotationsToFunctionType = (expr: Typedtree.expression, typ: typ) =>
-  switch (typ) {
+let addAnnotationsToFunctionType = (expr: Typedtree.expression, type_: type_) =>
+  switch (type_) {
   | Function(function_) =>
-    let argTypes = function_.argTypes |> addAnnotationsToTyps(expr);
+    let argTypes = function_.argTypes |> addAnnotationsToTypes(~expr);
     Function({...function_, argTypes});
-  | _ => typ
+  | _ => type_
   };
 
 let translateValueBinding =
@@ -47,21 +48,24 @@ let translateValueBinding =
       ~outputFileRelative,
       ~resolver,
       ~moduleItemGen,
-      ~fileName,
       ~typeEnv,
       valueBinding,
     )
     : Translation.t => {
   let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
-  if (Debug.translation^) {
+  let nameOpt =
     switch (vb_pat.pat_desc) {
-    | Tpat_var(id, _) =>
-      logItem("Translate Value Binding %s\n", id |> Ident.name)
-    | _ => ()
+    | Tpat_var(id, _) => Some(id |> Ident.name)
+    | _ => None
+    };
+  if (Debug.translation^) {
+    switch (nameOpt) {
+    | Some(s) => logItem("Translate Value Binding %s\n", s)
+    | None => ()
     };
   };
   let moduleItem = moduleItemGen |> Runtime.newModuleItem;
-  typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
+  typeEnv |> TypeEnv.updateModuleItem(~nameOpt, ~moduleItem);
   let typeExpr = vb_expr.exp_type;
 
   switch (vb_pat.pat_desc, Annotation.fromAttributes(vb_attributes)) {
@@ -74,7 +78,6 @@ let translateValueBinding =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~typeExpr,
          ~addAnnotationsToFunction=addAnnotationsToFunctionType(vb_expr),
@@ -83,12 +86,53 @@ let translateValueBinding =
   };
 };
 
+let rec removeDuplicateValueBindings =
+        (structureItems: list(Typedtree.structure_item)) =>
+  switch (structureItems) {
+  | [
+      {Typedtree.str_desc: Tstr_value(loc, valueBindings), _} as structureItem,
+      ...rest,
+    ] =>
+    let (boundInRest, filteredRest) = rest |> removeDuplicateValueBindings;
+    let valueBindingsFiltered =
+      valueBindings
+      |> List.filter(valueBinding =>
+           switch (valueBinding) {
+           | {Typedtree.vb_pat: {pat_desc: Tpat_var(id, _)}} =>
+             !(boundInRest |> StringSet.mem(id |> Ident.name))
+           | _ => true
+           }
+         );
+    let bound =
+      valueBindings
+      |> List.fold_left(
+           (bound, valueBinding: Typedtree.value_binding) =>
+             switch (valueBinding) {
+             | {vb_pat: {pat_desc: Tpat_var(id, _)}} =>
+               bound |> StringSet.add(id |> Ident.name)
+             | _ => bound
+             },
+           boundInRest,
+         );
+    (
+      bound,
+      [
+        {...structureItem, str_desc: Tstr_value(loc, valueBindingsFiltered)},
+        ...filteredRest,
+      ],
+    );
+  | [structureItem, ...rest] =>
+    let (boundInRest, filteredRest) = rest |> removeDuplicateValueBindings;
+    (boundInRest, [structureItem, ...filteredRest]);
+
+  | [] => (StringSet.empty, [])
+  };
+
 let rec translateModuleBinding =
         (
           ~config,
           ~outputFileRelative,
           ~resolver,
-          ~fileName,
           ~typeEnv,
           ~moduleItemGen,
           {mb_id, mb_expr, _}: Typedtree.module_binding,
@@ -105,13 +149,7 @@ let rec translateModuleBinding =
   switch (mb_expr.mod_desc) {
   | Tmod_structure(structure) =>
     structure
-    |> translateStructure(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~fileName,
-         ~typeEnv,
-       )
+    |> translateStructure(~config, ~outputFileRelative, ~resolver, ~typeEnv)
     |> Translation.combine
 
   | Tmod_apply(_) =>
@@ -153,13 +191,12 @@ let rec translateModuleBinding =
     | Mty_ident(path) =>
       switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
       | None => Translation.empty
-      | Some(signature) =>
+      | Some((signature, _)) =>
         signature
         |> TranslateSignature.translateSignature(
              ~config,
              ~outputFileRelative,
              ~resolver,
-             ~fileName,
              ~typeEnv,
            )
         |> Translation.combine
@@ -179,6 +216,48 @@ let rec translateModuleBinding =
   | Tmod_functor(_) =>
     logNotImplemented("Tmod_functor " ++ __LOC__);
     Translation.empty;
+  | Tmod_constraint(_, Mty_ident(path), Tmodtype_explicit(_), Tcoerce_none) =>
+    switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
+    | None => Translation.empty
+    | Some((signature, _)) =>
+      signature
+      |> TranslateSignature.translateSignature(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+         )
+      |> Translation.combine
+    }
+
+  | Tmod_constraint(
+      _,
+      Mty_signature(signature),
+      Tmodtype_explicit(_),
+      Tcoerce_none,
+    ) =>
+    signature
+    |> TranslateSignatureFromTypes.translateSignatureFromTypes(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
+    |> Translation.combine
+
+  | Tmod_constraint(
+      {mod_desc: Tmod_structure(structure)},
+      _,
+      Tmodtype_implicit,
+      Tcoerce_structure(_),
+    ) =>
+    {
+      ...structure,
+      str_items: structure.str_items |> removeDuplicateValueBindings |> snd,
+    }
+    |> translateStructure(~config, ~outputFileRelative, ~resolver, ~typeEnv)
+    |> Translation.combine
+
   | Tmod_constraint(_) =>
     logNotImplemented("Tmod_constraint " ++ __LOC__);
     Translation.empty;
@@ -190,7 +269,6 @@ and translateStructureItem =
       ~outputFileRelative,
       ~resolver,
       ~moduleItemGen,
-      ~fileName,
       ~typeEnv,
       structItem,
     )
@@ -217,7 +295,6 @@ and translateStructureItem =
            ~outputFileRelative,
            ~resolver,
            ~moduleItemGen,
-           ~fileName,
            ~typeEnv,
          ),
        )
@@ -230,7 +307,6 @@ and translateStructureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
 
@@ -240,7 +316,6 @@ and translateStructureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~moduleItemGen,
        )
@@ -251,7 +326,6 @@ and translateStructureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
 
@@ -262,12 +336,44 @@ and translateStructureItem =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
            ~moduleItemGen,
          ),
        )
     |> Translation.combine
+
+  | {
+      /* Bucklescript's encoding of bs.module: include with constraint. */
+      Typedtree.str_desc:
+        Tstr_include({
+          incl_mod: {
+            mod_desc:
+              Tmod_constraint(
+                {
+                  mod_desc:
+                    Tmod_structure({
+                      str_items: [
+                        {str_desc: Tstr_primitive(_)} as structItem1,
+                      ],
+                    }),
+                },
+                _,
+                _,
+                _,
+              ),
+          },
+          _,
+        }),
+      _,
+    } =>
+    structItem1
+    |> translateStructureItem(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~moduleItemGen,
+         ~typeEnv,
+       )
 
   | {Typedtree.str_desc: Tstr_include({incl_type: signature, _}), _} =>
     signature
@@ -302,7 +408,7 @@ and translateStructureItem =
     Translation.empty;
   }
 and translateStructure =
-    (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, structure)
+    (~config, ~outputFileRelative, ~resolver, ~typeEnv, structure)
     : list(Translation.t) => {
   if (Debug.translation^) {
     logItem("Translate Structure\n");
@@ -316,7 +422,6 @@ and translateStructure =
             ~outputFileRelative,
             ~resolver,
             ~moduleItemGen,
-            ~fileName,
             ~typeEnv,
           )
      );

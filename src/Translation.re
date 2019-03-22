@@ -33,34 +33,27 @@ let combine = (translations: list(t)): t =>
   );
 
 /* Applies type parameters to types (for all) */
-let abstractTheTypeParameters = (~typeVars, typ) =>
-  switch (typ) {
-  | Array(_)
-  | Enum(_) => typ
-  | Function({argTypes, retType, _}) =>
-    Function({typeVars, argTypes, retType})
+let abstractTheTypeParameters = (~typeVars, type_) =>
+  switch (type_) {
+  | Array(_) => type_
+  | Function({argTypes, retType, uncurried, _}) =>
+    Function({argTypes, retType, typeVars, uncurried})
   | GroupOfLabeledArgs(_)
   | Ident(_)
+  | Null(_)
   | Nullable(_)
   | Object(_)
   | Option(_)
   | Record(_)
   | Tuple(_)
   | TypeVar(_)
-  | Variant(_) => typ
-  };
-
-let rec pathIsResolved = (path: Dependencies.path) =>
-  switch (path) {
-  | Pid(_) => false
-  | Presolved(_) => true
-  | Pdot(p, _) => p |> pathIsResolved
+  | Variant(_) => type_
   };
 
 let pathToImportType =
     (~config, ~outputFileRelative, ~resolver, path: Dependencies.path) =>
   switch (path) {
-  | _ when path |> pathIsResolved => []
+  | _ when path |> Dependencies.pathIsResolved => []
   | Pid(name) when name == "list" => [
       {
         CodeItem.typeName: "list",
@@ -72,28 +65,15 @@ let pathToImportType =
                ~outputFileRelative,
                ~resolver,
              ),
-        cmtFile: None,
       },
     ]
   | Pid(_) => []
   | Presolved(_) => []
 
   | Pdot(_) =>
-    let rec getOuterModuleName = path =>
-      switch (path) {
-      | Dependencies.Pid(name)
-      | Presolved(name) => name |> ModuleName.fromStringUnsafe
-      | Pdot(path1, _) => path1 |> getOuterModuleName
-      };
-    let rec removeOuterModule = path =>
-      switch (path) {
-      | Dependencies.Pid(_)
-      | Dependencies.Presolved(_) => path
-      | Pdot(Pid(_), s) => Dependencies.Pid(s)
-      | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
-      };
-    let moduleName = path |> getOuterModuleName;
-    let typeName = path |> removeOuterModule |> Dependencies.typePathToName;
+    let moduleName = path |> Dependencies.getOuterModuleName;
+    let typeName =
+      path |> Dependencies.removeOuterModule |> Dependencies.typePathToName;
     let nameFromPath = path |> Dependencies.typePathToName;
     let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
     let importPath =
@@ -103,14 +83,7 @@ let pathToImportType =
            ~outputFileRelative,
            ~resolver,
          );
-    let cmtFile = {
-      let cmtFile =
-        importPath
-        |> ImportPath.toCmt(~outputFileRelative)
-        |> Paths.getCmtFile;
-      cmtFile == "" ? None : Some(cmtFile);
-    };
-    [{typeName, asTypeName, importPath, cmtFile}];
+    [{typeName, asTypeName, importPath}];
   };
 
 let translateDependencies =
@@ -125,10 +98,9 @@ let translateValue =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       ~typeExpr,
-      ~addAnnotationsToFunction: typ => typ,
+      ~addAnnotationsToFunction: type_ => type_,
       name,
     )
     : t => {
@@ -138,21 +110,18 @@ let translateValue =
          ~config,
          ~typeEnv,
        );
-  let typeVars = typeExprTranslation.typ |> TypeVars.free;
-  let typ =
-    typeExprTranslation.typ
+  let typeVars = typeExprTranslation.type_ |> TypeVars.free;
+  let type_ =
+    typeExprTranslation.type_
     |> abstractTheTypeParameters(~typeVars)
     |> addAnnotationsToFunction;
   let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
 
-  /* Access path for the value in the module.
-     I can be the value name if the module is not nested.
-     Or TopLevelModule[x][y] if accessing a value in a doubly nested module */
   let valueAccessPath =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.ExportValue({fileName, resolvedName, valueAccessPath, typ}),
+    CodeItem.ExportValue({resolvedName, type_, valueAccessPath}),
   ];
   {
     importTypes:
@@ -189,10 +158,9 @@ let translateComponent =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       ~typeExpr,
-      ~addAnnotationsToFunction: typ => typ,
+      ~addAnnotationsToFunction: type_ => type_,
       name,
     )
     : t => {
@@ -207,15 +175,15 @@ let translateComponent =
        );
   let typeExprTranslation = {
     ...typeExprTranslation_,
-    typ: typeExprTranslation_.typ |> addAnnotationsToFunction,
+    type_: typeExprTranslation_.type_ |> addAnnotationsToFunction,
   };
 
-  let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
+  let freeTypeVarsSet = typeExprTranslation.type_ |> TypeVars.free_;
 
   /* Replace type variables in props/children with any. */
-  let (typeVars, typ) = (
+  let (typeVars, type_) = (
     [],
-    typeExprTranslation.typ
+    typeExprTranslation.type_
     |> TypeVars.substitute(~f=s =>
          if (freeTypeVarsSet |> StringSet.mem(s)) {
            Some(mixedOrUnknown(~config));
@@ -224,16 +192,17 @@ let translateComponent =
          }
        ),
   );
-  switch (typ) {
+  switch (type_) {
   | Function({
       argTypes: [propOrChildren, ...childrenOrNil],
       retType:
-        Ident(
-          "ReasonReact_componentSpec" | "React_componentSpec" |
-          "ReasonReact_component" |
-          "React_component",
-          [_state, ..._],
-        ),
+        Ident({
+          name:
+            "ReasonReact_componentSpec" | "React_componentSpec" |
+            "ReasonReact_component" |
+            "React_component",
+          typeArgs: [_state, ..._],
+        }),
       _,
     }) =>
     /* Add children?:any to props type */
@@ -243,24 +212,24 @@ let translateComponent =
       | [] =>
         GroupOfLabeledArgs([
           {
+            mutable_: Immutable,
             name: "children",
             optional: Optional,
-            mutable_: Immutable,
-            typ: mixedOrUnknown(~config),
+            type_: mixedOrUnknown(~config),
           },
         ])
       /* Then we had both props and children. */
-      | [childrenTyp, ..._] =>
+      | [childrenType, ..._] =>
         switch (propOrChildren) {
         | GroupOfLabeledArgs(fields) =>
           GroupOfLabeledArgs(
             fields
             @ [
               {
+                mutable_: Immutable,
                 name: "children",
                 optional: Optional,
-                mutable_: Immutable,
-                typ: childrenTyp,
+                type_: childrenType,
               },
             ],
           )
@@ -268,23 +237,30 @@ let translateComponent =
         }
       };
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
-    let componentType = EmitTyp.reactComponentType(~config, ~propsTypeName);
-    let moduleName = typeEnv |> TypeEnv.getCurrentModuleName(~fileName);
+    let componentType = EmitType.reactComponentType(~config, ~propsTypeName);
+
+    let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
+
+    let valueAccessPath = typeEnv |> TypeEnv.getValueAccessPath(~name="make");
+    let componentAccessPath =
+      typeEnv
+      |> TypeEnv.getValueAccessPath(~component=true, ~name="component");
 
     let codeItems = [
       CodeItem.ExportComponent({
+        componentAccessPath,
+        componentType,
         exportType: {
           nameAs: None,
           opaque: Some(false),
-          optTyp: Some(propsType),
+          optType: Some(propsType),
           typeVars,
           resolvedTypeName: propsTypeName,
         },
-        fileName,
-        moduleName,
+        nestedModuleName,
         propsTypeName,
-        componentType,
-        typ,
+        type_,
+        valueAccessPath,
       }),
     ];
     {
@@ -302,7 +278,6 @@ let translateComponent =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~typeExpr,
          ~addAnnotationsToFunction,
@@ -319,7 +294,6 @@ let translatePrimitive =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
     )
@@ -331,33 +305,31 @@ let translatePrimitive =
   let typeExprTranslation =
     valueDescription.val_desc
     |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
-  let genTypeImportPayload =
-    valueDescription.val_attributes
-    |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport);
-  let genTypeAsPayload =
-    valueDescription.val_attributes
-    |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
-  switch (
-    typeExprTranslation.typ,
-    valueDescription.val_prim,
-    genTypeImportPayload,
-  ) {
+
+  let (attributeImport, attributeRenaming) =
+    valueDescription.val_attributes |> Annotation.getAttributeImportRenaming;
+  switch (typeExprTranslation.type_, attributeImport) {
   | (
       Function({
         argTypes: [_, ..._],
         retType:
-          Ident(
-            "ReasonReact_componentSpec" | "React_componentSpec" |
-            "ReasonReact_component" |
-            "React_component",
-            [_state, ..._],
-          ),
+          Ident({
+            name:
+              "ReasonReact_componentSpec" | "React_componentSpec" |
+              "ReasonReact_component" |
+              "React_component",
+            typeArgs: [_state, ..._],
+          }),
         _,
       }),
-      _,
-      Some(StringPayload(importString)),
+      Some(importString),
     )
       when valueName == "make" =>
+    let asPath =
+      switch (attributeRenaming) {
+      | Some(asPath) => asPath
+      | None => ""
+      };
     let typeExprTranslation =
       valueDescription.val_desc
       |> TranslateCoreType.translateCoreType(
@@ -368,12 +340,12 @@ let translatePrimitive =
            ~typeEnv,
          );
 
-    let freeTypeVarsSet = typeExprTranslation.typ |> TypeVars.free_;
+    let freeTypeVarsSet = typeExprTranslation.type_ |> TypeVars.free_;
 
     /* Replace type variables in props/children with any. */
-    let (typeVars, typ) = (
+    let (typeVars, type_) = (
       [],
-      typeExprTranslation.typ
+      typeExprTranslation.type_
       |> TypeVars.substitute(~f=s =>
            if (freeTypeVarsSet |> StringSet.mem(s)) {
              Some(mixedOrUnknown(~config));
@@ -384,7 +356,7 @@ let translatePrimitive =
     );
 
     let (propsFields, childrenTyp) =
-      switch (typ) {
+      switch (type_) {
       | Function({argTypes: [propOrChildren, ...childrenOrNil], _}) =>
         switch (childrenOrNil) {
         | [] => ([], mixedOrUnknown(~config))
@@ -392,12 +364,12 @@ let translatePrimitive =
           switch (propOrChildren) {
           | GroupOfLabeledArgs(fields) => (
               fields
-              |> List.map(({optional, typ, _} as field) =>
-                   switch (typ, optional) {
-                   | (Option(typ1), Optional) => {
+              |> List.map(({optional, type_, _} as field) =>
+                   switch (type_, optional) {
+                   | (Option(type1), Optional) => {
                        ...field,
                        optional: Optional,
-                       typ: typ1,
+                       type_: type1,
                      }
                    | _ => field
                    }
@@ -409,23 +381,23 @@ let translatePrimitive =
         }
       | _ => ([], mixedOrUnknown(~config))
       };
-    let propsTyp = Object(propsFields);
+    let propsTyp = Object(Closed, propsFields);
     let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
 
     let codeItems = [
       CodeItem.ImportComponent({
+        asPath,
+        childrenTyp,
         exportType: {
           nameAs: None,
           opaque: Some(false),
-          optTyp: Some(propsTyp),
+          optType: Some(propsTyp),
           typeVars,
           resolvedTypeName: propsTypeName,
         },
         importAnnotation: importString |> Annotation.importFromString,
-        childrenTyp,
         propsFields,
         propsTypeName,
-        fileName,
       }),
     ];
     {
@@ -436,11 +408,11 @@ let translatePrimitive =
       typeDeclarations: [],
     };
 
-  | (_, _, Some(StringPayload(importString))) =>
+  | (_, Some(importString)) =>
     let asPath =
-      switch (genTypeAsPayload) {
-      | Some(StringPayload(asPath)) => asPath
-      | _ => valueName
+      switch (attributeRenaming) {
+      | Some(asPath) => asPath
+      | None => valueName
       };
     {
       importTypes:
@@ -449,11 +421,10 @@ let translatePrimitive =
 
       codeItems: [
         ImportValue({
-          valueName,
           asPath,
           importAnnotation: importString |> Annotation.importFromString,
-          typ: typeExprTranslation.typ,
-          fileName,
+          type_: typeExprTranslation.type_,
+          valueName,
         }),
       ],
       typeDeclarations: [],

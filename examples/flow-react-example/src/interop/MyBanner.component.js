@@ -23,4 +23,10 @@ class App extends React.Component<Props> {
   }
 }
 
-module.exports = App;
+export default App;
+
+export class TopLevelClass {
+  static MiddleLevelElements = {
+    MyBannerInternal: App
+  };
+}

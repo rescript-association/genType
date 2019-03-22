@@ -6,23 +6,23 @@
     "merge": "^1.2.1",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-scripts-ts": "^4.0.8",
+    "react-scripts": "^2.1.4",
     "reason-react": "^0.5.3"
   },
   "scripts": {
     "start": "node ../run_bsb.js -make-world -w",
-    "ts:watch": "react-scripts-ts start",
+    "ts:watch": "react-scripts start",
     "build": "node ../run_bsb.js -make-world",
     "clean": "node ../clean_bsb.js",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",
     "@types/node": "^10.5.5",
     "@types/react": "^16.4.7",
     "@types/react-dom": "^16.0.6",
-    "bs-platform": "^4.0.7",
+    "bs-platform": "^5.0.0",
     "typescript": "^3.0.1"
   },
   "browserslist": [

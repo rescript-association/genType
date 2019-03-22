@@ -17,9 +17,9 @@ module Array = {
 
   /* Type-cast immutable functions from Belt.Array. */
 
-  let length = a => Array.length(a);
+  let length = a => Array.length(a->fromT);
 
-  let size = a => Array.size(a);
+  let size = a => Array.size(a->fromT);
 
   let get = (a, x) => a->fromT[x];
 

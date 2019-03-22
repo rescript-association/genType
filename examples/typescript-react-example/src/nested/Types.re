@@ -54,3 +54,46 @@ let mutuallyRecursiveConverter = ({b}) => b;
 
 [@genType]
 let testFunctionOnOptionsAsArgument = (a: option('a), foo) => foo(a);
+
+[@genType.opaque]
+type opaqueVariant =
+  | A
+  | B;
+
+[@genType]
+let stringT: String.t = "a";
+
+[@genType]
+let jsStringT: Js.String.t = "a";
+
+[@genType]
+type twice('a) = ('a, 'a);
+
+[@gentype]
+type genTypeMispelled = int;
+
+[@genType]
+type dictString = Js.Dict.t(string);
+
+[@genType]
+let jsonStringify = Js.Json.stringify;
+
+[@genType]
+type nullOrString = Js.Null.t(string);
+
+[@genType]
+type nullOrString2 = Js.null(string);
+
+type record = {
+  i: int,
+  s: string,
+};
+
+[@genType]
+let testConvertNull = (x: Js.Null.t(record)) => x;
+
+[@genType]
+type decorator('a, 'b) = 'a => 'b constraint 'a = int constraint 'b = _ => _;
+
+[@genType]
+let testConvertLocation = (x: Location.t) => x;

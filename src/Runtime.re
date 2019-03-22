@@ -16,16 +16,10 @@ type moduleItem = int;
 let blockTagValue = (~config, i) =>
   string_of_int(i) ++ (config.language == TypeScript ? " as any" : "");
 
-let emitRecordAsInt = (~config, i) => i |> blockTagValue(~config);
+let emitRecordAsInt = (~config, recordValue) =>
+  recordValue |> blockTagValue(~config);
 
-let emitRecordAsBlock = (~config, ~args, recordValue) =>
-  createBucklescriptBlock
-  |> EmitText.funCall(
-       ~args=[
-         recordValue |> emitRecordAsInt(~config),
-         EmitText.array(args),
-       ],
-     );
+let recordValueToString = recordValue => recordValue |> string_of_int;
 
 let recordGen = () => {unboxed: 0, boxed: 0};
 
@@ -50,9 +44,59 @@ let newModuleItem = moduleItemGen => {
 
 let emitModuleItem = itemValue => itemValue |> string_of_int;
 
-let emitVariantLabel = (~comment=true, label) =>
-  (comment ? label |> EmitText.comment : "")
-  ++ (label |> Btype.hash_variant |> string_of_int);
+let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
+  if (polymorphic) {
+    (comment ? label |> EmitText.comment : "")
+    ++ (label |> Btype.hash_variant |> string_of_int);
+  } else {
+    label;
+  };
+
+let emitVariantGetLabel = (~polymorphic, x) =>
+  if (polymorphic) {
+    x |> EmitText.arrayAccess(~index=0);
+  } else {
+    x |> EmitText.fieldAccess(~label="tag");
+  };
+
+let emitVariantGetPayload = (~numArgs, ~polymorphic, x) =>
+  if (polymorphic) {
+    x |> EmitText.arrayAccess(~index=1);
+  } else if (numArgs == 1) {
+    x |> EmitText.arrayAccess(~index=0);
+  } else {
+    /* to convert a runtime block to a tuple, remove the tag */
+    x |> EmitText.arraySlice;
+  };
+
+let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
+  if (polymorphic) {
+    EmitText.array([label |> emitVariantLabel(~polymorphic), x]);
+  } else {
+    config.emitCreateBucklescriptBlock = true;
+    let args = numArgs == 1 ? [x] |> EmitText.array : x;
+    createBucklescriptBlock |> EmitText.funCall(~args=[label, args]);
+  };
+
+let jsVariantTag = "tag";
+let jsVariantValue = "value";
+
+let emitJSVariantGetLabel = x =>
+  x |> EmitText.fieldAccess(~label=jsVariantTag);
+
+let emitJSVariantGetPayload = x =>
+  x |> EmitText.fieldAccess(~label=jsVariantValue);
+
+let emitJSVariantWithPayload = (~label, x) =>
+  "{"
+  ++ jsVariantTag
+  ++ ":"
+  ++ label
+  ++ ", "
+  ++ jsVariantValue
+  ++ ":"
+  ++ x
+  ++ "}";
 
 let isMutableObjectField = name =>
   String.length(name) >= 2

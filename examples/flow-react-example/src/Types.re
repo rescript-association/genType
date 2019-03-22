@@ -79,7 +79,7 @@ type someMutableFields = {
 external foo: int => int = "";
 
 [@genType.opaque]
-type exportOpaqueFromEnums = Enums.weekday;
+type exportOpaqueFromVariants = Variants.weekday;
 
 [@genType]
 [@genType.as "DateKey"]
@@ -97,3 +97,31 @@ let testAutoAnnotateVariants = (x: AutoAnnotate.variant) => x;
 
 [@genType]
 let testAutoAnnotateVariants2 = (x: AutoAnnotate.annotatedVariant) => x;
+
+[@genType.opaque]
+type opaqueVariant =
+  | A
+  | B;
+
+[@genType]
+[@genType.as "Filter"]
+type filter = {
+  name: string,
+  values: array(string),
+};
+
+[@genType]
+type twice('a) = ('a, 'a);
+
+[@genType]
+type gadt =
+  | F: gadt;
+
+type objectWithCallback = {
+  .
+  "y": option({. "z": option(unit => int)}),
+  "x": option(unit => int),
+};
+
+[@genType]
+let convertObjectWithCallback = (x: objectWithCallback) => x;

@@ -1,7 +1,17 @@
-const ReactDOM = require("react-dom");
-const React = require("react");
+import * as ReactDOM from "react-dom";
+import * as React from "react";
 
-const App = require("./App.gen").default;
+import App from "./App.gen";
+import { printVariantWithPayload, testWithPayload } from "./VariantsWithPayload.gen";
+
+const consoleLog = console.log;
+
+printVariantWithPayload("a");
+printVariantWithPayload("bRenamed");
+printVariantWithPayload(true);
+printVariantWithPayload(20);
+printVariantWithPayload(.5);
+printVariantWithPayload(testWithPayload({ x: 15 }));
 
 const Main = () => (
   <div>

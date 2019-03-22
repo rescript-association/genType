@@ -5,7 +5,6 @@ let translateSignatureValue =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       valueDescription: Typedtree.value_description,
     )
@@ -15,7 +14,7 @@ let translateSignatureValue =
     logItem("Translate Signature Value %s\n", val_id |> Ident.name);
   };
   let typeExpr = val_desc.ctyp_type;
-  let addAnnotationsToFunction = typ => typ;
+  let addAnnotationsToFunction = type_ => type_;
   switch (val_id, Annotation.fromAttributes(val_attributes)) {
   | (id, GenType) =>
     id
@@ -26,7 +25,6 @@ let translateSignatureValue =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
          ~typeExpr,
          ~addAnnotationsToFunction,
@@ -40,7 +38,6 @@ let rec translateModuleDeclaration =
           ~config,
           ~outputFileRelative,
           ~resolver,
-          ~fileName,
           ~typeEnv,
           {md_id, md_type, _}: Typedtree.module_declaration,
         ) => {
@@ -53,25 +50,18 @@ let rec translateModuleDeclaration =
   switch (md_type.mty_desc) {
   | Tmty_signature(signature) =>
     signature
-    |> translateSignature(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~fileName,
-         ~typeEnv,
-       )
+    |> translateSignature(~config, ~outputFileRelative, ~resolver, ~typeEnv)
     |> Translation.combine
 
   | Tmty_ident(path, _) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path)) {
     | None => Translation.empty
-    | Some(signature) =>
+    | Some((signature, _)) =>
       signature
       |> translateSignature(
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          )
       |> Translation.combine
@@ -96,7 +86,6 @@ and translateModuleTypeDeclaration =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~fileName,
       ~typeEnv,
       moduleTypeDeclaration: Typedtree.module_type_declaration,
     ) => {
@@ -118,11 +107,9 @@ and translateModuleTypeDeclaration =
              ~config,
              ~outputFileRelative,
              ~resolver,
-             ~fileName,
-             ~typeEnv=typeEnv |> TypeEnv.newModule(~name),
+             ~typeEnv=typeEnv |> TypeEnv.newModuleType(~name, ~signature),
            )
         |> Translation.combine;
-      typeEnv |> TypeEnv.addModuleTypeSignature(~name, ~signature);
       translation;
 
     | Tmty_ident(_) =>
@@ -149,7 +136,6 @@ and translateSignatureItem =
       ~outputFileRelative,
       ~resolver,
       ~moduleItemGen,
-      ~fileName,
       ~typeEnv,
       signatureItem,
     )
@@ -175,7 +161,6 @@ and translateSignatureItem =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          );
     } else {
@@ -186,7 +171,6 @@ and translateSignatureItem =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~fileName,
            ~typeEnv,
          );
     }
@@ -197,7 +181,6 @@ and translateSignatureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        )
 
@@ -209,7 +192,6 @@ and translateSignatureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~fileName,
          ~typeEnv,
        );
 
@@ -239,7 +221,7 @@ and translateSignatureItem =
     Translation.empty;
   }
 and translateSignature =
-    (~config, ~outputFileRelative, ~resolver, ~fileName, ~typeEnv, signature)
+    (~config, ~outputFileRelative, ~resolver, ~typeEnv, signature)
     : list(Translation.t) => {
   if (Debug.translation^) {
     logItem("Translate Signature\n");
@@ -252,7 +234,6 @@ and translateSignature =
          ~outputFileRelative,
          ~resolver,
          ~moduleItemGen,
-         ~fileName,
          ~typeEnv,
        ),
      );

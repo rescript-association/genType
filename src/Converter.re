@@ -3,18 +3,33 @@ open GenTypeCommon;
 type t =
   | ArrayC(t)
   | CircularC(string, t)
-  | EnumC(enum)
-  | FunctionC(list(groupedArgConverter), t)
+  | FunctionC(functionC)
   | IdentC
   | NullableC(t)
   | ObjectC(fieldsC)
   | OptionC(t)
   | RecordC(fieldsC)
   | TupleC(list(t))
+  | VariantC(variantC)
 and groupedArgConverter =
-  | ArgConverter(label, t)
-  | GroupConverter(list((string, t)))
-and fieldsC = list((string, t));
+  | ArgConverter(t)
+  | GroupConverter(list((string, optional, t)))
+  | UnitConverter
+and fieldsC = list((string, t))
+and functionC = {
+  argConverters: list(groupedArgConverter),
+  retConverter: t,
+  typeVars: list(string),
+  uncurried: bool,
+}
+and variantC = {
+  noPayloads: list(case),
+  withPayload: list((case, int, t)),
+  polymorphic: bool,
+  toJS: string,
+  toRE: string,
+  unboxed: bool,
+};
 
 let rec toString = converter =>
   switch (converter) {
@@ -22,42 +37,36 @@ let rec toString = converter =>
 
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
 
-  | EnumC({cases, _}) =>
-    "enum("
-    ++ (cases |> List.map(case => case.labelJS) |> String.concat(", "))
-    ++ ")"
-
-  | FunctionC(groupedArgConverters, c) =>
-    let labelToString = label =>
-      switch (label) {
-      | Nolabel => "_"
-      | Label(_) => "~l"
-      | OptLabel(l) => "~?" ++ l
-      };
-    "fn("
+  | FunctionC({argConverters, retConverter, uncurried}) =>
+    "fn"
+    ++ (uncurried ? "Uncurried" : "")
+    ++ "("
     ++ (
-      groupedArgConverters
+      argConverters
       |> List.map(groupedArgConverter =>
            switch (groupedArgConverter) {
-           | ArgConverter(label, conv) =>
-             "(" ++ labelToString(label) ++ ":" ++ toString(conv) ++ ")"
+           | ArgConverter(conv) => "(" ++ "_" ++ ":" ++ toString(conv) ++ ")"
            | GroupConverter(groupConverters) =>
              "{|"
              ++ (
                groupConverters
-               |> List.map(((s, argConverter)) =>
-                    s ++ ":" ++ toString(argConverter)
+               |> List.map(((s, optional, argConverter)) =>
+                    s
+                    ++ (optional == Optional ? "?" : "")
+                    ++ ":"
+                    ++ toString(argConverter)
                   )
                |> String.concat(", ")
              )
              ++ "|}"
+           | UnitConverter => "unit"
            }
          )
       |> String.concat(", ")
     )
     ++ " -> "
-    ++ toString(c)
-    ++ ")";
+    ++ toString(retConverter)
+    ++ ")"
 
   | IdentC => "id"
 
@@ -82,37 +91,70 @@ let rec toString = converter =>
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
   | TupleC(innerTypesC) =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
+
+  | VariantC({noPayloads, withPayload, _}) =>
+    "variant("
+    ++ (
+      (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
+      @ (
+        withPayload
+        |> List.map(((case, numArgs, c)) =>
+             (case.labelJS |> labelJSToString)
+             ++ ":"
+             ++ string_of_int(numArgs)
+             ++ ":"
+             ++ (c |> toString)
+           )
+      )
+      |> String.concat(", ")
+    )
+    ++ ")"
   };
 
-let typToConverterOpaque =
+let typeToConverterNormalized =
     (
       ~config,
       ~exportTypeMap: CodeItem.exportTypeMap,
       ~exportTypeMapFromOtherFiles,
       ~typeNameIsInterface,
-      typ,
+      type0,
     ) => {
   let circular = ref("");
-  let rec visit = (~visited: StringSet.t, typ) =>
-    switch (typ) {
+  let expandOneLevel = type_ =>
+    switch (type_) {
+    | Ident({name: s}) =>
+      switch (exportTypeMap |> StringMap.find(s)) {
+      | (t: CodeItem.exportTypeItem) => t.type_
+      | exception Not_found =>
+        switch (exportTypeMapFromOtherFiles |> StringMap.find(s)) {
+        | exception Not_found => type_
+        | (t: CodeItem.exportTypeItem) => t.type_
+        }
+      }
+    | _ => type_
+    };
+  let rec visit = (~visited: StringSet.t, type_) => {
+    let normalized_ = Some(type_);
+    switch (type_) {
     | Array(t, _) =>
-      let (converter, opaque) = t |> visit(~visited);
-      (ArrayC(converter), opaque);
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (ArrayC(tConverter), tNormalized == None ? None : normalized_);
 
-    | Enum(cases) => (EnumC(cases), false)
-
-    | Function({argTypes, retType, _}) =>
+    | Function({argTypes, retType, typeVars, uncurried, _}) =>
       let argConverters =
-        argTypes |> List.map(typToGroupedArgConverter(~visited));
+        argTypes |> List.map(typeToGroupedArgConverter(~visited));
       let (retConverter, _) = retType |> visit(~visited);
-      (FunctionC(argConverters, retConverter), false);
+      (
+        FunctionC({argConverters, retConverter, typeVars, uncurried}),
+        normalized_,
+      );
 
-    | GroupOfLabeledArgs(_) => (IdentC, true)
+    | GroupOfLabeledArgs(_) => (IdentC, None)
 
-    | Ident(s, typeArguments) =>
+    | Ident({isShim, name: s, typeArgs}) =>
       if (visited |> StringSet.mem(s)) {
         circular := s;
-        (IdentC, false);
+        (IdentC, normalized_);
       } else {
         let visited = visited |> StringSet.add(s);
         switch (
@@ -120,11 +162,11 @@ let typToConverterOpaque =
           | Not_found => exportTypeMapFromOtherFiles |> StringMap.find(s)
           }
         ) {
-        | {annotation: GenTypeOpaque, _} => (IdentC, true)
-        | {annotation: NoGenType, _} => (IdentC, true)
-        | {typeVars, typ, _} =>
+        | {annotation: GenTypeOpaque, _} => (IdentC, None)
+        | {annotation: NoGenType, _} => (IdentC, None)
+        | {typeVars, type_, _} =>
           let pairs =
-            try (List.combine(typeVars, typeArguments)) {
+            try (List.combine(typeVars, typeArgs)) {
             | Invalid_argument(_) => []
             };
 
@@ -135,96 +177,140 @@ let typToConverterOpaque =
             | (_, typeArgument) => Some(typeArgument)
             | exception Not_found => None
             };
-          (typ |> TypeVars.substitute(~f) |> visit(~visited) |> fst, false);
+          (
+            type_ |> TypeVars.substitute(~f) |> visit(~visited) |> fst,
+            normalized_,
+          );
         | exception Not_found =>
-          let opaqueUnlessBase =
-            !(typ == booleanT || typ == numberT || typ == stringT);
-          (IdentC, opaqueUnlessBase);
+          let isBaseType =
+            type_ == booleanT || type_ == numberT || type_ == stringT;
+          (IdentC, isShim || isBaseType ? normalized_ : None);
         };
       }
 
-    | Nullable(t) =>
-      let (converter, opaque) = t |> visit(~visited);
-      (NullableC(converter), opaque);
+    | Null(t) =>
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (NullableC(tConverter), tNormalized == None ? None : normalized_);
 
-    | Object(fields) => (
+    | Nullable(t) =>
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (NullableC(tConverter), tNormalized == None ? None : normalized_);
+
+    | Object(_, fields) => (
         ObjectC(
           fields
-          |> List.map(({name, optional, typ, _}) =>
+          |> List.map(({name, optional, type_: t, _}) =>
                (
                  name,
-                 (optional == Mandatory ? typ : Option(typ))
+                 (optional == Mandatory ? t : Option(t))
                  |> visit(~visited)
                  |> fst,
                )
              ),
         ),
-        false,
+        normalized_,
       )
 
     | Option(t) =>
-      let (converter, opaque) = t |> visit(~visited);
-      (OptionC(converter), opaque);
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (OptionC(tConverter), tNormalized == None ? None : normalized_);
 
     | Record(fields) => (
         RecordC(
           fields
-          |> List.map(({name, optional, typ, _}) =>
+          |> List.map(({name, optional, type_, _}) =>
                (
                  name,
-                 (optional == Mandatory ? typ : Option(typ))
+                 (optional == Mandatory ? type_ : Option(type_))
                  |> visit(~visited)
                  |> fst,
                )
              ),
         ),
-        false,
+        normalized_,
       )
 
     | Tuple(innerTypes) =>
-      let (innerConversions, opaques) =
+      let (innerConversions, normalizedList) =
         innerTypes |> List.map(visit(~visited)) |> List.split;
-      (TupleC(innerConversions), opaques |> List.mem(true));
+      let innerHasNone = normalizedList |> List.mem(None);
+      (TupleC(innerConversions), innerHasNone ? None : normalized_);
 
-    | TypeVar(_) => (IdentC, true)
+    | TypeVar(_) => (IdentC, normalized_)
 
-    | Variant(_) => (IdentC, true)
-    }
-  and typToGroupedArgConverter = (~visited, typ) =>
-    switch (typ) {
+    | Variant(variant) =>
+      let (withPayload, normalized, unboxed) =
+        switch (variant.payloads) {
+        | [] => ([], normalized_, variant.unboxed)
+        | [(case, numArgs, t)] =>
+          let converter = t |> visit(~visited) |> fst;
+          let unboxed = t |> expandOneLevel |> typeIsObject;
+          let normalized =
+            unboxed ?
+              Some(Variant({...variant, unboxed: true})) : normalized_;
+          ([(case, numArgs, converter)], normalized, unboxed);
+        | [_, _, ..._] => (
+            variant.payloads
+            |> List.map(((case, numArgs, t)) => {
+                 let converter = t |> visit(~visited) |> fst;
+                 (case, numArgs, converter);
+               }),
+            normalized_,
+            variant.unboxed,
+          )
+        };
+      let converter =
+        normalized == None ?
+          IdentC :
+          VariantC({
+            noPayloads: variant.noPayloads,
+            withPayload,
+            polymorphic: variant.polymorphic,
+            toJS: variant.toJS,
+            toRE: variant.toRE,
+            unboxed,
+          });
+      (converter, normalized);
+    };
+  }
+  and typeToGroupedArgConverter = (~visited, type_) =>
+    switch (type_) {
     | GroupOfLabeledArgs(fields) =>
       GroupConverter(
         fields
-        |> List.map(({name, typ, _}) =>
-             (name, typ |> visit(~visited) |> fst)
+        |> List.map(({name, type_, optional, _}) =>
+             (name, optional, type_ |> visit(~visited) |> fst)
            ),
       )
-    | _ => ArgConverter(Nolabel, typ |> visit(~visited) |> fst)
+    | _ =>
+      type_ == unitT ?
+        UnitConverter : ArgConverter(type_ |> visit(~visited) |> fst)
     };
 
-  let (converter, opaque) = typ |> visit(~visited=StringSet.empty);
-  if (Debug.converter^) {
-    logItem(
-      "Converter typ:%s converter:%s\n",
-      typ |> EmitTyp.typToString(~config, ~typeNameIsInterface),
-      converter |> toString,
-    );
-  };
+  let (converter, normalized) = type0 |> visit(~visited=StringSet.empty);
   let finalConverter =
     circular^ != "" ? CircularC(circular^, converter) : converter;
-  (finalConverter, opaque);
+  if (Debug.converter^) {
+    logItem(
+      "Converter %s type0:%s converter:%s\n",
+      normalized == None ? " opaque " : "",
+      type0 |> EmitType.typeToString(~config, ~typeNameIsInterface),
+      finalConverter |> toString,
+    );
+  };
+  (finalConverter, normalized);
 };
 
-let typToConverter =
+let typeToConverter =
     (
       ~config,
       ~exportTypeMap,
       ~exportTypeMapFromOtherFiles,
       ~typeNameIsInterface,
-      typ,
+      type_,
     ) =>
-  typ
-  |> typToConverterOpaque(
+  type_
+  |> typeToConverterNormalized(
        ~config,
        ~exportTypeMap,
        ~exportTypeMapFromOtherFiles,
@@ -238,19 +324,17 @@ let rec converterIsIdentity = (~toJS, converter) =>
 
   | CircularC(_, c) => c |> converterIsIdentity(~toJS)
 
-  | EnumC(_) => false
-
-  | FunctionC(groupedArgConverters, resultConverter) =>
-    resultConverter
+  | FunctionC({argConverters, retConverter, uncurried}) =>
+    retConverter
     |> converterIsIdentity(~toJS)
-    && groupedArgConverters
+    && (!toJS || uncurried || argConverters |> List.length <= 1)
+    && argConverters
     |> List.for_all(groupedArgConverter =>
          switch (groupedArgConverter) {
-         | ArgConverter(label, argConverter) =>
-           label == Nolabel
-           && argConverter
-           |> converterIsIdentity(~toJS=!toJS)
+         | ArgConverter(argConverter) =>
+           argConverter |> converterIsIdentity(~toJS=!toJS)
          | GroupConverter(_) => false
+         | UnitConverter => uncurried || toJS
          }
        )
 
@@ -275,11 +359,15 @@ let rec converterIsIdentity = (~toJS, converter) =>
     }
 
   | RecordC(_) => false
+
   | TupleC(innerTypesC) =>
     innerTypesC |> List.for_all(converterIsIdentity(~toJS))
+
+  | VariantC(_) => false
   };
 
-let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
+let rec apply =
+        (~config, ~converter, ~indent, ~nameGen, ~toJS, ~variantTables, value) =>
   switch (converter) {
   | _ when converter |> converterIsIdentity(~toJS) => value
 
@@ -287,118 +375,143 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     let x = "ArrayItem" |> EmitText.name(~nameGen);
     value
     ++ ".map(function _element("
-    ++ (x |> EmitTyp.ofTypeAnyTS(~config))
+    ++ (x |> EmitType.ofTypeAny(~config))
     ++ ") { return "
-    ++ (x |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS))
+    ++ (
+      x
+      |> apply(
+           ~config,
+           ~converter=c,
+           ~indent,
+           ~nameGen,
+           ~toJS,
+           ~variantTables,
+         )
+    )
     ++ "})";
 
   | CircularC(s, c) =>
-    "\n/* WARNING: circular type "
-    ++ s
-    ++ ". Only shallow converter applied. */\n  "
-    ++ value
-    |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+    value
+    |> EmitText.addComment(
+         ~comment=
+           "WARNING: circular type "
+           ++ s
+           ++ ". Only shallow converter applied.",
+       )
+    |> apply(~config, ~converter=c, ~indent, ~nameGen, ~toJS, ~variantTables)
 
-  | EnumC({cases: [case], _}) =>
-    toJS ?
-      case.labelJS |> EmitText.quotes : case.label |> Runtime.emitVariantLabel
-
-  | EnumC(enum) =>
-    let table = toJS ? enum.toJS : enum.toRE;
-    Hashtbl.replace(enumTables, table, (enum, toJS));
-    table ++ EmitText.array([value]);
-
-  | FunctionC(groupedArgConverters, resultConverter) =>
+  | FunctionC({argConverters, retConverter, typeVars, uncurried}) =>
     let resultName = EmitText.resultName(~nameGen);
+    let indent1 = indent |> Indent.more;
+    let indent2 = indent1 |> Indent.more;
+
     let mkReturn = x =>
       "const "
       ++ resultName
       ++ " = "
       ++ x
-      ++ "; return "
-      ++ apply(
-           ~config,
-           ~converter=resultConverter,
-           ~enumTables,
-           ~nameGen,
-           ~toJS,
-           resultName,
-         );
-    let convertedArgs = {
-      let convertArg = (i, groupedArgConverter) =>
-        switch (groupedArgConverter) {
-        | ArgConverter(lbl, argConverter) =>
-          let varName =
-            switch (lbl) {
-            | Nolabel => i + 1 |> EmitText.argi(~nameGen)
-            | Label(l)
-            | OptLabel(l) => l |> EmitText.arg(~nameGen)
-            };
-          let notToJS = !toJS;
-          (
-            varName |> EmitTyp.ofTypeAnyTS(~config),
+      ++ ";"
+      ++ Indent.break(~indent=indent1)
+      ++ "return "
+      ++ (
+        resultName
+        |> apply(
+             ~config,
+             ~converter=retConverter,
+             ~indent=indent2,
+             ~nameGen,
+             ~toJS,
+             ~variantTables,
+           )
+      );
+
+    let convertArg = (i, groupedArgConverter) =>
+      switch (groupedArgConverter) {
+      | ArgConverter(argConverter) =>
+        let varName = i + 1 |> EmitText.argi(~nameGen);
+        let notToJS = !toJS;
+        (
+          [varName],
+          [
             varName
             |> apply(
                  ~config,
                  ~converter=argConverter,
-                 ~enumTables,
+                 ~indent=indent2,
                  ~nameGen,
                  ~toJS=notToJS,
+                 ~variantTables,
+               ),
+          ],
+        );
+      | GroupConverter(groupConverters) =>
+        let notToJS = !toJS;
+        if (toJS) {
+          let varName = i + 1 |> EmitText.argi(~nameGen);
+          (
+            [varName],
+            groupConverters
+            |> List.map(((label, optional, argConverter)) =>
+                 varName
+                 |> EmitText.fieldAccess(~label)
+                 |> apply(
+                      ~config,
+                      ~converter=
+                        optional == Optional
+                        && !(argConverter |> converterIsIdentity(~toJS)) ?
+                          OptionC(argConverter) : argConverter,
+                      ~indent=indent2,
+                      ~nameGen,
+                      ~toJS=notToJS,
+                      ~variantTables,
+                    )
                ),
           );
-        | GroupConverter(groupConverters) =>
-          let notToJS = !toJS;
-          if (toJS) {
-            let varName = i + 1 |> EmitText.argi(~nameGen);
-            (
-              varName |> EmitTyp.ofTypeAnyTS(~config),
-              groupConverters
-              |> List.map(((s, argConverter)) =>
-                   varName
-                   ++ "."
-                   ++ s
+        } else {
+          let varNames =
+            groupConverters
+            |> List.map(((s, _optional, _argConverter)) =>
+                 s |> EmitText.arg(~nameGen)
+               );
+
+          let varNamesArr = varNames |> Array.of_list;
+          let fieldValues =
+            groupConverters
+            |> List.mapi((i, (s, _optional, argConverter)) =>
+                 s
+                 ++ ":"
+                 ++ (
+                   varNamesArr[i]
                    |> apply(
                         ~config,
                         ~converter=argConverter,
-                        ~enumTables,
+                        ~indent=indent2,
                         ~nameGen,
                         ~toJS=notToJS,
+                        ~variantTables,
                       )
                  )
-              |> String.concat(", "),
-            );
-          } else {
-            let varNames =
-              groupConverters
-              |> List.map(((s, _argConverter)) =>
-                   s |> EmitText.arg(~nameGen)
-                 );
-
-            let varNamesArr = varNames |> Array.of_list;
-            let fieldValues =
-              groupConverters
-              |> List.mapi((i, (s, argConverter)) =>
-                   s
-                   ++ ":"
-                   ++ (
-                     varNamesArr[i]
-                     |> apply(
-                          ~config,
-                          ~converter=argConverter,
-                          ~enumTables,
-                          ~nameGen,
-                          ~toJS=notToJS,
-                        )
-                   )
-                 )
-              |> String.concat(", ");
-            (varNames |> String.concat(", "), "{" ++ fieldValues ++ "}");
-          };
+               )
+            |> String.concat(", ");
+          (varNames, ["{" ++ fieldValues ++ "}"]);
         };
-      groupedArgConverters |> List.mapi(convertArg);
+      | UnitConverter =>
+        let varName = i + 1 |> EmitText.argi(~nameGen);
+        ([varName], [varName]);
+      };
+
+    let mkBody = bodyArgs => {
+      let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
+      config.emitImportCurry = config.emitImportCurry || useCurry;
+      Indent.break(~indent=indent1)
+      ++ (value |> EmitText.funCall(~args=bodyArgs, ~useCurry) |> mkReturn);
     };
-    let mkBody = args => value |> EmitText.funCall(~args) |> mkReturn;
-    EmitText.funDef(~args=convertedArgs, ~mkBody, "");
+
+    let convertedArgs = argConverters |> List.mapi(convertArg);
+    let args = convertedArgs |> List.map(fst) |> List.concat;
+    let funParams = args |> List.map(v => v |> EmitType.ofTypeAny(~config));
+    let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
+    EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars);
 
   | IdentC => value
 
@@ -408,7 +521,17 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
       ++ " == null ? "
       ++ value
       ++ " : "
-      ++ (value |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)),
+      ++ (
+        value
+        |> apply(
+             ~config,
+             ~converter=c,
+             ~indent,
+             ~nameGen,
+             ~toJS,
+             ~variantTables,
+           )
+      ),
     ])
 
   | ObjectC(fieldsC) =>
@@ -420,19 +543,19 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
       };
     let fieldValues =
       fieldsC
-      |> List.map(((lbl, fieldConverter)) =>
-           lbl
+      |> List.map(((label, fieldConverter)) =>
+           label
            ++ ":"
            ++ (
              value
-             ++ "."
-             ++ lbl
+             |> EmitText.fieldAccess(~label)
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~enumTables,
+                  ~indent,
                   ~nameGen,
                   ~toJS,
+                  ~variantTables,
                 )
            )
          )
@@ -447,7 +570,15 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
         ++ value
         ++ " : "
         ++ (
-          value |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+          value
+          |> apply(
+               ~config,
+               ~converter=c,
+               ~indent,
+               ~nameGen,
+               ~toJS,
+               ~variantTables,
+             )
         ),
       ]);
     } else {
@@ -455,7 +586,15 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
         value
         ++ " == null ? undefined : "
         ++ (
-          value |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+          value
+          |> apply(
+               ~config,
+               ~converter=c,
+               ~indent,
+               ~nameGen,
+               ~toJS,
+               ~variantTables,
+             )
         ),
       ]);
     }
@@ -470,20 +609,19 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     if (toJS) {
       let fieldValues =
         fieldsC
-        |> List.mapi((i, (lbl, fieldConverter)) =>
+        |> List.mapi((index, (lbl, fieldConverter)) =>
              lbl
              ++ ":"
              ++ (
                value
-               ++ "["
-               ++ string_of_int(i)
-               ++ "]"
+               |> EmitText.arrayAccess(~index)
                |> apply(
                     ~config,
                     ~converter=fieldConverter |> simplifyFieldConverted,
-                    ~enumTables,
+                    ~indent,
                     ~nameGen,
                     ~toJS,
+                    ~variantTables,
                   )
              )
            )
@@ -492,16 +630,16 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     } else {
       let fieldValues =
         fieldsC
-        |> List.map(((lbl, fieldConverter)) =>
+        |> List.map(((label, fieldConverter)) =>
              value
-             ++ "."
-             ++ lbl
+             |> EmitText.fieldAccess(~label)
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
-                  ~enumTables,
+                  ~indent,
                   ~nameGen,
                   ~toJS,
+                  ~variantTables,
                 )
            )
         |> String.concat(", ");
@@ -511,20 +649,160 @@ let rec apply = (~config, ~converter, ~enumTables, ~nameGen, ~toJS, value) =>
     "["
     ++ (
       innerTypesC
-      |> List.mapi((i, c) =>
+      |> List.mapi((index, c) =>
            value
-           ++ "["
-           ++ string_of_int(i)
-           ++ "]"
-           |> apply(~config, ~converter=c, ~enumTables, ~nameGen, ~toJS)
+           |> EmitText.arrayAccess(~index)
+           |> apply(
+                ~config,
+                ~converter=c,
+                ~indent,
+                ~nameGen,
+                ~toJS,
+                ~variantTables,
+              )
          )
       |> String.concat(", ")
     )
     ++ "]"
+
+  | VariantC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
+    toJS ?
+      case.labelJS |> labelJSToString :
+      case.label |> Runtime.emitVariantLabel(~polymorphic)
+
+  | VariantC(variantC) =>
+    let table = toJS ? variantC.toJS : variantC.toRE;
+    if (variantC.noPayloads != []) {
+      Hashtbl.replace(variantTables, table, (variantC, toJS));
+    };
+    let convertToString =
+      !toJS
+      && variantC.noPayloads
+      |> List.exists(({labelJS}) =>
+           labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
+         ) ?
+        ".toString()" : "";
+    let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
+    switch (variantC.withPayload) {
+    | [] => value |> accessTable
+
+    | [(case, numArgs, objConverter)] when variantC.unboxed =>
+      let casesWithPayload = (~indent) =>
+        if (toJS) {
+          value
+          |> Runtime.emitVariantGetPayload(
+               ~numArgs,
+               ~polymorphic=variantC.polymorphic,
+             )
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~indent,
+               ~nameGen,
+               ~toJS,
+               ~variantTables,
+             );
+        } else {
+          value
+          |> apply(
+               ~config,
+               ~converter=objConverter,
+               ~indent,
+               ~nameGen,
+               ~toJS,
+               ~variantTables,
+             )
+          |> Runtime.emitVariantWithPayload(
+               ~config,
+               ~label=case.label,
+               ~numArgs,
+               ~polymorphic=variantC.polymorphic,
+             );
+        };
+      variantC.noPayloads == [] ?
+        casesWithPayload(~indent) :
+        EmitText.ifThenElse(
+          ~indent,
+          (~indent as _) => value |> EmitText.typeOfObject,
+          casesWithPayload,
+          (~indent as _) => value |> accessTable,
+        );
+
+    | [_, ..._] =>
+      let convertCaseWithPayload = (~indent, ~numArgs, ~objConverter, case) =>
+        value
+        |> (
+          toJS ?
+            Runtime.emitVariantGetPayload(
+              ~numArgs,
+              ~polymorphic=variantC.polymorphic,
+            ) :
+            Runtime.emitJSVariantGetPayload
+        )
+        |> apply(
+             ~config,
+             ~converter=objConverter,
+             ~indent,
+             ~nameGen,
+             ~toJS,
+             ~variantTables,
+           )
+        |> (
+          toJS ?
+            Runtime.emitJSVariantWithPayload(
+              ~label=case.labelJS |> labelJSToString,
+            ) :
+            Runtime.emitVariantWithPayload(
+              ~config,
+              ~label=case.label,
+              ~numArgs,
+              ~polymorphic=variantC.polymorphic,
+            )
+        );
+      let switchCases = (~indent) =>
+        variantC.withPayload
+        |> List.map(((case, numArgs, objConverter)) =>
+             (
+               toJS ?
+                 case.label
+                 |> Runtime.emitVariantLabel(
+                      ~polymorphic=variantC.polymorphic,
+                    ) :
+                 case.labelJS |> labelJSToString,
+               case
+               |> convertCaseWithPayload(~indent, ~numArgs, ~objConverter),
+             )
+           );
+      let casesWithPayload = (~indent) =>
+        value
+        |> Runtime.(
+             toJS ?
+               emitVariantGetLabel(~polymorphic=variantC.polymorphic) :
+               emitJSVariantGetLabel
+           )
+        |> EmitText.switch_(~indent, ~cases=switchCases(~indent));
+      variantC.noPayloads == [] ?
+        casesWithPayload(~indent) :
+        EmitText.ifThenElse(
+          ~indent,
+          (~indent as _) => value |> EmitText.typeOfObject,
+          casesWithPayload,
+          (~indent as _) => value |> accessTable,
+        );
+    };
   };
 
-let toJS = (~config, ~converter, ~enumTables, ~nameGen, value) =>
-  value |> apply(~config, ~converter, ~enumTables, ~nameGen, ~toJS=true);
+let toJS = (~config, ~converter, ~indent, ~nameGen, ~variantTables, value) =>
+  value
+  |> apply(~config, ~converter, ~indent, ~nameGen, ~variantTables, ~toJS=true);
 
-let toReason = (~config, ~converter, ~enumTables, ~nameGen, value) =>
-  value |> apply(~config, ~converter, ~enumTables, ~nameGen, ~toJS=false);
+let toReason = (~config, ~converter, ~indent, ~nameGen, ~variantTables, value) =>
+  value
+  |> apply(
+       ~config,
+       ~converter,
+       ~indent,
+       ~nameGen,
+       ~toJS=false,
+       ~variantTables,
+     );

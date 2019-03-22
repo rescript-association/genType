@@ -1,46 +1,40 @@
 open GenTypeCommon;
 
-/**
-  * Extracts type variables from dependencies.
-  */
-let extractOne = (~typeVarsGen, soFar, typ) =>
-  switch (typ) {
-  | {Types.id, desc: Tvar(None), _} =>
-    let typeName = GenIdent.jsTypeNameForAnonymousTypeID(~typeVarsGen, id);
-    [typeName, ...soFar];
-  | {desc: Tvar(Some(s)), _} =>
-    let typeName = s;
-    [typeName, ...soFar];
-  | _ => soFar
-  };
+let extractFromTypeExpr = typeParams =>
+  typeParams
+  |> List.fold_left(
+       (soFar, typeExpr) =>
+         switch (typeExpr) {
+         | {Types.desc: Tvar(Some(s)), _} =>
+           let typeName = s;
+           [typeName, ...soFar];
+         | _ => assert(false)
+         },
+       [],
+     )
+  |> List.rev;
 
-/*
- * Utility for extracting results of compiling to output.
- * Input:
- *
- *     [
- *       ([dep, dep], [itm, itm]),
- *       ([dep, dep], [itm, itm])
- *     ]
- *
- * Output:
- *
- * List.merge
- *     ([dep, dep, dep, dep], [itm, itm, itm, itm])
- */
+let extractFromCoreType = typeParams =>
+  typeParams
+  |> List.fold_left(
+       (soFar, typeExpr) =>
+         switch (typeExpr.Typedtree.ctyp_desc) {
+         | Ttyp_var(s) =>
+           let typeName = s;
+           [typeName, ...soFar];
+         | _ => soFar
+         },
+       [],
+     )
+  |> List.rev;
 
-let extract = typeParams => {
-  let typeVarsGen = GenIdent.createTypeVarsGen();
-  typeParams |> List.fold_left(extractOne(~typeVarsGen), []) |> List.rev;
-};
 
 let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
 let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
-let rec substitute = (~f, typ) =>
-  switch (typ) {
-  | Array(typ, arrayKind) => Array(typ |> substitute(~f), arrayKind)
-  | Enum(_) => typ
+let rec substitute = (~f, type0) =>
+  switch (type0) {
+  | Array(t, arrayKind) => Array(t |> substitute(~f), arrayKind)
   | Function(function_) =>
     Function({
       ...function_,
@@ -50,63 +44,67 @@ let rec substitute = (~f, typ) =>
   | GroupOfLabeledArgs(fields) =>
     GroupOfLabeledArgs(
       fields
-      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+      |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
-  | Ident(_, []) => typ
-  | Ident(name, typeArguments) =>
-    Ident(name, typeArguments |> List.map(substitute(~f)))
-  | Nullable(typ) => Nullable(typ |> substitute(~f))
-  | Object(fields) =>
+  | Ident({typeArgs: []}) => type0
+  | Ident({isShim, name, typeArgs}) =>
+    Ident({isShim, name, typeArgs: typeArgs |> List.map(substitute(~f))})
+  | Null(type_) => Null(type_ |> substitute(~f))
+  | Nullable(type_) => Nullable(type_ |> substitute(~f))
+  | Object(closedFlag, fields) =>
     Object(
+      closedFlag,
       fields
-      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+      |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
-  | Option(typ) => Option(typ |> substitute(~f))
+  | Option(type_) => Option(type_ |> substitute(~f))
   | Record(fields) =>
     Record(
       fields
-      |> List.map(field => {...field, typ: field.typ |> substitute(~f)}),
+      |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Tuple(innerTypes) => Tuple(innerTypes |> List.map(substitute(~f)))
   | TypeVar(s) =>
     switch (f(s)) {
-    | None => typ
-    | Some(typ1) => typ1
+    | None => type0
+    | Some(type1) => type1
     }
-  | Variant(leaves) =>
-    Variant(
-      leaves
-      |> List.map(leaf =>
-           {...leaf, argTypes: leaf.argTypes |> List.map(substitute(~f))}
-         ),
-    )
+  | Variant(variant) =>
+    Variant({
+      ...variant,
+      payloads:
+        variant.payloads
+        |> List.map(((case, numArgs, t)) =>
+             (case, numArgs, t |> substitute(~f))
+           ),
+    })
   };
 
-let rec free_ = typ: StringSet.t =>
-  switch (typ) {
-  | Array(typ, _) => typ |> free_
-  | Enum(_) => StringSet.empty
-  | Function({typeVars, argTypes, retType}) =>
+let rec free_ = type0: StringSet.t =>
+  switch (type0) {
+  | Array(t, _) => t |> free_
+  | Function({argTypes, retType, typeVars}) =>
     StringSet.diff(
       (argTypes |> freeOfList_) +++ (retType |> free_),
       typeVars |> StringSet.of_list,
     )
   | GroupOfLabeledArgs(fields)
-  | Object(fields)
+  | Object(_, fields)
   | Record(fields) =>
     fields
     |> List.fold_left(
-         (s, {typ, _}) => StringSet.union(s, typ |> free_),
+         (s, {type_, _}) => StringSet.union(s, type_ |> free_),
          StringSet.empty,
        )
-  | Ident(_, typeArgs) =>
+  | Ident({typeArgs}) =>
     typeArgs
     |> List.fold_left(
          (s, typeArg) => StringSet.union(s, typeArg |> free_),
          StringSet.empty,
        )
-  | Nullable(typ) => typ |> free_
-  | Option(typ) => typ |> free_
+  | Null(type_) => type_ |> free_
+  | Nullable(type_) => type_ |> free_
+  | Option(type_) => type_ |> free_
   | Tuple(innerTypes) =>
     innerTypes
     |> List.fold_left(
@@ -114,16 +112,15 @@ let rec free_ = typ: StringSet.t =>
          StringSet.empty,
        )
   | TypeVar(s) => s |> StringSet.singleton
-  | Variant(leaves) =>
-    leaves
+  | Variant({payloads}) =>
+    payloads
     |> List.fold_left(
-         (s, leaf) => StringSet.union(s, leaf.argTypes |> freeOfList_),
+         (s, (_, _, t)) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
   }
-and freeOfList_ = typs =>
-  typs |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)
+and freeOfList_ = types =>
+  types |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)
 and (+++) = StringSet.union;
 
-let free = typ => typ |> free_ |> StringSet.elements;
-let freeOfList = typ => typ |> freeOfList_ |> StringSet.elements;
+let free = type_ => type_ |> free_ |> StringSet.elements;

@@ -10,20 +10,18 @@ const spawn = child_process.spawn;
 
 const isWindows = /^win/i.test(process.platform);
 
-function genTypeNativePath() {
-  const base = path.join(__dirname, "..", "lib", "bs", "native");
-  if (isWindows) {
-    return path.join(base, "gentype.native.exe");
-  } else {
-    return path.join(base, "gentype.native");
+function copyNativeToExe() {
+  const base = path.join(__dirname, "..", "src", "lib", "bs", "native");
+  if (!isWindows) {
+    fs.copyFileSync(path.join(base, "gentype.native"), path.join(base, "gentype.native.exe"));
   }
 }
-
-process.env.BS_CMT_POST_PROCESS_CMD = genTypeNativePath();
 
 const input = (args = process.argv.slice(2));
 
 const shell = isWindows ? true : false;
+
+copyNativeToExe();
 
 spawn("bsb", input, { stdio: ["inherit", "inherit"], shell }).on(
   "exit",

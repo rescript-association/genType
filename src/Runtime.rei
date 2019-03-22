@@ -10,14 +10,32 @@ type moduleItem;
 
 let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
 
-let emitModuleItem: moduleItem => string;
+let emitJSVariantGetLabel: string => string;
 
-let emitRecordAsBlock:
-  (~config: config, ~args: list(string), recordValue) => string;
+let emitJSVariantGetPayload: string => string;
+
+let emitJSVariantWithPayload: (~label: string, string) => string;
+
+let emitModuleItem: moduleItem => string;
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
-let emitVariantLabel: (~comment: bool=?, string) => string;
+let emitVariantGetLabel: (~polymorphic: bool, string) => string;
+
+let emitVariantGetPayload:
+  (~numArgs: int, ~polymorphic: bool, string) => string;
+
+let emitVariantLabel: (~comment: bool=?, ~polymorphic: bool, string) => string;
+
+let emitVariantWithPayload:
+  (
+    ~config: config,
+    ~label: string,
+    ~numArgs: int,
+    ~polymorphic: bool,
+    string
+  ) =>
+  string;
 
 let isMutableObjectField: string => bool;
 
@@ -28,3 +46,9 @@ let newModuleItem: moduleItemGen => moduleItem;
 let newRecordValue: (~unboxed: bool, recordGen) => recordValue;
 
 let recordGen: unit => recordGen;
+
+let recordValueToString: recordValue => string;
+
+let jsVariantTag: string;
+
+let jsVariantValue: string;
