@@ -81,7 +81,8 @@ let traslateDeclarationKind =
   | (_, Some(importString)) =>
     /* import type */
     let typeName_ = typeName;
-    let nameWithModulePath = typeName_ |> TypeEnv.addModulePath(~typeEnv);
+    let nameWithModulePath =
+      typeName_ |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
     let (typeName, asTypeName) =
       switch (nameAs) {
       | Some(asString) => (asString, Some(nameWithModulePath))

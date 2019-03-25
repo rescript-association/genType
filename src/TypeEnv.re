@@ -196,9 +196,9 @@ let updateModuleItem = (~nameOpt=None, ~moduleItem, typeEnv) => {
 
 let rec addModulePath = (~typeEnv, name) =>
   switch (typeEnv.parent) {
-  | None => name
+  | None => name |> ResolvedName.fromString
   | Some(parent) =>
-    typeEnv.name ++ "_" ++ name |> addModulePath(~typeEnv=parent)
+    typeEnv.name |> addModulePath(~typeEnv=parent) |> ResolvedName.dot(name)
   };
 
 let getValueAccessPath = (~component=false, ~name, typeEnv) => {
