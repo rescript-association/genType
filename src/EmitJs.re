@@ -26,7 +26,7 @@ let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (~config, ~file, declarations: list(CodeItem.typeDeclaration))
+    (~config, ~file, typeDeclarations: list(CodeItem.typeDeclaration))
     : CodeItem.exportTypeMap => {
   if (Debug.codeItems^) {
     logItem("Create Type Map for %s\n", file);
@@ -77,7 +77,7 @@ let createExportTypeMap =
     | {exportType, annotation} => exportType |> addExportType(~annotation)
     };
   };
-  declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
+  typeDeclarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
 let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
