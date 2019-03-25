@@ -2,7 +2,7 @@ open GenTypeCommon;
 
 type path =
   | Pid(string)
-  | Presolved(string)
+  | Presolved(ResolvedName.t)
   | Pdot(path, string);
 
 let rec handleNamespace = (~name, path) =>
@@ -24,13 +24,14 @@ let rec resolvePath1 = (~typeEnv, path) =>
       Presolved(resolvedName);
     };
   | Pdot(p, s, _pos) => Pdot(p |> resolvePath1(~typeEnv), s)
-  | Papply(_) => Presolved("__Papply_unsupported_genType__")
+  | Papply(_) =>
+    Presolved("__Papply_unsupported_genType__" |> ResolvedName.fromString)
   };
 
 let rec typePathToName = typePath =>
   switch (typePath) {
   | Pid(name) => name
-  | Presolved(name) => name
+  | Presolved(resolvedName) => resolvedName |> ResolvedName.toString
   | Pdot(p, s) => typePathToName(p) ++ "_" ++ s
   };
 
@@ -59,8 +60,9 @@ let rec pathIsResolved = path =>
 
 let rec getOuterModuleName = path =>
   switch (path) {
-  | Pid(name)
-  | Presolved(name) => name |> ModuleName.fromStringUnsafe
+  | Pid(name) => name |> ModuleName.fromStringUnsafe
+  | Presolved(resolvedName) =>
+    resolvedName |> ResolvedName.toString |> ModuleName.fromStringUnsafe
   | Pdot(path1, _) => path1 |> getOuterModuleName
   };
 

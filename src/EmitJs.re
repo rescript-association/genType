@@ -45,7 +45,7 @@ let createExportTypeMap =
       if (Debug.codeItems^) {
         logItem(
           "Type Map: %s%s%s\n",
-          resolvedTypeName,
+          resolvedTypeName |> ResolvedName.toString,
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
           switch (optType) {
@@ -67,7 +67,7 @@ let createExportTypeMap =
       | Some(type_) =>
         exportTypeMap
         |> StringMap.add(
-             resolvedTypeName,
+             resolvedTypeName |> ResolvedName.toString,
              {CodeItem.typeVars, type_, annotation},
            )
       | None => exportTypeMap
@@ -120,6 +120,7 @@ let emitExportType =
     | (None, None) => (false, None)
     };
   resolvedTypeName
+  |> ResolvedName.toString
   |> EmitType.emitExportType(
        ~early?,
        ~config,
@@ -882,7 +883,8 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
          annotatedSet
          |> StringSet.mem(
               typeDeclaration.CodeItem.exportFromTypeDeclaration.exportType.
-                resolvedTypeName,
+                resolvedTypeName
+              |> ResolvedName.toString,
             );
        if (nameInAnnotatedSet) {
          {

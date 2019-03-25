@@ -115,7 +115,8 @@ let translateValue =
     typeExprTranslation.type_
     |> abstractTheTypeParameters(~typeVars)
     |> addAnnotationsToFunction;
-  let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
+  let resolvedName =
+    name |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
 
   let valueAccessPath =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
@@ -236,7 +237,8 @@ let translateComponent =
         | _ => propOrChildren
         }
       };
-    let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let propsTypeName = resolvedTypeName |> ResolvedName.toString;
     let componentType = EmitType.reactComponentType(~config, ~propsTypeName);
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
@@ -255,7 +257,7 @@ let translateComponent =
           opaque: Some(false),
           optType: Some(propsType),
           typeVars,
-          resolvedTypeName: propsTypeName,
+          resolvedTypeName,
         },
         nestedModuleName,
         propsTypeName,
@@ -382,7 +384,8 @@ let translatePrimitive =
       | _ => ([], mixedOrUnknown(~config))
       };
     let propsTyp = Object(Closed, propsFields);
-    let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let propsTypeName = resolvedTypeName |> ResolvedName.toString;
 
     let codeItems = [
       CodeItem.ImportComponent({
@@ -393,7 +396,7 @@ let translatePrimitive =
           opaque: Some(false),
           optType: Some(propsTyp),
           typeVars,
-          resolvedTypeName: propsTypeName,
+          resolvedTypeName,
         },
         importAnnotation: importString |> Annotation.importFromString,
         propsFields,
