@@ -303,15 +303,15 @@ let translateConstr =
     switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
     | Some(type_) => {dependencies: typeParamDeps, type_}
     | None =>
-      let resolvedPath =
-        path |> Dependencies.resolveTypePath(~config, ~typeEnv);
-      let isShim = resolvedPath |> Dependencies.pathIsShim(~config);
+      let typePath =
+        path |> Dependencies.resolvePath(~config, ~typeEnv);
+      let isShim = typePath |> Dependencies.pathIsShim(~config);
       {
-        dependencies: [resolvedPath, ...typeParamDeps],
+        dependencies: [typePath, ...typeParamDeps],
         type_:
           Ident({
             isShim,
-            name: resolvedPath |> Dependencies.typePathToName,
+            name: typePath |> Dependencies.typePathToName,
             typeArgs,
           }),
       };

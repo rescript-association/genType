@@ -13,8 +13,8 @@ let rec handleNamespace = (~name, path) =>
   | Pdot(path1, s) => Pdot(path1 |> handleNamespace(~name), s)
   };
 
-let rec resolveTypePath1 = (~typeEnv, typePath) =>
-  switch (typePath) {
+let rec resolvePath1 = (~typeEnv, path) =>
+  switch (path) {
   | Path.Pident(id) =>
     let name = id |> Ident.name;
     switch (typeEnv |> TypeEnv.lookup(~name)) {
@@ -23,7 +23,7 @@ let rec resolveTypePath1 = (~typeEnv, typePath) =>
       let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
       Presolved(resolvedName);
     };
-  | Pdot(p, s, _pos) => Pdot(p |> resolveTypePath1(~typeEnv), s)
+  | Pdot(p, s, _pos) => Pdot(p |> resolvePath1(~typeEnv), s)
   | Papply(_) => Presolved("__Papply_unsupported_genType__")
   };
 
@@ -34,19 +34,19 @@ let rec typePathToName = typePath =>
   | Pdot(p, s) => typePathToName(p) ++ "_" ++ s
   };
 
-let resolveTypePath = (~config, ~typeEnv, typePath) => {
-  let path = typePath |> resolveTypePath1(~typeEnv);
+let resolvePath = (~config, ~typeEnv, path) => {
+  let typePath = path |> resolvePath1(~typeEnv);
   if (Debug.typeResolution^) {
     logItem(
       "resolveTypePath path:%s env:%s resolved:%s\n",
-      typePath |> Path.name,
+      path |> Path.name,
       typeEnv |> TypeEnv.toString,
-      path |> typePathToName,
+      typePath |> typePathToName,
     );
   };
   switch (config.namespace) {
-  | None => path
-  | Some(name) => path |> handleNamespace(~name)
+  | None => typePath
+  | Some(name) => typePath |> handleNamespace(~name)
   };
 };
 
