@@ -214,6 +214,26 @@ let rec addModulePath = (~typeEnv, name) =>
     typeEnv.name |> addModulePath(~typeEnv=parent) |> ResolvedName.dot(name)
   };
 
+let rec getModuleEquations = typeEnv: list(ResolvedName.eq) => {
+  let subEquations =
+    typeEnv.map
+    |> StringMap.bindings
+    |> List.map(((_, entry)) =>
+         switch (entry) {
+         | Module(te) => te |> getModuleEquations
+         | Type(_) => []
+         }
+       )
+    |> List.concat;
+  switch (typeEnv.moduleEquation, typeEnv.parent) {
+  | (None, _)
+  | (_, None) => subEquations
+  | (Some(resolvedName), Some(parent)) => [
+      (typeEnv.name |> addModulePath(~typeEnv=parent), resolvedName),
+    ]
+  };
+};
+
 let getValueAccessPath = (~component=false, ~name, typeEnv) => {
   let rec accessPath = typeEnv =>
     switch (typeEnv.parent) {

@@ -10,6 +10,8 @@ let addTypeEquations: (~typeEquations: list((Longident.t, type_)), t) => t;
 
 let applyTypeEquations: (~config: config, ~path: Path.t, t) => option(type_);
 
+let getModuleEquations: t => list(ResolvedName.eq);
+
 let getNestedModuleName: t => option(ModuleName.t);
 
 /* Access path for the value in the module.
