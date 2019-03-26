@@ -4,6 +4,7 @@ type t = {
   mutable componentModuleItem: Runtime.moduleItem,
   mutable map: StringMap.t(entry),
   mutable mapModuleTypes: StringMap.t((Typedtree.signature, t)),
+  mutable moduleEquation: option(ResolvedName.t),
   mutable moduleItem: Runtime.moduleItem,
   name: string,
   parent: option(t),
@@ -19,6 +20,7 @@ let createTypeEnv = (~name, parent) => {
     componentModuleItem: moduleItem,
     map: StringMap.empty,
     mapModuleTypes: StringMap.empty,
+    moduleEquation: None,
     moduleItem,
     name,
     parent,
@@ -62,6 +64,17 @@ let getModule = (~name, typeEnv) =>
   | Type(_) => None
   | exception Not_found => None
   };
+
+let addModuleEquation = (~resolvedName, typeEnv) => {
+  if (Debug.typeEnv^) {
+    logItem(
+      "Typenv.addModuleEquation %s resolvedName:%s\n",
+      typeEnv |> toString,
+      resolvedName |> ResolvedName.toString,
+    );
+  };
+  typeEnv.moduleEquation = Some(resolvedName);
+};
 
 let rec addTypeEquation = (~flattened, ~type_, typeEnv) =>
   switch (flattened) {

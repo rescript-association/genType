@@ -221,9 +221,11 @@ let rec translateModuleBinding =
       Translation.empty;
     }
 
-  | Tmod_ident(_) =>
-    logNotImplemented("Tmod_ident " ++ __LOC__);
+  | Tmod_ident(path, _) =>
+    let resolvedName = path |> ResolvedName.fromPath;
+    typeEnv |> TypeEnv.addModuleEquation(~resolvedName);
     Translation.empty;
+
   | Tmod_functor(_) =>
     logNotImplemented("Tmod_functor " ++ __LOC__);
     Translation.empty;

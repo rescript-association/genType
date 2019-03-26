@@ -2,6 +2,8 @@ open GenTypeCommon;
 
 type t;
 
+let addModuleEquation: (~resolvedName: ResolvedName.t, t) => unit;
+
 let addModulePath: (~typeEnv: t, string) => ResolvedName.t;
 
 let addTypeEquations: (~typeEquations: list((Longident.t, type_)), t) => t;
