@@ -4,13 +4,6 @@ let dot = (s, x) => x @ [s];
 
 let fromString = x => [x];
 
-let rec fromPath = (path: Path.t) =>
-  switch (path) {
-  | Pident(ident) => [ident |> Ident.name]
-  | Pdot(p, s, _) => dot(s, p |> fromPath)
-  | Papply(_) => []
-  };
-
 let toString = x => x |> String.concat("_");
 
 type eq = (t, t);
