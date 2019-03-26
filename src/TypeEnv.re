@@ -229,7 +229,7 @@ let rec getModuleEquations = typeEnv: list(ResolvedName.eq) => {
   | (None, _)
   | (_, None) => subEquations
   | (Some(resolvedName), Some(parent)) => [
-      (typeEnv.name |> addModulePath(~typeEnv=parent), resolvedName),
+      (resolvedName, typeEnv.name |> addModulePath(~typeEnv=parent)),
     ]
   };
 };
