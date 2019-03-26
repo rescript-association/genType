@@ -222,7 +222,6 @@ let rec translateModuleBinding =
     }
 
   | Tmod_ident(path, _) =>
- 
     let rec fromPath = (path: Dependencies.path) =>
       switch (path) {
       | Pid(name) => name |> ResolvedName.fromString
@@ -231,7 +230,7 @@ let rec translateModuleBinding =
       };
     let resolvedName =
       path |> Dependencies.resolvePath(~config, ~typeEnv) |> fromPath;
-    typeEnv |> TypeEnv.addModuleEquation(~resolvedName); 
+    typeEnv |> TypeEnv.addModuleEquation(~resolvedName);
     Translation.empty;
 
   | Tmod_functor(_) =>
