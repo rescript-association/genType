@@ -436,3 +436,46 @@ let translatePrimitive =
   | _ => {importTypes: [], codeItems: [], typeDeclarations: []}
   };
 };
+
+let addTypeDeclarationsFromModuleEquations = (~typeEnv, translation: t) => {
+  let eqs = typeEnv |> TypeEnv.getModuleEquations;
+  let newTypeDeclarations =
+    translation.typeDeclarations
+    |> List.map((typeDeclaration: CodeItem.typeDeclaration) => {
+         let exportType = typeDeclaration.exportFromTypeDeclaration.exportType;
+         let equations =
+           exportType.resolvedTypeName |> ResolvedName.applyEquations(~eqs);
+         equations
+         |> List.map(((x, y)) => {
+              let newExportType = {
+                ...exportType,
+                nameAs: None,
+                optType:
+                  Some(
+                    y
+                    |> ResolvedName.toString
+                    |> ident(
+                         ~typeArgs=
+                           exportType.typeVars |> List.map(s => TypeVar(s)),
+                       ),
+                  ),
+                resolvedTypeName: x,
+              };
+              {
+                CodeItem.exportFromTypeDeclaration: {
+                  CodeItem.exportType: newExportType,
+                  annotation:
+                    typeDeclaration.exportFromTypeDeclaration.annotation,
+                },
+                importTypes: [],
+              };
+            });
+       })
+    |> List.concat;
+  newTypeDeclarations == [] ?
+    translation :
+    {
+      ...translation,
+      typeDeclarations: translation.typeDeclarations @ newTypeDeclarations,
+    };
+};
