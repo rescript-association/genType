@@ -93,7 +93,9 @@ let translateCMT =
          )
     | _ => []
     };
-  translations |> Translation.combine;
+  translations
+  |> Translation.combine
+  |> Translation.addTypeDeclarationsFromModuleEquations(~typeEnv);
 };
 
 let emitTranslation =
