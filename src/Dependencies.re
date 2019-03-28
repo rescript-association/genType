@@ -1,15 +1,15 @@
 open GenTypeCommon;
 
 type path =
-  | Pid(string)
-  | Presolved(ResolvedName.t)
+  | Pexternal(string)
+  | Pinternal(ResolvedName.t)
   | Pdot(path, string);
 
 let rec handleNamespace = (~name, path) =>
   switch (path) {
-  | Pid(_)
-  | Presolved(_) => path
-  | Pdot(Pid(s), moduleName) when s == name => Pid(moduleName)
+  | Pexternal(_)
+  | Pinternal(_) => path
+  | Pdot(Pexternal(s), moduleName) when s == name => Pexternal(moduleName)
   | Pdot(path1, s) => Pdot(path1 |> handleNamespace(~name), s)
   };
 
@@ -18,30 +18,38 @@ let rec resolvePath1 = (~typeEnv, path) =>
   | Path.Pident(id) =>
     let name = id |> Ident.name;
     switch (typeEnv |> TypeEnv.lookup(~name)) {
-    | None => Pid(name)
+    | None => Pexternal(name)
     | Some(typeEnv1) =>
       let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
-      Presolved(resolvedName);
+      Pinternal(resolvedName);
     };
   | Pdot(p, s, _pos) => Pdot(p |> resolvePath1(~typeEnv), s)
   | Papply(_) =>
-    Presolved("__Papply_unsupported_genType__" |> ResolvedName.fromString)
+    Pinternal("__Papply_unsupported_genType__" |> ResolvedName.fromString)
   };
 
 let rec typePathToName = typePath =>
   switch (typePath) {
-  | Pid(name) => name
-  | Presolved(resolvedName) => resolvedName |> ResolvedName.toString
+  | Pexternal(name) => name
+  | Pinternal(resolvedName) => resolvedName |> ResolvedName.toString
   | Pdot(p, s) => typePathToName(p) ++ "_" ++ s
+  };
+
+let rec pathIsInternal = path =>
+  switch (path) {
+  | Pexternal(_) => false
+  | Pinternal(_) => true
+  | Pdot(p, _) => p |> pathIsInternal
   };
 
 let resolvePath = (~config, ~typeEnv, path) => {
   let typePath = path |> resolvePath1(~typeEnv);
   if (Debug.typeResolution^) {
     logItem(
-      "resolveTypePath path:%s env:%s resolved:%s\n",
+      "resolveTypePath path:%s typeEnv:%s %s resolved:%s\n",
       path |> Path.name,
       typeEnv |> TypeEnv.toString,
+      typePath |> pathIsInternal ? "Internal" : "External",
       typePath |> typePathToName,
     );
   };
@@ -51,26 +59,27 @@ let resolvePath = (~config, ~typeEnv, path) => {
   };
 };
 
-let rec pathIsResolved = path =>
+let rec toResolvedName = (path: path) =>
   switch (path) {
-  | Pid(_) => false
-  | Presolved(_) => true
-  | Pdot(p, _) => p |> pathIsResolved
+  | Pexternal(name) => name |> ResolvedName.fromString
+  | Pinternal(resolvedName) => resolvedName
+  | Pdot(p, s) => ResolvedName.dot(s, p |> toResolvedName)
   };
 
 let rec getOuterModuleName = path =>
   switch (path) {
-  | Pid(name) => name |> ModuleName.fromStringUnsafe
-  | Presolved(resolvedName) =>
+  | Pexternal(name) => name |> ModuleName.fromStringUnsafe
+  | Pinternal(resolvedName) =>
     resolvedName |> ResolvedName.toString |> ModuleName.fromStringUnsafe
   | Pdot(path1, _) => path1 |> getOuterModuleName
   };
 
 let rec removeOuterModule = path =>
   switch (path) {
-  | Pid(_)
-  | Presolved(_) => path
-  | Pdot(Pid(_), s) => Pid(s)
+  | Pexternal(_)
+  | Pinternal(_) => path
+  | Pdot(Pexternal(_), s) =>
+    Pexternal(s);
   | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
   };
 

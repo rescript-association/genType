@@ -53,8 +53,8 @@ let abstractTheTypeParameters = (~typeVars, type_) =>
 let pathToImportType =
     (~config, ~outputFileRelative, ~resolver, path: Dependencies.path) =>
   switch (path) {
-  | _ when path |> Dependencies.pathIsResolved => []
-  | Pid(name) when name == "list" => [
+  | _ when path |> Dependencies.pathIsInternal => []
+  | Pexternal(name) when name == "list" => [
       {
         CodeItem.typeName: "list",
         asTypeName: None,
@@ -67,8 +67,8 @@ let pathToImportType =
              ),
       },
     ]
-  | Pid(_) => []
-  | Presolved(_) => []
+  | Pexternal(_) => []
+  | Pinternal(_) => []
 
   | Pdot(_) =>
     let moduleName = path |> Dependencies.getOuterModuleName;
