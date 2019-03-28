@@ -1,7 +1,7 @@
 open GenTypeCommon;
 
 type translation = {
-  dependencies: list(Dependencies.path),
+  dependencies: list(Dependencies.t),
   type_,
 };
 
@@ -303,17 +303,11 @@ let translateConstr =
     switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
     | Some(type_) => {dependencies: typeParamDeps, type_}
     | None =>
-      let typePath =
-        path |> Dependencies.resolvePath(~config, ~typeEnv);
-      let isShim = typePath |> Dependencies.pathIsShim(~config);
+      let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
+      let isShim = dep |> Dependencies.isShim(~config);
       {
-        dependencies: [typePath, ...typeParamDeps],
-        type_:
-          Ident({
-            isShim,
-            name: typePath |> Dependencies.typePathToName,
-            typeArgs,
-          }),
+        dependencies: [dep, ...typeParamDeps],
+        type_: Ident({isShim, name: dep |> Dependencies.toString, typeArgs}),
       };
     };
   };
@@ -733,7 +727,7 @@ let translateTypeExprFromTypes =
   if (Debug.dependencies^) {
     translation.dependencies
     |> List.iter(dep =>
-         logItem("Dependency: %s\n", dep |> Dependencies.typePathToName)
+         logItem("Dependency: %s\n", dep |> Dependencies.toString)
        );
   };
   translation;
@@ -749,7 +743,7 @@ let translateTypeExprsFromTypes = (~config, ~typeEnv, typeExprs) => {
     |> List.iter(translation =>
          translation.dependencies
          |> List.iter(dep =>
-              logItem("Dependency: %s\n", dep |> Dependencies.typePathToName)
+              logItem("Dependency: %s\n", dep |> Dependencies.toString)
             )
        );
   };

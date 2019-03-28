@@ -50,11 +50,11 @@ let abstractTheTypeParameters = (~typeVars, type_) =>
   | Variant(_) => type_
   };
 
-let pathToImportType =
-    (~config, ~outputFileRelative, ~resolver, path: Dependencies.path) =>
-  switch (path) {
-  | _ when path |> Dependencies.pathIsInternal => []
-  | Pexternal(name) when name == "list" => [
+let depToImportType =
+    (~config, ~outputFileRelative, ~resolver, dep: Dependencies.t) =>
+  switch (dep) {
+  | _ when dep |> Dependencies.isInternal => []
+  | External(name) when name == "list" => [
       {
         CodeItem.typeName: "list",
         asTypeName: None,
@@ -67,18 +67,16 @@ let pathToImportType =
              ),
       },
     ]
-  | Pexternal(_) => []
-  | Pinternal(_) => []
+  | External(_) => []
+  | Internal(_) => []
 
-  | Pdot(_) =>
-    let moduleName = path |> Dependencies.getOuterModuleName;
+  | Dot(_) =>
+    let moduleName = dep |> Dependencies.getOuterModuleName;
     let typeName =
-      path
-      |> Dependencies.removeExternalOuterModule
-      |> Dependencies.typePathToName;
+      dep |> Dependencies.removeExternalOuterModule |> Dependencies.toString;
     let asTypeName =
-      path |> Dependencies.pathIsInternal ?
-        None : Some(path |> Dependencies.typePathToName);
+      dep |> Dependencies.isInternal ?
+        None : Some(dep |> Dependencies.toString);
     let importPath =
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
@@ -93,7 +91,7 @@ let translateDependencies =
     (~config, ~outputFileRelative, ~resolver, dependencies)
     : list(CodeItem.importType) =>
   dependencies
-  |> List.map(pathToImportType(~config, ~outputFileRelative, ~resolver))
+  |> List.map(depToImportType(~config, ~outputFileRelative, ~resolver))
   |> List.concat;
 
 let translateValue =
