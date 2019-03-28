@@ -74,13 +74,13 @@ let rec getOuterModuleName = path =>
   | Pdot(path1, _) => path1 |> getOuterModuleName
   };
 
-let rec removeOuterModule = path =>
+let rec removeExternalOuterModule = path =>
   switch (path) {
   | Pexternal(_)
   | Pinternal(_) => path
   | Pdot(Pexternal(_), s) =>
     Pexternal(s);
-  | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
+  | Pdot(path1, s) => Pdot(path1 |> removeExternalOuterModule, s)
   };
 
 let pathIsShim = (~config, path) =>

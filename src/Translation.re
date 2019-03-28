@@ -73,9 +73,12 @@ let pathToImportType =
   | Pdot(_) =>
     let moduleName = path |> Dependencies.getOuterModuleName;
     let typeName =
-      path |> Dependencies.removeOuterModule |> Dependencies.typePathToName;
-    let nameFromPath = path |> Dependencies.typePathToName;
-    let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
+      path
+      |> Dependencies.removeExternalOuterModule
+      |> Dependencies.typePathToName;
+    let asTypeName =
+      path |> Dependencies.pathIsInternal ?
+        None : Some(path |> Dependencies.typePathToName);
     let importPath =
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
