@@ -50,8 +50,7 @@ let abstractTheTypeParameters = (~typeVars, type_) =>
   | Variant(_) => type_
   };
 
-let depToImportType =
-    (~config, ~outputFileRelative, ~resolver, dep: Dependencies.t) =>
+let depToImportType = (~config, ~outputFileRelative, ~resolver, dep: dep) =>
   switch (dep) {
   | _ when dep |> Dependencies.isInternal => []
   | External(name) when name == "list" => [
@@ -73,10 +72,9 @@ let depToImportType =
   | Dot(_) =>
     let moduleName = dep |> Dependencies.getOuterModuleName;
     let typeName =
-      dep |> Dependencies.removeExternalOuterModule |> Dependencies.toString;
+      dep |> Dependencies.removeExternalOuterModule |> depToString;
     let asTypeName =
-      dep |> Dependencies.isInternal ?
-        None : Some(dep |> Dependencies.toString);
+      dep |> Dependencies.isInternal ? None : Some(dep |> depToString);
     let importPath =
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(

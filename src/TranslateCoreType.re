@@ -326,9 +326,7 @@ let translateCoreType =
 
   if (Debug.dependencies^) {
     translation.dependencies
-    |> List.iter(dep =>
-         logItem("Dependency: %s\n", dep |> Dependencies.toString)
-       );
+    |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString));
   };
   translation;
 };
