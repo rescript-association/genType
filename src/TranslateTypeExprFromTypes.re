@@ -1,7 +1,7 @@
 open GenTypeCommon;
 
 type translation = {
-  dependencies: list(Dependencies.t),
+  dependencies: list(dep),
   type_,
 };
 
@@ -307,7 +307,7 @@ let translateConstr =
       let isShim = dep |> Dependencies.isShim(~config);
       {
         dependencies: [dep, ...typeParamDeps],
-        type_: Ident({isShim, name: dep |> Dependencies.toString, typeArgs}),
+        type_: Ident({isShim, name: dep |> depToString, typeArgs}),
       };
     };
   };
@@ -726,9 +726,7 @@ let translateTypeExprFromTypes =
 
   if (Debug.dependencies^) {
     translation.dependencies
-    |> List.iter(dep =>
-         logItem("Dependency: %s\n", dep |> Dependencies.toString)
-       );
+    |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString));
   };
   translation;
 };
@@ -742,9 +740,7 @@ let translateTypeExprsFromTypes = (~config, ~typeEnv, typeExprs) => {
     translations
     |> List.iter(translation =>
          translation.dependencies
-         |> List.iter(dep =>
-              logItem("Dependency: %s\n", dep |> Dependencies.toString)
-            )
+         |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString))
        );
   };
   translations;

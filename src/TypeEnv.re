@@ -1,10 +1,15 @@
 open GenTypeCommon;
 
+type moduleEquation = {
+  internal: bool,
+  dep,
+};
+
 type t = {
   mutable componentModuleItem: Runtime.moduleItem,
   mutable map: StringMap.t(entry),
   mutable mapModuleTypes: StringMap.t((Typedtree.signature, t)),
-  mutable moduleEquation: option(ResolvedName.t),
+  mutable moduleEquation: option(moduleEquation),
   mutable moduleItem: Runtime.moduleItem,
   name: string,
   parent: option(t),
@@ -65,15 +70,31 @@ let getModule = (~name, typeEnv) =>
   | exception Not_found => None
   };
 
-let addModuleEquation = (~resolvedName, typeEnv) => {
+let expandAliasToExternalModule = (~name, typeEnv) =>
+  switch (typeEnv |> getModule(~name)) {
+  | Some({moduleEquation: Some({internal: false, dep})}) =>
+    if (Debug.typeEnv^) {
+      logItem(
+        "TypeEnv.expandAliasToExternalModule %s %s aliased to %s\n",
+        typeEnv |> toString,
+        name,
+        dep |> depToString,
+      );
+    };
+    Some(dep);
+  | _ => None
+  };
+
+let addModuleEquation = (~dep, ~internal, typeEnv) => {
   if (Debug.typeEnv^) {
     logItem(
-      "Typenv.addModuleEquation %s resolvedName:%s\n",
+      "Typenv.addModuleEquation %s %s dep:%s\n",
       typeEnv |> toString,
-      resolvedName |> ResolvedName.toString,
+      internal ? "Internal" : "External",
+      dep |> depToString,
     );
   };
-  typeEnv.moduleEquation = Some(resolvedName);
+  typeEnv.moduleEquation = Some({internal, dep});
 };
 
 let rec addTypeEquation = (~flattened, ~type_, typeEnv) =>
@@ -228,8 +249,11 @@ let rec getModuleEquations = typeEnv: list(ResolvedName.eq) => {
   switch (typeEnv.moduleEquation, typeEnv.parent) {
   | (None, _)
   | (_, None) => subEquations
-  | (Some(resolvedName), Some(parent)) => [
-      (resolvedName, typeEnv.name |> addModulePath(~typeEnv=parent)),
+  | (Some({dep}), Some(parent)) => [
+      (
+        dep |> depToResolvedName,
+        typeEnv.name |> addModulePath(~typeEnv=parent),
+      ),
     ]
   };
 };

@@ -107,6 +107,25 @@ type label =
   | Label(string)
   | OptLabel(string);
 
+type dep =
+  | External(string)
+  | Internal(ResolvedName.t)
+  | Dot(dep, string);
+
+let rec depToString = dep =>
+  switch (dep) {
+  | External(name) => name
+  | Internal(resolvedName) => resolvedName |> ResolvedName.toString
+  | Dot(d, s) => depToString(d) ++ "_" ++ s
+  };
+
+let rec depToResolvedName = (dep: dep) =>
+  switch (dep) {
+  | External(name) => name |> ResolvedName.fromString
+  | Internal(resolvedName) => resolvedName
+  | Dot(p, s) => ResolvedName.dot(s, p |> depToResolvedName)
+  };
+
 let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
   let hash =
     noPayloads

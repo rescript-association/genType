@@ -1,10 +1,5 @@
 open GenTypeCommon;
 
-type t =
-  | External(string)
-  | Internal(ResolvedName.t)
-  | Dot(t, string);
-
 let rec handleNamespace = (~name, dep) =>
   switch (dep) {
   | External(_)
@@ -20,19 +15,16 @@ let rec fromPath1 = (~typeEnv, path: Path.t) =>
     switch (typeEnv |> TypeEnv.lookup(~name)) {
     | None => External(name)
     | Some(typeEnv1) =>
-      let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
-      Internal(resolvedName);
+      switch (typeEnv1 |> TypeEnv.expandAliasToExternalModule(~name)) {
+      | Some(dep) => dep
+      | None =>
+        let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
+        Internal(resolvedName);
+      }
     };
   | Pdot(p, s, _pos) => Dot(p |> fromPath1(~typeEnv), s)
   | Papply(_) =>
     Internal("__Papply_unsupported_genType__" |> ResolvedName.fromString)
-  };
-
-let rec toString = dep =>
-  switch (dep) {
-  | External(name) => name
-  | Internal(resolvedName) => resolvedName |> ResolvedName.toString
-  | Dot(d, s) => toString(d) ++ "_" ++ s
   };
 
 let rec isInternal = dep =>
@@ -50,7 +42,7 @@ let fromPath = (~config, ~typeEnv, path) => {
       path |> Path.name,
       typeEnv |> TypeEnv.toString,
       dep |> isInternal ? "Internal" : "External",
-      dep |> toString,
+      dep |> depToString,
     );
   };
   switch (config.namespace) {
@@ -58,13 +50,6 @@ let fromPath = (~config, ~typeEnv, path) => {
   | Some(name) => dep |> handleNamespace(~name)
   };
 };
-
-let rec toResolvedName = (dep: t) =>
-  switch (dep) {
-  | External(name) => name |> ResolvedName.fromString
-  | Internal(resolvedName) => resolvedName
-  | Dot(p, s) => ResolvedName.dot(s, p |> toResolvedName)
-  };
 
 let rec getOuterModuleName = dep =>
   switch (dep) {
