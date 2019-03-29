@@ -780,7 +780,10 @@ let rec readCmtFilesRecursively =
              ~config,
              ~outputFileRelative,
              ~resolver,
-           );
+           )
+        |> List.map((x: CodeItem.translation) => x.typeDeclarations)
+        |> List.concat;
+
       let exportTypeMapFromCmt =
         typeDeclarations
         |> createExportTypeMap(

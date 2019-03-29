@@ -30,7 +30,7 @@ let signatureItemIsDeclaration = signatureItem =>
 
 let inputCmtTranslateTypeDeclarations =
     (~config, ~outputFileRelative, ~resolver, inputCMT)
-    : list(CodeItem.typeDeclaration) => {
+    : list(CodeItem.translation) => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
   switch (cmt_annots) {
@@ -46,8 +46,6 @@ let inputCmtTranslateTypeDeclarations =
          ~resolver,
          ~typeEnv,
        )
-    |> List.map((x: CodeItem.translation) => x.typeDeclarations)
-    |> List.concat
 
   | Interface(signature) =>
     {
@@ -61,8 +59,6 @@ let inputCmtTranslateTypeDeclarations =
          ~resolver,
          ~typeEnv,
        )
-    |> List.map(x => x.CodeItem.typeDeclarations)
-    |> List.concat
 
   | Packed(_)
   | Partial_implementation(_)
