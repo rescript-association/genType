@@ -16,7 +16,8 @@ let cmtHasGenTypeAnnotations = inputCMT =>
 let structureItemIsDeclaration = structItem =>
   switch (structItem.Typedtree.str_desc) {
   | Typedtree.Tstr_type(_)
-  | Tstr_modtype(_) => true
+  | Tstr_modtype(_)
+  | Tstr_module(_) => true
   | _ => false
   };
 

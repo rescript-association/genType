@@ -1,3 +1,6 @@
+# master
+- Fix: enable conversion for types defined inside a module in another file.
+
 # 2.17.0
 - Add support for bucklescript version 5 (AST for bs.module has changed).
 - Support file names starting with lower case letter.
