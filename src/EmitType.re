@@ -524,8 +524,7 @@ let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
 
 let emitRequireReact = (~early, ~emitters, ~config) =>
   switch (config.language) {
-  | Flow
-  | Untyped =>
+  | Flow =>
     emitRequire(
       ~importedValueOrComponent=false,
       ~early,
@@ -537,6 +536,7 @@ let emitRequireReact = (~early, ~emitters, ~config) =>
     )
   | TypeScript =>
     "import * as React from 'react';" |> require(~early, ~emitters)
+  | Untyped => emitters
   };
 
 let reactComponentType = (~config, ~propsTypeName) =>
