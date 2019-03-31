@@ -111,25 +111,15 @@ let rec toString = converter =>
     ++ ")"
   };
 
-let typeToConverterNormalized =
-    (
-      ~config,
-      ~exportTypeMap: CodeItem.exportTypeMap,
-      ~exportTypeMapFromOtherFiles,
-      ~typeNameIsInterface,
-      type0,
-    ) => {
+let typeGetConverterNormalized =
+    (~config, ~inline, ~lookupId, ~typeNameIsInterface, type0) => {
   let circular = ref("");
   let expandOneLevel = type_ =>
     switch (type_) {
     | Ident({name: s}) =>
-      switch (exportTypeMap |> StringMap.find(s)) {
+      switch (s |> lookupId) {
       | (t: CodeItem.exportTypeItem) => t.type_
-      | exception Not_found =>
-        switch (exportTypeMapFromOtherFiles |> StringMap.find(s)) {
-        | exception Not_found => type_
-        | (t: CodeItem.exportTypeItem) => t.type_
-        }
+      | exception Not_found => type_
       }
     | _ => type_
     };
@@ -151,17 +141,13 @@ let typeToConverterNormalized =
 
     | GroupOfLabeledArgs(_) => (IdentC, None)
 
-    | Ident({isShim, name: s, typeArgs}) =>
-      if (visited |> StringSet.mem(s)) {
-        circular := s;
+    | Ident({isShim, name, typeArgs}) =>
+      if (visited |> StringSet.mem(name)) {
+        circular := name;
         (IdentC, normalized_);
       } else {
-        let visited = visited |> StringSet.add(s);
-        switch (
-          try (exportTypeMap |> StringMap.find(s)) {
-          | Not_found => exportTypeMapFromOtherFiles |> StringMap.find(s)
-          }
-        ) {
+        let visited = visited |> StringSet.add(name);
+        switch (name |> lookupId) {
         | {annotation: GenTypeOpaque, _} => (IdentC, None)
         | {annotation: NoGenType, _} => (IdentC, None)
         | {typeVars, type_, _} =>
@@ -177,10 +163,9 @@ let typeToConverterNormalized =
             | (_, typeArgument) => Some(typeArgument)
             | exception Not_found => None
             };
-          (
-            type_ |> TypeVars.substitute(~f) |> visit(~visited) |> fst,
-            normalized_,
-          );
+          let (converter, inlined) =
+            type_ |> TypeVars.substitute(~f) |> visit(~visited);
+          (converter, inline ? inlined : normalized_);
         | exception Not_found =>
           let isBaseType =
             type_ == booleanT || type_ == numberT || type_ == stringT;
@@ -301,22 +286,26 @@ let typeToConverterNormalized =
   (finalConverter, normalized);
 };
 
-let typeToConverter =
-    (
-      ~config,
-      ~exportTypeMap,
-      ~exportTypeMapFromOtherFiles,
-      ~typeNameIsInterface,
-      type_,
-    ) =>
+let typeGetConverter = (~config, ~lookupId, ~typeNameIsInterface, type_) =>
   type_
-  |> typeToConverterNormalized(
+  |> typeGetConverterNormalized(
        ~config,
-       ~exportTypeMap,
-       ~exportTypeMapFromOtherFiles,
+       ~inline=false,
+       ~lookupId,
        ~typeNameIsInterface,
      )
   |> fst;
+
+let typeGetNormalized =
+    (~config, ~inline, ~lookupId, ~typeNameIsInterface, type_) =>
+  type_
+  |> typeGetConverterNormalized(
+       ~config,
+       ~inline,
+       ~lookupId,
+       ~typeNameIsInterface,
+     )
+  |> snd;
 
 let rec converterIsIdentity = (~toJS, converter) =>
   switch (converter) {
