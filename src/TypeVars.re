@@ -28,7 +28,6 @@ let extractFromCoreType = typeParams =>
      )
   |> List.rev;
 
-
 let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
 let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
@@ -47,8 +46,8 @@ let rec substitute = (~f, type0) =>
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Ident({typeArgs: []}) => type0
-  | Ident({isShim, name, typeArgs}) =>
-    Ident({isShim, name, typeArgs: typeArgs |> List.map(substitute(~f))})
+  | Ident({typeArgs} as ident) =>
+    Ident({...ident, typeArgs: typeArgs |> List.map(substitute(~f))})
   | Null(type_) => Null(type_ |> substitute(~f))
   | Nullable(type_) => Nullable(type_ |> substitute(~f))
   | Object(closedFlag, fields) =>
