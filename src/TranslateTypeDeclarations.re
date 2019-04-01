@@ -247,6 +247,11 @@ let traslateDeclarationKind =
                  labelDeclarations |> translateLabelDeclarations,
                ]
              };
+           let inlineRecord =
+             switch (constructorArgs) {
+             | Cstr_tuple(_) => false
+             | Cstr_record(_) => true
+             };
 
            let argTypes =
              argsTranslation
@@ -273,26 +278,48 @@ let traslateDeclarationKind =
              attributes,
              argTypes,
              importTypes,
+             inlineRecord,
              recordValue |> Runtime.recordValueToString,
            );
          });
     let (variantsNoPayload, variantsWithPayload) =
-      variants |> List.partition(((_, _, argTypes, _, _)) => argTypes == []);
+      variants
+      |> List.partition(((_, _, argTypes, _, _, _)) => argTypes == []);
 
     let noPayloads =
       variantsNoPayload
-      |> List.map(((name, attributes, _argTypes, _importTypes, recordValue)) =>
+      |> List.map(
+           (
+             (
+               name,
+               attributes,
+               _argTypes,
+               _importTypes,
+               _inlineRecord,
+               recordValue,
+             ),
+           ) =>
            {...(name, attributes) |> createCase, label: recordValue}
          );
     let payloads =
       variantsWithPayload
-      |> List.map(((name, attributes, argTypes, _importTypes, recordValue)) => {
+      |> List.map(
+           (
+             (
+               name,
+               attributes,
+               argTypes,
+               _importTypes,
+               inlineRecord,
+               recordValue,
+             ),
+           ) => {
            let type_ =
              switch (argTypes) {
              | [type_] => type_
              | _ => Tuple(argTypes)
              };
-           let numArgs = argTypes |> List.length;
+           let numArgs = inlineRecord ? 0 : argTypes |> List.length;
            (
              {...(name, attributes) |> createCase, label: recordValue},
              numArgs,
@@ -316,7 +343,7 @@ let traslateDeclarationKind =
     };
     let importTypes =
       variants
-      |> List.map(((_, _, _, importTypes, _)) => importTypes)
+      |> List.map(((_, _, _, importTypes, _, _)) => importTypes)
       |> List.concat;
 
     {CodeItem.exportFromTypeDeclaration, importTypes} |> returnTypeDeclaration;

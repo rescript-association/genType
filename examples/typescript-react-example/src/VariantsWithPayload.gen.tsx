@@ -47,6 +47,14 @@ export type variant1Int = { tag: "R"; value: number };
 // tslint:disable-next-line:interface-over-type-literal
 export type variant1Object = payload;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type xy = { readonly x: number; readonly y: number };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type inlineRecord = 
+  | { tag: "Inline"; value: { readonly x: number; readonly y: number } }
+  | { tag: "Ordinary"; value: xy };
+
 export const testWithPayload: (_1:withPayload) => withPayload = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
     ? [/* c */99, [Arg1.x, Arg1.y]]
@@ -132,4 +140,13 @@ export const testVariant1Int: (_1:variant1Int) => variant1Int = function (Arg1: 
 export const testVariant1Object: (_1:variant1Object) => variant1Object = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testVariant1Object(CreateBucklescriptBlock.__(0, [[Arg1.x, Arg1.y]]));
   return {x:result[0][0], y:result[0][1]}
+};
+
+export const testInlineRecord: (_1:inlineRecord) => inlineRecord = function (Arg1: any) {
+  const result = VariantsWithPayloadBS.testInlineRecord(Arg1.tag==="Inline"
+    ? CreateBucklescriptBlock.__(0, [Arg1.value.x, Arg1.value.y])
+    : CreateBucklescriptBlock.__(1, [[Arg1.value.x, Arg1.value.y]]));
+  return result.tag===0
+    ? {tag:"Inline", value:{x:result[0], y:result[1]}}
+    : {tag:"Ordinary", value:{x:result[0][0], y:result[0][1]}}
 };
