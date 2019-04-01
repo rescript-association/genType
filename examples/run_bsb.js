@@ -11,9 +11,11 @@ const spawn = child_process.spawn;
 const isWindows = /^win/i.test(process.platform);
 
 function copyNativeToExe() {
-  const base = path.join(__dirname, "..", "src", "lib", "bs", "native");
+  const duneBase = path.join(__dirname, "..", "_build", "install", "default", "bin");
+  const base = path.join(__dirname, "..", "src", "lib", "bs", "native");  
   if (!isWindows) {
-    fs.copyFileSync(path.join(base, "gentype.native"), path.join(base, "gentype.native.exe"));
+    fs.mkdirSync(base, {recursive: true});
+    fs.copyFileSync(path.join(duneBase, "GenType.exe"), path.join(base, "gentype.native.exe"));
   }
 }
 

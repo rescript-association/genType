@@ -7,13 +7,13 @@
 // $FlowExpectedError: Reason checked type sufficiently
 type $any = any;
 
-const $$toJS542320962 = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
+const $$toJS435467058 = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
 
 const $$toRE346759412 = {"A": 0, "B": 1, "C": 2};
 
-const $$toJS346759412 = {"0": "A", "1": "B", "2": "C"};
+const $$toRE435467058 = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
 
-const $$toRE542320962 = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
+const $$toJS346759412 = {"0": "A", "1": "B", "2": "C"};
 
 const $$toRE13337556 = {"ARenamed": 0};
 
@@ -50,16 +50,16 @@ export type variant1Object = payload;
 export const testWithPayload: (withPayload) => withPayload = function (Arg1: $any) {
   const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
     ? [/* c */99, [Arg1.x, Arg1.y]]
-    : $$toRE542320962[Arg1.toString()]);
+    : $$toRE435467058[Arg1.toString()]);
   return typeof(result) === 'object'
     ? {x:result[1][0], y:result[1][1]}
-    : $$toJS542320962[result]
+    : $$toJS435467058[result]
 };
 
 export const printVariantWithPayload: (withPayload) => void = function (Arg1: $any) {
   const result = VariantsWithPayloadBS.printVariantWithPayload(typeof(Arg1) === 'object'
     ? [/* c */99, [Arg1.x, Arg1.y]]
-    : $$toRE542320962[Arg1.toString()]);
+    : $$toRE435467058[Arg1.toString()]);
   return result
 };
 
