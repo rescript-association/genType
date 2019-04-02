@@ -169,7 +169,7 @@ let typeGetConverterNormalized =
         | exception Not_found =>
           let isBaseType =
             type_ == booleanT || type_ == numberT || type_ == stringT;
-          (IdentC, isShim || isBaseType ? normalized_ : None);
+          (IdentC, isShim || isBaseType || inline ? normalized_ : None);
         };
       }
 
