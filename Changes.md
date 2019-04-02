@@ -1,7 +1,7 @@
 # master
 - Fix: enable conversion for types defined inside a module in another file.
 - Fix conversion for types involving multiple type definitions in another file.
-- Add support for module equations such as module X = A.B.
+- Add support for module aliases such as module X = A.B.
 
 # 2.17.0
 - Add support for bucklescript version 5 (AST for bs.module has changed).
