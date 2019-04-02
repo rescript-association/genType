@@ -14,20 +14,6 @@ module Outer2 = {
   };
 };
 
-/*
-  Base.Inner.i
-  X.Y.Z.t
-
-  X.II.* == Base.Inner.*
-  A.* = X.*
-  B.* = A.Y.Z.*
-
- export type X_II_i = Base_Inner_i;
- export type A_II_i = X_II_i;
- export type A_Y_Z_t = X_Y_Z_t;
- export type B_t = A_Y_Z_t;
-  */
-
 module Outer2Alias = Outer2;
 
 module InnerNestedAlias = Outer2.Inner2.InnerNested;
