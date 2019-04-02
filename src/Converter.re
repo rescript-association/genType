@@ -116,8 +116,8 @@ let typeGetConverterNormalized =
   let circular = ref("");
   let expandOneLevel = type_ =>
     switch (type_) {
-    | Ident({name: s}) =>
-      switch (s |> lookupId) {
+    | Ident({name}) =>
+      switch (name |> lookupId) {
       | (t: CodeItem.exportTypeItem) => t.type_
       | exception Not_found => type_
       }
