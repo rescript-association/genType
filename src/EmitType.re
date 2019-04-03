@@ -145,6 +145,13 @@ let rec renderType =
       )
       ++ ")"
     }
+  | Promise(type_) =>
+    "Promise"
+    ++ "<"
+    ++ (
+      type_ |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
+    )
+    ++ ">"
   | Tuple(innerTypes) =>
     "["
     ++ (

@@ -35,19 +35,9 @@ let combine = (translations: list(t)): t =>
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, type_) =>
   switch (type_) {
-  | Array(_) => type_
   | Function({argTypes, retType, uncurried, _}) =>
     Function({argTypes, retType, typeVars, uncurried})
-  | GroupOfLabeledArgs(_)
-  | Ident(_)
-  | Null(_)
-  | Nullable(_)
-  | Object(_)
-  | Option(_)
-  | Record(_)
-  | Tuple(_)
-  | TypeVar(_)
-  | Variant(_) => type_
+  | _ => type_
   };
 
 let depToImportType = (~config, ~outputFileRelative, ~resolver, dep: dep) =>

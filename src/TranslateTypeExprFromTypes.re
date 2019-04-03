@@ -219,6 +219,13 @@ let translateConstr =
       type_: Nullable(paramTranslation.type_),
     }
   | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Promise", _), "t", _),
+      [paramTranslation],
+    ) => {
+      ...paramTranslation,
+      type_: Promise(paramTranslation.type_),
+    }
+  | (
       Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
       [{dependencies: argsDependencies, type_: Tuple(ts)}, ret],
     ) => {

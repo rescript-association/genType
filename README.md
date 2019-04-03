@@ -441,6 +441,11 @@ let none = () => None;
 const none = <T1>(a: T1): ?T1 => OptionBS.none;
 ```
 
+### promises
+
+Valiues of type `Js.Promise.t(arg)` are exported to JS promises of type `Promise<argJS>` where `argJS` is the JS type corresponding to `arg`.
+If a conversion for the argument is required, the conversion functions are chained via `.then(promise => ...)`.
+
 # Experimental features
 
 These features are for experimentation only. They could be changed/removed any time, and not be considered breaking changes.

@@ -8,6 +8,7 @@ type t =
   | NullableC(t)
   | ObjectC(fieldsC)
   | OptionC(t)
+  | PromiseC(t)
   | RecordC(fieldsC)
   | TupleC(list(t))
   | VariantC(variantC)
@@ -89,6 +90,7 @@ let rec toString = converter =>
     ++ "}";
 
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
+  | PromiseC(c) => "promise(" ++ toString(c) ++ ")"
   | TupleC(innerTypesC) =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
 
@@ -199,6 +201,10 @@ let typeGetConverterNormalized =
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
       (OptionC(tConverter), tNormalized == None ? None : normalized_);
+
+    | Promise(t) =>
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (PromiseC(tConverter), tNormalized == None ? None : normalized_);
 
     | Record(fields) => (
         RecordC(
@@ -346,6 +352,8 @@ let rec converterIsIdentity = (~toJS, converter) =>
     } else {
       false;
     }
+
+  | PromiseC(c) => c |> converterIsIdentity(~toJS)
 
   | RecordC(_) => false
 
@@ -587,6 +595,25 @@ let rec apply =
         ),
       ]);
     }
+
+  | PromiseC(c) =>
+    let x = "$promise" |> EmitText.name(~nameGen);
+    value
+    ++ ".then(function _element("
+    ++ (x |> EmitType.ofTypeAny(~config))
+    ++ ") { return "
+    ++ (
+      x
+      |> apply(
+           ~config,
+           ~converter=c,
+           ~indent,
+           ~nameGen,
+           ~toJS,
+           ~variantTables,
+         )
+    )
+    ++ "})";
 
   | RecordC(fieldsC) =>
     let simplifyFieldConverted = fieldConverter =>

@@ -55,6 +55,7 @@ type type_ =
   | Nullable(type_)
   | Object(closedFlag, fields)
   | Option(type_)
+  | Promise(type_)
   | Record(fields)
   | Tuple(list(type_))
   | TypeVar(string)
@@ -96,6 +97,7 @@ let typeIsObject = type_ =>
   | Nullable(_) => false
   | Object(_) => true
   | Option(_) => false
+  | Promise(_) => true
   | Record(_) => true
   | Tuple(_) => true
   | TypeVar(_) => false

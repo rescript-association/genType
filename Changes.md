@@ -1,3 +1,6 @@
+# master
+- Add first-class support for Js.Promise.t, and conversion when required.
+
 # 2.18.0
 - Fix: enable conversion for types defined inside a module in another file.
 - Fix conversion for types involving multiple type definitions in another file.

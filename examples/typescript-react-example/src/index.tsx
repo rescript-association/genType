@@ -22,6 +22,7 @@ import {
   testVariantWithPayloads,
   testWithPayload
 } from "./VariantsWithPayload.gen";
+import * as TestPromise from "./TestPromise.gen";
 
 const minusOne: number = minus({ second: 1 });
 
@@ -47,7 +48,10 @@ const addresses = Records.findAllAddresses(businesses);
 
 consoleLog("index.tsx roundedNumber:", ImportJsValue.roundedNumber);
 consoleLog("index.tsx areaValue:", ImportJsValue.areaValue);
-consoleLog("index.tsx returnedFromHigherOrder:", ImportJsValue.returnedFromHigherOrder);
+consoleLog(
+  "index.tsx returnedFromHigherOrder:",
+  ImportJsValue.returnedFromHigherOrder
+);
 
 consoleLog("index.tsx callback:", Uncurried.callback(() => 3));
 consoleLog(
@@ -139,4 +143,8 @@ printVariantWithPayloads(testVariantWithPayloads({ tag: "C", value: [1, 2] }));
 printVariantWithPayloads(testVariantWithPayloads({ tag: "D", value: [1, 2] }));
 printVariantWithPayloads(
   testVariantWithPayloads({ tag: "E", value: [1, "hello", 2] })
+);
+
+TestPromise.convert(Promise.resolve({ x: 3, s: "hello" })).then(x =>
+  consoleLog("TestPromise result:", x.result)
 );

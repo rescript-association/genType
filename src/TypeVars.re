@@ -57,6 +57,7 @@ let rec substitute = (~f, type0) =>
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Option(type_) => Option(type_ |> substitute(~f))
+  | Promise(type_) => Promise(type_ |> substitute(~f))
   | Record(fields) =>
     Record(
       fields
@@ -101,9 +102,10 @@ let rec free_ = type0: StringSet.t =>
          (s, typeArg) => StringSet.union(s, typeArg |> free_),
          StringSet.empty,
        )
-  | Null(type_) => type_ |> free_
-  | Nullable(type_) => type_ |> free_
-  | Option(type_) => type_ |> free_
+  | Null(type_)
+  | Nullable(type_)
+  | Option(type_)
+  | Promise(type_) => type_ |> free_
   | Tuple(innerTypes) =>
     innerTypes
     |> List.fold_left(

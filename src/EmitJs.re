@@ -976,7 +976,8 @@ let propagateAnnotationToSubTypes =
         fields |> List.iter(({type_, _}) => type_ |> visit)
       | Option(t)
       | Null(t)
-      | Nullable(t) => t |> visit
+      | Nullable(t)
+      | Promise(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
       | Variant({payloads}) =>
