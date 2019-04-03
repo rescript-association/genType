@@ -7,27 +7,27 @@
 // $FlowExpectedError: Reason checked type sufficiently
 type $any = any;
 
-const $$toJS1061900109 = {"120": "x", "26810": "same"};
-
-const $$toRE694113598 = {"saturday": -29784519, "sunday": 569248848};
-
-const $$toRE1061900109 = {"x": 120, "same": 26810};
-
-const $$toJS584768163 = {"449540197": "type", "-134553037": "module", "23437694": "XXX THIS IS DIFFERENT"};
-
-const $$toJS930788378 = {"120": "x", "26809": "same"};
+const $$toRE288839514 = {"monday": -949852400, "tuesday": 323181965, "wednesday": -863289194, "thursday": 122883354, "friday": 835226847, "saturday": -29784519, "sunday": 569248848};
 
 const $$toJS508922110 = {"449540197": "type", "-134553037": "module", "23437694": "42"};
 
-const $$toRE930788378 = {"x": 120, "same": 26809};
-
 const $$toRE508922110 = {"type": 449540197, "module": -134553037, "42": 23437694};
+
+const $$toJS584768163 = {"449540197": "type", "-134553037": "module", "23437694": "XXX THIS IS DIFFERENT"};
 
 const $$toRE584768163 = {"type": 449540197, "module": -134553037, "XXX THIS IS DIFFERENT": 23437694};
 
 const $$toJS694113598 = {"-29784519": "saturday", "569248848": "sunday"};
 
-const $$toRE288839514 = {"monday": -949852400, "tuesday": 323181965, "wednesday": -863289194, "thursday": 122883354, "friday": 835226847, "saturday": -29784519, "sunday": 569248848};
+const $$toRE694113598 = {"saturday": -29784519, "sunday": 569248848};
+
+const $$toJS930788378 = {"120": "x", "26809": "same"};
+
+const $$toRE930788378 = {"x": 120, "same": 26809};
+
+const $$toJS1061900109 = {"120": "x", "26810": "same"};
+
+const $$toRE1061900109 = {"x": 120, "same": 26810};
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as VariantsBS from './Variants.bs';

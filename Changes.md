@@ -1,5 +1,6 @@
 # master
 - Add first-class support for Js.Promise.t, and conversion when required.
+- Emit the variant conversion tables in a stable order to limit changes when the source is modified.
 
 # 2.18.0
 - Fix: enable conversion for types defined inside a module in another file.

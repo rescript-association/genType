@@ -79,11 +79,10 @@ and ident = {
   typeArgs: list(type_),
 }
 and variant = {
+  hash: int,
   noPayloads: list(case),
   payloads: list((case, int, type_)),
   polymorphic: bool,
-  toJS: string,
-  toRE: string,
   unboxed: bool,
 };
 
@@ -133,18 +132,14 @@ let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
     noPayloads
     |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
-    |> Hashtbl.hash
-    |> string_of_int;
+    |> Hashtbl.hash;
+
   let unboxed = payloads == [];
-  Variant({
-    noPayloads,
-    payloads,
-    polymorphic,
-    toJS: "$$toJS" ++ hash,
-    toRE: "$$toRE" ++ hash,
-    unboxed,
-  });
+  Variant({hash, noPayloads, payloads, polymorphic, unboxed});
 };
+
+let variantTable = (hash, ~toJS) =>
+  (toJS ? "$$toJS" : "$$toRE") ++ string_of_int(hash);
 
 let ident = (~isShim=false, ~typeArgs=[], name) =>
   Ident({isShim, name, typeArgs});

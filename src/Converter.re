@@ -24,11 +24,10 @@ and functionC = {
   uncurried: bool,
 }
 and variantC = {
+  hash: int,
   noPayloads: list(case),
   withPayload: list((case, int, t)),
   polymorphic: bool,
-  toJS: string,
-  toRE: string,
   unboxed: bool,
 };
 
@@ -254,11 +253,10 @@ let typeGetConverterNormalized =
         normalized == None ?
           IdentC :
           VariantC({
+            hash: variant.hash,
             noPayloads: variant.noPayloads,
             withPayload,
             polymorphic: variant.polymorphic,
-            toJS: variant.toJS,
-            toRE: variant.toRE,
             unboxed,
           });
       (converter, normalized);
@@ -687,9 +685,8 @@ let rec apply =
       case.label |> Runtime.emitVariantLabel(~polymorphic)
 
   | VariantC(variantC) =>
-    let table = toJS ? variantC.toJS : variantC.toRE;
     if (variantC.noPayloads != []) {
-      Hashtbl.replace(variantTables, table, (variantC, toJS));
+      Hashtbl.replace(variantTables, (variantC.hash, toJS), variantC);
     };
     let convertToString =
       !toJS
@@ -698,6 +695,7 @@ let rec apply =
            labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
          ) ?
         ".toString()" : "";
+    let table = variantC.hash |> variantTable(~toJS);
     let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
     switch (variantC.withPayload) {
     | [] => value |> accessTable

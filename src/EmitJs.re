@@ -714,9 +714,9 @@ let emitRequires =
   );
 
 let emitVariantTables = (~emitters, variantTables) => {
-  let emitTable = (~hash, ~toJS, variantC: Converter.variantC) =>
+  let emitTable = (~table, ~toJS, variantC: Converter.variantC) =>
     "const "
-    ++ hash
+    ++ table
     ++ " = {"
     ++ (
       variantC.noPayloads
@@ -734,11 +734,24 @@ let emitVariantTables = (~emitters, variantTables) => {
     )
     ++ "};";
   Hashtbl.fold(
-    (hash, (variantC, toJS), emitters) =>
-      variantC |> emitTable(~hash, ~toJS) |> Emitters.requireEarly(~emitters),
+    ((_, toJS), variantC, l) => [(variantC, toJS), ...l],
     variantTables,
-    emitters,
-  );
+    [],
+  )
+  |> List.sort(((variantC1, toJS1), (variantC2, toJS2)) => {
+       let n = compare(variantC1.Converter.hash, variantC2.hash);
+       n != 0 ? n : compare(toJS2, toJS1);
+     })
+  |> List.fold_left(
+       (emitters, (variantC, toJS)) =>
+         variantC
+         |> emitTable(
+              ~table=variantC.Converter.hash |> variantTable(~toJS),
+              ~toJS,
+            )
+         |> Emitters.requireEarly(~emitters),
+       emitters,
+     );
 };
 
 let typeGetInlined = (~config, ~exportTypeMap, type_) =>
