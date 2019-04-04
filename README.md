@@ -55,7 +55,7 @@ For running `gentype` with BuckleScript via `npm` workflow, add following script
 
 ```
 scripts: {
-  "bs:build": "export BS_CMT_POST_PROCESS_CMD=\"gentype\" && bsb -make-world",
+  "bs:build": "bsb -make-world",
   "bs:clean": "bsb -clean-world"
 }
 ```
