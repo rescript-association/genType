@@ -1,7 +1,7 @@
 open GenTypeCommon;
 
 type translation = {
-  dependencies: list(Dependencies.path),
+  dependencies: list(dep),
   type_,
 };
 
@@ -213,6 +213,13 @@ let translateConstr =
       type_: Nullable(paramTranslation.type_),
     }
   | (
+      Pdot(Pdot(Pident({name: "Js", _}), "Promise", _), "t", _),
+      [paramTranslation],
+    ) => {
+      ...paramTranslation,
+      type_: Promise(paramTranslation.type_),
+    }
+  | (
       Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
       [{dependencies: argsDependencies, type_: Tuple(ts)}, ret],
     ) => {
@@ -297,17 +304,11 @@ let translateConstr =
     switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
     | Some(type_) => {dependencies: typeParamDeps, type_}
     | None =>
-      let resolvedPath =
-        path |> Dependencies.resolveTypePath(~config, ~typeEnv);
-      let isShim = resolvedPath |> Dependencies.pathIsShim(~config);
+      let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
+      let isShim = dep |> Dependencies.isShim(~config);
       {
-        dependencies: [resolvedPath, ...typeParamDeps],
-        type_:
-          Ident({
-            isShim,
-            name: resolvedPath |> Dependencies.typePathToName,
-            typeArgs,
-          }),
+        dependencies: [dep, ...typeParamDeps],
+        type_: Ident({isShim, name: dep |> depToString, typeArgs}),
       };
     };
   };
@@ -726,9 +727,7 @@ let translateTypeExprFromTypes =
 
   if (Debug.dependencies^) {
     translation.dependencies
-    |> List.iter(dep =>
-         logItem("Dependency: %s\n", dep |> Dependencies.typePathToName)
-       );
+    |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString));
   };
   translation;
 };
@@ -742,9 +741,7 @@ let translateTypeExprsFromTypes = (~config, ~typeEnv, typeExprs) => {
     translations
     |> List.iter(translation =>
          translation.dependencies
-         |> List.iter(dep =>
-              logItem("Dependency: %s\n", dep |> Dependencies.typePathToName)
-            )
+         |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString))
        );
   };
   translations;

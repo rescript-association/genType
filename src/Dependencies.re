@@ -1,76 +1,71 @@
 open GenTypeCommon;
 
-type path =
-  | Pid(string)
-  | Presolved(string)
-  | Pdot(path, string);
-
-let rec handleNamespace = (~name, path) =>
-  switch (path) {
-  | Pid(_)
-  | Presolved(_) => path
-  | Pdot(Pid(s), moduleName) when s == name => Pid(moduleName)
-  | Pdot(path1, s) => Pdot(path1 |> handleNamespace(~name), s)
+let rec handleNamespace = (~name, dep) =>
+  switch (dep) {
+  | External(_)
+  | Internal(_) => dep
+  | Dot(External(s), moduleName) when s == name => External(moduleName)
+  | Dot(dep1, s) => Dot(dep1 |> handleNamespace(~name), s)
   };
 
-let rec resolveTypePath1 = (~typeEnv, typePath) =>
-  switch (typePath) {
-  | Path.Pident(id) =>
+let rec fromPath1 = (~typeEnv, path: Path.t) =>
+  switch (path) {
+  | Pident(id) =>
     let name = id |> Ident.name;
     switch (typeEnv |> TypeEnv.lookup(~name)) {
-    | None => Pid(name)
+    | None => External(name)
     | Some(typeEnv1) =>
-      let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
-      Presolved(resolvedName);
+      switch (typeEnv1 |> TypeEnv.expandAliasToExternalModule(~name)) {
+      | Some(dep) => dep
+      | None =>
+        let resolvedName = name |> TypeEnv.addModulePath(~typeEnv=typeEnv1);
+        Internal(resolvedName);
+      }
     };
-  | Pdot(p, s, _pos) => Pdot(p |> resolveTypePath1(~typeEnv), s)
-  | Papply(_) => Presolved("__Papply_unsupported_genType__")
+  | Pdot(p, s, _pos) => Dot(p |> fromPath1(~typeEnv), s)
+  | Papply(_) =>
+    Internal("__Papply_unsupported_genType__" |> ResolvedName.fromString)
   };
 
-let rec typePathToName = typePath =>
-  switch (typePath) {
-  | Pid(name) => name
-  | Presolved(name) => name
-  | Pdot(p, s) => typePathToName(p) ++ "_" ++ s
+let rec isInternal = dep =>
+  switch (dep) {
+  | External(_) => false
+  | Internal(_) => true
+  | Dot(d, _) => d |> isInternal
   };
 
-let resolveTypePath = (~config, ~typeEnv, typePath) => {
-  let path = typePath |> resolveTypePath1(~typeEnv);
+let fromPath = (~config, ~typeEnv, path) => {
+  let dep = path |> fromPath1(~typeEnv);
   if (Debug.typeResolution^) {
     logItem(
-      "resolveTypePath path:%s env:%s resolved:%s\n",
-      typePath |> Path.name,
+      "fromPath path:%s typeEnv:%s %s resolved:%s\n",
+      path |> Path.name,
       typeEnv |> TypeEnv.toString,
-      path |> typePathToName,
+      dep |> isInternal ? "Internal" : "External",
+      dep |> depToString,
     );
   };
   switch (config.namespace) {
-  | None => path
-  | Some(name) => path |> handleNamespace(~name)
+  | None => dep
+  | Some(name) => dep |> handleNamespace(~name)
   };
 };
 
-let rec pathIsResolved = path =>
-  switch (path) {
-  | Pid(_) => false
-  | Presolved(_) => true
-  | Pdot(p, _) => p |> pathIsResolved
+let rec getOuterModuleName = dep =>
+  switch (dep) {
+  | External(name) => name |> ModuleName.fromStringUnsafe
+  | Internal(resolvedName) =>
+    resolvedName |> ResolvedName.toString |> ModuleName.fromStringUnsafe
+  | Dot(dep1, _) => dep1 |> getOuterModuleName
   };
 
-let rec getOuterModuleName = path =>
-  switch (path) {
-  | Pid(name)
-  | Presolved(name) => name |> ModuleName.fromStringUnsafe
-  | Pdot(path1, _) => path1 |> getOuterModuleName
+let rec removeExternalOuterModule = dep =>
+  switch (dep) {
+  | External(_)
+  | Internal(_) => dep
+  | Dot(External(_), s) => External(s)
+  | Dot(dep1, s) => Dot(dep1 |> removeExternalOuterModule, s)
   };
 
-let rec removeOuterModule = path =>
-  switch (path) {
-  | Pid(_)
-  | Presolved(_) => path
-  | Pdot(Pid(_), s) => Pid(s)
-  | Pdot(path1, s) => Pdot(path1 |> removeOuterModule, s)
-  };
-
-let pathIsShim = (~config, path) =>
-  config.modulesMap |> ModuleNameMap.mem(path |> getOuterModuleName);
+let isShim = (~config, dep) =>
+  config.modulesMap |> ModuleNameMap.mem(dep |> getOuterModuleName);

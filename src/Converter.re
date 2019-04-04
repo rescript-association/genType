@@ -8,6 +8,7 @@ type t =
   | NullableC(t)
   | ObjectC(fieldsC)
   | OptionC(t)
+  | PromiseC(t)
   | RecordC(fieldsC)
   | TupleC(list(t))
   | VariantC(variantC)
@@ -23,11 +24,10 @@ and functionC = {
   uncurried: bool,
 }
 and variantC = {
+  hash: int,
   noPayloads: list(case),
   withPayload: list((case, int, t)),
   polymorphic: bool,
-  toJS: string,
-  toRE: string,
   unboxed: bool,
 };
 
@@ -89,6 +89,7 @@ let rec toString = converter =>
     ++ "}";
 
   | OptionC(c) => "option(" ++ toString(c) ++ ")"
+  | PromiseC(c) => "promise(" ++ toString(c) ++ ")"
   | TupleC(innerTypesC) =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
 
@@ -111,25 +112,15 @@ let rec toString = converter =>
     ++ ")"
   };
 
-let typeToConverterNormalized =
-    (
-      ~config,
-      ~exportTypeMap: CodeItem.exportTypeMap,
-      ~exportTypeMapFromOtherFiles,
-      ~typeNameIsInterface,
-      type0,
-    ) => {
+let typeGetConverterNormalized =
+    (~config, ~inline, ~lookupId, ~typeNameIsInterface, type0) => {
   let circular = ref("");
   let expandOneLevel = type_ =>
     switch (type_) {
-    | Ident({name: s}) =>
-      switch (exportTypeMap |> StringMap.find(s)) {
+    | Ident({name}) =>
+      switch (name |> lookupId) {
       | (t: CodeItem.exportTypeItem) => t.type_
-      | exception Not_found =>
-        switch (exportTypeMapFromOtherFiles |> StringMap.find(s)) {
-        | exception Not_found => type_
-        | (t: CodeItem.exportTypeItem) => t.type_
-        }
+      | exception Not_found => type_
       }
     | _ => type_
     };
@@ -151,17 +142,13 @@ let typeToConverterNormalized =
 
     | GroupOfLabeledArgs(_) => (IdentC, None)
 
-    | Ident({isShim, name: s, typeArgs}) =>
-      if (visited |> StringSet.mem(s)) {
-        circular := s;
+    | Ident({isShim, name, typeArgs}) =>
+      if (visited |> StringSet.mem(name)) {
+        circular := name;
         (IdentC, normalized_);
       } else {
-        let visited = visited |> StringSet.add(s);
-        switch (
-          try (exportTypeMap |> StringMap.find(s)) {
-          | Not_found => exportTypeMapFromOtherFiles |> StringMap.find(s)
-          }
-        ) {
+        let visited = visited |> StringSet.add(name);
+        switch (name |> lookupId) {
         | {annotation: GenTypeOpaque, _} => (IdentC, None)
         | {annotation: NoGenType, _} => (IdentC, None)
         | {typeVars, type_, _} =>
@@ -177,14 +164,13 @@ let typeToConverterNormalized =
             | (_, typeArgument) => Some(typeArgument)
             | exception Not_found => None
             };
-          (
-            type_ |> TypeVars.substitute(~f) |> visit(~visited) |> fst,
-            normalized_,
-          );
+          let (converter, inlined) =
+            type_ |> TypeVars.substitute(~f) |> visit(~visited);
+          (converter, inline ? inlined : normalized_);
         | exception Not_found =>
           let isBaseType =
             type_ == booleanT || type_ == numberT || type_ == stringT;
-          (IdentC, isShim || isBaseType ? normalized_ : None);
+          (IdentC, isShim || isBaseType || inline ? normalized_ : None);
         };
       }
 
@@ -214,6 +200,10 @@ let typeToConverterNormalized =
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
       (OptionC(tConverter), tNormalized == None ? None : normalized_);
+
+    | Promise(t) =>
+      let (tConverter, tNormalized) = t |> visit(~visited);
+      (PromiseC(tConverter), tNormalized == None ? None : normalized_);
 
     | Record(fields) => (
         RecordC(
@@ -263,11 +253,10 @@ let typeToConverterNormalized =
         normalized == None ?
           IdentC :
           VariantC({
+            hash: variant.hash,
             noPayloads: variant.noPayloads,
             withPayload,
             polymorphic: variant.polymorphic,
-            toJS: variant.toJS,
-            toRE: variant.toRE,
             unboxed,
           });
       (converter, normalized);
@@ -301,22 +290,26 @@ let typeToConverterNormalized =
   (finalConverter, normalized);
 };
 
-let typeToConverter =
-    (
-      ~config,
-      ~exportTypeMap,
-      ~exportTypeMapFromOtherFiles,
-      ~typeNameIsInterface,
-      type_,
-    ) =>
+let typeGetConverter = (~config, ~lookupId, ~typeNameIsInterface, type_) =>
   type_
-  |> typeToConverterNormalized(
+  |> typeGetConverterNormalized(
        ~config,
-       ~exportTypeMap,
-       ~exportTypeMapFromOtherFiles,
+       ~inline=false,
+       ~lookupId,
        ~typeNameIsInterface,
      )
   |> fst;
+
+let typeGetNormalized =
+    (~config, ~inline, ~lookupId, ~typeNameIsInterface, type_) =>
+  type_
+  |> typeGetConverterNormalized(
+       ~config,
+       ~inline,
+       ~lookupId,
+       ~typeNameIsInterface,
+     )
+  |> snd;
 
 let rec converterIsIdentity = (~toJS, converter) =>
   switch (converter) {
@@ -357,6 +350,8 @@ let rec converterIsIdentity = (~toJS, converter) =>
     } else {
       false;
     }
+
+  | PromiseC(c) => c |> converterIsIdentity(~toJS)
 
   | RecordC(_) => false
 
@@ -599,6 +594,25 @@ let rec apply =
       ]);
     }
 
+  | PromiseC(c) =>
+    let x = "$promise" |> EmitText.name(~nameGen);
+    value
+    ++ ".then(function _element("
+    ++ (x |> EmitType.ofTypeAny(~config))
+    ++ ") { return "
+    ++ (
+      x
+      |> apply(
+           ~config,
+           ~converter=c,
+           ~indent,
+           ~nameGen,
+           ~toJS,
+           ~variantTables,
+         )
+    )
+    ++ "})";
+
   | RecordC(fieldsC) =>
     let simplifyFieldConverted = fieldConverter =>
       switch (fieldConverter) {
@@ -671,9 +685,8 @@ let rec apply =
       case.label |> Runtime.emitVariantLabel(~polymorphic)
 
   | VariantC(variantC) =>
-    let table = toJS ? variantC.toJS : variantC.toRE;
     if (variantC.noPayloads != []) {
-      Hashtbl.replace(variantTables, table, (variantC, toJS));
+      Hashtbl.replace(variantTables, (variantC.hash, toJS), variantC);
     };
     let convertToString =
       !toJS
@@ -682,6 +695,7 @@ let rec apply =
            labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
          ) ?
         ".toString()" : "";
+    let table = variantC.hash |> variantTable(~toJS);
     let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
     switch (variantC.withPayload) {
     | [] => value |> accessTable

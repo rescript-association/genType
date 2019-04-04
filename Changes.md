@@ -1,3 +1,15 @@
+# 2.19.0
+- Add first-class support for Js.Promise.t, and conversion when required.
+- Emit the variant conversion tables in a stable order to limit changes when the source is modified.
+
+# 2.18.0
+- Fix: enable conversion for types defined inside a module in another file.
+- Fix conversion for types involving multiple type definitions in another file.
+- Add support for module aliases such as module X = A.B.
+  Extra type definitions are added so that all the aliases of @genType-annotated
+  type declarations are also exported.
+  In case of local aliases to types from other files, these are always inlined.
+
 # 2.17.0
 - Add support for bucklescript version 5 (AST for bs.module has changed).
 - Support file names starting with lower case letter.

@@ -210,9 +210,12 @@ let rec translateModuleBinding =
       Translation.empty;
     }
 
-  | Tmod_ident(_) =>
-    logNotImplemented("Tmod_ident " ++ __LOC__);
+  | Tmod_ident(path, _) =>
+    let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
+    let internal = dep |> Dependencies.isInternal;
+    typeEnv |> TypeEnv.addModuleEquation(~dep, ~internal);
     Translation.empty;
+
   | Tmod_functor(_) =>
     logNotImplemented("Tmod_functor " ++ __LOC__);
     Translation.empty;

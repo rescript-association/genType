@@ -5,8 +5,13 @@ function convert(x) {
   return x;
 }
 
+function convertAlias(x) {
+  return x;
+}
+
 export {
   convert ,
+  convertAlias ,
   
 }
 /* No side effect */

@@ -7,9 +7,9 @@
 // $FlowExpectedError: Reason checked type sufficiently
 type $any = any;
 
-const $$toRE453167283 = {"A": 0, "B": 1};
-
 const $$toJS453167283 = {"0": "A", "1": "B"};
+
+const $$toRE453167283 = {"A": 0, "B": 1};
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';

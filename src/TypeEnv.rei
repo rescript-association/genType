@@ -2,11 +2,17 @@ open GenTypeCommon;
 
 type t;
 
-let addModulePath: (~typeEnv: t, string) => string;
+let addModuleEquation: (~dep: dep, ~internal: bool, t) => unit;
+
+let addModulePath: (~typeEnv: t, string) => ResolvedName.t;
 
 let addTypeEquations: (~typeEquations: list((Longident.t, type_)), t) => t;
 
 let applyTypeEquations: (~config: config, ~path: Path.t, t) => option(type_);
+
+let expandAliasToExternalModule: (~name: string, t) => option(dep);
+
+let getModuleEquations: t => list(ResolvedName.eq);
 
 let getNestedModuleName: t => option(ModuleName.t);
 

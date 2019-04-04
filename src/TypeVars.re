@@ -28,7 +28,6 @@ let extractFromCoreType = typeParams =>
      )
   |> List.rev;
 
-
 let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
 let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
 
@@ -47,8 +46,8 @@ let rec substitute = (~f, type0) =>
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Ident({typeArgs: []}) => type0
-  | Ident({isShim, name, typeArgs}) =>
-    Ident({isShim, name, typeArgs: typeArgs |> List.map(substitute(~f))})
+  | Ident({typeArgs} as ident) =>
+    Ident({...ident, typeArgs: typeArgs |> List.map(substitute(~f))})
   | Null(type_) => Null(type_ |> substitute(~f))
   | Nullable(type_) => Nullable(type_ |> substitute(~f))
   | Object(closedFlag, fields) =>
@@ -58,6 +57,7 @@ let rec substitute = (~f, type0) =>
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
   | Option(type_) => Option(type_ |> substitute(~f))
+  | Promise(type_) => Promise(type_ |> substitute(~f))
   | Record(fields) =>
     Record(
       fields
@@ -102,9 +102,10 @@ let rec free_ = type0: StringSet.t =>
          (s, typeArg) => StringSet.union(s, typeArg |> free_),
          StringSet.empty,
        )
-  | Null(type_) => type_ |> free_
-  | Nullable(type_) => type_ |> free_
-  | Option(type_) => type_ |> free_
+  | Null(type_)
+  | Nullable(type_)
+  | Option(type_)
+  | Promise(type_) => type_ |> free_
   | Tuple(innerTypes) =>
     innerTypes
     |> List.fold_left(

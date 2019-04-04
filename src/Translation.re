@@ -35,26 +35,15 @@ let combine = (translations: list(t)): t =>
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, type_) =>
   switch (type_) {
-  | Array(_) => type_
   | Function({argTypes, retType, uncurried, _}) =>
     Function({argTypes, retType, typeVars, uncurried})
-  | GroupOfLabeledArgs(_)
-  | Ident(_)
-  | Null(_)
-  | Nullable(_)
-  | Object(_)
-  | Option(_)
-  | Record(_)
-  | Tuple(_)
-  | TypeVar(_)
-  | Variant(_) => type_
+  | _ => type_
   };
 
-let pathToImportType =
-    (~config, ~outputFileRelative, ~resolver, path: Dependencies.path) =>
-  switch (path) {
-  | _ when path |> Dependencies.pathIsResolved => []
-  | Pid(name) when name == "list" => [
+let depToImportType = (~config, ~outputFileRelative, ~resolver, dep: dep) =>
+  switch (dep) {
+  | _ when dep |> Dependencies.isInternal => []
+  | External(name) when name == "list" => [
       {
         CodeItem.typeName: "list",
         asTypeName: None,
@@ -67,15 +56,15 @@ let pathToImportType =
              ),
       },
     ]
-  | Pid(_) => []
-  | Presolved(_) => []
+  | External(_) => []
+  | Internal(_) => []
 
-  | Pdot(_) =>
-    let moduleName = path |> Dependencies.getOuterModuleName;
+  | Dot(_) =>
+    let moduleName = dep |> Dependencies.getOuterModuleName;
     let typeName =
-      path |> Dependencies.removeOuterModule |> Dependencies.typePathToName;
-    let nameFromPath = path |> Dependencies.typePathToName;
-    let asTypeName = nameFromPath == typeName ? None : Some(nameFromPath);
+      dep |> Dependencies.removeExternalOuterModule |> depToString;
+    let asTypeName =
+      dep |> Dependencies.isInternal ? None : Some(dep |> depToString);
     let importPath =
       moduleName
       |> ModuleResolver.importPathForReasonModuleName(
@@ -90,7 +79,7 @@ let translateDependencies =
     (~config, ~outputFileRelative, ~resolver, dependencies)
     : list(CodeItem.importType) =>
   dependencies
-  |> List.map(pathToImportType(~config, ~outputFileRelative, ~resolver))
+  |> List.map(depToImportType(~config, ~outputFileRelative, ~resolver))
   |> List.concat;
 
 let translateValue =
@@ -115,7 +104,8 @@ let translateValue =
     typeExprTranslation.type_
     |> abstractTheTypeParameters(~typeVars)
     |> addAnnotationsToFunction;
-  let resolvedName = name |> TypeEnv.addModulePath(~typeEnv);
+  let resolvedName =
+    name |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
 
   let valueAccessPath =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
@@ -236,7 +226,8 @@ let translateComponent =
         | _ => propOrChildren
         }
       };
-    let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let propsTypeName = resolvedTypeName |> ResolvedName.toString;
     let componentType = EmitType.reactComponentType(~config, ~propsTypeName);
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
@@ -255,7 +246,7 @@ let translateComponent =
           opaque: Some(false),
           optType: Some(propsType),
           typeVars,
-          resolvedTypeName: propsTypeName,
+          resolvedTypeName,
         },
         nestedModuleName,
         propsTypeName,
@@ -382,7 +373,8 @@ let translatePrimitive =
       | _ => ([], mixedOrUnknown(~config))
       };
     let propsTyp = Object(Closed, propsFields);
-    let propsTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
+    let propsTypeName = resolvedTypeName |> ResolvedName.toString;
 
     let codeItems = [
       CodeItem.ImportComponent({
@@ -393,7 +385,7 @@ let translatePrimitive =
           opaque: Some(false),
           optType: Some(propsTyp),
           typeVars,
-          resolvedTypeName: propsTypeName,
+          resolvedTypeName,
         },
         importAnnotation: importString |> Annotation.importFromString,
         propsFields,
@@ -432,4 +424,47 @@ let translatePrimitive =
 
   | _ => {importTypes: [], codeItems: [], typeDeclarations: []}
   };
+};
+
+let addTypeDeclarationsFromModuleEquations = (~typeEnv, translation: t) => {
+  let eqs = typeEnv |> TypeEnv.getModuleEquations;
+  let newTypeDeclarations =
+    translation.typeDeclarations
+    |> List.map((typeDeclaration: CodeItem.typeDeclaration) => {
+         let exportType = typeDeclaration.exportFromTypeDeclaration.exportType;
+         let equations =
+           exportType.resolvedTypeName |> ResolvedName.applyEquations(~eqs);
+         equations
+         |> List.map(((x, y)) => {
+              let newExportType = {
+                ...exportType,
+                nameAs: None,
+                optType:
+                  Some(
+                    y
+                    |> ResolvedName.toString
+                    |> ident(
+                         ~typeArgs=
+                           exportType.typeVars |> List.map(s => TypeVar(s)),
+                       ),
+                  ),
+                resolvedTypeName: x,
+              };
+              {
+                CodeItem.exportFromTypeDeclaration: {
+                  CodeItem.exportType: newExportType,
+                  annotation:
+                    typeDeclaration.exportFromTypeDeclaration.annotation,
+                },
+                importTypes: [],
+              };
+            });
+       })
+    |> List.concat;
+  newTypeDeclarations == [] ?
+    translation :
+    {
+      ...translation,
+      typeDeclarations: translation.typeDeclarations @ newTypeDeclarations,
+    };
 };

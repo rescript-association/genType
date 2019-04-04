@@ -26,7 +26,7 @@ let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
 };
 
 let createExportTypeMap =
-    (~config, ~file, declarations: list(CodeItem.typeDeclaration))
+    (~config, ~file, typeDeclarations: list(CodeItem.typeDeclaration))
     : CodeItem.exportTypeMap => {
   if (Debug.codeItems^) {
     logItem("Create Type Map for %s\n", file);
@@ -45,7 +45,7 @@ let createExportTypeMap =
       if (Debug.codeItems^) {
         logItem(
           "Type Map: %s%s%s\n",
-          resolvedTypeName,
+          resolvedTypeName |> ResolvedName.toString,
           typeVars == [] ?
             "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
           switch (optType) {
@@ -67,7 +67,7 @@ let createExportTypeMap =
       | Some(type_) =>
         exportTypeMap
         |> StringMap.add(
-             resolvedTypeName,
+             resolvedTypeName |> ResolvedName.toString,
              {CodeItem.typeVars, type_, annotation},
            )
       | None => exportTypeMap
@@ -77,7 +77,7 @@ let createExportTypeMap =
     | {exportType, annotation} => exportType |> addExportType(~annotation)
     };
   };
-  declarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
+  typeDeclarations |> List.fold_left(updateExportTypeMap, StringMap.empty);
 };
 
 let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
@@ -120,6 +120,7 @@ let emitExportType =
     | (None, None) => (false, None)
     };
   resolvedTypeName
+  |> ResolvedName.toString
   |> EmitType.emitExportType(
        ~early?,
        ~config,
@@ -177,8 +178,8 @@ let emitExportFromTypeDeclarations =
     (
       ~config,
       ~emitters,
-      ~typeGetNormalized,
       ~env,
+      ~typeGetNormalized,
       ~typeNameIsInterface,
       exportFromTypeDeclarations,
     ) =>
@@ -188,8 +189,8 @@ let emitExportFromTypeDeclarations =
          emitExportFromTypeDeclaration(
            ~config,
            ~emitters,
-           ~typeGetNormalized,
            ~env,
+           ~typeGetNormalized,
            ~typeNameIsInterface,
          ),
        (env, emitters),
@@ -203,9 +204,9 @@ let rec emitCodeItem =
           ~fileName,
           ~outputFileRelative,
           ~resolver,
+          ~typeGetConverter,
           ~typeGetNormalized,
           ~typeNameIsInterface,
-          ~typeToConverter,
           ~variantTables,
           codeItem,
         ) => {
@@ -346,7 +347,7 @@ let rec emitCodeItem =
                                optional == Mandatory ?
                                  propTyp : Option(propTyp)
                              )
-                             |> typeToConverter,
+                             |> typeGetConverter,
                            ~indent,
                            ~nameGen,
                            ~variantTables,
@@ -359,7 +360,7 @@ let rec emitCodeItem =
              "children"
              |> Converter.toJS(
                   ~config,
-                  ~converter=childrenTyp |> typeToConverter,
+                  ~converter=childrenTyp |> typeGetConverter,
                   ~indent,
                   ~nameGen,
                   ~variantTables,
@@ -426,7 +427,7 @@ let rec emitCodeItem =
           |> requireModule(~import=true, ~env, ~importPath, ~strict=true);
         (emitters, importedAsName, env);
       };
-    let converter = type_ |> typeToConverter;
+    let converter = type_ |> typeGetConverter;
     let valueNameTypeChecked = valueName ++ "TypeChecked";
 
     let emitters =
@@ -484,7 +485,7 @@ let rec emitCodeItem =
       valueAccessPath,
     }) =>
     let nameGen = EmitText.newNameGen();
-    let converter = type_ |> typeToConverter;
+    let converter = type_ |> typeGetConverter;
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
@@ -636,7 +637,7 @@ let rec emitCodeItem =
     let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =
       fileNameBs |> requireModule(~import=false, ~env, ~importPath);
-    let converter = type_ |> typeToConverter;
+    let converter = type_ |> typeGetConverter;
 
     let emitters =
       (
@@ -672,8 +673,8 @@ and emitCodeItems =
       ~fileName,
       ~resolver,
       ~typeNameIsInterface,
+      ~typeGetConverter,
       ~typeGetNormalized,
-      ~typeToConverter,
       ~variantTables,
       codeItems,
     ) =>
@@ -687,9 +688,9 @@ and emitCodeItems =
            ~fileName,
            ~outputFileRelative,
            ~resolver,
-           ~typeNameIsInterface,
+           ~typeGetConverter,
            ~typeGetNormalized,
-           ~typeToConverter,
+           ~typeNameIsInterface,
            ~variantTables,
          ),
        (env, emitters),
@@ -713,9 +714,9 @@ let emitRequires =
   );
 
 let emitVariantTables = (~emitters, variantTables) => {
-  let emitTable = (~hash, ~toJS, variantC: Converter.variantC) =>
+  let emitTable = (~table, ~toJS, variantC: Converter.variantC) =>
     "const "
-    ++ hash
+    ++ table
     ++ " = {"
     ++ (
       variantC.noPayloads
@@ -733,12 +734,39 @@ let emitVariantTables = (~emitters, variantTables) => {
     )
     ++ "};";
   Hashtbl.fold(
-    (hash, (variantC, toJS), emitters) =>
-      variantC |> emitTable(~hash, ~toJS) |> Emitters.requireEarly(~emitters),
+    ((_, toJS), variantC, l) => [(variantC, toJS), ...l],
     variantTables,
-    emitters,
-  );
+    [],
+  )
+  |> List.sort(((variantC1, toJS1), (variantC2, toJS2)) => {
+       let n = compare(variantC1.Converter.hash, variantC2.hash);
+       n != 0 ? n : compare(toJS2, toJS1);
+     })
+  |> List.fold_left(
+       (emitters, (variantC, toJS)) =>
+         variantC
+         |> emitTable(
+              ~table=variantC.Converter.hash |> variantTable(~toJS),
+              ~toJS,
+            )
+         |> Emitters.requireEarly(~emitters),
+       emitters,
+     );
 };
+
+let typeGetInlined = (~config, ~exportTypeMap, type_) =>
+  switch (
+    type_
+    |> Converter.typeGetNormalized(
+         ~config,
+         ~inline=true,
+         ~lookupId=s => exportTypeMap |> StringMap.find(s),
+         ~typeNameIsInterface=_ => false,
+       )
+  ) {
+  | None => type_
+  | Some(type1) => type1
+  };
 
 /* Read the cmt file referenced in an import type,
    and recursively for the import types obtained from reading the cmt file. */
@@ -753,12 +781,16 @@ let rec readCmtFilesRecursively =
         ) => {
   let updateTypeMapFromOtherFiles = (~asType, ~exportTypeMapFromCmt, env) =>
     switch (exportTypeMapFromCmt |> StringMap.find(typeName)) {
-    | exportTypeItem => {
+    | (exportTypeItem: CodeItem.exportTypeItem) =>
+      let type_ =
+        exportTypeItem.type_
+        |> typeGetInlined(~config, ~exportTypeMap=exportTypeMapFromCmt);
+      {
         ...env,
         exportTypeMapFromOtherFiles:
           env.exportTypeMapFromOtherFiles
-          |> StringMap.add(asType, exportTypeItem),
-      }
+          |> StringMap.add(asType, {...exportTypeItem, type_}),
+      };
     | exception Not_found => env
     };
   let cmtFile =
@@ -779,7 +811,9 @@ let rec readCmtFilesRecursively =
              ~config,
              ~outputFileRelative,
              ~resolver,
-           );
+           )
+        |> ((x: CodeItem.translation) => x.typeDeclarations);
+
       let exportTypeMapFromCmt =
         typeDeclarations
         |> createExportTypeMap(
@@ -882,7 +916,8 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
          annotatedSet
          |> StringSet.mem(
               typeDeclaration.CodeItem.exportFromTypeDeclaration.exportType.
-                resolvedTypeName,
+                resolvedTypeName
+              |> ResolvedName.toString,
             );
        if (nameInAnnotatedSet) {
          {
@@ -954,7 +989,8 @@ let propagateAnnotationToSubTypes =
         fields |> List.iter(({type_, _}) => type_ |> visit)
       | Option(t)
       | Null(t)
-      | Nullable(t) => t |> visit
+      | Nullable(t)
+      | Promise(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
       | Variant({payloads}) =>
@@ -1025,22 +1061,25 @@ let emitTranslationAsString =
       ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
     );
 
+  let lookupId_ = (~env, s) =>
+    try (exportTypeMap |> StringMap.find(s)) {
+    | Not_found => env.exportTypeMapFromOtherFiles |> StringMap.find(s)
+    };
+
   let typeGetNormalized_ = (~env, type_) =>
     type_
-    |> Converter.typeToConverterNormalized(
+    |> Converter.typeGetNormalized(
          ~config,
-         ~exportTypeMap,
-         ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
+         ~inline=false,
+         ~lookupId=lookupId_(~env),
          ~typeNameIsInterface=typeNameIsInterface(~env),
-       )
-    |> snd;
+       );
 
-  let typeToConverter_ = (~env, type_) =>
+  let typeGetConverter_ = (~env, type_) =>
     type_
-    |> Converter.typeToConverter(
+    |> Converter.typeGetConverter(
          ~config,
-         ~exportTypeMap,
-         ~exportTypeMapFromOtherFiles=env.exportTypeMapFromOtherFiles,
+         ~lookupId=lookupId_(~env),
          ~typeNameIsInterface=typeNameIsInterface(~env),
        );
 
@@ -1081,9 +1120,9 @@ let emitTranslationAsString =
          ~fileName,
          ~outputFileRelative,
          ~resolver,
-         ~typeNameIsInterface=typeNameIsInterface(~env),
          ~typeGetNormalized=typeGetNormalized_(~env),
-         ~typeToConverter=typeToConverter_(~env),
+         ~typeGetConverter=typeGetConverter_(~env),
+         ~typeNameIsInterface=typeNameIsInterface(~env),
          ~variantTables,
        );
   let env =

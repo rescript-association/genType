@@ -5,7 +5,7 @@ type exportType = {
   opaque: option(bool),
   optType: option(type_),
   typeVars: list(string),
-  resolvedTypeName: string,
+  resolvedTypeName: ResolvedName.t,
 };
 
 type importComponent = {

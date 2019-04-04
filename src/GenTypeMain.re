@@ -16,7 +16,8 @@ let cmtHasGenTypeAnnotations = inputCMT =>
 let structureItemIsDeclaration = structItem =>
   switch (structItem.Typedtree.str_desc) {
   | Typedtree.Tstr_type(_)
-  | Tstr_modtype(_) => true
+  | Tstr_modtype(_)
+  | Tstr_module(_) => true
   | _ => false
   };
 
@@ -28,45 +29,44 @@ let signatureItemIsDeclaration = signatureItem =>
   };
 
 let inputCmtTranslateTypeDeclarations =
-    (~config, ~outputFileRelative, ~resolver, inputCMT)
-    : list(CodeItem.typeDeclaration) => {
+    (~config, ~outputFileRelative, ~resolver, inputCMT): CodeItem.translation => {
   let {Cmt_format.cmt_annots, _} = inputCMT;
   let typeEnv = TypeEnv.root();
-  switch (cmt_annots) {
-  | Implementation(structure) =>
-    {
-      ...structure,
-      str_items:
-        structure.str_items |> List.filter(structureItemIsDeclaration),
-    }
-    |> TranslateStructure.translateStructure(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-       )
-    |> List.map((x: CodeItem.translation) => x.typeDeclarations)
-    |> List.concat
+  let translations =
+    switch (cmt_annots) {
+    | Implementation(structure) =>
+      {
+        ...structure,
+        str_items:
+          structure.str_items |> List.filter(structureItemIsDeclaration),
+      }
+      |> TranslateStructure.translateStructure(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+         )
 
-  | Interface(signature) =>
-    {
-      ...signature,
-      sig_items:
-        signature.sig_items |> List.filter(signatureItemIsDeclaration),
-    }
-    |> TranslateSignature.translateSignature(
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-       )
-    |> List.map(x => x.CodeItem.typeDeclarations)
-    |> List.concat
+    | Interface(signature) =>
+      {
+        ...signature,
+        sig_items:
+          signature.sig_items |> List.filter(signatureItemIsDeclaration),
+      }
+      |> TranslateSignature.translateSignature(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+         )
 
-  | Packed(_)
-  | Partial_implementation(_)
-  | Partial_interface(_) => []
-  };
+    | Packed(_)
+    | Partial_implementation(_)
+    | Partial_interface(_) => []
+    };
+  translations
+  |> Translation.combine
+  |> Translation.addTypeDeclarationsFromModuleEquations(~typeEnv);
 };
 
 let translateCMT =
@@ -93,7 +93,9 @@ let translateCMT =
          )
     | _ => []
     };
-  translations |> Translation.combine;
+  translations
+  |> Translation.combine
+  |> Translation.addTypeDeclarationsFromModuleEquations(~typeEnv);
 };
 
 let emitTranslation =

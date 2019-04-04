@@ -1,9 +1,15 @@
 open GenTypeCommon;
 
+type moduleEquation = {
+  internal: bool,
+  dep,
+};
+
 type t = {
   mutable componentModuleItem: Runtime.moduleItem,
   mutable map: StringMap.t(entry),
   mutable mapModuleTypes: StringMap.t((Typedtree.signature, t)),
+  mutable moduleEquation: option(moduleEquation),
   mutable moduleItem: Runtime.moduleItem,
   name: string,
   parent: option(t),
@@ -19,6 +25,7 @@ let createTypeEnv = (~name, parent) => {
     componentModuleItem: moduleItem,
     map: StringMap.empty,
     mapModuleTypes: StringMap.empty,
+    moduleEquation: None,
     moduleItem,
     name,
     parent,
@@ -62,6 +69,33 @@ let getModule = (~name, typeEnv) =>
   | Type(_) => None
   | exception Not_found => None
   };
+
+let expandAliasToExternalModule = (~name, typeEnv) =>
+  switch (typeEnv |> getModule(~name)) {
+  | Some({moduleEquation: Some({internal: false, dep})}) =>
+    if (Debug.typeEnv^) {
+      logItem(
+        "TypeEnv.expandAliasToExternalModule %s %s aliased to %s\n",
+        typeEnv |> toString,
+        name,
+        dep |> depToString,
+      );
+    };
+    Some(dep);
+  | _ => None
+  };
+
+let addModuleEquation = (~dep, ~internal, typeEnv) => {
+  if (Debug.typeEnv^) {
+    logItem(
+      "Typenv.addModuleEquation %s %s dep:%s\n",
+      typeEnv |> toString,
+      internal ? "Internal" : "External",
+      dep |> depToString,
+    );
+  };
+  typeEnv.moduleEquation = Some({internal, dep});
+};
 
 let rec addTypeEquation = (~flattened, ~type_, typeEnv) =>
   switch (flattened) {
@@ -196,10 +230,33 @@ let updateModuleItem = (~nameOpt=None, ~moduleItem, typeEnv) => {
 
 let rec addModulePath = (~typeEnv, name) =>
   switch (typeEnv.parent) {
-  | None => name
+  | None => name |> ResolvedName.fromString
   | Some(parent) =>
-    typeEnv.name ++ "_" ++ name |> addModulePath(~typeEnv=parent)
+    typeEnv.name |> addModulePath(~typeEnv=parent) |> ResolvedName.dot(name)
   };
+
+let rec getModuleEquations = typeEnv: list(ResolvedName.eq) => {
+  let subEquations =
+    typeEnv.map
+    |> StringMap.bindings
+    |> List.map(((_, entry)) =>
+         switch (entry) {
+         | Module(te) => te |> getModuleEquations
+         | Type(_) => []
+         }
+       )
+    |> List.concat;
+  switch (typeEnv.moduleEquation, typeEnv.parent) {
+  | (None, _)
+  | (_, None) => subEquations
+  | (Some({dep}), Some(parent)) => [
+      (
+        dep |> depToResolvedName,
+        typeEnv.name |> addModulePath(~typeEnv=parent),
+      ),
+    ]
+  };
+};
 
 let getValueAccessPath = (~component=false, ~name, typeEnv) => {
   let rec accessPath = typeEnv =>

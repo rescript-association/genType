@@ -55,6 +55,7 @@ type type_ =
   | Nullable(type_)
   | Object(closedFlag, fields)
   | Option(type_)
+  | Promise(type_)
   | Record(fields)
   | Tuple(list(type_))
   | TypeVar(string)
@@ -78,11 +79,10 @@ and ident = {
   typeArgs: list(type_),
 }
 and variant = {
+  hash: int,
   noPayloads: list(case),
   payloads: list((case, int, type_)),
   polymorphic: bool,
-  toJS: string,
-  toRE: string,
   unboxed: bool,
 };
 
@@ -96,6 +96,7 @@ let typeIsObject = type_ =>
   | Nullable(_) => false
   | Object(_) => true
   | Option(_) => false
+  | Promise(_) => true
   | Record(_) => true
   | Tuple(_) => true
   | TypeVar(_) => false
@@ -107,23 +108,38 @@ type label =
   | Label(string)
   | OptLabel(string);
 
+type dep =
+  | External(string)
+  | Internal(ResolvedName.t)
+  | Dot(dep, string);
+
+let rec depToString = dep =>
+  switch (dep) {
+  | External(name) => name
+  | Internal(resolvedName) => resolvedName |> ResolvedName.toString
+  | Dot(d, s) => depToString(d) ++ "_" ++ s
+  };
+
+let rec depToResolvedName = (dep: dep) =>
+  switch (dep) {
+  | External(name) => name |> ResolvedName.fromString
+  | Internal(resolvedName) => resolvedName
+  | Dot(p, s) => ResolvedName.dot(s, p |> depToResolvedName)
+  };
+
 let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
   let hash =
     noPayloads
     |> List.map(case => (case.label, case.labelJS))
     |> Array.of_list
-    |> Hashtbl.hash
-    |> string_of_int;
+    |> Hashtbl.hash;
+
   let unboxed = payloads == [];
-  Variant({
-    noPayloads,
-    payloads,
-    polymorphic,
-    toJS: "$$toJS" ++ hash,
-    toRE: "$$toRE" ++ hash,
-    unboxed,
-  });
+  Variant({hash, noPayloads, payloads, polymorphic, unboxed});
 };
+
+let variantTable = (hash, ~toJS) =>
+  (toJS ? "$$toJS" : "$$toRE") ++ string_of_int(hash);
 
 let ident = (~isShim=false, ~typeArgs=[], name) =>
   Ident({isShim, name, typeArgs});
