@@ -18,14 +18,11 @@ The output of `genType` can be configured by using one of 3 back-ends: `untyped`
 
 See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
 
-## Breaking Change:
-> Since genType version 2.0.0, ordinary variants (e.g. ``` | A | B(int) ```) use the same representation as polymorphic variants (e.g. ``` | `a | `b(int) ```). The construcor functions (e.g. ```A``` or ```B(42) ```) are not generated anymore. Instead, one can construct the variant values directly in JS. Check out the [variants](#variants) section below for more details.
-
-> **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
 # Requirements
 
-bs-platform 4.0.5 or higher
+`bs-platform` 5.0.0 or higher using `genType` 2.17.0 or higher.
+For earlier versions, see the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
 # Installation
 
@@ -55,15 +52,12 @@ For running `gentype` with BuckleScript via `npm` workflow, add following script
 
 ```
 scripts: {
-  "bs:build": "export BS_CMT_POST_PROCESS_CMD=\"gentype\" && bsb -make-world",
+  "bs:build": "bsb -make-world",
   "bs:clean": "bsb -clean-world"
 }
 ```
 
-> **Note:** With genType >= 2.17.0 and bucklescript >= 5.0.0, it is not necessary anymore to set up `BS_CMT_POST_PROCESS_CMD`.
-
-For running `gentype` via different mechanics (global env variable etc.), you can set `BS_CMT_POST_PROCESS_CMD` to `node_modules/.bin/gentype` as well.
-
+> **Note:** With genType < 2.17.0 or bucklescript < 5.0.0, one has to set environment variable `BS_CMT_POST_PROCESS_CMD`. See the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
 With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.re.js` files are generated).
 
@@ -125,23 +119,19 @@ let callback = _ => Js.log("Clicked");
 To import a function `realValue` from JS module `MyMath.ts` (or `MyMath.js`):
 
 ```reason
-[@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./WrapJsValue.gen"] /* Always the name of the current file plus ".gen". */
+[@genType.import "./MyMath"] /* JS module to import from. */
 /* Name and type of the JS value to import. */
 external realValue: complexNumber => float = "";
 
 ```
 
-> **Note:** With genType >= 2.17.0 and bucklescript >= 5.0.0, the line with `@bs.module` and the current file name can be omitted: it will be added internally by bucklescript.
+> **Note:** With genType < 2.17.0 or bucklescript < 5.0.0, one had to add a line with `@bs.module` and the current file name. See the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
 
 
 Because of the `external` keyword, it's clear from context that this is an import, so you can also just use `@genType` and omit `.import`.
 
 To import a default JS export, use a secong argument to `@genType.import` e.g. `[@genType.import ("./MyMath", "default")]`. Similarly, to import a value with a different JS name, use e.g. `[@genType.import ("./MyMath", "ValueStartingWithUpperCaseLetter")]`. To import nested values, e.g. `Some.Nested.value`, use e.g. `[@genType.import ("./MyMath", "Some.Nested.value")]`.
-
-**NOTE** The argument of `@bs.module`must always be the name of the current file plus `.gen` (In future, this could be automatically generated).
-If the imported value is consumed directly from a module defined in another directory, the behaviour of bucklescript's `bs.module` annotation [can be surprising](https://github.com/cristianoc/genType/issues/106).
 
 ### Export and Import React Components
 
@@ -162,7 +152,6 @@ To import and wrap a ReactJS component for use by ReasonReact, the type of the `
 
 ```reason
 [@genType.import "./MyBanner"] /* Module with the JS component to be wrapped. */
-[@bs.module "./ImportMyBanner.gen"] /* Always the name of the current file plus ".gen". */
 /* The make function will be automatically generated from the types below. */
 external make:
   (~show: bool, ~message: option(message)=?, 'a) =>
@@ -178,7 +167,6 @@ The type of `make` must have a named argument for each prop in the JS component.
 
 This assumes that the JS component was exported with a default export. In case of named export, use e.g. `[@genType.import ("./MyBanner", "componentName")]`. To import a nested component, use e.g. `[@genType.import ("./MyBanner", "Some.Nested.component")]`. 
 
-**NOTE** The argument of `@bs.module`must always be the name of the current file plus `.gen` (In future, this could be automatically generated).
 
 ### Type Expansion and @genType.opaque
 
