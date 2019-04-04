@@ -1,6 +1,6 @@
 # Reason genType
 
-[![CircleCI](https://circleci.com/gh/cristianoc/genType/tree/master.svg?style=svg)](https://circleci.com/gh/cristianoc/genType/tree/master) [![Appveyor](https://ci.appveyor.com/api/projects/status/github/cristianoc/gentype?svg=true)](https://ci.appveyor.com/project/cristianoc/gentype)
+[![CircleCI](https://circleci.com/gh/cristianoc/genType/tree/master.svg?style=svg)](https://circleci.com/gh/cristianoc/genType/tree/master) [![Appveyor](https://ci.appveyor.com/api/projects/status/github/cristianoc/gentype?svg=true)](https://ci.appveyor.com/project/cristianoc/gentype/branch/master)
 
 `genType` lets you export [Reason](https://reasonml.github.io/) values and types to use in JavaScript, and import JavaScript values and types into Reason, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
 In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-react/) components both ways is supported, with automatic generation of the wrappers.
