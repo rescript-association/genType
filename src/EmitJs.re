@@ -601,6 +601,13 @@ let rec emitCodeItem =
       );
 
     let emitters =
+      switch (exportType.optType) {
+      | Some(GroupOfLabeledArgs(fields)) when config.language == Untyped =>
+        fields |> EmitType.emitPropTypes(~config, ~name, ~emitters, ~indent)
+      | _ => emitters
+      };
+
+    let emitters =
       /* only export default for the top level component in the file */
       fileName == moduleName ?
         EmitType.emitExportDefault(~emitters, ~config, name) : emitters;
@@ -1129,6 +1136,12 @@ let emitTranslationAsString =
            ~env,
            ~importPath=ImportPath.bsCurryPath(~config),
          ) :
+      env;
+
+  let env =
+    config.emitImportPropTypes ?
+      ModuleName.propTypes
+      |> requireModule(~import=true, ~env, ~importPath=ImportPath.propTypes) :
       env;
 
   let finalEnv =

@@ -12,6 +12,8 @@ let forBsFile: t => t;
 
 let fromStringUnsafe: string => t;
 
+let propTypes: t;
+
 let react: t;
 
 let reasonPervasives: t;

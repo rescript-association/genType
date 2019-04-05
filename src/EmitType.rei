@@ -77,6 +77,16 @@ let emitImportValueAsEarly:
   ) =>
   Emitters.t;
 
+let emitPropTypes:
+  (
+    ~config: config,
+    ~emitters: Emitters.t,
+    ~indent: Indent.t,
+    ~name: string,
+    list(GenTypeCommon.field)
+  ) =>
+  Emitters.t;
+
 let emitRequire:
   (
     ~importedValueOrComponent: bool,
