@@ -505,7 +505,7 @@ let rec emitCodeItem =
     let jsProps = "jsProps";
     let jsPropsDot = s => jsProps ++ "." ++ s;
 
-    let args =
+    let (propConverters, childrenConverter) =
       switch (converter) {
       | FunctionC({argConverters}) =>
         switch (argConverters) {
@@ -513,53 +513,48 @@ let rec emitCodeItem =
             GroupConverter(propConverters),
             ArgConverter(childrenConverter),
             ..._,
-          ] =>
-          (
-            propConverters
-            |> List.map(((s, optional, argConverter)) =>
-                 jsPropsDot(s)
-                 |> Converter.toReason(
-                      ~config,
-                      ~converter=
-                        optional == Optional
-                        && !(
-                             argConverter
-                             |> Converter.converterIsIdentity(~toJS=false)
-                           ) ?
-                          OptionC(argConverter) : argConverter,
-                      ~indent,
-                      ~nameGen,
-                      ~variantTables,
-                    )
-               )
+          ] => (
+            propConverters,
+            childrenConverter,
           )
-          @ [
-            jsPropsDot("children")
-            |> Converter.toReason(
-                 ~config,
-                 ~converter=childrenConverter,
-                 ~indent,
-                 ~nameGen,
-                 ~variantTables,
-               ),
-          ]
+        | [ArgConverter(childrenConverter), ..._] => ([], childrenConverter)
 
-        | [ArgConverter(childrenConverter), ..._] => [
-            jsPropsDot("children")
-            |> Converter.toReason(
-                 ~config,
-                 ~converter=childrenConverter,
-                 ~indent,
-                 ~nameGen,
-                 ~variantTables,
-               ),
-          ]
-
-        | _ => [jsPropsDot("children")]
+        | _ => ([], IdentC)
         }
 
-      | _ => [jsPropsDot("children")]
+      | _ => ([], IdentC)
       };
+
+    let args =
+      (
+        propConverters
+        |> List.map(((s, optional, argConverter)) =>
+             jsPropsDot(s)
+             |> Converter.toReason(
+                  ~config,
+                  ~converter=
+                    optional == Optional
+                    && !(
+                         argConverter
+                         |> Converter.converterIsIdentity(~toJS=false)
+                       ) ?
+                      OptionC(argConverter) : argConverter,
+                  ~indent,
+                  ~nameGen,
+                  ~variantTables,
+                )
+           )
+      )
+      @ [
+        jsPropsDot("children")
+        |> Converter.toReason(
+             ~config,
+             ~converter=childrenConverter,
+             ~indent,
+             ~nameGen,
+             ~variantTables,
+           ),
+      ];
 
     let emitters =
       emitExportType(
@@ -571,7 +566,7 @@ let rec emitCodeItem =
       );
 
     let emitters =
-      EmitType.emitExportConstMany(
+      EmitType.emitExportConst(
         ~config,
         ~emitters,
         ~name,
@@ -601,7 +596,8 @@ let rec emitCodeItem =
           )
           ++ ";",
           "  }));",
-        ],
+        ]
+        |> String.concat("\n"),
       );
 
     let emitters =

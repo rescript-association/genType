@@ -28,17 +28,6 @@ let emitExportConstEarly:
   ) =>
   Emitters.t;
 
-let emitExportConstMany:
-  (
-    ~config: config,
-    ~emitters: Emitters.t,
-    ~name: string,
-    ~type_: type_,
-    ~typeNameIsInterface: string => bool,
-    list(string)
-  ) =>
-  Emitters.t;
-
 let emitExportDefault:
   (~emitters: Emitters.t, ~config: config, string) => Emitters.t;
 

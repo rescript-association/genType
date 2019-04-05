@@ -333,12 +333,6 @@ let emitExportConst = emitExportConst_(~early=false);
 
 let emitExportConstEarly = emitExportConst_(~early=true);
 
-let emitExportConstMany =
-    (~config, ~emitters, ~name, ~type_, ~typeNameIsInterface, lines) =>
-  lines
-  |> String.concat("\n")
-  |> emitExportConst(~config, ~emitters, ~name, ~type_, ~typeNameIsInterface);
-
 let emitExportFunction =
     (~early, ~comment="", ~emitters, ~name, ~config, line) =>
   (comment == "" ? comment : "// " ++ comment ++ "\n")
