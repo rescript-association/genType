@@ -14,7 +14,7 @@ export const App = ReasonReact.wrapReasonForJs(
      return Curry._5(AppBS.make, jsProps.array, (jsProps.callback == null ? undefined : function (Arg1) {
   const result = jsProps.callback(Arg1);
   return result
-}), [jsProps.person.name, jsProps.person.age], jsProps.title, jsProps.children);
+}), [jsProps.person.name, jsProps.person.age, jsProps.person.optional], jsProps.title, jsProps.children);
   }));
 
 App.propTypes = {
@@ -22,7 +22,8 @@ App.propTypes = {
   callback : PropTypes.func,
   person : PropTypes.shape({
     name : PropTypes.string.isRequired,
-    age : PropTypes.number.isRequired
+    age : PropTypes.number.isRequired,
+    optional : PropTypes.number
   }).isRequired,
   title : PropTypes.string.isRequired
 };

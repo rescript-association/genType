@@ -20,6 +20,7 @@ let component = ReasonReact.statelessComponent("App");
 type person = {
   name: string,
   age: int,
+  optional: option(float),
 };
 
 [@genType]

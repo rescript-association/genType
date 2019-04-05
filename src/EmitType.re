@@ -565,7 +565,6 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
       ++ Indent.break(~indent)
       ++ "})";
 
-    | _ => "any" |> prefix
     }
   and emitField = (~indent, {name, optional, type_}: field) =>
     name
