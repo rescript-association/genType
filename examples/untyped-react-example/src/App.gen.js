@@ -11,13 +11,14 @@ import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 export const App = ReasonReact.wrapReasonForJs(
   AppBS.component,
   (function _(jsProps) {
-     return Curry._4(AppBS.make, (jsProps.callback == null ? undefined : function (Arg1) {
+     return Curry._5(AppBS.make, jsProps.array, (jsProps.callback == null ? undefined : function (Arg1) {
   const result = jsProps.callback(Arg1);
   return result
 }), [jsProps.person.name, jsProps.person.age], jsProps.title, jsProps.children);
   }));
 
 App.propTypes = {
+  array : PropTypes.arrayOf(PropTypes.string).isRequired,
   callback : PropTypes.func,
   person : PropTypes.shape({
     name : PropTypes.string.isRequired,

@@ -2,11 +2,12 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
 import * as ReasonReact from "reason-react/src/ReasonReact.js";
 
 var component = ReasonReact.statelessComponent("App");
 
-function make($staropt$star, person, title, _children) {
+function make(array, $staropt$star, person, title, _children) {
   var callback = $staropt$star !== undefined ? $staropt$star : (function (param) {
         return /* () */0;
       });
@@ -22,7 +23,7 @@ function make($staropt$star, person, title, _children) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               Curry._1(callback, /* () */0);
-              return React.createElement("div", undefined, "Test Component Title:" + (title + (" Name:" + person[/* name */0])));
+              return React.createElement("div", undefined, "Test Component Title:" + (title + (" Name:" + (person[/* name */0] + (" array[0]:" + Caml_array.caml_array_get(array, 0))))));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

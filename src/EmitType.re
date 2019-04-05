@@ -545,6 +545,8 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
   let prefix = s => "PropTypes." ++ s;
   let rec emitType = (~indent, type_: type_) =>
     switch (type_) {
+    | Array(t, _) =>
+      prefix("arrayOf") ++ "(" ++ (t |> emitType(~indent)) ++ ")"
     | Ident({name: ("bool" | "number" | "string") as id}) => id |> prefix
     | Function(_) => "func" |> prefix
     | GroupOfLabeledArgs(fields)

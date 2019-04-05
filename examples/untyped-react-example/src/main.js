@@ -18,7 +18,7 @@ printVariantWithPayload(testWithPayload({ x: 15 }));
 
 const Main = () => (
   <div>
-    <App title={"hello"} person={{ name: "Josh", age: 33 }} />
+    <App title={"hello"} person={{ name: "Josh", age: 33 }} array={["abc"]} />
   </div>
 );
 
