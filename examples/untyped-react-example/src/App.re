@@ -23,20 +23,14 @@ type person = {
 };
 
 [@genType]
-let make =
-    (
-      ~callback=() => (),
-      ~person: {
-         .
-         "name": string,
-         "age": int,
-       },
-      ~title,
-      _children,
-    ) => {
+let make = (~callback=() => (), ~person, ~title, _children) => {
   ...component,
   render: _self => {
     callback();
-    <div> {ReasonReact.string("Test Component Title:" ++ title)} </div>;
+    <div>
+      {ReasonReact.string(
+         "Test Component Title:" ++ title ++ " Name:" ++ person.name,
+       )}
+    </div>;
   },
 };

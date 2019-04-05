@@ -14,14 +14,14 @@ export const App = ReasonReact.wrapReasonForJs(
      return Curry._4(AppBS.make, (jsProps.callback == null ? undefined : function (Arg1) {
   const result = jsProps.callback(Arg1);
   return result
-}), jsProps.person, jsProps.title, jsProps.children);
+}), [jsProps.person.name, jsProps.person.age], jsProps.title, jsProps.children);
   }));
 
 App.propTypes = {
   callback : PropTypes.func,
   person : PropTypes.shape({
-    age : PropTypes.number.isRequired,
-    name : PropTypes.string.isRequired
+    name : PropTypes.string.isRequired,
+    age : PropTypes.number.isRequired
   }).isRequired,
   title : PropTypes.string.isRequired
 };

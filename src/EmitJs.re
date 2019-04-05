@@ -205,6 +205,7 @@ let rec emitCodeItem =
           ~outputFileRelative,
           ~resolver,
           ~typeGetConverter,
+          ~typeGetInlined,
           ~typeGetNormalized,
           ~typeNameIsInterface,
           ~variantTables,
@@ -603,7 +604,16 @@ let rec emitCodeItem =
     let emitters =
       switch (exportType.optType) {
       | Some(GroupOfLabeledArgs(fields)) when config.language == Untyped =>
-        fields |> EmitType.emitPropTypes(~config, ~name, ~emitters, ~indent)
+        fields
+        |> List.map((field: field) => {
+             let type_ =
+               switch (field.type_ |> typeGetInlined) {
+               | Some(type1) => type1
+               | None => type_
+               };
+             {...field, type_};
+           })
+        |> EmitType.emitPropTypes(~config, ~name, ~emitters, ~indent)
       | _ => emitters
       };
 
@@ -677,6 +687,7 @@ and emitCodeItems =
       ~resolver,
       ~typeNameIsInterface,
       ~typeGetConverter,
+      ~typeGetInlined,
       ~typeGetNormalized,
       ~variantTables,
       codeItems,
@@ -692,6 +703,7 @@ and emitCodeItems =
            ~outputFileRelative,
            ~resolver,
            ~typeGetConverter,
+           ~typeGetInlined,
            ~typeGetNormalized,
            ~typeNameIsInterface,
            ~variantTables,
@@ -1069,11 +1081,11 @@ let emitTranslationAsString =
     | Not_found => env.exportTypeMapFromOtherFiles |> StringMap.find(s)
     };
 
-  let typeGetNormalized_ = (~env, type_) =>
+  let typeGetNormalized_ = (~env, ~inline=false, type_) =>
     type_
     |> Converter.typeGetNormalized(
          ~config,
-         ~inline=false,
+         ~inline,
          ~lookupId=lookupId_(~env),
          ~typeNameIsInterface=typeNameIsInterface(~env),
        );
@@ -1123,6 +1135,7 @@ let emitTranslationAsString =
          ~fileName,
          ~outputFileRelative,
          ~resolver,
+         ~typeGetInlined=typeGetNormalized_(~env, ~inline=true),
          ~typeGetNormalized=typeGetNormalized_(~env),
          ~typeGetConverter=typeGetConverter_(~env),
          ~typeNameIsInterface=typeNameIsInterface(~env),

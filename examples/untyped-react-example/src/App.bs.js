@@ -22,7 +22,7 @@ function make($staropt$star, person, title, _children) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               Curry._1(callback, /* () */0);
-              return React.createElement("div", undefined, "Test Component Title:" + title);
+              return React.createElement("div", undefined, "Test Component Title:" + (title + (" Name:" + person[/* name */0])));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
