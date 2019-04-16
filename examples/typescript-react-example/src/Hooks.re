@@ -20,8 +20,3 @@ let default = (~vehicle) => {
     </button>
   </div>;
 };
-
-/*
-[@genType]
-let default = x => x + 1;
-*/
