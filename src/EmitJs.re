@@ -635,6 +635,8 @@ let rec emitCodeItem =
       fileNameBs |> requireModule(~import=false, ~env, ~importPath);
     let converter = type_ |> typeGetConverter;
 
+    let nameIsDefault = resolvedName == "default";
+
     let emitters =
       (
         (fileNameBs |> ModuleName.toString)
@@ -652,10 +654,15 @@ let rec emitCodeItem =
       |> EmitType.emitExportConst(
            ~config,
            ~emitters,
-           ~name=resolvedName,
+           ~name=nameIsDefault ? Runtime.default : resolvedName,
            ~type_,
            ~typeNameIsInterface,
          );
+
+    let emitters =
+      nameIsDefault ?
+        EmitType.emitExportDefault(~emitters, ~config, Runtime.default) :
+        emitters;
 
     (envWithRequires, emitters);
   };

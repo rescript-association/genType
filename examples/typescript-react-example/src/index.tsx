@@ -14,7 +14,7 @@ import { minus, t, tToString } from "./ReasonComponent.gen";
 import * as Records from "./Records.gen";
 import registerServiceWorker from "./registerServiceWorker";
 import * as Variants from "./Variants.gen";
-import * as Hooks from "./Hooks.gen";
+import Hooks from "./Hooks.gen";
 import {
   printManyPayloads,
   printVariantWithPayload,
@@ -93,7 +93,7 @@ ReactDOM.render(
       title={<div>title</div>}
       description={<div>description</div>}
     />
-    <Hooks.make vehicle={{ name: "Car" }} />
+    <Hooks vehicle={{ name: "Car" }} />
   </div>,
   document.getElementById("root") as HTMLElement
 );

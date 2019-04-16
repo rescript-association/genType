@@ -16,7 +16,7 @@ import * as SomeFlowTypes from "../SomeFlowTypes";
 
 import * as Variants from "../Variants.gen";
 
-import * as Hooks from "../Hooks.gen";
+import Hooks from "../Hooks.gen";
 
 import {
   printVariantWithPayload,
@@ -92,7 +92,7 @@ const App = () => (
       title={<div>title</div>}
       description={<div>description</div>}
     />
-    <Hooks.make vehicle={{ name: "Car" }} />
+    <Hooks vehicle={{ name: "Car" }} />
   </div>
 );
 App.displayName = "ExampleInteropRoot";

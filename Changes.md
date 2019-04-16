@@ -1,3 +1,6 @@
+# master
+- Add support for default export like in bucklescript: call the value "default".
+
 # 2.19.0
 - Add first-class support for Js.Promise.t, and conversion when required.
 - Emit the variant conversion tables in a stable order to limit changes when the source is modified.
