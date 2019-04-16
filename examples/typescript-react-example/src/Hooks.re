@@ -2,7 +2,7 @@ type vehicle = {name: string};
 
 [@genType]
 [@react.component]
-let make = (~vehicle) => {
+let default = (~vehicle) => {
   let (count, setCount) = React.useState(() => 0);
 
   <div>
@@ -20,3 +20,8 @@ let make = (~vehicle) => {
     </button>
   </div>;
 };
+
+/*
+[@genType]
+let default = x => x + 1;
+*/

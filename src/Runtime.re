@@ -107,3 +107,5 @@ let isMutableObjectField = name =>
    preceding the normal field. */
 let checkMutableObjectField = (~previousName, ~name) =>
   previousName == name ++ "#=";
+
+let default = "$$default";

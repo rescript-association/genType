@@ -8,7 +8,9 @@ import {reactElement as ReasonReact_reactElement} from '../src/shims/ReactShim.s
 // tslint:disable-next-line:interface-over-type-literal
 export type vehicle = { readonly name: string };
 
-export const make: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function (Arg1: any) {
-  const result = HooksBS.make({vehicle:[Arg1.vehicle.name]});
+export const $$default: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function (Arg1: any) {
+  const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
   return result
 };
+
+export default $$default;
