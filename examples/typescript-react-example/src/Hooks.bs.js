@@ -3,7 +3,7 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 
-function Hooks$default(Props) {
+function Hooks(Props) {
   var vehicle = Props.vehicle;
   var match = React.useState((function () {
           return 0;
@@ -19,9 +19,12 @@ function Hooks$default(Props) {
                 }, "Click me"));
 }
 
-var $$default = Hooks$default;
+var make = Hooks;
+
+var $$default = Hooks;
 
 export {
+  make ,
   $$default ,
   $$default as default,
   
