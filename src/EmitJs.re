@@ -620,7 +620,12 @@ let rec emitCodeItem =
     config.emitImportCurry = config.emitImportCurry || useCurry;
     (env, emitters);
 
-  | ExportValue({resolvedName, type_, valueAccessPath}) =>
+  | ExportValue({
+      originalName,
+      resolvedName,
+      type_,
+      valueAccessPath,
+    }) =>
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
@@ -635,7 +640,44 @@ let rec emitCodeItem =
       fileNameBs |> requireModule(~import=false, ~env, ~importPath);
     let converter = type_ |> typeGetConverter;
 
-    let nameIsDefault = resolvedName == "default";
+    let default = "default";
+    let make = "make";
+
+    let isHook =
+      switch (type_) {
+      | Function({
+          argTypes: [Object(_)],
+          retType:
+            Ident({name: "ReasonReact_reactElement" | "React_reactElement"}),
+        }) =>
+        true
+      | _ => false
+      };
+
+    let converter =
+      switch (converter) {
+      | FunctionC(functionC) when isHook =>
+        let chopSuffix = suffix =>
+          resolvedName == suffix ?
+            "" :
+            Filename.check_suffix(resolvedName, "_" ++ suffix) ?
+              Filename.chop_suffix(resolvedName, "_" ++ suffix) : resolvedName;
+        let suffix =
+          if (originalName == default) {
+            chopSuffix(default);
+          } else if (originalName == make) {
+            chopSuffix(make);
+          } else {
+            resolvedName;
+          };
+        let hookName =
+          (fileName |> ModuleName.toString)
+          ++ (suffix == "" ? suffix : "_" ++ suffix);
+        logItem("XXX resolvedName:%s hookName:%s\n", resolvedName, hookName);
+
+        Converter.FunctionC({...functionC, functionName: Some(hookName)});
+      | _ => converter
+      };
 
     let emitters =
       (
@@ -654,13 +696,13 @@ let rec emitCodeItem =
       |> EmitType.emitExportConst(
            ~config,
            ~emitters,
-           ~name=nameIsDefault ? Runtime.default : resolvedName,
+           ~name=originalName == default ? Runtime.default : resolvedName,
            ~type_,
            ~typeNameIsInterface,
          );
 
     let emitters =
-      nameIsDefault ?
+      originalName == default ?
         EmitType.emitExportDefault(~emitters, ~config, Runtime.default) :
         emitters;
 

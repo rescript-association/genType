@@ -22,3 +22,32 @@ let make = (~vehicle) => {
 
 [@genType]
 let default = make;
+
+[@genType]
+[@react.component]
+let anotherComponent = (~vehicle) =>
+  <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+
+module Inner = {
+  [@genType]
+  [@react.component]
+  let make = (~vehicle) =>
+    <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+
+  [@genType]
+  [@react.component]
+  let anotherComponent = (~vehicle) =>
+    <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+
+  module Inner2 = {
+    [@genType]
+    [@react.component]
+    let make = (~vehicle) =>
+      <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+
+    [@genType]
+    [@react.component]
+    let anotherComponent = (~vehicle) =>
+      <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+  };
+};

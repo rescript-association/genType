@@ -19,6 +19,7 @@ and groupedArgConverter =
 and fieldsC = list((string, t))
 and functionC = {
   argConverters: list(groupedArgConverter),
+  functionName: option(string),
   retConverter: t,
   typeVars: list(string),
   uncurried: bool,
@@ -136,7 +137,13 @@ let typeGetConverterNormalized =
         argTypes |> List.map(typeToGroupedArgConverter(~visited));
       let (retConverter, _) = retType |> visit(~visited);
       (
-        FunctionC({argConverters, retConverter, typeVars, uncurried}),
+        FunctionC({
+          argConverters,
+          functionName: None,
+          retConverter,
+          typeVars,
+          uncurried,
+        }),
         normalized_,
       );
 
@@ -395,7 +402,13 @@ let rec apply =
        )
     |> apply(~config, ~converter=c, ~indent, ~nameGen, ~toJS, ~variantTables)
 
-  | FunctionC({argConverters, retConverter, typeVars, uncurried}) =>
+  | FunctionC({
+      argConverters,
+      functionName,
+      retConverter,
+      typeVars,
+      uncurried,
+    }) =>
     let resultName = EmitText.resultName(~nameGen);
     let indent1 = indent |> Indent.more;
     let indent2 = indent1 |> Indent.more;
@@ -506,7 +519,14 @@ let rec apply =
     let args = convertedArgs |> List.map(fst) |> List.concat;
     let funParams = args |> List.map(v => v |> EmitType.ofTypeAny(~config));
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
-    EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars);
+    EmitText.funDef(
+      ~bodyArgs,
+      ~functionName,
+      ~funParams,
+      ~indent,
+      ~mkBody,
+      ~typeVars,
+    );
 
   | IdentC => value
 
