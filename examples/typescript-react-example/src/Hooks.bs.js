@@ -19,14 +19,54 @@ function Hooks(Props) {
                 }, "Click me"));
 }
 
+function Hooks$anotherComponent(Props) {
+  var vehicle = Props.vehicle;
+  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+}
+
+function Hooks$Inner(Props) {
+  var vehicle = Props.vehicle;
+  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+}
+
+function Hooks$Inner$anotherComponent(Props) {
+  var vehicle = Props.vehicle;
+  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+}
+
+function Hooks$Inner$Inner2(Props) {
+  var vehicle = Props.vehicle;
+  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+}
+
+function Hooks$Inner$Inner2$anotherComponent(Props) {
+  var vehicle = Props.vehicle;
+  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+}
+
+var Inner2 = /* module */[
+  /* make */Hooks$Inner$Inner2,
+  /* anotherComponent */Hooks$Inner$Inner2$anotherComponent
+];
+
+var Inner = /* module */[
+  /* make */Hooks$Inner,
+  /* anotherComponent */Hooks$Inner$anotherComponent,
+  /* Inner2 */Inner2
+];
+
 var make = Hooks;
 
 var $$default = Hooks;
+
+var anotherComponent = Hooks$anotherComponent;
 
 export {
   make ,
   $$default ,
   $$default as default,
+  anotherComponent ,
+  Inner ,
   
 }
 /* react Not a pure module */

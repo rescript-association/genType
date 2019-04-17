@@ -15,7 +15,7 @@ import type {reactElement as ReasonReact_reactElement} from '../src/shims/ReactS
 
 export type vehicle = {| +name: string |};
 
-const $$default: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = function (Arg1: $any) {
+const $$default: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = function Hooks(Arg1: $any) {
   const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
   return result
 };;

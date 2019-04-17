@@ -35,6 +35,7 @@ type exportComponent = {
 };
 
 type exportValue = {
+  originalName: string,
   resolvedName: string,
   type_,
   valueAccessPath: string,

@@ -111,7 +111,12 @@ let translateValue =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.ExportValue({resolvedName, type_, valueAccessPath}),
+    CodeItem.ExportValue({
+      originalName:name,
+      resolvedName,
+      type_,
+      valueAccessPath,
+    }),
   ];
   {
     importTypes:
