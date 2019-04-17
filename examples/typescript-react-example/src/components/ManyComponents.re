@@ -1,3 +1,5 @@
+[@bs.config {jsx: 2}];
+
 module InnerComponent = {
   let someValueSoModuleOffsetsAreShifted = 77;
 

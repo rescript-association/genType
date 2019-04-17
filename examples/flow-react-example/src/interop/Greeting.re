@@ -1,3 +1,5 @@
+[@bs.config {jsx: 2}];
+
 /* ReasonReact used by ReactJS */
 /* This is just a normal stateless component. The only change you need to turn
    it into a ReactJS-compatible component is the wrapReasonForJs call below */

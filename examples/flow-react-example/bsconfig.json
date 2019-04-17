@@ -20,7 +20,7 @@
 },
   "name": "flow-react-example",
   "bsc-flags": ["-bs-super-errors"],
-  "reason": { "react-jsx": 2 },
+  "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],
   "sources": [
     {
