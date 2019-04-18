@@ -1,3 +1,6 @@
+# master
+- Make Flow type check function components.
+
 # 2.20.0
 - Add support for default export like in bucklescript: call the value "default".
 - Hooks: generate names analogous to those from ppx for the React developer tools.

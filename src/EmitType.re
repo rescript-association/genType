@@ -296,6 +296,28 @@ let ofType = (~config, ~typeNameIsInterface, ~type_, s) =>
   config.language == Untyped ?
     s : s ++ ": " ++ (type_ |> typeToString(~config, ~typeNameIsInterface));
 
+let emitHookTypeAsFunction =
+    (
+      ~config,
+      ~emitters,
+      ~name,
+      ~propsType,
+      ~retType,
+      ~retValue,
+      ~typeNameIsInterface,
+    ) =>
+  "// Type annotated function components are not checked by Flow, but typeof() works.\n"
+  ++ "const "
+  ++ name
+  ++ " = function ("
+  ++ ("_" |> ofType(~config, ~typeNameIsInterface, ~type_=propsType))
+  ++ ")"
+  ++ (" " |> ofType(~config, ~typeNameIsInterface, ~type_=retType))
+  ++ " { return "
+  ++ retValue
+  ++ " };"
+  |> Emitters.export(~emitters);
+
 let emitExportConst_ =
     (
       ~early,
