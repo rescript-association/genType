@@ -11,6 +11,8 @@ let fromModule:
 
 let fromStringUnsafe: string => t;
 
+let propTypes : t;
+
 let reasonReactPath: (~config: config) => t;
 
 let react: t;

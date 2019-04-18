@@ -3,6 +3,9 @@ type t = string;
 let createBucklescriptBlock = "CreateBucklescriptBlock";
 
 let curry = "Curry";
+
+let propTypes = "PropTypes";
+
 let react = "React";
 
 let reasonPervasives = "ReasonPervasives";

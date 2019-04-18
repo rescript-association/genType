@@ -2,6 +2,8 @@ open GenTypeCommon;
 
 type t = string;
 
+let propTypes = "prop-types";
+
 let react = "react";
 let reasonReactPath = (~config) => config.reasonReactPath;
 let bsBlockPath = Config_.getBsBlockPath;

@@ -104,10 +104,10 @@ let rec renderType =
          ~typeNameIsInterface,
        );
 
-  | Ident({name: identPath, typeArgs}) =>
+  | Ident({name, typeArgs}) =>
     (
-      config.exportInterfaces && identPath |> typeNameIsInterface ?
-        identPath |> interfaceName(~config) : identPath
+      config.exportInterfaces && name |> typeNameIsInterface ?
+        name |> interfaceName(~config) : name
     )
     ++ EmitText.genericsString(
          ~typeVars=
@@ -561,6 +561,63 @@ let emitRequireReact = (~early, ~emitters, ~config) =>
     "import * as React from 'react';" |> require(~early, ~emitters)
   | Untyped => emitters
   };
+
+let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
+  let indent1 = indent |> Indent.more;
+  let prefix = s => "PropTypes." ++ s;
+  let rec emitType = (~indent, type_: type_) =>
+    switch (type_) {
+    | Array(t, _) =>
+      prefix("arrayOf") ++ "(" ++ (t |> emitType(~indent)) ++ ")"
+    | Ident({name: ("bool" | "number" | "string") as id}) => id |> prefix
+    | Function(_) => "func" |> prefix
+    | GroupOfLabeledArgs(fields)
+    | Object(_, fields)
+    | Record(fields) =>
+      let indent1 = indent |> Indent.more;
+      prefix("shape")
+      ++ "({"
+      ++ Indent.break(~indent=indent1)
+      ++ (
+        fields
+        |> List.filter(({name}: field) => name != "children")
+        |> List.map(emitField(~indent=indent1))
+        |> String.concat("," ++ Indent.break(~indent=indent1))
+      )
+      ++ Indent.break(~indent)
+      ++ "})";
+
+    | Ident(_)
+    | Null(_)
+    | Nullable(_)
+    | Option(_)
+    | Promise(_)
+    | Tuple(_)
+    | TypeVar(_)
+    | Variant(_) => "any" |> prefix
+    }
+  and emitField = (~indent, {name, optional, type_}: field) =>
+    name
+    ++ " : "
+    ++ (type_ |> emitType(~indent))
+    ++ (optional == Mandatory ? ".isRequired" : "");
+
+  config.emitImportPropTypes = true;
+
+  name
+  ++ ".propTypes = "
+  ++ "{"
+  ++ Indent.break(~indent=indent1)
+  ++ (
+    fields
+    |> List.filter(({name}: field) => name != "children")
+    |> List.map(emitField(~indent=indent1))
+    |> String.concat("," ++ Indent.break(~indent=indent1))
+  )
+  ++ Indent.break(~indent)
+  ++ "};"
+  |> Emitters.export(~emitters);
+};
 
 let reactComponentType = (~config, ~propsTypeName) =>
   (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
