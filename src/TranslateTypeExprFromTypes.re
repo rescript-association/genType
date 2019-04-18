@@ -295,6 +295,7 @@ let translateConstr =
              | Option(t) => (Optional, t)
              | _ => (Mandatory, t)
              };
+           let name = name |> Runtime.marshalObjectField;
            {mutable_, name, optional, type_};
          });
     let type_ = Object(closedFlag, fields);

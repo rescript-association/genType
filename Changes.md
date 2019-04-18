@@ -1,3 +1,11 @@
+# 2.20.0
+- Add support for default export like in bucklescript: call the value "default".
+- Hooks: generate names analogous to those from ppx for the React developer tools.
+- Apply bucklescript's marshaling rules for Js object field names:
+  Remove trailing `__` if present.
+  Otherwise remove leading `_` when followed by an uppercase letter, or keyword.
+
+
 # 2.19.0
 - Add first-class support for Js.Promise.t, and conversion when required.
 - Emit the variant conversion tables in a stable order to limit changes when the source is modified.

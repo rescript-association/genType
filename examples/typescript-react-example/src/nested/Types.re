@@ -97,3 +97,39 @@ type decorator('a, 'b) = 'a => 'b constraint 'a = int constraint 'b = _ => _;
 
 [@genType]
 let testConvertLocation = (x: Location.t) => x;
+
+/* Bucklescript's marshaling rules. */
+[@genType]
+type marshalFields = {
+  .
+  "_rec": string,
+  "_switch": string,
+  "switch__": string,
+  "_": string,
+  "__": string,
+  "___": string,
+  "foo__": string,
+  "_foo__": string,
+  "_Uppercase": string,
+  "_Uppercase__": string,
+};
+
+[@genType]
+let testMarshalFields: marshalFields = {
+  "_rec": "rec",
+  "_switch": "_switch", /* reason keywords are not recognized */
+  "switch__": "switch",
+  "_": "_",
+  "__": "__",
+  "___": "_",
+  "foo__": "foo",
+  "_foo__": "_foo",
+  "_Uppercase": "Uppercase",
+  "_Uppercase__": "_Uppercase",
+};
+
+[@genType]
+type marshalMutableField = {. [@bs.set] "_match": int};
+
+[@genType]
+let setMatch = (x: marshalMutableField) => x##_match #= 34;
