@@ -673,8 +673,6 @@ let rec emitCodeItem =
         let hookName =
           (fileName |> ModuleName.toString)
           ++ (suffix == "" ? suffix : "_" ++ suffix);
-        logItem("XXX resolvedName:%s hookName:%s\n", resolvedName, hookName);
-
         Converter.FunctionC({...functionC, functionName: Some(hookName)});
       | _ => converter
       };
