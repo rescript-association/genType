@@ -1,4 +1,4 @@
-# master
+# 2.21.0
 - Make Flow type check function components.
 - Add experimental support for prop types. Add `"propTypes": true` and `"language": "untyped"` to the configuration.
 
