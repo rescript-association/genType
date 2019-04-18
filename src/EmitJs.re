@@ -638,12 +638,7 @@ let rec emitCodeItem =
     config.emitImportCurry = config.emitImportCurry || useCurry;
     (env, emitters);
 
-  | ExportValue({
-      originalName,
-      resolvedName,
-      type_,
-      valueAccessPath,
-    }) =>
+  | ExportValue({originalName, resolvedName, type_, valueAccessPath}) =>
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
@@ -661,20 +656,24 @@ let rec emitCodeItem =
     let default = "default";
     let make = "make";
 
-    let isHook =
+    let hookType =
       switch (type_) {
       | Function({
-          argTypes: [Object(_)],
+          argTypes: [Object(_) as propsT],
           retType:
-            Ident({name: "ReasonReact_reactElement" | "React_reactElement"}),
+            Ident({name: "ReasonReact_reactElement" | "React_reactElement"}) as retT,
         }) =>
-        true
-      | _ => false
+        Some((propsT, retT))
+      | _ => None
       };
+    /* Work around Flow issue with function components.
+       If type annotated direcly, they are not checked. But typeof() works. */
+    let flowFunctionTypeWorkaround =
+      hookType != None && config.language == Flow;
 
     let converter =
       switch (converter) {
-      | FunctionC(functionC) when isHook =>
+      | FunctionC(functionC) when hookType != None =>
         let chopSuffix = suffix =>
           resolvedName == suffix ?
             "" :
@@ -695,6 +694,27 @@ let rec emitCodeItem =
       | _ => converter
       };
 
+    let name = originalName == default ? Runtime.default : resolvedName;
+    let hookNameForTypeof = name ++ "$$forTypeof";
+    let type_ =
+      flowFunctionTypeWorkaround ?
+        ident("typeof(" ++ hookNameForTypeof ++ ")") : type_;
+
+    let emitters =
+      switch (hookType) {
+      | Some((propsType, retType)) when flowFunctionTypeWorkaround =>
+        EmitType.emitHookTypeAsFunction(
+          ~config,
+          ~emitters,
+          ~name=hookNameForTypeof,
+          ~propsType,
+          ~retType,
+          ~retValue="null",
+          ~typeNameIsInterface,
+        )
+      | _ => emitters
+      };
+
     let emitters =
       (
         (fileNameBs |> ModuleName.toString)
@@ -712,7 +732,7 @@ let rec emitCodeItem =
       |> EmitType.emitExportConst(
            ~config,
            ~emitters,
-           ~name=originalName == default ? Runtime.default : resolvedName,
+           ~name,
            ~type_,
            ~typeNameIsInterface,
          );
