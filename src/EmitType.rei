@@ -56,6 +56,18 @@ let emitExportType:
   ) =>
   Emitters.t;
 
+let emitHookTypeAsFunction:
+  (
+    ~config: config,
+    ~emitters: Emitters.t,
+    ~name: string,
+    ~propsType: type_,
+    ~retType: type_,
+    ~retValue: string,
+    ~typeNameIsInterface: string => bool
+  ) =>
+  Emitters.t;
+
 let emitImportTypeAs:
   (
     ~emitters: Emitters.t,
