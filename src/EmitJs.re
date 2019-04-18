@@ -603,7 +603,8 @@ let rec emitCodeItem =
 
     let emitters =
       switch (exportType.optType) {
-      | Some(GroupOfLabeledArgs(fields)) when config.language == Untyped =>
+      | Some(GroupOfLabeledArgs(fields))
+          when config.language == Untyped && config.propTypes =>
         fields
         |> List.map((field: field) => {
              let type_ =

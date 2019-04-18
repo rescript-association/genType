@@ -565,6 +565,14 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
       ++ Indent.break(~indent)
       ++ "})";
 
+    | Ident(_)
+    | Null(_)
+    | Nullable(_)
+    | Option(_)
+    | Promise(_)
+    | Tuple(_)
+    | TypeVar(_)
+    | Variant(_) => "any" |> prefix
     }
   and emitField = (~indent, {name, optional, type_}: field) =>
     name

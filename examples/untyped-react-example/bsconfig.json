@@ -6,6 +6,7 @@
       "all": false
     },
     "exportInterfaces": false,
+    "propTypes": true,
     "path": "../../src/lib/bs/native/gentype.native.exe"
   },
   "name": "untyped-react-example",

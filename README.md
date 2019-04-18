@@ -440,6 +440,9 @@ These features are for experimentation only. They could be changed/removed any t
 
 - Export object and record types as interfaces. To activate, add `"exportInterfaces": true` to the configuration. The types are also renamed from `name` to `Iname`.
 
+- Emit prop types for the untyped back-end. To activate, add `"propTypes": true` and `"language": "untyped"` to the configuration.
+
+
 # Limitations
 
 - **BuckleScript in-source = true**. Currently only supports bucklescript projects with [in-source generation](https://bucklescript.github.io/docs/en/build-configuration#package-specs) and `.bs.js` file suffix.
