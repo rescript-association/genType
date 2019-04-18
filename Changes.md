@@ -1,4 +1,4 @@
-# master
+# 2.21.1
 - Fix parentheses in function components with Flow back-end.
 
 # 2.21.0
