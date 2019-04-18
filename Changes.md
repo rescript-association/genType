@@ -1,5 +1,6 @@
 # master
 - Make Flow type check function components.
+- Add experimental support for prop types. Add "propTypes": true` and `"language": "untyped"` to the configuration.
 
 # 2.20.0
 - Add support for default export like in bucklescript: call the value "default".
