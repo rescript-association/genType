@@ -63,6 +63,23 @@ export type record = { readonly i: number; readonly s: string };
 // tslint:disable-next-line:interface-over-type-literal
 export type decorator<a,b> = (_1:a) => b;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type marshalFields = {
+  readonly rec: string; 
+  readonly _switch: string; 
+  readonly switch: string; 
+  readonly _: string; 
+  readonly __: string; 
+  readonly _: string; 
+  readonly foo: string; 
+  readonly _foo: string; 
+  readonly Uppercase: string; 
+  readonly _Uppercase: string
+};
+
+// tslint:disable-next-line:interface-over-type-literal
+export type marshalMutableField = { match: number };
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = function <T1,T2>(Arg1: any, Arg2: any) {
@@ -106,3 +123,7 @@ export const testConvertLocation: (_1:Location_t) => Location_t = function (Arg1
   const result = TypesBS.testConvertLocation([Arg1.id, Arg1.name]);
   return {id:result[0], name:result[1]}
 };
+
+export const testMarshalFields: marshalFields = TypesBS.testMarshalFields;
+
+export const setMatch: (_1:marshalMutableField) => void = TypesBS.setMatch;

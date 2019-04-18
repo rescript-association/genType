@@ -36,6 +36,24 @@ function testConvertLocation(x) {
   return x;
 }
 
+var testMarshalFields = {
+  rec: "rec",
+  _switch: "_switch",
+  switch: "switch",
+  _: "_",
+  __: "__",
+  _: "_",
+  foo: "foo",
+  _foo: "_foo",
+  Uppercase: "Uppercase",
+  _Uppercase: "_Uppercase"
+};
+
+function setMatch(x) {
+  x.match = 34;
+  return /* () */0;
+}
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -65,6 +83,8 @@ export {
   jsonStringify ,
   testConvertNull ,
   testConvertLocation ,
+  testMarshalFields ,
+  setMatch ,
   
 }
 /* No side effect */
