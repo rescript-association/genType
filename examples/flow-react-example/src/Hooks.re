@@ -25,8 +25,10 @@ let default = make;
 
 [@genType]
 [@react.component]
-let anotherComponent = (~vehicle) =>
+let anotherComponent = (~vehicle, ~callback: unit => unit) => {
+  callback();
   <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+};
 
 module Inner = {
   [@genType]

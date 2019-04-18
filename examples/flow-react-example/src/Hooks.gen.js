@@ -26,10 +26,13 @@ export const $$default: typeof($$default$$forTypeof) = function Hooks(Arg1: $any
 export default $$default;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
-const anotherComponent$$forTypeof = function (_: {| +vehicle: vehicle |}) : ReasonReact_reactElement { return null };
+const anotherComponent$$forTypeof = function (_: {| +callback: (void) => void, +vehicle: vehicle |}) : ReasonReact_reactElement { return null };
 
 export const anotherComponent: typeof(anotherComponent$$forTypeof) = function Hooks_anotherComponent(Arg1: $any) {
-  const result = HooksBS.anotherComponent({vehicle:[Arg1.vehicle.name]});
+  const result = HooksBS.anotherComponent({callback:function (Arg11: $any) {
+      const result1 = Arg1.callback(Arg11);
+      return result1
+    }, vehicle:[Arg1.vehicle.name]});
   return result
 };
 
