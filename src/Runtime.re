@@ -171,7 +171,7 @@ module Marshal = {
   |];
 
   let table = Hashtbl.create(keywords |> Array.length);
-  keywords |> Array.iter(x => table->Hashtbl.add("_" ++ x, x));
+  keywords |> Array.iter(x => Hashtbl.add(table, "_" ++ x, x));
 
   /*
      Apply bucklescript's marshaling rules for object field names:
@@ -180,18 +180,16 @@ module Marshal = {
    */
   let translate = x => {
     let len = x |> String.length;
-    if (len > 2
-        && x->String.get(len - 1) == '_'
-        && x->String.get(len - 2) == '_') {
+    if (len > 2 && x.[len - 1] == '_' && x.[len - 2] == '_') {
       /* "foo__" -> "foo" */
       String.sub(x, 0, len - 2);
-    } else if (len > 1 && x->String.get(0) == '_') {
-      if (x->String.get(1) >= 'A' && x->String.get(1) <= 'Z') {
+    } else if (len > 1 && x.[0] == '_') {
+      if (x.[1] >= 'A' && x.[1] <= 'Z') {
         /* "_Uppercase" => "Uppercase" */
         String.sub(x, 1, len - 1);
       } else {
         /* "_rec" -> "rec" */
-        switch (table->Hashtbl.find(x)) {
+        switch (Hashtbl.find(table, x)) {
         | y => y
         | exception Not_found => x
         };

@@ -310,7 +310,12 @@ let emitHookTypeAsFunction =
   ++ "const "
   ++ name
   ++ " = function ("
-  ++ ("_" |> ofType(~config, ~typeNameIsInterface, ~type_=propsType))
+  ++ (
+    "_: "
+    ++ (
+      propsType |> renderType(~config, ~typeNameIsInterface, ~inFunType=true)
+    )
+  )
   ++ ")"
   ++ (" " |> ofType(~config, ~typeNameIsInterface, ~type_=retType))
   ++ " { return "
