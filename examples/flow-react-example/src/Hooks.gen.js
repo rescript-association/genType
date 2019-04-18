@@ -21,3 +21,28 @@ export const $$default: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = 
 };
 
 export default $$default;
+
+export const anotherComponent: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = function Hooks_anotherComponent(Arg1: $any) {
+  const result = HooksBS.anotherComponent({vehicle:[Arg1.vehicle.name]});
+  return result
+};
+
+export const Inner_make: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = function Hooks_Inner(Arg1: $any) {
+  const result = HooksBS.Inner[0]({vehicle:[Arg1.vehicle.name]});
+  return result
+};
+
+export const Inner_anotherComponent: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = function Hooks_Inner_anotherComponent(Arg1: $any) {
+  const result = HooksBS.Inner[1]({vehicle:[Arg1.vehicle.name]});
+  return result
+};
+
+export const Inner_Inner2_make: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = function Hooks_Inner_Inner2(Arg1: $any) {
+  const result = HooksBS.Inner[2][0]({vehicle:[Arg1.vehicle.name]});
+  return result
+};
+
+export const Inner_Inner2_anotherComponent: ({| +vehicle: vehicle |}) => ReasonReact_reactElement = function Hooks_Inner_Inner2_anotherComponent(Arg1: $any) {
+  const result = HooksBS.Inner[2][1]({vehicle:[Arg1.vehicle.name]});
+  return result
+};
