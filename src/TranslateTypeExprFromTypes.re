@@ -187,6 +187,21 @@ let translateConstr =
       type_: Array(paramTranslation.type_, Immutable),
     }
 
+  | (
+      Pdot(Pident({name: "React", _}), "componentLike", _),
+      [propsTranslation, retTranslation],
+    ) => {
+      dependencies:
+        propsTranslation.dependencies @ retTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [propsTranslation.type_],
+          retType: retTranslation.type_,
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
   | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])
   | (Pident({name: "option", _}), [paramTranslation]) => {
       ...paramTranslation,
