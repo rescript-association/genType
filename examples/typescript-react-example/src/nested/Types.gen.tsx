@@ -68,7 +68,6 @@ export type marshalFields = {
   readonly rec: string; 
   readonly _switch: string; 
   readonly switch: string; 
-  readonly _: string; 
   readonly __: string; 
   readonly _: string; 
   readonly foo: string; 
