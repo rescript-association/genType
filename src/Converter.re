@@ -126,11 +126,14 @@ let typeGetConverterNormalized =
     | _ => type_
     };
   let rec visit = (~visited: StringSet.t, type_) => {
-    let normalized_ = Some(type_);
+    let normalized_ = type_;
     switch (type_) {
     | Array(t, _) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (ArrayC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
+      (
+        ArrayC(tConverter),
+        tNormalized == Opaque ? tNormalized : normalized_,
+      );
 
     | Function({argTypes, retType, typeVars, uncurried, _}) =>
       let argConverters =
@@ -147,7 +150,7 @@ let typeGetConverterNormalized =
         normalized_,
       );
 
-    | GroupOfLabeledArgs(_) => (IdentC, Some(Opaque))
+    | GroupOfLabeledArgs(_) => (IdentC, Opaque)
 
     | Ident({isShim, name, typeArgs}) =>
       if (visited |> StringSet.mem(name)) {
@@ -156,8 +159,8 @@ let typeGetConverterNormalized =
       } else {
         let visited = visited |> StringSet.add(name);
         switch (name |> lookupId) {
-        | {annotation: GenTypeOpaque, _} => (IdentC, Some(Opaque))
-        | {annotation: NoGenType, _} => (IdentC, Some(Opaque))
+        | {annotation: GenTypeOpaque, _} => (IdentC, Opaque)
+        | {annotation: NoGenType, _} => (IdentC, Opaque)
         | {typeVars, type_, _} =>
           let pairs =
             try (List.combine(typeVars, typeArgs)) {
@@ -177,20 +180,23 @@ let typeGetConverterNormalized =
         | exception Not_found =>
           let isBaseType =
             type_ == booleanT || type_ == numberT || type_ == stringT;
-          (
-            IdentC,
-            isShim || isBaseType || inline ? normalized_ : Some(Opaque),
-          );
+          (IdentC, isShim || isBaseType || inline ? normalized_ : Opaque);
         };
       }
 
     | Null(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (NullableC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
+      (
+        NullableC(tConverter),
+        tNormalized == Opaque ? tNormalized : normalized_,
+      );
 
     | Nullable(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (NullableC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
+      (
+        NullableC(tConverter),
+        tNormalized == Opaque ? tNormalized : normalized_,
+      );
 
     | Object(_, fields) => (
         ObjectC(
@@ -211,11 +217,17 @@ let typeGetConverterNormalized =
 
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (OptionC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
+      (
+        OptionC(tConverter),
+        tNormalized == Opaque ? tNormalized : normalized_,
+      );
 
     | Promise(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (PromiseC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
+      (
+        PromiseC(tConverter),
+        tNormalized == Opaque ? tNormalized : normalized_,
+      );
 
     | Record(fields) => (
         RecordC(
@@ -235,8 +247,8 @@ let typeGetConverterNormalized =
     | Tuple(innerTypes) =>
       let (innerConversions, normalizedList) =
         innerTypes |> List.map(visit(~visited)) |> List.split;
-      let innerHasOpaque = normalizedList |> List.mem(Some(Opaque));
-      (TupleC(innerConversions), innerHasOpaque ? Some(Opaque) : normalized_);
+      let innerHasOpaque = normalizedList |> List.mem(Opaque);
+      (TupleC(innerConversions), innerHasOpaque ? Opaque : normalized_);
 
     | TypeVar(_) => (IdentC, normalized_)
 
@@ -248,8 +260,7 @@ let typeGetConverterNormalized =
           let converter = t |> visit(~visited) |> fst;
           let unboxed = t |> expandOneLevel |> typeIsObject;
           let normalized =
-            unboxed ?
-              Some(Variant({...variant, unboxed: true})) : normalized_;
+            unboxed ? Variant({...variant, unboxed: true}) : normalized_;
           ([(case, numArgs, converter)], normalized, unboxed);
         | [_, _, ..._] => (
             variant.payloads
@@ -292,7 +303,7 @@ let typeGetConverterNormalized =
   if (Debug.converter^) {
     logItem(
       "Converter %s type0:%s converter:%s\n",
-      normalized == None ? " opaque " : "",
+      normalized == Opaque ? " opaque " : "",
       type0 |> EmitType.typeToString(~config, ~typeNameIsInterface),
       finalConverter |> toString,
     );

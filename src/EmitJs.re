@@ -116,7 +116,7 @@ let emitExportType =
     | (Some(opaque), _) => (opaque, optType)
     | (None, Some(type_)) =>
       let normalized = type_ |> typeGetNormalized;
-      normalized == Some(Opaque) ? (true, optType) : (false, normalized);
+      normalized == Opaque ? (true, optType) : (false, Some(normalized));
     | (None, None) => (false, None)
     };
   resolvedTypeName
@@ -607,11 +607,7 @@ let rec emitCodeItem =
           when config.language == Untyped && config.propTypes =>
         fields
         |> List.map((field: field) => {
-             let type_ =
-               switch (field.type_ |> typeGetInlined) {
-               | Some(type1) => type1
-               | None => type_
-               };
+             let type_ = field.type_ |> typeGetInlined;
              {...field, type_};
            })
         |> EmitType.emitPropTypes(~config, ~name, ~emitters, ~indent)
@@ -838,18 +834,13 @@ let emitVariantTables = (~emitters, variantTables) => {
 };
 
 let typeGetInlined = (~config, ~exportTypeMap, type_) =>
-  switch (
-    type_
-    |> Converter.typeGetNormalized(
-         ~config,
-         ~inline=true,
-         ~lookupId=s => exportTypeMap |> StringMap.find(s),
-         ~typeNameIsInterface=_ => false,
-       )
-  ) {
-  | None => type_
-  | Some(type1) => type1
-  };
+  type_
+  |> Converter.typeGetNormalized(
+       ~config,
+       ~inline=true,
+       ~lookupId=s => exportTypeMap |> StringMap.find(s),
+       ~typeNameIsInterface=_ => false,
+     );
 
 /* Read the cmt file referenced in an import type,
    and recursively for the import types obtained from reading the cmt file. */
