@@ -152,7 +152,7 @@ let typeGetConverterNormalized =
         }),
       );
 
-    | GroupOfLabeledArgs(_) => (IdentC, Opaque)
+    | GroupOfLabeledArgs(_) => (IdentC, normalized_)
 
     | Ident({isShim, name, typeArgs}) =>
       if (visited |> StringSet.mem(name)) {
@@ -161,8 +161,8 @@ let typeGetConverterNormalized =
       } else {
         let visited = visited |> StringSet.add(name);
         switch (name |> lookupId) {
-        | {annotation: GenTypeOpaque, _} => (IdentC, Opaque)
-        | {annotation: NoGenType, _} => (IdentC, Opaque)
+        | {annotation: GenTypeOpaque, _} => (IdentC, normalized_)
+        | {annotation: NoGenType, _} => (IdentC, normalized_)
         | {typeVars, type_, _} =>
           let pairs =
             try (List.combine(typeVars, typeArgs)) {
@@ -179,10 +179,7 @@ let typeGetConverterNormalized =
           let (converter, inlined) =
             type_ |> TypeVars.substitute(~f) |> visit(~visited);
           (converter, inline ? inlined : normalized_);
-        | exception Not_found =>
-          let isBaseType =
-            type_ == booleanT || type_ == numberT || type_ == stringT;
-          (IdentC, isShim || isBaseType || inline ? normalized_ : Opaque);
+        | exception Not_found => (IdentC, normalized_)
         };
       }
 
@@ -238,13 +235,7 @@ let typeGetConverterNormalized =
                (name, optional == Mandatory ? converter : OptionC(converter))
              ),
         ),
-        normalized_ /*
-        Record(
-          fieldsConverted
-          |> List.map(((field, (_, tNormalized))) =>
-               {...field, type_: tNormalized}
-             ),
-        ) */,
+        normalized_ /* Record(   fieldsConverted   |> List.map(((field, (_, tNormalized))) =>        {...field, type_: tNormalized}      ), ) */,
       );
 
     | Tuple(innerTypes) =>
