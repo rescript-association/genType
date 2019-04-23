@@ -5,8 +5,13 @@ function noConversion(x) {
   return x;
 }
 
+function testConvertNestedRecordFromOtherFile(x) {
+  return x;
+}
+
 export {
   noConversion ,
+  testConvertNestedRecordFromOtherFile ,
   
 }
 /* No side effect */
