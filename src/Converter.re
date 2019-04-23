@@ -235,7 +235,12 @@ let typeGetConverterNormalized =
                (name, optional == Mandatory ? converter : OptionC(converter))
              ),
         ),
-        normalized_ /* Record(   fieldsConverted   |> List.map(((field, (_, tNormalized))) =>        {...field, type_: tNormalized}      ), ) */,
+        Record(
+          fieldsConverted
+          |> List.map(((field, (_, tNormalized))) =>
+               {...field, type_: tNormalized}
+             ),
+        ),
       );
 
     | Tuple(innerTypes) =>
