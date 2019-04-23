@@ -147,7 +147,7 @@ let typeGetConverterNormalized =
         normalized_,
       );
 
-    | GroupOfLabeledArgs(_) => (IdentC, None)
+    | GroupOfLabeledArgs(_) => (IdentC, Some(Opaque))
 
     | Ident({isShim, name, typeArgs}) =>
       if (visited |> StringSet.mem(name)) {
@@ -156,8 +156,8 @@ let typeGetConverterNormalized =
       } else {
         let visited = visited |> StringSet.add(name);
         switch (name |> lookupId) {
-        | {annotation: GenTypeOpaque, _} => (IdentC, None)
-        | {annotation: NoGenType, _} => (IdentC, None)
+        | {annotation: GenTypeOpaque, _} => (IdentC, Some(Opaque))
+        | {annotation: NoGenType, _} => (IdentC, Some(Opaque))
         | {typeVars, type_, _} =>
           let pairs =
             try (List.combine(typeVars, typeArgs)) {
@@ -177,7 +177,10 @@ let typeGetConverterNormalized =
         | exception Not_found =>
           let isBaseType =
             type_ == booleanT || type_ == numberT || type_ == stringT;
-          (IdentC, isShim || isBaseType || inline ? normalized_ : None);
+          (
+            IdentC,
+            isShim || isBaseType || inline ? normalized_ : Some(Opaque),
+          );
         };
       }
 
@@ -259,15 +262,13 @@ let typeGetConverterNormalized =
           )
         };
       let converter =
-        normalized == None ?
-          IdentC :
-          VariantC({
-            hash: variant.hash,
-            noPayloads: variant.noPayloads,
-            withPayload,
-            polymorphic: variant.polymorphic,
-            unboxed,
-          });
+        VariantC({
+          hash: variant.hash,
+          noPayloads: variant.noPayloads,
+          withPayload,
+          polymorphic: variant.polymorphic,
+          unboxed,
+        });
       (converter, normalized);
     };
   }

@@ -116,7 +116,7 @@ let emitExportType =
     | (Some(opaque), _) => (opaque, optType)
     | (None, Some(type_)) =>
       let normalized = type_ |> typeGetNormalized;
-      normalized == None ? (true, optType) : (false, normalized);
+      normalized == Some(Opaque) ? (true, optType) : (false, normalized);
     | (None, None) => (false, None)
     };
   resolvedTypeName
