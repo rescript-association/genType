@@ -1,3 +1,6 @@
+# master
+- Support import of function components.
+
 # 2.21.1
 - Fix parentheses in function components with Flow back-end.
 
