@@ -6,6 +6,7 @@ import {
   printVariantWithPayload,
   testWithPayload
 } from "./VariantsWithPayload.gen";
+import Hooks from "./Hooks.gen";
 
 const consoleLog = console.log;
 
@@ -19,6 +20,7 @@ printVariantWithPayload(testWithPayload({ x: 15 }));
 const Main = () => (
   <div>
     <App title={"hello"} person={{ name: "Josh", age: 33 }} array={["abc"]} />
+    <Hooks vehicle={{name:"auto"}} />
   </div>
 );
 

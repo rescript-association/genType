@@ -734,6 +734,19 @@ let rec emitCodeItem =
          );
 
     let emitters =
+      switch (hookType) {
+      | Some((Object(_, fields), _retType))
+          when config.language == Untyped && config.propTypes =>
+        fields
+        |> List.map((field: field) => {
+             let type_ = field.type_ |> typeGetInlined;
+             {...field, type_};
+           })
+        |> EmitType.emitPropTypes(~config, ~name, ~emitters, ~indent)
+      | _ => emitters
+      };
+
+    let emitters =
       originalName == default ?
         EmitType.emitExportDefault(~emitters, ~config, Runtime.default) :
         emitters;
