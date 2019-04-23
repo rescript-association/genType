@@ -130,7 +130,7 @@ let typeGetConverterNormalized =
     switch (type_) {
     | Array(t, _) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (ArrayC(tConverter), tNormalized == None ? None : normalized_);
+      (ArrayC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
 
     | Function({argTypes, retType, typeVars, uncurried, _}) =>
       let argConverters =
@@ -186,11 +186,11 @@ let typeGetConverterNormalized =
 
     | Null(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (NullableC(tConverter), tNormalized == None ? None : normalized_);
+      (NullableC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
 
     | Nullable(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (NullableC(tConverter), tNormalized == None ? None : normalized_);
+      (NullableC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
 
     | Object(_, fields) => (
         ObjectC(
@@ -211,11 +211,11 @@ let typeGetConverterNormalized =
 
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (OptionC(tConverter), tNormalized == None ? None : normalized_);
+      (OptionC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
 
     | Promise(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (PromiseC(tConverter), tNormalized == None ? None : normalized_);
+      (PromiseC(tConverter), tNormalized == Some(Opaque) ? tNormalized : normalized_);
 
     | Record(fields) => (
         RecordC(
@@ -235,8 +235,8 @@ let typeGetConverterNormalized =
     | Tuple(innerTypes) =>
       let (innerConversions, normalizedList) =
         innerTypes |> List.map(visit(~visited)) |> List.split;
-      let innerHasNone = normalizedList |> List.mem(None);
-      (TupleC(innerConversions), innerHasNone ? None : normalized_);
+      let innerHasOpaque = normalizedList |> List.mem(Some(Opaque));
+      (TupleC(innerConversions), innerHasOpaque ? Some(Opaque) : normalized_);
 
     | TypeVar(_) => (IdentC, normalized_)
 
