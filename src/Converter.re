@@ -152,7 +152,9 @@ let typeGetConverterNormalized =
         }),
       );
 
-    | GroupOfLabeledArgs(_) => (IdentC, normalized_)
+    | GroupOfLabeledArgs(_) =>
+      /* This case should only fire from withing a function */
+      (IdentC, normalized_)
 
     | Ident({isShim, name, typeArgs}) =>
       if (visited |> StringSet.mem(name)) {
@@ -191,36 +193,37 @@ let typeGetConverterNormalized =
       let (tConverter, tNormalized) = t |> visit(~visited);
       (NullableC(tConverter), Nullable(tNormalized));
 
-    | Object(_, fields) => (
+    | Object(closedFlag, fields) =>
+      let fieldsConverted =
+        fields
+        |> List.map(({type_} as field) =>
+             (field, type_ |> visit(~visited))
+           );
+      (
         ObjectC(
-          fields
-          |> List.map(({name, optional, type_: t, _}) =>
-               (
-                 name,
-                 (optional == Mandatory ? t : Option(t))
-                 |> visit(~visited)
-                 |> fst,
-               )
+          fieldsConverted
+          |> List.map((({name, optional, _}, (converter, _))) =>
+               (name, optional == Mandatory ? converter : OptionC(converter))
              ),
         ),
-        normalized_,
-      )
+        Object(
+          closedFlag,
+          fieldsConverted
+          |> List.map(((field, (_, tNormalized))) =>
+               {...field, type_: tNormalized}
+             ),
+        ),
+      );
 
     | Opaque => (IdentC, normalized_)
 
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (
-        OptionC(tConverter),
-        tNormalized == Opaque ? tNormalized : normalized_,
-      );
+      (OptionC(tConverter), Option(tNormalized));
 
     | Promise(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (
-        PromiseC(tConverter),
-        tNormalized == Opaque ? tNormalized : normalized_,
-      );
+      (PromiseC(tConverter), Promise(tNormalized));
 
     | Record(fields) =>
       let fieldsConverted =
