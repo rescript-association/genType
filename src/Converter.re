@@ -246,30 +246,45 @@ let typeGetConverterNormalized =
     | Tuple(innerTypes) =>
       let (innerConversions, normalizedList) =
         innerTypes |> List.map(visit(~visited)) |> List.split;
-      let innerHasOpaque = normalizedList |> List.mem(Opaque);
-      (TupleC(innerConversions), innerHasOpaque ? Opaque : normalized_);
+      (TupleC(innerConversions), Tuple(normalizedList));
 
     | TypeVar(_) => (IdentC, normalized_)
 
     | Variant(variant) =>
       let (withPayload, normalized, unboxed) =
-        switch (variant.payloads) {
+        switch (
+          variant.payloads
+          |> List.map(((case, numArgs, t)) =>
+               (case, numArgs, t |> visit(~visited))
+             )
+        ) {
         | [] => ([], normalized_, variant.unboxed)
-        | [(case, numArgs, t)] =>
-          let converter = t |> visit(~visited) |> fst;
-          let unboxed = t |> expandOneLevel |> typeIsObject;
+        | [(case, numArgs, (converter, tNormalized))] =>
+          let unboxed = tNormalized |> expandOneLevel |> typeIsObject;
           let normalized =
-            unboxed ? Variant({...variant, unboxed: true}) : normalized_;
+            Variant({
+              ...variant,
+              payloads: [(case, numArgs, tNormalized)],
+
+              unboxed: unboxed ? true : variant.unboxed,
+            });
           ([(case, numArgs, converter)], normalized, unboxed);
-        | [_, _, ..._] => (
-            variant.payloads
-            |> List.map(((case, numArgs, t)) => {
-                 let converter = t |> visit(~visited) |> fst;
-                 (case, numArgs, converter);
-               }),
-            normalized_,
+        | [_, _, ..._] as withPayloadConverted =>
+          let withPayloadNormalized =
+            withPayloadConverted
+            |> List.map(((case, numArgs, (_, tNormalized))) =>
+                 (case, numArgs, tNormalized)
+               );
+          let normalized =
+            Variant({...variant, payloads: withPayloadNormalized});
+          (
+            withPayloadConverted
+            |> List.map(((case, numArgs, (converter, _))) =>
+                 (case, numArgs, converter)
+               ),
+            normalized,
             variant.unboxed,
-          )
+          );
         };
       let converter =
         VariantC({
