@@ -156,7 +156,7 @@ let typeGetConverterNormalized =
       /* This case should only fire from withing a function */
       (IdentC, normalized_)
 
-    | Ident({isShim, name, typeArgs}) =>
+    | Ident({name, typeArgs}) =>
       if (visited |> StringSet.mem(name)) {
         circular := name;
         (IdentC, normalized_);

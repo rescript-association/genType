@@ -74,7 +74,6 @@ and function_ = {
   uncurried: bool,
 }
 and ident = {
-  isShim: bool,
   name: string,
   typeArgs: list(type_),
 }
@@ -141,8 +140,8 @@ let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
 let variantTable = (hash, ~toJS) =>
   (toJS ? "$$toJS" : "$$toRE") ++ string_of_int(hash);
 
-let ident = (~isShim=false, ~typeArgs=[], name) =>
-  Ident({isShim, name, typeArgs});
+let ident = (~typeArgs=[], name) =>
+  Ident({name, typeArgs});
 
 let mixedOrUnknown = (~config) =>
   ident(

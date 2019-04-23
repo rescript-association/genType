@@ -327,10 +327,9 @@ let translateConstr =
     | Some(type_) => {dependencies: typeParamDeps, type_}
     | None =>
       let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
-      let isShim = dep |> Dependencies.isShim(~config);
       {
         dependencies: [dep, ...typeParamDeps],
-        type_: Ident({isShim, name: dep |> depToString, typeArgs}),
+        type_: Ident({name: dep |> depToString, typeArgs}),
       };
     };
   };
