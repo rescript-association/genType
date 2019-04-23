@@ -128,17 +128,15 @@ let typeGetConverterNormalized =
   let rec visit = (~visited: StringSet.t, type_) => {
     let normalized_ = type_;
     switch (type_) {
-    | Array(t, _) =>
+    | Array(t, mutable_) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (
-        ArrayC(tConverter),
-        tNormalized == Opaque ? tNormalized : normalized_,
-      );
+      (ArrayC(tConverter), Array(tNormalized, mutable_));
 
-    | Function({argTypes, retType, typeVars, uncurried, _}) =>
-      let argConverters =
+    | Function({argTypes, retType, typeVars, uncurried} as function_) =>
+      let argConverted =
         argTypes |> List.map(typeToGroupedArgConverter(~visited));
-      let (retConverter, _) = retType |> visit(~visited);
+      let argConverters = argConverted |> List.map(fst);
+      let (retConverter, retNormalized) = retType |> visit(~visited);
       (
         FunctionC({
           argConverters,
@@ -147,7 +145,11 @@ let typeGetConverterNormalized =
           typeVars,
           uncurried,
         }),
-        normalized_,
+        Function({
+          ...function_,
+          argTypes: argConverted |> List.map(snd),
+          retType: retNormalized,
+        }),
       );
 
     | GroupOfLabeledArgs(_) => (IdentC, Opaque)
@@ -186,17 +188,11 @@ let typeGetConverterNormalized =
 
     | Null(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (
-        NullableC(tConverter),
-        tNormalized == Opaque ? tNormalized : normalized_,
-      );
+      (NullableC(tConverter), Null(tNormalized));
 
     | Nullable(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (
-        NullableC(tConverter),
-        tNormalized == Opaque ? tNormalized : normalized_,
-      );
+      (NullableC(tConverter), Nullable(tNormalized));
 
     | Object(_, fields) => (
         ObjectC(
@@ -229,20 +225,27 @@ let typeGetConverterNormalized =
         tNormalized == Opaque ? tNormalized : normalized_,
       );
 
-    | Record(fields) => (
+    | Record(fields) =>
+      let fieldsConverted =
+        fields
+        |> List.map(({type_} as field) =>
+             (field, type_ |> visit(~visited))
+           );
+      (
         RecordC(
-          fields
-          |> List.map(({name, optional, type_, _}) =>
-               (
-                 name,
-                 (optional == Mandatory ? type_ : Option(type_))
-                 |> visit(~visited)
-                 |> fst,
-               )
+          fieldsConverted
+          |> List.map((({name, optional}, (converter, _))) =>
+               (name, optional == Mandatory ? converter : OptionC(converter))
              ),
         ),
-        normalized_,
-      )
+        normalized_ /*
+        Record(
+          fieldsConverted
+          |> List.map(((field, (_, tNormalized))) =>
+               {...field, type_: tNormalized}
+             ),
+        ) */,
+      );
 
     | Tuple(innerTypes) =>
       let (innerConversions, normalizedList) =
@@ -286,15 +289,29 @@ let typeGetConverterNormalized =
   and typeToGroupedArgConverter = (~visited, type_) =>
     switch (type_) {
     | GroupOfLabeledArgs(fields) =>
-      GroupConverter(
+      let fieldsConverted =
         fields
-        |> List.map(({name, type_, optional, _}) =>
-             (name, optional, type_ |> visit(~visited) |> fst)
-           ),
-      )
+        |> List.map(({type_} as field) =>
+             (field, type_ |> visit(~visited))
+           );
+      let tNormalized =
+        GroupOfLabeledArgs(
+          fieldsConverted
+          |> List.map(((field, (_, t))) => {...field, type_: t}),
+        );
+      let converter =
+        GroupConverter(
+          fieldsConverted
+          |> List.map((({name, optional, _}, (converter, _))) =>
+               (name, optional, converter)
+             ),
+        );
+      (converter, tNormalized);
     | _ =>
-      type_ == unitT ?
-        UnitConverter : ArgConverter(type_ |> visit(~visited) |> fst)
+      let (converter, tNormalized) = type_ |> visit(~visited);
+      let converter =
+        type_ == unitT ? UnitConverter : ArgConverter(converter);
+      (converter, tNormalized);
     };
 
   let (converter, normalized) = type0 |> visit(~visited=StringSet.empty);
