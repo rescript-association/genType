@@ -56,7 +56,6 @@ let rec substitute = (~f, type0) =>
       fields
       |> List.map(field => {...field, type_: field.type_ |> substitute(~f)}),
     )
-  | Opaque => Opaque
   | Option(type_) => Option(type_ |> substitute(~f))
   | Promise(type_) => Promise(type_ |> substitute(~f))
   | Record(fields) =>
@@ -105,7 +104,6 @@ let rec free_ = type0: StringSet.t =>
        )
   | Null(type_)
   | Nullable(type_) => type_ |> free_
-  | Opaque => StringSet.empty
   | Option(type_)
   | Promise(type_) => type_ |> free_
   | Tuple(innerTypes) =>

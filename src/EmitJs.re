@@ -116,7 +116,7 @@ let emitExportType =
     | (Some(opaque), _) => (opaque, optType)
     | (None, Some(type_)) =>
       let normalized = type_ |> typeGetNormalized;
-      normalized == Opaque ? (true, optType) : (false, Some(normalized));
+      (false, Some(normalized));
     | (None, None) => (false, None)
     };
   resolvedTypeName
@@ -1061,7 +1061,6 @@ let propagateAnnotationToSubTypes =
       | Object(_, fields)
       | Record(fields) =>
         fields |> List.iter(({type_, _}) => type_ |> visit)
-      | Opaque => ()
       | Option(t)
       | Null(t)
       | Nullable(t)
