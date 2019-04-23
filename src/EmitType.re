@@ -145,6 +145,9 @@ let rec renderType =
       )
       ++ ")"
     }
+  | Opaque =>
+    mixedOrUnknown(~config)
+    |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
   | Promise(type_) =>
     "Promise"
     ++ "<"
@@ -595,6 +598,7 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
     | Ident(_)
     | Null(_)
     | Nullable(_)
+    | Opaque
     | Option(_)
     | Promise(_)
     | Tuple(_)

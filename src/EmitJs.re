@@ -1070,6 +1070,7 @@ let propagateAnnotationToSubTypes =
       | Object(_, fields)
       | Record(fields) =>
         fields |> List.iter(({type_, _}) => type_ |> visit)
+      | Opaque => ()
       | Option(t)
       | Null(t)
       | Nullable(t)
