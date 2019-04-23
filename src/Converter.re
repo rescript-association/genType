@@ -204,6 +204,8 @@ let typeGetConverterNormalized =
         normalized_,
       )
 
+    | Opaque => (IdentC, normalized_)
+
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
       (OptionC(tConverter), tNormalized == None ? None : normalized_);

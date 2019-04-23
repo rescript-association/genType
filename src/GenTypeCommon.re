@@ -54,6 +54,7 @@ type type_ =
   | Null(type_)
   | Nullable(type_)
   | Object(closedFlag, fields)
+  | Opaque
   | Option(type_)
   | Promise(type_)
   | Record(fields)
@@ -95,6 +96,7 @@ let typeIsObject = type_ =>
   | Null(_) => false
   | Nullable(_) => false
   | Object(_) => true
+  | Opaque => false
   | Option(_) => false
   | Promise(_) => true
   | Record(_) => true
