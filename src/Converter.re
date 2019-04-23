@@ -215,8 +215,6 @@ let typeGetConverterNormalized =
         ),
       );
 
-    | Opaque => (IdentC, normalized_)
-
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
       (OptionC(tConverter), Option(tNormalized));
@@ -333,8 +331,7 @@ let typeGetConverterNormalized =
     circular^ != "" ? CircularC(circular^, converter) : converter;
   if (Debug.converter^) {
     logItem(
-      "Converter %s type0:%s converter:%s\n",
-      normalized == Opaque ? " opaque " : "",
+      "Converter type0:%s converter:%s\n",
       type0 |> EmitType.typeToString(~config, ~typeNameIsInterface),
       finalConverter |> toString,
     );
