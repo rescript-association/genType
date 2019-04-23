@@ -1,7 +1,6 @@
 
 export type reactElement = JSX.Element;
 export type element = reactElement;
-export type componentLike<props, ret> = (_:props) => ret;
 
 // tslint:disable-next-line:max-classes-per-file
 export abstract class component {
