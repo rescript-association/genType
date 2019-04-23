@@ -7,8 +7,7 @@ const OpaqueBS = require('./Opaque.bs');
 // tslint:disable-next-line:class-name
 export abstract class opaqueFromRecords { protected opaque!: any }; /* simulate opaque types */
 
-// tslint:disable-next-line:max-classes-per-file 
-// tslint:disable-next-line:class-name
-export abstract class pair { protected opaque!: any }; /* simulate opaque types */
+// tslint:disable-next-line:interface-over-type-literal
+export type pair = [opaqueFromRecords, opaqueFromRecords];
 
 export const noConversion: (_1:opaqueFromRecords) => opaqueFromRecords = OpaqueBS.noConversion;
