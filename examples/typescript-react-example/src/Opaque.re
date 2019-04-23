@@ -4,3 +4,6 @@ type opaqueFromRecords =
 
 [@genType]
 let noConversion = (x: opaqueFromRecords) => x;
+
+[@genType]
+type pair = (opaqueFromRecords, opaqueFromRecords);
