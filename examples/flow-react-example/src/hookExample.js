@@ -9,4 +9,4 @@ export const foo = function(x: { +person: { +name: string, +age: number } }) {
 export const make = (x: {
   +person: { +name: string, +age: number },
   +children: React.Node
-}) => <div> x.person.name children </div>;
+}) => <div> {x.person.name} {x.children} </div>;

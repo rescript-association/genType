@@ -13,7 +13,7 @@ import {make as makeNotChecked} from './hookExample';
 // flowlint-next-line nonstrict-import:off
 import {foo as fooNotChecked} from './hookExample';
 
-// In case of type error, check the type of 'make' in 'ImportHoooks.re' and './hookExample'.
+// In case of type error, check the type of 'make' in 'ImportHooks.re' and './hookExample'.
 export const makeTypeChecked: ({| +person: person, +children: React_element |}) => React_element = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
@@ -22,7 +22,7 @@ export const make: mixed = function (Arg1: $any) {
   return result
 };
 
-// In case of type error, check the type of 'foo' in 'ImportHoooks.re' and './hookExample'.
+// In case of type error, check the type of 'foo' in 'ImportHooks.re' and './hookExample'.
 export const fooTypeChecked: ({| +person: person |}) => string = fooNotChecked;
 
 // Export 'foo' early to allow circular import from the '.bs.js' file.

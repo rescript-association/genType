@@ -8,7 +8,5 @@ type person = {
 external make: (~person: person, ~children: React.element) => React.element =
   "";
 
-let make = make;
-
 [@genType.import "./hookExample"]
 external foo: (~person: person) => string = "";

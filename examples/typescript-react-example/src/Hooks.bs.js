@@ -2,6 +2,7 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as ImportHooksGen from "./ImportHooks.gen";
 
 function Hooks(Props) {
   var vehicle = Props.vehicle;
@@ -16,7 +17,13 @@ function Hooks(Props) {
                                     return count + 1 | 0;
                                   }));
                     })
-                }, "Click me"));
+                }, "Click me"), React.createElement(ImportHooksGen.make, {
+                  person: /* record */[
+                    /* name */"Mary",
+                    /* age */71
+                  ],
+                  children: null
+                }, "child1", "child2"));
 }
 
 function Hooks$anotherComponent(Props) {

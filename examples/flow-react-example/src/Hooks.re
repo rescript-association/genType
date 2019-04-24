@@ -17,6 +17,10 @@ let make = (~vehicle) => {
     <button onClick={_ => setCount(_ => count + 1)}>
       {React.string("Click me")}
     </button>
+    <ImportHooks person={name: "Mary", age: 71}>
+      {React.string("child1")}
+      {React.string("child2")}
+    </ImportHooks>
   </div>;
 };
 
