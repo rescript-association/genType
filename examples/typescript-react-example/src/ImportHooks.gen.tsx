@@ -8,7 +8,7 @@ import {foo as fooNotChecked} from './hookExample';
 export const makeTypeChecked: (_1:{ readonly person: person; readonly children: React_element }) => React_element = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function (Arg1: any) {
+export const make: unknown = function hookExample(Arg1: any) {
   const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children});
   return result
 } as (_1:{ readonly person: person; readonly children: React_element }) => React_element;

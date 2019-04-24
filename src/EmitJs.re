@@ -393,6 +393,8 @@ let rec emitCodeItem =
   | ImportValue({asPath, importAnnotation, type_, valueName}) =>
     let nameGen = EmitText.newNameGen();
     let importPath = importAnnotation.importPath;
+    let importFile = importAnnotation.name;
+
     let (firstNameInPath, restOfPath) =
       valueName == asPath ?
         (valueName, "") :
@@ -419,8 +421,6 @@ let rec emitCodeItem =
         (emitters, valueNameNotChecked, env);
       | (Flow | Untyped, _) =>
         /* add an early require(...)  */
-        let importFile = importAnnotation.name;
-
         let importedAsName = importFile ++ "." ++ firstNameInPath;
         let env =
           importFile
@@ -429,6 +429,26 @@ let rec emitCodeItem =
         (emitters, importedAsName, env);
       };
     let converter = type_ |> typeGetConverter;
+
+    let isHook = () =>
+      switch (type_) {
+      | Function({
+          argTypes: [Object(_)],
+          retType: Ident({name: "React_element"}),
+        }) =>
+        true
+      | _ => false
+      };
+    let converter =
+      switch (converter) {
+      | FunctionC(functionC) when isHook() =>
+        Converter.FunctionC({
+          ...functionC,
+          functionName: Some(importFile),
+        })
+      | _ => converter
+      };
+
     let valueNameTypeChecked = valueName ++ "TypeChecked";
 
     let emitters =
