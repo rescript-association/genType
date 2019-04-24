@@ -3,7 +3,7 @@
 - Fix issue where only shallow conversion was generated for nested records defined in another file.
 - Opaque types are now generated only for type definitions annotated with [@genType.opaque].
   Unknown types now are left unchanged, so type errors will indicate that shims need to be added.
-- Use file name in react developer tools when importing function components.
+- Show file name in react developer tools when importing function components.
 
 # 2.21.1
 - Fix parentheses in function components with Flow back-end.
