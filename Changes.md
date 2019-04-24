@@ -1,4 +1,4 @@
-# master
+# 2.22.0
 - Support import of function components.
 - Fix issue where only shallow conversion was generated for nested records defined in another file.
 - Opaque types are now generated only for type definitions annotated with [@genType.opaque].
