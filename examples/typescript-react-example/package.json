@@ -22,7 +22,7 @@
     "@types/node": "^10.5.5",
     "@types/react": "^16.4.7",
     "@types/react-dom": "^16.0.6",
-    "bs-platform": "^5.0.2",
+    "bs-platform": "^5.0.4",
     "typescript": "^3.0.1"
   },
   "browserslist": [
