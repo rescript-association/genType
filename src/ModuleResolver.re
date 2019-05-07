@@ -59,10 +59,7 @@ let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
                 fileMap :=
                   fileMap^
                   |> ModuleNameMap.add(
-                       fname
-                       |> chopExtensions
-                       |> String.capitalize
-                       |> ModuleName.fromStringUnsafe,
+                       fname |> chopExtensions |> ModuleName.fromStringUnsafe,
                        dir,
                      );
               }
@@ -79,7 +76,11 @@ let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
      );
 };
 
-type resolver = {lazyFind: Lazy.t(ModuleName.t => option(string))};
+type case =
+  | Lowercase
+  | Uppercase;
+
+type resolver = {lazyFind: Lazy.t(ModuleName.t => option((string, case)))};
 
 let createResolver = (~extensions, ~excludeFile) => {
   lazyFind:
@@ -87,8 +88,14 @@ let createResolver = (~extensions, ~excludeFile) => {
       let map = sourcedirsJsonToMap(~extensions, ~excludeFile);
       moduleName =>
         switch (map |> ModuleNameMap.find(moduleName)) {
-        | resolvedModuleName => Some(resolvedModuleName)
-        | exception _ => None
+        | resovedModuleDir => Some((resovedModuleDir, Uppercase))
+        | exception Not_found =>
+          switch (
+            map |> ModuleNameMap.find(moduleName |> ModuleName.uncapitalize)
+          ) {
+          | resovedModuleDir => Some((resovedModuleDir, Lowercase))
+          | exception Not_found => None
+          }
         };
     },
 };
@@ -123,7 +130,7 @@ let resolveModule =
     };
     switch (moduleName |> apply(~resolver)) {
     | None => candidate
-    | Some(resovedModuleDir) =>
+    | Some((resovedModuleDir, case)) =>
       /* e.g. "dst" in case of dst/ModuleName.re */
 
       let walkUpOutputDir =
@@ -144,7 +151,7 @@ let resolveModule =
         concat(walkUpOutputDir, resovedModuleDir);
 
       /* e.g. import "../dst/ModuleName.ext" */
-      moduleName
+      (case == Uppercase ? moduleName : moduleName |> ModuleName.uncapitalize)
       |> ImportPath.fromModule(
            ~config,
            ~dir=fromOutputDirToModuleDir,

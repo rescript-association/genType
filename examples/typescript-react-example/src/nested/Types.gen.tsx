@@ -12,7 +12,7 @@ import {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
 
 import {list} from '../../src/shims/ReasonPervasives.shim';
 
-import {t as Location_t} from '../../src/location/Location.gen';
+import {t as Location_t} from '../../src/location/location.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = number;
