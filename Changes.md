@@ -1,3 +1,6 @@
+# master
+- Preserve case when importing from a lower-case file name.
+
 # 2.22.0
 - Support import of function components.
 - Fix issue where only shallow conversion was generated for nested records defined in another file.
