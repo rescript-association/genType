@@ -1,5 +1,6 @@
 # master
 - Preserve case when importing from a lower-case file name.
+- In TypeScript output, disable eslint rule import/first (on by default in newer react-scripts).
 
 # 2.22.0
 - Support import of function components.
