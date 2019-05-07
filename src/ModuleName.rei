@@ -21,3 +21,5 @@ let reasonPervasives: t;
 let reasonReact: t;
 
 let toString: t => string;
+
+let uncapitalize: t => t;
