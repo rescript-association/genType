@@ -1,3 +1,6 @@
+# master
+- Don't delete generated files in case of type errors.
+
 # 2.23.0
 - Preserve case when importing from a lower-case file name.
 - In TypeScript output, disable eslint rule import/first (on by default in newer react-scripts).
