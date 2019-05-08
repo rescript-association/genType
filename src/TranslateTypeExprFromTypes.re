@@ -202,7 +202,8 @@ let translateConstr =
         }),
     }
 
-  | (Pdot(Pident({name: "React", _}), "element", _), []) => {
+  | (Pdot(Pident({name: "React", _}), "element", _), [])
+  | (Pdot(Pident({name: "ReasonReact", _}), "reactElement", _), []) => {
       dependencies: [],
       type_: EmitType.reactElementType(~config),
     }

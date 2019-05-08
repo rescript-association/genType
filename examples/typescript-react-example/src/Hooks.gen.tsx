@@ -5,39 +5,37 @@
 // tslint:disable-next-line:no-var-requires
 const HooksBS = require('./Hooks.bs');
 
-import {reactElement as ReasonReact_reactElement} from '../src/shims/ReactShim.shim';
-
 // tslint:disable-next-line:interface-over-type-literal
 export type vehicle = { readonly name: string };
 
-export const $$default: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks(Arg1: any) {
+export const $$default: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks(Arg1: any) {
   const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
 export default $$default;
 
-export const anotherComponent: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks_anotherComponent(Arg1: any) {
+export const anotherComponent: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks_anotherComponent(Arg1: any) {
   const result = HooksBS.anotherComponent({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_make: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks_Inner(Arg1: any) {
+export const Inner_make: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks_Inner(Arg1: any) {
   const result = HooksBS.Inner[0]({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_anotherComponent: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks_Inner_anotherComponent(Arg1: any) {
+export const Inner_anotherComponent: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks_Inner_anotherComponent(Arg1: any) {
   const result = HooksBS.Inner[1]({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_Inner2_make: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks_Inner_Inner2(Arg1: any) {
+export const Inner_Inner2_make: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks_Inner_Inner2(Arg1: any) {
   const result = HooksBS.Inner[2][0]({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_Inner2_anotherComponent: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks_Inner_Inner2_anotherComponent(Arg1: any) {
+export const Inner_Inner2_anotherComponent: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks_Inner_Inner2_anotherComponent(Arg1: any) {
   const result = HooksBS.Inner[2][1]({vehicle:[Arg1.vehicle.name]});
   return result
 };

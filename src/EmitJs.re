@@ -677,12 +677,9 @@ let rec emitCodeItem =
 
     let hookType =
       switch (type_) {
-      | Function({
-          argTypes: [Object(_) as propsT],
-          retType:
-            Ident({name: "ReasonReact_reactElement" | "React_reactElement"}) as retT,
-        }) =>
-        Some((propsT, retT))
+      | Function({argTypes: [Object(_) as propsT], retType})
+          when retType |> EmitType.isReactElementType(~config) =>
+        Some((propsT, retType))
       | _ => None
       };
     /* Work around Flow issue with function components.
