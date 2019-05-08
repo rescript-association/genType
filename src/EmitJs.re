@@ -440,10 +440,8 @@ let rec emitCodeItem =
 
     let isHook = () =>
       switch (type_) {
-      | Function({
-          argTypes: [Object(_)],
-          retType: Ident({name: "React_element"}),
-        }) =>
+      | Function({argTypes: [Object(_)], retType})
+          when retType |> EmitType.isReactElementType(~config) =>
         true
       | _ => false
       };

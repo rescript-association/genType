@@ -14,7 +14,7 @@ import {make as makeNotChecked} from './hookExample';
 import {foo as fooNotChecked} from './hookExample';
 
 // In case of type error, check the type of 'make' in 'ImportHooks.re' and './hookExample'.
-export const makeTypeChecked: ({| +person: person, +children: React_element |}) => React_element = makeNotChecked;
+export const makeTypeChecked: ({| +person: person, +children: React$Node |}) => React$Node = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: mixed = function hookExample(Arg1: $any) {
@@ -30,8 +30,5 @@ export const foo: mixed = function (Argperson: $any) {
   const result = fooTypeChecked({person:{name:Argperson[0], age:Argperson[1]}});
   return result
 };
-
-// flowlint-next-line nonstrict-import:off
-import type {element as React_element} from '../src/shims/ReactShim.shim';
 
 export type person = {| +name: string, +age: number |};

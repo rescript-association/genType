@@ -127,6 +127,8 @@ let fileHeader: (~config: config) => string;
 
 let generatedModuleExtension: (~config: config) => string;
 
+let isReactElementType: (~config: config, type_) => bool;
+
 let ofType:
   (
     ~config: config,

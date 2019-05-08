@@ -112,7 +112,7 @@ let translateValue =
 
   let codeItems = [
     CodeItem.ExportValue({
-      originalName:name,
+      originalName: name,
       resolvedName,
       type_,
       valueAccessPath,
@@ -449,6 +449,7 @@ let addTypeDeclarationsFromModuleEquations = (~typeEnv, translation: t) => {
                     y
                     |> ResolvedName.toString
                     |> ident(
+                         ~builtin=false,
                          ~typeArgs=
                            exportType.typeVars |> List.map(s => TypeVar(s)),
                        ),

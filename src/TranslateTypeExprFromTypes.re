@@ -202,6 +202,11 @@ let translateConstr =
         }),
     }
 
+  | (Pdot(Pident({name: "React", _}), "element", _), []) => {
+      dependencies: [],
+      type_: EmitType.reactElementType(~config),
+    }
+
   | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])
   | (Pident({name: "option", _}), [paramTranslation]) => {
       ...paramTranslation,
@@ -329,7 +334,7 @@ let translateConstr =
       let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
       {
         dependencies: [dep, ...typeParamDeps],
-        type_: Ident({name: dep |> depToString, typeArgs}),
+        type_: Ident({builtin: false, name: dep |> depToString, typeArgs}),
       };
     };
   };
