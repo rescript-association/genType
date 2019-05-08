@@ -47,7 +47,7 @@ export const defaultValue: unknown = defaultValueTypeChecked as number;
 export type Props = { readonly show: boolean; readonly message?: message };
 
 // In case of type error, check the type of 'make' in 'TestImport.re' and the props of './MyBanner'.
-export function MyBannerInternalTypeChecked(props: Props) {
+export function MyBannerInternalTypeChecked(props: Props): JSX.Element {
   return <TopLevelClass.MiddleLevelElements.MyBannerInternal {...props}/>;
 }
 

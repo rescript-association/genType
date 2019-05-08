@@ -143,6 +143,8 @@ let outputFileSuffix: (~config: config) => string;
 
 let reactComponentType: (~config: config, ~propsTypeName: string) => type_;
 
+let reactElementType: (~config: config) => type_;
+
 let shimExtension: (~config: config) => string;
 
 let typeToString:

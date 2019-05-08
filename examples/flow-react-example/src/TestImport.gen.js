@@ -55,7 +55,7 @@ export const defaultValue: mixed = defaultValueTypeChecked;
 export type Props = {| +show: boolean, +Message: ?string |};
 
 // In case of type error, check the type of 'make' in 'TestImport.re' and the props of './interop/MyBanner.component'.
-export function MyBannerInternalTypeChecked(props: Props) {
+export function MyBannerInternalTypeChecked(props: Props): React$Node {
   return <TopLevelClass.MiddleLevelElements.MyBannerInternal {...props}/>;
 }
 

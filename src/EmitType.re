@@ -631,6 +631,9 @@ let reactComponentType = (~config, ~propsTypeName) =>
   (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
   |> ident(~typeArgs=[ident(propsTypeName)]);
 
+let reactElementType = (~config) =>
+  ident(config.language == Flow ? "React$Node" : "JSX.Element");
+
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {
   | Flow =>

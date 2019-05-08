@@ -293,16 +293,24 @@ let rec emitCodeItem =
     let emitters =
       config.language == Untyped ?
         emitters :
-        "("
-        ++ (
-          "props"
+        (
+          "("
+          ++ (
+            "props"
+            |> EmitType.ofType(
+                 ~config,
+                 ~typeNameIsInterface,
+                 ~type_=ident(propsTypeName),
+               )
+          )
+          ++ ")"
           |> EmitType.ofType(
                ~config,
                ~typeNameIsInterface,
-               ~type_=ident(propsTypeName),
+               ~type_=EmitType.reactElementType(~config),
              )
         )
-        ++ ") {\n  return <"
+        ++ " {\n  return <"
         ++ componentPath
         ++ " {...props}/>;\n}"
         |> EmitType.emitExportFunction(
@@ -442,10 +450,7 @@ let rec emitCodeItem =
     let converter =
       switch (converter) {
       | FunctionC(functionC) when isHook() =>
-        Converter.FunctionC({
-          ...functionC,
-          functionName: Some(importFile),
-        })
+        Converter.FunctionC({...functionC, functionName: Some(importFile)})
       | _ => converter
       };
 
