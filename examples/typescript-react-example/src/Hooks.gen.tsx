@@ -14,6 +14,9 @@ export type vehicle = { readonly name: string };
 // tslint:disable-next-line:interface-over-type-literal
 export type callback<input,output> = (_1:input) => output;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type testReactContext = (_1:number) => React.Context<number>;
+
 export const $$default: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks(Arg1: any) {
   const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
   return result

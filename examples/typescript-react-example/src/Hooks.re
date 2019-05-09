@@ -73,3 +73,6 @@ let testForwardRef = React.forwardRef(makeWithRef);
 
 [@genType]
 type callback('input, 'output) = React.callback('input, 'output);
+
+[@genType]
+type testReactContext = React.Context.t(int);

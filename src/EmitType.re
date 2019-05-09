@@ -631,6 +631,10 @@ let typeReactComponent = (~config, ~propsTypeName) =>
   (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
   |> ident(~builtin=true, ~typeArgs=[ident(propsTypeName)]);
 
+let typeReactContext = (~config, ~type_) =>
+  (config.language == Flow ? "React$Context" : "React.Context")
+  |> ident(~builtin=true, ~typeArgs=[type_]);
+
 let typeReactElementFlow = ident(~builtin=true, "React$Node");
 
 let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");

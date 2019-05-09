@@ -215,6 +215,7 @@ let translateConstr =
           uncurried: false,
         }),
     }
+
   | (Pdot(Pident({name: "React", _}), "component", _), [propsTranslation]) => {
       dependencies: propsTranslation.dependencies,
       type_:
@@ -227,10 +228,25 @@ let translateConstr =
     }
 
   | (
-      Pdot(Pdot(Pident({name: "React", _}), "Ref", _), "t", _),
-      [propsTranslation],
+      Pdot(Pdot(Pident({name: "React", _}), "Context", _), "t", _),
+      [paramTranslation],
     ) => {
-      dependencies: propsTranslation.dependencies,
+      dependencies: paramTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [paramTranslation.type_],
+          retType:
+            EmitType.typeReactContext(~config, ~type_=paramTranslation.type_),
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
+  | (
+      Pdot(Pdot(Pident({name: "React", _}), "Ref", _), "t", _),
+      [paramTranslation],
+    ) => {
+      dependencies: paramTranslation.dependencies,
       type_: EmitType.typeAny(~config),
     }
 
