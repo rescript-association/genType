@@ -68,3 +68,6 @@ let makeWithRef = (~vehicle, ref) => {
 
 [@genType]
 let testForwardRef = React.forwardRef(makeWithRef);
+
+[@genType]
+type callback('input, 'output) = React.callback('input, 'output);

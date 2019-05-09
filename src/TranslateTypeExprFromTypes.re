@@ -188,6 +188,20 @@ let translateConstr =
     }
 
   | (
+      Pdot(Pident({name: "React", _}), "callback", _),
+      [fromTranslation, toTranslation],
+    ) => {
+      dependencies: fromTranslation.dependencies @ toTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [fromTranslation.type_],
+          retType: toTranslation.type_,
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
+  | (
       Pdot(Pident({name: "React", _}), "componentLike", _),
       [propsTranslation, retTranslation],
     ) => {

@@ -11,6 +11,9 @@ const HooksBS = require('./Hooks.bs');
 // tslint:disable-next-line:interface-over-type-literal
 export type vehicle = { readonly name: string };
 
+// tslint:disable-next-line:interface-over-type-literal
+export type callback<input,output> = (_1:input) => output;
+
 export const $$default: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks(Arg1: any) {
   const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
   return result
