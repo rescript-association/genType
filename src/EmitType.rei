@@ -127,7 +127,7 @@ let fileHeader: (~config: config) => string;
 
 let generatedModuleExtension: (~config: config) => string;
 
-let isReactElementType: (~config: config, type_) => bool;
+let isTypeReactElement: (~config: config, type_) => bool;
 
 let ofType:
   (
@@ -143,11 +143,11 @@ let ofTypeAny: (~config: config, string) => string;
 
 let outputFileSuffix: (~config: config) => string;
 
-let reactComponentType: (~config: config, ~propsTypeName: string) => type_;
-
-let reactElementType: (~config: config) => type_;
-
 let shimExtension: (~config: config) => string;
+
+let typeReactComponent: (~config: config, ~propsTypeName: string) => type_;
+
+let typeReactElement: (~config: config) => type_;
 
 let typeAny: (~config: config) => type_;
 

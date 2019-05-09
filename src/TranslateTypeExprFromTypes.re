@@ -220,7 +220,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [propsTranslation.type_],
-          retType: EmitType.reactElementType(~config),
+          retType: EmitType.typeReactElement(~config),
           typeVars: [],
           uncurried: false,
         }),
@@ -249,7 +249,7 @@ let translateConstr =
   | (Pdot(Pident({name: "React", _}), "element", _), [])
   | (Pdot(Pident({name: "ReasonReact", _}), "reactElement", _), []) => {
       dependencies: [],
-      type_: EmitType.reactElementType(~config),
+      type_: EmitType.typeReactElement(~config),
     }
 
   | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])

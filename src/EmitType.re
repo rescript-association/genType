@@ -627,19 +627,19 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
   |> Emitters.export(~emitters);
 };
 
-let reactComponentType = (~config, ~propsTypeName) =>
+let typeReactComponent = (~config, ~propsTypeName) =>
   (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
   |> ident(~builtin=true, ~typeArgs=[ident(propsTypeName)]);
 
-let reactElementTypeFlow = ident(~builtin=true, "React$Node");
+let typeReactElementFlow = ident(~builtin=true, "React$Node");
 
-let reactElementTypeTypeScript = ident(~builtin=true, "JSX.Element");
+let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
 
-let reactElementType = (~config) =>
-  config.language == Flow ? reactElementTypeFlow : reactElementTypeTypeScript;
+let typeReactElement = (~config) =>
+  config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
 
-let isReactElementType = (~config, type_) =>
-  type_ === reactElementType(~config);
+let isTypeReactElement = (~config, type_) =>
+  type_ === typeReactElement(~config);
 
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {

@@ -307,7 +307,7 @@ let rec emitCodeItem =
           |> EmitType.ofType(
                ~config,
                ~typeNameIsInterface,
-               ~type_=EmitType.reactElementType(~config),
+               ~type_=EmitType.typeReactElement(~config),
              )
         )
         ++ " {\n  return <"
@@ -441,7 +441,7 @@ let rec emitCodeItem =
     let isHook = () =>
       switch (type_) {
       | Function({argTypes: [Object(_)], retType})
-          when retType |> EmitType.isReactElementType(~config) =>
+          when retType |> EmitType.isTypeReactElement(~config) =>
         true
       | _ => false
       };
@@ -678,7 +678,7 @@ let rec emitCodeItem =
     let hookType =
       switch (type_) {
       | Function({argTypes: [Object(_) as propsT], retType})
-          when retType |> EmitType.isReactElementType(~config) =>
+          when retType |> EmitType.isTypeReactElement(~config) =>
         Some((propsT, retType))
       | _ => None
       };
