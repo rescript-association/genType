@@ -64,10 +64,13 @@ var Inner = /* module */[
 
 function Hooks$makeWithRef(Props, ref) {
   var vehicle = Props.vehicle;
-  if (!(ref == null)) {
-    ref.current = 10;
+  if (ref == null) {
+    return null;
+  } else {
+    return React.createElement("button", {
+                ref: ref
+              }, vehicle[/* name */0]);
   }
-  return vehicle[/* name */0];
 }
 
 var testForwardRef = React.forwardRef(Hooks$makeWithRef);

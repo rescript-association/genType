@@ -60,10 +60,12 @@ module Inner = {
 [@react.component]
 let makeWithRef = (~vehicle, ref) => {
   switch (ref->Js.Nullable.toOption) {
-  | Some(ref) => ref->React.Ref.setCurrent(10)
-  | None => ()
+  | Some(ref) =>
+    <button ref={ReactDOMRe.Ref.domRef(ref)}>
+      {React.string(vehicle.name)}
+    </button>
+  | None => React.null
   };
-  React.string(vehicle.name);
 };
 
 [@genType]
