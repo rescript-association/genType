@@ -64,11 +64,26 @@ var Inner = /* module */[
   /* Inner2 */Inner2
 ];
 
+function Hooks$makeWithRef(Props, ref) {
+  var vehicle = Props.vehicle;
+  if (ref == null) {
+    return null;
+  } else {
+    return React.createElement("button", {
+                ref: ref
+              }, vehicle[/* name */0]);
+  }
+}
+
+var testForwardRef = React.forwardRef(Hooks$makeWithRef);
+
 var make = Hooks;
 
 var $$default = Hooks;
 
 var anotherComponent = Hooks$anotherComponent;
+
+var makeWithRef = Hooks$makeWithRef;
 
 export {
   make ,
@@ -76,6 +91,8 @@ export {
   $$default as default,
   anotherComponent ,
   Inner ,
+  makeWithRef ,
+  testForwardRef ,
   
 }
-/* react Not a pure module */
+/* testForwardRef Not a pure module */

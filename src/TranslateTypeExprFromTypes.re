@@ -233,13 +233,7 @@ let translateConstr =
     ) => {
       dependencies: paramTranslation.dependencies,
       type_:
-        Function({
-          argTypes: [paramTranslation.type_],
-          retType:
-            EmitType.typeReactContext(~config, ~type_=paramTranslation.type_),
-          typeVars: [],
-          uncurried: false,
-        }),
+        EmitType.typeReactContext(~config, ~type_=paramTranslation.type_),
     }
 
   | (
