@@ -149,5 +149,7 @@ let reactElementType: (~config: config) => type_;
 
 let shimExtension: (~config: config) => string;
 
+let typeAny: (~config: config) => type_;
+
 let typeToString:
   (~config: config, ~typeNameIsInterface: string => bool, type_) => string;

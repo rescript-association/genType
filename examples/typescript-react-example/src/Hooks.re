@@ -55,3 +55,16 @@ module Inner = {
       <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
   };
 };
+
+[@genType]
+[@react.component]
+let makeWithRef = (~vehicle, ref) => {
+  switch (ref->Js.Nullable.toOption) {
+  | Some(ref) => ref->React.Ref.setCurrent(10)
+  | None => ()
+  };
+  React.string(vehicle.name);
+};
+
+[@genType]
+let testForwardRef = React.forwardRef(makeWithRef);

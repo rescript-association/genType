@@ -107,9 +107,9 @@ let rec renderType =
          ~typeNameIsInterface,
        );
 
-  | Ident({name, typeArgs}) =>
+  | Ident({builtin, name, typeArgs}) =>
     (
-      config.exportInterfaces && name |> typeNameIsInterface ?
+      !builtin && config.exportInterfaces && name |> typeNameIsInterface ?
         name |> interfaceName(~config) : name
     )
     ++ EmitText.genericsString(
@@ -693,14 +693,24 @@ let emitImportTypeAs =
   };
 };
 
+let typeAny = (~config) =>
+  ident(
+    ~builtin=true,
+    config.language == Flow ?
+      {
+        config.emitFlowAny = true;
+        "$any";
+      } :
+      "any",
+  );
+
 let ofTypeAny = (~config, s) =>
-  switch (config.language) {
-  | TypeScript => s ++ ": any"
-  | Flow =>
-    config.emitFlowAny = true;
-    s ++ ": $any";
-  | Untyped => s
-  };
+  s
+  |> ofType(
+       ~config,
+       ~typeNameIsInterface=_ => false,
+       ~type_=typeAny(~config),
+     );
 
 let emitTypeCast = (~config, ~type_, ~typeNameIsInterface, s) =>
   switch (config.language) {
