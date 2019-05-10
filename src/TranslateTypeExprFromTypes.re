@@ -241,7 +241,7 @@ let translateConstr =
       [paramTranslation],
     ) => {
       dependencies: paramTranslation.dependencies,
-      type_: EmitType.typeAny(~config),
+      type_: EmitType.typeReactRef(~config, ~type_=paramTranslation.type_),
     }
 
   | (

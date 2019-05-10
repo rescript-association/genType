@@ -28,6 +28,8 @@ function Hooks(Props) {
 
 function Hooks$anotherComponent(Props) {
   var vehicle = Props.vehicle;
+  var callback = Props.callback;
+  Curry._1(callback, /* () */0);
   return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
 }
 

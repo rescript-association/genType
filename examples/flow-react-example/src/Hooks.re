@@ -78,3 +78,6 @@ type callback('input, 'output) = React.callback('input, 'output);
 
 [@genType]
 type testReactContext = React.Context.t(int);
+
+[@genType]
+type testReactRef = React.Ref.t(int);

@@ -29,8 +29,10 @@ let default = make;
 
 [@genType]
 [@react.component]
-let anotherComponent = (~vehicle) =>
+let anotherComponent = (~vehicle, ~callback: unit => unit) => {
+  callback();
   <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+};
 
 module Inner = {
   [@genType]
@@ -76,3 +78,6 @@ type callback('input, 'output) = React.callback('input, 'output);
 
 [@genType]
 type testReactContext = React.Context.t(int);
+
+[@genType]
+type testReactRef = React.Ref.t(int);

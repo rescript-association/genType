@@ -151,6 +151,8 @@ let typeReactContext: (~config: config, ~type_: type_) => type_;
 
 let typeReactElement: (~config: config) => type_;
 
+let typeReactRef: (~config: config, ~type_: type_) => type_;
+
 let typeAny: (~config: config) => type_;
 
 let typeToString:

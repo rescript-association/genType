@@ -645,6 +645,11 @@ let typeReactElement = (~config) =>
 let isTypeReactElement = (~config, type_) =>
   type_ === typeReactElement(~config);
 
+let typeReactRef = (~config, ~type_) =>
+  (config.language == Flow ? "React$Ref" : "React.Ref")
+  |> ident(~builtin=true, ~typeArgs=[type_]);
+
+
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {
   | Flow =>

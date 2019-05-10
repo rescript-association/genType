@@ -17,6 +17,9 @@ export type callback<input,output> = (_1:input) => output;
 // tslint:disable-next-line:interface-over-type-literal
 export type testReactContext = React.Context<number>;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type testReactRef = React.Ref<number>;
+
 export const $$default: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks(Arg1: any) {
   const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
   return result
@@ -24,8 +27,11 @@ export const $$default: (_1:{ readonly vehicle: vehicle }) => JSX.Element = func
 
 export default $$default;
 
-export const anotherComponent: (_1:{ readonly vehicle: vehicle }) => JSX.Element = function Hooks_anotherComponent(Arg1: any) {
-  const result = HooksBS.anotherComponent({vehicle:[Arg1.vehicle.name]});
+export const anotherComponent: (_1:{ readonly callback: ((_1:void) => void); readonly vehicle: vehicle }) => JSX.Element = function Hooks_anotherComponent(Arg1: any) {
+  const result = HooksBS.anotherComponent({callback:function (Arg11: any) {
+      const result1 = Arg1.callback(Arg11);
+      return result1
+    }, vehicle:[Arg1.vehicle.name]});
   return result
 };
 
