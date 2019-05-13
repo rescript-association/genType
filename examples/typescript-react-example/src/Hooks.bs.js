@@ -62,11 +62,25 @@ var Inner = /* module */[
   /* Inner2 */Inner2
 ];
 
+function functionWithRenamedArgs(_to, _Type, param) {
+  return _to[/* name */0] + _Type[/* name */0];
+}
+
+function Hooks$componentWithRenamedArgs(Props) {
+  var _to = Props.to;
+  var _Type = Props.Type;
+  return (function (param) {
+      return _to[/* name */0] + _Type[/* name */0];
+    });
+}
+
 var make = Hooks;
 
 var $$default = Hooks;
 
 var anotherComponent = Hooks$anotherComponent;
+
+var componentWithRenamedArgs = Hooks$componentWithRenamedArgs;
 
 export {
   make ,
@@ -74,6 +88,8 @@ export {
   $$default as default,
   anotherComponent ,
   Inner ,
+  functionWithRenamedArgs ,
+  componentWithRenamedArgs ,
   
 }
 /* react Not a pure module */

@@ -3,12 +3,20 @@
 
 
 // tslint:disable-next-line:no-var-requires
+const Curry = require('bs-platform/lib/es6/curry.js');
+
+// tslint:disable-next-line:no-var-requires
 const HooksBS = require('./Hooks.bs');
+
+import {element as React_element} from '../src/shims/ReactShim.shim';
 
 import {reactElement as ReasonReact_reactElement} from '../src/shims/ReactShim.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type vehicle = { readonly name: string };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type cb = (_1:{ readonly to: vehicle }) => void;
 
 export const $$default: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks(Arg1: any) {
   const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
@@ -39,5 +47,21 @@ export const Inner_Inner2_make: (_1:{ readonly vehicle: vehicle }) => ReasonReac
 
 export const Inner_Inner2_anotherComponent: (_1:{ readonly vehicle: vehicle }) => ReasonReact_reactElement = function Hooks_Inner_Inner2_anotherComponent(Arg1: any) {
   const result = HooksBS.Inner[2][1]({vehicle:[Arg1.vehicle.name]});
+  return result
+};
+
+export const functionWithRenamedArgs: (_1:{ readonly to: vehicle; readonly Type: vehicle }, _2:cb) => string = function (Arg1: any, Arg2: any) {
+  const result = Curry._3(HooksBS.functionWithRenamedArgs, [Arg1.to.name], [Arg1.Type.name], function (Argto: any) {
+      const result1 = Arg2({to:{name:Argto[0]}});
+      return result1
+    });
+  return result
+};
+
+export const componentWithRenamedArgs: (_1:{ readonly Type: vehicle; readonly to: vehicle }, _2:cb) => React_element = function (Arg1: any, Arg2: any) {
+  const result = Curry._2(HooksBS.componentWithRenamedArgs, {Type:[Arg1.Type.name], to:[Arg1.to.name]}, function (Argto: any) {
+      const result1 = Arg2({to:{name:Argto[0]}});
+      return result1
+    });
   return result
 };

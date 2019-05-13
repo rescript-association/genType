@@ -55,3 +55,14 @@ module Inner = {
       <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
   };
 };
+
+[@genType]
+type cb = (~_to: vehicle) => unit;
+
+[@genType]
+let functionWithRenamedArgs = (~_to, ~_Type, _: cb) => _to.name ++ _Type.name;
+
+[@genType]
+[@react.component]
+let componentWithRenamedArgs = (~_to, ~_Type, _: cb) =>
+  React.string(_to.name ++ _Type.name);
