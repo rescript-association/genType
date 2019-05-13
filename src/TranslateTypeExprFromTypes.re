@@ -421,7 +421,10 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(Label(label), type1), ...revArgs],
+           ~revArgs=[
+             (Label(label |> Runtime.marshalObjectField), type1),
+             ...revArgs,
+           ],
          );
     | Some((lbl, t1)) =>
       let {dependencies, type_: type1} =
@@ -434,7 +437,10 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(OptLabel(lbl), type1), ...revArgs],
+           ~revArgs=[
+             (OptLabel(lbl |> Runtime.marshalObjectField), type1),
+             ...revArgs,
+           ],
          );
     }
   | _ =>
