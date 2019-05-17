@@ -198,7 +198,7 @@ type person = {
 type persons = array(person);
 ```
 
-### Renaming, @genType.as, and object marshaling convention.
+### Renaming, @genType.as, and object mangling convention.
 
 By default, entities with a given name are exported/imported with the same name. However, you might wish to change the appearence of the name on the JS side.
 For example, in case of a record field whose name is a keyword, such as `type`:
@@ -212,7 +212,7 @@ type shipment = {
 };
 ```
 
-Object field names follow bucklescript's marshaling convention:
+Object field names follow bucklescript's mangling convention:
 
 ```
 Remove trailing "__" if present.
@@ -232,7 +232,7 @@ type shipment = {
 
 or the equivalent ``` "type__": string```.
 
-Functions and function components also follow the marshaling convention for labeled arguments:
+Functions and function components also follow the mangling convention for labeled arguments:
 
 ```reason
 [@genType]
@@ -323,7 +323,7 @@ Since objects are immutable by default, their fields will be exported to readonl
 
 It is possible to mix object and option types, so for example the Reason type `{. "x":int, "y":option(string)}` exports to JS type `{x:number, ?y: string}`, requires no conversion, and allows option pattern matching on the Reason side.
 
-Object field names follow bucklescript's marshaling convention (so e.g. `_type` in Reason represents `type` in JS):
+Object field names follow bucklescript's mangling convention (so e.g. `_type` in Reason represents `type` in JS):
 
 ```
 Remove trailing "__" if present.
@@ -394,7 +394,7 @@ Function components are exported and imported exactly like normal functions. For
 let make = (~name) => React.string(name);
 ```
 
-For renaming, named arguments follow bucklescript's marshaling convention:
+For renaming, named arguments follow bucklescript's mangling convention:
 
 ```
 Remove trailing "__" if present.

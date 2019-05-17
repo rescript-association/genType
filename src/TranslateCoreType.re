@@ -107,7 +107,7 @@ let rec translateArrowType =
            ~revArgs=[
              (
                Label(
-                 asLabel == "" ? label |> Runtime.marshalObjectField : asLabel,
+                 asLabel == "" ? label |> Runtime.mangleObjectField : asLabel,
                ),
                type1,
              ),
@@ -128,7 +128,7 @@ let rec translateArrowType =
            ~revArgs=[
              (
                OptLabel(
-                 asLabel == "" ? lbl |> Runtime.marshalObjectField : asLabel,
+                 asLabel == "" ? lbl |> Runtime.mangleObjectField : asLabel,
                ),
                type1,
              ),

@@ -310,7 +310,7 @@ let translateConstr =
              | Option(t) => (Optional, t)
              | _ => (Mandatory, t)
              };
-           let name = name |> Runtime.marshalObjectField;
+           let name = name |> Runtime.mangleObjectField;
            {mutable_, name, optional, type_};
          });
     let type_ = Object(closedFlag, fields);
@@ -422,7 +422,7 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (Label(label |> Runtime.marshalObjectField), type1),
+             (Label(label |> Runtime.mangleObjectField), type1),
              ...revArgs,
            ],
          );
@@ -438,7 +438,7 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (OptLabel(lbl |> Runtime.marshalObjectField), type1),
+             (OptLabel(lbl |> Runtime.mangleObjectField), type1),
              ...revArgs,
            ],
          );
