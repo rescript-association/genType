@@ -42,7 +42,7 @@ let emitVariantWithPayload:
 
 let isMutableObjectField: string => bool;
 
-let marshalObjectField : string => string;
+let mangleObjectField : string => string;
 
 let moduleItemGen: unit => moduleItemGen;
 
