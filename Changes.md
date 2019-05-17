@@ -1,4 +1,4 @@
-# master
+# 2.24.0
 - Don't delete generated files in case of type errors.
 - Apply object field mangling convention to named arguments in functions.
   This gives a unified treatment for renaming of object fields, functions, and function components.
