@@ -1,5 +1,7 @@
 # master
 - Don't delete generated files in case of type errors.
+- Apply object field mangling convention to named arguments in functions.
+  This gives a unified treatment for renaming of object fields, functions, and function components.
 
 # 2.23.0
 - Preserve case when importing from a lower-case file name.
