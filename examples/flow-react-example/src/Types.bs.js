@@ -63,6 +63,10 @@ function convertObjectWithCallback(x) {
   return x;
 }
 
+function testInstantiateTypeParameter(x) {
+  return x;
+}
+
 export {
   consumeOption ,
   consumeOption2 ,
@@ -78,6 +82,7 @@ export {
   testAutoAnnotateVariants ,
   testAutoAnnotateVariants2 ,
   convertObjectWithCallback ,
+  testInstantiateTypeParameter ,
   
 }
 /* saturday Not a pure module */

@@ -1074,11 +1074,12 @@ let propagateAnnotationToSubTypes =
     let visited = ref(StringSet.empty);
     let rec visit = type_ =>
       switch (type_) {
-      | Ident({name: typeName}) =>
+      | Ident({name: typeName, typeArgs}) =>
         if (visited^ |> StringSet.mem(typeName)) {
           ();
         } else {
           visited := visited^ |> StringSet.add(typeName);
+          typeArgs |> List.iter(visit);
           switch (typeMap |> StringMap.find(typeName)) {
           | {annotation: GenType | GenTypeOpaque, _} => ()
           | {type_: type1, annotation: NoGenType, _} =>
