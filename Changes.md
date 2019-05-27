@@ -1,3 +1,6 @@
+# master
+- Fix: don't export the state type of components using the old record API.
+
 # 2.25.0
 - Fix: extend automatic @genType annotation to type arguments.
 - Fix issue when inlining type parameters across different modules.

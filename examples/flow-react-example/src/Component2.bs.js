@@ -34,7 +34,8 @@ function make(greeting, _children) {
           /* initialState */(function (param) {
               return /* record */[
                       /* count */0,
-                      /* show */true
+                      /* show */true,
+                      /* someRef : record */[/* contents */0]
                     ];
             }),
           /* retainedProps */component[/* retainedProps */11],
@@ -42,12 +43,14 @@ function make(greeting, _children) {
               if (action) {
                 return /* Update */Block.__(0, [/* record */[
                             /* count */state[/* count */0],
-                            /* show */!state[/* show */1]
+                            /* show */!state[/* show */1],
+                            /* someRef */state[/* someRef */2]
                           ]]);
               } else {
                 return /* Update */Block.__(0, [/* record */[
                             /* count */state[/* count */0] + 1 | 0,
-                            /* show */state[/* show */1]
+                            /* show */state[/* show */1],
+                            /* someRef */state[/* someRef */2]
                           ]]);
               }
             }),
