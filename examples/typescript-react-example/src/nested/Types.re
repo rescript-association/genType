@@ -131,3 +131,13 @@ type marshalMutableField = {. [@bs.set] "_match": int};
 
 [@genType]
 let setMatch = (x: marshalMutableField) => x##_match #= 34;
+
+type ocaml_array('a) = array('a);
+
+// This should be considered annotated automatically.
+type someRecord = {id: int};
+
+type instantiateTypeParameter = ocaml_array(someRecord);
+
+[@genType]
+let testInstantiateTypeParameter = (x: instantiateTypeParameter) => x;
