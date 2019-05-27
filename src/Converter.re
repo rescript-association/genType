@@ -181,7 +181,14 @@ let typeGetConverterNormalized =
           let (converter, inlined) =
             type_ |> TypeVars.substitute(~f) |> visit(~visited);
           (converter, inline ? inlined : normalized_);
-        | exception Not_found => (IdentC, normalized_)
+        | exception Not_found =>
+          if (inline) {
+            let typeArgs =
+              typeArgs |> List.map(t => t |> visit(~visited) |> snd);
+            (IdentC, Ident({name, typeArgs}));
+          } else {
+            (IdentC, normalized_);
+          }
         };
       }
 
