@@ -1,4 +1,4 @@
-# master
+# 2.25.1.
 - Fix: don't export the state type of components using the old record API.
 
 # 2.25.0
