@@ -1,5 +1,6 @@
 # master
 - Fix: extend automatic @genType annotation to type arguments.
+- Fix issue when inlining type parameters across different modules.
 
 # 2.24.0
 - Don't delete generated files in case of type errors.
