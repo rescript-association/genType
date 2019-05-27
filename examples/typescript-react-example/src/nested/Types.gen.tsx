@@ -81,6 +81,15 @@ export type marshalFields = {
 // tslint:disable-next-line:interface-over-type-literal
 export type marshalMutableField = { match: number };
 
+// tslint:disable-next-line:interface-over-type-literal
+export type ocaml_array<a> = a[];
+
+// tslint:disable-next-line:interface-over-type-literal
+export type someRecord = { readonly id: number };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type instantiateTypeParameter = ocaml_array<someRecord>;
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = function <T1,T2>(Arg1: any, Arg2: any) {
@@ -128,3 +137,8 @@ export const testConvertLocation: (_1:Location_t) => Location_t = function (Arg1
 export const testMarshalFields: marshalFields = TypesBS.testMarshalFields;
 
 export const setMatch: (_1:marshalMutableField) => void = TypesBS.setMatch;
+
+export const testInstantiateTypeParameter: (_1:instantiateTypeParameter) => instantiateTypeParameter = function (Arg1: any) {
+  const result = TypesBS.testInstantiateTypeParameter(Arg1.map(function _element(ArrayItem: any) { return [ArrayItem.id]}));
+  return result.map(function _element(ArrayItem1: any) { return {id:ArrayItem1[0]}})
+};
