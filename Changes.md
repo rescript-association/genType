@@ -1,7 +1,7 @@
-# master
+# 2.25.2
 - Add support for importing functions of polymorphic type.
 
-# 2.25.1.
+# 2.25.1
 - Fix: don't export the state type of components using the old record API.
 
 # 2.25.0
