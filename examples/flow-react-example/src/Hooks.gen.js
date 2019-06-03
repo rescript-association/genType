@@ -67,3 +67,8 @@ export const Inner_Inner2_anotherComponent: typeof(Inner_Inner2_anotherComponent
   const result = HooksBS.Inner[2][1]({vehicle:[Arg1.vehicle.name]});
   return result
 };
+
+// Type annotated function components are not checked by Flow, but typeof() works.
+const NoProps_make$$forTypeof = function (_: {||}) : ReasonReact_reactElement { return null };
+
+export const NoProps_make: typeof(NoProps_make$$forTypeof) = HooksBS.NoProps[0];

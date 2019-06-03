@@ -9,7 +9,7 @@ external innerStuffContents: {. "x": int} = "";
 [@genType.import
   (
     "./exportNestedValues",
-    "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContents",
+    "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContentsEmpty",
   )
 ]
 external innerStuffContentsAsEmptyObject: Js.t({.}) = "";

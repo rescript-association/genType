@@ -64,6 +64,12 @@ var Inner = /* module */[
   /* Inner2 */Inner2
 ];
 
+function Hooks$NoProps(Props) {
+  return React.createElement("div", undefined, null);
+}
+
+var NoProps = /* module */[/* make */Hooks$NoProps];
+
 var make = Hooks;
 
 var $$default = Hooks;
@@ -76,6 +82,7 @@ export {
   $$default as default,
   anotherComponent ,
   Inner ,
+  NoProps ,
   
 }
 /* react Not a pure module */

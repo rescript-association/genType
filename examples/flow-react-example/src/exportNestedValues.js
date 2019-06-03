@@ -2,7 +2,8 @@
 
 class InnerClass {
   static InnerStuff = {
-    innerStuffContents: { x: 34 }
+    innerStuffContents: { x: 34 },
+    innerStuffContentsEmpty: {}
   };
 }
 

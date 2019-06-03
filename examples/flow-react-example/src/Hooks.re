@@ -57,3 +57,11 @@ module Inner = {
       <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
   };
 };
+
+module NoProps = {
+  [@genType]
+  [@react.component]
+  let make = () => {
+    <div> ReasonReact.null </div>;
+  };
+};

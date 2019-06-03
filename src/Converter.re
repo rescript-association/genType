@@ -709,7 +709,8 @@ let rec apply =
              )
            )
         |> String.concat(", ");
-      "{" ++ fieldValues ++ "}";
+      fieldsC == [] && config.language == Flow ?
+        "Object.freeze({})" : "{" ++ fieldValues ++ "}";
     } else {
       let fieldValues =
         fieldsC

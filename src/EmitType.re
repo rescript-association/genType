@@ -232,7 +232,6 @@ and renderFields =
   let exact =
     config.language == Flow
     && !config.exportInterfaces
-    && fields != []
     && closedFlag == Closed;
   let space = indent == None && fields != [] ? " " : "";
   ((exact ? "{|" : "{") ++ space)
