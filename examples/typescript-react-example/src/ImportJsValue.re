@@ -60,3 +60,5 @@ type variant =
   | S(string);
 
 [@genType.import "./MyMath"] external convertVariant: variant => variant = "";
+
+[@genType.import "./MyMath"] external polymorphic: 'a => 'a = "";

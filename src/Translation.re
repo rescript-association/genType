@@ -418,6 +418,11 @@ let translatePrimitive =
       | Some(asPath) => asPath
       | None => valueName
       };
+
+    let typeVars = typeExprTranslation.type_ |> TypeVars.free;
+    let type_ =
+      typeExprTranslation.type_ |> abstractTheTypeParameters(~typeVars);
+
     {
       importTypes:
         typeExprTranslation.dependencies
@@ -427,7 +432,7 @@ let translatePrimitive =
         ImportValue({
           asPath,
           importAnnotation: importString |> Annotation.importFromString,
-          type_: typeExprTranslation.type_,
+          type_,
           valueName,
         }),
       ],
