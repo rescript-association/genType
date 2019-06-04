@@ -1,4 +1,4 @@
-# master
+# 2.26.0
 - Give exact Flow type to empty objects.
 
 # 2.25.2
