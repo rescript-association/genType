@@ -1,3 +1,6 @@
+# master
+- Give exact Flow type to empty objects.
+
 # 2.25.2
 - Add support for importing functions of polymorphic type.
 
