@@ -830,10 +830,11 @@ let emitRequires =
     emitters,
   );
 
-let emitVariantTables = (~emitters, variantTables) => {
+let emitVariantTables = (~config, ~emitters, variantTables) => {
+  let typeAnnotation = config.language == TypeScript ? ": { [key: string]: any }" : "";
   let emitTable = (~table, ~toJS, variantC: Converter.variantC) =>
     "const "
-    ++ table
+    ++ table++typeAnnotation
     ++ " = {"
     ++ (
       variantC.noPayloads
@@ -1265,7 +1266,7 @@ let emitTranslationAsString =
          ) :
       env;
 
-  let emitters = variantTables |> emitVariantTables(~emitters);
+  let emitters = variantTables |> emitVariantTables(~config, ~emitters);
 
   emitters
   |> emitRequires(

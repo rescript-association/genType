@@ -1,3 +1,6 @@
+# master
+- In TypeScript, support --noImplicitAny also for indexing objects. (I.e. without --suppressImplicitAnyIndexErrors).
+
 # 2.26.0
 - Give exact Flow type to empty objects.
 
