@@ -16,6 +16,15 @@ import type {reactElement as ReasonReact_reactElement} from '../src/shims/ReactS
 export type vehicle = {| +name: string |};
 
 // Type annotated function components are not checked by Flow, but typeof() works.
+const make$$forTypeof = function (_: {| +vehicle: vehicle |}) : ReasonReact_reactElement { return null };
+
+const make: typeof(make$$forTypeof) = function Hooks(Arg1: $any) {
+  const result = HooksBS.make({vehicle:[Arg1.vehicle.name]});
+  return result
+};;
+exports.make = make
+
+// Type annotated function components are not checked by Flow, but typeof() works.
 const $$default$$forTypeof = function (_: {| +vehicle: vehicle |}) : ReasonReact_reactElement { return null };
 
 const $$default: typeof($$default$$forTypeof) = function Hooks(Arg1: $any) {

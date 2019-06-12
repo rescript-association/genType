@@ -1,5 +1,6 @@
 type vehicle = {name: string};
 
+[@genType]
 [@react.component]
 let make = (~vehicle) => {
   let (count, setCount) = React.useState(() => 0);
@@ -17,6 +18,7 @@ let make = (~vehicle) => {
     <button onClick={_ => setCount(_ => count + 1)}>
       {React.string("Click me")}
     </button>
+    <ImportHookDefault show=true _Message="Imported Hook" />
   </div>;
 };
 
