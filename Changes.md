@@ -93,7 +93,7 @@ If using bucklescript >= 5.0.0:
   Resetting the type environment causes failures depending on the order of type arguments in https://github.com/cristianoc/genType/issues/158.
 
 # 2.12.1
-- Emit type parametes when generating polymorphic conversion functions. 
+- Emit type parametes when generating polymorphic conversion functions.
 
 # 2.12.0
 - Support type definitions in first-class module types.
@@ -101,9 +101,9 @@ If using bucklescript >= 5.0.0:
 - Add support for first-class module types with type equations.
 - Add support for functions with first-class module types and type equations.
 - Fix support for type parameters in type declarations with constraints.
- 
+
 # 2.11.0
-- Fix: don't export types defined in shims as opaque. 
+- Fix: don't export types defined in shims as opaque.
 - Add support for type Js.null (and Js.Null.t).
 - Fix signature of ImmutableArray length and size.
 
@@ -304,7 +304,7 @@ This can be used instead:
 # 0.15.0
 - Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.
 - Print version information with -help and -version.
-  
+
 # 0.14.0
 - Improve support for checking JS component used from Reason.
 - Support for nullable types Js.Nullable.t.
@@ -332,15 +332,15 @@ This can be used instead:
 - Allow gentypeconfig.json in addition to genflowconfig.json.
 
 # 0.10.0
-- [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37). 
+- [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37).
 - [Full support for polymorphic types (type instantiation works correctly to generate conversions)](https://github.com/cristianoc/genFlow/commit/9712a60fab3ef0f31ad074f15a4256939f9e40a6).
 
 # 0.9.0
-- [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35). 
+- [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35).
 - Depecate -setProjectRoot CLI option. The project root is now found automatically and the option ignored.
 
 # 0.8.0
-- [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21). 
+- [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21).
 - [Fix: props are contravariant](https://github.com/cristianoc/genFlow/issues/22).
 - Use @genType annotation (the @genFlow annotation is still supported for backward compatibility).
 
