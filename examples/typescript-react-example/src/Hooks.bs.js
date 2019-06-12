@@ -3,6 +3,7 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ImportHooks from "./ImportHooks.bs.js";
+import * as ImportHookDefault from "./ImportHookDefault.bs.js";
 
 function Hooks(Props) {
   var vehicle = Props.vehicle;
@@ -21,6 +22,12 @@ function Hooks(Props) {
                   person: /* record */[
                     /* name */"Mary",
                     /* age */71
+                  ],
+                  children: null
+                }, "child1", "child2"), React.createElement(ImportHookDefault.make, {
+                  person: /* record */[
+                    /* name */"DefaultImport",
+                    /* age */42
                   ],
                   children: null
                 }, "child1", "child2"));

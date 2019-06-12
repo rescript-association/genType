@@ -429,7 +429,9 @@ let rec emitCodeItem =
         (emitters, valueNameNotChecked, env);
       | (Flow | Untyped, _) =>
         /* add an early require(...)  */
-        let importedAsName = importFile ++ "." ++ firstNameInPath;
+        let importedAsName =
+          firstNameInPath == "default" ?
+            importFile : importFile ++ "." ++ firstNameInPath;
         let env =
           importFile
           |> ModuleName.fromStringUnsafe

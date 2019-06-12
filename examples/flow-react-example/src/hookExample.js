@@ -10,3 +10,5 @@ export const make = (x: {
   +person: { +name: string, +age: number },
   +children: React.Node
 }) => <div> {x.person.name} {x.children} </div>;
+
+export default make

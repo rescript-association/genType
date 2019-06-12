@@ -3,6 +3,7 @@
 
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var ImportHookDefault$CommonjsReactExample = require("./ImportHookDefault.bs.js");
 
 function Hooks(Props) {
   var vehicle = Props.vehicle;
@@ -17,7 +18,10 @@ function Hooks(Props) {
                                     return count + 1 | 0;
                                   }));
                     })
-                }, "Click me"));
+                }, "Click me"), React.createElement(ImportHookDefault$CommonjsReactExample.make, {
+                  show: true,
+                  Message: "Imported Hook"
+                }));
 }
 
 var make = Hooks;

@@ -21,6 +21,10 @@ let make = (~vehicle) => {
       {React.string("child1")}
       {React.string("child2")}
     </ImportHooks>
+    <ImportHookDefault person={name: "DefaultImport", age: 42}>
+      {React.string("child1")}
+      {React.string("child2")}
+    </ImportHookDefault>
   </div>;
 };
 
