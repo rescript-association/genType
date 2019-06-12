@@ -1,3 +1,6 @@
+# master
+- Add support for importing values which are default exports in commonjs.
+
 # 2.26.0
 - Give exact Flow type to empty objects.
 
