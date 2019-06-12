@@ -7,4 +7,11 @@ export const foo = (x: {
 export const make = (x: {
   readonly person: { readonly name: string; readonly age: number };
   readonly children: JSX.Element;
-}) => <div> {x.person.name} {x.children} </div>;
+}) => (
+  <div>
+    {" "}
+    {x.person.name} {x.children}{" "}
+  </div>
+);
+
+export default make;
