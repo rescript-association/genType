@@ -14,7 +14,7 @@ import {convertVariant as convertVariantNotChecked} from './MyMath';
 
 import {polymorphic as polymorphicNotChecked} from './MyMath';
 
-const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
+const $$toJS580645844: { [key: string]: any } = {"322339018": "tomato", "-999567389": "gray"};
 
 // tslint:disable-next-line:no-var-requires
 const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');

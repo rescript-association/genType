@@ -2,7 +2,7 @@
 /* eslint-disable import/first */
 
 
-const $$toRE552311971 = {"A": 0};
+const $$toRE552311971: { [key: string]: any } = {"A": 0};
 
 // tslint:disable-next-line:no-var-requires
 const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
