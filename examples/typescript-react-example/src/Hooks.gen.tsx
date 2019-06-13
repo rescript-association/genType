@@ -58,6 +58,8 @@ export const Inner_Inner2_anotherComponent: (_1:{ readonly vehicle: vehicle }) =
   return result
 };
 
+export const NoProps_make: (_1:{}) => JSX.Element = HooksBS.NoProps[0];
+
 export const functionWithRenamedArgs: (_1:{ readonly to: vehicle; readonly Type: vehicle }, _2:cb) => string = function (Arg1: any, Arg2: any) {
   const result = Curry._3(HooksBS.functionWithRenamedArgs, [Arg1.to.name], [Arg1.Type.name], function (Argto: any) {
       const result1 = Arg2({to:{name:Argto[0]}});
@@ -83,3 +85,10 @@ export const testForwardRef: (_1:{ readonly vehicle: vehicle }) => JSX.Element =
   const result = HooksBS.testForwardRef({vehicle:[Arg1.vehicle.name]});
   return result
 };
+
+export const polymorphicComponent: <T1>(_1:{ readonly p: [vehicle, T1] }) => JSX.Element = function Hooks_polymorphicComponent<T1>(Arg1: any) {
+  const result = HooksBS.polymorphicComponent({p:[[Arg1.p[0].name], Arg1.p[1]]});
+  return result
+};
+
+export const functionReturningReactElement: (_1:{ readonly name: string }) => JSX.Element = HooksBS.functionReturningReactElement;

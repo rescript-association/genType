@@ -70,6 +70,16 @@ module NoProps = {
   };
 };
 
+type cb = (~_to: vehicle) => unit;
+
+[@genType]
+let functionWithRenamedArgs = (~_to, ~_Type, _: cb) => _to.name ++ _Type.name;
+
+[@genType]
+[@react.component]
+let componentWithRenamedArgs = (~_to, ~_Type, _: cb) =>
+  React.string(_to.name ++ _Type.name);
+
 [@genType]
 [@react.component]
 let makeWithRef = (~vehicle, ref) => {
@@ -96,7 +106,7 @@ type testReactRef = React.Ref.t(int);
 
 [@genType]
 [@react.component]
-let polymorphicComponent = (~x, ~w as _) => React.string(x.name);
+let polymorphicComponent = (~p as (x, _)) => React.string(x.name);
 
 [@genType]
 [@react.component]

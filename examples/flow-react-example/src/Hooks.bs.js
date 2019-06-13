@@ -77,6 +77,18 @@ function Hooks$NoProps(Props) {
 
 var NoProps = /* module */[/* make */Hooks$NoProps];
 
+function functionWithRenamedArgs(_to, _Type, param) {
+  return _to[/* name */0] + _Type[/* name */0];
+}
+
+function Hooks$componentWithRenamedArgs(Props) {
+  var _to = Props.to;
+  var _Type = Props.Type;
+  return (function (param) {
+      return _to[/* name */0] + _Type[/* name */0];
+    });
+}
+
 function Hooks$makeWithRef(Props, ref) {
   var vehicle = Props.vehicle;
   if (ref == null) {
@@ -91,9 +103,8 @@ function Hooks$makeWithRef(Props, ref) {
 var testForwardRef = React.forwardRef(Hooks$makeWithRef);
 
 function Hooks$polymorphicComponent(Props) {
-  var x = Props.x;
-  Props.w;
-  return x[/* name */0];
+  var match = Props.p;
+  return match[0][/* name */0];
 }
 
 function Hooks$functionReturningReactElement(Props) {
@@ -105,6 +116,8 @@ var make = Hooks;
 var $$default = Hooks;
 
 var anotherComponent = Hooks$anotherComponent;
+
+var componentWithRenamedArgs = Hooks$componentWithRenamedArgs;
 
 var makeWithRef = Hooks$makeWithRef;
 
@@ -119,6 +132,8 @@ export {
   anotherComponent ,
   Inner ,
   NoProps ,
+  functionWithRenamedArgs ,
+  componentWithRenamedArgs ,
   makeWithRef ,
   testForwardRef ,
   polymorphicComponent ,

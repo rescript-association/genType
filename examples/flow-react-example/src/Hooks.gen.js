@@ -15,6 +15,8 @@ import * as HooksBS from './Hooks.bs';
 
 export type vehicle = {| +name: string |};
 
+export type cb = ({| +to: vehicle |}) => void;
+
 export type callback<input,output> = (input) => output;
 
 export type testReactContext = React$Context<number>;
@@ -79,6 +81,22 @@ const NoProps_make$$forTypeof = function (_: {||}) : React$Node { return null };
 
 export const NoProps_make: typeof(NoProps_make$$forTypeof) = HooksBS.NoProps[0];
 
+export const functionWithRenamedArgs: ({| +to: vehicle, +Type: vehicle |}, cb) => string = function (Arg1: $any, Arg2: $any) {
+  const result = Curry._3(HooksBS.functionWithRenamedArgs, [Arg1.to.name], [Arg1.Type.name], function (Argto: $any) {
+      const result1 = Arg2({to:{name:Argto[0]}});
+      return result1
+    });
+  return result
+};
+
+export const componentWithRenamedArgs: ({| +Type: vehicle, +to: vehicle |}, cb) => React$Node = function (Arg1: $any, Arg2: $any) {
+  const result = Curry._2(HooksBS.componentWithRenamedArgs, {Type:[Arg1.Type.name], to:[Arg1.to.name]}, function (Argto: $any) {
+      const result1 = Arg2({to:{name:Argto[0]}});
+      return result1
+    });
+  return result
+};
+
 export const makeWithRef: ({| +vehicle: vehicle |}, ?$any) => React$Node = function (Arg1: $any, Arg2: $any) {
   const result = Curry._2(HooksBS.makeWithRef, {vehicle:[Arg1.vehicle.name]}, Arg2);
   return result
@@ -93,10 +111,10 @@ export const testForwardRef: typeof(testForwardRef$$forTypeof) = function Hooks_
 };
 
 // Type annotated function components are not checked by Flow, but typeof() works.
-const polymorphicComponent$$forTypeof = function <w>(_: {| +w: w, +x: vehicle |}) : React$Node { return null };
+const polymorphicComponent$$forTypeof = function <T1>(_: {| +p: [vehicle, T1] |}) : React$Node { return null };
 
-export const polymorphicComponent: typeof(polymorphicComponent$$forTypeof) = function Hooks_polymorphicComponent<w>(Arg1: $any) {
-  const result = HooksBS.polymorphicComponent({w:Arg1.w, x:[Arg1.x.name]});
+export const polymorphicComponent: typeof(polymorphicComponent$$forTypeof) = function Hooks_polymorphicComponent<T1>(Arg1: $any) {
+  const result = HooksBS.polymorphicComponent({p:[[Arg1.p[0].name], Arg1.p[1]]});
   return result
 };
 

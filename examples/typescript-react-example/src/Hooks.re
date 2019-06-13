@@ -62,6 +62,14 @@ module Inner = {
   };
 };
 
+module NoProps = {
+  [@genType]
+  [@react.component]
+  let make = () => {
+    <div> ReasonReact.null </div>;
+  };
+};
+
 type cb = (~_to: vehicle) => unit;
 
 [@genType]
@@ -95,3 +103,11 @@ type testReactContext = React.Context.t(int);
 
 [@genType]
 type testReactRef = React.Ref.t(int);
+
+[@genType]
+[@react.component]
+let polymorphicComponent = (~p as (x, _)) => React.string(x.name);
+
+[@genType]
+[@react.component]
+let functionReturningReactElement = (~name) => React.string(name);
