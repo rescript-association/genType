@@ -93,3 +93,7 @@ type testReactContext = React.Context.t(int);
 
 [@genType]
 type testReactRef = React.Ref.t(int);
+
+[@genType]
+[@react.component]
+let polymorphicComponent = (~x, ~w as _) => React.string(x.name);

@@ -90,6 +90,12 @@ function Hooks$makeWithRef(Props, ref) {
 
 var testForwardRef = React.forwardRef(Hooks$makeWithRef);
 
+function Hooks$polymorphicComponent(Props) {
+  var x = Props.x;
+  Props.w;
+  return x[/* name */0];
+}
+
 var make = Hooks;
 
 var $$default = Hooks;
@@ -97,6 +103,8 @@ var $$default = Hooks;
 var anotherComponent = Hooks$anotherComponent;
 
 var makeWithRef = Hooks$makeWithRef;
+
+var polymorphicComponent = Hooks$polymorphicComponent;
 
 export {
   make ,
@@ -107,6 +115,7 @@ export {
   NoProps ,
   makeWithRef ,
   testForwardRef ,
+  polymorphicComponent ,
   
 }
 /* testForwardRef Not a pure module */

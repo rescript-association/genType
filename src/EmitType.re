@@ -230,9 +230,7 @@ and renderFields =
     (~closedFlag, ~config, ~indent, ~inFunType, ~typeNameIsInterface, fields) => {
   let indent1 = indent |> Indent.more;
   let exact =
-    config.language == Flow
-    && !config.exportInterfaces
-    && closedFlag == Closed;
+    config.language == Flow && !config.exportInterfaces && closedFlag == Closed;
   let space = indent == None && fields != [] ? " " : "";
   ((exact ? "{|" : "{") ++ space)
   ++ String.concat(
@@ -307,11 +305,14 @@ let emitHookTypeAsFunction =
       ~retType,
       ~retValue,
       ~typeNameIsInterface,
+      ~typeVars,
     ) =>
   "// Type annotated function components are not checked by Flow, but typeof() works.\n"
   ++ "const "
   ++ name
-  ++ " = function ("
+  ++ " = function "
+  ++ EmitText.genericsString(~typeVars)
+  ++ "("
   ++ (
     "_: "
     ++ (
@@ -647,7 +648,6 @@ let isTypeReactElement = (~config, type_) =>
 let typeReactRef = (~config, ~type_) =>
   (config.language == Flow ? "React$Ref" : "React.Ref")
   |> ident(~builtin=true, ~typeArgs=[type_]);
-
 
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {

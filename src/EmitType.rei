@@ -64,7 +64,8 @@ let emitHookTypeAsFunction:
     ~propsType: type_,
     ~retType: type_,
     ~retValue: string,
-    ~typeNameIsInterface: string => bool
+    ~typeNameIsInterface: string => bool,
+    ~typeVars: list(string)
   ) =>
   Emitters.t;
 

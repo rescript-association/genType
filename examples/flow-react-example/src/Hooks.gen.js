@@ -91,3 +91,11 @@ export const testForwardRef: typeof(testForwardRef$$forTypeof) = function Hooks_
   const result = HooksBS.testForwardRef({vehicle:[Arg1.vehicle.name]});
   return result
 };
+
+// Type annotated function components are not checked by Flow, but typeof() works.
+const polymorphicComponent$$forTypeof = function <w>(_: {| +w: w, +x: vehicle |}) : React$Node { return null };
+
+export const polymorphicComponent: typeof(polymorphicComponent$$forTypeof) = function Hooks_polymorphicComponent<w>(Arg1: $any) {
+  const result = HooksBS.polymorphicComponent({w:Arg1.w, x:[Arg1.x.name]});
+  return result
+};

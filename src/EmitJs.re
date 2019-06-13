@@ -679,9 +679,9 @@ let rec emitCodeItem =
 
     let hookType =
       switch (type_) {
-      | Function({argTypes: [Object(_) as propsT], retType})
+      | Function({argTypes: [Object(_) as propsT], retType, typeVars})
           when retType |> EmitType.isTypeReactElement(~config) =>
-        Some((propsT, retType))
+        Some((propsT, retType, typeVars))
       | _ => None
       };
     /* Work around Flow issue with function components.
@@ -720,7 +720,7 @@ let rec emitCodeItem =
 
     let emitters =
       switch (hookType) {
-      | Some((propsType, retType)) when flowFunctionTypeWorkaround =>
+      | Some((propsType, retType, typeVars)) when flowFunctionTypeWorkaround =>
         EmitType.emitHookTypeAsFunction(
           ~config,
           ~emitters,
@@ -729,6 +729,7 @@ let rec emitCodeItem =
           ~retType,
           ~retValue="null",
           ~typeNameIsInterface,
+          ~typeVars,
         )
       | _ => emitters
       };
@@ -757,7 +758,7 @@ let rec emitCodeItem =
 
     let emitters =
       switch (hookType) {
-      | Some((Object(_, fields), _retType))
+      | Some((Object(_, fields), _retType, _typeVars))
           when config.language == Untyped && config.propTypes =>
         fields
         |> List.map((field: field) => {
@@ -828,10 +829,12 @@ let emitRequires =
   );
 
 let emitVariantTables = (~config, ~emitters, variantTables) => {
-  let typeAnnotation = config.language == TypeScript ? ": { [key: string]: any }" : "";
+  let typeAnnotation =
+    config.language == TypeScript ? ": { [key: string]: any }" : "";
   let emitTable = (~table, ~toJS, variantC: Converter.variantC) =>
     "const "
-    ++ table++typeAnnotation
+    ++ table
+    ++ typeAnnotation
     ++ " = {"
     ++ (
       variantC.noPayloads
