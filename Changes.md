@@ -3,12 +3,12 @@
 - Fix issue with flow back-end when exporting a function component with polymorphic variables.
 - Fix issue where exporting a function returning React.element was not considered a function component. (Was checking React.reactElement).
 
+`React.element` and `ReasonReact.reactElement` represented as `React$Node`/`JSX.Element` (Flow/TS).
 `React.callback(t1,t2)` represented as `t1 => t2`.
 `React.component(t)` represented as `t => React.element`.
 `React.Context.t(t)` represented as `React.Context<t>`.
 `React.Ref.t(t)` represented as `React.Ref<t>`.
 `ReactDOMRe.Ref.currentDomRef` represented as `any`.
-`React.element` and `ReasonReact.reactElement` represented as `React$Node`/`JSX.Element` (Flow/TS).
 
 
 # 2.27.0
