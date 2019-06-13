@@ -1,3 +1,6 @@
+# master
+- Make core react types builtin instead of requiring a shim file.
+
 # 2.27.0
 - In TypeScript, support --noImplicitAny also for indexing objects. (I.e. without --suppressImplicitAnyIndexErrors).
 - Add support for importing values which are default exports in commonjs.
