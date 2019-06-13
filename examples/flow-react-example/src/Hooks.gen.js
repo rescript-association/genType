@@ -99,3 +99,8 @@ export const polymorphicComponent: typeof(polymorphicComponent$$forTypeof) = fun
   const result = HooksBS.polymorphicComponent({w:Arg1.w, x:[Arg1.x.name]});
   return result
 };
+
+// Type annotated function components are not checked by Flow, but typeof() works.
+const functionReturningReactElement$$forTypeof = function (_: {| +name: string |}) : React$Node { return null };
+
+export const functionReturningReactElement: typeof(functionReturningReactElement$$forTypeof) = HooksBS.functionReturningReactElement;

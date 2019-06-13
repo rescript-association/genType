@@ -96,6 +96,10 @@ function Hooks$polymorphicComponent(Props) {
   return x[/* name */0];
 }
 
+function Hooks$functionReturningReactElement(Props) {
+  return Props.name;
+}
+
 var make = Hooks;
 
 var $$default = Hooks;
@@ -105,6 +109,8 @@ var anotherComponent = Hooks$anotherComponent;
 var makeWithRef = Hooks$makeWithRef;
 
 var polymorphicComponent = Hooks$polymorphicComponent;
+
+var functionReturningReactElement = Hooks$functionReturningReactElement;
 
 export {
   make ,
@@ -116,6 +122,7 @@ export {
   makeWithRef ,
   testForwardRef ,
   polymorphicComponent ,
+  functionReturningReactElement ,
   
 }
 /* testForwardRef Not a pure module */

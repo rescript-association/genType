@@ -1,6 +1,7 @@
 # master
 - Make core react types builtin instead of requiring a shim file.
 - Fix issue with flow back-end when exporting a function component with polymorphic variables.
+- Fix issue where exporting a function returning React.element was not considered a function component. (Was checking React.reactElement).
 
 # 2.27.0
 - In TypeScript, support --noImplicitAny also for indexing objects. (I.e. without --suppressImplicitAnyIndexErrors).
