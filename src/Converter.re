@@ -118,7 +118,7 @@ let typeGetConverterNormalized =
   let circular = ref("");
   let expandOneLevel = type_ =>
     switch (type_) {
-    | Ident({name}) =>
+    | Ident({builtin: false, name}) =>
       switch (name |> lookupId) {
       | (t: CodeItem.exportTypeItem) => t.type_
       | exception Not_found => type_
@@ -156,7 +156,9 @@ let typeGetConverterNormalized =
       /* This case should only fire from withing a function */
       (IdentC, normalized_)
 
-    | Ident({name, typeArgs}) =>
+    | Ident({builtin: true}) => (IdentC, normalized_)
+
+    | Ident({builtin: false, name, typeArgs}) =>
       if (visited |> StringSet.mem(name)) {
         circular := name;
         (IdentC, normalized_);
@@ -185,7 +187,7 @@ let typeGetConverterNormalized =
           if (inline) {
             let typeArgs =
               typeArgs |> List.map(t => t |> visit(~visited) |> snd);
-            (IdentC, Ident({name, typeArgs}));
+            (IdentC, Ident({builtin: false, name, typeArgs}));
           } else {
             (IdentC, normalized_);
           }

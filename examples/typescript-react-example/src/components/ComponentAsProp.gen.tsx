@@ -11,13 +11,11 @@ const ComponentAsPropBS = require('./ComponentAsProp.bs');
 // tslint:disable-next-line:no-var-requires
 const ReasonReact = require('reason-react/src/ReasonReact.js');
 
-import {reactElement as ReasonReact_reactElement} from '../../src/shims/ReactShim.shim';
-
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {
-  readonly title: ReasonReact_reactElement; 
-  readonly description: ReasonReact_reactElement; 
-  readonly button?: ReasonReact_reactElement; 
+  readonly title: JSX.Element; 
+  readonly description: JSX.Element; 
+  readonly button?: JSX.Element; 
   readonly children?: unknown
 };
 

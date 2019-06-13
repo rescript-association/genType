@@ -64,7 +64,8 @@ let emitHookTypeAsFunction:
     ~propsType: type_,
     ~retType: type_,
     ~retValue: string,
-    ~typeNameIsInterface: string => bool
+    ~typeNameIsInterface: string => bool,
+    ~typeVars: list(string)
   ) =>
   Emitters.t;
 
@@ -127,6 +128,8 @@ let fileHeader: (~config: config) => string;
 
 let generatedModuleExtension: (~config: config) => string;
 
+let isTypeReactElement: (~config: config, type_) => bool;
+
 let ofType:
   (
     ~config: config,
@@ -141,11 +144,17 @@ let ofTypeAny: (~config: config, string) => string;
 
 let outputFileSuffix: (~config: config) => string;
 
-let reactComponentType: (~config: config, ~propsTypeName: string) => type_;
-
-let reactElementType: (~config: config) => type_;
-
 let shimExtension: (~config: config) => string;
+
+let typeReactComponent: (~config: config, ~propsTypeName: string) => type_;
+
+let typeReactContext: (~config: config, ~type_: type_) => type_;
+
+let typeReactElement: (~config: config) => type_;
+
+let typeReactRef: (~config: config, ~type_: type_) => type_;
+
+let typeAny: (~config: config) => type_;
 
 let typeToString:
   (~config: config, ~typeNameIsInterface: string => bool, type_) => string;

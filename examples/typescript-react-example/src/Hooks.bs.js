@@ -35,6 +35,8 @@ function Hooks(Props) {
 
 function Hooks$anotherComponent(Props) {
   var vehicle = Props.vehicle;
+  var callback = Props.callback;
+  Curry._1(callback, /* () */0);
   return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
 }
 
@@ -69,6 +71,12 @@ var Inner = /* module */[
   /* Inner2 */Inner2
 ];
 
+function Hooks$NoProps(Props) {
+  return React.createElement("div", undefined, null);
+}
+
+var NoProps = /* module */[/* make */Hooks$NoProps];
+
 function functionWithRenamedArgs(_to, _Type, param) {
   return _to[/* name */0] + _Type[/* name */0];
 }
@@ -81,6 +89,28 @@ function Hooks$componentWithRenamedArgs(Props) {
     });
 }
 
+function Hooks$makeWithRef(Props, ref) {
+  var vehicle = Props.vehicle;
+  if (ref == null) {
+    return null;
+  } else {
+    return React.createElement("button", {
+                ref: ref
+              }, vehicle[/* name */0]);
+  }
+}
+
+var testForwardRef = React.forwardRef(Hooks$makeWithRef);
+
+function Hooks$polymorphicComponent(Props) {
+  var match = Props.p;
+  return match[0][/* name */0];
+}
+
+function Hooks$functionReturningReactElement(Props) {
+  return Props.name;
+}
+
 var make = Hooks;
 
 var $$default = Hooks;
@@ -89,14 +119,25 @@ var anotherComponent = Hooks$anotherComponent;
 
 var componentWithRenamedArgs = Hooks$componentWithRenamedArgs;
 
+var makeWithRef = Hooks$makeWithRef;
+
+var polymorphicComponent = Hooks$polymorphicComponent;
+
+var functionReturningReactElement = Hooks$functionReturningReactElement;
+
 export {
   make ,
   $$default ,
   $$default as default,
   anotherComponent ,
   Inner ,
+  NoProps ,
   functionWithRenamedArgs ,
   componentWithRenamedArgs ,
+  makeWithRef ,
+  testForwardRef ,
+  polymorphicComponent ,
+  functionReturningReactElement ,
   
 }
-/* react Not a pure module */
+/* testForwardRef Not a pure module */

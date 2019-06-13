@@ -60,6 +60,8 @@ type type_ =
   | Tuple(list(type_))
   | TypeVar(string)
   | Variant(variant)
+and builtin =
+  | Promise(type_)
 and fields = list(field)
 and field = {
   mutable_,
@@ -74,6 +76,7 @@ and function_ = {
   uncurried: bool,
 }
 and ident = {
+  builtin: bool,
   name: string,
   typeArgs: list(type_),
 }
@@ -140,8 +143,8 @@ let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
 let variantTable = (hash, ~toJS) =>
   (toJS ? "$$toJS" : "$$toRE") ++ string_of_int(hash);
 
-let ident = (~typeArgs=[], name) =>
-  Ident({name, typeArgs});
+let ident = (~builtin=true, ~typeArgs=[], name) =>
+  Ident({builtin, name, typeArgs});
 
 let mixedOrUnknown = (~config) =>
   ident(

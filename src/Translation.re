@@ -240,7 +240,7 @@ let translateComponent =
       };
     let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
     let propsTypeName = resolvedTypeName |> ResolvedName.toString;
-    let componentType = EmitType.reactComponentType(~config, ~propsTypeName);
+    let componentType = EmitType.typeReactComponent(~config, ~propsTypeName);
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 
@@ -461,6 +461,7 @@ let addTypeDeclarationsFromModuleEquations = (~typeEnv, translation: t) => {
                     y
                     |> ResolvedName.toString
                     |> ident(
+                         ~builtin=false,
                          ~typeArgs=
                            exportType.typeVars |> List.map(s => TypeVar(s)),
                        ),

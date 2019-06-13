@@ -188,6 +188,20 @@ let translateConstr =
     }
 
   | (
+      Pdot(Pident({name: "React", _}), "callback", _),
+      [fromTranslation, toTranslation],
+    ) => {
+      dependencies: fromTranslation.dependencies @ toTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [fromTranslation.type_],
+          retType: toTranslation.type_,
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
+  | (
       Pdot(Pident({name: "React", _}), "componentLike", _),
       [propsTranslation, retTranslation],
     ) => {
@@ -200,6 +214,52 @@ let translateConstr =
           typeVars: [],
           uncurried: false,
         }),
+    }
+
+  | (Pdot(Pident({name: "React", _}), "component", _), [propsTranslation]) => {
+      dependencies: propsTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [propsTranslation.type_],
+          retType: EmitType.typeReactElement(~config),
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
+  | (
+      Pdot(Pdot(Pident({name: "React", _}), "Context", _), "t", _),
+      [paramTranslation],
+    ) => {
+      dependencies: paramTranslation.dependencies,
+      type_:
+        EmitType.typeReactContext(~config, ~type_=paramTranslation.type_),
+    }
+
+  | (
+      Pdot(Pdot(Pident({name: "React", _}), "Ref", _), "t", _),
+      [paramTranslation],
+    ) => {
+      dependencies: paramTranslation.dependencies,
+      type_: EmitType.typeReactRef(~config, ~type_=paramTranslation.type_),
+    }
+
+  | (
+      Pdot(
+        Pdot(Pident({name: "ReactDOMRe", _}), "Ref", _),
+        "currentDomRef",
+        _,
+      ),
+      [],
+    ) => {
+      dependencies: [],
+      type_: EmitType.typeAny(~config),
+    }
+
+  | (Pdot(Pident({name: "React", _}), "element", _), [])
+  | (Pdot(Pident({name: "ReasonReact", _}), "reactElement", _), []) => {
+      dependencies: [],
+      type_: EmitType.typeReactElement(~config),
     }
 
   | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])
@@ -329,7 +389,7 @@ let translateConstr =
       let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
       {
         dependencies: [dep, ...typeParamDeps],
-        type_: Ident({name: dep |> depToString, typeArgs}),
+        type_: Ident({builtin: false, name: dep |> depToString, typeArgs}),
       };
     };
   };

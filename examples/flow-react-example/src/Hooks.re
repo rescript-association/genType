@@ -69,3 +69,45 @@ module NoProps = {
     <div> ReasonReact.null </div>;
   };
 };
+
+type cb = (~_to: vehicle) => unit;
+
+[@genType]
+let functionWithRenamedArgs = (~_to, ~_Type, _: cb) => _to.name ++ _Type.name;
+
+[@genType]
+[@react.component]
+let componentWithRenamedArgs = (~_to, ~_Type, _: cb) =>
+  React.string(_to.name ++ _Type.name);
+
+[@genType]
+[@react.component]
+let makeWithRef = (~vehicle, ref) => {
+  switch (ref->Js.Nullable.toOption) {
+  | Some(ref) =>
+    <button ref={ReactDOMRe.Ref.domRef(ref)}>
+      {React.string(vehicle.name)}
+    </button>
+  | None => React.null
+  };
+};
+
+[@genType]
+let testForwardRef = React.forwardRef(makeWithRef);
+
+[@genType]
+type callback('input, 'output) = React.callback('input, 'output);
+
+[@genType]
+type testReactContext = React.Context.t(int);
+
+[@genType]
+type testReactRef = React.Ref.t(int);
+
+[@genType]
+[@react.component]
+let polymorphicComponent = (~p as (x, _)) => React.string(x.name);
+
+[@genType]
+[@react.component]
+let functionReturningReactElement = (~name) => React.string(name);

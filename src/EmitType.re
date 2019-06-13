@@ -107,9 +107,9 @@ let rec renderType =
          ~typeNameIsInterface,
        );
 
-  | Ident({name, typeArgs}) =>
+  | Ident({builtin, name, typeArgs}) =>
     (
-      config.exportInterfaces && name |> typeNameIsInterface ?
+      !builtin && config.exportInterfaces && name |> typeNameIsInterface ?
         name |> interfaceName(~config) : name
     )
     ++ EmitText.genericsString(
@@ -230,9 +230,7 @@ and renderFields =
     (~closedFlag, ~config, ~indent, ~inFunType, ~typeNameIsInterface, fields) => {
   let indent1 = indent |> Indent.more;
   let exact =
-    config.language == Flow
-    && !config.exportInterfaces
-    && closedFlag == Closed;
+    config.language == Flow && !config.exportInterfaces && closedFlag == Closed;
   let space = indent == None && fields != [] ? " " : "";
   ((exact ? "{|" : "{") ++ space)
   ++ String.concat(
@@ -307,11 +305,14 @@ let emitHookTypeAsFunction =
       ~retType,
       ~retValue,
       ~typeNameIsInterface,
+      ~typeVars,
     ) =>
   "// Type annotated function components are not checked by Flow, but typeof() works.\n"
   ++ "const "
   ++ name
-  ++ " = function ("
+  ++ " = function "
+  ++ EmitText.genericsString(~typeVars)
+  ++ "("
   ++ (
     "_: "
     ++ (
@@ -626,12 +627,27 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
   |> Emitters.export(~emitters);
 };
 
-let reactComponentType = (~config, ~propsTypeName) =>
+let typeReactComponent = (~config, ~propsTypeName) =>
   (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
-  |> ident(~typeArgs=[ident(propsTypeName)]);
+  |> ident(~builtin=true, ~typeArgs=[ident(propsTypeName)]);
 
-let reactElementType = (~config) =>
-  ident(config.language == Flow ? "React$Node" : "JSX.Element");
+let typeReactContext = (~config, ~type_) =>
+  (config.language == Flow ? "React$Context" : "React.Context")
+  |> ident(~builtin=true, ~typeArgs=[type_]);
+
+let typeReactElementFlow = ident(~builtin=true, "React$Node");
+
+let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
+
+let typeReactElement = (~config) =>
+  config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
+
+let isTypeReactElement = (~config, type_) =>
+  type_ === typeReactElement(~config);
+
+let typeReactRef = (~config, ~type_) =>
+  (config.language == Flow ? "React$Ref" : "React.Ref")
+  |> ident(~builtin=true, ~typeArgs=[type_]);
 
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {
@@ -685,14 +701,24 @@ let emitImportTypeAs =
   };
 };
 
+let typeAny = (~config) =>
+  ident(
+    ~builtin=true,
+    config.language == Flow ?
+      {
+        config.emitFlowAny = true;
+        "$any";
+      } :
+      "any",
+  );
+
 let ofTypeAny = (~config, s) =>
-  switch (config.language) {
-  | TypeScript => s ++ ": any"
-  | Flow =>
-    config.emitFlowAny = true;
-    s ++ ": $any";
-  | Untyped => s
-  };
+  s
+  |> ofType(
+       ~config,
+       ~typeNameIsInterface=_ => false,
+       ~type_=typeAny(~config),
+     );
 
 let emitTypeCast = (~config, ~type_, ~typeNameIsInterface, s) =>
   switch (config.language) {
