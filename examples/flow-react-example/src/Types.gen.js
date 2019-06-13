@@ -92,6 +92,12 @@ export type gadt = "F";
 
 export type objectWithCallback = {| +y?: {| +z?: (void) => number |}, +x?: (void) => number |};
 
+export type ocaml_array<a> = Array<a>;
+
+export type someRecord = {| +id: number |};
+
+export type instantiateTypeParameter = ocaml_array<someRecord>;
+
 export const consumeOption: (?number) => number = function (Arg1: $any) {
   const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
   return result
@@ -138,4 +144,9 @@ export const convertObjectWithCallback: (objectWithCallback) => objectWithCallba
       return result2
     })});
   return result
+};
+
+export const testInstantiateTypeParameter: (instantiateTypeParameter) => instantiateTypeParameter = function (Arg1: $any) {
+  const result = TypesBS.testInstantiateTypeParameter(Arg1.map(function _element(ArrayItem: $any) { return [ArrayItem.id]}));
+  return result.map(function _element(ArrayItem1: $any) { return {id:ArrayItem1[0]}})
 };

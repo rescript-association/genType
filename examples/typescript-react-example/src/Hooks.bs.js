@@ -3,6 +3,7 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ImportHooks from "./ImportHooks.bs.js";
+import * as ImportHookDefault from "./ImportHookDefault.bs.js";
 
 function Hooks(Props) {
   var vehicle = Props.vehicle;
@@ -21,6 +22,12 @@ function Hooks(Props) {
                   person: /* record */[
                     /* name */"Mary",
                     /* age */71
+                  ],
+                  children: null
+                }, "child1", "child2"), React.createElement(ImportHookDefault.make, {
+                  person: /* record */[
+                    /* name */"DefaultImport",
+                    /* age */42
                   ],
                   children: null
                 }, "child1", "child2"));
@@ -64,6 +71,18 @@ var Inner = /* module */[
   /* Inner2 */Inner2
 ];
 
+function functionWithRenamedArgs(_to, _Type, param) {
+  return _to[/* name */0] + _Type[/* name */0];
+}
+
+function Hooks$componentWithRenamedArgs(Props) {
+  var _to = Props.to;
+  var _Type = Props.Type;
+  return (function (param) {
+      return _to[/* name */0] + _Type[/* name */0];
+    });
+}
+
 function Hooks$makeWithRef(Props, ref) {
   var vehicle = Props.vehicle;
   if (ref == null) {
@@ -83,6 +102,8 @@ var $$default = Hooks;
 
 var anotherComponent = Hooks$anotherComponent;
 
+var componentWithRenamedArgs = Hooks$componentWithRenamedArgs;
+
 var makeWithRef = Hooks$makeWithRef;
 
 export {
@@ -91,6 +112,8 @@ export {
   $$default as default,
   anotherComponent ,
   Inner ,
+  functionWithRenamedArgs ,
+  componentWithRenamedArgs ,
   makeWithRef ,
   testForwardRef ,
   

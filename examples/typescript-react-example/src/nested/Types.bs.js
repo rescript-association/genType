@@ -53,6 +53,10 @@ function setMatch(x) {
   return /* () */0;
 }
 
+function testInstantiateTypeParameter(x) {
+  return x;
+}
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -84,6 +88,7 @@ export {
   testConvertLocation ,
   testMarshalFields ,
   setMatch ,
+  testInstantiateTypeParameter ,
   
 }
 /* No side effect */

@@ -1,5 +1,24 @@
-# master
+# 2.27.0
+- In TypeScript, support --noImplicitAny also for indexing objects. (I.e. without --suppressImplicitAnyIndexErrors).
+- Add support for importing values which are default exports in commonjs.
+
+# 2.26.0
+- Give exact Flow type to empty objects.
+
+# 2.25.2
+- Add support for importing functions of polymorphic type.
+
+# 2.25.1
+- Fix: don't export the state type of components using the old record API.
+
+# 2.25.0
+- Fix: extend automatic @genType annotation to type arguments.
+- Fix issue when inlining type parameters across different modules.
+
+# 2.24.0
 - Don't delete generated files in case of type errors.
+- Apply object field mangling convention to named arguments in functions.
+  This gives a unified treatment for renaming of object fields, functions, and function components.
 
 # 2.23.0
 - Preserve case when importing from a lower-case file name.
@@ -74,7 +93,7 @@ If using bucklescript >= 5.0.0:
   Resetting the type environment causes failures depending on the order of type arguments in https://github.com/cristianoc/genType/issues/158.
 
 # 2.12.1
-- Emit type parametes when generating polymorphic conversion functions. 
+- Emit type parametes when generating polymorphic conversion functions.
 
 # 2.12.0
 - Support type definitions in first-class module types.
@@ -82,9 +101,9 @@ If using bucklescript >= 5.0.0:
 - Add support for first-class module types with type equations.
 - Add support for functions with first-class module types and type equations.
 - Fix support for type parameters in type declarations with constraints.
- 
+
 # 2.11.0
-- Fix: don't export types defined in shims as opaque. 
+- Fix: don't export types defined in shims as opaque.
 - Add support for type Js.null (and Js.Null.t).
 - Fix signature of ImmutableArray length and size.
 
@@ -285,7 +304,7 @@ This can be used instead:
 # 0.15.0
 - Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.
 - Print version information with -help and -version.
-  
+
 # 0.14.0
 - Improve support for checking JS component used from Reason.
 - Support for nullable types Js.Nullable.t.
@@ -313,15 +332,15 @@ This can be used instead:
 - Allow gentypeconfig.json in addition to genflowconfig.json.
 
 # 0.10.0
-- [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37). 
+- [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37).
 - [Full support for polymorphic types (type instantiation works correctly to generate conversions)](https://github.com/cristianoc/genFlow/commit/9712a60fab3ef0f31ad074f15a4256939f9e40a6).
 
 # 0.9.0
-- [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35). 
+- [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35).
 - Depecate -setProjectRoot CLI option. The project root is now found automatically and the option ignored.
 
 # 0.8.0
-- [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21). 
+- [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21).
 - [Fix: props are contravariant](https://github.com/cristianoc/genFlow/issues/22).
 - Use @genType annotation (the @genFlow annotation is still supported for backward compatibility).
 

@@ -74,6 +74,11 @@ export const Inner_Inner2_anotherComponent: typeof(Inner_Inner2_anotherComponent
   return result
 };
 
+// Type annotated function components are not checked by Flow, but typeof() works.
+const NoProps_make$$forTypeof = function (_: {||}) : React$Node { return null };
+
+export const NoProps_make: typeof(NoProps_make$$forTypeof) = HooksBS.NoProps[0];
+
 export const makeWithRef: ({| +vehicle: vehicle |}, ?$any) => React$Node = function (Arg1: $any, Arg2: $any) {
   const result = Curry._2(HooksBS.makeWithRef, {vehicle:[Arg1.vehicle.name]}, Arg2);
   return result

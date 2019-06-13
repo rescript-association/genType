@@ -110,7 +110,7 @@ let checkMutableObjectField = (~previousName, ~name) =>
 
 let default = "$$default";
 
-module Marshal = {
+module Mangle = {
   let keywords = [|
     "and",
     "as",
@@ -200,4 +200,4 @@ module Marshal = {
   };
 };
 
-let marshalObjectField = Marshal.translate;
+let mangleObjectField = Mangle.translate;

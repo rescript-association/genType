@@ -12,7 +12,9 @@ import {higherOrder as higherOrderNotChecked} from './MyMath';
 
 import {convertVariant as convertVariantNotChecked} from './MyMath';
 
-const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
+import {polymorphic as polymorphicNotChecked} from './MyMath';
+
+const $$toJS580645844: { [key: string]: any } = {"322339018": "tomato", "-999567389": "gray"};
 
 // tslint:disable-next-line:no-var-requires
 const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
@@ -68,6 +70,12 @@ export const convertVariant: unknown = function (Arg1: any) {
     ? CreateBucklescriptBlock.__(0, [result.value])
     : CreateBucklescriptBlock.__(1, [result.value])
 } as (_1:variant) => variant;
+
+// In case of type error, check the type of 'polymorphic' in 'ImportJsValue.re' and './MyMath'.
+export const polymorphicTypeChecked: <a>(_1:a) => a = polymorphicNotChecked;
+
+// Export 'polymorphic' early to allow circular import from the '.bs.js' file.
+export const polymorphic: unknown = polymorphicTypeChecked as <a>(_1:a) => a;
 
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');

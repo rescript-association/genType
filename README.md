@@ -198,10 +198,10 @@ type person = {
 type persons = array(person);
 ```
 
-### Renaming and @genType.as
+### Renaming, @genType.as, and object mangling convention.
 
 By default, entities with a given name are exported/imported with the same name. However, you might wish to change the appearence of the name on the JS side.
-For example, in the case of a Reason keyword, such as `type`:
+For example, in case of a record field whose name is a keyword, such as `type`:
 
 ```reason
 [@genType]
@@ -212,15 +212,46 @@ type shipment = {
 };
 ```
 
-Or in the case of components:
+Object field names follow bucklescript's mangling convention:
+
+```
+Remove trailing "__" if present.
+Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
+```
+
+This means that the analogous example with objects is:
 
 ```reason
 [@genType]
-let make =
+type shipment = {
+  .
+  "date": float,
+  "_type": string,
+};
+```
+
+or the equivalent ``` "type__": string```.
+
+Functions and function components also follow the mangling convention for labeled arguments:
+
+```reason
+[@genType]
+let exampleFunction = (~_type) => "type: " ++ _type;
+
+[@genType]
+[@react.component]
+let exampleComponent = (~_type) => React.string("type: " ++ _type);
+```
+
+It is possible to use `@genType.as` for functions, though this is only maintained for backwards compatibility, and cannot be used on function components:
+
+```reason
+[@genType]
+let functionWithGenTypeAs =
   (~date: float) => [@genType.as "type"] (~type_: string) => ...
 ```
 
-**NOTE** For technical reasons, it is not possible to rename the first argument of a function (it will be fixed once bucklescript supports OCaml 4.0.6).
+**NOTE** For technical reasons, it is not possible to use `g@enType.as` on the first argument of a function (restriction lifted on OCaml 4.0.6).
 
 
 ## Configuration
@@ -292,6 +323,14 @@ Since objects are immutable by default, their fields will be exported to readonl
 
 It is possible to mix object and option types, so for example the Reason type `{. "x":int, "y":option(string)}` exports to JS type `{x:number, ?y: string}`, requires no conversion, and allows option pattern matching on the Reason side.
 
+Object field names follow bucklescript's mangling convention (so e.g. `_type` in Reason represents `type` in JS):
+
+```
+Remove trailing "__" if present.
+Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
+```
+
+
 ### tuples
 
 Reason tuple values of type e.g. `(int, string)` are exported as identical JS values of type `[number, string]`. This requires no conversion, unless one of types of the tuple items does.
@@ -338,7 +377,7 @@ Immutable arrays are supported with the additional Reason library
 [ImmutableArray.re/.rei](examples/typescript-react-example/src/ImmutableArray.rei), which currently needs to be added to your project.
 The type `ImmutableArray.t(+'a)` is covariant, and is mapped to readonly array types in TS/Flow. As opposed to TS/Flow, `ImmutableArray.t` does not allow casting in either direction with normal arrays. Instead, a copy must be performed using `fromArray` and `toArray`.
 
-### functions
+### functions and function components
 
 Reason functions are exported as JS functions of the corresponding type.
 So for example a Reason function `foo : int => int` is exported as a JS function from numbers to numbers.
@@ -347,19 +386,31 @@ If named arguments are present in the Reason type, they are grouped and exported
 
 In case of mixed named and unnamed arguments, consecutive named arguments form separate groups. So e.g. `foo : (int, ~x:int, ~y:int, int, ~z:int) => int` is exported to a JS function of type `(number, {x:number, y:number}, number, {z:number}) => number`.
 
-To specify how a named argument is exported to JS, use the `[@genType.as "name"]` annotation:
+Function components are exported and imported exactly like normal functions. For example:
+
+```reaspn
+[@genType]
+[@react.component]
+let make = (~name) => React.string(name);
+```
+
+For renaming, named arguments follow bucklescript's mangling convention:
+
+```
+Remove trailing "__" if present.
+Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
+```
+
+For example:
 
 ```reason
 [@genType]
-let make =
-  (~date: float) => [@genType.as "type"] (~type_: string) => ...
+let exampleFunction = (~_type) => "type: " ++ _type;
 ```
 
-**NOTE** For technical reasons, it is not possible to rename the first argument of a function (it will be fixed once bucklescript supports OCaml 4.0.6).
+### record components
 
-### components
-
-ReasonReact components with props of Reason types `t1`, `t2`, `t3` are exported as reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
+ReasonReact record components with props of Reason types `t1`, `t2`, `t3` are exported as reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
 
 A file can export many components by defining them in sub-modules. The toplevel component is also exported as default.
 

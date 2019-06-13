@@ -21,6 +21,10 @@ let make = (~vehicle) => {
       {React.string("child1")}
       {React.string("child2")}
     </ImportHooks>
+    <ImportHookDefault person={name: "DefaultImport", age: 42}>
+      {React.string("child1")}
+      {React.string("child2")}
+    </ImportHookDefault>
   </div>;
 };
 
@@ -55,6 +59,14 @@ module Inner = {
     [@react.component]
     let anotherComponent = (~vehicle) =>
       <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
+  };
+};
+
+module NoProps = {
+  [@genType]
+  [@react.component]
+  let make = () => {
+    <div> ReasonReact.null </div>;
   };
 };
 

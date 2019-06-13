@@ -47,6 +47,10 @@ function convertVariant(prim) {
   return ImportJsValueGen.convertVariant(prim);
 }
 
+function polymorphic(prim) {
+  return ImportJsValueGen.polymorphic(prim);
+}
+
 export {
   round ,
   area ,
@@ -59,6 +63,7 @@ export {
   higherOrder ,
   returnedFromHigherOrder ,
   convertVariant ,
+  polymorphic ,
   
 }
 /* roundedNumber Not a pure module */

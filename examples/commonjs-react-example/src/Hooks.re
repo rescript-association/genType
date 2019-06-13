@@ -17,6 +17,7 @@ let make = (~vehicle) => {
     <button onClick={_ => setCount(_ => count + 1)}>
       {React.string("Click me")}
     </button>
+    <ImportHookDefault show=true _Message="Imported Hook" />
   </div>;
 };
 

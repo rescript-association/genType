@@ -2,17 +2,17 @@
 /* eslint-disable import/first */
 
 
-const $$toJS13337556 = {"0": "ARenamed"};
+const $$toJS13337556: { [key: string]: any } = {"0": "ARenamed"};
 
-const $$toRE13337556 = {"ARenamed": 0};
+const $$toRE13337556: { [key: string]: any } = {"ARenamed": 0};
 
-const $$toJS346759412 = {"0": "A", "1": "B", "2": "C"};
+const $$toJS346759412: { [key: string]: any } = {"0": "A", "1": "B", "2": "C"};
 
-const $$toRE346759412 = {"A": 0, "B": 1, "C": 2};
+const $$toRE346759412: { [key: string]: any } = {"A": 0, "B": 1, "C": 2};
 
-const $$toJS542320962 = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
+const $$toJS542320962: { [key: string]: any } = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
 
-const $$toRE542320962 = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
+const $$toRE542320962: { [key: string]: any } = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
 
 // tslint:disable-next-line:no-var-requires
 const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');

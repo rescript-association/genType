@@ -429,7 +429,9 @@ let rec emitCodeItem =
         (emitters, valueNameNotChecked, env);
       | (Flow | Untyped, _) =>
         /* add an early require(...)  */
-        let importedAsName = importFile ++ "." ++ firstNameInPath;
+        let importedAsName =
+          firstNameInPath == "default" ?
+            importFile : importFile ++ "." ++ firstNameInPath;
         let env =
           importFile
           |> ModuleName.fromStringUnsafe
@@ -825,10 +827,11 @@ let emitRequires =
     emitters,
   );
 
-let emitVariantTables = (~emitters, variantTables) => {
+let emitVariantTables = (~config, ~emitters, variantTables) => {
+  let typeAnnotation = config.language == TypeScript ? ": { [key: string]: any }" : "";
   let emitTable = (~table, ~toJS, variantC: Converter.variantC) =>
     "const "
-    ++ table
+    ++ table++typeAnnotation
     ++ " = {"
     ++ (
       variantC.noPayloads
@@ -1069,11 +1072,12 @@ let propagateAnnotationToSubTypes =
     let visited = ref(StringSet.empty);
     let rec visit = type_ =>
       switch (type_) {
-      | Ident({name: typeName}) =>
+      | Ident({name: typeName, typeArgs}) =>
         if (visited^ |> StringSet.mem(typeName)) {
           ();
         } else {
           visited := visited^ |> StringSet.add(typeName);
+          typeArgs |> List.iter(visit);
           switch (typeMap |> StringMap.find(typeName)) {
           | {annotation: GenType | GenTypeOpaque, _} => ()
           | {type_: type1, annotation: NoGenType, _} =>
@@ -1259,7 +1263,7 @@ let emitTranslationAsString =
          ) :
       env;
 
-  let emitters = variantTables |> emitVariantTables(~emitters);
+  let emitters = variantTables |> emitVariantTables(~config, ~emitters);
 
   emitters
   |> emitRequires(
