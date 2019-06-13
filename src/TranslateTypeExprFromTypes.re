@@ -336,16 +336,23 @@ let translateConstr =
   | (
       Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
       [{dependencies: argsDependencies, type_: singleT}, ret],
-    ) => {
+    ) =>
+    let argTypes =
+      switch (singleT) {
+      | Variant({payloads: [(_, _, Tuple(argTypes))]}) => argTypes
+      | Variant({payloads: [(_, _, type_)]}) => [type_]
+      | _ => [singleT]
+      };
+    {
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: [singleT],
+          argTypes,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
         }),
-    }
+    };
   | (Pdot(Pident({name: "Js", _}), "t", _), _) =>
     let dependencies =
       fieldsTranslations

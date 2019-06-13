@@ -9,6 +9,18 @@ const Curry = require('bs-platform/lib/es6/curry.js');
 const UncurriedBS = require('./Uncurried.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
+export type u0 = () => string;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type u1 = (_1:number) => string;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type u2 = (_1:number, _2:string) => string;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type u3 = (_1:number, _2:string, _3:number) => string;
+
+// tslint:disable-next-line:interface-over-type-literal
 export type auth = { readonly login: (_1:void) => string };
 
 // tslint:disable-next-line:interface-over-type-literal

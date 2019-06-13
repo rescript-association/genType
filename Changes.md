@@ -1,3 +1,7 @@
+# master
+- Fix issue where direct type declarations of uncurried types were not recognized.
+  Inferred uncurried types or declarations inside other types were working already.
+
 # 2.28.0
 - Make core react types builtin instead of requiring a shim file.
 - Fix issue with flow back-end when exporting a function component with polymorphic variables.
