@@ -37,10 +37,7 @@ export default $$default;
 const anotherComponent$$forTypeof = function (_: {| +callback: ((void) => void), +vehicle: vehicle |}) : React$Node { return null };
 
 export const anotherComponent: typeof(anotherComponent$$forTypeof) = function Hooks_anotherComponent(Arg1: $any) {
-  const result = HooksBS.anotherComponent({callback:function (Arg11: $any) {
-      const result1 = Arg1.callback(Arg11);
-      return result1
-    }, vehicle:[Arg1.vehicle.name]});
+  const result = HooksBS.anotherComponent({callback:Arg1.callback, vehicle:[Arg1.vehicle.name]});
   return result
 };
 

@@ -31,10 +31,7 @@ export const $$default: (_1:{ readonly vehicle: vehicle }) => JSX.Element = func
 export default $$default;
 
 export const anotherComponent: (_1:{ readonly callback: ((_1:void) => void); readonly vehicle: vehicle }) => JSX.Element = function Hooks_anotherComponent(Arg1: any) {
-  const result = HooksBS.anotherComponent({callback:function (Arg11: any) {
-      const result1 = Arg1.callback(Arg11);
-      return result1
-    }, vehicle:[Arg1.vehicle.name]});
+  const result = HooksBS.anotherComponent({callback:Arg1.callback, vehicle:[Arg1.vehicle.name]});
   return result
 };
 
