@@ -1,4 +1,4 @@
-# master
+# 2.29.0
 - Fix issue where direct type declarations of uncurried types were not recognized.
   Inferred uncurried types or declarations inside other types were working already.
 - With untyped back-end, don't add type parameters to generated functions.
