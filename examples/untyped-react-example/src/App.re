@@ -26,4 +26,4 @@ let make = (~array, ~callback=() => (), ~person, ~title, _children) => {
 };
 
 [@genType]
-let poly = (x, y) => x + 1;
+let poly = (x, _y) => x + 1;

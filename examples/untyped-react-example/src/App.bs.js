@@ -32,7 +32,7 @@ function make(array, $staropt$star, person, title, _children) {
         ];
 }
 
-function poly(x, y) {
+function poly(x, _y) {
   return x + 1 | 0;
 }
 
