@@ -1,6 +1,7 @@
 # master
 - Fix issue where direct type declarations of uncurried types were not recognized.
   Inferred uncurried types or declarations inside other types were working already.
+- With untyped back-end, don't add type parameters to generated functions.
 
 # 2.28.0
 - Make core react types builtin instead of requiring a shim file.

@@ -30,3 +30,8 @@ App.propTypes = {
 };
 
 export default App;
+
+export const poly = function (Arg1, Arg2) {
+  const result = Curry._2(AppBS.poly, Arg1, Arg2);
+  return result
+};

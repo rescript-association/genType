@@ -24,3 +24,6 @@ let make = (~array, ~callback=() => (), ~person, ~title, _children) => {
     </div>;
   },
 };
+
+[@genType]
+let poly = (x, y) => x + 1;

@@ -32,9 +32,14 @@ function make(array, $staropt$star, person, title, _children) {
         ];
 }
 
+function poly(x, y) {
+  return x + 1 | 0;
+}
+
 export {
   component ,
   make ,
+  poly ,
   
 }
 /* component Not a pure module */

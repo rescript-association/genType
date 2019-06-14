@@ -576,7 +576,12 @@ let rec apply =
       ~funParams,
       ~indent,
       ~mkBody,
-      ~typeVars,
+      ~typeVars=
+        switch (config.language) {
+        | Flow
+        | TypeScript => typeVars
+        | Untyped => []
+        },
     );
 
   | IdentC => value
