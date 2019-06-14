@@ -2,6 +2,9 @@
 - Fix issue where direct type declarations of uncurried types were not recognized.
   Inferred uncurried types or declarations inside other types were working already.
 - With untyped back-end, don't add type parameters to generated functions.
+- Don't generate conversion for callbacks of type unit => ..., as it's unnecessary from bucklescript 5.
+  Before bucklescript version 5, passing a function with arity 0 from JS would give a runtime error,
+  so a conversion was used to avoid this, adding runtime cost.
 
 # 2.28.0
 - Make core react types builtin instead of requiring a shim file.

@@ -15,7 +15,6 @@ type t =
 and groupedArgConverter =
   | ArgConverter(t)
   | GroupConverter(list((string, optional, t)))
-  | UnitConverter
 and fieldsC = list((string, t))
 and functionC = {
   argConverters: list(groupedArgConverter),
@@ -60,7 +59,6 @@ let rec toString = converter =>
                |> String.concat(", ")
              )
              ++ "|}"
-           | UnitConverter => "unit"
            }
          )
       |> String.concat(", ")
@@ -330,8 +328,7 @@ let typeGetConverterNormalized =
       (converter, tNormalized);
     | _ =>
       let (converter, tNormalized) = type_ |> visit(~visited);
-      let converter =
-        type_ == unitT ? UnitConverter : ArgConverter(converter);
+      let converter = ArgConverter(converter);
       (converter, tNormalized);
     };
 
@@ -385,7 +382,6 @@ let rec converterIsIdentity = (~toJS, converter) =>
          | ArgConverter(argConverter) =>
            argConverter |> converterIsIdentity(~toJS=!toJS)
          | GroupConverter(_) => false
-         | UnitConverter => uncurried || toJS
          }
        )
 
@@ -554,9 +550,6 @@ let rec apply =
             |> String.concat(", ");
           (varNames, ["{" ++ fieldValues ++ "}"]);
         };
-      | UnitConverter =>
-        let varName = i + 1 |> EmitText.argi(~nameGen);
-        ([varName], [varName]);
       };
 
     let mkBody = bodyArgs => {
