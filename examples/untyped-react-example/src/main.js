@@ -19,8 +19,15 @@ printVariantWithPayload(testWithPayload({ x: 15 }));
 
 const Main = () => (
   <div>
-    <App title={"hello"} person={{ name: "Josh", age: 33 }} array={["abc"]} />
-    <Hooks vehicle={{name:"auto"}} />
+    <App
+      title={"hello"}
+      person={{ name: "Josh", age: 33 }}
+      array={["abc"]}
+      callback={() => {
+        console.log("callback called");
+      }}
+    />
+    <Hooks vehicle={{ name: "auto" }} />
   </div>
 );
 
