@@ -1,3 +1,6 @@
+# master
+- TypeScript: support importing a functional component declared with type React.FC<...>.
+
 # 2.29.0
 - Fix issue where direct type declarations of uncurried types were not recognized.
   Inferred uncurried types or declarations inside other types were working already.

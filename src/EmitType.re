@@ -639,6 +639,9 @@ let typeReactElementFlow = ident(~builtin=true, "React$Node");
 
 let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
 
+let typeReactFunctionComponentTypeScript = (~propsType) =>
+  ident(~builtin=true, ~typeArgs=[propsType], "React.FC");
+
 let typeReactElement = (~config) =>
   config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
 
