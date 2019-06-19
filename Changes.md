@@ -1,4 +1,4 @@
-# master
+# 2.29.1
 - TypeScript: support importing a functional component declared with type React.FC<...>.
 
 # 2.29.0
