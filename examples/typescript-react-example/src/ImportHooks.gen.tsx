@@ -7,13 +7,25 @@ import {make as makeNotChecked} from './hookExample';
 import {foo as fooNotChecked} from './hookExample';
 
 // In case of type error, check the type of 'make' in 'ImportHooks.re' and './hookExample'.
-export const makeTypeChecked: React.FC<{ readonly person: person; readonly children: JSX.Element }> = makeNotChecked;
+export const makeTypeChecked: React.FC<{
+  readonly person: person; 
+  readonly children: JSX.Element; 
+  readonly renderMe: React.FC<{
+    readonly randomString: string
+  }>
+}> = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: unknown = function hookExample(Arg1: any) {
-  const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children});
+  const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
-} as React.FC<{ readonly person: person; readonly children: JSX.Element }>;
+} as React.FC<{
+  readonly person: person; 
+  readonly children: JSX.Element; 
+  readonly renderMe: React.FC<{
+    readonly randomString: string
+  }>
+}>;
 
 // In case of type error, check the type of 'foo' in 'ImportHooks.re' and './hookExample'.
 export const fooTypeChecked: (_1:{ readonly person: person }) => string = fooNotChecked;
