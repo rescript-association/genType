@@ -14,11 +14,17 @@ import {make as makeNotChecked} from './hookExample';
 import {foo as fooNotChecked} from './hookExample';
 
 // In case of type error, check the type of 'make' in 'ImportHooks.re' and './hookExample'.
-export const makeTypeChecked: ({| +person: person, +children: React$Node |}) => React$Node = makeNotChecked;
+export const makeTypeChecked: ({|
+  +person: person, 
+  +children: React$Node, 
+  +renderMe: (({|
+    +randomString: string
+  |}) => React$Node)
+|}) => React$Node = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: mixed = function hookExample(Arg1: $any) {
-  const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children});
+  const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
 };
 
