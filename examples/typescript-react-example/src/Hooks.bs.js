@@ -23,13 +23,19 @@ function Hooks(Props) {
                     /* name */"Mary",
                     /* age */71
                   ],
-                  children: null
+                  children: null,
+                  renderMe: (function (param) {
+                      return null;
+                    })
                 }, "child1", "child2"), React.createElement(ImportHookDefault.make, {
                   person: /* record */[
                     /* name */"DefaultImport",
                     /* age */42
                   ],
-                  children: null
+                  children: null,
+                  renderMe: (function (param) {
+                      return null;
+                    })
                 }, "child1", "child2"));
 }
 
