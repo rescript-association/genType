@@ -9,7 +9,8 @@ export const makeTypeChecked: React.FC<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: React.FC<{
-    readonly randomString: string
+    readonly randomString: string; 
+    readonly poly: string
   }>
 }> = makeNotChecked;
 
@@ -21,7 +22,8 @@ export const make: unknown = function hookExample(Arg1: any) {
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: React.FC<{
-    readonly randomString: string
+    readonly randomString: string; 
+    readonly poly: string
   }>
 }>;
 

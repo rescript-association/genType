@@ -15,7 +15,8 @@ export const makeTypeChecked: ({|
   +person: person, 
   +children: React$Node, 
   +renderMe: (({|
-    +randomString: string
+    +randomString: string, 
+    +poly: string
   |}) => React$Node)
 |}) => React$Node = makeNotChecked;
 
