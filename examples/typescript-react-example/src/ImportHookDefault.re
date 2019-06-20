@@ -4,5 +4,11 @@ type person = {
 };
 
 [@genType.import ("./hookExample", "default")] [@react.component]
-external make: (~person: person, ~children: React.element) => React.element =
+external make:
+  (
+    ~person: person,
+    ~children: React.element,
+    ~renderMe: {. "randomString": string} => React.element
+  ) =>
+  React.element =
   "";
