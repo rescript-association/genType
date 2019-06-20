@@ -11,19 +11,21 @@ export const makeTypeChecked: React.FC<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: React.FC<{
-    readonly randomString: string
+    readonly randomString: string; 
+    readonly poly: any
   }>
 }> = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function hookExample(Arg1: any) {
+export const make: unknown = function hookExample<a>(Arg1: any) {
   const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
 } as React.FC<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: React.FC<{
-    readonly randomString: string
+    readonly randomString: string; 
+    readonly poly: any
   }>
 }>;
 

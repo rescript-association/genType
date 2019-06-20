@@ -7,7 +7,7 @@ export const foo = (x: {
 type Props = {
   readonly person: { readonly name: string; readonly age: number };
   readonly children: JSX.Element;
-  readonly renderMe: React.FC<{ randomString: string }>;
+  readonly renderMe: React.FC<{ randomString: string; readonly poly: string }>;
 };
 
 export const make: React.FC<Props> = (x: Props) => (

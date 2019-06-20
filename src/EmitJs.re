@@ -442,7 +442,11 @@ let rec emitCodeItem =
 
     let rec convertFunctionType = t =>
       switch (t) {
-      | Function({argTypes: [Object(closedFlag, fields)], retType})
+      | Function({
+          argTypes: [Object(closedFlag, fields)],
+          retType,
+          typeVars,
+        })
           when
             config.language == TypeScript
             && retType
@@ -450,7 +454,19 @@ let rec emitCodeItem =
         let fields =
           fields
           |> List.map(field =>
-               {...field, type_: field.type_ |> convertFunctionType}
+               {
+                 ...field,
+                 type_:
+                   field.type_
+                   |> TypeVars.substitute(~f=s =>
+                        if (typeVars |> List.mem(s)) {
+                          Some(EmitType.typeAny(~config));
+                        } else {
+                          None;
+                        }
+                      )
+                   |> convertFunctionType,
+               }
              );
         EmitType.typeReactFunctionComponentTypeScript(
           ~propsType=Object(closedFlag, fields),
@@ -466,6 +482,7 @@ let rec emitCodeItem =
       | _ => false
       };
     let type_ = type_ |> convertFunctionType;
+
     let converter =
       switch (converter) {
       | FunctionC(functionC) when isHook =>
