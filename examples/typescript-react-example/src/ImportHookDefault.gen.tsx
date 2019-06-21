@@ -8,10 +8,7 @@ import {default as makeNotChecked} from './hookExample';
 export const makeTypeChecked: React.FC<{
   readonly person: person; 
   readonly children: JSX.Element; 
-  readonly renderMe: React.FC<{
-    readonly randomString: string; 
-    readonly poly: string
-  }>
+  readonly renderMe: ImportHooks_renderMe<string>
 }> = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
@@ -21,11 +18,10 @@ export const make: unknown = function hookExample(Arg1: any) {
 } as React.FC<{
   readonly person: person; 
   readonly children: JSX.Element; 
-  readonly renderMe: React.FC<{
-    readonly randomString: string; 
-    readonly poly: string
-  }>
+  readonly renderMe: ImportHooks_renderMe<string>
 }>;
+
+import {renderMe as ImportHooks_renderMe} from './ImportHooks.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type person = { readonly name: string; readonly age: number };

@@ -8,12 +8,7 @@ external make:
   (
     ~person: person,
     ~children: React.element,
-    ~renderMe: {
-                 .
-                 "randomString": string,
-                 "poly": string,
-               } =>
-               React.element
+    ~renderMe: ImportHooks.renderMe(string)
   ) =>
   React.element =
   "";
