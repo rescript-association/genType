@@ -4,18 +4,18 @@ type person = {
   age: int,
 };
 
+[@genType]
+type renderMe('a) =
+  {
+    .
+    "randomString": string,
+    "poly": 'a,
+  } =>
+  React.element;
+
 [@genType.import "./hookExample"] [@react.component]
 external make:
-  (
-    ~person: person,
-    ~children: React.element,
-    ~renderMe: {
-                 .
-                 "randomString": string,
-                 "poly": 'a,
-               } =>
-               React.element
-  ) =>
+  (~person: person, ~children: React.element, ~renderMe: renderMe('a)) =>
   React.element =
   "";
 

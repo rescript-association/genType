@@ -14,10 +14,7 @@ import {default as makeNotChecked} from './hookExample';
 export const makeTypeChecked: ({|
   +person: person, 
   +children: React$Node, 
-  +renderMe: (({|
-    +randomString: string, 
-    +poly: string
-  |}) => React$Node)
+  +renderMe: ImportHooks_renderMe<string>
 |}) => React$Node = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
@@ -25,5 +22,8 @@ export const make: mixed = function hookExample(Arg1: $any) {
   const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
 };
+
+// flowlint-next-line nonstrict-import:off
+import type {renderMe as ImportHooks_renderMe} from './ImportHooks.gen';
 
 export type person = {| +name: string, +age: number |};

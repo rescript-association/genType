@@ -440,40 +440,6 @@ let rec emitCodeItem =
       };
     let converter = type_ |> typeGetConverter;
 
-    let rec convertFunctionType = t =>
-      switch (t) {
-      | Function({
-          argTypes: [Object(closedFlag, fields)],
-          retType,
-          typeVars,
-        })
-          when
-            config.language == TypeScript
-            && retType
-            |> EmitType.isTypeReactElement(~config) =>
-        let fields =
-          fields
-          |> List.map(field =>
-               {
-                 ...field,
-                 type_:
-                   field.type_
-                   |> TypeVars.substitute(~f=s =>
-                        if (typeVars |> List.mem(s)) {
-                          Some(EmitType.typeAny(~config));
-                        } else {
-                          None;
-                        }
-                      )
-                   |> convertFunctionType,
-               }
-             );
-        EmitType.typeReactFunctionComponentTypeScript(
-          ~propsType=Object(closedFlag, fields),
-        );
-      | _ => t
-      };
-
     let isHook =
       switch (type_) {
       | Function({argTypes: [Object(_)], retType})
@@ -481,7 +447,6 @@ let rec emitCodeItem =
         true
       | _ => false
       };
-    let type_ = type_ |> convertFunctionType;
 
     let converter =
       switch (converter) {

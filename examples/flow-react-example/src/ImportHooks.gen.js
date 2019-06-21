@@ -17,10 +17,7 @@ import {foo as fooNotChecked} from './hookExample';
 export const makeTypeChecked: <a>({|
   +person: person, 
   +children: React$Node, 
-  +renderMe: (({|
-    +randomString: string, 
-    +poly: a
-  |}) => React$Node)
+  +renderMe: renderMe<a>
 |}) => React$Node = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
@@ -39,3 +36,5 @@ export const foo: mixed = function (Argperson: $any) {
 };
 
 export type person = {| +name: string, +age: number |};
+
+export type renderMe<a> = ({| +randomString: string, +poly: a |}) => React$Node;

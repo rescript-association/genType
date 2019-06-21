@@ -46,6 +46,49 @@ let shimExtension = (~config) =>
 let interfaceName = (~config, name) =>
   config.exportInterfaces ? "I" ++ name : name;
 
+let typeReactComponent = (~config, ~propsTypeName) =>
+  (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
+  |> ident(~builtin=true, ~typeArgs=[ident(propsTypeName)]);
+
+let typeReactContext = (~config, ~type_) =>
+  (config.language == Flow ? "React$Context" : "React.Context")
+  |> ident(~builtin=true, ~typeArgs=[type_]);
+
+let typeReactElementFlow = ident(~builtin=true, "React$Node");
+
+let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
+
+let typeReactFunctionComponentTypeScript = (~propsType) =>
+  ident(~builtin=true, ~typeArgs=[propsType], "React.FC");
+
+let typeReactElement = (~config) =>
+  config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
+
+let isTypeReactElement = (~config, type_) =>
+  type_ === typeReactElement(~config);
+
+let typeReactRef = (~config, ~type_) =>
+  (config.language == Flow ? "React$Ref" : "React.Ref")
+  |> ident(~builtin=true, ~typeArgs=[type_]);
+
+let componentExportName = (~config, ~fileName, ~moduleName) =>
+  switch (config.language) {
+  | Flow =>
+    fileName == moduleName ? "component" : moduleName |> ModuleName.toString
+  | _ => moduleName |> ModuleName.toString
+  };
+
+let typeAny = (~config) =>
+  ident(
+    ~builtin=true,
+    config.language == Flow ?
+      {
+        config.emitFlowAny = true;
+        "$any";
+      } :
+      "any",
+  );
+
 let rec renderType =
         (~config, ~indent=None, ~typeNameIsInterface, ~inFunType, type0) =>
   switch (type0) {
@@ -72,6 +115,34 @@ let rec renderType =
       )
       ++ ">";
     };
+
+  | Function({argTypes: [Object(closedFlag, fields)], retType, typeVars})
+      when
+        config.language == TypeScript
+        && retType
+        |> isTypeReactElement(~config) =>
+    let fields =
+      fields
+      |> List.map(field =>
+           {
+             ...field,
+             type_:
+               field.type_
+               |> TypeVars.substitute(~f=s =>
+                    if (typeVars |> List.mem(s)) {
+                      Some(typeAny(~config));
+                    } else {
+                      None;
+                    }
+                  ),
+           }
+         );
+    let functionComponentType =
+      typeReactFunctionComponentTypeScript(
+        ~propsType=Object(closedFlag, fields),
+      );
+    functionComponentType
+    |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType);
 
   | Function({argTypes, retType, typeVars}) =>
     renderFunType(
@@ -627,38 +698,6 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
   |> Emitters.export(~emitters);
 };
 
-let typeReactComponent = (~config, ~propsTypeName) =>
-  (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
-  |> ident(~builtin=true, ~typeArgs=[ident(propsTypeName)]);
-
-let typeReactContext = (~config, ~type_) =>
-  (config.language == Flow ? "React$Context" : "React.Context")
-  |> ident(~builtin=true, ~typeArgs=[type_]);
-
-let typeReactElementFlow = ident(~builtin=true, "React$Node");
-
-let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
-
-let typeReactFunctionComponentTypeScript = (~propsType) =>
-  ident(~builtin=true, ~typeArgs=[propsType], "React.FC");
-
-let typeReactElement = (~config) =>
-  config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
-
-let isTypeReactElement = (~config, type_) =>
-  type_ === typeReactElement(~config);
-
-let typeReactRef = (~config, ~type_) =>
-  (config.language == Flow ? "React$Ref" : "React.Ref")
-  |> ident(~builtin=true, ~typeArgs=[type_]);
-
-let componentExportName = (~config, ~fileName, ~moduleName) =>
-  switch (config.language) {
-  | Flow =>
-    fileName == moduleName ? "component" : moduleName |> ModuleName.toString
-  | _ => moduleName |> ModuleName.toString
-  };
-
 let emitImportTypeAs =
     (
       ~emitters,
@@ -703,17 +742,6 @@ let emitImportTypeAs =
   | Untyped => emitters
   };
 };
-
-let typeAny = (~config) =>
-  ident(
-    ~builtin=true,
-    config.language == Flow ?
-      {
-        config.emitFlowAny = true;
-        "$any";
-      } :
-      "any",
-  );
 
 let ofTypeAny = (~config, s) =>
   s
