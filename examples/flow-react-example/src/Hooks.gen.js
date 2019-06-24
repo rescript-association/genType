@@ -78,19 +78,30 @@ const NoProps_make$$forTypeof = function (_: {||}) : React$Node { return null };
 
 export const NoProps_make: typeof(NoProps_make$$forTypeof) = HooksBS.NoProps[0];
 
-export const functionWithRenamedArgs: ({| +to: vehicle, +Type: vehicle |}, cb) => string = function (Arg1: $any, Arg2: $any) {
+export const functionWithRenamedArgs: ({|
+  +to: vehicle, 
+  +Type: vehicle, 
+  +cb: cb
+|}) => string = function (Arg1: $any) {
   const result = Curry._3(HooksBS.functionWithRenamedArgs, [Arg1.to.name], [Arg1.Type.name], function (Argto: $any) {
-      const result1 = Arg2({to:{name:Argto[0]}});
+      const result1 = Arg1.cb({to:{name:Argto[0]}});
       return result1
     });
   return result
 };
 
-export const componentWithRenamedArgs: ({| +Type: vehicle, +to: vehicle |}, cb) => React$Node = function (Arg1: $any, Arg2: $any) {
-  const result = Curry._2(HooksBS.componentWithRenamedArgs, {Type:[Arg1.Type.name], to:[Arg1.to.name]}, function (Argto: $any) {
-      const result1 = Arg2({to:{name:Argto[0]}});
+// Type annotated function components are not checked by Flow, but typeof() works.
+const componentWithRenamedArgs$$forTypeof = function (_: {|
+  +Type: vehicle, 
+  +to: vehicle, 
+  +cb: cb
+|}) : React$Node { return null };
+
+export const componentWithRenamedArgs: typeof(componentWithRenamedArgs$$forTypeof) = function Hooks_componentWithRenamedArgs(Arg1: $any) {
+  const result = HooksBS.componentWithRenamedArgs({Type:[Arg1.Type.name], to:[Arg1.to.name], cb:function (Argto: $any) {
+      const result1 = Arg1.cb({to:{name:Argto[0]}});
       return result1
-    });
+    }});
   return result
 };
 

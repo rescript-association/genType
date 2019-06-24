@@ -83,16 +83,17 @@ function Hooks$NoProps(Props) {
 
 var NoProps = /* module */[/* make */Hooks$NoProps];
 
-function functionWithRenamedArgs(_to, _Type, param) {
+function functionWithRenamedArgs(_to, _Type, cb) {
+  Curry._1(cb, _to);
   return _to[/* name */0] + _Type[/* name */0];
 }
 
 function Hooks$componentWithRenamedArgs(Props) {
   var _to = Props.to;
   var _Type = Props.Type;
-  return (function (param) {
-      return _to[/* name */0] + _Type[/* name */0];
-    });
+  var cb = Props.cb;
+  Curry._1(cb, _to);
+  return _to[/* name */0] + _Type[/* name */0];
 }
 
 function Hooks$makeWithRef(Props, ref) {

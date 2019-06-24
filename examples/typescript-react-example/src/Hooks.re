@@ -74,12 +74,17 @@ module NoProps = {
 type cb = (~_to: vehicle) => unit;
 
 [@genType]
-let functionWithRenamedArgs = (~_to, ~_Type, _: cb) => _to.name ++ _Type.name;
+let functionWithRenamedArgs = (~_to, ~_Type, ~cb: cb) => {
+  cb(~_to);
+  _to.name ++ _Type.name;
+};
 
 [@genType]
 [@react.component]
-let componentWithRenamedArgs = (~_to, ~_Type, _: cb) =>
+let componentWithRenamedArgs = (~_to, ~_Type, ~cb: cb) => {
+  cb(~_to);
   React.string(_to.name ++ _Type.name);
+};
 
 [@genType]
 [@react.component]
