@@ -1,3 +1,8 @@
+# master
+- TypeScript: represent all function components with type React.FV<...>.
+  A function component is any value of type `props => React.element` where `props` has type object.  
+  Type variables are replaced by `any`.
+
 # 2.29.1
 - TypeScript: support importing a functional component declared with type React.FC<...>.
 
