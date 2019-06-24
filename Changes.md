@@ -1,5 +1,5 @@
 # 2.30.0
-- TypeScript: represent all function components with type `React.FV<...>`.
+- TypeScript: represent all function components with type `React.FC<...>`.
   A function component is any value of type `props => React.element` where `props` has type object.  
   Free type variables in type `props` are replaced by `any`.
 
