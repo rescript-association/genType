@@ -57,19 +57,27 @@ export const Inner_Inner2_anotherComponent: React.FC<{ readonly vehicle: vehicle
 
 export const NoProps_make: React.FC<{}> = HooksBS.NoProps[0];
 
-export const functionWithRenamedArgs: (_1:{ readonly to: vehicle; readonly Type: vehicle }, _2:cb) => string = function (Arg1: any, Arg2: any) {
+export const functionWithRenamedArgs: (_1:{
+  readonly to: vehicle; 
+  readonly Type: vehicle; 
+  readonly cb: cb
+}) => string = function (Arg1: any) {
   const result = Curry._3(HooksBS.functionWithRenamedArgs, [Arg1.to.name], [Arg1.Type.name], function (Argto: any) {
-      const result1 = Arg2({to:{name:Argto[0]}});
+      const result1 = Arg1.cb({to:{name:Argto[0]}});
       return result1
     });
   return result
 };
 
-export const componentWithRenamedArgs: (_1:{ readonly Type: vehicle; readonly to: vehicle }, _2:cb) => JSX.Element = function (Arg1: any, Arg2: any) {
-  const result = Curry._2(HooksBS.componentWithRenamedArgs, {Type:[Arg1.Type.name], to:[Arg1.to.name]}, function (Argto: any) {
-      const result1 = Arg2({to:{name:Argto[0]}});
+export const componentWithRenamedArgs: React.FC<{
+  readonly Type: vehicle; 
+  readonly to: vehicle; 
+  readonly cb: cb
+}> = function Hooks_componentWithRenamedArgs(Arg1: any) {
+  const result = HooksBS.componentWithRenamedArgs({Type:[Arg1.Type.name], to:[Arg1.to.name], cb:function (Argto: any) {
+      const result1 = Arg1.cb({to:{name:Argto[0]}});
       return result1
-    });
+    }});
   return result
 };
 
