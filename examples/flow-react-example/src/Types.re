@@ -75,7 +75,7 @@ type someMutableFields = {
   [@bs.set] "mutable2": string,
 };
 
-[@genType.import "./name-with-dashes"] external foo: int => int = "";
+[@genType.import "./name-with-dashes"] external foo: int => int = "foo";
 
 [@genType.opaque]
 type exportOpaqueFromVariants = Variants.weekday;

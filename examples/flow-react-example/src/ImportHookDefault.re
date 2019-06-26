@@ -11,4 +11,4 @@ external make:
     ~renderMe: ImportHooks.renderMe(string)
   ) =>
   React.element =
-  "";
+  "make";
