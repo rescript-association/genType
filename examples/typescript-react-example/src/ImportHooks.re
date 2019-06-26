@@ -17,7 +17,7 @@ type renderMe('a) =
 external make:
   (~person: person, ~children: React.element, ~renderMe: renderMe('a)) =>
   React.element =
-  "";
+  "make";
 
 [@genType.import "./hookExample"]
-external foo: (~person: person) => string = "";
+external foo: (~person: person) => string = "foo";
