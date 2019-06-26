@@ -3,7 +3,7 @@
   */
 [@genType.import "./MyMath"] /* This is the module to import from. */
 /* Name and type of the JS value to bind to. */
-external round: float => float = "";
+external round: float => float = "round";
 
 [@genType]
 type point = {
@@ -13,7 +13,7 @@ type point = {
 
 [@genType.import "./MyMath"] /* This is the module to import from. */
 /* Name and type of the JS value to bind to. */
-external area: point => int = "";
+external area: point => int = "area";
 
 [@genType]
 let roundedNumber = round(1.8);
@@ -47,10 +47,10 @@ type stringFunction;
 [@genType]
 type color = [ | `tomato | `gray];
 
-[@genType.import "./MyMath"] external useColor: color => int = "";
+[@genType.import "./MyMath"] external useColor: color => int = "useColor";
 
 [@genType.import "./MyMath"]
-external higherOrder: ((int, int) => int) => int = "";
+external higherOrder: ((int, int) => int) => int = "higherOrder";
 
 [@genType]
 let returnedFromHigherOrder = higherOrder((+));
@@ -59,6 +59,7 @@ type variant =
   | I(int)
   | S(string);
 
-[@genType.import "./MyMath"] external convertVariant: variant => variant = "";
+[@genType.import "./MyMath"]
+external convertVariant: variant => variant = "convertVariant";
 
-[@genType.import "./MyMath"] external polymorphic: 'a => 'a = "";
+[@genType.import "./MyMath"] external polymorphic: 'a => 'a = "polymorphic";
