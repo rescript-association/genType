@@ -13,6 +13,6 @@ external make:
       ReasonReact.actionless,
     )
   ) =
-  "";
+  "make";
 
 let make = make;
