@@ -1,4 +1,4 @@
-# master
+# 2.31.0
 - Support externals with different name: external foo: someType = "fooRenamed".
 
 # 2.30.0
