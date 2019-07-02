@@ -304,7 +304,15 @@ let translatePrimitive =
   if (Debug.translation^) {
     logItem("Translate Primitive\n");
   };
-  let valueName = valueDescription.val_id |> Ident.name;
+  let valueName =
+    switch (valueDescription.val_prim) {
+    | ["", ..._]
+    | [] => valueDescription.val_id |> Ident.name
+    | [nameOfExtern, ..._] =>
+      /* extern foo : someType = "abc"
+         The first element of val_prim is "abc" */
+      nameOfExtern
+    };
   let typeExprTranslation =
     valueDescription.val_desc
     |> TranslateCoreType.translateCoreType(~config, ~typeEnv);

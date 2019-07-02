@@ -2,20 +2,20 @@
 /* eslint-disable import/first */
 
 
-import {make as makeNotChecked} from './hookExample';
+import {makeRenamed as makeRenamedNotChecked} from './hookExample';
 
 import {foo as fooNotChecked} from './hookExample';
 
-// In case of type error, check the type of 'make' in 'ImportHooks.re' and './hookExample'.
-export const makeTypeChecked: React.FC<{
+// In case of type error, check the type of 'makeRenamed' in 'ImportHooks.re' and './hookExample'.
+export const makeRenamedTypeChecked: React.FC<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: renderMe<any>
-}> = makeNotChecked;
+}> = makeRenamedNotChecked;
 
-// Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function hookExample<a>(Arg1: any) {
-  const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+// Export 'makeRenamed' early to allow circular import from the '.bs.js' file.
+export const makeRenamed: unknown = function hookExample<a>(Arg1: any) {
+  const result = makeRenamedTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
 } as React.FC<{
   readonly person: person; 

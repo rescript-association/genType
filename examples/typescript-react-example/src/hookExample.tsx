@@ -17,4 +17,6 @@ export const make: React.FC<Props> = (x: Props) => (
   </div>
 );
 
+export const makeRenamed = make;
+
 export default make;
