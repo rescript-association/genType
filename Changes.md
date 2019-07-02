@@ -1,3 +1,6 @@
+# master
+- Support externals with different name: external foo: someType = "fooRenamed".
+
 # 2.30.0
 - TypeScript: represent all function components with type `React.FC<...>`.
   A function component is any value of type `props => React.element` where `props` has type object.  
