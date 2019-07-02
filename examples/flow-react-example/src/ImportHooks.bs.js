@@ -2,7 +2,7 @@
 
 import * as ImportHooksGen from "./ImportHooks.gen";
 
-var make = ImportHooksGen.make;
+var make = ImportHooksGen.makeRenamed;
 
 function foo(prim) {
   return ImportHooksGen.foo(prim);

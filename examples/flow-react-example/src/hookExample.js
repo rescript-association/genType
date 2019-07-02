@@ -9,6 +9,13 @@ export const foo = function(x: { +person: { +name: string, +age: number } }) {
 export const make = (x: {
   +person: { +name: string, +age: number },
   +children: React.Node
-}) => <div> {x.person.name} {x.children} </div>;
+}) => (
+  <div>
+    {" "}
+    {x.person.name} {x.children}{" "}
+  </div>
+);
 
-export default make
+export const makeRenamed = make;
+
+export default make;
