@@ -8,21 +8,21 @@
 type $any = any;
 
 // flowlint-next-line nonstrict-import:off
-import {make as makeNotChecked} from './hookExample';
+import {makeRenamed as makeRenamedNotChecked} from './hookExample';
 
 // flowlint-next-line nonstrict-import:off
 import {foo as fooNotChecked} from './hookExample';
 
-// In case of type error, check the type of 'make' in 'ImportHooks.re' and './hookExample'.
-export const makeTypeChecked: <a>({|
+// In case of type error, check the type of 'makeRenamed' in 'ImportHooks.re' and './hookExample'.
+export const makeRenamedTypeChecked: <a>({|
   +person: person, 
   +children: React$Node, 
   +renderMe: renderMe<a>
-|}) => React$Node = makeNotChecked;
+|}) => React$Node = makeRenamedNotChecked;
 
-// Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: mixed = function hookExample<a>(Arg1: $any) {
-  const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+// Export 'makeRenamed' early to allow circular import from the '.bs.js' file.
+export const makeRenamed: mixed = function hookExample<a>(Arg1: $any) {
+  const result = makeRenamedTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
 };
 
