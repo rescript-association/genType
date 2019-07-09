@@ -1,4 +1,4 @@
-# master
+# 2.31.1
 - Add support for default import when the value is called `default` in the external.
   ```[@genType.import "./MyMath"] external default: int = "default";```
   ```[@genType.import "./MyMath"] external someRenamedName: int = "default";```
