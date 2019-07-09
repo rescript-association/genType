@@ -476,6 +476,8 @@ let rec emitCodeItem =
            ~type_,
            ~typeNameIsInterface,
          );
+    let valueNameNotDefault =
+      valueName == "default" ? Runtime.default : valueName;
     let emitters =
       (
         valueNameTypeChecked
@@ -492,14 +494,19 @@ let rec emitCodeItem =
       |> EmitType.emitExportConstEarly(
            ~comment=
              "Export '"
-             ++ valueName
+             ++ valueNameNotDefault
              ++ "' early to allow circular import from the '.bs.js' file.",
            ~config,
            ~emitters,
-           ~name=valueName,
+           ~name=valueNameNotDefault,
            ~type_=mixedOrUnknown(~config),
            ~typeNameIsInterface,
          );
+    let emitters =
+      valueName == "default" ?
+        EmitType.emitExportDefault(~emitters, ~config, valueNameNotDefault) :
+        emitters;
+
     ({...env, importedValueOrComponent: true}, emitters);
 
   | ExportComponent({

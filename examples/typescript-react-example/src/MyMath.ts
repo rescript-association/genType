@@ -30,3 +30,5 @@ export const higherOrder = (foo: (_1:number, _2:number) => number) => foo(3,4);
 export const convertVariant = (x:any) => x;
 
 export const polymorphic = <T>(x:T) : T => x;
+
+export default 34;

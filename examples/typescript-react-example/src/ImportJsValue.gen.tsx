@@ -14,6 +14,8 @@ import {convertVariant as convertVariantNotChecked} from './MyMath';
 
 import {polymorphic as polymorphicNotChecked} from './MyMath';
 
+import {default as defaultNotChecked} from './MyMath';
+
 const $$toJS580645844: { [key: string]: any } = {"322339018": "tomato", "-999567389": "gray"};
 
 // tslint:disable-next-line:no-var-requires
@@ -77,6 +79,12 @@ export const polymorphicTypeChecked: <a>(_1:a) => a = polymorphicNotChecked;
 // Export 'polymorphic' early to allow circular import from the '.bs.js' file.
 export const polymorphic: unknown = polymorphicTypeChecked as <a>(_1:a) => a;
 
+// In case of type error, check the type of 'default' in 'ImportJsValue.re' and './MyMath'.
+export const defaultTypeChecked: number = defaultNotChecked;
+
+// Export '$$default' early to allow circular import from the '.bs.js' file.
+export const $$default: unknown = defaultTypeChecked as number;
+
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');
 
@@ -110,3 +118,5 @@ export const useGetProp: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGet
 export const useGetAbs: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGetAbs;
 
 export const returnedFromHigherOrder: number = ImportJsValueBS.returnedFromHigherOrder;
+
+export default $$default;
