@@ -51,6 +51,8 @@ function polymorphic(prim) {
   return ImportJsValueGen.polymorphic(prim);
 }
 
+var $$default = ImportJsValueGen.default;
+
 export {
   round ,
   area ,
@@ -64,6 +66,8 @@ export {
   returnedFromHigherOrder ,
   convertVariant ,
   polymorphic ,
+  $$default ,
+  $$default as default,
   
 }
 /* roundedNumber Not a pure module */

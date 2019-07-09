@@ -19,6 +19,9 @@ import {getValueAtIndex as getValueAtIndexNotChecked} from './MyMath';
 // flowlint-next-line nonstrict-import:off
 import {functionWithRenamedArgument as functionWithRenamedArgumentNotChecked} from './MyMath';
 
+// flowlint-next-line nonstrict-import:off
+import {default as defaultNotChecked} from './MyMath';
+
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
 export const roundTypeChecked: (number) => number = roundNotChecked;
 
@@ -49,6 +52,12 @@ export const functionWithRenamedArgument: mixed = function (Arg1: $any, ArgArgRe
   return result
 };
 
+// In case of type error, check the type of 'default' in 'ImportJsValue.re' and './MyMath'.
+export const defaultTypeChecked: number = defaultNotChecked;
+
+// Export '$$default' early to allow circular import from the '.bs.js' file.
+export const $$default: mixed = defaultTypeChecked;
+
 // $FlowExpectedError: Reason checked type sufficiently
 const ImportJsValueBS = require('./ImportJsValue.bs');
 
@@ -67,3 +76,5 @@ export const myArea: (point) => number = function (Arg1: $any) {
 export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 
 export const areaValue: number = ImportJsValueBS.areaValue;
+
+export default $$default;

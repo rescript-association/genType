@@ -37,3 +37,5 @@ external getValueAtIndex: (myArray(string), int) => string =
 external functionWithRenamedArgument:
   string => [@genType.as "ArgRenamed"] ((~argToRename: string) => string) =
   "functionWithRenamedArgument";
+
+[@genType.import "./MyMath"] external default: int = "default";

@@ -25,6 +25,8 @@ function functionWithRenamedArgument(prim, prim$1) {
   return ImportJsValueGen.functionWithRenamedArgument(prim, prim$1);
 }
 
+var $$default = ImportJsValueGen.default;
+
 var myArea = area;
 
 export {
@@ -35,6 +37,8 @@ export {
   areaValue ,
   getValueAtIndex ,
   functionWithRenamedArgument ,
+  $$default ,
+  $$default as default,
   
 }
 /* roundedNumber Not a pure module */

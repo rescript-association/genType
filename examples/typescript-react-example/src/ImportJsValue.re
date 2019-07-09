@@ -63,3 +63,5 @@ type variant =
 external convertVariant: variant => variant = "convertVariant";
 
 [@genType.import "./MyMath"] external polymorphic: 'a => 'a = "polymorphic";
+
+[@genType.import "./MyMath"] external default: int = "default";
