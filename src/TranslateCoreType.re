@@ -103,7 +103,12 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (Label(asLabel == "" ? lbl : asLabel), type1),
+             (
+               Label(
+                 asLabel == "" ? lbl |> Runtime.mangleObjectField : asLabel,
+               ),
+               type1,
+             ),
              ...revArgs,
            ],
          );
@@ -119,7 +124,12 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (OptLabel(asLabel == "" ? lbl : asLabel), type1),
+             (
+               OptLabel(
+                 asLabel == "" ? lbl |> Runtime.mangleObjectField : asLabel,
+               ),
+               type1,
+             ),
              ...revArgs,
            ],
          );

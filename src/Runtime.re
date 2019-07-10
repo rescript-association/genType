@@ -110,3 +110,97 @@ let isMutableObjectField = name =>
    preceding the normal field. */
 let checkMutableObjectField = (~previousName, ~name) =>
   previousName == name ++ "#=";
+
+let default = "$$default";
+
+module Mangle = {
+  let keywords = [|
+    "and",
+    "as",
+    "assert",
+    "begin",
+    "class",
+    "constraint",
+    "do",
+    "done",
+    "downto",
+    "else",
+    "end",
+    "exception",
+    "external",
+    "false",
+    "for",
+    "fun",
+    "function",
+    "functor",
+    "if",
+    "in",
+    "include",
+    "inherit",
+    "initializer",
+    "lazy",
+    "let",
+    "match",
+    "method",
+    "module",
+    "mutable",
+    "new",
+    "nonrec",
+    "object",
+    "of",
+    "open",
+    "or",
+    "private",
+    "rec",
+    "sig",
+    "struct",
+    "then",
+    "to",
+    "true",
+    "try",
+    "type",
+    "val",
+    "virtual",
+    "when",
+    "while",
+    "with",
+    "mod",
+    "land",
+    "lor",
+    "lxor",
+    "lsl",
+    "lsr",
+    "asr",
+  |];
+
+  let table = Hashtbl.create(keywords |> Array.length);
+  keywords |> Array.iter(x => Hashtbl.add(table, "_" ++ x, x));
+
+  /*
+     Apply bucklescript's marshaling rules for object field names:
+     Remove trailing "__" if present.
+     Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
+   */
+  let translate = x => {
+    let len = x |> String.length;
+    if (len > 2 && x.[len - 1] == '_' && x.[len - 2] == '_') {
+      /* "foo__" -> "foo" */
+      String.sub(x, 0, len - 2);
+    } else if (len > 1 && x.[0] == '_') {
+      if (x.[1] >= 'A' && x.[1] <= 'Z') {
+        /* "_Uppercase" => "Uppercase" */
+        String.sub(x, 1, len - 1);
+      } else {
+        /* "_rec" -> "rec" */
+        switch (Hashtbl.find(table, x)) {
+        | y => y
+        | exception Not_found => x
+        };
+      };
+    } else {
+      x;
+    };
+  };
+};
+
+let mangleObjectField = Mangle.translate;

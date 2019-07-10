@@ -25,3 +25,5 @@ export const functionWithRenamedArgument: (
 ) => string = function(_) {
   return "";
 };
+
+export default 42;

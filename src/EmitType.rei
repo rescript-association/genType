@@ -28,17 +28,6 @@ let emitExportConstEarly:
   ) =>
   Emitters.t;
 
-let emitExportConstMany:
-  (
-    ~config: config,
-    ~emitters: Emitters.t,
-    ~name: string,
-    ~type_: type_,
-    ~typeNameIsInterface: string => bool,
-    list(string)
-  ) =>
-  Emitters.t;
-
 let emitExportDefault:
   (~emitters: Emitters.t, ~config: config, string) => Emitters.t;
 
@@ -67,6 +56,19 @@ let emitExportType:
   ) =>
   Emitters.t;
 
+let emitHookTypeAsFunction:
+  (
+    ~config: config,
+    ~emitters: Emitters.t,
+    ~name: string,
+    ~propsType: type_,
+    ~retType: type_,
+    ~retValue: string,
+    ~typeNameIsInterface: string => bool,
+    ~typeVars: list(string)
+  ) =>
+  Emitters.t;
+
 let emitImportTypeAs:
   (
     ~emitters: Emitters.t,
@@ -85,6 +87,16 @@ let emitImportValueAsEarly:
     ~name: string,
     ~nameAs: option(string),
     ImportPath.t
+  ) =>
+  Emitters.t;
+
+let emitPropTypes:
+  (
+    ~config: config,
+    ~emitters: Emitters.t,
+    ~indent: Indent.t,
+    ~name: string,
+    list(GenTypeCommon.field)
   ) =>
   Emitters.t;
 
@@ -116,6 +128,8 @@ let fileHeader: (~config: config) => string;
 
 let generatedModuleExtension: (~config: config) => string;
 
+let isTypeReactElement: (~config: config, type_) => bool;
+
 let ofType:
   (
     ~config: config,
@@ -130,9 +144,19 @@ let ofTypeAny: (~config: config, string) => string;
 
 let outputFileSuffix: (~config: config) => string;
 
-let reactComponentType: (~config: config, ~propsTypeName: string) => type_;
-
 let shimExtension: (~config: config) => string;
+
+let typeReactComponent: (~config: config, ~propsTypeName: string) => type_;
+
+let typeReactFunctionComponentTypeScript: (~propsType: type_) => type_;
+
+let typeReactContext: (~config: config, ~type_: type_) => type_;
+
+let typeReactElement: (~config: config) => type_;
+
+let typeReactRef: (~config: config, ~type_: type_) => type_;
+
+let typeAny: (~config: config) => type_;
 
 let typeToString:
   (~config: config, ~typeNameIsInterface: string => bool, type_) => string;

@@ -15,10 +15,10 @@ type t =
 and groupedArgConverter =
   | ArgConverter(t)
   | GroupConverter(list((string, optional, t)))
-  | UnitConverter
 and fieldsC = list((string, t))
 and functionC = {
   argConverters: list(groupedArgConverter),
+  functionName: option(string),
   retConverter: t,
   typeVars: list(string),
   uncurried: bool,
@@ -59,7 +59,6 @@ let rec toString = converter =>
                |> String.concat(", ")
              )
              ++ "|}"
-           | UnitConverter => "unit"
            }
          )
       |> String.concat(", ")
@@ -117,7 +116,7 @@ let typeGetConverterNormalized =
   let circular = ref("");
   let expandOneLevel = type_ =>
     switch (type_) {
-    | Ident({name}) =>
+    | Ident({builtin: false, name}) =>
       switch (name |> lookupId) {
       | (t: CodeItem.exportTypeItem) => t.type_
       | exception Not_found => type_
@@ -125,32 +124,47 @@ let typeGetConverterNormalized =
     | _ => type_
     };
   let rec visit = (~visited: StringSet.t, type_) => {
-    let normalized_ = Some(type_);
+    let normalized_ = type_;
     switch (type_) {
-    | Array(t, _) =>
+    | Array(t, mutable_) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (ArrayC(tConverter), tNormalized == None ? None : normalized_);
+      (ArrayC(tConverter), Array(tNormalized, mutable_));
 
-    | Function({argTypes, retType, typeVars, uncurried, _}) =>
-      let argConverters =
+    | Function({argTypes, retType, typeVars, uncurried} as function_) =>
+      let argConverted =
         argTypes |> List.map(typeToGroupedArgConverter(~visited));
-      let (retConverter, _) = retType |> visit(~visited);
+      let argConverters = argConverted |> List.map(fst);
+      let (retConverter, retNormalized) = retType |> visit(~visited);
       (
-        FunctionC({argConverters, retConverter, typeVars, uncurried}),
-        normalized_,
+        FunctionC({
+          argConverters,
+          functionName: None,
+          retConverter,
+          typeVars,
+          uncurried,
+        }),
+        Function({
+          ...function_,
+          argTypes: argConverted |> List.map(snd),
+          retType: retNormalized,
+        }),
       );
 
-    | GroupOfLabeledArgs(_) => (IdentC, None)
+    | GroupOfLabeledArgs(_) =>
+      /* This case should only fire from withing a function */
+      (IdentC, normalized_)
 
-    | Ident({isShim, name, typeArgs}) =>
+    | Ident({builtin: true}) => (IdentC, normalized_)
+
+    | Ident({builtin: false, name, typeArgs}) =>
       if (visited |> StringSet.mem(name)) {
         circular := name;
         (IdentC, normalized_);
       } else {
         let visited = visited |> StringSet.add(name);
         switch (name |> lookupId) {
-        | {annotation: GenTypeOpaque, _} => (IdentC, None)
-        | {annotation: NoGenType, _} => (IdentC, None)
+        | {annotation: GenTypeOpaque, _} => (IdentC, normalized_)
+        | {annotation: NoGenType, _} => (IdentC, normalized_)
         | {typeVars, type_, _} =>
           let pairs =
             try (List.combine(typeVars, typeArgs)) {
@@ -168,112 +182,154 @@ let typeGetConverterNormalized =
             type_ |> TypeVars.substitute(~f) |> visit(~visited);
           (converter, inline ? inlined : normalized_);
         | exception Not_found =>
-          let isBaseType =
-            type_ == booleanT || type_ == numberT || type_ == stringT;
-          (IdentC, isShim || isBaseType || inline ? normalized_ : None);
+          if (inline) {
+            let typeArgs =
+              typeArgs |> List.map(t => t |> visit(~visited) |> snd);
+            (IdentC, Ident({builtin: false, name, typeArgs}));
+          } else {
+            (IdentC, normalized_);
+          }
         };
       }
 
     | Null(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (NullableC(tConverter), tNormalized == None ? None : normalized_);
+      (NullableC(tConverter), Null(tNormalized));
 
     | Nullable(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (NullableC(tConverter), tNormalized == None ? None : normalized_);
+      (NullableC(tConverter), Nullable(tNormalized));
 
-    | Object(_, fields) => (
+    | Object(closedFlag, fields) =>
+      let fieldsConverted =
+        fields
+        |> List.map(({type_} as field) =>
+             (field, type_ |> visit(~visited))
+           );
+      (
         ObjectC(
-          fields
-          |> List.map(({name, optional, type_: t, _}) =>
-               (
-                 name,
-                 (optional == Mandatory ? t : Option(t))
-                 |> visit(~visited)
-                 |> fst,
-               )
+          fieldsConverted
+          |> List.map((({name, optional, _}, (converter, _))) =>
+               (name, optional == Mandatory ? converter : OptionC(converter))
              ),
         ),
-        normalized_,
-      )
+        Object(
+          closedFlag,
+          fieldsConverted
+          |> List.map(((field, (_, tNormalized))) =>
+               {...field, type_: tNormalized}
+             ),
+        ),
+      );
 
     | Option(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (OptionC(tConverter), tNormalized == None ? None : normalized_);
+      (OptionC(tConverter), Option(tNormalized));
 
     | Promise(t) =>
       let (tConverter, tNormalized) = t |> visit(~visited);
-      (PromiseC(tConverter), tNormalized == None ? None : normalized_);
+      (PromiseC(tConverter), Promise(tNormalized));
 
-    | Record(fields) => (
+    | Record(fields) =>
+      let fieldsConverted =
+        fields
+        |> List.map(({type_} as field) =>
+             (field, type_ |> visit(~visited))
+           );
+      (
         RecordC(
-          fields
-          |> List.map(({name, optional, type_, _}) =>
-               (
-                 name,
-                 (optional == Mandatory ? type_ : Option(type_))
-                 |> visit(~visited)
-                 |> fst,
-               )
+          fieldsConverted
+          |> List.map((({name, optional}, (converter, _))) =>
+               (name, optional == Mandatory ? converter : OptionC(converter))
              ),
         ),
-        normalized_,
-      )
+        Record(
+          fieldsConverted
+          |> List.map(((field, (_, tNormalized))) =>
+               {...field, type_: tNormalized}
+             ),
+        ),
+      );
 
     | Tuple(innerTypes) =>
       let (innerConversions, normalizedList) =
         innerTypes |> List.map(visit(~visited)) |> List.split;
-      let innerHasNone = normalizedList |> List.mem(None);
-      (TupleC(innerConversions), innerHasNone ? None : normalized_);
+      (TupleC(innerConversions), Tuple(normalizedList));
 
     | TypeVar(_) => (IdentC, normalized_)
 
     | Variant(variant) =>
       let (withPayload, normalized, unboxed) =
-        switch (variant.payloads) {
+        switch (
+          variant.payloads
+          |> List.map(((case, numArgs, t)) =>
+               (case, numArgs, t |> visit(~visited))
+             )
+        ) {
         | [] => ([], normalized_, variant.unboxed)
-        | [(case, numArgs, t)] =>
-          let converter = t |> visit(~visited) |> fst;
-          let unboxed = t |> expandOneLevel |> typeIsObject;
+        | [(case, numArgs, (converter, tNormalized))] =>
+          let unboxed = tNormalized |> expandOneLevel |> typeIsObject;
           let normalized =
-            unboxed ?
-              Some(Variant({...variant, unboxed: true})) : normalized_;
+            Variant({
+              ...variant,
+              payloads: [(case, numArgs, tNormalized)],
+
+              unboxed: unboxed ? true : variant.unboxed,
+            });
           ([(case, numArgs, converter)], normalized, unboxed);
-        | [_, _, ..._] => (
-            variant.payloads
-            |> List.map(((case, numArgs, t)) => {
-                 let converter = t |> visit(~visited) |> fst;
-                 (case, numArgs, converter);
-               }),
-            normalized_,
+        | [_, _, ..._] as withPayloadConverted =>
+          let withPayloadNormalized =
+            withPayloadConverted
+            |> List.map(((case, numArgs, (_, tNormalized))) =>
+                 (case, numArgs, tNormalized)
+               );
+          let normalized =
+            Variant({...variant, payloads: withPayloadNormalized});
+          (
+            withPayloadConverted
+            |> List.map(((case, numArgs, (converter, _))) =>
+                 (case, numArgs, converter)
+               ),
+            normalized,
             variant.unboxed,
-          )
+          );
         };
       let converter =
-        normalized == None ?
-          IdentC :
-          VariantC({
-            hash: variant.hash,
-            noPayloads: variant.noPayloads,
-            withPayload,
-            polymorphic: variant.polymorphic,
-            unboxed,
-          });
+        VariantC({
+          hash: variant.hash,
+          noPayloads: variant.noPayloads,
+          withPayload,
+          polymorphic: variant.polymorphic,
+          unboxed,
+        });
       (converter, normalized);
     };
   }
   and typeToGroupedArgConverter = (~visited, type_) =>
     switch (type_) {
     | GroupOfLabeledArgs(fields) =>
-      GroupConverter(
+      let fieldsConverted =
         fields
-        |> List.map(({name, type_, optional, _}) =>
-             (name, optional, type_ |> visit(~visited) |> fst)
-           ),
-      )
+        |> List.map(({type_} as field) =>
+             (field, type_ |> visit(~visited))
+           );
+      let tNormalized =
+        GroupOfLabeledArgs(
+          fieldsConverted
+          |> List.map(((field, (_, t))) => {...field, type_: t}),
+        );
+      let converter =
+        GroupConverter(
+          fieldsConverted
+          |> List.map((({name, optional, _}, (converter, _))) =>
+               (name, optional, converter)
+             ),
+        );
+      (converter, tNormalized);
     | _ =>
-      type_ == unitT ?
-        UnitConverter : ArgConverter(type_ |> visit(~visited) |> fst)
+      let (converter, tNormalized) = type_ |> visit(~visited);
+      let converter = ArgConverter(converter);
+      (converter, tNormalized);
     };
 
   let (converter, normalized) = type0 |> visit(~visited=StringSet.empty);
@@ -281,8 +337,7 @@ let typeGetConverterNormalized =
     circular^ != "" ? CircularC(circular^, converter) : converter;
   if (Debug.converter^) {
     logItem(
-      "Converter %s type0:%s converter:%s\n",
-      normalized == None ? " opaque " : "",
+      "Converter type0:%s converter:%s\n",
       type0 |> EmitType.typeToString(~config, ~typeNameIsInterface),
       finalConverter |> toString,
     );
@@ -327,7 +382,6 @@ let rec converterIsIdentity = (~toJS, converter) =>
          | ArgConverter(argConverter) =>
            argConverter |> converterIsIdentity(~toJS=!toJS)
          | GroupConverter(_) => false
-         | UnitConverter => uncurried || toJS
          }
        )
 
@@ -395,7 +449,13 @@ let rec apply =
        )
     |> apply(~config, ~converter=c, ~indent, ~nameGen, ~toJS, ~variantTables)
 
-  | FunctionC({argConverters, retConverter, typeVars, uncurried}) =>
+  | FunctionC({
+      argConverters,
+      functionName,
+      retConverter,
+      typeVars,
+      uncurried,
+    }) =>
     let resultName = EmitText.resultName(~nameGen);
     let indent1 = indent |> Indent.more;
     let indent2 = indent1 |> Indent.more;
@@ -490,9 +550,6 @@ let rec apply =
             |> String.concat(", ");
           (varNames, ["{" ++ fieldValues ++ "}"]);
         };
-      | UnitConverter =>
-        let varName = i + 1 |> EmitText.argi(~nameGen);
-        ([varName], [varName]);
       };
 
     let mkBody = bodyArgs => {
@@ -506,7 +563,19 @@ let rec apply =
     let args = convertedArgs |> List.map(fst) |> List.concat;
     let funParams = args |> List.map(v => v |> EmitType.ofTypeAny(~config));
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
-    EmitText.funDef(~bodyArgs, ~funParams, ~indent, ~mkBody, ~typeVars);
+    EmitText.funDef(
+      ~bodyArgs,
+      ~functionName,
+      ~funParams,
+      ~indent,
+      ~mkBody,
+      ~typeVars=
+        switch (config.language) {
+        | Flow
+        | TypeScript => typeVars
+        | Untyped => []
+        },
+    );
 
   | IdentC => value
 
@@ -640,7 +709,8 @@ let rec apply =
              )
            )
         |> String.concat(", ");
-      "{" ++ fieldValues ++ "}";
+      fieldsC == [] && config.language == Flow ?
+        "Object.freeze({})" : "{" ++ fieldValues ++ "}";
     } else {
       let fieldValues =
         fieldsC

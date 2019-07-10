@@ -4,7 +4,7 @@
     "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContents",
   )
 ]
-external innerStuffContents: {. "x": int} = "";
+external innerStuffContents: {. "x": int} = "innerStuffContents";
 
 [@genType.import
   (
@@ -12,15 +12,17 @@ external innerStuffContents: {. "x": int} = "";
     "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContents",
   )
 ]
-external innerStuffContentsAsEmptyObject: Js.t({.}) = "";
+external innerStuffContentsAsEmptyObject: Js.t({.}) =
+  "innerStuffContentsAsEmptyObject";
 
 let innerStuffContents = innerStuffContents;
 
 [@genType.import ("./exportNestedValues", "ValueStartingWithUpperCaseLetter")]
-external valueStartingWithUpperCaseLetter: string = "";
+external valueStartingWithUpperCaseLetter: string =
+  "valueStartingWithUpperCaseLetter";
 
 [@genType.import ("./exportNestedValues", "default")]
-external defaultValue: int = "";
+external defaultValue: int = "defaultValue";
 
 [@genType]
 type message = {text: string};
@@ -35,9 +37,9 @@ external make:
     ReasonReact.noRetainedProps,
     ReasonReact.actionless,
   ) =
-  "";
+  "make";
 
 let make = make;
 
 [@genType.import ("./exportNestedValues", "default")]
-external defaultValue2: int = "";
+external defaultValue2: int = "defaultValue2";

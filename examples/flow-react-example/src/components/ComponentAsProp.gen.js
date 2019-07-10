@@ -14,13 +14,10 @@ import * as ComponentAsPropBS from './ComponentAsProp.bs';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
-// flowlint-next-line nonstrict-import:off
-import type {reactElement as ReasonReact_reactElement} from '../../src/shims/ReactShim.shim';
-
 export type Props = {|
-  +title: ReasonReact_reactElement, 
-  +description: ReasonReact_reactElement, 
-  +button?: ReasonReact_reactElement, 
+  +title: React$Node, 
+  +description: React$Node, 
+  +button?: React$Node, 
   +children?: mixed
 |};
 

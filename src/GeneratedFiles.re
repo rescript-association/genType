@@ -4,6 +4,7 @@ type fileAction =
   | NoMatch /* No @genType annotation found. */
   | Replace /* Replace existing file on disk with new contents. */
   | Identical /* File already on disk with identical contents. Skip. */
+  | TypeError /* The cmt file was produced after a type error -- don't delete generated files. */
   | Write; /* File not present on disk. */
 
 let logFileAction = (fileAction, fileName) =>
@@ -14,6 +15,7 @@ let logFileAction = (fileAction, fileName) =>
       | NoMatch => "NoMatch"
       | Replace => "Replace"
       | Identical => "Identical"
+      | TypeError => "TypeError"
       | Write => "Write"
       },
       fileName,

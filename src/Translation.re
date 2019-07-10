@@ -111,7 +111,12 @@ let translateValue =
     typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
 
   let codeItems = [
-    CodeItem.ExportValue({resolvedName, type_, valueAccessPath}),
+    CodeItem.ExportValue({
+      originalName: name,
+      resolvedName,
+      type_,
+      valueAccessPath,
+    }),
   ];
   {
     importTypes:
@@ -183,18 +188,25 @@ let translateComponent =
        ),
   );
   switch (type_) {
-  | Function({
-      argTypes: [propOrChildren, ...childrenOrNil],
-      retType:
-        Ident({
-          name:
-            "ReasonReact_componentSpec" | "React_componentSpec" |
-            "ReasonReact_component" |
-            "React_component",
-          typeArgs: [_state, ..._],
-        }),
-      _,
-    }) =>
+  | Function(
+      {
+        argTypes: [propOrChildren, ...childrenOrNil],
+        retType:
+          Ident(
+            {
+              name:
+                "ReasonReact_componentSpec" | "React_componentSpec" |
+                "ReasonReact_component" |
+                "React_component",
+              typeArgs: [_state, ..._],
+            } as ident,
+          ),
+        _,
+      } as function_,
+    ) =>
+    let type_ =
+      Function({...function_, retType: Ident({...ident, typeArgs: []})});
+
     /* Add children?:any to props type */
     let propsType =
       switch (childrenOrNil) {
@@ -228,7 +240,7 @@ let translateComponent =
       };
     let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
     let propsTypeName = resolvedTypeName |> ResolvedName.toString;
-    let componentType = EmitType.reactComponentType(~config, ~propsTypeName);
+    let componentType = EmitType.typeReactComponent(~config, ~propsTypeName);
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 
@@ -292,7 +304,15 @@ let translatePrimitive =
   if (Debug.translation^) {
     logItem("Translate Primitive\n");
   };
-  let valueName = valueDescription.val_id |> Ident.name;
+  let valueName =
+    switch (valueDescription.val_prim) {
+    | ["", ..._]
+    | [] => valueDescription.val_id |> Ident.name
+    | [nameOfExtern, ..._] =>
+      /* extern foo : someType = "abc"
+         The first element of val_prim is "abc" */
+      nameOfExtern
+    };
   let typeExprTranslation =
     valueDescription.val_desc
     |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
@@ -406,6 +426,11 @@ let translatePrimitive =
       | Some(asPath) => asPath
       | None => valueName
       };
+
+    let typeVars = typeExprTranslation.type_ |> TypeVars.free;
+    let type_ =
+      typeExprTranslation.type_ |> abstractTheTypeParameters(~typeVars);
+
     {
       importTypes:
         typeExprTranslation.dependencies
@@ -415,7 +440,7 @@ let translatePrimitive =
         ImportValue({
           asPath,
           importAnnotation: importString |> Annotation.importFromString,
-          type_: typeExprTranslation.type_,
+          type_,
           valueName,
         }),
       ],
@@ -444,6 +469,7 @@ let addTypeDeclarationsFromModuleEquations = (~typeEnv, translation: t) => {
                     y
                     |> ResolvedName.toString
                     |> ident(
+                         ~builtin=false,
                          ~typeArgs=
                            exportType.typeVars |> List.map(s => TypeVar(s)),
                        ),

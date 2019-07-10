@@ -35,7 +35,7 @@ export const innerStuffContentsTypeChecked: {| +x: number |} = innerStuffContent
 export const innerStuffContents: mixed = innerStuffContentsTypeChecked;
 
 // In case of type error, check the type of 'innerStuffContentsAsEmptyObject' in 'TestImport.re' and './exportNestedValues'.
-export const innerStuffContentsAsEmptyObjectTypeChecked: {} = innerStuffContentsAsEmptyObjectNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;
+export const innerStuffContentsAsEmptyObjectTypeChecked: {||} = innerStuffContentsAsEmptyObjectNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContentsEmpty;
 
 // Export 'innerStuffContentsAsEmptyObject' early to allow circular import from the '.bs.js' file.
 export const innerStuffContentsAsEmptyObject: mixed = innerStuffContentsAsEmptyObjectTypeChecked;
@@ -55,7 +55,7 @@ export const defaultValue: mixed = defaultValueTypeChecked;
 export type Props = {| +show: boolean, +Message: ?string |};
 
 // In case of type error, check the type of 'make' in 'TestImport.re' and the props of './interop/MyBanner.component'.
-export function MyBannerInternalTypeChecked(props: Props) {
+export function MyBannerInternalTypeChecked(props: Props): React$Node {
   return <TopLevelClass.MiddleLevelElements.MyBannerInternal {...props}/>;
 }
 
