@@ -181,6 +181,81 @@ let translateConstr =
       type_: Array(paramTranslation.type_, Immutable),
     }
 
+  | (
+      Pdot(Pident({name: "React", _}), "callback", _),
+      [fromTranslation, toTranslation],
+    ) => {
+      dependencies: fromTranslation.dependencies @ toTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [fromTranslation.type_],
+          retType: toTranslation.type_,
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
+  | (
+      Pdot(Pident({name: "React", _}), "componentLike", _),
+      [propsTranslation, retTranslation],
+    ) => {
+      dependencies:
+        propsTranslation.dependencies @ retTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [propsTranslation.type_],
+          retType: retTranslation.type_,
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
+  | (Pdot(Pident({name: "React", _}), "component", _), [propsTranslation]) => {
+      dependencies: propsTranslation.dependencies,
+      type_:
+        Function({
+          argTypes: [propsTranslation.type_],
+          retType: EmitType.typeReactElement(~config),
+          typeVars: [],
+          uncurried: false,
+        }),
+    }
+
+  | (
+      Pdot(Pdot(Pident({name: "React", _}), "Context", _), "t", _),
+      [paramTranslation],
+    ) => {
+      dependencies: paramTranslation.dependencies,
+      type_:
+        EmitType.typeReactContext(~config, ~type_=paramTranslation.type_),
+    }
+
+  | (
+      Pdot(Pdot(Pident({name: "React", _}), "Ref", _), "t", _),
+      [paramTranslation],
+    ) => {
+      dependencies: paramTranslation.dependencies,
+      type_: EmitType.typeReactRef(~config, ~type_=paramTranslation.type_),
+    }
+
+  | (
+      Pdot(
+        Pdot(Pident({name: "ReactDOMRe", _}), "Ref", _),
+        "currentDomRef",
+        _,
+      ),
+      [],
+    ) => {
+      dependencies: [],
+      type_: EmitType.typeAny(~config),
+    }
+
+  | (Pdot(Pident({name: "React", _}), "element", _), [])
+  | (Pdot(Pident({name: "ReasonReact", _}), "reactElement", _), []) => {
+      dependencies: [],
+      type_: EmitType.typeReactElement(~config),
+    }
+
   | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])
   | (Pident({name: "option", _}), [paramTranslation]) => {
       ...paramTranslation,
@@ -255,16 +330,23 @@ let translateConstr =
   | (
       Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
       [{dependencies: argsDependencies, type_: singleT}, ret],
-    ) => {
+    ) =>
+    let argTypes =
+      switch (singleT) {
+      | Variant({payloads: [(_, _, Tuple(argTypes))]}) => argTypes
+      | Variant({payloads: [(_, _, type_)]}) => [type_]
+      | _ => [singleT]
+      };
+    {
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: [singleT],
+          argTypes,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
         }),
-    }
+    };
   | (Pdot(Pident({name: "Js", _}), "t", _), _) =>
     let dependencies =
       fieldsTranslations
@@ -289,6 +371,7 @@ let translateConstr =
              | Option(t) => (Optional, t)
              | _ => (Mandatory, t)
              };
+           let name = name |> Runtime.mangleObjectField;
            {mutable_, name, optional, type_};
          });
     let type_ = Object(closedFlag, fields);
@@ -305,10 +388,9 @@ let translateConstr =
     | Some(type_) => {dependencies: typeParamDeps, type_}
     | None =>
       let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
-      let isShim = dep |> Dependencies.isShim(~config);
       {
         dependencies: [dep, ...typeParamDeps],
-        type_: Ident({isShim, name: dep |> depToString, typeArgs}),
+        type_: Ident({builtin: false, name: dep |> depToString, typeArgs}),
       };
     };
   };
@@ -400,7 +482,10 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(Label(lbl), type1), ...revArgs],
+           ~revArgs=[
+             (Label(lbl |> Runtime.mangleObjectField), type1),
+             ...revArgs,
+           ],
          );
     | Some((lbl, t1)) =>
       let {dependencies, type_: type1} =
@@ -413,7 +498,10 @@ let rec translateArrowType =
            ~noFunctionReturnDependencies,
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
-           ~revArgs=[(OptLabel(lbl), type1), ...revArgs],
+           ~revArgs=[
+             (OptLabel(lbl |> Runtime.mangleObjectField), type1),
+             ...revArgs,
+           ],
          );
     }
   | _ =>

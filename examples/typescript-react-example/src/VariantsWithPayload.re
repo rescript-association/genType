@@ -108,22 +108,3 @@ type variant1Object =
 
 [@genType]
 let testVariant1Object = (x: variant1Object) => x;
-
-type xy = {
-  x: int,
-  y: int,
-};
-
-type inlineRecord =
-  | Inline{
-      x: int,
-      y: int,
-    }
-  | Ordinary(xy);
-
-[@genType]
-let testInlineRecord = v =>
-  switch (v) {
-  | Inline({x, y}) => Ordinary({x, y})
-  | Ordinary({x, y}) => Inline({x, y})
-  };

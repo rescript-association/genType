@@ -1,6 +1,6 @@
 # Reason genType
 
-[![CircleCI](https://circleci.com/gh/cristianoc/genType/tree/master.svg?style=svg)](https://circleci.com/gh/cristianoc/genType/tree/master) [![Appveyor](https://ci.appveyor.com/api/projects/status/github/cristianoc/gentype?svg=true)](https://ci.appveyor.com/project/cristianoc/gentype)
+[![CircleCI](https://circleci.com/gh/cristianoc/genType/tree/master.svg?style=svg)](https://circleci.com/gh/cristianoc/genType/tree/master) [![Appveyor](https://ci.appveyor.com/api/projects/status/github/cristianoc/gentype?svg=true)](https://ci.appveyor.com/project/cristianoc/gentype/branch/master)
 
 `genType` lets you export [Reason](https://reasonml.github.io/) values and types to use in JavaScript, and import JavaScript values and types into Reason, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
 In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-react/) components both ways is supported, with automatic generation of the wrappers.
@@ -18,14 +18,11 @@ The output of `genType` can be configured by using one of 3 back-ends: `untyped`
 
 See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
 
-## Breaking Change:
-> Since genType version 2.0.0, ordinary variants (e.g. ``` | A | B(int) ```) use the same representation as polymorphic variants (e.g. ``` | `a | `b(int) ```). The construcor functions (e.g. ```A``` or ```B(42) ```) are not generated anymore. Instead, one can construct the variant values directly in JS. Check out the [variants](#variants) section below for more details.
-
-> **Disclaimer:** While most of the feature set is complete, the project is still growing and changing based on feedback. It is possible that the workflow will change in future.
 
 # Requirements
 
-bs-platform 4.0.5 or higher
+`bs-platform` 5.0.0 or higher using `genType` 2.17.0 or higher.
+For earlier versions, see the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
 # Installation
 
@@ -55,15 +52,12 @@ For running `gentype` with BuckleScript via `npm` workflow, add following script
 
 ```
 scripts: {
-  "bs:build": "export BS_CMT_POST_PROCESS_CMD=\"gentype\" && bsb -make-world",
+  "bs:build": "bsb -make-world",
   "bs:clean": "bsb -clean-world"
 }
 ```
 
-> **Note:** With genType >= 2.17.0 and bucklescript >= 5.0.0, it is not necessary anymore to set up `BS_CMT_POST_PROCESS_CMD`.
-
-For running `gentype` via different mechanics (global env variable etc.), you can set `BS_CMT_POST_PROCESS_CMD` to `node_modules/.bin/gentype` as well.
-
+> **Note:** With genType < 2.17.0 or bucklescript < 5.0.0, one has to set environment variable `BS_CMT_POST_PROCESS_CMD`. See the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
 With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.re.js` files are generated).
 
@@ -125,23 +119,19 @@ let callback = _ => Js.log("Clicked");
 To import a function `realValue` from JS module `MyMath.ts` (or `MyMath.js`):
 
 ```reason
-[@genType.import "./MyMath"] /* This is the module to import from. */
-[@bs.module "./WrapJsValue.gen"] /* Always the name of the current file plus ".gen". */
+[@genType.import "./MyMath"] /* JS module to import from. */
 /* Name and type of the JS value to import. */
 external realValue: complexNumber => float = "";
 
 ```
 
-> **Note:** With genType >= 2.17.0 and bucklescript >= 5.0.0, the line with `@bs.module` and the current file name can be omitted: it will be added internally by bucklescript.
+> **Note:** With genType < 2.17.0 or bucklescript < 5.0.0, one had to add a line with `@bs.module` and the current file name. See the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
 
 
 Because of the `external` keyword, it's clear from context that this is an import, so you can also just use `@genType` and omit `.import`.
 
 To import a default JS export, use a secong argument to `@genType.import` e.g. `[@genType.import ("./MyMath", "default")]`. Similarly, to import a value with a different JS name, use e.g. `[@genType.import ("./MyMath", "ValueStartingWithUpperCaseLetter")]`. To import nested values, e.g. `Some.Nested.value`, use e.g. `[@genType.import ("./MyMath", "Some.Nested.value")]`.
-
-**NOTE** The argument of `@bs.module`must always be the name of the current file plus `.gen` (In future, this could be automatically generated).
-If the imported value is consumed directly from a module defined in another directory, the behaviour of bucklescript's `bs.module` annotation [can be surprising](https://github.com/cristianoc/genType/issues/106).
 
 ### Export and Import React Components
 
@@ -162,7 +152,6 @@ To import and wrap a ReactJS component for use by ReasonReact, the type of the `
 
 ```reason
 [@genType.import "./MyBanner"] /* Module with the JS component to be wrapped. */
-[@bs.module "./ImportMyBanner.gen"] /* Always the name of the current file plus ".gen". */
 /* The make function will be automatically generated from the types below. */
 external make:
   (~show: bool, ~message: option(message)=?, 'a) =>
@@ -178,7 +167,6 @@ The type of `make` must have a named argument for each prop in the JS component.
 
 This assumes that the JS component was exported with a default export. In case of named export, use e.g. `[@genType.import ("./MyBanner", "componentName")]`. To import a nested component, use e.g. `[@genType.import ("./MyBanner", "Some.Nested.component")]`. 
 
-**NOTE** The argument of `@bs.module`must always be the name of the current file plus `.gen` (In future, this could be automatically generated).
 
 ### Type Expansion and @genType.opaque
 
@@ -210,10 +198,10 @@ type person = {
 type persons = array(person);
 ```
 
-### Renaming and @genType.as
+### Renaming, @genType.as, and object mangling convention.
 
 By default, entities with a given name are exported/imported with the same name. However, you might wish to change the appearence of the name on the JS side.
-For example, in the case of a Reason keyword, such as `type`:
+For example, in case of a record field whose name is a keyword, such as `type`:
 
 ```reason
 [@genType]
@@ -224,15 +212,46 @@ type shipment = {
 };
 ```
 
-Or in the case of components:
+Object field names follow bucklescript's mangling convention:
+
+```
+Remove trailing "__" if present.
+Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
+```
+
+This means that the analogous example with objects is:
 
 ```reason
 [@genType]
-let make =
+type shipment = {
+  .
+  "date": float,
+  "_type": string,
+};
+```
+
+or the equivalent ``` "type__": string```.
+
+Functions and function components also follow the mangling convention for labeled arguments:
+
+```reason
+[@genType]
+let exampleFunction = (~_type) => "type: " ++ _type;
+
+[@genType]
+[@react.component]
+let exampleComponent = (~_type) => React.string("type: " ++ _type);
+```
+
+It is possible to use `@genType.as` for functions, though this is only maintained for backwards compatibility, and cannot be used on function components:
+
+```reason
+[@genType]
+let functionWithGenTypeAs =
   (~date: float) => [@genType.as "type"] (~type_: string) => ...
 ```
 
-**NOTE** For technical reasons, it is not possible to rename the first argument of a function (it will be fixed once bucklescript supports OCaml 4.0.6).
+**NOTE** For technical reasons, it is not possible to use `g@enType.as` on the first argument of a function (restriction lifted on OCaml 4.0.6).
 
 
 ## Configuration
@@ -304,6 +323,14 @@ Since objects are immutable by default, their fields will be exported to readonl
 
 It is possible to mix object and option types, so for example the Reason type `{. "x":int, "y":option(string)}` exports to JS type `{x:number, ?y: string}`, requires no conversion, and allows option pattern matching on the Reason side.
 
+Object field names follow bucklescript's mangling convention (so e.g. `_type` in Reason represents `type` in JS):
+
+```
+Remove trailing "__" if present.
+Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
+```
+
+
 ### tuples
 
 Reason tuple values of type e.g. `(int, string)` are exported as identical JS values of type `[number, string]`. This requires no conversion, unless one of types of the tuple items does.
@@ -350,7 +377,7 @@ Immutable arrays are supported with the additional Reason library
 [ImmutableArray.re/.rei](examples/typescript-react-example/src/ImmutableArray.rei), which currently needs to be added to your project.
 The type `ImmutableArray.t(+'a)` is covariant, and is mapped to readonly array types in TS/Flow. As opposed to TS/Flow, `ImmutableArray.t` does not allow casting in either direction with normal arrays. Instead, a copy must be performed using `fromArray` and `toArray`.
 
-### functions
+### functions and function components
 
 Reason functions are exported as JS functions of the corresponding type.
 So for example a Reason function `foo : int => int` is exported as a JS function from numbers to numbers.
@@ -359,19 +386,31 @@ If named arguments are present in the Reason type, they are grouped and exported
 
 In case of mixed named and unnamed arguments, consecutive named arguments form separate groups. So e.g. `foo : (int, ~x:int, ~y:int, int, ~z:int) => int` is exported to a JS function of type `(number, {x:number, y:number}, number, {z:number}) => number`.
 
-To specify how a named argument is exported to JS, use the `[@genType.as "name"]` annotation:
+Function components are exported and imported exactly like normal functions. For example:
+
+```reaspn
+[@genType]
+[@react.component]
+let make = (~name) => React.string(name);
+```
+
+For renaming, named arguments follow bucklescript's mangling convention:
+
+```
+Remove trailing "__" if present.
+Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
+```
+
+For example:
 
 ```reason
 [@genType]
-let make =
-  (~date: float) => [@genType.as "type"] (~type_: string) => ...
+let exampleFunction = (~_type) => "type: " ++ _type;
 ```
 
-**NOTE** For technical reasons, it is not possible to rename the first argument of a function (it will be fixed once bucklescript supports OCaml 4.0.6).
+### record components
 
-### components
-
-ReasonReact components with props of Reason types `t1`, `t2`, `t3` are exported as reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
+ReasonReact record components with props of Reason types `t1`, `t2`, `t3` are exported as reactjs components with props of the JS types corresponding to `t1`, `t2`, `t3`. The annotation is on the `make` function: `[@genType] let make ...`.
 
 A file can export many components by defining them in sub-modules. The toplevel component is also exported as default.
 
@@ -451,6 +490,9 @@ If a conversion for the argument is required, the conversion functions are chain
 These features are for experimentation only. They could be changed/removed any time, and not be considered breaking changes.
 
 - Export object and record types as interfaces. To activate, add `"exportInterfaces": true` to the configuration. The types are also renamed from `name` to `Iname`.
+
+- Emit prop types for the untyped back-end. To activate, add `"propTypes": true` and `"language": "untyped"` to the configuration.
+
 
 # Limitations
 

@@ -8,6 +8,7 @@
 import * as React from 'react';
 
 export type reactElement = React.Node;
+export type element = React.Node;
 
 export type component<t> = React.ComponentType<t>;
 

@@ -21,6 +21,7 @@ type config = {
   mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
+  mutable emitImportPropTypes: bool,
   exportInterfaces: bool,
   generatedFileExtension: option(string),
   importPath,
@@ -28,6 +29,7 @@ type config = {
   module_,
   modulesMap: ModuleNameMap.t(ModuleName.t),
   namespace: option(string),
+  propTypes: bool,
   reasonReactPath: string,
 };
 
@@ -37,6 +39,7 @@ let default = {
   emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
+  emitImportPropTypes: false,
   exportInterfaces: false,
   generatedFileExtension: None,
   importPath: Relative,
@@ -44,6 +47,7 @@ let default = {
   module_: ES6,
   modulesMap: ModuleNameMap.empty,
   namespace: None,
+  propTypes: false,
   reasonReactPath: "reason-react/src/ReasonReact.js",
 };
 
@@ -178,6 +182,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
     let exportInterfacesBool = json |> getBool("exportInterfaces");
     let generatedFileExtensionStringOption =
       json |> getStringOption("generatedFileExtension");
+    let propTypesBool = json |> getBool("propTypes");
     let modulesMap =
       json
       |> getShims
@@ -238,6 +243,11 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | None => default.exportInterfaces
       | Some(b) => b
       };
+    let propTypes =
+      switch (propTypesBool) {
+      | None => default.propTypes
+      | Some(b) => b
+      };
     let generatedFileExtension = generatedFileExtensionStringOption;
 
     {
@@ -246,6 +256,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
       emitImportCurry: false,
+      emitImportPropTypes: false,
       exportInterfaces,
       generatedFileExtension,
       importPath,
@@ -253,6 +264,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       module_,
       modulesMap,
       namespace: None,
+      propTypes,
       reasonReactPath,
     };
   };

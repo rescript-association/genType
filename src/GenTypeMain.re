@@ -13,6 +13,13 @@ let cmtHasGenTypeAnnotations = inputCMT =>
   | _ => false
   };
 
+let cmtHasTypeErrors = inputCMT =>
+  switch (inputCMT.Cmt_format.cmt_annots) {
+  | Partial_implementation(_)
+  | Partial_interface(_) => true
+  | _ => false
+  };
+
 let structureItemIsDeclaration = structItem =>
   switch (structItem.Typedtree.str_desc) {
   | Typedtree.Tstr_type(_)
@@ -147,6 +154,8 @@ let processCmtFile = (~signFile, ~config, cmt) => {
            ~resolver,
            ~signFile,
          );
+    } else if (inputCMT |> cmtHasTypeErrors) {
+      outputFile |> GeneratedFiles.logFileAction(TypeError);
     } else {
       outputFile |> GeneratedFiles.logFileAction(NoMatch);
       if (Sys.file_exists(outputFile)) {

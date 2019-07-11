@@ -10,6 +10,9 @@ type moduleItem;
 
 let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
 
+/* Internal name of a value called "default" used by buclescript for default export */
+let default: string;
+
 let emitJSVariantGetLabel: string => string;
 
 let emitJSVariantGetPayload: string => string;
@@ -38,6 +41,8 @@ let emitVariantWithPayload:
   string;
 
 let isMutableObjectField: string => bool;
+
+let mangleObjectField : string => string;
 
 let moduleItemGen: unit => moduleItemGen;
 

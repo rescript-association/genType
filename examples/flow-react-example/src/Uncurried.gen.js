@@ -13,6 +13,14 @@ import * as Curry from 'bs-platform/lib/es6/curry.js';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as UncurriedBS from './Uncurried.bs';
 
+export type u0 = () => string;
+
+export type u1 = (number) => string;
+
+export type u2 = (number, string) => string;
+
+export type u3 = (number, string, number) => string;
+
 export const uncurried0: () => string = UncurriedBS.uncurried0;
 
 export const uncurried1: (number) => string = UncurriedBS.uncurried1;

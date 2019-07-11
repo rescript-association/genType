@@ -75,8 +75,7 @@ type someMutableFields = {
   [@bs.set] "mutable2": string,
 };
 
-[@genType.import "./name-with-dashes"]
-external foo: int => int = "";
+[@genType.import "./name-with-dashes"] external foo: int => int = "foo";
 
 [@genType.opaque]
 type exportOpaqueFromVariants = Variants.weekday;
@@ -125,3 +124,13 @@ type objectWithCallback = {
 
 [@genType]
 let convertObjectWithCallback = (x: objectWithCallback) => x;
+
+type ocaml_array('a) = array('a);
+
+// This should be considered annotated automatically.
+type someRecord = {id: int};
+
+type instantiateTypeParameter = ocaml_array(someRecord);
+
+[@genType]
+let testInstantiateTypeParameter = (x: instantiateTypeParameter) => x;

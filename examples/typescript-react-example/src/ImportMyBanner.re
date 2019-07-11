@@ -14,6 +14,6 @@ external make:
     ReasonReact.noRetainedProps,
     ReasonReact.actionless,
   ) =
-  "";
+  "make";
 
 let make = make;

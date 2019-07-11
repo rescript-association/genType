@@ -92,6 +92,12 @@ export type gadt = "F";
 
 export type objectWithCallback = {| +y?: {| +z?: (void) => number |}, +x?: (void) => number |};
 
+export type ocaml_array<a> = Array<a>;
+
+export type someRecord = {| +id: number |};
+
+export type instantiateTypeParameter = ocaml_array<someRecord>;
+
 export const consumeOption: (?number) => number = function (Arg1: $any) {
   const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
   return result
@@ -129,13 +135,9 @@ export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoA
     : {tag:"R4", value:result[0]}
 };
 
-export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = function (Arg1: $any) {
-  const result = TypesBS.convertObjectWithCallback({y:(Arg1.y == null ? undefined : {z:(Arg1.y.z == null ? undefined : function (Arg11: $any) {
-      const result1 = Arg1.y.z(Arg11);
-      return result1
-    })}), x:(Arg1.x == null ? undefined : function (Arg12: $any) {
-      const result2 = Arg1.x(Arg12);
-      return result2
-    })});
-  return result
+export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = TypesBS.convertObjectWithCallback;
+
+export const testInstantiateTypeParameter: (instantiateTypeParameter) => instantiateTypeParameter = function (Arg1: $any) {
+  const result = TypesBS.testInstantiateTypeParameter(Arg1.map(function _element(ArrayItem: $any) { return [ArrayItem.id]}));
+  return result.map(function _element(ArrayItem1: $any) { return {id:ArrayItem1[0]}})
 };

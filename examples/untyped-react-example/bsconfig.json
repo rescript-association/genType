@@ -6,11 +6,12 @@
       "all": false
     },
     "exportInterfaces": false,
+    "propTypes": true,
     "path": "../../src/lib/bs/native/gentype.native.exe"
   },
   "name": "untyped-react-example",
   "bsc-flags": ["-bs-super-errors"],
-  "reason": { "react-jsx": 2 },
+  "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],
   "sources": [
     {

@@ -1,4 +1,16 @@
 [@genType]
+type u0 = (. unit) => string;
+
+[@genType]
+type u1 = (. int) => string;
+
+[@genType]
+type u2 = (. int, string) => string;
+
+[@genType]
+type u3 = (. int, string, int) => string;
+
+[@genType]
 let uncurried0 = (.) => "";
 
 [@genType]

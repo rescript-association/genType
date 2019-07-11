@@ -103,7 +103,7 @@ let rec free_ = type0: StringSet.t =>
          StringSet.empty,
        )
   | Null(type_)
-  | Nullable(type_)
+  | Nullable(type_) => type_ |> free_
   | Option(type_)
   | Promise(type_) => type_ |> free_
   | Tuple(innerTypes) =>

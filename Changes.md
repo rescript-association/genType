@@ -1,3 +1,89 @@
+# 2.31.1
+- Add support for default import when the value is called `default` in the external.
+  ```[@genType.import "./MyMath"] external default: int = "default";```
+  ```[@genType.import "./MyMath"] external someRenamedName: int = "default";```
+
+# 2.31.0
+- Support externals with different name: external foo: someType = "fooRenamed".
+
+# 2.30.0
+- TypeScript: represent all function components with type `React.FC<...>`.
+  A function component is any value of type `props => React.element` where `props` has type object.  
+  Free type variables in type `props` are replaced by `any`.
+
+# 2.29.1
+- TypeScript: support importing a functional component declared with type React.FC<...>.
+
+# 2.29.0
+- Fix issue where direct type declarations of uncurried types were not recognized.
+  Inferred uncurried types or declarations inside other types were working already.
+- With untyped back-end, don't add type parameters to generated functions.
+- Don't generate conversion for callbacks of type unit => ..., as it's unnecessary from bucklescript 5.
+  Before bucklescript version 5, passing a function with arity 0 from JS would give a runtime error,
+  so a conversion was used to avoid this, adding runtime cost.
+
+# 2.28.0
+- Make core react types builtin instead of requiring a shim file.
+- Fix issue with flow back-end when exporting a function component with polymorphic variables.
+- Fix issue where exporting a function returning React.element was not considered a function component. (Was checking React.reactElement).
+
+`React.element` and `ReasonReact.reactElement` represented as `React$Node`/`JSX.Element` (Flow/TS).
+`React.callback(t1,t2)` represented as `t1 => t2`.
+`React.component(t)` represented as `t => React.element`.
+`React.Context.t(t)` represented as `React.Context<t>`.
+`React.Ref.t(t)` represented as `React.Ref<t>`.
+`ReactDOMRe.Ref.currentDomRef` represented as `any`.
+
+
+# 2.27.0
+- In TypeScript, support --noImplicitAny also for indexing objects. (I.e. without --suppressImplicitAnyIndexErrors).
+- Add support for importing values which are default exports in commonjs.
+
+# 2.26.0
+- Give exact Flow type to empty objects.
+
+# 2.25.2
+- Add support for importing functions of polymorphic type.
+
+# 2.25.1
+- Fix: don't export the state type of components using the old record API.
+
+# 2.25.0
+- Fix: extend automatic @genType annotation to type arguments.
+- Fix issue when inlining type parameters across different modules.
+
+# 2.24.0
+- Don't delete generated files in case of type errors.
+- Apply object field mangling convention to named arguments in functions.
+  This gives a unified treatment for renaming of object fields, functions, and function components.
+
+# 2.23.0
+- Preserve case when importing from a lower-case file name.
+- In TypeScript output, disable eslint rule import/first (on by default in newer react-scripts).
+- Generate explicit return type for the function that type checks an imported (record) component.
+
+# 2.22.0
+- Support import of function components.
+- Fix issue where only shallow conversion was generated for nested records defined in another file.
+- Opaque types are now generated only for type definitions annotated with [@genType.opaque].
+  Unknown types now are left unchanged, so type errors will indicate that shims need to be added.
+- Show file name in react developer tools when importing function components.
+
+# 2.21.1
+- Fix parentheses in function components with Flow back-end.
+
+# 2.21.0
+- Make Flow type check function components.
+- Add experimental support for prop types. Add `"propTypes": true` and `"language": "untyped"` to the configuration.
+
+# 2.20.0
+- Add support for default export like in bucklescript: call the value "default".
+- Hooks: generate names analogous to those from ppx for the React developer tools.
+- Apply bucklescript's marshaling rules for Js object field names:
+  Remove trailing `__` if present.
+  Otherwise remove leading `_` when followed by an uppercase letter, or keyword.
+
+
 # 2.19.0
 - Add first-class support for Js.Promise.t, and conversion when required.
 - Emit the variant conversion tables in a stable order to limit changes when the source is modified.
@@ -44,7 +130,7 @@ If using bucklescript >= 5.0.0:
   Resetting the type environment causes failures depending on the order of type arguments in https://github.com/cristianoc/genType/issues/158.
 
 # 2.12.1
-- Emit type parametes when generating polymorphic conversion functions. 
+- Emit type parametes when generating polymorphic conversion functions.
 
 # 2.12.0
 - Support type definitions in first-class module types.
@@ -52,9 +138,9 @@ If using bucklescript >= 5.0.0:
 - Add support for first-class module types with type equations.
 - Add support for functions with first-class module types and type equations.
 - Fix support for type parameters in type declarations with constraints.
- 
+
 # 2.11.0
-- Fix: don't export types defined in shims as opaque. 
+- Fix: don't export types defined in shims as opaque.
 - Add support for type Js.null (and Js.Null.t).
 - Fix signature of ImmutableArray length and size.
 
@@ -255,7 +341,7 @@ This can be used instead:
 # 0.15.0
 - Add configuration options to gentypeconfig.json for module, importPath, reasonReactPath, bsBlockPath.
 - Print version information with -help and -version.
-  
+
 # 0.14.0
 - Improve support for checking JS component used from Reason.
 - Support for nullable types Js.Nullable.t.
@@ -283,15 +369,15 @@ This can be used instead:
 - Allow gentypeconfig.json in addition to genflowconfig.json.
 
 # 0.10.0
-- [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37). 
+- [Add `@genType.as`/`@genFlow.as` to specify the name of the field seen from JS](https://github.com/cristianoc/genFlow/issues/37).
 - [Full support for polymorphic types (type instantiation works correctly to generate conversions)](https://github.com/cristianoc/genFlow/commit/9712a60fab3ef0f31ad074f15a4256939f9e40a6).
 
 # 0.9.0
-- [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35). 
+- [Support conversion of types with free type variables](https://github.com/cristianoc/genFlow/issues/35).
 - Depecate -setProjectRoot CLI option. The project root is now found automatically and the option ignored.
 
 # 0.8.0
-- [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21). 
+- [Add "export default ComponentName" for TypeScript](https://github.com/cristianoc/genFlow/issues/21).
 - [Fix: props are contravariant](https://github.com/cristianoc/genFlow/issues/22).
 - Use @genType annotation (the @genFlow annotation is still supported for backward compatibility).
 

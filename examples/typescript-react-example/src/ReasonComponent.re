@@ -1,3 +1,5 @@
+[@bs.config {jsx: 2}];
+
 let component = ReasonReact.statelessComponent("ReasonComponent");
 
 [@genType]
@@ -19,19 +21,17 @@ let make =
   ...component,
   render: _self =>
     <div className="App" onClick>
-      {
-        (
-          "ReasonReact "
-          ++ message
-          ++ " and intList: "
-          ++ (
-            intList |> List.map(i => string_of_int(i)) |> String.concat(",")
-          )
-          ++ " and person name: "
-          ++ person.name
-        )
-        ->ReasonReact.string
-      }
+      {(
+         "ReasonReact "
+         ++ message
+         ++ " and intList: "
+         ++ (
+           intList |> List.map(i => string_of_int(i)) |> String.concat(",")
+         )
+         ++ " and person name: "
+         ++ person.name
+       )
+       ->ReasonReact.string}
       <ImportMyBanner
         show=true
         message={Some({text: "this is from ReasonComponent"})}
