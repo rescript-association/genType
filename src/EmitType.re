@@ -578,7 +578,7 @@ let emitImportValueAsEarly = (~config, ~emitters, ~name, ~nameAs, importPath) =>
   )
   ++ " from "
   ++ "'"
-  ++ (importPath |> ImportPath.toString)
+  ++ (importPath |> ImportPath.emit(~config))
   ++ "';"
   |> Emitters.requireEarly(~emitters);
 };
@@ -608,7 +608,7 @@ let emitRequire =
     ++ "import * as "
     ++ ModuleName.toString(moduleName)
     ++ " from '"
-    ++ (importPath |> ImportPath.toString)
+    ++ (importPath |> ImportPath.emit(~config))
     ++ "';"
     |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
   | _ =>
@@ -616,7 +616,7 @@ let emitRequire =
     ++ "const "
     ++ ModuleName.toString(moduleName)
     ++ " = require('"
-    ++ (importPath |> ImportPath.toString)
+    ++ (importPath |> ImportPath.emit(~config))
     ++ "');"
     |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
   };
@@ -736,7 +736,7 @@ let emitImportTypeAs =
       }
     )
     ++ "} from '"
-    ++ (importPath |> ImportPath.toString)
+    ++ (importPath |> ImportPath.emit(~config))
     ++ "';"
     |> Emitters.import(~emitters)
   | Untyped => emitters
