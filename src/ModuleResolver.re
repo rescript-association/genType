@@ -106,7 +106,7 @@ let apply = (~resolver, moduleName) =>
 /* Resolve a reference to ModuleName, and produce a path suitable for require.
    E.g. require "../foo/bar/ModuleName.ext" where ext is ".re" or ".js". */
 let resolveModule =
-    (~config, ~outputFileRelative, ~resolver, ~importExtension, moduleName) => {
+    (~outputFileRelative, ~resolver, ~importExtension, moduleName) => {
   open Filename;
 
   let outputFileRelativeDir =
@@ -120,7 +120,7 @@ let resolveModule =
   let candidate =
     /* e.g. import "./Modulename.ext" */
     moduleName
-    |> ImportPath.fromModule(~config, ~dir=current_dir_name, ~importExtension);
+    |> ImportPath.fromModule(~dir=current_dir_name, ~importExtension);
   if (Sys.file_exists(moduleNameReFile)) {
     candidate;
   } else {
@@ -153,7 +153,6 @@ let resolveModule =
       /* e.g. import "../dst/ModuleName.ext" */
       (case == Uppercase ? moduleName : moduleName |> ModuleName.uncapitalize)
       |> ImportPath.fromModule(
-           ~config,
            ~dir=fromOutputDirToModuleDir,
            ~importExtension,
          );
@@ -166,7 +165,7 @@ let resolveSourceModule = (~importPath, moduleName) => {
     logItem("Resolve Source Module: %s\n", moduleName |> ModuleName.toString);
   };
   if (Debug.moduleResolution^) {
-    logItem("Import Path: %s\n", importPath |> ImportPath.toString);
+    logItem("Import Path: %s\n", importPath |> ImportPath.dump);
   };
   importPath;
 };
@@ -181,14 +180,13 @@ let resolveGeneratedModule =
   };
   let importPath =
     resolveModule(
-      ~config,
       ~outputFileRelative,
       ~resolver,
       ~importExtension=EmitType.generatedModuleExtension(~config),
       moduleName,
     );
   if (Debug.moduleResolution^) {
-    logItem("Import Path: %s\n", importPath |> ImportPath.toString);
+    logItem("Import Path: %s\n", importPath |> ImportPath.dump);
   };
   importPath;
 };
@@ -208,14 +206,13 @@ let importPathForReasonModuleName =
     };
     let importPath =
       resolveModule(
-        ~config,
         ~outputFileRelative,
         ~resolver,
         ~importExtension=".shim",
         shimModuleName,
       );
     if (Debug.moduleResolution^) {
-      logItem("Import Path: %s\n", importPath |> ImportPath.toString);
+      logItem("Import Path: %s\n", importPath |> ImportPath.dump);
     };
     importPath;
   | exception Not_found =>

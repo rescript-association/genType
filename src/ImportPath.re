@@ -1,35 +1,34 @@
 open GenTypeCommon;
 
-type t = string;
+type t = (string, string);
 
-let propTypes = "prop-types";
+let propTypes = ("", "prop-types");
 
-let react = "react";
-let reasonReactPath = (~config) => config.reasonReactPath;
-let bsBlockPath = Config_.getBsBlockPath;
+let react = ("", "react");
+let reasonReactPath = (~config) => ("", config.reasonReactPath);
+let bsBlockPath = (~config) => ("", Config_.getBsBlockPath(~config));
 
-let bsCurryPath = Config_.getBsCurryPath;
+let bsCurryPath = (~config) => ("", Config_.getBsCurryPath(~config));
 
-let fromModule = (~config, ~dir, ~importExtension, moduleName) => {
+let fromModule = (~dir, ~importExtension, moduleName) => {
   let withNoPath = (moduleName |> ModuleName.toString) ++ importExtension;
-  switch (config.importPath) {
-  | Relative => NodeFilename.concat(dir, withNoPath)
-  | Node => withNoPath
-  };
+  (dir, withNoPath);
 };
 
-let fromStringUnsafe = s => s;
+let fromStringUnsafe = s => ("", s);
 
 let chopExtensionSafe = s =>
   try (s |> Filename.chop_extension) {
   | Invalid_argument(_) => s
   };
 
-let toCmt = (~config, ~outputFileRelative, s) =>
+let dump = ((dir, s)) => NodeFilename.concat(dir, s);
+
+let toCmt = (~config, ~outputFileRelative, (dir, s)) =>
   Filename.(
     concat(
       outputFileRelative |> dirname,
-      (s |> chopExtensionSafe)
+      ((dir, s |> chopExtensionSafe) |> dump)
       ++ (
         switch (config.namespace) {
         | None => ""
@@ -39,4 +38,9 @@ let toCmt = (~config, ~outputFileRelative, s) =>
       ++ ".cmt",
     )
   );
-let toString = s => s;
+
+let emit = (~config, (dir, s)) =>
+  switch (config.importPath) {
+  | Relative => (dir, s) |> dump
+  | Node => s
+  };

@@ -97,9 +97,9 @@ let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
     ++ " type:"
     ++ EmitType.typeToString(~config, ~typeNameIsInterface, type_)
   | ImportComponent({importAnnotation, _}) =>
-    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.toString)
+    "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.dump)
   | ImportValue({importAnnotation, _}) =>
-    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.toString)
+    "ImportValue " ++ (importAnnotation.importPath |> ImportPath.dump)
   };
 
 let emitExportType =
@@ -325,7 +325,7 @@ let rec emitCodeItem =
                ++ (fileName |> ModuleName.toString)
                ++ ".re'"
                ++ " and the props of '"
-               ++ (importPath |> ImportPath.toString)
+               ++ (importPath |> ImportPath.emit(~config))
                ++ "'.",
            );
 
@@ -469,7 +469,7 @@ let rec emitCodeItem =
              ++ (fileName |> ModuleName.toString)
              ++ ".re'"
              ++ " and '"
-             ++ (importPath |> ImportPath.toString)
+             ++ (importPath |> ImportPath.emit(~config))
              ++ "'.",
            ~emitters,
            ~name=valueNameTypeChecked,
@@ -523,7 +523,6 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
-           ~config,
            ~outputFileRelative,
            ~resolver,
            ~importExtension=".bs",
@@ -672,7 +671,6 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
-           ~config,
            ~outputFileRelative,
            ~resolver,
            ~importExtension=".bs",

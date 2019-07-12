@@ -1,3 +1,6 @@
+# master
+- Fix issue where conversion functions are not be generated for types defined in other files when `"importPath": "node",` is set in `gentypeconfig`.
+
 # 2.31.1
 - Add support for default import when the value is called `default` in the external.
   ```[@genType.import "./MyMath"] external default: int = "default";```
