@@ -555,8 +555,15 @@ let rec apply =
     let mkBody = bodyArgs => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       config.emitImportCurry = config.emitImportCurry || useCurry;
+      let hooksToReason =
+        !toJS && config.language != TypeScript && functionName != None;
+      let args = hooksToReason ? [value, ...bodyArgs] : bodyArgs;
+      let functionName = hooksToReason ? "React.createElement" : value;
+      if (hooksToReason) {
+        config.emitImportReact = true;
+      };
       Indent.break(~indent=indent1)
-      ++ (value |> EmitText.funCall(~args=bodyArgs, ~useCurry) |> mkReturn);
+      ++ (functionName |> EmitText.funCall(~args, ~useCurry) |> mkReturn);
     };
 
     let convertedArgs = argConverters |> List.mapi(convertArg);

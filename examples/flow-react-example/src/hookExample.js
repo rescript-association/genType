@@ -6,15 +6,21 @@ export const foo = function(x: { +person: { +name: string, +age: number } }) {
   return x.person.name;
 };
 
-export const make = (x: {
+type Props = {
   +person: { +name: string, +age: number },
   +children: React.Node
-}) => (
-  <div>
-    {" "}
-    {x.person.name} {x.children}{" "}
-  </div>
-);
+};
+
+export class make extends React.Component<Props> {
+  render() {
+    return (
+      <div>
+        {" "}
+        {this.props.person.name} {this.props.children}{" "}
+      </div>
+    );
+  }
+}
 
 export const makeRenamed = make;
 
