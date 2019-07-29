@@ -148,8 +148,6 @@ let shimExtension: (~config: config) => string;
 
 let typeReactComponent: (~config: config, ~propsTypeName: string) => type_;
 
-let typeReactFunctionComponentTypeScript: (~propsType: type_) => type_;
-
 let typeReactContext: (~config: config, ~type_: type_) => type_;
 
 let typeReactElement: (~config: config) => type_;
