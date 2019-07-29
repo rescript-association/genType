@@ -451,7 +451,7 @@ let rec emitCodeItem =
     let converter =
       switch (converter) {
       | FunctionC(functionC) when isHook =>
-        Converter.FunctionC({...functionC, functionName: Some(importFile)})
+        Converter.FunctionC({...functionC, componentName: Some(importFile)})
       | _ => converter
       };
 
@@ -714,7 +714,7 @@ let rec emitCodeItem =
         let hookName =
           (fileName |> ModuleName.toString)
           ++ (suffix == "" ? suffix : "_" ++ suffix);
-        Converter.FunctionC({...functionC, functionName: Some(hookName)});
+        Converter.FunctionC({...functionC, componentName: Some(hookName)});
       | _ => converter
       };
 

@@ -18,7 +18,7 @@ and groupedArgConverter =
 and fieldsC = list((string, t))
 and functionC = {
   argConverters: list(groupedArgConverter),
-  functionName: option(string),
+  componentName: option(string),
   retConverter: t,
   typeVars: list(string),
   uncurried: bool,
@@ -138,7 +138,7 @@ let typeGetConverterNormalized =
       (
         FunctionC({
           argConverters,
-          functionName: None,
+          componentName: None,
           retConverter,
           typeVars,
           uncurried,
@@ -451,7 +451,7 @@ let rec apply =
 
   | FunctionC({
       argConverters,
-      functionName,
+      componentName,
       retConverter,
       typeVars,
       uncurried,
@@ -556,7 +556,7 @@ let rec apply =
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       config.emitImportCurry = config.emitImportCurry || useCurry;
       let hooksToReason =
-        !toJS && config.language != TypeScript && functionName != None;
+        !toJS && config.language != TypeScript && componentName != None;
       let args = hooksToReason ? [value, ...bodyArgs] : bodyArgs;
       let functionName = hooksToReason ? "React.createElement" : value;
       if (hooksToReason) {
@@ -572,7 +572,7 @@ let rec apply =
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
     EmitText.funDef(
       ~bodyArgs,
-      ~functionName,
+      ~functionName=componentName,
       ~funParams,
       ~indent,
       ~mkBody,
