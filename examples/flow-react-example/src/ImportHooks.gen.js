@@ -17,11 +17,11 @@ import {foo as fooNotChecked} from './hookExample';
 import * as React from 'react';
 
 // In case of type error, check the type of 'makeRenamed' in 'ImportHooks.re' and './hookExample'.
-export const makeRenamedTypeChecked: <a>({|
+export const makeRenamedTypeChecked: React.ComponentType<{|
   +person: person, 
   +children: React$Node, 
-  +renderMe: renderMe<a>
-|}) => React$Node = makeRenamedNotChecked;
+  +renderMe: renderMe<$any>
+|}> = makeRenamedNotChecked;
 
 // Export 'makeRenamed' early to allow circular import from the '.bs.js' file.
 export const makeRenamed: mixed = function hookExample<a>(Arg1: $any) {
@@ -40,4 +40,4 @@ export const foo: mixed = function (Argperson: $any) {
 
 export type person = {| +name: string, +age: number |};
 
-export type renderMe<a> = ({| +randomString: string, +poly: a |}) => React$Node;
+export type renderMe<a> = React.ComponentType<{| +randomString: string, +poly: a |}>;

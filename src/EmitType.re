@@ -58,8 +58,17 @@ let typeReactElementFlow = ident(~builtin=true, "React$Node");
 
 let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
 
-let typeReactFunctionComponentTypeScript = (~propsType) =>
-  ident(~builtin=true, ~typeArgs=[propsType], "React.FC");
+let typeReactFunctionComponent = (~config, ~propsType) =>
+  ident(
+    ~builtin=true,
+    ~typeArgs=[propsType],
+    config.language == Flow ?
+      {
+        config.emitImportReact = true;
+        "React.ComponentType";
+      } :
+      "React.FC",
+  );
 
 let typeReactElement = (~config) =>
   config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
@@ -117,10 +126,7 @@ let rec renderType =
     };
 
   | Function({argTypes: [Object(closedFlag, fields)], retType, typeVars})
-      when
-        config.language == TypeScript
-        && retType
-        |> isTypeReactElement(~config) =>
+      when retType |> isTypeReactElement(~config) =>
     let fields =
       fields
       |> List.map(field =>
@@ -138,7 +144,8 @@ let rec renderType =
            }
          );
     let functionComponentType =
-      typeReactFunctionComponentTypeScript(
+      typeReactFunctionComponent(
+        ~config,
         ~propsType=Object(closedFlag, fields),
       );
     functionComponentType

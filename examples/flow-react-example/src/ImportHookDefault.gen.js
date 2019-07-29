@@ -17,11 +17,11 @@ import {default as defaultNotChecked} from './hookExample';
 import * as React from 'react';
 
 // In case of type error, check the type of 'make' in 'ImportHookDefault.re' and './hookExample'.
-export const makeTypeChecked: ({|
+export const makeTypeChecked: React.ComponentType<{|
   +person: person, 
   +children: React$Node, 
   +renderMe: ImportHooks_renderMe<string>
-|}) => React$Node = makeNotChecked;
+|}> = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: mixed = function hookExample(Arg1: $any) {
@@ -30,11 +30,11 @@ export const make: mixed = function hookExample(Arg1: $any) {
 };
 
 // In case of type error, check the type of 'default' in 'ImportHookDefault.re' and './hookExample'.
-export const defaultTypeChecked: ({|
+export const defaultTypeChecked: React.ComponentType<{|
   +person: person, 
   +children: React$Node, 
   +renderMe: ImportHooks_renderMe<string>
-|}) => React$Node = defaultNotChecked;
+|}> = defaultNotChecked;
 
 // Export '$$default' early to allow circular import from the '.bs.js' file.
 export const $$default: mixed = function hookExample(Arg1: $any) {
