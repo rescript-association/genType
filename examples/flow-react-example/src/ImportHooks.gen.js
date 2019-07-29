@@ -13,6 +13,9 @@ import {makeRenamed as makeRenamedNotChecked} from './hookExample';
 // flowlint-next-line nonstrict-import:off
 import {foo as fooNotChecked} from './hookExample';
 
+// $FlowExpectedError: Reason checked type sufficiently
+import * as React from 'react';
+
 // In case of type error, check the type of 'makeRenamed' in 'ImportHooks.re' and './hookExample'.
 export const makeRenamedTypeChecked: <a>({|
   +person: person, 
@@ -22,7 +25,7 @@ export const makeRenamedTypeChecked: <a>({|
 
 // Export 'makeRenamed' early to allow circular import from the '.bs.js' file.
 export const makeRenamed: mixed = function hookExample<a>(Arg1: $any) {
-  const result = makeRenamedTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+  const result = React.createElement(makeRenamedTypeChecked, {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
 };
 

@@ -280,7 +280,7 @@ let rec emitCodeItem =
     let componentNameTypeChecked = lastNameInPath ++ "TypeChecked";
 
     /* Check the type of the component */
-    let emitters = EmitType.emitRequireReact(~early=true, ~emitters, ~config);
+    config.emitImportReact = true;
     let emitters =
       emitExportType(
         ~early=true,
@@ -1246,6 +1246,10 @@ let emitTranslationAsString =
          ~typeNameIsInterface=typeNameIsInterface(~env),
          ~variantTables,
        );
+  let emitters =
+    config.emitImportReact ?
+      EmitType.emitRequireReact(~early=true, ~emitters, ~config) : emitters;
+
   let env =
     config.emitImportCurry ?
       ModuleName.curry

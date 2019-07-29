@@ -12,9 +12,9 @@ import {default as defaultValueNotChecked} from './exportNestedValues';
 
 import {TopLevelClass as TopLevelClass} from './MyBanner';
 
-import * as React from 'react';
-
 import {default as defaultValue2NotChecked} from './exportNestedValues';
+
+import * as React from 'react';
 
 // tslint:disable-next-line:no-var-requires
 const ReasonReact = require('reason-react/src/ReasonReact.js');
