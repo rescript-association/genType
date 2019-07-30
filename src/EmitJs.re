@@ -438,22 +438,16 @@ let rec emitCodeItem =
           |> requireModule(~import=true, ~env, ~importPath, ~strict=true);
         (emitters, importedAsName, env);
       };
-    let converter = type_ |> typeGetConverter;
 
-    let isHook =
+    let type_ =
       switch (type_) {
-      | Function({argTypes: [Object(_)], retType})
+      | Function({argTypes: [Object(_)], retType} as function_)
           when retType |> EmitType.isTypeReactElement(~config) =>
-        true
-      | _ => false
+        Function({...function_, componentName: Some(importFile)})
+      | _ => type_
       };
 
-    let converter =
-      switch (converter) {
-      | FunctionC(functionC) when isHook =>
-        Converter.FunctionC({...functionC, componentName: Some(importFile)})
-      | _ => converter
-      };
+    let converter = type_ |> typeGetConverter;
 
     let valueNameTypeChecked = valueName ++ "TypeChecked";
 
@@ -678,26 +672,16 @@ let rec emitCodeItem =
     let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =
       fileNameBs |> requireModule(~import=false, ~env, ~importPath);
-    let converter = type_ |> typeGetConverter;
 
     let default = "default";
     let make = "make";
 
-    let hookType =
+    let (type_, hookType) =
       switch (type_) {
-      | Function({argTypes: [Object(_) as propsT], retType, typeVars})
+      | Function(
+          {argTypes: [Object(_) as propsT], retType, typeVars} as function_,
+        )
           when retType |> EmitType.isTypeReactElement(~config) =>
-        Some((propsT, retType, typeVars))
-      | _ => None
-      };
-    /* Work around Flow issue with function components.
-       If type annotated direcly, they are not checked. But typeof() works. */
-    let flowFunctionTypeWorkaround =
-      hookType != None && config.language == Flow;
-
-    let converter =
-      switch (converter) {
-      | FunctionC(functionC) when hookType != None =>
         let chopSuffix = suffix =>
           resolvedName == suffix ?
             "" :
@@ -714,9 +698,19 @@ let rec emitCodeItem =
         let hookName =
           (fileName |> ModuleName.toString)
           ++ (suffix == "" ? suffix : "_" ++ suffix);
-        Converter.FunctionC({...functionC, componentName: Some(hookName)});
-      | _ => converter
+
+        (
+          Function({...function_, componentName: Some(hookName)}),
+          Some((propsT, retType, typeVars)),
+        );
+      | _ => (type_, None)
       };
+    /* Work around Flow issue with function components.
+       If type annotated direcly, they are not checked. But typeof() works. */
+    let flowFunctionTypeWorkaround =
+      hookType != None && config.language == Flow;
+
+    let converter = type_ |> typeGetConverter;
 
     let name = originalName == default ? Runtime.default : resolvedName;
     let hookNameForTypeof = name ++ "$$forTypeof";

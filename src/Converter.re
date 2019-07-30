@@ -130,7 +130,9 @@ let typeGetConverterNormalized =
       let (tConverter, tNormalized) = t |> visit(~visited);
       (ArrayC(tConverter), Array(tNormalized, mutable_));
 
-    | Function({argTypes, retType, typeVars, uncurried} as function_) =>
+    | Function(
+        {argTypes, componentName, retType, typeVars, uncurried} as function_,
+      ) =>
       let argConverted =
         argTypes |> List.map(typeToGroupedArgConverter(~visited));
       let argConverters = argConverted |> List.map(fst);
@@ -138,7 +140,7 @@ let typeGetConverterNormalized =
       (
         FunctionC({
           argConverters,
-          componentName: None,
+          componentName,
           retConverter,
           typeVars,
           uncurried,

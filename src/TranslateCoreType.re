@@ -149,7 +149,13 @@ let rec translateArrowType =
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
     let functionType =
-      Function({argTypes, retType, typeVars: [], uncurried: false});
+      Function({
+        argTypes,
+        componentName: None,
+        retType,
+        typeVars: [],
+        uncurried: false,
+      });
 
     {dependencies: allDeps, type_: functionType};
   }

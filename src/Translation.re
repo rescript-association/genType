@@ -35,8 +35,7 @@ let combine = (translations: list(t)): t =>
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, type_) =>
   switch (type_) {
-  | Function({argTypes, retType, uncurried, _}) =>
-    Function({argTypes, retType, typeVars, uncurried})
+  | Function(function_) => Function({...function_, typeVars})
   | _ => type_
   };
 
