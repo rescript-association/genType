@@ -195,6 +195,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [fromTranslation.type_],
+          componentName: None,
           retType: toTranslation.type_,
           typeVars: [],
           uncurried: false,
@@ -210,6 +211,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [propsTranslation.type_],
+          componentName: None,
           retType: retTranslation.type_,
           typeVars: [],
           uncurried: false,
@@ -221,6 +223,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [propsTranslation.type_],
+          componentName: None,
           retType: EmitType.typeReactElement(~config),
           typeVars: [],
           uncurried: false,
@@ -308,6 +311,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: ts,
+          componentName: None,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
@@ -328,6 +332,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [],
+          componentName: None,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
@@ -348,6 +353,7 @@ let translateConstr =
       type_:
         Function({
           argTypes,
+          componentName: None,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
@@ -523,7 +529,13 @@ let rec translateArrowType =
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
     let functionType =
-      Function({argTypes, retType, typeVars: [], uncurried: false});
+      Function({
+        argTypes,
+        componentName: None,
+        retType,
+        typeVars: [],
+        uncurried: false,
+      });
 
     {dependencies: allDeps, type_: functionType};
   }
