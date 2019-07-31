@@ -6,12 +6,11 @@ type person = {
 
 [@genType]
 type renderMe('a) =
-  {
+  React.component({
     .
     "randomString": string,
     "poly": 'a,
-  } =>
-  React.element;
+  });
 
 [@genType.import "./hookExample"] [@react.component]
 external make:
