@@ -6,10 +6,14 @@ export const foo = function(x: { +person: { +name: string, +age: number } }) {
   return x.person.name;
 };
 
-type Props = {
+type Props = {|
   +person: { +name: string, +age: number },
-  +children: React.Node
-};
+  +children: React.Node,
+  +renderMe: React.ComponentType<{|
+    +randomString: string,
+    +poly: string
+  |}>
+|};
 
 export class make extends React.Component<Props> {
   render() {
