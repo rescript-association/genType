@@ -6,8 +6,10 @@ import {default as makeNotChecked} from './hookExample';
 
 import {default as defaultNotChecked} from './hookExample';
 
+import * as React from 'react';
+
 // In case of type error, check the type of 'make' in 'ImportHookDefault.re' and './hookExample'.
-export const makeTypeChecked: React.FC<{
+export const makeTypeChecked: React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: ImportHooks_renderMe<string>
@@ -15,16 +17,16 @@ export const makeTypeChecked: React.FC<{
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: unknown = function hookExample(Arg1: any) {
-  const result = makeTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+  const result = React.createElement(makeTypeChecked, {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
-} as React.FC<{
+} as React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: ImportHooks_renderMe<string>
 }>;
 
 // In case of type error, check the type of 'default' in 'ImportHookDefault.re' and './hookExample'.
-export const defaultTypeChecked: React.FC<{
+export const defaultTypeChecked: React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: ImportHooks_renderMe<string>
@@ -32,9 +34,9 @@ export const defaultTypeChecked: React.FC<{
 
 // Export '$$default' early to allow circular import from the '.bs.js' file.
 export const $$default: unknown = function hookExample(Arg1: any) {
-  const result = defaultTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+  const result = React.createElement(defaultTypeChecked, {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
   return result
-} as React.FC<{
+} as React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: ImportHooks_renderMe<string>

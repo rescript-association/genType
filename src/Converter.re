@@ -557,8 +557,7 @@ let rec apply =
     let mkBody = bodyArgs => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       config.emitImportCurry = config.emitImportCurry || useCurry;
-      let hooksToReason =
-        !toJS && config.language != TypeScript && componentName != None;
+      let hooksToReason = !toJS && componentName != None;
       let args = hooksToReason ? [value, ...bodyArgs] : bodyArgs;
       let functionName = hooksToReason ? "React.createElement" : value;
       if (hooksToReason) {
