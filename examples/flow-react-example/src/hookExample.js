@@ -17,10 +17,12 @@ type Props = {|
 
 export class make extends React.Component<Props> {
   render() {
+    const RenderMe = this.props.renderMe;
     return (
       <div>
         {" "}
         {this.props.person.name} {this.props.children}{" "}
+        <RenderMe randomString="random-string" poly="" />
       </div>
     );
   }

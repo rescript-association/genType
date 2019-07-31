@@ -17,12 +17,15 @@ let make = (~vehicle) => {
     <button onClick={_ => setCount(_ => count + 1)}>
       {React.string("Click me")}
     </button>
-    <ImportHooks person={name: "Mary", age: 71} renderMe={_ => React.null}>
+    <ImportHooks
+      person={name: "Mary", age: 71}
+      renderMe={x => React.string(x##randomString)}>
       {React.string("child1")}
       {React.string("child2")}
     </ImportHooks>
     <ImportHookDefault
-      person={name: "DefaultImport", age: 42} renderMe={_ => React.null}>
+      person={name: "DefaultImport", age: 42}
+      renderMe={x => React.string(x##randomString)}>
       {React.string("child1")}
       {React.string("child2")}
     </ImportHookDefault>
