@@ -23,39 +23,39 @@ export type testReactContext = React.Context<number>;
 // tslint:disable-next-line:interface-over-type-literal
 export type testReactRef = React.Ref<number>;
 
-export const $$default: React.FC<{ readonly vehicle: vehicle }> = function Hooks(Arg1: any) {
+export const $$default: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks(Arg1: any) {
   const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
 export default $$default;
 
-export const anotherComponent: React.FC<{ readonly callback: (_1:void) => void; readonly vehicle: vehicle }> = function Hooks_anotherComponent(Arg1: any) {
+export const anotherComponent: React.ComponentType<{ readonly callback: (_1:void) => void; readonly vehicle: vehicle }> = function Hooks_anotherComponent(Arg1: any) {
   const result = HooksBS.anotherComponent({callback:Arg1.callback, vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_make: React.FC<{ readonly vehicle: vehicle }> = function Hooks_Inner(Arg1: any) {
+export const Inner_make: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner(Arg1: any) {
   const result = HooksBS.Inner[0]({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_anotherComponent: React.FC<{ readonly vehicle: vehicle }> = function Hooks_Inner_anotherComponent(Arg1: any) {
+export const Inner_anotherComponent: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner_anotherComponent(Arg1: any) {
   const result = HooksBS.Inner[1]({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_Inner2_make: React.FC<{ readonly vehicle: vehicle }> = function Hooks_Inner_Inner2(Arg1: any) {
+export const Inner_Inner2_make: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner_Inner2(Arg1: any) {
   const result = HooksBS.Inner[2][0]({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const Inner_Inner2_anotherComponent: React.FC<{ readonly vehicle: vehicle }> = function Hooks_Inner_Inner2_anotherComponent(Arg1: any) {
+export const Inner_Inner2_anotherComponent: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner_Inner2_anotherComponent(Arg1: any) {
   const result = HooksBS.Inner[2][1]({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const NoProps_make: React.FC<{}> = HooksBS.NoProps[0];
+export const NoProps_make: React.ComponentType<{}> = HooksBS.NoProps[0];
 
 export const functionWithRenamedArgs: (_1:{
   readonly to: vehicle; 
@@ -69,7 +69,7 @@ export const functionWithRenamedArgs: (_1:{
   return result
 };
 
-export const componentWithRenamedArgs: React.FC<{
+export const componentWithRenamedArgs: React.ComponentType<{
   readonly Type: vehicle; 
   readonly to: vehicle; 
   readonly cb: cb
@@ -86,14 +86,14 @@ export const makeWithRef: (_1:{ readonly vehicle: vehicle }, _2:(null | undefine
   return result
 };
 
-export const testForwardRef: React.FC<{ readonly vehicle: vehicle }> = function Hooks_testForwardRef(Arg1: any) {
+export const testForwardRef: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_testForwardRef(Arg1: any) {
   const result = HooksBS.testForwardRef({vehicle:[Arg1.vehicle.name]});
   return result
 };
 
-export const polymorphicComponent: React.FC<{ readonly p: [vehicle, any] }> = function Hooks_polymorphicComponent<T1>(Arg1: any) {
+export const polymorphicComponent: React.ComponentType<{ readonly p: [vehicle, any] }> = function Hooks_polymorphicComponent<T1>(Arg1: any) {
   const result = HooksBS.polymorphicComponent({p:[[Arg1.p[0].name], Arg1.p[1]]});
   return result
 };
 
-export const functionReturningReactElement: React.FC<{ readonly name: string }> = HooksBS.functionReturningReactElement;
+export const functionReturningReactElement: React.ComponentType<{ readonly name: string }> = HooksBS.functionReturningReactElement;

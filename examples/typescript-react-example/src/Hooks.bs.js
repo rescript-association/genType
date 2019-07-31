@@ -24,8 +24,8 @@ function Hooks(Props) {
                     /* age */71
                   ],
                   children: null,
-                  renderMe: (function (param) {
-                      return null;
+                  renderMe: (function (x) {
+                      return x.randomString;
                     })
                 }, "child1", "child2"), React.createElement(ImportHookDefault.make, {
                   person: /* record */[
@@ -33,8 +33,8 @@ function Hooks(Props) {
                     /* age */42
                   ],
                   children: null,
-                  renderMe: (function (param) {
-                      return null;
+                  renderMe: (function (x) {
+                      return x.randomString;
                     })
                 }, "child1", "child2"));
 }
