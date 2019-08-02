@@ -120,3 +120,21 @@ let polymorphicComponent = (~p as (x, _)) => React.string(x.name);
 [@genType]
 [@react.component]
 let functionReturningReactElement = (~name) => React.string(name);
+
+module RenderPropRequiresConversion = {
+  [@genType]
+  [@react.component]
+  let make =
+      (
+        ~renderVehicle:
+           {
+             .
+             "vehicle": vehicle,
+             "number": int,
+           } =>
+           React.element,
+      ) => {
+    let car = {name: "Car"};
+    renderVehicle({"vehicle": car, "number": 42});
+  };
+};

@@ -19,6 +19,7 @@ and fieldsC = list((string, t))
 and functionC = {
   argConverters: list(groupedArgConverter),
   componentName: option(string),
+  isHook: bool,
   retConverter: t,
   typeVars: list(string),
   uncurried: bool,
@@ -137,10 +138,16 @@ let typeGetConverterNormalized =
         argTypes |> List.map(typeToGroupedArgConverter(~visited));
       let argConverters = argConverted |> List.map(fst);
       let (retConverter, retNormalized) = retType |> visit(~visited);
+      let isHook =
+        switch (argTypes) {
+        | [Object(_)] => retType |> EmitType.isTypeReactElement(~config)
+        | _ => false
+        };
       (
         FunctionC({
           argConverters,
           componentName,
+          isHook,
           retConverter,
           typeVars,
           uncurried,
@@ -454,6 +461,7 @@ let rec apply =
   | FunctionC({
       argConverters,
       componentName,
+      isHook,
       retConverter,
       typeVars,
       uncurried,
@@ -557,10 +565,10 @@ let rec apply =
     let mkBody = bodyArgs => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       config.emitImportCurry = config.emitImportCurry || useCurry;
-      let hooksToReason = !toJS && componentName != None;
-      let args = hooksToReason ? [value, ...bodyArgs] : bodyArgs;
-      let functionName = hooksToReason ? "React.createElement" : value;
-      if (hooksToReason) {
+      let hookToReason = !toJS && isHook;
+      let args = hookToReason ? [value, ...bodyArgs] : bodyArgs;
+      let functionName = hookToReason ? "React.createElement" : value;
+      if (hookToReason) {
         config.emitImportReact = true;
       };
       Indent.break(~indent=indent1)

@@ -118,6 +118,16 @@ function Hooks$functionReturningReactElement(Props) {
   return Props.name;
 }
 
+function Hooks$RenderPropRequiresConversion(Props) {
+  var renderVehicle = Props.renderVehicle;
+  return Curry._1(renderVehicle, {
+              vehicle: /* record */[/* name */"Car"],
+              number: 42
+            });
+}
+
+var RenderPropRequiresConversion = /* module */[/* make */Hooks$RenderPropRequiresConversion];
+
 var make = Hooks;
 
 var $$default = Hooks;
@@ -145,6 +155,7 @@ export {
   testForwardRef ,
   polymorphicComponent ,
   functionReturningReactElement ,
+  RenderPropRequiresConversion ,
   
 }
 /* testForwardRef Not a pure module */
