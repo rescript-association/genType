@@ -8,6 +8,9 @@
 type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
+import * as React from 'react';
+
+// $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
@@ -130,3 +133,14 @@ export const polymorphicComponent: typeof(polymorphicComponent$$forTypeof) = fun
 const functionReturningReactElement$$forTypeof = function (_: {| +name: string |}) : React$Node { return null };
 
 export const functionReturningReactElement: typeof(functionReturningReactElement$$forTypeof) = HooksBS.functionReturningReactElement;
+
+// Type annotated function components are not checked by Flow, but typeof() works.
+const RenderPropRequiresConversion_make$$forTypeof = function (_: {| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |}) : React$Node { return null };
+
+export const RenderPropRequiresConversion_make: typeof(RenderPropRequiresConversion_make$$forTypeof) = function Hooks_RenderPropRequiresConversion(Arg1: $any) {
+  const result = HooksBS.RenderPropRequiresConversion[0]({renderVehicle:function (Arg11: $any) {
+      const result1 = React.createElement(Arg1.renderVehicle, {number:Arg11.number, vehicle:{name:Arg11.vehicle[0]}});
+      return result1
+    }});
+  return result
+};

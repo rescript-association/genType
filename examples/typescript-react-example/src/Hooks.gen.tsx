@@ -2,6 +2,8 @@
 /* eslint-disable import/first */
 
 
+import * as React from 'react';
+
 // tslint:disable-next-line:no-var-requires
 const Curry = require('bs-platform/lib/es6/curry.js');
 
@@ -97,3 +99,11 @@ export const polymorphicComponent: React.ComponentType<{ readonly p: [vehicle, a
 };
 
 export const functionReturningReactElement: React.ComponentType<{ readonly name: string }> = HooksBS.functionReturningReactElement;
+
+export const RenderPropRequiresConversion_make: React.ComponentType<{ readonly renderVehicle: React.ComponentType<{ readonly number: number; readonly vehicle: vehicle }> }> = function Hooks_RenderPropRequiresConversion(Arg1: any) {
+  const result = HooksBS.RenderPropRequiresConversion[0]({renderVehicle:function (Arg11: any) {
+      const result1 = React.createElement(Arg1.renderVehicle, {number:Arg11.number, vehicle:{name:Arg11.vehicle[0]}});
+      return result1
+    }});
+  return result
+};
