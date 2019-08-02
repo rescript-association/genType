@@ -46,9 +46,9 @@ let shimExtension = (~config) =>
 let interfaceName = (~config, name) =>
   config.exportInterfaces ? "I" ++ name : name;
 
-let typeReactComponent = (~config, ~propsTypeName) =>
-  (config.language == Flow ? "React$ComponentType" : "React.ComponentClass")
-  |> ident(~builtin=true, ~typeArgs=[ident(propsTypeName)]);
+let typeReactComponent = (~config, ~propsType) =>
+  (config.language == Flow ? "React$ComponentType" : "React.ComponentType")
+  |> ident(~builtin=true, ~typeArgs=[propsType]);
 
 let typeReactContext = (~config, ~type_) =>
   (config.language == Flow ? "React$Context" : "React.Context")
@@ -57,18 +57,6 @@ let typeReactContext = (~config, ~type_) =>
 let typeReactElementFlow = ident(~builtin=true, "React$Node");
 
 let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
-
-let typeReactFunctionComponent = (~config, ~propsType) =>
-  ident(
-    ~builtin=true,
-    ~typeArgs=[propsType],
-    config.language == Flow ?
-      {
-        config.emitImportReact = true;
-        "React.ComponentType";
-      } :
-      "React.ComponentType",
-  );
 
 let typeReactElement = (~config) =>
   config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
@@ -143,12 +131,9 @@ let rec renderType =
                   ),
            }
          );
-    let functionComponentType =
-      typeReactFunctionComponent(
-        ~config,
-        ~propsType=Object(closedFlag, fields),
-      );
-    functionComponentType
+    let componentType =
+      typeReactComponent(~config, ~propsType=Object(closedFlag, fields));
+    componentType
     |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType);
 
   | Function({argTypes, retType, typeVars}) =>

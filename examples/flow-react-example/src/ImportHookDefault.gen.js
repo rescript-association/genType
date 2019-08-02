@@ -17,7 +17,7 @@ import {default as defaultNotChecked} from './hookExample';
 import * as React from 'react';
 
 // In case of type error, check the type of 'make' in 'ImportHookDefault.re' and './hookExample'.
-export const makeTypeChecked: React.ComponentType<{|
+export const makeTypeChecked: React$ComponentType<{|
   +person: person, 
   +children: React$Node, 
   +renderMe: ImportHooks_renderMe<string>
@@ -30,7 +30,7 @@ export const make: mixed = function hookExample(Arg1: $any) {
 };
 
 // In case of type error, check the type of 'default' in 'ImportHookDefault.re' and './hookExample'.
-export const defaultTypeChecked: React.ComponentType<{|
+export const defaultTypeChecked: React$ComponentType<{|
   +person: person, 
   +children: React$Node, 
   +renderMe: ImportHooks_renderMe<string>

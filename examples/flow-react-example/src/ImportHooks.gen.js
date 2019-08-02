@@ -17,7 +17,7 @@ import {foo as fooNotChecked} from './hookExample';
 import * as React from 'react';
 
 // In case of type error, check the type of 'makeRenamed' in 'ImportHooks.re' and './hookExample'.
-export const makeRenamedTypeChecked: React.ComponentType<{|
+export const makeRenamedTypeChecked: React$ComponentType<{|
   +person: person, 
   +children: React$Node, 
   +renderMe: renderMe<$any>
@@ -40,4 +40,4 @@ export const foo: mixed = function (Argperson: $any) {
 
 export type person = {| +name: string, +age: number |};
 
-export type renderMe<a> = React.ComponentType<{| +randomString: string, +poly: a |}>;
+export type renderMe<a> = React$ComponentType<{| +randomString: string, +poly: a |}>;
