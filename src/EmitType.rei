@@ -145,7 +145,7 @@ let outputFileSuffix: (~config: config) => string;
 
 let shimExtension: (~config: config) => string;
 
-let typeReactComponent: (~config: config, ~propsTypeName: string) => type_;
+let typeReactComponent: (~config: config, ~propsType: type_) => type_;
 
 let typeReactContext: (~config: config, ~type_: type_) => type_;
 

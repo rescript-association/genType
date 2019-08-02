@@ -198,13 +198,13 @@ let translateComponent =
                 "ReasonReact_component" |
                 "React_component",
               typeArgs: [_state, ..._],
-            } as ident,
+            } as id,
           ),
         _,
       } as function_,
     ) =>
     let type_ =
-      Function({...function_, retType: Ident({...ident, typeArgs: []})});
+      Function({...function_, retType: Ident({...id, typeArgs: []})});
 
     /* Add children?:any to props type */
     let propsType =
@@ -239,7 +239,8 @@ let translateComponent =
       };
     let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
     let propsTypeName = resolvedTypeName |> ResolvedName.toString;
-    let componentType = EmitType.typeReactComponent(~config, ~propsTypeName);
+    let componentType =
+      EmitType.typeReactComponent(~config, ~propsType=ident(propsTypeName));
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 

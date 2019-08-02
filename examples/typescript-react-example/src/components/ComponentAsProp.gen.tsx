@@ -19,7 +19,7 @@ export type Props = {
   readonly children?: unknown
 };
 
-export const ComponentAsProp: React.ComponentClass<Props> = ReasonReact.wrapReasonForJs(
+export const ComponentAsProp: React.ComponentType<Props> = ReasonReact.wrapReasonForJs(
   ComponentAsPropBS.component,
   (function _(jsProps: Props) {
      return Curry._4(ComponentAsPropBS.make, jsProps.title, jsProps.description, jsProps.button, jsProps.children);
