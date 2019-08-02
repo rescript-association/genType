@@ -125,11 +125,7 @@ let rec renderType =
       ++ ">";
     };
 
-  | Function({
-      argTypes: [Object(closedFlag, fields)],
-      retType,
-      typeVars,
-    })
+  | Function({argTypes: [Object(closedFlag, fields)], retType, typeVars})
       when retType |> isTypeReactElement(~config) =>
     let fields =
       fields
@@ -635,12 +631,12 @@ let emitRequire =
 
 let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
 
-let emitRequireReact = (~early, ~emitters, ~config) =>
+let emitImportReact = (~emitters, ~config) =>
   switch (config.language) {
   | Flow =>
     emitRequire(
       ~importedValueOrComponent=false,
-      ~early,
+      ~early=true,
       ~emitters,
       ~config,
       ~moduleName=ModuleName.react,
@@ -648,7 +644,7 @@ let emitRequireReact = (~early, ~emitters, ~config) =>
       ImportPath.react,
     )
   | TypeScript =>
-    "import * as React from 'react';" |> require(~early, ~emitters)
+    "import * as React from 'react';" |> require(~early=true, ~emitters)
   | Untyped => emitters
   };
 
