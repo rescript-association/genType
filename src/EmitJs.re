@@ -1242,7 +1242,7 @@ let emitTranslationAsString =
        );
   let emitters =
     config.emitImportReact ?
-      EmitType.emitRequireReact(~early=true, ~emitters, ~config) : emitters;
+      EmitType.emitImportReact(~emitters, ~config) : emitters;
 
   let env =
     config.emitImportCurry ?

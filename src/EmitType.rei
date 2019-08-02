@@ -69,6 +69,8 @@ let emitHookTypeAsFunction:
   ) =>
   Emitters.t;
 
+let emitImportReact: (~emitters: Emitters.t, ~config: config) => Emitters.t;
+
 let emitImportTypeAs:
   (
     ~emitters: Emitters.t,
@@ -111,9 +113,6 @@ let emitRequire:
     ImportPath.t
   ) =>
   Emitters.t;
-
-let emitRequireReact:
-  (~early: bool, ~emitters: Emitters.t, ~config: config) => Emitters.t;
 
 let emitTypeCast:
   (
