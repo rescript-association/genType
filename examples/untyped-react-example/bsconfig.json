@@ -8,7 +8,7 @@
     "exportInterfaces": false,
     "propTypes": true,
     "path": "../../src/lib/bs/native/gentype.native.exe",
-    "fileHeader": "/*\n * this is a custom header you can add to every file!\n */"
+    "fileHeader": "this is a custom header you can add to every file!"
   },
   "name": "untyped-react-example",
   "bsc-flags": ["-bs-super-errors"],
