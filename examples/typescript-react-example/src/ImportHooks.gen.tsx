@@ -38,4 +38,4 @@ export const foo: unknown = function (Argperson: any) {
 export type person = { readonly name: string; readonly age: number };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type renderMe<a> = React.FC<{ readonly randomString: string; readonly poly: a }>;
+export type renderMe<a> = React.ComponentType<{ readonly randomString: string; readonly poly: a }>;
