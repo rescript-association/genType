@@ -32,6 +32,7 @@ type config = {
   namespace: option(string),
   propTypes: bool,
   reasonReactPath: string,
+  fileHeader: option(string),
 };
 
 let default = {
@@ -51,6 +52,7 @@ let default = {
   namespace: None,
   propTypes: false,
   reasonReactPath: "reason-react/src/ReasonReact.js",
+  fileHeader: None,
 };
 
 let bsPlatformLib = (~config) =>
@@ -179,6 +181,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
     let moduleString = json |> getString("module");
     let importPathString = json |> getString("importPath");
     let reasonReactPathString = json |> getString("reasonReactPath");
+    let fileHeader = json |> getStringOption("fileHeader");
     let bsBlockPathString = json |> getString("bsBlockPath");
     let bsCurryPathString = json |> getString("bsCurryPath");
     let exportInterfacesBool = json |> getBool("exportInterfaces");
@@ -250,6 +253,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | None => default.propTypes
       | Some(b) => b
       };
+    let fileHeader = fileHeader;
     let generatedFileExtension = generatedFileExtensionStringOption;
 
     {
@@ -269,6 +273,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       namespace: None,
       propTypes,
       reasonReactPath,
+      fileHeader,
     };
   };
 
