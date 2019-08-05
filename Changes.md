@@ -1,4 +1,4 @@
-# master
+# 2.33.0
 - Support import of `[@react.component]` components whose props require conversion.
   The conversion is performed by wrapping the component with a `React.createElement` call,
   so it works whether the component is a function or a class.
