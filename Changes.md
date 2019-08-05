@@ -9,6 +9,8 @@
   
   See https://github.com/cristianoc/genType/pull/226.
 
+- Add configuration option `"fileHeader"` to specify additional text to be emitted in the file header.
+
 # 2.32.0
 - Fix issue where conversion functions are not be generated for types defined in other files when `"importPath": "node",` is set in `gentypeconfig`.
 
