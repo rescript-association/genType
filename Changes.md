@@ -1,3 +1,14 @@
+# master
+- Support import of `[@react.component]` components whose props require conversion.
+  The conversion is performed by wrapping the component with a `React.createElement` call,
+  so it works whether the component is a function or a class.
+  
+  All the TypeScript components are now typed with `React.ComponentType<...>`.
+  If existing code was using e.g. render props of type `React.FC<...>`,
+  direct function calls `foo(props)` should now be replaced with JSX calls `<foo props=... />`.
+  
+  See https://github.com/cristianoc/genType/pull/226.
+
 # 2.32.0
 - Fix issue where conversion functions are not be generated for types defined in other files when `"importPath": "node",` is set in `gentypeconfig`.
 
