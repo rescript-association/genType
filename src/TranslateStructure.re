@@ -86,6 +86,7 @@ let translateValueBinding =
     |> Translation.(
          Ident.name(id) == "make" ? translateComponent : translateValue
        )(
+         ~attributes=vb_attributes,
          ~config,
          ~outputFileRelative,
          ~resolver,

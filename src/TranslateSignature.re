@@ -22,6 +22,7 @@ let translateSignatureValue =
     |> Translation.(
          Ident.name(id) == "make" ? translateComponent : translateValue
        )(
+         ~attributes=val_attributes,
          ~config,
          ~outputFileRelative,
          ~resolver,

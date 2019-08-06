@@ -83,6 +83,7 @@ let translateDependencies =
 
 let translateValue =
     (
+      ~attributes,
       ~config,
       ~outputFileRelative,
       ~resolver,
@@ -92,6 +93,11 @@ let translateValue =
       name,
     )
     : t => {
+  let nameAs =
+    switch (Annotation.getAttributeRenaming(attributes)) {
+    | Some(s) => s
+    | _ => name
+    };
   let typeExprTranslation =
     typeExpr
     |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
@@ -103,11 +109,13 @@ let translateValue =
     typeExprTranslation.type_
     |> abstractTheTypeParameters(~typeVars)
     |> addAnnotationsToFunction;
-  let resolvedName =
+  let resolvedNameOriginal =
     name |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
+  let resolvedName =
+    nameAs |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
 
   let valueAccessPath =
-    typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
+    typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedNameOriginal);
 
   let codeItems = [
     CodeItem.ExportValue({
@@ -149,6 +157,7 @@ let translateValue =
  */
 let translateComponent =
     (
+      ~attributes,
       ~config,
       ~outputFileRelative,
       ~resolver,
@@ -278,6 +287,7 @@ let translateComponent =
     /* not a component: treat make as a normal function */
     name
     |> translateValue(
+         ~attributes,
          ~config,
          ~outputFileRelative,
          ~resolver,
