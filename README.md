@@ -116,6 +116,22 @@ To export a function `callback` to JS:
 let callback = _ => Js.log("Clicked");
 ```
 
+To rename the function and export it as `CB` on the JS side, use
+
+```reason
+[@genType]
+[@genType.as "CB"]
+let callback = _ => Js.log("Clicked");
+```
+
+or the more compact
+
+```reason
+[@genType "CB"]
+let callback = _ => Js.log("Clicked");
+```
+
+
 To import a function `realValue` from JS module `MyMath.ts` (or `MyMath.js`):
 
 ```reason
@@ -131,7 +147,11 @@ external realValue: complexNumber => float = "";
 
 Because of the `external` keyword, it's clear from context that this is an import, so you can also just use `@genType` and omit `.import`.
 
-To import a default JS export, use a secong argument to `@genType.import` e.g. `[@genType.import ("./MyMath", "default")]`. Similarly, to import a value with a different JS name, use e.g. `[@genType.import ("./MyMath", "ValueStartingWithUpperCaseLetter")]`. To import nested values, e.g. `Some.Nested.value`, use e.g. `[@genType.import ("./MyMath", "Some.Nested.value")]`.
+To import a default JS export, use a secong argument to `@genType.import` e.g. `[@genType.import ("./MyMath", "default")]`.
+
+Similarly, to import a value with a different JS name, use e.g. `[@genType.import ("./MyMath", "ValueStartingWithUpperCaseLetter")]`.
+
+To import nested values, e.g. `Some.Nested.value`, use e.g. `[@genType.import ("./MyMath", "Some.Nested.value")]`.
 
 ### Export and Import React Components
 

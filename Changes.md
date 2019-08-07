@@ -1,5 +1,6 @@
 # master
-- Add support for [@genType.as "SomeName"] to export renamed values.
+- Add support for `[@genType] [@genType.as "SomeName"]` to export renamed values.
+- Add more compact form `[@genType "SomeName"]`.
 
 # 2.33.0
 - Support import of `[@react.component]` components whose props require conversion.
