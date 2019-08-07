@@ -1,4 +1,4 @@
-# master
+# 2.34.0
 - Add support for `[@genType] [@genType.as "SomeName"]` to export renamed values.
 - Add more compact form `[@genType "SomeName"]`.
 
