@@ -412,6 +412,7 @@ let rec emitCodeItem =
           | _ => (asPath, "")
           }
         );
+    let importFileVariable = "$$" ++ importFile;
     let (emitters, importedAsName, env) =
       switch (language, config.module_) {
       | (_, ES6)
@@ -431,9 +432,9 @@ let rec emitCodeItem =
         /* add an early require(...)  */
         let importedAsName =
           firstNameInPath == "default" ?
-            importFile : importFile ++ "." ++ firstNameInPath;
+            importFileVariable : importFileVariable ++ "." ++ firstNameInPath;
         let env =
-          importFile
+          importFileVariable
           |> ModuleName.fromStringUnsafe
           |> requireModule(~import=true, ~env, ~importPath, ~strict=true);
         (emitters, importedAsName, env);

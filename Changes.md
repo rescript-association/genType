@@ -1,3 +1,6 @@
+# master
+- Fix issue where two constants with the same name would be generated in CommonJS mode.
+
 # 2.34.0
 - Add support for `[@genType] [@genType.as "SomeName"]` to export renamed values.
 - Add more compact form `[@genType "SomeName"]`.
