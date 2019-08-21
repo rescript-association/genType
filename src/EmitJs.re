@@ -678,10 +678,21 @@ let rec emitCodeItem =
     let default = "default";
     let make = "make";
 
+    let name = originalName == default ? Runtime.default : resolvedName;
+
+    module HookType = {
+      type t = {
+        propsType: type_,
+        resolvedTypeName: ResolvedName.t,
+        retType: type_,
+        typeVars: list(string),
+      };
+    };
+
     let (type_, hookType) =
       switch (type_) {
       | Function(
-          {argTypes: [Object(_) as propsT], retType, typeVars} as function_,
+          {argTypes: [Object(_) as propsType], retType, typeVars} as function_,
         )
           when retType |> EmitType.isTypeReactElement(~config) =>
         let chopSuffix = suffix =>
@@ -700,10 +711,18 @@ let rec emitCodeItem =
         let hookName =
           (fileName |> ModuleName.toString)
           ++ (suffix == "" ? suffix : "_" ++ suffix);
+        let resolvedTypeName =
+          if (!config.emitTypePropDone
+              && (originalName == default || originalName == make)) {
+            config.emitTypePropDone = true;
+            ResolvedName.fromString("Props");
+          } else {
+            ResolvedName.fromString(name) |> ResolvedName.dot("Props");
+          };
 
         (
           Function({...function_, componentName: Some(hookName)}),
-          Some((propsT, retType, typeVars)),
+          Some({HookType.propsType, resolvedTypeName, retType, typeVars}),
         );
       | _ => (type_, None)
       };
@@ -714,7 +733,6 @@ let rec emitCodeItem =
 
     let converter = type_ |> typeGetConverter;
 
-    let name = originalName == default ? Runtime.default : resolvedName;
     let hookNameForTypeof = name ++ "$$forTypeof";
     let type_ =
       flowFunctionTypeWorkaround ?
@@ -722,7 +740,7 @@ let rec emitCodeItem =
 
     let emitters =
       switch (hookType) {
-      | Some((propsType, retType, typeVars)) when flowFunctionTypeWorkaround =>
+      | Some({propsType, retType, typeVars}) when flowFunctionTypeWorkaround =>
         EmitType.emitHookTypeAsFunction(
           ~config,
           ~emitters,
@@ -733,6 +751,26 @@ let rec emitCodeItem =
           ~typeNameIsInterface,
           ~typeVars,
         )
+      | _ => emitters
+      };
+
+    let emitters =
+      switch (hookType) {
+      | Some({propsType, resolvedTypeName, typeVars}) =>
+        let exportType: CodeItem.exportType = {
+          nameAs: None,
+          opaque: Some(false),
+          optType: Some(propsType),
+          typeVars,
+          resolvedTypeName,
+        };
+        emitExportType(
+          ~emitters,
+          ~config,
+          ~typeGetNormalized,
+          ~typeNameIsInterface,
+          exportType,
+        );
       | _ => emitters
       };
 
@@ -760,7 +798,7 @@ let rec emitCodeItem =
 
     let emitters =
       switch (hookType) {
-      | Some((Object(_, fields), _retType, _typeVars))
+      | Some({propsType: Object(_, fields)})
           when config.language == Untyped && config.propTypes =>
         fields
         |> List.map((field: field) => {

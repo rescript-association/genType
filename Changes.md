@@ -1,3 +1,6 @@
+# master
+- Export Props type when exporting a function component.
+
 # 2.35.0
 - Fix issue where two constants with the same name would be generated in CommonJS mode.
 
