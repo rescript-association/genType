@@ -247,9 +247,6 @@ let translateComponent =
         }
       };
     let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
-    let propsTypeName = resolvedTypeName |> ResolvedName.toString;
-    let componentType =
-      EmitType.typeReactComponent(~config, ~propsType=ident(propsTypeName));
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 
@@ -261,7 +258,6 @@ let translateComponent =
     let codeItems = [
       CodeItem.ExportComponent({
         componentAccessPath,
-        componentType,
         exportType: {
           nameAs: None,
           opaque: Some(false),
@@ -270,7 +266,6 @@ let translateComponent =
           resolvedTypeName,
         },
         nestedModuleName,
-        propsTypeName,
         type_,
         valueAccessPath,
       }),

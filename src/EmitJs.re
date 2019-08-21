@@ -506,10 +506,8 @@ let rec emitCodeItem =
 
   | ExportComponent({
       componentAccessPath,
-      componentType,
       exportType,
       nestedModuleName,
-      propsTypeName,
       type_,
       valueAccessPath,
     }) =>
@@ -528,6 +526,9 @@ let rec emitCodeItem =
       | Some(moduleName) => moduleName
       | None => fileName
       };
+    let propsTypeName = exportType.resolvedTypeName |> ResolvedName.toString;
+    let componentType =
+      EmitType.typeReactComponent(~config, ~propsType=ident(propsTypeName));
 
     let name = EmitType.componentExportName(~config, ~fileName, ~moduleName);
     let jsProps = "jsProps";

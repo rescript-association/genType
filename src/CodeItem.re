@@ -26,10 +26,8 @@ type importValue = {
 
 type exportComponent = {
   componentAccessPath: string,
-  componentType: type_,
   exportType,
   nestedModuleName: option(ModuleName.t),
-  propsTypeName: string,
   type_,
   valueAccessPath: string,
 };
