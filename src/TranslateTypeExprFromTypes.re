@@ -187,6 +187,11 @@ let translateConstr =
       type_: Array(paramTranslation.type_, Immutable),
     }
 
+  | (Pdot(Pident({name: "Pervasives", _}), "ref", _), [paramTranslation]) => {
+      dependencies: paramTranslation.dependencies,
+      type_: Tuple([paramTranslation.type_]),
+    }
+
   | (
       Pdot(Pident({name: "React", _}), "callback", _),
       [fromTranslation, toTranslation],
