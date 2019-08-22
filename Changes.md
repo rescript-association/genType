@@ -1,5 +1,7 @@
 # master
 - Export Props type when exporting a function component.
+- Add support for exporting references as 1-tuples.
+  There are some nuances when the argument type requires conversion: https://github.com/cristianoc/genType/issues/237.
 
 # 2.35.0
 - Fix issue where two constants with the same name would be generated in CommonJS mode.
