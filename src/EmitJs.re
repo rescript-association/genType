@@ -692,9 +692,22 @@ let rec emitCodeItem =
     let (type_, hookType) =
       switch (type_) {
       | Function(
-          {argTypes: [Object(_) as propsType], retType, typeVars} as function_,
+          {argTypes: [Object(closedFlags, fields)], retType, typeVars} as function_,
         )
           when retType |> EmitType.isTypeReactElement(~config) =>
+        let propsType = {
+          let fields =
+            fields
+            |> List.map((field: field) =>
+                 field.name == "children"
+                 && field.type_
+                 |> EmitType.isTypeReactElement(~config) ?
+                   {...field, type_: EmitType.typeReactChild(~config)} :
+                   field
+               );
+          Object(closedFlags, fields);
+        };
+        let function_ = {...function_, argTypes: [propsType]};
         let chopSuffix = suffix =>
           resolvedName == suffix ?
             "" :

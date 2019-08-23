@@ -147,3 +147,11 @@ export const RenderPropRequiresConversion_make: React.ComponentType<{ readonly r
     }});
   return result
 };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type aComponentWithChildren_Props = { readonly children: React.ReactChild; readonly vehicle: vehicle };
+
+export const aComponentWithChildren: React.ComponentType<{ readonly children: React.ReactChild; readonly vehicle: vehicle }> = function Hooks_aComponentWithChildren(Arg1: any) {
+  const result = HooksBS.aComponentWithChildren({children:Arg1.children, vehicle:[Arg1.vehicle.name]});
+  return result
+};
