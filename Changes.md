@@ -1,4 +1,8 @@
 # master
+- In TypeScript export children of Reason type `element` as TS type `React.ReactChild`.
+  So the exported component can be used from TS with string and number literals.
+
+# 2.36.0
 - Export Props type when exporting a function component.
 - Add support for exporting references as 1-tuples.
   There are some nuances when the argument type requires conversion: https://github.com/cristianoc/genType/issues/237.

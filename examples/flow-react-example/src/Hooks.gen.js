@@ -172,3 +172,13 @@ export const RenderPropRequiresConversion_make: typeof(RenderPropRequiresConvers
     }});
   return result
 };
+
+// Type annotated function components are not checked by Flow, but typeof() works.
+const aComponentWithChildren$$forTypeof = function (_: {| +children: React$Node, +vehicle: vehicle |}) : React$Node { return null };
+
+export type aComponentWithChildren_Props = {| +children: React$Node, +vehicle: vehicle |};
+
+export const aComponentWithChildren: typeof(aComponentWithChildren$$forTypeof) = function Hooks_aComponentWithChildren(Arg1: $any) {
+  const result = HooksBS.aComponentWithChildren({children:Arg1.children, vehicle:[Arg1.vehicle.name]});
+  return result
+};

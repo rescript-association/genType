@@ -138,3 +138,12 @@ module RenderPropRequiresConversion = {
     renderVehicle({"vehicle": car, "number": 42});
   };
 };
+
+[@genType]
+[@react.component]
+let aComponentWithChildren = (~vehicle, ~children) => {
+  <div>
+    {React.string("Another Hook " ++ vehicle.name)}
+    <div> children </div>
+  </div>;
+};

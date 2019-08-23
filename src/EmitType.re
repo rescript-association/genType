@@ -70,8 +70,14 @@ let typeReactElementFlow = ident(~builtin=true, "React$Node");
 
 let typeReactElementTypeScript = ident(~builtin=true, "JSX.Element");
 
+let typeReactChildTypeScript = ident(~builtin=true, "React.ReactChild");
+
 let typeReactElement = (~config) =>
   config.language == Flow ? typeReactElementFlow : typeReactElementTypeScript;
+
+let typeReactChild = (~config) =>
+  config.language == Flow ? typeReactElementFlow : typeReactChildTypeScript;
+
 
 let isTypeReactElement = (~config, type_) =>
   type_ === typeReactElement(~config);

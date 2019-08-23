@@ -128,6 +128,12 @@ function Hooks$RenderPropRequiresConversion(Props) {
 
 var RenderPropRequiresConversion = /* module */[/* make */Hooks$RenderPropRequiresConversion];
 
+function Hooks$aComponentWithChildren(Props) {
+  var vehicle = Props.vehicle;
+  var children = Props.children;
+  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0], React.createElement("div", undefined, children));
+}
+
 var make = Hooks;
 
 var $$default = Hooks;
@@ -141,6 +147,8 @@ var makeWithRef = Hooks$makeWithRef;
 var polymorphicComponent = Hooks$polymorphicComponent;
 
 var functionReturningReactElement = Hooks$functionReturningReactElement;
+
+var aComponentWithChildren = Hooks$aComponentWithChildren;
 
 export {
   make ,
@@ -156,6 +164,7 @@ export {
   polymorphicComponent ,
   functionReturningReactElement ,
   RenderPropRequiresConversion ,
+  aComponentWithChildren ,
   
 }
 /* testForwardRef Not a pure module */
