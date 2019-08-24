@@ -1,6 +1,6 @@
 {
   "name": "gentype",
-  "version": "2.36.0",
+  "version": "2.37.0",
   "private": true,
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
   "license": "MIT",
