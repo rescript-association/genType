@@ -387,7 +387,7 @@ The `@genType.as` annotation can also be used on variants with payloads to deter
 
 For more examples, see [Variants.re](examples/typescript-react-example/src/Variants.re) and [VariantsWithPayload.re](examples/typescript-react-example/src/VariantsWithPayload.re).
 
-**NOTE** When exporting/importing values that have polymorphic variant type, you have to use type annotations, and cannot rely on type inference. So instead of ```let monday = `Monday```, use ```let monday : days = `Monday```. The former does not work, as the type checker infers a tyoe without annotations.
+**NOTE** When exporting/importing values that have polymorphic variant type, you have to use type annotations, and cannot rely on type inference. So instead of ```let monday = `Monday```, use ```let monday : days = `Monday```. The former does not work, as the type checker infers a type without annotations.
 
 ### arrays
 
