@@ -574,14 +574,14 @@ and translateTypeExprFromTypes_ =
           [
             (
               name,
-              name |> Runtime.isMutableObjectField ?
-                {dependencies: [], type_: ident("")} :
-                t1
-                |> translateTypeExprFromTypes_(
-                     ~config,
-                     ~typeVarsGen,
-                     ~typeEnv,
-                   ),
+              name |> Runtime.isMutableObjectField
+                ? {dependencies: [], type_: ident("")}
+                : t1
+                  |> translateTypeExprFromTypes_(
+                       ~config,
+                       ~typeVarsGen,
+                       ~typeEnv,
+                     ),
             ),
             ...fields,
           ],
@@ -740,7 +740,11 @@ and translateTypeExprFromTypes_ =
       let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
       let (dependenciesFromRecordType, type_) =
         signature.sig_type
-        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+        |> signatureToModuleRuntimeRepresentation(
+             ~config,
+             ~typeVarsGen,
+             ~typeEnv=typeEnv1,
+           );
       {
         dependencies:
           dependenciesFromTypeEquations @ dependenciesFromRecordType,
@@ -760,7 +764,8 @@ and translateTypeExprsFromTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
   typeExprs
   |> List.map(translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv))
-and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
+and signatureToModuleRuntimeRepresentation =
+    (~config, ~typeVarsGen, ~typeEnv, signature) => {
   let dependenciesAndFields =
     signature
     |> List.map(signatureItem =>
@@ -793,7 +798,7 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
              switch (moduleDeclaration.md_type) {
              | Mty_signature(signature) =>
                signature
-               |> signatureToRecordType(
+               |> signatureToModuleRuntimeRepresentation(
                     ~config,
                     ~typeVarsGen,
                     ~typeEnv=typeEnv1,
@@ -821,7 +826,10 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
     let (dl, fl) = dependenciesAndFields |> List.split;
     (dl |> List.concat, fl |> List.concat);
   };
-  (dependencies, Record(fields));
+  (
+    dependencies,
+    config.modulesAsObjects ? Object(Closed, fields) : Record(fields),
+  );
 };
 
 let translateTypeExprFromTypes =

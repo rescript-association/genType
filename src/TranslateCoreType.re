@@ -191,9 +191,9 @@ and translateCoreType_ =
     ) =>
     let getFieldType = ((name, _attibutes, t)) => (
       name,
-      name |> Runtime.isMutableObjectField ?
-        {dependencies: [], type_: ident("")} :
-        t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+      name |> Runtime.isMutableObjectField
+        ? {dependencies: [], type_: ident("")}
+        : t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
     );
     let fieldsTranslations = tObj |> List.map(getFieldType);
     translateConstr(
@@ -311,7 +311,11 @@ and translateCoreType_ =
       let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
       let (dependenciesFromRecordType, type_) =
         signature.sig_type
-        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+        |> signatureToModuleRuntimeRepresentation(
+             ~config,
+             ~typeVarsGen,
+             ~typeEnv=typeEnv1,
+           );
       {
         dependencies:
           dependenciesFromTypeEquations @ dependenciesFromRecordType,
