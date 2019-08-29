@@ -105,7 +105,8 @@ and translateSignatureItemFromTypes =
     }
 
   | Types.Sig_module(id, moduleDeclaration, _) =>
-    let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+    let moduleItem =
+      moduleItemGen |> Runtime.newModuleItem(~name=id |> Ident.name);
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleDeclaration
     |> translateModuleDeclarationFromTypes(

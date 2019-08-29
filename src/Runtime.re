@@ -11,7 +11,10 @@ type recordValue = int;
 
 type moduleItemGen = {mutable itemValue: int};
 
-type moduleItem = int;
+type moduleItem = {
+  name: string,
+  offset: int,
+};
 
 let blockTagValue = (~config, i) =>
   string_of_int(i) ++ (config.language == TypeScript ? " as any" : "");
@@ -36,13 +39,14 @@ let newRecordValue = (~unboxed, recordGen) =>
 
 let moduleItemGen = () => {itemValue: 0};
 
-let newModuleItem = moduleItemGen => {
-  let v = moduleItemGen.itemValue;
+let newModuleItem = (~name, moduleItemGen) => {
+  let offset = moduleItemGen.itemValue;
   moduleItemGen.itemValue = moduleItemGen.itemValue + 1;
-  v;
+  {name, offset};
 };
 
-let emitModuleItem = itemValue => itemValue |> string_of_int;
+let emitModuleItem = (~config, itemValue) =>
+  config.modulesAsObjects ? itemValue.name : itemValue.offset |> string_of_int;
 
 let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
   if (polymorphic) {

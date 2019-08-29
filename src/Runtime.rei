@@ -19,7 +19,7 @@ let emitJSVariantGetPayload: string => string;
 
 let emitJSVariantWithPayload: (~label: string, string) => string;
 
-let emitModuleItem: moduleItem => string;
+let emitModuleItem: (~config: config, moduleItem) => string;
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
@@ -42,11 +42,11 @@ let emitVariantWithPayload:
 
 let isMutableObjectField: string => bool;
 
-let mangleObjectField : string => string;
+let mangleObjectField: string => string;
 
 let moduleItemGen: unit => moduleItemGen;
 
-let newModuleItem: moduleItemGen => moduleItem;
+let newModuleItem: (~name: string, moduleItemGen) => moduleItem;
 
 let newRecordValue: (~unboxed: bool, recordGen) => recordValue;
 

@@ -60,40 +60,36 @@ let translateValueBinding =
       ~resolver,
       ~moduleItemGen,
       ~typeEnv,
-      valueBinding,
+      {Typedtree.vb_pat, vb_attributes, vb_expr, _},
     )
     : Translation.t => {
-  let {Typedtree.vb_pat, vb_attributes, vb_expr, _} = valueBinding;
-  let nameOpt =
-    switch (vb_pat.pat_desc) {
-    | Tpat_var(id, _) => Some(id |> Ident.name)
-    | _ => None
+  switch (vb_pat.pat_desc) {
+  | Tpat_var(id, _) =>
+    let name = id |> Ident.name;
+    if (Debug.translation^) {
+      logItem("Translate Value Binding %s\n", name);
     };
-  if (Debug.translation^) {
-    switch (nameOpt) {
-    | Some(s) => logItem("Translate Value Binding %s\n", s)
-    | None => ()
-    };
-  };
-  let moduleItem = moduleItemGen |> Runtime.newModuleItem;
-  typeEnv |> TypeEnv.updateModuleItem(~nameOpt, ~moduleItem);
-  let typeExpr = vb_expr.exp_type;
+    let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
+    typeEnv |> TypeEnv.updateModuleItem(~nameOpt=Some(name), ~moduleItem);
 
-  switch (vb_pat.pat_desc, Annotation.fromAttributes(vb_attributes)) {
-  | (Tpat_var(id, _), GenType) =>
-    id
-    |> Ident.name
-    |> Translation.(
-         Ident.name(id) == "make" ? translateComponent : translateValue
-       )(
-         ~attributes=vb_attributes,
-         ~config,
-         ~outputFileRelative,
-         ~resolver,
-         ~typeEnv,
-         ~typeExpr,
-         ~addAnnotationsToFunction=addAnnotationsToFunctionType(vb_expr),
-       )
+    if (Annotation.fromAttributes(vb_attributes) == GenType) {
+      id
+      |> Ident.name
+      |> Translation.(
+           Ident.name(id) == "make" ? translateComponent : translateValue
+         )(
+           ~attributes=vb_attributes,
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+           ~typeExpr=vb_expr.exp_type,
+           ~addAnnotationsToFunction=addAnnotationsToFunctionType(vb_expr),
+         );
+    } else {
+      Translation.empty;
+    };
+
   | _ => Translation.empty
   };
 };
@@ -154,7 +150,7 @@ let rec translateModuleBinding =
   if (Debug.translation^) {
     logItem("Translate Module Binding %s\n", name);
   };
-  let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+  let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeEnv = typeEnv |> TypeEnv.newModule(~name);
 
