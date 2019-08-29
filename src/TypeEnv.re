@@ -258,7 +258,7 @@ let rec getModuleEquations = (typeEnv): list(ResolvedName.eq) => {
   };
 };
 
-let getAccessPath = (~component, ~name, typeEnv) => {
+let getModuleAccessPath = (~component=false, ~name, typeEnv) => {
   let rec accessPath = typeEnv =>
     switch (typeEnv.parent) {
     | None => Runtime.Root(name) /* not nested */
@@ -270,8 +270,3 @@ let getAccessPath = (~component, ~name, typeEnv) => {
     };
   typeEnv |> accessPath;
 };
-
-let getModuleItemAccessPath = (~component=false, ~config, ~name, typeEnv) =>
-  typeEnv
-  |> getAccessPath(~component, ~name)
-  |> Runtime.emitModuleAccessPath(~config);

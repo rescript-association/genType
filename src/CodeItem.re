@@ -25,18 +25,18 @@ type importValue = {
 };
 
 type exportComponent = {
-  componentAccessPath: string,
+  componentAccessPath: Runtime.moduleAccessPath,
   exportType,
+  moduleAccessPath: Runtime.moduleAccessPath,
   nestedModuleName: option(ModuleName.t),
   type_,
-  valueAccessPath: string,
 };
 
 type exportValue = {
+  moduleAccessPath: Runtime.moduleAccessPath,
   originalName: string,
   resolvedName: string,
   type_,
-  valueAccessPath: string,
 };
 
 type exportFromTypeDeclaration = {
