@@ -114,16 +114,15 @@ let translateValue =
   let resolvedName =
     nameAs |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
 
-  let valueAccessPath =
-    typeEnv
-    |> TypeEnv.getModuleItemAccessPath(~config, ~name=resolvedNameOriginal);
+  let moduleAccessPath =
+    typeEnv |> TypeEnv.getModuleAccessPath(~name=resolvedNameOriginal);
 
   let codeItems = [
     CodeItem.ExportValue({
+      moduleAccessPath,
       originalName: name,
       resolvedName,
       type_,
-      valueAccessPath,
     }),
   ];
   {
@@ -251,13 +250,12 @@ let translateComponent =
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 
-    let valueAccessPath =
-      typeEnv |> TypeEnv.getModuleItemAccessPath(~config, ~name="make");
+    let moduleAccessPath =
+      typeEnv |> TypeEnv.getModuleAccessPath(~name="make");
     let componentAccessPath =
       typeEnv
-      |> TypeEnv.getModuleItemAccessPath(
+      |> TypeEnv.getModuleAccessPath(
            ~component=true,
-           ~config,
            ~name="component",
          );
 
@@ -271,9 +269,9 @@ let translateComponent =
           typeVars,
           resolvedTypeName,
         },
+        moduleAccessPath,
         nestedModuleName,
         type_,
-        valueAccessPath,
       }),
     ];
     {

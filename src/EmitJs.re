@@ -21,8 +21,8 @@ let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
            strict,
          ),
        );
-  import ?
-    {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
+  import
+    ? {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
 };
 
 let createExportTypeMap =
@@ -46,8 +46,8 @@ let createExportTypeMap =
         logItem(
           "Type Map: %s%s%s\n",
           resolvedTypeName |> ResolvedName.toString,
-          typeVars == [] ?
-            "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
+          typeVars == []
+            ? "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
           switch (optType) {
           | Some(type_) =>
             " "
@@ -247,9 +247,9 @@ let rec emitCodeItem =
           | [last, ..._] => last
           | [] => x
           };
-        es6 ?
-          (x, ["", ...y] |> String.concat("."), lastNameInPath) :
-          (name, ["", x, ...y] |> String.concat("."), lastNameInPath);
+        es6
+          ? (x, ["", ...y] |> String.concat("."), lastNameInPath)
+          : (name, ["", x, ...y] |> String.concat("."), lastNameInPath);
       | _ => (name, "", name)
       };
 
@@ -291,43 +291,43 @@ let rec emitCodeItem =
         exportType,
       );
     let emitters =
-      config.language == Untyped ?
-        emitters :
-        (
-          "("
-          ++ (
-            "props"
+      config.language == Untyped
+        ? emitters
+        : (
+            "("
+            ++ (
+              "props"
+              |> EmitType.ofType(
+                   ~config,
+                   ~typeNameIsInterface,
+                   ~type_=ident(propsTypeName),
+                 )
+            )
+            ++ ")"
             |> EmitType.ofType(
                  ~config,
                  ~typeNameIsInterface,
-                 ~type_=ident(propsTypeName),
+                 ~type_=EmitType.typeReactElement(~config),
                )
           )
-          ++ ")"
-          |> EmitType.ofType(
+          ++ " {\n  return <"
+          ++ componentPath
+          ++ " {...props}/>;\n}"
+          |> EmitType.emitExportFunction(
+               ~early=true,
+               ~emitters,
+               ~name=componentNameTypeChecked,
                ~config,
-               ~typeNameIsInterface,
-               ~type_=EmitType.typeReactElement(~config),
-             )
-        )
-        ++ " {\n  return <"
-        ++ componentPath
-        ++ " {...props}/>;\n}"
-        |> EmitType.emitExportFunction(
-             ~early=true,
-             ~emitters,
-             ~name=componentNameTypeChecked,
-             ~config,
-             ~comment=
-               "In case of type error, check the type of '"
-               ++ "make"
-               ++ "' in '"
-               ++ (fileName |> ModuleName.toString)
-               ++ ".re'"
-               ++ " and the props of '"
-               ++ (importPath |> ImportPath.emit(~config))
-               ++ "'.",
-           );
+               ~comment=
+                 "In case of type error, check the type of '"
+                 ++ "make"
+                 ++ "' in '"
+                 ++ (fileName |> ModuleName.toString)
+                 ++ ".re'"
+                 ++ " and the props of '"
+                 ++ (importPath |> ImportPath.emit(~config))
+                 ++ "'.",
+             );
 
     /* Wrap the component */
     let emitters =
@@ -353,8 +353,8 @@ let rec emitCodeItem =
                            ~config,
                            ~converter=
                              (
-                               optional == Mandatory ?
-                                 propTyp : Option(propTyp)
+                               optional == Mandatory
+                                 ? propTyp : Option(propTyp)
                              )
                              |> typeGetConverter,
                            ~indent,
@@ -404,9 +404,9 @@ let rec emitCodeItem =
     let importFile = importAnnotation.name;
 
     let (firstNameInPath, restOfPath) =
-      valueName == asPath ?
-        (valueName, "") :
-        (
+      valueName == asPath
+        ? (valueName, "")
+        : (
           switch (asPath |> Str.split(Str.regexp("\\."))) {
           | [x, ...y] => (x, ["", ...y] |> String.concat("."))
           | _ => (asPath, "")
@@ -431,8 +431,8 @@ let rec emitCodeItem =
       | (Flow | Untyped, _) =>
         /* add an early require(...)  */
         let importedAsName =
-          firstNameInPath == "default" ?
-            importFileVariable : importFileVariable ++ "." ++ firstNameInPath;
+          firstNameInPath == "default"
+            ? importFileVariable : importFileVariable ++ "." ++ firstNameInPath;
         let env =
           importFileVariable
           |> ModuleName.fromStringUnsafe
@@ -498,18 +498,18 @@ let rec emitCodeItem =
            ~typeNameIsInterface,
          );
     let emitters =
-      valueName == "default" ?
-        EmitType.emitExportDefault(~emitters, ~config, valueNameNotDefault) :
-        emitters;
+      valueName == "default"
+        ? EmitType.emitExportDefault(~emitters, ~config, valueNameNotDefault)
+        : emitters;
 
     ({...env, importedValueOrComponent: true}, emitters);
 
   | ExportComponent({
       componentAccessPath,
       exportType,
+      moduleAccessPath,
       nestedModuleName,
       type_,
-      valueAccessPath,
     }) =>
     let nameGen = EmitText.newNameGen();
     let converter = type_ |> typeGetConverter;
@@ -566,8 +566,8 @@ let rec emitCodeItem =
                     && !(
                          argConverter
                          |> Converter.converterIsIdentity(~toJS=false)
-                       ) ?
-                      OptionC(argConverter) : argConverter,
+                       )
+                      ? OptionC(argConverter) : argConverter,
                   ~indent,
                   ~nameGen,
                   ~variantTables,
@@ -606,7 +606,7 @@ let rec emitCodeItem =
           "  "
           ++ ModuleName.toString(moduleNameBs)
           ++ "."
-          ++ componentAccessPath
+          ++ (componentAccessPath |> Runtime.emitModuleAccessPath(~config))
           ++ ",",
           "  (function _("
           ++ EmitType.ofType(
@@ -620,7 +620,7 @@ let rec emitCodeItem =
           ++ (
             ModuleName.toString(moduleNameBs)
             ++ "."
-            ++ valueAccessPath
+            ++ (moduleAccessPath |> Runtime.emitModuleAccessPath(~config))
             |> EmitText.curry(~args, ~numArgs=args |> List.length)
           )
           ++ ";",
@@ -644,8 +644,8 @@ let rec emitCodeItem =
 
     let emitters =
       /* only export default for the top level component in the file */
-      fileName == moduleName ?
-        EmitType.emitExportDefault(~emitters, ~config, name) : emitters;
+      fileName == moduleName
+        ? EmitType.emitExportDefault(~emitters, ~config, name) : emitters;
 
     let env = moduleNameBs |> requireModule(~import=false, ~env, ~importPath);
 
@@ -662,7 +662,7 @@ let rec emitCodeItem =
     config.emitImportCurry = config.emitImportCurry || useCurry;
     (env, emitters);
 
-  | ExportValue({originalName, resolvedName, type_, valueAccessPath}) =>
+  | ExportValue({moduleAccessPath, originalName, resolvedName, type_}) =>
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
@@ -701,18 +701,19 @@ let rec emitCodeItem =
             |> List.map((field: field) =>
                  field.name == "children"
                  && field.type_
-                 |> EmitType.isTypeReactElement(~config) ?
-                   {...field, type_: EmitType.typeReactChild(~config)} :
-                   field
+                 |> EmitType.isTypeReactElement(~config)
+                   ? {...field, type_: EmitType.typeReactChild(~config)}
+                   : field
                );
           Object(closedFlags, fields);
         };
         let function_ = {...function_, argTypes: [propsType]};
         let chopSuffix = suffix =>
-          resolvedName == suffix ?
-            "" :
-            Filename.check_suffix(resolvedName, "_" ++ suffix) ?
-              Filename.chop_suffix(resolvedName, "_" ++ suffix) : resolvedName;
+          resolvedName == suffix
+            ? ""
+            : Filename.check_suffix(resolvedName, "_" ++ suffix)
+                ? Filename.chop_suffix(resolvedName, "_" ++ suffix)
+                : resolvedName;
         let suffix =
           if (originalName == default) {
             chopSuffix(default);
@@ -748,8 +749,8 @@ let rec emitCodeItem =
 
     let hookNameForTypeof = name ++ "$$forTypeof";
     let type_ =
-      flowFunctionTypeWorkaround ?
-        ident("typeof(" ++ hookNameForTypeof ++ ")") : type_;
+      flowFunctionTypeWorkaround
+        ? ident("typeof(" ++ hookNameForTypeof ++ ")") : type_;
 
     let emitters =
       switch (hookType) {
@@ -791,7 +792,7 @@ let rec emitCodeItem =
       (
         (fileNameBs |> ModuleName.toString)
         ++ "."
-        ++ valueAccessPath
+        ++ (moduleAccessPath |> Runtime.emitModuleAccessPath(~config))
         |> Converter.toJS(
              ~config,
              ~converter,
@@ -823,9 +824,9 @@ let rec emitCodeItem =
       };
 
     let emitters =
-      originalName == default ?
-        EmitType.emitExportDefault(~emitters, ~config, Runtime.default) :
-        emitters;
+      originalName == default
+        ? EmitType.emitExportDefault(~emitters, ~config, Runtime.default)
+        : emitters;
 
     (envWithRequires, emitters);
   };
@@ -1174,8 +1175,8 @@ let propagateAnnotationToSubTypes =
          {
            ...exportTypeItem,
            annotation:
-             annotatedSet^ |> StringSet.mem(typeName) ?
-               Annotation.GenType : exportTypeItem.annotation,
+             annotatedSet^ |> StringSet.mem(typeName)
+               ? Annotation.GenType : exportTypeItem.annotation,
          }
        );
 
@@ -1294,34 +1295,34 @@ let emitTranslationAsString =
          ~variantTables,
        );
   let emitters =
-    config.emitImportReact ?
-      EmitType.emitImportReact(~emitters, ~config) : emitters;
+    config.emitImportReact
+      ? EmitType.emitImportReact(~emitters, ~config) : emitters;
 
   let env =
-    config.emitImportCurry ?
-      ModuleName.curry
-      |> requireModule(
-           ~import=true,
-           ~env,
-           ~importPath=ImportPath.bsCurryPath(~config),
-         ) :
-      env;
+    config.emitImportCurry
+      ? ModuleName.curry
+        |> requireModule(
+             ~import=true,
+             ~env,
+             ~importPath=ImportPath.bsCurryPath(~config),
+           )
+      : env;
 
   let env =
-    config.emitImportPropTypes ?
-      ModuleName.propTypes
-      |> requireModule(~import=true, ~env, ~importPath=ImportPath.propTypes) :
-      env;
+    config.emitImportPropTypes
+      ? ModuleName.propTypes
+        |> requireModule(~import=true, ~env, ~importPath=ImportPath.propTypes)
+      : env;
 
   let finalEnv =
-    config.emitCreateBucklescriptBlock ?
-      ModuleName.createBucklescriptBlock
-      |> requireModule(
-           ~import=true,
-           ~env,
-           ~importPath=ImportPath.bsBlockPath(~config),
-         ) :
-      env;
+    config.emitCreateBucklescriptBlock
+      ? ModuleName.createBucklescriptBlock
+        |> requireModule(
+             ~import=true,
+             ~env,
+             ~importPath=ImportPath.bsBlockPath(~config),
+           )
+      : env;
 
   let emitters = variantTables |> emitVariantTables(~config, ~emitters);
 
