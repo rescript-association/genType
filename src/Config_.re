@@ -18,6 +18,7 @@ type importPath =
 type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
+  bsVersion: option(string),
   mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
@@ -40,6 +41,7 @@ type config = {
 let default = {
   bsBlockPath: None,
   bsCurryPath: None,
+  bsVersion: None,
   emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
@@ -179,7 +181,7 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
+let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
   let fromJson = json => {
     let languageString = json |> getString("language");
     let moduleString = json |> getString("module");
@@ -259,10 +261,12 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       };
     let fileHeader = fileHeader;
     let generatedFileExtension = generatedFileExtensionStringOption;
+    let modulesAsObjects = bsVersion != None;
 
     {
       bsBlockPath,
       bsCurryPath,
+      bsVersion,
       emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
       emitImportCurry: false,
@@ -274,7 +278,7 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       importPath,
       language,
       module_,
-      modulesAsObjects: false,
+      modulesAsObjects,
       modulesMap,
       namespace: None,
       propTypes,
