@@ -258,19 +258,20 @@ let rec getModuleEquations = (typeEnv): list(ResolvedName.eq) => {
   };
 };
 
-let getValueAccessPath = (~component=false, ~config, ~name, typeEnv) => {
+let getAccessPath = (~component, ~name, typeEnv) => {
   let rec accessPath = typeEnv =>
     switch (typeEnv.parent) {
-    | None => ""
+    | None => Runtime.Root(name) /* not nested */
     | Some(parent) =>
-      (parent.parent == None ? typeEnv.name : parent |> accessPath)
-      ++ (config.modulesAsObjects ? "." : "[")
-      ++ (
-        (component ? typeEnv.componentModuleItem : typeEnv.moduleItem)
-        |> Runtime.emitModuleItem(~config)
+      Dot(
+        parent.parent == None ? Root(typeEnv.name) : parent |> accessPath,
+        component ? typeEnv.componentModuleItem : typeEnv.moduleItem,
       )
-      ++ (config.modulesAsObjects ? "" : "]")
     };
-  let notNested = typeEnv.parent == None;
-  notNested ? name : typeEnv |> accessPath;
+  typeEnv |> accessPath;
 };
+
+let getModuleItemAccessPath = (~component=false, ~config, ~name, typeEnv) =>
+  typeEnv
+  |> getAccessPath(~component, ~name)
+  |> Runtime.emitModuleAccessPath(~config);
