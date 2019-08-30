@@ -15,10 +15,12 @@ type importPath =
   | Relative
   | Node;
 
+type bsVersion = (int, int, int);
+
 type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
-  bsVersion: option(string),
+  bsVersion,
   mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
@@ -41,7 +43,7 @@ type config = {
 let default = {
   bsBlockPath: None,
   bsCurryPath: None,
-  bsVersion: None,
+  bsVersion: (0, 0, 0),
   emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
@@ -207,15 +209,6 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
            ModuleNameMap.empty,
          );
     json |> getDebug;
-    if (Debug.config^) {
-      logItem(
-        "Config language:%s module:%s importPath:%s shims:%d entries\n",
-        languageString,
-        moduleString,
-        importPathString,
-        modulesMap |> ModuleNameMap.cardinal,
-      );
-    };
     let language =
       switch (languageString) {
       | "typescript" => TypeScript
@@ -261,7 +254,39 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       };
     let fileHeader = fileHeader;
     let generatedFileExtension = generatedFileExtensionStringOption;
-    let modulesAsObjects = bsVersion != None;
+    let bsVersion =
+      switch (bsVersion) {
+      | None => (0, 0, 0)
+      | Some(s) =>
+        switch (s |> Str.split(Str.regexp(Str.quote(".")))) {
+        | [x1, x2, x3, ..._] =>
+          let v1 = int_of_string(x1);
+          let v2 = int_of_string(x2);
+          let v3 =
+            switch (x3 |> Str.split(Str.regexp("-"))) {
+            | [x3, ..._] => int_of_string(x3)
+            | _ => 0
+            };
+          (v1, v2, v3);
+        | _ => (0, 0, 0)
+        }
+      };
+    let modulesAsObjects = {
+      bsVersion >= (5, 2, 0);
+    };
+    if (Debug.config^) {
+      let (v1, v2, v3) = bsVersion;
+      logItem(
+        "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
+        languageString,
+        moduleString,
+        importPathString,
+        modulesMap |> ModuleNameMap.cardinal,
+        v1,
+        v2,
+        v3,
+      );
+    };
 
     {
       bsBlockPath,
