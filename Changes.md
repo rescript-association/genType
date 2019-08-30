@@ -1,4 +1,4 @@
-# master
+# 2.38.0
 - Add config option to represent modules as objects at runtime.
   For compatibility with the upcoming bucklescript version 5.2.0.
 
