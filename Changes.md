@@ -1,3 +1,7 @@
+# master
+- Add config option to represent modules as objects at runtime.
+  For compatibility with the upcoming bucklescript version 5.2.0.
+
 # 2.37.0
 - In TypeScript export children of Reason type `element` as TS type `React.ReactChild`.
   So the exported component can be used from TS with string and number literals.
