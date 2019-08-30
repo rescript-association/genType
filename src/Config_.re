@@ -271,11 +271,15 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
         | _ => (0, 0, 0)
         }
       };
+    let (v1, v2, v3) = bsVersion;
     let modulesAsObjects = {
-      bsVersion >= (5, 2, 0);
+      switch (v1) {
+      | 5 => bsVersion >= (5, 2, 0)
+      | 6 => bsVersion > (6, 2, 0)
+      | _ => v1 > 6
+      };
     };
     if (Debug.config^) {
-      let (v1, v2, v3) = bsVersion;
       logItem(
         "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
         languageString,
