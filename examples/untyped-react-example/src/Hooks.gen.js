@@ -8,7 +8,7 @@ import * as PropTypes from 'prop-types';
 import * as HooksBS from './Hooks.bs';
 
 export const $$default = function Hooks(Arg1) {
-  const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
+  const result = React.createElement(HooksBS.default, {vehicle:[Arg1.vehicle.name]});
   return result
 };
 

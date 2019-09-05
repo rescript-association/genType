@@ -104,6 +104,15 @@ let makeWithRef = (~vehicle, ref) => {
 [@genType]
 let testForwardRef = React.forwardRef(makeWithRef);
 
+type r = {x: string};
+
+[@genType]
+[@react.component]
+let input =
+  React.forwardRef((~r, (), ref) =>
+    <div ref={Obj.magic(ref)}> {React.string(r.x)} </div>
+  );
+
 [@genType]
 type callback('input, 'output) = React.callback('input, 'output);
 
