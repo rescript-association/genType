@@ -21,7 +21,8 @@ const $$default$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node 
 export type Props = {| +vehicle: vehicle |};
 
 const $$default: typeof($$default$$forTypeof) = function Hooks(Arg1: $any) {
-  const result = React.createElement(HooksBS.default, {vehicle:[Arg1.vehicle.name]});
+  const $props = {vehicle:[Arg1.vehicle.name]};
+  const result = React.createElement(HooksBS.default, $props);
   return result
 };;
 exports.$$default = $$default
