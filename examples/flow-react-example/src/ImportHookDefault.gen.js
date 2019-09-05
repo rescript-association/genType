@@ -25,7 +25,8 @@ export const makeTypeChecked: React$ComponentType<{|
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
 export const make: mixed = function hookExample(Arg1: $any) {
-  const result = React.createElement(makeTypeChecked, {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+  const $props = {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe};
+  const result = React.createElement(makeTypeChecked, $props);
   return result
 };
 
@@ -38,7 +39,8 @@ export const defaultTypeChecked: React$ComponentType<{|
 
 // Export '$$default' early to allow circular import from the '.bs.js' file.
 export const $$default: mixed = function hookExample(Arg1: $any) {
-  const result = React.createElement(defaultTypeChecked, {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+  const $props = {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe};
+  const result = React.createElement(defaultTypeChecked, $props);
   return result
 };
 

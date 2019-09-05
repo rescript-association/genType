@@ -565,12 +565,30 @@ let rec apply =
     let mkBody = bodyArgs => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       config.emitImportCurry = config.emitImportCurry || useCurry;
-      let args = isHook ? [value, ...bodyArgs] : bodyArgs;
       let functionName = isHook ? "React.createElement" : value;
       if (isHook) {
         config.emitImportReact = true;
       };
-      Indent.break(~indent=indent1)
+      let (declareProps, args) = {
+        switch (bodyArgs) {
+        | [props] when isHook =>
+          let propsName = "$props" |> EmitText.name(~nameGen);
+          (
+            Indent.break(~indent=indent1)
+            ++ "const "
+            ++ propsName
+            ++ " = "
+            ++ props
+            ++ ";",
+            [value, propsName],
+          );
+
+        | _ => ("", bodyArgs)
+        };
+      };
+
+      declareProps
+      ++ Indent.break(~indent=indent1)
       ++ (functionName |> EmitText.funCall(~args, ~useCurry) |> mkReturn);
     };
 
