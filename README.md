@@ -187,6 +187,12 @@ The type of `make` must have a named argument for each prop in the JS component.
 
 This assumes that the JS component was exported with a default export. In case of named export, use e.g. `[@genType.import ("./MyBanner", "componentName")]`. To import a nested component, use e.g. `[@genType.import ("./MyBanner", "Some.Nested.component")]`. 
 
+### Interface (.rei) and Implementation (.re) files
+
+If both `Foo.rei` and `Foo.re` exist, the annotations are taken from `Foo.rei`.
+
+The behaviour can be overridden by adding a `[@genType.ignoreInterface]` anywhere in `Foo.rei`. Use case: expose implementation details to JS but not to Reason.
+
 
 ### Type Expansion and @genType.opaque
 

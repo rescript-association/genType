@@ -1,3 +1,8 @@
+# master
+- Add new annotation `[@genType.ignoreInterface]`.
+  When added anywhere in a `.rei` file, the annotations will be taken from the `.re` file.
+  Use case: expose implementation details to JS but not to Reason.
+
 # 2.38.0
 - Add config option to represent modules as objects at runtime.
   For compatibility with the upcoming bucklescript version 5.2.0.
