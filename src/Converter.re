@@ -523,8 +523,8 @@ let rec apply =
                       ~config,
                       ~converter=
                         optional == Optional
-                        && !(argConverter |> converterIsIdentity(~toJS)) ?
-                          OptionC(argConverter) : argConverter,
+                        && !(argConverter |> converterIsIdentity(~toJS))
+                          ? OptionC(argConverter) : argConverter,
                       ~indent=indent2,
                       ~nameGen,
                       ~toJS=notToJS,
@@ -565,10 +565,9 @@ let rec apply =
     let mkBody = bodyArgs => {
       let useCurry = !uncurried && toJS && List.length(bodyArgs) > 1;
       config.emitImportCurry = config.emitImportCurry || useCurry;
-      let hookToReason = !toJS && isHook;
-      let args = hookToReason ? [value, ...bodyArgs] : bodyArgs;
-      let functionName = hookToReason ? "React.createElement" : value;
-      if (hookToReason) {
+      let args = isHook ? [value, ...bodyArgs] : bodyArgs;
+      let functionName = isHook ? "React.createElement" : value;
+      if (isHook) {
         config.emitImportReact = true;
       };
       Indent.break(~indent=indent1)
@@ -725,8 +724,8 @@ let rec apply =
              )
            )
         |> String.concat(", ");
-      fieldsC == [] && config.language == Flow ?
-        "Object.freeze({})" : "{" ++ fieldValues ++ "}";
+      fieldsC == [] && config.language == Flow
+        ? "Object.freeze({})" : "{" ++ fieldValues ++ "}";
     } else {
       let fieldValues =
         fieldsC
@@ -766,9 +765,9 @@ let rec apply =
     ++ "]"
 
   | VariantC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
-    toJS ?
-      case.labelJS |> labelJSToString :
-      case.label |> Runtime.emitVariantLabel(~polymorphic)
+    toJS
+      ? case.labelJS |> labelJSToString
+      : case.label |> Runtime.emitVariantLabel(~polymorphic)
 
   | VariantC(variantC) =>
     if (variantC.noPayloads != []) {
@@ -779,8 +778,8 @@ let rec apply =
       && variantC.noPayloads
       |> List.exists(({labelJS}) =>
            labelJS == BoolLabel(true) || labelJS == BoolLabel(false)
-         ) ?
-        ".toString()" : "";
+         )
+        ? ".toString()" : "";
     let table = variantC.hash |> variantTable(~toJS);
     let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
     switch (variantC.withPayload) {
@@ -819,25 +818,25 @@ let rec apply =
                ~polymorphic=variantC.polymorphic,
              );
         };
-      variantC.noPayloads == [] ?
-        casesWithPayload(~indent) :
-        EmitText.ifThenElse(
-          ~indent,
-          (~indent as _) => value |> EmitText.typeOfObject,
-          casesWithPayload,
-          (~indent as _) => value |> accessTable,
-        );
+      variantC.noPayloads == []
+        ? casesWithPayload(~indent)
+        : EmitText.ifThenElse(
+            ~indent,
+            (~indent as _) => value |> EmitText.typeOfObject,
+            casesWithPayload,
+            (~indent as _) => value |> accessTable,
+          );
 
     | [_, ..._] =>
       let convertCaseWithPayload = (~indent, ~numArgs, ~objConverter, case) =>
         value
         |> (
-          toJS ?
-            Runtime.emitVariantGetPayload(
-              ~numArgs,
-              ~polymorphic=variantC.polymorphic,
-            ) :
-            Runtime.emitJSVariantGetPayload
+          toJS
+            ? Runtime.emitVariantGetPayload(
+                ~numArgs,
+                ~polymorphic=variantC.polymorphic,
+              )
+            : Runtime.emitJSVariantGetPayload
         )
         |> apply(
              ~config,
@@ -848,27 +847,27 @@ let rec apply =
              ~variantTables,
            )
         |> (
-          toJS ?
-            Runtime.emitJSVariantWithPayload(
-              ~label=case.labelJS |> labelJSToString,
-            ) :
-            Runtime.emitVariantWithPayload(
-              ~config,
-              ~label=case.label,
-              ~numArgs,
-              ~polymorphic=variantC.polymorphic,
-            )
+          toJS
+            ? Runtime.emitJSVariantWithPayload(
+                ~label=case.labelJS |> labelJSToString,
+              )
+            : Runtime.emitVariantWithPayload(
+                ~config,
+                ~label=case.label,
+                ~numArgs,
+                ~polymorphic=variantC.polymorphic,
+              )
         );
       let switchCases = (~indent) =>
         variantC.withPayload
         |> List.map(((case, numArgs, objConverter)) =>
              (
-               toJS ?
-                 case.label
-                 |> Runtime.emitVariantLabel(
-                      ~polymorphic=variantC.polymorphic,
-                    ) :
-                 case.labelJS |> labelJSToString,
+               toJS
+                 ? case.label
+                   |> Runtime.emitVariantLabel(
+                        ~polymorphic=variantC.polymorphic,
+                      )
+                 : case.labelJS |> labelJSToString,
                case
                |> convertCaseWithPayload(~indent, ~numArgs, ~objConverter),
              )
@@ -876,19 +875,19 @@ let rec apply =
       let casesWithPayload = (~indent) =>
         value
         |> Runtime.(
-             toJS ?
-               emitVariantGetLabel(~polymorphic=variantC.polymorphic) :
-               emitJSVariantGetLabel
+             toJS
+               ? emitVariantGetLabel(~polymorphic=variantC.polymorphic)
+               : emitJSVariantGetLabel
            )
         |> EmitText.switch_(~indent, ~cases=switchCases(~indent));
-      variantC.noPayloads == [] ?
-        casesWithPayload(~indent) :
-        EmitText.ifThenElse(
-          ~indent,
-          (~indent as _) => value |> EmitText.typeOfObject,
-          casesWithPayload,
-          (~indent as _) => value |> accessTable,
-        );
+      variantC.noPayloads == []
+        ? casesWithPayload(~indent)
+        : EmitText.ifThenElse(
+            ~indent,
+            (~indent as _) => value |> EmitText.typeOfObject,
+            casesWithPayload,
+            (~indent as _) => value |> accessTable,
+          );
     };
   };
 

@@ -8,6 +8,9 @@
 type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
+const React = require('react');
+
+// $FlowExpectedError: Reason checked type sufficiently
 const HooksBS = require('./Hooks.bs');
 
 export type vehicle = {| +name: string |};
@@ -18,7 +21,7 @@ const $$default$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node 
 export type Props = {| +vehicle: vehicle |};
 
 const $$default: typeof($$default$$forTypeof) = function Hooks(Arg1: $any) {
-  const result = HooksBS.default({vehicle:[Arg1.vehicle.name]});
+  const result = React.createElement(HooksBS.default, {vehicle:[Arg1.vehicle.name]});
   return result
 };;
 exports.$$default = $$default

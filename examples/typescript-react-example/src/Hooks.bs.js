@@ -109,6 +109,15 @@ function Hooks$makeWithRef(Props, ref) {
 
 var testForwardRef = React.forwardRef(Hooks$makeWithRef);
 
+var input = React.forwardRef((function (Props, param) {
+        var r = Props.r;
+        return (function (ref) {
+                    return React.createElement("div", {
+                                ref: ref
+                              }, r[/* x */0]);
+                  })(param);
+      }));
+
 function Hooks$polymorphicComponent(Props) {
   var match = Props.p;
   return match[0][/* name */0];
@@ -161,6 +170,7 @@ export {
   componentWithRenamedArgs ,
   makeWithRef ,
   testForwardRef ,
+  input ,
   polymorphicComponent ,
   functionReturningReactElement ,
   RenderPropRequiresConversion ,
