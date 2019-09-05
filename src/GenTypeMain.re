@@ -4,12 +4,12 @@
 
 module StringSet = Set.Make(String);
 
-let cmtHasGenTypeAnnotations = inputCMT =>
+let cmtHasGenTypeAnnotations = (~ignoreInterface, inputCMT) =>
   switch (inputCMT.Cmt_format.cmt_annots) {
   | Implementation(structure) =>
-    structure |> Annotation.structureHasGenTypeAnnotation
+    structure |> Annotation.structureHasGenTypeAnnotation(~ignoreInterface)
   | Interface(signature) =>
-    signature |> Annotation.signatureHasGenTypeAnnotation
+    signature |> Annotation.signatureHasGenTypeAnnotation(~ignoreInterface)
   | _ => false
   };
 
@@ -133,7 +133,6 @@ let emitTranslation =
 let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = cmt |> Paths.getCmtFile;
   if (cmtFile != "") {
-    let inputCMT = Cmt_format.read_cmt(cmtFile);
     let outputFile = cmt |> Paths.getOutputFile(~config);
     let outputFileRelative = cmt |> Paths.getOutputFileRelative(~config);
     let fileName = cmt |> Paths.getModuleName;
@@ -143,7 +142,22 @@ let processCmtFile = (~signFile, ~config, cmt) => {
         ~excludeFile=fname =>
         fname == "React.re" || fname == "ReasonReact.re"
       );
-    if (inputCMT |> cmtHasGenTypeAnnotations) {
+    let (inputCMT, hasGenTypeAnnotations) = {
+      let inputCMT = Cmt_format.read_cmt(cmtFile);
+      let ignoreInterface = ref(false);
+      let hasGenTypeAnnotations =
+        inputCMT |> cmtHasGenTypeAnnotations(~ignoreInterface);
+      if (! ignoreInterface^) {
+        (inputCMT, hasGenTypeAnnotations);
+      } else {
+        let cmtFile = (cmtFile |> Filename.chop_extension) ++ ".cmt";
+        let inputCMT = Cmt_format.read_cmt(cmtFile);
+        let hasGenTypeAnnotations =
+          inputCMT |> cmtHasGenTypeAnnotations(~ignoreInterface);
+        (inputCMT, hasGenTypeAnnotations);
+      };
+    };
+    if (hasGenTypeAnnotations) {
       inputCMT
       |> translateCMT(~config, ~outputFileRelative, ~resolver)
       |> emitTranslation(
