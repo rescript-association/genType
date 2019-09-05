@@ -17,7 +17,8 @@ export const makeRenamedTypeChecked: React.ComponentType<{
 
 // Export 'makeRenamed' early to allow circular import from the '.bs.js' file.
 export const makeRenamed: unknown = function hookExample<a>(Arg1: any) {
-  const result = React.createElement(makeRenamedTypeChecked, {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+  const $props = {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe};
+  const result = React.createElement(makeRenamedTypeChecked, $props);
   return result
 } as React.ComponentType<{
   readonly person: person; 
