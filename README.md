@@ -191,7 +191,7 @@ This assumes that the JS component was exported with a default export. In case o
 
 If both `Foo.rei` and `Foo.re` exist, the annotations are taken from `Foo.rei`.
 
-The behaviour can be overridden by adding a `[@genType.ignoreInterface]` anywhere in `Foo.rei`. Use case: expose implementation details to JS but not to Reason.
+The behaviour can be overridden by adding annotation `[@genType.ignoreInterface];` at the top of `Foo.rei`. Use case: expose implementation details to JS but not to Reason.
 
 
 ### Type Expansion and @genType.opaque
