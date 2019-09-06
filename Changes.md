@@ -1,4 +1,4 @@
-# 2.39,0
+# 2.39.0
 - Add new annotation `[@genType.ignoreInterface]`.
   When added anywhere in a `.rei` file, the annotations will be taken from the `.re` file.
   Use case: expose implementation details to JS but not to Reason.
