@@ -183,28 +183,30 @@ and moduleDeclarationHasGenTypeAnnotation =
 and signatureItemHasGenTypeAnnotation =
     (~ignoreInterface, signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} =>
+  | {sig_desc: Tsig_type(typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec =>
          dec.Typedtree.typ_attributes
          |> hasGenTypeAnnotation(~ignoreInterface)
        )
-  | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
+  | {sig_desc: Tsig_value(valueDescription), _} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation(~ignoreInterface)
-  | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
+  | {sig_desc: Tsig_module(moduleDeclaration), _} =>
     moduleDeclaration
     |> moduleDeclarationHasGenTypeAnnotation(~ignoreInterface)
+  | {sig_desc: Tsig_attribute(attribute), _} =>
+    [attribute] |> hasGenTypeAnnotation(~ignoreInterface)
   | _ => false
   }
 and signatureHasGenTypeAnnotation =
     (~ignoreInterface, signature: Typedtree.signature) =>
-  signature.Typedtree.sig_items
+  signature.sig_items
   |> List.exists(signatureItemHasGenTypeAnnotation(~ignoreInterface));
 
 let rec structureItemHasGenTypeAnnotation =
         (~ignoreInterface, structureItem: Typedtree.structure_item) =>
   switch (structureItem) {
-  | {str_desc: Typedtree.Tstr_type(typeDeclarations), _} =>
+  | {str_desc: Tstr_type(typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec =>
          dec.Typedtree.typ_attributes
