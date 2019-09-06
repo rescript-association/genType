@@ -3,6 +3,9 @@
   When added anywhere in a `.rei` file, the annotations will be taken from the `.re` file.
   Use case: expose implementation details to JS but not to Reason.
 
+- Always wrap export components in `React.createElement`.
+  This fixes an issue when exported components are not functions e.g, because they use `forwardRef`.
+
 # 2.38.0
 - Add config option to represent modules as objects at runtime.
   For compatibility with the upcoming bucklescript version 5.2.0.
