@@ -6,6 +6,7 @@ esy.lock
 esy.lock.json
 lib/
 node_modules/
+/_esy
 /_build
 /genType.install
 /yarn-error.log
