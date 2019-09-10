@@ -9,17 +9,18 @@ cache:
 install:
     # The x64 is required as a workaround for esy/esy#412
     - ps: Install-Product node 10 x64
+    - npm install -g esy
     - npm install
 
 build_script:
     - npm run build
     - npm test
     # Validate binary
-    - src\lib\bs\native\gentype.native.exe --help
-    - tar czvf gentype-win.tar.gz -C src\lib\bs\native gentype.native.exe
+    - _esy\build\install\default\bin\gentype.native.exe --help
+    - tar czvf gentype-4.06-win.tar.gz -C _esy\build\install\default\bin gentype.native.exe
 
 artifacts:
-    - path: gentype-win.tar.gz
+    - path: gentype-4.06-win.tar.gz
       name: Windows Build
       type: File
 
@@ -29,7 +30,7 @@ deploy:
       auth_token:
         secure: h4ts/g/OSbN7Ol71eZWP2EXFvPaHaizMj3gpaAl7An4vO/2dYATb+r3PHcWD6nFp
       draft: false
-      artifact: gentype-win.tar.gz
+      artifact: gentype-4.06-win.tar.gz
       force_update: true
       on:
         appveyor_repo_tag: true
