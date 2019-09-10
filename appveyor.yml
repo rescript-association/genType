@@ -10,10 +10,10 @@ install:
     # The x64 is required as a workaround for esy/esy#412
     - ps: Install-Product node 10 x64
     - npm install -g esy
-    - npm install
 
 build_script:
-    - npm run build
+    - esy
+    - esy build
     - npm test
     # Validate binary
     - _esy\build\install\default\bin\gentype.native.exe --help
