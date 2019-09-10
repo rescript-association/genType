@@ -21,16 +21,7 @@ const exampleDirPaths = [
 
 const isWindows = /^win/i.test(process.platform);
 
-function getGenTypeFilePath() {
-  const base = path.join(__dirname, "..", "src", "lib", "bs", "native");
-  if (isWindows) {
-    return path.join(base, "gentype.native.exe");
-  } else {
-    return path.join(base, "gentype.native");
-  }
-}
-
-const genTypeFile = getGenTypeFilePath();
+const genTypeFile = path.join(__dirname, "../_esy/default/build/install/default/bin/gentype.native.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise
@@ -114,7 +105,7 @@ function checkSetup() {
   console.log(`Check existing binary: ${genTypeFile}`);
   if (!fs.existsSync(genTypeFile)) {
     const filepath = path.relative(path.join(__dirname, ".."), genTypeFile);
-    throw new Error(`${filepath} does not exist. Use \`npm run build\` first!`);
+    throw new Error(`${filepath} does not exist. Use \`esy\` first!`);
   }
 
   console.log("Checking if --version outputs the right version");
