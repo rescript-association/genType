@@ -181,6 +181,11 @@ let translateConstr =
       type_: Array(paramTranslation.type_, Immutable),
     }
 
+  | (Pdot(Pident({name: "Pervasives", _}), "ref", _), [paramTranslation]) => {
+      dependencies: paramTranslation.dependencies,
+      type_: Tuple([paramTranslation.type_]),
+    }
+
   | (
       Pdot(Pident({name: "React", _}), "callback", _),
       [fromTranslation, toTranslation],
@@ -189,6 +194,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [fromTranslation.type_],
+          componentName: None,
           retType: toTranslation.type_,
           typeVars: [],
           uncurried: false,
@@ -204,6 +210,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [propsTranslation.type_],
+          componentName: None,
           retType: retTranslation.type_,
           typeVars: [],
           uncurried: false,
@@ -215,6 +222,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [propsTranslation.type_],
+          componentName: None,
           retType: EmitType.typeReactElement(~config),
           typeVars: [],
           uncurried: false,
@@ -302,6 +310,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: ts,
+          componentName: None,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
@@ -322,6 +331,7 @@ let translateConstr =
       type_:
         Function({
           argTypes: [],
+          componentName: None,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
@@ -342,6 +352,7 @@ let translateConstr =
       type_:
         Function({
           argTypes,
+          componentName: None,
           retType: ret.type_,
           typeVars: [],
           uncurried: true,
@@ -517,7 +528,13 @@ let rec translateArrowType =
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
     let functionType =
-      Function({argTypes, retType, typeVars: [], uncurried: false});
+      Function({
+        argTypes,
+        componentName: None,
+        retType,
+        typeVars: [],
+        uncurried: false,
+      });
 
     {dependencies: allDeps, type_: functionType};
   }
@@ -551,14 +568,14 @@ and translateTypeExprFromTypes_ =
           [
             (
               name,
-              name |> Runtime.isMutableObjectField ?
-                {dependencies: [], type_: ident("")} :
-                t1
-                |> translateTypeExprFromTypes_(
-                     ~config,
-                     ~typeVarsGen,
-                     ~typeEnv,
-                   ),
+              name |> Runtime.isMutableObjectField
+                ? {dependencies: [], type_: ident("")}
+                : t1
+                  |> translateTypeExprFromTypes_(
+                       ~config,
+                       ~typeVarsGen,
+                       ~typeEnv,
+                     ),
             ),
             ...fields,
           ],
@@ -717,7 +734,11 @@ and translateTypeExprFromTypes_ =
       let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
       let (dependenciesFromRecordType, type_) =
         signature.sig_type
-        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+        |> signatureToModuleRuntimeRepresentation(
+             ~config,
+             ~typeVarsGen,
+             ~typeEnv=typeEnv1,
+           );
       {
         dependencies:
           dependenciesFromTypeEquations @ dependenciesFromRecordType,
@@ -737,7 +758,8 @@ and translateTypeExprsFromTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>
   typeExprs
   |> List.map(translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv))
-and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
+and signatureToModuleRuntimeRepresentation =
+    (~config, ~typeVarsGen, ~typeEnv, signature) => {
   let dependenciesAndFields =
     signature
     |> List.map(signatureItem =>
@@ -770,7 +792,7 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
              switch (moduleDeclaration.md_type) {
              | Mty_signature(signature) =>
                signature
-               |> signatureToRecordType(
+               |> signatureToModuleRuntimeRepresentation(
                     ~config,
                     ~typeVarsGen,
                     ~typeEnv=typeEnv1,
@@ -798,7 +820,10 @@ and signatureToRecordType = (~config, ~typeVarsGen, ~typeEnv, signature) => {
     let (dl, fl) = dependenciesAndFields |> List.split;
     (dl |> List.concat, fl |> List.concat);
   };
-  (dependencies, Record(fields));
+  (
+    dependencies,
+    config.modulesAsObjects ? Object(Closed, fields) : Record(fields),
+  );
 };
 
 let translateTypeExprFromTypes =

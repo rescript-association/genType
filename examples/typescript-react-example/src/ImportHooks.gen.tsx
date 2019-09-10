@@ -6,8 +6,10 @@ import {makeRenamed as makeRenamedNotChecked} from './hookExample';
 
 import {foo as fooNotChecked} from './hookExample';
 
+import * as React from 'react';
+
 // In case of type error, check the type of 'makeRenamed' in 'ImportHooks.re' and './hookExample'.
-export const makeRenamedTypeChecked: React.FC<{
+export const makeRenamedTypeChecked: React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: renderMe<any>
@@ -15,9 +17,10 @@ export const makeRenamedTypeChecked: React.FC<{
 
 // Export 'makeRenamed' early to allow circular import from the '.bs.js' file.
 export const makeRenamed: unknown = function hookExample<a>(Arg1: any) {
-  const result = makeRenamedTypeChecked({person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe});
+  const $props = {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe};
+  const result = React.createElement(makeRenamedTypeChecked, $props);
   return result
-} as React.FC<{
+} as React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: renderMe<any>
@@ -36,4 +39,4 @@ export const foo: unknown = function (Argperson: any) {
 export type person = { readonly name: string; readonly age: number };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type renderMe<a> = React.FC<{ readonly randomString: string; readonly poly: a }>;
+export type renderMe<a> = React.ComponentType<{ readonly randomString: string; readonly poly: a }>;

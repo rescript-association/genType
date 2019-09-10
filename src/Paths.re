@@ -135,7 +135,7 @@ let relativePathFromBsLib = fileName =>
     );
   };
 
-let readConfig = (~namespace) => {
+let readConfig = (~bsVersion, ~namespace) => {
   setProjectRoot();
-  Config.readConfig(~getConfigFile, ~getBsConfigFile, ~namespace);
+  Config.readConfig(~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace);
 };

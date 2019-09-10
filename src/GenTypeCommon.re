@@ -71,6 +71,7 @@ and field = {
 }
 and function_ = {
   argTypes: list(type_),
+  componentName: option(string),
   retType: type_,
   typeVars: list(string),
   uncurried: bool,

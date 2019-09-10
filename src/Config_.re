@@ -15,40 +15,52 @@ type importPath =
   | Relative
   | Node;
 
+type bsVersion = (int, int, int);
+
 type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
+  bsVersion,
   mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
   mutable emitImportPropTypes: bool,
+  mutable emitImportReact: bool,
+  mutable emitTypePropDone: bool,
   exportInterfaces: bool,
   generatedFileExtension: option(string),
   importPath,
   language,
   module_,
+  modulesAsObjects: bool,
   modulesMap: ModuleNameMap.t(ModuleName.t),
   namespace: option(string),
   propTypes: bool,
   reasonReactPath: string,
+  fileHeader: option(string),
 };
 
 let default = {
   bsBlockPath: None,
   bsCurryPath: None,
+  bsVersion: (0, 0, 0),
   emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
   emitImportPropTypes: false,
+  emitImportReact: false,
+  emitTypePropDone: false,
   exportInterfaces: false,
   generatedFileExtension: None,
   importPath: Relative,
   language: Flow,
   module_: ES6,
+  modulesAsObjects: false,
   modulesMap: ModuleNameMap.empty,
   namespace: None,
   propTypes: false,
   reasonReactPath: "reason-react/src/ReasonReact.js",
+  fileHeader: None,
 };
 
 let bsPlatformLib = (~config) =>
@@ -171,12 +183,13 @@ let logItem = x => {
   Printf.fprintf(outChannel, x);
 };
 
-let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
+let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
   let fromJson = json => {
     let languageString = json |> getString("language");
     let moduleString = json |> getString("module");
     let importPathString = json |> getString("importPath");
     let reasonReactPathString = json |> getString("reasonReactPath");
+    let fileHeader = json |> getStringOption("fileHeader");
     let bsBlockPathString = json |> getString("bsBlockPath");
     let bsCurryPathString = json |> getString("bsCurryPath");
     let exportInterfacesBool = json |> getBool("exportInterfaces");
@@ -196,15 +209,6 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
            ModuleNameMap.empty,
          );
     json |> getDebug;
-    if (Debug.config^) {
-      logItem(
-        "Config language:%s module:%s importPath:%s shims:%d entries\n",
-        languageString,
-        moduleString,
-        importPathString,
-        modulesMap |> ModuleNameMap.cardinal,
-      );
-    };
     let language =
       switch (languageString) {
       | "typescript" => TypeScript
@@ -248,24 +252,67 @@ let readConfig = (~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | None => default.propTypes
       | Some(b) => b
       };
+    let fileHeader = fileHeader;
     let generatedFileExtension = generatedFileExtensionStringOption;
+    let bsVersion =
+      switch (bsVersion) {
+      | None => (0, 0, 0)
+      | Some(s) =>
+        switch (s |> Str.split(Str.regexp(Str.quote(".")))) {
+        | [x1, x2, x3, ..._] =>
+          let v1 = int_of_string(x1);
+          let v2 = int_of_string(x2);
+          let v3 =
+            switch (x3 |> Str.split(Str.regexp("-"))) {
+            | [x3, ..._] => int_of_string(x3)
+            | _ => 0
+            };
+          (v1, v2, v3);
+        | _ => (0, 0, 0)
+        }
+      };
+    let (v1, v2, v3) = bsVersion;
+    let modulesAsObjects = {
+      switch (v1) {
+      | 5 => bsVersion >= (5, 2, 0)
+      | 6 => bsVersion > (6, 2, 0)
+      | _ => v1 > 6
+      };
+    };
+    if (Debug.config^) {
+      logItem(
+        "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
+        languageString,
+        moduleString,
+        importPathString,
+        modulesMap |> ModuleNameMap.cardinal,
+        v1,
+        v2,
+        v3,
+      );
+    };
 
     {
       bsBlockPath,
       bsCurryPath,
+      bsVersion,
       emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
       emitImportCurry: false,
       emitImportPropTypes: false,
+      emitImportReact: false,
+      emitTypePropDone: false,
       exportInterfaces,
       generatedFileExtension,
       importPath,
       language,
       module_,
+      modulesAsObjects,
       modulesMap,
       namespace: None,
       propTypes,
       reasonReactPath,
+      fileHeader,
     };
   };
 

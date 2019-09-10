@@ -6,6 +6,7 @@ _esy/
 
 lib/
 node_modules/
+/_esy
 /_build
 /_release
 /genType.install

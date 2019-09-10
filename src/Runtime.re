@@ -9,9 +9,16 @@ type recordGen = {
 
 type recordValue = int;
 
-type moduleItemGen = {mutable itemValue: int};
+type moduleItemGen = {mutable itemIndex: int};
 
-type moduleItem = int;
+type moduleItem = {
+  name: string,
+  index: int,
+};
+
+type moduleAccessPath =
+  | Root(string)
+  | Dot(moduleAccessPath, moduleItem);
 
 let blockTagValue = (~config, i) =>
   string_of_int(i) ++ (config.language == TypeScript ? " as any" : "");
@@ -34,15 +41,26 @@ let newRecordValue = (~unboxed, recordGen) =>
     v;
   };
 
-let moduleItemGen = () => {itemValue: 0};
+let moduleItemGen = () => {itemIndex: 0};
 
-let newModuleItem = moduleItemGen => {
-  let v = moduleItemGen.itemValue;
-  moduleItemGen.itemValue = moduleItemGen.itemValue + 1;
-  v;
+let newModuleItem = (~name, moduleItemGen) => {
+  let index = moduleItemGen.itemIndex;
+  moduleItemGen.itemIndex = moduleItemGen.itemIndex + 1;
+  {name, index};
 };
 
-let emitModuleItem = itemValue => itemValue |> string_of_int;
+let rec emitModuleAccessPath = (~config, moduleAccessPath) =>
+  switch (moduleAccessPath) {
+  | Root(s) => s
+  | Dot(p, moduleItem) =>
+    p
+    |> emitModuleAccessPath(~config)
+    |> (
+      config.modulesAsObjects
+        ? EmitText.fieldAccess(~label=moduleItem.name)
+        : EmitText.arrayAccess(~index=moduleItem.index)
+    )
+  };
 
 let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
   if (polymorphic) {

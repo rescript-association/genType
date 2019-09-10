@@ -17,12 +17,15 @@ let make = (~vehicle) => {
     <button onClick={_ => setCount(_ => count + 1)}>
       {React.string("Click me")}
     </button>
-    <ImportHooks person={name: "Mary", age: 71} renderMe={_ => React.null}>
+    <ImportHooks
+      person={name: "Mary", age: 71}
+      renderMe={x => React.string(x##randomString)}>
       {React.string("child1")}
       {React.string("child2")}
     </ImportHooks>
     <ImportHookDefault
-      person={name: "DefaultImport", age: 42} renderMe={_ => React.null}>
+      person={name: "DefaultImport", age: 42}
+      renderMe={x => React.string(x##randomString)}>
       {React.string("child1")}
       {React.string("child2")}
     </ImportHookDefault>
@@ -101,6 +104,15 @@ let makeWithRef = (~vehicle, ref) => {
 [@genType]
 let testForwardRef = React.forwardRef(makeWithRef);
 
+type r = {x: string};
+
+[@genType]
+[@react.component]
+let input =
+  React.forwardRef((~r, (), ref) =>
+    <div ref={Obj.magic(ref)}> {React.string(r.x)} </div>
+  );
+
 [@genType]
 type callback('input, 'output) = React.callback('input, 'output);
 
@@ -117,3 +129,30 @@ let polymorphicComponent = (~p as (x, _)) => React.string(x.name);
 [@genType]
 [@react.component]
 let functionReturningReactElement = (~name) => React.string(name);
+
+module RenderPropRequiresConversion = {
+  [@genType]
+  [@react.component]
+  let make =
+      (
+        ~renderVehicle:
+           {
+             .
+             "vehicle": vehicle,
+             "number": int,
+           } =>
+           React.element,
+      ) => {
+    let car = {name: "Car"};
+    renderVehicle({"vehicle": car, "number": 42});
+  };
+};
+
+[@genType]
+[@react.component]
+let aComponentWithChildren = (~vehicle, ~children) => {
+  <div>
+    {React.string("Another Hook " ++ vehicle.name)}
+    <div> children </div>
+  </div>;
+};

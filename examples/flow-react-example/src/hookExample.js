@@ -6,15 +6,27 @@ export const foo = function(x: { +person: { +name: string, +age: number } }) {
   return x.person.name;
 };
 
-export const make = (x: {
+type Props = {|
   +person: { +name: string, +age: number },
-  +children: React.Node
-}) => (
-  <div>
-    {" "}
-    {x.person.name} {x.children}{" "}
-  </div>
-);
+  +children: React.Node,
+  +renderMe: React.ComponentType<{|
+    +randomString: string,
+    +poly: string
+  |}>
+|};
+
+export class make extends React.Component<Props> {
+  render() {
+    const RenderMe = this.props.renderMe;
+    return (
+      <div>
+        {" "}
+        {this.props.person.name} {this.props.children}{" "}
+        <RenderMe randomString="random-string" poly="" />
+      </div>
+    );
+  }
+}
 
 export const makeRenamed = make;
 

@@ -35,8 +35,7 @@ let combine = (translations: list(t)): t =>
 /* Applies type parameters to types (for all) */
 let abstractTheTypeParameters = (~typeVars, type_) =>
   switch (type_) {
-  | Function({argTypes, retType, uncurried, _}) =>
-    Function({argTypes, retType, typeVars, uncurried})
+  | Function(function_) => Function({...function_, typeVars})
   | _ => type_
   };
 
@@ -84,6 +83,7 @@ let translateDependencies =
 
 let translateValue =
     (
+      ~attributes,
       ~config,
       ~outputFileRelative,
       ~resolver,
@@ -93,6 +93,11 @@ let translateValue =
       name,
     )
     : t => {
+  let nameAs =
+    switch (Annotation.getAttributeRenaming(attributes)) {
+    | Some(s) => s
+    | _ => name
+    };
   let typeExprTranslation =
     typeExpr
     |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
@@ -104,18 +109,20 @@ let translateValue =
     typeExprTranslation.type_
     |> abstractTheTypeParameters(~typeVars)
     |> addAnnotationsToFunction;
-  let resolvedName =
+  let resolvedNameOriginal =
     name |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
+  let resolvedName =
+    nameAs |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
 
-  let valueAccessPath =
-    typeEnv |> TypeEnv.getValueAccessPath(~name=resolvedName);
+  let moduleAccessPath =
+    typeEnv |> TypeEnv.getModuleAccessPath(~name=resolvedNameOriginal);
 
   let codeItems = [
     CodeItem.ExportValue({
+      moduleAccessPath,
       originalName: name,
       resolvedName,
       type_,
-      valueAccessPath,
     }),
   ];
   {
@@ -150,6 +157,7 @@ let translateValue =
  */
 let translateComponent =
     (
+      ~attributes,
       ~config,
       ~outputFileRelative,
       ~resolver,
@@ -199,13 +207,13 @@ let translateComponent =
                 "ReasonReact_component" |
                 "React_component",
               typeArgs: [_state, ..._],
-            } as ident,
+            } as id,
           ),
         _,
       } as function_,
     ) =>
     let type_ =
-      Function({...function_, retType: Ident({...ident, typeArgs: []})});
+      Function({...function_, retType: Ident({...id, typeArgs: []})});
 
     /* Add children?:any to props type */
     let propsType =
@@ -239,20 +247,21 @@ let translateComponent =
         }
       };
     let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
-    let propsTypeName = resolvedTypeName |> ResolvedName.toString;
-    let componentType = EmitType.typeReactComponent(~config, ~propsTypeName);
 
     let nestedModuleName = typeEnv |> TypeEnv.getNestedModuleName;
 
-    let valueAccessPath = typeEnv |> TypeEnv.getValueAccessPath(~name="make");
+    let moduleAccessPath =
+      typeEnv |> TypeEnv.getModuleAccessPath(~name="make");
     let componentAccessPath =
       typeEnv
-      |> TypeEnv.getValueAccessPath(~component=true, ~name="component");
+      |> TypeEnv.getModuleAccessPath(
+           ~component=true,
+           ~name="component",
+         );
 
     let codeItems = [
       CodeItem.ExportComponent({
         componentAccessPath,
-        componentType,
         exportType: {
           nameAs: None,
           opaque: Some(false),
@@ -260,10 +269,9 @@ let translateComponent =
           typeVars,
           resolvedTypeName,
         },
+        moduleAccessPath,
         nestedModuleName,
-        propsTypeName,
         type_,
-        valueAccessPath,
       }),
     ];
     {
@@ -278,6 +286,7 @@ let translateComponent =
     /* not a component: treat make as a normal function */
     name
     |> translateValue(
+         ~attributes,
          ~config,
          ~outputFileRelative,
          ~resolver,
@@ -487,9 +496,9 @@ let addTypeDeclarationsFromModuleEquations = (~typeEnv, translation: t) => {
             });
        })
     |> List.concat;
-  newTypeDeclarations == [] ?
-    translation :
-    {
+  newTypeDeclarations == []
+    ? translation
+    : {
       ...translation,
       typeDeclarations: translation.typeDeclarations @ newTypeDeclarations,
     };

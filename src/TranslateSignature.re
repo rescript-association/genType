@@ -22,6 +22,7 @@ let translateSignatureValue =
     |> Translation.(
          Ident.name(id) == "make" ? translateComponent : translateValue
        )(
+         ~attributes=val_attributes,
          ~config,
          ~outputFileRelative,
          ~resolver,
@@ -164,7 +165,9 @@ and translateSignatureItem =
            ~typeEnv,
          );
     } else {
-      let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+      let moduleItem =
+        moduleItemGen
+        |> Runtime.newModuleItem(~name=valueDescription.val_id |> Ident.name);
       typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
       valueDescription
       |> translateSignatureValue(
@@ -185,7 +188,11 @@ and translateSignatureItem =
        )
 
   | {Typedtree.sig_desc: Typedtree.Tsig_modtype(moduleTypeDeclaration), _} =>
-    let moduleItem = moduleItemGen |> Runtime.newModuleItem;
+    let moduleItem =
+      moduleItemGen
+      |> Runtime.newModuleItem(
+           ~name=moduleTypeDeclaration.mtd_id |> Ident.name,
+         );
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleTypeDeclaration
     |> translateModuleTypeDeclaration(

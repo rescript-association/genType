@@ -19,7 +19,8 @@ let getNestedModuleName: t => option(ModuleName.t);
 /* Access path for the value in the module.
    It can be the value name if the module is not nested.
    Or TopLevelModule[x][y] if accessing a value in a doubly nested module */
-let getValueAccessPath: (~component: bool=?, ~name: string, t) => string;
+let getModuleAccessPath:
+  (~component: bool=?, ~name: string, t) => Runtime.moduleAccessPath;
 
 let getModule: (~name: string, t) => option(t);
 

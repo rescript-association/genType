@@ -24,8 +24,8 @@ function Hooks(Props) {
                     /* age */71
                   ],
                   children: null,
-                  renderMe: (function (param) {
-                      return null;
+                  renderMe: (function (x) {
+                      return x.randomString;
                     })
                 }, "child1", "child2"), React.createElement(ImportHookDefault.make, {
                   person: /* record */[
@@ -33,8 +33,8 @@ function Hooks(Props) {
                     /* age */42
                   ],
                   children: null,
-                  renderMe: (function (param) {
-                      return null;
+                  renderMe: (function (x) {
+                      return x.randomString;
                     })
                 }, "child1", "child2"));
 }
@@ -109,6 +109,15 @@ function Hooks$makeWithRef(Props, ref) {
 
 var testForwardRef = React.forwardRef(Hooks$makeWithRef);
 
+var input = React.forwardRef((function (Props, param) {
+        var r = Props.r;
+        return (function (ref) {
+                    return React.createElement("div", {
+                                ref: ref
+                              }, r[/* x */0]);
+                  })(param);
+      }));
+
 function Hooks$polymorphicComponent(Props) {
   var match = Props.p;
   return match[0][/* name */0];
@@ -116,6 +125,22 @@ function Hooks$polymorphicComponent(Props) {
 
 function Hooks$functionReturningReactElement(Props) {
   return Props.name;
+}
+
+function Hooks$RenderPropRequiresConversion(Props) {
+  var renderVehicle = Props.renderVehicle;
+  return Curry._1(renderVehicle, {
+              vehicle: /* record */[/* name */"Car"],
+              number: 42
+            });
+}
+
+var RenderPropRequiresConversion = /* module */[/* make */Hooks$RenderPropRequiresConversion];
+
+function Hooks$aComponentWithChildren(Props) {
+  var vehicle = Props.vehicle;
+  var children = Props.children;
+  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0], React.createElement("div", undefined, children));
 }
 
 var make = Hooks;
@@ -132,6 +157,8 @@ var polymorphicComponent = Hooks$polymorphicComponent;
 
 var functionReturningReactElement = Hooks$functionReturningReactElement;
 
+var aComponentWithChildren = Hooks$aComponentWithChildren;
+
 export {
   make ,
   $$default ,
@@ -143,8 +170,11 @@ export {
   componentWithRenamedArgs ,
   makeWithRef ,
   testForwardRef ,
+  input ,
   polymorphicComponent ,
   functionReturningReactElement ,
+  RenderPropRequiresConversion ,
+  aComponentWithChildren ,
   
 }
 /* testForwardRef Not a pure module */

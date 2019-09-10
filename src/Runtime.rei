@@ -8,18 +8,22 @@ type moduleItemGen;
 
 type moduleItem;
 
+type moduleAccessPath =
+  | Root(string)
+  | Dot(moduleAccessPath, moduleItem);
+
 let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
 
 /* Internal name of a value called "default" used by buclescript for default export */
 let default: string;
+
+let emitModuleAccessPath: (~config: config, moduleAccessPath) => string;
 
 let emitJSVariantGetLabel: string => string;
 
 let emitJSVariantGetPayload: string => string;
 
 let emitJSVariantWithPayload: (~label: string, string) => string;
-
-let emitModuleItem: moduleItem => string;
 
 let emitRecordAsInt: (~config: config, recordValue) => string;
 
@@ -42,11 +46,11 @@ let emitVariantWithPayload:
 
 let isMutableObjectField: string => bool;
 
-let mangleObjectField : string => string;
+let mangleObjectField: string => string;
 
 let moduleItemGen: unit => moduleItemGen;
 
-let newModuleItem: moduleItemGen => moduleItem;
+let newModuleItem: (~name: string, moduleItemGen) => moduleItem;
 
 let newRecordValue: (~unboxed: bool, recordGen) => recordValue;
 

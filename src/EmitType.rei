@@ -69,6 +69,8 @@ let emitHookTypeAsFunction:
   ) =>
   Emitters.t;
 
+let emitImportReact: (~emitters: Emitters.t, ~config: config) => Emitters.t;
+
 let emitImportTypeAs:
   (
     ~emitters: Emitters.t,
@@ -112,9 +114,6 @@ let emitRequire:
   ) =>
   Emitters.t;
 
-let emitRequireReact:
-  (~early: bool, ~emitters: Emitters.t, ~config: config) => Emitters.t;
-
 let emitTypeCast:
   (
     ~config: config,
@@ -146,9 +145,9 @@ let outputFileSuffix: (~config: config) => string;
 
 let shimExtension: (~config: config) => string;
 
-let typeReactComponent: (~config: config, ~propsTypeName: string) => type_;
+let typeReactChild: (~config: config) => type_;
 
-let typeReactFunctionComponentTypeScript: (~propsType: type_) => type_;
+let typeReactComponent: (~config: config, ~propsType: type_) => type_;
 
 let typeReactContext: (~config: config, ~type_: type_) => type_;
 

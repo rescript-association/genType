@@ -1,3 +1,47 @@
+# 2.39.0
+- Add new annotation `[@genType.ignoreInterface];`.
+  When added at the top `.rei` file, the annotations will be taken from the `.re` file.
+  Use case: expose implementation details to JS but not to Reason.
+
+- Always wrap export components in `React.createElement`.
+  This fixes an issue when exported components are not functions e.g, because they use `forwardRef`.
+
+# 2.38.0
+- Add config option to represent modules as objects at runtime.
+  For compatibility with the upcoming bucklescript version 5.2.0.
+
+# 2.37.0
+- In TypeScript export children of Reason type `element` as TS type `React.ReactChild`.
+  So the exported component can be used from TS with string and number literals.
+
+# 2.36.0
+- Export Props type when exporting a function component.
+- Add support for exporting references as 1-tuples.
+  There are some nuances when the argument type requires conversion: https://github.com/cristianoc/genType/issues/237.
+
+# 2.35.0
+- Fix issue where two constants with the same name would be generated in CommonJS mode.
+
+# 2.34.0
+- Add support for `[@genType] [@genType.as "SomeName"]` to export renamed values.
+- Add more compact form `[@genType "SomeName"]`.
+
+# 2.33.0
+- Support import of `[@react.component]` components whose props require conversion.
+  The conversion is performed by wrapping the component with a `React.createElement` call,
+  so it works whether the component is a function or a class.
+  
+  All the TypeScript components are now typed with `React.ComponentType<...>`.
+  If existing code was using e.g. render props of type `React.FC<...>`,
+  direct function calls `foo(props)` should now be replaced with JSX calls `<foo props=... />`.
+  
+  See https://github.com/cristianoc/genType/pull/226.
+
+- Add configuration option `"fileHeader"` to specify additional text to be emitted in the file header.
+
+# 2.32.0
+- Fix issue where conversion functions are not be generated for types defined in other files when `"importPath": "node",` is set in `gentypeconfig`.
+
 # 2.31.1
 - Add support for default import when the value is called `default` in the external.
   ```[@genType.import "./MyMath"] external default: int = "default";```

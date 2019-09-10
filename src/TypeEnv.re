@@ -20,7 +20,7 @@ and entry =
   | Type(string);
 
 let createTypeEnv = (~name, parent) => {
-  let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem;
+  let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem(~name);
   {
     componentModuleItem: moduleItem,
     map: StringMap.empty,
@@ -217,8 +217,8 @@ let lookupModuleTypeSignature = (~path, typeEnv) => {
 };
 
 let getNestedModuleName = typeEnv =>
-  typeEnv.parent == None ?
-    None : Some(typeEnv.name |> ModuleName.fromStringUnsafe);
+  typeEnv.parent == None
+    ? None : Some(typeEnv.name |> ModuleName.fromStringUnsafe);
 
 let updateModuleItem = (~nameOpt=None, ~moduleItem, typeEnv) => {
   switch (nameOpt) {
@@ -235,7 +235,7 @@ let rec addModulePath = (~typeEnv, name) =>
     typeEnv.name |> addModulePath(~typeEnv=parent) |> ResolvedName.dot(name)
   };
 
-let rec getModuleEquations = typeEnv: list(ResolvedName.eq) => {
+let rec getModuleEquations = (typeEnv): list(ResolvedName.eq) => {
   let subEquations =
     typeEnv.map
     |> StringMap.bindings
@@ -258,19 +258,15 @@ let rec getModuleEquations = typeEnv: list(ResolvedName.eq) => {
   };
 };
 
-let getValueAccessPath = (~component=false, ~name, typeEnv) => {
+let getModuleAccessPath = (~component=false, ~name, typeEnv) => {
   let rec accessPath = typeEnv =>
     switch (typeEnv.parent) {
-    | None => ""
+    | None => Runtime.Root(name) /* not nested */
     | Some(parent) =>
-      (parent.parent == None ? typeEnv.name : parent |> accessPath)
-      ++ "["
-      ++ (
-        (component ? typeEnv.componentModuleItem : typeEnv.moduleItem)
-        |> Runtime.emitModuleItem
+      Dot(
+        parent.parent == None ? Root(typeEnv.name) : parent |> accessPath,
+        component ? typeEnv.componentModuleItem : typeEnv.moduleItem,
       )
-      ++ "]"
     };
-  let notNested = typeEnv.parent == None;
-  notNested ? name : typeEnv |> accessPath;
+  typeEnv |> accessPath;
 };

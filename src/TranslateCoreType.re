@@ -147,7 +147,13 @@ let rec translateArrowType =
     let argTypes = labeledConvertableTypes |> NamedArgs.group;
 
     let functionType =
-      Function({argTypes, retType, typeVars: [], uncurried: false});
+      Function({
+        argTypes,
+        componentName: None,
+        retType,
+        typeVars: [],
+        uncurried: false,
+      });
 
     {dependencies: allDeps, type_: functionType};
   }
@@ -310,7 +316,11 @@ and translateCoreType_ =
       let typeEnv1 = typeEnv |> TypeEnv.addTypeEquations(~typeEquations);
       let (dependenciesFromRecordType, type_) =
         signature.sig_type
-        |> signatureToRecordType(~config, ~typeVarsGen, ~typeEnv=typeEnv1);
+        |> signatureToModuleRuntimeRepresentation(
+             ~config,
+             ~typeVarsGen,
+             ~typeEnv=typeEnv1,
+           );
       {
         dependencies:
           dependenciesFromTypeEquations @ dependenciesFromRecordType,
