@@ -21,7 +21,8 @@ const input = (args = process.argv.slice(2));
 
 const shell = isWindows ? true : false;
 
-copyNativeToExe();
+// Not needed, since dune builds gentype.native.exe files by default
+//copyNativeToExe();
 
 spawn("bsb", input, { stdio: ["inherit", "inherit"], shell }).on(
   "exit",

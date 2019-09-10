@@ -10,18 +10,11 @@ const spawn = child_process.spawn;
 
 const isWindows = /^win/i.test(process.platform);
 
-function genTypeNativePath() {
-  const base = path.join(__dirname, "..", "src", "lib", "bs", "native");
-  if (isWindows) {
-    return path.join(base, "gentype.native.exe");
-  } else {
-    return path.join(base, "gentype.native");
-  }
-}
+const genTypeNativePath = path.join(__dirname, "../_esy/default/build/install/default/bin/gentype.native.exe");
 
 const shell = isWindows ? true : false;
 
-child_process.spawnSync(genTypeNativePath(), ["-clean"], {
+child_process.spawnSync(genTypeNativePath, ["-clean"], {
   stdio: ["inherit", "inherit"],
   shell
 });
