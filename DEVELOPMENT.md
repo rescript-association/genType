@@ -1,6 +1,6 @@
 # Development
 
-## Build genType
+## Build genType (bsb-native)
 
 ```
 npm install
@@ -8,6 +8,16 @@ npm run build
 ```
 
 This will create the binary `lib/bs/native/gentype.native`, which is the executable that BuckleScript is supposed to use via `BS_CMT_POST_PROCESS_CMD`.
+
+## Build genType (esy & dune)
+
+```
+# For version 4.02.3 (aligned with BuckleScript OCaml version):
+esy x dune build src/GenType.exe
+
+# For version 4.06
+esy @ocaml-4.6 dune build src/GenType.exe
+```
 
 ## Automated Releases (for Maintainers)
 
