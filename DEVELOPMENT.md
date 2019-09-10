@@ -9,6 +9,16 @@ npm run build
 
 This will create the binary `lib/bs/native/gentype.native`, which is the executable that BuckleScript is supposed to use via `BS_CMT_POST_PROCESS_CMD`.
 
+## Build genType (esy & dune)
+
+```
+# Switch to the correct branch first
+git checkout 4_06_1
+
+# Currently only builds for OCaml version 4.06.1 (not compatible with the offical BuckeScript version)
+esy build
+```
+
 ## Automated Releases (for Maintainers)
 
 The project is compatible with the [`npm version`](https://docs.npmjs.com/cli/version) workflow. After using the `npm version [major|minor|patch|...]` command, npm will automatically tag the current commit, bump all the necessary version numbers (also the number in `src/Version.re`) and push it to the current remote branch.
@@ -62,6 +72,26 @@ Consult the [npm publish](https://docs.npmjs.com/cli/publish) documentation for 
 In case you get an `ENEEDAUTH` error, use `npm adduser` and authenticate with your npm account first.
 
 **Pro tip:** If you want to publish a dist with a different version number (e.g. for testing the publishing process), you can also manually modify the `version` number in the `dist/package.json` file before releasing.
+
+### Releasing 4.06 builds
+
+This release process is currently not well automated (we will figure out the
+details in the future). Every 4.06 release will be published with a version
+suffix `-4.06` (e.g. gentype@2.39.0-4.06) and a `4.06` npm tag (`gentype@4.06`
+would point to the latest 4.06 release).
+
+```
+# Make sure you are on the correct branch
+git checkout 4_06_1
+
+# Build the gentype binary with esy
+esy
+
+# Prepare the dist folder with the built gentype.exe
+node scripts/prepare_406_dist.js
+
+npm publish dist/ --tag 4.06
+```
 
 ## Manual Releases (MacOS & Linux)
 
