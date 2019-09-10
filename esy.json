@@ -1,8 +1,5 @@
 {
   "name": "gentype",
-  "scripts": {
-    "build": "dune build -p #{self.name}"
-  },
   "dependencies": {
     "ocaml": "~4.02.3",
     "@opam/dune": "~1.7.3",
@@ -11,7 +8,5 @@
   },
   "devDependencies": {
     "@opam/merlin": "*"
-  },
-  "resolutions": {
   }
 }
