@@ -42,8 +42,8 @@ export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs
 
 export default component;
 
-export const firstIsIgnored: ({| +x: number |}) => number = function (Arg1: $any) {
-  const result = RenamePropsBS.firstIsIgnored(Arg1.x);
+export const firstIsIgnored: ({| +Ignored: number |}) => number = function (Arg1: $any) {
+  const result = RenamePropsBS.firstIsIgnored(Arg1.Ignored);
   return result
 };
 
