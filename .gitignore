@@ -2,8 +2,8 @@
 *.merlin*
 *.bsb.lock*
 bundledOutputs/
-esy.lock
-esy.lock.json
+_esy/
+
 lib/
 node_modules/
 /_build
