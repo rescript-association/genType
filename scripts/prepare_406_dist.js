@@ -105,7 +105,7 @@ const copyEsyGentypeBinary = () => {
     process.exit(1);
   }
 
-  const gentypePath = path.join(__dirname, "..", "_esy/default/build/install/default/bin/gentype.exe");
+  const gentypePath = path.join(__dirname, "..", "_esy/default/build/install/default/bin/gentype.native.exe");
   const targetFile = path.join(distDir, "gentype.native");
 
   logStep(`Copying "${gentypePath}" to ${targetFile} ...`);
@@ -114,7 +114,7 @@ const copyEsyGentypeBinary = () => {
     return child_process.execSync(`cp ${gentypePath} ${targetFile}`);
   } catch(e) {
     logErr(
-      `Could not copy gentype.exe from esy build directory... did you build it via 'esy build'?`
+      `Could not copy gentype.native.exe from esy build directory... did you build it via 'esy build'?`
     );
     process.exit(1);
   }
