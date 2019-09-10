@@ -12,11 +12,8 @@ This will create the binary `lib/bs/native/gentype.native`, which is the executa
 ## Build genType (esy & dune)
 
 ```
-# For version 4.02.3 (aligned with BuckleScript OCaml version):
-esy x dune build src/GenType.exe
-
-# For version 4.06
-esy @ocaml-4.6 dune build src/GenType.exe
+# Currently only builds for OCaml version 4.06.1 (not compatible with the offical BuckeScript version)
+esy build
 ```
 
 ## Automated Releases (for Maintainers)

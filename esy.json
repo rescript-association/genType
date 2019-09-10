@@ -1,12 +1,23 @@
 {
   "name": "gentype",
   "dependencies": {
-    "ocaml": "~4.02.3",
+    "ocaml": "~4.06.1",
     "@opam/dune": "~1.7.3",
     "@opam/reason": "*",
     "refmterr": "*"
   },
   "devDependencies": {
     "@opam/merlin": "*"
+  },
+  "scripts": {
+    "test": "esy x gentype.exe --version"
+  },
+  "esy": {
+    "build": "dune build -p #{self.name}",
+    "release": {
+      "bin": [
+        "gentype.exe"
+      ]
+    }
   }
 }
