@@ -77,7 +77,7 @@ In case you get an `ENEEDAUTH` error, use `npm adduser` and authenticate with yo
 
 This release process is currently not well automated (we will figure out the
 details in the future). Every 4.06 release will be published with a version
-suffix `-4.06` (e.g. gentype@2.39.0-4.06) and a `4.06` npm tag (`gentype@4.06`
+suffix `-4.06` (e.g. gentype@2.39.0-4.06) and a `4.06` npm tag (`gentype@ocaml-4.06`
 would point to the latest 4.06 release).
 
 ```
@@ -90,7 +90,7 @@ esy
 # Prepare the dist folder with the built gentype.exe
 node scripts/prepare_406_dist.js
 
-npm publish dist/ --tag 4.06
+npm publish dist/ --tag ocaml-4.06
 ```
 
 ## Manual Releases (MacOS & Linux)
