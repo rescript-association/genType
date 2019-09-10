@@ -1,0 +1,45 @@
+name: Build npm release
+
+trigger:
+  - master
+
+jobs:
+  - template: .ci/build-platform.yml
+    parameters:
+      platform: Linux
+      vmImage: ubuntu-16.04
+      STAGING_DIRECTORY: /home/vsts/STAGING
+      STAGING_DIRECTORY_UNIX: /home/vsts/STAGING
+      ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i
+      ESY__CACHE_SOURCE_TARBALL_PATH: /home/vsts/.esy/source/i
+
+  - template: .ci/build-platform.yml
+    parameters:
+      platform: macOS
+      vmImage: macOS-10.13
+      STAGING_DIRECTORY: /Users/vsts/STAGING
+      STAGING_DIRECTORY_UNIX: /Users/vsts/STAGING
+      ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3____________________________________________________________________/i
+      ESY__CACHE_SOURCE_TARBALL_PATH: /Users/vsts/.esy/source/i
+
+  - template: .ci/build-platform.yml
+    parameters:
+      platform: Windows
+      vmImage: vs2017-win2016
+      STAGING_DIRECTORY: C:\Users\VssAdministrator\STAGING
+      STAGING_DIRECTORY_UNIX: /C/Users/VssAdministrator/STAGING
+      ESY__CACHE_INSTALL_PATH: /C/Users/VssAdministrator/.esy/3_/i
+      ESY__CACHE_SOURCE_TARBALL_PATH: /C/Users/VssAdministrator/.esy/source/i
+
+  # This job is kept here as we want to have the platform names in the same file
+  - job: Release
+    displayName: Release
+    dependsOn:
+      - Linux
+      - macOS
+      - Windows
+    pool:
+      vmImage: macOS-10.13
+      demands: node.js
+    steps:
+      - template: .ci/cross-release.yml

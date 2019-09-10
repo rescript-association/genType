@@ -1,0 +1,39 @@
+parameters:
+  platform: "macOS"
+  vmImage: "macOS-10.13"
+  STAGING_DIRECTORY: /Users/vsts/STAGING
+  STAGING_DIRECTORY_UNIX: /Users/vsts/STAGING
+  ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3____________________________________________________________________/i
+  ESY__CACHE_SOURCE_TARBALL_PATH: /Users/vsts/.esy/source/i
+
+jobs:
+  - job: ${{ parameters.platform }}
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+      demands: node.js
+    timeoutInMinutes: 120 # This is mostly for Windows
+    variables:
+      STAGING_DIRECTORY: ${{ parameters.STAGING_DIRECTORY }}
+      STAGING_DIRECTORY_UNIX: ${{ parameters.STAGING_DIRECTORY_UNIX }}
+      ESY__CACHE_INSTALL_PATH: ${{ parameters.ESY__CACHE_INSTALL_PATH }}
+      ESY__CACHE_SOURCE_TARBALL_PATH: ${{ parameters.ESY__CACHE_SOURCE_TARBALL_PATH }}
+
+    steps:
+      - template: utils/use-node.yml
+      - template: utils/use-esy.yml
+      - template: utils/restore-build-cache.yml
+      - script: "esy install"
+        displayName: "esy install"
+      - script: "esy build"
+        displayName: "esy build"
+      - template: utils/create-docs.yml
+      - script: "esy test"
+        displayName: "Test command"
+      - script: "esy release"
+        displayName: "esy release"
+      - template: utils/publish-build-cache.yml
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: ${{ parameters.platform }}"
+        inputs:
+          PathtoPublish: "_release"
+          ArtifactName: ${{ parameters.platform }}
