@@ -33,8 +33,8 @@ jobs:
             - v1-dependencies-
 
       # build & test
-      - run: npm install
-      - run: npm run build
+      - run: npm install -g esy
+      - run: esy build
       - run: npm test
 
       - save_cache:
