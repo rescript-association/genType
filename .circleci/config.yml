@@ -33,7 +33,7 @@ jobs:
             - v1-dependencies-
 
       # build & test
-      - run: npm install -g esy
+      - run: sudo npm install -g esy
       - run: esy build
       - run: npm test
 
