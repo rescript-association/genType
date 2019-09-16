@@ -52,8 +52,8 @@ let traslateDeclarationKind =
     typeAttributes |> Annotation.getAttributeImportRenaming;
 
   let returnTypeDeclaration = (typeDeclaration: CodeItem.typeDeclaration) =>
-    opaque == Some(true) ?
-      [{...typeDeclaration, importTypes: []}] : [typeDeclaration];
+    opaque == Some(true)
+      ? [{...typeDeclaration, importTypes: []}] : [typeDeclaration];
 
   let handleGeneralDeclaration =
       (translation: TranslateTypeExprFromTypes.translation) => {
