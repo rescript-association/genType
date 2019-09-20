@@ -35,7 +35,7 @@ type exportComponent = {
 type exportValue = {
   moduleAccessPath: Runtime.moduleAccessPath,
   originalName: string,
-  resolvedName: string,
+  resolvedName: ResolvedName.t,
   type_,
 };
 
