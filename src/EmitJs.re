@@ -93,7 +93,7 @@ let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
   | ExportValue({resolvedName, type_, _}) =>
     "ExportValue"
     ++ " resolvedName:"
-    ++ resolvedName
+    ++ ResolvedName.toString(resolvedName)
     ++ " type:"
     ++ EmitType.typeToString(~config, ~typeNameIsInterface, type_)
   | ImportComponent({importAnnotation, _}) =>
@@ -663,6 +663,7 @@ let rec emitCodeItem =
     (env, emitters);
 
   | ExportValue({moduleAccessPath, originalName, resolvedName, type_}) =>
+    let resolvedName = ResolvedName.toString(resolvedName);
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName

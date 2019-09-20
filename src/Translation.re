@@ -111,9 +111,7 @@ let translateValue =
     |> addAnnotationsToFunction;
   let resolvedNameOriginal =
     name |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
-  let resolvedName =
-    nameAs |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
-
+  let resolvedName = nameAs |> TypeEnv.addModulePath(~typeEnv);
   let moduleAccessPath =
     typeEnv |> TypeEnv.getModuleAccessPath(~name=resolvedNameOriginal);
 
@@ -254,10 +252,7 @@ let translateComponent =
       typeEnv |> TypeEnv.getModuleAccessPath(~name="make");
     let componentAccessPath =
       typeEnv
-      |> TypeEnv.getModuleAccessPath(
-           ~component=true,
-           ~name="component",
-         );
+      |> TypeEnv.getModuleAccessPath(~component=true, ~name="component");
 
     let codeItems = [
       CodeItem.ExportComponent({
