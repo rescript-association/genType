@@ -4,8 +4,14 @@ type eq = (t, t);
 
 let applyEquations: (~eqs: list(eq), t) => list(eq);
 
-let emitAllModuleItems: unit => string;
-let extendExportModules: t => unit;
+type moduleItemsEmitter;
+
+let createModuleItemsEmitter: unit => moduleItemsEmitter;
+
+let extendExportModules: (~moduleItemsEmitter: moduleItemsEmitter, t) => unit;
+
+let emitAllModuleItems:
+  (~emitters: Emitters.t, moduleItemsEmitter) => Emitters.t;
 
 let dot: (string, t) => t;
 
