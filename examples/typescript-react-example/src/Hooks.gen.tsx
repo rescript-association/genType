@@ -179,3 +179,9 @@ export const aComponentWithChildren: React.ComponentType<{ readonly children: Re
   const result = React.createElement(HooksBS.aComponentWithChildren, $props);
   return result
 };
+
+export const RenderPropRequiresConversion = { make: RenderPropRequiresConversion_make };
+
+export const Inner = { make: Inner_make, anotherComponent: Inner_anotherComponent, Inner2: { make: Inner_Inner2_make, anotherComponent: Inner_Inner2_anotherComponent } };
+
+export const NoProps = { make: NoProps_make };
