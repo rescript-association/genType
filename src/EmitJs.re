@@ -200,6 +200,7 @@ let rec emitCodeItem =
         (
           ~config,
           ~emitters,
+          ~moduleItemsEmitter,
           ~env,
           ~fileName,
           ~outputFileRelative,
@@ -663,7 +664,7 @@ let rec emitCodeItem =
     (env, emitters);
 
   | ExportValue({moduleAccessPath, originalName, resolvedName, type_}) =>
-    resolvedName |> ResolvedName.extendExportModules;
+    resolvedName |> ResolvedName.extendExportModules(~moduleItemsEmitter);
     let resolvedName = ResolvedName.toString(resolvedName);
     let nameGen = EmitText.newNameGen();
     let importPath =
@@ -838,6 +839,7 @@ and emitCodeItems =
       ~config,
       ~outputFileRelative,
       ~emitters,
+      ~moduleItemsEmitter,
       ~env,
       ~fileName,
       ~resolver,
@@ -854,6 +856,7 @@ and emitCodeItems =
          emitCodeItem(
            ~config,
            ~emitters,
+           ~moduleItemsEmitter,
            ~env,
            ~fileName,
            ~outputFileRelative,
@@ -1254,6 +1257,7 @@ let emitTranslationAsString =
        );
 
   let emitters = Emitters.initial
+  and moduleItemsEmitter = ResolvedName.createModuleItemsEmitter()
   and env = initialEnv;
 
   let (env, emitters) =
@@ -1286,6 +1290,7 @@ let emitTranslationAsString =
     |> emitCodeItems(
          ~config,
          ~emitters,
+         ~moduleItemsEmitter,
          ~env,
          ~fileName,
          ~outputFileRelative,
@@ -1327,8 +1332,8 @@ let emitTranslationAsString =
       : env;
 
   let emitters = variantTables |> emitVariantTables(~config, ~emitters);
-
-  logItem("XXX emitAllModuleItems\n%s\n", ResolvedName.emitAllModuleItems());
+  let emitters =
+    moduleItemsEmitter |> ResolvedName.emitAllModuleItems(~emitters);
 
   emitters
   |> emitRequires(

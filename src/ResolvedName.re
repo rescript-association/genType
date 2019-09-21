@@ -27,14 +27,21 @@ and emitExportModuleItems = (exportModuleItems, ~buffer) => {
 }
 and emitExportModuleItem = (exportModuleItem, ~buffer) => {
   Buffer.add_string(buffer, "{ ");
-  Hashtbl.iter(
-    (fieldNameName, exportModuleValue) => {
+
+  Hashtbl.fold(
+    (fieldNameName, exportModuleValue, l) => {
+      let buffer = Buffer.create(0);
       Buffer.add_string(buffer, fieldNameName ++ ": ");
       exportModuleValue |> emitExportModuleValue(~buffer);
-      Buffer.add_string(buffer, ", ");
+      [buffer |> Buffer.to_bytes, ...l];
     },
     exportModuleItem,
-  );
+    [],
+  )
+  |> List.rev
+  |> String.concat(", ")
+  |> Buffer.add_string(buffer);
+
   Buffer.add_string(buffer, " }");
 };
 
@@ -55,7 +62,7 @@ let extend =
       ~exportModuleValue: exportModuleValue,
     ) => {
   let exportModuleItem = exportModuleItems |> populate(~moduleName);
-  Hashtbl.add(exportModuleItem, fieldName, exportModuleValue);
+  Hashtbl.replace(exportModuleItem, fieldName, exportModuleValue);
 };
 
 let rec extendExportModules = (x, ~exportModuleItems, ~valueName) =>
@@ -95,24 +102,38 @@ let rec extendExportModules = (x, ~exportModuleItems, ~valueName) =>
     }
   };
 
-let globalExportModuleItems: exportModuleItems = Hashtbl.create(1);
+type moduleItemsEmitter = Hashtbl.t(string, exportModuleItem)
+and moduleItem = (string, string);
 
-let emitAllModuleItems = () => {
-  let buffer = Buffer.create(0);
+let createModuleItemsEmitter = () => Hashtbl.create(1);
+
+let moduleItemToString = ((moduleName, exportModuleItem)) =>
+  "export const " ++ moduleName ++ " = " ++ exportModuleItem ++ ";";
+
+let emitAllModuleItems = (~emitters, moduleItemsEmitter) => {
+  let emitters = ref(emitters);
+
   Hashtbl.iter(
     (moduleName, exportModuleItem) => {
-      Buffer.add_string(buffer, "export const " ++ moduleName ++ " = ");
+      let buffer = Buffer.create(0);
       exportModuleItem |> emitExportModuleItem(~buffer);
-      Buffer.add_string(buffer, ";\n");
+
+      emitters :=
+        Emitters.export(
+          ~emitters=emitters^,
+          (moduleName, buffer |> Buffer.to_bytes) |> moduleItemToString,
+        );
     },
-    globalExportModuleItems,
+    moduleItemsEmitter,
   );
-  buffer |> Buffer.to_bytes;
+
+  emitters^;
 };
-let extendExportModules = x =>
+
+let extendExportModules = (~moduleItemsEmitter, x) =>
   x
   |> extendExportModules(
-       ~exportModuleItems=globalExportModuleItems,
+       ~exportModuleItems=moduleItemsEmitter,
        ~valueName=x |> toString,
      );
 
