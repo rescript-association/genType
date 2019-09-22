@@ -664,7 +664,8 @@ let rec emitCodeItem =
     (env, emitters);
 
   | ExportValue({moduleAccessPath, originalName, resolvedName, type_}) =>
-    resolvedName |> ExportModule.extendExportModules(~moduleItemsEmitter);
+    resolvedName
+    |> ExportModule.extendExportModules(~moduleItemsEmitter, ~type_);
     let resolvedName = ResolvedName.toString(resolvedName);
     let nameGen = EmitText.newNameGen();
     let importPath =

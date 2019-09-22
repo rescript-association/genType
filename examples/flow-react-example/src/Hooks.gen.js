@@ -208,15 +208,30 @@ export const aComponentWithChildren: typeof(aComponentWithChildren$$forTypeof) =
   return result
 };
 
-export const NoProps = { make: NoProps_make };
+export const NoProps: { make: React$ComponentType<{||}> } = { make: NoProps_make }
 
-export const Inner = {
+export const Inner: {
+  Inner2: {
+    anotherComponent: React$ComponentType<{|
+      +vehicle: vehicle
+    |}>, 
+    make: React$ComponentType<{|
+      +vehicle: vehicle
+    |}>
+  }, 
+  anotherComponent: React$ComponentType<{|
+    +vehicle: vehicle
+  |}>, 
+  make: React$ComponentType<{|
+    +vehicle: vehicle
+  |}>
+} = {
   Inner2: {
     anotherComponent: Inner_Inner2_anotherComponent, 
     make: Inner_Inner2_make
   }, 
   anotherComponent: Inner_anotherComponent, 
   make: Inner_make
-};
+}
 
-export const RenderPropRequiresConversion = { make: RenderPropRequiresConversion_make };
+export const RenderPropRequiresConversion: { make: React$ComponentType<{| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |}> } = { make: RenderPropRequiresConversion_make }
