@@ -58,14 +58,14 @@ let rev_fold = (f, tbl, base) => {
   List.fold_left((x, (k, v)) => f(k, v, x), base, list);
 };
 
-let rec emitExportModuleValue: exportModuleValue => type_ =
+let rec exportModuleValueToType: exportModuleValue => type_ =
   exportModuleValue =>
     switch (exportModuleValue) {
     | S(s) => ident(s)
     | M(exportModuleItem) =>
-      Object(Open, exportModuleItem |> emitExportModuleItem)
+      Object(Open, exportModuleItem |> exportModuleItemToFields)
     }
-and emitExportModuleItem: exportModuleItem => fields =
+and exportModuleItemToFields: exportModuleItem => fields =
   exportModuleItem => {
     Hashtbl.fold(
       (fieldName, exportModuleValue, fields) => {
@@ -73,7 +73,7 @@ and emitExportModuleItem: exportModuleItem => fields =
           mutable_: Mutable,
           name: fieldName,
           optional: Mandatory,
-          type_: exportModuleValue |> emitExportModuleValue,
+          type_: exportModuleValue |> exportModuleValueToType,
         };
         [field, ...fields];
       },
@@ -90,9 +90,9 @@ let emitAllModuleItems =
   emitters
   |> rev_fold(
        (moduleName, exportModuleItem, emitters) => {
-         let fields = exportModuleItem |> emitExportModuleItem;
          let emittedModuleItem =
-           Object(Open, fields)
+           M(exportModuleItem)
+           |> exportModuleValueToType
            |> EmitType.typeToString(
                 ~config={...config, language: Flow} /* abuse type to print object */,
                 ~typeNameIsInterface=_ =>
