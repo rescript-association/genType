@@ -664,7 +664,7 @@ let rec emitCodeItem =
     (env, emitters);
 
   | ExportValue({moduleAccessPath, originalName, resolvedName, type_}) =>
-    resolvedName |> ResolvedName.extendExportModules(~moduleItemsEmitter);
+    resolvedName |> ExportModule.extendExportModules(~moduleItemsEmitter);
     let resolvedName = ResolvedName.toString(resolvedName);
     let nameGen = EmitText.newNameGen();
     let importPath =
@@ -1257,7 +1257,7 @@ let emitTranslationAsString =
        );
 
   let emitters = Emitters.initial
-  and moduleItemsEmitter = ResolvedName.createModuleItemsEmitter()
+  and moduleItemsEmitter = ExportModule.createModuleItemsEmitter()
   and env = initialEnv;
 
   let (env, emitters) =
@@ -1333,7 +1333,7 @@ let emitTranslationAsString =
 
   let emitters = variantTables |> emitVariantTables(~config, ~emitters);
   let emitters =
-    moduleItemsEmitter |> ResolvedName.emitAllModuleItems(~emitters);
+    moduleItemsEmitter |> ExportModule.emitAllModuleItems(~emitters);
 
   emitters
   |> emitRequires(
