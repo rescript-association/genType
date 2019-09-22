@@ -7,4 +7,4 @@ const NestedModulesInSignatureBS = require('./NestedModulesInSignature.bs');
 
 export const Universe_theAnswer: number = NestedModulesInSignatureBS.Universe[0];
 
-export const Universe = { theAnswer: Universe_theAnswer };
+export const Universe: { theAnswer: number } = { theAnswer: Universe_theAnswer }

@@ -17,6 +17,8 @@ exports.Inner_y = Inner_y
 const Outer_Medium_Inner_y: number = TestEmitInnerModulesBS.Outer[0][0][0];;
 exports.Outer_Medium_Inner_y = Outer_Medium_Inner_y
 
-export const Inner = { x: Inner_x, y: Inner_y };
+const Inner: { x: number, y: string } = { x: Inner_x, y: Inner_y };
+exports.Inner = Inner
 
-export const Outer = { Medium: { Inner: { y: Outer_Medium_Inner_y } } };
+const Outer: { Medium: { Inner: { y: number } } } = { Medium: { Inner: { y: Outer_Medium_Inner_y } } };
+exports.Outer = Outer
