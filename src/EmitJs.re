@@ -1333,7 +1333,7 @@ let emitTranslationAsString =
 
   let emitters = variantTables |> emitVariantTables(~config, ~emitters);
   let emitters =
-    moduleItemsEmitter |> ExportModule.emitAllModuleItems(~emitters);
+    moduleItemsEmitter |> ExportModule.emitAllModuleItems(~config, ~emitters);
 
   emitters
   |> emitRequires(

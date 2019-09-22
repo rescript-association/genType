@@ -180,8 +180,15 @@ export const aComponentWithChildren: React.ComponentType<{ readonly children: Re
   return result
 };
 
-export const RenderPropRequiresConversion = { make: RenderPropRequiresConversion_make };
-
-export const Inner = { make: Inner_make, anotherComponent: Inner_anotherComponent, Inner2: { make: Inner_Inner2_make, anotherComponent: Inner_Inner2_anotherComponent } };
-
 export const NoProps = { make: NoProps_make };
+
+export const Inner = {
+  Inner2: {
+    anotherComponent: Inner_Inner2_anotherComponent, 
+    make: Inner_Inner2_make
+  }, 
+  anotherComponent: Inner_anotherComponent, 
+  make: Inner_make
+};
+
+export const RenderPropRequiresConversion = { make: RenderPropRequiresConversion_make };
