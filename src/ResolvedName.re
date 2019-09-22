@@ -73,11 +73,7 @@ let rec extendExportModules = (x, ~exportModuleItems, ~valueName) =>
     | [] => ()
     | [fieldName] =>
       exportModuleItems
-      |> extend(
-           ~moduleName,
-           ~fieldName,
-           ~exportModuleValue=S(valueName),
-         )
+      |> extend(~moduleName, ~fieldName, ~exportModuleValue=S(valueName))
     | [fieldName, _, ..._] =>
       let exportModuleItem = exportModuleItems |> populate(~moduleName);
       let innerExportModuleItems =
@@ -102,8 +98,7 @@ let rec extendExportModules = (x, ~exportModuleItems, ~valueName) =>
     }
   };
 
-type moduleItemsEmitter = Hashtbl.t(string, exportModuleItem)
-and moduleItem = (string, string);
+type moduleItemsEmitter = Hashtbl.t(string, exportModuleItem);
 
 let createModuleItemsEmitter = () => Hashtbl.create(1);
 
