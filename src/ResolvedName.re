@@ -106,23 +106,21 @@ let moduleItemToString = ((moduleName, exportModuleItem)) =>
   "export const " ++ moduleName ++ " = " ++ exportModuleItem ++ ";";
 
 let emitAllModuleItems = (~emitters, moduleItemsEmitter) => {
-  let emitters = ref(emitters);
-
-  Hashtbl.iter(
-    (moduleName, exportModuleItem) => {
+  Hashtbl.fold(
+    (moduleName, exportModuleItem, emitters) => {
       let buffer = Buffer.create(0);
       exportModuleItem |> emitExportModuleItem(~buffer);
 
-      emitters :=
+      let emitters =
         Emitters.export(
-          ~emitters=emitters^,
+          ~emitters,
           (moduleName, buffer |> Buffer.to_bytes) |> moduleItemToString,
         );
+      emitters;
     },
     moduleItemsEmitter,
+    emitters,
   );
-
-  emitters^;
 };
 
 let extendExportModules = (~moduleItemsEmitter, x) =>
