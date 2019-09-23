@@ -68,10 +68,14 @@ let cli = () => {
   let executeCliCommand = (~bsVersion, cliCommand) =>
     switch (cliCommand) {
     | Add(s) =>
-      let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
-      assert(Array.length(splitColon) === 2);
-      let cmt: string = splitColon[0];
-      let mlast: string = splitColon[1];
+      let splitColon = Str.split(Str.regexp(":"), s);
+      let (cmt, mlast) =
+        switch (splitColon) {
+        | [cmt, ...rest] =>
+          let mlast = rest |> String.concat("");
+          (cmt, mlast);
+        | _ => assert(false)
+        };
       let config =
         Paths.readConfig(~bsVersion, ~namespace=cmt |> Paths.findNameSpace);
       if (Debug.basic^) {
