@@ -1,4 +1,4 @@
-# master
+# 2.40.0
 - Export inner modules as objects (when at least one value in the module is exported).
   See: https://github.com/cristianoc/genType/issues/253.
 
