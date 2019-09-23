@@ -17,7 +17,7 @@
     "path": "../../src/lib/bs/native/gentype.native.exe"
   },
   "name": "sample-typescript-app",
-  "bsc-flags": ["-bs-super-errors -verbose"],
+  "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],
   "sources": [
