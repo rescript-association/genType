@@ -1,3 +1,7 @@
+# master
+- Export inner modules as objects (when at least one value in the module is exported).
+  See: https://github.com/cristianoc/genType/issues/253.
+
 # 2.39.0
 - Add new annotation `[@genType.ignoreInterface];`.
   When added at the top `.rei` file, the annotations will be taken from the `.re` file.
