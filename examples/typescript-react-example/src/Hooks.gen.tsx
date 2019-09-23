@@ -53,7 +53,7 @@ export type Inner_make_Props = { readonly vehicle: vehicle };
 
 export const Inner_make: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner(Arg1: any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.make, $props);
+  const result = React.createElement(HooksBS.Inner[0], $props);
   return result
 };
 
@@ -62,7 +62,7 @@ export type Inner_anotherComponent_Props = { readonly vehicle: vehicle };
 
 export const Inner_anotherComponent: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner_anotherComponent(Arg1: any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.anotherComponent, $props);
+  const result = React.createElement(HooksBS.Inner[1], $props);
   return result
 };
 
@@ -71,7 +71,7 @@ export type Inner_Inner2_make_Props = { readonly vehicle: vehicle };
 
 export const Inner_Inner2_make: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner_Inner2(Arg1: any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.Inner2.make, $props);
+  const result = React.createElement(HooksBS.Inner[2][0], $props);
   return result
 };
 
@@ -80,14 +80,14 @@ export type Inner_Inner2_anotherComponent_Props = { readonly vehicle: vehicle };
 
 export const Inner_Inner2_anotherComponent: React.ComponentType<{ readonly vehicle: vehicle }> = function Hooks_Inner_Inner2_anotherComponent(Arg1: any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.Inner2.anotherComponent, $props);
+  const result = React.createElement(HooksBS.Inner[2][1], $props);
   return result
 };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type NoProps_make_Props = {};
 
-export const NoProps_make: React.ComponentType<{}> = HooksBS.NoProps.make;
+export const NoProps_make: React.ComponentType<{}> = HooksBS.NoProps[0];
 
 export const functionWithRenamedArgs: (_1:{
   readonly to: vehicle; 
@@ -167,7 +167,7 @@ export const RenderPropRequiresConversion_make: React.ComponentType<{ readonly r
       const result1 = React.createElement(Arg1.renderVehicle, $props);
       return result1
     }};
-  const result = React.createElement(HooksBS.RenderPropRequiresConversion.make, $props1);
+  const result = React.createElement(HooksBS.RenderPropRequiresConversion[0], $props1);
   return result
 };
 
@@ -180,7 +180,7 @@ export const aComponentWithChildren: React.ComponentType<{ readonly children: Re
   return result
 };
 
-export const NoProps: { make: React.ComponentType<{}> } = HooksBS.NoProps
+export const NoProps: { make: React.ComponentType<{}> } = { make: NoProps_make }
 
 export const Inner: {
   Inner2: {
@@ -197,6 +197,13 @@ export const Inner: {
   make: React.ComponentType<{
     readonly vehicle: vehicle
   }>
-} = HooksBS.Inner
+} = {
+  Inner2: {
+    anotherComponent: Inner_Inner2_anotherComponent, 
+    make: Inner_Inner2_make
+  }, 
+  anotherComponent: Inner_anotherComponent, 
+  make: Inner_make
+}
 
-export const RenderPropRequiresConversion: { make: React.ComponentType<{ readonly renderVehicle: React.ComponentType<{ readonly number: number; readonly vehicle: vehicle }> }> } = HooksBS.RenderPropRequiresConversion
+export const RenderPropRequiresConversion: { make: React.ComponentType<{ readonly renderVehicle: React.ComponentType<{ readonly number: number; readonly vehicle: vehicle }> }> } = { make: RenderPropRequiresConversion_make }

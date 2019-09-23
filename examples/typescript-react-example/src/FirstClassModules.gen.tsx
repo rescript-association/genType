@@ -26,7 +26,7 @@ export type firstClassModule = {
   readonly y: string
 };
 
-export const firstClassModule: firstClassModule = FirstClassModulesBS.firstClassModule;
+export const firstClassModule: firstClassModule = {x:FirstClassModulesBS.firstClassModule[0], EmptyInnerModule:{}, InnerModule2:{k:FirstClassModulesBS.firstClassModule[2][0]}, InnerModule3:{k3:FirstClassModulesBS.firstClassModule[3][0]}, Z:FirstClassModulesBS.firstClassModule[4], y:FirstClassModulesBS.firstClassModule[5]};
 
 export const testConvert: (_1:{
   readonly x: number; 
@@ -52,7 +52,10 @@ export const testConvert: (_1:{
   }; 
   readonly Z: unknown; 
   readonly y: string
-} = FirstClassModulesBS.testConvert;
+} = function (Arg1: any) {
+  const result = FirstClassModulesBS.testConvert([Arg1.x, [], [Arg1.InnerModule2.k], [Arg1.InnerModule3.k3], Arg1.Z, Arg1.y]);
+  return {x:result[0], EmptyInnerModule:{}, InnerModule2:{k:result[2][0]}, InnerModule3:{k3:result[3][0]}, Z:result[4], y:result[5]}
+};
 
 export const someFunctorAsFunction: (_1:{
   readonly x: number; 
@@ -66,4 +69,7 @@ export const someFunctorAsFunction: (_1:{
   }; 
   readonly Z: unknown; 
   readonly y: string
-}) => { readonly ww: string } = FirstClassModulesBS.someFunctorAsFunction;
+}) => { readonly ww: string } = function (Arg1: any) {
+  const result = FirstClassModulesBS.someFunctorAsFunction([Arg1.x, [], [Arg1.InnerModule2.k], [Arg1.InnerModule3.k3], Arg1.Z, Arg1.y]);
+  return {ww:result[0]}
+};
