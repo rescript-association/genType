@@ -100,19 +100,25 @@ let moduleItemToString = ((moduleName, exportModuleItem)) =>
   "export const " ++ moduleName ++ " = " ++ exportModuleItem ++ ";";
 
 let emitAllModuleItems =
-    (~config, ~emitters, exportModuleItems: exportModuleItems) => {
+    (~config, ~emitters, ~fileName, exportModuleItems: exportModuleItems) => {
   emitters
   |> rev_fold(
        (moduleName, exportModuleItem, emitters) => {
          let {typeForValue, typeForType} =
            M(exportModuleItem) |> exportModuleValueToType;
          let emittedModuleItem =
-           typeForValue
-           |> EmitType.typeToString(
-                ~config={...config, language: Flow} /* abuse type to print object */,
-                ~typeNameIsInterface=_ =>
-                false
-              );
+           config.modulesAsObjects
+             ? ModuleName.forInnerModule(
+                 ~fileName,
+                 ~innerModuleName=moduleName,
+               )
+               |> ModuleName.toString
+             : typeForValue
+               |> EmitType.typeToString(
+                    ~config={...config, language: Flow} /* abuse type to print object */,
+                    ~typeNameIsInterface=_ =>
+                    false
+                  );
          emittedModuleItem
          |> EmitType.emitExportConst(
               ~config,

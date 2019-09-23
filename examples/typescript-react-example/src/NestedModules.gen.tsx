@@ -42,15 +42,4 @@ export const Universe: {
     }
   }; 
   someString: string
-} = {
-  theAnswer: Universe_theAnswer, 
-  Nested2: {
-    nested2Function: Universe_Nested2_nested2Function, 
-    nested2Value: Universe_Nested2_nested2Value, 
-    Nested3: {
-      nested3Value: Universe_Nested2_Nested3_nested3Value, 
-      nested3Function: Universe_Nested2_Nested3_nested3Function
-    }
-  }, 
-  someString: Universe_someString
-}
+} = NestedModulesBS.Universe
