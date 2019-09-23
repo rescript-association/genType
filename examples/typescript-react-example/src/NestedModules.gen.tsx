@@ -19,17 +19,17 @@ export type Universe_variant = "A" | { tag: "B"; value: string };
 
 export const notNested: number = NestedModulesBS.notNested;
 
-export const Universe_theAnswer: number = NestedModulesBS.Universe[0];
+export const Universe_theAnswer: number = NestedModulesBS.Universe.theAnswer;
 
-export const Universe_Nested2_nested2Value: number = NestedModulesBS.Universe[2][1];
+export const Universe_Nested2_nested2Value: number = NestedModulesBS.Universe.Nested2.nested2Value;
 
-export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesBS.Universe[2][3][4];
+export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesBS.Universe.Nested2.Nested3.nested3Value;
 
-export const Universe_Nested2_Nested3_nested3Function: (_1:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type = NestedModulesBS.Universe[2][3][5];
+export const Universe_Nested2_Nested3_nested3Function: (_1:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type = NestedModulesBS.Universe.Nested2.Nested3.nested3Function;
 
-export const Universe_Nested2_nested2Function: (_1:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type = NestedModulesBS.Universe[2][4];
+export const Universe_Nested2_nested2Function: (_1:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type = NestedModulesBS.Universe.Nested2.nested2Function;
 
-export const Universe_someString: string = NestedModulesBS.Universe[3];
+export const Universe_someString: string = NestedModulesBS.Universe.someString;
 
 export const Universe: {
   theAnswer: number; 
@@ -42,15 +42,4 @@ export const Universe: {
     }
   }; 
   someString: string
-} = {
-  theAnswer: Universe_theAnswer, 
-  Nested2: {
-    nested2Function: Universe_Nested2_nested2Function, 
-    nested2Value: Universe_Nested2_nested2Value, 
-    Nested3: {
-      nested3Value: Universe_Nested2_Nested3_nested3Value, 
-      nested3Function: Universe_Nested2_Nested3_nested3Function
-    }
-  }, 
-  someString: Universe_someString
-}
+} = NestedModulesBS.Universe
