@@ -15,9 +15,9 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 export type InnerComponent_Props = { readonly children?: unknown };
 
 export const InnerComponent: React.ComponentType<InnerComponent_Props> = ReasonReact.wrapReasonForJs(
-  ManyComponentsBS.InnerComponent.component,
+  ManyComponentsBS.InnerComponent[1],
   (function _(jsProps: InnerComponent_Props) {
-     return ManyComponentsBS.InnerComponent.make(jsProps.children);
+     return ManyComponentsBS.InnerComponent[2](jsProps.children);
   }));
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -34,9 +34,9 @@ export type ManyProps_Props = {
 };
 
 export const ManyProps: React.ComponentType<ManyProps_Props> = ReasonReact.wrapReasonForJs(
-  ManyComponentsBS.ManyProps.component,
+  ManyComponentsBS.ManyProps[0],
   (function _(jsProps: ManyProps_Props) {
-     return Curry.app(ManyComponentsBS.ManyProps.make, [jsProps.a, jsProps.b, jsProps.c, jsProps.d, jsProps.e, jsProps.f, jsProps.g, jsProps.h, jsProps.children]);
+     return Curry.app(ManyComponentsBS.ManyProps[1], [jsProps.a, jsProps.b, jsProps.c, jsProps.d, jsProps.e, jsProps.f, jsProps.g, jsProps.h, jsProps.children]);
   }));
 
 // tslint:disable-next-line:interface-over-type-literal
