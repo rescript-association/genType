@@ -78,7 +78,6 @@ let typeReactElement = (~config) =>
 let typeReactChild = (~config) =>
   config.language == Flow ? typeReactElementFlow : typeReactChildTypeScript;
 
-
 let isTypeReactElement = (~config, type_) =>
   type_ === typeReactElement(~config);
 
@@ -96,12 +95,12 @@ let componentExportName = (~config, ~fileName, ~moduleName) =>
 let typeAny = (~config) =>
   ident(
     ~builtin=true,
-    config.language == Flow ?
-      {
+    config.language == Flow
+      ? {
         config.emitFlowAny = true;
         "$any";
-      } :
-      "any",
+      }
+      : "any",
   );
 
 let rec renderType =
@@ -120,9 +119,9 @@ let rec renderType =
       ++ "[]";
     } else {
       let arrayName =
-        arrayKind == Mutable ?
-          "Array" :
-          config.language == Flow ? "$ReadOnlyArray" : "ReadonlyArray";
+        arrayKind == Mutable
+          ? "Array"
+          : config.language == Flow ? "$ReadOnlyArray" : "ReadonlyArray";
       arrayName
       ++ "<"
       ++ (
@@ -190,8 +189,8 @@ let rec renderType =
 
   | Ident({builtin, name, typeArgs}) =>
     (
-      !builtin && config.exportInterfaces && name |> typeNameIsInterface ?
-        name |> interfaceName(~config) : name
+      !builtin && config.exportInterfaces && name |> typeNameIsInterface
+        ? name |> interfaceName(~config) : name
     )
     ++ EmitText.genericsString(
          ~typeVars=
@@ -272,15 +271,15 @@ let rec renderType =
            let typeRendered =
              type_
              |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType);
-           unboxed ?
-             typeRendered :
-             [
-               case.labelJS
-               |> labelJSToString
-               |> field(~name=Runtime.jsVariantTag),
-               typeRendered |> field(~name=Runtime.jsVariantValue),
-             ]
-             |> fields;
+           unboxed
+             ? typeRendered
+             : [
+                 case.labelJS
+                 |> labelJSToString
+                 |> field(~name=Runtime.jsVariantTag),
+                 typeRendered |> field(~name=Runtime.jsVariantValue),
+               ]
+               |> fields;
          });
     let rendered = noPayloadsRendered @ payloadsRendered;
     let indent1 = rendered |> Indent.heuristicVariants(~indent);
@@ -348,8 +347,8 @@ and renderFunType =
        List.mapi(
          (i, t) => {
            let parameterName =
-             config.language == Flow ?
-               "" : "_" ++ string_of_int(i + 1) ++ ":";
+             config.language == Flow
+               ? "" : "_" ++ string_of_int(i + 1) ++ ":";
            parameterName
            ++ (
              t
@@ -374,8 +373,8 @@ let typeToString = (~config, ~typeNameIsInterface, type_) =>
   type_ |> renderType(~config, ~typeNameIsInterface, ~inFunType=false);
 
 let ofType = (~config, ~typeNameIsInterface, ~type_, s) =>
-  config.language == Untyped ?
-    s : s ++ ": " ++ (type_ |> typeToString(~config, ~typeNameIsInterface));
+  config.language == Untyped
+    ? s : s ++ ": " ++ (type_ |> typeToString(~config, ~typeNameIsInterface));
 
 let emitHookTypeAsFunction =
     (
@@ -482,8 +481,8 @@ let emitExportType =
   let typeParamsString = EmitText.genericsString(~typeVars);
   let isInterface = resolvedTypeName |> typeNameIsInterface;
   let resolvedTypeName =
-    config.exportInterfaces && isInterface ?
-      resolvedTypeName |> interfaceName(~config) : resolvedTypeName;
+    config.exportInterfaces && isInterface
+      ? resolvedTypeName |> interfaceName(~config) : resolvedTypeName;
   let exportNameAs =
     switch (nameAs) {
     | None => ""
@@ -537,8 +536,8 @@ let emitExportType =
         typeVars == [] ? "any" : typeVars |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ (
-        String.capitalize(resolvedTypeName) != resolvedTypeName ?
-          "// tslint:disable-next-line:class-name\n" : ""
+        String.capitalize(resolvedTypeName) != resolvedTypeName
+          ? "// tslint:disable-next-line:class-name\n" : ""
       )
       ++ "export abstract class "
       ++ resolvedTypeName
@@ -576,8 +575,8 @@ let emitExportType =
 
 let emitImportValueAsEarly = (~config, ~emitters, ~name, ~nameAs, importPath) => {
   let commentBeforeImport =
-    config.language == Flow ?
-      "// flowlint-next-line nonstrict-import:off\n" : "";
+    config.language == Flow
+      ? "// flowlint-next-line nonstrict-import:off\n" : "";
   commentBeforeImport
   ++ "import "
   ++ (
@@ -607,9 +606,9 @@ let emitRequire =
     switch (config.language) {
     | TypeScript => "// tslint:disable-next-line:no-var-requires\n"
     | Flow =>
-      strict ?
-        early ? "// flowlint-next-line nonstrict-import:off\n" : "" :
-        flowExpectedError
+      strict
+        ? early ? "// flowlint-next-line nonstrict-import:off\n" : ""
+        : flowExpectedError
     | Untyped => ""
     };
   switch (config.module_) {
@@ -636,7 +635,8 @@ let require = (~early) => early ? Emitters.requireEarly : Emitters.require;
 
 let emitImportReact = (~emitters, ~config) =>
   switch (config.language) {
-  | Flow =>
+  | Flow
+  | Untyped =>
     emitRequire(
       ~importedValueOrComponent=false,
       ~early=true,
@@ -648,7 +648,6 @@ let emitImportReact = (~emitters, ~config) =>
     )
   | TypeScript =>
     "import * as React from 'react';" |> require(~early=true, ~emitters)
-  | Untyped => emitters
   };
 
 let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
@@ -720,17 +719,17 @@ let emitImportTypeAs =
   let (typeName, asTypeName) =
     switch (asTypeName) {
     | Some(asName) =>
-      asName |> typeNameIsInterface ?
-        (
+      asName |> typeNameIsInterface
+        ? (
           typeName |> interfaceName(~config),
           Some(asName |> interfaceName(~config)),
-        ) :
-        (typeName, asTypeName)
+        )
+        : (typeName, asTypeName)
     | None => (typeName, asTypeName)
     };
   let strictLocalPrefix =
-    config.language == Flow ?
-      "// flowlint-next-line nonstrict-import:off\n" : "";
+    config.language == Flow
+      ? "// flowlint-next-line nonstrict-import:off\n" : "";
   switch (config.language) {
   | Flow
   | TypeScript =>

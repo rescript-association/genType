@@ -1,3 +1,6 @@
+# master
+- Fix missing import React in untyped back-end.
+
 # 2.40.1
 - Work around an issue in which bucklescript passes the file names to genType.
   See https://github.com/cristianoc/genType/pull/256.

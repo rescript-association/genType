@@ -5,6 +5,8 @@
 
 import MyBanner from './MyBanner';
 
+import * as React from 'react';
+
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
