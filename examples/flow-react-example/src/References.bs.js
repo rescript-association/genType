@@ -27,11 +27,11 @@ function set(r, v) {
   return /* () */0;
 }
 
-var R = /* module */[
-  /* get */get,
-  /* make */make,
-  /* set */set
-];
+var R = {
+  get: get,
+  make: make,
+  set: set
+};
 
 function destroysRefIdentity(x) {
   return x;

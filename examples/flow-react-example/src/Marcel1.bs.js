@@ -5,9 +5,13 @@ function foo(x) {
   return x;
 }
 
-var A = /* module */[/* foo */foo];
+var A = {
+  foo: foo
+};
 
-var N = /* module */[/* foo */foo];
+var N = {
+  foo: foo
+};
 
 function testConversion(x) {
   return x;

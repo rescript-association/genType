@@ -70,17 +70,17 @@ function printVariantWithPayloads(x) {
     return /* () */0;
   } else {
     switch (x.tag | 0) {
-      case 0 : 
+      case /* B */0 :
           console.log("printVariantWithPayloads", "B(" + (String(x[0]) + ")"));
           return /* () */0;
-      case 1 : 
+      case /* C */1 :
           console.log("printVariantWithPayloads", "C(" + (String(x[0]) + (", " + (String(x[1]) + ")"))));
           return /* () */0;
-      case 2 : 
+      case /* D */2 :
           var match = x[0];
           console.log("printVariantWithPayloads", "D((" + (String(match[0]) + (", " + (String(match[1]) + "))"))));
           return /* () */0;
-      case 3 : 
+      case /* E */3 :
           console.log("printVariantWithPayloads", "E(" + (String(x[0]) + (", " + (x[1] + (", " + (String(x[2]) + ")"))))));
           return /* () */0;
       

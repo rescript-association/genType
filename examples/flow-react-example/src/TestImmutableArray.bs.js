@@ -4,7 +4,7 @@ import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as ImmutableArray from "./ImmutableArray.bs.js";
 
 function testImmutableArrayGet(arr) {
-  return ImmutableArray.$$Array[/* get */0](arr, 3);
+  return ImmutableArray.$$Array.get(arr, 3);
 }
 
 function testBeltArrayGet(arr) {

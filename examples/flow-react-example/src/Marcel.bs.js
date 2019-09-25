@@ -2,19 +2,27 @@
 
 
 function Make(Conf) {
-  var Inner = /* module */[];
-  return /* module */[/* Inner */Inner];
+  var Inner = { };
+  return {
+          Inner: Inner
+        };
 }
 
-var A = /* module */[/* Make */Make];
+var A = {
+  Make: Make
+};
 
-var Inner = /* module */[];
+var Inner = { };
 
-var B = /* module */[/* Inner */Inner];
+var B = {
+  Inner: Inner
+};
 
-var Inner$1 = /* module */[];
+var Inner$1 = { };
 
-var C = /* module */[/* Inner */Inner$1];
+var C = {
+  Inner: Inner$1
+};
 
 export {
   A ,
