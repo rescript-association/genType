@@ -275,7 +275,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
     let modulesAsObjects = {
       switch (v1) {
       | 5 => bsVersion >= (5, 2, 0)
-      | 6 => bsVersion > (6, 2, 0)
+      | 6 => bsVersion >= (6, 2, 0)
       | _ => v1 > 6
       };
     };
