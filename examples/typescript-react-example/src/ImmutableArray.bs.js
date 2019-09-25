@@ -140,7 +140,9 @@ var eqU = Belt_Array.eqU;
 
 var eq = Belt_Array.eq;
 
-var $$Array$1 = [get];
+var $$Array$1 = {
+  get: get
+};
 
 export {
   $$Array$1 as $$Array,

@@ -5,7 +5,7 @@ function testConversion(x) {
   return x;
 }
 
-var A = /* module */[];
+var A = { };
 
 export {
   testConversion ,

@@ -3,51 +3,61 @@
 
 var y = "abc";
 
-var EmptyInnerModule = /* module */[];
+var EmptyInnerModule = { };
 
-var InnerModule2 = /* module */[/* k */4242];
+var InnerModule2 = {
+  k: 4242
+};
 
 function k3(x) {
   return x + 1 | 0;
 }
 
-var InnerModule3 = /* module */[/* k3 */k3];
+var InnerModule3 = {
+  k3: k3
+};
 
-var Z = /* module */[/* u : tuple */[
+var Z = {
+  u: /* tuple */[
     0,
     0
-  ]];
+  ]
+};
 
-var M = /* module */[
-  /* y */y,
-  /* EmptyInnerModule */EmptyInnerModule,
-  /* InnerModule2 */InnerModule2,
-  /* InnerModule3 */InnerModule3,
-  /* Z */Z,
-  /* x */42
-];
+var M = {
+  y: y,
+  EmptyInnerModule: EmptyInnerModule,
+  InnerModule2: InnerModule2,
+  InnerModule3: InnerModule3,
+  Z: Z,
+  x: 42
+};
 
-var firstClassModule = [
-  42,
-  EmptyInnerModule,
-  InnerModule2,
-  InnerModule3,
-  Z,
-  y
-];
+var firstClassModule = {
+  x: 42,
+  EmptyInnerModule: EmptyInnerModule,
+  InnerModule2: InnerModule2,
+  InnerModule3: InnerModule3,
+  Z: Z,
+  y: y
+};
 
 function testConvert(m) {
   return m;
 }
 
 function SomeFunctor(X) {
-  var ww = X[/* y */5];
-  return /* module */[/* ww */ww];
+  var ww = X.y;
+  return {
+          ww: ww
+        };
 }
 
 function someFunctorAsFunction(x) {
-  var ww = x[/* y */5];
-  return /* module */[/* ww */ww];
+  var ww = x.y;
+  return {
+          ww: ww
+        };
 }
 
 export {

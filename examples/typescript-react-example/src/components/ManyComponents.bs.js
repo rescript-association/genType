@@ -26,11 +26,11 @@ function make(_children) {
         ];
 }
 
-var InnerComponent = /* module */[
-  /* someValueSoModuleOffsetsAreShifted */77,
-  /* component */component,
-  /* make */make
-];
+var InnerComponent = {
+  someValueSoModuleOffsetsAreShifted: 77,
+  component: component,
+  make: make
+};
 
 var component$1 = ReasonReact.statelessComponent("ManyProps");
 
@@ -55,10 +55,10 @@ function make$1(param, param$1, param$2, param$3, param$4, param$5, param$6, par
         ];
 }
 
-var ManyProps = /* module */[
-  /* component */component$1,
-  /* make */make$1
-];
+var ManyProps = {
+  component: component$1,
+  make: make$1
+};
 
 var component$2 = ReasonReact.statelessComponent("ManyComponents");
 

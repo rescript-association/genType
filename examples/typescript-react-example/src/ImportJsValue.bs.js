@@ -21,7 +21,9 @@ function getAbs(x) {
   return x.getAbs();
 }
 
-var AbsoluteValue = /* module */[/* getAbs */getAbs];
+var AbsoluteValue = {
+  getAbs: getAbs
+};
 
 function useGetProp(x) {
   return x.getProp() + 1 | 0;

@@ -66,22 +66,24 @@ function Hooks$Inner$Inner2$anotherComponent(Props) {
   return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
 }
 
-var Inner2 = /* module */[
-  /* make */Hooks$Inner$Inner2,
-  /* anotherComponent */Hooks$Inner$Inner2$anotherComponent
-];
+var Inner2 = {
+  make: Hooks$Inner$Inner2,
+  anotherComponent: Hooks$Inner$Inner2$anotherComponent
+};
 
-var Inner = /* module */[
-  /* make */Hooks$Inner,
-  /* anotherComponent */Hooks$Inner$anotherComponent,
-  /* Inner2 */Inner2
-];
+var Inner = {
+  make: Hooks$Inner,
+  anotherComponent: Hooks$Inner$anotherComponent,
+  Inner2: Inner2
+};
 
 function Hooks$NoProps(Props) {
   return React.createElement("div", undefined, null);
 }
 
-var NoProps = /* module */[/* make */Hooks$NoProps];
+var NoProps = {
+  make: Hooks$NoProps
+};
 
 function functionWithRenamedArgs(_to, _Type, cb) {
   Curry._1(cb, _to);
@@ -135,7 +137,9 @@ function Hooks$RenderPropRequiresConversion(Props) {
             });
 }
 
-var RenderPropRequiresConversion = /* module */[/* make */Hooks$RenderPropRequiresConversion];
+var RenderPropRequiresConversion = {
+  make: Hooks$RenderPropRequiresConversion
+};
 
 function Hooks$aComponentWithChildren(Props) {
   var vehicle = Props.vehicle;
