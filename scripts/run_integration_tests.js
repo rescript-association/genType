@@ -76,11 +76,13 @@ function cleanBuildExamples() {
     const shell = isWindows ? true : false;
     child_process.execFileSync("npm", ["run", "clean"], {
       cwd,
-      shell
+      shell,
+      stdio: [0,1,2]
     });
     child_process.execFileSync("npm", ["run", "build"], {
       cwd,
-      shell
+      shell,
+      stdio: [0,1,2]
     });
   }
 }

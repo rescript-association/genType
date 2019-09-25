@@ -8,4 +8,6 @@ let dot: (string, t) => t;
 
 let fromString: string => t;
 
+let toList: t => list(string);
+
 let toString: t => string;

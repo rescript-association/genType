@@ -4,6 +4,8 @@ let dot = (s, x) => x @ [s];
 
 let fromString = x => [x];
 
+let toList = x => x;
+
 let toString = x => x |> String.concat("_");
 
 type eq = (t, t);
@@ -45,10 +47,10 @@ let rec applyEquationsToElements =
   let newElements = newEquations |> List.map(fst);
   let newSeen = NameSet.union(seen, newElements |> NameSet.of_list);
 
-  newEquations == [] ?
-    newEquations :
-    newEquations
-    @ (newElements |> applyEquationsToElements(~eqs, ~seen=newSeen));
+  newEquations == []
+    ? newEquations
+    : newEquations
+      @ (newElements |> applyEquationsToElements(~eqs, ~seen=newSeen));
 };
 
 /* Apply equations of the form e.g. X.Y = A from the alias: module A = X.Y.

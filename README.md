@@ -147,7 +147,7 @@ external realValue: complexNumber => float = "";
 
 Because of the `external` keyword, it's clear from context that this is an import, so you can also just use `@genType` and omit `.import`.
 
-To import a default JS export, use a secong argument to `@genType.import` e.g. `[@genType.import ("./MyMath", "default")]`.
+To import a default JS export, use a second argument to `@genType.import` e.g. `[@genType.import ("./MyMath", "default")]`.
 
 Similarly, to import a value with a different JS name, use e.g. `[@genType.import ("./MyMath", "ValueStartingWithUpperCaseLetter")]`.
 

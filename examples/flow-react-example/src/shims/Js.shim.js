@@ -3,6 +3,6 @@
  * @nolint
  */
 
-export type Dict_t<T> = mixed;
+export type Dict_t<T> = {[string]: T};
 
 export type t = mixed;

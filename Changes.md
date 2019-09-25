@@ -1,3 +1,14 @@
+# master
+- Fix missing import React in untyped back-end.
+
+# 2.40.1
+- Work around an issue in which bucklescript passes the file names to genType.
+  See https://github.com/cristianoc/genType/pull/256.
+
+# 2.40.0
+- Export inner modules as objects (when at least one value in the module is exported).
+  See: https://github.com/cristianoc/genType/issues/253.
+
 # 2.39.0
 - Add new annotation `[@genType.ignoreInterface];`.
   When added at the top `.rei` file, the annotations will be taken from the `.re` file.

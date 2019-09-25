@@ -93,7 +93,7 @@ let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
   | ExportValue({resolvedName, type_, _}) =>
     "ExportValue"
     ++ " resolvedName:"
-    ++ resolvedName
+    ++ ResolvedName.toString(resolvedName)
     ++ " type:"
     ++ EmitType.typeToString(~config, ~typeNameIsInterface, type_)
   | ImportComponent({importAnnotation, _}) =>
@@ -200,6 +200,7 @@ let rec emitCodeItem =
         (
           ~config,
           ~emitters,
+          ~moduleItemsEmitter,
           ~env,
           ~fileName,
           ~outputFileRelative,
@@ -663,6 +664,9 @@ let rec emitCodeItem =
     (env, emitters);
 
   | ExportValue({moduleAccessPath, originalName, resolvedName, type_}) =>
+    resolvedName
+    |> ExportModule.extendExportModules(~moduleItemsEmitter, ~type_);
+    let resolvedName = ResolvedName.toString(resolvedName);
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
@@ -836,6 +840,7 @@ and emitCodeItems =
       ~config,
       ~outputFileRelative,
       ~emitters,
+      ~moduleItemsEmitter,
       ~env,
       ~fileName,
       ~resolver,
@@ -852,6 +857,7 @@ and emitCodeItems =
          emitCodeItem(
            ~config,
            ~emitters,
+           ~moduleItemsEmitter,
            ~env,
            ~fileName,
            ~outputFileRelative,
@@ -1252,6 +1258,7 @@ let emitTranslationAsString =
        );
 
   let emitters = Emitters.initial
+  and moduleItemsEmitter = ExportModule.createModuleItemsEmitter()
   and env = initialEnv;
 
   let (env, emitters) =
@@ -1284,6 +1291,7 @@ let emitTranslationAsString =
     |> emitCodeItems(
          ~config,
          ~emitters,
+         ~moduleItemsEmitter,
          ~env,
          ~fileName,
          ~outputFileRelative,
@@ -1325,6 +1333,9 @@ let emitTranslationAsString =
       : env;
 
   let emitters = variantTables |> emitVariantTables(~config, ~emitters);
+  let emitters =
+    moduleItemsEmitter
+    |> ExportModule.emitAllModuleItems(~config, ~emitters, ~fileName);
 
   emitters
   |> emitRequires(
