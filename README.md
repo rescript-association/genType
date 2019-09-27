@@ -20,8 +20,10 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 
 # Requirements
+`bs-platform` 5.2.0 or higher: use `genType` 2.40.0 or higher.
 
-`bs-platform` 5.0.0 or higher using `genType` 2.17.0 or higher.
+`bs-platform` 5.0.x and 5.1.x: use `genType` 2.17.0 or higher.
+
 For earlier versions, see the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
 # Installation
