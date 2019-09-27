@@ -71,9 +71,15 @@ Configure your shim files in your `"gentypeconfig"` in [`bsconfig.json`](example
 
 ## Testing the whole setup
 
-Open any relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [ReasonComponent.re](examples/typescript-react-example/src/ReasonComponent.re).
+Open any relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Hooks.re](examples/typescript-react-example/src/Hooks.re).
 
 Save the file and rebuild the project with BuckleScript. You should now see a `*.gen.tsx` (for TypeScript, or `*.gen.js` for Flow) file with the same name (e.g. `MyComponent.re` -> `MyComponent.gen.tsx`).
+
+Any values exported from `MyComponent.re` can then be imported from JS. For example:
+
+```js
+import MyComponent from "./components/MyComponent.gen";
+```
 
 # Examples
 
