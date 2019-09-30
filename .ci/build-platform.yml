@@ -31,8 +31,8 @@ jobs:
 #      - script: "esy release"
 #        displayName: "esy release"
       - template: utils/publish-build-cache.yml
-      - task: PublishBuildArtifacts@1
-        displayName: "Publish Artifact: ${{ parameters.platform }}"
-        inputs:
-          PathtoPublish: "_release"
-          ArtifactName: ${{ parameters.platform }}
+#      - task: PublishBuildArtifacts@1
+#        displayName: "Publish Artifact: ${{ parameters.platform }}"
+#        inputs:
+#          PathtoPublish: "_release"
+#          ArtifactName: ${{ parameters.platform }}
