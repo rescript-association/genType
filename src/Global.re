@@ -2,6 +2,11 @@ include GenTypeCommon;
 
 let active = true;
 
+let processCmt = (~sourceDir, cmtFile) => {
+  let _inputCMT = Cmt_format.read_cmt(Filename.concat(sourceDir, cmtFile));
+  logItem("READ cmtFile: %s\n", cmtFile);
+};
+
 if (active) {
   logItem("Global!\n");
 
@@ -23,6 +28,6 @@ if (active) {
          };
        let cmtFiles =
          files |> List.filter(x => Filename.extension(x) == ".cmt");
-       cmtFiles |> List.iter(cmtFile => logItem("cmtFile: %s\n", cmtFile));
+       cmtFiles |> List.iter(processCmt(~sourceDir));
      });
 };
