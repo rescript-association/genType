@@ -114,24 +114,24 @@ jobs:
 #            VERSION=$CIRCLE_TAG
 #            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 
-workflows:
-  version: 2
-  build_deploy:
-    jobs:
-      - build_linux:
-          filters:
-            tags:
-              only: /.*/
-      - build_macos:
-          filters:
-            tags:
-              only: /.*/
-      - github_release:
-          requires:
-            - build_linux
-            - build_macos
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+#workflows:
+#  version: 2
+#  build_deploy:
+#    jobs:
+#      - build_linux:
+#          filters:
+#            tags:
+#              only: /.*/
+#      - build_macos:
+#          filters:
+#            tags:
+#              only: /.*/
+#      - github_release:
+#          requires:
+#            - build_linux
+#            - build_macos
+#          filters:
+#            branches:
+#              ignore: /.*/
+#            tags:
+#              only: /^v.*/
