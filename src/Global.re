@@ -1,6 +1,6 @@
 include GenTypeCommon;
 
-let active = true;
+let active = Sys.getenv_opt("Global") != None;
 
 let processCmt = (~sourceDir, cmtFile) => {
   let _inputCMT = Cmt_format.read_cmt(Filename.concat(sourceDir, cmtFile));
