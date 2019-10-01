@@ -10,10 +10,10 @@ let processCmt = (~sourceDir, cmtFile) => {
 if (active) {
   logItem("Global!\n");
 
-  let projectRoot = Paths.findProjectRoot(~dir=Sys.getcwd());
+  Paths.setProjectRoot();
   let lib_bs = {
     let (++) = Filename.concat;
-    projectRoot ++ "lib" ++ "bs";
+    projectRoot^ ++ "lib" ++ "bs";
   };
   logItem("lib_bs: %s\n", lib_bs);
 
@@ -27,7 +27,7 @@ if (active) {
          | exception (Sys_error(_)) => []
          };
        let cmtFiles =
-         files |> List.filter(x => Filename.extension(x) == ".cmt");
+         files |> List.filter(x => Filename.check_suffix(x, ".cmt"));
        cmtFiles |> List.iter(processCmt(~sourceDir));
      });
 };
