@@ -1,3 +1,12 @@
+version: 2.1
+  jobs:
+    build:
+      docker: 
+        - image: circleci/node:4.8.2 # the primary container, where your job's commands are run
+      steps:
+        - checkout # check out the code in the project directory
+        - run: echo "hello world" # run the `echo` command
+
 # We build artifacts to the `~/repo/dist` directory and attach it to the workspace
 # so that the release jobs can access all the build artifacts of the workspace
 # context.
@@ -11,9 +20,8 @@
 #
 # All commands should all be run in the workdir `~/repo` to prevent confusion.
 
-version: 2
-jobs:
- none:
+#version: 2
+#jobs:
 #  build_linux:
 #    docker:
 #      # specify the version you desire here
