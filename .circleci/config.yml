@@ -13,106 +13,106 @@
 
 version: 2
 jobs:
-  build_linux:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:10.11
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/repo/artifacts
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      # build & test
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-
-      - save_cache:
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-
-      # Tar things up
-      - run: tar czvf artifacts/gentype-linux.tar.gz -C src/lib/bs/native gentype.native
-
-      - store_artifacts:
-          path: artifacts/gentype-linux.tar.gz
-          destination: gentype-linux.tar.gz
-
-      - persist_to_workspace:
-          root: artifacts
-          paths:
-            - gentype-linux.tar.gz
-
-  build_macos:
-    macos:
-      xcode: "9.0"
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - attach_workspace:
-          at: ~/repo/artifacts
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-macos-dependencies-{{ checksum "package-lock.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-macos-dependencies-
-
-      # build & test
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-
-      - save_cache:
-          key: v1-macos-dependencies-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-
-      # Tar things up
-      - run: tar czvf artifacts/gentype-macos.tar.gz -C src/lib/bs/native gentype.native
-
-      - store_artifacts:
-          path: artifacts/gentype-macos.tar.gz
-          destination: gentype-macos.tar.gz
-
-      - persist_to_workspace:
-          root: artifacts
-          paths:
-            - gentype-macos.tar.gz
-
-  github_release:
-    docker:
-      #- image: appropriate/curl:latest
-      - image: cibuilds/github:0.10
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - attach_workspace:
-          at: ~/repo/artifacts
-
-      - run:
-          name: Publish Release on Github
-          command: |
-            VERSION=$CIRCLE_TAG
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+#  build_linux:
+#    docker:
+#      # specify the version you desire here
+#      - image: circleci/node:10.11
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: ~/repo/artifacts
+#
+#      # Download and cache dependencies
+#      - restore_cache:
+#          keys:
+#            - v1-dependencies-{{ checksum "package-lock.json" }}
+#            # fallback to using the latest cache if no exact match is found
+#            - v1-dependencies-
+#
+#      # build & test
+#      - run: npm install
+#      - run: npm run build
+#      - run: npm test
+#
+#      - save_cache:
+#          key: v1-dependencies-{{ checksum "package-lock.json" }}
+#          paths:
+#            - node_modules
+#
+#      # Tar things up
+#      - run: tar czvf artifacts/gentype-linux.tar.gz -C src/lib/bs/native gentype.native
+#
+#      - store_artifacts:
+#          path: artifacts/gentype-linux.tar.gz
+#          destination: gentype-linux.tar.gz
+#
+#      - persist_to_workspace:
+#          root: artifacts
+#          paths:
+#            - gentype-linux.tar.gz
+#
+#  build_macos:
+#    macos:
+#      xcode: "9.0"
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#
+#      - attach_workspace:
+#          at: ~/repo/artifacts
+#
+#      # Download and cache dependencies
+#      - restore_cache:
+#          keys:
+#            - v1-macos-dependencies-{{ checksum "package-lock.json" }}
+#            # fallback to using the latest cache if no exact match is found
+#            - v1-macos-dependencies-
+#
+#      # build & test
+#      - run: npm install
+#      - run: npm run build
+#      - run: npm test
+#
+#      - save_cache:
+#          key: v1-macos-dependencies-{{ checksum "package-lock.json" }}
+#          paths:
+#            - node_modules
+#
+#      # Tar things up
+#      - run: tar czvf artifacts/gentype-macos.tar.gz -C src/lib/bs/native gentype.native
+#
+#      - store_artifacts:
+#          path: artifacts/gentype-macos.tar.gz
+#          destination: gentype-macos.tar.gz
+#
+#      - persist_to_workspace:
+#          root: artifacts
+#          paths:
+#            - gentype-macos.tar.gz
+#
+#  github_release:
+#    docker:
+#      #- image: appropriate/curl:latest
+#      - image: cibuilds/github:0.10
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#
+#      - attach_workspace:
+#          at: ~/repo/artifacts
+#
+#      - run:
+#          name: Publish Release on Github
+#          command: |
+#            VERSION=$CIRCLE_TAG
+#            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 
 workflows:
   version: 2
