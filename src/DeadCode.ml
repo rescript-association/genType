@@ -24,8 +24,6 @@ open DeadCommon
 
                 (********   ATTRIBUTES   ********)
 
-let bad_files = ref []                (* unreadable cmi/cmt files *)
-
 let main_files = Hashtbl.create 256   (* names -> paths *)
 
 
@@ -329,17 +327,13 @@ let regabs fn =
 
 
 let read_interface fn src =
-  try
-    regabs src;
-    let u = unit fn in
-    let f =
-      collect_export [Ident.create (String.capitalize_ascii u)] u decs
-    in
-    List.iter f (Cmi_format.read_cmi fn).cmi_sign;
-    last_loc := Lexing.dummy_pos
-  with Cmi_format.Error (Wrong_version_interface _) ->
-    (*Printf.eprintf "cannot read cmi file: %s\n%!" fn;*)
-    bad_files := fn :: !bad_files
+  regabs src;
+  let u = unit fn in
+  let f =
+    collect_export [Ident.create (String.capitalize_ascii u)] u decs
+  in
+  List.iter f (Cmi_format.read_cmi fn).cmi_sign;
+  last_loc := Lexing.dummy_pos
 
 
 (* Merge a location's references to another one's *)
@@ -557,15 +551,6 @@ try
     if [@warning "-44"] DeadFlag.(!style.opt_arg || !style.unit_pat
     || !style.seq || !style.binding)            then  report_style ();
 
-    if !bad_files <> [] then begin
-      let oc = open_out_bin "remove_bad_files.sh" in
-      Printf.fprintf oc "#!/bin/sh\n";
-      List.iter
-        (fun x -> Printf.fprintf oc "rm %s\n" x)
-        !bad_files;
-      close_out oc;
-      Printf.eprintf "*** INFO: Several binary files cannot be read.  Please run ./remove_bad_files.sh to remove them.\n%!"
-    end
   with exn ->
     Location.report_exception Format.err_formatter exn;
     exit 2
