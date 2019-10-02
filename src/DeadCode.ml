@@ -377,19 +377,23 @@ let process_structure cmt_value_dependencies (structure: Typedtree.structure) =
 
 
 (* Starting point *)
-let load_file ~sourceFile ~kind cmtFilePath =
+let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtFilePath =
   last_loc := Lexing.dummy_pos;
   if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" cmtFilePath;
   regabs sourceFile;
   let {Cmt_format.cmt_annots; cmt_value_dependencies} = Cmt_format.read_cmt cmtFilePath in
   match cmt_annots with
-  | Interface {sig_type} ->
-    process_signature cmtFilePath sig_type
+  | Interface signature ->
+    process_signature cmtFilePath signature.sig_type;
+    exportedValuesSignature(signature)
   | Implementation structure ->
     process_structure cmt_value_dependencies structure;
     let cmtiFilePath = (cmtFilePath |> Filename.chop_extension) ^ ".cmti" in
     if not (Sys.file_exists cmtiFilePath) then
-      process_signature cmtFilePath structure.str_type
+      begin
+        process_signature cmtFilePath structure.str_type;
+        exportedValuesStructure(structure)
+      end
   | _ -> ()
 
 
@@ -483,11 +487,12 @@ let report_opt_args s l =
   in report_opt_args 0
 
 
-let report_unused_exported () = report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported
+let report_unused_exported () =
+  report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported
 
 let run () =
   !DeadLexiFi.prepare_report DeadType.decs;
-  report_unused_exported ();
+  report_unused_exported();
   DeadObj.report();
   DeadType.report();
   if !DeadFlag.opta.DeadFlag.print || !DeadFlag.optn.DeadFlag.print

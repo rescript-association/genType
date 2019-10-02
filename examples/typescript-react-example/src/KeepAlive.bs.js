@@ -6,8 +6,11 @@ console.log(ImmutableArray.fromArray);
 
 var fortytwo = 42;
 
+var fortyTwoButExported = 42;
+
 export {
   fortytwo ,
+  fortyTwoButExported ,
   
 }
 /*  Not a pure module */

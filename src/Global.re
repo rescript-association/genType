@@ -4,18 +4,74 @@ let active = Sys.getenv_opt("Global") != None;
 
 let (+++) = Filename.concat;
 
+/* Keep track of the location of values exported via genType */
+module ExportedValues = {
+  let ignoreInterface = ref(false);
+
+  let exportLocations = DeadCommon.LocHash.create(1);
+
+  let locationIsExported = loc =>
+    DeadCommon.LocHash.mem(exportLocations, loc);
+
+  let loc = (loc: Lexing.position) => {
+    DeadCommon.LocHash.replace(exportLocations, loc, ());
+  };
+
+  let collectExportLocations = {
+    let super = Tast_mapper.default;
+    let value_binding =
+        (
+          self,
+          {vb_attributes, vb_pat} as value_binding: Typedtree.value_binding,
+        ) => {
+      switch (vb_pat.pat_desc) {
+      | Tpat_var(id, pLoc) =>
+        if (vb_attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
+          pLoc.loc.loc_start |> loc;
+        }
+      | _ => ()
+      };
+      super.value_binding(self, value_binding);
+    };
+    let value_description =
+        (
+          self,
+          {val_attributes, val_id, val_loc} as value_description: Typedtree.value_description,
+        ) => {
+      if (val_attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
+        val_loc.loc_start |> loc;
+      };
+      super.value_description(self, value_description);
+    };
+    {...super, value_binding, value_description};
+  };
+
+  let structure = structure =>
+    structure
+    |> collectExportLocations.structure(collectExportLocations)
+    |> ignore;
+  let signature = signature =>
+    signature
+    |> collectExportLocations.signature(collectExportLocations)
+    |> ignore;
+};
+
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let extension = Filename.extension(cmtFile);
-  let kind = extension == ".cmti" ? `Iface : `Implem;
   let sourceFile =
     Filename.chop_extension(projectRoot^ +++ sourceDir +++ cmtFile)
-    ++ (kind == `Iface ? ".rei" : ".re");
+    ++ (extension == ".cmti" ? ".rei" : ".re");
   if (!Sys.file_exists(sourceFile)) {
     assert(false);
   };
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  DeadCode.load_file(~kind, ~sourceFile, cmtFilePath);
+  DeadCode.load_file(
+    ~exportedValuesSignature=ExportedValues.signature,
+    ~exportedValuesStructure=ExportedValues.structure,
+    ~sourceFile,
+    cmtFilePath,
+  );
 };
 
 if (active) {
@@ -41,5 +97,9 @@ if (active) {
        cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
      });
 
+  Hashtbl.filter_map_inplace(
+    (a, b) => ExportedValues.locationIsExported(a) ? None : Some(b),
+    DeadCommon.decs,
+  );
   DeadCode.run();
 };
