@@ -106,8 +106,7 @@ let find_abspath fn =
 
 let exported (flag : DeadFlag.basic ref) loc =
   let fn = loc.Lexing.pos_fname in
-  !flag.DeadFlag.print
-  && LocHash.find_set references loc
+  LocHash.find_set references loc
      |> LocSet.cardinal <= !flag.DeadFlag.threshold
   && (flag == DeadFlag.typ
     || !DeadFlag.internal

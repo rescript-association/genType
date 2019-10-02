@@ -196,13 +196,3 @@ let tstr typ =
 
 
 let report () = report_basic decs "UNUSED CONSTRUCTORS/RECORD FIELDS" !DeadFlag.typ
-
-
-                (********   WRAPPING  ********)
-
-let wrap f x =
-  if DeadFlag.(!typ.print) then f x else ()
-
-let collect_export path u stock t = wrap (collect_export path u stock) t
-let tstr typ = wrap tstr typ
-let report () = wrap report ()

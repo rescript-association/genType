@@ -35,7 +35,7 @@ let rec collect_export ?(mod_type = false) path u stock = function
 
   | Sig_value (id, ({Types.val_loc; val_type; _} as value))
     when not val_loc.Location.loc_ghost && stock == decs ->
-      if !DeadFlag.exported.DeadFlag.print then export path u stock id val_loc;
+      export path u stock id val_loc;
       let path = Ident.{id with name = id.name ^ "*"} :: path in
       DeadObj.collect_export path u stock ~obj:val_type val_loc;
       !DeadLexiFi.sig_value value
@@ -121,12 +121,12 @@ let value_binding super self x =
 let structure_item super self i =
   let open Asttypes in
   begin match i.str_desc with
-  | Tstr_type  (_, l) when !DeadFlag.typ.DeadFlag.print ->
+  | Tstr_type  (_, l) ->
       List.iter DeadType.tstr l
   | Tstr_module  {mb_name = {txt; _}; _} ->
       mods := txt :: !mods;
       DeadMod.defined := String.concat "." (List.rev !mods) :: !DeadMod.defined
-  | Tstr_class l when !DeadFlag.obj.DeadFlag.print -> List.iter DeadObj.tstr l
+  | Tstr_class l -> List.iter DeadObj.tstr l
   | Tstr_include i ->
       let collect_include signature =
         let prev_last_loc = !last_loc in
@@ -332,15 +332,11 @@ let read_interface fn src =
   try
     regabs src;
     let u = unit fn in
-    if !DeadFlag.exported.DeadFlag.print
-       || !DeadFlag.obj.DeadFlag.print
-       || !DeadFlag.typ.DeadFlag.print
-    then
-      let f =
-        collect_export [Ident.create (String.capitalize_ascii u)] u decs
-      in
-      List.iter f (Cmi_format.read_cmi fn).cmi_sign;
-      last_loc := Lexing.dummy_pos
+    let f =
+      collect_export [Ident.create (String.capitalize_ascii u)] u decs
+    in
+    List.iter f (Cmi_format.read_cmi fn).cmi_sign;
+    last_loc := Lexing.dummy_pos
   with Cmi_format.Error (Wrong_version_interface _) ->
     (*Printf.eprintf "cannot read cmi file: %s\n%!" fn;*)
     bad_files := fn :: !bad_files
@@ -412,13 +408,8 @@ let load_file ~sourceFile ~kind fn =
       last_loc := Lexing.dummy_pos;
       if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
       regabs sourceFile;
-      let cmt =
-        try Some (Cmt_format.read_cmt fn)
-        with _ -> bad_files := fn :: !bad_files; None
-      in
-
-      begin match cmt with
-      | Some {cmt_annots = Implementation x; cmt_value_dependencies; _} ->
+      begin match Cmt_format.read_cmt fn with
+      | {cmt_annots = Implementation x; cmt_value_dependencies; _} ->
           let prepare = function
             | {Types.val_loc = {Location.loc_start = loc1; loc_ghost = false; _}; _},
               {Types.val_loc = {Location.loc_start = loc2; loc_ghost = false}; _} ->
@@ -430,18 +421,15 @@ let load_file ~sourceFile ~kind fn =
           ignore (collect_references.Tast_mapper.structure collect_references x);
 
           let loc_dep =
-            if !DeadFlag.exported.DeadFlag.print then
-              List.rev_map
-                (fun (vd1, vd2) ->
-                  (vd1.Types.val_loc.Location.loc_start, vd2.Types.val_loc.Location.loc_start)
-                )
-                cmt_value_dependencies
-            else []
+            List.rev_map
+              (fun (vd1, vd2) ->
+                (vd1.Types.val_loc.Location.loc_start, vd2.Types.val_loc.Location.loc_start)
+              )
+              cmt_value_dependencies
           in
           eom loc_dep
+      | _ -> ()
       end
-
-  | _ -> ()
 
 
                 (********   REPORTING   ********)
@@ -557,11 +545,8 @@ let report_style () =
 
 let run () =
 try
-    Printf.eprintf " [DONE]\n\n%!";
-
-    let open DeadFlag in
     !DeadLexiFi.prepare_report DeadType.decs;
-    if !DeadFlag.exported.print                 then  report_unused_exported ();
+    report_unused_exported ();
     DeadObj.report();
     DeadType.report();
     if !DeadFlag.opta.DeadFlag.print || !DeadFlag.optn.DeadFlag.print

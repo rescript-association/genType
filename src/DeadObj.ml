@@ -488,29 +488,8 @@ let report () =
                 (********   WRAPPING  ********)
 
 
-let wrap f x =
-  if !DeadFlag.obj.print then f x else ()
-
 let collect_export path u stock ?obj ?cltyp loc =
-  wrap (collect_export path u stock ~obj ~cltyp) loc
+  collect_export path u stock ~obj ~cltyp loc
 
 let collect_references ~meth ~call_site exp =
-  wrap (collect_references ~meth ~call_site) exp
-
-let tstr cl_dec =
-  wrap tstr cl_dec
-
-let add_var loc exp =
-  wrap (add_var loc) exp
-
-let class_structure cl_struct =
-  wrap class_structure cl_struct
-
-let class_field cl_field =
-  wrap class_field cl_field
-
-let arg typ args =
-  wrap (arg typ) args
-
-let report () =
-  wrap report ()
+  collect_references ~meth ~call_site exp

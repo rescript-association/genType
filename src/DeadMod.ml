@@ -70,7 +70,7 @@ let expr m = match m.mod_desc with
           let is_obj = String.contains x '#' in
           let is_type = not is_obj && DeadType.is_type x in
           if (List.mem x l1 || l1 = [])
-          && (is_obj && !DeadFlag.obj.DeadFlag.print
+          && (is_obj
               || not is_obj && is_type && exported DeadFlag.typ loc
               || not is_obj && not is_type && exported DeadFlag.exported loc) then
             LocHash.add_set references loc m.mod_loc.Location.loc_start
@@ -78,11 +78,3 @@ let expr m = match m.mod_desc with
         l2
   | _ -> ()
 
-
-                (********   WRAPPING  ********)
-
-let expr m =
-  if [@warning "-44"]
-  DeadFlag.(!exported.print || !typ.print || !obj.print) then
-    expr m
-  else ()

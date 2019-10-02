@@ -46,10 +46,9 @@ let style = ref
     binding = false;
   }
 
-type basic = {print: bool; call_sites: bool; threshold: int}
+type basic = {call_sites: bool; threshold: int}
 let exported : basic ref = ref
   ({
-    print = true;
     call_sites = false;
     threshold = 0
   } : basic)
@@ -57,7 +56,6 @@ let exported : basic ref = ref
 
 let obj = ref
   ({
-    print = true;
     call_sites = false;
     threshold = 0;
   } : basic)
@@ -65,7 +63,6 @@ let obj = ref
 
 let typ : basic ref = ref
   ({
-    print = true;
     call_sites = false;
     threshold = 0
   } : basic)
