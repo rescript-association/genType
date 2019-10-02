@@ -4,7 +4,10 @@ import * as ImmutableArray from "./ImmutableArray.bs.js";
 
 console.log(ImmutableArray.fromArray);
 
+var fortytwo = 42;
+
 export {
+  fortytwo ,
   
 }
 /*  Not a pure module */
