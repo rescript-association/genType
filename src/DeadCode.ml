@@ -360,10 +360,9 @@ let load_file ~sourceFile ~kind fn =
   match kind with
   | `Iface ->
       let u = unit fn in
-      let f =
-        collect_export [Ident.create (String.capitalize_ascii u)] u decs
-      in
-      List.iter f (Cmi_format.read_cmi fn).cmi_sign;
+      let signature_items = (Cmi_format.read_cmi fn).cmi_sign in
+      signature_items |> List.iter(fun signature_item ->
+        collect_export [Ident.create (String.capitalize_ascii u)] u decs signature_item);
       last_loc := Lexing.dummy_pos
 
   | `Implem ->
