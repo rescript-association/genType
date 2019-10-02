@@ -377,16 +377,19 @@ let process_structure cmt_value_dependencies (structure: Typedtree.structure) =
 
 
 (* Starting point *)
-let load_file ~sourceFile ~kind fn =
+let load_file ~sourceFile ~kind cmtFilePath =
   last_loc := Lexing.dummy_pos;
-  if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
+  if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" cmtFilePath;
   regabs sourceFile;
-  let {Cmt_format.cmt_annots; cmt_value_dependencies} = Cmt_format.read_cmt fn in
+  let {Cmt_format.cmt_annots; cmt_value_dependencies} = Cmt_format.read_cmt cmtFilePath in
   match cmt_annots with
   | Interface {sig_type} ->
-    process_signature fn sig_type
+    process_signature cmtFilePath sig_type
   | Implementation structure ->
-    process_structure cmt_value_dependencies structure
+    process_structure cmt_value_dependencies structure;
+    let cmtiFilePath = (cmtFilePath |> Filename.chop_extension) ^ ".cmti" in
+    if not (Sys.file_exists cmtiFilePath) then
+      process_signature cmtFilePath structure.str_type
   | _ -> ()
 
 
