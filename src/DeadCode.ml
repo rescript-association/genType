@@ -439,8 +439,6 @@ let load_file ~sourceFile ~kind fn =
             else []
           in
           eom loc_dep
-
-      | _ -> ()  (* todo: support partial_implementation? *)
       end
 
   | _ -> ()
