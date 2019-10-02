@@ -354,11 +354,11 @@ let eom loc_dep =
 
 (* Starting point *)
 let load_file ~sourceFile ~kind fn =
+  last_loc := Lexing.dummy_pos;
+  if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
+  regabs sourceFile;
   match kind with
   | `Iface ->
-      last_loc := Lexing.dummy_pos;
-      if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
-      regabs sourceFile;
       let u = unit fn in
       let f =
         collect_export [Ident.create (String.capitalize_ascii u)] u decs
@@ -367,9 +367,6 @@ let load_file ~sourceFile ~kind fn =
       last_loc := Lexing.dummy_pos
 
   | `Implem ->
-      last_loc := Lexing.dummy_pos;
-      if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
-      regabs sourceFile;
       begin match Cmt_format.read_cmt fn with
       | {cmt_annots = Implementation x; cmt_value_dependencies; _} ->
           let prepare = function
