@@ -327,68 +327,19 @@ let kind fn =
   if not (Sys.file_exists fn) then begin
     prerr_endline ("Warning: '" ^fn ^ "' not found");
     `Ignore
-  end else if not (DeadFlag.is_excluded fn) then begin
-    (* When searching source files according to *.cmi or *.cmt files, *)
-    (* we should consider dune(formerly known as jbuilder) puts the *)
-    (* cmi/cmt files in a separate folder named ".<name>.objs" or ".<name>.eobjs"  *)
-    let good_exts base exts =
-      let open DeadFlag in
-      let good_ext base ext =
-        let fn = base ^ ext in
-        Sys.file_exists fn && not (is_excluded fn)
-      in
-      (* normalize_path would append a slash, use it only on the dirname *)
-      let base = Filename.(concat (normalize_path (dirname base)) (basename base)) in
-      let upper_base =
-        let upper_d, cur_dir =
-          let d = Filename.dirname base in
-          Filename.dirname d, Filename.basename d
-        in
-        if starts_with "." cur_dir
-        && (ends_with ".objs" cur_dir || ends_with ".eobjs" cur_dir) then begin
-          let f = remove_wrap (Filename.basename base) in
-          Some (Filename.concat upper_d f)
-        end
-        else None
-      in
-      let rec find_source = function
-        | [] -> ""
-        | ext :: tl ->
-          if good_ext base ext then base ^ ext
-          else begin
-            match upper_base with
-            | Some base ->
-              if good_ext base ext then base ^ ext else find_source tl
-            | None ->
-              find_source tl
-          end
-      in
-      find_source exts
-    in
-    if Filename.check_suffix fn ".cmi" then
-      let base = Filename.chop_suffix fn ".cmi" in
-      match good_exts base [".mli"; ".mfi"; ".ml"; ".mf"; ".mll"; ".mfl"] with
-      | "" ->
-        if !DeadFlag.verbose then Printf.eprintf "Ignoring %s (no source?)\n%!" base;
-        `Ignore
-      | src -> `Iface src
-    else if Filename.check_suffix fn ".cmt" then
-      let base = Filename.chop_suffix fn ".cmt" in
-      match good_exts base [".ml"; ".mf"; ".mll"; ".mfl"] with
-      | "" ->
-        if !DeadFlag.verbose then Printf.eprintf "Ignoring %s (no source?)\n%!" base;
-        `Ignore
-      | src -> `Implem src
-    else if Sys.is_directory fn       then  `Dir
-    else            (* default *)           `Ignore
-  end else          (* default *)           `Ignore
+  end else begin
+  if Filename.check_suffix fn ".cmt" then
+      `Implem
+  else if Filename.check_suffix fn ".cmti" then
+      `Iface
+  else `Ignore
+  end
 
 
 let regabs fn =
   current_src := fn;
   hashtbl_add_unique_to_list abspath (unit fn) fn;
-  if !DeadCommon.declarations then
-    hashtbl_add_unique_to_list main_files (unit fn) ()
+  hashtbl_add_unique_to_list main_files (unit fn) ()
 
 
 let read_interface fn src = let open Cmi_format in
@@ -464,18 +415,18 @@ let eom loc_dep =
 
 
 (* Starting point *)
-let rec load_file fn =
+let load_file ~sourceFile fn =
   match kind fn with
-  | `Iface src when !DeadCommon.declarations ->
+  | `Iface ->
       last_loc := Lexing.dummy_pos;
       if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
-      read_interface fn src
+      read_interface fn sourceFile
 
-  | `Implem src ->
+  | `Implem ->
       let open Cmt_format in
       last_loc := Lexing.dummy_pos;
       if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
-      regabs src;
+      regabs sourceFile;
       let cmt =
         try Some (read_cmt fn)
         with _ -> bad_files := fn :: !bad_files; None
@@ -506,14 +457,6 @@ let rec load_file fn =
 
       | _ -> ()  (* todo: support partial_implementation? *)
       end
-
-  | `Dir ->
-      let next = Sys.readdir fn in
-      Array.sort compare next;
-      Array.iter
-        (fun s -> load_file (fn ^ "/" ^ s))
-        next
-      (* else Printf.eprintf "skipping directory %s\n" fn *)
 
   | _ -> ()
 
@@ -629,100 +572,8 @@ let report_style () =
   |> separator
 
 
-(* Option parsing and processing *)
-let parse () =
-  let update_all print () =
-    DeadFlag.(
-    update_style ((if print = "all" then "+" else "-") ^ "all");
-    update_basic "-E" DeadFlag.exported print;
-    update_basic "-M" obj print;
-    update_basic "-T" typ print;
-    update_opt opta print;
-    update_opt optn print)
-  in
-
-  (* any extra argument can be accepted by any option using some
-   * although it doesn't necessary affects the results (e.g. -O 3+4) *)
-  Arg.(parse
-    [ "--exclude", String DeadFlag.exclude, "<path>  Exclude given path from research.";
-
-      "--references",
-        String (fun dir -> DeadFlag.directories := dir :: !DeadFlag.directories),
-        "<path>  Consider given path to collect references.";
-
-      "--underscore", Unit DeadFlag.set_underscore, " Show names starting with an underscore";
-
-      "--verbose", Unit DeadFlag.set_verbose, " Verbose mode (ie., show scanned files)";
-      "-v", Unit DeadFlag.set_verbose, " See --verbose";
-
-      "--internal", Unit DeadFlag.set_internal,
-        " Keep internal uses as exported values uses when the interface is given. \
-          This is the default behaviour when only the implementation is found";
-
-      "--nothing", Unit (update_all "nothing"), " Disable all warnings";
-      "-a", Unit (update_all "nothing"), " See --nothing";
-      "--all", Unit (update_all "all"), " Enable all warnings";
-      "-A", Unit (update_all "all"), " See --all";
-
-      "-E", String (DeadFlag.update_basic "-E" DeadFlag.exported),
-        "<display>  Enable/Disable unused exported values warnings.\n    \
-        <display> can be:\n\
-          \tall\n\
-          \tnothing\n\
-          \t\"threshold:<integer>\": report elements used up to the given integer\n\
-          \t\"calls:<integer>\": like threshold + show call sites";
-
-      "-M", String (DeadFlag.update_basic "-M" DeadFlag.obj),
-        "<display>  Enable/Disable unused methods warnings.\n    \
-        See option -E for the syntax of <display>";
-
-      "-Oa", String (DeadFlag.update_opt DeadFlag.opta),
-        "<display>  Enable/Disable optional arguments always used warnings.\n    \
-        <display> can be:\n\
-          \tall\n\
-          \tnothing\n\
-          \t<threshold>\n\
-          \t\"calls:<threshold>\" like <threshold> + show call sites\n    \
-        <threshold> can be:\n\
-          \t\"both:<integer>,<float>\": both the number max of exceptions \
-          (given through the integer) and the percent of valid cases (given as a float) \
-          must be respected for the element to be reported\n\
-          \t\"percent:<float>\": percent of valid cases to be reported";
-
-      "-On", String (DeadFlag.update_opt DeadFlag.optn),
-        "<display>  Enable/Disable optional arguments never used warnings.\n    \
-        See option -Oa for the syntax of <display>";
-
-      "-S", String (DeadFlag.update_style),
-        " Enable/Disable coding style warnings.\n    \
-        Delimiters '+' and '-' determine if the following option is to enable or disable.\n    \
-        Options (can be used together):\n\
-          \tbind: useless binding\n\
-          \topt: optional arg in arg\n\
-          \tseq: use sequence\n\
-          \tunit: unit pattern\n\
-          \tall: bind & opt & seq & unit";
-
-      "-T", String (DeadFlag.update_basic "-T" DeadFlag.typ),
-        "<display>  Enable/Disable unused constructors/records fields warnings.\n    \
-        See option -E for the syntax of <display>";
-
-    ]
-    (Printf.eprintf "Scanning files...\n%!";
-    load_file)
-    ("Usage: " ^ Sys.argv.(0) ^ " <options> <path>\nOptions are:"))
-
-
 let run () =
 try
-    parse ();
-    DeadCommon.declarations := false;
-
-    let oldstyle = !DeadFlag.style in
-    DeadFlag.update_style "-all";
-    List.iter load_file !DeadFlag.directories;
-    DeadFlag.style := oldstyle;
-
     Printf.eprintf " [DONE]\n\n%!";
 
     let open DeadFlag in

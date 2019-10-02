@@ -199,11 +199,5 @@ let normalize_path s =
   in
   concat_path (norm_path (List.rev (split_path s)))
 
-let exclude, is_excluded =
-  let tbl = Hashtbl.create 10 in
-  let exclude s = Hashtbl.replace tbl (normalize_path s) () in
-  let is_excluded s = Hashtbl.mem tbl (normalize_path s) in
-  exclude, is_excluded
-
 
 let directories : string list ref = ref []

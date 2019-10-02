@@ -2,33 +2,43 @@ include GenTypeCommon;
 
 let active = Sys.getenv_opt("Global") != None;
 
-let processCmt = (~sourceDir, cmtFile) => {
-  let _inputCMT = Cmt_format.read_cmt(Filename.concat(sourceDir, cmtFile));
-  logItem("READ cmtFile: %s\n", cmtFile);
+let (+++) = Filename.concat;
+
+let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
+  let extension = Filename.extension(cmtFile);
+  let sourceFile =
+    Filename.chop_extension(projectRoot^ +++ sourceDir +++ cmtFile)
+    ++ (extension == ".cmti" ? ".rei" : ".re");
+  if (!Sys.file_exists(sourceFile)) {
+    assert(false);
+  };
+
+  let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
+  let _inputCMT = Cmt_format.read_cmt(cmtFilePath);
+  DeadCode.load_file(~sourceFile, cmtFilePath);
 };
 
 if (active) {
-  logItem("Global!\n");
-
   Paths.setProjectRoot();
   let lib_bs = {
-    let (++) = Filename.concat;
-    projectRoot^ ++ "lib" ++ "bs";
+    projectRoot^ +++ "lib" +++ "bs";
   };
-  logItem("lib_bs: %s\n", lib_bs);
 
-  let sourceDirs =
-    ModuleResolver.readSourceDirs() |> List.map(Filename.concat(lib_bs));
-  sourceDirs
+  ModuleResolver.readSourceDirs()
   |> List.iter(sourceDir => {
+       let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
        let files =
-         switch (Sys.readdir(sourceDir) |> Array.to_list) {
+         switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
          | files => files
          | exception (Sys_error(_)) => []
          };
        let cmtFiles =
-         files |> List.filter(x => Filename.check_suffix(x, ".cmt"));
-       cmtFiles |> List.iter(processCmt(~sourceDir));
+         files
+         |> List.filter(x =>
+              Filename.check_suffix(x, ".cmt")
+              || Filename.check_suffix(x, ".cmti")
+            );
+       cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
      });
 
   DeadCode.run();
