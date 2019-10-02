@@ -6,8 +6,6 @@ let (+++) = Filename.concat;
 
 /* Keep track of the location of values exported via genType */
 module ExportedValues = {
-  let ignoreInterface = ref(false);
-
   let exportLocations = DeadCommon.LocHash.create(1);
 
   let locationIsExported = loc =>
@@ -17,7 +15,7 @@ module ExportedValues = {
     DeadCommon.LocHash.replace(exportLocations, loc, ());
   };
 
-  let collectExportLocations = {
+  let collectExportLocations = (~ignoreInterface) => {
     let super = Tast_mapper.default;
     let value_binding =
         (
@@ -46,14 +44,20 @@ module ExportedValues = {
     {...super, value_binding, value_description};
   };
 
-  let structure = structure =>
+  let structure = structure => {
+    let ignoreInterface = ref(false);
+    let collectExportLocations = collectExportLocations(~ignoreInterface);
     structure
     |> collectExportLocations.structure(collectExportLocations)
     |> ignore;
-  let signature = signature =>
+  };
+  let signature = signature => {
+    let ignoreInterface = ref(false);
+    let collectExportLocations = collectExportLocations(~ignoreInterface);
     signature
     |> collectExportLocations.signature(collectExportLocations)
     |> ignore;
+  };
 };
 
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
