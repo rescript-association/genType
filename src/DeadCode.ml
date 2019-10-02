@@ -322,20 +322,6 @@ let remove_wrap name =
     else name
   in loop 0
 
-(* Checks the nature of the file *)
-let kind fn =
-  if not (Sys.file_exists fn) then begin
-    prerr_endline ("Warning: '" ^fn ^ "' not found");
-    `Ignore
-  end else begin
-  if Filename.check_suffix fn ".cmt" then
-      `Implem
-  else if Filename.check_suffix fn ".cmti" then
-      `Iface
-  else `Ignore
-  end
-
-
 let regabs fn =
   current_src := fn;
   hashtbl_add_unique_to_list abspath (unit fn) fn;
@@ -415,8 +401,8 @@ let eom loc_dep =
 
 
 (* Starting point *)
-let load_file ~sourceFile fn =
-  match kind fn with
+let load_file ~sourceFile ~kind fn =
+  match kind with
   | `Iface ->
       last_loc := Lexing.dummy_pos;
       if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;

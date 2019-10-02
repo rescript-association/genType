@@ -6,16 +6,16 @@ let (+++) = Filename.concat;
 
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let extension = Filename.extension(cmtFile);
+  let kind = extension == ".cmti" ? `Iface : `Implem;
   let sourceFile =
     Filename.chop_extension(projectRoot^ +++ sourceDir +++ cmtFile)
-    ++ (extension == ".cmti" ? ".rei" : ".re");
+    ++ (kind == `Iface ? ".rei" : ".re");
   if (!Sys.file_exists(sourceFile)) {
     assert(false);
   };
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  let _inputCMT = Cmt_format.read_cmt(cmtFilePath);
-  DeadCode.load_file(~sourceFile, cmtFilePath);
+  DeadCode.load_file(~kind, ~sourceFile, cmtFilePath);
 };
 
 if (active) {
