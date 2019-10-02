@@ -30,4 +30,6 @@ if (active) {
          files |> List.filter(x => Filename.check_suffix(x, ".cmt"));
        cmtFiles |> List.iter(processCmt(~sourceDir));
      });
+
+  DeadCode.run();
 };
