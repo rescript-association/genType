@@ -125,13 +125,6 @@ let section ?(sub = false) title =
     title
     (String.make ((if sub then 5 else 2) + String.length title + 1) (if sub then '~' else '='))
 
-
-(* End of section *)
-let separator () =
-  print_endline "Nothing else to report in this section";
-  Printf.printf "%s\n\n\n" (String.make 80 '-')
-
-
 (* Location printer: `filename:line: ' *)
 let prloc ?(call_site = false) ?fn (loc : Lexing.position) =
   let file = loc.Lexing.pos_fname in
@@ -399,7 +392,7 @@ let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l continue nb_call pretty_
       (if l <> [] then print_endline "--------" else ()) |> print_newline |> print_newline
   end;
   if continue nb_call then reporter (nb_call + 1)
-  else (print_newline () |> separator)
+  else print_newline ()
 
 
 let report_basic ?folder decs title (flag:DeadFlag.basic) =
