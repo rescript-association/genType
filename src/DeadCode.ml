@@ -359,10 +359,11 @@ let load_file ~sourceFile ~kind fn =
   regabs sourceFile;
   match kind with
   | `Iface ->
-      let u = unit fn in
-      let signature_items = (Cmi_format.read_cmi fn).cmi_sign in
-      signature_items |> List.iter(fun signature_item ->
-        collect_export [Ident.create (String.capitalize_ascii u)] u decs signature_item);
+      let unit_name = unit fn in
+      let module_id = Ident.create (String.capitalize_ascii unit_name) in
+      let sig_items = (Cmi_format.read_cmi fn).cmi_sign in
+      sig_items |> List.iter(fun sig_item ->
+        collect_export [module_id] unit_name decs sig_item);
       last_loc := Lexing.dummy_pos
 
   | `Implem ->
