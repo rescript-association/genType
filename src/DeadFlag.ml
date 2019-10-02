@@ -10,11 +10,10 @@
 type threshold = {exceptions: int; percentage: float; optional: [`Percent | `Both]}
 
 
-type opt = {print: bool; call_sites: bool; threshold: threshold}
+type opt = {call_sites: bool; threshold: threshold}
 
 let opta = ref
   {
-    print = false;
     call_sites = false;
     threshold =
       {
@@ -26,7 +25,6 @@ let opta = ref
 
 let optn = ref
   {
-    print = false;
     call_sites = false;
     threshold =
       {

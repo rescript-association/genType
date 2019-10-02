@@ -207,7 +207,6 @@ let expr super self e =
 
 
   | Texp_apply (exp, args) ->
-      if DeadFlag.(!opta.print || !optn.print) then treat_exp exp args;
       begin match exp.exp_desc with
       | Texp_ident (_, _, {Types.val_loc; _})
         when val_loc.Location.loc_ghost -> (* The node is due to lookup preparation
@@ -495,10 +494,3 @@ let run () =
   report_unused_exported();
   (* DeadObj.report(); *)
   (* DeadType.report(); *)
-  if !DeadFlag.opta.DeadFlag.print || !DeadFlag.optn.DeadFlag.print
-  then
-    begin
-      let tmp = analyze_opt_args () in
-      if !DeadFlag.opta.print then  report_opt_args "ALWAYS" tmp;
-      if !DeadFlag.optn.print then  report_opt_args "NEVER" tmp
-    end;

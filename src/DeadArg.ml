@@ -129,34 +129,11 @@ let node_build loc expr =
                       cases = [{c_lhs = {pat_type; _}; c_rhs = exp; _}]; _ } ->
         begin match lab with
         | Asttypes.Optional s ->
-            if !DeadFlag.optn.print || !DeadFlag.opta.print then
-              let opts, next = VdNode.get loc in
-              VdNode.update loc (s :: opts, next);
             loop loc exp
         | _ -> () end
     | Texp_apply (exp, _) ->
         begin match exp.exp_desc with
-        | Texp_ident (_, _, {val_loc = {Location.loc_start = loc2; _}; _})
-        | Texp_field (_, _, {lbl_loc = {Location.loc_start = loc2; _}; _})
-          when (!DeadFlag.optn.print || !DeadFlag.opta.print)
-          && DeadType.nb_args ~keep:`Opt expr.exp_type > 0 ->
-            VdNode.merge_locs loc loc2
         | _ -> ()
         end
-    | Texp_ident (_, _, {val_loc = {Location.loc_start = loc2; _}; _})
-      when !DeadFlag.optn.print || !DeadFlag.opta.print
-      && DeadType.nb_args ~keep:`Opt expr.exp_type > 0 ->
-        VdNode.merge_locs loc loc2
     | _ -> ()
   in loop loc expr
-
-
-
-                (********   WRAPPING  ********)
-
-
-let wrap f x y =
-  if DeadFlag.(!optn.print || !opta.print) then f x y else ()
-
-let process val_loc args =
-  wrap process val_loc args
