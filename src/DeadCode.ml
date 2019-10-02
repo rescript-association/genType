@@ -298,17 +298,6 @@ let regabs fn =
   hashtbl_add_unique_to_list abspath (unit fn) fn;
   hashtbl_add_unique_to_list main_files (unit fn) ()
 
-
-let read_interface fn src =
-  regabs src;
-  let u = unit fn in
-  let f =
-    collect_export [Ident.create (String.capitalize_ascii u)] u decs
-  in
-  List.iter f (Cmi_format.read_cmi fn).cmi_sign;
-  last_loc := Lexing.dummy_pos
-
-
 (* Merge a location's references to another one's *)
 let assoc decs (loc1, loc2) =
   let fn1 = loc1.Lexing.pos_fname
@@ -369,7 +358,13 @@ let load_file ~sourceFile ~kind fn =
   | `Iface ->
       last_loc := Lexing.dummy_pos;
       if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
-      read_interface fn sourceFile
+      regabs sourceFile;
+      let u = unit fn in
+      let f =
+        collect_export [Ident.create (String.capitalize_ascii u)] u decs
+      in
+      List.iter f (Cmi_format.read_cmi fn).cmi_sign;
+      last_loc := Lexing.dummy_pos
 
   | `Implem ->
       last_loc := Lexing.dummy_pos;
