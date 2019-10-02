@@ -357,41 +357,32 @@ let load_file ~sourceFile ~kind fn =
   last_loc := Lexing.dummy_pos;
   if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
   regabs sourceFile;
-  match kind with
-  | `Iface ->
-      begin match Cmt_format.read_cmt fn with
-        | {cmt_annots = Interface {sig_type = sig_items}; cmt_value_dependencies; _} ->
-          let unit_name = unit fn in
-          let module_id = Ident.create (String.capitalize_ascii unit_name) in
-          sig_items |> List.iter(fun sig_item ->
-            collect_export [module_id] unit_name decs sig_item);
-          last_loc := Lexing.dummy_pos
-        | _ -> ()
-      end
+  let {Cmt_format.cmt_annots; cmt_value_dependencies} = Cmt_format.read_cmt fn in
+  match cmt_annots with
+  | Interface {sig_type = sig_items} ->
+    let unit_name = unit fn in
+    let module_id = Ident.create (String.capitalize_ascii unit_name) in
+    sig_items |> List.iter(fun sig_item ->
+      collect_export [module_id] unit_name decs sig_item);
+    last_loc := Lexing.dummy_pos
 
-  | `Implem ->
-      begin match Cmt_format.read_cmt fn with
-      | {cmt_annots = Implementation x; cmt_value_dependencies; _} ->
-          let prepare = function
-            | {Types.val_loc = {Location.loc_start = loc1; loc_ghost = false; _}; _},
-              {Types.val_loc = {Location.loc_start = loc2; loc_ghost = false}; _} ->
-                VdNode.merge_locs ~force:true loc2 loc1
-            | _ -> ()
-          in
-          List.iter prepare cmt_value_dependencies;
+  | Implementation structure ->
+    let prepare = function
+      | {Types.val_loc = {Location.loc_start = loc1; loc_ghost = false; _}; _},
+        {Types.val_loc = {Location.loc_start = loc2; loc_ghost = false}; _} ->
+          VdNode.merge_locs ~force:true loc2 loc1
+      | _ -> ()  in
+    List.iter prepare cmt_value_dependencies;
+    ignore (collect_references.Tast_mapper.structure collect_references structure);
+    let loc_dep =
+      List.rev_map
+        (fun (vd1, vd2) ->
+          (vd1.Types.val_loc.Location.loc_start, vd2.Types.val_loc.Location.loc_start)
+        )
+        cmt_value_dependencies in
+    eom loc_dep
 
-          ignore (collect_references.Tast_mapper.structure collect_references x);
-
-          let loc_dep =
-            List.rev_map
-              (fun (vd1, vd2) ->
-                (vd1.Types.val_loc.Location.loc_start, vd2.Types.val_loc.Location.loc_start)
-              )
-              cmt_value_dependencies
-          in
-          eom loc_dep
-      | _ -> ()
-      end
+  | _ -> ()
 
 
                 (********   REPORTING   ********)
