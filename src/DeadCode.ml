@@ -493,8 +493,8 @@ let report_unused_exported () =
 let run () =
   !DeadLexiFi.prepare_report DeadType.decs;
   report_unused_exported();
-  DeadObj.report();
-  DeadType.report();
+  (* DeadObj.report(); *)
+  (* DeadType.report(); *)
   if !DeadFlag.opta.DeadFlag.print || !DeadFlag.optn.DeadFlag.print
   then
     begin
