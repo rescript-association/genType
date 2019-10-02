@@ -140,4 +140,6 @@ let cli = () => {
   executeCliCommand(~bsVersion=bsVersion^, cliCommand^);
 };
 
-cli();
+if (!Global.active) {
+  cli();
+};
