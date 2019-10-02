@@ -342,7 +342,7 @@ let regabs fn =
   hashtbl_add_unique_to_list main_files (unit fn) ()
 
 
-let read_interface fn src = let open Cmi_format in
+let read_interface fn src =
   try
     regabs src;
     let u = unit fn in
@@ -353,7 +353,7 @@ let read_interface fn src = let open Cmi_format in
       let f =
         collect_export [Ident.create (String.capitalize_ascii u)] u decs
       in
-      List.iter f (read_cmi fn).cmi_sign;
+      List.iter f (Cmi_format.read_cmi fn).cmi_sign;
       last_loc := Lexing.dummy_pos
   with Cmi_format.Error (Wrong_version_interface _) ->
     (*Printf.eprintf "cannot read cmi file: %s\n%!" fn;*)
@@ -423,12 +423,11 @@ let load_file ~sourceFile fn =
       read_interface fn sourceFile
 
   | `Implem ->
-      let open Cmt_format in
       last_loc := Lexing.dummy_pos;
       if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" fn;
       regabs sourceFile;
       let cmt =
-        try Some (read_cmt fn)
+        try Some (Cmt_format.read_cmt fn)
         with _ -> bad_files := fn :: !bad_files; None
       in
 
