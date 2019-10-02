@@ -359,12 +359,15 @@ let load_file ~sourceFile ~kind fn =
   regabs sourceFile;
   match kind with
   | `Iface ->
-      let unit_name = unit fn in
-      let module_id = Ident.create (String.capitalize_ascii unit_name) in
-      let sig_items = (Cmi_format.read_cmi fn).cmi_sign in
-      sig_items |> List.iter(fun sig_item ->
-        collect_export [module_id] unit_name decs sig_item);
-      last_loc := Lexing.dummy_pos
+      begin match Cmt_format.read_cmt fn with
+        | {cmt_annots = Interface {sig_type = sig_items}; cmt_value_dependencies; _} ->
+          let unit_name = unit fn in
+          let module_id = Ident.create (String.capitalize_ascii unit_name) in
+          sig_items |> List.iter(fun sig_item ->
+            collect_export [module_id] unit_name decs sig_item);
+          last_loc := Lexing.dummy_pos
+        | _ -> ()
+      end
 
   | `Implem ->
       begin match Cmt_format.read_cmt fn with
