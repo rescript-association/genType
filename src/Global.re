@@ -62,8 +62,9 @@ module ExportedValues = {
 
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let extension = Filename.extension(cmtFile);
+  let base = cmtFile |> Paths.handleNamespace;
   let sourceFile =
-    Filename.chop_extension(projectRoot^ +++ sourceDir +++ cmtFile)
+    (projectRoot^ +++ sourceDir +++ base)
     ++ (extension == ".cmti" ? ".rei" : ".re");
   if (!Sys.file_exists(sourceFile)) {
     assert(false);
