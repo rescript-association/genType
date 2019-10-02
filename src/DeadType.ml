@@ -132,23 +132,6 @@ let collect_export path u stock t =
 let collect_references loc exp_loc =
   LocHash.add_set references loc exp_loc
 
-
-(* Look for bad style typing *)
-let rec check_style t loc =
-  if !DeadFlag.style.DeadFlag.opt_arg then
-    match t.desc with
-      | Tlink t -> check_style t loc
-      | Tarrow (lab, _, t, _) -> begin
-          match lab with
-            | Optional lab when check_underscore lab ->
-                style :=
-                  (!current_src, loc,
-                   "val f: ... -> (... -> ?_:_ -> ...) -> ...")
-                  :: !style
-            | _ -> check_style t loc end
-      | _ -> ()
-
-
 let tstr typ =
 
   let assoc name loc =

@@ -44,7 +44,6 @@ let references : LocSet.t LocHash.t  = LocHash.create 256      (* all value refe
 
 let fields : (string, Lexing.position) Hashtbl.t = Hashtbl.create 256      (* link from fields (record/variant) paths and locations *)
 
-let style : (string * Lexing.position * string) list ref = ref []                        (* patterns of type unit which are not () *)
 let last_loc = ref Lexing.dummy_pos                                  (* helper to diagnose occurrences of Location.none in the typedtree *)
 let current_src = ref ""
 let mods : string list ref = ref []                                                 (* module path *)

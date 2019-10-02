@@ -127,7 +127,6 @@ let node_build loc expr =
     match expr.exp_desc with
     | Texp_function { arg_label = lab;
                       cases = [{c_lhs = {pat_type; _}; c_rhs = exp; _}]; _ } ->
-        DeadType.check_style pat_type expr.exp_loc.Location.loc_start;
         begin match lab with
         | Asttypes.Optional s ->
             if !DeadFlag.optn.print || !DeadFlag.opta.print then

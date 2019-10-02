@@ -155,19 +155,15 @@ let structure_item super self i =
 
 let pat super self p =
   let pat_loc = p.pat_loc.Location.loc_start in
-  let u s =
-    let err = (!current_src, pat_loc, Printf.sprintf "unit pattern %s" s) in
-    style := err :: !style
-  in
   let open Asttypes in
   if DeadType.is_unit p.pat_type && !DeadFlag.style.DeadFlag.unit_pat then begin
     match p.pat_desc with
       | Tpat_construct _ -> ()
       | Tpat_var (_, {txt = "eta"; loc = _})
         when p.pat_loc = Location.none -> ()
-      | Tpat_var (_, {txt; _})-> if check_underscore txt then u txt
-      | Tpat_any -> if not !DeadFlag.underscore then u "_"
-      | _ -> u ""
+      | Tpat_var (_, {txt; _})-> ()
+      | Tpat_any -> ()
+      | _ -> ()
   end;
   begin match p.pat_desc with
   | Tpat_record (l, _) ->
@@ -223,29 +219,6 @@ let expr super self e =
       | _ ->
           DeadObj.arg exp.exp_type args
       end
-
-  | Texp_let (_, [{vb_pat; _}], _)
-    when DeadType.is_unit vb_pat.pat_type && !DeadFlag.style.DeadFlag.seq ->
-      begin match vb_pat.pat_desc with
-      | Tpat_var (id, _) when not (check_underscore (Ident.name id)) -> ()
-      | _ ->
-          let err =
-            ( !current_src,
-              vb_pat.pat_loc.Location.loc_start,
-              "let () = ... in ... (=> use sequence)"
-            )
-          in
-          style := err :: !style
-      end
-
-  | Texp_let (
-        Asttypes.Nonrecursive,
-        [{vb_pat = {pat_desc = Tpat_var (id1, _); pat_loc = {loc_start = loc; _}; _}; _}],
-        {exp_desc = Texp_ident (Path.Pident id2, _, _); exp_extra = []; _})
-    when id1 = id2
-         && !DeadFlag.style.DeadFlag.binding
-         && check_underscore (Ident.name id1) ->
-      style := (!current_src, loc, "let x = ... in x (=> useless binding)") :: !style
 
   | _ -> ()
   end;
@@ -518,39 +491,15 @@ let report_opt_args s l =
 
 let report_unused_exported () = report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported
 
-
-let report_style () =
-  section "CODING STYLE";
-  if !style <> [] then begin
-    style := List.fast_sort compare !style;
-    let change =
-      let (fn, _, _) = List.hd !style in
-      dir fn
-    in
-    List.iter (fun (fn, l, s) ->
-      if change fn then print_newline ();
-      prloc ~fn l;
-      print_endline s)
-    !style;
-  end;
-  print_newline ()
-  |> separator
-
-
 let run () =
-try
-    !DeadLexiFi.prepare_report DeadType.decs;
-    report_unused_exported ();
-    DeadObj.report();
-    DeadType.report();
-    if !DeadFlag.opta.DeadFlag.print || !DeadFlag.optn.DeadFlag.print
-    then  begin
-        let tmp = analyze_opt_args () in
-        if !DeadFlag.opta.print then  report_opt_args "ALWAYS" tmp;
-        if !DeadFlag.optn.print then  report_opt_args "NEVER" tmp end;
-    if [@warning "-44"] DeadFlag.(!style.opt_arg || !style.unit_pat
-    || !style.seq || !style.binding)            then  report_style ();
-
-  with exn ->
-    Location.report_exception Format.err_formatter exn;
-    exit 2
+  !DeadLexiFi.prepare_report DeadType.decs;
+  report_unused_exported ();
+  DeadObj.report();
+  DeadType.report();
+  if !DeadFlag.opta.DeadFlag.print || !DeadFlag.optn.DeadFlag.print
+  then
+    begin
+      let tmp = analyze_opt_args () in
+      if !DeadFlag.opta.print then  report_opt_args "ALWAYS" tmp;
+      if !DeadFlag.optn.print then  report_opt_args "NEVER" tmp
+    end;
