@@ -59,7 +59,7 @@ let _variant = ": variant :"
 
                 (********   HELPERS   ********)
 
-let unit fn = try Filename.chop_extension (Filename.basename fn) with Invalid_argument _ -> fn
+let unit fn = fn |> Paths.getModuleName |> ModuleName.toString
 
 
 let is_ghost loc =

@@ -352,10 +352,10 @@ let eom loc_dep =
 
 
 let process_signature fn (signature : Types.signature) = 
-    let unit_name = unit fn in
-    let module_id = Ident.create (String.capitalize_ascii unit_name) in
+    let module_name = unit fn in
+    let module_id = Ident.create (String.capitalize_ascii module_name) in
     signature |> List.iter(fun sig_item ->
-      collect_export [module_id] unit_name decs sig_item);
+      collect_export [module_id] module_name decs sig_item);
     last_loc := Lexing.dummy_pos
 
 let process_structure cmt_value_dependencies (structure: Typedtree.structure) =
