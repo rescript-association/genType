@@ -366,14 +366,9 @@ let pretty_print_call () = let ghost = ref false in function
 
 (* Base pattern for reports *)
 let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l continue nb_call pretty_print reporter =
-  begin
-    section ~sub:false @@ s;
-    List.iter pretty_print l;
-    if continue nb_call then
-      (if l <> [] then print_endline "--------" else ()) |> print_newline |> print_newline
-  end;
-  if continue nb_call then reporter (nb_call + 1)
-  else print_newline ()
+  section ~sub:false @@ s;
+  List.iter pretty_print l;
+  print_newline ()
 
 
 let report_basic ?folder decs title (flag:DeadFlag.basic) =
@@ -424,7 +419,7 @@ let report_basic ?folder decs title (flag:DeadFlag.basic) =
       end
     in
 
-    let continue nb_call = nb_call < flag.DeadFlag.threshold in
+    let continue nb_call = false in
     let s =
       if nb_call = 0 then title
       else "ALMOST " ^ title
