@@ -105,7 +105,7 @@ let find_abspath fn =
 let exported (flag : DeadFlag.basic ref) loc =
   let fn = loc.Lexing.pos_fname in
   LocHash.find_set references loc
-     |> LocSet.cardinal <= !flag.DeadFlag.threshold
+     |> LocSet.cardinal <= 0
   && (flag == DeadFlag.typ
     || !DeadFlag.internal
     || fn.[String.length fn - 1] = 'i'
@@ -404,13 +404,7 @@ let report_basic decs title (flag:DeadFlag.basic) =
     if change fn then print_newline ();
     prloc ~fn loc;
     print_string path;
-    if call_sites <> [] && flag.DeadFlag.call_sites then
-      print_string "    Call sites:";
     print_newline ();
-    if flag.DeadFlag.call_sites then begin
-      List.fast_sort compare call_sites
-      |> List.iter (pretty_print_call ());
-    end
   in
   report title ~opt:(!DeadFlag.opta) l pretty_print
 

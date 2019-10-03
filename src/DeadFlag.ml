@@ -26,16 +26,14 @@ let style = ref
     binding = false;
   }
 
-type basic = {call_sites: bool; threshold: int}
+type basic = {threshold: int}
 let exported : basic ref = ref
   ({
-    call_sites = false;
     threshold = 0
   } : basic)
 
 let typ : basic ref = ref
   ({
-    call_sites = false;
     threshold = 0
   } : basic)
 
