@@ -34,15 +34,10 @@ let rec collect_export ?(mod_type = false) path u stock = function
   | Sig_value (id, ({Types.val_loc; val_type; _} as value))
     when not val_loc.Location.loc_ghost && stock == decs ->
       export path u stock id val_loc;
-      let path = Ident.{id with name = id.name ^ "*"} :: path in
-      DeadObj.collect_export path u stock ~obj:val_type val_loc;
       !DeadLexiFi.sig_value value
 
   | Sig_type (id, t, _) when stock == decs ->
       DeadType.collect_export (id :: path) u stock t
-
-  | Sig_class (id, {Types.cty_type = t; cty_loc = loc; _}, _) ->
-      DeadObj.collect_export (id :: path) u stock ~cltyp:t loc
 
   | (Sig_module (id, {Types.md_type = t; _}, _)
   | Sig_modtype (id, {Types.mtd_type = Some t; _})) as s ->
@@ -52,29 +47,6 @@ let rec collect_export ?(mod_type = false) path u stock = function
         |> List.iter (collect_export ~mod_type (id :: path) u stock)
 
   | _ -> ()
-
-
-let rec treat_exp exp args =
-  match exp.exp_desc with
-  | Texp_apply (exp, in_args) -> treat_exp exp (in_args @ args)
-
-  | Texp_ident (_, _, {Types.val_loc = {Location.loc_start = loc; _}; _})
-  | Texp_field (_, _, {lbl_loc = {Location.loc_start = loc; _}; _}) ->
-      DeadArg.process loc args;
-
-  | Texp_match (_, l1, l2, _) ->
-      List.iter (fun {c_rhs = exp; _} -> treat_exp exp args) l1;
-      List.iter (fun {c_rhs = exp; _} -> treat_exp exp args) l2
-
-  | Texp_ifthenelse (_, exp_then, exp_else) ->
-      treat_exp exp_then args;
-      begin match exp_else with
-      | Some exp -> treat_exp exp args
-      | _ -> ()
-      end
-
-  | _ -> ()
-
 
 let value_binding super self x =
   let old_later = !DeadArg.later in
@@ -104,8 +76,7 @@ let value_binding super self x =
       vb_expr = exp;
       _
     } ->
-      DeadArg.node_build loc exp;
-      DeadObj.add_var loc exp
+      DeadArg.node_build loc exp
   | _ -> ()
   end;
 
@@ -124,7 +95,6 @@ let structure_item super self i =
   | Tstr_module  {mb_name = {txt; _}; _} ->
       mods := txt :: !mods;
       DeadMod.defined := String.concat "." (List.rev !mods) :: !DeadMod.defined
-  | Tstr_class l -> List.iter DeadObj.tstr l
   | Tstr_include i ->
       let collect_include signature =
         let prev_last_loc = !last_loc in
@@ -179,12 +149,6 @@ let pat super self p =
 
 
 let expr super self e =
-  let rec extra = function
-    | [] -> ()
-    | (Texp_coerce (_, typ), _, _)::l -> DeadObj.coerce e typ.ctyp_type; extra l
-    | _::l -> extra l
-  in
-  extra e.exp_extra;
   let exp_loc = e.exp_loc.Location.loc_start in
   let open Ident in
   begin match e.exp_desc with
@@ -201,24 +165,6 @@ let expr super self e =
     when exported DeadFlag.typ loc ->
       DeadType.collect_references loc exp_loc
 
-  | Texp_send (e2, Tmeth_name s, _)
-  | Texp_send (e2, Tmeth_val {name = s; _}, _) ->
-      DeadObj.collect_references ~meth:s ~call_site:e.exp_loc.Location.loc_start e2
-
-
-  | Texp_apply (exp, args) ->
-      begin match exp.exp_desc with
-      | Texp_ident (_, _, {Types.val_loc; _})
-        when val_loc.Location.loc_ghost -> (* The node is due to lookup preparation
-            * anticipated in the typedtree, wich is a case we do not want to treat
-            * otherwise all object's content would be marked as used at this point... *)
-          ()
-      | Texp_ident (_, _, {val_type; _}) ->
-          DeadObj.arg val_type args
-      | _ ->
-          DeadObj.arg exp.exp_type args
-      end
-
   | _ -> ()
   end;
   super.Tast_mapper.expr self e
@@ -231,9 +177,7 @@ let collect_references =                          (* Tast_mapper *)
     let l = !last_loc in
     let ll = (loc x).Location.loc_start in
     if ll <> Lexing.dummy_pos then last_loc := ll;
-    let prev_last_class = !DeadObj.last_class in
     let r = f self x in
-    DeadObj.last_class := prev_last_class;
     last_loc := l;
     r
   in
@@ -247,16 +191,6 @@ let collect_references =                          (* Tast_mapper *)
       (fun self x -> DeadMod.expr x; super.Tast_mapper.module_expr self x)
       (fun x -> x.mod_loc)
   in
-  let class_structure =
-    (fun self x ->
-     DeadObj.class_structure x; super.Tast_mapper.class_structure self x)
-  in
-  let class_field =
-    (fun self x ->
-     DeadObj.class_field x;
-     super.Tast_mapper.class_field self x)
-  in
-  let class_field = wrap class_field (fun x -> x.cf_loc) in
   let typ =
     (fun self x ->
      !DeadLexiFi.type_ext x; super.Tast_mapper.typ self x)
@@ -267,30 +201,9 @@ let collect_references =                          (* Tast_mapper *)
   in
   Tast_mapper.{ super with
                 structure_item; expr; pat; value_binding;
-                module_expr; class_structure; class_field; typ;
+                module_expr; typ;
                 type_declaration
               }
-
-let starts_with prefix s =
-  let len = String.length prefix in
-  if len > String.length s then false
-  else String.sub s 0 len = prefix
-
-let ends_with suffix s =
-  let len = String.length suffix in
-  let s_len = String.length s in
-  if len > s_len then false
-  else String.sub s (s_len - len) len = suffix
-
-let remove_wrap name =
-  let n = String.length name in
-  let rec loop i =
-    if i < n - 1 then
-      if name.[i] == '_' && name.[i+1] == '_' then
-        String.uncapitalize_ascii (String.sub name (i+2) (n - i - 2))
-      else loop (i+1)
-    else name
-  in loop 0
 
 let regabs fn =
   current_src := fn;
@@ -346,7 +259,6 @@ let eom loc_dep =
     clean !DeadType.dependencies;
   end;
   VdNode.eom ();
-  DeadObj.eom ();
   DeadType.dependencies := [];
   Hashtbl.reset incl
 
@@ -395,102 +307,7 @@ let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtF
       end
   | _ -> ()
 
-
-                (********   REPORTING   ********)
-
-(* Prepare the list of opt_args for report *)
-let analyze_opt_args () =
-  List.iter (fun f -> f ()) !DeadArg.last;
-  let all = ref [] in
-  let tbl = Hashtbl.create 256 in
-  let dec_loc loc = Hashtbl.mem main_files (getModuleName loc.Lexing.pos_fname) in
-
-  let analyze = fun (loc, lab, has_val, call_site) ->
-    let slot =
-      try Hashtbl.find tbl (loc, lab)
-      with Not_found ->
-        let r = {with_val = []; without_val = []} in
-        if dec_loc loc then begin
-          all := (loc, lab, r) :: !all;
-          Hashtbl.add tbl (loc, lab) r
-        end;
-        r
-    in
-    if has_val then slot.with_val <- call_site :: slot.with_val
-    else slot.without_val <- call_site :: slot.without_val
-  in
-
-  List.iter analyze !opt_args;
-  List.iter                   (* Remove call sites accounted more than once for the same element *)
-    (fun (_, _, slot) ->
-      slot.with_val     <- List.sort_uniq compare slot.with_val;
-      slot.without_val  <- List.sort_uniq compare slot.without_val)
-    !all;
-  !all
-
-
-let report_opt_args s l =
-  let opt =
-    if s = "NEVER" then !DeadFlag.optn
-    else !DeadFlag.opta
-  in
-  let percent = percent opt in
-  let rec report_opt_args nb_call =
-    let open DeadFlag in
-    let l = List.filter
-        (fun (_, _, slot, ratio, _) -> let ratio = 1. -. ratio in
-          if opt.threshold.optional = `Both then
-            ratio >= opt.threshold.percentage && check_length nb_call slot
-          else ratio >= percent nb_call
-            && (opt.threshold.percentage >= 1. || ratio < (percent (nb_call - 1))))
-      @@ List.map
-        (fun (loc, lab, slot) ->
-          let l = if s = "NEVER" then slot.with_val else slot.without_val in
-          let total = List.length slot.with_val + List.length slot.without_val in
-          let ratio = float_of_int (List.length l) /. float_of_int total
-          in (loc, lab, l, ratio, total))
-        l
-      |> List.fast_sort (fun (loc1, lab1, slot1, _, _) (loc2, lab2, slot2, _, _) ->
-          compare (DeadCommon.abs loc1, loc1, lab1, slot1) (DeadCommon.abs loc2, loc2, lab2, slot2))
-    in
-
-    let change =
-      let (loc, _, _, _, _) = try List.hd l with _ -> (!last_loc, _none, [], 0., 0) in
-      dir (DeadCommon.abs loc)
-    in
-
-    let pretty_print = fun (loc, lab, slot, ratio, total) ->
-      if change (DeadCommon.abs loc) then print_newline ();
-      prloc loc; print_string ("?" ^ lab);
-      if ratio <> 0. then begin
-        Printf.printf "   (%d/%d calls)" (total - List.length slot) total;
-        if opt.call_sites then print_string "  Exceptions:"
-      end;
-      print_newline ();
-      if opt.call_sites then begin
-        List.iter (pretty_print_call ()) slot;
-        if nb_call <> 0 then print_newline ()
-      end
-    in
-
-    let continue nb_call =
-      opt.threshold.optional = `Both && nb_call < opt.threshold.exceptions
-      || opt.threshold.optional = `Percent && percent nb_call > opt.threshold.percentage
-    in
-    let s =
-      (if nb_call > 0 then "OPTIONAL ARGUMENTS: ALMOST "
-      else "OPTIONAL ARGUMENTS: ") ^ s
-    in
-    report s ~opt ~extra:"Except" l continue nb_call pretty_print report_opt_args;
-
-  in report_opt_args 0
-
-
-let report_unused_exported () =
-  report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported
-
 let run () =
   !DeadLexiFi.prepare_report DeadType.decs;
-  report_unused_exported();
-  (* DeadObj.report(); *)
+  report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported;
   (* DeadType.report(); *)
