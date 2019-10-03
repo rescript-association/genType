@@ -103,26 +103,8 @@ let find_abspath fn =
 
 
 let exported loc =
-  let fn = loc.Lexing.pos_fname in
-  LocHash.find_set references loc
-     |> LocSet.cardinal = 0
-  && (
-      !DeadFlag.internal
-    || fn.[String.length fn - 1] = 'i'
-    || getModuleName !current_src <> getModuleName fn
-    || try not (Sys.file_exists (find_abspath fn ^ "i")) with Not_found -> true)
-
-
-(* Section printer:
- * section:     `.> SECTION: '
- *              `==========='
- * subsection:  `.>->  SUBSECTION: '
- *              `~~~~~~~~~~~~~~~~~' *)
-let section ?(sub = false) title =
-  Printf.printf "%s %s:\n%s\n"
-    (if sub then ".>-> " else ".>")
-    title
-    (String.make ((if sub then 5 else 2) + String.length title + 1) (if sub then '~' else '='))
+  let num_references = LocHash.find_set references loc |> LocSet.cardinal in
+  num_references = 0
 
 (* Location printer: `filename:line: ' *)
 let prloc ?(call_site = false) ?fn (loc : Lexing.position) =
@@ -364,9 +346,15 @@ let pretty_print_call () = let ghost = ref false in function
 
 
 
+let section title =
+  Printf.printf "%s %s:\n%s\n"
+    ".>"
+    title
+    (String.make (2 + String.length title + 1) '=')
+
 (* Base pattern for reports *)
-let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l pretty_print =
-  section ~sub:false @@ s;
+let report title ~(opt: DeadFlag.opt) ?(extra = "Called") l pretty_print =
+  section title;
   List.iter pretty_print l;
   print_newline ()
 

@@ -29,5 +29,3 @@ let style = ref
 let verbose = ref false
 
 let underscore = ref false
-
-let internal = ref false
