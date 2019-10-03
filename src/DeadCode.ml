@@ -22,11 +22,6 @@ open Typedtree
 open DeadCommon
 
 
-                (********   ATTRIBUTES   ********)
-
-let main_files = Hashtbl.create 256   (* names -> paths *)
-
-
                 (********   PROCESSING   ********)
 
 let rec collect_export ?(mod_type = false) path u stock = function
@@ -205,11 +200,6 @@ let collect_references =                          (* Tast_mapper *)
                 type_declaration
               }
 
-let regabs fn =
-  current_src := fn;
-  hashtbl_add_unique_to_list abspath (getModuleName fn) fn;
-  hashtbl_add_unique_to_list main_files (getModuleName fn) ()
-
 (* Merge a location's references to another one's *)
 let assoc decs (loc1, loc2) =
   let fn1 = loc1.Lexing.pos_fname
@@ -291,7 +281,7 @@ let process_structure cmt_value_dependencies (structure: Typedtree.structure) =
 let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtFilePath =
   last_loc := Lexing.dummy_pos;
   if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" cmtFilePath;
-  regabs sourceFile;
+  current_src := sourceFile;
   let {Cmt_format.cmt_annots; cmt_value_dependencies} = Cmt_format.read_cmt cmtFilePath in
   match cmt_annots with
   | Interface signature ->
@@ -310,4 +300,4 @@ let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtF
 let run () =
   !DeadLexiFi.prepare_report DeadType.decs;
   report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported;
-  (* DeadType.report(); *)
+  DeadType.report();
