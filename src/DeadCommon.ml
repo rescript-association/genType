@@ -441,35 +441,3 @@ let report_basic ?folder decs title (flag:DeadFlag.basic) =
     report s ~opt:(!DeadFlag.opta) l continue nb_call pretty_print reportn
 
   in reportn 0
-
-                (********   LEXIFI SPECIALS ********)
-
-module DeadLexiFi = struct
-(*   .^.  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  .^.   *)
-(*  / ! \  DO NOT DELETE UNLESS YOU CAN COMPILE WITH `make lexifi' AND YOU KNOW WHAT YOU ARE DOING  / ! \  *)
-(* /_____\   /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\  -  /!\   /_____\ *)
-
-  (* The following hooks are pointing LexiFi's extensions if compiled with `make lexifi'.
-   * They stay as following otherwise *)
-
-  let sig_value : (Types.value_description -> unit) ref =
-    ref (fun _ -> ())
-
-  let export_type : (Lexing.position -> string -> unit) ref =
-    ref (fun _ _ -> ())
-
-  let type_ext : (Typedtree.core_type -> unit) ref =
-    ref (fun _ -> ())
-
-  let type_decl : (Typedtree.type_declaration -> unit) ref =
-    ref (fun _ -> ())
-
-  let tstr_type : (Typedtree.type_declaration -> string -> unit) ref =
-    ref (fun _ _ -> ())
-
-  let ttype_of : (Typedtree.expression -> unit) ref =
-    ref (fun _ -> ())
-
-  let prepare_report : ((Lexing.position, string * string) Hashtbl.t -> unit) ref =
-    ref (fun _ -> ())
-end

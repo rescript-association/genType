@@ -26,10 +26,9 @@ open DeadCommon
 
 let rec collect_export ?(mod_type = false) path u stock = function
 
-  | Sig_value (id, ({Types.val_loc; val_type; _} as value))
+  | Sig_value (id, ({Types.val_loc}))
     when not val_loc.Location.loc_ghost && stock == decs ->
-      export path u stock id val_loc;
-      !DeadLexiFi.sig_value value
+      export path u stock id val_loc
 
   | Sig_type (id, t, _) when stock == decs ->
       DeadType.collect_export (id :: path) u stock t
@@ -94,9 +93,6 @@ let expr super self e =
   let open Ident in
   begin match e.exp_desc with
 
-  | Texp_ident (path, _, _) when Path.name path = "Mlfi_types.internal_ttype_of" ->
-      !DeadLexiFi.ttype_of e
-
   | Texp_ident (_, _, {Types.val_loc = {Location.loc_start = loc; loc_ghost = false; _}; _})
     when exported DeadFlag.exported loc ->
       LocHash.add_set references loc exp_loc
@@ -126,18 +122,8 @@ let collect_references =                          (* Tast_mapper *)
   let expr = wrap (expr super) (fun x -> x.exp_loc) in
   let pat = wrap (pat super) (fun x -> x.pat_loc) in
   let value_binding = wrap (value_binding super) (fun x -> x.vb_expr.exp_loc) in
-  let typ =
-    (fun self x ->
-     !DeadLexiFi.type_ext x; super.Tast_mapper.typ self x)
-  in
-  let type_declaration self x =
-    !DeadLexiFi.type_decl x;
-    super.Tast_mapper.type_declaration self x
-  in
   Tast_mapper.{ super with
                 expr; pat; value_binding;
-                typ;
-                type_declaration
               }
 
 (* Merge a location's references to another one's *)
@@ -234,6 +220,5 @@ let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtF
   | _ -> ()
 
 let run () =
-  !DeadLexiFi.prepare_report DeadType.decs;
   report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported;
   DeadType.report();

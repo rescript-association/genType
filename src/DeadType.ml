@@ -118,8 +118,7 @@ let collect_export path u stock t =
     | Type_record (l, _) ->
         List.iter
           (fun {Types.ld_id; ld_loc; ld_type; _} ->
-            save ld_id ld_loc;
-            !DeadLexiFi.export_type ld_loc.Location.loc_start (_TO_STRING_ ld_type)
+            save ld_id ld_loc
           )
           l
     | Type_variant l ->
