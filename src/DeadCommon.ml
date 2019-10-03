@@ -352,7 +352,7 @@ let section title =
     (String.make (String.length title + 1) '=')
 
 (* Base pattern for reports *)
-let report title ~(opt: DeadFlag.opt) ?(extra = "Called") l pretty_print =
+let report title l pretty_print =
   section title;
   List.iter pretty_print l;
   print_newline ()
@@ -393,5 +393,5 @@ let report_basic decs title =
     print_string path;
     print_newline ();
   in
-  report title ~opt:(!DeadFlag.opta) l pretty_print
+  report title l pretty_print
 

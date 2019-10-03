@@ -66,15 +66,6 @@ let value_binding super self x =
 let pat super self p =
   let pat_loc = p.pat_loc.Location.loc_start in
   let open Asttypes in
-  if DeadType.is_unit p.pat_type && !DeadFlag.style.DeadFlag.unit_pat then begin
-    match p.pat_desc with
-      | Tpat_construct _ -> ()
-      | Tpat_var (_, {txt = "eta"; loc = _})
-        when p.pat_loc = Location.none -> ()
-      | Tpat_var (_, {txt; _})-> ()
-      | Tpat_any -> ()
-      | _ -> ()
-  end;
   begin match p.pat_desc with
   | Tpat_record (l, _) ->
       List.iter

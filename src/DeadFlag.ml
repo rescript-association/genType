@@ -7,25 +7,6 @@
 (*                                                                         *)
 (***************************************************************************)
 
-
-type opt = {call_sites: bool}
-
-let opta = ref
-  {
-    call_sites = false;
-  }
-
-
-
-type style = {opt_arg: bool; unit_pat: bool; seq: bool; binding: bool}
-let style = ref
-  {
-    opt_arg = false;
-    unit_pat = false;
-    seq = false;
-    binding = false;
-  }
-
 let verbose = ref false
 
 let underscore = ref false
