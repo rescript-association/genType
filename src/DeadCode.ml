@@ -79,7 +79,7 @@ let pat super self p =
   | Tpat_record (l, _) ->
       List.iter
         (fun (_, {Types.lbl_loc = {Location.loc_start = lab_loc; _}; _}, _) ->
-          if exported DeadFlag.typ lab_loc then
+          if exported lab_loc then
             DeadType.collect_references lab_loc pat_loc
         )
         l
@@ -94,12 +94,12 @@ let expr super self e =
   begin match e.exp_desc with
 
   | Texp_ident (_, _, {Types.val_loc = {Location.loc_start = loc; loc_ghost = false; _}; _})
-    when exported DeadFlag.exported loc ->
+    when exported loc ->
       LocHash.add_set references loc exp_loc
 
   | Texp_field (_, _, {lbl_loc = {Location.loc_start = loc; loc_ghost = false; _}; _})
   | Texp_construct (_, {cstr_loc = {Location.loc_start = loc; loc_ghost = false; _}; _}, _)
-    when exported DeadFlag.typ loc ->
+    when exported loc ->
       DeadType.collect_references loc exp_loc
 
   | _ -> ()
@@ -220,5 +220,5 @@ let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtF
   | _ -> ()
 
 let run () =
-  report_basic decs "UNUSED EXPORTED VALUES" !DeadFlag.exported;
+  report_basic decs "UNUSED EXPORTED VALUES";
   DeadType.report();

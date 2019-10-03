@@ -129,4 +129,4 @@ let collect_export path u stock t =
 let collect_references loc exp_loc =
   LocHash.add_set references loc exp_loc
 
-let report () = report_basic decs "UNUSED CONSTRUCTORS/RECORD FIELDS" !DeadFlag.typ
+let report () = report_basic decs "UNUSED CONSTRUCTORS/RECORD FIELDS"

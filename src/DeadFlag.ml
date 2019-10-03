@@ -26,17 +26,6 @@ let style = ref
     binding = false;
   }
 
-type basic = {threshold: int}
-let exported : basic ref = ref
-  ({
-    threshold = 0
-  } : basic)
-
-let typ : basic ref = ref
-  ({
-    threshold = 0
-  } : basic)
-
 let verbose = ref false
 
 let underscore = ref false

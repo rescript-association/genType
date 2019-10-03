@@ -102,12 +102,12 @@ let find_abspath fn =
 
 
 
-let exported (flag : DeadFlag.basic ref) loc =
+let exported loc =
   let fn = loc.Lexing.pos_fname in
   LocHash.find_set references loc
-     |> LocSet.cardinal <= 0
-  && (flag == DeadFlag.typ
-    || !DeadFlag.internal
+     |> LocSet.cardinal = 0
+  && (
+      !DeadFlag.internal
     || fn.[String.length fn - 1] = 'i'
     || getModuleName !current_src <> getModuleName fn
     || try not (Sys.file_exists (find_abspath fn ^ "i")) with Not_found -> true)
@@ -371,7 +371,7 @@ let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l pretty_print =
   print_newline ()
 
 
-let report_basic decs title (flag:DeadFlag.basic) =
+let report_basic decs title =
   let folder = fun loc (fn, path) acc ->
     let rec cut_main s pos =
       if pos = String.length s then s
