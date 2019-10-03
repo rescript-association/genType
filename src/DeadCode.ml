@@ -65,7 +65,6 @@ let value_binding super self x =
 
 let pat super self p =
   let pat_loc = p.pat_loc.Location.loc_start in
-  let open Asttypes in
   begin match p.pat_desc with
   | Tpat_record (l, _) ->
       List.iter
