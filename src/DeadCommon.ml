@@ -371,31 +371,27 @@ let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l pretty_print =
   print_newline ()
 
 
-let report_basic ?folder decs title (flag:DeadFlag.basic) =
-  let folder = match folder with
-    | Some folder -> folder
-    | None -> fun nb_call -> fun loc (fn, path) acc ->
-        let rec cut_main s pos =
-          if pos = String.length s then s
-          else if s.[pos] = '.' then String.sub s (pos + 1) (String.length s - pos - 1)
-          else cut_main s (pos + 1)
-        in
-        let test elt =
-          let set = LocHash.find_set references elt in
-          if LocSet.cardinal set = nb_call then begin
-              let l = LocSet.elements set in
-              Some ((fn, cut_main path 0, loc, l) :: acc)
-            end
-          else None
-        in match test loc with
-          | exception Not_found when nb_call = 0 ->
-                (fn, cut_main path 0, loc, []) :: acc
-          | exception Not_found -> acc
-          | None -> acc
-          | Some l -> l
+let report_basic decs title (flag:DeadFlag.basic) =
+  let folder = fun loc (fn, path) acc ->
+    let rec cut_main s pos =
+      if pos = String.length s then s
+      else if s.[pos] = '.' then String.sub s (pos + 1) (String.length s - pos - 1)
+      else cut_main s (pos + 1)
+    in
+    let test elt =
+      let set = LocHash.find_set references elt in
+      if LocSet.cardinal set = 0 then begin
+          let l = LocSet.elements set in
+          Some ((fn, cut_main path 0, loc, l) :: acc)
+        end
+      else None
+    in match test loc with
+      | exception Not_found -> acc
+      | None -> acc
+      | Some l -> l
   in
   let l =
-    Hashtbl.fold (folder 0) decs []
+    Hashtbl.fold folder decs []
     |> List.fast_sort (fun (fn1, path1, loc1, _) (fn2, path2, loc2, _) ->
         compare (fn1, loc1, path1) (fn2, loc2, path2))
   in
