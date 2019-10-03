@@ -365,7 +365,7 @@ let pretty_print_call () = let ghost = ref false in function
 
 
 (* Base pattern for reports *)
-let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l continue nb_call pretty_print reporter =
+let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l pretty_print =
   section ~sub:false @@ s;
   List.iter pretty_print l;
   print_newline ()
@@ -394,36 +394,27 @@ let report_basic ?folder decs title (flag:DeadFlag.basic) =
           | None -> acc
           | Some l -> l
   in
-  let rec reportn nb_call =
-    let l =
-     Hashtbl.fold (folder nb_call) decs []
-      |> List.fast_sort (fun (fn1, path1, loc1, _) (fn2, path2, loc2, _) ->
-          compare (fn1, loc1, path1) (fn2, loc2, path2))
-    in
+  let l =
+    Hashtbl.fold (folder 0) decs []
+    |> List.fast_sort (fun (fn1, path1, loc1, _) (fn2, path2, loc2, _) ->
+        compare (fn1, loc1, path1) (fn2, loc2, path2))
+  in
 
-    let change =
-      let (fn, _, _, _) = try List.hd l with _ -> (_none, "", !last_loc, []) in
-      dir fn
-    in
-    let pretty_print = fun (fn, path, loc, call_sites) ->
-      if change fn then print_newline ();
-      prloc ~fn loc;
-      print_string path;
-      if call_sites <> [] && flag.DeadFlag.call_sites then
-        print_string "    Call sites:";
-      print_newline ();
-      if flag.DeadFlag.call_sites then begin
-        List.fast_sort compare call_sites
-        |> List.iter (pretty_print_call ());
-        if nb_call <> 0 then print_newline ()
-      end
-    in
+  let change =
+    let (fn, _, _, _) = try List.hd l with _ -> (_none, "", !last_loc, []) in
+    dir fn
+  in
+  let pretty_print = fun (fn, path, loc, call_sites) ->
+    if change fn then print_newline ();
+    prloc ~fn loc;
+    print_string path;
+    if call_sites <> [] && flag.DeadFlag.call_sites then
+      print_string "    Call sites:";
+    print_newline ();
+    if flag.DeadFlag.call_sites then begin
+      List.fast_sort compare call_sites
+      |> List.iter (pretty_print_call ());
+    end
+  in
+  report title ~opt:(!DeadFlag.opta) l pretty_print
 
-    let continue nb_call = false in
-    let s =
-      if nb_call = 0 then title
-      else "ALMOST " ^ title
-    in
-    report s ~opt:(!DeadFlag.opta) l continue nb_call pretty_print reportn
-
-  in reportn 0
