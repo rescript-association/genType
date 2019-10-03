@@ -347,10 +347,9 @@ let pretty_print_call () = let ghost = ref false in function
 
 
 let section title =
-  Printf.printf "%s %s:\n%s\n"
-    ".>"
+  Printf.printf "%s:\n%s\n"
     title
-    (String.make (2 + String.length title + 1) '=')
+    (String.make (String.length title + 1) '=')
 
 (* Base pattern for reports *)
 let report title ~(opt: DeadFlag.opt) ?(extra = "Called") l pretty_print =
