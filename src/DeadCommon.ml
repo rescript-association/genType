@@ -66,7 +66,7 @@ let is_ghost loc =
   || loc.Lexing.pos_fname = _none || loc.Lexing.pos_fname = ""
 
 
-let check_underscore name = name.[0] <> '_'
+let check_underscore name = !DeadFlag.report_underscore || name.[0] <> '_'
 
 
 let hashtbl_find_list hashtbl key = Hashtbl.find_all hashtbl key

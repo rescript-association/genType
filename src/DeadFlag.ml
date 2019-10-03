@@ -9,4 +9,4 @@
 
 let verbose = ref false
 
-let underscore = ref false
+let report_underscore = ref false
