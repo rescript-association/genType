@@ -23,16 +23,6 @@ let opta = ref
       };
   }
 
-let optn = ref
-  {
-    call_sites = false;
-    threshold =
-      {
-        exceptions = 0;
-        percentage = 1.;
-        optional = `Percent
-      };
-  }
 
 
 type style = {opt_arg: bool; unit_pat: bool; seq: bool; binding: bool}
@@ -50,14 +40,6 @@ let exported : basic ref = ref
     call_sites = false;
     threshold = 0
   } : basic)
-
-
-let obj = ref
-  ({
-    call_sites = false;
-    threshold = 0;
-  } : basic)
-
 
 let typ : basic ref = ref
   ({
