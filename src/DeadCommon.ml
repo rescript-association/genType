@@ -363,20 +363,11 @@ let pretty_print_call () = let ghost = ref false in function
       ghost := true
 
 
-let percent (opt : DeadFlag.opt) base =
-  let open DeadFlag in
-  1. -. (float_of_int base) *. (1. -. opt.threshold.percentage) /. 10.
-
 
 (* Base pattern for reports *)
 let report s ~(opt: DeadFlag.opt) ?(extra = "Called") l continue nb_call pretty_print reporter =
-  if nb_call = 0 || l <> [] then begin
-    section ~sub:(nb_call <> 0)
-    @@ (if nb_call = 0 then s
-        else if DeadFlag.(opt.threshold.optional) = `Both || extra = "Called"
-        then
-          Printf.sprintf "%s: %s %d time(s)" s extra nb_call
-        else Printf.sprintf "%s: at least %3.2f%% of the time" s (100. *. percent opt nb_call));
+  begin
+    section ~sub:false @@ s;
     List.iter pretty_print l;
     if continue nb_call then
       (if l <> [] then print_endline "--------" else ()) |> print_newline |> print_newline

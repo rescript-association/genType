@@ -7,20 +7,12 @@
 (*                                                                         *)
 (***************************************************************************)
 
-type threshold = {exceptions: int; percentage: float; optional: [`Percent | `Both]}
 
-
-type opt = {call_sites: bool; threshold: threshold}
+type opt = {call_sites: bool}
 
 let opta = ref
   {
     call_sites = false;
-    threshold =
-      {
-        exceptions = 0;
-        percentage = 1.;
-        optional = `Percent
-      };
   }
 
 
