@@ -11,9 +11,6 @@ open Asttypes
 open Types
 open Typedtree
 
-open DeadCommon
-
-
 
                 (********   ATTRIBUTES  ********)
 
@@ -109,9 +106,9 @@ let collect_export path u stock t =
 
   let save id loc =
     if t.type_manifest = None then
-      export path u stock id loc;
+      DeadCommon.export path u stock id loc;
     let path = String.concat "." @@ List.rev_map (fun id -> id.Ident.name) (id::path) in
-    Hashtbl.replace fields path loc.Location.loc_start
+    Hashtbl.replace DeadCommon.fields path loc.Location.loc_start
   in
 
   match t.type_kind with
@@ -127,7 +124,7 @@ let collect_export path u stock t =
 
 
 let collect_references declaration_loc usage_loc =
-  LocHash.add_set references declaration_loc usage_loc
+  DeadCommon.LocHash.add_set DeadCommon.references declaration_loc usage_loc
   
 
-let report () = report_basic decs "UNUSED CONSTRUCTORS/RECORD FIELDS"
+let report () = DeadCommon.report_basic decs "UNUSED CONSTRUCTORS/RECORD FIELDS"
