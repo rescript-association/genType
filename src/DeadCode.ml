@@ -60,24 +60,6 @@ let value_binding super self x =
   decr depth;
   r
 
-
-
-
-let pat super self p =
-  let pat_loc = p.pat_loc.Location.loc_start in
-  begin match p.pat_desc with
-  | Tpat_record (l, _) ->
-      List.iter
-        (fun (_, {Types.lbl_loc = {Location.loc_start = lab_loc; _}; _}, _) ->
-          if exported lab_loc then
-            DeadType.collect_references lab_loc pat_loc
-        )
-        l
-  | _ -> ()
-  end;
-  super.Tast_mapper.pat self p
-
-
 let expr super self e =
   let exp_loc = e.exp_loc.Location.loc_start in
   let open Ident in
@@ -110,11 +92,8 @@ let collect_references =                          (* Tast_mapper *)
   in
 
   let expr = wrap (expr super) (fun x -> x.exp_loc) in
-  let pat = wrap (pat super) (fun x -> x.pat_loc) in
   let value_binding = wrap (value_binding super) (fun x -> x.vb_expr.exp_loc) in
-  Tast_mapper.{ super with
-                expr; pat; value_binding;
-              }
+  Tast_mapper.{ super with expr; value_binding; }
 
 (* Merge a location's references to another one's *)
 let assoc decs (loc1, loc2) =
