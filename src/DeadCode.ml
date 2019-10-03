@@ -34,13 +34,6 @@ let rec collect_export ?(mod_type = false) path u stock = function
   | Sig_type (id, t, _) when stock == decs ->
       DeadType.collect_export (id :: path) u stock t
 
-  | (Sig_module (id, {Types.md_type = t; _}, _)
-  | Sig_modtype (id, {Types.mtd_type = Some t; _})) as s ->
-      let collect = match s with Sig_modtype _ -> mod_type | _ -> true in
-      if collect then
-        DeadMod.sign t
-        |> List.iter (collect_export ~mod_type (id :: path) u stock)
-
   | _ -> ()
 
 let value_binding super self x =
@@ -69,40 +62,6 @@ let value_binding super self x =
   r
 
 
-let structure_item super self i =
-  let open Asttypes in
-  begin match i.str_desc with
-  | Tstr_type  (_, l) ->
-      List.iter DeadType.tstr l
-  | Tstr_module  {mb_name = {txt; _}; _} ->
-      mods := txt :: !mods;
-      DeadMod.defined := String.concat "." (List.rev !mods) :: !DeadMod.defined
-  | Tstr_include i ->
-      let collect_include signature =
-        let prev_last_loc = !last_loc in
-        List.iter
-          (collect_export ~mod_type:true [Ident.create (getModuleName !current_src)] _include incl)
-          signature;
-        last_loc := prev_last_loc;
-      in
-      let rec includ mod_expr =
-        match mod_expr.mod_desc with
-        | Tmod_ident (_, _) -> collect_include (DeadMod.sign mod_expr.mod_type)
-        | Tmod_structure structure -> collect_include structure.str_type
-        | Tmod_unpack (_, mod_type) -> collect_include (DeadMod.sign mod_type)
-        | Tmod_functor (_, _, _, mod_expr)
-        | Tmod_apply (_, mod_expr, _)
-        | Tmod_constraint (mod_expr, _, _, _) -> includ mod_expr
-      in
-      includ i.incl_mod
-  | _ -> ()
-  end;
-  let r = super.Tast_mapper.structure_item self i in
-  begin match i.str_desc with
-  | Tstr_module _ -> mods := List.tl !mods
-  | _ -> ()
-  end;
-  r
 
 
 let pat super self p =
@@ -166,13 +125,7 @@ let collect_references =                          (* Tast_mapper *)
 
   let expr = wrap (expr super) (fun x -> x.exp_loc) in
   let pat = wrap (pat super) (fun x -> x.pat_loc) in
-  let structure_item = wrap (structure_item super) (fun x -> x.str_loc) in
   let value_binding = wrap (value_binding super) (fun x -> x.vb_expr.exp_loc) in
-  let module_expr =
-    wrap
-      (fun self x -> DeadMod.expr x; super.Tast_mapper.module_expr self x)
-      (fun x -> x.mod_loc)
-  in
   let typ =
     (fun self x ->
      !DeadLexiFi.type_ext x; super.Tast_mapper.typ self x)
@@ -182,8 +135,8 @@ let collect_references =                          (* Tast_mapper *)
     super.Tast_mapper.type_declaration self x
   in
   Tast_mapper.{ super with
-                structure_item; expr; pat; value_binding;
-                module_expr; typ;
+                expr; pat; value_binding;
+                typ;
                 type_declaration
               }
 
@@ -223,7 +176,6 @@ let clean references loc =
 
 let eom loc_dep =
   List.iter (assoc decs) loc_dep;
-  List.iter (assoc DeadType.decs) !DeadType.dependencies;
   if Sys.file_exists (!current_src ^ "i") then begin
     let clean =
       List.iter
@@ -231,11 +183,9 @@ let eom loc_dep =
           clean references loc1; clean references loc2
         )
     in
-    clean loc_dep;
-    clean !DeadType.dependencies;
+    clean loc_dep
   end;
   VdNode.eom ();
-  DeadType.dependencies := [];
   Hashtbl.reset incl
 
 

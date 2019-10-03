@@ -46,7 +46,6 @@ let fields : (string, Lexing.position) Hashtbl.t = Hashtbl.create 256      (* li
 
 let last_loc = ref Lexing.dummy_pos                                  (* helper to diagnose occurrences of Location.none in the typedtree *)
 let current_src = ref ""
-let mods : string list ref = ref []                                                 (* module path *)
 
 
 let depth = ref (-1)
