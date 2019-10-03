@@ -59,7 +59,7 @@ let _variant = ": variant :"
 
                 (********   HELPERS   ********)
 
-let unit fn = fn |> Paths.getModuleName |> ModuleName.toString
+let getModuleName fn = fn |> Paths.getModuleName |> ModuleName.toString
 
 
 let is_ghost loc =
@@ -98,7 +98,7 @@ let find_path fn ?(sep = '/') l = List.find
   l
 
 let find_abspath fn =
-  find_path fn (hashtbl_find_list abspath (unit fn))
+  find_path fn (hashtbl_find_list abspath (getModuleName fn))
 
 
 
@@ -110,7 +110,7 @@ let exported (flag : DeadFlag.basic ref) loc =
   && (flag == DeadFlag.typ
     || !DeadFlag.internal
     || fn.[String.length fn - 1] = 'i'
-    || unit !current_src <> unit fn
+    || getModuleName !current_src <> getModuleName fn
     || try not (Sys.file_exists (find_abspath fn ^ "i")) with Not_found -> true)
 
 
@@ -303,7 +303,7 @@ module VdNode = struct
         if not (LocSet.is_empty worklist) then
           let loc = LocSet.choose worklist in
           let wl = LocSet.remove loc worklist in
-           if unit loc.Lexing.pos_fname <> unit !current_src then
+           if getModuleName loc.Lexing.pos_fname <> getModuleName !current_src then
             List.iter (LocHash.remove parents) loc_list
            else begin
             LocHash.replace met loc ();
@@ -335,7 +335,7 @@ let export ?(sep = ".") path u stock id loc =
     will create value definitions whose location is in set.mli
   *)
   if not loc.Location.loc_ghost
-  && (u = unit loc.Location.loc_start.Lexing.pos_fname || u == _include)
+  && (u = getModuleName loc.Location.loc_start.Lexing.pos_fname || u == _include)
   && check_underscore id.Ident.name then
     hashtbl_add_to_list stock loc.Location.loc_start (!current_src, value)
 

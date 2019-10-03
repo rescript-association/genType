@@ -129,7 +129,7 @@ let structure_item super self i =
       let collect_include signature =
         let prev_last_loc = !last_loc in
         List.iter
-          (collect_export ~mod_type:true [Ident.create (unit !current_src)] _include incl)
+          (collect_export ~mod_type:true [Ident.create (getModuleName !current_src)] _include incl)
           signature;
         last_loc := prev_last_loc;
       in
@@ -294,8 +294,8 @@ let remove_wrap name =
 
 let regabs fn =
   current_src := fn;
-  hashtbl_add_unique_to_list abspath (unit fn) fn;
-  hashtbl_add_unique_to_list main_files (unit fn) ()
+  hashtbl_add_unique_to_list abspath (getModuleName fn) fn;
+  hashtbl_add_unique_to_list main_files (getModuleName fn) ()
 
 (* Merge a location's references to another one's *)
 let assoc decs (loc1, loc2) =
@@ -304,13 +304,13 @@ let assoc decs (loc1, loc2) =
   let is_implem fn = fn.[String.length fn - 1] <> 'i' in
   let has_iface fn =
     fn.[String.length fn - 1] = 'i'
-    ||  ( unit fn = unit !current_src
+    ||  ( getModuleName fn = getModuleName !current_src
           &&  try Sys.file_exists (find_abspath fn ^ "i")
               with Not_found -> false
         )
   in
   let is_iface fn loc =
-    Hashtbl.mem decs loc || unit fn <> unit !current_src
+    Hashtbl.mem decs loc || getModuleName fn <> getModuleName !current_src
     || not (is_implem fn && has_iface fn)
   in
   if fn1 <> _none && fn2 <> _none && loc1 <> loc2 then begin
@@ -328,7 +328,7 @@ let assoc decs (loc1, loc2) =
 
 let clean references loc =
   let fn = loc.Lexing.pos_fname in
-  if (fn.[String.length fn - 1] <> 'i' && unit fn = unit !current_src) then
+  if (fn.[String.length fn - 1] <> 'i' && getModuleName fn = getModuleName !current_src) then
     LocHash.remove references loc
 
 let eom loc_dep =
@@ -352,7 +352,7 @@ let eom loc_dep =
 
 
 let process_signature fn (signature : Types.signature) = 
-    let module_name = unit fn in
+    let module_name = getModuleName fn in
     let module_id = Ident.create (String.capitalize_ascii module_name) in
     signature |> List.iter(fun sig_item ->
       collect_export [module_id] module_name decs sig_item);
@@ -403,7 +403,7 @@ let analyze_opt_args () =
   List.iter (fun f -> f ()) !DeadArg.last;
   let all = ref [] in
   let tbl = Hashtbl.create 256 in
-  let dec_loc loc = Hashtbl.mem main_files (unit loc.Lexing.pos_fname) in
+  let dec_loc loc = Hashtbl.mem main_files (getModuleName loc.Lexing.pos_fname) in
 
   let analyze = fun (loc, lab, has_val, call_site) ->
     let slot =

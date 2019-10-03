@@ -138,13 +138,13 @@ let tstr typ =
     let path = String.concat "." @@ List.rev @@
       name.Asttypes.txt
       :: typ.typ_name.Asttypes.txt :: !mods
-      @ (String.capitalize_ascii (unit !current_src):: [])
+      @ (String.capitalize_ascii (getModuleName !current_src):: [])
     in
     begin try match typ.typ_manifest with
       | Some {ctyp_desc=Ttyp_constr (_, {txt;  _}, _); _} ->
           let loc1 = Hashtbl.find fields
             (String.concat "." @@
-              String.capitalize_ascii (unit !current_src)
+              String.capitalize_ascii (getModuleName !current_src)
               :: Longident.flatten txt
               @ (name.Asttypes.txt :: []))
           in

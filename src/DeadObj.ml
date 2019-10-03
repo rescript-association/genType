@@ -224,7 +224,7 @@ let tstr ({ci_expr; ci_decl = {cty_loc = loc; _}; ci_id_name = {txt = name; _}; 
     (List.rev !mods |> String.concat ".")
     ^ (if !mods <> [] then "." else "") ^ name
   in
-  let path = String.capitalize_ascii (unit !current_src) ^ "." ^ short in
+  let path = String.capitalize_ascii (getModuleName !current_src) ^ "." ^ short in
   if not (Hashtbl.mem defined short) then
     Hashtbl.add defined short path
   else
