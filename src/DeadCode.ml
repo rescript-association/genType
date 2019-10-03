@@ -19,24 +19,22 @@
 open Types
 open Typedtree
 
-open DeadCommon
-
 
                 (********   PROCESSING   ********)
 
 let rec collect_export ?(mod_type = false) path u stock = function
 
   | Sig_value (id, ({Types.val_loc}))
-    when not val_loc.Location.loc_ghost && stock == decs ->
-      export path u stock id val_loc
+    when not val_loc.Location.loc_ghost && stock == DeadCommon.decs ->
+      DeadCommon.export path u stock id val_loc
 
-  | Sig_type (id, t, _) when stock == decs ->
+  | Sig_type (id, t, _) when stock == DeadCommon.decs ->
       DeadType.collect_export (id :: path) u stock t
 
   | _ -> ()
 
 let value_binding super self x =
-  incr depth;
+  incr DeadCommon.depth;
   let open Asttypes in
   begin match x with
   | { vb_pat =
@@ -52,12 +50,12 @@ let value_binding super self x =
           _};
       _
     } ->
-      VdNode.merge_locs loc1 loc2
+      DeadCommon.VdNode.merge_locs loc1 loc2
   | _ -> ()
   end;
 
   let r = super.Tast_mapper.value_binding self x in
-  decr depth;
+  decr DeadCommon.depth;
   r
 
 let expr super self e =
@@ -66,12 +64,12 @@ let expr super self e =
   begin match e.exp_desc with
 
   | Texp_ident (_, _, {Types.val_loc = {Location.loc_start = loc; loc_ghost = false; _}; _})
-    when exported loc ->
-      LocHash.add_set references loc exp_loc
+    when DeadCommon.exported loc ->
+      DeadCommon.LocHash.add_set DeadCommon.references loc exp_loc
 
   | Texp_field (_, _, {lbl_loc = {Location.loc_start = loc; loc_ghost = false; _}; _})
   | Texp_construct (_, {cstr_loc = {Location.loc_start = loc; loc_ghost = false; _}; _}, _)
-    when exported loc ->
+    when DeadCommon.exported loc ->
       DeadType.collect_references loc exp_loc
 
   | _ -> ()
@@ -83,11 +81,11 @@ let expr super self e =
 let collect_references =                          (* Tast_mapper *)
   let super = Tast_mapper.default in
   let wrap f loc self x =
-    let l = !last_loc in
+    let l = !DeadCommon.last_loc in
     let ll = (loc x).Location.loc_start in
-    if ll <> Lexing.dummy_pos then last_loc := ll;
+    if ll <> Lexing.dummy_pos then DeadCommon.last_loc := ll;
     let r = f self x in
-    last_loc := l;
+    DeadCommon.last_loc := l;
     r
   in
 
@@ -102,60 +100,60 @@ let assoc decs (loc1, loc2) =
   let is_implem fn = fn.[String.length fn - 1] <> 'i' in
   let has_iface fn =
     fn.[String.length fn - 1] = 'i'
-    ||  ( getModuleName fn = getModuleName !current_src
-          &&  try Sys.file_exists (find_abspath fn ^ "i")
+    ||  ( DeadCommon.getModuleName fn = DeadCommon.getModuleName !DeadCommon.current_src
+          &&  try Sys.file_exists (DeadCommon.find_abspath fn ^ "i")
               with Not_found -> false
         )
   in
   let is_iface fn loc =
-    Hashtbl.mem decs loc || getModuleName fn <> getModuleName !current_src
+    Hashtbl.mem decs loc || DeadCommon.getModuleName fn <> DeadCommon.getModuleName !DeadCommon.current_src
     || not (is_implem fn && has_iface fn)
   in
-  if fn1 <> _none && fn2 <> _none && loc1 <> loc2 then begin
+  if fn1 <> DeadCommon._none && fn2 <> DeadCommon._none && loc1 <> loc2 then begin
     if (fn1 <> fn2) && is_implem fn1 && is_implem fn2 then
-      DeadCommon.LocHash.merge_set references loc2 references loc1;
+      DeadCommon.LocHash.merge_set DeadCommon.references loc2 DeadCommon.references loc1;
     if is_iface fn1 loc1 then begin
-      DeadCommon.LocHash.merge_set references loc1 references loc2;
+      DeadCommon.LocHash.merge_set DeadCommon.references loc1 DeadCommon.references loc2;
       if is_iface fn2 loc2 then
-        DeadCommon.LocHash.add_set references loc1 loc2
+        DeadCommon.LocHash.add_set DeadCommon.references loc1 loc2
     end
     else
-      DeadCommon.LocHash.merge_set references loc2 references loc1
+      DeadCommon.LocHash.merge_set DeadCommon.references loc2 DeadCommon.references loc1
   end
 
 
 let clean references loc =
   let fn = loc.Lexing.pos_fname in
-  if (fn.[String.length fn - 1] <> 'i' && getModuleName fn = getModuleName !current_src) then
-    LocHash.remove references loc
+  if (fn.[String.length fn - 1] <> 'i' && DeadCommon.getModuleName fn = DeadCommon.getModuleName !DeadCommon.current_src) then
+    DeadCommon.LocHash.remove references loc
 
 let eom loc_dep =
-  List.iter (assoc decs) loc_dep;
-  if Sys.file_exists (!current_src ^ "i") then begin
+  List.iter (assoc DeadCommon.decs) loc_dep;
+  if Sys.file_exists (!DeadCommon.current_src ^ "i") then begin
     let clean =
       List.iter
         (fun (loc1, loc2) ->
-          clean references loc1; clean references loc2
+          clean DeadCommon.references loc1; clean DeadCommon.references loc2
         )
     in
     clean loc_dep
   end;
-  VdNode.eom ();
-  Hashtbl.reset incl
+  DeadCommon.VdNode.eom ();
+  Hashtbl.reset DeadCommon.incl
 
 
 let process_signature fn (signature : Types.signature) = 
-    let module_name = getModuleName fn in
+    let module_name = DeadCommon.getModuleName fn in
     let module_id = Ident.create (String.capitalize_ascii module_name) in
     signature |> List.iter(fun sig_item ->
-      collect_export [module_id] module_name decs sig_item);
-    last_loc := Lexing.dummy_pos
+      collect_export [module_id] module_name DeadCommon.decs sig_item);
+    DeadCommon.last_loc := Lexing.dummy_pos
 
 let process_structure cmt_value_dependencies (structure: Typedtree.structure) =
   let prepare = function
     | {Types.val_loc = {Location.loc_start = loc1; loc_ghost = false; _}; _},
       {Types.val_loc = {Location.loc_start = loc2; loc_ghost = false}; _} ->
-        VdNode.merge_locs ~force:true loc2 loc1
+        DeadCommon.VdNode.merge_locs ~force:true loc2 loc1
     | _ -> ()  in
   List.iter prepare cmt_value_dependencies;
   ignore (collect_references.Tast_mapper.structure collect_references structure);
@@ -170,9 +168,9 @@ let process_structure cmt_value_dependencies (structure: Typedtree.structure) =
 
 (* Starting point *)
 let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtFilePath =
-  last_loc := Lexing.dummy_pos;
+  DeadCommon.last_loc := Lexing.dummy_pos;
   if !DeadFlag.verbose then Printf.eprintf "Scanning %s\n%!" cmtFilePath;
-  current_src := sourceFile;
+  DeadCommon.current_src := sourceFile;
   let {Cmt_format.cmt_annots; cmt_value_dependencies} = Cmt_format.read_cmt cmtFilePath in
   match cmt_annots with
   | Interface signature ->
@@ -188,6 +186,9 @@ let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtF
       end
   | _ -> ()
 
+let report () = 
+  DeadCommon.report_basic DeadCommon.decs "UNUSED EXPORTED VALUES"
+
 let run () =
-  report_basic decs "UNUSED EXPORTED VALUES";
-  DeadType.report();
+  report();
+  DeadType.report()
