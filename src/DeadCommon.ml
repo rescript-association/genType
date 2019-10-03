@@ -154,15 +154,6 @@ let prloc ?(call_site = false) ?fn (loc : Lexing.position) =
                 (********   TYPES   *********)
 
 
-type opt_arg =
-  {
-    mutable with_val: Lexing.position list;
-    mutable without_val: Lexing.position list;
-  }
-
-
-let opt_args : (Lexing.position * string * bool * Lexing.position) list ref = ref []
-
 
 
                 (********   NODE MANIPULATION   ********)

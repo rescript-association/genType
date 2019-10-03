@@ -44,8 +44,6 @@ let rec collect_export ?(mod_type = false) path u stock = function
   | _ -> ()
 
 let value_binding super self x =
-  let old_later = !DeadArg.later in
-  DeadArg.later := [];
   incr depth;
   let open Asttypes in
   begin match x with
@@ -63,21 +61,10 @@ let value_binding super self x =
       _
     } ->
       VdNode.merge_locs loc1 loc2
-  | { vb_pat =
-        { pat_desc = Tpat_var (
-            _,
-            {loc = {Location.loc_start = loc; loc_ghost = false; _}; _});
-          _};
-      vb_expr = exp;
-      _
-    } ->
-      DeadArg.node_build loc exp
   | _ -> ()
   end;
 
   let r = super.Tast_mapper.value_binding self x in
-  List.iter (fun f -> f()) !DeadArg.later;
-  DeadArg.later := old_later;
   decr depth;
   r
 
@@ -235,7 +222,6 @@ let clean references loc =
     LocHash.remove references loc
 
 let eom loc_dep =
-  DeadArg.eom();
   List.iter (assoc decs) loc_dep;
   List.iter (assoc DeadType.decs) !DeadType.dependencies;
   if Sys.file_exists (!current_src ^ "i") then begin
