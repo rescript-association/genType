@@ -395,27 +395,19 @@ let pathWithoutHead = path => {
 };
 
 type item = {
-  fileName: string,
-  path: string,
   loc: Lexing.position,
+  path: string,
 };
 
-let compareItems =
-    (
-      {fileName: fn1, path: path1, loc: loc1},
-      {fileName: fn2, path: path2, loc: loc2},
-    ) =>
-  compare((fn1, loc1, path1), (fn2, loc2, path2));
+let compareItems = ({path: path1, loc: loc1}, {path: path2, loc: loc2}) =>
+  compare((loc1, path1), (loc2, path2));
 
 let report = (~title, decs: decs) => {
   let folder = (loc, path, items) => {
     switch (loc |> LocHash.find_set(references)) {
     | referencesToLoc =>
       if (referencesToLoc |> LocSet.cardinal == 0) {
-        [
-          {fileName: loc.Lexing.pos_fname, path: pathWithoutHead(path), loc},
-          ...items,
-        ];
+        [{loc, path: pathWithoutHead(path)}, ...items];
       } else {
         items;
       }
@@ -427,8 +419,8 @@ let report = (~title, decs: decs) => {
 
   Hashtbl.fold(folder, decs, [])
   |> List.fast_sort(compareItems)
-  |> List.iter(({fileName, path, loc}) => {
-       prloc(~fn=fileName, loc);
+  |> List.iter(({loc, path}) => {
+       prloc(~fn=loc.Lexing.pos_fname, loc);
        print_string(path);
        print_newline();
      });
