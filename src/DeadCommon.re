@@ -11,8 +11,6 @@ let reportUnderscore = ref(false);
 
 let verbose = ref(false);
 
-let writeFile = ref(false);
-
 /********   ATTRIBUTES   ********/
 module LocSet =
   Set.Make({

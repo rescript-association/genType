@@ -1,6 +1,7 @@
 include GenTypeCommon;
 
 let active = Sys.getenv_opt("Global") != None;
+let write = Sys.getenv_opt("Write") != None;
 
 let (+++) = Filename.concat;
 
@@ -95,7 +96,7 @@ let readFile = fileName => {
 };
 
 let writeFile = (fileName, lines) =>
-  if (fileName != "" && DeadCommon.writeFile^) {
+  if (fileName != "" && write) {
     let channel = open_out(fileName);
     let lastLine = Array.length(lines);
     lines
