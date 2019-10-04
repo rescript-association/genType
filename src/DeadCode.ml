@@ -73,7 +73,7 @@ let structure_item super self i =
       let collect_include signature =
         let prev_last_loc = !DeadCommon.last_loc in
         List.iter
-          (collect_export ~mod_type:true [Ident.create (DeadCommon.getModuleName !DeadCommon.current_src)] DeadCommon._include DeadCommon.incl)
+          (collect_export ~mod_type:true [Ident.create (DeadCommon.getModuleName !DeadCommon.current_src)] DeadCommon.include_ DeadCommon.incl)
           signature;
         DeadCommon.last_loc := prev_last_loc;
       in
@@ -146,7 +146,7 @@ let assoc decs (loc1, loc2) =
     Hashtbl.mem decs loc || DeadCommon.getModuleName fn <> DeadCommon.getModuleName !DeadCommon.current_src
     || not (is_implem fn && has_iface fn)
   in
-  if fn1 <> DeadCommon._none && fn2 <> DeadCommon._none && loc1 <> loc2 then begin
+  if fn1 <> DeadCommon.none_ && fn2 <> DeadCommon.none_ && loc1 <> loc2 then begin
     if (fn1 <> fn2) && is_implem fn1 && is_implem fn2 then
       DeadCommon.LocHash.merge_set DeadCommon.references loc2 DeadCommon.references loc1;
     if is_iface fn1 loc1 then begin

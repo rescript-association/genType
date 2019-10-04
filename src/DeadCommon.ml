@@ -49,10 +49,10 @@ let current_src = ref ""
 let mods : string list ref = ref []                                                 (* module path *)
 
 
-let _none = "_none_"
-let _obj = "*obj*"
-let _include = "*include*"
-let _variant = ": variant :"
+let none_ = "_none_"
+let obj_ = "*obj*"
+let include_ = "*include*"
+let variant_ = ": variant :"
 
 
                 (********   HELPERS   ********)
@@ -62,7 +62,7 @@ let getModuleName fn = fn |> Paths.getModuleName |> ModuleName.toString
 
 let is_ghost loc =
   loc.Lexing.pos_lnum <= 0 || loc.Lexing.pos_cnum - loc.Lexing.pos_bol < 0
-  || loc.Lexing.pos_fname = _none || loc.Lexing.pos_fname = ""
+  || loc.Lexing.pos_fname = none_ || loc.Lexing.pos_fname = ""
 
 
 let check_underscore name = !DeadFlag.report_underscore || name.[0] <> '_'
@@ -306,7 +306,7 @@ let export ?(sep = ".") path u stock id loc =
     will create value definitions whose location is in set.mli
   *)
   if not loc.Location.loc_ghost
-  && (u = getModuleName loc.Location.loc_start.Lexing.pos_fname || u == _include)
+  && (u = getModuleName loc.Location.loc_start.Lexing.pos_fname || u == include_)
   && check_underscore id.Ident.name then
     hashtbl_add_to_list stock loc.Location.loc_start (!current_src, value)
 
@@ -376,7 +376,7 @@ let report decs title =
   in
 
   let change =
-    let (fn, _, _, _) = try List.hd l with _ -> (_none, "", !last_loc, []) in
+    let (fn, _, _, _) = try List.hd l with _ -> (none_, "", !last_loc, []) in
     dir fn
   in
   let pretty_print = fun (fn, path, loc, call_sites) ->
