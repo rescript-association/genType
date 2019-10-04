@@ -410,49 +410,53 @@ let pathWithoutHead = path => {
   cutFromNextDot(path, 0);
 };
 
+type item = {
+  fileName: string,
+  path: string,
+  loc: Lexing.position,
+  callsites: list(Lexing.position),
+};
+
+let compareItems =
+    (
+      {fileName: fn1, path: path1, loc: loc1},
+      {fileName: fn2, path: path2, loc: loc2},
+    ) =>
+  compare((fn1, loc1, path1), (fn2, loc2, path2));
+
 let report = (decs: decs, title) => {
-  let folder = (loc, path, acc) => {
-    let fn = loc.Lexing.pos_fname;
-    let test = elt => {
-      let set = LocHash.find_set(references, elt);
-      if (LocSet.cardinal(set) == 0) {
-        let l = LocSet.elements(set);
-        Some([(fn, pathWithoutHead(path), loc, l), ...acc]);
-      } else {
-        None;
-      };
-    };
-    switch (test(loc)) {
-    | exception Not_found => acc
-    | None => acc
-    | Some(l) => l
+  let folder = (loc, path, items) => {
+    switch (loc |> LocHash.find_set(references) |> LocSet.cardinal) {
+    | 0 => [
+        {
+          fileName: loc.Lexing.pos_fname,
+          path: pathWithoutHead(path),
+          loc,
+          callsites: [],
+        },
+        ...items,
+      ]
+    | _setSize => items
+    | exception Not_found => items
     };
   };
+  let items = Hashtbl.fold(folder, decs, []) |> List.fast_sort(compareItems);
+  let firstFileName =
+    try(List.hd(items).fileName) {
+    | Not_found => none_
+    };
+  let changeFile = fileName1 => dir(firstFileName, fileName1);
 
-  let l =
-    Hashtbl.fold(folder, decs, [])
-    |> List.fast_sort(((fn1, path1, loc1, _), (fn2, path2, loc2, _)) =>
-         compare((fn1, loc1, path1), (fn2, loc2, path2))
-       );
-
-  let change = {
-    let (fn, _, _, _) =
-      try(List.hd(l)) {
-      | _ => (none_, "", last_loc^, [])
-      };
-    dir(fn);
-  };
-
-  let pretty_print = ((fn, path, loc, call_sites)) => {
-    if (change(fn)) {
+  let printItem = ({fileName, path, loc, callsites}) => {
+    if (changeFile(fileName)) {
       print_newline();
     };
-    prloc(~fn, loc);
+    prloc(~fn=fileName, loc);
     print_string(path);
     print_newline();
   };
 
   section(title);
-  List.iter(pretty_print, l);
+  items |> List.iter(printItem);
   print_newline();
 };
