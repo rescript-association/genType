@@ -349,19 +349,21 @@ let section title =
     title
     (String.make (String.length title + 1) '=')
 
+let pathWithoutHead path =
+  let rec cutFromNextDot s pos =
+    if pos = String.length s then s
+    else if s.[pos] = '.' then String.sub s (pos + 1) (String.length s - pos - 1)
+    else cutFromNextDot s (pos + 1) in
+  cutFromNextDot path 0
+
 let report (decs: decs) title =
   let folder = fun loc path acc ->
     let fn = loc.Lexing.pos_fname in
-    let rec cut_main s pos =
-      if pos = String.length s then s
-      else if s.[pos] = '.' then String.sub s (pos + 1) (String.length s - pos - 1)
-      else cut_main s (pos + 1)
-    in
     let test elt =
       let set = LocHash.find_set references elt in
       if LocSet.cardinal set = 0 then begin
           let l = LocSet.elements set in
-          Some ((fn, cut_main path 0, loc, l) :: acc)
+          Some ((fn, pathWithoutHead path, loc, l) :: acc)
         end
       else None
     in match test loc with
