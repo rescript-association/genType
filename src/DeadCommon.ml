@@ -35,9 +35,10 @@ end
 
 let abspath : (string, string) Hashtbl.t = Hashtbl.create 256                  (* longest paths known *)
 
-let decs : (Lexing.position, string * string) Hashtbl.t = Hashtbl.create 256                         (* all exported value declarations *)
+type decs = (Lexing.position, string) Hashtbl.t
+let decs : decs = Hashtbl.create 256                         (* all exported value declarations *)
 
-let incl : (Lexing.position, string * string) Hashtbl.t = Hashtbl.create 256                         (* all exported value declarations *)
+let incl : decs = Hashtbl.create 256                         (* all exported value declarations *)
 
 let references : LocSet.t LocHash.t  = LocHash.create 256      (* all value references *)
 
@@ -292,7 +293,7 @@ end
 
                 (********   PROCESSING  ********)
 
-let export ?(sep = ".") path u stock id loc =
+let export ?(sep = ".") path u (stock: decs) id loc =
   let value =
     String.concat "." (List.rev_map Ident.name path)
     ^ sep
@@ -306,7 +307,7 @@ let export ?(sep = ".") path u stock id loc =
   if not loc.Location.loc_ghost
   && (u = getModuleName loc.Location.loc_start.Lexing.pos_fname || u == include_)
   && check_underscore id.Ident.name then
-    hashtbl_add_to_list stock loc.Location.loc_start (!current_src, value)
+    hashtbl_add_to_list stock loc.Location.loc_start value
 
 
 
@@ -348,8 +349,9 @@ let section title =
     title
     (String.make (String.length title + 1) '=')
 
-let report decs title =
-  let folder = fun loc (fn, path) acc ->
+let report (decs: decs) title =
+  let folder = fun loc path acc ->
+    let fn = loc.Lexing.pos_fname in
     let rec cut_main s pos =
       if pos = String.length s then s
       else if s.[pos] = '.' then String.sub s (pos + 1) (String.length s - pos - 1)

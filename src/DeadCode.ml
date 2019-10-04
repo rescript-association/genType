@@ -22,7 +22,7 @@ open Typedtree
 
                 (********   PROCESSING   ********)
 
-let rec collect_export ?(mod_type = false) path u stock = function
+let rec collect_export ?(mod_type = false) path u (stock: DeadCommon.decs) = function
 
   | Sig_value (id, ({Types.val_loc}))
     when not val_loc.Location.loc_ghost && stock == DeadCommon.decs ->
