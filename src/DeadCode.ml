@@ -40,7 +40,6 @@ let rec collect_export ?(mod_type = false) path u stock = function
   | _ -> ()
 
 let value_binding super self x =
-  incr DeadCommon.depth;
   let open Asttypes in
   begin match x with
   | { vb_pat =
@@ -60,9 +59,7 @@ let value_binding super self x =
   | _ -> ()
   end;
 
-  let r = super.Tast_mapper.value_binding self x in
-  decr DeadCommon.depth;
-  r
+  super.Tast_mapper.value_binding self x
 
 let structure_item super self i =
   let open Asttypes in

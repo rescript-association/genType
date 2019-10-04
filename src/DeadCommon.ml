@@ -35,7 +35,6 @@ end
 
 let abspath : (string, string) Hashtbl.t = Hashtbl.create 256                  (* longest paths known *)
 
-
 let decs : (Lexing.position, string * string) Hashtbl.t = Hashtbl.create 256                         (* all exported value declarations *)
 
 let incl : (Lexing.position, string * string) Hashtbl.t = Hashtbl.create 256                         (* all exported value declarations *)
@@ -49,7 +48,6 @@ let current_src = ref ""
 
 let mods : string list ref = ref []                                                 (* module path *)
 
-let depth = ref (-1)
 
 let _none = "_none_"
 let _obj = "*obj*"
