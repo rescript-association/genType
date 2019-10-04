@@ -352,7 +352,7 @@ let section title =
     title
     (String.make (String.length title + 1) '=')
 
-let report_basic decs title =
+let report decs title =
   let folder = fun loc (fn, path) acc ->
     let rec cut_main s pos =
       if pos = String.length s then s
