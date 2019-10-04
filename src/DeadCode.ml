@@ -22,7 +22,7 @@ open Typedtree
 
                 (********   PROCESSING   ********)
 
-let collect_export path u stock = function
+let rec collect_export ?(mod_type = false) path u stock = function
 
   | Sig_value (id, ({Types.val_loc}))
     when not val_loc.Location.loc_ghost && stock == DeadCommon.decs ->
@@ -31,6 +31,12 @@ let collect_export path u stock = function
   | Sig_type (id, t, _) when stock == DeadCommon.decs ->
       DeadType.collect_export (id :: path) u stock t
 
+  | (Sig_module (id, {Types.md_type = t; _}, _)
+  | Sig_modtype (id, {Types.mtd_type = Some t; _})) as s ->
+      let collect = match s with Sig_modtype _ -> mod_type | _ -> true in
+      if collect then
+        DeadMod.sign t
+        |> List.iter (collect_export ~mod_type (id :: path) u stock)
   | _ -> ()
 
 let value_binding super self x =
@@ -58,6 +64,40 @@ let value_binding super self x =
   decr DeadCommon.depth;
   r
 
+let structure_item super self i =
+  let open Asttypes in
+  begin match i.str_desc with
+  | Tstr_type  (_, l) ->
+      List.iter DeadType.tstr l
+  | Tstr_module  {mb_name = {txt; _}; _} ->
+      DeadCommon.mods := txt :: !DeadCommon.mods;
+      DeadMod.defined := String.concat "." (List.rev !DeadCommon.mods) :: !DeadMod.defined
+  | Tstr_include i ->
+      let collect_include signature =
+        let prev_last_loc = !DeadCommon.last_loc in
+        List.iter
+          (collect_export ~mod_type:true [Ident.create (DeadCommon.getModuleName !DeadCommon.current_src)] DeadCommon._include DeadCommon.incl)
+          signature;
+        DeadCommon.last_loc := prev_last_loc;
+      in
+      let rec includ mod_expr =
+        match mod_expr.mod_desc with
+        | Tmod_ident (_, _) -> collect_include (DeadMod.sign mod_expr.mod_type)
+        | Tmod_structure structure -> collect_include structure.str_type
+        | Tmod_unpack (_, mod_type) -> collect_include (DeadMod.sign mod_type)
+        | Tmod_functor (_, _, _, mod_expr)
+        | Tmod_apply (_, mod_expr, _)
+        | Tmod_constraint (mod_expr, _, _, _) -> includ mod_expr
+      in
+      includ i.incl_mod
+  | _ -> ()
+  end;
+  let r = super.Tast_mapper.structure_item self i in
+  begin match i.str_desc with
+  | Tstr_module _ -> DeadCommon.mods := List.tl !DeadCommon.mods
+  | _ -> ()
+  end;
+  r
 let expr super self e =
   let exp_loc = e.exp_loc.Location.loc_start in
   let open Ident in

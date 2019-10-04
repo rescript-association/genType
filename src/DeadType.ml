@@ -16,7 +16,7 @@ open Typedtree
 
 let decs = Hashtbl.create 256
 
-
+let dependencies = ref []   (* like the cmt value_dependencies but for types *)
 
                 (********   HELPERS   ********)
 
@@ -126,5 +126,45 @@ let collect_export path u stock t =
 let collect_references declaration_loc usage_loc =
   DeadCommon.LocHash.add_set DeadCommon.references declaration_loc usage_loc
   
+
+let tstr typ =
+
+  let assoc name loc =
+    let path = String.concat "." @@ List.rev @@
+      name.Asttypes.txt
+      :: typ.typ_name.Asttypes.txt :: !DeadCommon.mods
+      @ (String.capitalize_ascii (DeadCommon.getModuleName !DeadCommon.current_src):: [])
+    in
+    begin try match typ.typ_manifest with
+      | Some {ctyp_desc=Ttyp_constr (_, {txt;  _}, _); _} ->
+          let loc1 = Hashtbl.find DeadCommon.fields
+            (String.concat "." @@
+              String.capitalize_ascii (DeadCommon.getModuleName !DeadCommon.current_src)
+              :: Longident.flatten txt
+              @ (name.Asttypes.txt :: []))
+          in
+          let loc2 = Hashtbl.find DeadCommon.fields path in
+          dependencies :=
+          (loc2, loc1) :: (loc1, loc) :: !dependencies;
+      | _ -> ()
+    with _ -> () end;
+    try
+      let loc1 = Hashtbl.find DeadCommon.fields path in
+      dependencies := (loc1, loc) :: !dependencies
+    with Not_found -> Hashtbl.add DeadCommon.fields path loc
+  in
+
+  match typ.typ_kind with
+    | Ttype_record l ->
+        List.iter
+          (fun {Typedtree.ld_name; ld_loc; ld_type; _} ->
+            assoc ld_name ld_loc.Location.loc_start
+          )
+          l
+    | Ttype_variant l ->
+        List.iter
+          (fun {Typedtree.cd_name; cd_loc; _} -> assoc cd_name cd_loc.Location.loc_start)
+          l
+    | _ -> ()
 
 let report () = DeadCommon.report_basic decs "UNUSED CONSTRUCTORS/RECORD FIELDS"
