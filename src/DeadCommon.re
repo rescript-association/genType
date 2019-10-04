@@ -402,7 +402,7 @@ type item = {
 let compareItems = ({path: path1, loc: loc1}, {path: path2, loc: loc2}) =>
   compare((loc1, path1), (loc2, path2));
 
-let report = (~title, decs: decs) => {
+let report = (~onItem, decs: decs) => {
   let folder = (loc, path, items) => {
     switch (loc |> LocHash.find_set(references)) {
     | referencesToLoc =>
@@ -415,13 +415,18 @@ let report = (~title, decs: decs) => {
     };
   };
 
-  Printf.printf("\n%s:\n", title);
-
+  let currentFile = ref("");
   Hashtbl.fold(folder, decs, [])
   |> List.fast_sort(compareItems)
   |> List.iter(({loc, path}) => {
-       prloc(~fn=loc.Lexing.pos_fname, loc);
-       print_string(path);
-       print_newline();
+       let fileName = loc.Lexing.pos_fname;
+       let fileChanged =
+         fileName == currentFile^
+           ? false
+           : {
+             currentFile := fileName;
+             true;
+           };
+       onItem(fileChanged, loc, path);
      });
 };

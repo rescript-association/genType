@@ -79,6 +79,21 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   );
 };
 
+let readFile = fileName => {
+  let channel = open_in(fileName);
+  let lines = ref([]);
+  let rec loop = () => {
+    let line = input_line(channel);
+    lines := [line, ...lines^];
+    loop();
+  };
+  try(loop()) {
+  | End_of_file =>
+    close_in(channel);
+    lines^ |> List.rev |> Array.of_list;
+  };
+};
+
 if (active) {
   Paths.setProjectRoot();
   let lib_bs = {
@@ -106,5 +121,21 @@ if (active) {
     (a, b) => ExportedValues.locationIsExported(a) ? None : Some(b),
     DeadCommon.decs,
   );
-  DeadCode.report();
+
+  let currentFileLines = ref([||]);
+  let onUnusedValue = (fileChanged, loc, path) => {
+    let fileName = loc.Lexing.pos_fname;
+    if (fileChanged) {
+      currentFileLines := readFile(fileName);
+    };
+    let indexInLines = loc.Lexing.pos_lnum - 1;
+    currentFileLines^[indexInLines] =
+      "[@dead \"" ++ path ++ "\"] " ++ currentFileLines^[indexInLines];
+    Printf.printf(
+      "<-- line %d\n%s\n",
+      loc.Lexing.pos_lnum,
+      currentFileLines^[indexInLines],
+    );
+  };
+  DeadCode.report(~onUnusedValue);
 };
