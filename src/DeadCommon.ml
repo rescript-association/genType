@@ -50,9 +50,7 @@ let mods : string list ref = ref []                                             
 
 
 let none_ = "_none_"
-let obj_ = "*obj*"
 let include_ = "*include*"
-let variant_ = ": variant :"
 
 
                 (********   HELPERS   ********)
