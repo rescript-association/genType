@@ -94,6 +94,19 @@ let readFile = fileName => {
   };
 };
 
+let writeFile = (fileName, lines) =>
+  if (fileName != "" && DeadCommon.writeFile^) {
+    let channel = open_out(fileName);
+    let lastLine = Array.length(lines);
+    lines
+    |> Array.iteri((n, line) => {
+         output_string(channel, line);
+         if (n < lastLine - 1) {
+           output_char(channel, '\n');
+         };
+       });
+  };
+
 if (active) {
   Paths.setProjectRoot();
   let lib_bs = {
@@ -122,10 +135,13 @@ if (active) {
     DeadCommon.decs,
   );
 
+  let currentFile = ref("");
   let currentFileLines = ref([||]);
-  let onUnusedValue = (fileChanged, loc, path) => {
+  let onUnusedValue = (loc, path) => {
     let fileName = loc.Lexing.pos_fname;
-    if (fileChanged) {
+    if (fileName != currentFile^) {
+      writeFile(currentFile^, currentFileLines^);
+      currentFile := fileName;
       currentFileLines := readFile(fileName);
     };
     let indexInLines = loc.Lexing.pos_lnum - 1;
@@ -138,4 +154,5 @@ if (active) {
     );
   };
   DeadCode.report(~onUnusedValue);
+  writeFile(currentFile^, currentFileLines^);
 };

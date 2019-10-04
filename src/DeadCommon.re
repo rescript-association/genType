@@ -7,9 +7,11 @@
 /*                                                                         */
 /***************************************************************************/
 
+let reportUnderscore = ref(false);
+
 let verbose = ref(false);
 
-let reportUnderscore = ref(false);
+let writeFile = ref(false);
 
 /********   ATTRIBUTES   ********/
 module LocSet =
@@ -415,18 +417,7 @@ let report = (~onItem, decs: decs) => {
     };
   };
 
-  let currentFile = ref("");
   Hashtbl.fold(folder, decs, [])
   |> List.fast_sort(compareItems)
-  |> List.iter(({loc, path}) => {
-       let fileName = loc.Lexing.pos_fname;
-       let fileChanged =
-         fileName == currentFile^
-           ? false
-           : {
-             currentFile := fileName;
-             true;
-           };
-       onItem(fileChanged, loc, path);
-     });
+  |> List.iter(({loc, path}) => {onItem(loc, path)});
 };

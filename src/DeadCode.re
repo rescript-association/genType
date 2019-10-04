@@ -316,14 +316,14 @@ let load_file =
 };
 
 let report = (~onUnusedValue) => {
-  let onItem = (fileChanged, loc, path) => {
+  let onItem = (loc, path) => {
     DeadCommon.prloc(~fn=loc.Lexing.pos_fname, loc);
     print_string(path);
     print_newline();
   };
-  let onUnusedValue = (fileChanged, loc, path) => {
-    onItem(fileChanged, loc, path);
-    onUnusedValue(fileChanged, loc, path);
+  let onUnusedValue = (loc, path) => {
+    onItem(loc, path);
+    onUnusedValue(loc, path);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
   DeadCommon.decs |> DeadCommon.report(~onItem=onUnusedValue);
