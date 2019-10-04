@@ -362,19 +362,6 @@ let abs = loc =>
   | exception Not_found => loc.Lexing.pos_fname
   };
 
-/* Check directory change */
-let dir = first => {
-  let prev = ref @@ Filename.dirname(first);
-  s => {
-    let s = Filename.dirname(s);
-    prev^ != s
-    && {
-      prev := s;
-      true;
-    };
-  };
-};
-
 /* Faster than 'List.length l = len' when len < List.length l; same speed otherwise*/
 let rec check_length = len =>
   fun
@@ -442,10 +429,18 @@ let report = (~title, decs: decs) => {
     try(List.hd(items).fileName) {
     | Not_found => none_
     };
-  let changeFile = fileName1 => dir(firstFileName, fileName1);
+  let prevDir = ref(firstFileName |> Filename.dirname);
+  let dirChange = fileName => {
+    let dir = Filename.dirname(fileName);
+    prevDir^ != dir
+    && {
+      prevDir := dir;
+      true;
+    };
+  };
 
   let printItem = ({fileName, path, loc, callsites}) => {
-    if (changeFile(fileName)) {
+    if (dirChange(fileName)) {
       print_newline();
     };
     prloc(~fn=fileName, loc);
