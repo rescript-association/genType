@@ -7,6 +7,10 @@
 /*                                                                         */
 /***************************************************************************/
 
+let verbose = ref(false);
+
+let reportUnderscore = ref(false);
+
 /********   ATTRIBUTES   ********/
 module LocSet =
   Set.Make({
@@ -79,7 +83,7 @@ let is_ghost = loc =>
   || loc.Lexing.pos_fname == none_
   || loc.Lexing.pos_fname == "";
 
-let check_underscore = name => DeadFlag.report_underscore^ || name.[0] != '_';
+let check_underscore = name => reportUnderscore^ || name.[0] != '_';
 
 let hashtbl_find_list = (hashtbl, key) => Hashtbl.find_all(hashtbl, key);
 

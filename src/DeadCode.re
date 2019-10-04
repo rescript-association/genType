@@ -294,7 +294,7 @@ let load_file =
       cmtFilePath,
     ) => {
   DeadCommon.last_loc := Lexing.dummy_pos;
-  if (DeadFlag.verbose^) {
+  if (DeadCommon.verbose^) {
     Printf.eprintf("Scanning %s\n%!", cmtFilePath);
   };
   DeadCommon.current_src := sourceFile;
