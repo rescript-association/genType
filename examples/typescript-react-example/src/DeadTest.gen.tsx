@@ -3,6 +3,6 @@
 
 
 // tslint:disable-next-line:no-var-requires
-const KeepAliveBS = require('./KeepAlive.bs');
+const DeadTestBS = require('./DeadTest.bs');
 
-export const fortyTwoButExported: number = KeepAliveBS.fortyTwoButExported;
+export const fortyTwoButExported: number = DeadTestBS.fortyTwoButExported;

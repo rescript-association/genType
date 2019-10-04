@@ -398,7 +398,6 @@ type item = {
   fileName: string,
   path: string,
   loc: Lexing.position,
-  callsites: list(Lexing.position),
 };
 
 let compareItems =
@@ -410,17 +409,16 @@ let compareItems =
 
 let report = (~title, decs: decs) => {
   let folder = (loc, path, items) => {
-    switch (loc |> LocHash.find_set(references) |> LocSet.cardinal) {
-    | 0 => [
-        {
-          fileName: loc.Lexing.pos_fname,
-          path: pathWithoutHead(path),
-          loc,
-          callsites: [],
-        },
-        ...items,
-      ]
-    | _setSize => items
+    switch (loc |> LocHash.find_set(references)) {
+    | referencesToLoc =>
+      if (referencesToLoc |> LocSet.cardinal == 0) {
+        [
+          {fileName: loc.Lexing.pos_fname, path: pathWithoutHead(path), loc},
+          ...items,
+        ];
+      } else {
+        items;
+      }
     | exception Not_found => items
     };
   };
@@ -429,7 +427,7 @@ let report = (~title, decs: decs) => {
 
   Hashtbl.fold(folder, decs, [])
   |> List.fast_sort(compareItems)
-  |> List.iter(({fileName, path, loc, callsites}) => {
+  |> List.iter(({fileName, path, loc}) => {
        prloc(~fn=fileName, loc);
        print_string(path);
        print_newline();
