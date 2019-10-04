@@ -424,30 +424,14 @@ let report = (~title, decs: decs) => {
     | exception Not_found => items
     };
   };
-  let items = Hashtbl.fold(folder, decs, []) |> List.fast_sort(compareItems);
-  let firstFileName =
-    try(List.hd(items).fileName) {
-    | Not_found => none_
-    };
-  let prevDir = ref(firstFileName |> Filename.dirname);
-  let dirChange = fileName => {
-    let dir = Filename.dirname(fileName);
-    prevDir^ != dir
-    && {
-      prevDir := dir;
-      true;
-    };
-  };
-
-  let printItem = ({fileName, path, loc, callsites}) => {
-    if (dirChange(fileName)) {
-      print_newline();
-    };
-    prloc(~fn=fileName, loc);
-    print_string(path);
-    print_newline();
-  };
 
   Printf.printf("\n%s:\n", title);
-  items |> List.iter(printItem);
+
+  Hashtbl.fold(folder, decs, [])
+  |> List.fast_sort(compareItems)
+  |> List.iter(({fileName, path, loc, callsites}) => {
+       prloc(~fn=fileName, loc);
+       print_string(path);
+       print_newline();
+     });
 };
