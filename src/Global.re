@@ -106,5 +106,5 @@ if (active) {
     (a, b) => ExportedValues.locationIsExported(a) ? None : Some(b),
     DeadCommon.decs,
   );
-  DeadCode.run();
+  DeadCode.report();
 };

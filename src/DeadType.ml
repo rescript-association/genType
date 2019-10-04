@@ -166,5 +166,3 @@ let tstr typ =
           (fun {Typedtree.cd_name; cd_loc; _} -> assoc cd_name cd_loc.Location.loc_start)
           l
     | _ -> ()
-
-let report () = DeadCommon.report_basic decs "UNUSED CONSTRUCTORS/RECORD FIELDS"
