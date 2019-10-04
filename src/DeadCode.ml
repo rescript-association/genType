@@ -224,6 +224,6 @@ let load_file ~exportedValuesSignature ~exportedValuesStructure ~sourceFile cmtF
   | _ -> ()
 
 let report () =
-  DeadCommon.report DeadCommon.decs "UNUSED EXPORTED VALUES";
-  DeadCommon.report DeadType.decs "UNUSED CONSTRUCTORS/RECORD FIELDS"
+   DeadCommon.decs |> DeadCommon.report ~title:"UNUSED EXPORTED VALUES";
+   DeadType.decs |> DeadCommon.report ~title:"UNUSED CONSTRUCTORS/RECORD FIELDS"
 

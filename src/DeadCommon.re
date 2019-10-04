@@ -391,13 +391,6 @@ let pretty_print_call = () => {
     };
 };
 
-let section = title =>
-  Printf.printf(
-    "%s:\n%s\n",
-    title,
-    String.make(String.length(title) + 1, '='),
-  );
-
 let pathWithoutHead = path => {
   let rec cutFromNextDot = (s, pos) =>
     if (pos == String.length(s)) {
@@ -424,7 +417,7 @@ let compareItems =
     ) =>
   compare((fn1, loc1, path1), (fn2, loc2, path2));
 
-let report = (decs: decs, title) => {
+let report = (~title, decs: decs) => {
   let folder = (loc, path, items) => {
     switch (loc |> LocHash.find_set(references) |> LocSet.cardinal) {
     | 0 => [
@@ -456,7 +449,6 @@ let report = (decs: decs, title) => {
     print_newline();
   };
 
-  section(title);
+  Printf.printf("\n%s:\n", title);
   items |> List.iter(printItem);
-  print_newline();
 };
