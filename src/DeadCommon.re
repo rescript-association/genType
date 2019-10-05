@@ -9,11 +9,11 @@
 
 let reportUnderscore = ref(false);
 
-let verbose = ref(false);
-
 let active = Sys.getenv_opt("Global") != None;
 
 let write = Sys.getenv_opt("Write") != None;
+
+let verbose = Sys.getenv_opt("Verbose") != None;
 
 /********   ATTRIBUTES   ********/
 module LocSet =
@@ -359,7 +359,7 @@ let report = (~onItem, decs: decs) => {
       if (referencesToLoc |> LocSet.cardinal == 0) {
         [{loc, path: pathWithoutHead(path)}, ...items];
       } else {
-        if (verbose^) {
+        if (verbose) {
           GenTypeCommon.logItem(
             "%s: %d references\n",
             path,
