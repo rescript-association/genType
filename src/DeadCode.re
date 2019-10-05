@@ -118,6 +118,10 @@ let structure_item = (super, self, i) => {
   };
   r;
 };
+
+let addReference = (loc1, loc2) =>
+  DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
+
 let colletExpr = (super, self, e) => {
   let exp_loc = e.exp_loc.Location.loc_start;
   open Ident;
@@ -127,7 +131,7 @@ let colletExpr = (super, self, e) => {
       _,
       {Types.val_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
     ) =>
-    DeadCommon.LocHash.add_set(DeadCommon.references, loc, exp_loc)
+    addReference(loc, exp_loc)
 
   | Texp_field(
       _,
@@ -206,7 +210,7 @@ let assoc = (decs, (loc1, loc2)) => {
         loc2,
       );
       if (is_iface(fn2, loc2)) {
-        DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
+        addReference(loc1, loc2);
       };
     } else {
       DeadCommon.LocHash.merge_set(
