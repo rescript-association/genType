@@ -129,10 +129,10 @@ let runAnalysis = () => {
        cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
      });
 
-  Hashtbl.filter_map_inplace(
-    (a, b) => ExportedValues.locationIsExported(a) ? None : Some(b),
-    DeadCommon.decs,
-  );
+  DeadCommon.decs
+  |> Hashtbl.filter_map_inplace((a, b) =>
+       ExportedValues.locationIsExported(a) ? None : Some(b)
+     );
 
   let currentFile = ref("");
   let currentFileLines = ref([||]);
