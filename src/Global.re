@@ -22,7 +22,13 @@ module ExportedValues = {
         ) => {
       switch (vb_pat.pat_desc) {
       | Tpat_var(id, pLoc) =>
-        if (vb_attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
+        if (vb_attributes
+            |> Annotation.hasGenTypeAnnotation(~ignoreInterface)
+            || vb_attributes
+            |> Annotation.getAttributePayload(
+                 (==)(DeadCommon.deadAnnotation),
+               )
+            != None) {
           pLoc.loc.loc_start |> loc;
         }
       | _ => ()
@@ -140,7 +146,12 @@ let runAnalysis = () => {
     };
     let indexInLines = loc.Lexing.pos_lnum - 1;
     currentFileLines^[indexInLines] =
-      "[@dead \"" ++ path ++ "\"] " ++ currentFileLines^[indexInLines];
+      "[@"
+      ++ DeadCommon.deadAnnotation
+      ++ " \""
+      ++ path
+      ++ "\"] "
+      ++ currentFileLines^[indexInLines];
     Printf.printf(
       "<-- line %d\n%s\n",
       loc.Lexing.pos_lnum,

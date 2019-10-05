@@ -15,6 +15,8 @@ let write = Sys.getenv_opt("Write") != None;
 
 let verbose = Sys.getenv_opt("Verbose") != None;
 
+let deadAnnotation = "dead";
+
 /********   ATTRIBUTES   ********/
 module LocSet =
   Set.Make({
