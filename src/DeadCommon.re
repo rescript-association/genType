@@ -132,7 +132,7 @@ let exported = loc => {
 };
 
 /* Location printer: `filename:line: ' */
-let prloc = (~call_site=false, ~fn=?, loc: Lexing.position) => {
+let prloc = (~printCol=false, ~fn=?, loc: Lexing.position) => {
   let file = loc.Lexing.pos_fname;
   let line = loc.Lexing.pos_lnum;
   let col = loc.Lexing.pos_cnum - loc.Lexing.pos_bol;
@@ -149,7 +149,7 @@ let prloc = (~call_site=false, ~fn=?, loc: Lexing.position) => {
   };
   print_char(':');
   print_int(line);
-  if (call_site) {
+  if (printCol) {
     print_char(':');
     print_int(col);
   } else {
@@ -368,19 +368,6 @@ let rec check_length = len =>
   | [] => len == 0
   | [_, ...l] when len > 0 => check_length(len - 1, l)
   | _ => false;
-
-/* Print call site */
-let pretty_print_call = () => {
-  let ghost = ref(false);
-  fun
-  | loc when !is_ghost(loc) => prloc(~call_site=true, loc) |> print_newline
-  | _ when ghost^ => ()
-  | _ => {
-      /* first ghost met */
-      print_endline("~ ghost ~");
-      ghost := true;
-    };
-};
 
 let pathWithoutHead = path => {
   let rec cutFromNextDot = (s, pos) =>
