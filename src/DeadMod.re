@@ -71,15 +71,7 @@ let expr = m =>
         let is_obj = String.contains(x, '#');
         let is_type = !is_obj && DeadType.is_type(x);
         if ((List.mem(x, l1) || l1 == [])
-            && (
-              is_obj
-              || !is_obj
-              && is_type
-              && exported(loc)
-              || !is_obj
-              && !is_type
-              && exported(loc)
-            )) {
+            && (is_obj || !is_obj && is_type || !is_obj && !is_type)) {
           LocHash.add_set(references, loc, m.mod_loc.Location.loc_start);
         };
       },

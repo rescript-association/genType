@@ -119,11 +119,6 @@ let find_path = (fn, ~sep='/', l) =>
     l,
   );
 
-let exported = loc => {
-  let num_references = LocHash.find_set(references, loc) |> LocSet.cardinal;
-  num_references == 0;
-};
-
 /* Location printer: `filename:line: ' */
 let prloc = (~printCol=false, loc: Lexing.position) => {
   let file = loc.Lexing.pos_fname;
@@ -360,6 +355,13 @@ let report = (~onItem, decs: decs) => {
       if (referencesToLoc |> LocSet.cardinal == 0) {
         [{loc, path: pathWithoutHead(path)}, ...items];
       } else {
+        if (verbose^) {
+          GenTypeCommon.logItem(
+            "%s: %d references\n",
+            path,
+            referencesToLoc |> LocSet.cardinal,
+          );
+        };
         items;
       }
     | exception Not_found => items

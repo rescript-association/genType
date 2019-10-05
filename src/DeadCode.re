@@ -123,24 +123,22 @@ let colletExpr = (super, self, e) => {
   open Ident;
   switch (e.exp_desc) {
   | Texp_ident(
-      _,
+      path,
       _,
       {Types.val_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
-    )
-      when DeadCommon.exported(loc) =>
+    ) =>
     DeadCommon.LocHash.add_set(DeadCommon.references, loc, exp_loc)
 
   | Texp_field(
       _,
-      _,
+      x,
       {lbl_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
     )
   | Texp_construct(
-      _,
+      x,
       {cstr_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
       _,
-    )
-      when DeadCommon.exported(loc) =>
+    ) =>
     DeadType.collect_references(loc, exp_loc)
 
   | _ => ()
