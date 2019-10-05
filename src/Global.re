@@ -4,10 +4,10 @@ let (+++) = Filename.concat;
 
 /* Keep track of the location of values exported via genType */
 module ExportedValues = {
+  /* Locations exported to JS */
   let exportLocations = DeadCommon.LocHash.create(1);
 
-  let locationIsExported = loc =>
-    DeadCommon.LocHash.mem(exportLocations, loc);
+  let locExportedToJS = loc => DeadCommon.LocHash.mem(exportLocations, loc);
 
   let loc = (loc: Lexing.position) => {
     DeadCommon.LocHash.replace(exportLocations, loc, ());
@@ -129,11 +129,6 @@ let runAnalysis = () => {
        cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
      });
 
-  DeadCommon.decs
-  |> Hashtbl.filter_map_inplace((a, b) =>
-       ExportedValues.locationIsExported(a) ? None : Some(b)
-     );
-
   let currentFile = ref("");
   let currentFileLines = ref([||]);
   let onUnusedValue = (loc, path) => {
@@ -152,6 +147,9 @@ let runAnalysis = () => {
       currentFileLines^[indexInLines],
     );
   };
-  DeadCode.report(~onUnusedValue);
+  DeadCode.report(
+    ~locExportedToJS=ExportedValues.locExportedToJS,
+    ~onUnusedValue,
+  );
   writeFile(currentFile^, currentFileLines^);
 };

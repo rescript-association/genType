@@ -352,10 +352,10 @@ type item = {
 let compareItems = ({path: path1, loc: loc1}, {path: path2, loc: loc2}) =>
   compare((loc1, path1), (loc2, path2));
 
-let report = (~onItem, decs: decs) => {
+let report = (~locExportedToJS=_ => false, ~onItem, decs: decs) => {
   let folder = (loc, path, items) => {
     switch (loc |> LocHash.find_set(references)) {
-    | referencesToLoc =>
+    | referencesToLoc when !(loc |> locExportedToJS) =>
       if (referencesToLoc |> LocSet.cardinal == 0) {
         [{loc, path: pathWithoutHead(path)}, ...items];
       } else {
@@ -368,6 +368,7 @@ let report = (~onItem, decs: decs) => {
         };
         items;
       }
+    | _ => items
     | exception Not_found => items
     };
   };
