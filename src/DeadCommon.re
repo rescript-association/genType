@@ -11,6 +11,10 @@ let reportUnderscore = ref(false);
 
 let verbose = ref(false);
 
+let active = Sys.getenv_opt("Global") != None;
+
+let write = Sys.getenv_opt("Write") != None;
+
 /********   ATTRIBUTES   ********/
 module LocSet =
   Set.Make({

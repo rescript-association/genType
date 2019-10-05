@@ -140,6 +140,8 @@ let cli = () => {
   executeCliCommand(~bsVersion=bsVersion^, cliCommand^);
 };
 
-if (!Global.active) {
+if (DeadCommon.active) {
+  Global.runAnalysis();
+} else {
   cli();
 };

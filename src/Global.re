@@ -1,8 +1,5 @@
 include GenTypeCommon;
 
-let active = Sys.getenv_opt("Global") != None;
-let write = Sys.getenv_opt("Write") != None;
-
 let (+++) = Filename.concat;
 
 /* Keep track of the location of values exported via genType */
@@ -97,7 +94,7 @@ let readFile = fileName => {
 };
 
 let writeFile = (fileName, lines) =>
-  if (fileName != "" && write) {
+  if (fileName != "" && DeadCommon.write) {
     let channel = open_out(fileName);
     let lastLine = Array.length(lines);
     lines
@@ -109,7 +106,7 @@ let writeFile = (fileName, lines) =>
        });
   };
 
-if (active) {
+let runAnalysis = () => {
   Paths.setProjectRoot();
   let lib_bs = {
     projectRoot^ +++ "lib" +++ "bs";
