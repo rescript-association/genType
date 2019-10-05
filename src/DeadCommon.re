@@ -132,21 +132,11 @@ let exported = loc => {
 };
 
 /* Location printer: `filename:line: ' */
-let prloc = (~printCol=false, ~fn=?, loc: Lexing.position) => {
+let prloc = (~printCol=false, loc: Lexing.position) => {
   let file = loc.Lexing.pos_fname;
   let line = loc.Lexing.pos_lnum;
   let col = loc.Lexing.pos_cnum - loc.Lexing.pos_bol;
-  switch (fn) {
-  | Some(s) =>
-    /* print_string (Filename.dirname s ^ "/" ^ file) */
-    /* s should contain the whole path (thus be sufficient) */
-    print_string(s)
-  | _ =>
-    switch (find_abspath(file)) {
-    | s => print_string(s)
-    | exception Not_found => Printf.printf("!!UNKNOWN<%s>!!%!", file)
-    }
-  };
+  print_string(file);
   print_char(':');
   print_int(line);
   if (printCol) {

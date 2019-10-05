@@ -321,7 +321,7 @@ let load_file =
 
 let report = (~onUnusedValue) => {
   let onItem = (loc, path) => {
-    DeadCommon.prloc(~fn=loc.Lexing.pos_fname, loc);
+    DeadCommon.prloc(loc);
     print_string(path);
     print_newline();
   };
