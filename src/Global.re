@@ -20,6 +20,17 @@ module ExportedValues = {
     DeadCommon.LocHash.replace(locationsAnnotatedDead, loc, ());
   };
 
+  let processAttributes = (~ignoreInterface, ~loc, attributes) => {
+    if (attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
+      loc |> locAnnotatedWithGenType;
+    };
+    if (attributes
+        |> Annotation.getAttributePayload((==)(DeadCommon.deadAnnotation))
+        != None) {
+      loc |> locAnnotatedDead;
+    };
+  };
+
   let collectExportLocations = (~ignoreInterface) => {
     let super = Tast_mapper.default;
     let value_binding =
@@ -29,16 +40,8 @@ module ExportedValues = {
         ) => {
       switch (vb_pat.pat_desc) {
       | Tpat_var(id, pLoc) =>
-        if (vb_attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
-          pLoc.loc.loc_start |> locAnnotatedWithGenType;
-        };
-        if (vb_attributes
-            |> Annotation.getAttributePayload(
-                 (==)(DeadCommon.deadAnnotation),
-               )
-            != None) {
-          pLoc.loc.loc_start |> locAnnotatedDead;
-        };
+        vb_attributes
+        |> processAttributes(~ignoreInterface, ~loc=pLoc.loc.loc_start)
 
       | _ => ()
       };
@@ -49,9 +52,8 @@ module ExportedValues = {
           self,
           {val_attributes, val_id, val_loc} as value_description: Typedtree.value_description,
         ) => {
-      if (val_attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
-        val_loc.loc_start |> locAnnotatedWithGenType;
-      };
+      val_attributes
+      |> processAttributes(~ignoreInterface, ~loc=val_loc.loc_start);
       super.value_description(self, value_description);
     };
     {...super, value_binding, value_description};
