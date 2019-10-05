@@ -261,28 +261,32 @@ let process_signature = (fn, signature: Types.signature) => {
 
 let process_structure =
     (cmt_value_dependencies, structure: Typedtree.structure) => {
-  let prepare =
-    fun
-    | (
-        {Types.val_loc: {Location.loc_start: loc1, loc_ghost: false, _}, _},
-        {Types.val_loc: {Location.loc_start: loc2, loc_ghost: false}, _},
-      ) =>
-      DeadCommon.VdNode.merge_locs(~force=true, loc2, loc1)
-    | _ => ();
-  List.iter(prepare, cmt_value_dependencies);
-  ignore(
-    collect_references.Tast_mapper.structure(collect_references, structure),
-  );
-  let loc_dep =
-    List.rev_map(
-      ((vd1, vd2)) =>
-        (
-          vd1.Types.val_loc.Location.loc_start,
-          vd2.Types.val_loc.Location.loc_start,
-        ),
-      cmt_value_dependencies,
-    );
-  eom(loc_dep);
+  cmt_value_dependencies
+  |> List.iter(
+       fun
+       | (
+           {
+             Types.val_loc: {Location.loc_start: loc1, loc_ghost: false, _},
+             _,
+           },
+           {Types.val_loc: {Location.loc_start: loc2, loc_ghost: false}, _},
+         ) =>
+         DeadCommon.VdNode.merge_locs(~force=true, loc2, loc1)
+       | _ => (),
+     );
+
+  structure
+  |> collect_references.Tast_mapper.structure(collect_references)
+  |> ignore;
+
+  cmt_value_dependencies
+  |> List.rev_map(((vd1, vd2)) =>
+       (
+         vd1.Types.val_loc.Location.loc_start,
+         vd2.Types.val_loc.Location.loc_start,
+       )
+     )
+  |> eom;
 };
 
 /* Starting point */

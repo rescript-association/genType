@@ -68,6 +68,7 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
     (projectRoot^ +++ sourceDir +++ moduleName)
     ++ (extension == ".cmti" ? ".rei" : ".re");
   if (!Sys.file_exists(sourceFile)) {
+    GenTypeCommon.logItem("XXX sourceFile:%s\n", sourceFile);
     assert(false);
   };
 
