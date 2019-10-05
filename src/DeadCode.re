@@ -22,16 +22,16 @@ open Typedtree;
 
 let rec collect_export = (~mod_type=false, path, u, stock: DeadCommon.decs) =>
   fun
-  | [@implicit_arity] Sig_value(id, {Types.val_loc})
+  | Sig_value(id, {Types.val_loc})
       when !val_loc.Location.loc_ghost && stock === DeadCommon.decs =>
     DeadCommon.export(path, u, stock, id, val_loc)
 
-  | [@implicit_arity] Sig_type(id, t, _) when stock === DeadCommon.decs =>
+  | Sig_type(id, t, _) when stock === DeadCommon.decs =>
     DeadType.collect_export([id, ...path], u, stock, t)
 
   | (
-      [@implicit_arity] Sig_module(id, {Types.md_type: t, _}, _) |
-      [@implicit_arity] Sig_modtype(id, {Types.mtd_type: Some(t), _})
+      Sig_module(id, {Types.md_type: t, _}, _) |
+      Sig_modtype(id, {Types.mtd_type: Some(t), _})
     ) as s => {
       let collect =
         switch (s) {
@@ -45,13 +45,12 @@ let rec collect_export = (~mod_type=false, path, u, stock: DeadCommon.decs) =>
     }
   | _ => ();
 
-let value_binding = (super, self, x) => {
+let collectValueBinding = (super, self, x) => {
   open Asttypes;
   switch (x) {
   | {
       vb_pat: {
         pat_desc:
-          [@implicit_arity]
           Tpat_var(
             _,
             {loc: {Location.loc_start: loc1, loc_ghost: false, _}, _},
@@ -60,7 +59,6 @@ let value_binding = (super, self, x) => {
       },
       vb_expr: {
         exp_desc:
-          [@implicit_arity]
           Texp_ident(
             _,
             _,
@@ -80,7 +78,7 @@ let value_binding = (super, self, x) => {
 let structure_item = (super, self, i) => {
   open Asttypes;
   switch (i.str_desc) {
-  | [@implicit_arity] Tstr_type(_, l) => List.iter(DeadType.tstr, l)
+  | Tstr_type(_, l) => List.iter(DeadType.tstr, l)
   | Tstr_module({mb_name: {txt, _}, _}) =>
     DeadCommon.mods := [txt, ...DeadCommon.mods^];
     DeadMod.defined :=
@@ -102,15 +100,12 @@ let structure_item = (super, self, i) => {
 
     let rec includ = mod_expr =>
       switch (mod_expr.mod_desc) {
-      | [@implicit_arity] Tmod_ident(_, _) =>
-        collect_include(DeadMod.sign(mod_expr.mod_type))
+      | Tmod_ident(_, _) => collect_include(DeadMod.sign(mod_expr.mod_type))
       | Tmod_structure(structure) => collect_include(structure.str_type)
-      | [@implicit_arity] Tmod_unpack(_, mod_type) =>
-        collect_include(DeadMod.sign(mod_type))
-      | [@implicit_arity] Tmod_functor(_, _, _, mod_expr)
-      | [@implicit_arity] Tmod_apply(_, mod_expr, _)
-      | [@implicit_arity] Tmod_constraint(mod_expr, _, _, _) =>
-        includ(mod_expr)
+      | Tmod_unpack(_, mod_type) => collect_include(DeadMod.sign(mod_type))
+      | Tmod_functor(_, _, _, mod_expr)
+      | Tmod_apply(_, mod_expr, _)
+      | Tmod_constraint(mod_expr, _, _, _) => includ(mod_expr)
       };
 
     includ(i.incl_mod);
@@ -123,12 +118,11 @@ let structure_item = (super, self, i) => {
   };
   r;
 };
-let expr = (super, self, e) => {
+let colletExpr = (super, self, e) => {
   let exp_loc = e.exp_loc.Location.loc_start;
   open Ident;
   switch (e.exp_desc) {
-  | [@implicit_arity]
-    Texp_ident(
+  | Texp_ident(
       _,
       _,
       {Types.val_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
@@ -136,14 +130,12 @@ let expr = (super, self, e) => {
       when DeadCommon.exported(loc) =>
     DeadCommon.LocHash.add_set(DeadCommon.references, loc, exp_loc)
 
-  | [@implicit_arity]
-    Texp_field(
+  | Texp_field(
       _,
       _,
       {lbl_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
     )
-  | [@implicit_arity]
-    Texp_construct(
+  | Texp_construct(
       _,
       {cstr_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
       _,
@@ -156,23 +148,25 @@ let expr = (super, self, e) => {
   super.Tast_mapper.expr(self, e);
 };
 
-/* Parse the AST */
-let collect_references = {
+/* Traverse the AST */
+let collectReferences = {
   /* Tast_mapper */
   let super = Tast_mapper.default;
-  let wrap = (f, loc, self, x) => {
-    let l = DeadCommon.last_loc^;
-    let ll = loc(x).Location.loc_start;
-    if (ll != Lexing.dummy_pos) {
-      DeadCommon.last_loc := ll;
+  let wrap = (f, ~getLoc, ~self, x) => {
+    let lastLoc = DeadCommon.last_loc^;
+    let thisLoc = getLoc(x).Location.loc_start;
+    if (thisLoc != Lexing.dummy_pos) {
+      DeadCommon.last_loc := thisLoc;
     };
-    let r = f(self, x);
-    DeadCommon.last_loc := l;
+    let r = f(super, self, x);
+    DeadCommon.last_loc := lastLoc;
     r;
   };
 
-  let expr = wrap(expr(super), x => x.exp_loc);
-  let value_binding = wrap(value_binding(super), x => x.vb_expr.exp_loc);
+  let expr = (self, e) =>
+    e |> wrap(colletExpr, ~getLoc=x => x.exp_loc, ~self);
+  let value_binding = (self, vb) =>
+    vb |> wrap(collectValueBinding, ~getLoc=x => x.vb_expr.exp_loc, ~self);
   Tast_mapper.{...super, expr, value_binding};
 };
 
@@ -270,13 +264,14 @@ let process_structure =
              _,
            },
            {Types.val_loc: {Location.loc_start: loc2, loc_ghost: false}, _},
-         ) =>
-         DeadCommon.VdNode.merge_locs(~force=true, loc2, loc1)
+         ) => {
+           DeadCommon.VdNode.merge_locs(~force=true, loc2, loc1);
+         }
        | _ => (),
      );
 
   structure
-  |> collect_references.Tast_mapper.structure(collect_references)
+  |> collectReferences.Tast_mapper.structure(collectReferences)
   |> ignore;
 
   cmt_value_dependencies

@@ -18,23 +18,22 @@ let defined: ref(list(string)) = (ref([]): ref(list(string)));
 let rec sign = (~isfunc=false) =>
   fun
   | Mty_signature(sg) => sg
-  | [@implicit_arity] Mty_functor(_, t, _) when isfunc =>
+  | Mty_functor(_, t, _) when isfunc =>
     switch (t) {
     | None => []
     | Some(t) => sign(t)
     }
-  | [@implicit_arity] Mty_functor(_, _, t) => sign(t)
+  | Mty_functor(_, _, t) => sign(t)
   | _ => [];
 
 let item = maker =>
   fun
-  | [@implicit_arity]
-    Sig_value({name, _}, {val_loc: {Location.loc_start: loc, _}, _}) => [
+  | Sig_value({name, _}, {val_loc: {Location.loc_start: loc, _}, _}) => [
       (name, loc),
     ]
-  | [@implicit_arity] Sig_type({name: t, _}, {type_kind, _}, _) =>
+  | Sig_type({name: t, _}, {type_kind, _}, _) =>
     switch (type_kind) {
-    | [@implicit_arity] Type_record(l, _) =>
+    | Type_record(l, _) =>
       List.map(
         ({Types.ld_id: {name, _}, ld_loc: {Location.loc_start: loc, _}, _}) =>
           (t ++ "." ++ name, loc),
@@ -48,11 +47,10 @@ let item = maker =>
       )
     | _ => []
     }
-  | [@implicit_arity] Sig_module({name, _}, {md_type, _}, _)
-  | [@implicit_arity] Sig_modtype({name, _}, {mtd_type: Some(md_type), _}) =>
+  | Sig_module({name, _}, {md_type, _}, _)
+  | Sig_modtype({name, _}, {mtd_type: Some(md_type), _}) =>
     List.map(((n, l)) => (name ++ "." ++ n, l), maker(md_type))
-  | [@implicit_arity]
-    Sig_class({name, _}, {cty_loc: {Location.loc_start: loc, _}, _}, _) => [
+  | Sig_class({name, _}, {cty_loc: {Location.loc_start: loc, _}, _}, _) => [
       (name ++ "#", loc),
     ]
   | _ => [];
@@ -65,7 +63,7 @@ let rec make_arg = typ =>
 
 let expr = m =>
   switch (m.mod_desc) {
-  | [@implicit_arity] Tmod_apply(m1, m2, _) =>
+  | Tmod_apply(m1, m2, _) =>
     let l1 = make_arg(m1.mod_type) |> List.map(((x, _)) => x);
     let l2 = make_content(m2.mod_type);
     List.iter(
