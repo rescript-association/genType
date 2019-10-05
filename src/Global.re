@@ -3,14 +3,17 @@ include GenTypeCommon;
 let (+++) = Filename.concat;
 
 /* Keep track of the location of values exported via genType */
-module ExportedValues = {
+module ProcessAnnotations = {
   /* Locations exported to JS */
   let locationsAnnotatedWithGenType = DeadCommon.LocHash.create(1);
   let locationsAnnotatedDead = DeadCommon.LocHash.create(1);
 
-  let dontReportDead = loc =>
+  let isAnnotatedDead = loc =>
+    DeadCommon.LocHash.mem(locationsAnnotatedDead, loc);
+
+  let isAnnotatedGentypeOrDead = loc =>
     DeadCommon.LocHash.mem(locationsAnnotatedWithGenType, loc)
-    || DeadCommon.LocHash.mem(locationsAnnotatedDead, loc);
+    || isAnnotatedDead(loc);
 
   let locAnnotatedWithGenType = (loc: Lexing.position) => {
     DeadCommon.LocHash.replace(locationsAnnotatedWithGenType, loc, ());
@@ -88,8 +91,8 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
   DeadCode.load_file(
-    ~exportedValuesSignature=ExportedValues.signature,
-    ~exportedValuesStructure=ExportedValues.structure,
+    ~processAnnotationsSignature=ProcessAnnotations.signature,
+    ~processAnnotationsStructure=ProcessAnnotations.structure,
     ~sourceFile,
     cmtFilePath,
   );
@@ -170,7 +173,7 @@ let runAnalysis = () => {
     );
   };
   DeadCode.report(
-    ~dontReportDead=ExportedValues.dontReportDead,
+    ~dontReportDead=ProcessAnnotations.isAnnotatedGentypeOrDead,
     ~onUnusedValue,
   );
   writeFile(currentFile^, currentFileLines^);

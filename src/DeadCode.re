@@ -45,6 +45,8 @@ let rec collect_export = (~mod_type=false, path, u, stock: DeadCommon.decs) =>
     }
   | _ => ();
 
+let currentBindingIsDead = ref(false);
+
 let collectValueBinding = (super, self, x) => {
   open Asttypes;
   switch (x) {
@@ -72,57 +74,23 @@ let collectValueBinding = (super, self, x) => {
   | _ => ()
   };
 
-  super.Tast_mapper.value_binding(self, x);
-};
-
-let structure_item = (super, self, i) => {
-  open Asttypes;
-  switch (i.str_desc) {
-  | Tstr_type(_, l) => List.iter(DeadType.tstr, l)
-  | Tstr_module({mb_name: {txt, _}, _}) =>
-    DeadCommon.mods := [txt, ...DeadCommon.mods^];
-    DeadMod.defined :=
-      [String.concat(".", List.rev(DeadCommon.mods^)), ...DeadMod.defined^];
-  | Tstr_include(i) =>
-    let collect_include = signature => {
-      let prev_last_loc = DeadCommon.last_loc^;
-      List.iter(
-        collect_export(
-          ~mod_type=true,
-          [Ident.create(DeadCommon.getModuleName(DeadCommon.current_src^))],
-          DeadCommon.include_,
-          DeadCommon.incl,
-        ),
-        signature,
-      );
-      DeadCommon.last_loc := prev_last_loc;
-    };
-
-    let rec includ = mod_expr =>
-      switch (mod_expr.mod_desc) {
-      | Tmod_ident(_, _) => collect_include(DeadMod.sign(mod_expr.mod_type))
-      | Tmod_structure(structure) => collect_include(structure.str_type)
-      | Tmod_unpack(_, mod_type) => collect_include(DeadMod.sign(mod_type))
-      | Tmod_functor(_, _, _, mod_expr)
-      | Tmod_apply(_, mod_expr, _)
-      | Tmod_constraint(mod_expr, _, _, _) => includ(mod_expr)
-      };
-
-    includ(i.incl_mod);
-  | _ => ()
-  };
-  let r = super.Tast_mapper.structure_item(self, i);
-  switch (i.str_desc) {
-  | Tstr_module(_) => DeadCommon.mods := List.tl(DeadCommon.mods^)
-  | _ => ()
-  };
+  let old = currentBindingIsDead^;
+  let isAnnotatedDead =
+    x.vb_attributes
+    |> Annotation.getAttributePayload((==)(DeadCommon.deadAnnotation))
+    != None;
+  currentBindingIsDead := isAnnotatedDead;
+  let r = super.Tast_mapper.value_binding(self, x);
+  currentBindingIsDead := old;
   r;
 };
 
 let addReference = (loc1, loc2) =>
-  DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
+  if (! currentBindingIsDead^) {
+    DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
+  };
 
-let colletExpr = (super, self, e) => {
+let collectExpr = (super, self, e) => {
   let exp_loc = e.exp_loc.Location.loc_start;
   open Ident;
   switch (e.exp_desc) {
@@ -166,7 +134,7 @@ let collectReferences = {
   };
 
   let expr = (self, e) =>
-    e |> wrap(colletExpr, ~getLoc=x => x.exp_loc, ~self);
+    e |> wrap(collectExpr, ~getLoc=x => x.exp_loc, ~self);
   let value_binding = (self, vb) =>
     vb |> wrap(collectValueBinding, ~getLoc=x => x.vb_expr.exp_loc, ~self);
   Tast_mapper.{...super, expr, value_binding};
@@ -255,7 +223,7 @@ let process_signature = (fn, signature: Types.signature) => {
   DeadCommon.last_loc := Lexing.dummy_pos;
 };
 
-let process_structure =
+let processStructure =
     (cmt_value_dependencies, structure: Typedtree.structure) => {
   cmt_value_dependencies
   |> List.iter(
@@ -289,8 +257,8 @@ let process_structure =
 /* Starting point */
 let load_file =
     (
-      ~exportedValuesSignature,
-      ~exportedValuesStructure,
+      ~processAnnotationsSignature,
+      ~processAnnotationsStructure,
       ~sourceFile,
       cmtFilePath,
     ) => {
@@ -303,15 +271,15 @@ let load_file =
     Cmt_format.read_cmt(cmtFilePath);
   switch (cmt_annots) {
   | Interface(signature) =>
-    exportedValuesSignature(signature);
+    processAnnotationsSignature(signature);
     process_signature(cmtFilePath, signature.sig_type);
   | Implementation(structure) =>
     let cmtiExists =
       Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
     if (!cmtiExists) {
-      exportedValuesStructure(structure);
+      processAnnotationsStructure(structure);
     };
-    process_structure(cmt_value_dependencies, structure);
+    processStructure(cmt_value_dependencies, structure);
     if (!cmtiExists) {
       process_signature(cmtFilePath, structure.str_type);
     };

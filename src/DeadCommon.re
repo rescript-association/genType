@@ -33,7 +33,7 @@ module LocHash = {
       Hashtbl.hash((x.Lexing.pos_cnum, s));
     };
 
-    let equal = (x, y) => x == y;
+    let equal = (x: t, y) => x == y;
   });
 
   let find_set = (h, k) =>
