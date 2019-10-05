@@ -299,14 +299,17 @@ let load_file =
     Cmt_format.read_cmt(cmtFilePath);
   switch (cmt_annots) {
   | Interface(signature) =>
-    process_signature(cmtFilePath, signature.sig_type);
     exportedValuesSignature(signature);
+    process_signature(cmtFilePath, signature.sig_type);
   | Implementation(structure) =>
-    process_structure(cmt_value_dependencies, structure);
-    let cmtiFilePath = (cmtFilePath |> Filename.chop_extension) ++ ".cmti";
-    if (!Sys.file_exists(cmtiFilePath)) {
-      process_signature(cmtFilePath, structure.str_type);
+    let cmtiExists =
+      Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
+    if (!cmtiExists) {
       exportedValuesStructure(structure);
+    };
+    process_structure(cmt_value_dependencies, structure);
+    if (!cmtiExists) {
+      process_signature(cmtFilePath, structure.str_type);
     };
   | _ => ()
   };
@@ -323,7 +326,8 @@ let report = (~locExportedToJS, ~onUnusedValue) => {
     onUnusedValue(loc, path);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  DeadCommon.decs |> DeadCommon.report(~locExportedToJS, ~onItem=onUnusedValue);
+  DeadCommon.decs
+  |> DeadCommon.report(~locExportedToJS, ~onItem=onUnusedValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
   DeadType.decs |> DeadCommon.report(~onItem);
 };
