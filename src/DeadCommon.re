@@ -47,10 +47,6 @@ module LocHash = {
   };
 };
 
-let abspath: Hashtbl.t(string, string) = (
-  Hashtbl.create(256): Hashtbl.t(string, string)
-); /* longest paths known */
-
 type decs = Hashtbl.t(Lexing.position, string);
 let decs: decs = (Hashtbl.create(256): decs); /* all exported value declarations */
 
@@ -123,9 +119,6 @@ let find_path = (fn, ~sep='/', l) =>
     l,
   );
 
-let find_abspath = fn =>
-  find_path(fn, hashtbl_find_list(abspath, getModuleName(fn)));
-
 let exported = loc => {
   let num_references = LocHash.find_set(references, loc) |> LocSet.cardinal;
   num_references == 0;
@@ -191,23 +184,12 @@ module VdNode = {
 
   let is_end = loc => get_next(loc) == None;
 
-  let seen = loc =>
-    try(
-      {
-        ignore(find_abspath(loc.Lexing.pos_fname));
-        true;
-      }
-    ) {
-    | Not_found => false
-    };
-
   let func = loc => {
     let met = LocHash.create(8);
     let rec loop = loc => {
       LocHash.replace(met, loc, ());
       switch (get(loc)) {
-      | ([], Some(loc)) when !LocHash.mem(met, loc) && seen(loc) =>
-        loop(loc)
+      | ([], Some(loc)) when !LocHash.mem(met, loc) => loop(loc)
       | _ => loc
       };
     };
@@ -218,7 +200,7 @@ module VdNode = {
   let merge_locs = (~force=false, loc1, loc2) =>
     if (!(is_ghost(loc1) || is_ghost(loc2))) {
       let loc2 = func(loc2);
-      if (force || !is_end(loc2) || get_opts(loc2) != [] || !seen(loc2)) {
+      if (force || !is_end(loc2) || get_opts(loc2) != []) {
         let repr = loc => {
           let met = Hashtbl.create(8);
           let rec loop = loc => {
@@ -272,25 +254,24 @@ module VdNode = {
       LocHash.fold((loc, _, acc) => [loc, ...acc], parents, [])
       |> List.sort_uniq(compare);
 
-    let delete = loc =>
-      if (seen(loc)) {
-        let met = Hashtbl.create(64);
-        let rec loop = loc =>
-          if (!Hashtbl.mem(met, loc)) {
-            Hashtbl.add(met, loc, ());
-            LocHash.find_set(parents, loc) |> LocSet.iter(loop);
-            let pts =
-              LocHash.find_set(parents, loc)
-              |> LocSet.filter(LocHash.mem(vd_nodes));
-            if (LocSet.is_empty(pts)) {
-              if (LocHash.mem(parents, loc)) {
-                LocHash.remove(parents, loc);
-              };
-              LocHash.remove(vd_nodes, loc);
+    let delete = loc => {
+      let met = Hashtbl.create(64);
+      let rec loop = loc =>
+        if (!Hashtbl.mem(met, loc)) {
+          Hashtbl.add(met, loc, ());
+          LocHash.find_set(parents, loc) |> LocSet.iter(loop);
+          let pts =
+            LocHash.find_set(parents, loc)
+            |> LocSet.filter(LocHash.mem(vd_nodes));
+          if (LocSet.is_empty(pts)) {
+            if (LocHash.mem(parents, loc)) {
+              LocHash.remove(parents, loc);
             };
+            LocHash.remove(vd_nodes, loc);
           };
-        loop(loc);
-      };
+        };
+      loop(loc);
+    };
 
     List.iter(delete, sons);
 
@@ -344,13 +325,6 @@ let export = (~sep=".", path, u, stock: decs, id, loc) => {
 };
 
 /**** REPORTING ****/
-
-/* Absolute path */
-let abs = loc =>
-  switch (find_abspath(loc.Lexing.pos_fname)) {
-  | s => s
-  | exception Not_found => loc.Lexing.pos_fname
-  };
 
 /* Faster than 'List.length l = len' when len < List.length l; same speed otherwise*/
 let rec check_length = len =>

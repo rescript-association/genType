@@ -186,7 +186,7 @@ let assoc = (decs, (loc1, loc2)) => {
     || DeadCommon.getModuleName(fn)
     == DeadCommon.getModuleName(DeadCommon.current_src^)
     && (
-      try(Sys.file_exists(DeadCommon.find_abspath(fn) ++ "i")) {
+      try(Sys.file_exists(fn ++ "i")) {
       | Not_found => false
       }
     );
