@@ -5,12 +5,19 @@ let (+++) = Filename.concat;
 /* Keep track of the location of values exported via genType */
 module ExportedValues = {
   /* Locations exported to JS */
-  let exportLocations = DeadCommon.LocHash.create(1);
+  let locationsAnnotatedWithGenType = DeadCommon.LocHash.create(1);
+  let locationsAnnotatedDead = DeadCommon.LocHash.create(1);
 
-  let locExportedToJS = loc => DeadCommon.LocHash.mem(exportLocations, loc);
+  let dontReportDead = loc =>
+    DeadCommon.LocHash.mem(locationsAnnotatedWithGenType, loc)
+    || DeadCommon.LocHash.mem(locationsAnnotatedDead, loc);
 
-  let loc = (loc: Lexing.position) => {
-    DeadCommon.LocHash.replace(exportLocations, loc, ());
+  let locAnnotatedWithGenType = (loc: Lexing.position) => {
+    DeadCommon.LocHash.replace(locationsAnnotatedWithGenType, loc, ());
+  };
+
+  let locAnnotatedDead = (loc: Lexing.position) => {
+    DeadCommon.LocHash.replace(locationsAnnotatedDead, loc, ());
   };
 
   let collectExportLocations = (~ignoreInterface) => {
@@ -22,15 +29,17 @@ module ExportedValues = {
         ) => {
       switch (vb_pat.pat_desc) {
       | Tpat_var(id, pLoc) =>
+        if (vb_attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
+          pLoc.loc.loc_start |> locAnnotatedWithGenType;
+        };
         if (vb_attributes
-            |> Annotation.hasGenTypeAnnotation(~ignoreInterface)
-            || vb_attributes
             |> Annotation.getAttributePayload(
                  (==)(DeadCommon.deadAnnotation),
                )
             != None) {
-          pLoc.loc.loc_start |> loc;
-        }
+          pLoc.loc.loc_start |> locAnnotatedDead;
+        };
+
       | _ => ()
       };
       super.value_binding(self, value_binding);
@@ -41,7 +50,7 @@ module ExportedValues = {
           {val_attributes, val_id, val_loc} as value_description: Typedtree.value_description,
         ) => {
       if (val_attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
-        val_loc.loc_start |> loc;
+        val_loc.loc_start |> locAnnotatedWithGenType;
       };
       super.value_description(self, value_description);
     };
@@ -159,7 +168,7 @@ let runAnalysis = () => {
     );
   };
   DeadCode.report(
-    ~locExportedToJS=ExportedValues.locExportedToJS,
+    ~dontReportDead=ExportedValues.dontReportDead,
     ~onUnusedValue,
   );
   writeFile(currentFile^, currentFileLines^);

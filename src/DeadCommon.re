@@ -354,10 +354,10 @@ type item = {
 let compareItems = ({path: path1, loc: loc1}, {path: path2, loc: loc2}) =>
   compare((loc1, path1), (loc2, path2));
 
-let report = (~locExportedToJS=_ => false, ~onItem, decs: decs) => {
+let report = (~dontReportDead=_ => false, ~onItem, decs: decs) => {
   let folder = (loc, path, items) => {
     switch (loc |> LocHash.find_set(references)) {
-    | referencesToLoc when !(loc |> locExportedToJS) =>
+    | referencesToLoc when !(loc |> dontReportDead) =>
       if (referencesToLoc |> LocSet.cardinal == 0) {
         [{loc, path: pathWithoutHead(path)}, ...items];
       } else {

@@ -315,7 +315,7 @@ let load_file =
   };
 };
 
-let report = (~locExportedToJS, ~onUnusedValue) => {
+let report = (~dontReportDead, ~onUnusedValue) => {
   let onItem = (loc, path) => {
     DeadCommon.prloc(loc);
     print_string(path);
@@ -326,8 +326,7 @@ let report = (~locExportedToJS, ~onUnusedValue) => {
     onUnusedValue(loc, path);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  DeadCommon.decs
-  |> DeadCommon.report(~locExportedToJS, ~onItem=onUnusedValue);
+  DeadCommon.decs |> DeadCommon.report(~dontReportDead, ~onItem=onUnusedValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
   DeadType.decs |> DeadCommon.report(~onItem);
 };
