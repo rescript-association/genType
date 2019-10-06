@@ -186,7 +186,6 @@ let eom = loc_dep => {
          clean(loc2);
        });
   };
-  Hashtbl.reset(DeadCommon.incl);
 };
 
 let process_signature = (fn, signature: Types.signature) => {

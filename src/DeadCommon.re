@@ -56,8 +56,6 @@ module LocHash = {
 type decs = Hashtbl.t(Lexing.position, string);
 let decs: decs = (Hashtbl.create(256): decs); /* all exported value declarations */
 
-let incl: decs = (Hashtbl.create(256): decs); /* all exported value declarations */
-
 let references: LocHash.t(LocSet.t) = (
   LocHash.create(256): LocHash.t(LocSet.t)
 ); /* all value references */
