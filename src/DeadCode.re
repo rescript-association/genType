@@ -222,13 +222,7 @@ let processStructure =
 };
 
 /* Starting point */
-let load_file =
-    (
-      ~processAnnotationsSignature,
-      ~processAnnotationsStructure,
-      ~sourceFile,
-      cmtFilePath,
-    ) => {
+let load_file = (~sourceFile, cmtFilePath) => {
   DeadCommon.last_loc := Lexing.dummy_pos;
   if (DeadCommon.verbose) {
     GenTypeCommon.logItem("Scanning %s\n", cmtFilePath);
@@ -238,13 +232,13 @@ let load_file =
     Cmt_format.read_cmt(cmtFilePath);
   switch (cmt_annots) {
   | Interface(signature) =>
-    processAnnotationsSignature(signature);
+    DeadCommon.ProcessAnnotations.signature(signature);
     process_signature(cmtFilePath, signature.sig_type);
   | Implementation(structure) =>
     let cmtiExists =
       Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
     if (!cmtiExists) {
-      processAnnotationsStructure(structure);
+      DeadCommon.ProcessAnnotations.structure(structure);
     };
     processStructure(cmt_value_dependencies, structure);
     if (!cmtiExists) {

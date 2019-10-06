@@ -14,12 +14,7 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   };
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  DeadCode.load_file(
-    ~processAnnotationsSignature=DeadCommon.ProcessAnnotations.signature,
-    ~processAnnotationsStructure=DeadCommon.ProcessAnnotations.structure,
-    ~sourceFile,
-    cmtFilePath,
-  );
+  DeadCode.load_file(~sourceFile, cmtFilePath);
 };
 
 let readFile = fileName => {
