@@ -50,21 +50,28 @@ let rec collect_export =
   };
 
 let currentBindingIsDead = ref(false);
+let currentBindingPos = ref(Lexing.dummy_pos);
 
 let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let old = currentBindingIsDead^;
+  let oldPos = currentBindingPos^;
   let isAnnotatedDead =
     vb.vb_attributes
     |> Annotation.getAttributePayload((==)(DeadCommon.deadAnnotation))
     != None;
   currentBindingIsDead := isAnnotatedDead;
+  currentBindingPos := vb.vb_loc.loc_start;
   let r = super.Tast_mapper.value_binding(self, vb);
   currentBindingIsDead := old;
+  currentBindingPos := oldPos;
   r;
 };
 
 let addReference = (loc1, loc2) =>
   if (! currentBindingIsDead^) {
+    let loc2 =
+      !DeadCommon.transitive || currentBindingPos^ == Lexing.dummy_pos
+        ? loc2 : currentBindingPos^;
     DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
   };
 

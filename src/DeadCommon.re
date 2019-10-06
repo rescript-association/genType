@@ -11,6 +11,8 @@ let reportUnderscore = ref(false);
 
 let active = Sys.getenv_opt("Global") != None;
 
+let transitive = Sys.getenv_opt("Transitive") != None;
+
 let write = Sys.getenv_opt("Write") != None;
 
 let verbose = Sys.getenv_opt("Verbose") != None;
