@@ -225,7 +225,10 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
   let folder = (pos, path, items) => {
     switch (pos |> LocHash.find_set(references)) {
     | referencesToLoc when !(pos |> dontReportDead) =>
-      if (referencesToLoc |> LocSet.cardinal == 0) {
+      let liveReferences =
+        referencesToLoc
+        |> LocSet.filter(pos => !ProcessAnnotations.isAnnotatedDead(pos));
+      if (liveReferences |> LocSet.cardinal == 0) {
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
         if (verbose) {
@@ -242,7 +245,7 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
           );
         };
         items;
-      }
+      };
     | _ => items
     | exception Not_found => items
     };

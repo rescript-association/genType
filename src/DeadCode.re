@@ -49,34 +49,27 @@ let rec collect_export =
   | _ => ()
   };
 
-let currentBindingIsDead = ref(false);
 let currentBindingPos = ref(Lexing.dummy_pos);
 
 let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
-  let old = currentBindingIsDead^;
   let oldPos = currentBindingPos^;
-  let isAnnotatedDead =
+  let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(id, pLoc) =>
-      pLoc.loc.loc_start |> DeadCommon.ProcessAnnotations.isAnnotatedDead
-    | _ => false
+    | Tpat_var(id, pLoc) => pLoc.loc.loc_start
+    | _ => vb.vb_loc.loc_start
     };
-
-  currentBindingIsDead := isAnnotatedDead;
-  currentBindingPos := vb.vb_loc.loc_start;
+  currentBindingPos := pos;
   let r = super.Tast_mapper.value_binding(self, vb);
-  currentBindingIsDead := old;
   currentBindingPos := oldPos;
   r;
 };
 
-let addReference = (loc1, loc2) =>
-  if (! currentBindingIsDead^) {
-    let loc2 =
-      !DeadCommon.transitive || currentBindingPos^ == Lexing.dummy_pos
-        ? loc2 : currentBindingPos^;
-    DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
-  };
+let addReference = (loc1, loc2) => {
+  let loc2 =
+    !DeadCommon.transitive || currentBindingPos^ == Lexing.dummy_pos
+      ? loc2 : currentBindingPos^;
+  DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
+};
 
 let collectExpr = (super, self, e: Typedtree.expression) => {
   let exp_loc = e.exp_loc.loc_start;
