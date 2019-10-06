@@ -49,82 +49,6 @@ let rec collect_export =
   | _ => ()
   };
 
-/* Keep track of the location of values exported via genType */
-module ProcessAnnotations = {
-  /* Locations exported to JS */
-  let locationsAnnotatedWithGenType = DeadCommon.LocHash.create(1);
-  let locationsAnnotatedDead = DeadCommon.LocHash.create(1);
-
-  let isAnnotatedDead = loc =>
-    DeadCommon.LocHash.mem(locationsAnnotatedDead, loc);
-
-  let isAnnotatedGentypeOrDead = loc =>
-    DeadCommon.LocHash.mem(locationsAnnotatedWithGenType, loc)
-    || isAnnotatedDead(loc);
-
-  let locAnnotatedWithGenType = (loc: Lexing.position) => {
-    DeadCommon.LocHash.replace(locationsAnnotatedWithGenType, loc, ());
-  };
-
-  let locAnnotatedDead = (loc: Lexing.position) => {
-    DeadCommon.LocHash.replace(locationsAnnotatedDead, loc, ());
-  };
-
-  let processAttributes = (~ignoreInterface, ~loc, attributes) => {
-    if (attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
-      loc |> locAnnotatedWithGenType;
-    };
-    if (attributes
-        |> Annotation.getAttributePayload((==)(DeadCommon.deadAnnotation))
-        != None) {
-      loc |> locAnnotatedDead;
-    };
-  };
-
-  let collectExportLocations = (~ignoreInterface) => {
-    let super = Tast_mapper.default;
-    let value_binding =
-        (
-          self,
-          {vb_attributes, vb_pat} as value_binding: Typedtree.value_binding,
-        ) => {
-      switch (vb_pat.pat_desc) {
-      | Tpat_var(id, pLoc) =>
-        vb_attributes
-        |> processAttributes(~ignoreInterface, ~loc=pLoc.loc.loc_start)
-
-      | _ => ()
-      };
-      super.value_binding(self, value_binding);
-    };
-    let value_description =
-        (
-          self,
-          {val_attributes, val_id, val_loc} as value_description: Typedtree.value_description,
-        ) => {
-      val_attributes
-      |> processAttributes(~ignoreInterface, ~loc=val_loc.loc_start);
-      super.value_description(self, value_description);
-    };
-    {...super, value_binding, value_description};
-  };
-
-  let structure = structure => {
-    let ignoreInterface = ref(false);
-    let collectExportLocations = collectExportLocations(~ignoreInterface);
-    structure
-    |> collectExportLocations.structure(collectExportLocations)
-    |> ignore;
-  };
-  let signature = signature => {
-    let ignoreInterface = ref(false);
-    let collectExportLocations = collectExportLocations(~ignoreInterface);
-    signature
-    |> collectExportLocations.signature(collectExportLocations)
-    |> ignore;
-  };
-};
-
 let currentBindingIsDead = ref(false);
 let currentBindingPos = ref(Lexing.dummy_pos);
 
@@ -330,7 +254,7 @@ let load_file =
   };
 };
 
-let report = (~dontReportDead, ~onUnusedValue) => {
+let report = (~onUnusedValue) => {
   let onItem = (DeadCommon.{pos, path}) => {
     print_string(pos |> DeadCommon.posToString);
     print_string(path);
@@ -341,7 +265,7 @@ let report = (~dontReportDead, ~onUnusedValue) => {
     onUnusedValue(item);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  DeadCommon.decs |> DeadCommon.report(~dontReportDead, ~onItem=onUnusedValue);
+  DeadCommon.decs |> DeadCommon.report(~useDead=true, ~onItem=onUnusedValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
   DeadType.decs |> DeadCommon.report(~onItem);
 };

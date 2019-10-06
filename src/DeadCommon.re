@@ -138,6 +138,79 @@ let pathWithoutHead = path => {
   cutFromNextDot(path, 0);
 };
 
+/* Keep track of the location of values exported via genType */
+module ProcessAnnotations = {
+  /* Locations exported to JS */
+  let locationsAnnotatedWithGenType = LocHash.create(1);
+  let locationsAnnotatedDead = LocHash.create(1);
+
+  let isAnnotatedDead = loc => LocHash.mem(locationsAnnotatedDead, loc);
+
+  let isAnnotatedGentypeOrDead = loc =>
+    LocHash.mem(locationsAnnotatedWithGenType, loc) || isAnnotatedDead(loc);
+
+  let locAnnotatedWithGenType = (loc: Lexing.position) => {
+    LocHash.replace(locationsAnnotatedWithGenType, loc, ());
+  };
+
+  let locAnnotatedDead = (loc: Lexing.position) => {
+    LocHash.replace(locationsAnnotatedDead, loc, ());
+  };
+
+  let processAttributes = (~ignoreInterface, ~loc, attributes) => {
+    if (attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
+      loc |> locAnnotatedWithGenType;
+    };
+    if (attributes
+        |> Annotation.getAttributePayload((==)(deadAnnotation)) != None) {
+      loc |> locAnnotatedDead;
+    };
+  };
+
+  let collectExportLocations = (~ignoreInterface) => {
+    let super = Tast_mapper.default;
+    let value_binding =
+        (
+          self,
+          {vb_attributes, vb_pat} as value_binding: Typedtree.value_binding,
+        ) => {
+      switch (vb_pat.pat_desc) {
+      | Tpat_var(id, pLoc) =>
+        vb_attributes
+        |> processAttributes(~ignoreInterface, ~loc=pLoc.loc.loc_start)
+
+      | _ => ()
+      };
+      super.value_binding(self, value_binding);
+    };
+    let value_description =
+        (
+          self,
+          {val_attributes, val_id, val_loc} as value_description: Typedtree.value_description,
+        ) => {
+      val_attributes
+      |> processAttributes(~ignoreInterface, ~loc=val_loc.loc_start);
+      super.value_description(self, value_description);
+    };
+    {...super, value_binding, value_description};
+  };
+
+  let structure = structure => {
+    let ignoreInterface = ref(false);
+    let collectExportLocations = collectExportLocations(~ignoreInterface);
+    structure
+    |> collectExportLocations.structure(collectExportLocations)
+    |> ignore;
+  };
+  let signature = signature => {
+    let ignoreInterface = ref(false);
+    let collectExportLocations = collectExportLocations(~ignoreInterface);
+    signature
+    |> collectExportLocations.signature(collectExportLocations)
+    |> ignore;
+  };
+};
+
 type item = {
   pos: Lexing.position,
   path: string,
@@ -146,7 +219,9 @@ type item = {
 let compareItems = ({path: path1, pos: pos1}, {path: path2, pos: pos2}) =>
   compare((pos1, path1), (pos2, path2));
 
-let report = (~dontReportDead=_ => false, ~onItem, decs: decs) => {
+let report = (~useDead=false, ~onItem, decs: decs) => {
+  let dontReportDead = pos =>
+    useDead && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
   let folder = (pos, path, items) => {
     switch (pos |> LocHash.find_set(references)) {
     | referencesToLoc when !(pos |> dontReportDead) =>

@@ -15,8 +15,8 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
   DeadCode.load_file(
-    ~processAnnotationsSignature=DeadCode.ProcessAnnotations.signature,
-    ~processAnnotationsStructure=DeadCode.ProcessAnnotations.structure,
+    ~processAnnotationsSignature=DeadCommon.ProcessAnnotations.signature,
+    ~processAnnotationsStructure=DeadCommon.ProcessAnnotations.structure,
     ~sourceFile,
     cmtFilePath,
   );
@@ -96,9 +96,6 @@ let runAnalysis = () => {
       currentFileLines^[indexInLines],
     );
   };
-  DeadCode.report(
-    ~dontReportDead=DeadCode.ProcessAnnotations.isAnnotatedGentypeOrDead,
-    ~onUnusedValue,
-  );
+  DeadCode.report(~onUnusedValue);
   writeFile(currentFile^, currentFileLines^);
 };
