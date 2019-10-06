@@ -56,9 +56,12 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let old = currentBindingIsDead^;
   let oldPos = currentBindingPos^;
   let isAnnotatedDead =
-    vb.vb_attributes
-    |> Annotation.getAttributePayload((==)(DeadCommon.deadAnnotation))
-    != None;
+    switch (vb.vb_pat.pat_desc) {
+    | Tpat_var(id, pLoc) =>
+      pLoc.loc.loc_start |> DeadCommon.ProcessAnnotations.isAnnotatedDead
+    | _ => false
+    };
+
   currentBindingIsDead := isAnnotatedDead;
   currentBindingPos := vb.vb_loc.loc_start;
   let r = super.Tast_mapper.value_binding(self, vb);
