@@ -119,9 +119,9 @@ let collectReferences = {
 };
 
 /* Merge a location's references to another one's */
-let assoc = ((loc1, loc2)) => {
-  let fn1 = loc1.Lexing.pos_fname
-  and fn2 = loc2.Lexing.pos_fname;
+let assoc = ((pos1, pos2)) => {
+  let fn1 = pos1.Lexing.pos_fname
+  and fn2 = pos2.Lexing.pos_fname;
   let is_implem = fn => fn.[String.length(fn) - 1] != 'i';
   let has_iface = fn =>
     fn.[String.length(fn) - 1] == 'i'
@@ -139,31 +139,31 @@ let assoc = ((loc1, loc2)) => {
     != DeadCommon.getModuleName(DeadCommon.current_src^)
     || !(is_implem(fn) && has_iface(fn));
 
-  if (fn1 != DeadCommon.none_ && fn2 != DeadCommon.none_ && loc1 != loc2) {
+  if (fn1 != DeadCommon.none_ && fn2 != DeadCommon.none_ && pos1 != pos2) {
     if (fn1 != fn2 && is_implem(fn1) && is_implem(fn2)) {
       DeadCommon.LocHash.merge_set(
         DeadCommon.references,
-        loc2,
+        pos2,
         DeadCommon.references,
-        loc1,
+        pos1,
       );
     };
-    if (is_iface(fn1, loc1)) {
+    if (is_iface(fn1, pos1)) {
       DeadCommon.LocHash.merge_set(
         DeadCommon.references,
-        loc1,
+        pos1,
         DeadCommon.references,
-        loc2,
+        pos2,
       );
-      if (is_iface(fn2, loc2)) {
-        addReference(loc1, loc2);
+      if (is_iface(fn2, pos2)) {
+        addReference(pos1, pos2);
       };
     } else {
       DeadCommon.LocHash.merge_set(
         DeadCommon.references,
-        loc2,
+        pos2,
         DeadCommon.references,
-        loc1,
+        pos1,
       );
     };
   };
