@@ -222,13 +222,17 @@ let compareItems = ({path: path1, pos: pos1}, {path: path2, pos: pos2}) =>
 let report = (~useDead=false, ~onItem, decs: decs) => {
   let dontReportDead = pos =>
     useDead && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
-  let folder = (pos, path, items) => {
+
+  let folder = (items, {pos, path}) => {
     switch (pos |> LocHash.find_set(references)) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
         referencesToLoc
         |> LocSet.filter(pos => !ProcessAnnotations.isAnnotatedDead(pos));
       if (liveReferences |> LocSet.cardinal == 0) {
+        if (transitive) {
+          ProcessAnnotations.locAnnotatedDead(pos);
+        };
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
         if (verbose) {
@@ -251,7 +255,9 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
     };
   };
 
-  Hashtbl.fold(folder, decs, [])
-  |> List.fast_sort(compareItems)
+  Hashtbl.fold((pos, path, items) => [{pos, path}, ...items], decs, [])
+  |> List.fast_sort((i1, i2) => compareItems(i2, i1)) /* analyze in reverse order */
+  |> List.fold_left(folder, [])
+  |> List.fast_sort(compareItems) /* report in order */
   |> List.iter(onItem);
 };
