@@ -115,7 +115,7 @@ let collectReferences = {
 };
 
 /* Merge a location's references to another one's */
-let assoc = (decs, (loc1, loc2)) => {
+let assoc = ((loc1, loc2)) => {
   let fn1 = loc1.Lexing.pos_fname
   and fn2 = loc2.Lexing.pos_fname;
   let is_implem = fn => fn.[String.length(fn) - 1] != 'i';
@@ -130,7 +130,7 @@ let assoc = (decs, (loc1, loc2)) => {
     );
 
   let is_iface = (fn, loc) =>
-    Hashtbl.mem(decs, loc)
+    Hashtbl.mem(DeadCommon.decs, loc)
     || DeadCommon.getModuleName(fn)
     != DeadCommon.getModuleName(DeadCommon.current_src^)
     || !(is_implem(fn) && has_iface(fn));
@@ -175,7 +175,7 @@ let clean = (references, loc) => {
 };
 
 let eom = loc_dep => {
-  List.iter(assoc(DeadCommon.decs), loc_dep);
+  loc_dep |> List.iter(assoc);
   if (Sys.file_exists(DeadCommon.current_src^ ++ "i")) {
     loc_dep
     |> List.iter(((loc1, loc2)) => {
