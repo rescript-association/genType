@@ -169,22 +169,21 @@ let assoc = ((pos1, pos2)) => {
   };
 };
 
-let clean = (references, loc) => {
-  let fn = loc.Lexing.pos_fname;
-  if (fn.[String.length(fn) - 1] != 'i'
-      && DeadCommon.getModuleName(fn)
-      == DeadCommon.getModuleName(DeadCommon.current_src^)) {
-    DeadCommon.LocHash.remove(references, loc);
-  };
-};
-
 let eom = loc_dep => {
   loc_dep |> List.iter(assoc);
   if (Sys.file_exists(DeadCommon.current_src^ ++ "i")) {
+    let clean = loc => {
+      let fn = loc.Lexing.pos_fname;
+      if (fn.[String.length(fn) - 1] != 'i'
+          && DeadCommon.getModuleName(fn)
+          == DeadCommon.getModuleName(DeadCommon.current_src^)) {
+        DeadCommon.LocHash.remove(DeadCommon.references, loc);
+      };
+    };
     loc_dep
     |> List.iter(((loc1, loc2)) => {
-         clean(DeadCommon.references, loc1);
-         clean(DeadCommon.references, loc2);
+         clean(loc1);
+         clean(loc2);
        });
   };
   Hashtbl.reset(DeadCommon.incl);
