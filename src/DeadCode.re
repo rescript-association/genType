@@ -246,14 +246,14 @@ let load_file =
 };
 
 let report = (~dontReportDead, ~onUnusedValue) => {
-  let onItem = (loc, path) => {
-    DeadCommon.prloc(loc);
+  let onItem = (DeadCommon.{pos, path}) => {
+    print_string(pos |> DeadCommon.posToString);
     print_string(path);
     print_newline();
   };
-  let onUnusedValue = (loc, path) => {
-    onItem(loc, path);
-    onUnusedValue(loc, path);
+  let onUnusedValue = item => {
+    onItem(item);
+    onUnusedValue(item);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
   DeadCommon.decs |> DeadCommon.report(~dontReportDead, ~onItem=onUnusedValue);

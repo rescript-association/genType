@@ -126,19 +126,14 @@ let find_path = (fn, ~sep='/', l) =>
   );
 
 /* Location printer: `filename:line: ' */
-let prloc = (~printCol=false, loc: Lexing.position) => {
-  let file = loc.Lexing.pos_fname;
-  let line = loc.Lexing.pos_lnum;
-  let col = loc.Lexing.pos_cnum - loc.Lexing.pos_bol;
-  print_string(file);
-  print_char(':');
-  print_int(line);
-  if (printCol) {
-    print_char(':');
-    print_int(col);
-  } else {
-    print_string(": ");
-  };
+let posToString = (~printCol=false, pos: Lexing.position) => {
+  let file = pos.Lexing.pos_fname;
+  let line = pos.Lexing.pos_lnum;
+  let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
+  file
+  ++ ":"
+  ++ string_of_int(line)
+  ++ (printCol ? ":" ++ string_of_int(col) : ": ");
 };
 
 /********   PROCESSING  ********/
@@ -186,19 +181,19 @@ let pathWithoutHead = path => {
 };
 
 type item = {
-  loc: Lexing.position,
+  pos: Lexing.position,
   path: string,
 };
 
-let compareItems = ({path: path1, loc: loc1}, {path: path2, loc: loc2}) =>
-  compare((loc1, path1), (loc2, path2));
+let compareItems = ({path: path1, pos: pos1}, {path: path2, pos: pos2}) =>
+  compare((pos1, path1), (pos2, path2));
 
 let report = (~dontReportDead=_ => false, ~onItem, decs: decs) => {
-  let folder = (loc, path, items) => {
-    switch (loc |> LocHash.find_set(references)) {
-    | referencesToLoc when !(loc |> dontReportDead) =>
+  let folder = (pos, path, items) => {
+    switch (pos |> LocHash.find_set(references)) {
+    | referencesToLoc when !(pos |> dontReportDead) =>
       if (referencesToLoc |> LocSet.cardinal == 0) {
-        [{loc, path: pathWithoutHead(path)}, ...items];
+        [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
         if (verbose) {
           GenTypeCommon.logItem(
@@ -216,5 +211,5 @@ let report = (~dontReportDead=_ => false, ~onItem, decs: decs) => {
 
   Hashtbl.fold(folder, decs, [])
   |> List.fast_sort(compareItems)
-  |> List.iter(({loc, path}) => {onItem(loc, path)});
+  |> List.iter(onItem);
 };

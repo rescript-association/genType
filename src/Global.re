@@ -151,14 +151,14 @@ let runAnalysis = () => {
 
   let currentFile = ref("");
   let currentFileLines = ref([||]);
-  let onUnusedValue = (loc, path) => {
-    let fileName = loc.Lexing.pos_fname;
+  let onUnusedValue = (DeadCommon.{pos, path}) => {
+    let fileName = pos.Lexing.pos_fname;
     if (fileName != currentFile^) {
       writeFile(currentFile^, currentFileLines^);
       currentFile := fileName;
       currentFileLines := readFile(fileName);
     };
-    let indexInLines = loc.Lexing.pos_lnum - 1;
+    let indexInLines = pos.Lexing.pos_lnum - 1;
     currentFileLines^[indexInLines] =
       "[@"
       ++ DeadCommon.deadAnnotation
@@ -168,7 +168,7 @@ let runAnalysis = () => {
       ++ currentFileLines^[indexInLines];
     Printf.printf(
       "<-- line %d\n%s\n",
-      loc.Lexing.pos_lnum,
+      pos.Lexing.pos_lnum,
       currentFileLines^[indexInLines],
     );
   };
