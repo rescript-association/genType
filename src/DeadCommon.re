@@ -78,52 +78,10 @@ let include_ = "*include*";
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
 
-let is_ghost = loc =>
-  loc.Lexing.pos_lnum <= 0
-  || loc.Lexing.pos_cnum
-  - loc.Lexing.pos_bol < 0
-  || loc.Lexing.pos_fname == none_
-  || loc.Lexing.pos_fname == "";
-
 let check_underscore = name => reportUnderscore^ || name.[0] != '_';
-
-let hashtbl_find_list = (hashtbl, key) => Hashtbl.find_all(hashtbl, key);
 
 let hashtbl_add_to_list = (hashtbl, key, elt) =>
   Hashtbl.add(hashtbl, key, elt);
-
-let hashtbl_add_unique_to_list = (hashtbl, key, elt) =>
-  if (!List.mem(elt, hashtbl_find_list(hashtbl, key))) {
-    Hashtbl.add(hashtbl, key, elt);
-  };
-
-let rec hashtbl_remove_list = (hashtbl, key) =>
-  if (Hashtbl.mem(hashtbl, key)) {
-    Hashtbl.remove(hashtbl, key);
-    hashtbl_remove_list(hashtbl, key);
-  };
-
-let hashtbl_replace_list = (hashtbl, key, l) => {
-  hashtbl_remove_list(hashtbl, key);
-  List.iter(elt => hashtbl_add_to_list(hashtbl, key, elt), l);
-};
-
-let hashtbl_merge_unique_list = (tbl1, key1, tbl2, key2) =>
-  List.iter(
-    elt => hashtbl_add_unique_to_list(tbl1, key1, elt),
-    hashtbl_find_list(tbl2, key2),
-  );
-
-let find_path = (fn, ~sep='/', l) =>
-  List.find(
-    path => {
-      let lp = String.length(path)
-      and lf = String.length(fn);
-      (lp > lf && path.[lp - lf - 1] == sep || lp == lf)
-      && String.sub(path, lp - lf, lf) == fn;
-    },
-    l,
-  );
 
 /* Location printer: `filename:line: ' */
 let posToString = (~printCol=false, pos: Lexing.position) => {
