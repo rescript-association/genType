@@ -48,32 +48,6 @@ let rec collect_export = (~mod_type=false, path, u, stock: DeadCommon.decs) =>
 let currentBindingIsDead = ref(false);
 
 let collectValueBinding = (super, self, x) => {
-  open Asttypes;
-  switch (x) {
-  | {
-      vb_pat: {
-        pat_desc:
-          Tpat_var(
-            _,
-            {loc: {Location.loc_start: loc1, loc_ghost: false, _}, _},
-          ),
-        _,
-      },
-      vb_expr: {
-        exp_desc:
-          Texp_ident(
-            _,
-            _,
-            {val_loc: {Location.loc_start: loc2, loc_ghost: false, _}, _},
-          ),
-        _,
-      },
-      _,
-    } =>
-    DeadCommon.VdNode.merge_locs(loc1, loc2)
-  | _ => ()
-  };
-
   let old = currentBindingIsDead^;
   let isAnnotatedDead =
     x.vb_attributes
@@ -209,7 +183,6 @@ let eom = loc_dep => {
          clean(DeadCommon.references, loc2);
        });
   };
-  DeadCommon.VdNode.eom();
   Hashtbl.reset(DeadCommon.incl);
 };
 
@@ -225,21 +198,6 @@ let process_signature = (fn, signature: Types.signature) => {
 
 let processStructure =
     (cmt_value_dependencies, structure: Typedtree.structure) => {
-  cmt_value_dependencies
-  |> List.iter(
-       fun
-       | (
-           {
-             Types.val_loc: {Location.loc_start: loc1, loc_ghost: false, _},
-             _,
-           },
-           {Types.val_loc: {Location.loc_start: loc2, loc_ghost: false}, _},
-         ) => {
-           DeadCommon.VdNode.merge_locs(~force=true, loc2, loc1);
-         }
-       | _ => (),
-     );
-
   structure
   |> collectReferences.Tast_mapper.structure(collectReferences)
   |> ignore;
