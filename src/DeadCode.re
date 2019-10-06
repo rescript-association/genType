@@ -15,13 +15,17 @@
   It assumes .mli/.mfi are compiled with -keep-locs and .ml/.mf are compiled with -bin-annot.
  */;
 
-open Types;
-open Typedtree;
-
 /********   PROCESSING   ********/
 
-let rec collect_export = (~mod_type=false, path, u, stock: DeadCommon.decs) =>
-  fun
+let rec collect_export =
+        (
+          ~mod_type=false,
+          path,
+          u,
+          stock: DeadCommon.decs,
+          si: Types.signature_item,
+        ) =>
+  switch (si) {
   | Sig_value(id, {Types.val_loc})
       when !val_loc.Location.loc_ghost && stock === DeadCommon.decs =>
     DeadCommon.export(path, u, stock, id, val_loc)
@@ -32,29 +36,29 @@ let rec collect_export = (~mod_type=false, path, u, stock: DeadCommon.decs) =>
   | (
       Sig_module(id, {Types.md_type: t, _}, _) |
       Sig_modtype(id, {Types.mtd_type: Some(t), _})
-    ) as s => {
-      let collect =
-        switch (s) {
-        | Sig_modtype(_) => mod_type
-        | _ => true
-        };
-      if (collect) {
-        DeadMod.sign(t)
-        |> List.iter(collect_export(~mod_type, [id, ...path], u, stock));
+    ) as s =>
+    let collect =
+      switch (s) {
+      | Sig_modtype(_) => mod_type
+      | _ => true
       };
-    }
-  | _ => ();
+    if (collect) {
+      DeadMod.sign(t)
+      |> List.iter(collect_export(~mod_type, [id, ...path], u, stock));
+    };
+  | _ => ()
+  };
 
 let currentBindingIsDead = ref(false);
 
-let collectValueBinding = (super, self, x) => {
+let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let old = currentBindingIsDead^;
   let isAnnotatedDead =
-    x.vb_attributes
+    vb.vb_attributes
     |> Annotation.getAttributePayload((==)(DeadCommon.deadAnnotation))
     != None;
   currentBindingIsDead := isAnnotatedDead;
-  let r = super.Tast_mapper.value_binding(self, x);
+  let r = super.Tast_mapper.value_binding(self, vb);
   currentBindingIsDead := old;
   r;
 };
@@ -64,8 +68,8 @@ let addReference = (loc1, loc2) =>
     DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
   };
 
-let collectExpr = (super, self, e) => {
-  let exp_loc = e.exp_loc.Location.loc_start;
+let collectExpr = (super, self, e: Typedtree.expression) => {
+  let exp_loc = e.exp_loc.loc_start;
   open Ident;
   switch (e.exp_desc) {
   | Texp_ident(
