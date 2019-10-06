@@ -82,11 +82,11 @@ let hashtbl_add_to_list = (hashtbl, key, elt) =>
   Hashtbl.add(hashtbl, key, elt);
 
 /* Location printer: `filename:line: ' */
-let posToString = (~printCol=false, pos: Lexing.position) => {
+let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
   let file = pos.Lexing.pos_fname;
   let line = pos.Lexing.pos_lnum;
   let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
-  file
+  (shortFile ? file |> Filename.basename : file)
   ++ ":"
   ++ string_of_int(line)
   ++ (printCol ? ":" ++ string_of_int(col) : ": ");
@@ -152,10 +152,16 @@ let report = (~dontReportDead=_ => false, ~onItem, decs: decs) => {
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
         if (verbose) {
+          let refsString =
+            referencesToLoc
+            |> LocSet.elements
+            |> List.map(posToString(~printCol=true, ~shortFile=true))
+            |> String.concat(", ");
           GenTypeCommon.logItem(
-            "%s: %d references\n",
+            "%s: %d references (%s)\n",
             path,
             referencesToLoc |> LocSet.cardinal,
+            refsString,
           );
         };
         items;
