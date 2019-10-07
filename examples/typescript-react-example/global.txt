@@ -406,67 +406,67 @@
   addReference ImmutableArray.re:5:2 -> ImmutableArray.re:118:46
   addReference ImmutableArray.re:118:20 -> ImmutableArray.re:118:57
   addReference belt_Array.mli:593:0 -> ImmutableArray.re:118:26
-  mergeSet ImmutableArray.rei:5:15 -> ImmutableArray.re:24:6
-  mergeSet ImmutableArray.rei:7:0 -> ImmutableArray.re:14:6
-  mergeSet ImmutableArray.rei:10:0 -> ImmutableArray.re:16:6
-  mergeSet ImmutableArray.rei:12:0 -> ImmutableArray.re:20:6
-  mergeSet ImmutableArray.rei:16:0 -> ImmutableArray.re:22:6
-  mergeSet ImmutableArray.rei:18:0 -> ImmutableArray.re:24:6
-  mergeSet ImmutableArray.rei:20:0 -> ImmutableArray.re:26:6
-  mergeSet ImmutableArray.rei:22:0 -> ImmutableArray.re:28:6
-  mergeSet ImmutableArray.rei:24:0 -> ImmutableArray.re:30:6
-  mergeSet ImmutableArray.rei:26:0 -> ImmutableArray.re:32:6
-  mergeSet ImmutableArray.rei:28:0 -> ImmutableArray.re:34:6
-  mergeSet ImmutableArray.rei:30:0 -> ImmutableArray.re:36:6
-  mergeSet ImmutableArray.rei:32:0 -> ImmutableArray.re:38:6
-  mergeSet ImmutableArray.rei:34:0 -> ImmutableArray.re:40:6
-  mergeSet ImmutableArray.rei:36:0 -> ImmutableArray.re:42:6
-  mergeSet ImmutableArray.rei:38:0 -> ImmutableArray.re:44:6
-  mergeSet ImmutableArray.rei:40:0 -> ImmutableArray.re:46:6
-  mergeSet ImmutableArray.rei:41:0 -> ImmutableArray.re:47:6
-  mergeSet ImmutableArray.rei:43:0 -> ImmutableArray.re:49:6
-  mergeSet ImmutableArray.rei:44:0 -> ImmutableArray.re:50:6
-  mergeSet ImmutableArray.rei:46:0 -> ImmutableArray.re:52:6
-  mergeSet ImmutableArray.rei:48:0 -> ImmutableArray.re:54:6
-  mergeSet ImmutableArray.rei:49:0 -> ImmutableArray.re:55:6
-  mergeSet ImmutableArray.rei:51:0 -> ImmutableArray.re:57:6
-  mergeSet ImmutableArray.rei:53:0 -> ImmutableArray.re:59:6
-  mergeSet ImmutableArray.rei:55:0 -> ImmutableArray.re:61:6
-  mergeSet ImmutableArray.rei:57:0 -> ImmutableArray.re:63:6
-  mergeSet ImmutableArray.rei:59:0 -> ImmutableArray.re:66:6
-  mergeSet ImmutableArray.rei:61:0 -> ImmutableArray.re:68:6
-  mergeSet ImmutableArray.rei:63:0 -> ImmutableArray.re:70:6
-  mergeSet ImmutableArray.rei:64:0 -> ImmutableArray.re:71:6
-  mergeSet ImmutableArray.rei:66:0 -> ImmutableArray.re:73:6
-  mergeSet ImmutableArray.rei:67:0 -> ImmutableArray.re:74:6
-  mergeSet ImmutableArray.rei:69:0 -> ImmutableArray.re:76:6
-  mergeSet ImmutableArray.rei:70:0 -> ImmutableArray.re:77:6
-  mergeSet ImmutableArray.rei:72:0 -> ImmutableArray.re:79:6
-  mergeSet ImmutableArray.rei:73:0 -> ImmutableArray.re:80:6
-  mergeSet ImmutableArray.rei:75:0 -> ImmutableArray.re:82:6
-  mergeSet ImmutableArray.rei:76:0 -> ImmutableArray.re:83:6
-  mergeSet ImmutableArray.rei:78:0 -> ImmutableArray.re:85:6
-  mergeSet ImmutableArray.rei:79:0 -> ImmutableArray.re:86:6
-  mergeSet ImmutableArray.rei:81:0 -> ImmutableArray.re:88:6
-  mergeSet ImmutableArray.rei:82:0 -> ImmutableArray.re:89:6
-  mergeSet ImmutableArray.rei:84:0 -> ImmutableArray.re:91:6
-  mergeSet ImmutableArray.rei:85:0 -> ImmutableArray.re:92:6
-  mergeSet ImmutableArray.rei:87:0 -> ImmutableArray.re:94:6
-  mergeSet ImmutableArray.rei:88:0 -> ImmutableArray.re:95:6
-  mergeSet ImmutableArray.rei:90:0 -> ImmutableArray.re:97:6
-  mergeSet ImmutableArray.rei:91:0 -> ImmutableArray.re:99:6
-  mergeSet ImmutableArray.rei:93:0 -> ImmutableArray.re:102:6
-  mergeSet ImmutableArray.rei:94:0 -> ImmutableArray.re:103:6
-  mergeSet ImmutableArray.rei:96:0 -> ImmutableArray.re:105:6
-  mergeSet ImmutableArray.rei:97:0 -> ImmutableArray.re:106:6
-  mergeSet ImmutableArray.rei:99:0 -> ImmutableArray.re:108:6
-  mergeSet ImmutableArray.rei:100:0 -> ImmutableArray.re:109:6
-  mergeSet ImmutableArray.rei:102:0 -> ImmutableArray.re:111:6
-  mergeSet ImmutableArray.rei:103:0 -> ImmutableArray.re:112:6
-  mergeSet ImmutableArray.rei:105:0 -> ImmutableArray.re:114:6
-  mergeSet ImmutableArray.rei:106:0 -> ImmutableArray.re:115:6
-  mergeSet ImmutableArray.rei:108:0 -> ImmutableArray.re:117:6
-  mergeSet ImmutableArray.rei:109:0 -> ImmutableArray.re:118:6
+  mergeSet ImmutableArray.rei:5:15 <- ImmutableArray.re:24:6
+  mergeSet ImmutableArray.rei:7:0 <- ImmutableArray.re:14:6
+  mergeSet ImmutableArray.rei:10:0 <- ImmutableArray.re:16:6
+  mergeSet ImmutableArray.rei:12:0 <- ImmutableArray.re:20:6
+  mergeSet ImmutableArray.rei:16:0 <- ImmutableArray.re:22:6
+  mergeSet ImmutableArray.rei:18:0 <- ImmutableArray.re:24:6
+  mergeSet ImmutableArray.rei:20:0 <- ImmutableArray.re:26:6
+  mergeSet ImmutableArray.rei:22:0 <- ImmutableArray.re:28:6
+  mergeSet ImmutableArray.rei:24:0 <- ImmutableArray.re:30:6
+  mergeSet ImmutableArray.rei:26:0 <- ImmutableArray.re:32:6
+  mergeSet ImmutableArray.rei:28:0 <- ImmutableArray.re:34:6
+  mergeSet ImmutableArray.rei:30:0 <- ImmutableArray.re:36:6
+  mergeSet ImmutableArray.rei:32:0 <- ImmutableArray.re:38:6
+  mergeSet ImmutableArray.rei:34:0 <- ImmutableArray.re:40:6
+  mergeSet ImmutableArray.rei:36:0 <- ImmutableArray.re:42:6
+  mergeSet ImmutableArray.rei:38:0 <- ImmutableArray.re:44:6
+  mergeSet ImmutableArray.rei:40:0 <- ImmutableArray.re:46:6
+  mergeSet ImmutableArray.rei:41:0 <- ImmutableArray.re:47:6
+  mergeSet ImmutableArray.rei:43:0 <- ImmutableArray.re:49:6
+  mergeSet ImmutableArray.rei:44:0 <- ImmutableArray.re:50:6
+  mergeSet ImmutableArray.rei:46:0 <- ImmutableArray.re:52:6
+  mergeSet ImmutableArray.rei:48:0 <- ImmutableArray.re:54:6
+  mergeSet ImmutableArray.rei:49:0 <- ImmutableArray.re:55:6
+  mergeSet ImmutableArray.rei:51:0 <- ImmutableArray.re:57:6
+  mergeSet ImmutableArray.rei:53:0 <- ImmutableArray.re:59:6
+  mergeSet ImmutableArray.rei:55:0 <- ImmutableArray.re:61:6
+  mergeSet ImmutableArray.rei:57:0 <- ImmutableArray.re:63:6
+  mergeSet ImmutableArray.rei:59:0 <- ImmutableArray.re:66:6
+  mergeSet ImmutableArray.rei:61:0 <- ImmutableArray.re:68:6
+  mergeSet ImmutableArray.rei:63:0 <- ImmutableArray.re:70:6
+  mergeSet ImmutableArray.rei:64:0 <- ImmutableArray.re:71:6
+  mergeSet ImmutableArray.rei:66:0 <- ImmutableArray.re:73:6
+  mergeSet ImmutableArray.rei:67:0 <- ImmutableArray.re:74:6
+  mergeSet ImmutableArray.rei:69:0 <- ImmutableArray.re:76:6
+  mergeSet ImmutableArray.rei:70:0 <- ImmutableArray.re:77:6
+  mergeSet ImmutableArray.rei:72:0 <- ImmutableArray.re:79:6
+  mergeSet ImmutableArray.rei:73:0 <- ImmutableArray.re:80:6
+  mergeSet ImmutableArray.rei:75:0 <- ImmutableArray.re:82:6
+  mergeSet ImmutableArray.rei:76:0 <- ImmutableArray.re:83:6
+  mergeSet ImmutableArray.rei:78:0 <- ImmutableArray.re:85:6
+  mergeSet ImmutableArray.rei:79:0 <- ImmutableArray.re:86:6
+  mergeSet ImmutableArray.rei:81:0 <- ImmutableArray.re:88:6
+  mergeSet ImmutableArray.rei:82:0 <- ImmutableArray.re:89:6
+  mergeSet ImmutableArray.rei:84:0 <- ImmutableArray.re:91:6
+  mergeSet ImmutableArray.rei:85:0 <- ImmutableArray.re:92:6
+  mergeSet ImmutableArray.rei:87:0 <- ImmutableArray.re:94:6
+  mergeSet ImmutableArray.rei:88:0 <- ImmutableArray.re:95:6
+  mergeSet ImmutableArray.rei:90:0 <- ImmutableArray.re:97:6
+  mergeSet ImmutableArray.rei:91:0 <- ImmutableArray.re:99:6
+  mergeSet ImmutableArray.rei:93:0 <- ImmutableArray.re:102:6
+  mergeSet ImmutableArray.rei:94:0 <- ImmutableArray.re:103:6
+  mergeSet ImmutableArray.rei:96:0 <- ImmutableArray.re:105:6
+  mergeSet ImmutableArray.rei:97:0 <- ImmutableArray.re:106:6
+  mergeSet ImmutableArray.rei:99:0 <- ImmutableArray.re:108:6
+  mergeSet ImmutableArray.rei:100:0 <- ImmutableArray.re:109:6
+  mergeSet ImmutableArray.rei:102:0 <- ImmutableArray.re:111:6
+  mergeSet ImmutableArray.rei:103:0 <- ImmutableArray.re:112:6
+  mergeSet ImmutableArray.rei:105:0 <- ImmutableArray.re:114:6
+  mergeSet ImmutableArray.rei:106:0 <- ImmutableArray.re:115:6
+  mergeSet ImmutableArray.rei:108:0 <- ImmutableArray.re:117:6
+  mergeSet ImmutableArray.rei:109:0 <- ImmutableArray.re:118:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
   addReference TransitiveType3.re:8:17 -> TransitiveType3.re:8:27
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
@@ -560,23 +560,23 @@
   addReference FirstClassModules.re:44:19 -> FirstClassModules.re:44:38
   addReference FirstClassModules.re:14:2 -> FirstClassModules.re:49:11
   addReference FirstClassModules.re:53:29 -> FirstClassModules.re:54:27
-  mergeSet FirstClassModules.re:34:6 -> FirstClassModules.re:2:2
+  mergeSet FirstClassModules.re:34:6 <- FirstClassModules.re:2:2
   addReference FirstClassModules.re:34:6 -> FirstClassModules.re:2:2
-  mergeSet FirstClassModules.re:33:2 -> FirstClassModules.re:4:2
+  mergeSet FirstClassModules.re:33:2 <- FirstClassModules.re:4:2
   addReference FirstClassModules.re:33:2 -> FirstClassModules.re:4:2
-  mergeSet FirstClassModules.re:21:8 -> FirstClassModules.re:7:24
+  mergeSet FirstClassModules.re:21:8 <- FirstClassModules.re:7:24
   addReference FirstClassModules.re:21:8 -> FirstClassModules.re:7:24
-  mergeSet FirstClassModules.re:25:8 -> FirstClassModules.re:10:4
+  mergeSet FirstClassModules.re:25:8 <- FirstClassModules.re:10:4
   addReference FirstClassModules.re:25:8 -> FirstClassModules.re:10:4
-  mergeSet FirstClassModules.re:28:20 -> FirstClassModules.re:12:20
+  mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:12:20
   addReference FirstClassModules.re:28:20 -> FirstClassModules.re:12:20
-  mergeSet FirstClassModules.re:12:20 -> FirstClassModules.re:28:20
+  mergeSet FirstClassModules.re:12:20 <- FirstClassModules.re:28:20
   addReference FirstClassModules.re:12:20 -> FirstClassModules.re:28:20
-  mergeSet FirstClassModules.re:30:8 -> FirstClassModules.re:28:20
+  mergeSet FirstClassModules.re:30:8 <- FirstClassModules.re:28:20
   addReference FirstClassModules.re:30:8 -> FirstClassModules.re:28:20
-  mergeSet FirstClassModules.re:17:6 -> FirstClassModules.re:14:2
+  mergeSet FirstClassModules.re:17:6 <- FirstClassModules.re:14:2
   addReference FirstClassModules.re:17:6 -> FirstClassModules.re:14:2
-  mergeSet FirstClassModules.re:49:6 -> FirstClassModules.re:46:20
+  mergeSet FirstClassModules.re:49:6 <- FirstClassModules.re:46:20
   addReference FirstClassModules.re:49:6 -> FirstClassModules.re:46:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
   addReference ImportMyBanner.re:8:0 -> ImportMyBanner.re:19:11
@@ -657,9 +657,9 @@
   addReference VariantsWithPayload.re:103:23 -> VariantsWithPayload.re:103:42
   addReference VariantsWithPayload.re:110:26 -> VariantsWithPayload.re:110:48
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
-  mergeSet FirstClassModulesInterface.rei:7:0 -> FirstClassModulesInterface.re:6:4
-  mergeSet FirstClassModulesInterface.rei:10:18 -> FirstClassModulesInterface.re:8:18
-  mergeSet FirstClassModulesInterface.rei:10:18 -> FirstClassModulesInterface.re:8:18
+  mergeSet FirstClassModulesInterface.rei:7:0 <- FirstClassModulesInterface.re:6:4
+  mergeSet FirstClassModulesInterface.rei:10:18 <- FirstClassModulesInterface.re:8:18
+  mergeSet FirstClassModulesInterface.rei:10:18 <- FirstClassModulesInterface.re:8:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
   addReference ImportJsValue.re:1:0 -> ImportJsValue.re:19:20
   addReference ImportJsValue.re:14:0 -> ImportJsValue.re:22:16
@@ -692,11 +692,11 @@
   addReference References.re:20:2 -> References.re:38:10
   addReference References.re:44:27 -> References.re:44:58
   addReference References.re:48:27 -> References.re:48:58
-  mergeSet References.re:23:6 -> References.re:18:2
+  mergeSet References.re:23:6 <- References.re:18:2
   addReference References.re:23:6 -> References.re:18:2
-  mergeSet References.re:24:6 -> References.re:19:2
+  mergeSet References.re:24:6 <- References.re:19:2
   addReference References.re:24:6 -> References.re:19:2
-  mergeSet References.re:25:6 -> References.re:20:2
+  mergeSet References.re:25:6 <- References.re:20:2
   addReference References.re:25:6 -> References.re:20:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
@@ -909,7 +909,7 @@
   addReference js_promise.ml:39:0 -> TestPromise.re:14:40
   addReference js_promise.ml:50:0 -> TestPromise.re:14:14
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
-  mergeSet NestedModulesInSignature.rei:2:2 -> NestedModulesInSignature.re:2:6
+  mergeSet NestedModulesInSignature.rei:2:2 <- NestedModulesInSignature.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestFirstClassModules.cmt
   addReference TestFirstClassModules.re:2:15 -> TestFirstClassModules.re:2:57
   addReference TestFirstClassModules.re:5:24 -> TestFirstClassModules.re:5:75
