@@ -76,22 +76,6 @@ let mods: ref(list(string)) = (ref([]): ref(list(string))); /* module path */
 let none_ = "_none_";
 let include_ = "*include*";
 
-/********   HELPERS   ********/
-
-let addReference = (pos1, pos2) => {
-  let pos2 =
-    !transitive || currentBindingPos^ == Lexing.dummy_pos
-      ? pos2 : currentBindingPos^;
-  PosHash.addSet(references, pos1, pos2);
-};
-
-let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
-
-let check_underscore = name => reportUnderscore^ || name.[0] != '_';
-
-let hashtbl_add_to_list = (hashtbl, key, elt) =>
-  Hashtbl.add(hashtbl, key, elt);
-
 /* Location printer: `filename:line: ' */
 let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
   let file = pos.Lexing.pos_fname;
@@ -102,6 +86,29 @@ let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
   ++ string_of_int(line)
   ++ (printCol ? ":" ++ string_of_int(col) : ": ");
 };
+
+/********   HELPERS   ********/
+
+let addReference = (pos1, pos2) => {
+  let pos2 =
+    !transitive || currentBindingPos^ == Lexing.dummy_pos
+      ? pos2 : currentBindingPos^;
+  if (verbose) {
+    GenTypeCommon.logItem(
+      "addReference %s -> %s\n",
+      pos1 |> posToString(~printCol=true, ~shortFile=true),
+      pos2 |> posToString(~printCol=true, ~shortFile=true),
+    );
+  };
+  PosHash.addSet(references, pos1, pos2);
+};
+
+let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
+
+let check_underscore = name => reportUnderscore^ || name.[0] != '_';
+
+let hashtbl_add_to_list = (hashtbl, key, elt) =>
+  Hashtbl.add(hashtbl, key, elt);
 
 /********   PROCESSING  ********/
 
@@ -218,6 +225,17 @@ module ProcessAnnotations = {
     |> collectExportLocations.signature(collectExportLocations)
     |> ignore;
   };
+};
+
+/* Location printer: `filename:line: ' */
+let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
+  let file = pos.Lexing.pos_fname;
+  let line = pos.Lexing.pos_lnum;
+  let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
+  (shortFile ? file |> Filename.basename : file)
+  ++ ":"
+  ++ string_of_int(line)
+  ++ (printCol ? ":" ++ string_of_int(col) : ": ");
 };
 
 type item = {
