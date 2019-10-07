@@ -88,13 +88,13 @@ let collectReferences = {
   /* Tast_mapper */
   let super = Tast_mapper.default;
   let wrap = (f, ~getLoc, ~self, x) => {
-    let lastLoc = last_loc^;
+    let last = lastPos^;
     let thisLoc = getLoc(x).Location.loc_start;
     if (thisLoc != Lexing.dummy_pos) {
-      last_loc := thisLoc;
+      lastPos := thisLoc;
     };
     let r = f(super, self, x);
-    last_loc := lastLoc;
+    lastPos := last;
     r;
   };
 
@@ -112,7 +112,7 @@ let assoc = ((pos1, pos2)) => {
   let is_implem = fn => fn.[String.length(fn) - 1] != 'i';
   let has_iface = fn =>
     fn.[String.length(fn) - 1] == 'i'
-    || getModuleName(fn) == getModuleName(current_src^)
+    || getModuleName(fn) == getModuleName(currentSrc^)
     && (
       try(Sys.file_exists(fn ++ "i")) {
       | Not_found => false
@@ -121,7 +121,7 @@ let assoc = ((pos1, pos2)) => {
 
   let is_iface = (fn, loc) =>
     Hashtbl.mem(valueDecs, loc)
-    || getModuleName(fn) != getModuleName(current_src^)
+    || getModuleName(fn) != getModuleName(currentSrc^)
     || !(is_implem(fn) && has_iface(fn));
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
@@ -141,11 +141,11 @@ let assoc = ((pos1, pos2)) => {
 
 let eom = loc_dep => {
   loc_dep |> List.iter(assoc);
-  if (Sys.file_exists(current_src^ ++ "i")) {
+  if (Sys.file_exists(currentSrc^ ++ "i")) {
     let clean = loc => {
       let fn = loc.Lexing.pos_fname;
       if (fn.[String.length(fn) - 1] != 'i'
-          && getModuleName(fn) == getModuleName(current_src^)) {
+          && getModuleName(fn) == getModuleName(currentSrc^)) {
         PosHash.remove(references, loc);
       };
     };
@@ -164,7 +164,7 @@ let process_signature = (fn, signature: Types.signature) => {
   |> List.iter(sig_item =>
        collect_export([module_id], module_name, sig_item)
      );
-  last_loc := Lexing.dummy_pos;
+  lastPos := Lexing.dummy_pos;
 };
 
 let processStructure =
@@ -185,11 +185,11 @@ let processStructure =
 
 /* Starting point */
 let load_file = (~sourceFile, cmtFilePath) => {
-  last_loc := Lexing.dummy_pos;
+  lastPos := Lexing.dummy_pos;
   if (verbose) {
     GenTypeCommon.logItem("Scanning %s\n", cmtFilePath);
   };
-  current_src := sourceFile;
+  currentSrc := sourceFile;
   let {Cmt_format.cmt_annots, cmt_value_dependencies} =
     Cmt_format.read_cmt(cmtFilePath);
   switch (cmt_annots) {

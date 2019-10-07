@@ -169,7 +169,7 @@ let tstr = typ => {
       [name.Asttypes.txt, typ.typ_name.Asttypes.txt, ...DeadCommon.mods^]
       @ [
         String.capitalize_ascii(
-          DeadCommon.getModuleName(DeadCommon.current_src^),
+          DeadCommon.getModuleName(DeadCommon.currentSrc^),
         ),
       ];
 
@@ -182,7 +182,7 @@ let tstr = typ => {
             String.concat(".") @@
             [
               String.capitalize_ascii(
-                DeadCommon.getModuleName(DeadCommon.current_src^),
+                DeadCommon.getModuleName(DeadCommon.currentSrc^),
               ),
               ...Longident.flatten(txt),
             ]
