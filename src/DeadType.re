@@ -134,17 +134,10 @@ let is_type = s => {
 
 /********   PROCESSING  ********/
 
-let collect_export = (path, u, stock, t) => {
-  let stock =
-    if (stock === DeadCommon.decs) {
-      decs;
-    } else {
-      stock;
-    };
-
+let collect_export = (path, u, t) => {
   let save = (id, loc) => {
     if (t.type_manifest == None) {
-      DeadCommon.export(path, u, stock, id, loc);
+      DeadCommon.export(path, u, decs, id, loc);
     };
     let path =
       String.concat(".") @@ List.rev_map(id => id.Ident.name, [id, ...path]);

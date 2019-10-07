@@ -22,8 +22,7 @@ let rec collect_export = (~mod_type=false, path, u, si: Types.signature_item) =>
   | Sig_value(id, {Types.val_loc}) when !val_loc.Location.loc_ghost =>
     DeadCommon.export(path, u, DeadCommon.decs, id, val_loc)
 
-  | Sig_type(id, t, _) =>
-    DeadType.collect_export([id, ...path], u, DeadCommon.decs, t)
+  | Sig_type(id, t, _) => DeadType.collect_export([id, ...path], u, t)
 
   | (
       Sig_module(id, {Types.md_type: t, _}, _) |
