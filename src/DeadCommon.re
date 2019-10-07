@@ -149,30 +149,30 @@ let pathWithoutHead = path => {
 
 /* Keep track of the location of values exported via genType */
 module ProcessAnnotations = {
-  /* Locations exported to JS */
-  let locationsAnnotatedWithGenType = PosHash.create(1);
-  let locationsAnnotatedDead = PosHash.create(1);
+  /* Positions exported to JS */
+  let positionsAnnotatedWithGenType = PosHash.create(1);
+  let positionsAnnotatedDead = PosHash.create(1);
 
-  let isAnnotatedDead = loc => PosHash.mem(locationsAnnotatedDead, loc);
+  let isAnnotatedDead = pos => PosHash.mem(positionsAnnotatedDead, pos);
 
-  let isAnnotatedGentypeOrDead = loc =>
-    PosHash.mem(locationsAnnotatedWithGenType, loc) || isAnnotatedDead(loc);
+  let isAnnotatedGentypeOrDead = pos =>
+    PosHash.mem(positionsAnnotatedWithGenType, pos) || isAnnotatedDead(pos);
 
-  let locAnnotatedWithGenType = (loc: Lexing.position) => {
-    PosHash.replace(locationsAnnotatedWithGenType, loc, ());
+  let posAnnotatedWithGenType = (pos: Lexing.position) => {
+    PosHash.replace(positionsAnnotatedWithGenType, pos, ());
   };
 
-  let locAnnotatedDead = (loc: Lexing.position) => {
-    PosHash.replace(locationsAnnotatedDead, loc, ());
+  let posAnnotatedDead = (pos: Lexing.position) => {
+    PosHash.replace(positionsAnnotatedDead, pos, ());
   };
 
-  let processAttributes = (~ignoreInterface, ~loc, attributes) => {
+  let processAttributes = (~ignoreInterface, ~pos, attributes) => {
     if (attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
-      loc |> locAnnotatedWithGenType;
+      pos |> posAnnotatedWithGenType;
     };
     if (attributes
         |> Annotation.getAttributePayload((==)(deadAnnotation)) != None) {
-      loc |> locAnnotatedDead;
+      pos |> posAnnotatedDead;
     };
   };
 
@@ -186,7 +186,7 @@ module ProcessAnnotations = {
       switch (vb_pat.pat_desc) {
       | Tpat_var(id, pLoc) =>
         vb_attributes
-        |> processAttributes(~ignoreInterface, ~loc=pLoc.loc.loc_start)
+        |> processAttributes(~ignoreInterface, ~pos=pLoc.loc.loc_start)
 
       | _ => ()
       };
@@ -198,7 +198,7 @@ module ProcessAnnotations = {
           {val_attributes, val_id, val_loc} as value_description: Typedtree.value_description,
         ) => {
       val_attributes
-      |> processAttributes(~ignoreInterface, ~loc=val_loc.loc_start);
+      |> processAttributes(~ignoreInterface, ~pos=val_loc.loc_start);
       super.value_description(self, value_description);
     };
     {...super, value_binding, value_description};
@@ -240,7 +240,7 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
         |> PosSet.filter(pos => !ProcessAnnotations.isAnnotatedDead(pos));
       if (liveReferences |> PosSet.cardinal == 0) {
         if (transitive) {
-          ProcessAnnotations.locAnnotatedDead(pos);
+          pos |> ProcessAnnotations.posAnnotatedDead;
         };
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
