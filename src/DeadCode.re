@@ -17,10 +17,12 @@
 
 /********   PROCESSING   ********/
 
+open DeadCommon;
+
 let rec collect_export = (~mod_type=false, path, u, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc}) when !val_loc.Location.loc_ghost =>
-    DeadCommon.export(path, u, DeadCommon.valueDecs, id, val_loc)
+    export(path, u, valueDecs, id, val_loc)
 
   | Sig_type(id, t, _) => DeadType.collect_export([id, ...path], u, t)
 
@@ -41,15 +43,15 @@ let rec collect_export = (~mod_type=false, path, u, si: Types.signature_item) =>
   };
 
 let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
-  let oldPos = DeadCommon.currentBindingPos^;
+  let oldPos = currentBindingPos^;
   let pos =
     switch (vb.vb_pat.pat_desc) {
     | Tpat_var(id, pLoc) => pLoc.loc.loc_start
     | _ => vb.vb_loc.loc_start
     };
-  DeadCommon.currentBindingPos := pos;
+  currentBindingPos := pos;
   let r = super.Tast_mapper.value_binding(self, vb);
-  DeadCommon.currentBindingPos := oldPos;
+  currentBindingPos := oldPos;
   r;
 };
 
@@ -62,7 +64,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       _,
       {Types.val_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
     ) =>
-    DeadCommon.addReference(loc, exp_loc)
+    addReference(loc, exp_loc)
 
   | Texp_field(
       _,
@@ -86,13 +88,13 @@ let collectReferences = {
   /* Tast_mapper */
   let super = Tast_mapper.default;
   let wrap = (f, ~getLoc, ~self, x) => {
-    let lastLoc = DeadCommon.last_loc^;
+    let lastLoc = last_loc^;
     let thisLoc = getLoc(x).Location.loc_start;
     if (thisLoc != Lexing.dummy_pos) {
-      DeadCommon.last_loc := thisLoc;
+      last_loc := thisLoc;
     };
     let r = f(super, self, x);
-    DeadCommon.last_loc := lastLoc;
+    last_loc := lastLoc;
     r;
   };
 
@@ -110,8 +112,7 @@ let assoc = ((pos1, pos2)) => {
   let is_implem = fn => fn.[String.length(fn) - 1] != 'i';
   let has_iface = fn =>
     fn.[String.length(fn) - 1] == 'i'
-    || DeadCommon.getModuleName(fn)
-    == DeadCommon.getModuleName(DeadCommon.current_src^)
+    || getModuleName(fn) == getModuleName(current_src^)
     && (
       try(Sys.file_exists(fn ++ "i")) {
       | Not_found => false
@@ -119,50 +120,33 @@ let assoc = ((pos1, pos2)) => {
     );
 
   let is_iface = (fn, loc) =>
-    Hashtbl.mem(DeadCommon.valueDecs, loc)
-    || DeadCommon.getModuleName(fn)
-    != DeadCommon.getModuleName(DeadCommon.current_src^)
+    Hashtbl.mem(valueDecs, loc)
+    || getModuleName(fn) != getModuleName(current_src^)
     || !(is_implem(fn) && has_iface(fn));
 
-  if (fn1 != DeadCommon.none_ && fn2 != DeadCommon.none_ && pos1 != pos2) {
+  if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     if (fn1 != fn2 && is_implem(fn1) && is_implem(fn2)) {
-      DeadCommon.LocHash.merge_set(
-        DeadCommon.references,
-        pos2,
-        DeadCommon.references,
-        pos1,
-      );
+      LocHash.merge_set(references, pos2, references, pos1);
     };
     if (is_iface(fn1, pos1)) {
-      DeadCommon.LocHash.merge_set(
-        DeadCommon.references,
-        pos1,
-        DeadCommon.references,
-        pos2,
-      );
+      LocHash.merge_set(references, pos1, references, pos2);
       if (is_iface(fn2, pos2)) {
-        DeadCommon.addReference(pos1, pos2);
+        addReference(pos1, pos2);
       };
     } else {
-      DeadCommon.LocHash.merge_set(
-        DeadCommon.references,
-        pos2,
-        DeadCommon.references,
-        pos1,
-      );
+      LocHash.merge_set(references, pos2, references, pos1);
     };
   };
 };
 
 let eom = loc_dep => {
   loc_dep |> List.iter(assoc);
-  if (Sys.file_exists(DeadCommon.current_src^ ++ "i")) {
+  if (Sys.file_exists(current_src^ ++ "i")) {
     let clean = loc => {
       let fn = loc.Lexing.pos_fname;
       if (fn.[String.length(fn) - 1] != 'i'
-          && DeadCommon.getModuleName(fn)
-          == DeadCommon.getModuleName(DeadCommon.current_src^)) {
-        DeadCommon.LocHash.remove(DeadCommon.references, loc);
+          && getModuleName(fn) == getModuleName(current_src^)) {
+        LocHash.remove(references, loc);
       };
     };
     loc_dep
@@ -174,13 +158,13 @@ let eom = loc_dep => {
 };
 
 let process_signature = (fn, signature: Types.signature) => {
-  let module_name = DeadCommon.getModuleName(fn);
+  let module_name = getModuleName(fn);
   let module_id = Ident.create(String.capitalize_ascii(module_name));
   signature
   |> List.iter(sig_item =>
        collect_export([module_id], module_name, sig_item)
      );
-  DeadCommon.last_loc := Lexing.dummy_pos;
+  last_loc := Lexing.dummy_pos;
 };
 
 let processStructure =
@@ -201,22 +185,22 @@ let processStructure =
 
 /* Starting point */
 let load_file = (~sourceFile, cmtFilePath) => {
-  DeadCommon.last_loc := Lexing.dummy_pos;
-  if (DeadCommon.verbose) {
+  last_loc := Lexing.dummy_pos;
+  if (verbose) {
     GenTypeCommon.logItem("Scanning %s\n", cmtFilePath);
   };
-  DeadCommon.current_src := sourceFile;
+  current_src := sourceFile;
   let {Cmt_format.cmt_annots, cmt_value_dependencies} =
     Cmt_format.read_cmt(cmtFilePath);
   switch (cmt_annots) {
   | Interface(signature) =>
-    DeadCommon.ProcessAnnotations.signature(signature);
+    ProcessAnnotations.signature(signature);
     process_signature(cmtFilePath, signature.sig_type);
   | Implementation(structure) =>
     let cmtiExists =
       Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
     if (!cmtiExists) {
-      DeadCommon.ProcessAnnotations.structure(structure);
+      ProcessAnnotations.structure(structure);
     };
     processStructure(cmt_value_dependencies, structure);
     if (!cmtiExists) {
@@ -227,8 +211,8 @@ let load_file = (~sourceFile, cmtFilePath) => {
 };
 
 let report = (~onUnusedValue) => {
-  let onItem = (DeadCommon.{pos, path}) => {
-    print_string(pos |> DeadCommon.posToString);
+  let onItem = ({pos, path}) => {
+    print_string(pos |> posToString);
     print_string(path);
     print_newline();
   };
@@ -237,8 +221,7 @@ let report = (~onUnusedValue) => {
     onUnusedValue(item);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  DeadCommon.valueDecs
-  |> DeadCommon.report(~useDead=true, ~onItem=onUnusedValue);
+  valueDecs |> report(~useDead=true, ~onItem=onUnusedValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  DeadCommon.typeDecs |> DeadCommon.report(~onItem);
+  typeDecs |> report(~onItem);
 };
