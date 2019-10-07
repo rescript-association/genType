@@ -46,7 +46,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let oldPos = currentBindingPos^;
   let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(id, pLoc) => pLoc.loc.loc_start
+    | Tpat_var(id, loc) => loc.loc.loc_start
     | _ => vb.vb_loc.loc_start
     };
   currentBindingPos := pos;
@@ -56,27 +56,27 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 };
 
 let collectExpr = (super, self, e: Typedtree.expression) => {
-  let exp_loc = e.exp_loc.loc_start;
+  let posExp = e.exp_loc.loc_start;
   open Ident;
   switch (e.exp_desc) {
   | Texp_ident(
       path,
       _,
-      {Types.val_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
+      {Types.val_loc: {Location.loc_start: pos, loc_ghost: false, _}, _},
     ) =>
-    addReference(loc, exp_loc)
+    addReference(pos, posExp)
 
   | Texp_field(
       _,
       x,
-      {lbl_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
+      {lbl_loc: {Location.loc_start: pos, loc_ghost: false, _}, _},
     )
   | Texp_construct(
       x,
-      {cstr_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
+      {cstr_loc: {Location.loc_start: pos, loc_ghost: false, _}, _},
       _,
     ) =>
-    DeadType.collect_references(loc, exp_loc)
+    DeadType.collect_references(pos, posExp)
 
   | _ => ()
   };
@@ -87,11 +87,11 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
 let collectReferences = {
   /* Tast_mapper */
   let super = Tast_mapper.default;
-  let wrap = (f, ~getLoc, ~self, x) => {
+  let wrap = (f, ~getPos, ~self, x) => {
     let last = lastPos^;
-    let thisLoc = getLoc(x).Location.loc_start;
-    if (thisLoc != Lexing.dummy_pos) {
-      lastPos := thisLoc;
+    let thisPos = getPos(x);
+    if (thisPos != Lexing.dummy_pos) {
+      lastPos := thisPos;
     };
     let r = f(super, self, x);
     lastPos := last;
@@ -99,9 +99,14 @@ let collectReferences = {
   };
 
   let expr = (self, e) =>
-    e |> wrap(collectExpr, ~getLoc=x => x.exp_loc, ~self);
+    e |> wrap(collectExpr, ~getPos=x => x.exp_loc.loc_start, ~self);
   let value_binding = (self, vb) =>
-    vb |> wrap(collectValueBinding, ~getLoc=x => x.vb_expr.exp_loc, ~self);
+    vb
+    |> wrap(
+         collectValueBinding,
+         ~getPos=x => x.vb_expr.exp_loc.loc_start,
+         ~self,
+       );
   Tast_mapper.{...super, expr, value_binding};
 };
 
@@ -119,8 +124,8 @@ let assoc = ((pos1, pos2)) => {
       }
     );
 
-  let is_iface = (fn, loc) =>
-    Hashtbl.mem(valueDecs, loc)
+  let is_iface = (fn, pos) =>
+    Hashtbl.mem(valueDecs, pos)
     || getModuleName(fn) != getModuleName(currentSrc^)
     || !(is_implem(fn) && has_iface(fn));
 
@@ -136,24 +141,6 @@ let assoc = ((pos1, pos2)) => {
     } else {
       PosHash.merge_set(references, pos2, references, pos1);
     };
-  };
-};
-
-let eom = loc_dep => {
-  loc_dep |> List.iter(assoc);
-  if (Sys.file_exists(currentSrc^ ++ "i")) {
-    let clean = loc => {
-      let fn = loc.Lexing.pos_fname;
-      if (fn.[String.length(fn) - 1] != 'i'
-          && getModuleName(fn) == getModuleName(currentSrc^)) {
-        PosHash.remove(references, loc);
-      };
-    };
-    loc_dep
-    |> List.iter(((pos1, pos2)) => {
-         clean(pos1);
-         clean(pos2);
-       });
   };
 };
 
@@ -173,14 +160,29 @@ let processStructure =
   |> collectReferences.Tast_mapper.structure(collectReferences)
   |> ignore;
 
-  cmt_value_dependencies
-  |> List.rev_map(((vd1, vd2)) =>
-       (
-         vd1.Types.val_loc.Location.loc_start,
-         vd2.Types.val_loc.Location.loc_start,
-       )
-     )
-  |> eom;
+  let posDependencies =
+    cmt_value_dependencies
+    |> List.rev_map(((vd1, vd2)) =>
+         (
+           vd1.Types.val_loc.Location.loc_start,
+           vd2.Types.val_loc.Location.loc_start,
+         )
+       );
+  posDependencies |> List.iter(assoc);
+  if (Sys.file_exists(currentSrc^ ++ "i")) {
+    let clean = pos => {
+      let fn = pos.Lexing.pos_fname;
+      if (fn.[String.length(fn) - 1] != 'i'
+          && getModuleName(fn) == getModuleName(currentSrc^)) {
+        PosHash.remove(references, pos);
+      };
+    };
+    posDependencies
+    |> List.iter(((pos1, pos2)) => {
+         clean(pos1);
+         clean(pos2);
+       });
+  };
 };
 
 /* Starting point */
