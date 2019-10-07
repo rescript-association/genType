@@ -38,20 +38,20 @@ module PosHash = {
     let equal = (x: t, y) => x == y;
   });
 
-  let find_set = (h, k) =>
+  let findSet = (h, k) =>
     try(find(h, k)) {
     | Not_found => PosSet.empty
     };
 
-  let add_set = (h, k, v) => {
-    let l = find_set(h, k);
-    replace(h, k, PosSet.add(v, l));
+  let addSet = (h, k, v) => {
+    let set = findSet(h, k);
+    replace(h, k, PosSet.add(v, set));
   };
 
-  let merge_set = (h1, k1, h2, k2) => {
-    let pos1 = find_set(h1, k1);
-    let pos2 = find_set(h2, k2);
-    replace(h1, k1, PosSet.union(pos1, pos2));
+  let mergeSet = (table1, k1, table2, k2) => {
+    let set1 = findSet(table1, k1);
+    let set2 = findSet(table2, k2);
+    replace(table1, k1, PosSet.union(set1, set2));
   };
 };
 
@@ -82,7 +82,7 @@ let addReference = (pos1, pos2) => {
   let pos2 =
     !transitive || currentBindingPos^ == Lexing.dummy_pos
       ? pos2 : currentBindingPos^;
-  PosHash.add_set(references, pos1, pos2);
+  PosHash.addSet(references, pos1, pos2);
 };
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
@@ -233,7 +233,7 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
     useDead && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
-    switch (pos |> PosHash.find_set(references)) {
+    switch (pos |> PosHash.findSet(references)) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
         referencesToLoc

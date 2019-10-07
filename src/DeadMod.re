@@ -67,12 +67,12 @@ let expr = m =>
     let l1 = make_arg(m1.mod_type) |> List.map(((x, _)) => x);
     let l2 = make_content(m2.mod_type);
     List.iter(
-      ((x, loc)) => {
+      ((x, pos)) => {
         let is_obj = String.contains(x, '#');
         let is_type = !is_obj && DeadType.is_type(x);
         if ((List.mem(x, l1) || l1 == [])
             && (is_obj || !is_obj && is_type || !is_obj && !is_type)) {
-          PosHash.add_set(references, loc, m.mod_loc.Location.loc_start);
+          PosHash.addSet(references, pos, m.mod_loc.Location.loc_start);
         };
       },
       l2,
