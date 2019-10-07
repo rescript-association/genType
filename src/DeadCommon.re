@@ -19,6 +19,17 @@ let verbose = Sys.getenv_opt("Verbose") != None;
 
 let deadAnnotation = "dead";
 
+/* Location printer: `filename:line: ' */
+let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
+  let file = pos.Lexing.pos_fname;
+  let line = pos.Lexing.pos_lnum;
+  let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
+  (shortFile ? file |> Filename.basename : file)
+  ++ ":"
+  ++ string_of_int(line)
+  ++ (printCol ? ":" ++ string_of_int(col) : ": ");
+};
+
 /********   ATTRIBUTES   ********/
 module PosSet =
   Set.Make({
@@ -48,10 +59,18 @@ module PosHash = {
     replace(h, k, PosSet.add(v, set));
   };
 
-  let mergeSet = (table1, k1, table2, k2) => {
-    let set1 = findSet(table1, k1);
-    let set2 = findSet(table2, k2);
-    replace(table1, k1, PosSet.union(set1, set2));
+  let mergeSet = (table, pos1, pos2) => {
+    if (verbose) {
+      GenTypeCommon.logItem(
+        "mergeSet %s <- %s\n",
+        pos1 |> posToString(~printCol=true, ~shortFile=true),
+        pos2 |> posToString(~printCol=true, ~shortFile=true),
+      );
+    };
+
+    let set1 = findSet(table, pos1);
+    let set2 = findSet(table, pos2);
+    replace(table, pos1, PosSet.union(set1, set2));
   };
 };
 
@@ -75,17 +94,6 @@ let mods: ref(list(string)) = (ref([]): ref(list(string))); /* module path */
 
 let none_ = "_none_";
 let include_ = "*include*";
-
-/* Location printer: `filename:line: ' */
-let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
-  let file = pos.Lexing.pos_fname;
-  let line = pos.Lexing.pos_lnum;
-  let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
-  (shortFile ? file |> Filename.basename : file)
-  ++ ":"
-  ++ string_of_int(line)
-  ++ (printCol ? ":" ++ string_of_int(col) : ": ");
-};
 
 /********   HELPERS   ********/
 
@@ -225,17 +233,6 @@ module ProcessAnnotations = {
     |> collectExportLocations.signature(collectExportLocations)
     |> ignore;
   };
-};
-
-/* Location printer: `filename:line: ' */
-let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
-  let file = pos.Lexing.pos_fname;
-  let line = pos.Lexing.pos_lnum;
-  let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
-  (shortFile ? file |> Filename.basename : file)
-  ++ ":"
-  ++ string_of_int(line)
-  ++ (printCol ? ":" ++ string_of_int(col) : ": ");
 };
 
 type item = {
