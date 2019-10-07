@@ -155,7 +155,7 @@ let process_signature = (fn, signature: Types.signature) => {
 };
 
 let processStructure =
-    (cmt_value_dependencies, structure: Typedtree.structure) => {
+    (~cmtiExists, cmt_value_dependencies, structure: Typedtree.structure) => {
   structure
   |> collectReferences.Tast_mapper.structure(collectReferences)
   |> ignore;
@@ -169,7 +169,7 @@ let processStructure =
          )
        );
   posDependencies |> List.iter(assoc);
-  if (Sys.file_exists(currentSrc^ ++ "i")) {
+  if (cmtiExists) {
     let clean = pos => {
       let fn = pos.Lexing.pos_fname;
       if (fn.[String.length(fn) - 1] != 'i'
@@ -204,7 +204,7 @@ let load_file = (~sourceFile, cmtFilePath) => {
     if (!cmtiExists) {
       ProcessAnnotations.structure(structure);
     };
-    processStructure(cmt_value_dependencies, structure);
+    processStructure(~cmtiExists, cmt_value_dependencies, structure);
     if (!cmtiExists) {
       process_signature(cmtFilePath, structure.str_type);
     };
