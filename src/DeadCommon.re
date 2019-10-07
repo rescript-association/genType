@@ -69,6 +69,7 @@ let fields: Hashtbl.t(string, Lexing.position) = (
 
 let last_loc = ref(Lexing.dummy_pos); /* helper to diagnose occurrences of Location.none in the typedtree */
 let current_src = ref("");
+let currentBindingPos = ref(Lexing.dummy_pos);
 
 let mods: ref(list(string)) = (ref([]): ref(list(string))); /* module path */
 
@@ -76,6 +77,13 @@ let none_ = "_none_";
 let include_ = "*include*";
 
 /********   HELPERS   ********/
+
+let addReference = (loc1, loc2) => {
+  let loc2 =
+    !transitive || currentBindingPos^ == Lexing.dummy_pos
+      ? loc2 : currentBindingPos^;
+  LocHash.add_set(references, loc1, loc2);
+};
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
 

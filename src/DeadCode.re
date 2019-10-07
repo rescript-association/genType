@@ -40,26 +40,17 @@ let rec collect_export = (~mod_type=false, path, u, si: Types.signature_item) =>
   | _ => ()
   };
 
-let currentBindingPos = ref(Lexing.dummy_pos);
-
 let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
-  let oldPos = currentBindingPos^;
+  let oldPos = DeadCommon.currentBindingPos^;
   let pos =
     switch (vb.vb_pat.pat_desc) {
     | Tpat_var(id, pLoc) => pLoc.loc.loc_start
     | _ => vb.vb_loc.loc_start
     };
-  currentBindingPos := pos;
+  DeadCommon.currentBindingPos := pos;
   let r = super.Tast_mapper.value_binding(self, vb);
-  currentBindingPos := oldPos;
+  DeadCommon.currentBindingPos := oldPos;
   r;
-};
-
-let addReference = (loc1, loc2) => {
-  let loc2 =
-    !DeadCommon.transitive || currentBindingPos^ == Lexing.dummy_pos
-      ? loc2 : currentBindingPos^;
-  DeadCommon.LocHash.add_set(DeadCommon.references, loc1, loc2);
 };
 
 let collectExpr = (super, self, e: Typedtree.expression) => {
@@ -71,7 +62,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       _,
       {Types.val_loc: {Location.loc_start: loc, loc_ghost: false, _}, _},
     ) =>
-    addReference(loc, exp_loc)
+    DeadCommon.addReference(loc, exp_loc)
 
   | Texp_field(
       _,
@@ -150,7 +141,7 @@ let assoc = ((pos1, pos2)) => {
         pos2,
       );
       if (is_iface(fn2, pos2)) {
-        addReference(pos1, pos2);
+        DeadCommon.addReference(pos1, pos2);
       };
     } else {
       DeadCommon.LocHash.merge_set(
