@@ -126,15 +126,15 @@ let assoc = ((pos1, pos2)) => {
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     if (fn1 != fn2 && is_implem(fn1) && is_implem(fn2)) {
-      LocHash.merge_set(references, pos2, references, pos1);
+      PosHash.merge_set(references, pos2, references, pos1);
     };
     if (is_iface(fn1, pos1)) {
-      LocHash.merge_set(references, pos1, references, pos2);
+      PosHash.merge_set(references, pos1, references, pos2);
       if (is_iface(fn2, pos2)) {
         addReference(pos1, pos2);
       };
     } else {
-      LocHash.merge_set(references, pos2, references, pos1);
+      PosHash.merge_set(references, pos2, references, pos1);
     };
   };
 };
@@ -146,13 +146,13 @@ let eom = loc_dep => {
       let fn = loc.Lexing.pos_fname;
       if (fn.[String.length(fn) - 1] != 'i'
           && getModuleName(fn) == getModuleName(current_src^)) {
-        LocHash.remove(references, loc);
+        PosHash.remove(references, loc);
       };
     };
     loc_dep
-    |> List.iter(((loc1, loc2)) => {
-         clean(loc1);
-         clean(loc2);
+    |> List.iter(((pos1, pos2)) => {
+         clean(pos1);
+         clean(pos2);
        });
   };
 };

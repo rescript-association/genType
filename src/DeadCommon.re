@@ -20,13 +20,13 @@ let verbose = Sys.getenv_opt("Verbose") != None;
 let deadAnnotation = "dead";
 
 /********   ATTRIBUTES   ********/
-module LocSet =
+module PosSet =
   Set.Make({
     type t = Lexing.position;
     let compare = compare;
   });
 
-module LocHash = {
+module PosHash = {
   include Hashtbl.Make({
     type t = Lexing.position;
 
@@ -40,18 +40,18 @@ module LocHash = {
 
   let find_set = (h, k) =>
     try(find(h, k)) {
-    | Not_found => LocSet.empty
+    | Not_found => PosSet.empty
     };
 
   let add_set = (h, k, v) => {
     let l = find_set(h, k);
-    replace(h, k, LocSet.add(v, l));
+    replace(h, k, PosSet.add(v, l));
   };
 
   let merge_set = (h1, k1, h2, k2) => {
-    let l1 = find_set(h1, k1);
-    let l2 = find_set(h2, k2);
-    replace(h1, k1, LocSet.union(l1, l2));
+    let pos1 = find_set(h1, k1);
+    let pos2 = find_set(h2, k2);
+    replace(h1, k1, PosSet.union(pos1, pos2));
   };
 };
 
@@ -59,8 +59,8 @@ type decs = Hashtbl.t(Lexing.position, string);
 let valueDecs: decs = Hashtbl.create(256); /* all exported value declarations */
 let typeDecs: decs = Hashtbl.create(256);
 
-let references: LocHash.t(LocSet.t) = (
-  LocHash.create(256): LocHash.t(LocSet.t)
+let references: PosHash.t(PosSet.t) = (
+  PosHash.create(256): PosHash.t(PosSet.t)
 ); /* all value references */
 
 let fields: Hashtbl.t(string, Lexing.position) = (
@@ -78,11 +78,11 @@ let include_ = "*include*";
 
 /********   HELPERS   ********/
 
-let addReference = (loc1, loc2) => {
-  let loc2 =
+let addReference = (pos1, pos2) => {
+  let pos2 =
     !transitive || currentBindingPos^ == Lexing.dummy_pos
-      ? loc2 : currentBindingPos^;
-  LocHash.add_set(references, loc1, loc2);
+      ? pos2 : currentBindingPos^;
+  PosHash.add_set(references, pos1, pos2);
 };
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
@@ -150,20 +150,20 @@ let pathWithoutHead = path => {
 /* Keep track of the location of values exported via genType */
 module ProcessAnnotations = {
   /* Locations exported to JS */
-  let locationsAnnotatedWithGenType = LocHash.create(1);
-  let locationsAnnotatedDead = LocHash.create(1);
+  let locationsAnnotatedWithGenType = PosHash.create(1);
+  let locationsAnnotatedDead = PosHash.create(1);
 
-  let isAnnotatedDead = loc => LocHash.mem(locationsAnnotatedDead, loc);
+  let isAnnotatedDead = loc => PosHash.mem(locationsAnnotatedDead, loc);
 
   let isAnnotatedGentypeOrDead = loc =>
-    LocHash.mem(locationsAnnotatedWithGenType, loc) || isAnnotatedDead(loc);
+    PosHash.mem(locationsAnnotatedWithGenType, loc) || isAnnotatedDead(loc);
 
   let locAnnotatedWithGenType = (loc: Lexing.position) => {
-    LocHash.replace(locationsAnnotatedWithGenType, loc, ());
+    PosHash.replace(locationsAnnotatedWithGenType, loc, ());
   };
 
   let locAnnotatedDead = (loc: Lexing.position) => {
-    LocHash.replace(locationsAnnotatedDead, loc, ());
+    PosHash.replace(locationsAnnotatedDead, loc, ());
   };
 
   let processAttributes = (~ignoreInterface, ~loc, attributes) => {
@@ -233,12 +233,12 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
     useDead && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
-    switch (pos |> LocHash.find_set(references)) {
+    switch (pos |> PosHash.find_set(references)) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
         referencesToLoc
-        |> LocSet.filter(pos => !ProcessAnnotations.isAnnotatedDead(pos));
-      if (liveReferences |> LocSet.cardinal == 0) {
+        |> PosSet.filter(pos => !ProcessAnnotations.isAnnotatedDead(pos));
+      if (liveReferences |> PosSet.cardinal == 0) {
         if (transitive) {
           ProcessAnnotations.locAnnotatedDead(pos);
         };
@@ -247,13 +247,13 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
         if (verbose) {
           let refsString =
             referencesToLoc
-            |> LocSet.elements
+            |> PosSet.elements
             |> List.map(posToString(~printCol=true, ~shortFile=true))
             |> String.concat(", ");
           GenTypeCommon.logItem(
             "%s: %d references (%s)\n",
             path,
-            referencesToLoc |> LocSet.cardinal,
+            referencesToLoc |> PosSet.cardinal,
             refsString,
           );
         };

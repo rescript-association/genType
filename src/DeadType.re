@@ -155,7 +155,7 @@ let collect_export = (path, u, t) => {
 };
 
 let collect_references = (declaration_loc, usage_loc) =>
-  DeadCommon.LocHash.add_set(
+  DeadCommon.PosHash.add_set(
     DeadCommon.references,
     declaration_loc,
     usage_loc,
