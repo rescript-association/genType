@@ -1202,9 +1202,6 @@ UNUSED EXPORTED VALUES:
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:28: Universe.Nested2.Nested3.w
 <-- line 28
 [@dead "Universe.Nested2.Nested3.w"]       let w = 3;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModulesInSignature.rei:2: Universe.theAnswer
-<-- line 2
-[@dead "Universe.theAnswer"]   [@genType]
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:9: testBeltArrayGet
 <-- line 9
 [@dead "testBeltArrayGet"] let testBeltArrayGet = arr => Belt.(arr[3]);

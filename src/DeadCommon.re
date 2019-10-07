@@ -210,10 +210,10 @@ module ProcessAnnotations = {
     let value_description =
         (
           self,
-          {val_attributes, val_id, val_loc} as value_description: Typedtree.value_description,
+          {val_attributes, val_id, val_val} as value_description: Typedtree.value_description,
         ) => {
       val_attributes
-      |> processAttributes(~ignoreInterface, ~pos=val_loc.loc_start);
+      |> processAttributes(~ignoreInterface, ~pos=val_val.val_loc.loc_start);
       super.value_description(self, value_description);
     };
     {...super, value_binding, value_description};
