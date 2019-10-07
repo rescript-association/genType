@@ -13,8 +13,6 @@ open Typedtree;
 
 /********   ATTRIBUTES  ********/
 
-let decs = Hashtbl.create(256);
-
 let dependencies = ref([]); /* like the cmt value_dependencies but for types */
 
 /********   HELPERS   ********/
@@ -137,7 +135,7 @@ let is_type = s => {
 let collect_export = (path, u, t) => {
   let save = (id, loc) => {
     if (t.type_manifest == None) {
-      DeadCommon.export(path, u, decs, id, loc);
+      DeadCommon.export(path, u, DeadCommon.typeDecs, id, loc);
     };
     let path =
       String.concat(".") @@ List.rev_map(id => id.Ident.name, [id, ...path]);

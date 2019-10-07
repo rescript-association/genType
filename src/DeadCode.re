@@ -20,7 +20,7 @@
 let rec collect_export = (~mod_type=false, path, u, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc}) when !val_loc.Location.loc_ghost =>
-    DeadCommon.export(path, u, DeadCommon.decs, id, val_loc)
+    DeadCommon.export(path, u, DeadCommon.valueDecs, id, val_loc)
 
   | Sig_type(id, t, _) => DeadType.collect_export([id, ...path], u, t)
 
@@ -128,7 +128,7 @@ let assoc = ((pos1, pos2)) => {
     );
 
   let is_iface = (fn, loc) =>
-    Hashtbl.mem(DeadCommon.decs, loc)
+    Hashtbl.mem(DeadCommon.valueDecs, loc)
     || DeadCommon.getModuleName(fn)
     != DeadCommon.getModuleName(DeadCommon.current_src^)
     || !(is_implem(fn) && has_iface(fn));
@@ -246,7 +246,8 @@ let report = (~onUnusedValue) => {
     onUnusedValue(item);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  DeadCommon.decs |> DeadCommon.report(~useDead=true, ~onItem=onUnusedValue);
+  DeadCommon.valueDecs
+  |> DeadCommon.report(~useDead=true, ~onItem=onUnusedValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  DeadType.decs |> DeadCommon.report(~onItem);
+  DeadCommon.typeDecs |> DeadCommon.report(~onItem);
 };

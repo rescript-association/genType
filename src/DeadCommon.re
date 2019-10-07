@@ -56,7 +56,8 @@ module LocHash = {
 };
 
 type decs = Hashtbl.t(Lexing.position, string);
-let decs: decs = (Hashtbl.create(256): decs); /* all exported value declarations */
+let valueDecs: decs = Hashtbl.create(256); /* all exported value declarations */
+let typeDecs: decs = Hashtbl.create(256);
 
 let references: LocHash.t(LocSet.t) = (
   LocHash.create(256): LocHash.t(LocSet.t)
@@ -256,7 +257,7 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
   };
 
   Hashtbl.fold((pos, path, items) => [{pos, path}, ...items], decs, [])
-  |> List.fast_sort((i1, i2) => compareItems(i2, i1)) /* analyze in reverse order */
+  |> List.fast_sort((i1, i2) => compareItems(i2, i1))  /* analyze in reverse order */
   |> List.fold_left(folder, [])
   |> List.iter(onItem);
 };
