@@ -110,32 +110,31 @@ let collectReferences = {
   Tast_mapper.{...super, expr, value_binding};
 };
 
+let isImplementation = fn => fn.[String.length(fn) - 1] != 'i';
+
 /* Merge a location's references to another one's */
 let assoc = ((pos1, pos2)) => {
   let fn1 = pos1.Lexing.pos_fname
   and fn2 = pos2.Lexing.pos_fname;
-  let is_implem = fn => fn.[String.length(fn) - 1] != 'i';
-  let has_iface = fn =>
-    fn.[String.length(fn) - 1] == 'i'
-    || getModuleName(fn) == getModuleName(currentSrc^)
-    && (
-      try(Sys.file_exists(fn ++ "i")) {
-      | Not_found => false
-      }
-    );
-
-  let is_iface = (fn, pos) =>
+  let hasInterface = fn =>
+    switch (isImplementation(fn)) {
+    | false => true
+    | true =>
+      getModuleName(fn) == getModuleName(currentSrc^)
+      && Sys.file_exists(fn ++ "i")
+    };
+  let isInterface = (fn, pos) =>
     Hashtbl.mem(valueDecs, pos)
     || getModuleName(fn) != getModuleName(currentSrc^)
-    || !(is_implem(fn) && has_iface(fn));
+    || !(isImplementation(fn) && hasInterface(fn));
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
-    if (fn1 != fn2 && is_implem(fn1) && is_implem(fn2)) {
+    if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
       PosHash.merge_set(references, pos2, references, pos1);
     };
-    if (is_iface(fn1, pos1)) {
+    if (isInterface(fn1, pos1)) {
       PosHash.merge_set(references, pos1, references, pos2);
-      if (is_iface(fn2, pos2)) {
+      if (isInterface(fn2, pos2)) {
         addReference(pos1, pos2);
       };
     } else {
@@ -172,7 +171,7 @@ let processStructure =
   if (cmtiExists) {
     let clean = pos => {
       let fn = pos.Lexing.pos_fname;
-      if (fn.[String.length(fn) - 1] != 'i'
+      if (isImplementation(fn)
           && getModuleName(fn) == getModuleName(currentSrc^)) {
         PosHash.remove(references, pos);
       };
