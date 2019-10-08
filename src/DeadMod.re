@@ -13,8 +13,6 @@ open Typedtree;
 
 open DeadCommon;
 
-let defined: ref(list(string)) = (ref([]): ref(list(string)));
-
 let rec getSignature = (~isfunc=false, moduleType) =>
   switch (moduleType) {
   | Mty_signature(signature) => signature
