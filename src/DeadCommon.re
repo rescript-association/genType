@@ -15,7 +15,7 @@ let transitive = Sys.getenv_opt("Transitive") != None;
 
 let write = Sys.getenv_opt("Write") != None;
 
-let verbose = Sys.getenv_opt("Verbose") != None;
+let verbose = Sys.getenv_opt("Debug") != None;
 
 let deadAnnotation = "dead";
 
