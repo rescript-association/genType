@@ -147,15 +147,15 @@ let assoc = ((pos1, pos2)) => {
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
-      PosHash.mergeSet(references, pos2, pos1);
+      PosHash.mergeSet(valueReferences, pos2, pos1);
     };
     if (isInterface(fn1, pos1)) {
-      PosHash.mergeSet(references, pos1, pos2);
+      PosHash.mergeSet(valueReferences, pos1, pos2);
       if (isInterface(fn2, pos2)) {
         addReference(pos1, pos2);
       };
     } else {
-      PosHash.mergeSet(references, pos2, pos1);
+      PosHash.mergeSet(valueReferences, pos2, pos1);
     };
   };
 };
@@ -190,7 +190,7 @@ let processStructure =
       let fn = pos.Lexing.pos_fname;
       if (isImplementation(fn)
           && getModuleName(fn) == getModuleName(currentSrc^)) {
-        PosHash.remove(references, pos);
+        PosHash.remove(valueReferences, pos);
       };
     };
     posDependencies

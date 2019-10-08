@@ -74,13 +74,35 @@ module PosHash = {
   };
 };
 
+module FileSet = Set.Make(String);
+
+module FileHash = {
+  include Hashtbl.Make({
+    type t = string;
+
+    let hash = (x: t) => Hashtbl.hash(x);
+
+    let equal = (x: t, y) => x == y;
+  });
+
+  let findSet = (table, key) =>
+    try(find(table, key)) {
+    | Not_found => FileSet.empty
+    };
+
+  let addSet = (table, key, value) => {
+    let set = findSet(table, key);
+    replace(table, key, FileSet.add(value, set));
+  };
+};
+
 type decs = Hashtbl.t(Lexing.position, string);
 let valueDecs: decs = Hashtbl.create(256); /* all exported value declarations */
 let typeDecs: decs = Hashtbl.create(256);
 
-let references: PosHash.t(PosSet.t) = (
-  PosHash.create(256): PosHash.t(PosSet.t)
-); /* all value references */
+let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
+
+let fileReferences: FileHash.t(FileSet.t) = FileHash.create(256);
 
 let fields: Hashtbl.t(string, Lexing.position) = (
   Hashtbl.create(256): Hashtbl.t(string, Lexing.position)
@@ -106,7 +128,12 @@ let addReference = (~posDeclaration, ~posUsage) => {
       posUsage |> posToString(~printCol=true, ~shortFile=true),
     );
   };
-  PosHash.addSet(references, posDeclaration, posUsage);
+  PosHash.addSet(valueReferences, posDeclaration, posUsage);
+  FileHash.addSet(
+    fileReferences,
+    posDeclaration.pos_fname,
+    posUsage.pos_fname,
+  );
 };
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
@@ -239,7 +266,7 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
     useDead && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
-    switch (pos |> PosHash.findSet(references)) {
+    switch (pos |> PosHash.findSet(valueReferences)) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
         referencesToLoc

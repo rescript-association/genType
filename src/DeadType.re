@@ -155,7 +155,11 @@ let collect_export = (path, u, t) => {
 };
 
 let collect_references = (~posDeclaration, ~posUsage) =>
-  DeadCommon.PosHash.addSet(DeadCommon.references, posDeclaration, posUsage);
+  DeadCommon.PosHash.addSet(
+    DeadCommon.valueReferences,
+    posDeclaration,
+    posUsage,
+  );
 
 let tstr = typ => {
   let assoc = (name, pos) => {
