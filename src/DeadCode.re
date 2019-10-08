@@ -75,7 +75,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         _,
       },
     ) =>
-    addReference(~posDeclaration, ~posUsage)
+    addValueReference(~posDeclaration, ~posUsage)
 
   | Texp_field(
       _,
@@ -152,7 +152,7 @@ let assoc = ((pos1, pos2)) => {
     if (isInterface(fn1, pos1)) {
       PosHash.mergeSet(valueReferences, pos1, pos2);
       if (isInterface(fn2, pos2)) {
-        addReference(pos1, pos2);
+        addValueReference(pos1, pos2);
       };
     } else {
       PosHash.mergeSet(valueReferences, pos2, pos1);

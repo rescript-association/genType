@@ -117,13 +117,13 @@ let include_ = "*include*";
 
 /********   HELPERS   ********/
 
-let addReference = (~posDeclaration, ~posUsage) => {
+let addValueReference = (~posDeclaration, ~posUsage) => {
   let posUsage =
     !transitive || currentBindingPos^ == Lexing.dummy_pos
       ? posUsage : currentBindingPos^;
   if (verbose) {
     GenTypeCommon.logItem(
-      "addReference declaration:%s  usage:%s\n",
+      "addValueReference declaration:%s  usage:%s\n",
       posDeclaration |> posToString(~printCol=true, ~shortFile=true),
       posUsage |> posToString(~printCol=true, ~shortFile=true),
     );
