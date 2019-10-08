@@ -280,7 +280,7 @@ let report = (~onItem, decs: decs) => {
         };
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
-        if (verbose) {
+        if (verbose && isValueDecs) {
           let refsString =
             referencesToLoc
             |> PosSet.elements

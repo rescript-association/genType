@@ -1046,20 +1046,6 @@ File References
 [@dead "aComponentWithChildrenProps"] [@dead "aComponentWithChildrenProps"] [@react.component]
 
 UNUSED CONSTRUCTORS/RECORD FIELDS:
-  Tuples.person.age: 1 references (Tuples.re:47:19)
-  Tuples.person.name: 1 references (Tuples.re:39:49)
-  VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53)
-  VariantsWithPayload.payload.x: 2 references (VariantsWithPayload.re:27:42, VariantsWithPayload.re:46:36)
-  Uncurried.authU.loginU: 1 references (Uncurried.re:39:25)
-  Uncurried.auth.login: 1 references (Uncurried.re:36:24)
-  Records.business2.address2: 1 references (Records.re:93:2)
-  Records.record.v: 1 references (Records.re:81:5)
-  Records.business.address: 2 references (Records.re:38:2, Records.re:47:6)
-  Records.business.owner: 1 references (Records.re:48:8)
-  Records.person.address: 1 references (Records.re:48:40)
-  ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12)
-  Hooks.r.x: 1 references (Hooks.re:113:45)
-  Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:127:58, Hooks.re:155:37)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:2: variant.R
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:5: record.variant
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:7: r2.r2
