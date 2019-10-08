@@ -129,11 +129,13 @@ let addReference = (~posDeclaration, ~posUsage) => {
     );
   };
   PosHash.addSet(valueReferences, posDeclaration, posUsage);
-  FileHash.addSet(
-    fileReferences,
-    posDeclaration.pos_fname,
-    posUsage.pos_fname,
-  );
+  if (posDeclaration.pos_fname != none_ && posUsage.pos_fname != none_) {
+    FileHash.addSet(
+      fileReferences,
+      posDeclaration.pos_fname,
+      posUsage.pos_fname,
+    );
+  };
 };
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
@@ -261,9 +263,10 @@ type item = {
 let compareItems = ({path: path1, pos: pos1}, {path: path2, pos: pos2}) =>
   compare((pos1, path1), (pos2, path2));
 
-let report = (~useDead=false, ~onItem, decs: decs) => {
+let report = (~onItem, decs: decs) => {
+  let isValueDecs = decs === valueDecs;
   let dontReportDead = pos =>
-    useDead && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
+    isValueDecs && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
     switch (pos |> PosHash.findSet(valueReferences)) {
@@ -295,6 +298,21 @@ let report = (~useDead=false, ~onItem, decs: decs) => {
     | _ => items
     | exception Not_found => items
     };
+  };
+
+  if (isValueDecs && verbose) {
+    GenTypeCommon.logItem("\nFile References\n\n");
+    fileReferences
+    |> FileHash.iter((file, files) =>
+         GenTypeCommon.logItem(
+           "%s <<-- %s\n",
+           file |> Filename.basename,
+           files
+           |> FileSet.elements
+           |> List.map(Filename.basename)
+           |> String.concat(", "),
+         )
+       );
   };
 
   Hashtbl.fold((pos, path, items) => [{pos, path}, ...items], decs, [])

@@ -239,7 +239,7 @@ let report = (~onUnusedValue) => {
     onUnusedValue(item);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  valueDecs |> report(~useDead=true, ~onItem=onUnusedValue);
+  valueDecs |> report(~onItem=onUnusedValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
   typeDecs |> report(~onItem);
 };
