@@ -15,16 +15,17 @@ open DeadCommon;
 
 let defined: ref(list(string)) = (ref([]): ref(list(string)));
 
-let rec sign = (~isfunc=false) =>
-  fun
-  | Mty_signature(sg) => sg
-  | Mty_functor(_, t, _) when isfunc =>
-    switch (t) {
+let rec getSignature = (~isfunc=false, moduleType) =>
+  switch (moduleType) {
+  | Mty_signature(signature) => signature
+  | Mty_functor(_, tOpt, _) when isfunc =>
+    switch (tOpt) {
     | None => []
-    | Some(t) => sign(t)
+    | Some(moduleType) => getSignature(moduleType)
     }
-  | Mty_functor(_, _, t) => sign(t)
-  | _ => [];
+  | Mty_functor(_, _, moduleType) => getSignature(moduleType)
+  | _ => []
+  };
 
 let item = maker =>
   fun
@@ -55,11 +56,11 @@ let item = maker =>
     ]
   | _ => [];
 
-let rec make_content = typ =>
-  List.map(item(make_content), sign(typ)) |> List.flatten;
+let rec make_content = moduleType =>
+  List.map(item(make_content), getSignature(moduleType)) |> List.flatten;
 
-let rec make_arg = typ =>
-  List.map(item(make_arg), sign(~isfunc=true, typ)) |> List.flatten;
+let rec make_arg = moduleType =>
+  List.map(item(make_arg), getSignature(~isfunc=true, moduleType)) |> List.flatten;
 
 let expr = m =>
   switch (m.mod_desc) {

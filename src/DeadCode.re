@@ -29,8 +29,8 @@ let rec collect_export =
     DeadType.collect_export([id, ...path], moduleName, t)
 
   | (
-      Sig_module(id, {Types.md_type: t, _}, _) |
-      Sig_modtype(id, {Types.mtd_type: Some(t), _})
+      Sig_module(id, {Types.md_type: moduleType, _}, _) |
+      Sig_modtype(id, {Types.mtd_type: Some(moduleType), _})
     ) as s =>
     let collect =
       switch (s) {
@@ -38,7 +38,7 @@ let rec collect_export =
       | _ => true
       };
     if (collect) {
-      DeadMod.sign(t)
+      DeadMod.getSignature(moduleType)
       |> List.iter(
            collect_export(~mod_type, ~path=[id, ...path], ~moduleName),
          );
