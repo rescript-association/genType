@@ -97,18 +97,18 @@ let include_ = "*include*";
 
 /********   HELPERS   ********/
 
-let addReference = (pos1, pos2) => {
-  let pos2 =
+let addReference = (~posDeclaration, ~posUsage) => {
+  let posUsage =
     !transitive || currentBindingPos^ == Lexing.dummy_pos
-      ? pos2 : currentBindingPos^;
+      ? posUsage : currentBindingPos^;
   if (verbose) {
     GenTypeCommon.logItem(
-      "addReference %s -> %s\n",
-      pos1 |> posToString(~printCol=true, ~shortFile=true),
-      pos2 |> posToString(~printCol=true, ~shortFile=true),
+      "addReference declaration:%s  usage:%s\n",
+      posDeclaration |> posToString(~printCol=true, ~shortFile=true),
+      posUsage |> posToString(~printCol=true, ~shortFile=true),
     );
   };
-  PosHash.addSet(references, pos1, pos2);
+  PosHash.addSet(references, posDeclaration, posUsage);
 };
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;

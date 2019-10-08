@@ -154,15 +154,11 @@ let collect_export = (path, u, t) => {
   };
 };
 
-let collect_references = (declaration_loc, usage_loc) =>
-  DeadCommon.PosHash.addSet(
-    DeadCommon.references,
-    declaration_loc,
-    usage_loc,
-  );
+let collect_references = (~posDeclaration, ~posUsage) =>
+  DeadCommon.PosHash.addSet(DeadCommon.references, posDeclaration, posUsage);
 
 let tstr = typ => {
-  let assoc = (name, loc) => {
+  let assoc = (name, pos) => {
     let path =
       String.concat(".") @@
       List.rev @@
@@ -190,7 +186,7 @@ let tstr = typ => {
           );
 
         let loc2 = Hashtbl.find(DeadCommon.fields, path);
-        dependencies := [(loc2, loc1), (loc1, loc), ...dependencies^];
+        dependencies := [(loc2, loc1), (loc1, pos), ...dependencies^];
       | _ => ()
       }
     ) {
@@ -198,9 +194,9 @@ let tstr = typ => {
     };
     try({
       let loc1 = Hashtbl.find(DeadCommon.fields, path);
-      dependencies := [(loc1, loc), ...dependencies^];
+      dependencies := [(loc1, pos), ...dependencies^];
     }) {
-    | Not_found => Hashtbl.add(DeadCommon.fields, path, loc)
+    | Not_found => Hashtbl.add(DeadCommon.fields, path, pos)
     };
   };
 

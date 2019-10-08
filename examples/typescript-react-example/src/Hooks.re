@@ -1,6 +1,6 @@
 type vehicle = {name: string};
 
-[@react.component]
+[@dead "makeProps"] [@react.component]
 let make = (~vehicle) => {
   let (count, setCount) = React.useState(() => 0);
 
@@ -36,7 +36,7 @@ let make = (~vehicle) => {
 let default = make;
 
 [@genType]
-[@react.component]
+[@dead "anotherComponentProps"] [@react.component]
 let anotherComponent = (~vehicle, ~callback: unit => unit) => {
   callback();
   <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
@@ -44,23 +44,23 @@ let anotherComponent = (~vehicle, ~callback: unit => unit) => {
 
 module Inner = {
   [@genType]
-  [@react.component]
+[@dead "Inner.makeProps"]   [@react.component]
   let make = (~vehicle) =>
     <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
 
   [@genType]
-  [@react.component]
+[@dead "Inner.anotherComponentProps"]   [@react.component]
   let anotherComponent = (~vehicle) =>
     <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
 
   module Inner2 = {
     [@genType]
-    [@react.component]
+[@dead "Inner.Inner2.makeProps"]     [@react.component]
     let make = (~vehicle) =>
       <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
 
     [@genType]
-    [@react.component]
+[@dead "Inner.Inner2.anotherComponentProps"]     [@react.component]
     let anotherComponent = (~vehicle) =>
       <div> {React.string("Another Hook " ++ vehicle.name)} </div>;
   };
@@ -68,7 +68,7 @@ module Inner = {
 
 module NoProps = {
   [@genType]
-  [@react.component]
+[@dead "NoProps.makeProps"]   [@react.component]
   let make = () => {
     <div> ReasonReact.null </div>;
   };
@@ -83,14 +83,14 @@ let functionWithRenamedArgs = (~_to, ~_Type, ~cb: cb) => {
 };
 
 [@genType]
-[@react.component]
+[@dead "componentWithRenamedArgsProps"] [@react.component]
 let componentWithRenamedArgs = (~_to, ~_Type, ~cb: cb) => {
   cb(~_to);
   React.string(_to.name ++ _Type.name);
 };
 
 [@genType]
-[@react.component]
+[@dead "makeWithRefProps"] [@react.component]
 let makeWithRef = (~vehicle, ref) => {
   switch (ref->Js.Nullable.toOption) {
   | Some(ref) =>
@@ -107,7 +107,7 @@ let testForwardRef = React.forwardRef(makeWithRef);
 type r = {x: string};
 
 [@genType]
-[@react.component]
+[@dead "inputProps"] [@react.component]
 let input =
   React.forwardRef((~r, (), ref) =>
     <div ref={Obj.magic(ref)}> {React.string(r.x)} </div>
@@ -123,16 +123,16 @@ type testReactContext = React.Context.t(int);
 type testReactRef = React.Ref.t(int);
 
 [@genType]
-[@react.component]
+[@dead "polymorphicComponentProps"] [@react.component]
 let polymorphicComponent = (~p as (x, _)) => React.string(x.name);
 
 [@genType]
-[@react.component]
+[@dead "functionReturningReactElementProps"] [@react.component]
 let functionReturningReactElement = (~name) => React.string(name);
 
 module RenderPropRequiresConversion = {
   [@genType]
-  [@react.component]
+[@dead "RenderPropRequiresConversion.makeProps"]   [@react.component]
   let make =
       (
         ~renderVehicle:
@@ -149,7 +149,7 @@ module RenderPropRequiresConversion = {
 };
 
 [@genType]
-[@react.component]
+[@dead "aComponentWithChildrenProps"] [@react.component]
 let aComponentWithChildren = (~vehicle, ~children) => {
   <div>
     {React.string("Another Hook " ++ vehicle.name)}

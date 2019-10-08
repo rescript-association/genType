@@ -56,27 +56,40 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 };
 
 let collectExpr = (super, self, e: Typedtree.expression) => {
-  let posExp = e.exp_loc.loc_start;
+  let posUsage = e.exp_loc.loc_start;
   open Ident;
   switch (e.exp_desc) {
   | Texp_ident(
       path,
       _,
-      {Types.val_loc: {Location.loc_start: pos, loc_ghost: false, _}, _},
+      {
+        Types.val_loc: {
+          Location.loc_start: posDeclaration,
+          loc_ghost: false,
+          _,
+        },
+        _,
+      },
     ) =>
-    addReference(pos, posExp)
+    addReference(~posDeclaration, ~posUsage)
 
   | Texp_field(
       _,
       x,
-      {lbl_loc: {Location.loc_start: pos, loc_ghost: false, _}, _},
+      {
+        lbl_loc: {Location.loc_start: posDeclaration, loc_ghost: false, _},
+        _,
+      },
     )
   | Texp_construct(
       x,
-      {cstr_loc: {Location.loc_start: pos, loc_ghost: false, _}, _},
+      {
+        cstr_loc: {Location.loc_start: posDeclaration, loc_ghost: false, _},
+        _,
+      },
       _,
     ) =>
-    DeadType.collect_references(pos, posExp)
+    DeadType.collect_references(~posDeclaration, ~posUsage)
 
   | _ => ()
   };
