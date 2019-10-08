@@ -143,12 +143,6 @@ let export = (path, u, stock: decs, id, loc) => {
 
 /**** REPORTING ****/
 
-/* Faster than 'List.length l = len' when len < List.length l; same speed otherwise*/
-let rec check_length = len =>
-  fun
-  | [] => len == 0
-  | [_, ...l] when len > 0 => check_length(len - 1, l)
-  | _ => false;
 
 let pathWithoutHead = path => {
   let rec cutFromNextDot = (s, pos) =>
