@@ -120,10 +120,10 @@ let hashtbl_add_to_list = (hashtbl, key, elt) =>
 
 /********   PROCESSING  ********/
 
-let export = (~sep=".", path, u, stock: decs, id, loc) => {
+let export = (path, u, stock: decs, id, loc) => {
   let value =
     String.concat(".", List.rev_map(Ident.name, path))
-    ++ sep
+    ++ "."
     ++ id.Ident.name;
 
   /* a .cmi file can contain locations from other files.
