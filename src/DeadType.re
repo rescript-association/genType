@@ -162,7 +162,7 @@ let tstr = typ => {
     let path =
       String.concat(".") @@
       List.rev @@
-      [name.Asttypes.txt, typ.typ_name.Asttypes.txt, ...DeadCommon.mods^]
+      [name.Asttypes.txt, typ.typ_name.Asttypes.txt]
       @ [
         String.capitalize_ascii(
           DeadCommon.getModuleName(DeadCommon.currentSrc^),

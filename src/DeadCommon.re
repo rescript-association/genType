@@ -90,8 +90,6 @@ let lastPos = ref(Lexing.dummy_pos); /* helper to diagnose occurrences of Locati
 let currentSrc = ref("");
 let currentBindingPos = ref(Lexing.dummy_pos);
 
-let mods: ref(list(string)) = (ref([]): ref(list(string))); /* module path */
-
 let none_ = "_none_";
 let include_ = "*include*";
 
