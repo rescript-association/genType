@@ -23,7 +23,7 @@ let rec collect_export =
         (~mod_type=false, ~path, ~moduleName, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc}) when !val_loc.Location.loc_ghost =>
-    export(~path, ~moduleName, ~decs=valueDecs, id, val_loc)
+    export(~path, ~moduleName, ~decs=valueDecs, ~id, ~loc=val_loc)
 
   | Sig_type(id, t, _) =>
     DeadType.collect_export([id, ...path], moduleName, t)

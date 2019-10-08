@@ -120,7 +120,7 @@ let hashtbl_add_to_list = (hashtbl, key, elt) =>
 
 /********   PROCESSING  ********/
 
-let export = (~path, ~moduleName, ~decs: decs, id, loc) => {
+let export = (~path, ~moduleName, ~decs: decs, ~id, ~loc) => {
   let value =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
