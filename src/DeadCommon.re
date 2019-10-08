@@ -120,7 +120,7 @@ let hashtbl_add_to_list = (hashtbl, key, elt) =>
 
 /********   PROCESSING  ********/
 
-let export = (path, u, stock: decs, id, loc) => {
+let export = (~path, ~moduleName, ~decs: decs, id, loc) => {
   let value =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
@@ -133,16 +133,15 @@ let export = (path, u, stock: decs, id, loc) => {
      */
   if (!loc.Location.loc_ghost
       && (
-        u == getModuleName(loc.Location.loc_start.Lexing.pos_fname)
-        || u === include_
+        moduleName == getModuleName(loc.Location.loc_start.Lexing.pos_fname)
+        || moduleName === include_
       )
       && check_underscore(id.Ident.name)) {
-    hashtbl_add_to_list(stock, loc.Location.loc_start, value);
+    hashtbl_add_to_list(decs, loc.Location.loc_start, value);
   };
 };
 
 /**** REPORTING ****/
-
 
 let pathWithoutHead = path => {
   let rec cutFromNextDot = (s, pos) =>

@@ -19,12 +19,14 @@
 
 open DeadCommon;
 
-let rec collect_export = (~mod_type=false, path, u, si: Types.signature_item) =>
+let rec collect_export =
+        (~mod_type=false, ~path, ~moduleName, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc}) when !val_loc.Location.loc_ghost =>
-    export(path, u, valueDecs, id, val_loc)
+    export(~path, ~moduleName, ~decs=valueDecs, id, val_loc)
 
-  | Sig_type(id, t, _) => DeadType.collect_export([id, ...path], u, t)
+  | Sig_type(id, t, _) =>
+    DeadType.collect_export([id, ...path], moduleName, t)
 
   | (
       Sig_module(id, {Types.md_type: t, _}, _) |
@@ -37,7 +39,9 @@ let rec collect_export = (~mod_type=false, path, u, si: Types.signature_item) =>
       };
     if (collect) {
       DeadMod.sign(t)
-      |> List.iter(collect_export(~mod_type, [id, ...path], u));
+      |> List.iter(
+           collect_export(~mod_type, ~path=[id, ...path], ~moduleName),
+         );
     };
   | _ => ()
   };
@@ -157,11 +161,11 @@ let assoc = ((pos1, pos2)) => {
 };
 
 let process_signature = (fn, signature: Types.signature) => {
-  let module_name = getModuleName(fn);
-  let module_id = Ident.create(String.capitalize_ascii(module_name));
+  let moduleName = getModuleName(fn);
+  let module_id = Ident.create(String.capitalize_ascii(moduleName));
   signature
   |> List.iter(sig_item =>
-       collect_export([module_id], module_name, sig_item)
+       collect_export(~path=[module_id], ~moduleName, sig_item)
      );
   lastPos := Lexing.dummy_pos;
 };
