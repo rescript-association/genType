@@ -172,7 +172,7 @@ let tstr = typ => {
     try(
       switch (typ.typ_manifest) {
       | Some({ctyp_desc: [@implicit_arity] Ttyp_constr(_, {txt, _}, _), _}) =>
-        let loc1 =
+        let pos1 =
           Hashtbl.find(
             DeadCommon.fields,
             String.concat(".") @@
@@ -185,16 +185,16 @@ let tstr = typ => {
             @ [name.Asttypes.txt],
           );
 
-        let loc2 = Hashtbl.find(DeadCommon.fields, path);
-        dependencies := [(loc2, loc1), (loc1, pos), ...dependencies^];
+        let pos2 = Hashtbl.find(DeadCommon.fields, path);
+        dependencies := [(pos2, pos1), (pos1, pos), ...dependencies^];
       | _ => ()
       }
     ) {
     | _ => ()
     };
     try({
-      let loc1 = Hashtbl.find(DeadCommon.fields, path);
-      dependencies := [(loc1, pos), ...dependencies^];
+      let pos1 = Hashtbl.find(DeadCommon.fields, path);
+      dependencies := [(pos1, pos), ...dependencies^];
     }) {
     | Not_found => Hashtbl.add(DeadCommon.fields, path, pos)
     };

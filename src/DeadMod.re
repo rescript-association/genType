@@ -28,21 +28,21 @@ let rec sign = (~isfunc=false) =>
 
 let item = maker =>
   fun
-  | Sig_value({name, _}, {val_loc: {Location.loc_start: loc, _}, _}) => [
-      (name, loc),
+  | Sig_value({name, _}, {val_loc: {Location.loc_start: pos, _}, _}) => [
+      (name, pos),
     ]
   | Sig_type({name: t, _}, {type_kind, _}, _) =>
     switch (type_kind) {
     | Type_record(l, _) =>
       List.map(
-        ({Types.ld_id: {name, _}, ld_loc: {Location.loc_start: loc, _}, _}) =>
-          (t ++ "." ++ name, loc),
+        ({Types.ld_id: {name, _}, ld_loc: {Location.loc_start: pos, _}, _}) =>
+          (t ++ "." ++ name, pos),
         l,
       )
     | Type_variant(l) =>
       List.map(
-        ({Types.cd_id: {name, _}, cd_loc: {Location.loc_start: loc, _}, _}) =>
-          (t ++ "." ++ name, loc),
+        ({Types.cd_id: {name, _}, cd_loc: {Location.loc_start: pos, _}, _}) =>
+          (t ++ "." ++ name, pos),
         l,
       )
     | _ => []
@@ -50,8 +50,8 @@ let item = maker =>
   | Sig_module({name, _}, {md_type, _}, _)
   | Sig_modtype({name, _}, {mtd_type: Some(md_type), _}) =>
     List.map(((n, l)) => (name ++ "." ++ n, l), maker(md_type))
-  | Sig_class({name, _}, {cty_loc: {Location.loc_start: loc, _}, _}, _) => [
-      (name ++ "#", loc),
+  | Sig_class({name, _}, {cty_loc: {Location.loc_start: pos, _}, _}, _) => [
+      (name ++ "#", pos),
     ]
   | _ => [];
 
