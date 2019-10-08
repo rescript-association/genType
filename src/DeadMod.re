@@ -58,7 +58,8 @@ let rec make_content = moduleType =>
   List.map(item(make_content), getSignature(moduleType)) |> List.flatten;
 
 let rec make_arg = moduleType =>
-  List.map(item(make_arg), getSignature(~isfunc=true, moduleType)) |> List.flatten;
+  List.map(item(make_arg), getSignature(~isfunc=true, moduleType))
+  |> List.flatten;
 
 let expr = m =>
   switch (m.mod_desc) {
