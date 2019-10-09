@@ -9,7 +9,6 @@
 
 open Asttypes;
 open Types;
-open Typedtree;
 
 /********   ATTRIBUTES  ********/
 
@@ -161,12 +160,12 @@ let collect_references = (~posDeclaration, ~posUsage) =>
     posUsage,
   );
 
-let tstr = typ => {
+let tstr = ({typ_kind, typ_manifest, typ_name}: Typedtree.type_declaration) => {
   let assoc = (name, pos) => {
     let path =
       String.concat(".") @@
       List.rev @@
-      [name.Asttypes.txt, typ.typ_name.Asttypes.txt]
+      [name.Asttypes.txt, typ_name.Asttypes.txt]
       @ [
         String.capitalize_ascii(
           DeadCommon.getModuleName(DeadCommon.currentSrc^),
@@ -174,7 +173,7 @@ let tstr = typ => {
       ];
 
     try(
-      switch (typ.typ_manifest) {
+      switch (typ_manifest) {
       | Some({ctyp_desc: [@implicit_arity] Ttyp_constr(_, {txt, _}, _), _}) =>
         let pos1 =
           Hashtbl.find(
@@ -204,7 +203,7 @@ let tstr = typ => {
     };
   };
 
-  switch (typ.typ_kind) {
+  switch (typ_kind) {
   | Ttype_record(l) =>
     List.iter(
       ({Typedtree.ld_name, ld_loc, ld_type, _}) =>
