@@ -988,62 +988,15 @@ File References
   ReasonComponent.component: 1 references (ReasonComponent.re:21:5)
   ImportMyBanner.make: 1 references (ReasonComponent.re:35:7)
   ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:42:43)
-  ImportJsValue.AbsoluteValue.getProp: 2 references (ImportJsValue.re:39:44, UseImportJsValue.re:3:5)
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:15)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:51)
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
-  FirstClassModules.M.f: 1 references (FirstClassModules.re:4:2)
   FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
   FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4)
   FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24)
   FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:11)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ExportWithRename.re:2: makeProps
-<-- line 2
-[@dead "makeProps"] [@dead "makeProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:3: makeProps
-<-- line 3
-[@dead "makeProps"] [@dead "makeProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:39: anotherComponentProps
-<-- line 39
-[@dead "anotherComponentProps"] [@dead "anotherComponentProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:47: Inner.makeProps
-<-- line 47
-[@dead "Inner.makeProps"] [@dead "Inner.makeProps"]   [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:52: Inner.anotherComponentProps
-<-- line 52
-[@dead "Inner.anotherComponentProps"] [@dead "Inner.anotherComponentProps"]   [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:58: Inner.Inner2.makeProps
-<-- line 58
-[@dead "Inner.Inner2.makeProps"] [@dead "Inner.Inner2.makeProps"]     [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:63: Inner.Inner2.anotherComponentProps
-<-- line 63
-[@dead "Inner.Inner2.anotherComponentProps"] [@dead "Inner.Inner2.anotherComponentProps"]     [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:71: NoProps.makeProps
-<-- line 71
-[@dead "NoProps.makeProps"] [@dead "NoProps.makeProps"]   [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:86: componentWithRenamedArgsProps
-<-- line 86
-[@dead "componentWithRenamedArgsProps"] [@dead "componentWithRenamedArgsProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:93: makeWithRefProps
-<-- line 93
-[@dead "makeWithRefProps"] [@dead "makeWithRefProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:110: inputProps
-<-- line 110
-[@dead "inputProps"] [@dead "inputProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:126: polymorphicComponentProps
-<-- line 126
-[@dead "polymorphicComponentProps"] [@dead "polymorphicComponentProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:130: functionReturningReactElementProps
-<-- line 130
-[@dead "functionReturningReactElementProps"] [@dead "functionReturningReactElementProps"] [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:135: RenderPropRequiresConversion.makeProps
-<-- line 135
-[@dead "RenderPropRequiresConversion.makeProps"] [@dead "RenderPropRequiresConversion.makeProps"]   [@react.component]
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re:152: aComponentWithChildrenProps
-<-- line 152
-[@dead "aComponentWithChildrenProps"] [@dead "aComponentWithChildrenProps"] [@react.component]
 
 UNUSED CONSTRUCTORS/RECORD FIELDS:
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:2: variant.R

@@ -15,9 +15,15 @@ let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
 let rec collect_export =
         (~mod_type=false, ~path, ~moduleName, si: Types.signature_item) =>
   switch (si) {
-  | Sig_value(id, {Types.val_loc}) when !val_loc.Location.loc_ghost =>
-    export(~path, ~moduleName, ~decs=valueDecs, ~id, ~loc=val_loc)
-
+  | Sig_value(id, {Types.val_loc, val_kind}) when !val_loc.Location.loc_ghost =>
+    let isPrimitive =
+      switch (val_kind) {
+      | Val_prim(_) => true
+      | _ => false
+      };
+    if (!isPrimitive || analyzeExternals) {
+      export(~path, ~moduleName, ~decs=valueDecs, ~id, ~loc=val_loc);
+    };
   | Sig_type(id, t, _) =>
     if (analyzeTypes) {
       DeadType.collectExport([id, ...path], moduleName, t);
