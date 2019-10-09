@@ -7,31 +7,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-let isType = s => {
-  let rec blk = (s, p, l, acc) =>
-    try(
-      if (s.[p] == '.') {
-        let acc = [String.sub(s, p - l, l), ...acc];
-        blk(s, p + 1, 0, acc);
-      } else {
-        blk(s, p + 1, l + 1, acc);
-      }
-    ) {
-    | _ => [String.sub(s, p - l, l), ...acc]
-    };
-
-  if (!String.contains(s, '.')) {
-    false;
-  } else {
-    switch (blk(s, 0, 0, [])) {
-    | [hd, cont, ..._] =>
-      String.capitalize_ascii(hd) == hd
-      || String.lowercase_ascii(cont) == cont
-    | _ => assert(false)
-    };
-  };
-};
-
 let collectExport =
     (path, u, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (id, loc) => {
