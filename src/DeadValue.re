@@ -1,5 +1,17 @@
 open DeadCommon;
 
+let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
+  switch (moduleType) {
+  | Mty_signature(signature) => signature
+  | Mty_functor(_, tOpt, _) when isfunc =>
+    switch (tOpt) {
+    | None => []
+    | Some(moduleType) => getSignature(moduleType)
+    }
+  | Mty_functor(_, _, moduleType) => getSignature(moduleType)
+  | _ => []
+  };
+
 let rec collect_export =
         (~mod_type=false, ~path, ~moduleName, si: Types.signature_item) =>
   switch (si) {
@@ -19,7 +31,7 @@ let rec collect_export =
       | _ => true
       };
     if (collect) {
-      DeadMod.getSignature(moduleType)
+      getSignature(moduleType)
       |> List.iter(
            collect_export(~mod_type, ~path=[id, ...path], ~moduleName),
          );
