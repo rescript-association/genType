@@ -19,8 +19,9 @@ let rec collect_export =
     export(~path, ~moduleName, ~decs=valueDecs, ~id, ~loc=val_loc)
 
   | Sig_type(id, t, _) =>
-    DeadType.collectExport([id, ...path], moduleName, t)
-
+    if (analyzeTypes) {
+      DeadType.collectExport([id, ...path], moduleName, t);
+    }
   | (
       Sig_module(id, {Types.md_type: moduleType, _}, _) |
       Sig_modtype(id, {Types.mtd_type: Some(moduleType), _})
@@ -86,7 +87,9 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       },
       _,
     ) =>
-    DeadType.collectReferences(~posDeclaration, ~posUsage)
+    if (analyzeTypes) {
+      DeadType.collectReferences(~posDeclaration, ~posUsage);
+    }
 
   | _ => ()
   };

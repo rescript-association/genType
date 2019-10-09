@@ -11,6 +11,8 @@ let reportUnderscore = ref(false);
 
 let active = Sys.getenv_opt("Global") != None;
 
+let analyzeTypes = true;
+
 let transitive = Sys.getenv_opt("Transitive") != None;
 
 let write = Sys.getenv_opt("Write") != None;
