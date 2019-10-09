@@ -7,8 +7,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-open Asttypes;
-
 /********   ATTRIBUTES  ********/
 
 let dependencies = ref([]); /* like the cmt value_dependencies but for types */
