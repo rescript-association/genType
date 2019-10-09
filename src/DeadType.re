@@ -9,8 +9,6 @@
 
 /********   ATTRIBUTES  ********/
 
-let dependencies = ref([]); /* like the cmt value_dependencies but for types */
-
 let isType = s => {
   let rec blk = (s, p, l, acc) =>
     try(
@@ -59,69 +57,9 @@ let collect_export =
   };
 };
 
-let collect_references = (~posDeclaration, ~posUsage) =>
+let collectReferences = (~posDeclaration, ~posUsage) =>
   DeadCommon.PosHash.addSet(
     DeadCommon.valueReferences,
     posDeclaration,
     posUsage,
   );
-
-let tstr = ({typ_kind, typ_manifest, typ_name}: Typedtree.type_declaration) => {
-  let assoc = (name, pos) => {
-    let path =
-      String.concat(".") @@
-      List.rev @@
-      [name.Asttypes.txt, typ_name.Asttypes.txt]
-      @ [
-        String.capitalize_ascii(
-          DeadCommon.getModuleName(DeadCommon.currentSrc^),
-        ),
-      ];
-
-    try(
-      switch (typ_manifest) {
-      | Some({ctyp_desc: [@implicit_arity] Ttyp_constr(_, {txt, _}, _), _}) =>
-        let pos1 =
-          Hashtbl.find(
-            DeadCommon.fields,
-            String.concat(".") @@
-            [
-              String.capitalize_ascii(
-                DeadCommon.getModuleName(DeadCommon.currentSrc^),
-              ),
-              ...Longident.flatten(txt),
-            ]
-            @ [name.Asttypes.txt],
-          );
-
-        let pos2 = Hashtbl.find(DeadCommon.fields, path);
-        dependencies := [(pos2, pos1), (pos1, pos), ...dependencies^];
-      | _ => ()
-      }
-    ) {
-    | _ => ()
-    };
-    try({
-      let pos1 = Hashtbl.find(DeadCommon.fields, path);
-      dependencies := [(pos1, pos), ...dependencies^];
-    }) {
-    | Not_found => Hashtbl.add(DeadCommon.fields, path, pos)
-    };
-  };
-
-  switch (typ_kind) {
-  | Ttype_record(l) =>
-    List.iter(
-      ({Typedtree.ld_name, ld_loc, ld_type, _}) =>
-        assoc(ld_name, ld_loc.Location.loc_start),
-      l,
-    )
-  | Ttype_variant(l) =>
-    List.iter(
-      ({Typedtree.cd_name, cd_loc, _}) =>
-        assoc(cd_name, cd_loc.Location.loc_start),
-      l,
-    )
-  | _ => ()
-  };
-};

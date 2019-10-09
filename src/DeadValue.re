@@ -74,7 +74,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       },
       _,
     ) =>
-    DeadType.collect_references(~posDeclaration, ~posUsage)
+    DeadType.collectReferences(~posDeclaration, ~posUsage)
 
   | _ => ()
   };
