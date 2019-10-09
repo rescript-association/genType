@@ -1,4 +1,5 @@
-include GenTypeCommon;
+open GenTypeCommon;
+open DeadCommon;
 
 let (+++) = Filename.concat;
 
@@ -12,6 +13,7 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
     GenTypeCommon.logItem("XXX sourceFile:%s\n", sourceFile);
     assert(false);
   };
+  FileHash.addFile(fileReferences, sourceFile);
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
   DeadCode.load_file(~sourceFile, cmtFilePath);

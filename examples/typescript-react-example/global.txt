@@ -935,12 +935,15 @@ File References
   js_null_undefined.mli <<-- Hooks.re, Records.re
   Records.re <<-- Records.re
   UseImportJsValue.re <<-- UseImportJsValue.re
+  FirstClassModulesInterface.re <<-- 
   ReasonComponent.re <<-- ReasonComponent.re
   ReactDOMRe.re <<-- Hooks.re, ReasonComponent.re, ComponentAsProp.re, ManyComponents.re
   DeadTest.re <<-- DeadTest.re
   js_promise.ml <<-- TestPromise.re
+  TestEmitInnerModules.re <<-- 
   belt_Array.mli <<-- ImmutableArray.re, Records.re, TestImmutableArray.re
   pervasives.mli <<-- DeadTest.re, FirstClassModules.re, Hooks.re, ImportJsValue.re, ReasonComponent.re, Records.re, References.re, Uncurried.re, UseImportJsValue.re, VariantsWithPayload.re, Tuples.re
+  TypeParams1.re <<-- 
   string.mli <<-- ReasonComponent.re
   ImportHookDefault.re <<-- Hooks.re
   ModuleAliases.re <<-- ModuleAliases.re
@@ -951,14 +954,21 @@ File References
   js.ml <<-- DeadTest.re, ExportWithRename.re, Hooks.re, ImportJsValue.re, ReasonComponent.re, Records.re, Uncurried.re, VariantsWithPayload.re, Types.re
   FirstClassModules.re <<-- FirstClassModules.re
   Opaque.re <<-- Opaque.re
+  location.re <<-- 
+  IgnoreInterface.re <<-- 
+  NestedModulesInSignature.rei <<-- 
+  AutoAnnotate.re <<-- 
   ComponentAsProp.re <<-- ComponentAsProp.re
   ExportWithRename.re <<-- ExportWithRename.re
   ImmutableArray.rei <<-- DeadTest.re, TestImmutableArray.re
+  NestedModulesInSignature.re <<-- 
   React.re <<-- ExportWithRename.re, Hooks.re
   TransitiveType3.re <<-- TransitiveType3.re
   Uncurried.re <<-- Uncurried.re
   TransitiveType2.re <<-- TransitiveType2.re
+  IgnoreInterface.rei <<-- 
   TestFirstClassModules.re <<-- TestFirstClassModules.re
+  FirstClassModulesInterface.rei <<-- 
   TransitiveType1.re <<-- TransitiveType1.re
   TestImmutableArray.re <<-- TestImmutableArray.re
   Tuples.re <<-- Tuples.re
@@ -970,6 +980,7 @@ File References
   ImportHooks.re <<-- Hooks.re
   References.re <<-- References.re
   Hooks.re <<-- Hooks.re
+  ModuleAliases2.re <<-- 
   ImportMyBanner.re <<-- ImportMyBanner.re, ReasonComponent.re
   TestPromise.re <<-- TestPromise.re
   obj.mli <<-- Hooks.re
@@ -977,6 +988,7 @@ File References
   ReasonReact.rei <<-- Hooks.re, ReasonComponent.re, ComponentAsProp.re, ManyComponents.re
   Types.re <<-- Types.re
   ImmutableArray.re <<-- ImmutableArray.re
+  TypeParams2.re <<-- 
   ManyComponents.component: 1 references (ManyComponents.re:40:5)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:31:7)
   ManyComponents.InnerComponent.component: 1 references (ManyComponents.re:10:7)

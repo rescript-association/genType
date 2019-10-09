@@ -94,6 +94,11 @@ module FileHash = {
     | Not_found => FileSet.empty
     };
 
+  let addFile = (table, key) => {
+    let set = findSet(table, key);
+    replace(table, key, set);
+  };
+
   let addSet = (table, key, value) => {
     let set = findSet(table, key);
     replace(table, key, FileSet.add(value, set));
