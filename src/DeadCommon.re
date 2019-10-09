@@ -138,12 +138,93 @@ let addValueReference = (~posDeclaration, ~posUsage) => {
     );
   };
   PosHash.addSet(valueReferences, posDeclaration, posUsage);
-  if (posDeclaration.pos_fname != none_ && posUsage.pos_fname != none_) {
+  if (posDeclaration.pos_fname != none_
+      && posUsage.pos_fname != none_
+      && posUsage.pos_fname != posDeclaration.pos_fname) {
     FileHash.addSet(
       fileReferences,
-      posDeclaration.pos_fname,
       posUsage.pos_fname,
+      posDeclaration.pos_fname,
     );
+  };
+};
+
+let iterFilesFromRootsToLeaves = iterFun => {
+  /* For each file, the number of incoming references */
+  let inverseReferences: Hashtbl.t(string, int) = Hashtbl.create(1);
+  /* For each number of incoming references, the files */
+  let referencesByNumber: Hashtbl.t(int, FileSet.t) = Hashtbl.create(1);
+
+  let getNum = fileName =>
+    try(Hashtbl.find(inverseReferences, fileName)) {
+    | Not_found => 0
+    };
+
+  let getSet = num =>
+    try(Hashtbl.find(referencesByNumber, num)) {
+    | Not_found => FileSet.empty
+    };
+
+  let addIncomingEdge = fileName => {
+    let oldNum = getNum(fileName);
+    let newNum = oldNum + 1;
+    let oldSetAtNum = getSet(oldNum);
+    let newSetAtNum = FileSet.remove(fileName, oldSetAtNum);
+    let oldSetAtNewNum = getSet(newNum);
+    let newSetAtNewNum = FileSet.add(fileName, oldSetAtNewNum);
+    Hashtbl.replace(inverseReferences, fileName, newNum);
+    Hashtbl.replace(referencesByNumber, oldNum, newSetAtNum);
+    Hashtbl.replace(referencesByNumber, newNum, newSetAtNewNum);
+  };
+
+  let removeIncomingEdge = fileName => {
+    let oldNum = getNum(fileName);
+    let newNum = oldNum - 1;
+    let oldSetAtNum = getSet(oldNum);
+    let newSetAtNum = FileSet.remove(fileName, oldSetAtNum);
+    let oldSetAtNewNum = getSet(newNum);
+    let newSetAtNewNum = FileSet.add(fileName, oldSetAtNewNum);
+    Hashtbl.replace(inverseReferences, fileName, newNum);
+    Hashtbl.replace(referencesByNumber, oldNum, newSetAtNum);
+    Hashtbl.replace(referencesByNumber, newNum, newSetAtNewNum);
+  };
+
+  let isSourceFile = fileName => FileHash.mem(fileReferences, fileName);
+
+  let addEdge = (fromFile, toFile) =>
+    if (isSourceFile(fromFile)) {
+      addIncomingEdge(toFile);
+    };
+
+  let removeEdge = (fromFile, toFile) =>
+    if (isSourceFile(fromFile)) {
+      removeIncomingEdge(toFile);
+    };
+
+  fileReferences
+  |> FileHash.iter((fromFile, set) => {
+       if (getNum(fromFile) == 0) {
+         Hashtbl.replace(
+           referencesByNumber,
+           0,
+           FileSet.add(fromFile, getSet(0)),
+         );
+       };
+       set |> FileSet.iter(toFile => {addEdge(fromFile, toFile)});
+     });
+
+  while (getSet(0) != FileSet.empty) {
+    let filesWithNoIncomingReferences = getSet(0);
+    Hashtbl.replace(referencesByNumber, 0, FileSet.empty);
+    filesWithNoIncomingReferences
+    |> FileSet.iter(fileName => {
+         iterFun(fileName);
+         let references =
+           try(FileHash.find(fileReferences, fileName)) {
+           | Not_found => FileSet.empty
+           };
+         references |> FileSet.iter(toFile => removeEdge(fileName, toFile));
+       });
   };
 };
 
@@ -269,9 +350,6 @@ type item = {
   path: string,
 };
 
-let compareItems = ({path: path1, pos: pos1}, {path: path2, pos: pos2}) =>
-  compare((pos1, path1), (pos2, path2));
-
 let report = (~onItem, decs: decs) => {
   let isValueDecs = decs === valueDecs;
   let dontReportDead = pos =>
@@ -314,7 +392,7 @@ let report = (~onItem, decs: decs) => {
     fileReferences
     |> FileHash.iter((file, files) =>
          GenTypeCommon.logItem(
-           "%s <<-- %s\n",
+           "%s -->> %s\n",
            file |> Filename.basename,
            files
            |> FileSet.elements
@@ -324,8 +402,48 @@ let report = (~onItem, decs: decs) => {
        );
   };
 
-  Hashtbl.fold((pos, path, items) => [{pos, path}, ...items], decs, [])
-  |> List.fast_sort((i1, i2) => compareItems(i2, i1))  /* analyze in reverse order */
+  let items =
+    Hashtbl.fold((pos, path, items) => [{pos, path}, ...items], decs, []);
+  let orderedFiles = Hashtbl.create(256);
+  iterFilesFromRootsToLeaves(
+    {
+      let current = ref(0);
+      fileName => {
+        incr(current);
+        Hashtbl.add(orderedFiles, fileName, current^);
+      };
+    },
+  );
+  let compareItemsUsingDependencies =
+      (
+        {
+          path: path1,
+          pos: {
+            pos_fname: fname1,
+            pos_lnum: lnum1,
+            pos_bol: bol1,
+            pos_cnum: cnum1,
+          },
+        },
+        {
+          path: path2,
+          pos: {
+            pos_fname: fname2,
+            pos_lnum: lnum2,
+            pos_bol: bol2,
+            pos_cnum: cnum2,
+          },
+        },
+      ) => {
+    /* From the root of the file dependency DAG to the leaves.
+       From the bottom of the file to the top */
+    compare(
+      (Hashtbl.find(orderedFiles, fname1), lnum2, bol2, cnum2, path1),
+      (Hashtbl.find(orderedFiles, fname2), lnum1, bol1, cnum1, path2),
+    );
+  };
+  items
+  |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
   |> List.fold_left(folder, [])
   |> List.iter(onItem);
 };

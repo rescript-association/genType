@@ -50,18 +50,18 @@ let load_file = (~sourceFile, cmtFilePath) => {
   };
 };
 
-let report = (~onUnusedValue) => {
+let report = (~onDeadValue) => {
   let onItem = ({pos, path}) => {
     print_string(pos |> posToString);
     print_string(path);
     print_newline();
   };
-  let onUnusedValue = item => {
+  let onDeadValue = item => {
     onItem(item);
-    onUnusedValue(item);
+    onDeadValue(item);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  valueDecs |> report(~onItem=onUnusedValue);
+  valueDecs |> report(~onItem=onDeadValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
   typeDecs |> report(~onItem);
 };

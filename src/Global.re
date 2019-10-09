@@ -72,7 +72,7 @@ let runAnalysis = () => {
 
   let currentFile = ref("");
   let currentFileLines = ref([||]);
-  let onUnusedValue = (DeadCommon.{pos, path}) => {
+  let onDeadValue = (DeadCommon.{pos, path}) => {
     let fileName = pos.Lexing.pos_fname;
     if (fileName != currentFile^) {
       writeFile(currentFile^, currentFileLines^);
@@ -93,6 +93,6 @@ let runAnalysis = () => {
       currentFileLines^[indexInLines],
     );
   };
-  DeadCode.report(~onUnusedValue);
+  DeadCode.report(~onDeadValue);
   writeFile(currentFile^, currentFileLines^);
 };
