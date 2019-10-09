@@ -8,7 +8,6 @@
 /***************************************************************************/
 
 open Asttypes;
-open Types;
 
 /********   ATTRIBUTES  ********/
 
@@ -22,9 +21,9 @@ let is_unit = t =>
   | _ => false
   };
 
-let nb_args = (~keep, typ) => {
-  let rec loop = n =>
-    fun
+let nb_args = (~keep, {desc}: Types.type_expr) => {
+  let rec loop = (n, typeDesc: Types.type_desc) =>
+    switch (typeDesc) {
     | [@implicit_arity] Tarrow(_, _, typ, _) when keep == `All =>
       loop(n + 1, typ.desc)
     | [@implicit_arity] Tarrow(Labelled(_), _, typ, _) when keep == `Lbl =>
@@ -34,15 +33,16 @@ let nb_args = (~keep, typ) => {
     | [@implicit_arity] Tarrow(Nolabel, _, typ, _) when keep == `Reg =>
       loop(n + 1, typ.desc)
     | [@implicit_arity] Tarrow(_, _, typ, _) => loop(n, typ.desc)
-    | _ => n;
+    | _ => n
+    };
 
-  loop(0, typ.desc);
+  loop(0, desc);
 };
 
-let rec _TO_STRING_ = typ =>
+let rec _TO_STRING_ = ({desc}: Types.type_expr) =>
   [@warning "-11"]
   (
-    switch (typ.desc) {
+    switch (desc) {
     | Tvar(i) =>
       switch (i) {
       | Some(id) => id
@@ -131,9 +131,10 @@ let is_type = s => {
 
 /********   PROCESSING  ********/
 
-let collect_export = (path, u, t) => {
+let collect_export =
+    (path, u, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (id, loc) => {
-    if (t.type_manifest == None) {
+    if (type_manifest == None) {
       DeadCommon.export(path, u, DeadCommon.typeDecs, id, loc);
     };
     let path =
@@ -141,7 +142,7 @@ let collect_export = (path, u, t) => {
     Hashtbl.replace(DeadCommon.fields, path, loc.Location.loc_start);
   };
 
-  switch (t.type_kind) {
+  switch (type_kind) {
   | [@implicit_arity] Type_record(l, _) =>
     List.iter(
       ({Types.ld_id, ld_loc, ld_type, _}) => save(ld_id, ld_loc),
