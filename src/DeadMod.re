@@ -69,7 +69,7 @@ let expr = m =>
     List.iter(
       ((x, pos)) => {
         let is_obj = String.contains(x, '#');
-        let is_type = !is_obj && DeadType.is_type(x);
+        let is_type = !is_obj && DeadType.isType(x);
         if ((List.mem(x, l1) || l1 == [])
             && (is_obj || !is_obj && is_type || !is_obj && !is_type)) {
           PosHash.addSet(valueReferences, pos, m.mod_loc.Location.loc_start);

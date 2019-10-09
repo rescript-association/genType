@@ -11,33 +11,7 @@
 
 let dependencies = ref([]); /* like the cmt value_dependencies but for types */
 
-/********   HELPERS   ********/
-
-let is_unit = t =>
-  switch (Ctype.repr(t).desc) {
-  | [@implicit_arity] Tconstr(p, [], _) => Path.same(p, Predef.path_unit)
-  | _ => false
-  };
-
-let nb_args = (~keep, {desc}: Types.type_expr) => {
-  let rec loop = (n, typeDesc: Types.type_desc) =>
-    switch (typeDesc) {
-    | [@implicit_arity] Tarrow(_, _, typ, _) when keep == `All =>
-      loop(n + 1, typ.desc)
-    | [@implicit_arity] Tarrow(Labelled(_), _, typ, _) when keep == `Lbl =>
-      loop(n + 1, typ.desc)
-    | [@implicit_arity] Tarrow(Optional(_), _, typ, _) when keep == `Opt =>
-      loop(n + 1, typ.desc)
-    | [@implicit_arity] Tarrow(Nolabel, _, typ, _) when keep == `Reg =>
-      loop(n + 1, typ.desc)
-    | [@implicit_arity] Tarrow(_, _, typ, _) => loop(n, typ.desc)
-    | _ => n
-    };
-
-  loop(0, desc);
-};
-
-let is_type = s => {
+let isType = s => {
   let rec blk = (s, p, l, acc) =>
     try(
       if (s.[p] == '.') {
@@ -61,8 +35,6 @@ let is_type = s => {
     };
   };
 };
-
-/********   PROCESSING  ********/
 
 let collect_export =
     (path, u, {type_kind, type_manifest}: Types.type_declaration) => {
