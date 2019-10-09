@@ -7,7 +7,7 @@ let rec collect_export =
     export(~path, ~moduleName, ~decs=valueDecs, ~id, ~loc=val_loc)
 
   | Sig_type(id, t, _) =>
-    DeadType.collect_export([id, ...path], moduleName, t)
+    DeadType.collectExport([id, ...path], moduleName, t)
 
   | (
       Sig_module(id, {Types.md_type: moduleType, _}, _) |

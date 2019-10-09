@@ -7,8 +7,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-/********   ATTRIBUTES  ********/
-
 let isType = s => {
   let rec blk = (s, p, l, acc) =>
     try(
@@ -34,7 +32,7 @@ let isType = s => {
   };
 };
 
-let collect_export =
+let collectExport =
     (path, u, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (id, loc) => {
     if (type_manifest == None) {
