@@ -131,6 +131,12 @@ let addValueReference = (~posDeclaration, ~posUsage) => {
     !transitive || currentBindingPos^ == Lexing.dummy_pos
       ? posUsage : currentBindingPos^;
   if (verbose) {
+    // XXX swap
+    // GenTypeCommon.logItem(
+    //   "addValueReference usage:%s declaration:%s\n",
+    //   posUsage |> posToString(~printCol=true, ~shortFile=true),
+    //   posDeclaration |> posToString(~printCol=true, ~shortFile=true),
+    // );
     GenTypeCommon.logItem(
       "addValueReference declaration:%s  usage:%s\n",
       posDeclaration |> posToString(~printCol=true, ~shortFile=true),
@@ -215,7 +221,7 @@ let iterFilesFromRootsToLeaves = iterFun => {
 
   while (getSet(0) != FileSet.empty) {
     let filesWithNoIncomingReferences = getSet(0);
-    Hashtbl.replace(referencesByNumber, 0, FileSet.empty);
+    Hashtbl.remove(referencesByNumber, 0);
     filesWithNoIncomingReferences
     |> FileSet.iter(fileName => {
          iterFun(fileName);

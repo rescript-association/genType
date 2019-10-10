@@ -50,8 +50,9 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let oldPos = currentBindingPos^;
   let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(id, loc) => loc.loc.loc_start
-    | _ => vb.vb_loc.loc_start
+    | Tpat_var(id, loc) when !loc.loc.loc_ghost => loc.loc.loc_start
+    | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
+    | _ => currentBindingPos^
     };
   currentBindingPos := pos;
   let r = super.Tast_mapper.value_binding(self, vb);
