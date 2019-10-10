@@ -131,16 +131,10 @@ let addValueReference = (~posDeclaration, ~posUsage) => {
     !transitive || currentBindingPos^ == Lexing.dummy_pos
       ? posUsage : currentBindingPos^;
   if (verbose) {
-    // XXX swap
-    // GenTypeCommon.logItem(
-    //   "addValueReference usage:%s declaration:%s\n",
-    //   posUsage |> posToString(~printCol=true, ~shortFile=true),
-    //   posDeclaration |> posToString(~printCol=true, ~shortFile=true),
-    // );
     GenTypeCommon.logItem(
-      "addValueReference declaration:%s  usage:%s\n",
-      posDeclaration |> posToString(~printCol=true, ~shortFile=true),
+      "addValueReference usage:%s declaration:%s\n",
       posUsage |> posToString(~printCol=true, ~shortFile=true),
+      posDeclaration |> posToString(~printCol=true, ~shortFile=true),
     );
   };
   PosHash.addSet(valueReferences, posDeclaration, posUsage);
