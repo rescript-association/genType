@@ -120,7 +120,17 @@
   addValueReference usage:ReasonComponent.re:63:42 declaration:ReasonComponent.re:63:24
   addValueReference usage:ReasonComponent.re:63:46 declaration:ReasonComponent.re:63:35
   addValueReference usage:ReasonComponent.re:63:44 declaration:pervasives.mli:264:0
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler.cmt
+  addValueReference usage:CreateErrorHandler.re:3:27 declaration:CreateErrorHandler.re:3:21
+  addValueReference usage:CreateErrorHandler.re:3:30 declaration:CreateErrorHandler.re:3:21
+  addValueReference usage:CreateErrorHandler.re:8:0 declaration:ErrorHandler.re:7:6
+  mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler.re:3:6
+  mergeSet CreateErrorHandler.re:3:6 <- ErrorHandler.re:3:2
+  addValueReference usage:CreateErrorHandler.re:3:6 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
+  addValueReference usage:ErrorHandler.re:7:39 declaration:ErrorHandler.re:7:15
+  addValueReference usage:ErrorHandler.re:7:20 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
   addValueReference usage:ImmutableArray.re:14:34 declaration:ImmutableArray.re:14:18
   addValueReference usage:ImmutableArray.re:14:23 declaration:belt_Array.mli:275:0
@@ -555,6 +565,38 @@
   addValueReference usage:TransitiveType1.re:5:51 declaration:TransitiveType1.re:5:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModules.cmt
+  addValueReference usage:FirstClassModules.re:25:18 declaration:FirstClassModules.re:25:13
+  addValueReference usage:FirstClassModules.re:25:20 declaration:pervasives.mli:264:0
+  addValueReference usage:FirstClassModules.re:44:38 declaration:FirstClassModules.re:44:19
+  addValueReference usage:FirstClassModules.re:49:11 declaration:FirstClassModules.re:14:2
+  addValueReference usage:FirstClassModules.re:54:27 declaration:FirstClassModules.re:53:29
+  mergeSet FirstClassModules.re:2:2 <- FirstClassModules.re:34:6
+  mergeSet FirstClassModules.re:34:6 <- FirstClassModules.re:2:2
+  addValueReference usage:FirstClassModules.re:34:6 declaration:FirstClassModules.re:2:2
+  mergeSet FirstClassModules.re:4:2 <- FirstClassModules.re:33:2
+  mergeSet FirstClassModules.re:33:2 <- FirstClassModules.re:4:2
+  addValueReference usage:FirstClassModules.re:33:2 declaration:FirstClassModules.re:4:2
+  mergeSet FirstClassModules.re:7:24 <- FirstClassModules.re:21:8
+  mergeSet FirstClassModules.re:21:8 <- FirstClassModules.re:7:24
+  addValueReference usage:FirstClassModules.re:21:8 declaration:FirstClassModules.re:7:24
+  mergeSet FirstClassModules.re:10:4 <- FirstClassModules.re:25:8
+  mergeSet FirstClassModules.re:25:8 <- FirstClassModules.re:10:4
+  addValueReference usage:FirstClassModules.re:25:8 declaration:FirstClassModules.re:10:4
+  mergeSet FirstClassModules.re:12:20 <- FirstClassModules.re:28:20
+  mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:12:20
+  addValueReference usage:FirstClassModules.re:28:20 declaration:FirstClassModules.re:12:20
+  mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:12:20
+  mergeSet FirstClassModules.re:12:20 <- FirstClassModules.re:28:20
+  addValueReference usage:FirstClassModules.re:12:20 declaration:FirstClassModules.re:28:20
+  mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:30:8
+  mergeSet FirstClassModules.re:30:8 <- FirstClassModules.re:28:20
+  addValueReference usage:FirstClassModules.re:30:8 declaration:FirstClassModules.re:28:20
+  mergeSet FirstClassModules.re:14:2 <- FirstClassModules.re:17:6
+  mergeSet FirstClassModules.re:17:6 <- FirstClassModules.re:14:2
+  addValueReference usage:FirstClassModules.re:17:6 declaration:FirstClassModules.re:14:2
+  mergeSet FirstClassModules.re:46:20 <- FirstClassModules.re:49:6
+  mergeSet FirstClassModules.re:49:6 <- FirstClassModules.re:46:20
+  addValueReference usage:FirstClassModules.re:49:6 declaration:FirstClassModules.re:46:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
   addValueReference usage:ImportMyBanner.re:19:11 declaration:ImportMyBanner.re:8:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams3.cmt
@@ -679,6 +721,10 @@
   mergeSet References.re:25:6 <- References.re:20:2
   addValueReference usage:References.re:25:6 declaration:References.re:20:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
+  mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler2.re:3:6
+  mergeSet CreateErrorHandler2.re:3:6 <- ErrorHandler.re:3:2
+  addValueReference usage:CreateErrorHandler2.re:3:6 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
   addValueReference usage:ModuleAliases.re:22:44 declaration:ModuleAliases.re:22:18
   addValueReference usage:ModuleAliases.re:25:59 declaration:ModuleAliases.re:25:17
@@ -923,8 +969,9 @@ File References
   ModuleAliases.re -->> 
   TestModuleAliases.re -->> 
   TestImport.re -->> 
+  CreateErrorHandler2.re -->> ErrorHandler.re
   VariantsWithPayload.re -->> js.ml, pervasives.mli
-  FirstClassModules.re -->> 
+  FirstClassModules.re -->> pervasives.mli
   Opaque.re -->> 
   location.re -->> 
   IgnoreInterface.re -->> 
@@ -937,6 +984,7 @@ File References
   TransitiveType3.re -->> 
   Uncurried.re -->> js.ml, pervasives.mli
   TransitiveType2.re -->> 
+  CreateErrorHandler.re -->> ErrorHandler.re
   IgnoreInterface.rei -->> 
   TestFirstClassModules.re -->> 
   FirstClassModulesInterface.rei -->> 
@@ -948,6 +996,7 @@ File References
   Variants.re -->> 
   ImportHooks.re -->> 
   References.re -->> pervasives.mli
+  ErrorHandler.re -->> 
   Hooks.re -->> React.re, ReactDOMRe.re, ReasonReact.rei, ImportHookDefault.re, ImportHooks.re, js_null_undefined.mli, js.ml, obj.mli, pervasives.mli
   ModuleAliases2.re -->> 
   ImportMyBanner.re -->> 
@@ -955,8 +1004,11 @@ File References
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
   ImmutableArray.re -->> belt_Array.mli
   TypeParams2.re -->> 
+  CreateErrorHandler2.Error2.notification: 2 references (CreateErrorHandler.re:3:6, ErrorHandler.re:7:20)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
+  FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
+  FirstClassModules.M.y: 1 references (FirstClassModules.re:49:11)
   ReasonComponent.component: 1 references (ReasonComponent.re:21:5)
   Records.getOpt: 5 references (Records.re:38:20, Records.re:47:24, Records.re:48:24, Records.re:48:51, Records.re:93:43)
   References.R.set: 2 references (References.re:25:6, References.re:38:10)
@@ -966,6 +1018,7 @@ File References
   ManyComponents.component: 1 references (ManyComponents.re:40:5)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:31:7)
   ManyComponents.InnerComponent.component: 1 references (ManyComponents.re:10:7)
+  ErrorHandler.Make.notify: 1 references (CreateErrorHandler.re:8:0)
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:15)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:51)
   ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:42:43)
@@ -1201,9 +1254,21 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei:7: r
 <-- line 7
 [@dead "r"] let r: record;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModules.re:21: M.InnerModule2.k
+<-- line 21
+[@dead "M.InnerModule2.k"]     let k = 4242;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModules.re:25: M.InnerModule3.k3
+<-- line 25
+[@dead "M.InnerModule3.k3"]     let k3 = x => x + 1;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModules.re:34: M.x
+<-- line 34
+[@dead "M.x"]   let x = 42;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re:2: fortytwo
 <-- line 2
 [@dead "fortytwo"] let fortytwo = 42;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler.re:3: Error1.notification
+<-- line 3
+[@dead "Error1.notification"]   let notification = s => (s, s);
 
 UNUSED CONSTRUCTORS/RECORD FIELDS:
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re:6: message.text
