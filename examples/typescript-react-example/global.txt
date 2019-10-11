@@ -555,29 +555,6 @@
   addValueReference usage:TransitiveType1.re:5:51 declaration:TransitiveType1.re:5:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModules.cmt
-  addValueReference usage:FirstClassModules.re:25:18 declaration:FirstClassModules.re:25:13
-  addValueReference usage:FirstClassModules.re:25:20 declaration:pervasives.mli:264:0
-  addValueReference usage:FirstClassModules.re:44:38 declaration:FirstClassModules.re:44:19
-  addValueReference usage:FirstClassModules.re:49:11 declaration:FirstClassModules.re:14:2
-  addValueReference usage:FirstClassModules.re:54:27 declaration:FirstClassModules.re:53:29
-  mergeSet FirstClassModules.re:34:6 <- FirstClassModules.re:2:2
-  addValueReference usage:FirstClassModules.re:2:2 declaration:FirstClassModules.re:34:6
-  mergeSet FirstClassModules.re:33:2 <- FirstClassModules.re:4:2
-  addValueReference usage:FirstClassModules.re:4:2 declaration:FirstClassModules.re:33:2
-  mergeSet FirstClassModules.re:21:8 <- FirstClassModules.re:7:24
-  addValueReference usage:FirstClassModules.re:7:24 declaration:FirstClassModules.re:21:8
-  mergeSet FirstClassModules.re:25:8 <- FirstClassModules.re:10:4
-  addValueReference usage:FirstClassModules.re:10:4 declaration:FirstClassModules.re:25:8
-  mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:12:20
-  addValueReference usage:FirstClassModules.re:12:20 declaration:FirstClassModules.re:28:20
-  mergeSet FirstClassModules.re:12:20 <- FirstClassModules.re:28:20
-  addValueReference usage:FirstClassModules.re:28:20 declaration:FirstClassModules.re:12:20
-  mergeSet FirstClassModules.re:30:8 <- FirstClassModules.re:28:20
-  addValueReference usage:FirstClassModules.re:28:20 declaration:FirstClassModules.re:30:8
-  mergeSet FirstClassModules.re:17:6 <- FirstClassModules.re:14:2
-  addValueReference usage:FirstClassModules.re:14:2 declaration:FirstClassModules.re:17:6
-  mergeSet FirstClassModules.re:49:6 <- FirstClassModules.re:46:20
-  addValueReference usage:FirstClassModules.re:46:20 declaration:FirstClassModules.re:49:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
   addValueReference usage:ImportMyBanner.re:19:11 declaration:ImportMyBanner.re:8:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams3.cmt
@@ -692,12 +669,15 @@
   addValueReference usage:References.re:38:10 declaration:References.re:20:2
   addValueReference usage:References.re:44:58 declaration:References.re:44:27
   addValueReference usage:References.re:48:58 declaration:References.re:48:27
+  mergeSet References.re:18:2 <- References.re:23:6
   mergeSet References.re:23:6 <- References.re:18:2
-  addValueReference usage:References.re:18:2 declaration:References.re:23:6
+  addValueReference usage:References.re:23:6 declaration:References.re:18:2
+  mergeSet References.re:19:2 <- References.re:24:6
   mergeSet References.re:24:6 <- References.re:19:2
-  addValueReference usage:References.re:19:2 declaration:References.re:24:6
+  addValueReference usage:References.re:24:6 declaration:References.re:19:2
+  mergeSet References.re:20:2 <- References.re:25:6
   mergeSet References.re:25:6 <- References.re:20:2
-  addValueReference usage:References.re:20:2 declaration:References.re:25:6
+  addValueReference usage:References.re:25:6 declaration:References.re:20:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
   addValueReference usage:ModuleAliases.re:22:44 declaration:ModuleAliases.re:22:18
@@ -944,7 +924,7 @@ File References
   TestModuleAliases.re -->> 
   TestImport.re -->> 
   VariantsWithPayload.re -->> js.ml, pervasives.mli
-  FirstClassModules.re -->> pervasives.mli
+  FirstClassModules.re -->> 
   Opaque.re -->> 
   location.re -->> 
   IgnoreInterface.re -->> 
@@ -977,16 +957,11 @@ File References
   TypeParams2.re -->> 
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
-  FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
-  FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
-  FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4)
-  FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24)
-  FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:11)
   ReasonComponent.component: 1 references (ReasonComponent.re:21:5)
   Records.getOpt: 5 references (Records.re:38:20, Records.re:47:24, Records.re:48:24, Records.re:48:51, Records.re:93:43)
-  References.R.set: 1 references (References.re:38:10)
-  References.R.make: 1 references (References.re:35:11)
-  References.R.get: 1 references (References.re:32:10)
+  References.R.set: 2 references (References.re:25:6, References.re:38:10)
+  References.R.make: 2 references (References.re:24:6, References.re:35:11)
+  References.R.get: 2 references (References.re:23:6, References.re:32:10)
   ComponentAsProp.component: 1 references (ComponentAsProp.re:6:5)
   ManyComponents.component: 1 references (ManyComponents.re:40:5)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:31:7)
