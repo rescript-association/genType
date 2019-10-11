@@ -121,12 +121,12 @@
   addValueReference usage:ReasonComponent.re:63:46 declaration:ReasonComponent.re:63:35
   addValueReference usage:ReasonComponent.re:63:44 declaration:pervasives.mli:264:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler.cmt
-  addValueReference usage:CreateErrorHandler.re:3:27 declaration:CreateErrorHandler.re:3:21
-  addValueReference usage:CreateErrorHandler.re:3:30 declaration:CreateErrorHandler.re:3:21
+  addValueReference usage:CreateErrorHandler.re:3:57 declaration:CreateErrorHandler.re:3:51
+  addValueReference usage:CreateErrorHandler.re:3:60 declaration:CreateErrorHandler.re:3:51
   addValueReference usage:CreateErrorHandler.re:8:0 declaration:ErrorHandler.re:7:6
-  mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler.re:3:6
-  mergeSet CreateErrorHandler.re:3:6 <- ErrorHandler.re:3:2
-  addValueReference usage:CreateErrorHandler.re:3:6 declaration:ErrorHandler.re:3:2
+  mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler.re:3:36
+  mergeSet CreateErrorHandler.re:3:36 <- ErrorHandler.re:3:2
+  addValueReference usage:CreateErrorHandler.re:3:36 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
   addValueReference usage:ErrorHandler.re:7:39 declaration:ErrorHandler.re:7:15
@@ -416,71 +416,71 @@
   addValueReference usage:ImmutableArray.re:118:46 declaration:ImmutableArray.re:5:2
   addValueReference usage:ImmutableArray.re:118:57 declaration:ImmutableArray.re:118:20
   addValueReference usage:ImmutableArray.re:118:26 declaration:belt_Array.mli:593:0
-  mergeSet ImmutableArray.rei:5:15 <- ImmutableArray.re:24:6
-  mergeSet ImmutableArray.rei:7:0 <- ImmutableArray.re:14:6
-  mergeSet ImmutableArray.rei:10:0 <- ImmutableArray.re:16:6
-  mergeSet ImmutableArray.rei:12:0 <- ImmutableArray.re:20:6
-  mergeSet ImmutableArray.rei:16:0 <- ImmutableArray.re:22:6
-  mergeSet ImmutableArray.rei:18:0 <- ImmutableArray.re:24:6
-  mergeSet ImmutableArray.rei:20:0 <- ImmutableArray.re:26:6
-  mergeSet ImmutableArray.rei:22:0 <- ImmutableArray.re:28:6
-  mergeSet ImmutableArray.rei:24:0 <- ImmutableArray.re:30:6
-  mergeSet ImmutableArray.rei:26:0 <- ImmutableArray.re:32:6
-  mergeSet ImmutableArray.rei:28:0 <- ImmutableArray.re:34:6
-  mergeSet ImmutableArray.rei:30:0 <- ImmutableArray.re:36:6
-  mergeSet ImmutableArray.rei:32:0 <- ImmutableArray.re:38:6
-  mergeSet ImmutableArray.rei:34:0 <- ImmutableArray.re:40:6
-  mergeSet ImmutableArray.rei:36:0 <- ImmutableArray.re:42:6
-  mergeSet ImmutableArray.rei:38:0 <- ImmutableArray.re:44:6
-  mergeSet ImmutableArray.rei:40:0 <- ImmutableArray.re:46:6
-  mergeSet ImmutableArray.rei:41:0 <- ImmutableArray.re:47:6
-  mergeSet ImmutableArray.rei:43:0 <- ImmutableArray.re:49:6
-  mergeSet ImmutableArray.rei:44:0 <- ImmutableArray.re:50:6
-  mergeSet ImmutableArray.rei:46:0 <- ImmutableArray.re:52:6
-  mergeSet ImmutableArray.rei:48:0 <- ImmutableArray.re:54:6
-  mergeSet ImmutableArray.rei:49:0 <- ImmutableArray.re:55:6
-  mergeSet ImmutableArray.rei:51:0 <- ImmutableArray.re:57:6
-  mergeSet ImmutableArray.rei:53:0 <- ImmutableArray.re:59:6
-  mergeSet ImmutableArray.rei:55:0 <- ImmutableArray.re:61:6
-  mergeSet ImmutableArray.rei:57:0 <- ImmutableArray.re:63:6
-  mergeSet ImmutableArray.rei:59:0 <- ImmutableArray.re:66:6
-  mergeSet ImmutableArray.rei:61:0 <- ImmutableArray.re:68:6
-  mergeSet ImmutableArray.rei:63:0 <- ImmutableArray.re:70:6
-  mergeSet ImmutableArray.rei:64:0 <- ImmutableArray.re:71:6
-  mergeSet ImmutableArray.rei:66:0 <- ImmutableArray.re:73:6
-  mergeSet ImmutableArray.rei:67:0 <- ImmutableArray.re:74:6
-  mergeSet ImmutableArray.rei:69:0 <- ImmutableArray.re:76:6
-  mergeSet ImmutableArray.rei:70:0 <- ImmutableArray.re:77:6
-  mergeSet ImmutableArray.rei:72:0 <- ImmutableArray.re:79:6
-  mergeSet ImmutableArray.rei:73:0 <- ImmutableArray.re:80:6
-  mergeSet ImmutableArray.rei:75:0 <- ImmutableArray.re:82:6
-  mergeSet ImmutableArray.rei:76:0 <- ImmutableArray.re:83:6
-  mergeSet ImmutableArray.rei:78:0 <- ImmutableArray.re:85:6
-  mergeSet ImmutableArray.rei:79:0 <- ImmutableArray.re:86:6
-  mergeSet ImmutableArray.rei:81:0 <- ImmutableArray.re:88:6
-  mergeSet ImmutableArray.rei:82:0 <- ImmutableArray.re:89:6
-  mergeSet ImmutableArray.rei:84:0 <- ImmutableArray.re:91:6
-  mergeSet ImmutableArray.rei:85:0 <- ImmutableArray.re:92:6
-  mergeSet ImmutableArray.rei:87:0 <- ImmutableArray.re:94:6
-  mergeSet ImmutableArray.rei:88:0 <- ImmutableArray.re:95:6
-  mergeSet ImmutableArray.rei:90:0 <- ImmutableArray.re:97:6
-  mergeSet ImmutableArray.rei:91:0 <- ImmutableArray.re:99:6
-  mergeSet ImmutableArray.rei:93:0 <- ImmutableArray.re:102:6
-  mergeSet ImmutableArray.rei:94:0 <- ImmutableArray.re:103:6
-  mergeSet ImmutableArray.rei:96:0 <- ImmutableArray.re:105:6
-  mergeSet ImmutableArray.rei:97:0 <- ImmutableArray.re:106:6
-  mergeSet ImmutableArray.rei:99:0 <- ImmutableArray.re:108:6
-  mergeSet ImmutableArray.rei:100:0 <- ImmutableArray.re:109:6
-  mergeSet ImmutableArray.rei:102:0 <- ImmutableArray.re:111:6
-  mergeSet ImmutableArray.rei:103:0 <- ImmutableArray.re:112:6
-  mergeSet ImmutableArray.rei:105:0 <- ImmutableArray.re:114:6
-  mergeSet ImmutableArray.rei:106:0 <- ImmutableArray.re:115:6
-  mergeSet ImmutableArray.rei:108:0 <- ImmutableArray.re:117:6
-  mergeSet ImmutableArray.rei:109:0 <- ImmutableArray.re:118:6
+  mergeSet ImmutableArray.re:24:6 <- ImmutableArray.rei:5:15
+  mergeSet ImmutableArray.re:14:6 <- ImmutableArray.rei:7:0
+  mergeSet ImmutableArray.re:16:6 <- ImmutableArray.rei:10:0
+  mergeSet ImmutableArray.re:20:6 <- ImmutableArray.rei:12:0
+  mergeSet ImmutableArray.re:22:6 <- ImmutableArray.rei:16:0
+  mergeSet ImmutableArray.re:24:6 <- ImmutableArray.rei:18:0
+  mergeSet ImmutableArray.re:26:6 <- ImmutableArray.rei:20:0
+  mergeSet ImmutableArray.re:28:6 <- ImmutableArray.rei:22:0
+  mergeSet ImmutableArray.re:30:6 <- ImmutableArray.rei:24:0
+  mergeSet ImmutableArray.re:32:6 <- ImmutableArray.rei:26:0
+  mergeSet ImmutableArray.re:34:6 <- ImmutableArray.rei:28:0
+  mergeSet ImmutableArray.re:36:6 <- ImmutableArray.rei:30:0
+  mergeSet ImmutableArray.re:38:6 <- ImmutableArray.rei:32:0
+  mergeSet ImmutableArray.re:40:6 <- ImmutableArray.rei:34:0
+  mergeSet ImmutableArray.re:42:6 <- ImmutableArray.rei:36:0
+  mergeSet ImmutableArray.re:44:6 <- ImmutableArray.rei:38:0
+  mergeSet ImmutableArray.re:46:6 <- ImmutableArray.rei:40:0
+  mergeSet ImmutableArray.re:47:6 <- ImmutableArray.rei:41:0
+  mergeSet ImmutableArray.re:49:6 <- ImmutableArray.rei:43:0
+  mergeSet ImmutableArray.re:50:6 <- ImmutableArray.rei:44:0
+  mergeSet ImmutableArray.re:52:6 <- ImmutableArray.rei:46:0
+  mergeSet ImmutableArray.re:54:6 <- ImmutableArray.rei:48:0
+  mergeSet ImmutableArray.re:55:6 <- ImmutableArray.rei:49:0
+  mergeSet ImmutableArray.re:57:6 <- ImmutableArray.rei:51:0
+  mergeSet ImmutableArray.re:59:6 <- ImmutableArray.rei:53:0
+  mergeSet ImmutableArray.re:61:6 <- ImmutableArray.rei:55:0
+  mergeSet ImmutableArray.re:63:6 <- ImmutableArray.rei:57:0
+  mergeSet ImmutableArray.re:66:6 <- ImmutableArray.rei:59:0
+  mergeSet ImmutableArray.re:68:6 <- ImmutableArray.rei:61:0
+  mergeSet ImmutableArray.re:70:6 <- ImmutableArray.rei:63:0
+  mergeSet ImmutableArray.re:71:6 <- ImmutableArray.rei:64:0
+  mergeSet ImmutableArray.re:73:6 <- ImmutableArray.rei:66:0
+  mergeSet ImmutableArray.re:74:6 <- ImmutableArray.rei:67:0
+  mergeSet ImmutableArray.re:76:6 <- ImmutableArray.rei:69:0
+  mergeSet ImmutableArray.re:77:6 <- ImmutableArray.rei:70:0
+  mergeSet ImmutableArray.re:79:6 <- ImmutableArray.rei:72:0
+  mergeSet ImmutableArray.re:80:6 <- ImmutableArray.rei:73:0
+  mergeSet ImmutableArray.re:82:6 <- ImmutableArray.rei:75:0
+  mergeSet ImmutableArray.re:83:6 <- ImmutableArray.rei:76:0
+  mergeSet ImmutableArray.re:85:6 <- ImmutableArray.rei:78:0
+  mergeSet ImmutableArray.re:86:6 <- ImmutableArray.rei:79:0
+  mergeSet ImmutableArray.re:88:6 <- ImmutableArray.rei:81:0
+  mergeSet ImmutableArray.re:89:6 <- ImmutableArray.rei:82:0
+  mergeSet ImmutableArray.re:91:6 <- ImmutableArray.rei:84:0
+  mergeSet ImmutableArray.re:92:6 <- ImmutableArray.rei:85:0
+  mergeSet ImmutableArray.re:94:6 <- ImmutableArray.rei:87:0
+  mergeSet ImmutableArray.re:95:6 <- ImmutableArray.rei:88:0
+  mergeSet ImmutableArray.re:97:6 <- ImmutableArray.rei:90:0
+  mergeSet ImmutableArray.re:99:6 <- ImmutableArray.rei:91:0
+  mergeSet ImmutableArray.re:102:6 <- ImmutableArray.rei:93:0
+  mergeSet ImmutableArray.re:103:6 <- ImmutableArray.rei:94:0
+  mergeSet ImmutableArray.re:105:6 <- ImmutableArray.rei:96:0
+  mergeSet ImmutableArray.re:106:6 <- ImmutableArray.rei:97:0
+  mergeSet ImmutableArray.re:108:6 <- ImmutableArray.rei:99:0
+  mergeSet ImmutableArray.re:109:6 <- ImmutableArray.rei:100:0
+  mergeSet ImmutableArray.re:111:6 <- ImmutableArray.rei:102:0
+  mergeSet ImmutableArray.re:112:6 <- ImmutableArray.rei:103:0
+  mergeSet ImmutableArray.re:114:6 <- ImmutableArray.rei:105:0
+  mergeSet ImmutableArray.re:115:6 <- ImmutableArray.rei:106:0
+  mergeSet ImmutableArray.re:117:6 <- ImmutableArray.rei:108:0
+  mergeSet ImmutableArray.re:118:6 <- ImmutableArray.rei:109:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
   addValueReference usage:TransitiveType3.re:8:27 declaration:TransitiveType3.re:8:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
-  addValueReference usage:TransitiveType2.re:7:27 declaration:TransitiveType2.re:7:17
+  addValueReference usage:TransitiveType2.re:7:47 declaration:TransitiveType2.re:7:37
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Variants.cmt
   addValueReference usage:Variants.re:14:9 declaration:Variants.re:13:17
   addValueReference usage:Variants.re:32:9 declaration:Variants.re:31:11
@@ -565,36 +565,27 @@
   addValueReference usage:TransitiveType1.re:5:51 declaration:TransitiveType1.re:5:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModules.cmt
-  addValueReference usage:FirstClassModules.re:25:18 declaration:FirstClassModules.re:25:13
-  addValueReference usage:FirstClassModules.re:25:20 declaration:pervasives.mli:264:0
+  addValueReference usage:FirstClassModules.re:25:46 declaration:FirstClassModules.re:25:41
+  addValueReference usage:FirstClassModules.re:25:48 declaration:pervasives.mli:264:0
   addValueReference usage:FirstClassModules.re:44:38 declaration:FirstClassModules.re:44:19
   addValueReference usage:FirstClassModules.re:49:11 declaration:FirstClassModules.re:14:2
   addValueReference usage:FirstClassModules.re:54:27 declaration:FirstClassModules.re:53:29
-  mergeSet FirstClassModules.re:2:2 <- FirstClassModules.re:34:6
-  mergeSet FirstClassModules.re:34:6 <- FirstClassModules.re:2:2
-  addValueReference usage:FirstClassModules.re:34:6 declaration:FirstClassModules.re:2:2
-  mergeSet FirstClassModules.re:4:2 <- FirstClassModules.re:33:2
+  mergeSet FirstClassModules.re:34:20 <- FirstClassModules.re:2:2
+  addValueReference usage:FirstClassModules.re:34:20 declaration:FirstClassModules.re:2:2
   mergeSet FirstClassModules.re:33:2 <- FirstClassModules.re:4:2
   addValueReference usage:FirstClassModules.re:33:2 declaration:FirstClassModules.re:4:2
-  mergeSet FirstClassModules.re:7:24 <- FirstClassModules.re:21:8
-  mergeSet FirstClassModules.re:21:8 <- FirstClassModules.re:7:24
-  addValueReference usage:FirstClassModules.re:21:8 declaration:FirstClassModules.re:7:24
-  mergeSet FirstClassModules.re:10:4 <- FirstClassModules.re:25:8
-  mergeSet FirstClassModules.re:25:8 <- FirstClassModules.re:10:4
-  addValueReference usage:FirstClassModules.re:25:8 declaration:FirstClassModules.re:10:4
-  mergeSet FirstClassModules.re:12:20 <- FirstClassModules.re:28:20
+  mergeSet FirstClassModules.re:21:35 <- FirstClassModules.re:7:24
+  addValueReference usage:FirstClassModules.re:21:35 declaration:FirstClassModules.re:7:24
+  mergeSet FirstClassModules.re:25:36 <- FirstClassModules.re:10:4
+  addValueReference usage:FirstClassModules.re:25:36 declaration:FirstClassModules.re:10:4
   mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:12:20
   addValueReference usage:FirstClassModules.re:28:20 declaration:FirstClassModules.re:12:20
-  mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:12:20
   mergeSet FirstClassModules.re:12:20 <- FirstClassModules.re:28:20
   addValueReference usage:FirstClassModules.re:12:20 declaration:FirstClassModules.re:28:20
-  mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:30:8
   mergeSet FirstClassModules.re:30:8 <- FirstClassModules.re:28:20
   addValueReference usage:FirstClassModules.re:30:8 declaration:FirstClassModules.re:28:20
-  mergeSet FirstClassModules.re:14:2 <- FirstClassModules.re:17:6
   mergeSet FirstClassModules.re:17:6 <- FirstClassModules.re:14:2
   addValueReference usage:FirstClassModules.re:17:6 declaration:FirstClassModules.re:14:2
-  mergeSet FirstClassModules.re:46:20 <- FirstClassModules.re:49:6
   mergeSet FirstClassModules.re:49:6 <- FirstClassModules.re:46:20
   addValueReference usage:FirstClassModules.re:49:6 declaration:FirstClassModules.re:46:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
@@ -676,8 +667,8 @@
   addValueReference usage:VariantsWithPayload.re:103:42 declaration:VariantsWithPayload.re:103:23
   addValueReference usage:VariantsWithPayload.re:110:48 declaration:VariantsWithPayload.re:110:26
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
-  mergeSet FirstClassModulesInterface.rei:7:0 <- FirstClassModulesInterface.re:6:4
-  mergeSet FirstClassModulesInterface.rei:10:18 <- FirstClassModulesInterface.re:8:18
+  mergeSet FirstClassModulesInterface.re:6:4 <- FirstClassModulesInterface.rei:7:0
+  mergeSet FirstClassModulesInterface.re:8:18 <- FirstClassModulesInterface.rei:10:18
   mergeSet FirstClassModulesInterface.rei:10:18 <- FirstClassModulesInterface.re:8:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
   addValueReference usage:ImportJsValue.re:19:20 declaration:ImportJsValue.re:1:0
@@ -711,13 +702,10 @@
   addValueReference usage:References.re:38:10 declaration:References.re:20:2
   addValueReference usage:References.re:44:58 declaration:References.re:44:27
   addValueReference usage:References.re:48:58 declaration:References.re:48:27
-  mergeSet References.re:18:2 <- References.re:23:6
   mergeSet References.re:23:6 <- References.re:18:2
   addValueReference usage:References.re:23:6 declaration:References.re:18:2
-  mergeSet References.re:19:2 <- References.re:24:6
   mergeSet References.re:24:6 <- References.re:19:2
   addValueReference usage:References.re:24:6 declaration:References.re:19:2
-  mergeSet References.re:20:2 <- References.re:25:6
   mergeSet References.re:25:6 <- References.re:20:2
   addValueReference usage:References.re:25:6 declaration:References.re:20:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
@@ -741,15 +729,15 @@
   addValueReference usage:UseImportJsValue.re:3:41 declaration:pervasives.mli:264:0
   addValueReference usage:UseImportJsValue.re:6:72 declaration:UseImportJsValue.re:6:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImport.cmt
-  addValueReference usage:TestImport.re:18:25 declaration:TestImport.re:1:0
-  addValueReference usage:TestImport.re:42:11 declaration:TestImport.re:30:0
+  addValueReference usage:TestImport.re:18:54 declaration:TestImport.re:1:0
+  addValueReference usage:TestImport.re:42:26 declaration:TestImport.re:30:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImmutableArray.cmt
   addValueReference usage:TestImmutableArray.re:2:51 declaration:TestImmutableArray.re:2:28
   addValueReference usage:TestImmutableArray.re:2:51 declaration:ImmutableArray.rei:5:15
-  addValueReference usage:TestImmutableArray.re:9:36 declaration:TestImmutableArray.re:9:23
-  addValueReference usage:TestImmutableArray.re:9:36 declaration:belt_Array.mli:27:0
-  addValueReference usage:TestImmutableArray.re:11:36 declaration:TestImmutableArray.re:11:23
-  addValueReference usage:TestImmutableArray.re:11:36 declaration:belt_Array.mli:64:0
+  addValueReference usage:TestImmutableArray.re:9:63 declaration:TestImmutableArray.re:9:50
+  addValueReference usage:TestImmutableArray.re:9:63 declaration:belt_Array.mli:27:0
+  addValueReference usage:TestImmutableArray.re:11:63 declaration:TestImmutableArray.re:11:50
+  addValueReference usage:TestImmutableArray.re:11:63 declaration:belt_Array.mli:64:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHooks.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
   addValueReference usage:Records.re:15:10 declaration:Records.re:14:20
@@ -935,7 +923,7 @@
   addValueReference usage:TestPromise.re:14:40 declaration:js_promise.ml:39:0
   addValueReference usage:TestPromise.re:14:14 declaration:js_promise.ml:50:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
-  mergeSet NestedModulesInSignature.rei:2:2 <- NestedModulesInSignature.re:2:6
+  mergeSet NestedModulesInSignature.re:2:6 <- NestedModulesInSignature.rei:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestFirstClassModules.cmt
   addValueReference usage:TestFirstClassModules.re:2:57 declaration:TestFirstClassModules.re:2:15
   addValueReference usage:TestFirstClassModules.re:5:75 declaration:TestFirstClassModules.re:5:24
@@ -1004,10 +992,10 @@ File References
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
   ImmutableArray.re -->> belt_Array.mli
   TypeParams2.re -->> 
-  CreateErrorHandler2.Error2.notification: 2 references (CreateErrorHandler.re:3:6, ErrorHandler.re:7:20)
+  CreateErrorHandler2.Error2.notification: 2 references (CreateErrorHandler.re:3:36, ErrorHandler.re:7:20)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
-  FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
+  FirstClassModules.M.Z.u: 1 references (FirstClassModules.re:12:20)
   FirstClassModules.M.y: 1 references (FirstClassModules.re:49:11)
   ReasonComponent.component: 1 references (ReasonComponent.re:21:5)
   Records.getOpt: 5 references (Records.re:38:20, Records.re:47:24, Records.re:48:24, Records.re:48:51, Records.re:93:43)
@@ -1023,252 +1011,6 @@ File References
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:51)
   ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:42:43)
   ImportMyBanner.make: 1 references (ReasonComponent.re:35:7)
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:10: toArray
-<-- line 10
-[@dead "toArray"] let toArray: t('a) => array('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:12: length
-<-- line 12
-[@dead "length"] /** Subset of the Belt.Array oprerations that do not mutate the array. */
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:16: size
-<-- line 16
-[@dead "size"] let size: t('a) => int;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:18: get
-<-- line 18
-[@dead "get"] let get: (t('a), int) => option('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:20: getExn
-<-- line 20
-[@dead "getExn"] let getExn: (t('a), int) => 'a;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:22: getUnsafe
-<-- line 22
-[@dead "getUnsafe"] let getUnsafe: (t('a), int) => 'a;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:24: getUndefined
-<-- line 24
-[@dead "getUndefined"] let getUndefined: (t('a), int) => Js.undefined('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:26: shuffle
-<-- line 26
-[@dead "shuffle"] let shuffle: t('a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:28: reverse
-<-- line 28
-[@dead "reverse"] let reverse: t('a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:30: makeUninitialized
-<-- line 30
-[@dead "makeUninitialized"] let makeUninitialized: int => t(Js.undefined('a));
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:32: makeUninitializedUnsafe
-<-- line 32
-[@dead "makeUninitializedUnsafe"] let makeUninitializedUnsafe: int => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:34: make
-<-- line 34
-[@dead "make"] let make: (int, 'a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:36: range
-<-- line 36
-[@dead "range"] let range: (int, int) => t(int);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:38: rangeBy
-<-- line 38
-[@dead "rangeBy"] let rangeBy: (int, int, ~step: int) => t(int);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:40: makeByU
-<-- line 40
-[@dead "makeByU"] let makeByU: (int, (. int) => 'a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:41: makeBy
-<-- line 41
-[@dead "makeBy"] let makeBy: (int, int => 'a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:43: makeByAndShuffleU
-<-- line 43
-[@dead "makeByAndShuffleU"] let makeByAndShuffleU: (int, (. int) => 'a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:44: makeByAndShuffle
-<-- line 44
-[@dead "makeByAndShuffle"] let makeByAndShuffle: (int, int => 'a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:46: zip
-<-- line 46
-[@dead "zip"] let zip: (t('a), t('b)) => t(('a, 'b));
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:48: zipByU
-<-- line 48
-[@dead "zipByU"] let zipByU: (t('a), t('b), (. 'a, 'b) => 'c) => t('c);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:49: zipBy
-<-- line 49
-[@dead "zipBy"] let zipBy: (t('a), t('b), ('a, 'b) => 'c) => t('c);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:51: unzip
-<-- line 51
-[@dead "unzip"] let unzip: t(('a, 'a)) => (t('a), t('a));
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:53: concat
-<-- line 53
-[@dead "concat"] let concat: (t('a), t('a)) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:55: concatMany
-<-- line 55
-[@dead "concatMany"] let concatMany: t(t('a)) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:57: slice
-<-- line 57
-[@dead "slice"] let slice: (t('a), ~offset: int, ~len: int) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:59: sliceToEnd
-<-- line 59
-[@dead "sliceToEnd"] let sliceToEnd: (t('a), int) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:61: copy
-<-- line 61
-[@dead "copy"] let copy: t('a) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:63: forEachU
-<-- line 63
-[@dead "forEachU"] let forEachU: (t('a), (. 'a) => unit) => unit;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:64: forEach
-<-- line 64
-[@dead "forEach"] let forEach: (t('a), 'a => unit) => unit;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:66: mapU
-<-- line 66
-[@dead "mapU"] let mapU: (t('a), (. 'a) => 'b) => t('b);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:67: map
-<-- line 67
-[@dead "map"] let map: (t('a), 'a => 'b) => t('b);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:69: keepWithIndexU
-<-- line 69
-[@dead "keepWithIndexU"] let keepWithIndexU: (t('a), (. 'a, int) => bool) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:70: keepWithIndex
-<-- line 70
-[@dead "keepWithIndex"] let keepWithIndex: (t('a), ('a, int) => bool) => t('a);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:72: keepMapU
-<-- line 72
-[@dead "keepMapU"] let keepMapU: (t('a), (. 'a) => option('b)) => t('b);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:73: keepMap
-<-- line 73
-[@dead "keepMap"] let keepMap: (t('a), 'a => option('b)) => t('b);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:75: forEachWithIndexU
-<-- line 75
-[@dead "forEachWithIndexU"] let forEachWithIndexU: (t('a), (. int, 'a) => unit) => unit;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:76: forEachWithIndex
-<-- line 76
-[@dead "forEachWithIndex"] let forEachWithIndex: (t('a), (int, 'a) => unit) => unit;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:78: mapWithIndexU
-<-- line 78
-[@dead "mapWithIndexU"] let mapWithIndexU: (t('a), (. int, 'a) => 'b) => t('b);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:79: mapWithIndex
-<-- line 79
-[@dead "mapWithIndex"] let mapWithIndex: (t('a), (int, 'a) => 'b) => t('b);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:81: partitionU
-<-- line 81
-[@dead "partitionU"] let partitionU: (t('a), (. 'a) => bool) => (t('a), t('a));
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:82: partition
-<-- line 82
-[@dead "partition"] let partition: (t('a), 'a => bool) => (t('a), t('a));
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:84: reduceU
-<-- line 84
-[@dead "reduceU"] let reduceU: (t('a), 'b, (. 'b, 'a) => 'b) => 'b;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:85: reduce
-<-- line 85
-[@dead "reduce"] let reduce: (t('a), 'b, ('b, 'a) => 'b) => 'b;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:87: reduceReverseU
-<-- line 87
-[@dead "reduceReverseU"] let reduceReverseU: (t('a), 'b, (. 'b, 'a) => 'b) => 'b;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:88: reduceReverse
-<-- line 88
-[@dead "reduceReverse"] let reduceReverse: (t('a), 'b, ('b, 'a) => 'b) => 'b;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:90: reduceReverse2U
-<-- line 90
-[@dead "reduceReverse2U"] let reduceReverse2U: (t('a), t('b), 'c, (. 'c, 'a, 'b) => 'c) => 'c;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:91: reduceReverse2
-<-- line 91
-[@dead "reduceReverse2"] let reduceReverse2: (t('a), t('b), 'c, ('c, 'a, 'b) => 'c) => 'c;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:93: someU
-<-- line 93
-[@dead "someU"] let someU: (t('a), (. 'a) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:94: some
-<-- line 94
-[@dead "some"] let some: (t('a), 'a => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:96: everyU
-<-- line 96
-[@dead "everyU"] let everyU: (t('a), (. 'a) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:97: every
-<-- line 97
-[@dead "every"] let every: (t('a), 'a => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:99: every2U
-<-- line 99
-[@dead "every2U"] let every2U: (t('a), t('b), (. 'a, 'b) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:100: every2
-<-- line 100
-[@dead "every2"] let every2: (t('a), t('b), ('a, 'b) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:102: some2U
-<-- line 102
-[@dead "some2U"] let some2U: (t('a), t('b), (. 'a, 'b) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:103: some2
-<-- line 103
-[@dead "some2"] let some2: (t('a), t('b), ('a, 'b) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:105: cmpU
-<-- line 105
-[@dead "cmpU"] let cmpU: (t('a), t('a), (. 'a, 'a) => int) => int;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:106: cmp
-<-- line 106
-[@dead "cmp"] let cmp: (t('a), t('a), ('a, 'a) => int) => int;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:108: eqU
-<-- line 108
-[@dead "eqU"] let eqU: (t('a), t('a), (. 'a, 'a) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:109: eq
-<-- line 109
-[@dead "eq"] let eq: (t('a), t('a), ('a, 'a) => bool) => bool;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re:9: x
-<-- line 9
-[@dead "x"] let x = 42;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re:4: InnerComponent.someValueSoModuleOffsetsAreShifted
-<-- line 4
-[@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"]   let someValueSoModuleOffsetsAreShifted = 77;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re:10: exportSomething
-<-- line 10
-[@dead "exportSomething"] let exportSomething = 10;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams1.re:4: exportSomething
-<-- line 4
-[@dead "exportSomething"] let exportSomething = 10;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType2.re:7: convertT2
-<-- line 7
-[@dead "convertT2"] let convertT2 = (x: t2) => x;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re:18: innerStuffContents
-<-- line 18
-[@dead "innerStuffContents"] let innerStuffContents = innerStuffContents;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re:42: make
-<-- line 42
-[@dead "make"] let make = make;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:9: testBeltArrayGet
-<-- line 9
-[@dead "testBeltArrayGet"] let testBeltArrayGet = arr => Belt.(arr[3]);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:11: testBeltArraySet
-<-- line 11
-[@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:8: Universe.notExported
-<-- line 8
-[@dead "Universe.notExported"]   let notExported = 33;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:14: Universe.Nested2.x
-<-- line 14
-[@dead "Universe.Nested2.x"]     let x = 0;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:19: Universe.Nested2.y
-<-- line 19
-[@dead "Universe.Nested2.y"]     let y = 2;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:25: Universe.Nested2.Nested3.x
-<-- line 25
-[@dead "Universe.Nested2.Nested3.x"]       let x = 0;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:26: Universe.Nested2.Nested3.y
-<-- line 26
-[@dead "Universe.Nested2.Nested3.y"]       let y = 1;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:27: Universe.Nested2.Nested3.z
-<-- line 27
-[@dead "Universe.Nested2.Nested3.z"]       let z = 2;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:28: Universe.Nested2.Nested3.w
-<-- line 28
-[@dead "Universe.Nested2.Nested3.w"]       let w = 3;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re:21: q
-<-- line 21
-[@dead "q"] let q = 42;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei:7: r
-<-- line 7
-[@dead "r"] let r: record;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModules.re:21: M.InnerModule2.k
-<-- line 21
-[@dead "M.InnerModule2.k"]     let k = 4242;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModules.re:25: M.InnerModule3.k3
-<-- line 25
-[@dead "M.InnerModule3.k3"]     let k3 = x => x + 1;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModules.re:34: M.x
-<-- line 34
-[@dead "M.x"]   let x = 42;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re:2: fortytwo
-<-- line 2
-[@dead "fortytwo"] let fortytwo = 42;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler.re:3: Error1.notification
-<-- line 3
-[@dead "Error1.notification"]   let notification = s => (s, s);
 
 UNUSED CONSTRUCTORS/RECORD FIELDS:
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re:6: message.text
