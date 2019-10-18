@@ -125,7 +125,6 @@
   addValueReference usage:CreateErrorHandler.re:3:30 declaration:CreateErrorHandler.re:3:21
   addValueReference usage:CreateErrorHandler.re:8:0 declaration:ErrorHandler.re:7:6
   mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler.re:3:6
-  mergeSet CreateErrorHandler.re:3:6 <- ErrorHandler.re:3:2
   addValueReference usage:CreateErrorHandler.re:3:6 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
@@ -711,7 +710,6 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler2.re:3:6
-  mergeSet CreateErrorHandler2.re:3:6 <- ErrorHandler.re:3:2
   addValueReference usage:CreateErrorHandler2.re:3:6 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
   addValueReference usage:ModuleAliases.re:22:44 declaration:ModuleAliases.re:22:18
@@ -992,7 +990,6 @@ File References
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
   ImmutableArray.re -->> belt_Array.mli
   TypeParams2.re -->> 
-  CreateErrorHandler2.Error2.notification: 2 references (CreateErrorHandler.re:3:6, ErrorHandler.re:7:20)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
@@ -1248,6 +1245,9 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re:2: fortytwo
 <-- line 2
 [@dead "fortytwo"] let fortytwo = 42;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler2.re:3: Error2.notification
+<-- line 3
+[@dead "Error2.notification"]   let notification = s => ("", "");
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler.re:3: Error1.notification
 <-- line 3
 [@dead "Error1.notification"]   let notification = s => (s, s);

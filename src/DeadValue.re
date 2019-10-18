@@ -151,15 +151,10 @@ let assoc = ((pos1, pos2)) => {
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
       PosHash.mergeSet(valueReferences, pos2, pos1);
-    };
-    if (isInterface(fn1, pos1)) {
+      addValueReference(pos2, pos1);
+    } else if (isInterface(fn1, pos1)) {
       PosHash.mergeSet(valueReferences, pos1, pos2);
-
-      if (isImplementation(pos1.pos_fname)
-          && isImplementation(pos2.pos_fname)
-          && pos1.pos_fname != pos2.pos_fname) {
-        addValueReference(pos2, pos1);
-      } else if (isInterface(fn2, pos2)) {
+      if (isInterface(fn2, pos2)) {
         addValueReference(pos1, pos2);
       };
     } else {
