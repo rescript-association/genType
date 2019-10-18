@@ -1016,241 +1016,241 @@ File References
   ImportMyBanner.make: 1 references (ReasonComponent.re:35:7)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:10: toArray
 <-- line 10
-[@dead "toArray"] [@dead "toArray"] let toArray: t('a) => array('a);
+[@dead "toArray"] let toArray: t('a) => array('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:12: length
 <-- line 12
-[@dead "length"] [@dead "length"] /** Subset of the Belt.Array oprerations that do not mutate the array. */
+[@dead "length"] /** Subset of the Belt.Array oprerations that do not mutate the array. */
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:16: size
 <-- line 16
-[@dead "size"] [@dead "size"] let size: t('a) => int;
+[@dead "size"] let size: t('a) => int;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:18: get
 <-- line 18
-[@dead "get"] [@dead "get"] let get: (t('a), int) => option('a);
+[@dead "get"] let get: (t('a), int) => option('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:20: getExn
 <-- line 20
-[@dead "getExn"] [@dead "getExn"] let getExn: (t('a), int) => 'a;
+[@dead "getExn"] let getExn: (t('a), int) => 'a;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:22: getUnsafe
 <-- line 22
-[@dead "getUnsafe"] [@dead "getUnsafe"] let getUnsafe: (t('a), int) => 'a;
+[@dead "getUnsafe"] let getUnsafe: (t('a), int) => 'a;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:24: getUndefined
 <-- line 24
-[@dead "getUndefined"] [@dead "getUndefined"] let getUndefined: (t('a), int) => Js.undefined('a);
+[@dead "getUndefined"] let getUndefined: (t('a), int) => Js.undefined('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:26: shuffle
 <-- line 26
-[@dead "shuffle"] [@dead "shuffle"] let shuffle: t('a) => t('a);
+[@dead "shuffle"] let shuffle: t('a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:28: reverse
 <-- line 28
-[@dead "reverse"] [@dead "reverse"] let reverse: t('a) => t('a);
+[@dead "reverse"] let reverse: t('a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:30: makeUninitialized
 <-- line 30
-[@dead "makeUninitialized"] [@dead "makeUninitialized"] let makeUninitialized: int => t(Js.undefined('a));
+[@dead "makeUninitialized"] let makeUninitialized: int => t(Js.undefined('a));
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:32: makeUninitializedUnsafe
 <-- line 32
-[@dead "makeUninitializedUnsafe"] [@dead "makeUninitializedUnsafe"] let makeUninitializedUnsafe: int => t('a);
+[@dead "makeUninitializedUnsafe"] let makeUninitializedUnsafe: int => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:34: make
 <-- line 34
-[@dead "make"] [@dead "make"] let make: (int, 'a) => t('a);
+[@dead "make"] let make: (int, 'a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:36: range
 <-- line 36
-[@dead "range"] [@dead "range"] let range: (int, int) => t(int);
+[@dead "range"] let range: (int, int) => t(int);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:38: rangeBy
 <-- line 38
-[@dead "rangeBy"] [@dead "rangeBy"] let rangeBy: (int, int, ~step: int) => t(int);
+[@dead "rangeBy"] let rangeBy: (int, int, ~step: int) => t(int);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:40: makeByU
 <-- line 40
-[@dead "makeByU"] [@dead "makeByU"] let makeByU: (int, (. int) => 'a) => t('a);
+[@dead "makeByU"] let makeByU: (int, (. int) => 'a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:41: makeBy
 <-- line 41
-[@dead "makeBy"] [@dead "makeBy"] let makeBy: (int, int => 'a) => t('a);
+[@dead "makeBy"] let makeBy: (int, int => 'a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:43: makeByAndShuffleU
 <-- line 43
-[@dead "makeByAndShuffleU"] [@dead "makeByAndShuffleU"] let makeByAndShuffleU: (int, (. int) => 'a) => t('a);
+[@dead "makeByAndShuffleU"] let makeByAndShuffleU: (int, (. int) => 'a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:44: makeByAndShuffle
 <-- line 44
-[@dead "makeByAndShuffle"] [@dead "makeByAndShuffle"] let makeByAndShuffle: (int, int => 'a) => t('a);
+[@dead "makeByAndShuffle"] let makeByAndShuffle: (int, int => 'a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:46: zip
 <-- line 46
-[@dead "zip"] [@dead "zip"] let zip: (t('a), t('b)) => t(('a, 'b));
+[@dead "zip"] let zip: (t('a), t('b)) => t(('a, 'b));
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:48: zipByU
 <-- line 48
-[@dead "zipByU"] [@dead "zipByU"] let zipByU: (t('a), t('b), (. 'a, 'b) => 'c) => t('c);
+[@dead "zipByU"] let zipByU: (t('a), t('b), (. 'a, 'b) => 'c) => t('c);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:49: zipBy
 <-- line 49
-[@dead "zipBy"] [@dead "zipBy"] let zipBy: (t('a), t('b), ('a, 'b) => 'c) => t('c);
+[@dead "zipBy"] let zipBy: (t('a), t('b), ('a, 'b) => 'c) => t('c);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:51: unzip
 <-- line 51
-[@dead "unzip"] [@dead "unzip"] let unzip: t(('a, 'a)) => (t('a), t('a));
+[@dead "unzip"] let unzip: t(('a, 'a)) => (t('a), t('a));
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:53: concat
 <-- line 53
-[@dead "concat"] [@dead "concat"] let concat: (t('a), t('a)) => t('a);
+[@dead "concat"] let concat: (t('a), t('a)) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:55: concatMany
 <-- line 55
-[@dead "concatMany"] [@dead "concatMany"] let concatMany: t(t('a)) => t('a);
+[@dead "concatMany"] let concatMany: t(t('a)) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:57: slice
 <-- line 57
-[@dead "slice"] [@dead "slice"] let slice: (t('a), ~offset: int, ~len: int) => t('a);
+[@dead "slice"] let slice: (t('a), ~offset: int, ~len: int) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:59: sliceToEnd
 <-- line 59
-[@dead "sliceToEnd"] [@dead "sliceToEnd"] let sliceToEnd: (t('a), int) => t('a);
+[@dead "sliceToEnd"] let sliceToEnd: (t('a), int) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:61: copy
 <-- line 61
-[@dead "copy"] [@dead "copy"] let copy: t('a) => t('a);
+[@dead "copy"] let copy: t('a) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:63: forEachU
 <-- line 63
-[@dead "forEachU"] [@dead "forEachU"] let forEachU: (t('a), (. 'a) => unit) => unit;
+[@dead "forEachU"] let forEachU: (t('a), (. 'a) => unit) => unit;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:64: forEach
 <-- line 64
-[@dead "forEach"] [@dead "forEach"] let forEach: (t('a), 'a => unit) => unit;
+[@dead "forEach"] let forEach: (t('a), 'a => unit) => unit;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:66: mapU
 <-- line 66
-[@dead "mapU"] [@dead "mapU"] let mapU: (t('a), (. 'a) => 'b) => t('b);
+[@dead "mapU"] let mapU: (t('a), (. 'a) => 'b) => t('b);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:67: map
 <-- line 67
-[@dead "map"] [@dead "map"] let map: (t('a), 'a => 'b) => t('b);
+[@dead "map"] let map: (t('a), 'a => 'b) => t('b);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:69: keepWithIndexU
 <-- line 69
-[@dead "keepWithIndexU"] [@dead "keepWithIndexU"] let keepWithIndexU: (t('a), (. 'a, int) => bool) => t('a);
+[@dead "keepWithIndexU"] let keepWithIndexU: (t('a), (. 'a, int) => bool) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:70: keepWithIndex
 <-- line 70
-[@dead "keepWithIndex"] [@dead "keepWithIndex"] let keepWithIndex: (t('a), ('a, int) => bool) => t('a);
+[@dead "keepWithIndex"] let keepWithIndex: (t('a), ('a, int) => bool) => t('a);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:72: keepMapU
 <-- line 72
-[@dead "keepMapU"] [@dead "keepMapU"] let keepMapU: (t('a), (. 'a) => option('b)) => t('b);
+[@dead "keepMapU"] let keepMapU: (t('a), (. 'a) => option('b)) => t('b);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:73: keepMap
 <-- line 73
-[@dead "keepMap"] [@dead "keepMap"] let keepMap: (t('a), 'a => option('b)) => t('b);
+[@dead "keepMap"] let keepMap: (t('a), 'a => option('b)) => t('b);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:75: forEachWithIndexU
 <-- line 75
-[@dead "forEachWithIndexU"] [@dead "forEachWithIndexU"] let forEachWithIndexU: (t('a), (. int, 'a) => unit) => unit;
+[@dead "forEachWithIndexU"] let forEachWithIndexU: (t('a), (. int, 'a) => unit) => unit;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:76: forEachWithIndex
 <-- line 76
-[@dead "forEachWithIndex"] [@dead "forEachWithIndex"] let forEachWithIndex: (t('a), (int, 'a) => unit) => unit;
+[@dead "forEachWithIndex"] let forEachWithIndex: (t('a), (int, 'a) => unit) => unit;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:78: mapWithIndexU
 <-- line 78
-[@dead "mapWithIndexU"] [@dead "mapWithIndexU"] let mapWithIndexU: (t('a), (. int, 'a) => 'b) => t('b);
+[@dead "mapWithIndexU"] let mapWithIndexU: (t('a), (. int, 'a) => 'b) => t('b);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:79: mapWithIndex
 <-- line 79
-[@dead "mapWithIndex"] [@dead "mapWithIndex"] let mapWithIndex: (t('a), (int, 'a) => 'b) => t('b);
+[@dead "mapWithIndex"] let mapWithIndex: (t('a), (int, 'a) => 'b) => t('b);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:81: partitionU
 <-- line 81
-[@dead "partitionU"] [@dead "partitionU"] let partitionU: (t('a), (. 'a) => bool) => (t('a), t('a));
+[@dead "partitionU"] let partitionU: (t('a), (. 'a) => bool) => (t('a), t('a));
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:82: partition
 <-- line 82
-[@dead "partition"] [@dead "partition"] let partition: (t('a), 'a => bool) => (t('a), t('a));
+[@dead "partition"] let partition: (t('a), 'a => bool) => (t('a), t('a));
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:84: reduceU
 <-- line 84
-[@dead "reduceU"] [@dead "reduceU"] let reduceU: (t('a), 'b, (. 'b, 'a) => 'b) => 'b;
+[@dead "reduceU"] let reduceU: (t('a), 'b, (. 'b, 'a) => 'b) => 'b;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:85: reduce
 <-- line 85
-[@dead "reduce"] [@dead "reduce"] let reduce: (t('a), 'b, ('b, 'a) => 'b) => 'b;
+[@dead "reduce"] let reduce: (t('a), 'b, ('b, 'a) => 'b) => 'b;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:87: reduceReverseU
 <-- line 87
-[@dead "reduceReverseU"] [@dead "reduceReverseU"] let reduceReverseU: (t('a), 'b, (. 'b, 'a) => 'b) => 'b;
+[@dead "reduceReverseU"] let reduceReverseU: (t('a), 'b, (. 'b, 'a) => 'b) => 'b;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:88: reduceReverse
 <-- line 88
-[@dead "reduceReverse"] [@dead "reduceReverse"] let reduceReverse: (t('a), 'b, ('b, 'a) => 'b) => 'b;
+[@dead "reduceReverse"] let reduceReverse: (t('a), 'b, ('b, 'a) => 'b) => 'b;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:90: reduceReverse2U
 <-- line 90
-[@dead "reduceReverse2U"] [@dead "reduceReverse2U"] let reduceReverse2U: (t('a), t('b), 'c, (. 'c, 'a, 'b) => 'c) => 'c;
+[@dead "reduceReverse2U"] let reduceReverse2U: (t('a), t('b), 'c, (. 'c, 'a, 'b) => 'c) => 'c;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:91: reduceReverse2
 <-- line 91
-[@dead "reduceReverse2"] [@dead "reduceReverse2"] let reduceReverse2: (t('a), t('b), 'c, ('c, 'a, 'b) => 'c) => 'c;
+[@dead "reduceReverse2"] let reduceReverse2: (t('a), t('b), 'c, ('c, 'a, 'b) => 'c) => 'c;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:93: someU
 <-- line 93
-[@dead "someU"] [@dead "someU"] let someU: (t('a), (. 'a) => bool) => bool;
+[@dead "someU"] let someU: (t('a), (. 'a) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:94: some
 <-- line 94
-[@dead "some"] [@dead "some"] let some: (t('a), 'a => bool) => bool;
+[@dead "some"] let some: (t('a), 'a => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:96: everyU
 <-- line 96
-[@dead "everyU"] [@dead "everyU"] let everyU: (t('a), (. 'a) => bool) => bool;
+[@dead "everyU"] let everyU: (t('a), (. 'a) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:97: every
 <-- line 97
-[@dead "every"] [@dead "every"] let every: (t('a), 'a => bool) => bool;
+[@dead "every"] let every: (t('a), 'a => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:99: every2U
 <-- line 99
-[@dead "every2U"] [@dead "every2U"] let every2U: (t('a), t('b), (. 'a, 'b) => bool) => bool;
+[@dead "every2U"] let every2U: (t('a), t('b), (. 'a, 'b) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:100: every2
 <-- line 100
-[@dead "every2"] [@dead "every2"] let every2: (t('a), t('b), ('a, 'b) => bool) => bool;
+[@dead "every2"] let every2: (t('a), t('b), ('a, 'b) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:102: some2U
 <-- line 102
-[@dead "some2U"] [@dead "some2U"] let some2U: (t('a), t('b), (. 'a, 'b) => bool) => bool;
+[@dead "some2U"] let some2U: (t('a), t('b), (. 'a, 'b) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:103: some2
 <-- line 103
-[@dead "some2"] [@dead "some2"] let some2: (t('a), t('b), ('a, 'b) => bool) => bool;
+[@dead "some2"] let some2: (t('a), t('b), ('a, 'b) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:105: cmpU
 <-- line 105
-[@dead "cmpU"] [@dead "cmpU"] let cmpU: (t('a), t('a), (. 'a, 'a) => int) => int;
+[@dead "cmpU"] let cmpU: (t('a), t('a), (. 'a, 'a) => int) => int;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:106: cmp
 <-- line 106
-[@dead "cmp"] [@dead "cmp"] let cmp: (t('a), t('a), ('a, 'a) => int) => int;
+[@dead "cmp"] let cmp: (t('a), t('a), ('a, 'a) => int) => int;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:108: eqU
 <-- line 108
-[@dead "eqU"] [@dead "eqU"] let eqU: (t('a), t('a), (. 'a, 'a) => bool) => bool;
+[@dead "eqU"] let eqU: (t('a), t('a), (. 'a, 'a) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei:109: eq
 <-- line 109
-[@dead "eq"] [@dead "eq"] let eq: (t('a), t('a), ('a, 'a) => bool) => bool;
+[@dead "eq"] let eq: (t('a), t('a), ('a, 'a) => bool) => bool;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re:9: x
 <-- line 9
-[@dead "x"] [@dead "x"] let x = 42;
+[@dead "x"] let x = 42;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re:4: InnerComponent.someValueSoModuleOffsetsAreShifted
 <-- line 4
-[@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"] [@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"]   let someValueSoModuleOffsetsAreShifted = 77;
+[@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"]   let someValueSoModuleOffsetsAreShifted = 77;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re:10: exportSomething
 <-- line 10
-[@dead "exportSomething"] [@dead "exportSomething"] let exportSomething = 10;
+[@dead "exportSomething"] let exportSomething = 10;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams1.re:4: exportSomething
 <-- line 4
-[@dead "exportSomething"] [@dead "exportSomething"] let exportSomething = 10;
+[@dead "exportSomething"] let exportSomething = 10;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType2.re:7: convertT2
 <-- line 7
-[@dead "convertT2"] [@dead "convertT2"] let convertT2 = (x: t2) => x;
+[@dead "convertT2"] let convertT2 = (x: t2) => x;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re:18: innerStuffContents
 <-- line 18
-[@dead "innerStuffContents"] [@dead "innerStuffContents"] let innerStuffContents = innerStuffContents;
+[@dead "innerStuffContents"] let innerStuffContents = innerStuffContents;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re:42: make
 <-- line 42
-[@dead "make"] [@dead "make"] let make = make;
+[@dead "make"] let make = make;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:9: testBeltArrayGet
 <-- line 9
-[@dead "testBeltArrayGet"] [@dead "testBeltArrayGet"] let testBeltArrayGet = arr => Belt.(arr[3]);
+[@dead "testBeltArrayGet"] let testBeltArrayGet = arr => Belt.(arr[3]);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:11: testBeltArraySet
 <-- line 11
-[@dead "testBeltArraySet"] [@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
+[@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:8: Universe.notExported
 <-- line 8
-[@dead "Universe.notExported"] [@dead "Universe.notExported"]   let notExported = 33;
+[@dead "Universe.notExported"]   let notExported = 33;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:14: Universe.Nested2.x
 <-- line 14
-[@dead "Universe.Nested2.x"] [@dead "Universe.Nested2.x"]     let x = 0;
+[@dead "Universe.Nested2.x"]     let x = 0;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:19: Universe.Nested2.y
 <-- line 19
-[@dead "Universe.Nested2.y"] [@dead "Universe.Nested2.y"]     let y = 2;
+[@dead "Universe.Nested2.y"]     let y = 2;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:25: Universe.Nested2.Nested3.x
 <-- line 25
-[@dead "Universe.Nested2.Nested3.x"] [@dead "Universe.Nested2.Nested3.x"]       let x = 0;
+[@dead "Universe.Nested2.Nested3.x"]       let x = 0;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:26: Universe.Nested2.Nested3.y
 <-- line 26
-[@dead "Universe.Nested2.Nested3.y"] [@dead "Universe.Nested2.Nested3.y"]       let y = 1;
+[@dead "Universe.Nested2.Nested3.y"]       let y = 1;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:27: Universe.Nested2.Nested3.z
 <-- line 27
-[@dead "Universe.Nested2.Nested3.z"] [@dead "Universe.Nested2.Nested3.z"]       let z = 2;
+[@dead "Universe.Nested2.Nested3.z"]       let z = 2;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:28: Universe.Nested2.Nested3.w
 <-- line 28
-[@dead "Universe.Nested2.Nested3.w"] [@dead "Universe.Nested2.Nested3.w"]       let w = 3;
+[@dead "Universe.Nested2.Nested3.w"]       let w = 3;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re:21: q
 <-- line 21
-[@dead "q"] [@dead "q"] let q = 42;
+[@dead "q"] let q = 42;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei:7: r
 <-- line 7
-[@dead "r"] [@dead "r"] let r: record;
+[@dead "r"] let r: record;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re:2: fortytwo
 <-- line 2
-[@dead "fortytwo"] [@dead "fortytwo"] let fortytwo = 42;
+[@dead "fortytwo"] let fortytwo = 42;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler.re:3: Error1.notification
 <-- line 3
-[@dead "Error1.notification"] [@dead "Error1.notification"]   let notification = s => (s, s);
+[@dead "Error1.notification"]   let notification = s => (s, s);
 
 UNUSED CONSTRUCTORS/RECORD FIELDS:
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re:6: message.text
