@@ -136,18 +136,11 @@ let isImplementation = fn => fn.[String.length(fn) - 1] != 'i';
 let assoc = ((pos1, pos2)) => {
   let fn1 = pos1.Lexing.pos_fname
   and fn2 = pos2.Lexing.pos_fname;
-  let hasInterface = fn =>
-    switch (isImplementation(fn)) {
-    | false => true
-    | true =>
-      getModuleName(fn) == getModuleName(currentSrc^)
-      && Sys.file_exists(fn ++ "i")
-    };
   let isInterface = (fn, pos) =>
     Hashtbl.mem(valueDecs, pos)
     || getModuleName(fn) != getModuleName(currentSrc^)
     || !isImplementation(fn)
-    || !hasInterface(fn);
+    || !Sys.file_exists(fn ++ "i");
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
