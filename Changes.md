@@ -1,5 +1,6 @@
 # master
 - Fix missing import React in untyped back-end.
+- Fix version detection for bucklescript 6.2.x (inner modules).
 - Use React.ReactNode for children in TypeScript.
 
 # 2.40.1
