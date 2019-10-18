@@ -146,7 +146,8 @@ let assoc = ((pos1, pos2)) => {
   let isInterface = (fn, pos) =>
     Hashtbl.mem(valueDecs, pos)
     || getModuleName(fn) != getModuleName(currentSrc^)
-    || !(isImplementation(fn) && hasInterface(fn));
+    || !isImplementation(fn)
+    || !hasInterface(fn);
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
