@@ -235,19 +235,27 @@ let export = (~path, ~moduleName, ~decs: decs, ~id, ~loc) => {
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
     ++ id.Ident.name;
+  let pos = loc.Location.loc_start;
 
   /* a .cmi file can contain locations from other files.
        For instance:
            module M : Set.S with type elt = int
        will create value definitions whose location is in set.mli
      */
-  if (!loc.Location.loc_ghost
+  if (!loc.loc_ghost
       && (
-        moduleName == getModuleName(loc.Location.loc_start.Lexing.pos_fname)
-        || moduleName === include_
+        moduleName == getModuleName(pos.pos_fname) || moduleName === include_
       )
-      && check_underscore(id.Ident.name)) {
-    hashtbl_add_to_list(decs, loc.Location.loc_start, value);
+      && check_underscore(id.name)) {
+    if (verbose) {
+      GenTypeCommon.logItem(
+        "export %s %s\n",
+        id.name,
+        pos |> posToString(~printCol=true, ~shortFile=true),
+      );
+    };
+
+    hashtbl_add_to_list(decs, pos, value);
   };
 };
 
