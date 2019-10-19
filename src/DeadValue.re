@@ -135,9 +135,11 @@ let collectReferences = {
 let isImplementation = fn => fn.[String.length(fn) - 1] != 'i';
 
 /* Merge a location's references to another one's */
-let assoc = ((pos1, pos2)) => {
-  let fn1 = pos1.Lexing.pos_fname
-  and fn2 = pos2.Lexing.pos_fname;
+let processValueDependency = ((vd1, vd2)) => {
+  let pos1 = vd1.Types.val_loc.loc_start
+  and pos2 = vd2.Types.val_loc.loc_start;
+  let fn1 = pos1.pos_fname
+  and fn2 = pos2.pos_fname;
   let isInterface = (fn, pos) =>
     Hashtbl.mem(valueDecs, pos)
     || getModuleName(fn) != getModuleName(currentSrc^)
@@ -170,15 +172,9 @@ let processStructure =
   |> collectReferences.Tast_mapper.structure(collectReferences)
   |> ignore;
 
-  let posDependencies =
-    cmt_value_dependencies
-    |> List.rev_map(((vd1, vd2)) =>
-         (
-           vd1.Types.val_loc.Location.loc_start,
-           vd2.Types.val_loc.Location.loc_start,
-         )
-       );
-  posDependencies |> List.iter(assoc);
+  let valueDependencies = cmt_value_dependencies |> List.rev;
+
+  valueDependencies |> List.iter(processValueDependency);
   if (cmtiExists) {
     let clean = pos => {
       let fn = pos.Lexing.pos_fname;
@@ -187,10 +183,10 @@ let processStructure =
         PosHash.remove(valueReferences, pos);
       };
     };
-    posDependencies
-    |> List.iter(((pos1, pos2)) => {
-         clean(pos1);
-         clean(pos2);
+    valueDependencies
+    |> List.iter(((vd1, vd2)) => {
+         clean(vd1.Types.val_loc.loc_start);
+         clean(vd2.Types.val_loc.loc_start);
        });
   };
 };
