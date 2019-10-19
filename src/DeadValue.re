@@ -14,8 +14,7 @@ let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
   | _ => []
   };
 
-let rec collect_export =
-        (~mod_type=false, ~path, ~moduleName, si: Types.signature_item) =>
+let rec collect_export = (~path, ~moduleName, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc, val_kind}) when !val_loc.Location.loc_ghost =>
     let isPrimitive =
@@ -36,14 +35,12 @@ let rec collect_export =
     ) as s =>
     let collect =
       switch (s) {
-      | Sig_modtype(_) => mod_type
+      | Sig_modtype(_) => false
       | _ => true
       };
     if (collect) {
       getSignature(moduleType)
-      |> List.iter(
-           collect_export(~mod_type, ~path=[id, ...path], ~moduleName),
-         );
+      |> List.iter(collect_export(~path=[id, ...path], ~moduleName));
     };
   | _ => ()
   };
