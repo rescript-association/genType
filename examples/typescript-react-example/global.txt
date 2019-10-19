@@ -120,12 +120,6 @@
   addValueReference usage:ReasonComponent.re:63:42 declaration:ReasonComponent.re:63:24
   addValueReference usage:ReasonComponent.re:63:46 declaration:ReasonComponent.re:63:35
   addValueReference usage:ReasonComponent.re:63:44 declaration:pervasives.mli:264:0
-  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler.cmt
-  addValueReference usage:CreateErrorHandler.re:3:27 declaration:CreateErrorHandler.re:3:21
-  addValueReference usage:CreateErrorHandler.re:3:30 declaration:CreateErrorHandler.re:3:21
-  addValueReference usage:CreateErrorHandler.re:8:0 declaration:ErrorHandler.re:7:6
-  mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler.re:3:6
-  addValueReference usage:CreateErrorHandler.re:3:6 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
   addValueReference usage:ErrorHandler.re:7:39 declaration:ErrorHandler.re:7:15
@@ -711,6 +705,12 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler2.re:3:6
   addValueReference usage:CreateErrorHandler2.re:3:6 declaration:ErrorHandler.re:3:2
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
+  addValueReference usage:CreateErrorHandler1.re:3:27 declaration:CreateErrorHandler1.re:3:21
+  addValueReference usage:CreateErrorHandler1.re:3:30 declaration:CreateErrorHandler1.re:3:21
+  addValueReference usage:CreateErrorHandler1.re:8:0 declaration:ErrorHandler.re:7:6
+  mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler1.re:3:6
+  addValueReference usage:CreateErrorHandler1.re:3:6 declaration:ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
   addValueReference usage:ModuleAliases.re:22:44 declaration:ModuleAliases.re:22:18
   addValueReference usage:ModuleAliases.re:25:59 declaration:ModuleAliases.re:25:17
@@ -970,7 +970,6 @@ File References
   TransitiveType3.re -->> 
   Uncurried.re -->> js.ml, pervasives.mli
   TransitiveType2.re -->> 
-  CreateErrorHandler.re -->> ErrorHandler.re
   IgnoreInterface.rei -->> 
   TestFirstClassModules.re -->> 
   FirstClassModulesInterface.rei -->> 
@@ -985,6 +984,7 @@ File References
   ErrorHandler.re -->> 
   Hooks.re -->> React.re, ReactDOMRe.re, ReasonReact.rei, ImportHookDefault.re, ImportHooks.re, js_null_undefined.mli, js.ml, obj.mli, pervasives.mli
   ModuleAliases2.re -->> 
+  CreateErrorHandler1.re -->> ErrorHandler.re
   ImportMyBanner.re -->> 
   TestPromise.re -->> js_promise.ml
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
@@ -1006,7 +1006,7 @@ File References
   ManyComponents.component: 1 references (ManyComponents.re:40:5)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:31:7)
   ManyComponents.InnerComponent.component: 1 references (ManyComponents.re:10:7)
-  ErrorHandler.Make.notify: 1 references (CreateErrorHandler.re:8:0)
+  ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0)
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:15)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:51)
   ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:42:43)
@@ -1248,7 +1248,7 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler2.re:3: Error2.notification
 <-- line 3
 [@dead "Error2.notification"]   let notification = _ => ("", "");
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler.re:3: Error1.notification
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler1.re:3: Error1.notification
 <-- line 3
 [@dead "Error1.notification"]   let notification = s => (s, s);
 
