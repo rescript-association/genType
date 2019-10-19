@@ -2,9 +2,9 @@
 
 import * as ErrorHandler from "./ErrorHandler.bs.js";
 
-function notification(param) {
+function notification(n) {
   return /* tuple */[
-          "",
+          String(n),
           ""
         ];
 }
