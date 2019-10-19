@@ -125,7 +125,7 @@ let addValueReference = (~posDeclaration, ~posUsage) => {
       ? posUsage : currentBindingPos^;
   if (verbose) {
     GenTypeCommon.logItem(
-      "addValueReference usage:%s declaration:%s\n",
+      "addValueReference %s --> %s\n",
       posUsage |> posToString(~printCol=true, ~shortFile=true),
       posDeclaration |> posToString(~printCol=true, ~shortFile=true),
     );

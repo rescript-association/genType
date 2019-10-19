@@ -1,414 +1,414 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/location/location.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ManyComponents.cmt
-  addValueReference usage:ManyComponents.re:6:6 declaration:ReasonReact.rei:153:0
-  addValueReference usage:ManyComponents.re:9:6 declaration:ReasonReact.rei:17:0
-  addValueReference usage:ManyComponents.re:9:6 declaration:ReactDOMRe.re:2105:0
-  addValueReference usage:ManyComponents.re:9:6 declaration:ManyComponents.re:6:6
-  addValueReference usage:ManyComponents.re:16:6 declaration:ReasonReact.rei:153:0
-  addValueReference usage:ManyComponents.re:19:6 declaration:ReasonReact.rei:17:0
-  addValueReference usage:ManyComponents.re:19:6 declaration:ReactDOMRe.re:2105:0
-  addValueReference usage:ManyComponents.re:19:6 declaration:ManyComponents.re:16:6
-  addValueReference usage:ManyComponents.re:36:4 declaration:ReasonReact.rei:153:0
-  addValueReference usage:ManyComponents.re:39:4 declaration:ReasonReact.rei:17:0
-  addValueReference usage:ManyComponents.re:39:4 declaration:ManyComponents.re:9:6
-  addValueReference usage:ManyComponents.re:39:4 declaration:ReasonReact.rei:181:0
-  addValueReference usage:ManyComponents.re:39:4 declaration:ReactDOMRe.re:2105:0
-  addValueReference usage:ManyComponents.re:39:4 declaration:ManyComponents.re:36:4
+  addValueReference ManyComponents.re:6:6 --> ReasonReact.rei:153:0
+  addValueReference ManyComponents.re:9:6 --> ReasonReact.rei:17:0
+  addValueReference ManyComponents.re:9:6 --> ReactDOMRe.re:2105:0
+  addValueReference ManyComponents.re:9:6 --> ManyComponents.re:6:6
+  addValueReference ManyComponents.re:16:6 --> ReasonReact.rei:153:0
+  addValueReference ManyComponents.re:19:6 --> ReasonReact.rei:17:0
+  addValueReference ManyComponents.re:19:6 --> ReactDOMRe.re:2105:0
+  addValueReference ManyComponents.re:19:6 --> ManyComponents.re:16:6
+  addValueReference ManyComponents.re:36:4 --> ReasonReact.rei:153:0
+  addValueReference ManyComponents.re:39:4 --> ReasonReact.rei:17:0
+  addValueReference ManyComponents.re:39:4 --> ManyComponents.re:9:6
+  addValueReference ManyComponents.re:39:4 --> ReasonReact.rei:181:0
+  addValueReference ManyComponents.re:39:4 --> ReactDOMRe.re:2105:0
+  addValueReference ManyComponents.re:39:4 --> ManyComponents.re:36:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ComponentAsProp.cmt
-  addValueReference usage:ComponentAsProp.re:1:4 declaration:ReasonReact.rei:153:0
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ComponentAsProp.re:5:13
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ComponentAsProp.re:5:21
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ComponentAsProp.re:13:16
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ReasonReact.rei:15:0
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ComponentAsProp.re:5:35
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:ComponentAsProp.re:5:4 declaration:ComponentAsProp.re:1:4
+  addValueReference ComponentAsProp.re:1:4 --> ReasonReact.rei:153:0
+  addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:5:13
+  addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:5:21
+  addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:13:16
+  addValueReference ComponentAsProp.re:5:4 --> ReasonReact.rei:15:0
+  addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:5:35
+  addValueReference ComponentAsProp.re:5:4 --> ReactDOMRe.re:1097:0
+  addValueReference ComponentAsProp.re:5:4 --> ReactDOMRe.re:1097:0
+  addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:1:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Types.cmt
-  addValueReference usage:Types.re:8:4 declaration:list.mli:117:0
-  addValueReference usage:Types.re:28:8 declaration:Types.re:28:16
-  addValueReference usage:Types.re:28:8 declaration:js.ml:70:1
-  addValueReference usage:Types.re:28:8 declaration:Types.re:28:16
-  addValueReference usage:Types.re:28:8 declaration:js.ml:70:1
-  addValueReference usage:Types.re:28:8 declaration:Types.re:28:8
-  addValueReference usage:Types.re:28:8 declaration:belt_Option.mli:58:0
-  addValueReference usage:Types.re:28:8 declaration:Types.re:28:16
-  addValueReference usage:Types.re:28:8 declaration:js.ml:70:1
-  addValueReference usage:Types.re:28:8 declaration:Types.re:28:8
-  addValueReference usage:Types.re:28:8 declaration:belt_Option.mli:58:0
-  addValueReference usage:Types.re:28:8 declaration:Types.re:28:37
-  addValueReference usage:Types.re:46:4 declaration:Types.re:46:31
-  addValueReference usage:Types.re:53:4 declaration:Types.re:53:35
-  addValueReference usage:Types.re:56:4 declaration:Types.re:56:39
-  addValueReference usage:Types.re:56:4 declaration:Types.re:56:54
-  addValueReference usage:Types.re:79:4 declaration:js_json.mli:183:0
-  addValueReference usage:Types.re:93:4 declaration:Types.re:93:23
-  addValueReference usage:Types.re:99:4 declaration:Types.re:99:27
-  addValueReference usage:Types.re:117:4 declaration:Types.re:117:39
-  addValueReference usage:Types.re:133:4 declaration:Types.re:133:16
-  addValueReference usage:Types.re:133:4 declaration:js.ml:70:1
-  addValueReference usage:Types.re:133:4 declaration:js.ml:103:1
-  addValueReference usage:Types.re:143:4 declaration:Types.re:143:36
+  addValueReference Types.re:8:4 --> list.mli:117:0
+  addValueReference Types.re:28:8 --> Types.re:28:16
+  addValueReference Types.re:28:8 --> js.ml:70:1
+  addValueReference Types.re:28:8 --> Types.re:28:16
+  addValueReference Types.re:28:8 --> js.ml:70:1
+  addValueReference Types.re:28:8 --> Types.re:28:8
+  addValueReference Types.re:28:8 --> belt_Option.mli:58:0
+  addValueReference Types.re:28:8 --> Types.re:28:16
+  addValueReference Types.re:28:8 --> js.ml:70:1
+  addValueReference Types.re:28:8 --> Types.re:28:8
+  addValueReference Types.re:28:8 --> belt_Option.mli:58:0
+  addValueReference Types.re:28:8 --> Types.re:28:37
+  addValueReference Types.re:46:4 --> Types.re:46:31
+  addValueReference Types.re:53:4 --> Types.re:53:35
+  addValueReference Types.re:56:4 --> Types.re:56:39
+  addValueReference Types.re:56:4 --> Types.re:56:54
+  addValueReference Types.re:79:4 --> js_json.mli:183:0
+  addValueReference Types.re:93:4 --> Types.re:93:23
+  addValueReference Types.re:99:4 --> Types.re:99:27
+  addValueReference Types.re:117:4 --> Types.re:117:39
+  addValueReference Types.re:133:4 --> Types.re:133:16
+  addValueReference Types.re:133:4 --> js.ml:70:1
+  addValueReference Types.re:133:4 --> js.ml:103:1
+  addValueReference Types.re:143:4 --> Types.re:143:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
-  addValueReference usage:Tuples.re:4:4 declaration:Tuples.re:4:18
-  addValueReference usage:Tuples.re:4:4 declaration:Tuples.re:4:21
-  addValueReference usage:Tuples.re:4:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Tuples.re:13:4 declaration:Tuples.re:13:20
-  addValueReference usage:Tuples.re:13:4 declaration:Tuples.re:13:23
-  addValueReference usage:Tuples.re:13:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Tuples.re:13:4 declaration:Tuples.re:13:26
-  addValueReference usage:Tuples.re:13:4 declaration:Tuples.re:14:40
-  addValueReference usage:Tuples.re:13:4 declaration:belt_Option.mli:43:0
-  addValueReference usage:Tuples.re:13:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Tuples.re:17:4 declaration:Tuples.re:17:29
-  addValueReference usage:Tuples.re:17:4 declaration:Tuples.re:17:32
-  addValueReference usage:Tuples.re:17:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Tuples.re:17:4 declaration:Tuples.re:17:35
-  addValueReference usage:Tuples.re:17:4 declaration:Tuples.re:18:40
-  addValueReference usage:Tuples.re:17:4 declaration:belt_Option.mli:43:0
-  addValueReference usage:Tuples.re:17:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Tuples.re:21:4 declaration:Tuples.re:21:32
-  addValueReference usage:Tuples.re:21:4 declaration:Tuples.re:21:40
-  addValueReference usage:Tuples.re:21:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Tuples.re:24:4 declaration:Tuples.re:24:15
-  addValueReference usage:Tuples.re:24:4 declaration:Tuples.re:24:18
-  addValueReference usage:Tuples.re:39:4 declaration:Tuples.re:39:21
-  addValueReference usage:Tuples.re:42:4 declaration:Tuples.re:42:13
-  addValueReference usage:Tuples.re:42:4 declaration:Tuples.re:42:20
-  addValueReference usage:Tuples.re:45:4 declaration:Tuples.re:45:24
-  addValueReference usage:Tuples.re:45:4 declaration:Tuples.re:45:31
-  addValueReference usage:Tuples.re:45:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Tuples.re:45:4 declaration:Tuples.re:45:31
+  addValueReference Tuples.re:4:4 --> Tuples.re:4:18
+  addValueReference Tuples.re:4:4 --> Tuples.re:4:21
+  addValueReference Tuples.re:4:4 --> pervasives.mli:264:0
+  addValueReference Tuples.re:13:4 --> Tuples.re:13:20
+  addValueReference Tuples.re:13:4 --> Tuples.re:13:23
+  addValueReference Tuples.re:13:4 --> pervasives.mli:272:0
+  addValueReference Tuples.re:13:4 --> Tuples.re:13:26
+  addValueReference Tuples.re:13:4 --> Tuples.re:14:40
+  addValueReference Tuples.re:13:4 --> belt_Option.mli:43:0
+  addValueReference Tuples.re:13:4 --> pervasives.mli:272:0
+  addValueReference Tuples.re:17:4 --> Tuples.re:17:29
+  addValueReference Tuples.re:17:4 --> Tuples.re:17:32
+  addValueReference Tuples.re:17:4 --> pervasives.mli:272:0
+  addValueReference Tuples.re:17:4 --> Tuples.re:17:35
+  addValueReference Tuples.re:17:4 --> Tuples.re:18:40
+  addValueReference Tuples.re:17:4 --> belt_Option.mli:43:0
+  addValueReference Tuples.re:17:4 --> pervasives.mli:272:0
+  addValueReference Tuples.re:21:4 --> Tuples.re:21:32
+  addValueReference Tuples.re:21:4 --> Tuples.re:21:40
+  addValueReference Tuples.re:21:4 --> pervasives.mli:272:0
+  addValueReference Tuples.re:24:4 --> Tuples.re:24:15
+  addValueReference Tuples.re:24:4 --> Tuples.re:24:18
+  addValueReference Tuples.re:39:4 --> Tuples.re:39:21
+  addValueReference Tuples.re:42:4 --> Tuples.re:42:13
+  addValueReference Tuples.re:42:4 --> Tuples.re:42:20
+  addValueReference Tuples.re:45:4 --> Tuples.re:45:24
+  addValueReference Tuples.re:45:4 --> Tuples.re:45:31
+  addValueReference Tuples.re:45:4 --> pervasives.mli:264:0
+  addValueReference Tuples.re:45:4 --> Tuples.re:45:31
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ReasonComponent.cmt
-  addValueReference usage:ReasonComponent.re:3:4 declaration:ReasonReact.rei:153:0
-  addValueReference usage:ReasonComponent.re:15:4 declaration:js.ml:160:0
-  addValueReference usage:ReasonComponent.re:19:6 declaration:ReasonComponent.re:19:14
-  addValueReference usage:ReasonComponent.re:19:43 declaration:ReasonComponent.re:19:51
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonComponent.re:15:4
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonComponent.re:19:6
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonComponent.re:19:43
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonComponent.re:29:31
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:723:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:list.mli:117:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:226:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:string.mli:123:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:226:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonComponent.re:19:34
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonReact.rei:17:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ImportMyBanner.re:19:4
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonReact.rei:181:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReactDOMRe.re:2105:0
-  addValueReference usage:ReasonComponent.re:18:4 declaration:ReasonComponent.re:3:4
-  addValueReference usage:ReasonComponent.re:43:14 declaration:ReasonComponent.re:43:20
-  addValueReference usage:ReasonComponent.re:43:4 declaration:ReasonComponent.re:43:14
-  addValueReference usage:ReasonComponent.re:43:4 declaration:ReasonComponent.re:43:24
-  addValueReference usage:ReasonComponent.re:43:4 declaration:pervasives.mli:268:0
-  addValueReference usage:ReasonComponent.re:46:4 declaration:ReasonComponent.re:46:37
-  addValueReference usage:ReasonComponent.re:55:4 declaration:ReasonComponent.re:58:6
-  addValueReference usage:ReasonComponent.re:55:4 declaration:pervasives.mli:723:0
-  addValueReference usage:ReasonComponent.re:55:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:55:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:55:4 declaration:ReasonComponent.re:59:6
-  addValueReference usage:ReasonComponent.re:55:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:55:4 declaration:pervasives.mli:670:0
-  addValueReference usage:ReasonComponent.re:55:4 declaration:ReasonComponent.re:55:16
-  addValueReference usage:ReasonComponent.re:63:4 declaration:ReasonComponent.re:63:24
-  addValueReference usage:ReasonComponent.re:63:4 declaration:ReasonComponent.re:63:35
-  addValueReference usage:ReasonComponent.re:63:4 declaration:pervasives.mli:264:0
+  addValueReference ReasonComponent.re:3:4 --> ReasonReact.rei:153:0
+  addValueReference ReasonComponent.re:15:4 --> js.ml:160:0
+  addValueReference ReasonComponent.re:19:6 --> ReasonComponent.re:19:14
+  addValueReference ReasonComponent.re:19:43 --> ReasonComponent.re:19:51
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:15:4
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:6
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:43
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:29:31
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:723:0
+  addValueReference ReasonComponent.re:18:4 --> list.mli:117:0
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:226:0
+  addValueReference ReasonComponent.re:18:4 --> string.mli:123:0
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:226:0
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:34
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:18:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:17:0
+  addValueReference ReasonComponent.re:18:4 --> ImportMyBanner.re:19:4
+  addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:181:0
+  addValueReference ReasonComponent.re:18:4 --> ReactDOMRe.re:2105:0
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:3:4
+  addValueReference ReasonComponent.re:43:14 --> ReasonComponent.re:43:20
+  addValueReference ReasonComponent.re:43:4 --> ReasonComponent.re:43:14
+  addValueReference ReasonComponent.re:43:4 --> ReasonComponent.re:43:24
+  addValueReference ReasonComponent.re:43:4 --> pervasives.mli:268:0
+  addValueReference ReasonComponent.re:46:4 --> ReasonComponent.re:46:37
+  addValueReference ReasonComponent.re:55:4 --> ReasonComponent.re:58:6
+  addValueReference ReasonComponent.re:55:4 --> pervasives.mli:723:0
+  addValueReference ReasonComponent.re:55:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:55:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:55:4 --> ReasonComponent.re:59:6
+  addValueReference ReasonComponent.re:55:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:55:4 --> pervasives.mli:670:0
+  addValueReference ReasonComponent.re:55:4 --> ReasonComponent.re:55:16
+  addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:24
+  addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:35
+  addValueReference ReasonComponent.re:63:4 --> pervasives.mli:264:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
-  addValueReference usage:ErrorHandler.re:7:6 declaration:ErrorHandler.re:7:15
-  addValueReference usage:ErrorHandler.re:7:6 declaration:ErrorHandler.re:3:2
+  addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
+  addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
-  addValueReference usage:ImmutableArray.re:14:6 declaration:ImmutableArray.re:14:18
-  addValueReference usage:ImmutableArray.re:14:6 declaration:belt_Array.mli:275:0
-  addValueReference usage:ImmutableArray.re:14:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:16:6 declaration:ImmutableArray.re:16:16
-  addValueReference usage:ImmutableArray.re:16:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:16:6 declaration:belt_Array.mli:275:0
-  addValueReference usage:ImmutableArray.re:20:6 declaration:ImmutableArray.re:20:15
-  addValueReference usage:ImmutableArray.re:20:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:20:6 declaration:belt_Array.mli:21:0
-  addValueReference usage:ImmutableArray.re:22:6 declaration:ImmutableArray.re:22:13
-  addValueReference usage:ImmutableArray.re:22:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:22:6 declaration:belt_Array.mli:24:0
-  addValueReference usage:ImmutableArray.re:24:6 declaration:ImmutableArray.re:24:13
-  addValueReference usage:ImmutableArray.re:24:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:24:6 declaration:ImmutableArray.re:24:16
-  addValueReference usage:ImmutableArray.re:24:6 declaration:belt_Array.mli:27:0
-  addValueReference usage:ImmutableArray.re:26:6 declaration:ImmutableArray.re:26:16
-  addValueReference usage:ImmutableArray.re:26:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:26:6 declaration:ImmutableArray.re:26:19
-  addValueReference usage:ImmutableArray.re:26:6 declaration:belt_Array.mli:41:0
-  addValueReference usage:ImmutableArray.re:28:6 declaration:ImmutableArray.re:28:19
-  addValueReference usage:ImmutableArray.re:28:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:28:6 declaration:ImmutableArray.re:28:22
-  addValueReference usage:ImmutableArray.re:28:6 declaration:belt_Array.mli:47:0
-  addValueReference usage:ImmutableArray.re:30:6 declaration:ImmutableArray.re:30:22
-  addValueReference usage:ImmutableArray.re:30:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:30:6 declaration:ImmutableArray.re:30:25
-  addValueReference usage:ImmutableArray.re:30:6 declaration:belt_Array.mli:56:0
-  addValueReference usage:ImmutableArray.re:32:6 declaration:ImmutableArray.re:32:16
-  addValueReference usage:ImmutableArray.re:32:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:32:6 declaration:belt_Array.mli:80:0
-  addValueReference usage:ImmutableArray.re:32:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:34:6 declaration:ImmutableArray.re:34:16
-  addValueReference usage:ImmutableArray.re:34:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:34:6 declaration:belt_Array.mli:94:0
-  addValueReference usage:ImmutableArray.re:34:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:36:6 declaration:ImmutableArray.re:36:26
-  addValueReference usage:ImmutableArray.re:36:6 declaration:belt_Array.mli:103:0
-  addValueReference usage:ImmutableArray.re:36:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:38:6 declaration:ImmutableArray.re:38:32
-  addValueReference usage:ImmutableArray.re:38:6 declaration:belt_Array.mli:114:0
-  addValueReference usage:ImmutableArray.re:38:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:40:6 declaration:ImmutableArray.re:40:14
-  addValueReference usage:ImmutableArray.re:40:6 declaration:ImmutableArray.re:40:17
-  addValueReference usage:ImmutableArray.re:40:6 declaration:belt_Array.mli:128:0
-  addValueReference usage:ImmutableArray.re:40:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:42:6 declaration:ImmutableArray.re:42:15
-  addValueReference usage:ImmutableArray.re:42:6 declaration:ImmutableArray.re:42:18
-  addValueReference usage:ImmutableArray.re:42:6 declaration:belt_Array.mli:134:0
-  addValueReference usage:ImmutableArray.re:42:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:44:6 declaration:ImmutableArray.re:44:17
-  addValueReference usage:ImmutableArray.re:44:6 declaration:ImmutableArray.re:44:20
-  addValueReference usage:ImmutableArray.re:44:6 declaration:ImmutableArray.re:44:24
-  addValueReference usage:ImmutableArray.re:44:6 declaration:belt_Array.mli:142:0
-  addValueReference usage:ImmutableArray.re:44:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:46:6 declaration:ImmutableArray.re:46:17
-  addValueReference usage:ImmutableArray.re:46:6 declaration:ImmutableArray.re:46:20
-  addValueReference usage:ImmutableArray.re:46:6 declaration:belt_Array.mli:159:0
-  addValueReference usage:ImmutableArray.re:46:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:47:6 declaration:ImmutableArray.re:47:16
-  addValueReference usage:ImmutableArray.re:47:6 declaration:ImmutableArray.re:47:19
-  addValueReference usage:ImmutableArray.re:47:6 declaration:belt_Array.mli:160:0
-  addValueReference usage:ImmutableArray.re:47:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:49:6 declaration:ImmutableArray.re:49:27
-  addValueReference usage:ImmutableArray.re:49:6 declaration:ImmutableArray.re:49:30
-  addValueReference usage:ImmutableArray.re:49:6 declaration:belt_Array.mli:172:0
-  addValueReference usage:ImmutableArray.re:49:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:50:6 declaration:ImmutableArray.re:50:26
-  addValueReference usage:ImmutableArray.re:50:6 declaration:ImmutableArray.re:50:29
-  addValueReference usage:ImmutableArray.re:50:6 declaration:belt_Array.mli:173:0
-  addValueReference usage:ImmutableArray.re:50:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:52:6 declaration:ImmutableArray.re:52:13
-  addValueReference usage:ImmutableArray.re:52:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:52:6 declaration:ImmutableArray.re:52:17
-  addValueReference usage:ImmutableArray.re:52:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:52:6 declaration:belt_Array.mli:180:0
-  addValueReference usage:ImmutableArray.re:52:6 declaration:ImmutableArray.re:9:2
-  addValueReference usage:ImmutableArray.re:54:6 declaration:ImmutableArray.re:54:16
-  addValueReference usage:ImmutableArray.re:54:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:54:6 declaration:ImmutableArray.re:54:20
-  addValueReference usage:ImmutableArray.re:54:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:54:6 declaration:ImmutableArray.re:54:24
-  addValueReference usage:ImmutableArray.re:54:6 declaration:belt_Array.mli:192:1
-  addValueReference usage:ImmutableArray.re:54:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:55:6 declaration:ImmutableArray.re:55:15
-  addValueReference usage:ImmutableArray.re:55:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:55:6 declaration:ImmutableArray.re:55:19
-  addValueReference usage:ImmutableArray.re:55:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:55:6 declaration:ImmutableArray.re:55:23
-  addValueReference usage:ImmutableArray.re:55:6 declaration:belt_Array.mli:193:1
-  addValueReference usage:ImmutableArray.re:55:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:57:6 declaration:ImmutableArray.re:57:14
-  addValueReference usage:ImmutableArray.re:57:6 declaration:ImmutableArray.re:6:2
-  addValueReference usage:ImmutableArray.re:57:6 declaration:belt_Array.mli:207:0
-  addValueReference usage:ImmutableArray.re:57:6 declaration:ImmutableArray.re:10:2
-  addValueReference usage:ImmutableArray.re:59:6 declaration:ImmutableArray.re:59:16
-  addValueReference usage:ImmutableArray.re:59:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:59:6 declaration:ImmutableArray.re:59:20
-  addValueReference usage:ImmutableArray.re:59:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:59:6 declaration:belt_Array.mli:216:0
-  addValueReference usage:ImmutableArray.re:59:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:61:6 declaration:ImmutableArray.re:61:20
-  addValueReference usage:ImmutableArray.re:61:6 declaration:ImmutableArray.re:7:2
-  addValueReference usage:ImmutableArray.re:61:6 declaration:belt_Array.mli:229:0
-  addValueReference usage:ImmutableArray.re:61:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:63:6 declaration:ImmutableArray.re:63:15
-  addValueReference usage:ImmutableArray.re:63:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:63:6 declaration:ImmutableArray.re:63:19
-  addValueReference usage:ImmutableArray.re:63:6 declaration:ImmutableArray.re:63:28
-  addValueReference usage:ImmutableArray.re:63:6 declaration:belt_Array.mli:240:0
-  addValueReference usage:ImmutableArray.re:63:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:66:6 declaration:ImmutableArray.re:66:20
-  addValueReference usage:ImmutableArray.re:66:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:66:6 declaration:ImmutableArray.re:66:23
-  addValueReference usage:ImmutableArray.re:66:6 declaration:belt_Array.mli:260:0
-  addValueReference usage:ImmutableArray.re:66:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:68:6 declaration:ImmutableArray.re:68:13
-  addValueReference usage:ImmutableArray.re:68:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:68:6 declaration:belt_Array.mli:275:0
-  addValueReference usage:ImmutableArray.re:68:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:70:6 declaration:ImmutableArray.re:70:18
-  addValueReference usage:ImmutableArray.re:70:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:70:6 declaration:ImmutableArray.re:70:21
-  addValueReference usage:ImmutableArray.re:70:6 declaration:belt_Array.mli:336:0
-  addValueReference usage:ImmutableArray.re:71:6 declaration:ImmutableArray.re:71:17
-  addValueReference usage:ImmutableArray.re:71:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:71:6 declaration:ImmutableArray.re:71:20
-  addValueReference usage:ImmutableArray.re:71:6 declaration:belt_Array.mli:337:0
-  addValueReference usage:ImmutableArray.re:73:6 declaration:ImmutableArray.re:73:14
-  addValueReference usage:ImmutableArray.re:73:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:73:6 declaration:ImmutableArray.re:73:17
-  addValueReference usage:ImmutableArray.re:73:6 declaration:belt_Array.mli:359:0
-  addValueReference usage:ImmutableArray.re:73:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:74:6 declaration:ImmutableArray.re:74:13
-  addValueReference usage:ImmutableArray.re:74:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:74:6 declaration:ImmutableArray.re:74:16
-  addValueReference usage:ImmutableArray.re:74:6 declaration:belt_Array.mli:360:0
-  addValueReference usage:ImmutableArray.re:74:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:76:6 declaration:ImmutableArray.re:76:24
-  addValueReference usage:ImmutableArray.re:76:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:76:6 declaration:ImmutableArray.re:76:27
-  addValueReference usage:ImmutableArray.re:76:6 declaration:belt_Array.mli:402:0
-  addValueReference usage:ImmutableArray.re:76:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:77:6 declaration:ImmutableArray.re:77:23
-  addValueReference usage:ImmutableArray.re:77:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:77:6 declaration:ImmutableArray.re:77:26
-  addValueReference usage:ImmutableArray.re:77:6 declaration:belt_Array.mli:403:0
-  addValueReference usage:ImmutableArray.re:77:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:79:6 declaration:ImmutableArray.re:79:18
-  addValueReference usage:ImmutableArray.re:79:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:79:6 declaration:ImmutableArray.re:79:21
-  addValueReference usage:ImmutableArray.re:79:6 declaration:belt_Array.mli:412:0
-  addValueReference usage:ImmutableArray.re:79:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:80:6 declaration:ImmutableArray.re:80:17
-  addValueReference usage:ImmutableArray.re:80:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:80:6 declaration:ImmutableArray.re:80:20
-  addValueReference usage:ImmutableArray.re:80:6 declaration:belt_Array.mli:413:0
-  addValueReference usage:ImmutableArray.re:80:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:82:6 declaration:ImmutableArray.re:82:27
-  addValueReference usage:ImmutableArray.re:82:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:82:6 declaration:ImmutableArray.re:82:30
-  addValueReference usage:ImmutableArray.re:82:6 declaration:belt_Array.mli:423:0
-  addValueReference usage:ImmutableArray.re:83:6 declaration:ImmutableArray.re:83:26
-  addValueReference usage:ImmutableArray.re:83:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:83:6 declaration:ImmutableArray.re:83:29
-  addValueReference usage:ImmutableArray.re:83:6 declaration:belt_Array.mli:424:0
-  addValueReference usage:ImmutableArray.re:85:6 declaration:ImmutableArray.re:85:23
-  addValueReference usage:ImmutableArray.re:85:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:85:6 declaration:ImmutableArray.re:85:26
-  addValueReference usage:ImmutableArray.re:85:6 declaration:belt_Array.mli:446:0
-  addValueReference usage:ImmutableArray.re:85:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:86:6 declaration:ImmutableArray.re:86:22
-  addValueReference usage:ImmutableArray.re:86:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:86:6 declaration:ImmutableArray.re:86:25
-  addValueReference usage:ImmutableArray.re:86:6 declaration:belt_Array.mli:447:0
-  addValueReference usage:ImmutableArray.re:86:6 declaration:ImmutableArray.re:8:2
-  addValueReference usage:ImmutableArray.re:88:6 declaration:ImmutableArray.re:88:20
-  addValueReference usage:ImmutableArray.re:88:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:88:6 declaration:ImmutableArray.re:88:23
-  addValueReference usage:ImmutableArray.re:88:6 declaration:belt_Array.mli:460:0
-  addValueReference usage:ImmutableArray.re:88:6 declaration:ImmutableArray.re:10:2
-  addValueReference usage:ImmutableArray.re:89:6 declaration:ImmutableArray.re:89:19
-  addValueReference usage:ImmutableArray.re:89:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:89:6 declaration:ImmutableArray.re:89:22
-  addValueReference usage:ImmutableArray.re:89:6 declaration:belt_Array.mli:461:0
-  addValueReference usage:ImmutableArray.re:89:6 declaration:ImmutableArray.re:10:2
-  addValueReference usage:ImmutableArray.re:91:6 declaration:ImmutableArray.re:91:17
-  addValueReference usage:ImmutableArray.re:91:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:91:6 declaration:ImmutableArray.re:91:20
-  addValueReference usage:ImmutableArray.re:91:6 declaration:ImmutableArray.re:91:23
-  addValueReference usage:ImmutableArray.re:91:6 declaration:belt_Array.mli:470:0
-  addValueReference usage:ImmutableArray.re:92:6 declaration:ImmutableArray.re:92:16
-  addValueReference usage:ImmutableArray.re:92:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:92:6 declaration:ImmutableArray.re:92:19
-  addValueReference usage:ImmutableArray.re:92:6 declaration:ImmutableArray.re:92:22
-  addValueReference usage:ImmutableArray.re:92:6 declaration:belt_Array.mli:471:0
-  addValueReference usage:ImmutableArray.re:94:6 declaration:ImmutableArray.re:94:24
-  addValueReference usage:ImmutableArray.re:94:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:94:6 declaration:ImmutableArray.re:94:27
-  addValueReference usage:ImmutableArray.re:94:6 declaration:ImmutableArray.re:94:30
-  addValueReference usage:ImmutableArray.re:94:6 declaration:belt_Array.mli:485:0
-  addValueReference usage:ImmutableArray.re:95:6 declaration:ImmutableArray.re:95:23
-  addValueReference usage:ImmutableArray.re:95:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:95:6 declaration:ImmutableArray.re:95:26
-  addValueReference usage:ImmutableArray.re:95:6 declaration:ImmutableArray.re:95:29
-  addValueReference usage:ImmutableArray.re:95:6 declaration:belt_Array.mli:486:0
-  addValueReference usage:ImmutableArray.re:97:6 declaration:ImmutableArray.re:97:25
-  addValueReference usage:ImmutableArray.re:97:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:97:6 declaration:ImmutableArray.re:97:29
-  addValueReference usage:ImmutableArray.re:97:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:97:6 declaration:ImmutableArray.re:97:33
-  addValueReference usage:ImmutableArray.re:97:6 declaration:ImmutableArray.re:97:36
-  addValueReference usage:ImmutableArray.re:97:6 declaration:belt_Array.mli:497:0
-  addValueReference usage:ImmutableArray.re:99:6 declaration:ImmutableArray.re:99:24
-  addValueReference usage:ImmutableArray.re:99:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:99:6 declaration:ImmutableArray.re:99:28
-  addValueReference usage:ImmutableArray.re:99:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:99:6 declaration:ImmutableArray.re:99:32
-  addValueReference usage:ImmutableArray.re:99:6 declaration:ImmutableArray.re:99:35
-  addValueReference usage:ImmutableArray.re:99:6 declaration:belt_Array.mli:499:0
-  addValueReference usage:ImmutableArray.re:102:6 declaration:ImmutableArray.re:102:15
-  addValueReference usage:ImmutableArray.re:102:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:102:6 declaration:ImmutableArray.re:102:18
-  addValueReference usage:ImmutableArray.re:102:6 declaration:belt_Array.mli:524:0
-  addValueReference usage:ImmutableArray.re:103:6 declaration:ImmutableArray.re:103:14
-  addValueReference usage:ImmutableArray.re:103:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:103:6 declaration:ImmutableArray.re:103:17
-  addValueReference usage:ImmutableArray.re:103:6 declaration:belt_Array.mli:525:0
-  addValueReference usage:ImmutableArray.re:105:6 declaration:ImmutableArray.re:105:16
-  addValueReference usage:ImmutableArray.re:105:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:105:6 declaration:ImmutableArray.re:105:19
-  addValueReference usage:ImmutableArray.re:105:6 declaration:belt_Array.mli:537:0
-  addValueReference usage:ImmutableArray.re:106:6 declaration:ImmutableArray.re:106:15
-  addValueReference usage:ImmutableArray.re:106:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:106:6 declaration:ImmutableArray.re:106:18
-  addValueReference usage:ImmutableArray.re:106:6 declaration:belt_Array.mli:538:0
-  addValueReference usage:ImmutableArray.re:108:6 declaration:ImmutableArray.re:108:17
-  addValueReference usage:ImmutableArray.re:108:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:108:6 declaration:ImmutableArray.re:108:21
-  addValueReference usage:ImmutableArray.re:108:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:108:6 declaration:ImmutableArray.re:108:25
-  addValueReference usage:ImmutableArray.re:108:6 declaration:belt_Array.mli:550:0
-  addValueReference usage:ImmutableArray.re:109:6 declaration:ImmutableArray.re:109:16
-  addValueReference usage:ImmutableArray.re:109:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:109:6 declaration:ImmutableArray.re:109:20
-  addValueReference usage:ImmutableArray.re:109:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:109:6 declaration:ImmutableArray.re:109:24
-  addValueReference usage:ImmutableArray.re:109:6 declaration:belt_Array.mli:551:0
-  addValueReference usage:ImmutableArray.re:111:6 declaration:ImmutableArray.re:111:16
-  addValueReference usage:ImmutableArray.re:111:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:111:6 declaration:ImmutableArray.re:111:20
-  addValueReference usage:ImmutableArray.re:111:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:111:6 declaration:ImmutableArray.re:111:24
-  addValueReference usage:ImmutableArray.re:111:6 declaration:belt_Array.mli:562:0
-  addValueReference usage:ImmutableArray.re:112:6 declaration:ImmutableArray.re:112:15
-  addValueReference usage:ImmutableArray.re:112:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:112:6 declaration:ImmutableArray.re:112:19
-  addValueReference usage:ImmutableArray.re:112:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:112:6 declaration:ImmutableArray.re:112:23
-  addValueReference usage:ImmutableArray.re:112:6 declaration:belt_Array.mli:563:0
-  addValueReference usage:ImmutableArray.re:114:6 declaration:ImmutableArray.re:114:14
-  addValueReference usage:ImmutableArray.re:114:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:114:6 declaration:ImmutableArray.re:114:18
-  addValueReference usage:ImmutableArray.re:114:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:114:6 declaration:ImmutableArray.re:114:22
-  addValueReference usage:ImmutableArray.re:114:6 declaration:belt_Array.mli:574:0
-  addValueReference usage:ImmutableArray.re:115:6 declaration:ImmutableArray.re:115:13
-  addValueReference usage:ImmutableArray.re:115:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:115:6 declaration:ImmutableArray.re:115:17
-  addValueReference usage:ImmutableArray.re:115:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:115:6 declaration:ImmutableArray.re:115:21
-  addValueReference usage:ImmutableArray.re:115:6 declaration:belt_Array.mli:575:0
-  addValueReference usage:ImmutableArray.re:117:6 declaration:ImmutableArray.re:117:13
-  addValueReference usage:ImmutableArray.re:117:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:117:6 declaration:ImmutableArray.re:117:17
-  addValueReference usage:ImmutableArray.re:117:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:117:6 declaration:ImmutableArray.re:117:21
-  addValueReference usage:ImmutableArray.re:117:6 declaration:belt_Array.mli:592:0
-  addValueReference usage:ImmutableArray.re:118:6 declaration:ImmutableArray.re:118:12
-  addValueReference usage:ImmutableArray.re:118:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:118:6 declaration:ImmutableArray.re:118:16
-  addValueReference usage:ImmutableArray.re:118:6 declaration:ImmutableArray.re:5:2
-  addValueReference usage:ImmutableArray.re:118:6 declaration:ImmutableArray.re:118:20
-  addValueReference usage:ImmutableArray.re:118:6 declaration:belt_Array.mli:593:0
+  addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:14:18
+  addValueReference ImmutableArray.re:14:6 --> belt_Array.mli:275:0
+  addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:16:6 --> ImmutableArray.re:16:16
+  addValueReference ImmutableArray.re:16:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:16:6 --> belt_Array.mli:275:0
+  addValueReference ImmutableArray.re:20:6 --> ImmutableArray.re:20:15
+  addValueReference ImmutableArray.re:20:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:20:6 --> belt_Array.mli:21:0
+  addValueReference ImmutableArray.re:22:6 --> ImmutableArray.re:22:13
+  addValueReference ImmutableArray.re:22:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:22:6 --> belt_Array.mli:24:0
+  addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:24:13
+  addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:24:16
+  addValueReference ImmutableArray.re:24:6 --> belt_Array.mli:27:0
+  addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:26:16
+  addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:26:19
+  addValueReference ImmutableArray.re:26:6 --> belt_Array.mli:41:0
+  addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:28:19
+  addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:28:22
+  addValueReference ImmutableArray.re:28:6 --> belt_Array.mli:47:0
+  addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:30:22
+  addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:30:25
+  addValueReference ImmutableArray.re:30:6 --> belt_Array.mli:56:0
+  addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:32:16
+  addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:32:6 --> belt_Array.mli:80:0
+  addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:34:16
+  addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:34:6 --> belt_Array.mli:94:0
+  addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:36:6 --> ImmutableArray.re:36:26
+  addValueReference ImmutableArray.re:36:6 --> belt_Array.mli:103:0
+  addValueReference ImmutableArray.re:36:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:38:6 --> ImmutableArray.re:38:32
+  addValueReference ImmutableArray.re:38:6 --> belt_Array.mli:114:0
+  addValueReference ImmutableArray.re:38:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:40:14
+  addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:40:17
+  addValueReference ImmutableArray.re:40:6 --> belt_Array.mli:128:0
+  addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:42:15
+  addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:42:18
+  addValueReference ImmutableArray.re:42:6 --> belt_Array.mli:134:0
+  addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:17
+  addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:20
+  addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:24
+  addValueReference ImmutableArray.re:44:6 --> belt_Array.mli:142:0
+  addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:46:17
+  addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:46:20
+  addValueReference ImmutableArray.re:46:6 --> belt_Array.mli:159:0
+  addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:47:16
+  addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:47:19
+  addValueReference ImmutableArray.re:47:6 --> belt_Array.mli:160:0
+  addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:49:27
+  addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:49:30
+  addValueReference ImmutableArray.re:49:6 --> belt_Array.mli:172:0
+  addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:50:26
+  addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:50:29
+  addValueReference ImmutableArray.re:50:6 --> belt_Array.mli:173:0
+  addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:52:13
+  addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:52:17
+  addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:52:6 --> belt_Array.mli:180:0
+  addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:9:2
+  addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:16
+  addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:20
+  addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:24
+  addValueReference ImmutableArray.re:54:6 --> belt_Array.mli:192:1
+  addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:15
+  addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:19
+  addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:23
+  addValueReference ImmutableArray.re:55:6 --> belt_Array.mli:193:1
+  addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:57:14
+  addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:6:2
+  addValueReference ImmutableArray.re:57:6 --> belt_Array.mli:207:0
+  addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:10:2
+  addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:59:16
+  addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:59:20
+  addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:59:6 --> belt_Array.mli:216:0
+  addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:61:20
+  addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:7:2
+  addValueReference ImmutableArray.re:61:6 --> belt_Array.mli:229:0
+  addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:15
+  addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:19
+  addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:28
+  addValueReference ImmutableArray.re:63:6 --> belt_Array.mli:240:0
+  addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:66:20
+  addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:66:23
+  addValueReference ImmutableArray.re:66:6 --> belt_Array.mli:260:0
+  addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:68:13
+  addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:68:6 --> belt_Array.mli:275:0
+  addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:70:18
+  addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:70:21
+  addValueReference ImmutableArray.re:70:6 --> belt_Array.mli:336:0
+  addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:71:17
+  addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:71:20
+  addValueReference ImmutableArray.re:71:6 --> belt_Array.mli:337:0
+  addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:73:14
+  addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:73:17
+  addValueReference ImmutableArray.re:73:6 --> belt_Array.mli:359:0
+  addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:74:13
+  addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:74:16
+  addValueReference ImmutableArray.re:74:6 --> belt_Array.mli:360:0
+  addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:76:24
+  addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:76:27
+  addValueReference ImmutableArray.re:76:6 --> belt_Array.mli:402:0
+  addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:77:23
+  addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:77:26
+  addValueReference ImmutableArray.re:77:6 --> belt_Array.mli:403:0
+  addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:79:18
+  addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:79:21
+  addValueReference ImmutableArray.re:79:6 --> belt_Array.mli:412:0
+  addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:80:17
+  addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:80:20
+  addValueReference ImmutableArray.re:80:6 --> belt_Array.mli:413:0
+  addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:82:27
+  addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:82:30
+  addValueReference ImmutableArray.re:82:6 --> belt_Array.mli:423:0
+  addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:83:26
+  addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:83:29
+  addValueReference ImmutableArray.re:83:6 --> belt_Array.mli:424:0
+  addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:85:23
+  addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:85:26
+  addValueReference ImmutableArray.re:85:6 --> belt_Array.mli:446:0
+  addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:86:22
+  addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:86:25
+  addValueReference ImmutableArray.re:86:6 --> belt_Array.mli:447:0
+  addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:8:2
+  addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:88:20
+  addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:88:23
+  addValueReference ImmutableArray.re:88:6 --> belt_Array.mli:460:0
+  addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:10:2
+  addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:89:19
+  addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:89:22
+  addValueReference ImmutableArray.re:89:6 --> belt_Array.mli:461:0
+  addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:10:2
+  addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:17
+  addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:20
+  addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:23
+  addValueReference ImmutableArray.re:91:6 --> belt_Array.mli:470:0
+  addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:16
+  addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:19
+  addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:22
+  addValueReference ImmutableArray.re:92:6 --> belt_Array.mli:471:0
+  addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:24
+  addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:27
+  addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:30
+  addValueReference ImmutableArray.re:94:6 --> belt_Array.mli:485:0
+  addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:23
+  addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:26
+  addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:29
+  addValueReference ImmutableArray.re:95:6 --> belt_Array.mli:486:0
+  addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:25
+  addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:29
+  addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:33
+  addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:36
+  addValueReference ImmutableArray.re:97:6 --> belt_Array.mli:497:0
+  addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:24
+  addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:28
+  addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:32
+  addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:35
+  addValueReference ImmutableArray.re:99:6 --> belt_Array.mli:499:0
+  addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:102:15
+  addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:102:18
+  addValueReference ImmutableArray.re:102:6 --> belt_Array.mli:524:0
+  addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:103:14
+  addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:103:17
+  addValueReference ImmutableArray.re:103:6 --> belt_Array.mli:525:0
+  addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:105:16
+  addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:105:19
+  addValueReference ImmutableArray.re:105:6 --> belt_Array.mli:537:0
+  addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:106:15
+  addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:106:18
+  addValueReference ImmutableArray.re:106:6 --> belt_Array.mli:538:0
+  addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:17
+  addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:21
+  addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:25
+  addValueReference ImmutableArray.re:108:6 --> belt_Array.mli:550:0
+  addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:16
+  addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:20
+  addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:24
+  addValueReference ImmutableArray.re:109:6 --> belt_Array.mli:551:0
+  addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:16
+  addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:20
+  addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:24
+  addValueReference ImmutableArray.re:111:6 --> belt_Array.mli:562:0
+  addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:15
+  addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:19
+  addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:23
+  addValueReference ImmutableArray.re:112:6 --> belt_Array.mli:563:0
+  addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:14
+  addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:18
+  addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:22
+  addValueReference ImmutableArray.re:114:6 --> belt_Array.mli:574:0
+  addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:13
+  addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:17
+  addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:21
+  addValueReference ImmutableArray.re:115:6 --> belt_Array.mli:575:0
+  addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:13
+  addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:17
+  addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:21
+  addValueReference ImmutableArray.re:117:6 --> belt_Array.mli:592:0
+  addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:12
+  addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:16
+  addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:5:2
+  addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:20
+  addValueReference ImmutableArray.re:118:6 --> belt_Array.mli:593:0
   mergeSet ImmutableArray.re:24:6 <- ImmutableArray.rei:5:15
   mergeSet ImmutableArray.re:14:6 <- ImmutableArray.rei:7:0
   mergeSet ImmutableArray.re:16:6 <- ImmutableArray.rei:10:0
@@ -471,472 +471,472 @@
   mergeSet ImmutableArray.re:117:6 <- ImmutableArray.rei:108:0
   mergeSet ImmutableArray.re:118:6 <- ImmutableArray.rei:109:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
-  addValueReference usage:TransitiveType3.re:8:4 declaration:TransitiveType3.re:8:17
+  addValueReference TransitiveType3.re:8:4 --> TransitiveType3.re:8:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
-  addValueReference usage:TransitiveType2.re:7:4 declaration:TransitiveType2.re:7:17
+  addValueReference TransitiveType2.re:7:4 --> TransitiveType2.re:7:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Variants.cmt
-  addValueReference usage:Variants.re:13:4 declaration:Variants.re:13:17
-  addValueReference usage:Variants.re:31:4 declaration:Variants.re:31:11
-  addValueReference usage:Variants.re:45:4 declaration:Variants.re:45:19
-  addValueReference usage:Variants.re:64:4 declaration:Variants.re:64:20
-  addValueReference usage:Variants.re:76:4 declaration:Variants.re:76:20
-  addValueReference usage:Variants.re:80:4 declaration:Variants.re:80:23
-  addValueReference usage:Variants.re:89:4 declaration:Variants.re:89:11
-  addValueReference usage:Variants.re:92:4 declaration:Variants.re:92:11
+  addValueReference Variants.re:13:4 --> Variants.re:13:17
+  addValueReference Variants.re:31:4 --> Variants.re:31:11
+  addValueReference Variants.re:45:4 --> Variants.re:45:19
+  addValueReference Variants.re:64:4 --> Variants.re:64:20
+  addValueReference Variants.re:76:4 --> Variants.re:76:20
+  addValueReference Variants.re:80:4 --> Variants.re:80:23
+  addValueReference Variants.re:89:4 --> Variants.re:89:11
+  addValueReference Variants.re:92:4 --> Variants.re:92:11
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Uncurried.cmt
-  addValueReference usage:Uncurried.re:14:4 declaration:js.ml:72:1
-  addValueReference usage:Uncurried.re:17:4 declaration:Uncurried.re:17:20
-  addValueReference usage:Uncurried.re:17:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Uncurried.re:17:4 declaration:pervasives.mli:226:0
-  addValueReference usage:Uncurried.re:17:4 declaration:js.ml:73:1
-  addValueReference usage:Uncurried.re:20:4 declaration:Uncurried.re:20:20
-  addValueReference usage:Uncurried.re:20:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Uncurried.re:20:4 declaration:pervasives.mli:226:0
-  addValueReference usage:Uncurried.re:20:4 declaration:Uncurried.re:20:23
-  addValueReference usage:Uncurried.re:20:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Uncurried.re:20:4 declaration:js.ml:74:1
-  addValueReference usage:Uncurried.re:23:4 declaration:Uncurried.re:24:5
-  addValueReference usage:Uncurried.re:23:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Uncurried.re:23:4 declaration:pervasives.mli:226:0
-  addValueReference usage:Uncurried.re:23:4 declaration:Uncurried.re:24:8
-  addValueReference usage:Uncurried.re:23:4 declaration:Uncurried.re:24:11
-  addValueReference usage:Uncurried.re:23:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Uncurried.re:23:4 declaration:pervasives.mli:226:0
-  addValueReference usage:Uncurried.re:23:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Uncurried.re:23:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Uncurried.re:23:4 declaration:js.ml:75:1
-  addValueReference usage:Uncurried.re:27:4 declaration:Uncurried.re:27:16
-  addValueReference usage:Uncurried.re:27:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Uncurried.re:27:4 declaration:pervasives.mli:226:0
-  addValueReference usage:Uncurried.re:27:4 declaration:Uncurried.re:27:19
-  addValueReference usage:Uncurried.re:27:4 declaration:Uncurried.re:27:22
-  addValueReference usage:Uncurried.re:27:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Uncurried.re:27:4 declaration:pervasives.mli:226:0
-  addValueReference usage:Uncurried.re:27:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Uncurried.re:27:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Uncurried.re:30:4 declaration:Uncurried.re:30:15
-  addValueReference usage:Uncurried.re:30:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Uncurried.re:30:4 declaration:pervasives.mli:226:0
-  addValueReference usage:Uncurried.re:36:4 declaration:Uncurried.re:36:16
-  addValueReference usage:Uncurried.re:39:4 declaration:Uncurried.re:39:17
-  addValueReference usage:Uncurried.re:39:4 declaration:js.ml:92:1
-  addValueReference usage:Uncurried.re:42:4 declaration:Uncurried.re:43:8
-  addValueReference usage:Uncurried.re:42:4 declaration:Uncurried.re:43:5
-  addValueReference usage:Uncurried.re:42:4 declaration:Uncurried.re:43:8
-  addValueReference usage:Uncurried.re:42:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Uncurried.re:42:4 declaration:js.ml:166:0
-  addValueReference usage:Uncurried.re:42:4 declaration:js.ml:74:1
-  addValueReference usage:Uncurried.re:48:4 declaration:Uncurried.re:50:7
-  addValueReference usage:Uncurried.re:48:4 declaration:Uncurried.re:49:5
-  addValueReference usage:Uncurried.re:48:4 declaration:Uncurried.re:50:7
-  addValueReference usage:Uncurried.re:48:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Uncurried.re:48:4 declaration:js.ml:166:0
-  addValueReference usage:Uncurried.re:48:4 declaration:js.ml:73:1
-  addValueReference usage:Uncurried.re:48:4 declaration:js.ml:73:1
-  addValueReference usage:Uncurried.re:55:4 declaration:Uncurried.re:57:2
-  addValueReference usage:Uncurried.re:55:4 declaration:Uncurried.re:55:17
-  addValueReference usage:Uncurried.re:55:4 declaration:Uncurried.re:57:2
-  addValueReference usage:Uncurried.re:55:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Uncurried.re:55:4 declaration:js.ml:166:0
-  addValueReference usage:Uncurried.re:55:4 declaration:Uncurried.re:55:17
-  addValueReference usage:Uncurried.re:55:4 declaration:js.ml:162:0
-  addValueReference usage:Uncurried.re:63:4 declaration:Uncurried.re:65:4
-  addValueReference usage:Uncurried.re:63:4 declaration:Uncurried.re:63:33
-  addValueReference usage:Uncurried.re:63:4 declaration:Uncurried.re:65:4
-  addValueReference usage:Uncurried.re:63:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Uncurried.re:63:4 declaration:js.ml:166:0
-  addValueReference usage:Uncurried.re:63:4 declaration:Uncurried.re:63:21
-  addValueReference usage:Uncurried.re:63:4 declaration:Uncurried.re:63:33
-  addValueReference usage:Uncurried.re:63:4 declaration:js.ml:164:0
+  addValueReference Uncurried.re:14:4 --> js.ml:72:1
+  addValueReference Uncurried.re:17:4 --> Uncurried.re:17:20
+  addValueReference Uncurried.re:17:4 --> pervasives.mli:723:0
+  addValueReference Uncurried.re:17:4 --> pervasives.mli:226:0
+  addValueReference Uncurried.re:17:4 --> js.ml:73:1
+  addValueReference Uncurried.re:20:4 --> Uncurried.re:20:20
+  addValueReference Uncurried.re:20:4 --> pervasives.mli:723:0
+  addValueReference Uncurried.re:20:4 --> pervasives.mli:226:0
+  addValueReference Uncurried.re:20:4 --> Uncurried.re:20:23
+  addValueReference Uncurried.re:20:4 --> pervasives.mli:670:0
+  addValueReference Uncurried.re:20:4 --> js.ml:74:1
+  addValueReference Uncurried.re:23:4 --> Uncurried.re:24:5
+  addValueReference Uncurried.re:23:4 --> pervasives.mli:723:0
+  addValueReference Uncurried.re:23:4 --> pervasives.mli:226:0
+  addValueReference Uncurried.re:23:4 --> Uncurried.re:24:8
+  addValueReference Uncurried.re:23:4 --> Uncurried.re:24:11
+  addValueReference Uncurried.re:23:4 --> pervasives.mli:723:0
+  addValueReference Uncurried.re:23:4 --> pervasives.mli:226:0
+  addValueReference Uncurried.re:23:4 --> pervasives.mli:670:0
+  addValueReference Uncurried.re:23:4 --> pervasives.mli:670:0
+  addValueReference Uncurried.re:23:4 --> js.ml:75:1
+  addValueReference Uncurried.re:27:4 --> Uncurried.re:27:16
+  addValueReference Uncurried.re:27:4 --> pervasives.mli:723:0
+  addValueReference Uncurried.re:27:4 --> pervasives.mli:226:0
+  addValueReference Uncurried.re:27:4 --> Uncurried.re:27:19
+  addValueReference Uncurried.re:27:4 --> Uncurried.re:27:22
+  addValueReference Uncurried.re:27:4 --> pervasives.mli:723:0
+  addValueReference Uncurried.re:27:4 --> pervasives.mli:226:0
+  addValueReference Uncurried.re:27:4 --> pervasives.mli:670:0
+  addValueReference Uncurried.re:27:4 --> pervasives.mli:670:0
+  addValueReference Uncurried.re:30:4 --> Uncurried.re:30:15
+  addValueReference Uncurried.re:30:4 --> pervasives.mli:723:0
+  addValueReference Uncurried.re:30:4 --> pervasives.mli:226:0
+  addValueReference Uncurried.re:36:4 --> Uncurried.re:36:16
+  addValueReference Uncurried.re:39:4 --> Uncurried.re:39:17
+  addValueReference Uncurried.re:39:4 --> js.ml:92:1
+  addValueReference Uncurried.re:42:4 --> Uncurried.re:43:8
+  addValueReference Uncurried.re:42:4 --> Uncurried.re:43:5
+  addValueReference Uncurried.re:42:4 --> Uncurried.re:43:8
+  addValueReference Uncurried.re:42:4 --> pervasives.mli:264:0
+  addValueReference Uncurried.re:42:4 --> js.ml:166:0
+  addValueReference Uncurried.re:42:4 --> js.ml:74:1
+  addValueReference Uncurried.re:48:4 --> Uncurried.re:50:7
+  addValueReference Uncurried.re:48:4 --> Uncurried.re:49:5
+  addValueReference Uncurried.re:48:4 --> Uncurried.re:50:7
+  addValueReference Uncurried.re:48:4 --> pervasives.mli:264:0
+  addValueReference Uncurried.re:48:4 --> js.ml:166:0
+  addValueReference Uncurried.re:48:4 --> js.ml:73:1
+  addValueReference Uncurried.re:48:4 --> js.ml:73:1
+  addValueReference Uncurried.re:55:4 --> Uncurried.re:57:2
+  addValueReference Uncurried.re:55:4 --> Uncurried.re:55:17
+  addValueReference Uncurried.re:55:4 --> Uncurried.re:57:2
+  addValueReference Uncurried.re:55:4 --> pervasives.mli:264:0
+  addValueReference Uncurried.re:55:4 --> js.ml:166:0
+  addValueReference Uncurried.re:55:4 --> Uncurried.re:55:17
+  addValueReference Uncurried.re:55:4 --> js.ml:162:0
+  addValueReference Uncurried.re:63:4 --> Uncurried.re:65:4
+  addValueReference Uncurried.re:63:4 --> Uncurried.re:63:33
+  addValueReference Uncurried.re:63:4 --> Uncurried.re:65:4
+  addValueReference Uncurried.re:63:4 --> pervasives.mli:264:0
+  addValueReference Uncurried.re:63:4 --> js.ml:166:0
+  addValueReference Uncurried.re:63:4 --> Uncurried.re:63:21
+  addValueReference Uncurried.re:63:4 --> Uncurried.re:63:33
+  addValueReference Uncurried.re:63:4 --> js.ml:164:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestEmitInnerModules.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModules.cmt
-  addValueReference usage:NestedModules.re:37:10 declaration:NestedModules.re:37:29
-  addValueReference usage:NestedModules.re:41:8 declaration:NestedModules.re:41:27
+  addValueReference NestedModules.re:37:10 --> NestedModules.re:37:29
+  addValueReference NestedModules.re:41:8 --> NestedModules.re:41:27
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases2.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
-  addValueReference usage:TransitiveType1.re:2:4 declaration:TransitiveType1.re:2:15
-  addValueReference usage:TransitiveType1.re:5:4 declaration:TransitiveType1.re:5:20
+  addValueReference TransitiveType1.re:2:4 --> TransitiveType1.re:2:15
+  addValueReference TransitiveType1.re:5:4 --> TransitiveType1.re:5:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModules.cmt
-  addValueReference usage:FirstClassModules.re:25:8 declaration:FirstClassModules.re:25:13
-  addValueReference usage:FirstClassModules.re:25:8 declaration:pervasives.mli:264:0
-  addValueReference usage:FirstClassModules.re:44:4 declaration:FirstClassModules.re:44:19
-  addValueReference usage:FirstClassModules.re:49:6 declaration:FirstClassModules.re:14:2
-  addValueReference usage:FirstClassModules.re:53:4 declaration:FirstClassModules.re:53:29
+  addValueReference FirstClassModules.re:25:8 --> FirstClassModules.re:25:13
+  addValueReference FirstClassModules.re:25:8 --> pervasives.mli:264:0
+  addValueReference FirstClassModules.re:44:4 --> FirstClassModules.re:44:19
+  addValueReference FirstClassModules.re:49:6 --> FirstClassModules.re:14:2
+  addValueReference FirstClassModules.re:53:4 --> FirstClassModules.re:53:29
   mergeSet FirstClassModules.re:34:6 <- FirstClassModules.re:2:2
-  addValueReference usage:FirstClassModules.re:2:2 declaration:FirstClassModules.re:34:6
+  addValueReference FirstClassModules.re:2:2 --> FirstClassModules.re:34:6
   mergeSet FirstClassModules.re:33:2 <- FirstClassModules.re:4:2
-  addValueReference usage:FirstClassModules.re:4:2 declaration:FirstClassModules.re:33:2
+  addValueReference FirstClassModules.re:4:2 --> FirstClassModules.re:33:2
   mergeSet FirstClassModules.re:21:8 <- FirstClassModules.re:7:24
-  addValueReference usage:FirstClassModules.re:7:24 declaration:FirstClassModules.re:21:8
+  addValueReference FirstClassModules.re:7:24 --> FirstClassModules.re:21:8
   mergeSet FirstClassModules.re:25:8 <- FirstClassModules.re:10:4
-  addValueReference usage:FirstClassModules.re:10:4 declaration:FirstClassModules.re:25:8
+  addValueReference FirstClassModules.re:10:4 --> FirstClassModules.re:25:8
   mergeSet FirstClassModules.re:28:20 <- FirstClassModules.re:12:20
-  addValueReference usage:FirstClassModules.re:12:20 declaration:FirstClassModules.re:28:20
+  addValueReference FirstClassModules.re:12:20 --> FirstClassModules.re:28:20
   mergeSet FirstClassModules.re:12:20 <- FirstClassModules.re:28:20
-  addValueReference usage:FirstClassModules.re:28:20 declaration:FirstClassModules.re:12:20
+  addValueReference FirstClassModules.re:28:20 --> FirstClassModules.re:12:20
   mergeSet FirstClassModules.re:30:8 <- FirstClassModules.re:28:20
-  addValueReference usage:FirstClassModules.re:28:20 declaration:FirstClassModules.re:30:8
+  addValueReference FirstClassModules.re:28:20 --> FirstClassModules.re:30:8
   mergeSet FirstClassModules.re:17:6 <- FirstClassModules.re:14:2
-  addValueReference usage:FirstClassModules.re:14:2 declaration:FirstClassModules.re:17:6
+  addValueReference FirstClassModules.re:14:2 --> FirstClassModules.re:17:6
   mergeSet FirstClassModules.re:49:6 <- FirstClassModules.re:46:20
-  addValueReference usage:FirstClassModules.re:46:20 declaration:FirstClassModules.re:49:6
+  addValueReference FirstClassModules.re:46:20 --> FirstClassModules.re:49:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
-  addValueReference usage:ImportMyBanner.re:19:4 declaration:ImportMyBanner.re:8:0
+  addValueReference ImportMyBanner.re:19:4 --> ImportMyBanner.re:8:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams3.cmt
-  addValueReference usage:TypeParams3.re:2:4 declaration:TypeParams3.re:2:12
-  addValueReference usage:TypeParams3.re:5:4 declaration:TypeParams3.re:5:13
+  addValueReference TypeParams3.re:2:4 --> TypeParams3.re:2:12
+  addValueReference TypeParams3.re:5:4 --> TypeParams3.re:5:13
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams1.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestModuleAliases.cmt
-  addValueReference usage:TestModuleAliases.re:32:4 declaration:TestModuleAliases.re:32:18
-  addValueReference usage:TestModuleAliases.re:35:4 declaration:TestModuleAliases.re:35:26
-  addValueReference usage:TestModuleAliases.re:38:4 declaration:TestModuleAliases.re:38:18
-  addValueReference usage:TestModuleAliases.re:41:4 declaration:TestModuleAliases.re:41:26
+  addValueReference TestModuleAliases.re:32:4 --> TestModuleAliases.re:32:18
+  addValueReference TestModuleAliases.re:35:4 --> TestModuleAliases.re:35:26
+  addValueReference TestModuleAliases.re:38:4 --> TestModuleAliases.re:38:18
+  addValueReference TestModuleAliases.re:41:4 --> TestModuleAliases.re:41:26
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Opaque.cmt
-  addValueReference usage:Opaque.re:6:4 declaration:Opaque.re:6:20
-  addValueReference usage:Opaque.re:12:4 declaration:Opaque.re:12:44
+  addValueReference Opaque.re:6:4 --> Opaque.re:6:20
+  addValueReference Opaque.re:12:4 --> Opaque.re:12:44
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/VariantsWithPayload.cmt
-  addValueReference usage:VariantsWithPayload.re:16:4 declaration:VariantsWithPayload.re:16:23
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:js.ml:160:0
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:js.ml:160:0
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:js.ml:160:0
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:js.ml:160:0
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:js.ml:160:0
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:VariantsWithPayload.re:26:6
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:VariantsWithPayload.re:26:6
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:js.ml:166:0
-  addValueReference usage:VariantsWithPayload.re:19:4 declaration:VariantsWithPayload.re:19:31
-  addValueReference usage:VariantsWithPayload.re:38:4 declaration:VariantsWithPayload.re:38:24
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:VariantsWithPayload.re:43:8
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:js.ml:162:0
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:VariantsWithPayload.re:44:9
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:VariantsWithPayload.re:44:13
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:js.ml:164:0
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:VariantsWithPayload.re:45:10
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:VariantsWithPayload.re:45:10
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:js.ml:166:0
-  addValueReference usage:VariantsWithPayload.re:41:4 declaration:VariantsWithPayload.re:41:25
-  addValueReference usage:VariantsWithPayload.re:56:4 declaration:VariantsWithPayload.re:56:25
-  addValueReference usage:VariantsWithPayload.re:67:4 declaration:VariantsWithPayload.re:67:31
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:js.ml:162:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:73:6
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:723:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:js.ml:162:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:75:6
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:723:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:75:9
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:723:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:js.ml:162:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:80:7
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:723:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:80:10
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:723:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:js.ml:162:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:85:6
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:723:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:85:9
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:85:12
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:723:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:pervasives.mli:670:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:js.ml:162:0
-  addValueReference usage:VariantsWithPayload.re:70:4 declaration:VariantsWithPayload.re:70:31
-  addValueReference usage:VariantsWithPayload.re:103:4 declaration:VariantsWithPayload.re:103:23
-  addValueReference usage:VariantsWithPayload.re:110:4 declaration:VariantsWithPayload.re:110:26
+  addValueReference VariantsWithPayload.re:16:4 --> VariantsWithPayload.re:16:23
+  addValueReference VariantsWithPayload.re:19:4 --> js.ml:160:0
+  addValueReference VariantsWithPayload.re:19:4 --> js.ml:160:0
+  addValueReference VariantsWithPayload.re:19:4 --> js.ml:160:0
+  addValueReference VariantsWithPayload.re:19:4 --> js.ml:160:0
+  addValueReference VariantsWithPayload.re:19:4 --> js.ml:160:0
+  addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:26:6
+  addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:26:6
+  addValueReference VariantsWithPayload.re:19:4 --> js.ml:166:0
+  addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:19:31
+  addValueReference VariantsWithPayload.re:38:4 --> VariantsWithPayload.re:38:24
+  addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:43:8
+  addValueReference VariantsWithPayload.re:41:4 --> js.ml:162:0
+  addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:44:9
+  addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:44:13
+  addValueReference VariantsWithPayload.re:41:4 --> js.ml:164:0
+  addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:45:10
+  addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:45:10
+  addValueReference VariantsWithPayload.re:41:4 --> js.ml:166:0
+  addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:41:25
+  addValueReference VariantsWithPayload.re:56:4 --> VariantsWithPayload.re:56:25
+  addValueReference VariantsWithPayload.re:67:4 --> VariantsWithPayload.re:67:31
+  addValueReference VariantsWithPayload.re:70:4 --> js.ml:162:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:73:6
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:723:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> js.ml:162:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:75:6
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:723:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:75:9
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:723:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> js.ml:162:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:80:7
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:723:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:80:10
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:723:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> js.ml:162:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:85:6
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:723:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:85:9
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:85:12
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:723:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> pervasives.mli:670:0
+  addValueReference VariantsWithPayload.re:70:4 --> js.ml:162:0
+  addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:70:31
+  addValueReference VariantsWithPayload.re:103:4 --> VariantsWithPayload.re:103:23
+  addValueReference VariantsWithPayload.re:110:4 --> VariantsWithPayload.re:110:26
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
   mergeSet FirstClassModulesInterface.re:6:4 <- FirstClassModulesInterface.rei:7:0
   mergeSet FirstClassModulesInterface.re:8:18 <- FirstClassModulesInterface.rei:10:18
   mergeSet FirstClassModulesInterface.rei:10:18 <- FirstClassModulesInterface.re:8:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
-  addValueReference usage:ImportJsValue.re:19:4 declaration:ImportJsValue.re:1:0
-  addValueReference usage:ImportJsValue.re:22:4 declaration:ImportJsValue.re:14:0
-  addValueReference usage:ImportJsValue.re:33:8 declaration:ImportJsValue.re:32:16
-  addValueReference usage:ImportJsValue.re:33:8 declaration:js.ml:70:1
-  addValueReference usage:ImportJsValue.re:32:6 declaration:ImportJsValue.re:33:8
-  addValueReference usage:ImportJsValue.re:32:6 declaration:js.ml:92:1
-  addValueReference usage:ImportJsValue.re:39:4 declaration:ImportJsValue.re:39:18
-  addValueReference usage:ImportJsValue.re:39:4 declaration:ImportJsValue.re:29:2
-  addValueReference usage:ImportJsValue.re:39:4 declaration:pervasives.mli:264:0
-  addValueReference usage:ImportJsValue.re:42:4 declaration:ImportJsValue.re:42:17
-  addValueReference usage:ImportJsValue.re:42:4 declaration:ImportJsValue.re:32:6
-  addValueReference usage:ImportJsValue.re:42:4 declaration:pervasives.mli:264:0
-  addValueReference usage:ImportJsValue.re:56:4 declaration:pervasives.mli:264:0
-  addValueReference usage:ImportJsValue.re:56:4 declaration:ImportJsValue.re:52:0
+  addValueReference ImportJsValue.re:19:4 --> ImportJsValue.re:1:0
+  addValueReference ImportJsValue.re:22:4 --> ImportJsValue.re:14:0
+  addValueReference ImportJsValue.re:33:8 --> ImportJsValue.re:32:16
+  addValueReference ImportJsValue.re:33:8 --> js.ml:70:1
+  addValueReference ImportJsValue.re:32:6 --> ImportJsValue.re:33:8
+  addValueReference ImportJsValue.re:32:6 --> js.ml:92:1
+  addValueReference ImportJsValue.re:39:4 --> ImportJsValue.re:39:18
+  addValueReference ImportJsValue.re:39:4 --> ImportJsValue.re:29:2
+  addValueReference ImportJsValue.re:39:4 --> pervasives.mli:264:0
+  addValueReference ImportJsValue.re:42:4 --> ImportJsValue.re:42:17
+  addValueReference ImportJsValue.re:42:4 --> ImportJsValue.re:32:6
+  addValueReference ImportJsValue.re:42:4 --> pervasives.mli:264:0
+  addValueReference ImportJsValue.re:56:4 --> pervasives.mli:264:0
+  addValueReference ImportJsValue.re:56:4 --> ImportJsValue.re:52:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/References.cmt
-  addValueReference usage:References.re:4:4 declaration:References.re:4:14
-  addValueReference usage:References.re:4:4 declaration:pervasives.mli:1179:0
-  addValueReference usage:References.re:7:4 declaration:References.re:7:13
-  addValueReference usage:References.re:7:4 declaration:pervasives.mli:264:0
-  addValueReference usage:References.re:10:4 declaration:References.re:10:13
-  addValueReference usage:References.re:10:4 declaration:pervasives.mli:264:0
-  addValueReference usage:References.re:10:4 declaration:References.re:10:13
-  addValueReference usage:References.re:23:6 declaration:References.re:23:12
-  addValueReference usage:References.re:24:6 declaration:pervasives.mli:1179:0
-  addValueReference usage:References.re:25:6 declaration:References.re:25:16
-  addValueReference usage:References.re:25:6 declaration:References.re:25:13
-  addValueReference usage:References.re:32:4 declaration:References.re:18:2
-  addValueReference usage:References.re:35:4 declaration:References.re:19:2
-  addValueReference usage:References.re:38:4 declaration:References.re:20:2
-  addValueReference usage:References.re:44:4 declaration:References.re:44:27
-  addValueReference usage:References.re:48:4 declaration:References.re:48:27
+  addValueReference References.re:4:4 --> References.re:4:14
+  addValueReference References.re:4:4 --> pervasives.mli:1179:0
+  addValueReference References.re:7:4 --> References.re:7:13
+  addValueReference References.re:7:4 --> pervasives.mli:264:0
+  addValueReference References.re:10:4 --> References.re:10:13
+  addValueReference References.re:10:4 --> pervasives.mli:264:0
+  addValueReference References.re:10:4 --> References.re:10:13
+  addValueReference References.re:23:6 --> References.re:23:12
+  addValueReference References.re:24:6 --> pervasives.mli:1179:0
+  addValueReference References.re:25:6 --> References.re:25:16
+  addValueReference References.re:25:6 --> References.re:25:13
+  addValueReference References.re:32:4 --> References.re:18:2
+  addValueReference References.re:35:4 --> References.re:19:2
+  addValueReference References.re:38:4 --> References.re:20:2
+  addValueReference References.re:44:4 --> References.re:44:27
+  addValueReference References.re:48:4 --> References.re:48:27
   mergeSet References.re:23:6 <- References.re:18:2
-  addValueReference usage:References.re:18:2 declaration:References.re:23:6
+  addValueReference References.re:18:2 --> References.re:23:6
   mergeSet References.re:24:6 <- References.re:19:2
-  addValueReference usage:References.re:19:2 declaration:References.re:24:6
+  addValueReference References.re:19:2 --> References.re:24:6
   mergeSet References.re:25:6 <- References.re:20:2
-  addValueReference usage:References.re:20:2 declaration:References.re:25:6
+  addValueReference References.re:20:2 --> References.re:25:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler2.re:3:6
-  addValueReference usage:CreateErrorHandler2.re:3:6 declaration:ErrorHandler.re:3:2
+  addValueReference CreateErrorHandler2.re:3:6 --> ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
-  addValueReference usage:CreateErrorHandler1.re:3:6 declaration:CreateErrorHandler1.re:3:21
-  addValueReference usage:CreateErrorHandler1.re:3:6 declaration:CreateErrorHandler1.re:3:21
-  addValueReference usage:CreateErrorHandler1.re:8:0 declaration:ErrorHandler.re:7:6
+  addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
+  addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
+  addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.re:7:6
   mergeSet ErrorHandler.re:3:2 <- CreateErrorHandler1.re:3:6
-  addValueReference usage:CreateErrorHandler1.re:3:6 declaration:ErrorHandler.re:3:2
+  addValueReference CreateErrorHandler1.re:3:6 --> ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
-  addValueReference usage:ModuleAliases.re:22:4 declaration:ModuleAliases.re:22:18
-  addValueReference usage:ModuleAliases.re:25:4 declaration:ModuleAliases.re:25:17
-  addValueReference usage:ModuleAliases.re:28:4 declaration:ModuleAliases.re:28:18
+  addValueReference ModuleAliases.re:22:4 --> ModuleAliases.re:22:18
+  addValueReference ModuleAliases.re:25:4 --> ModuleAliases.re:25:17
+  addValueReference ModuleAliases.re:28:4 --> ModuleAliases.re:28:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ExportWithRename.cmt
-  addValueReference usage:ExportWithRename.re:3:13 declaration:js.ml:70:1
-  addValueReference usage:ExportWithRename.re:3:4 declaration:ExportWithRename.re:3:13
-  addValueReference usage:ExportWithRename.re:3:4 declaration:React.re:5:0
+  addValueReference ExportWithRename.re:3:13 --> js.ml:70:1
+  addValueReference ExportWithRename.re:3:4 --> ExportWithRename.re:3:13
+  addValueReference ExportWithRename.re:3:4 --> React.re:5:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHookDefault.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/UseImportJsValue.cmt
-  addValueReference usage:UseImportJsValue.re:2:4 declaration:UseImportJsValue.re:2:18
-  addValueReference usage:UseImportJsValue.re:2:4 declaration:ImportJsValue.re:29:2
-  addValueReference usage:UseImportJsValue.re:2:4 declaration:pervasives.mli:264:0
-  addValueReference usage:UseImportJsValue.re:6:4 declaration:UseImportJsValue.re:6:36
+  addValueReference UseImportJsValue.re:2:4 --> UseImportJsValue.re:2:18
+  addValueReference UseImportJsValue.re:2:4 --> ImportJsValue.re:29:2
+  addValueReference UseImportJsValue.re:2:4 --> pervasives.mli:264:0
+  addValueReference UseImportJsValue.re:6:4 --> UseImportJsValue.re:6:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImport.cmt
-  addValueReference usage:TestImport.re:18:4 declaration:TestImport.re:1:0
-  addValueReference usage:TestImport.re:42:4 declaration:TestImport.re:30:0
+  addValueReference TestImport.re:18:4 --> TestImport.re:1:0
+  addValueReference TestImport.re:42:4 --> TestImport.re:30:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImmutableArray.cmt
-  addValueReference usage:TestImmutableArray.re:2:4 declaration:TestImmutableArray.re:2:28
-  addValueReference usage:TestImmutableArray.re:2:4 declaration:ImmutableArray.rei:5:15
-  addValueReference usage:TestImmutableArray.re:9:4 declaration:TestImmutableArray.re:9:23
-  addValueReference usage:TestImmutableArray.re:9:4 declaration:belt_Array.mli:27:0
-  addValueReference usage:TestImmutableArray.re:11:4 declaration:TestImmutableArray.re:11:23
-  addValueReference usage:TestImmutableArray.re:11:4 declaration:belt_Array.mli:64:0
+  addValueReference TestImmutableArray.re:2:4 --> TestImmutableArray.re:2:28
+  addValueReference TestImmutableArray.re:2:4 --> ImmutableArray.rei:5:15
+  addValueReference TestImmutableArray.re:9:4 --> TestImmutableArray.re:9:23
+  addValueReference TestImmutableArray.re:9:4 --> belt_Array.mli:27:0
+  addValueReference TestImmutableArray.re:11:4 --> TestImmutableArray.re:11:23
+  addValueReference TestImmutableArray.re:11:4 --> belt_Array.mli:64:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHooks.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
-  addValueReference usage:Records.re:14:4 declaration:Records.re:14:20
-  addValueReference usage:Records.re:14:4 declaration:Records.re:14:23
-  addValueReference usage:Records.re:14:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Records.re:14:4 declaration:Records.re:14:26
-  addValueReference usage:Records.re:14:4 declaration:Records.re:15:40
-  addValueReference usage:Records.re:14:4 declaration:belt_Option.mli:43:0
-  addValueReference usage:Records.re:14:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Records.re:18:4 declaration:Records.re:18:15
-  addValueReference usage:Records.re:18:4 declaration:Records.re:18:18
-  addValueReference usage:Records.re:34:4 declaration:Records.re:34:19
-  addValueReference usage:Records.re:34:4 declaration:Records.re:34:28
-  addValueReference usage:Records.re:34:4 declaration:Records.re:34:14
-  addValueReference usage:Records.re:34:4 declaration:belt_Option.mli:43:0
-  addValueReference usage:Records.re:37:4 declaration:Records.re:38:31
-  addValueReference usage:Records.re:37:4 declaration:Records.re:37:19
-  addValueReference usage:Records.re:37:4 declaration:Records.re:34:4
-  addValueReference usage:Records.re:44:4 declaration:Records.re:47:35
-  addValueReference usage:Records.re:44:4 declaration:Records.re:46:14
-  addValueReference usage:Records.re:44:4 declaration:Records.re:34:4
-  addValueReference usage:Records.re:44:4 declaration:Records.re:48:62
-  addValueReference usage:Records.re:44:4 declaration:Records.re:48:35
-  addValueReference usage:Records.re:44:4 declaration:Records.re:34:4
-  addValueReference usage:Records.re:44:4 declaration:Records.re:46:14
-  addValueReference usage:Records.re:44:4 declaration:Records.re:34:4
-  addValueReference usage:Records.re:44:4 declaration:pervasives.mli:793:0
-  addValueReference usage:Records.re:44:4 declaration:Records.re:44:24
-  addValueReference usage:Records.re:44:4 declaration:belt_Array.mli:360:0
-  addValueReference usage:Records.re:44:4 declaration:belt_List.mli:269:0
-  addValueReference usage:Records.re:44:4 declaration:belt_List.mli:209:0
-  addValueReference usage:Records.re:44:4 declaration:belt_List.mli:277:0
-  addValueReference usage:Records.re:61:4 declaration:Records.re:61:19
-  addValueReference usage:Records.re:70:4 declaration:Records.re:70:25
-  addValueReference usage:Records.re:76:4 declaration:Records.re:73:4
-  addValueReference usage:Records.re:79:4 declaration:Records.re:79:32
-  addValueReference usage:Records.re:79:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Records.re:79:4 declaration:Records.re:79:32
-  addValueReference usage:Records.re:92:4 declaration:Records.re:93:54
-  addValueReference usage:Records.re:92:4 declaration:Records.re:92:20
-  addValueReference usage:Records.re:92:4 declaration:js_null_undefined.mli:95:0
-  addValueReference usage:Records.re:92:4 declaration:Records.re:34:4
-  addValueReference usage:Records.re:96:4 declaration:js_null_undefined.mli:40:0
-  addValueReference usage:Records.re:96:4 declaration:js_null_undefined.mli:40:0
-  addValueReference usage:Records.re:103:4 declaration:Records.re:105:6
-  addValueReference usage:Records.re:103:4 declaration:js.ml:70:1
-  addValueReference usage:Records.re:103:4 declaration:Records.re:105:6
-  addValueReference usage:Records.re:103:4 declaration:js.ml:70:1
-  addValueReference usage:Records.re:103:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Records.re:103:4 declaration:Records.re:112:69
-  addValueReference usage:Records.re:103:4 declaration:Records.re:105:6
-  addValueReference usage:Records.re:103:4 declaration:js.ml:70:1
-  addValueReference usage:Records.re:103:4 declaration:js_null_undefined.mli:95:0
-  addValueReference usage:Records.re:103:4 declaration:belt_Option.mli:43:0
-  addValueReference usage:Records.re:103:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Records.re:115:4 declaration:Records.re:117:6
-  addValueReference usage:Records.re:115:4 declaration:js.ml:70:1
-  addValueReference usage:Records.re:115:4 declaration:Records.re:117:6
-  addValueReference usage:Records.re:115:4 declaration:js.ml:70:1
-  addValueReference usage:Records.re:115:4 declaration:pervasives.mli:272:0
-  addValueReference usage:Records.re:115:4 declaration:Records.re:124:47
-  addValueReference usage:Records.re:115:4 declaration:Records.re:117:6
-  addValueReference usage:Records.re:115:4 declaration:js.ml:70:1
-  addValueReference usage:Records.re:115:4 declaration:belt_Option.mli:43:0
-  addValueReference usage:Records.re:115:4 declaration:pervasives.mli:272:0
+  addValueReference Records.re:14:4 --> Records.re:14:20
+  addValueReference Records.re:14:4 --> Records.re:14:23
+  addValueReference Records.re:14:4 --> pervasives.mli:272:0
+  addValueReference Records.re:14:4 --> Records.re:14:26
+  addValueReference Records.re:14:4 --> Records.re:15:40
+  addValueReference Records.re:14:4 --> belt_Option.mli:43:0
+  addValueReference Records.re:14:4 --> pervasives.mli:272:0
+  addValueReference Records.re:18:4 --> Records.re:18:15
+  addValueReference Records.re:18:4 --> Records.re:18:18
+  addValueReference Records.re:34:4 --> Records.re:34:19
+  addValueReference Records.re:34:4 --> Records.re:34:28
+  addValueReference Records.re:34:4 --> Records.re:34:14
+  addValueReference Records.re:34:4 --> belt_Option.mli:43:0
+  addValueReference Records.re:37:4 --> Records.re:38:31
+  addValueReference Records.re:37:4 --> Records.re:37:19
+  addValueReference Records.re:37:4 --> Records.re:34:4
+  addValueReference Records.re:44:4 --> Records.re:47:35
+  addValueReference Records.re:44:4 --> Records.re:46:14
+  addValueReference Records.re:44:4 --> Records.re:34:4
+  addValueReference Records.re:44:4 --> Records.re:48:62
+  addValueReference Records.re:44:4 --> Records.re:48:35
+  addValueReference Records.re:44:4 --> Records.re:34:4
+  addValueReference Records.re:44:4 --> Records.re:46:14
+  addValueReference Records.re:44:4 --> Records.re:34:4
+  addValueReference Records.re:44:4 --> pervasives.mli:793:0
+  addValueReference Records.re:44:4 --> Records.re:44:24
+  addValueReference Records.re:44:4 --> belt_Array.mli:360:0
+  addValueReference Records.re:44:4 --> belt_List.mli:269:0
+  addValueReference Records.re:44:4 --> belt_List.mli:209:0
+  addValueReference Records.re:44:4 --> belt_List.mli:277:0
+  addValueReference Records.re:61:4 --> Records.re:61:19
+  addValueReference Records.re:70:4 --> Records.re:70:25
+  addValueReference Records.re:76:4 --> Records.re:73:4
+  addValueReference Records.re:79:4 --> Records.re:79:32
+  addValueReference Records.re:79:4 --> pervasives.mli:264:0
+  addValueReference Records.re:79:4 --> Records.re:79:32
+  addValueReference Records.re:92:4 --> Records.re:93:54
+  addValueReference Records.re:92:4 --> Records.re:92:20
+  addValueReference Records.re:92:4 --> js_null_undefined.mli:95:0
+  addValueReference Records.re:92:4 --> Records.re:34:4
+  addValueReference Records.re:96:4 --> js_null_undefined.mli:40:0
+  addValueReference Records.re:96:4 --> js_null_undefined.mli:40:0
+  addValueReference Records.re:103:4 --> Records.re:105:6
+  addValueReference Records.re:103:4 --> js.ml:70:1
+  addValueReference Records.re:103:4 --> Records.re:105:6
+  addValueReference Records.re:103:4 --> js.ml:70:1
+  addValueReference Records.re:103:4 --> pervasives.mli:272:0
+  addValueReference Records.re:103:4 --> Records.re:112:69
+  addValueReference Records.re:103:4 --> Records.re:105:6
+  addValueReference Records.re:103:4 --> js.ml:70:1
+  addValueReference Records.re:103:4 --> js_null_undefined.mli:95:0
+  addValueReference Records.re:103:4 --> belt_Option.mli:43:0
+  addValueReference Records.re:103:4 --> pervasives.mli:272:0
+  addValueReference Records.re:115:4 --> Records.re:117:6
+  addValueReference Records.re:115:4 --> js.ml:70:1
+  addValueReference Records.re:115:4 --> Records.re:117:6
+  addValueReference Records.re:115:4 --> js.ml:70:1
+  addValueReference Records.re:115:4 --> pervasives.mli:272:0
+  addValueReference Records.re:115:4 --> Records.re:124:47
+  addValueReference Records.re:115:4 --> Records.re:117:6
+  addValueReference Records.re:115:4 --> js.ml:70:1
+  addValueReference Records.re:115:4 --> belt_Option.mli:43:0
+  addValueReference Records.re:115:4 --> pervasives.mli:272:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Hooks.cmt
-  addValueReference usage:Hooks.re:4:13 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:5:2 declaration:React.re:104:0
-  addValueReference usage:Hooks.re:4:4 declaration:Hooks.re:4:13
-  addValueReference usage:Hooks.re:4:4 declaration:Hooks.re:5:7
-  addValueReference usage:Hooks.re:4:4 declaration:pervasives.mli:723:0
-  addValueReference usage:Hooks.re:4:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:4:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:4:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:4:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:4:4 declaration:Hooks.re:5:7
-  addValueReference usage:Hooks.re:4:4 declaration:pervasives.mli:264:0
-  addValueReference usage:Hooks.re:4:4 declaration:Hooks.re:5:14
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:4:4 declaration:ImportHooks.re:15:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:3:0
-  addValueReference usage:Hooks.re:4:4 declaration:Hooks.re:22:16
-  addValueReference usage:Hooks.re:4:4 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:ImportHooks.re:15:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:16:0
-  addValueReference usage:Hooks.re:4:4 declaration:ImportHookDefault.re:6:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:3:0
-  addValueReference usage:Hooks.re:4:4 declaration:Hooks.re:28:16
-  addValueReference usage:Hooks.re:4:4 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:ImportHookDefault.re:6:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:4:4 declaration:React.re:16:0
-  addValueReference usage:Hooks.re:4:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:36:4 declaration:Hooks.re:4:4
-  addValueReference usage:Hooks.re:40:25 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:40:4 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:40:4 declaration:Hooks.re:40:25
-  addValueReference usage:Hooks.re:40:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:40:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:40:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:40:4 declaration:Hooks.re:40:35
-  addValueReference usage:Hooks.re:48:15 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:48:6 declaration:Hooks.re:48:15
-  addValueReference usage:Hooks.re:48:6 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:48:6 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:48:6 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:53:27 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:53:6 declaration:Hooks.re:53:27
-  addValueReference usage:Hooks.re:53:6 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:53:6 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:53:6 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:59:17 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:59:8 declaration:Hooks.re:59:17
-  addValueReference usage:Hooks.re:59:8 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:59:8 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:59:8 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:64:29 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:64:8 declaration:Hooks.re:64:29
-  addValueReference usage:Hooks.re:64:8 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:64:8 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:64:8 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:72:6 declaration:ReasonReact.rei:15:0
-  addValueReference usage:Hooks.re:72:6 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:80:4 declaration:Hooks.re:80:32
-  addValueReference usage:Hooks.re:80:4 declaration:Hooks.re:80:38
-  addValueReference usage:Hooks.re:80:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:80:4 declaration:Hooks.re:80:32
-  addValueReference usage:Hooks.re:80:4 declaration:Hooks.re:80:46
-  addValueReference usage:Hooks.re:87:33 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:87:39 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:87:4 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:87:4 declaration:Hooks.re:87:33
-  addValueReference usage:Hooks.re:87:4 declaration:Hooks.re:87:39
-  addValueReference usage:Hooks.re:87:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:87:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:87:4 declaration:Hooks.re:87:33
-  addValueReference usage:Hooks.re:87:4 declaration:Hooks.re:87:47
-  addValueReference usage:Hooks.re:94:20 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:94:4 declaration:Hooks.re:96:9
-  addValueReference usage:Hooks.re:94:4 declaration:ReactDOMRe.re:96:2
-  addValueReference usage:Hooks.re:94:4 declaration:Hooks.re:94:20
-  addValueReference usage:Hooks.re:94:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:94:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:94:4 declaration:React.re:3:0
-  addValueReference usage:Hooks.re:94:4 declaration:js_null_undefined.mli:95:0
-  addValueReference usage:Hooks.re:105:4 declaration:Hooks.re:94:4
-  addValueReference usage:Hooks.re:105:4 declaration:React.re:44:0
-  addValueReference usage:Hooks.re:112:21 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:111:4 declaration:Hooks.re:112:28
-  addValueReference usage:Hooks.re:111:4 declaration:obj.mli:25:0
-  addValueReference usage:Hooks.re:111:4 declaration:Hooks.re:112:21
-  addValueReference usage:Hooks.re:111:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:111:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:111:4 declaration:React.re:44:0
-  addValueReference usage:Hooks.re:127:4 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:127:4 declaration:Hooks.re:127:35
-  addValueReference usage:Hooks.re:127:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:131:38 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:131:4 declaration:Hooks.re:131:38
-  addValueReference usage:Hooks.re:131:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:136:6 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:136:6 declaration:Hooks.re:146:8
-  addValueReference usage:Hooks.re:136:6 declaration:Hooks.re:147:18
-  addValueReference usage:Hooks.re:136:6 declaration:Hooks.re:138:9
-  addValueReference usage:Hooks.re:153:31 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:153:41 declaration:js.ml:70:1
-  addValueReference usage:Hooks.re:153:4 declaration:Hooks.re:153:31
-  addValueReference usage:Hooks.re:153:4 declaration:pervasives.mli:670:0
-  addValueReference usage:Hooks.re:153:4 declaration:React.re:5:0
-  addValueReference usage:Hooks.re:153:4 declaration:Hooks.re:153:41
-  addValueReference usage:Hooks.re:153:4 declaration:ReactDOMRe.re:1097:0
-  addValueReference usage:Hooks.re:153:4 declaration:ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:4:13 --> js.ml:70:1
+  addValueReference Hooks.re:5:2 --> React.re:104:0
+  addValueReference Hooks.re:4:4 --> Hooks.re:4:13
+  addValueReference Hooks.re:4:4 --> Hooks.re:5:7
+  addValueReference Hooks.re:4:4 --> pervasives.mli:723:0
+  addValueReference Hooks.re:4:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:4:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:4:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:4:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:4:4 --> Hooks.re:5:7
+  addValueReference Hooks.re:4:4 --> pervasives.mli:264:0
+  addValueReference Hooks.re:4:4 --> Hooks.re:5:14
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:4:4 --> ImportHooks.re:15:0
+  addValueReference Hooks.re:4:4 --> React.re:3:0
+  addValueReference Hooks.re:4:4 --> Hooks.re:22:16
+  addValueReference Hooks.re:4:4 --> js.ml:70:1
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> ImportHooks.re:15:0
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> React.re:16:0
+  addValueReference Hooks.re:4:4 --> ImportHookDefault.re:6:0
+  addValueReference Hooks.re:4:4 --> React.re:3:0
+  addValueReference Hooks.re:4:4 --> Hooks.re:28:16
+  addValueReference Hooks.re:4:4 --> js.ml:70:1
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> ImportHookDefault.re:6:0
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> React.re:5:0
+  addValueReference Hooks.re:4:4 --> React.re:16:0
+  addValueReference Hooks.re:4:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:36:4 --> Hooks.re:4:4
+  addValueReference Hooks.re:40:25 --> js.ml:70:1
+  addValueReference Hooks.re:40:4 --> js.ml:70:1
+  addValueReference Hooks.re:40:4 --> Hooks.re:40:25
+  addValueReference Hooks.re:40:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:40:4 --> React.re:5:0
+  addValueReference Hooks.re:40:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:40:4 --> Hooks.re:40:35
+  addValueReference Hooks.re:48:15 --> js.ml:70:1
+  addValueReference Hooks.re:48:6 --> Hooks.re:48:15
+  addValueReference Hooks.re:48:6 --> pervasives.mli:670:0
+  addValueReference Hooks.re:48:6 --> React.re:5:0
+  addValueReference Hooks.re:48:6 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:53:27 --> js.ml:70:1
+  addValueReference Hooks.re:53:6 --> Hooks.re:53:27
+  addValueReference Hooks.re:53:6 --> pervasives.mli:670:0
+  addValueReference Hooks.re:53:6 --> React.re:5:0
+  addValueReference Hooks.re:53:6 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:59:17 --> js.ml:70:1
+  addValueReference Hooks.re:59:8 --> Hooks.re:59:17
+  addValueReference Hooks.re:59:8 --> pervasives.mli:670:0
+  addValueReference Hooks.re:59:8 --> React.re:5:0
+  addValueReference Hooks.re:59:8 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:64:29 --> js.ml:70:1
+  addValueReference Hooks.re:64:8 --> Hooks.re:64:29
+  addValueReference Hooks.re:64:8 --> pervasives.mli:670:0
+  addValueReference Hooks.re:64:8 --> React.re:5:0
+  addValueReference Hooks.re:64:8 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:72:6 --> ReasonReact.rei:15:0
+  addValueReference Hooks.re:72:6 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:80:4 --> Hooks.re:80:32
+  addValueReference Hooks.re:80:4 --> Hooks.re:80:38
+  addValueReference Hooks.re:80:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:80:4 --> Hooks.re:80:32
+  addValueReference Hooks.re:80:4 --> Hooks.re:80:46
+  addValueReference Hooks.re:87:33 --> js.ml:70:1
+  addValueReference Hooks.re:87:39 --> js.ml:70:1
+  addValueReference Hooks.re:87:4 --> js.ml:70:1
+  addValueReference Hooks.re:87:4 --> Hooks.re:87:33
+  addValueReference Hooks.re:87:4 --> Hooks.re:87:39
+  addValueReference Hooks.re:87:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:87:4 --> React.re:5:0
+  addValueReference Hooks.re:87:4 --> Hooks.re:87:33
+  addValueReference Hooks.re:87:4 --> Hooks.re:87:47
+  addValueReference Hooks.re:94:20 --> js.ml:70:1
+  addValueReference Hooks.re:94:4 --> Hooks.re:96:9
+  addValueReference Hooks.re:94:4 --> ReactDOMRe.re:96:2
+  addValueReference Hooks.re:94:4 --> Hooks.re:94:20
+  addValueReference Hooks.re:94:4 --> React.re:5:0
+  addValueReference Hooks.re:94:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:94:4 --> React.re:3:0
+  addValueReference Hooks.re:94:4 --> js_null_undefined.mli:95:0
+  addValueReference Hooks.re:105:4 --> Hooks.re:94:4
+  addValueReference Hooks.re:105:4 --> React.re:44:0
+  addValueReference Hooks.re:112:21 --> js.ml:70:1
+  addValueReference Hooks.re:111:4 --> Hooks.re:112:28
+  addValueReference Hooks.re:111:4 --> obj.mli:25:0
+  addValueReference Hooks.re:111:4 --> Hooks.re:112:21
+  addValueReference Hooks.re:111:4 --> React.re:5:0
+  addValueReference Hooks.re:111:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:111:4 --> React.re:44:0
+  addValueReference Hooks.re:127:4 --> js.ml:70:1
+  addValueReference Hooks.re:127:4 --> Hooks.re:127:35
+  addValueReference Hooks.re:127:4 --> React.re:5:0
+  addValueReference Hooks.re:131:38 --> js.ml:70:1
+  addValueReference Hooks.re:131:4 --> Hooks.re:131:38
+  addValueReference Hooks.re:131:4 --> React.re:5:0
+  addValueReference Hooks.re:136:6 --> js.ml:70:1
+  addValueReference Hooks.re:136:6 --> Hooks.re:146:8
+  addValueReference Hooks.re:136:6 --> Hooks.re:147:18
+  addValueReference Hooks.re:136:6 --> Hooks.re:138:9
+  addValueReference Hooks.re:153:31 --> js.ml:70:1
+  addValueReference Hooks.re:153:41 --> js.ml:70:1
+  addValueReference Hooks.re:153:4 --> Hooks.re:153:31
+  addValueReference Hooks.re:153:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:153:4 --> React.re:5:0
+  addValueReference Hooks.re:153:4 --> Hooks.re:153:41
+  addValueReference Hooks.re:153:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:153:4 --> ReactDOMRe.re:1097:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestPromise.cmt
-  addValueReference usage:TestPromise.re:14:4 declaration:TestPromise.re:14:33
-  addValueReference usage:TestPromise.re:14:4 declaration:js_promise.ml:39:0
-  addValueReference usage:TestPromise.re:14:4 declaration:js_promise.ml:50:0
+  addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
+  addValueReference TestPromise.re:14:4 --> js_promise.ml:39:0
+  addValueReference TestPromise.re:14:4 --> js_promise.ml:50:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
   mergeSet NestedModulesInSignature.re:2:6 <- NestedModulesInSignature.rei:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestFirstClassModules.cmt
-  addValueReference usage:TestFirstClassModules.re:2:4 declaration:TestFirstClassModules.re:2:15
-  addValueReference usage:TestFirstClassModules.re:5:4 declaration:TestFirstClassModules.re:5:24
-  addValueReference usage:TestFirstClassModules.re:8:4 declaration:TestFirstClassModules.re:8:21
-  addValueReference usage:TestFirstClassModules.re:26:4 declaration:TestFirstClassModules.re:30:6
+  addValueReference TestFirstClassModules.re:2:4 --> TestFirstClassModules.re:2:15
+  addValueReference TestFirstClassModules.re:5:4 --> TestFirstClassModules.re:5:24
+  addValueReference TestFirstClassModules.re:8:4 --> TestFirstClassModules.re:8:21
+  addValueReference TestFirstClassModules.re:26:4 --> TestFirstClassModules.re:30:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/AutoAnnotate.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTest.cmt
-  addValueReference usage:DeadTest.re:1:0 declaration:ImmutableArray.rei:7:0
-  addValueReference usage:DeadTest.re:1:0 declaration:js.ml:160:0
-  addValueReference usage:DeadTest.re:8:7 declaration:DeadTest.re:7:4
-  addValueReference usage:DeadTest.re:8:0 declaration:pervasives.mli:694:0
-  addValueReference usage:DeadTest.re:11:7 declaration:DeadTest.re:10:4
-  addValueReference usage:DeadTest.re:11:0 declaration:pervasives.mli:694:0
-  addValueReference usage:DeadTest.re:12:7 declaration:DeadTest.re:10:4
-  addValueReference usage:DeadTest.re:12:0 declaration:pervasives.mli:694:0
+  addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
+  addValueReference DeadTest.re:1:0 --> js.ml:160:0
+  addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
+  addValueReference DeadTest.re:8:0 --> pervasives.mli:694:0
+  addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
+  addValueReference DeadTest.re:11:0 --> pervasives.mli:694:0
+  addValueReference DeadTest.re:12:7 --> DeadTest.re:10:4
+  addValueReference DeadTest.re:12:0 --> pervasives.mli:694:0
 
 UNUSED EXPORTED VALUES:
   
