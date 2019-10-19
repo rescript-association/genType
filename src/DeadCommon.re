@@ -57,6 +57,10 @@ module PosHash = {
   };
 
   let mergeSet = (table, pos1, pos2) => {
+    let set1 = findSet(table, pos1);
+    let set2 = findSet(table, pos2);
+    let setUnion = PosSet.union(set1, set2);
+    replace(table, pos1, setUnion);
     if (verbose) {
       GenTypeCommon.logItem(
         "mergeSet %s --> %s\n",
@@ -64,10 +68,6 @@ module PosHash = {
         pos1 |> posToString(~printCol=true, ~shortFile=true),
       );
     };
-
-    let set1 = findSet(table, pos1);
-    let set2 = findSet(table, pos2);
-    replace(table, pos1, PosSet.union(set1, set2));
   };
 };
 

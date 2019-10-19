@@ -180,6 +180,13 @@ let processStructure =
       let fn = pos.Lexing.pos_fname;
       if (isImplementation(fn)
           && getModuleName(fn) == getModuleName(currentSrc^)) {
+        if (verbose) {
+          GenTypeCommon.logItem(
+            "clean %s\n",
+            pos |> posToString(~printCol=true, ~shortFile=true),
+          );
+        };
+
         PosHash.remove(valueReferences, pos);
       };
     };

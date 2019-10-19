@@ -470,6 +470,67 @@
   mergeSet ImmutableArray.rei:106:0 --> ImmutableArray.re:115:6
   mergeSet ImmutableArray.rei:108:0 --> ImmutableArray.re:117:6
   mergeSet ImmutableArray.rei:109:0 --> ImmutableArray.re:118:6
+  clean ImmutableArray.re:24:6
+  clean ImmutableArray.re:14:6
+  clean ImmutableArray.re:16:6
+  clean ImmutableArray.re:20:6
+  clean ImmutableArray.re:22:6
+  clean ImmutableArray.re:24:6
+  clean ImmutableArray.re:26:6
+  clean ImmutableArray.re:28:6
+  clean ImmutableArray.re:30:6
+  clean ImmutableArray.re:32:6
+  clean ImmutableArray.re:34:6
+  clean ImmutableArray.re:36:6
+  clean ImmutableArray.re:38:6
+  clean ImmutableArray.re:40:6
+  clean ImmutableArray.re:42:6
+  clean ImmutableArray.re:44:6
+  clean ImmutableArray.re:46:6
+  clean ImmutableArray.re:47:6
+  clean ImmutableArray.re:49:6
+  clean ImmutableArray.re:50:6
+  clean ImmutableArray.re:52:6
+  clean ImmutableArray.re:54:6
+  clean ImmutableArray.re:55:6
+  clean ImmutableArray.re:57:6
+  clean ImmutableArray.re:59:6
+  clean ImmutableArray.re:61:6
+  clean ImmutableArray.re:63:6
+  clean ImmutableArray.re:66:6
+  clean ImmutableArray.re:68:6
+  clean ImmutableArray.re:70:6
+  clean ImmutableArray.re:71:6
+  clean ImmutableArray.re:73:6
+  clean ImmutableArray.re:74:6
+  clean ImmutableArray.re:76:6
+  clean ImmutableArray.re:77:6
+  clean ImmutableArray.re:79:6
+  clean ImmutableArray.re:80:6
+  clean ImmutableArray.re:82:6
+  clean ImmutableArray.re:83:6
+  clean ImmutableArray.re:85:6
+  clean ImmutableArray.re:86:6
+  clean ImmutableArray.re:88:6
+  clean ImmutableArray.re:89:6
+  clean ImmutableArray.re:91:6
+  clean ImmutableArray.re:92:6
+  clean ImmutableArray.re:94:6
+  clean ImmutableArray.re:95:6
+  clean ImmutableArray.re:97:6
+  clean ImmutableArray.re:99:6
+  clean ImmutableArray.re:102:6
+  clean ImmutableArray.re:103:6
+  clean ImmutableArray.re:105:6
+  clean ImmutableArray.re:106:6
+  clean ImmutableArray.re:108:6
+  clean ImmutableArray.re:109:6
+  clean ImmutableArray.re:111:6
+  clean ImmutableArray.re:112:6
+  clean ImmutableArray.re:114:6
+  clean ImmutableArray.re:115:6
+  clean ImmutableArray.re:117:6
+  clean ImmutableArray.re:118:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
   addValueReference TransitiveType3.re:8:4 --> TransitiveType3.re:8:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
@@ -663,6 +724,9 @@
   mergeSet FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   mergeSet FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
   mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
+  clean FirstClassModulesInterface.re:6:4
+  clean FirstClassModulesInterface.re:8:18
+  clean FirstClassModulesInterface.re:8:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
   addValueReference ImportJsValue.re:19:4 --> ImportJsValue.re:1:0
   addValueReference ImportJsValue.re:22:4 --> ImportJsValue.re:14:0
@@ -922,6 +986,7 @@
   addValueReference TestPromise.re:14:4 --> js_promise.ml:50:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
   mergeSet NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6
+  clean NestedModulesInSignature.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestFirstClassModules.cmt
   addValueReference TestFirstClassModules.re:2:4 --> TestFirstClassModules.re:2:15
   addValueReference TestFirstClassModules.re:5:4 --> TestFirstClassModules.re:5:24
