@@ -13,7 +13,7 @@ let load_file = (~sourceFile, cmtFilePath) => {
   switch (cmt_annots) {
   | Interface(signature) =>
     ProcessAnnotations.signature(signature);
-    DeadValue.process_signature(cmtFilePath, signature.sig_type);
+    DeadValue.processSignature(cmtFilePath, signature.sig_type);
   | Implementation(structure) =>
     let cmtiExists =
       Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
@@ -26,7 +26,7 @@ let load_file = (~sourceFile, cmtFilePath) => {
       structure,
     );
     if (!cmtiExists) {
-      DeadValue.process_signature(cmtFilePath, structure.str_type);
+      DeadValue.processSignature(cmtFilePath, structure.str_type);
     };
   | _ => ()
   };

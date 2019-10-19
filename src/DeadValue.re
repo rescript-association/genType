@@ -153,7 +153,7 @@ let processValueDependency = ((vd1, vd2)) => {
   };
 };
 
-let process_signature = (fn, signature: Types.signature) => {
+let processSignature = (fn, signature: Types.signature) => {
   let moduleName = getModuleName(fn);
   let module_id = Ident.create(String.capitalize_ascii(moduleName));
   signature
