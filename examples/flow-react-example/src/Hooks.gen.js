@@ -59,7 +59,7 @@ export type Inner_make_Props = {| +vehicle: vehicle |};
 
 export const Inner_make: typeof(Inner_make$$forTypeof) = function Hooks_Inner(Arg1: $any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner[0], $props);
+  const result = React.createElement(HooksBS.Inner.make, $props);
   return result
 };
 
@@ -70,7 +70,7 @@ export type Inner_anotherComponent_Props = {| +vehicle: vehicle |};
 
 export const Inner_anotherComponent: typeof(Inner_anotherComponent$$forTypeof) = function Hooks_Inner_anotherComponent(Arg1: $any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner[1], $props);
+  const result = React.createElement(HooksBS.Inner.anotherComponent, $props);
   return result
 };
 
@@ -81,7 +81,7 @@ export type Inner_Inner2_make_Props = {| +vehicle: vehicle |};
 
 export const Inner_Inner2_make: typeof(Inner_Inner2_make$$forTypeof) = function Hooks_Inner_Inner2(Arg1: $any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner[2][0], $props);
+  const result = React.createElement(HooksBS.Inner.Inner2.make, $props);
   return result
 };
 
@@ -92,7 +92,7 @@ export type Inner_Inner2_anotherComponent_Props = {| +vehicle: vehicle |};
 
 export const Inner_Inner2_anotherComponent: typeof(Inner_Inner2_anotherComponent$$forTypeof) = function Hooks_Inner_Inner2_anotherComponent(Arg1: $any) {
   const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner[2][1], $props);
+  const result = React.createElement(HooksBS.Inner.Inner2.anotherComponent, $props);
   return result
 };
 
@@ -101,7 +101,7 @@ const NoProps_make$$forTypeof = function (_: {||}) : React$Node { return null };
 
 export type NoProps_make_Props = {||};
 
-export const NoProps_make: typeof(NoProps_make$$forTypeof) = HooksBS.NoProps[0];
+export const NoProps_make: typeof(NoProps_make$$forTypeof) = HooksBS.NoProps.make;
 
 export const functionWithRenamedArgs: ({|
   +to: vehicle, 
@@ -193,7 +193,7 @@ export const RenderPropRequiresConversion_make: typeof(RenderPropRequiresConvers
       const result1 = React.createElement(Arg1.renderVehicle, $props);
       return result1
     }};
-  const result = React.createElement(HooksBS.RenderPropRequiresConversion[0], $props1);
+  const result = React.createElement(HooksBS.RenderPropRequiresConversion.make, $props1);
   return result
 };
 
@@ -208,7 +208,7 @@ export const aComponentWithChildren: typeof(aComponentWithChildren$$forTypeof) =
   return result
 };
 
-export const NoProps: { make: React$ComponentType<{||}> } = { make: NoProps_make }
+export const NoProps: { make: React$ComponentType<{||}> } = HooksBS.NoProps
 
 export const Inner: {
   Inner2: {
@@ -225,13 +225,6 @@ export const Inner: {
   make: React$ComponentType<{|
     +vehicle: vehicle
   |}>
-} = {
-  Inner2: {
-    anotherComponent: Inner_Inner2_anotherComponent, 
-    make: Inner_Inner2_make
-  }, 
-  anotherComponent: Inner_anotherComponent, 
-  make: Inner_make
-}
+} = HooksBS.Inner
 
-export const RenderPropRequiresConversion: { make: React$ComponentType<{| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |}> } = { make: RenderPropRequiresConversion_make }
+export const RenderPropRequiresConversion: { make: React$ComponentType<{| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |}> } = HooksBS.RenderPropRequiresConversion
