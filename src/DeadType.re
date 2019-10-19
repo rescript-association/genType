@@ -12,7 +12,7 @@ let collectExport =
   };
 
   switch (type_kind) {
-  | [@implicit_arity] Type_record(l, _) =>
+  | Type_record(l, _) =>
     List.iter(
       ({Types.ld_id, ld_loc, ld_type, _}) => save(ld_id, ld_loc),
       l,
