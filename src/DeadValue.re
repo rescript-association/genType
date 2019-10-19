@@ -147,7 +147,7 @@ let assoc = ((pos1, pos2)) => {
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     PosHash.mergeSet(valueReferences, pos1, pos2);
     if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
-      addValueReference(pos2, pos1);
+      (); // addValueReference(pos2, pos1);
     } else if (isInterface(fn1, pos1) && isInterface(fn2, pos2)) {
       addValueReference(pos1, pos2);
     };

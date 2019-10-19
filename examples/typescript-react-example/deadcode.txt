@@ -706,13 +706,11 @@
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
   addValueReference CreateErrorHandler2.re:3:6 --> pervasives.mli:723:0
   mergeSet ErrorHandler.re:3:2 --> CreateErrorHandler2.re:3:6
-  addValueReference CreateErrorHandler2.re:3:6 --> ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.re:7:6
   mergeSet ErrorHandler.re:3:2 --> CreateErrorHandler1.re:3:6
-  addValueReference CreateErrorHandler1.re:3:6 --> ErrorHandler.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
   addValueReference ModuleAliases.re:22:4 --> ModuleAliases.re:22:18
   addValueReference ModuleAliases.re:25:4 --> ModuleAliases.re:25:17
@@ -957,7 +955,7 @@ File References
   ModuleAliases.re -->> 
   TestModuleAliases.re -->> 
   TestImport.re -->> 
-  CreateErrorHandler2.re -->> ErrorHandler.re, pervasives.mli
+  CreateErrorHandler2.re -->> pervasives.mli
   VariantsWithPayload.re -->> js.ml, pervasives.mli
   FirstClassModules.re -->> pervasives.mli
   Opaque.re -->> 
@@ -992,7 +990,7 @@ File References
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
   ImmutableArray.re -->> belt_Array.mli
   TypeParams2.re -->> 
-  CreateErrorHandler1.Error1.notification: 2 references (CreateErrorHandler2.re:3:6, ErrorHandler.re:7:6)
+  CreateErrorHandler1.Error1.notification: 1 references (ErrorHandler.re:7:6)
   CreateErrorHandler2.Error2.notification: 1 references (ErrorHandler.re:7:6)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
