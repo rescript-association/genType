@@ -1,3 +1,5 @@
+/* Adapted from https://github.com/LexiFi/dead_code_analyzer */
+
 open DeadCommon;
 
 let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>

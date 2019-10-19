@@ -1,11 +1,4 @@
-/***************************************************************************/
-/*                                                                         */
-/*   Copyright (c) 2014-2016 LexiFi SAS. All rights reserved.              */
-/*                                                                         */
-/*   This source code is licensed under the MIT License                    */
-/*   found in the LICENSE file at the root of this source tree             */
-/*                                                                         */
-/***************************************************************************/
+/* Adapted from https://github.com/LexiFi/dead_code_analyzer */
 
 let collectExport =
     (path, u, {type_kind, type_manifest}: Types.type_declaration) => {

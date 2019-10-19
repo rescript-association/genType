@@ -1247,7 +1247,7 @@ File References
 [@dead "fortytwo"] let fortytwo = 42;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler2.re:3: Error2.notification
 <-- line 3
-[@dead "Error2.notification"]   let notification = s => ("", "");
+[@dead "Error2.notification"]   let notification = _ => ("", "");
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/CreateErrorHandler.re:3: Error1.notification
 <-- line 3
 [@dead "Error1.notification"]   let notification = s => (s, s);
