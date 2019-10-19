@@ -779,6 +779,7 @@
   addValueReference ModuleAliases.re:22:4 --> ModuleAliases.re:22:18
   addValueReference ModuleAliases.re:25:4 --> ModuleAliases.re:25:17
   addValueReference ModuleAliases.re:28:4 --> ModuleAliases.re:28:18
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeInterface.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ExportWithRename.cmt
   addValueReference ExportWithRename.re:3:13 --> js.ml:70:1
   addValueReference ExportWithRename.re:3:4 --> ExportWithRename.re:3:13
@@ -993,6 +994,8 @@
   addValueReference TestFirstClassModules.re:8:4 --> TestFirstClassModules.re:8:21
   addValueReference TestFirstClassModules.re:26:4 --> TestFirstClassModules.re:30:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/AutoAnnotate.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeImplementation.cmt
+  mergeSet DeadCodeInterface.re:2:2 --> DeadCodeImplementation.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTest.cmt
   addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:1:0 --> js.ml:160:0
@@ -1032,6 +1035,8 @@ File References
   ExportWithRename.re -->> React.re, js.ml
   ImmutableArray.rei -->> 
   NestedModulesInSignature.re -->> 
+  DeadCodeImplementation.re -->> 
+  DeadCodeInterface.re -->> 
   TransitiveType3.re -->> 
   Uncurried.re -->> js.ml, pervasives.mli
   TransitiveType2.re -->> 
