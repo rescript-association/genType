@@ -59,9 +59,9 @@ module PosHash = {
   let mergeSet = (table, pos1, pos2) => {
     if (verbose) {
       GenTypeCommon.logItem(
-        "mergeSet %s <- %s\n",
-        pos1 |> posToString(~printCol=true, ~shortFile=true),
+        "mergeSet %s --> %s\n",
         pos2 |> posToString(~printCol=true, ~shortFile=true),
+        pos1 |> posToString(~printCol=true, ~shortFile=true),
       );
     };
 
