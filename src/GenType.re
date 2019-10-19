@@ -141,7 +141,7 @@ let cli = () => {
 };
 
 if (DeadCommon.active) {
-  Global.runAnalysis();
+  DeadCode.runAnalysis();
 } else {
   cli();
 };
