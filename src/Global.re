@@ -1,4 +1,3 @@
-open GenTypeCommon;
 open DeadCommon;
 
 let (+++) = Filename.concat;
@@ -7,7 +6,7 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let extension = Filename.extension(cmtFile);
   let moduleName = cmtFile |> DeadCommon.getModuleName;
   let sourceFile =
-    (projectRoot^ +++ sourceDir +++ moduleName)
+    (GenTypeCommon.projectRoot^ +++ sourceDir +++ moduleName)
     ++ (extension == ".cmti" ? ".rei" : ".re");
   if (!Sys.file_exists(sourceFile)) {
     GenTypeCommon.logItem("XXX sourceFile:%s\n", sourceFile);
@@ -50,7 +49,7 @@ let writeFile = (fileName, lines) =>
 let runAnalysis = () => {
   Paths.setProjectRoot();
   let lib_bs = {
-    projectRoot^ +++ "lib" +++ "bs";
+    GenTypeCommon.projectRoot^ +++ "lib" +++ "bs";
   };
 
   ModuleResolver.readSourceDirs()
