@@ -1,6 +1,6 @@
 module Error2 = {
   type t = int;
-  let notification = s => ("", "");
+  let notification = _ => ("", "");
 };
 
 module MyErrorHandler = ErrorHandler.Make(Error2);

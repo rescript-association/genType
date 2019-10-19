@@ -2,7 +2,7 @@
 
 import * as ErrorHandler from "./ErrorHandler.bs.js";
 
-function notification(s) {
+function notification(param) {
   return /* tuple */[
           "",
           ""
