@@ -119,7 +119,7 @@ let include_ = "*include*";
 
 /********   HELPERS   ********/
 
-let addValueReference = (~posDeclaration, ~posUsage) => {
+let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
   let posUsage =
     !transitive || currentBindingPos^ == Lexing.dummy_pos
       ? posUsage : currentBindingPos^;
@@ -131,7 +131,8 @@ let addValueReference = (~posDeclaration, ~posUsage) => {
     );
   };
   PosHash.addSet(valueReferences, posDeclaration, posUsage);
-  if (posDeclaration.pos_fname != none_
+  if (addFileReference
+      && posDeclaration.pos_fname != none_
       && posUsage.pos_fname != none_
       && posUsage.pos_fname != posDeclaration.pos_fname) {
     FileHash.addSet(
@@ -225,8 +226,7 @@ let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
 
 let checkUnderscore = name => reportUnderscore^ || name.[0] != '_';
 
-let hashtblAddToList = (hashtbl, key, elt) =>
-  Hashtbl.add(hashtbl, key, elt);
+let hashtblAddToList = (hashtbl, key, elt) => Hashtbl.add(hashtbl, key, elt);
 
 /********   PROCESSING  ********/
 
@@ -436,11 +436,13 @@ let report = (~onItem, decs: decs) => {
           },
         },
       ) => {
+    let findPosition = fn => Hashtbl.find(orderedFiles, fn);
+
     /* From the root of the file dependency DAG to the leaves.
        From the bottom of the file to the top */
     compare(
-      (Hashtbl.find(orderedFiles, fname1), lnum2, bol2, cnum2, path1),
-      (Hashtbl.find(orderedFiles, fname2), lnum1, bol1, cnum1, path2),
+      (fname1 |> findPosition, lnum2, bol2, cnum2, path1),
+      (fname2 |> findPosition, lnum1, bol1, cnum1, path2),
     );
   };
   items

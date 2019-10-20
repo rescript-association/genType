@@ -75,7 +75,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         _,
       },
     ) =>
-    addValueReference(~posDeclaration, ~posUsage)
+    addValueReference(~addFileReference=true, posDeclaration, posUsage)
 
   | Texp_field(
       _,
@@ -145,7 +145,8 @@ let processValueDependency = ((vd1, vd2)) => {
     if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
       (); // addValueReference(pos2, pos1);
     } else if (isInterface(fn1) && isInterface(fn2)) {
-      addValueReference(pos1, pos2);
+      let addFileReference = true;
+      addValueReference(~addFileReference, pos1, pos2);
     };
   };
 };
