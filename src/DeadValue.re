@@ -142,10 +142,9 @@ let processValueDependency = ((vd1, vd2)) => {
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     PosHash.mergeSet(valueReferences, pos1, pos2);
-    if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
-      (); // addValueReference(pos2, pos1);
-    } else if (isInterface(fn1) && isInterface(fn2)) {
-      let addFileReference = true;
+    if (isInterface(fn1) && isInterface(fn2)) {
+      let addFileReference =
+        !(isImplementation(fn1) && isImplementation(fn2));
       addValueReference(~addFileReference, pos1, pos2);
     };
   };
