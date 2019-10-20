@@ -188,7 +188,12 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
-  export notify ErrorHandler.re:7:6
+  mergeSet ErrorHandler.rei:1:30 --> ErrorHandler.re:3:2
+  mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:1:30
+  mergeSet ErrorHandler.rei:2:34 --> ErrorHandler.re:7:6
+  clean ErrorHandler.re:3:2
+  clean ErrorHandler.re:3:2
+  clean ErrorHandler.re:7:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:14:18
   addValueReference ImmutableArray.re:14:6 --> belt_Array.mli:275:0
@@ -805,6 +810,8 @@
   export A Opaque.re:3:4
   export noConversion Opaque.re:6:4
   export testConvertNestedRecordFromOtherFile Opaque.re:12:4
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmti
+  export notify ErrorHandler.rei:2:34
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/VariantsWithPayload.cmt
   addValueReference VariantsWithPayload.re:16:4 --> VariantsWithPayload.re:16:23
   addValueReference VariantsWithPayload.re:19:4 --> js.ml:160:0
@@ -967,15 +974,15 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
   addValueReference CreateErrorHandler2.re:3:6 --> pervasives.mli:723:0
-  mergeSet ErrorHandler.re:3:2 --> CreateErrorHandler2.re:3:6
-  addValueReference ErrorHandler.re:3:2 --> CreateErrorHandler2.re:3:6
+  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
+  addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   export notification CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
-  addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.re:7:6
-  mergeSet ErrorHandler.re:3:2 --> CreateErrorHandler1.re:3:6
-  addValueReference ErrorHandler.re:3:2 --> CreateErrorHandler1.re:3:6
+  addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:2:34
+  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6
+  addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6
   export notification CreateErrorHandler1.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
   addValueReference ModuleAliases.re:22:4 --> ModuleAliases.re:22:18
@@ -1390,6 +1397,7 @@ File References
   FirstClassModules.re -->> pervasives.mli
   Opaque.re -->> 
   location.re -->> 
+  ErrorHandler.rei -->> 
   IgnoreInterface.re -->> 
   NestedModulesInSignature.rei -->> 
   AutoAnnotate.re -->> 
@@ -1416,14 +1424,14 @@ File References
   ErrorHandler.re -->> 
   Hooks.re -->> React.re, ReactDOMRe.re, ReasonReact.rei, ImportHookDefault.re, ImportHooks.re, js_null_undefined.mli, js.ml, obj.mli, pervasives.mli
   ModuleAliases2.re -->> 
-  CreateErrorHandler1.re -->> ErrorHandler.re
+  CreateErrorHandler1.re -->> ErrorHandler.rei
   ImportMyBanner.re -->> 
   TestPromise.re -->> js_promise.ml
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
   ImmutableArray.re -->> belt_Array.mli
   TypeParams2.re -->> 
-  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:3:2, ErrorHandler.re:7:6)
-  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:3:2, ErrorHandler.re:7:6)
+  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
+  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
