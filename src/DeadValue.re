@@ -137,17 +137,14 @@ let processValueDependency = ((vd1, vd2)) => {
   and pos2 = vd2.Types.val_loc.loc_start;
   let fn1 = pos1.pos_fname
   and fn2 = pos2.pos_fname;
-  let isInterface = (fn, pos) =>
-    Hashtbl.mem(valueDecs, pos)
-    || getModuleName(fn) != getModuleName(currentSrc^)
-    || !isImplementation(fn)
-    || !Sys.file_exists(fn ++ "i");
+  let isInterface = fn =>
+    !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
     PosHash.mergeSet(valueReferences, pos1, pos2);
     if (fn1 != fn2 && isImplementation(fn1) && isImplementation(fn2)) {
       (); // addValueReference(pos2, pos1);
-    } else if (isInterface(fn1, pos1) && isInterface(fn2, pos2)) {
+    } else if (isInterface(fn1) && isInterface(fn2)) {
       addValueReference(pos1, pos2);
     };
   };
