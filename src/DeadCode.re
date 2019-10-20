@@ -2,7 +2,7 @@ open DeadCommon;
 
 let (+++) = Filename.concat;
 
-let load_file = (~sourceFile, cmtFilePath) => {
+let loadFile = (~sourceFile, cmtFilePath) => {
   lastPos := Lexing.dummy_pos;
   if (verbose) {
     GenTypeCommon.logItem("Scanning %s\n", cmtFilePath);
@@ -61,7 +61,7 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   FileHash.addFile(fileReferences, sourceFile);
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  load_file(~sourceFile, cmtFilePath);
+  loadFile(~sourceFile, cmtFilePath);
 };
 
 let readFile = fileName => {

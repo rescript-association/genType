@@ -223,9 +223,9 @@ let iterFilesFromRootsToLeaves = iterFun => {
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
 
-let check_underscore = name => reportUnderscore^ || name.[0] != '_';
+let checkUnderscore = name => reportUnderscore^ || name.[0] != '_';
 
-let hashtbl_add_to_list = (hashtbl, key, elt) =>
+let hashtblAddToList = (hashtbl, key, elt) =>
   Hashtbl.add(hashtbl, key, elt);
 
 /********   PROCESSING  ********/
@@ -246,7 +246,7 @@ let export = (~path, ~moduleName, ~decs: decs, ~id, ~loc) => {
       && (
         moduleName == getModuleName(pos.pos_fname) || moduleName === include_
       )
-      && check_underscore(id.name)) {
+      && checkUnderscore(id.name)) {
     if (verbose) {
       GenTypeCommon.logItem(
         "export %s %s\n",
@@ -255,7 +255,7 @@ let export = (~path, ~moduleName, ~decs: decs, ~id, ~loc) => {
       );
     };
 
-    hashtbl_add_to_list(decs, pos, value);
+    hashtblAddToList(decs, pos, value);
   };
 };
 

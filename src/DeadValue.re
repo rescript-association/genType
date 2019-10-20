@@ -14,7 +14,7 @@ let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
   | _ => []
   };
 
-let rec collect_export = (~path, ~moduleName, si: Types.signature_item) =>
+let rec collectExport = (~path, ~moduleName, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc, val_kind}) when !val_loc.Location.loc_ghost =>
     let isPrimitive =
@@ -40,7 +40,7 @@ let rec collect_export = (~path, ~moduleName, si: Types.signature_item) =>
       };
     if (collect) {
       getSignature(moduleType)
-      |> List.iter(collect_export(~path=[id, ...path], ~moduleName));
+      |> List.iter(collectExport(~path=[id, ...path], ~moduleName));
     };
   | _ => ()
   };
@@ -155,7 +155,7 @@ let processSignature = (fn, signature: Types.signature) => {
   let module_id = Ident.create(String.capitalize_ascii(moduleName));
   signature
   |> List.iter(sig_item =>
-       collect_export(~path=[module_id], ~moduleName, sig_item)
+       collectExport(~path=[module_id], ~moduleName, sig_item)
      );
   lastPos := Lexing.dummy_pos;
 };
