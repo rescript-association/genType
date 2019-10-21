@@ -1,5 +1,7 @@
 # Development
 
+**! THE `4_02` BRANCH IS ONLY IN MAINTENANCE MODE. SWITCH TO MASTER FOR THE ADDING NEW FEATURES !**
+
 ## Build genType
 
 ```
