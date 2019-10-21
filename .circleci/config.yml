@@ -119,19 +119,19 @@ workflows:
   build_deploy:
     jobs:
       - build_linux:
-          branches:
-            ignore:
-              - 4_06_1
-              - global
           filters:
+            branches:
+              ignore:
+                - 4_06_1
+                - global
             tags:
               only: /.*/
       - build_macos:
-          branches:
-            ignore:
-              - 4_06_1
-              - global
           filters:
+            branches:
+              ignore:
+                - 4_06_1
+                - global
             tags:
               only: /.*/
       - github_release:
