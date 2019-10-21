@@ -14,7 +14,7 @@
     "ts:watch": "react-scripts start",
     "build": "node ../run_bsb.js -make-world",
     "clean": "node ../clean_bsb.js",
-    "test": " Global=1 Debug=1 Transitive=1 ../../_esy/default/build/install/default/bin/gentype.native.exe >deadcode.txt",
+    "test": " Global=1 Debug=1 ../../_esy/default/build/install/default/bin/gentype.native.exe >deadcode.txt",
     "eject": "react-scripts eject",
     "tsc": "tsc -p tsconfig.json"
   },

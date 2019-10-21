@@ -8,7 +8,7 @@ let analyzeTypes = true;
 
 let analyzeExternals = false;
 
-let transitive = Sys.getenv_opt("Transitive") != None;
+let transitive = true;
 
 let write = Sys.getenv_opt("Write") != None;
 
