@@ -172,9 +172,9 @@ export const RenderPropRequiresConversion_make: React.ComponentType<{ readonly r
 };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type aComponentWithChildren_Props = { readonly children: React.ReactChild; readonly vehicle: vehicle };
+export type aComponentWithChildren_Props = { readonly children: React.ReactNode; readonly vehicle: vehicle };
 
-export const aComponentWithChildren: React.ComponentType<{ readonly children: React.ReactChild; readonly vehicle: vehicle }> = function Hooks_aComponentWithChildren(Arg1: any) {
+export const aComponentWithChildren: React.ComponentType<{ readonly children: React.ReactNode; readonly vehicle: vehicle }> = function Hooks_aComponentWithChildren(Arg1: any) {
   const $props = {children:Arg1.children, vehicle:[Arg1.vehicle.name]};
   const result = React.createElement(HooksBS.aComponentWithChildren, $props);
   return result
