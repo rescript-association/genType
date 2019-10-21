@@ -2,7 +2,7 @@
 
 let reportUnderscore = ref(false);
 
-let active = Sys.getenv_opt("Global") != None;
+let active = Sys.getenv_opt("DCE") != None;
 
 let analyzeTypes = true;
 
