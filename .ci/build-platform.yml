@@ -24,8 +24,6 @@ jobs:
       - template: utils/restore-build-cache.yml
       - script: "esy install"
         displayName: "esy install"
-      # - bash: 'ls /Users/runner/.esy/3*'
-      #   displayName: 'ls -a /Users/runner/.esy/3*'
       - script: "esy build"
         displayName: "esy build"
       - script: "npm install"
