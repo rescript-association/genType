@@ -38,5 +38,5 @@ deploy:
       artifact: gentype-4.06-win.tar.gz
       force_update: true
       on:
-        branch: /v2.*/
         appveyor_repo_tag: true
+        APPVEYOR_REPO_TAG_NAME: /v2.*/
