@@ -1,0 +1,20 @@
+# The cache key is built up of the following:
+# We use a string that we can change to bust the cache
+# The string "esy"
+# The string for the OS
+# The hash of the lock file
+steps:
+  - task: CacheBeta@1
+    inputs:
+      key: cache_string | esy | $(Agent.OS) | esy.lock/index.json
+      path: $(CACHE_FOLDER)
+      cacheHitVar: CACHE_RESTORED
+    displayName: '[Cache] esy packages'
+
+  - script: 'mkdir -p $(ESY__CACHE_INSTALL_PATH)'
+    condition: eq(variables.CACHE_RESTORED, 'true')
+    displayName: '[Cache][Restore] Create esy cache directory'
+
+  - pwsh: Move-Item -Path $(CACHE_FOLDER)/* -Destination $(ESY__CACHE_INSTALL_PATH)
+    displayName: '[Cache][Restore] Move downloaded cache in place'
+    condition: eq(variables.CACHE_RESTORED, 'true')
