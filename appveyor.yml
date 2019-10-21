@@ -5,7 +5,12 @@ platform:
 
 cache:
     - node_modules
-
+    
+branches:
+  except:
+    - 4_06_1
+    - global
+    
 install:
     # The x64 is required as a workaround for esy/esy#412
     - ps: Install-Product node 10 x64
