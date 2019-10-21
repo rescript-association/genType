@@ -1,9 +1,6 @@
 # Steps for restoring project cache
 
 steps:
-  - bash: 'ls /Users/vsts/.esy'
-    displayName: 'ls /Users/vsts/.esy'
-
   - bash: 'mkdir -p $(STAGING_DIRECTORY_UNIX)'
     #condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
     displayName: '[Cache][Publish] Create cache directory'
