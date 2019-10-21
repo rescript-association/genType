@@ -16,7 +16,7 @@ jobs:
       platform: macOS
       vmImage: macOS-10.13
       AZP_CACHING_TAR: true
-      ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3_____________________________________________________________________/i
+      ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3______________________________________________________________/i
 
   - template: .ci/build-platform.yml
     parameters:
