@@ -1,8 +1,8 @@
 # Steps for restoring project cache
 
 steps:
-  - bash: 'ls $(ESY__CACHE_INSTALL_PATH)/../..'
-    displayName: 'ls $(ESY__CACHE_INSTALL_PATH)'
+  - bash: 'ls /Users/runner/.esy'
+    displayName: 'ls /Users/runner/.esy'
 
   - bash: 'mkdir -p $(STAGING_DIRECTORY_UNIX)'
     #condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
