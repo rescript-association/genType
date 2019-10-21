@@ -36,3 +36,4 @@ jobs:
         inputs:
          PathtoPublish: "_release"
          ArtifactName: ${{ parameters.platform }}
+
