@@ -121,15 +121,15 @@ workflows:
       - build_linux:
           filters:
             branches:
-              ignore: /4\_06\_1|global/
+              only: /4\_02/
             tags:
-              only: /.*/
+              only: /^v2.*/
       - build_macos:
           filters:
             branches:
-              ignore: /4\_06\_1|global/
+              only: /4\_02/
             tags:
-              only: /.*/
+              only: /^v2.*/
       - github_release:
           requires:
             - build_linux
@@ -138,4 +138,4 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^v.*/
+              only: /^v2.*/
