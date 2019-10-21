@@ -1,5 +1,6 @@
 {
   "name": "gentype",
+  "version": "2.41.0",
   "dependencies": {
     "ocaml": "~4.06.1",
     "@opam/dune": "~1.7.3",
