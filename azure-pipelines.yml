@@ -13,7 +13,7 @@ jobs:
       ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i
       ESY__CACHE_SOURCE_TARBALL_PATH: /home/vsts/.esy/source/i
 
- - template: .ci/build-platform.yml
+  - template: .ci/build-platform.yml
    parameters:
      platform: macOS
      vmImage: macOS-10.13
@@ -22,7 +22,7 @@ jobs:
      ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3____________________________________________________________________/i
      ESY__CACHE_SOURCE_TARBALL_PATH: /Users/vsts/.esy/source/i
 
- - template: .ci/build-platform.yml
+  - template: .ci/build-platform.yml
    parameters:
      platform: Windows
      vmImage: vs2017-win2016
