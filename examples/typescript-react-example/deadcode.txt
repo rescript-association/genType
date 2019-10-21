@@ -1690,77 +1690,227 @@ File References
 
 UNUSED CONSTRUCTORS/RECORD FIELDS:
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re:6: message.text
+<-- line 6
+[@dead "message.text"] type message = {text: string};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re:10: point.x
+<-- line 10
+[@dead "point.x"]   x: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re:11: point.y
+<-- line 11
+[@dead "point.y"]   y: option(int),
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re:59: variant.I
+<-- line 59
+[@dead "variant.I"]   | I(int)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re:60: variant.S
+<-- line 60
+[@dead "variant.S"]   | S(string);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re:3: person.name
+<-- line 3
+[@dead "person.name"]   name: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re:4: person.age
+<-- line 4
+[@dead "person.age"]   age: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re:2: person.name
+<-- line 2
+[@dead "person.name"]   name: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re:3: person.age
+<-- line 3
+[@dead "person.age"]   age: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:12: typeWithVars.A
+<-- line 12
+[@dead "typeWithVars.A"]   | A('x, 'y)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:13: typeWithVars.B
+<-- line 13
+[@dead "typeWithVars.B"]   | B('z);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:35: selfRecursive.self
+<-- line 35
+[@dead "selfRecursive.self"] type selfRecursive = {self: selfRecursive};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:38: mutuallyRecursiveA.b
+<-- line 38
+[@dead "mutuallyRecursiveA.b"] type mutuallyRecursiveA = {b: mutuallyRecursiveB}
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:39: mutuallyRecursiveB.a
+<-- line 39
+[@dead "mutuallyRecursiveB.a"] and mutuallyRecursiveB = {a: mutuallyRecursiveA};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:60: opaqueVariant.A
+<-- line 60
+[@dead "opaqueVariant.A"]   | A
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:61: opaqueVariant.B
+<-- line 61
+[@dead "opaqueVariant.B"]   | B;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:88: record.i
+<-- line 88
+[@dead "record.i"]   i: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:89: record.s
+<-- line 89
+[@dead "record.s"]   s: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:138: someRecord.id
+<-- line 138
+[@dead "someRecord.id"] type someRecord = {id: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re:5: t.id
+<-- line 5
+[@dead "t.id"]   id: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re:6: t.name
+<-- line 6
+[@dead "t.name"]   name: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:51: simpleVariant.A
+<-- line 51
+[@dead "simpleVariant.A"]   | A
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:52: simpleVariant.B
+<-- line 52
+[@dead "simpleVariant.B"]   | B
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:53: simpleVariant.C
+<-- line 53
+[@dead "simpleVariant.C"]   | C;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:60: variantWithPayloads.A
+<-- line 60
+[@dead "variantWithPayloads.A"]   | [@genType.as "ARenamed"] A
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:61: variantWithPayloads.B
+<-- line 61
+[@dead "variantWithPayloads.B"]   | B(int)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:62: variantWithPayloads.C
+<-- line 62
+[@dead "variantWithPayloads.C"]   | C(int, int)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:63: variantWithPayloads.D
+<-- line 63
+[@dead "variantWithPayloads.D"]   | D((int, int))
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:64: variantWithPayloads.E
+<-- line 64
+[@dead "variantWithPayloads.E"]   | E(int, string, int);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:100: variant1Int.R
+<-- line 100
+[@dead "variant1Int.R"]   | R(int);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re:107: variant1Object.R
+<-- line 107
+[@dead "variant1Object.R"]   | R(payload);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re:97: type_.Type
+<-- line 97
+[@dead "type_.Type"]   | [@genType.as "type"] Type;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re:2: item.id
+<-- line 2
+[@dead "item.id"] type item = {id: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType3.re:3: t3.i
+<-- line 3
+[@dead "t3.i"]   i: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType3.re:4: t3.s
+<-- line 4
+[@dead "t3.s"]   s: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re:6: fromPayload.x
+<-- line 6
+[@dead "fromPayload.x"]   x: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re:7: fromPayload.s
+<-- line 7
+[@dead "fromPayload.s"]   s: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re:11: toPayload.result
+<-- line 11
+[@dead "toPayload.result"] type toPayload = {result: string};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re:28: message.text
+<-- line 28
+[@dead "message.text"] type message = {text: string};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re:40: requiresConversion.x
+<-- line 40
+[@dead "requiresConversion.x"] type requiresConversion = {x: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:5: coord.x
+<-- line 5
+[@dead "coord.x"]   x: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:6: coord.y
+<-- line 6
+[@dead "coord.y"]   y: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:7: coord.z
+<-- line 7
+[@dead "coord.z"]   z: option(int),
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:22: person.name
+<-- line 22
+[@dead "person.name"]   name: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:23: person.age
+<-- line 23
+[@dead "person.age"]   age: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:29: business.name
+<-- line 29
+[@dead "business.name"]   name: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:56: payload.num
+<-- line 56
+[@dead "payload.num"]   num: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:57: payload.payload
+<-- line 57
+[@dead "payload.payload"]   payload: 'a,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:66: record.w
+<-- line 66
+[@dead "record.w"]   w: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:86: business2.name
+<-- line 86
+[@dead "business2.name"]   name: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re:87: business2.owner
+<-- line 87
+[@dead "business2.owner"]   owner: Js.Nullable.t(person),
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re:8: person.surname
+<-- line 8
+[@dead "person.surname"]   surname: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re:9: person.type_
+<-- line 9
+[@dead "person.type_"]   [@genType.as "type"]
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re:11: person.polymorphicPayload
+<-- line 11
+[@dead "person.polymorphicPayload"]   polymorphicPayload: 'a,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re:50: t.A
+<-- line 50
+[@dead "t.A"]   | A
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re:51: t.B
+<-- line 51
+[@dead "t.B"]   | B(int)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re:52: t.C
+<-- line 52
+[@dead "t.C"]   | C(string);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Opaque.re:3: opaqueFromRecords.A
+<-- line 3
+[@dead "opaqueFromRecords.A"]   | A(Records.coord);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:46: Universe.variant.A
+<-- line 46
+[@dead "Universe.variant.A"]     | A
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:47: Universe.variant.B
+<-- line 47
+[@dead "Universe.variant.B"]     | B(string);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re:3: record.x
+<-- line 3
+[@dead "record.x"]   x: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re:4: record.y
+<-- line 4
+[@dead "record.y"]   y: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re:9: Outer.outer.outer
+<-- line 9
+[@dead "Outer.outer.outer"]   type outer = {outer: string};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re:13: Outer.Inner.inner.inner
+<-- line 13
+[@dead "Outer.Inner.inner.inner"]     type inner = {inner: string};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases.re:3: Outer.Inner.innerT.inner
+<-- line 3
+[@dead "Outer.Inner.innerT.inner"]     type innerT = {inner: string};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases.re:11: Outer2.Inner2.InnerNested.t.nested
+<-- line 11
+[@dead "Outer2.Inner2.InnerNested.t.nested"]       type t = {nested: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei:3: record.x
+<-- line 3
+[@dead "record.x"]   x: int,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei:4: record.y
+<-- line 4
+[@dead "record.y"]   y: string,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:2: variant.R
+<-- line 2
+[@dead "variant.R"]   | R(int);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:5: record.variant
+<-- line 5
+[@dead "record.variant"] type record = {variant: variant};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:7: r2.r2
+<-- line 7
+[@dead "r2.r2"] type r2 = {r2: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:9: r3.r3
+<-- line 9
+[@dead "r3.r3"] type r3 = {r3: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:11: r4.r4
+<-- line 11
+[@dead "r4.r4"] type r4 = {r4: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:15: annotatedVariant.R2
+<-- line 15
+[@dead "annotatedVariant.R2"]   | R2(r2, r3)
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:16: annotatedVariant.R4
+<-- line 16
+[@dead "annotatedVariant.R4"]   | R4(r4);

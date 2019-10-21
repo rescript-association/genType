@@ -45,7 +45,7 @@ let report = (~onDeadValue) => {
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
   valueDecs |> report(~onItem=onDeadValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  typeDecs |> report(~onItem);
+  typeDecs |> report(~onItem=onDeadValue);
 };
 
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
@@ -90,6 +90,7 @@ let writeFile = (fileName, lines) =>
            output_char(channel, '\n');
          };
        });
+    close_out(channel);
   };
 
 let runAnalysis = () => {
