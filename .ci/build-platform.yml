@@ -26,8 +26,8 @@ jobs:
         displayName: "npm install"
       - script: "npm run test"
         displayName: "Test command"
-#      - script: "esy release"
-#        displayName: "esy release"
+      - script: "esy release"
+        displayName: "esy release"
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
         inputs:
