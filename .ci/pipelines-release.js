@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 console.log("Creating package.json");
-const mainPackageJson = require("../package.json");
+const mainPackageJson = require("../esy.json");
 const packageJson = JSON.stringify(
   {
     name: mainPackageJson.name,

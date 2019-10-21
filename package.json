@@ -15,9 +15,7 @@
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"
   },
-  "dependencies": {
-    "bsb-native": "^4.0.7"
-  },
+  "dependencies": {},
   "devDependencies": {
     "debug": "^4.1.0"
   },
