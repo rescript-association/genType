@@ -17,7 +17,7 @@
     "build": "dune build -p #{self.name}",
     "release": {
       "bin": [
-        "gentype.exe"
+        "gentype.native.exe"
       ]
     }
   }

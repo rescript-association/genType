@@ -3,6 +3,7 @@
 *.bsb.lock*
 bundledOutputs/
 _esy/
+esy.lock/
 
 lib/
 node_modules/
