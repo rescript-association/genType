@@ -7,9 +7,9 @@ cache:
     - node_modules
     
 branches:
-  except:
-    - 4_06_1
-    - global
+  only:
+      - 4_02
+      - /v2.*/
     
 install:
     # The x64 is required as a workaround for esy/esy#412
