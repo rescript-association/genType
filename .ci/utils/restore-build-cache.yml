@@ -1,8 +1,8 @@
 # Steps for restoring project cache
 
 steps:
-  - bash: 'ls /Users/runner/.esy'
-    displayName: 'ls /Users/runner/.esy'
+  - bash: 'ls /Users/vsts/.esy'
+    displayName: 'ls /Users/vsts/.esy'
 
   - bash: 'mkdir -p $(STAGING_DIRECTORY_UNIX)'
     #condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
