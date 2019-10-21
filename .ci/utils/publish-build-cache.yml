@@ -14,6 +14,12 @@ steps:
 #    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 #    displayName: '[Cache][Publish] Tar npm cache directory'
 
+  - bash: 'mkdir _release && cp `esy x echo "#{self.bin}"`/*.exe _release'
+    workingDirectory: '$(STAGING_DIRECTORY)'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: '[Cache][Publish] Copy binary'
+
+
   - task: PublishBuildArtifacts@1
     displayName: '[Cache][Publish] Upload tarball'
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))

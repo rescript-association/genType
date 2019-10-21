@@ -34,6 +34,6 @@ jobs:
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
         inputs:
-         PathtoPublish: "_esy/default/build/install/default/bin"
+         PathtoPublish: "_release"
          ArtifactName: ${{ parameters.platform }}
 
