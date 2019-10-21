@@ -8,7 +8,7 @@ jobs:
     parameters:
       platform: Linux
       vmImage: ubuntu-16.04
-      AZP_CACHING_TAR: false
+      AZP_CACHING_TAR: false # Linux is currently bugged if we set it to true but should be faster when fixed
       ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i
 
   - template: .ci/build-platform.yml
