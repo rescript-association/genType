@@ -20,6 +20,10 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 
 # Requirements
+
+> **Note:** This is the branch for versions of genType compatible with bucklescript versions 5.x.y.
+
+
 `bs-platform` 5.2.0 or higher: use `genType` 2.40.0 or higher.
 
 `bs-platform` 5.0.x and 5.1.x: use `genType` 2.17.0 or higher.
