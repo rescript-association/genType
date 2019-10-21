@@ -12,7 +12,7 @@ jobs:
       demands: node.js
     timeoutInMinutes: 120 # This is mostly for Windows
     variables:
-      CACHE_FOLDER: ${{ paramters.CACHE_FOLDER }}
+      CACHE_FOLDER: ${{ parameters.CACHE_FOLDER }}
       ESY__CACHE_INSTALL_PATH: ${{ parameters.ESY__CACHE_INSTALL_PATH }}
 
     steps:
