@@ -16,7 +16,7 @@ steps:
 
   - task: PublishBuildArtifacts@1
     displayName: '[Cache][Publish] Upload tarball'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
         pathToPublish: '$(STAGING_DIRECTORY)'
         artifactName: 'cache-$(Agent.OS)-install'
