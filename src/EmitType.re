@@ -536,7 +536,7 @@ let emitExportType =
         typeVars == [] ? "any" : typeVars |> String.concat(" | ");
       "// tslint:disable-next-line:max-classes-per-file \n"
       ++ (
-        String.capitalize(resolvedTypeName) != resolvedTypeName
+        String.capitalize_ascii(resolvedTypeName) != resolvedTypeName
           ? "// tslint:disable-next-line:class-name\n" : ""
       )
       ++ "export abstract class "

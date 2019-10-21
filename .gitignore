@@ -2,12 +2,14 @@
 *.merlin*
 *.bsb.lock*
 bundledOutputs/
-esy.lock
-esy.lock.json
+_esy/
+esy.lock/
+
 lib/
 node_modules/
 /_esy
 /_build
+/_release
 /genType.install
 /yarn-error.log
 

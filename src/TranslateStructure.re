@@ -1,54 +1,43 @@
 open GenTypeCommon;
 
-let rec addAnnotationsToTyps =
+let rec addAnnotationsToTypes =
         (~expr: Typedtree.expression, types: list(type_)) =>
   switch (expr.exp_desc, types) {
-  | (_, [GroupOfLabeledArgs(fields), ...nextTyps]) =>
-    let (fields1, nextTyps1) =
-      addAnnotationsToFields(expr, fields, nextTyps);
-    [GroupOfLabeledArgs(fields1), ...nextTyps1];
-  | (Texp_function(_lbl, [{c_rhs, _}], _), [type_, ...nextTyps]) =>
-    let nextTyps1 = nextTyps |> addAnnotationsToTyps(~expr=c_rhs);
-    [type_, ...nextTyps1];
+  | (_, [GroupOfLabeledArgs(fields), ...nextTypes]) =>
+    let (fields1, nextTypes1) =
+      addAnnotationsToFields(expr, fields, nextTypes);
+    [GroupOfLabeledArgs(fields1), ...nextTypes1];
+  | (Texp_function({cases: [{c_rhs, _}]}), [type_, ...nextTypes]) =>
+    let nextTypes1 = nextTypes |> addAnnotationsToTypes(~expr=c_rhs);
+    [type_, ...nextTypes1];
   | _ => types
   }
 and addAnnotationsToFields =
     (expr: Typedtree.expression, fields: fields, types: list(type_)) =>
   switch (expr.exp_desc, fields, types) {
-  | (_, [], _) => ([], types |> addAnnotationsToTyps(~expr))
-  | (Texp_function(_lbl, [{c_rhs, _}], _), [field, ...nextFields], _) =>
-    switch (expr.exp_attributes |> Annotation.getAttributeRenaming) {
-    | Some(s) =>
+  | (_, [], _) => ([], types |> addAnnotationsToTypes(~expr))
+  | (Texp_function({cases: [{c_rhs, _}]}), [field, ...nextFields], _) =>
+    let genTypeAsPayload =
+      expr.exp_attributes
+      |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
+    switch (genTypeAsPayload) {
+    | Some(StringPayload(s)) =>
       let (nextFields1, types1) =
         addAnnotationsToFields(c_rhs, nextFields, types);
       ([{...field, name: s}, ...nextFields1], types1);
-    | None =>
+    | _ =>
       let (nextFields1, types1) =
         addAnnotationsToFields(c_rhs, nextFields, types);
       ([field, ...nextFields1], types1);
-    }
+    };
   | _ => (fields, types)
-  };
-
-/* Because of a bug in 4.02.3, the first attribute of a function type is lost.
-   This if fixed in newer versions. */
-let bugInOCaml4_02_3 = (expr: Typedtree.expression) =>
-  switch (expr.exp_desc) {
-  | Texp_function(lbl, [case], pt) => {
-      ...expr,
-      exp_desc: Texp_function(lbl, [{...case, c_rhs: expr}], pt),
-      exp_attributes: [],
-    }
-  | _ => expr
   };
 
 /* Recover from expr the renaming annotations on named arguments. */
 let addAnnotationsToFunctionType = (expr: Typedtree.expression, type_: type_) =>
   switch (type_) {
   | Function(function_) =>
-    let argTypes =
-      function_.argTypes
-      |> addAnnotationsToTyps(~expr=expr |> bugInOCaml4_02_3);
+    let argTypes = function_.argTypes |> addAnnotationsToTypes(~expr);
     Function({...function_, argTypes});
   | _ => type_
   };
@@ -285,7 +274,7 @@ and translateStructureItem =
     )
     : Translation.t =>
   switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(typeDeclarations), _} => {
+  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations), _} => {
       importTypes: [],
       codeItems: [],
       typeDeclarations:

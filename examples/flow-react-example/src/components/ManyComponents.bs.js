@@ -63,6 +63,7 @@ var ManyProps = {
 var component$2 = ReasonReact.statelessComponent("ManyComponents");
 
 function make$2($staropt$star, _children) {
+  $staropt$star !== undefined;
   return /* record */[
           /* debugName */component$2[/* debugName */0],
           /* reactClassInternal */component$2[/* reactClassInternal */1],

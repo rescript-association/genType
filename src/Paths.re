@@ -70,7 +70,7 @@ let getCmtFile = cmt => {
       let pathCmtLowerCase = {
         let dirName = pathCmt |> Filename.dirname;
         let baseName = pathCmt |> Filename.basename;
-        Filename.concat(dirName, baseName |> String.uncapitalize);
+        Filename.concat(dirName, baseName |> String.uncapitalize_ascii);
       };
       let pathCmti = Filename.chop_extension(pathCmt) ++ ".cmti";
       let pathCmtiLowerCase =

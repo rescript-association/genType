@@ -124,21 +124,15 @@ type translation = {
   }
  */
 
-let rec removeOption = (~label, typeExpr: Types.type_expr) =>
-  switch (typeExpr.desc) {
-  | Tconstr(Path.Pident(id), [t], _)
-      /* This has a different representation in 4.03+ */
-      when Ident.name(id) == "option" && label != "" && label.[0] == '?' =>
-    Some((String.sub(label, 1, String.length(label) - 1), t))
-  | Tconstr(Pdot(Path.Pident(nameSpace), id, _), [t], _)
-      /* This has a different representation in 4.03+ */
-      when
-        Ident.name(nameSpace) == "FB"
-        && id == "option"
-        && label != ""
-        && label.[0] == '?' =>
-    Some((String.sub(label, 1, String.length(label) - 1), t))
-  | Tlink(t) => t |> removeOption(~label)
+let rec removeOption = (~label: Asttypes.arg_label, typeExpr: Types.type_expr) =>
+  switch (typeExpr.desc, label) {
+  | (Tconstr(Path.Pident(id), [t], _), Optional(lbl))
+      when Ident.name(id) == "option" =>
+    Some((lbl, t))
+  | (Tconstr(Pdot(Path.Pident(nameSpace), id, _), [t], _), Optional(lbl))
+      when Ident.name(nameSpace) == "FB" && id == "option" =>
+    Some((lbl, t))
+  | (Tlink(t), _) => t |> removeOption(~label)
   | _ => None
   };
 
@@ -471,7 +465,7 @@ let rec translateArrowType =
       ~revArgs,
       t,
     )
-  | Tarrow("", typeExpr1, typeExpr2, _) =>
+  | Tarrow(Nolabel, typeExpr1, typeExpr2, _) =>
     let {dependencies, type_} =
       typeExpr1
       |> translateTypeExprFromTypes_(~config, ~typeVarsGen, ~typeEnv, _);
@@ -485,7 +479,7 @@ let rec translateArrowType =
          ~revArgDeps=nextRevDeps,
          ~revArgs=[(Nolabel, type_), ...revArgs],
        );
-  | Tarrow(label, typeExpr1, typeExpr2, _) =>
+  | Tarrow((Labelled(lbl) | Optional(lbl)) as label, typeExpr1, typeExpr2, _) =>
     switch (typeExpr1 |> removeOption(~label)) {
     | None =>
       let {dependencies, type_: type1} =
@@ -500,7 +494,7 @@ let rec translateArrowType =
            ~typeEnv,
            ~revArgDeps=nextRevDeps,
            ~revArgs=[
-             (Label(label |> Runtime.mangleObjectField), type1),
+             (Label(lbl |> Runtime.mangleObjectField), type1),
              ...revArgs,
            ],
          );

@@ -77,6 +77,47 @@ let traslateDeclarationKind =
     {CodeItem.importTypes, exportFromTypeDeclaration};
   };
 
+  let translateLabelDeclarations = labelDeclarations => {
+    let fieldTranslations =
+      labelDeclarations
+      |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
+           let name =
+             switch (ld_attributes |> Annotation.getAttributeRenaming) {
+             | Some(s) => s
+             | None => ld_id |> Ident.name
+             };
+           let mutability = ld_mutable == Mutable ? Mutable : Immutable;
+           (
+             name,
+             mutability,
+             ld_type
+             |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
+                  ~config,
+                  ~typeEnv,
+                ),
+           );
+         });
+
+    let dependencies =
+      fieldTranslations
+      |> List.map(((_, _, {TranslateTypeExprFromTypes.dependencies, _})) =>
+           dependencies
+         )
+      |> List.concat;
+
+    let fields =
+      fieldTranslations
+      |> List.map(((name, mutable_, {TranslateTypeExprFromTypes.type_, _})) => {
+           let (optional, type1) =
+             switch (type_) {
+             | Option(type1) => (Optional, type1)
+             | _ => (Mandatory, type_)
+             };
+           {mutable_, name, optional, type_: type1};
+         });
+    {TranslateTypeExprFromTypes.dependencies, type_: Record(fields)};
+  };
+
   switch (declarationKind, importStringOpt) {
   | (_, Some(importString)) =>
     /* import type */
@@ -161,48 +202,16 @@ let traslateDeclarationKind =
     |> returnTypeDeclaration;
 
   | (RecordDeclarationFromTypes(labelDeclarations), None) =>
-    let fieldTranslations =
-      labelDeclarations
-      |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
-           let name =
-             switch (ld_attributes |> Annotation.getAttributeRenaming) {
-             | Some(s) => s
-             | None => ld_id |> Ident.name
-             };
-           let mutability = ld_mutable == Mutable ? Mutable : Immutable;
-           (
-             name,
-             mutability,
-             ld_type
-             |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
-                  ~config,
-                  ~typeEnv,
-                ),
-           );
-         });
+    let {TranslateTypeExprFromTypes.dependencies, type_} =
+      labelDeclarations |> translateLabelDeclarations;
+    let optType = Some(type_);
     let importTypes =
-      fieldTranslations
-      |> List.map(((_, _, {TranslateTypeExprFromTypes.dependencies, _})) =>
-           dependencies
-         )
-      |> List.concat
+      dependencies
       |> Translation.translateDependencies(
            ~config,
            ~outputFileRelative,
            ~resolver,
          );
-
-    let fields =
-      fieldTranslations
-      |> List.map(((name, mutable_, {TranslateTypeExprFromTypes.type_, _})) => {
-           let (optional, type1) =
-             switch (type_) {
-             | Option(type1) => (Optional, type1)
-             | _ => (Mandatory, type_)
-             };
-           {mutable_, name, optional, type_: type1};
-         });
-    let optType = Some(Record(fields));
 
     {
       CodeItem.importTypes,
@@ -228,11 +237,23 @@ let traslateDeclarationKind =
            let name = constructorDeclaration.Types.cd_id |> Ident.name;
            let attributes = constructorDeclaration.Types.cd_attributes;
            let argsTranslation =
-             constructorArgs
-             |> TranslateTypeExprFromTypes.translateTypeExprsFromTypes(
-                  ~config,
-                  ~typeEnv,
-                );
+             switch (constructorArgs) {
+             | Cstr_tuple(typeExprs) =>
+               typeExprs
+               |> TranslateTypeExprFromTypes.translateTypeExprsFromTypes(
+                    ~config,
+                    ~typeEnv,
+                  )
+             | Cstr_record(labelDeclarations) => [
+                 labelDeclarations |> translateLabelDeclarations,
+               ]
+             };
+           let inlineRecord =
+             switch (constructorArgs) {
+             | Cstr_tuple(_) => false
+             | Cstr_record(_) => true
+             };
+
            let argTypes =
              argsTranslation
              |> List.map(({TranslateTypeExprFromTypes.type_, _}) => type_);
@@ -250,32 +271,56 @@ let traslateDeclarationKind =
 
            let recordValue =
              recordGen
-             |> Runtime.newRecordValue(~unboxed=constructorArgs == []);
+             |> Runtime.newRecordValue(
+                  ~unboxed=constructorArgs == Cstr_tuple([]),
+                );
            (
              name,
              attributes,
              argTypes,
              importTypes,
+             inlineRecord,
              recordValue |> Runtime.recordValueToString,
            );
          });
     let (variantsNoPayload, variantsWithPayload) =
-      variants |> List.partition(((_, _, argTypes, _, _)) => argTypes == []);
+      variants
+      |> List.partition(((_, _, argTypes, _, _, _)) => argTypes == []);
 
     let noPayloads =
       variantsNoPayload
-      |> List.map(((name, attributes, _argTypes, _importTypes, recordValue)) =>
+      |> List.map(
+           (
+             (
+               name,
+               attributes,
+               _argTypes,
+               _importTypes,
+               _inlineRecord,
+               recordValue,
+             ),
+           ) =>
            {...(name, attributes) |> createCase, label: recordValue}
          );
     let payloads =
       variantsWithPayload
-      |> List.map(((name, attributes, argTypes, _importTypes, recordValue)) => {
+      |> List.map(
+           (
+             (
+               name,
+               attributes,
+               argTypes,
+               _importTypes,
+               inlineRecord,
+               recordValue,
+             ),
+           ) => {
            let type_ =
              switch (argTypes) {
              | [type_] => type_
              | _ => Tuple(argTypes)
              };
-           let numArgs = argTypes |> List.length;
+           let numArgs = inlineRecord ? 0 : argTypes |> List.length;
            (
              {...(name, attributes) |> createCase, label: recordValue},
              numArgs,
@@ -299,7 +344,7 @@ let traslateDeclarationKind =
     };
     let importTypes =
       variants
-      |> List.map(((_, _, _, importTypes, _)) => importTypes)
+      |> List.map(((_, _, _, importTypes, _, _)) => importTypes)
       |> List.concat;
 
     {CodeItem.exportFromTypeDeclaration, importTypes} |> returnTypeDeclaration;

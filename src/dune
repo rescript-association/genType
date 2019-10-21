@@ -1,7 +1,7 @@
 (copy_files# ext/*.{ml,mli})
 (
   executable
-    (public_name GenType.exe)
+    (public_name gentype.native.exe)
 
     ; The main module that will become the binary.
     (name GenType)

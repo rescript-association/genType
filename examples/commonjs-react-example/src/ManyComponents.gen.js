@@ -17,9 +17,9 @@ const ReasonReact = require('reason-react/src/ReasonReact.js');
 export type InnerComponent_Props = {| +children?: mixed |};
 
 const InnerComponent: React$ComponentType<InnerComponent_Props> = ReasonReact.wrapReasonForJs(
-  ManyComponentsBS.InnerComponent[1],
+  ManyComponentsBS.InnerComponent.component,
   (function _(jsProps: InnerComponent_Props) {
-     return ManyComponentsBS.InnerComponent[2](jsProps.children);
+     return ManyComponentsBS.InnerComponent.make(jsProps.children);
   }));;
 exports.InnerComponent = InnerComponent
 
@@ -36,9 +36,9 @@ export type ManyProps_Props = {|
 |};
 
 const ManyProps: React$ComponentType<ManyProps_Props> = ReasonReact.wrapReasonForJs(
-  ManyComponentsBS.ManyProps[0],
+  ManyComponentsBS.ManyProps.component,
   (function _(jsProps: ManyProps_Props) {
-     return Curry.app(ManyComponentsBS.ManyProps[1], [jsProps.a, jsProps.b, jsProps.c, jsProps.d, jsProps.e, jsProps.f, jsProps.g, jsProps.h, jsProps.children]);
+     return Curry.app(ManyComponentsBS.ManyProps.make, [jsProps.a, jsProps.b, jsProps.c, jsProps.d, jsProps.e, jsProps.f, jsProps.g, jsProps.h, jsProps.children]);
   }));;
 exports.ManyProps = ManyProps
 

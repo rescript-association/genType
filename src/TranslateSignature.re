@@ -142,7 +142,7 @@ and translateSignatureItem =
     )
     : Translation.t =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(typeDeclarations), _} => {
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations), _} => {
       importTypes: [],
       codeItems: [],
       typeDeclarations:

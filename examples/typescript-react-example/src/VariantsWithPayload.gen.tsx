@@ -10,9 +10,9 @@ const $$toJS346759412: { [key: string]: any } = {"0": "A", "1": "B", "2": "C"};
 
 const $$toRE346759412: { [key: string]: any } = {"A": 0, "B": 1, "C": 2};
 
-const $$toJS542320962: { [key: string]: any } = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
+const $$toJS435467058: { [key: string]: any } = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
 
-const $$toRE542320962: { [key: string]: any } = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
+const $$toRE435467058: { [key: string]: any } = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
 
 // tslint:disable-next-line:no-var-requires
 const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
@@ -52,16 +52,16 @@ export type variant1Object = payload;
 export const testWithPayload: (_1:withPayload) => withPayload = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
     ? [/* c */99, [Arg1.x, Arg1.y]]
-    : $$toRE542320962[Arg1.toString()]);
+    : $$toRE435467058[Arg1.toString()]);
   return typeof(result) === 'object'
     ? {x:result[1][0], y:result[1][1]}
-    : $$toJS542320962[result]
+    : $$toJS435467058[result]
 };
 
 export const printVariantWithPayload: (_1:withPayload) => void = function (Arg1: any) {
   const result = VariantsWithPayloadBS.printVariantWithPayload(typeof(Arg1) === 'object'
     ? [/* c */99, [Arg1.x, Arg1.y]]
-    : $$toRE542320962[Arg1.toString()]);
+    : $$toRE435467058[Arg1.toString()]);
   return result
 };
 

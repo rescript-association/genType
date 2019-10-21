@@ -1,6 +1,6 @@
 # Development
 
-## Build genType
+## Build genType (bsb-native)
 
 ```
 npm install
@@ -12,9 +12,12 @@ This will create the binary `lib/bs/native/gentype.native`, which is the executa
 ## Build genType (esy & dune)
 
 ```
+<<<<<<< HEAD
+=======
 # Switch to the correct branch first
 git checkout 4_06_1
 
+>>>>>>> master
 # Currently only builds for OCaml version 4.06.1 (not compatible with the offical BuckeScript version)
 esy build
 ```

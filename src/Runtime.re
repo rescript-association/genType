@@ -82,6 +82,9 @@ let emitVariantGetPayload = (~numArgs, ~polymorphic, x) =>
     x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
     x |> EmitText.arrayAccess(~index=0);
+  } else if (numArgs == 0) {
+    /* inline record */
+    x;
   } else {
     /* to convert a runtime block to a tuple, remove the tag */
     x |> EmitText.arraySlice;

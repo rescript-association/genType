@@ -16,7 +16,7 @@
       "all": false
     },
     "exportInterfaces": false,
-    "path": "../../src/lib/bs/native/gentype.native.exe"
+    "path": "../../_esy/default/build/install/default/bin/gentype.native.exe"
 },
   "name": "flow-react-example",
   "bsc-flags": ["-bs-super-errors"],

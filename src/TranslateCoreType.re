@@ -2,20 +2,18 @@ open GenTypeCommon;
 
 open! TranslateTypeExprFromTypes;
 
-let removeOption = (~label, coreType: Typedtree.core_type) =>
-  switch (coreType.ctyp_desc) {
-  | Ttyp_constr(Path.Pident(id), _, [t])
+let removeOption = (~label: Asttypes.arg_label, coreType: Typedtree.core_type) =>
+  switch (coreType.ctyp_desc, label) {
+  | (Ttyp_constr(Path.Pident(id), _, [t]), Optional(lbl))
+      when Ident.name(id) == "option" =>
+    Some((lbl, t))
+  | (
+      Ttyp_constr(Pdot(Path.Pident(nameSpace), id, _), _, [t]),
+      Optional(lbl),
+    )
       /* This has a different representation in 4.03+ */
-      when Ident.name(id) == "option" && label != "" && label.[0] == '?' =>
-    Some((String.sub(label, 1, String.length(label) - 1), t))
-  | Ttyp_constr(Pdot(Path.Pident(nameSpace), id, _), _, [t])
-      /* This has a different representation in 4.03+ */
-      when
-        Ident.name(nameSpace) == "FB"
-        && id == "option"
-        && label != ""
-        && label.[0] == '?' =>
-    Some((String.sub(label, 1, String.length(label) - 1), t))
+      when Ident.name(nameSpace) == "FB" && id == "option" =>
+    Some((lbl, t))
   | _ => None
   };
 
@@ -30,7 +28,7 @@ let processVariant = rowFields => {
     switch (fields) {
     | [
         Typedtree.Ttag(
-          label,
+          {txt: label},
           attributes,
           _,
           /* only variants with no payload */ [],
@@ -43,7 +41,7 @@ let processVariant = rowFields => {
            ~payloads,
            ~unknowns,
          )
-    | [Ttag(label, attributes, _, [payload]), ...otherFields] =>
+    | [Ttag({txt: label}, attributes, _, [payload]), ...otherFields] =>
       otherFields
       |> loop(
            ~noPayloads,
@@ -73,7 +71,7 @@ let rec translateArrowType =
           coreType: Typedtree.core_type,
         ) =>
   switch (coreType.ctyp_desc) {
-  | Ttyp_arrow("", coreType1, coreType2) =>
+  | Ttyp_arrow(Nolabel, coreType1, coreType2) =>
     let {dependencies, type_} =
       coreType1 |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv, _);
     let nextRevDeps = List.rev_append(dependencies, revArgDeps);
@@ -86,7 +84,7 @@ let rec translateArrowType =
          ~revArgDeps=nextRevDeps,
          ~revArgs=[(Nolabel, type_), ...revArgs],
        );
-  | Ttyp_arrow(label, coreType1, coreType2) =>
+  | Ttyp_arrow((Labelled(lbl) | Optional(lbl)) as label, coreType1, coreType2) =>
     let asLabel =
       switch (coreType.ctyp_attributes |> Annotation.getAttributeRenaming) {
       | Some(s) => s
@@ -107,7 +105,7 @@ let rec translateArrowType =
            ~revArgs=[
              (
                Label(
-                 asLabel == "" ? label |> Runtime.mangleObjectField : asLabel,
+                 asLabel == "" ? lbl |> Runtime.mangleObjectField : asLabel,
                ),
                type1,
              ),
@@ -189,12 +187,19 @@ and translateCoreType_ =
         },
       ],
     ) =>
-    let getFieldType = ((name, _attibutes, t)) => (
-      name,
-      name |> Runtime.isMutableObjectField
-        ? {dependencies: [], type_: ident("")}
-        : t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
-    );
+    let getFieldType = objectField =>
+      switch (objectField) {
+      | Typedtree.OTtag({txt: name}, _, t) => (
+          name,
+          name |> Runtime.isMutableObjectField ?
+            {dependencies: [], type_: ident("")} :
+            t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+        )
+      | OTinherit(t) => (
+          "Inherit",
+          t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+        )
+      };
     let fieldsTranslations = tObj |> List.map(getFieldType);
     translateConstr(
       ~config,

@@ -6,7 +6,7 @@ type import = {
 type attributePayload =
   | BoolPayload(bool)
   | FloatPayload(string)
-  | IntPayload(int)
+  | IntPayload(string)
   | StringPayload(string)
   | TuplePayload(list(attributePayload))
   | UnrecognizedPayload;
@@ -36,10 +36,11 @@ let tagIsGenTypeIgnoreInterface = s =>
 let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
   let rec fromExpr = (expr: Parsetree.expression) =>
     switch (expr) {
-    | {pexp_desc: Pexp_constant(Const_string(s, _)), _} =>
+    | {pexp_desc: Pexp_constant(Pconst_string(s, _)), _} =>
       Some(StringPayload(s))
-    | {pexp_desc: Pexp_constant(Const_int(n)), _} => Some(IntPayload(n))
-    | {pexp_desc: Pexp_constant(Const_float(s)), _} =>
+    | {pexp_desc: Pexp_constant(Pconst_integer(n, _)), _} =>
+      Some(IntPayload(n))
+    | {pexp_desc: Pexp_constant(Pconst_float(s, _)), _} =>
       Some(FloatPayload(s))
     | {
         pexp_desc: Pexp_construct({txt: Lident(("true" | "false") as s)}, _),
@@ -67,7 +68,6 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
     switch (payload) {
     | PStr([]) => Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_eval(expr, _), _}, ..._]) => expr |> fromExpr
-
     | PStr([{pstr_desc: Pstr_extension(_), _}, ..._]) =>
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_value(_), _}, ..._]) =>
@@ -96,8 +96,9 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_attribute(_), _}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PTyp(_) => Some(UnrecognizedPayload)
     | PPat(_) => Some(UnrecognizedPayload)
+    | PSig(_) => Some(UnrecognizedPayload)
+    | PTyp(_) => Some(UnrecognizedPayload)
     }
   | [_hd, ...tl] => getAttributePayload(checkText, tl)
   };
@@ -183,7 +184,7 @@ and moduleDeclarationHasGenTypeAnnotation =
 and signatureItemHasGenTypeAnnotation =
     (~ignoreInterface, signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
-  | {sig_desc: Tsig_type(typeDeclarations), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec =>
          dec.Typedtree.typ_attributes
@@ -206,7 +207,7 @@ and signatureHasGenTypeAnnotation =
 let rec structureItemHasGenTypeAnnotation =
         (~ignoreInterface, structureItem: Typedtree.structure_item) =>
   switch (structureItem) {
-  | {str_desc: Tstr_type(typeDeclarations), _} =>
+  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations), _} =>
     typeDeclarations
     |> List.exists(dec =>
          dec.Typedtree.typ_attributes
