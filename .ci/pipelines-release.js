@@ -2,7 +2,19 @@ const fs = require("fs");
 const path = require("path");
 
 console.log("Creating package.json");
-const mainPackageJson = require("../package.json");
+
+// From the project root pwd
+const mainPackageJsonPath =
+  fs.existsSync('esy.json') ?
+  'esy.json' : 'package.json';
+
+const exists = fs.existsSync(mainPackageJsonPath);
+if (!exists) {
+  console.error("No package.json or esy.json at " + mainPackageJsonPath);
+  process.exit(1);
+}
+// Now require from this script's location.
+const mainPackageJson = require(path.join('..', mainPackageJsonPath));
 const packageJson = JSON.stringify(
   {
     name: mainPackageJson.name,

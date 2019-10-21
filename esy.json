@@ -1,5 +1,6 @@
 {
   "name": "gentype",
+  "version": "1.0.0",
   "dependencies": {
     "ocaml": "~4.06.1",
     "@opam/dune": "~1.7.3",
@@ -11,7 +12,8 @@
   },
   "scripts": {
     "test": "esy x gentype.exe --version",
-    "clean": "dune clean -p #{self.name}"
+    "clean": "dune clean -p #{self.name}",
+    "docs": "echo 'no docs to generate'"
   },
   "esy": {
     "build": "dune build -p #{self.name}",
