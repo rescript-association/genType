@@ -26,7 +26,7 @@ jobs:
         displayName: "esy install"
       - script: "esy build"
         displayName: "esy build"
-      - script: "esy test"
+      - script: "npm run test"
         displayName: "Test command"
 #      - script: "esy release"
 #        displayName: "esy release"
