@@ -14,7 +14,7 @@ steps:
 #    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 #    displayName: '[Cache][Publish] Tar npm cache directory'
 
-  - bash: 'mkdir _release && cp `esy x echo "#{self.bin}"`/*.exe _release'
+  - bash: 'mkdir _release && cp _esy/default/store/b/gentype-*/default/src/GenType.exe _release/'
     workingDirectory: '$(STAGING_DIRECTORY)'
     #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     displayName: '[Cache][Publish] Copy binary'
