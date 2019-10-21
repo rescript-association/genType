@@ -19,7 +19,7 @@ jobs:
       vmImage: macOS-10.13
       STAGING_DIRECTORY: /Users/runner/STAGING
       STAGING_DIRECTORY_UNIX: /Users/runner/STAGING
-      ESY__CACHE_INSTALL_PATH: /Users/runner/.esy/3____________________________________________________________________/i
+      ESY__CACHE_INSTALL_PATH: /Users/runner/.esy/3__________________________________________________________________/i
       ESY__CACHE_SOURCE_TARBALL_PATH: /Users/runner/.esy/source/i
 
   - template: .ci/build-platform.yml
