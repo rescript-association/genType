@@ -10,7 +10,7 @@
     "@opam/merlin": "*"
   },
   "scripts": {
-    "test": "esy x gentype.exe --version",
+    "test": "esy x gentype.native.exe --version",
     "clean": "dune clean -p #{self.name}"
   },
   "esy": {
