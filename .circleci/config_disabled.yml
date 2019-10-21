@@ -120,10 +120,14 @@ workflows:
     jobs:
       - build_linux:
           filters:
+            branches:
+              ignore: /4\_06\_1|global/
             tags:
               only: /.*/
       - build_macos:
           filters:
+            branches:
+              ignore: /4\_06\_1|global/
             tags:
               only: /.*/
       - github_release:
