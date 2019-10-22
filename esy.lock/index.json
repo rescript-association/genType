@@ -16,9 +16,9 @@
       "dependencies": [
         "ocaml@4.6.1000@d41d8cd9", "@reason-native/pastel@0.2.1@d41d8cd9",
         "@reason-native/console@0.1.0@d41d8cd9",
-        "@opam/re@opam:1.9.0@d4d5e13d", "@opam/dune@opam:1.8.2@bcddaee5",
+        "@opam/re@opam:1.9.0@fc2ceb05", "@opam/dune@opam:1.8.2@bcddaee5",
         "@opam/atdgen@opam:2.0.0@5d912e07",
-        "@esy-ocaml/reason@3.5.2@d41d8cd9"
+        "@esy-ocaml/reason@3.5.0@d41d8cd9"
       ],
       "devDependencies": []
     },
@@ -44,7 +44,7 @@
       "overrides": [],
       "dependencies": [
         "refmterr@3.2.2@d41d8cd9", "ocaml@4.6.1000@d41d8cd9",
-        "@opam/reason@opam:3.5.2@f689c2cb", "@opam/dune@opam:1.8.2@bcddaee5"
+        "@opam/reason@opam:3.5.0@40205ac4", "@opam/dune@opam:1.8.2@bcddaee5"
       ],
       "devDependencies": [ "@opam/merlin@opam:3.3.2@7a364181" ]
     },
@@ -61,7 +61,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.6.1000@d41d8cd9", "@opam/dune@opam:1.8.2@bcddaee5",
-        "@esy-ocaml/reason@3.5.2@d41d8cd9"
+        "@esy-ocaml/reason@3.5.0@d41d8cd9"
       ],
       "devDependencies": []
     },
@@ -78,7 +78,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.6.1000@d41d8cd9", "@opam/dune@opam:1.8.2@bcddaee5",
-        "@esy-ocaml/reason@3.5.2@d41d8cd9"
+        "@esy-ocaml/reason@3.5.0@d41d8cd9"
       ],
       "devDependencies": []
     },
@@ -110,33 +110,32 @@
         "@opam/dune@opam:1.8.2@bcddaee5", "@opam/biniou@opam:1.2.0@c8516f18"
       ]
     },
-    "@opam/seq@opam:0.2@35c16df8": {
-      "id": "@opam/seq@opam:0.2@35c16df8",
+    "@opam/seq@opam:0.1@93954fa7": {
+      "id": "@opam/seq@opam:0.1@93954fa7",
       "name": "@opam/seq",
-      "version": "opam:0.2",
+      "version": "opam:0.1",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://opam.ocaml.org/cache/md5/1d/1d5a9d0aba27b22433f518cdc495d0fd#md5:1d5a9d0aba27b22433f518cdc495d0fd",
-          "archive:https://github.com/c-cube/seq/archive/0.2.tar.gz#md5:1d5a9d0aba27b22433f518cdc495d0fd"
+          "archive:https://opam.ocaml.org/cache/md5/0e/0e87f9709541ed46ecb6f414bc31458c#md5:0e87f9709541ed46ecb6f414bc31458c",
+          "archive:https://github.com/c-cube/seq/archive/0.1.tar.gz#md5:0e87f9709541ed46ecb6f414bc31458c"
         ],
         "opam": {
           "name": "seq",
-          "version": "0.2",
-          "path": "esy.lock/opam/seq.0.2"
+          "version": "0.1",
+          "path": "esy.lock/opam/seq.0.1"
         }
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/dune@opam:1.8.2@bcddaee5",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/ocamlfind@opam:1.8.1@ff07b0f9",
+        "@opam/ocamlbuild@opam:0.14.0@427a2331",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
-      "devDependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/dune@opam:1.8.2@bcddaee5"
-      ]
+      "devDependencies": [ "ocaml@4.6.1000@d41d8cd9" ]
     },
-    "@opam/result@opam:1.4@dc720aef": {
-      "id": "@opam/result@opam:1.4@dc720aef",
+    "@opam/result@opam:1.4@6fb665c3": {
+      "id": "@opam/result@opam:1.4@6fb665c3",
       "name": "@opam/result",
       "version": "opam:1.4",
       "source": {
@@ -160,41 +159,40 @@
         "ocaml@4.6.1000@d41d8cd9", "@opam/dune@opam:1.8.2@bcddaee5"
       ]
     },
-    "@opam/reason@opam:3.5.2@f689c2cb": {
-      "id": "@opam/reason@opam:3.5.2@f689c2cb",
+    "@opam/reason@opam:3.5.0@40205ac4": {
+      "id": "@opam/reason@opam:3.5.0@40205ac4",
       "name": "@opam/reason",
-      "version": "opam:3.5.2",
+      "version": "opam:3.5.0",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://opam.ocaml.org/cache/md5/66/66c54296009e0f6cbc8e93aa01105cbb#md5:66c54296009e0f6cbc8e93aa01105cbb",
-          "archive:https://registry.npmjs.org/@esy-ocaml/reason/-/reason-3.5.2.tgz#md5:66c54296009e0f6cbc8e93aa01105cbb"
+          "archive:https://opam.ocaml.org/cache/md5/db/db3431720b9c26ea10b938c1fa08289c#md5:db3431720b9c26ea10b938c1fa08289c",
+          "archive:https://registry.npmjs.org/@esy-ocaml/reason/-/reason-3.5.0.tgz#md5:db3431720b9c26ea10b938c1fa08289c"
         ],
         "opam": {
           "name": "reason",
-          "version": "3.5.2",
-          "path": "esy.lock/opam/reason.3.5.2"
+          "version": "3.5.0",
+          "path": "esy.lock/opam/reason.3.5.0"
         }
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@dc720aef",
-        "@opam/ocamlfind@opam:1.8.1@ff07b0f9",
-        "@opam/ocaml-migrate-parsetree@opam:1.3.1@8bfb3f95",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@6fb665c3",
+        "@opam/ocaml-migrate-parsetree@opam:1.3.1@b0538b43",
         "@opam/merlin-extend@opam:0.5@a5dd7d4b",
-        "@opam/menhir@opam:20190924@004407ff",
+        "@opam/menhir@opam:20190626@bbeb8953",
         "@opam/dune@opam:1.8.2@bcddaee5", "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@dc720aef",
-        "@opam/ocaml-migrate-parsetree@opam:1.3.1@8bfb3f95",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@6fb665c3",
+        "@opam/ocaml-migrate-parsetree@opam:1.3.1@b0538b43",
         "@opam/merlin-extend@opam:0.5@a5dd7d4b",
-        "@opam/menhir@opam:20190924@004407ff",
+        "@opam/menhir@opam:20190626@bbeb8953",
         "@opam/dune@opam:1.8.2@bcddaee5"
       ]
     },
-    "@opam/re@opam:1.9.0@d4d5e13d": {
-      "id": "@opam/re@opam:1.9.0@d4d5e13d",
+    "@opam/re@opam:1.9.0@fc2ceb05": {
+      "id": "@opam/re@opam:1.9.0@fc2ceb05",
       "name": "@opam/re",
       "version": "opam:1.9.0",
       "source": {
@@ -211,16 +209,16 @@
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/seq@opam:0.2@35c16df8",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/seq@opam:0.1@93954fa7",
         "@opam/dune@opam:1.8.2@bcddaee5", "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/seq@opam:0.2@35c16df8",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/seq@opam:0.1@93954fa7",
         "@opam/dune@opam:1.8.2@bcddaee5"
       ]
     },
-    "@opam/ppx_derivers@opam:1.2.1@ecf0aa45": {
-      "id": "@opam/ppx_derivers@opam:1.2.1@ecf0aa45",
+    "@opam/ppx_derivers@opam:1.2.1@aee9c3db": {
+      "id": "@opam/ppx_derivers@opam:1.2.1@aee9c3db",
       "name": "@opam/ppx_derivers",
       "version": "opam:1.2.1",
       "source": {
@@ -268,13 +266,13 @@
         }
       ],
       "dependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/conf-m4@opam:1@3b2b148a",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/conf-m4@opam:1@da6f4f44",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [ "ocaml@4.6.1000@d41d8cd9" ]
     },
-    "@opam/ocamlbuild@opam:0.14.0@6ac75d03": {
-      "id": "@opam/ocamlbuild@opam:0.14.0@6ac75d03",
+    "@opam/ocamlbuild@opam:0.14.0@427a2331": {
+      "id": "@opam/ocamlbuild@opam:0.14.0@427a2331",
       "name": "@opam/ocamlbuild",
       "version": "opam:0.14.0",
       "source": {
@@ -300,8 +298,8 @@
       ],
       "devDependencies": [ "ocaml@4.6.1000@d41d8cd9" ]
     },
-    "@opam/ocaml-migrate-parsetree@opam:1.3.1@8bfb3f95": {
-      "id": "@opam/ocaml-migrate-parsetree@opam:1.3.1@8bfb3f95",
+    "@opam/ocaml-migrate-parsetree@opam:1.3.1@b0538b43": {
+      "id": "@opam/ocaml-migrate-parsetree@opam:1.3.1@b0538b43",
       "name": "@opam/ocaml-migrate-parsetree",
       "version": "opam:1.3.1",
       "source": {
@@ -318,13 +316,13 @@
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@dc720aef",
-        "@opam/ppx_derivers@opam:1.2.1@ecf0aa45",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@6fb665c3",
+        "@opam/ppx_derivers@opam:1.2.1@aee9c3db",
         "@opam/dune@opam:1.8.2@bcddaee5", "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@dc720aef",
-        "@opam/ppx_derivers@opam:1.2.1@ecf0aa45",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@6fb665c3",
+        "@opam/ppx_derivers@opam:1.2.1@aee9c3db",
         "@opam/dune@opam:1.8.2@bcddaee5"
       ]
     },
@@ -381,26 +379,26 @@
         "@opam/dune@opam:1.8.2@bcddaee5"
       ]
     },
-    "@opam/menhir@opam:20190924@004407ff": {
-      "id": "@opam/menhir@opam:20190924@004407ff",
+    "@opam/menhir@opam:20190626@bbeb8953": {
+      "id": "@opam/menhir@opam:20190626@bbeb8953",
       "name": "@opam/menhir",
-      "version": "opam:20190924",
+      "version": "opam:20190626",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://opam.ocaml.org/cache/md5/67/677f1997fb73177d5a00fa1b8d61c3ef#md5:677f1997fb73177d5a00fa1b8d61c3ef",
-          "archive:https://gitlab.inria.fr/fpottier/menhir/repository/20190924/archive.tar.gz#md5:677f1997fb73177d5a00fa1b8d61c3ef"
+          "archive:https://opam.ocaml.org/cache/md5/78/783961f8d124449a1a335cc8e50f013f#md5:783961f8d124449a1a335cc8e50f013f",
+          "archive:https://gitlab.inria.fr/fpottier/menhir/repository/20190626/archive.tar.gz#md5:783961f8d124449a1a335cc8e50f013f"
         ],
         "opam": {
           "name": "menhir",
-          "version": "20190924",
-          "path": "esy.lock/opam/menhir.20190924"
+          "version": "20190626",
+          "path": "esy.lock/opam/menhir.20190626"
         }
       },
       "overrides": [],
       "dependencies": [
         "ocaml@4.6.1000@d41d8cd9", "@opam/ocamlfind@opam:1.8.1@ff07b0f9",
-        "@opam/ocamlbuild@opam:0.14.0@6ac75d03",
+        "@opam/ocamlbuild@opam:0.14.0@427a2331",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [ "ocaml@4.6.1000@d41d8cd9" ]
@@ -509,8 +507,8 @@
         "@opam/base-unix@opam:base@87d0b2eb"
       ]
     },
-    "@opam/conf-which@opam:1@61ea698f": {
-      "id": "@opam/conf-which@opam:1@61ea698f",
+    "@opam/conf-which@opam:1@576f0c6d": {
+      "id": "@opam/conf-which@opam:1@576f0c6d",
       "name": "@opam/conf-which",
       "version": "opam:1",
       "source": {
@@ -526,8 +524,8 @@
       "dependencies": [ "@esy-ocaml/substs@0.0.1@d41d8cd9" ],
       "devDependencies": []
     },
-    "@opam/conf-m4@opam:1@3b2b148a": {
-      "id": "@opam/conf-m4@opam:1@3b2b148a",
+    "@opam/conf-m4@opam:1@da6f4f44": {
+      "id": "@opam/conf-m4@opam:1@da6f4f44",
       "name": "@opam/conf-m4",
       "version": "opam:1",
       "source": {
@@ -563,7 +561,7 @@
       "dependencies": [
         "ocaml@4.6.1000@d41d8cd9", "@opam/jbuilder@opam:transition@58bdfe0a",
         "@opam/easy-format@opam:1.3.1@9abfd4ed",
-        "@opam/conf-which@opam:1@61ea698f",
+        "@opam/conf-which@opam:1@576f0c6d",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [
@@ -681,7 +679,7 @@
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/menhir@opam:20190924@004407ff",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/menhir@opam:20190626@bbeb8953",
         "@opam/jbuilder@opam:transition@58bdfe0a",
         "@opam/easy-format@opam:1.3.1@9abfd4ed",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
@@ -704,23 +702,23 @@
       "dependencies": [],
       "devDependencies": []
     },
-    "@esy-ocaml/reason@3.5.2@d41d8cd9": {
-      "id": "@esy-ocaml/reason@3.5.2@d41d8cd9",
+    "@esy-ocaml/reason@3.5.0@d41d8cd9": {
+      "id": "@esy-ocaml/reason@3.5.0@d41d8cd9",
       "name": "@esy-ocaml/reason",
-      "version": "3.5.2",
+      "version": "3.5.0",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://registry.npmjs.org/@esy-ocaml/reason/-/reason-3.5.2.tgz#sha1:ac48b63fd66fbbc1d77ab6a2b7e3a1ba21a8f40b"
+          "archive:https://registry.npmjs.org/@esy-ocaml/reason/-/reason-3.5.0.tgz#sha1:f276b991ef0dfe4d559b68e554661f8b2bc618bf"
         ]
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@dc720aef",
+        "ocaml@4.6.1000@d41d8cd9", "@opam/result@opam:1.4@6fb665c3",
         "@opam/ocamlfind@opam:1.8.1@ff07b0f9",
-        "@opam/ocaml-migrate-parsetree@opam:1.3.1@8bfb3f95",
+        "@opam/ocaml-migrate-parsetree@opam:1.3.1@b0538b43",
         "@opam/merlin-extend@opam:0.5@a5dd7d4b",
-        "@opam/menhir@opam:20190924@004407ff",
+        "@opam/menhir@opam:20190626@bbeb8953",
         "@opam/dune@opam:1.8.2@bcddaee5"
       ],
       "devDependencies": []
