@@ -7,7 +7,7 @@
     },
     "exportInterfaces": false,
     "propTypes": true,
-    "path": "../../_esy/default/build/install/default/bin/gentype.native.exe",
+    "path": "../../_esy/default/build/install/default/bin/gentype.exe",
     "fileHeader": "this is a custom header you can add to every file!"
   },
   "name": "untyped-react-example",
