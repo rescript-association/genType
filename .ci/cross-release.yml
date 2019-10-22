@@ -9,10 +9,10 @@ steps:
       platform: "Linux"
       folder: "platform-linux"
 
-#  - template: release-platform-setup.yml
-#    parameters:
-#      platform: "macOS"
-#      folder: "platform-darwin"
+  - template: release-platform-setup.yml
+    parameters:
+      platform: "macOS"
+      folder: "platform-darwin"
 
   - template: release-platform-setup.yml
     parameters:

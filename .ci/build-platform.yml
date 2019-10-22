@@ -18,7 +18,11 @@ jobs:
       ESY__CACHE_INSTALL_PATH: ${{ parameters.ESY__CACHE_INSTALL_PATH }}
       ESY__CACHE_SOURCE_TARBALL_PATH: ${{ parameters.ESY__CACHE_SOURCE_TARBALL_PATH }}
 
-    steps:
+    steps: 
+      - bash: echo "$(System.PullRequest.TargetBranch) - $SYSTEM_PULLREQUEST_TARGETBRANCH"
+        displayName: "Print CI_CACHE_BRANCH_NAME variable"
+      - bash: env
+        displayName: "Print environment"
       - template: utils/use-node.yml
       - template: utils/use-esy.yml
       - template: utils/restore-build-cache.yml
@@ -26,20 +30,14 @@ jobs:
         displayName: "esy install"
       - script: "esy build"
         displayName: "esy build"
-      - script: "npm install"
-        displayName: "npm install"
-#      - script: "npm run test"
-#        displayName: "Test command"
-      - bash: 'mkdir _release && cp _esy/default/store/b/gentype-*/default/src/GenType.exe _release/'
-        workingDirectory: ''
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        displayName: 'Copy binary'
-#      - script: "esy release"
-#        displayName: "esy release"
+      - template: utils/create-docs.yml
+      - script: "esy test"
+        displayName: "Test command"
+      - script: "esy release"
+        displayName: "esy release"
       - template: utils/publish-build-cache.yml
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
         inputs:
-         PathtoPublish: "_release"
-         ArtifactName: ${{ parameters.platform }}
-
+          PathtoPublish: "_release"
+          ArtifactName: ${{ parameters.platform }}
