@@ -45,6 +45,8 @@ jobs:
       - script: "esy build"
         displayName: "esy build"
       #- template: utils/create-docs.yml
+      - bash: "esy x echo \"#{self.bin/'gentype.exe'}\""
+        displayName: "Debug esy gentype path"
       - script: "npm install"
         displayName: "npm install command (for tests)"
       - script: "npm test"
