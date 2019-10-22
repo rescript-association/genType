@@ -21,7 +21,7 @@ const exampleDirPaths = [
 
 const isWindows = /^win/i.test(process.platform);
 
-const genTypeFile = path.join(__dirname, "../_esy/default/build/install/default/bin/gentype.native.exe");
+const genTypeFile = path.join(__dirname, "../_esy/default/build/install/default/bin/gentype.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise
@@ -104,6 +104,11 @@ function checkDiff() {
 }
 
 function checkSetup() {
+  console.log(`Make sure this script is not run with esy...`);
+  if(process.env.ESY__ROOT_PACKAGE_CONFIG_PATH) {
+    throw new Error("This script cannot be run with `esy`. Use `npm test` instead!");
+  }
+
   console.log(`Check existing binary: ${genTypeFile}`);
   if (!fs.existsSync(genTypeFile)) {
     const filepath = path.relative(path.join(__dirname, ".."), genTypeFile);
