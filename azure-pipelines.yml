@@ -4,14 +4,14 @@ trigger:
   - master
 
 jobs:
-  # - template: .ci/build-platform.yml
-  #   parameters:
-  #     platform: Linux
-  #     vmImage: ubuntu-16.04
-  #     STAGING_DIRECTORY: /home/vsts/STAGING
-  #     STAGING_DIRECTORY_UNIX: /home/vsts/STAGING
-  #     ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i
-  #     ESY__CACHE_SOURCE_TARBALL_PATH: /home/vsts/.esy/source/i
+  - template: .ci/build-platform.yml
+    parameters:
+      platform: Linux
+      vmImage: ubuntu-16.04
+      STAGING_DIRECTORY: /home/vsts/STAGING
+      STAGING_DIRECTORY_UNIX: /home/vsts/STAGING
+      ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i
+      ESY__CACHE_SOURCE_TARBALL_PATH: /home/vsts/.esy/source/i
 
   - template: .ci/build-platform.yml
     parameters:
