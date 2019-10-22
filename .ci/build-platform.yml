@@ -45,11 +45,11 @@ jobs:
       - script: "esy build"
         displayName: "esy build"
       #- template: utils/create-docs.yml
-      - bash: "esy x echo \"#{self.bin/'gentype.exe'}\""
+      - script: "esy x echo \"#{self.bin/'gentype.exe'}\""
         displayName: "Debug esy gentype path"
       - script: "npm install"
         displayName: "npm install command (for tests)"
-      - script: "npm test"
+      - script: "node scripts/run_integration_tests.js"
         displayName: "Test command"
       - script: "esy release"
         displayName: "esy release"
