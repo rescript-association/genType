@@ -26,7 +26,7 @@ export type callback<input,output> = (_1:input) => output;
 export type testReactContext = React.Context<number>;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type testReactRef = React.Ref<number>;
+export type testReactRef = { readonly current: (null | number) };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = { readonly vehicle: vehicle };

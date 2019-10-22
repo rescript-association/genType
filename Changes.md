@@ -1,3 +1,6 @@
+# master
+- Make React.Ref more permissive: `{contents: null | T}`.
+
 # 2.41.0
 - Fix missing import React in untyped back-end.
 - Fix version detection for bucklescript 6.2.x (inner modules).
