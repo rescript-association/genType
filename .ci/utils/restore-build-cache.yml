@@ -46,8 +46,10 @@ steps:
             echo "Build log for build that produced the cache: $LATEST_BUILD_PAGE"
             echo "Build badge for build that produced the cache: $LATEST_BUILD_BADGE"
             echo "Build artifact from build that produced the cache: $LATEST_ART_URL"
-            mkdir -p "$ESY__CACHE_INSTALL_PATH"
-            cd "${ESY__CACHE_INSTALL_PATH}" && tar -xf "${STAGING_DIRECTORY_UNIX}/cache-${AGENT_OS}-install/esy-cache.tar" -C .
+            echo "Restoring build cache into:"
+            echo $ESY__CACHE_INSTALL_PATH
+            mkdir -p $ESY__CACHE_INSTALL_PATH
+            cd $ESY__CACHE_INSTALL_PATH && tar -xf "${STAGING_DIRECTORY_UNIX}/cache-${AGENT_OS}-install/esy-cache.tar" -C .
           fi
         }
         fetchArtifactURL
