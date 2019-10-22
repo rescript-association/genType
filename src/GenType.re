@@ -140,4 +140,8 @@ let cli = () => {
   executeCliCommand(~bsVersion=bsVersion^, cliCommand^);
 };
 
-cli();
+if (DeadCommon.active) {
+  DeadCode.runAnalysis();
+} else {
+  cli();
+};
