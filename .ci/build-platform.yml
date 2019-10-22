@@ -13,17 +13,24 @@ jobs:
     variables:
       STAGING_DIRECTORY: ${{ parameters.STAGING_DIRECTORY }}
       STAGING_DIRECTORY_UNIX: ${{ parameters.STAGING_DIRECTORY_UNIX }}
-
     steps: 
       - bash: |
           # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
           DESIRED_LEN="86"
+          # Note: This will need to change when upgrading esy version
+          # that reenables long paths on windows.
+          if [ "$AGENT_OS" == "Windows_NT" ]; then
+            DESIRED_LEN="33"
+          fi
           HOME_ESY3="$HOME/.esy/3"
           HOME_ESY3_LEN=${#HOME_ESY3}
           NUM_UNDERS=$(echo "$(($DESIRED_LEN-$HOME_ESY3_LEN))")
           UNDERS=$(printf "%-${NUM_UNDERS}s" "_")
           UNDERS="${UNDERS// /_}"
           THE_ESY__CACHE_INSTALL_PATH=${HOME_ESY3}${UNDERS}/i
+          if [ "$AGENT_OS" == "Windows_NT" ]; then
+            THE_ESY__CACHE_INSTALL_PATH=$( cygpath --mixed --absolute "$THE_ESY__CACHE_INSTALL_PATH")
+          fi
           echo "THE_ESY__CACHE_INSTALL_PATH: $THE_ESY__CACHE_INSTALL_PATH"
           # This will be exposed as an env var ESY__CACHE_INSTALL_PATH, or an
           # Azure var esy__cache_install_path
