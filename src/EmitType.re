@@ -86,7 +86,7 @@ let typeReactRef = (~config, ~type_) =>
     Closed,
     [
       {
-        mutable_: Immutable,
+        mutable_: Mutable,
         name: "current",
         optional: Mandatory,
         type_: Null(type_),
