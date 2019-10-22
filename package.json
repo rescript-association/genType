@@ -4,16 +4,10 @@
   "private": true,
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
   "license": "MIT",
-  "esy": {
-    "build": "dune build -p #{self.name}",
-    "release": {
-      "bin": [
-        "gentype.exe"
-      ]
-    }
-  },
   "scripts": {
-    "clean": "esy x dune clean -p #{self.name}",
+    "start": "cd src && bsb -make-world -backend native -w",
+    "build": "esy",
+    "clean": "cd src && bsb -clean-world",
     "test": "node ./scripts/run_integration_tests.js",
     "install:examples": "(cd examples/flow-react-example && npm install) & (cd examples/typescript-react-example && npm install) & (cd examples/untyped-react-example && npm install) & (cd examples/commonjs-react-example && npm install)",
     "build:examples": "(cd examples/flow-react-example && npm run clean && npm run build) & (cd examples/typescript-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build) & (cd examples/commonjs-react-example && npm run clean && npm run build)",
@@ -21,14 +15,9 @@
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"
   },
-  "dependencies": {
-    "ocaml": "~4.06.1",
-    "@opam/dune": "~1.7.3",
-    "@opam/reason": "*"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "debug": "^4.1.0",
-    "@opam/merlin": "*"
+    "debug": "^4.1.0"
   },
   "author": "Cristiano Calcagno",
   "bugs": {
