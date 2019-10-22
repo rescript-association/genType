@@ -13,7 +13,7 @@
   "scripts": {
     "test": "esy x gentype.exe --version",
     "clean": "dune clean -p #{self.name}",
-    "docs": "echo 'no docs to generate'"
+    "doc": "mkdir -p #{self.target_dir}/default/_doc/_html"
   },
   "esy": {
     "build": "dune build -p #{self.name}",
