@@ -47,6 +47,10 @@ jobs:
       #- template: utils/create-docs.yml
       - script: "esy x echo \"#{self.bin/'gentype.exe'}\""
         displayName: "Debug esy gentype path"
+      - script: "echo `find . -name GenType.exe`"
+        displayName: "Find GenType.exe"
+      - script: "echo `find . -name gentype.exe`"
+        displayName: "Find gentype.exe"
       - script: "npm install"
         displayName: "npm install command (for tests)"
       - script: "node scripts/run_integration_tests.js"
