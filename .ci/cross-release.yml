@@ -21,7 +21,7 @@ steps:
 
   - script: "node .ci/pipelines-release.js"
     displayName: "node .ci/pipelines-release.js"
-    continueOnError: true
+    continueOnError: false
 
   - script: "npm pack ."
     displayName: "npm pack"
