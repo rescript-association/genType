@@ -33,7 +33,7 @@ jobs:
       - bash: 'mkdir _release && cp _esy/default/store/b/gentype-*/default/src/GenType.exe _release/'
         workingDirectory: ''
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        displayName: '[Cache][Publish] Copy binary'
+        displayName: 'Copy binary'
 #      - script: "esy release"
 #        displayName: "esy release"
       - template: utils/publish-build-cache.yml
