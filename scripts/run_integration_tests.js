@@ -6,6 +6,13 @@ In a successful test scenario, after building the example projects, there should
 (We check manually verified genType generated files in git, we consider diffs as regressions)
 */
 
+/*
+Windows support is hard with shell spawning.  This is a very good article on
+understanding the different spawning models:
+
+https://www.brainbell.com/javascript/child-process.html
+*/
+
 const debug = require("debug")("IO");
 const fs = require("fs");
 const child_process = require("child_process");
@@ -25,7 +32,7 @@ const isWindows = /^win/i.test(process.platform);
 //const genTypeFile = path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
 
 function findGenTypeFile() {
-  if(!isWindows) {
+  if(isWindows) {
     const output = child_process.execSync("esy x echo \"#{self.bin/'gentype.exe'}\"", {
       shell: true,
       encoding: "utf8",
