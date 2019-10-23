@@ -53,7 +53,7 @@ jobs:
         displayName: "Find gentype.exe"
       - script: "npm install"
         displayName: "npm install command (for tests)"
-      - script: "node scripts/run_integration_tests.js"
+      - bash: "npm test"
         displayName: "Test command"
       - script: "esy release"
         displayName: "esy release"
