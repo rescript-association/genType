@@ -22,7 +22,7 @@ const exampleDirPaths = [
 const isWindows = /^win/i.test(process.platform);
 
 // This file, unlike the public_name `gentype.exe` is not symlinked and will hopefully cause less troubles with Windows
-const genTypeFile = path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
+const genTypeFile = path.resolve(__dirname, "../_esy/default/build/default/src/GenType.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise
