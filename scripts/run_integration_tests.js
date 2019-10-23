@@ -25,12 +25,16 @@ const isWindows = /^win/i.test(process.platform);
 //const genTypeFile = path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
 
 function findGenTypeFile() {
-  if(isWindows) {
-    return child_process.execFileSync("esy", ['x', 'echo', "#{self.bin/'gentype.exe'}"], {
-      stdio: ["inherit", "inherit"],
+  if(!isWindows) {
+    const output = child_process.execSync("esy x echo \"#{self.bin/'gentype.exe'}\"", {
       shell: true,
-      encoding: "utf8"
+      encoding: "utf8",
+      env: process.env
     });
+
+    if(output) {
+      return output.replace('\n', '');
+    }
   }
   else {
     return path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
