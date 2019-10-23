@@ -110,7 +110,9 @@ function checkSetup() {
     throw new Error("This script cannot be run with `esy`. Use `npm test` instead!");
   }
 
-  const lsOutput = child_process.execFileSync("ls", ['-l', path.resolve(__dirname, "..")]);
+  const lsOutput = child_process.execFileSync("ls", ['-l', path.resolve(__dirname, "..")], {
+    encoding: "utf8"
+  });
   console.log(lsOutput);
 
   console.log(`Check existing binary: ${genTypeFile}`);
