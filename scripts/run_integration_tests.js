@@ -27,6 +27,8 @@ const isWindows = /^win/i.test(process.platform);
 function findGenTypeFile() {
   if(isWindows) {
     return child_process.execFileSync("esy", ['x', 'echo', "#{self.bin/'gentype.exe'}"], {
+      stdio: ["inherit", "inherit"],
+      shell: true,
       encoding: "utf8"
     });
   }
