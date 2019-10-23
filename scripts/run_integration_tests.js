@@ -142,7 +142,7 @@ function checkSetup() {
   console.log(lsOutput);
 
   console.log(`Check existing binary: ${genTypeFile}`);
-  if (!fs.existsSync(genTypeFile)) {
+  if (!isWindows && !fs.existsSync(genTypeFile)) {
     const filepath = path.relative(path.join(__dirname, ".."), genTypeFile);
     throw new Error(`${filepath} does not exist. Use \`esy\` first!`);
   }
