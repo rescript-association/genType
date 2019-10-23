@@ -152,7 +152,8 @@ function checkSetup() {
 
   /* Compare the --version output with the package.json version number (should match) */
   try {
-    output = child_process.execFileSync(genTypeFile, ["--version"], {
+    output = child_process.execSync(`${genTypeFile} --version`, {
+      shell: isWindows,
       encoding: "utf8"
     });
   } catch (e) {
