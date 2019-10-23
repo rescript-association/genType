@@ -22,7 +22,18 @@ const exampleDirPaths = [
 const isWindows = /^win/i.test(process.platform);
 
 // This file, unlike the public_name `gentype.exe` is not symlinked and will hopefully cause less troubles with Windows
-const genTypeFile = path.resolve(__dirname, "../_esy/default/build/default/src/GenType.exe");
+//const genTypeFile = path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
+
+function findGenTypeFile() {
+  if(isWindows) {
+    return child_process.execFileSync("esy", ['x', 'echo', "#{self.bin/'gentype.exe'}"], {
+      encoding: "utf8"
+    });
+  }
+  else {
+    return path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
+  }
+}
 
 /*
 Needed for wrapping the stdout pipe with a promise
@@ -109,6 +120,8 @@ function checkSetup() {
   if(process.env.ESY__ROOT_PACKAGE_CONFIG_PATH) {
     throw new Error("This script cannot be run with `esy`. Use `npm test` instead!");
   }
+
+  const genTypeFile = findGenTypeFile();
 
   const lsOutput = child_process.execFileSync("ls", ['-l', path.resolve(__dirname, "..")], {
     encoding: "utf8"
