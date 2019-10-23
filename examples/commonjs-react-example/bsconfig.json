@@ -16,7 +16,7 @@
       "all": false
     },
     "exportInterfaces": false,
-    "path": "../../_esy/default/build/install/default/bin/gentype.exe"
+    "path": "../../_esy/default/build/default/src/GenType.exe"
   },
   "name": "commonjs-react-example",
   "bsc-flags": ["-bs-super-errors"],
