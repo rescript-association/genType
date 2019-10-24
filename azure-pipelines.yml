@@ -2,13 +2,15 @@ name: Build npm release
 
 trigger:
   tags:
+    include:
+      - v* 
     exclude:
       - v2.*
-  - master
-  - global
-  - release-*
-  - releases-*
-  - feature-*
+  branches:
+    include:
+      - '*'
+    exclude:
+      - 4_02
 
 jobs:
   - template: .ci/build-platform.yml
