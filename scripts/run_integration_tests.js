@@ -64,6 +64,14 @@ function wrappedSpawn(command, args, options) {
   });
 }
 
+function copyGenTypeExe() {
+  console.log(`Copy genType to '${genTypeFile}'`);
+  child_process.execSync(`cp $(find _esy -name GenType.exe) examples`, {
+    shell: isWindows,
+    encoding: "utf8"
+  });
+}
+
 async function installExamples() {
   const tasks = exampleDirPaths.map(cwd => {
     console.log(`${cwd}: npm install --no-save (takes a while)`);
@@ -158,6 +166,7 @@ function checkSetup() {
 
 async function main() {
   try {
+    copyGenTypeExe();
     checkSetup();
     await installExamples();
     cleanBuildExamples();
