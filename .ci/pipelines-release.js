@@ -40,16 +40,16 @@ const packageJson = JSON.stringify(
     bin: esyJson.esy.release.bin.reduce((acc, curr) => {
       // should result in "bin": { "gentype": "bin/gentype.exe" }
       const key = path.basename(curr, ".exe");
-      return Object.assign({ [key]: "bin/" + curr }, acc);
+      return Object.assign({ [key]: curr }, acc);
     }, {}),
     files: [
-      "_export/",
-      "bin/",
+      //"_export/",
+      //"bin/",
       "postinstall.js",
-      "esyInstallRelease.js",
-      "platform-linux/",
-      "platform-darwin/",
-      "platform-windows-x64/"
+      //"esyInstallRelease.js",
+      "vendor-linux/",
+      "vendor-darwin/",
+      "vendor-win32/"
     ]
   },
   null,
@@ -57,7 +57,7 @@ const packageJson = JSON.stringify(
 );
 
 fs.writeFileSync(
-  path.join(__dirname, "..", "_release", "package.json"),
+  path.join(__dirname, "..", "dist", "package.json"),
   packageJson,
   {
     encoding: "utf8"
@@ -68,7 +68,7 @@ try {
   console.log("Copying LICENSE");
   fs.copyFileSync(
     path.join(__dirname, "..", "LICENSE"),
-    path.join(__dirname, "..", "_release", "LICENSE")
+    path.join(__dirname, "..", "dist", "LICENSE")
   );
 } catch (e) {
   console.warn("No LICENSE found");
@@ -77,27 +77,27 @@ try {
 console.log("Copying README.md");
 fs.copyFileSync(
   path.join(__dirname, "..", "README.md"),
-  path.join(__dirname, "..", "_release", "README.md")
+  path.join(__dirname, "..", "dist", "README.md")
 );
 
-console.log("Copying postinstall.js");
-fs.copyFileSync(
-  path.join(__dirname, "release-postinstall.js"),
-  path.join(__dirname, "..", "_release", "postinstall.js")
-);
+//console.log("Copying postinstall.js");
+//fs.copyFileSync(
+  //path.join(__dirname, "release-postinstall.js"),
+  //path.join(__dirname, "..", "_release", "postinstall.js")
+//);
 
-console.log("Creating placeholder files");
-const placeholderFile = `:; echo "You need to have postinstall enabled"; exit $?
-@ECHO OFF
-ECHO You need to have postinstall enabled`;
-fs.mkdirSync(path.join(__dirname, "..", "_release", "bin"));
-const binPath = path.join(
-  __dirname,
-  "..",
-  "_release",
-  "bin",
-  esyJson.esy.release.bin[0]
-);
+//console.log("Creating placeholder files");
+//const placeholderFile = `:; echo "You need to have postinstall enabled"; exit $?
+//@ECHO OFF
+//ECHO You need to have postinstall enabled`;
+//fs.mkdirSync(path.join(__dirname, "..", "_release", "bin"));
+//const binPath = path.join(
+  //__dirname,
+  //"..",
+  //"_release",
+  //"bin",
+  //esyJson.esy.release.bin[0]
+//);
 
-fs.writeFileSync(binPath, placeholderFile);
-fs.chmodSync(binPath, 0777);
+//fs.writeFileSync(binPath, placeholderFile);
+//fs.chmodSync(binPath, 0777);

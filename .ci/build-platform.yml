@@ -53,8 +53,8 @@ jobs:
         displayName: "npm install command (for tests)"
       - bash: "npm test"
         displayName: "Test command"
-      - script: "esy release"
-        displayName: "esy release"
+      - bash: "mkdir _release"
+        displayName: "Create _release directory"
       - template: utils/publish-build-cache.yml
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"

@@ -1,6 +1,6 @@
 parameters:
   platform: "macOS"
-  folder: "platform-darwin"
+  folder: "vendor-darwin"
 
 steps:
   - task: DownloadBuildArtifacts@0
@@ -9,8 +9,5 @@ steps:
       artifactName: ${{ parameters.platform }}
       downloadPath: $(Build.StagingDirectory)
 
-  - script: "mkdir _release/${{ parameters.folder }}"
-    displayName: "Create _release/${{ parameters.folder }}"
-
-  - script: "cp -r $(Build.StagingDirectory)/${{ parameters.platform }}/ _release/${{ parameters.folder }}"
+  - script: "cp -r $(Build.StagingDirectory)/${{ parameters.platform }}/ dist/${{ parameters.folder }}"
     displayName: "cp ${{ parameters.platform }}"
