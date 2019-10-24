@@ -44,7 +44,6 @@ jobs:
         displayName: "esy install"
       - script: "esy build"
         displayName: "esy build"
-      #- template: utils/create-docs.yml
       - bash: "echo `find _esy -name GenType.exe`"
         displayName: "Find GenType.exe"
       - bash: "rm examples/GenType.exe && cp `find _esy -name GenType.exe` examples/"	
