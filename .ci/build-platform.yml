@@ -49,7 +49,7 @@ jobs:
         displayName: "Find GenType.exe"
       - script: "npm install"
         displayName: "npm install command (for tests)"
-      - script: "npm test"
+      - bash: "npm test"
         displayName: "Test command"
       - script: "esy release"
         displayName: "esy release"
