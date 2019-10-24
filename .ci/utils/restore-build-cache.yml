@@ -3,7 +3,7 @@
 steps:
   - bash: 'mkdir -p $(STAGING_DIRECTORY_UNIX)'
     condition: and(eq(variables['Build.Reason'], 'PullRequest'), and(succeeded(), ne(variables['Build.SourceBranch'], variables['System.PullRequest.TargetBranch'])))
-    displayName: '[Cache][Publish] Create cache directory'
+    displayName: '[Cache][Restore] Create cache directory'
 
   - task: Bash@3
     condition: and(eq(variables['Build.Reason'], 'PullRequest'), and(succeeded(), ne(variables['Build.SourceBranch'], variables['System.PullRequest.TargetBranch'])))
