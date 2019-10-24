@@ -10,23 +10,24 @@ esy
 
 # Alternatively (same as calling `esy`)
 npm run build
-yarn run build
+yarn build
 
 # If you want to run gentype without a complicated path
 esy x gentype.exe --version
 ```
 
-This will create the binary
-`_esy/default/build/install/default/bin/gentype.exe`, which is the executable
-BuckleScript automatically picks up when installed via npm.
+This will create a symlink
+`_esy/default/build/install/default/bin/gentype.exe` which is pointing to the
+executable BuckleScript picks up automatically when installed via npm.
 
-**Note:** The binary `examples/GenType.exe` is a symlink to the same path and is used by
-our integration tests.
+**Note:** There is also a file called `examples/GenType.exe`, which is actually
+also a symlink to the built genType binary. It is used for our integration
+tests.
 
 ## Test genType
 
-Make sure to always run a tests before submitting any changes (CI usually takes
-longer to give you feedback on failing tests).
+Make sure to always run the tests before submitting any changes (CI usually takes
+longer to give you feedback).
 
 ```
 # Only needed on initial setup
