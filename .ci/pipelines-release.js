@@ -28,6 +28,9 @@ const packageJson = JSON.stringify(
   {
     name: pjson.name,
     version: pjson.version,
+    author: pjson.author,
+    bugs: pjson.bugs,
+    homepage: pjson.homepage,
     license: pjson.license,
     description: pjson.description,
     repository: pjson.repository,
