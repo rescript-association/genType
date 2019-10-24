@@ -104,10 +104,6 @@ npm publish gentype-*.tgz --tag beta
 Consult the [npm publish](https://docs.npmjs.com/cli/publish) documentation for more options.
 In case you get an `ENEEDAUTH` error, use `npm adduser` and authenticate with your npm account first.
 
-**Pro tip:** If you want to publish a dist with a different version number
-(e.g. for testing the publishing process), you can also manually modify the
-`version` number in the `dist/package.json` file before releasing.
-
 ### Working on genType v2 / 4.02 patches
 
 For further DEVELOPMENT instructions for genType v2, check out the [4_02
