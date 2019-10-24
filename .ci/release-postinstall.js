@@ -147,6 +147,16 @@ var copyPlatformBinaries = platformPath => {
     copyFileSync(sourcePath, destPath);
     fs.chmodSync(destPath, 0777);
   });
+
+  // Relevant for BuckleScript compatibility
+  // TODO: This is a quick hack, should be implemented in a better way
+  if(binariesToCopy["gentype"]) {
+    var gentypeBin = path.join(platformBuildPath, binaryPath);
+    var target = path.join(__dirname, "gentype.exe");
+
+    copyFileSync(gentypeBin, target);
+    fs.chmodSync(target, 0777);
+  }
 };
 
 try {
