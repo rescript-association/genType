@@ -38,15 +38,14 @@ const packageJson = JSON.stringify(
       postinstall: "node ./postinstall.js"
     },
     bin: esyJson.esy.release.bin.reduce((acc, curr) => {
-      // should result in "bin": { "gentype": "bin/gentype.exe" }
+      // should result in "bin": { "gentype": "gentype.exe" }
       const key = path.basename(curr, ".exe");
       return Object.assign({ [key]: curr }, acc);
     }, {}),
     files: [
-      //"_export/",
-      //"bin/",
+      // Dummy file
+      "gentype.exe",
       "postinstall.js",
-      //"esyInstallRelease.js",
       "vendor-linux/",
       "vendor-darwin/",
       "vendor-win32/"
@@ -79,25 +78,3 @@ fs.copyFileSync(
   path.join(__dirname, "..", "README.md"),
   path.join(__dirname, "..", "dist", "README.md")
 );
-
-//console.log("Copying postinstall.js");
-//fs.copyFileSync(
-  //path.join(__dirname, "release-postinstall.js"),
-  //path.join(__dirname, "..", "_release", "postinstall.js")
-//);
-
-//console.log("Creating placeholder files");
-//const placeholderFile = `:; echo "You need to have postinstall enabled"; exit $?
-//@ECHO OFF
-//ECHO You need to have postinstall enabled`;
-//fs.mkdirSync(path.join(__dirname, "..", "_release", "bin"));
-//const binPath = path.join(
-  //__dirname,
-  //"..",
-  //"_release",
-  //"bin",
-  //esyJson.esy.release.bin[0]
-//);
-
-//fs.writeFileSync(binPath, placeholderFile);
-//fs.chmodSync(binPath, 0777);
