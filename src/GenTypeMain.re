@@ -2,6 +2,8 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
+open GenTypeCommon;
+
 module StringSet = Set.Make(String);
 
 let cmtHasGenTypeAnnotations = (~ignoreInterface, inputCMT) =>
@@ -130,6 +132,18 @@ let emitTranslation =
   GeneratedFiles.writeFileIfRequired(~outputFile, ~fileContents);
 };
 
+let readCmt = cmtFile =>
+  try(Cmt_format.read_cmt(cmtFile)) {
+  | Cmi_format.Error(_) =>
+    logItem("Error loading %s\n\n", cmtFile);
+    logItem(
+      "It looks like you might be using an old version of bucklescript, or have stale compilation artifacts.\n",
+    );
+    logItem("Check that bs-platform is version 6.2.x or later.\n")
+    logItem("And try to clean and rebuild.\n\n")
+    assert(false);
+  };
+
 let processCmtFile = (~signFile, ~config, cmt) => {
   let cmtFile = cmt |> Paths.getCmtFile;
   if (cmtFile != "") {
@@ -143,7 +157,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
         fname == "React.re" || fname == "ReasonReact.re"
       );
     let (inputCMT, hasGenTypeAnnotations) = {
-      let inputCMT = Cmt_format.read_cmt(cmtFile);
+      let inputCMT = readCmt(cmtFile);
       let ignoreInterface = ref(false);
       let hasGenTypeAnnotations =
         inputCMT |> cmtHasGenTypeAnnotations(~ignoreInterface);
@@ -151,7 +165,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
         (inputCMT, hasGenTypeAnnotations);
       } else {
         let cmtFile = (cmtFile |> Filename.chop_extension) ++ ".cmt";
-        let inputCMT = Cmt_format.read_cmt(cmtFile);
+        let inputCMT = readCmt(cmtFile);
         let hasGenTypeAnnotations =
           inputCMT |> cmtHasGenTypeAnnotations(~ignoreInterface);
         (inputCMT, hasGenTypeAnnotations);
