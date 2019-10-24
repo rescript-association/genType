@@ -24,10 +24,18 @@ steps:
     displayName: "npm pack"
     workingDirectory: "dist"
 
+  - bash: "mkdir _release"
+    displayName: "Create _release directory"
+
+  - task: CopyFiles@2
+    inputs:
+      contents: 'dist/gentype-*.tgz'
+      targetFolder: '_release'
+
   - task: PublishBuildArtifacts@1
     displayName: "Publish Artifact: Release"
     inputs:
-      PathtoPublish: "dist"
+      PathtoPublish: "_release"
       ArtifactName: Release
 
   - task: GithubRelease@0
