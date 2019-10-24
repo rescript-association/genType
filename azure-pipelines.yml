@@ -1,6 +1,9 @@
 name: Build npm release
 
 trigger:
+  tags:
+    exclude:
+      - v2.*
   - master
   - global
   - release-*
