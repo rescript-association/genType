@@ -39,4 +39,4 @@ steps:
     inputs:
       gitHubConnection: gh-ra-bot
       repositoryName: cristianoc/genType
-      assets: *.tgz
+      assets: "*.tgz"
