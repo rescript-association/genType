@@ -19,7 +19,7 @@
     "path": "../../_esy/default/build/default/src/GenType.exe"
 },
   "name": "flow-react-example",
-  "bsc-flags": ["-bs-super-errors"],
+  "bsc-flags": ["-bs-super-errors -verbose"],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],
   "sources": [
