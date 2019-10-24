@@ -5,6 +5,8 @@
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
   "license": "MIT",
   "scripts": {
+    "build": "esy",
+    "clean": "esy clean",
     "test": "node ./scripts/run_integration_tests.js",
     "install:examples": "(cd examples/flow-react-example && npm install) & (cd examples/typescript-react-example && npm install) & (cd examples/untyped-react-example && npm install) & (cd examples/commonjs-react-example && npm install)",
     "build:examples": "(cd examples/flow-react-example && npm run clean && npm run build) & (cd examples/typescript-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build) & (cd examples/commonjs-react-example && npm run clean && npm run build)",
