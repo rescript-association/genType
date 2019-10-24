@@ -352,16 +352,30 @@ type item = {
 };
 
 module WriteDeadAnnotations = {
+  type annotation = {
+    item,
+    useColumn: bool,
+  };
   type line = {
+    mutable annotation: option(annotation),
     original: string,
-    mutable annotation: option(item),
   };
 
   let lineToString = ({original, annotation}) => {
     switch (annotation) {
     | None => original
-    | Some({path}) =>
-      "[@" ++ deadAnnotation ++ " \"" ++ path ++ "\"] " ++ original
+    | Some({item: {pos, path}, useColumn}) =>
+      let annotationStr = "[@" ++ deadAnnotation ++ " \"" ++ path ++ "\"] ";
+      if (useColumn) {
+        let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
+        let originalLen = String.length(original);
+        assert(String.length(original) >= col);
+        let original1 = String.sub(original, 0, col);
+        let original2 = String.sub(original, col, originalLen - col);
+        original1 ++ annotationStr ++ original2;
+      } else {
+        annotationStr ++ original;
+      };
     };
   };
 
@@ -397,7 +411,7 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadValue = ({pos, path} as item) => {
+  let onDeadItem = (~useColumn, {pos, path} as item) => {
     let fileName = pos.Lexing.pos_fname;
     if (fileName != currentFile^) {
       writeFile(currentFile^, currentFileLines^);
@@ -406,7 +420,7 @@ module WriteDeadAnnotations = {
     };
     let indexInLines = pos.Lexing.pos_lnum - 1;
     let line = currentFileLines^[indexInLines];
-    line.annotation = Some(item);
+    line.annotation = Some({item, useColumn});
     Printf.printf(
       "<-- line %d\n%s\n",
       pos.Lexing.pos_lnum,
@@ -417,7 +431,7 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let report = (~onItem, decs: decs) => {
+let report = (~useColumn, ~onDeadCode, decs: decs) => {
   let isValueDecs = decs === valueDecs;
   let dontReportDead = pos =>
     isValueDecs && ProcessDeadAnnotations.isAnnotatedGentypeOrDead(pos);
@@ -514,5 +528,5 @@ let report = (~onItem, decs: decs) => {
   items
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
   |> List.fold_left(folder, [])
-  |> List.iter(onItem);
+  |> List.iter(item => item |> onDeadCode(~useColumn));
 };
