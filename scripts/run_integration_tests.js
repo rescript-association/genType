@@ -65,9 +65,8 @@ function wrappedSpawn(command, args, options) {
 }
 
 function copyGenTypeExe() {
-  let targetDir = path.join(__dirname, "..", "examples");
   console.log(`Copy genType to '${genTypeFile}'`);
-  child_process.execSync(`cp $(find _esy -name GenType.exe) ${targetDir}`, {
+  child_process.execSync(`cp $(find _esy -name GenType.exe) examples/`, {
     shell: isWindows ? "bash" : false,
     encoding: "utf8"
   });
