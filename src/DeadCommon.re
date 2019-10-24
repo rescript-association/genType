@@ -354,13 +354,14 @@ type item = {
 module WriteDeadAnnotations = {
   type line = {
     original: string,
-    mutable annotation: option(string),
+    mutable annotation: option(item),
   };
 
   let lineToString = ({original, annotation}) => {
     switch (annotation) {
     | None => original
-    | Some(s) => s ++ original
+    | Some({path}) =>
+      "[@" ++ deadAnnotation ++ " \"" ++ path ++ "\"] " ++ original
     };
   };
 
@@ -396,7 +397,7 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadValue = ({pos, path}) => {
+  let onDeadValue = ({pos, path} as item) => {
     let fileName = pos.Lexing.pos_fname;
     if (fileName != currentFile^) {
       writeFile(currentFile^, currentFileLines^);
@@ -405,7 +406,7 @@ module WriteDeadAnnotations = {
     };
     let indexInLines = pos.Lexing.pos_lnum - 1;
     let line = currentFileLines^[indexInLines];
-    line.annotation = Some("[@" ++ deadAnnotation ++ " \"" ++ path ++ "\"] ");
+    line.annotation = Some(item);
     Printf.printf(
       "<-- line %d\n%s\n",
       pos.Lexing.pos_lnum,
