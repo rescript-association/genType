@@ -45,7 +45,7 @@ let report = () => {
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
   valueDecs |> report(~useColumn=false, ~onDeadCode);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  typeDecs |> report(~useColumn=false, ~onDeadCode);
+  typeDecs |> report(~useColumn=true, ~onDeadCode);
   WriteDeadAnnotations.write();
 };
 
