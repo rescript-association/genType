@@ -19,12 +19,13 @@ const child_process = require("child_process");
 const path = require("path");
 const pjson = require("../package.json");
 
-const exampleDirPaths = [
+const exampleDirNames = [
   "flow-react-example",
   "typescript-react-example",
   "untyped-react-example",
   "commonjs-react-example"
-].map(exampleName => path.join(__dirname, "..", "examples", exampleName));
+];
+const exampleDirPaths = exampleDirNames.map(exampleName => path.join(__dirname, "..", "examples", exampleName));
 
 const isWindows = /^win/i.test(process.platform);
 
@@ -101,19 +102,21 @@ function cleanBuildExamples() {
 }
 
 function checkDiff() {
-  console.log("Checking for changes in examples/");
+  exampleDirNames.forEach((example) => {
+    const exampleDir = path.join("examples", example);
+    console.log(`Checking for changes in '${exampleDir}'`);
 
-  const output = child_process.execFileSync("git", ["diff", "examples"], {
-    encoding: "utf8"
-  });
+    const output = child_process.execFileSync("git", ["diff", "--", exampleDir + "/"], {
+      encoding: "utf8"
+    });
 
-  console.log(output);
-  if (output.length > 0) {
-    throw new Error(
-      "Changed files detected in path examples/! Make sure genType is emitting the right code and commit the files to git" +
+    if (output.length > 0) {
+      throw new Error(
+        `Changed files detected in path '${exampleDir}'! Make sure genType is emitting the right code and commit the files to git` +
         "\n"
-    );
-  }
+      );
+    }
+  });
 }
 
 function checkSetup() {
