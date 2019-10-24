@@ -318,6 +318,18 @@ module ProcessDeadAnnotations = {
       };
       super.value_binding(self, value_binding);
     };
+    let type_kind = (self, typeKind: Typedtree.type_kind) => {
+      switch (typeKind) {
+      | Ttype_record(labelDeclarations) =>
+        labelDeclarations
+        |> List.iter(({ld_attributes, ld_loc}: Typedtree.label_declaration) =>
+             ld_attributes
+             |> processAttributes(~ignoreInterface, ~pos=ld_loc.loc_start)
+           )
+      | _ => ()
+      };
+      super.type_kind(self, typeKind);
+    };
     let value_description =
         (
           self,
@@ -327,7 +339,7 @@ module ProcessDeadAnnotations = {
       |> processAttributes(~ignoreInterface, ~pos=val_val.val_loc.loc_start);
       super.value_description(self, value_description);
     };
-    {...super, value_binding, value_description};
+    {...super, type_kind, value_binding, value_description};
   };
 
   let structure = structure => {
@@ -434,7 +446,7 @@ module WriteDeadAnnotations = {
 let report = (~useColumn, ~onDeadCode, decs: decs) => {
   let isValueDecs = decs === valueDecs;
   let dontReportDead = pos =>
-    isValueDecs && ProcessDeadAnnotations.isAnnotatedGentypeOrDead(pos);
+    ProcessDeadAnnotations.isAnnotatedGentypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
     switch (pos |> PosHash.findSet(valueReferences)) {
