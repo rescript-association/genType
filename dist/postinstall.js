@@ -10,15 +10,8 @@ function fail(msg) {
     process.exit(1);
 }
 
-function exeFileName(platform) {
-  if (/^win/i.test(platform)) {
-    return "gentype.native.exe";
-  }
-  return "gentype.native";
-}
-
 function getPlatformBinaryPath(platform) {
-  return path.join(__dirname, "vendor-" + platform, exeFileName(platform));
+  return path.join(__dirname, "vendor-" + platform, "gentype.exe");
 }
 
 function movePlatformBinary(platform) {

@@ -9,5 +9,5 @@ steps:
       artifactName: ${{ parameters.platform }}
       downloadPath: $(Build.StagingDirectory)
 
-  - script: "cp -r $(Build.StagingDirectory)/${{ parameters.platform }}/ dist/${{ parameters.folder }}"
-    displayName: "cp ${{ parameters.platform }}"
+  - script: "cp -r $(Build.StagingDirectory)/${{ parameters.platform }}/gentype.exe dist/${{ parameters.folder }}"
+    displayName: "cp ${{ parameters.platform }}/gentype.exe"
