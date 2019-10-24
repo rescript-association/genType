@@ -115,7 +115,9 @@ let traslateDeclarationKind =
              };
            {mutable_, name, optional, type_: type1};
          });
-    {TranslateTypeExprFromTypes.dependencies, type_: Record(fields)};
+    let type_ =
+      config.recordsAsObjects ? Object(Closed, fields) : Record(fields);
+    {TranslateTypeExprFromTypes.dependencies, type_};
   };
 
   switch (declarationKind, importStringOpt) {
