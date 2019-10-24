@@ -274,7 +274,7 @@ let pathWithoutHead = path => {
 };
 
 /* Keep track of the location of values exported via genType */
-module ProcessAnnotations = {
+module ProcessDeadAnnotations = {
   /* Positions exported to JS */
   let positionsAnnotatedWithGenType = PosHash.create(1);
   let positionsAnnotatedDead = PosHash.create(1);
@@ -351,20 +351,76 @@ type item = {
   path: string,
 };
 
+module WriteDeadAnnotations = {
+  let readFile = fileName => {
+    let channel = open_in(fileName);
+    let lines = ref([]);
+    let rec loop = () => {
+      let line = input_line(channel);
+      lines := [line, ...lines^];
+      loop();
+    };
+    try(loop()) {
+    | End_of_file =>
+      close_in(channel);
+      lines^ |> List.rev |> Array.of_list;
+    };
+  };
+
+  let writeFile = (fileName, lines) =>
+    if (fileName != "" && write) {
+      let channel = open_out(fileName);
+      let lastLine = Array.length(lines);
+      lines
+      |> Array.iteri((n, line) => {
+           output_string(channel, line);
+           if (n < lastLine - 1) {
+             output_char(channel, '\n');
+           };
+         });
+      close_out(channel);
+    };
+
+  let currentFile = ref("");
+  let currentFileLines = ref([||]);
+  let onDeadValue = ({pos, path}) => {
+    let fileName = pos.Lexing.pos_fname;
+    if (fileName != currentFile^) {
+      writeFile(currentFile^, currentFileLines^);
+      currentFile := fileName;
+      currentFileLines := readFile(fileName);
+    };
+    let indexInLines = pos.Lexing.pos_lnum - 1;
+    currentFileLines^[indexInLines] =
+      "[@"
+      ++ deadAnnotation
+      ++ " \""
+      ++ path
+      ++ "\"] "
+      ++ currentFileLines^[indexInLines];
+    Printf.printf(
+      "<-- line %d\n%s\n",
+      pos.Lexing.pos_lnum,
+      currentFileLines^[indexInLines],
+    );
+  };
+  let write = () => writeFile(currentFile^, currentFileLines^);
+};
+
 let report = (~onItem, decs: decs) => {
   let isValueDecs = decs === valueDecs;
   let dontReportDead = pos =>
-    isValueDecs && ProcessAnnotations.isAnnotatedGentypeOrDead(pos);
+    isValueDecs && ProcessDeadAnnotations.isAnnotatedGentypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
     switch (pos |> PosHash.findSet(valueReferences)) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
         referencesToLoc
-        |> PosSet.filter(pos => !ProcessAnnotations.isAnnotatedDead(pos));
+        |> PosSet.filter(pos => !ProcessDeadAnnotations.isAnnotatedDead(pos));
       if (liveReferences |> PosSet.cardinal == 0) {
         if (transitive) {
-          pos |> ProcessAnnotations.posAnnotatedDead;
+          pos |> ProcessDeadAnnotations.posAnnotatedDead;
         };
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {

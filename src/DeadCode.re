@@ -12,13 +12,13 @@ let loadFile = (~sourceFile, cmtFilePath) => {
     Cmt_format.read_cmt(cmtFilePath);
   switch (cmt_annots) {
   | Interface(signature) =>
-    ProcessAnnotations.signature(signature);
+    ProcessDeadAnnotations.signature(signature);
     DeadValue.processSignature(cmtFilePath, signature.sig_type);
   | Implementation(structure) =>
     let cmtiExists =
       Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
     if (!cmtiExists) {
-      ProcessAnnotations.structure(structure);
+      ProcessDeadAnnotations.structure(structure);
     };
     DeadValue.processStructure(
       ~cmtiExists,
@@ -32,7 +32,7 @@ let loadFile = (~sourceFile, cmtFilePath) => {
   };
 };
 
-let report = (~onDeadValue) => {
+let report = () => {
   let onItem = ({pos, path}) => {
     print_string(pos |> posToString);
     print_string(path);
@@ -40,12 +40,13 @@ let report = (~onDeadValue) => {
   };
   let onDeadValue = item => {
     onItem(item);
-    onDeadValue(item);
+    WriteDeadAnnotations.onDeadValue(item);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
   valueDecs |> report(~onItem=onDeadValue);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
   typeDecs |> report(~onItem=onDeadValue);
+  WriteDeadAnnotations.write();
 };
 
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
@@ -63,35 +64,6 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
   loadFile(~sourceFile, cmtFilePath);
 };
-
-let readFile = fileName => {
-  let channel = open_in(fileName);
-  let lines = ref([]);
-  let rec loop = () => {
-    let line = input_line(channel);
-    lines := [line, ...lines^];
-    loop();
-  };
-  try(loop()) {
-  | End_of_file =>
-    close_in(channel);
-    lines^ |> List.rev |> Array.of_list;
-  };
-};
-
-let writeFile = (fileName, lines) =>
-  if (fileName != "" && DeadCommon.write) {
-    let channel = open_out(fileName);
-    let lastLine = Array.length(lines);
-    lines
-    |> Array.iteri((n, line) => {
-         output_string(channel, line);
-         if (n < lastLine - 1) {
-           output_char(channel, '\n');
-         };
-       });
-    close_out(channel);
-  };
 
 let runAnalysis = () => {
   Paths.setProjectRoot();
@@ -116,29 +88,5 @@ let runAnalysis = () => {
        cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
      });
 
-  let currentFile = ref("");
-  let currentFileLines = ref([||]);
-  let onDeadValue = (DeadCommon.{pos, path}) => {
-    let fileName = pos.Lexing.pos_fname;
-    if (fileName != currentFile^) {
-      writeFile(currentFile^, currentFileLines^);
-      currentFile := fileName;
-      currentFileLines := readFile(fileName);
-    };
-    let indexInLines = pos.Lexing.pos_lnum - 1;
-    currentFileLines^[indexInLines] =
-      "[@"
-      ++ DeadCommon.deadAnnotation
-      ++ " \""
-      ++ path
-      ++ "\"] "
-      ++ currentFileLines^[indexInLines];
-    Printf.printf(
-      "<-- line %d\n%s\n",
-      pos.Lexing.pos_lnum,
-      currentFileLines^[indexInLines],
-    );
-  };
-  report(~onDeadValue);
-  writeFile(currentFile^, currentFileLines^);
+  report();
 };
