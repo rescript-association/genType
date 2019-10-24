@@ -29,7 +29,8 @@ steps:
 
   - task: CopyFiles@2
     inputs:
-      contents: 'dist/gentype-*.tgz'
+      sourceFolder: 'dist'
+      contents: 'gentype-*.tgz'
       targetFolder: '_release'
 
   - task: PublishBuildArtifacts@1
