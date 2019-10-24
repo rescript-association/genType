@@ -326,6 +326,13 @@ module ProcessDeadAnnotations = {
              ld_attributes
              |> processAttributes(~ignoreInterface, ~pos=ld_loc.loc_start)
            )
+      | Ttype_variant(constructorDeclarations) =>
+        constructorDeclarations
+        |> List.iter(
+             ({cd_attributes, cd_loc}: Typedtree.constructor_declaration) =>
+             cd_attributes
+             |> processAttributes(~ignoreInterface, ~pos=cd_loc.loc_start)
+           )
       | _ => ()
       };
       super.type_kind(self, typeKind);
