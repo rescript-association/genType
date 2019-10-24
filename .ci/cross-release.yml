@@ -1,23 +1,20 @@
 steps:
   - template: utils/use-node.yml
 
-  - script: "mkdir _release"
-    displayName: "Create _release dir"
-
   - template: release-platform-setup.yml
     parameters:
       platform: "Linux"
-      folder: "platform-linux"
+      folder: "vendor-linux"
 
   - template: release-platform-setup.yml
     parameters:
       platform: "macOS"
-      folder: "platform-darwin"
+      folder: "vendor-darwin"
 
   - template: release-platform-setup.yml
     parameters:
       platform: "Windows"
-      folder: "platform-windows-x64"
+      folder: "vendor-win32"
 
   - script: "node .ci/pipelines-release.js"
     displayName: "node .ci/pipelines-release.js"
@@ -25,7 +22,16 @@ steps:
 
   - script: "npm pack ."
     displayName: "npm pack"
-    workingDirectory: "_release"
+    workingDirectory: "dist"
+
+  - bash: "mkdir _release"
+    displayName: "Create _release directory"
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: 'dist'
+      contents: 'gentype-*.tgz'
+      targetFolder: '_release'
 
   - task: PublishBuildArtifacts@1
     displayName: "Publish Artifact: Release"
@@ -39,4 +45,4 @@ steps:
     inputs:
       gitHubConnection: gh-ra-bot
       repositoryName: cristianoc/genType
-      assets: _release/gentype-*.tgz 
+      assets: dist/gentype-*.tgz 

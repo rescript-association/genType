@@ -44,7 +44,6 @@ jobs:
         displayName: "esy install"
       - script: "esy build"
         displayName: "esy build"
-      #- template: utils/create-docs.yml
       - bash: "echo `find _esy -name GenType.exe`"
         displayName: "Find GenType.exe"
       - bash: "rm examples/GenType.exe && cp `find _esy -name GenType.exe` examples/"	
@@ -53,8 +52,10 @@ jobs:
         displayName: "npm install command (for tests)"
       - bash: "npm test"
         displayName: "Test command"
-      - script: "esy release"
-        displayName: "esy release"
+      - bash: "mkdir _release"
+        displayName: "Create _release directory"
+      - bash: "cp `find _esy -name GenType.exe` _release/gentype.exe"	
+        displayName: "Copy gentype.exe to _release"
       - template: utils/publish-build-cache.yml
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
