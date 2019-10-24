@@ -38,14 +38,14 @@ let report = () => {
     print_string(path);
     print_newline();
   };
-  let onDeadValue = item => {
+  let onDeadCode = (~useColumn, item) => {
     onItem(item);
-    WriteDeadAnnotations.onDeadValue(item);
+    item |> WriteDeadAnnotations.onDeadItem(~useColumn);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  valueDecs |> report(~onItem=onDeadValue);
+  valueDecs |> report(~useColumn=false, ~onDeadCode);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  typeDecs |> report(~onItem=onDeadValue);
+  typeDecs |> report(~useColumn=false, ~onDeadCode);
   WriteDeadAnnotations.write();
 };
 
