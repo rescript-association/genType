@@ -25,6 +25,13 @@ trigger:
     exclude:
       - 4_02
 
+pr:
+  branches:
+    include:
+      - master
+    exclude:
+      - 4_02
+
 jobs:
   - template: .ci/build-platform.yml
     parameters:
