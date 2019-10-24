@@ -34,7 +34,7 @@ steps:
       ArtifactName: Release
 
   - task: GithubRelease@0
-    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v3.')
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v')
     displayName: "Create Github Release"
     inputs:
       gitHubConnection: gh-ryyppy
