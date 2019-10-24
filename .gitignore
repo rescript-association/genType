@@ -13,6 +13,9 @@ node_modules/
 /genType.install
 /yarn-error.log
 
+# We need this for CI testing to prevent symlink errors
+examples/GenType.exe
+
 # dist related stuff
 dist/vendor-darwin/gentype.native
 dist/vendor-win32/gentype.native.exe

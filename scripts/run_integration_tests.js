@@ -28,25 +28,13 @@ const exampleDirPaths = [
 
 const isWindows = /^win/i.test(process.platform);
 
-// This file, unlike the public_name `gentype.exe` is not symlinked and will hopefully cause less troubles with Windows
-//const genTypeFile = path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
-
-function findGenTypeFile() {
-  if(isWindows) {
-    const output = child_process.execSync("esy x echo \"#{self.bin/'gentype.exe'}\"", {
-      shell: true,
-      encoding: "utf8",
-      env: process.env
-    });
-
-    if(output) {
-      return output.replace('\n', '');
-    }
-  }
-  else {
-    return path.join(__dirname, "../_esy/default/build/default/src/GenType.exe");
-  }
-}
+// To prevent all kinds of cross-platform symlink errors, we decided to always
+// copy the built binary to the examples folder, otherwise the example projects
+// cannot find genType. We don't fully understand what kind of files esy
+// creates on each platform. Linux & MacOS usually work fine, but Windows
+// caused a lot of troubles. Be aware that this was a concious decision,
+// refactoring this will eventually cause you man hours of work on AzureCI.
+const genTypeFile = path.join(__dirname, "../examples/GenType.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise
@@ -134,15 +122,8 @@ function checkSetup() {
     throw new Error("This script cannot be run with `esy`. Use `npm test` instead!");
   }
 
-  const genTypeFile = findGenTypeFile();
-
-  const lsOutput = child_process.execFileSync("ls", ['-l', path.resolve(__dirname, "..")], {
-    encoding: "utf8"
-  });
-  console.log(lsOutput);
-
   console.log(`Check existing binary: ${genTypeFile}`);
-  if (!isWindows && !fs.existsSync(genTypeFile)) {
+  if (!fs.existsSync(path.resolve(genTypeFile))) {
     const filepath = path.relative(path.join(__dirname, ".."), genTypeFile);
     throw new Error(`${filepath} does not exist. Use \`esy\` first!`);
   }
