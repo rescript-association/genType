@@ -37,5 +37,5 @@ steps:
     condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v')
     displayName: "Create Github Release"
     inputs:
-      gitHubConnection: gh-ryyppy
+      gitHubConnection: gh-ra-bot
       repositoryName: cristianoc/genType
