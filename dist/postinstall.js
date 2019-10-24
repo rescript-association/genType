@@ -21,6 +21,7 @@ function movePlatformBinary(platform) {
       return fail("error: executable not found: " + sourcePath);
   }
   fs.renameSync(sourcePath, targetPath);
+  fs.chmodSync(targetPath, 0777);
 }
 
 switch (platform) {
