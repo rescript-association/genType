@@ -8,7 +8,7 @@ trigger:
       - v2.*
   branches:
     include:
-      - '*'
+      - master
     exclude:
       - 4_02
 
