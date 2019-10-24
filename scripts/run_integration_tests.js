@@ -6,22 +6,36 @@ In a successful test scenario, after building the example projects, there should
 (We check manually verified genType generated files in git, we consider diffs as regressions)
 */
 
+/*
+Windows support is hard with shell spawning.  This is a very good article on
+understanding the different spawning models:
+
+https://www.brainbell.com/javascript/child-process.html
+*/
+
 const debug = require("debug")("IO");
 const fs = require("fs");
 const child_process = require("child_process");
 const path = require("path");
 const pjson = require("../package.json");
 
-const exampleDirPaths = [
+const exampleDirNames = [
   "flow-react-example",
   "typescript-react-example",
   "untyped-react-example",
   "commonjs-react-example"
-].map(exampleName => path.join(__dirname, "..", "examples", exampleName));
+];
+const exampleDirPaths = exampleDirNames.map(exampleName => path.join(__dirname, "..", "examples", exampleName));
 
 const isWindows = /^win/i.test(process.platform);
 
-const genTypeFile = path.join(__dirname, "../_esy/default/build/install/default/bin/gentype.native.exe");
+// To prevent all kinds of cross-platform symlink errors, we decided to always
+// copy the built binary to the examples folder, otherwise the example projects
+// cannot find genType. We don't fully understand what kind of files esy
+// creates on each platform. Linux & MacOS usually work fine, but Windows
+// caused a lot of troubles. Be aware that this was a concious decision,
+// refactoring this will eventually cause you man hours of work on AzureCI.
+const genTypeFile = path.join(__dirname, "../examples/GenType.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise
@@ -88,24 +102,31 @@ function cleanBuildExamples() {
 }
 
 function checkDiff() {
-  console.log("Checking for changes in examples/");
+  exampleDirNames.forEach((example) => {
+    const exampleDir = path.join("examples", example);
+    console.log(`Checking for changes in '${exampleDir}'`);
 
-  const output = child_process.execFileSync("git", ["diff", "examples"], {
-    encoding: "utf8"
-  });
+    const output = child_process.execFileSync("git", ["diff", "--", exampleDir + "/"], {
+      encoding: "utf8"
+    });
 
-  console.log(output);
-  if (output.length > 0) {
-    throw new Error(
-      "Changed files detected in path examples/! Make sure genType is emitting the right code and commit the files to git" +
+    if (output.length > 0) {
+      throw new Error(
+        `Changed files detected in path '${exampleDir}'! Make sure genType is emitting the right code and commit the files to git` +
         "\n"
-    );
-  }
+      );
+    }
+  });
 }
 
 function checkSetup() {
+  console.log(`Make sure this script is not run with esy...`);
+  if(process.env.ESY__ROOT_PACKAGE_CONFIG_PATH) {
+    throw new Error("This script cannot be run with `esy`. Use `npm test` instead!");
+  }
+
   console.log(`Check existing binary: ${genTypeFile}`);
-  if (!fs.existsSync(genTypeFile)) {
+  if (!fs.existsSync(path.resolve(genTypeFile))) {
     const filepath = path.relative(path.join(__dirname, ".."), genTypeFile);
     throw new Error(`${filepath} does not exist. Use \`esy\` first!`);
   }
@@ -115,7 +136,8 @@ function checkSetup() {
 
   /* Compare the --version output with the package.json version number (should match) */
   try {
-    output = child_process.execFileSync(genTypeFile, ["--version"], {
+    output = child_process.execSync(`${genTypeFile} --version`, {
+      shell: isWindows,
       encoding: "utf8"
     });
   } catch (e) {

@@ -21,7 +21,7 @@ steps:
 
   - script: "node .ci/pipelines-release.js"
     displayName: "node .ci/pipelines-release.js"
-    continueOnError: true
+    continueOnError: false
 
   - script: "npm pack ."
     displayName: "npm pack"
@@ -32,3 +32,11 @@ steps:
     inputs:
       PathtoPublish: "_release"
       ArtifactName: Release
+
+  - task: GithubRelease@0
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v')
+    displayName: "Create Github Release"
+    inputs:
+      gitHubConnection: gh-ra-bot
+      repositoryName: cristianoc/genType
+      assets: _release/gentype-*.tgz 

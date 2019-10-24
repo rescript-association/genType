@@ -7,11 +7,11 @@
     },
     "exportInterfaces": false,
     "propTypes": true,
-    "path": "../../_esy/default/build/install/default/bin/gentype.native.exe",
+    "path": "../GenType.exe",
     "fileHeader": "this is a custom header you can add to every file!"
   },
   "name": "untyped-react-example",
-  "bsc-flags": ["-bs-super-errors"],
+  "bsc-flags": ["-bs-super-errors -verbose"],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],
   "sources": [

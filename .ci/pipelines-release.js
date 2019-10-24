@@ -1,32 +1,46 @@
+/*
+ * Note:
+ * This file has been modified to the needs of gentype!
+ */
 const fs = require("fs");
 const path = require("path");
 
 console.log("Creating package.json");
 
 // From the project root pwd
-const mainPackageJsonPath =
-  fs.existsSync('esy.json') ?
-  'esy.json' : 'package.json';
-
-const exists = fs.existsSync(mainPackageJsonPath);
-if (!exists) {
-  console.error("No package.json or esy.json at " + mainPackageJsonPath);
+if (!fs.existsSync('esy.json')) {
+  console.error("No esy.json in project root found");
   process.exit(1);
 }
+
+if (!fs.existsSync('package.json')) {
+  console.error("No package.json in project root found");
+  process.exit(1);
+}
+
 // Now require from this script's location.
-const mainPackageJson = require(path.join('..', mainPackageJsonPath));
+const esyJson = require(path.join('..', 'esy.json'));
+
+// We need that for the package metadata
+const pjson = require(path.join('..', 'package.json'));
+
 const packageJson = JSON.stringify(
   {
-    name: mainPackageJson.name,
-    version: mainPackageJson.version,
-    license: mainPackageJson.license,
-    description: mainPackageJson.description,
-    repository: mainPackageJson.repository,
+    name: pjson.name,
+    version: pjson.version,
+    author: pjson.author,
+    bugs: pjson.bugs,
+    homepage: pjson.homepage,
+    license: pjson.license,
+    description: pjson.description,
+    repository: pjson.repository,
     scripts: {
       postinstall: "node ./postinstall.js"
     },
-    bin: mainPackageJson.esy.release.bin.reduce((acc, curr) => {
-      return Object.assign({ [curr]: "bin/" + curr }, acc);
+    bin: esyJson.esy.release.bin.reduce((acc, curr) => {
+      // should result in "bin": { "gentype": "bin/gentype.exe" }
+      const key = path.basename(curr, ".exe");
+      return Object.assign({ [key]: "bin/" + curr }, acc);
     }, {}),
     files: [
       "_export/",
@@ -82,7 +96,7 @@ const binPath = path.join(
   "..",
   "_release",
   "bin",
-  mainPackageJson.esy.release.bin[0]
+  esyJson.esy.release.bin[0]
 );
 
 fs.writeFileSync(binPath, placeholderFile);
