@@ -1,6 +1,6 @@
 # Reason genType
 
-**Status master (v3.*)**[![Build
+**Status `master (v3.*)`:** [![Build
 Status](https://dev.azure.com/ccrisccris/genType/_apis/build/status/cristianoc.genType?branchName=master)](https://dev.azure.com/ccrisccris/genType/_build/latest?definitionId=1&branchName=master)
 
 **Status `4_02 (v2.*)`:** [![Linux /
