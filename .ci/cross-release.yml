@@ -35,7 +35,7 @@ steps:
 
   - task: GithubRelease@0
     condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v3.')
-    displayName: "Create Github Release'
+    displayName: "Create Github Release"
     inputs:
       githubConnection: cristianoc
       repositoryName: cristianoc/genType
