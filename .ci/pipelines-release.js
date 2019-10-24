@@ -38,9 +38,9 @@ const packageJson = JSON.stringify(
       postinstall: "node ./postinstall.js"
     },
     bin: esyJson.esy.release.bin.reduce((acc, curr) => {
-      // should result in "bin": { "gentype": "gentype.exe" }
+      // should result in "bin": { "gentype": "bin/gentype.exe" }
       const key = path.basename(curr, ".exe");
-      return Object.assign({ [key]: curr }, acc);
+      return Object.assign({ [key]: "bin/" + curr }, acc);
     }, {}),
     files: [
       "_export/",
