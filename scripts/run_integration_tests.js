@@ -64,22 +64,6 @@ function wrappedSpawn(command, args, options) {
   });
 }
 
-function copyGenTypeExe() {
-  if (!isWindows) {
-    let targetDir = path.join(__dirname, "..", "examples");
-    console.log(`Copy genType to '${genTypeFile}'`);
-    try {
-      let command = `cp $(find _esy -name GenType.exe) ${targetDir}`;
-      child_process.execSync(command, {
-        stdio: ["ignore", "ignore", "ignore"],
-        encoding: "utf8"
-      });
-    } catch(e) {
-      throw new Error(`Seems like '${genTypeFile}' does not exist. Use \`esy\` first!`);
-    }
-  }
-}
-
 async function installExamples() {
   const tasks = exampleDirPaths.map(cwd => {
     console.log(`${cwd}: npm install --no-save (takes a while)`);
@@ -174,7 +158,6 @@ function checkSetup() {
 
 async function main() {
   try {
-    copyGenTypeExe();
     checkSetup();
     await installExamples();
     cleanBuildExamples();
