@@ -383,6 +383,7 @@ module WriteDeadAnnotations = {
 
   let currentFile = ref("");
   let currentFileLines = ref([||]);
+
   let onDeadValue = ({pos, path}) => {
     let fileName = pos.Lexing.pos_fname;
     if (fileName != currentFile^) {
@@ -404,6 +405,7 @@ module WriteDeadAnnotations = {
       currentFileLines^[indexInLines],
     );
   };
+
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
