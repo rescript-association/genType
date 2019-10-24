@@ -65,11 +65,19 @@ function wrappedSpawn(command, args, options) {
 }
 
 function copyGenTypeExe() {
-  console.log(`Copy genType to '${genTypeFile}'`);
-  child_process.execSync(`cp $(find _esy -name GenType.exe) examples/`, {
-    shell: isWindows ? "bash" : false,
-    encoding: "utf8"
-  });
+  if (!isWindows) {
+    let targetDir = path.join(__dirname, "..", "examples");
+    console.log(`Copy genType to '${genTypeFile}'`);
+    try {
+      let command = `cp $(find _esy -name GenType.exe) ${targetDir}`;
+      child_process.execSync(command, {
+        stdio: ["ignore", "ignore", "ignore"],
+        encoding: "utf8"
+      });
+    } catch(e) {
+      throw new Error(`Seems like '${genTypeFile}' does not exist. Use \`esy\` first!`);
+    }
+  }
 }
 
 async function installExamples() {

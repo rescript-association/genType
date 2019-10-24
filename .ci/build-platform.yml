@@ -47,6 +47,8 @@ jobs:
       #- template: utils/create-docs.yml
       - bash: "echo `find _esy -name GenType.exe`"
         displayName: "Find GenType.exe"
+      - bash: "cp `find _esy -name GenType.exe` examples/"	
+        displayName: "Copy GenType.exe to examples/"
       - script: "npm install"
         displayName: "npm install command (for tests)"
       - bash: "npm test"
