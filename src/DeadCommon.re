@@ -352,11 +352,26 @@ type item = {
 };
 
 module WriteDeadAnnotations = {
+  type line = {
+    original: string,
+    mutable annotation: option(string),
+  };
+
+  let lineToString = ({original, annotation}) => {
+    switch (annotation) {
+    | None => original
+    | Some(s) => s ++ original
+    };
+  };
+
+  let currentFile = ref("");
+  let currentFileLines: ref(array(line)) = ref([||]);
+
   let readFile = fileName => {
     let channel = open_in(fileName);
     let lines = ref([]);
     let rec loop = () => {
-      let line = input_line(channel);
+      let line = {original: input_line(channel), annotation: None};
       lines := [line, ...lines^];
       loop();
     };
@@ -373,16 +388,13 @@ module WriteDeadAnnotations = {
       let lastLine = Array.length(lines);
       lines
       |> Array.iteri((n, line) => {
-           output_string(channel, line);
+           output_string(channel, line |> lineToString);
            if (n < lastLine - 1) {
              output_char(channel, '\n');
            };
          });
       close_out(channel);
     };
-
-  let currentFile = ref("");
-  let currentFileLines = ref([||]);
 
   let onDeadValue = ({pos, path}) => {
     let fileName = pos.Lexing.pos_fname;
@@ -392,17 +404,12 @@ module WriteDeadAnnotations = {
       currentFileLines := readFile(fileName);
     };
     let indexInLines = pos.Lexing.pos_lnum - 1;
-    currentFileLines^[indexInLines] =
-      "[@"
-      ++ deadAnnotation
-      ++ " \""
-      ++ path
-      ++ "\"] "
-      ++ currentFileLines^[indexInLines];
+    let line = currentFileLines^[indexInLines];
+    line.annotation = Some("[@" ++ deadAnnotation ++ " \"" ++ path ++ "\"] ");
     Printf.printf(
       "<-- line %d\n%s\n",
       pos.Lexing.pos_lnum,
-      currentFileLines^[indexInLines],
+      currentFileLines^[indexInLines] |> lineToString,
     );
   };
 
