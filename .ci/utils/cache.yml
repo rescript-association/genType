@@ -4,7 +4,7 @@
 # The string for the OS
 # The hash of the lock file
 steps:
-  - task: CacheBeta@1
+  - task: CacheBeta@0
     inputs:
       key: cache_string6 | esy | $(Agent.OS) | esy.lock/index.json
       path: $(STAGING_DIRECTORY)
@@ -17,19 +17,19 @@ steps:
       path: $(Pipeline.Workspace)/examples/commonjs-react-example/node_modules
     displayName: "[Cache2] npm commonjs-react-example"
 
-  - task: CacheBeta@1
+  - task: CacheBeta@2
     inputs:
       key: npm | $(Agent.OS) | examples/flow-react-example/package-lock.json
       path: $(Pipeline.Workspace)/examples/flow-react-example/node_modules
     displayName: "[Cache2] npm flow-react-example"
 
-  - task: CacheBeta@1
+  - task: CacheBeta@3
     inputs:
       key: npm | $(Agent.OS) | examples/typescript-react-example/package-lock.json
       path: $(Pipeline.Workspace)/examples/typescript-react-example/node_modules
     displayName: "[Cache2] npm typescript-react-example"
 
-  - task: CacheBeta@1
+  - task: CacheBeta@4
     inputs:
       key: npm | $(Agent.OS) | examples/untyped-react-example/package-lock.json
       path: $(Pipeline.Workspace)/examples/untyped-react-example/node_modules
