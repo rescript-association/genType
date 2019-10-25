@@ -46,6 +46,8 @@ jobs:
       #   displayName: "[Cache][Restore] What's in the cache?"
       - script: "esy install"
         displayName: "esy install"
+      - script: "esy install"
+        displayName: "esy install"
       - script: "esy build"
         displayName: "esy build"
       - bash: "echo `find _esy -name GenType.exe`"
