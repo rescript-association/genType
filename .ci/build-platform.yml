@@ -66,4 +66,4 @@ jobs:
         inputs:
           PathtoPublish: "_release"
           ArtifactName: ${{ parameters.platform }}
-      - template: utils/prepare-cache.yml
+      # - template: utils/prepare-cache.yml
