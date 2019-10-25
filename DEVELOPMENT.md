@@ -6,11 +6,11 @@ This project requires the `esy` package manager: `npm install -g esy`
 
 ```
 # Installs all dependencies (if needed) and builds genType
+esy install
 esy
 
 # Alternatively (same as calling `esy`)
 npm run build
-yarn build
 
 # If you want to run gentype without a complicated path
 esy x gentype.exe --version
