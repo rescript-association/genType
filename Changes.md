@@ -2,6 +2,9 @@
 - Make React.Ref more permissive: `{contents: null | T}`.
 - Make `ReactDOMRe.domRef` map to `React.Ref`.
 
+# 3.0.0
+- This release is equivalent in functionality to `v2.41.0`, but targets bucklescript versions `6.2.x` (i.e. based on OCaml `4.6).
+
 # 2.41.0
 - Fix missing import React in untyped back-end.
 - Fix version detection for bucklescript 6.2.x (inner modules).
