@@ -41,9 +41,9 @@ jobs:
       - template: utils/use-node.yml
       - template: utils/use-esy.yml
       - template: utils/cache.yml
-      - template: utils/restore-build-cache.yml
-      - script: "ls -lR $(ESY__CACHE_INSTALL_PATH)"
-        displayName: "[Cache][Restore] What's in the cache?"
+      # - template: utils/restore-build-cache.yml
+      # - script: "ls -lR $(ESY__CACHE_INSTALL_PATH)"
+      #   displayName: "[Cache][Restore] What's in the cache?"
       - script: "esy install"
         displayName: "esy install"
       - script: "esy build"
@@ -54,8 +54,8 @@ jobs:
         displayName: "Copy GenType.exe to examples/"
       - script: "npm install"
         displayName: "npm install command (for tests)"
-      - bash: "npm test"
-        displayName: "Test command"
+      # - bash: "npm test"
+      #   displayName: "Test command"
       - bash: "mkdir _release"
         displayName: "Create _release directory"
       - bash: "cp `find _esy -name GenType.exe` _release/gentype.exe"
