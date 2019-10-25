@@ -11,7 +11,7 @@ steps:
       cacheHitVar: CACHE_RESTORED
     displayName: "[Cache2] esy packages"
 
-  - script: "mkdir -p $(ESY__CACHE_INSTALL_PATH)"
+  - bash: "mkdir -p $(ESY__CACHE_INSTALL_PATH)"
     condition: eq(variables.CACHE_RESTORED, 'true')
     displayName: "[Cache2][Restore] Create esy cache directory"
 
