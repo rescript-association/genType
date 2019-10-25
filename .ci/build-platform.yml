@@ -58,7 +58,7 @@ jobs:
         displayName: "Create _release directory"
       - bash: "cp `find _esy -name GenType.exe` _release/gentype.exe"
         displayName: "Copy gentype.exe to _release"
-      - template: utils/publish-build-cache.yml
+      # - template: utils/publish-build-cache.yml
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
         inputs:
