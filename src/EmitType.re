@@ -81,9 +81,22 @@ let typeReactChild = (~config) =>
 let isTypeReactElement = (~config, type_) =>
   type_ === typeReactElement(~config);
 
-let typeReactRef = (~config, ~type_) =>
+let typeReactDOMReDomRef = (~config) =>
   (config.language == Flow ? "React$Ref" : "React.Ref")
-  |> ident(~builtin=true, ~typeArgs=[type_]);
+  |> ident(~builtin=true, ~typeArgs=[mixedOrUnknown(~config)]);
+
+let typeReactRef = (~config, ~type_) =>
+  Object(
+    Closed,
+    [
+      {
+        mutable_: Mutable,
+        name: "current",
+        optional: Mandatory,
+        type_: Null(type_),
+      },
+    ],
+  );
 
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {

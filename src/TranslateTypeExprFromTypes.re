@@ -246,6 +246,11 @@ let translateConstr =
       type_: EmitType.typeReactRef(~config, ~type_=paramTranslation.type_),
     }
 
+  | (Pdot(Pident({name: "ReactDOMRe", _}), "domRef", _), []) => {
+      dependencies: [],
+      type_: EmitType.typeReactDOMReDomRef(~config),
+    }
+
   | (
       Pdot(
         Pdot(Pident({name: "ReactDOMRe", _}), "Ref", _),
