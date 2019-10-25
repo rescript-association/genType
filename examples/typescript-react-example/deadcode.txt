@@ -1293,24 +1293,24 @@
   addValueReference Hooks.re:111:4 --> React.re:5:0
   addValueReference Hooks.re:111:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:111:4 --> React.re:44:0
-  addValueReference Hooks.re:127:4 --> js.ml:70:1
-  addValueReference Hooks.re:127:4 --> Hooks.re:127:35
-  addValueReference Hooks.re:127:4 --> React.re:5:0
-  addValueReference Hooks.re:131:38 --> js.ml:70:1
-  addValueReference Hooks.re:131:4 --> Hooks.re:131:38
-  addValueReference Hooks.re:131:4 --> React.re:5:0
-  addValueReference Hooks.re:136:6 --> js.ml:70:1
-  addValueReference Hooks.re:136:6 --> Hooks.re:146:8
-  addValueReference Hooks.re:136:6 --> Hooks.re:147:18
-  addValueReference Hooks.re:136:6 --> Hooks.re:138:9
-  addValueReference Hooks.re:153:31 --> js.ml:70:1
-  addValueReference Hooks.re:153:41 --> js.ml:70:1
-  addValueReference Hooks.re:153:4 --> Hooks.re:153:31
-  addValueReference Hooks.re:153:4 --> pervasives.mli:670:0
-  addValueReference Hooks.re:153:4 --> React.re:5:0
-  addValueReference Hooks.re:153:4 --> Hooks.re:153:41
-  addValueReference Hooks.re:153:4 --> ReactDOMRe.re:1097:0
-  addValueReference Hooks.re:153:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:130:4 --> js.ml:70:1
+  addValueReference Hooks.re:130:4 --> Hooks.re:130:35
+  addValueReference Hooks.re:130:4 --> React.re:5:0
+  addValueReference Hooks.re:134:38 --> js.ml:70:1
+  addValueReference Hooks.re:134:4 --> Hooks.re:134:38
+  addValueReference Hooks.re:134:4 --> React.re:5:0
+  addValueReference Hooks.re:139:6 --> js.ml:70:1
+  addValueReference Hooks.re:139:6 --> Hooks.re:149:8
+  addValueReference Hooks.re:139:6 --> Hooks.re:150:18
+  addValueReference Hooks.re:139:6 --> Hooks.re:141:9
+  addValueReference Hooks.re:156:31 --> js.ml:70:1
+  addValueReference Hooks.re:156:41 --> js.ml:70:1
+  addValueReference Hooks.re:156:4 --> Hooks.re:156:31
+  addValueReference Hooks.re:156:4 --> pervasives.mli:670:0
+  addValueReference Hooks.re:156:4 --> React.re:5:0
+  addValueReference Hooks.re:156:4 --> Hooks.re:156:41
+  addValueReference Hooks.re:156:4 --> ReactDOMRe.re:1097:0
+  addValueReference Hooks.re:156:4 --> ReactDOMRe.re:1097:0
   export name Hooks.re:1:16
   export make Hooks.re:4:4
   export default Hooks.re:36:4
@@ -1326,10 +1326,10 @@
   export testForwardRef Hooks.re:105:4
   export x Hooks.re:107:10
   export input Hooks.re:111:4
-  export polymorphicComponent Hooks.re:127:4
-  export functionReturningReactElement Hooks.re:131:4
-  export make Hooks.re:136:6
-  export aComponentWithChildren Hooks.re:153:4
+  export polymorphicComponent Hooks.re:130:4
+  export functionReturningReactElement Hooks.re:134:4
+  export make Hooks.re:139:6
+  export aComponentWithChildren Hooks.re:156:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestPromise.cmt
   addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
   addValueReference TestPromise.re:14:4 --> js_promise.ml:39:0
