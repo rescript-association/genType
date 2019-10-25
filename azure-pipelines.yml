@@ -10,13 +10,13 @@ name: Build npm release
 # Branch triggering:
 # We configured only a set of static branches, which will be automatically
 # built with every commit (even without PR).
-# 
+#
 # Branches with an open PR will automatically be built as well, so we don't
 # have to list them here (otherwise we will have two CI builds every time)
 trigger:
   tags:
     include:
-      - v* 
+      - v*
     exclude:
       - v2.*
   branches:
@@ -66,4 +66,3 @@ jobs:
       demands: node.js
     steps:
       - template: .ci/cross-release.yml
-
