@@ -6,8 +6,8 @@
 steps:
   - task: CacheBeta@1
     inputs:
-      key: cache_string4 | esy | $(Agent.OS) | esy.lock/index.json
-      path: $(ESY__CACHE_INSTALL_PATH)
+      key: cache_string5 | esy | $(Agent.OS) | esy.lock/index.json
+      path: $(CACHE_FOLDER)
       cacheHitVar: CACHE_RESTORED
     displayName: "[Cache2] esy packages"
 
@@ -20,9 +20,8 @@ steps:
     condition: eq(variables.CACHE_RESTORED, 'true')
 
   - bash: cd $(ESY__CACHE_INSTALL_PATH) && tar xf esy-cache.tgz
-    displayName: "Unpack esy-cache.tgz"
+    displayName: "[Cache2][Restore] Unpack esy-cache.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
-
 
   - script: "ls -lR $(ESY__CACHE_INSTALL_PATH)"
     condition: eq(variables.CACHE_RESTORED, 'true')

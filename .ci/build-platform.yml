@@ -48,7 +48,7 @@ jobs:
         displayName: "esy install"
       - script: "esy build"
         displayName: "esy build"
-      - bash: tar czf esy-cache.tgz .
+      - bash: cd $(ESY__CACHE_INSTALL_PATH) && tar czf $(CACHE_FOLDER)/esy-cache.tgz .
         displayName: "Create esy-cache.tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
       - bash: "echo `find _esy -name GenType.exe`"
