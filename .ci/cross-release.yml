@@ -29,9 +29,9 @@ steps:
 
   - task: CopyFiles@2
     inputs:
-      sourceFolder: 'dist'
-      contents: 'gentype-*.tgz'
-      targetFolder: '_release'
+      sourceFolder: "dist"
+      contents: "gentype-*.tgz"
+      targetFolder: "_release"
 
   - task: PublishBuildArtifacts@1
     displayName: "Publish Artifact: Release"
@@ -45,4 +45,4 @@ steps:
     inputs:
       gitHubConnection: gh-ra-bot
       repositoryName: cristianoc/genType
-      assets: dist/gentype-*.tgz 
+      assets: dist/gentype-*.tgz
