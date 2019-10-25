@@ -9,21 +9,18 @@ jobs:
       platform: Linux
       vmImage: ubuntu-16.04
       AZP_CACHING_TAR: false # Linux is currently bugged if we set it to true but should be faster when fixed
-      ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i
 
   - template: .ci/build-platform.yml
     parameters:
       platform: macOS
       vmImage: macOS-10.13
       AZP_CACHING_TAR: true
-      ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3______________________________________________________________/i
 
   - template: .ci/build-platform.yml
     parameters:
       platform: Windows
       vmImage: vs2017-win2016
       AZP_CACHING_TAR: true
-      ESY__CACHE_INSTALL_PATH: /C/Users/VssAdministrator/.esy/3_/i
 
   # This job is kept here as we want to have the platform names in the same file
 #  - job: Release
