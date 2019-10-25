@@ -41,7 +41,9 @@ jobs:
       - template: utils/use-node.yml
       - template: utils/use-esy.yml
       - template: utils/cache.yml
-      # - template: utils/restore-build-cache.yml
+      - template: utils/restore-build-cache.yml
+      - script: "ls -lR $(ESY__CACHE_INSTALL_PATH)"
+        displayName: "[Cache][Restore] What's in the cache?"
       - script: "esy install"
         displayName: "esy install"
       - script: "esy build"

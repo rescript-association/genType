@@ -21,4 +21,4 @@ steps:
 
   - script: "ls -lR $(ESY__CACHE_INSTALL_PATH)"
     condition: eq(variables.CACHE_RESTORED, 'true')
-    displayName: "[Cache2][Restore] What's in the cache"
+    displayName: "[Cache2][Restore] What's in the cache?"
