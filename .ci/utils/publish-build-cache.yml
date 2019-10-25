@@ -10,10 +10,6 @@ steps:
     condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'))
     displayName: '[Cache][Publish] Tar esy cache directory'
 
-  # - bash: 'cd $(ESY__NPM_ROOT) && tar -czf $(STAGING_DIRECTORY_UNIX)/npm-cache.tar .'
-  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], variables['System.PullRequest.TargetBranch']))
-  #   displayName: '[Cache][Publish] Tar npm cache directory'
-
   - task: PublishBuildArtifacts@1
     displayName: '[Cache][Publish] Upload tarball'
     condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'))
