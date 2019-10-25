@@ -46,10 +46,11 @@ jobs:
       #   displayName: "[Cache][Restore] What's in the cache?"
       - script: "esy install"
         displayName: "esy install"
-      - script: "esy install"
-        displayName: "esy install"
       - script: "esy build"
         displayName: "esy build"
+      - bash: tar czf esy-cache.tgz .
+        displayName: "Create esy-cache.tgz"
+        condition: eq(variables.CACHE_RESTORED, 'false')
       - bash: "echo `find _esy -name GenType.exe`"
         displayName: "Find GenType.exe"
       - bash: "rm examples/GenType.exe && cp `find _esy -name GenType.exe` examples/"

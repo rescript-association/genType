@@ -6,18 +6,23 @@
 steps:
   - task: CacheBeta@1
     inputs:
-      key: cache_string3 | esy | $(Agent.OS) | esy.lock/index.json
+      key: cache_string4 | esy | $(Agent.OS) | esy.lock/index.json
       path: $(ESY__CACHE_INSTALL_PATH)
       cacheHitVar: CACHE_RESTORED
     displayName: "[Cache2] esy packages"
 
-  # - script: "mkdir -p $(ESY__CACHE_INSTALL_PATH)"
-  #   condition: eq(variables.CACHE_RESTORED, 'true')
-  #   displayName: "[Cache2][Restore] Create esy cache directory"
+  - script: "mkdir -p $(ESY__CACHE_INSTALL_PATH)"
+    condition: eq(variables.CACHE_RESTORED, 'true')
+    displayName: "[Cache2][Restore] Create esy cache directory"
 
-  # - pwsh: Move-Item -Path $(CACHE_FOLDER)/* -Destination $(ESY__CACHE_INSTALL_PATH)
-  #   displayName: "[Cache2][Restore] Move downloaded cache in place"
-  #   condition: eq(variables.CACHE_RESTORED, 'true')
+  - pwsh: Move-Item -Path $(CACHE_FOLDER)/* -Destination $(ESY__CACHE_INSTALL_PATH)
+    displayName: "[Cache2][Restore] Move downloaded cache in place"
+    condition: eq(variables.CACHE_RESTORED, 'true')
+
+  - bash: cd $(ESY__CACHE_INSTALL_PATH) && tar xf esy-cache.tgz
+    displayName: "Unpack esy-cache.tgz"
+    condition: eq(variables.CACHE_RESTORED, 'true')
+
 
   - script: "ls -lR $(ESY__CACHE_INSTALL_PATH)"
     condition: eq(variables.CACHE_RESTORED, 'true')
