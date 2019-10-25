@@ -1,5 +1,6 @@
 # master
 - Make React.Ref more permissive: `{contents: null | T}`.
+- Make `ReactDOMRe.domRef` map to `React.Ref`.
 
 # 2.41.0
 - Fix missing import React in untyped back-end.

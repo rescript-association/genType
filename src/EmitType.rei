@@ -151,6 +151,8 @@ let typeReactComponent: (~config: config, ~propsType: type_) => type_;
 
 let typeReactContext: (~config: config, ~type_: type_) => type_;
 
+let typeReactDOMReDomRef: (~config: config) => type_;
+
 let typeReactElement: (~config: config) => type_;
 
 let typeReactRef: (~config: config, ~type_: type_) => type_;

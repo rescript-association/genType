@@ -81,6 +81,10 @@ let typeReactChild = (~config) =>
 let isTypeReactElement = (~config, type_) =>
   type_ === typeReactElement(~config);
 
+let typeReactDOMReDomRef = (~config) =>
+  (config.language == Flow ? "React$Ref" : "React.Ref")
+  |> ident(~builtin=true, ~typeArgs=[mixedOrUnknown(~config)]);
+
 let typeReactRef = (~config, ~type_) =>
   Object(
     Closed,
