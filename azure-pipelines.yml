@@ -54,7 +54,7 @@ jobs:
       STAGING_DIRECTORY: C:\Users\VssAdministrator\STAGING
       STAGING_DIRECTORY_UNIX: /C/Users/VssAdministrator/STAGING
 
-  This job is kept here as we want to have the platform names in the same file
+  # This job is kept here as we want to have the platform names in the same file
   - job: Release
     displayName: Release
     dependsOn:
