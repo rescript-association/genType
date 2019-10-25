@@ -11,6 +11,34 @@ steps:
       cacheHitVar: CACHE_RESTORED
     displayName: "[Cache2] esy packages"
 
+  - task: CacheBeta@1
+    inputs:
+      key: npm | $(Agent.OS) | examples/commonjs-react-example/package-lock.json
+      path: $(Pipeline.Workspace)/examples/commonjs-react-example/node_modules
+      cacheHitVar: CACHE_RESTORED
+    displayName: "[Cache2] npm commonjs-react-example"
+
+  - task: CacheBeta@1
+    inputs:
+      key: npm | $(Agent.OS) | examples/flow-react-example/package-lock.json
+      path: $(Pipeline.Workspace)/examples/flow-react-example/node_modules
+      cacheHitVar: CACHE_RESTORED
+    displayName: "[Cache2] npm flow-react-example"
+
+  - task: CacheBeta@1
+    inputs:
+      key: npm | $(Agent.OS) | examples/typescript-react-example/package-lock.json
+      path: $(Pipeline.Workspace)/examples/typescript-react-example/node_modules
+      cacheHitVar: CACHE_RESTORED
+    displayName: "[Cache2] npm typescript-react-example"
+
+  - task: CacheBeta@1
+    inputs:
+      key: npm | $(Agent.OS) | examples/untyped-react-example/package-lock.json
+      path: $(Pipeline.Workspace)/examples/untyped-react-example/node_modules
+      cacheHitVar: CACHE_RESTORED
+    displayName: "[Cache2] npm untyped-react-example"
+
   - bash: "mkdir -p $(ESY__CACHE_INSTALL_PATH)"
     condition: eq(variables.CACHE_RESTORED, 'true')
     displayName: "[Cache2][Restore] Create esy cache directory"
