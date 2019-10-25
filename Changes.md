@@ -1,4 +1,4 @@
-# master
+# 3.1.0
 - Make React.Ref more permissive: `{contents: null | T}`.
 - Make `ReactDOMRe.domRef` map to `React.Ref`.
 
