@@ -13,7 +13,7 @@ jobs:
     variables:
       STAGING_DIRECTORY: ${{ parameters.STAGING_DIRECTORY }}
       STAGING_DIRECTORY_UNIX: ${{ parameters.STAGING_DIRECTORY_UNIX }}
-    steps: 
+    steps:
       - bash: |
           # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
           DESIRED_LEN="86"
@@ -39,6 +39,7 @@ jobs:
         displayName: "Print environment"
       - template: utils/use-node.yml
       - template: utils/use-esy.yml
+      - template: utils/cache.yml
       - template: utils/restore-build-cache.yml
       - script: "esy install"
         displayName: "esy install"
@@ -46,7 +47,7 @@ jobs:
         displayName: "esy build"
       - bash: "echo `find _esy -name GenType.exe`"
         displayName: "Find GenType.exe"
-      - bash: "rm examples/GenType.exe && cp `find _esy -name GenType.exe` examples/"	
+      - bash: "rm examples/GenType.exe && cp `find _esy -name GenType.exe` examples/"
         displayName: "Copy GenType.exe to examples/"
       - script: "npm install"
         displayName: "npm install command (for tests)"
@@ -54,7 +55,7 @@ jobs:
         displayName: "Test command"
       - bash: "mkdir _release"
         displayName: "Create _release directory"
-      - bash: "cp `find _esy -name GenType.exe` _release/gentype.exe"	
+      - bash: "cp `find _esy -name GenType.exe` _release/gentype.exe"
         displayName: "Copy gentype.exe to _release"
       - template: utils/publish-build-cache.yml
       - task: PublishBuildArtifacts@1
@@ -62,3 +63,4 @@ jobs:
         inputs:
           PathtoPublish: "_release"
           ArtifactName: ${{ parameters.platform }}
+      - template: utils/prepare-cache.yml
