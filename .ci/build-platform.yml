@@ -41,7 +41,7 @@ jobs:
       - template: utils/use-node.yml
       - template: utils/use-esy.yml
       - template: utils/cache.yml
-      - template: utils/restore-build-cache.yml
+      # - template: utils/restore-build-cache.yml
       - script: "esy install"
         displayName: "esy install"
       - script: "esy build"
