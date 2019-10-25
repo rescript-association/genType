@@ -15,14 +15,6 @@ steps:
     condition: eq(variables.CACHE_RESTORED, 'true')
     displayName: "[Cache2][Restore] Create esy cache directory"
 
-  # - pwsh: Move-Item -Path $(STAGING_DIRECTORY)/* -Destination $(ESY__CACHE_INSTALL_PATH)
-  #   displayName: "[Cache2][Restore] Move downloaded cache in place"
-  #   condition: eq(variables.CACHE_RESTORED, 'true')
-
   - bash: cd $(ESY__CACHE_INSTALL_PATH) && tar xf $(STAGING_DIRECTORY_UNIX)/esy-cache.tgz
     displayName: "[Cache2][Restore] Unpack esy-cache.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
-
-  - script: "ls -lR $(ESY__CACHE_INSTALL_PATH)"
-    condition: eq(variables.CACHE_RESTORED, 'true')
-    displayName: "[Cache2][Restore] What's in the cache?"

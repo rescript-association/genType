@@ -1,3 +1,0 @@
-steps:
-  - pwsh: Move-Item -Path $(ESY__CACHE_INSTALL_PATH) -Destination $(STAGING_DIRECTORY)
-    displayName: "[Cache2][Publish] Move builds to be cached"
