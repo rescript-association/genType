@@ -6,7 +6,7 @@
 steps:
   - task: CacheBeta@1
     inputs:
-      key: cache_string8 | esy | $(Agent.OS) | esy.lock/index.json
+      key: cache_string9 | esy | $(Agent.OS) | esy.lock/index.json
       path: $(STAGING_DIRECTORY)
       cacheHitVar: CACHE_RESTORED
     displayName: "[Cache2] esy packages"
@@ -19,10 +19,6 @@ steps:
     displayName: "[Cache2][Restore] Unpack esy-cache.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
 
-  - bash: tar xf $(STAGING_DIRECTORY_UNIX)/_esy-cache.tgz
-    displayName: "[Cache2][Restore] Unpack _esy-cache.tgz"
-    condition: eq(variables.CACHE_RESTORED, 'true')
-
-  - bash: ls -lR _esy
-    displayName: "[Cache2][Restore] What's in _esy?"
+  - bash: cd $(ESY_SOURCE) && tar xf $(STAGING_DIRECTORY_UNIX)/esy-source.tgz
+    displayName: "[Cache2][Restore] Unpack esy-source.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
