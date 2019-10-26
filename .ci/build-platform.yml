@@ -9,8 +9,10 @@ jobs:
       demands: node.js
     timeoutInMinutes: 120 # This is mostly for Windows
     steps:
-      - script: mv examples $(Build.StagingDirectory)/
-        displayName: "move examples to staging"
+      # - script: mv examples $(Build.StagingDirectory)/
+      #   displayName: "move examples to staging"
+      - pwsh: Move-Item -Path examples -Destination $(Build.StagingDirectory) 
+        displayName: 'move examples to staging'
       - script: npm install
         workingDirectory:  $(Build.StagingDirectory)/examples/typescript-react-example 
         displayName: "npm install typescript-react-example"
