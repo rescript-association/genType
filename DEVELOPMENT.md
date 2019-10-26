@@ -5,6 +5,7 @@
 ```
 # Installs all dependencies (if needed) and builds genType
 npm install
+npx esy install
 npm run build
 
 # If you want to run gentype without a complicated path
