@@ -11,6 +11,17 @@ jobs:
     variables:
       STAGING_DIRECTORY: $(Build.StagingDirectory)
     steps:
+      - script: npm install
+        workingDirectory: examples/typescript-react-example 
+        displayName: "npm install typescript-react-example"
+  - job: ${{ parameters.platform }}
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+      demands: node.js
+    timeoutInMinutes: 120 # This is mostly for Windows
+    variables:
+      STAGING_DIRECTORY: $(Build.StagingDirectory)
+    steps:
       - bash: |
           # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
           DESIRED_LEN="86"
