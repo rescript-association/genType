@@ -19,6 +19,10 @@ steps:
     displayName: "[Cache2][Restore] Unpack esy-cache.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
 
+  - bash: "mkdir -p $(ESY_SOURCE)"
+    condition: eq(variables.CACHE_RESTORED, 'true')
+    displayName: "[Cache2][Restore] Create esy source directory"
+
   - bash: cd $(ESY_SOURCE) && tar xf $(STAGING_DIRECTORY_UNIX)/esy-source.tgz
     displayName: "[Cache2][Restore] Unpack esy-source.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
