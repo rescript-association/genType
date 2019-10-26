@@ -2,7 +2,6 @@ parameters:
   platform: "macOS"
   vmImage: "macOS-10.13"
   STAGING_DIRECTORY: $(Build.StagingDirectory)
-  STAGING_DIRECTORY_UNIX: $(Build.StagingDirectory)
 
 jobs:
   - job: ${{ parameters.platform }}
