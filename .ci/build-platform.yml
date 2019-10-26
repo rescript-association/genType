@@ -34,6 +34,18 @@ jobs:
     steps:
       - bash: npm test
         displayName: "Test command"
+      - script: npm run build
+        workingDirectory:  $(Build.StagingDirectory)/examples/typescript-react-example 
+        displayName: "build typescript-react-example"
+      - script: npm run build
+        workingDirectory:  $(Build.StagingDirectory)/examples/flow-react-example 
+        displayName: "build flow-react-example"
+      - script: npm run build
+        workingDirectory:  $(Build.StagingDirectory)/examples/commonjs-react-example 
+        displayName: "build commonjs-react-example"
+      - script: npm run build
+        workingDirectory:  $(Build.StagingDirectory)/examples/untyped-react-example 
+        displayName: "build untyped-react-example"
   - job: ${{ parameters.platform }}
     pool:
       vmImage: ${{ parameters.vmImage }}
