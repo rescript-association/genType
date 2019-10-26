@@ -33,7 +33,7 @@ jobs:
           echo "ESY_CACHE_INSTALL_PATH: $ESY_CACHE_INSTALL_PATH"
           # This will be exposed as an env var ESY_CACHE_INSTALL_PATH, or an
           # Azure var esy_cache_install_path
-          echo "##vso[task.setvariable variable=esy_cache_install_path]$_ESY_CACHE_INSTALL_PATH"
+          echo "##vso[task.setvariable variable=esy_cache_install_path]$ESY_CACHE_INSTALL_PATH"
         displayName: "Set ESY_CACHE_INSTALL_PATH"
       - bash: |
           ESY_SOURCE_INSTALL_PATH="$HOME/.esy/source"
