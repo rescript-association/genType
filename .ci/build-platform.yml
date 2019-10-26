@@ -9,26 +9,22 @@ jobs:
       demands: node.js
     timeoutInMinutes: 120 # This is mostly for Windows
     steps:
-      # - script: mv examples $(Build.StagingDirectory)/
-      #   displayName: "move examples to staging"
-      - pwsh: Move-Item -Path examples -Destination $(Build.StagingDirectory) 
-        displayName: 'move examples to staging'
       - script: npm install
-        workingDirectory:  $(Build.StagingDirectory)/examples/typescript-react-example 
+        workingDirectory: examples/typescript-react-example 
         displayName: "npm install typescript-react-example"
       - script: npm install
-        workingDirectory:  $(Build.StagingDirectory)/examples/flow-react-example 
+        workingDirectory: examples/flow-react-example 
         displayName: "npm install flow-react-example"
       - script: npm install
-        workingDirectory:  $(Build.StagingDirectory)/examples/commonjs-react-example 
+        workingDirectory: examples/commonjs-react-example 
         displayName: "npm install commonjs-react-example"
       - script: npm install
-        workingDirectory:  $(Build.StagingDirectory)/examples/untyped-react-example 
+        workingDirectory: examples/untyped-react-example 
         displayName: "npm install untyped-react-example"
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
         inputs:
-          PathtoPublish: "examples"
+          PathtoPublish: examples
           ArtifactName: examples_${{ parameters.platform }}
   - job: test_${{ parameters.platform }}
     dependsOn: warmup_${{ parameters.platform }}
