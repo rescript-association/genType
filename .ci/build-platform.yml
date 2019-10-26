@@ -25,6 +25,11 @@ jobs:
       - script: npm install
         workingDirectory:  $(Build.StagingDirectory)/examples/untyped-react-example 
         displayName: "npm install untyped-react-example"
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: ${{ parameters.platform }}"
+        inputs:
+          PathtoPublish: "examples"
+          ArtifactName: examples_${{ parameters.platform }}
   - job: test_${{ parameters.platform }}
     dependsOn: warmup_${{ parameters.platform }}
     pool:
