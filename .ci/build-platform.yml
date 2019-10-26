@@ -57,6 +57,8 @@ jobs:
       - template: utils/cache.yml
       - script: npx esy install
         displayName: "esy install"
+      - script: npx esy clean
+        displayName: "esy clean"
       - script: npx esy build
         displayName: "esy build"
       - bash: cd $(ESY__CACHE_INSTALL_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/esy-cache.tgz .
