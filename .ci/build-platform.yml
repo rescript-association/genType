@@ -23,6 +23,17 @@ jobs:
       - script: npm install
         workingDirectory: examples/untyped-react-example 
         displayName: "npm install untyped-react-example"
+  - job: test_${{ parameters.platform }}
+    dependsOn: warmup_${{ parameters.platform }}
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+      demands: node.js
+    timeoutInMinutes: 120 # This is mostly for Windows
+    variables:
+      STAGING_DIRECTORY: $(Build.StagingDirectory)
+    steps:
+      - bash: npm test
+        displayName: "Test command"
   - job: ${{ parameters.platform }}
     pool:
       vmImage: ${{ parameters.vmImage }}
@@ -79,8 +90,6 @@ jobs:
         displayName: "Find GenType.exe"
       - bash: "rm examples/GenType.exe && cp `find _esy -name GenType.exe` examples/"
         displayName: "Copy GenType.exe to examples/"
-      - bash: npm test
-        displayName: "Test command"
       - bash: mkdir _release
         displayName: "Create _release directory"
       - bash: cp `find _esy -name GenType.exe` _release/gentype.exe
