@@ -45,11 +45,11 @@ jobs:
       - bash: env
         displayName: "Print environment"
       - template: utils/use-node.yml
-      - script: "npm install"
+      - script: npm install
         displayName: "npm install"
       - template: utils/cache.yml
-      - script: "build"
-        displayName: "npx esy build"
+      - script: npx esy build
+        displayName: "build"
       - bash: mkdir -p $(STAGING_DIRECTORY_UNIX)
         displayName: "Create STAGING_DIRECTORY"
         condition: eq(variables.CACHE_RESTORED, 'false')
