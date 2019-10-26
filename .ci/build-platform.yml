@@ -32,8 +32,8 @@ jobs:
     variables:
       STAGING_DIRECTORY: $(Build.StagingDirectory)
     steps:
-      - bash: npm test
-        displayName: "Test command"
+      # - bash: npm test
+      #   displayName: "Test command"
       - script: npm run build
         workingDirectory:  $(Build.StagingDirectory)/examples/typescript-react-example 
         displayName: "build typescript-react-example"
