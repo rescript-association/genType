@@ -38,7 +38,10 @@ jobs:
       - bash: |
           if [ "$AGENT_OS" == "Windows_NT" ]; then
             STAGING_DIRECTORY_UNIX=$( cygpath --unix "$STAGING_DIRECTORY")
+          else
+            STAGING_DIRECTORY_UNIX=$STAGING_DIRECTORY
           fi
+          echo "STAGING_DIRECTORY_UNIX: $STAGING_DIRECTORY_UNIX"
           echo "##vso[task.setvariable variable=staging_directory_unix]$STAGING_DIRECTORY_UNIX"
         displayName: "Set STAGING_DIRECTORY_UNIX"
       - bash: "echo $(STAGING_DIRECTORY)"
