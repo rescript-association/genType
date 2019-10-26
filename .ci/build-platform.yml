@@ -42,18 +42,15 @@ jobs:
           echo "STAGING_DIRECTORY_UNIX: $STAGING_DIRECTORY_UNIX"
           echo "##vso[task.setvariable variable=staging_directory_unix]$STAGING_DIRECTORY_UNIX"
         displayName: "Set STAGING_DIRECTORY_UNIX"
-      - bash: "echo $(STAGING_DIRECTORY)"
-        displayName: "Print STAGING_DIRECTORY"
-      - bash: echo `cygpath -u $(STAGING_DIRECTORY)`
-        displayName: "Print cygpath STAGING_DIRECTORY"
       - bash: env
         displayName: "Print environment"
       - template: utils/use-node.yml
-      - template: utils/use-esy.yml
+      - script: npm install
+        displayName: "npm install"
       - template: utils/cache.yml
-      - script: "esy install"
+      - script: npx esy install
         displayName: "esy install"
-      - script: "esy build"
+      - script: npx esy build
         displayName: "esy build"
       - bash: mkdir -p $(STAGING_DIRECTORY_UNIX)
         displayName: "Create STAGING_DIRECTORY"

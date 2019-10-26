@@ -2,18 +2,13 @@
 
 ## Build genType
 
-This project requires the `esy` package manager: `npm install -g esy`
-
 ```
 # Installs all dependencies (if needed) and builds genType
-esy install
-esy
-
-# Alternatively (same as calling `esy`)
+npm install
 npm run build
 
 # If you want to run gentype without a complicated path
-esy x gentype.exe --version
+npx esy x gentype.exe --version
 ```
 
 This will create a symlink
@@ -30,9 +25,6 @@ Make sure to always run the tests before submitting any changes (CI usually take
 longer to give you feedback).
 
 ```
-# Only needed on initial setup
-npm install
-
 npm test
 ```
 
