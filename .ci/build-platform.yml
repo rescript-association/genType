@@ -14,6 +14,15 @@ jobs:
       - script: npm install
         workingDirectory: examples/typescript-react-example 
         displayName: "npm install typescript-react-example"
+      - script: npm install
+        workingDirectory: examples/flow-react-example 
+        displayName: "npm install flow-react-example"
+      - script: npm install
+        workingDirectory: examples/commonjs-react-example 
+        displayName: "npm install commonjs-react-example"
+      - script: npm install
+        workingDirectory: examples/untyped-react-example 
+        displayName: "npm install untyped-react-example"
   - job: ${{ parameters.platform }}
     pool:
       vmImage: ${{ parameters.vmImage }}
