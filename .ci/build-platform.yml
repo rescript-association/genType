@@ -35,9 +35,9 @@ jobs:
           # This will be exposed as an env var ESY__CACHE_INSTALL_PATH, or an
           # Azure var esy__cache_install_path
           echo "##vso[task.setvariable variable=esy__cache_install_path]$THE_ESY__CACHE_INSTALL_PATH"
-      - bash: echo $(STAGING_DIRECTORY)
+      - bash: "echo $(STAGING_DIRECTORY)"
         displayName: "Print STAGING_DIRECTORY"
-      - bash: echo `cygpath $(STAGING_DIRECTORY)`
+      - bash: echo `cygpath -u $(STAGING_DIRECTORY)`
         displayName: "Print cygpath STAGING_DIRECTORY"
       - bash: env
         displayName: "Print environment"
