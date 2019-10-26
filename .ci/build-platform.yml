@@ -8,20 +8,20 @@ jobs:
       vmImage: ${{ parameters.vmImage }}
       demands: node.js
     timeoutInMinutes: 120 # This is mostly for Windows
-    variables:
-      STAGING_DIRECTORY: $(Build.StagingDirectory)
     steps:
+      - script: mv examples $(Build.StagingDirectory)/
+        displayName: "move examples to staging"
       - script: npm install
-        workingDirectory: examples/typescript-react-example 
+        workingDirectory:  $(Build.StagingDirectory)/examples/typescript-react-example 
         displayName: "npm install typescript-react-example"
       - script: npm install
-        workingDirectory: examples/flow-react-example 
+        workingDirectory:  $(Build.StagingDirectory)/examples/flow-react-example 
         displayName: "npm install flow-react-example"
       - script: npm install
-        workingDirectory: examples/commonjs-react-example 
+        workingDirectory:  $(Build.StagingDirectory)/examples/commonjs-react-example 
         displayName: "npm install commonjs-react-example"
       - script: npm install
-        workingDirectory: examples/untyped-react-example 
+        workingDirectory:  $(Build.StagingDirectory)/examples/untyped-react-example 
         displayName: "npm install untyped-react-example"
   - job: test_${{ parameters.platform }}
     dependsOn: warmup_${{ parameters.platform }}
