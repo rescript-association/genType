@@ -1,7 +1,6 @@
 parameters:
   platform: "macOS"
   vmImage: "macOS-10.13"
-  STAGING_DIRECTORY: $(Build.StagingDirectory)
 
 jobs:
   - job: ${{ parameters.platform }}
@@ -10,8 +9,7 @@ jobs:
       demands: node.js
     timeoutInMinutes: 120 # This is mostly for Windows
     variables:
-      STAGING_DIRECTORY: ${{ parameters.STAGING_DIRECTORY }}
-      STAGING_DIRECTORY_UNIX: ${{ parameters.STAGING_DIRECTORY_UNIX }}
+      STAGING_DIRECTORY: $(Build.StagingDirectory)
     steps:
       - bash: |
           # COMPUTE THE ESY INSTALL CACHE LOCATION AHEAD OF TIME
@@ -34,7 +32,7 @@ jobs:
           # This will be exposed as an env var ESY__CACHE_INSTALL_PATH, or an
           # Azure var esy__cache_install_path
           echo "##vso[task.setvariable variable=esy__cache_install_path]$THE_ESY__CACHE_INSTALL_PATH"
-        displayName: "Set THE_ESY__CACHE_INSTALL_PATH"
+        displayName: "Set ESY__CACHE_INSTALL_PATH"
       - bash: |
           if [ "$AGENT_OS" == "Windows_NT" ]; then
             STAGING_DIRECTORY_UNIX=$( cygpath --unix "$STAGING_DIRECTORY")
