@@ -22,3 +22,7 @@ steps:
   - bash: tar xf $(STAGING_DIRECTORY_UNIX)/_esy-cache.tgz
     displayName: "[Cache2][Restore] Unpack _esy-cache.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
+
+  - bash: ls -lR _esy
+    displayName: "[Cache2][Restore] What's in _esy?"
+    condition: eq(variables.CACHE_RESTORED, 'true')
