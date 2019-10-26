@@ -6,23 +6,23 @@
 steps:
   - task: CacheBeta@1
     inputs:
-      key: cache_string9 | esy | $(Agent.OS) | esy.lock/index.json
+      key: cache_string10 | esy | $(Agent.OS) | esy.lock/index.json
       path: $(STAGING_DIRECTORY)
       cacheHitVar: CACHE_RESTORED
     displayName: "[Cache2] esy packages"
 
-  - bash: "mkdir -p $(ESY__CACHE_INSTALL_PATH)"
+  - bash: "mkdir -p $(ESY_CACHE_INSTALL_PATH)"
     condition: eq(variables.CACHE_RESTORED, 'true')
-    displayName: "[Cache2][Restore] Create esy cache directory"
+    displayName: "[Cache2][Restore] Create esy cache install directory"
 
-  - bash: cd $(ESY__CACHE_INSTALL_PATH) && tar xf $(STAGING_DIRECTORY_UNIX)/esy-cache.tgz
-    displayName: "[Cache2][Restore] Unpack esy-cache.tgz"
+  - bash: cd $(ESY_CACHE_INSTALL_PATH) && tar xf $(STAGING_DIRECTORY_UNIX)/esy-cache-install.tgz
+    displayName: "[Cache2][Restore] Unpack esy-cache-install.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
 
-  - bash: "mkdir -p $(ESY_SOURCE)"
+  - bash: "mkdir -p $(ESY_SOURCE_INSTALL_PATH)"
     condition: eq(variables.CACHE_RESTORED, 'true')
-    displayName: "[Cache2][Restore] Create esy source directory"
+    displayName: "[Cache2][Restore] Create esy cache source directory"
 
-  - bash: cd $(ESY_SOURCE) && tar xf $(STAGING_DIRECTORY_UNIX)/esy-source-cache.tgz
-    displayName: "[Cache2][Restore] Unpack esy-source-cache.tgz"
+  - bash: cd $(ESY_SOURCE_INSTALL_PATH) && tar xf $(STAGING_DIRECTORY_UNIX)/esy-cache-source.tgz
+    displayName: "[Cache2][Restore] Unpack esy-cache-source.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')

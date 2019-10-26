@@ -24,22 +24,22 @@ jobs:
           NUM_UNDERS=$(echo "$(($DESIRED_LEN-$HOME_ESY3_LEN))")
           UNDERS=$(printf "%-${NUM_UNDERS}s" "_")
           UNDERS="${UNDERS// /_}"
-          THE_ESY__CACHE_INSTALL_PATH=${HOME_ESY3}${UNDERS}/i
+          ESY_CACHE_INSTALL_PATH=${HOME_ESY3}${UNDERS}/i
           if [ "$AGENT_OS" == "Windows_NT" ]; then
-            THE_ESY__CACHE_INSTALL_PATH=$( cygpath --mixed --absolute "$THE_ESY__CACHE_INSTALL_PATH")
+            ESY_CACHE_INSTALL_PATH=$( cygpath --mixed --absolute "$ESY_CACHE_INSTALL_PATH")
           fi
-          echo "THE_ESY__CACHE_INSTALL_PATH: $THE_ESY__CACHE_INSTALL_PATH"
-          # This will be exposed as an env var ESY__CACHE_INSTALL_PATH, or an
-          # Azure var esy__cache_install_path
-          echo "##vso[task.setvariable variable=esy__cache_install_path]$THE_ESY__CACHE_INSTALL_PATH"
-        displayName: "Set ESY__CACHE_INSTALL_PATH"
+          echo "ESY_CACHE_INSTALL_PATH: $ESY_CACHE_INSTALL_PATH"
+          # This will be exposed as an env var ESY_CACHE_INSTALL_PATH, or an
+          # Azure var esy_cache_install_path
+          echo "##vso[task.setvariable variable=esy_cache_install_path]$_ESY_CACHE_INSTALL_PATH"
+        displayName: "Set ESY_CACHE_INSTALL_PATH"
       - bash: |
-          ESY_SOURCE="$HOME/.esy/source"
-          echo "ESY_SOURCE: $ESY_SOURCE"
-          # This will be exposed as an env var ESY__CACHE_INSTALL_PATH, or an
-          # Azure var esy__cache_install_path
-          echo "##vso[task.setvariable variable=esy_source]$ESY_SOURCE"
-        displayName: "Set ESY_SOURCE"
+          ESY_SOURCE_INSTALL_PATH="$HOME/.esy/source"
+          echo "ESY_SOURCE_INSTALL_PAT: $ESY_SOURCE_INSTALL_PATH"
+          # This will be exposed as an env var ESY_SOURCE_INSTALL_PATH, or an
+          # Azure var esy_source_install_path
+          echo "##vso[task.setvariable variable=esy_source_install_path]$ESY_SOURCE_INSTALL_PATH"
+        displayName: "Set ESY_SOURCE_INSTALL_PATH"
       - bash: |
           if [ "$AGENT_OS" == "Windows_NT" ]; then
             STAGING_DIRECTORY_UNIX=$( cygpath --unix "$STAGING_DIRECTORY")
@@ -61,11 +61,11 @@ jobs:
         displayName: "esy clean"
       - script: npx esy build
         displayName: "esy build"
-      - bash: cd $(ESY__CACHE_INSTALL_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/esy-cache.tgz .
-        displayName: "Create esy-cache.tgz"
+      - bash: cd $(ESY_CACHE_INSTALL_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/esy-cache-install.tgz .
+        displayName: "Create esy-cache-install.tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
-      - bash: cd $(ESY_SOURCE) && tar czf $(STAGING_DIRECTORY_UNIX)/esy-source-cache.tgz .
-        displayName: "Create esy-source-cache.tgz"
+      - bash: cd $(ESY_SOURCE_INSTALL_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/esy-cache-source.tgz .
+        displayName: "Create esy-cache-source.tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
       - bash: "echo `find _esy -name GenType.exe`"
         displayName: "Find GenType.exe"
