@@ -19,6 +19,6 @@ steps:
     displayName: "[Cache2][Restore] Unpack esy-cache.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
 
-  - bash: cd $(_ESY__CACHE_INSTALL_PATH)/../../_esy && tar xf $(STAGING_DIRECTORY_UNIX)/_esy-cache.tgz
+  - bash: tar xf $(STAGING_DIRECTORY_UNIX)/_esy-cache.tgz
     displayName: "[Cache2][Restore] Unpack _esy-cache.tgz"
     condition: eq(variables.CACHE_RESTORED, 'true')
