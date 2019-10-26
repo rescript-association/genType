@@ -38,21 +38,18 @@ jobs:
       platform: Linux
       vmImage: ubuntu-16.04
       STAGING_DIRECTORY: /home/vsts/STAGING
-      STAGING_DIRECTORY_UNIX: /home/vsts/STAGING
 
   - template: .ci/build-platform.yml
     parameters:
       platform: macOS
       vmImage: macOS-10.13
       STAGING_DIRECTORY: $(Build.StagingDirectory)
-      STAGING_DIRECTORY_UNIX: $(Build.StagingDirectory)
 
   - template: .ci/build-platform.yml
     parameters:
       platform: Windows
       vmImage: vs2017-win2016
       STAGING_DIRECTORY: C:\Users\VssAdministrator\STAGING
-      STAGING_DIRECTORY_UNIX: /C/Users/VssAdministrator/STAGING
 
   # This job is kept here as we want to have the platform names in the same file
   - job: Release
