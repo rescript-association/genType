@@ -48,8 +48,10 @@ jobs:
       - script: npm install
         displayName: "npm install"
       - template: utils/cache.yml
+      - script: npx esy install
+        displayName: "esy install"
       - script: npx esy build
-        displayName: "build"
+        displayName: "esy build"
       - bash: mkdir -p $(STAGING_DIRECTORY_UNIX)
         displayName: "Create STAGING_DIRECTORY"
         condition: eq(variables.CACHE_RESTORED, 'false')
