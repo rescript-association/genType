@@ -36,12 +36,12 @@ jobs:
           echo "##vso[task.setvariable variable=esy_cache_install_path]$ESY_CACHE_INSTALL_PATH"
         displayName: "Set ESY_CACHE_INSTALL_PATH"
       - bash: |
-          ESY_SOURCE_INSTALL_PATH="$HOME/.esy/source"
-          echo "ESY_SOURCE_INSTALL_PAT: $ESY_SOURCE_INSTALL_PATH"
-          # This will be exposed as an env var ESY_SOURCE_INSTALL_PATH, or an
-          # Azure var esy_source_install_path
-          echo "##vso[task.setvariable variable=esy_source_install_path]$ESY_SOURCE_INSTALL_PATH"
-        displayName: "Set ESY_SOURCE_INSTALL_PATH"
+          ESY_CACHE_SOURCE_PATH="$HOME/.esy/source"
+          echo "ESY_CACHE_SOURCE_PATH: $ESY_CACHE_SOURCE_PATH"
+          # This will be exposed as an env var ESY_CACHE_SOURCE_PATH, or an
+          # Azure var esy_cache_source_path
+          echo "##vso[task.setvariable variable=esy_cache_source_path]$ESY_CACHE_SOURCE_PATH"
+        displayName: "Set ESY_CACHE_SOURCE_PATH"
       - bash: |
           if [ "$AGENT_OS" == "Windows_NT" ]; then
             STAGING_DIRECTORY_UNIX=$( cygpath --unix "$STAGING_DIRECTORY")
@@ -64,7 +64,7 @@ jobs:
       - bash: cd $(ESY_CACHE_INSTALL_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/$(ESY_CACHE_INSTALL_TGZ) .
         displayName: "Create esy cache install .tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
-      - bash: cd $(ESY_SOURCE_INSTALL_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/$(ESY_CACHE_SOURCE_TGZ) .
+      - bash: cd $(ESY_CACHE_SOURCE_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/$(ESY_CACHE_SOURCE_TGZ) .
         displayName: "Create esy cache source .tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
       - bash: "echo `find _esy -name GenType.exe`"
