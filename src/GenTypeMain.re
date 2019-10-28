@@ -137,7 +137,7 @@ let readCmt = cmtFile =>
   | Cmi_format.Error(_) =>
     logItem("Error loading %s\n\n", cmtFile);
     logItem(
-      "It looks like you might be using an old version of bucklescript, or have stale compilation artifacts.\n",
+      "It looks like you might be using an old version of Bucklescript, or have stale compilation artifacts.\n",
     );
     logItem("Check that bs-platform is version 6.2.x or later.\n")
     logItem("And try to clean and rebuild.\n\n")
