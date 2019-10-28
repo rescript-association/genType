@@ -6,7 +6,7 @@
 steps:
   - task: CacheBeta@1
     inputs:
-      key: cache_string10 | esy | $(Agent.OS) | esy.lock/index.json
+      key: cache_string11 | esy | $(Agent.OS) | esy.lock/index.json
       path: $(STAGING_DIRECTORY)
       cacheHitVar: CACHE_RESTORED
     displayName: "[Cache] esy packages"
