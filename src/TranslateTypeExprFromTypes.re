@@ -170,26 +170,27 @@ let translateConstr =
     };
   };
   switch (path |> pathToList |> List.rev, paramsTranslation) {
-  | (["FB", "bool"], [])
-  | (["bool"], []) => {dependencies: [], type_: booleanT}
+  | (["FB", "bool"] | ["bool"], []) => {dependencies: [], type_: booleanT}
 
-  | (["FB", "int"], [])
-  | (["int"], []) => {dependencies: [], type_: numberT}
+  | (["FB", "int"] | ["int"], []) => {dependencies: [], type_: numberT}
 
-  | (["FB", "float"], [])
-  | (["float"], []) => {dependencies: [], type_: numberT}
+  | (["FB", "float"] | ["float"], []) => {dependencies: [], type_: numberT}
 
-  | (["FB", "string"], [])
-  | (["string"], [])
-  | (["String", "t"], [])
-  | (["Js", "String", "t"], []) => {dependencies: [], type_: stringT}
+  | (
+      ["FB", "string"] | ["string"] | ["String", "t"] |
+      ["Js", "String", "t"],
+      [],
+    ) => {
+      dependencies: [],
+      type_: stringT,
+    }
 
-  | (["FB", "unit"], [])
-  | (["unit"], []) => {dependencies: [], type_: unitT}
+  | (["FB", "unit"] | ["unit"], []) => {dependencies: [], type_: unitT}
 
-  | (["FB", "array"], [paramTranslation])
-  | (["array"], [paramTranslation])
-  | (["Js", "Array", "t"], [paramTranslation]) => {
+  | (
+      ["FB", "array"] | ["array"] | ["Js", "Array", "t"],
+      [paramTranslation],
+    ) => {
       ...paramTranslation,
       type_: Array(paramTranslation.type_, Mutable),
     }
@@ -262,28 +263,27 @@ let translateConstr =
       type_: EmitType.typeAny(~config),
     }
 
-  | (["React", "element"], [])
-  | (["ReasonReact", "reactElement"], []) => {
+  | (["React", "element"] | ["ReasonReact", "reactElement"], []) => {
       dependencies: [],
       type_: EmitType.typeReactElement(~config),
     }
 
-  | (["FB", "option"], [paramTranslation])
-  | (["option"], [paramTranslation]) => {
+  | (["FB", "option"] | ["option"], [paramTranslation]) => {
       ...paramTranslation,
       type_: Option(paramTranslation.type_),
     }
 
-  | (["Js", "Null", "t"], [paramTranslation])
-  | (["Js", "null"], [paramTranslation]) => {
+  | (["Js", "Null", "t"] | ["Js", "null"], [paramTranslation]) => {
       ...paramTranslation,
       type_: Null(paramTranslation.type_),
     }
 
-  | (["Js", "Nullable", "t"], [paramTranslation])
-  | (["Js", "nullable"], [paramTranslation])
-  | (["Js", "Null_undefined", "t"], [paramTranslation])
-  | (["Js", "null_undefined"], [paramTranslation]) => {
+  | (
+      ["Js", "Nullable", "t"] | ["Js", "nullable"] |
+      ["Js", "Null_undefined", "t"] |
+      ["Js", "null_undefined"],
+      [paramTranslation],
+    ) => {
       ...paramTranslation,
       type_: Nullable(paramTranslation.type_),
     }
