@@ -144,52 +144,68 @@ let translateConstr =
       ~paramsTranslation,
       ~path: Path.t,
       ~typeEnv,
-    ) =>
-  switch (path, paramsTranslation) {
-  | (Pdot(Pident({name: "FB", _}), "bool", _), [])
-  | (Pident({name: "bool", _}), []) => {dependencies: [], type_: booleanT}
+    ) => {
+  exception ContainsApply;
+  let rec pathToList = path =>
+    switch (path) {
+    | Path.Pident(id) => [id |> Ident.name]
+    | Path.Pdot(p, s, _) => [s, ...p |> pathToList]
+    | Path.Papply(_) => raise(ContainsApply)
+    };
+  let defaultCase = () => {
+    let typeArgs = paramsTranslation |> List.map(({type_, _}) => type_);
+    let typeParamDeps =
+      paramsTranslation
+      |> List.map(({dependencies, _}) => dependencies)
+      |> List.concat;
 
-  | (Pdot(Pident({name: "FB", _}), "int", _), [])
-  | (Pident({name: "int", _}), []) => {dependencies: [], type_: numberT}
+    switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
+    | Some(type_) => {dependencies: typeParamDeps, type_}
+    | None =>
+      let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
+      {
+        dependencies: [dep, ...typeParamDeps],
+        type_: Ident({builtin: false, name: dep |> depToString, typeArgs}),
+      };
+    };
+  };
+  switch (path |> pathToList |> List.rev, paramsTranslation) {
+  | (["FB", "bool"] | ["bool"], []) => {dependencies: [], type_: booleanT}
 
-  | (Pdot(Pident({name: "FB", _}), "float", _), [])
-  | (Pident({name: "float", _}), []) => {dependencies: [], type_: numberT}
+  | (["FB", "int"] | ["int"], []) => {dependencies: [], type_: numberT}
 
-  | (Pdot(Pident({name: "FB", _}), "string", _), [])
-  | (Pident({name: "string", _}), [])
-  | (Pdot(Pident({name: "String", _}), "t", _), [])
-  | (Pdot(Pdot(Pident({name: "Js", _}), "String", _), "t", _), []) => {
+  | (["FB", "float"] | ["float"], []) => {dependencies: [], type_: numberT}
+
+  | (
+      ["FB", "string"] | ["string"] | ["String", "t"] |
+      ["Js", "String", "t"],
+      [],
+    ) => {
       dependencies: [],
       type_: stringT,
     }
 
-  | (Pdot(Pident({name: "FB", _}), "unit", _), [])
-  | (Pident({name: "unit", _}), []) => {dependencies: [], type_: unitT}
+  | (["FB", "unit"] | ["unit"], []) => {dependencies: [], type_: unitT}
 
-  | (Pdot(Pident({name: "FB", _}), "array", _), [paramTranslation])
-  | (Pident({name: "array", _}), [paramTranslation])
   | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Array", _), "t", _),
+      ["FB", "array"] | ["array"] | ["Js", "Array", "t"],
       [paramTranslation],
     ) => {
       ...paramTranslation,
       type_: Array(paramTranslation.type_, Mutable),
     }
 
-  | (Pdot(Pident({name: "ImmutableArray", _}), "t", _), [paramTranslation]) => {
+  | (["ImmutableArray", "t"], [paramTranslation]) => {
       ...paramTranslation,
       type_: Array(paramTranslation.type_, Immutable),
     }
 
-  | (Pdot(Pident({name: "Pervasives", _}), "ref", _), [paramTranslation]) => {
+  | (["Pervasives", "ref"], [paramTranslation]) => {
       dependencies: paramTranslation.dependencies,
       type_: Tuple([paramTranslation.type_]),
     }
 
-  | (
-      Pdot(Pident({name: "React", _}), "callback", _),
-      [fromTranslation, toTranslation],
-    ) => {
+  | (["React", "callback"], [fromTranslation, toTranslation]) => {
       dependencies: fromTranslation.dependencies @ toTranslation.dependencies,
       type_:
         Function({
@@ -201,10 +217,7 @@ let translateConstr =
         }),
     }
 
-  | (
-      Pdot(Pident({name: "React", _}), "componentLike", _),
-      [propsTranslation, retTranslation],
-    ) => {
+  | (["React", "componentLike"], [propsTranslation, retTranslation]) => {
       dependencies:
         propsTranslation.dependencies @ retTranslation.dependencies,
       type_:
@@ -217,7 +230,7 @@ let translateConstr =
         }),
     }
 
-  | (Pdot(Pident({name: "React", _}), "component", _), [propsTranslation]) => {
+  | (["React", "component"], [propsTranslation]) => {
       dependencies: propsTranslation.dependencies,
       type_:
         Function({
@@ -229,86 +242,57 @@ let translateConstr =
         }),
     }
 
-  | (
-      Pdot(Pdot(Pident({name: "React", _}), "Context", _), "t", _),
-      [paramTranslation],
-    ) => {
+  | (["React", "Context", "t"], [paramTranslation]) => {
       dependencies: paramTranslation.dependencies,
       type_:
         EmitType.typeReactContext(~config, ~type_=paramTranslation.type_),
     }
 
-  | (
-      Pdot(Pdot(Pident({name: "React", _}), "Ref", _), "t", _),
-      [paramTranslation],
-    ) => {
+  | (["React", "Ref", "t"], [paramTranslation]) => {
       dependencies: paramTranslation.dependencies,
       type_: EmitType.typeReactRef(~config, ~type_=paramTranslation.type_),
     }
 
-  | (Pdot(Pident({name: "ReactDOMRe", _}), "domRef", _), []) => {
+  | (["ReactDOMRe", "domRef"], []) => {
       dependencies: [],
       type_: EmitType.typeReactDOMReDomRef(~config),
     }
 
-  | (
-      Pdot(
-        Pdot(Pident({name: "ReactDOMRe", _}), "Ref", _),
-        "currentDomRef",
-        _,
-      ),
-      [],
-    ) => {
+  | (["ReactDOMRe", "Ref", "currentDomRef"], []) => {
       dependencies: [],
       type_: EmitType.typeAny(~config),
     }
 
-  | (Pdot(Pident({name: "React", _}), "element", _), [])
-  | (Pdot(Pident({name: "ReasonReact", _}), "reactElement", _), []) => {
+  | (["React", "element"] | ["ReasonReact", "reactElement"], []) => {
       dependencies: [],
       type_: EmitType.typeReactElement(~config),
     }
 
-  | (Pdot(Pident({name: "FB", _}), "option", _), [paramTranslation])
-  | (Pident({name: "option", _}), [paramTranslation]) => {
+  | (["FB", "option"] | ["option"], [paramTranslation]) => {
       ...paramTranslation,
       type_: Option(paramTranslation.type_),
     }
 
-  | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Null", _), "t", _),
-      [paramTranslation],
-    )
-  | (Pdot(Pident({name: "Js", _}), "null", _), [paramTranslation]) => {
+  | (["Js", "Null", "t"] | ["Js", "null"], [paramTranslation]) => {
       ...paramTranslation,
       type_: Null(paramTranslation.type_),
     }
 
   | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Nullable", _), "t", _),
-      [paramTranslation],
-    )
-  | (Pdot(Pident({name: "Js", _}), "nullable", _), [paramTranslation])
-  | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Null_undefined", _), "t", _),
-      [paramTranslation],
-    )
-  | (
-      Pdot(Pident({name: "Js", _}), "null_undefined", _),
+      ["Js", "Nullable", "t"] | ["Js", "nullable"] |
+      ["Js", "Null_undefined", "t"] |
+      ["Js", "null_undefined"],
       [paramTranslation],
     ) => {
       ...paramTranslation,
       type_: Nullable(paramTranslation.type_),
     }
-  | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Promise", _), "t", _),
-      [paramTranslation],
-    ) => {
+  | (["Js", "Promise", "t"], [paramTranslation]) => {
       ...paramTranslation,
       type_: Promise(paramTranslation.type_),
     }
   | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      ["Js", "Internal", "fn"],
       [{dependencies: argsDependencies, type_: Tuple(ts)}, ret],
     ) => {
       dependencies: argsDependencies @ ret.dependencies,
@@ -323,7 +307,7 @@ let translateConstr =
     }
 
   | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      ["Js", "Internal", "fn"],
       [
         {
           dependencies: argsDependencies,
@@ -343,7 +327,7 @@ let translateConstr =
         }),
     }
   | (
-      Pdot(Pdot(Pident({name: "Js", _}), "Internal", _), "fn", _),
+      ["Js", "Internal", "fn"],
       [{dependencies: argsDependencies, type_: singleT}, ret],
     ) =>
     let argTypes =
@@ -363,7 +347,7 @@ let translateConstr =
           uncurried: true,
         }),
     };
-  | (Pdot(Pident({name: "Js", _}), "t", _), _) =>
+  | (["Js", "t"], _) =>
     let dependencies =
       fieldsTranslations
       |> List.map(((_, {dependencies, _})) => dependencies)
@@ -393,23 +377,10 @@ let translateConstr =
     let type_ = Object(closedFlag, fields);
     {dependencies, type_};
 
-  | _ =>
-    let typeArgs = paramsTranslation |> List.map(({type_, _}) => type_);
-    let typeParamDeps =
-      paramsTranslation
-      |> List.map(({dependencies, _}) => dependencies)
-      |> List.concat;
-
-    switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
-    | Some(type_) => {dependencies: typeParamDeps, type_}
-    | None =>
-      let dep = path |> Dependencies.fromPath(~config, ~typeEnv);
-      {
-        dependencies: [dep, ...typeParamDeps],
-        type_: Ident({builtin: false, name: dep |> depToString, typeArgs}),
-      };
-    };
+  | _ => defaultCase()
+  | exception ContainsApply => defaultCase()
   };
+};
 
 type processVariant = {
   noPayloads: list(string),
