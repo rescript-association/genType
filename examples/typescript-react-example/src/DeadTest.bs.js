@@ -4,6 +4,10 @@ import * as ImmutableArray from "./ImmutableArray.bs.js";
 
 console.log(ImmutableArray.fromArray);
 
+var Inner = { };
+
+var M = { };
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -17,6 +21,8 @@ export {
   fortyTwoButExported ,
   thisIsUsedOnce ,
   thisIsUsedTwice ,
+  Inner ,
+  M ,
   
 }
 /*  Not a pure module */
