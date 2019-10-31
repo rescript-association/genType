@@ -1,6 +1,6 @@
 [@genType.opaque]
 type opaqueFromRecords =
-  | A(Records.coord);
+  | [@dead "opaqueFromRecords.A"] A(Records.coord);
 
 [@genType]
 let noConversion = (x: opaqueFromRecords) => x;

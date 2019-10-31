@@ -15,7 +15,7 @@ external innerStuffContents: {. "x": int} = "innerStuffContents";
 external innerStuffContentsAsEmptyObject: Js.t({.}) =
   "innerStuffContentsAsEmptyObject";
 
-let innerStuffContents = innerStuffContents;
+[@dead "innerStuffContents"] let innerStuffContents = innerStuffContents;
 
 [@genType.import ("./exportNestedValues", "ValueStartingWithUpperCaseLetter")]
 external valueStartingWithUpperCaseLetter: string =
@@ -25,7 +25,7 @@ external valueStartingWithUpperCaseLetter: string =
 external defaultValue: int = "defaultValue";
 
 [@genType]
-type message = {text: string};
+type message = {[@dead "message.text"] text: string};
 
 [@genType.import
   ("./MyBanner", "TopLevelClass.MiddleLevelElements.MyBannerInternal")
@@ -39,7 +39,7 @@ external make:
   ) =
   "make";
 
-let make = make;
+[@dead "make"] let make = make;
 
 [@genType.import ("./exportNestedValues", "default")]
 external defaultValue2: int = "defaultValue2";

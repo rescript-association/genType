@@ -1,5 +1,5 @@
 [@genType]
-type item = {id: int};
+type item = {[@dead "item.id"] id: int};
 
 [@genType]
 type items = TypeParams1.ocaml_array(item);
@@ -7,4 +7,4 @@ type items = TypeParams1.ocaml_array(item);
 [@genType]
 type items2 = array(item);
 
-let exportSomething = 10;
+[@dead "exportSomething"] let exportSomething = 10;

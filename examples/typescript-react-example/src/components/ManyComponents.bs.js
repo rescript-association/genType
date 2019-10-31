@@ -27,7 +27,6 @@ function make(_children) {
 }
 
 var InnerComponent = {
-  someValueSoModuleOffsetsAreShifted: 77,
   component: component,
   make: make
 };

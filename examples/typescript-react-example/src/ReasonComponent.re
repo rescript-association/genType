@@ -5,10 +5,10 @@ let component = ReasonReact.statelessComponent("ReasonComponent");
 [@genType]
 type person('a) = {
   name: string,
-  surname: string,
-  [@genType.as "type"]
+  [@dead "person.surname"] surname: string,
+  [@dead "person.type_"] [@genType.as "type"]
   type_: string,
-  polymorphicPayload: 'a,
+  [@dead "person.polymorphicPayload"] polymorphicPayload: 'a,
 };
 
 [@genType]
@@ -47,9 +47,9 @@ let useTypeDefinedInAnotherModule = (x: Types.t) => x;
 
 [@genType]
 type t =
-  | A
-  | B(int)
-  | C(string);
+  | [@dead "t.A"] A
+  | [@dead "t.B"] B(int)
+  | [@dead "t.C"] C(string);
 
 [@genType]
 let tToString = t =>

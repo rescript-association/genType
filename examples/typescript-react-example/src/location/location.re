@@ -2,8 +2,8 @@
 
 [@genType]
 type t = {
-  id: string,
-  name: string,
+  [@dead "t.id"] id: string,
+  [@dead "t.name"] name: string,
 };
 
-let x = 42;
+[@dead "x"] let x = 42;

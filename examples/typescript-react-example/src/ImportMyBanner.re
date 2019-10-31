@@ -3,7 +3,7 @@
   */
 
 [@genType]
-type message = {text: string};
+type message = {[@dead "message.text"] text: string};
 
 [@genType.import "./MyBanner"] /* Module with the JS component to be wrapped. */
 /* The make function will be automatically generated from the types below. */

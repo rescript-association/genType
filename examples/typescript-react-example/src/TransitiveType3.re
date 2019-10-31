@@ -1,7 +1,7 @@
 [@genType]
 type t3 = {
-  i: int,
-  s: string,
+  [@dead "t3.i"] i: int,
+  [@dead "t3.s"] s: string,
 };
 
 [@genType]

@@ -37,7 +37,7 @@ let make = R.make;
 [@genType]
 let set = R.set;
 
-type requiresConversion = {x: int};
+type requiresConversion = {[@dead "requiresConversion.x"] x: int};
 
 // Careful: conversion makes a copy and destroys the reference identity.
 [@genType]

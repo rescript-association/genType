@@ -7,8 +7,8 @@ external round: float => float = "round";
 
 [@genType]
 type point = {
-  x: int,
-  y: option(int),
+  [@dead "point.x"] x: int,
+  [@dead "point.y"] y: option(int),
 };
 
 [@genType.import "./MyMath"] /* This is the module to import from. */
@@ -56,8 +56,8 @@ external higherOrder: ((int, int) => int) => int = "higherOrder";
 let returnedFromHigherOrder = higherOrder((+));
 
 type variant =
-  | I(int)
-  | S(string);
+  | [@dead "variant.I"] I(int)
+  | [@dead "variant.S"] S(string);
 
 [@genType.import "./MyMath"]
 external convertVariant: variant => variant = "convertVariant";

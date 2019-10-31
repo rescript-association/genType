@@ -1,7 +1,7 @@
 [@genType]
 type person = {
-  name: string,
-  age: int,
+  [@dead "person.name"] name: string,
+  [@dead "person.age"] age: int,
 };
 
 [@genType]

@@ -18,8 +18,8 @@ function make(prim, prim$1, prim$2) {
 var defaultValue2 = TestImportGen.defaultValue2;
 
 export {
-  innerStuffContentsAsEmptyObject ,
   innerStuffContents ,
+  innerStuffContentsAsEmptyObject ,
   valueStartingWithUpperCaseLetter ,
   defaultValue ,
   make ,

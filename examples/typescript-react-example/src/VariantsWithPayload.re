@@ -48,20 +48,20 @@ let printManyPayloads = (x: manyPayloads) =>
 
 [@genType]
 type simpleVariant =
-  | A
-  | B
-  | C;
+  | [@dead "simpleVariant.A"] A
+  | [@dead "simpleVariant.B"] B
+  | [@dead "simpleVariant.C"] C;
 
 [@genType]
 let testSimpleVariant = (x: simpleVariant) => x;
 
 [@genType]
 type variantWithPayloads =
-  | [@genType.as "ARenamed"] A
-  | B(int)
-  | C(int, int)
-  | D((int, int))
-  | E(int, string, int);
+  | [@dead "variantWithPayloads.A"] [@genType.as "ARenamed"] A
+  | [@dead "variantWithPayloads.B"] B(int)
+  | [@dead "variantWithPayloads.C"] C(int, int)
+  | [@dead "variantWithPayloads.D"] D((int, int))
+  | [@dead "variantWithPayloads.E"] E(int, string, int);
 
 [@genType]
 let testVariantWithPayloads = (x: variantWithPayloads) => x;
@@ -97,14 +97,14 @@ let printVariantWithPayloads = x =>
 
 [@genType]
 type variant1Int =
-  | R(int);
+  | [@dead "variant1Int.R"] R(int);
 
 [@genType]
 let testVariant1Int = (x: variant1Int) => x;
 
 [@genType]
 type variant1Object =
-  | R(payload);
+  | [@dead "variant1Object.R"] R(payload);
 
 [@genType]
 let testVariant1Object = (x: variant1Object) => x;

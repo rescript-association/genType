@@ -2,9 +2,9 @@ open Belt;
 
 [@genType]
 type coord = {
-  x: int,
-  y: int,
-  z: option(int),
+  [@dead "coord.x"] x: int,
+  [@dead "coord.y"] y: int,
+  [@dead "coord.z"] z: option(int),
 };
 
 [@genType]
@@ -19,14 +19,14 @@ let coord2d = (x, y) => {x, y, z: None};
 
 [@genType]
 type person = {
-  name: string,
-  age: int,
+  [@dead "person.name"] name: string,
+  [@dead "person.age"] age: int,
   address: option(string),
 };
 
 [@genType]
 type business = {
-  name: string,
+  [@dead "business.name"] name: string,
   owner: option(person),
   address: option(string),
 };
@@ -53,8 +53,8 @@ let findAllAddresses = (businesses: array(business)): array(string) =>
 
 [@genType]
 type payload('a) = {
-  num: int,
-  payload: 'a,
+  [@dead "payload.num"] num: int,
+  [@dead "payload.payload"] payload: 'a,
 };
 
 [@genType]
@@ -63,7 +63,7 @@ let getPayload = ({payload}) => payload;
 [@genType]
 type record = {
   v: int,
-  w: int,
+  [@dead "record.w"] w: int,
 };
 
 [@genType]
@@ -83,8 +83,8 @@ let getPayloadRecordPlusOne = ({payload}): record => {
 
 [@genType]
 type business2 = {
-  name: string,
-  owner: Js.Nullable.t(person),
+  [@dead "business2.name"] name: string,
+  [@dead "business2.owner"] owner: Js.Nullable.t(person),
   address2: Js.Nullable.t(string),
 };
 

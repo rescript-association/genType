@@ -6,6 +6,6 @@ let testImmutableArrayGet = arr => ImmutableArray.(arr[3]);
    let testImmutableArraySet = arr => ImmutableArray.(arr[3] = 4);
  */
 
-let testBeltArrayGet = arr => Belt.(arr[3]);
+[@dead "testBeltArrayGet"] let testBeltArrayGet = arr => Belt.(arr[3]);
 
-let testBeltArraySet = arr => Belt.(arr[3] = 4);
+[@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);

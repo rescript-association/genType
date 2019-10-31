@@ -8,8 +8,6 @@ var Inner = { };
 
 var M = { };
 
-var fortytwo = 42;
-
 var fortyTwoButExported = 42;
 
 var thisIsUsedOnce = 34;
@@ -17,7 +15,6 @@ var thisIsUsedOnce = 34;
 var thisIsUsedTwice = 34;
 
 export {
-  fortytwo ,
   fortyTwoButExported ,
   thisIsUsedOnce ,
   thisIsUsedTwice ,

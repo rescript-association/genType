@@ -5,27 +5,27 @@ module Universe = {
   [@genType]
   let theAnswer = 42;
 
-  let notExported = 33;
+[@dead "Universe.notExported"]   let notExported = 33;
 
   [@genType]
   type nestedType = array(string);
 
   module Nested2 = {
-    let x = 0;
+[@dead "Universe.Nested2.x"]     let x = 0;
 
     [@genType]
     let nested2Value = 1;
 
-    let y = 2;
+[@dead "Universe.Nested2.y"]     let y = 2;
 
     [@genType]
     type nested2Type = array(array(string));
 
     module Nested3 = {
-      let x = 0;
-      let y = 1;
-      let z = 2;
-      let w = 3;
+[@dead "Universe.Nested2.Nested3.x"]       let x = 0;
+[@dead "Universe.Nested2.Nested3.y"]       let y = 1;
+[@dead "Universe.Nested2.Nested3.z"]       let z = 2;
+[@dead "Universe.Nested2.Nested3.w"]       let w = 3;
 
       [@genType]
       type nested3Type = array(array(array(string)));
@@ -43,8 +43,8 @@ module Universe = {
 
   [@genType]
   type variant =
-    | A
-    | B(string);
+    | [@dead "Universe.variant.A"] A
+    | [@dead "Universe.variant.B"] B(string);
 
   [@genType]
   let someString = "some exported string";

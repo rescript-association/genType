@@ -1,6 +1,6 @@
 module Outer = {
   module Inner = {
-    type innerT = {inner: string};
+    type innerT = {[@dead "Outer.Inner.innerT.inner"] inner: string};
   };
 };
 
@@ -8,7 +8,7 @@ module Outer2 = {
   module OuterInnerAlias = Outer.Inner;
   module Inner2 = {
     module InnerNested = {
-      type t = {nested: int};
+      type t = {[@dead "Outer2.Inner2.InnerNested.t.nested"] nested: int};
     };
     module OuterInnerAlias2 = OuterInnerAlias;
   };

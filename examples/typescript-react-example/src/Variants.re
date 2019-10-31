@@ -94,4 +94,4 @@ let id2 = (x: x2) => x;
 [@genType]
 [@genType.as "type"]
 type type_ =
-  | [@genType.as "type"] Type;
+  | [@dead "type_.Type"] [@genType.as "type"] Type;

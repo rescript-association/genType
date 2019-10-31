@@ -1,10 +1,10 @@
 [@genType]
 type record = {
-  x: int,
-  y: string,
+  [@dead "record.x"] x: int,
+  [@dead "record.y"] y: string,
 };
 
-let r: record;
+[@dead "r"] let r: record;
 
 [@genType]
 module type MT = {let x: int;};

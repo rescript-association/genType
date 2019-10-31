@@ -9,8 +9,8 @@ let map = List.map;
 
 [@genType]
 type typeWithVars('x, 'y, 'z) =
-  | A('x, 'y)
-  | B('z);
+  | [@dead "typeWithVars.A"] A('x, 'y)
+  | [@dead "typeWithVars.B"] B('z);
 
 [@genType]
 type tree = {
@@ -32,11 +32,11 @@ let rec swap = (tree: tree): tree => {
 };
 
 [@genType]
-type selfRecursive = {self: selfRecursive};
+type selfRecursive = {[@dead "selfRecursive.self"] self: selfRecursive};
 
 [@genType]
-type mutuallyRecursiveA = {b: mutuallyRecursiveB}
-and mutuallyRecursiveB = {a: mutuallyRecursiveA};
+type mutuallyRecursiveA = {[@dead "mutuallyRecursiveA.b"] b: mutuallyRecursiveB}
+and mutuallyRecursiveB = {[@dead "mutuallyRecursiveB.a"] a: mutuallyRecursiveA};
 
 /*
  * This is a recursive type which requires conversion (a record).
@@ -57,8 +57,8 @@ let testFunctionOnOptionsAsArgument = (a: option('a), foo) => foo(a);
 
 [@genType.opaque]
 type opaqueVariant =
-  | A
-  | B;
+  | [@dead "opaqueVariant.A"] A
+  | [@dead "opaqueVariant.B"] B;
 
 [@genType]
 let stringT: String.t = "a";
@@ -85,8 +85,8 @@ type nullOrString = Js.Null.t(string);
 type nullOrString2 = Js.null(string);
 
 type record = {
-  i: int,
-  s: string,
+  [@dead "record.i"] i: int,
+  [@dead "record.s"] s: string,
 };
 
 [@genType]
@@ -135,7 +135,7 @@ let setMatch = (x: marshalMutableField) => x##_match #= 34;
 type ocaml_array('a) = array('a);
 
 // This should be considered annotated automatically.
-type someRecord = {id: int};
+type someRecord = {[@dead "someRecord.id"] id: int};
 
 type instantiateTypeParameter = ocaml_array(someRecord);
 
