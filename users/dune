@@ -8,4 +8,5 @@
     (flags "-w" "-30-40")
 
     ; Depends on:
+    (libraries str)
 )

@@ -9,16 +9,6 @@ let readFile = (~channel, ~onLine) => {
   };
 };
 
-let getUser = s => {
-  let email =
-    switch (String.index(s, '<'), String.index(s, '>')) {
-    | (lt, gt) => String.sub(s, lt + 1, gt - lt - 1)
-    | exception Not_found => s
-    };
-  let at = String.index(email, '@');
-  String.sub(email, 0, at);
-};
-
 module Month: {
   type t;
   let compare: (t, t) => int;
@@ -146,55 +136,98 @@ module DiffsPerMonth = {
 module Diffs = {
   let users = Hashtbl.create(1);
   let diffsPerMonth = DiffsPerMonth.create();
+  let currentFound = ref(false);
+  let currentDate = ref("");
   let currentUser = ref("");
-  let addUser = user => {
-    currentUser := user;
-  };
-  let add = (~date, ~quarterly, ~user) => {
+
+  let addItem = (~quarterly) => {
     // Mon, 28 Oct 2019
-    let month = date |> Month.fromDate(~quarterly);
+    let month = currentDate^ |> Month.fromDate(~quarterly);
     diffsPerMonth |> DiffsPerMonth.add(~month);
   };
-  let addDate = (~quarterly, date) => {
+
+  let processCurrentItem = (~quarterly) => {
     let user = currentUser^;
-    add(~date, ~quarterly, ~user);
-    let dpm =
-      try(Hashtbl.find(users, user)) {
-      | Not_found =>
-        let dpm = DiffsPerMonth.create();
-        Hashtbl.replace(users, user, dpm);
-        dpm;
+    let date = currentDate^;
+    if (currentFound^) {
+      let month = date |> Month.fromDate(~quarterly);
+      diffsPerMonth |> DiffsPerMonth.add(~month);
+      let dpm =
+        try(Hashtbl.find(users, user)) {
+        | Not_found =>
+          let dpm = DiffsPerMonth.create();
+          Hashtbl.replace(users, user, dpm);
+          dpm;
+        };
+      dpm |> DiffsPerMonth.add(~month);
+    };
+  };
+
+  let setUser = (~quarterly, user) => {
+    processCurrentItem(~quarterly);
+    let email =
+      switch (String.index(user, '<'), String.index(user, '>')) {
+      | (lt, gt) => String.sub(user, lt + 1, gt - lt - 1)
+      | exception Not_found => user
       };
-    let month = date |> Month.fromDate(~quarterly);
-    dpm |> DiffsPerMonth.add(~month);
+    let at = String.index(email, '@');
+
+    currentUser := String.sub(email, 0, at);
+    currentDate := "";
+    currentFound := false;
+  };
+  let setDate = date => {
+    currentDate := date;
+  };
+  let setFound = () => {
+    currentFound := true;
   };
 
   let print = (~csv) => DiffsPerMonth.print(~csv, ~diffsPerMonth, ~users);
 };
 
 let run = () => {
-  let numLines = ref(0);
-  let processLine = (~quarterly, line) => {
-    incr(numLines);
-    if (numLines^ mod 1000 == 0) {
-      Diffs.print(~csv=true);
-    };
+  let processLine = (~extension, ~quarterly, line) => {
     let len = String.length(line);
     let user = "user:        ";
     let lenLhs = String.length(user);
+    let handleExtension = () => {
+      switch (extension) {
+      | None => Diffs.setFound()
+      | Some(s) =>
+        try(
+          {
+            Str.search_forward(Str.regexp(Str.quote(s ++ " ")), line, 0)
+            |> ignore;
+            Diffs.setFound();
+          }
+        ) {
+        | Not_found => ()
+        }
+      };
+    };
     if (len >= lenLhs) {
       let lhs = String.sub(line, 0, lenLhs);
       let rhs = String.sub(line, lenLhs, len - lenLhs);
       switch (lhs) {
-      | "user:        " => rhs |> getUser |> Diffs.addUser
-      | "date:        " => rhs |> Diffs.addDate(~quarterly)
-      | _ => ()
+      | "user:        " => rhs |> Diffs.setUser(~quarterly)
+      | "date:        " => rhs |> Diffs.setDate
+      | "changeset:   " => ()
+      | "summary:     " => ()
+      | _ => handleExtension()
       };
+    } else {
+      handleExtension();
     };
   };
 
-  readFile(~channel=stdin, ~onLine=processLine(~quarterly=true));
-  Diffs.print(~csv=true);
+  let extension = None;
+  let csv = false;
+  let quarterly = true;
+
+  readFile(~channel=stdin, ~onLine=processLine(~extension, ~quarterly));
+  Diffs.processCurrentItem(~quarterly);
+  Diffs.print(~csv);
   exit(-1) |> ignore;
 };
 
