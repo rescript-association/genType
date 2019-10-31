@@ -19,7 +19,7 @@
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],
   "ppx-flags": [
-    "../../_esy/default/store/b/gentype-a7293292/install/default/bin/DeadCodePPX.exe"
+    "../DeadCodePPX.exe"
   ],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],

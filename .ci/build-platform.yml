@@ -69,7 +69,11 @@ jobs:
         condition: eq(variables.CACHE_RESTORED, 'false')
       - bash: "echo `find _esy -name GenType.exe`"
         displayName: "Find GenType.exe"
-      - bash: "rm examples/GenType.exe && cp `find _esy -name GenType.exe` examples/"
+      - bash: |
+          rm examples/GenType.exe
+          cp `find _esy -name GenType.exe` examples/	
+          rm examples/DeadCodePPX.exe
+          cp `find _esy -name DeadCodePPX.exe` examples/	
         displayName: "Copy GenType.exe to examples/"
       - bash: npm test
         displayName: "Test command"
