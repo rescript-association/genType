@@ -273,32 +273,41 @@ let pathWithoutHead = path => {
   cutFromNextDot(path, 0);
 };
 
-/* Keep track of the location of values exported via genType */
+/* Keep track of the location of values annotated @genType or @dead */
 module ProcessDeadAnnotations = {
-  /* Positions exported to JS */
-  let positionsAnnotatedWithGenType = PosHash.create(1);
-  let positionsAnnotatedDead = PosHash.create(1);
+  type annotatedAs =
+    | GenType
+    | Dead;
 
-  let isAnnotatedDead = pos => PosHash.mem(positionsAnnotatedDead, pos);
+  let positionsAnnotated = PosHash.create(1);
 
-  let isAnnotatedGentypeOrDead = pos =>
-    PosHash.mem(positionsAnnotatedWithGenType, pos) || isAnnotatedDead(pos);
+  let isAnnotatedDead = pos =>
+    PosHash.find_opt(positionsAnnotated, pos) == Some(Dead);
 
-  let posAnnotatedWithGenType = (pos: Lexing.position) => {
-    PosHash.replace(positionsAnnotatedWithGenType, pos, ());
+  let isAnnotatedGenType = pos =>
+    PosHash.find_opt(positionsAnnotated, pos) == Some(GenType);
+
+  let isAnnotatedGenTypeOrDead = pos =>
+    switch (PosHash.find_opt(positionsAnnotated, pos)) {
+    | Some(Dead | GenType) => true
+    | None => false
+    };
+
+  let annotateGenType = (pos: Lexing.position) => {
+    PosHash.replace(positionsAnnotated, pos, GenType);
   };
 
-  let posAnnotatedDead = (pos: Lexing.position) => {
-    PosHash.replace(positionsAnnotatedDead, pos, ());
+  let annotateDead = (pos: Lexing.position) => {
+    PosHash.replace(positionsAnnotated, pos, Dead);
   };
 
   let processAttributes = (~ignoreInterface, ~pos, attributes) => {
     if (attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
-      pos |> posAnnotatedWithGenType;
+      pos |> annotateGenType;
     };
     if (attributes
         |> Annotation.getAttributePayload((==)(deadAnnotation)) != None) {
-      pos |> posAnnotatedDead;
+      pos |> annotateDead;
     };
   };
 
@@ -453,7 +462,7 @@ module WriteDeadAnnotations = {
 let report = (~useColumn, ~onDeadCode, decs: decs) => {
   let isValueDecs = decs === valueDecs;
   let dontReportDead = pos =>
-    ProcessDeadAnnotations.isAnnotatedGentypeOrDead(pos);
+    ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
     switch (pos |> PosHash.findSet(valueReferences)) {
@@ -463,7 +472,7 @@ let report = (~useColumn, ~onDeadCode, decs: decs) => {
         |> PosSet.filter(pos => !ProcessDeadAnnotations.isAnnotatedDead(pos));
       if (liveReferences |> PosSet.cardinal == 0) {
         if (transitive) {
-          pos |> ProcessDeadAnnotations.posAnnotatedDead;
+          pos |> ProcessDeadAnnotations.annotateDead;
         };
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
