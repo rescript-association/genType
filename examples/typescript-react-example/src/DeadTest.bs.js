@@ -8,6 +8,10 @@ var Inner = { };
 
 var M = { };
 
+var VariantUsedOnlyInImplementation = {
+  a: /* A */0
+};
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -29,6 +33,7 @@ export {
   thisIsMarkedLive ,
   Inner ,
   M ,
+  VariantUsedOnlyInImplementation ,
   
 }
 /*  Not a pure module */

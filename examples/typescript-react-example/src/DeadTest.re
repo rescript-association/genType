@@ -30,3 +30,15 @@ module M: {
 } = {
   let thisSignatureItemIsDead = 34;
 };
+
+module VariantUsedOnlyInImplementation: {
+  type t =
+    | [@live] A; // TODO: discovered this automatically
+  let a: t;
+} = {
+  type t =
+    | A;
+  let a = A;
+};
+
+let _ = VariantUsedOnlyInImplementation.a;
