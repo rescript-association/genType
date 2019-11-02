@@ -94,7 +94,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       _,
     ) =>
     if (analyzeTypes) {
-      DeadType.collectReferences(~posDeclaration, ~posUsage);
+      DeadType.addTypeReference(~posDeclaration, ~posUsage);
     }
 
   | _ => ()
@@ -103,7 +103,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
 };
 
 /* Traverse the AST */
-let collectReferences = {
+let collectValueReferences = {
   /* Tast_mapper */
   let super = Tast_mapper.default;
   let wrap = (f, ~getPos, ~self, x) => {
@@ -161,7 +161,7 @@ let processSignature = (fn, signature: Types.signature) => {
 let processStructure =
     (~cmtiExists, cmt_value_dependencies, structure: Typedtree.structure) => {
   structure
-  |> collectReferences.Tast_mapper.structure(collectReferences)
+  |> collectValueReferences.structure(collectValueReferences)
   |> ignore;
 
   let valueDependencies = cmt_value_dependencies |> List.rev;

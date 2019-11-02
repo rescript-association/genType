@@ -1,5 +1,7 @@
 /* Adapted from https://github.com/LexiFi/dead_code_analyzer */
 
+open DeadCommon;
+
 let collectExport =
     (path, u, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (id, loc) => {
@@ -23,9 +25,17 @@ let collectExport =
   };
 };
 
-let collectReferences = (~posDeclaration, ~posUsage) =>
+let addTypeReference = (~posDeclaration, ~posUsage) => {
+  if (verbose) {
+    GenTypeCommon.logItem(
+      "addTypeReference %s --> %s\n",
+      posUsage |> posToString(~printCol=true, ~shortFile=true),
+      posDeclaration |> posToString(~printCol=true, ~shortFile=true),
+    );
+  };
   DeadCommon.PosHash.addSet(
     DeadCommon.valueReferences,
     posDeclaration,
     posUsage,
   );
+};
