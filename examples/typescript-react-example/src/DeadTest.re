@@ -14,6 +14,11 @@ ignore(thisIsUsedTwice);
 [@dead]
 let thisIsMarkedDead = 99;
 
+let thisIsKeptAlive = 42;
+
+[@live]
+let thisIsMarkedLive = thisIsKeptAlive;
+
 module Inner = {
   [@dead]
   let thisIsAlsoMarkedDead = 99;

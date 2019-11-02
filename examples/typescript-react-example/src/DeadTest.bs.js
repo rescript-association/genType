@@ -16,11 +16,17 @@ var thisIsUsedOnce = 34;
 
 var thisIsUsedTwice = 34;
 
+var thisIsKeptAlive = 42;
+
+var thisIsMarkedLive = 42;
+
 export {
   fortytwo ,
   fortyTwoButExported ,
   thisIsUsedOnce ,
   thisIsUsedTwice ,
+  thisIsKeptAlive ,
+  thisIsMarkedLive ,
   Inner ,
   M ,
   

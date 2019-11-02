@@ -15,6 +15,7 @@ let write = Sys.getenv_opt("Write") != None;
 let verbose = Sys.getenv_opt("Debug") != None;
 
 let deadAnnotation = "dead";
+let liveAnnotation = "live";
 
 /* Location printer: `filename:line: ' */
 let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
@@ -277,12 +278,16 @@ let pathWithoutHead = path => {
 module ProcessDeadAnnotations = {
   type annotatedAs =
     | GenType
-    | Dead;
+    | Dead
+    | Live;
 
   let positionsAnnotated = PosHash.create(1);
 
   let isAnnotatedDead = pos =>
     PosHash.find_opt(positionsAnnotated, pos) == Some(Dead);
+
+  let isAnnotatedLive = pos =>
+    PosHash.find_opt(positionsAnnotated, pos) == Some(Live);
 
   let isAnnotatedGenType = pos =>
     PosHash.find_opt(positionsAnnotated, pos) == Some(GenType);
@@ -290,6 +295,7 @@ module ProcessDeadAnnotations = {
   let isAnnotatedGenTypeOrDead = pos =>
     switch (PosHash.find_opt(positionsAnnotated, pos)) {
     | Some(Dead | GenType) => true
+    | Some(Live)
     | None => false
     };
 
@@ -301,6 +307,10 @@ module ProcessDeadAnnotations = {
     PosHash.replace(positionsAnnotated, pos, Dead);
   };
 
+  let annotateLive = (pos: Lexing.position) => {
+    PosHash.replace(positionsAnnotated, pos, Live);
+  };
+
   let processAttributes = (~ignoreInterface, ~pos, attributes) => {
     if (attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
       pos |> annotateGenType;
@@ -308,6 +318,10 @@ module ProcessDeadAnnotations = {
     if (attributes
         |> Annotation.getAttributePayload((==)(deadAnnotation)) != None) {
       pos |> annotateDead;
+    } else if (attributes
+               |> Annotation.getAttributePayload((==)(liveAnnotation))
+               != None) {
+      pos |> annotateLive;
     };
   };
 
@@ -470,7 +484,9 @@ let report = (~useColumn, ~onDeadCode, decs: decs) => {
       let liveReferences =
         referencesToLoc
         |> PosSet.filter(pos => !ProcessDeadAnnotations.isAnnotatedDead(pos));
-      if (liveReferences |> PosSet.cardinal == 0) {
+      if (liveReferences
+          |> PosSet.cardinal == 0
+          && !ProcessDeadAnnotations.isAnnotatedLive(pos)) {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };

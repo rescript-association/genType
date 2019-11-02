@@ -1370,10 +1370,13 @@
   addValueReference DeadTest.re:11:0 --> pervasives.mli:694:0
   addValueReference DeadTest.re:12:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:12:0 --> pervasives.mli:694:0
+  addValueReference DeadTest.re:20:4 --> DeadTest.re:17:4
   export fortytwo DeadTest.re:2:4
   export fortyTwoButExported DeadTest.re:5:4
   export thisIsUsedOnce DeadTest.re:7:4
   export thisIsUsedTwice DeadTest.re:10:4
+  export thisIsKeptAlive DeadTest.re:17:4
+  export thisIsMarkedLive DeadTest.re:20:4
 
 UNUSED EXPORTED VALUES:
   
@@ -1432,6 +1435,8 @@ File References
   TypeParams2.re -->> 
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
+  DeadTest.thisIsMarkedLive: 0 references ()
+  DeadTest.thisIsKeptAlive: 1 references (DeadTest.re:20:4)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
