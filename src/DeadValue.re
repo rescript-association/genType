@@ -14,7 +14,7 @@ let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
   | _ => []
   };
 
-let rec collectExport = (~path, ~moduleName, si: Types.signature_item) =>
+let rec collectExport = (~path, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc, val_kind}) when !val_loc.Location.loc_ghost =>
     let isPrimitive =
@@ -23,11 +23,11 @@ let rec collectExport = (~path, ~moduleName, si: Types.signature_item) =>
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      export(~analysisKind=Value, ~path, ~moduleName, ~id, ~loc=val_loc);
+      export(~analysisKind=Value, ~path, ~id, ~loc=val_loc);
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes) {
-      DeadType.collectExport(~path=[id, ...path], ~moduleName, t);
+      DeadType.collectExport(~path=[id, ...path], t);
     }
   | (
       Sig_module(id, {Types.md_type: moduleType, _}, _) |
@@ -40,7 +40,7 @@ let rec collectExport = (~path, ~moduleName, si: Types.signature_item) =>
       };
     if (collect) {
       getSignature(moduleType)
-      |> List.iter(collectExport(~path=[id, ...path], ~moduleName));
+      |> List.iter(collectExport(~path=[id, ...path]));
     };
   | _ => ()
   };
@@ -171,12 +171,9 @@ let processTypeDependency = ((to_: Lexing.position, from: Lexing.position)) => {
 };
 
 let processSignature = (fn, signature: Types.signature) => {
-  let moduleName = getModuleName(fn);
-  let module_id = Ident.create(String.capitalize_ascii(moduleName));
+  let module_id = Ident.create(String.capitalize_ascii(currentModuleName^));
   signature
-  |> List.iter(sig_item =>
-       collectExport(~path=[module_id], ~moduleName, sig_item)
-     );
+  |> List.iter(sig_item => collectExport(~path=[module_id], sig_item));
   lastPos := Lexing.dummy_pos;
 };
 
@@ -195,8 +192,7 @@ let processStructure =
   if (cmtiExists) {
     let clean = (~analysisKind, pos) => {
       let fn = pos.Lexing.pos_fname;
-      if (isImplementation(fn)
-          && getModuleName(fn) == getModuleName(currentSrc^)) {
+      if (isImplementation(fn) && fn == currentSrc^) {
         if (verbose) {
           GenTypeCommon.logItem(
             "%sclean %s\n",

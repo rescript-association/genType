@@ -7,10 +7,10 @@ let mods: ref(list(string)) = ref([]); /* XXX do we need this? */
 let typeDependencies = ref([]);
 
 let collectExport =
-    (~path, ~moduleName, {type_kind, type_manifest}: Types.type_declaration) => {
+    (~path, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (id, loc) => {
     if (type_manifest == None) {
-      export(~analysisKind=Type, ~path, ~moduleName, ~id, ~loc);
+      export(~analysisKind=Type, ~path, ~id, ~loc);
     };
     let path =
       String.concat(".") @@ List.rev_map(id => id.Ident.name, [id, ...path]);
@@ -49,7 +49,7 @@ let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
       String.concat(".") @@
       List.rev @@
       [name.Asttypes.txt, typeDeclaration.typ_name.txt, ...mods^]
-      @ [getModuleName(currentSrc^)];
+      @ [currentModuleName^];
 
     try(
       switch (typeDeclaration.typ_manifest) {
@@ -61,7 +61,7 @@ let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
             String.concat(".") @@
             [
               /* XXX clean up moduleName: from currentSrc of threaded around? */
-              getModuleName(currentSrc^),
+              currentModuleName^,
               ...Longident.flatten(txt),
             ]
             @ [name.Asttypes.txt],

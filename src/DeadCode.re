@@ -2,12 +2,16 @@ open DeadCommon;
 
 let (+++) = Filename.concat;
 
+let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
+
 let loadFile = (~sourceFile, cmtFilePath) => {
   lastPos := Lexing.dummy_pos;
   if (verbose) {
     GenTypeCommon.logItem("Scanning %s\n", cmtFilePath);
   };
   currentSrc := sourceFile;
+  currentModuleName := getModuleName(sourceFile);
+
   let {Cmt_format.cmt_annots, cmt_value_dependencies} =
     Cmt_format.read_cmt(cmtFilePath);
   switch (cmt_annots) {

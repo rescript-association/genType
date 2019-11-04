@@ -119,6 +119,7 @@ let fields: Hashtbl.t(string, Lexing.position) = (
 
 let lastPos = ref(Lexing.dummy_pos); /* helper to diagnose occurrences of Location.none in the typedtree */
 let currentSrc = ref("");
+let currentModuleName = ref("");
 let currentBindingPos = ref(Lexing.dummy_pos);
 
 let none_ = "_none_";
@@ -229,15 +230,13 @@ let iterFilesFromRootsToLeaves = iterFun => {
   };
 };
 
-let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
-
 let checkUnderscore = name => reportUnderscore^ || name.[0] != '_';
 
 let hashtblAddToList = (hashtbl, key, elt) => Hashtbl.add(hashtbl, key, elt);
 
 /********   PROCESSING  ********/
 
-let export = (~analysisKind, ~path, ~moduleName, ~id, ~loc) => {
+let export = (~analysisKind, ~path, ~id, ~loc) => {
   let value =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
@@ -250,9 +249,7 @@ let export = (~analysisKind, ~path, ~moduleName, ~id, ~loc) => {
        will create value definitions whose location is in set.mli
      */
   if (!loc.loc_ghost
-      && (
-        moduleName == getModuleName(pos.pos_fname) || moduleName === include_
-      )
+      && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)
       && checkUnderscore(id.name)) {
     if (verbose) {
       GenTypeCommon.logItem(
