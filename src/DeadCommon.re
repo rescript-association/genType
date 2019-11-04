@@ -17,6 +17,10 @@ let verbose = Sys.getenv_opt("Debug") != None;
 let deadAnnotation = "dead";
 let liveAnnotation = "live";
 
+type analysisKind =
+  | Value
+  | Type;
+
 /* Location printer: `filename:line: ' */
 let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
   let file = pos.Lexing.pos_fname;
@@ -57,16 +61,17 @@ module PosHash = {
     replace(h, k, PosSet.add(v, set));
   };
 
-  let mergeSet = (table, pos1, pos2) => {
-    let set1 = findSet(table, pos1);
-    let set2 = findSet(table, pos2);
+  let mergeSet = (~analysisKind, ~from, ~to_, table) => {
+    let set1 = findSet(table, to_);
+    let set2 = findSet(table, from);
     let setUnion = PosSet.union(set1, set2);
-    replace(table, pos1, setUnion);
+    replace(table, to_, setUnion);
     if (verbose) {
       GenTypeCommon.logItem(
-        "mergeSet %s --> %s\n",
-        pos2 |> posToString(~printCol=true, ~shortFile=true),
-        pos1 |> posToString(~printCol=true, ~shortFile=true),
+        "%smergeSet %s --> %s\n",
+        analysisKind == Type ? "[type] " : "",
+        from |> posToString(~printCol=true, ~shortFile=true),
+        to_ |> posToString(~printCol=true, ~shortFile=true),
       );
     };
   };
@@ -104,6 +109,7 @@ let valueDecs: decs = Hashtbl.create(256); /* all exported value declarations */
 let typeDecs: decs = Hashtbl.create(256);
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
+let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
 
 let fileReferences: FileHash.t(FileSet.t) = FileHash.create(256);
 
@@ -231,7 +237,7 @@ let hashtblAddToList = (hashtbl, key, elt) => Hashtbl.add(hashtbl, key, elt);
 
 /********   PROCESSING  ********/
 
-let export = (~path, ~moduleName, ~decs: decs, ~id, ~loc) => {
+let export = (~analysisKind, ~path, ~moduleName, ~id, ~loc) => {
   let value =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
@@ -250,13 +256,18 @@ let export = (~path, ~moduleName, ~decs: decs, ~id, ~loc) => {
       && checkUnderscore(id.name)) {
     if (verbose) {
       GenTypeCommon.logItem(
-        "export %s %s\n",
+        "%sexport %s %s\n",
+        analysisKind == Type ? "[type] " : "",
         id.name,
         pos |> posToString(~printCol=true, ~shortFile=true),
       );
     };
 
-    hashtblAddToList(decs, pos, value);
+    hashtblAddToList(
+      analysisKind == Value ? valueDecs : typeDecs,
+      pos,
+      value,
+    );
   };
 };
 
@@ -473,13 +484,17 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let report = (~useColumn, ~onDeadCode, decs: decs) => {
-  let isValueDecs = decs === valueDecs;
+let report = (~analysisKind, ~useColumn, ~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
   let folder = (items, {pos, path}) => {
-    switch (pos |> PosHash.findSet(valueReferences)) {
+    switch (
+      pos
+      |> PosHash.findSet(
+           analysisKind == Value ? valueReferences : typeReferences,
+         )
+    ) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
         referencesToLoc
@@ -492,7 +507,7 @@ let report = (~useColumn, ~onDeadCode, decs: decs) => {
         };
         [{pos, path: pathWithoutHead(path)}, ...items];
       } else {
-        if (verbose && isValueDecs) {
+        if (verbose && analysisKind == Value) {
           let refsString =
             referencesToLoc
             |> PosSet.elements
@@ -512,7 +527,7 @@ let report = (~useColumn, ~onDeadCode, decs: decs) => {
     };
   };
 
-  if (isValueDecs && verbose) {
+  if (analysisKind == Value && verbose) {
     GenTypeCommon.logItem("\nFile References\n\n");
     fileReferences
     |> FileHash.iter((file, files) =>
@@ -528,7 +543,11 @@ let report = (~useColumn, ~onDeadCode, decs: decs) => {
   };
 
   let items =
-    Hashtbl.fold((pos, path, items) => [{pos, path}, ...items], decs, []);
+    Hashtbl.fold(
+      (pos, path, items) => [{pos, path}, ...items],
+      analysisKind == Value ? valueDecs : typeDecs,
+      [],
+    );
   let orderedFiles = Hashtbl.create(256);
   iterFilesFromRootsToLeaves(
     {

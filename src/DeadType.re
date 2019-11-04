@@ -2,15 +2,20 @@
 
 open DeadCommon;
 
+let mods: ref(list(string)) = ref([]); /* XXX do we need this? */
+
+let typeDependencies = ref([]);
+
 let collectExport =
-    (path, u, {type_kind, type_manifest}: Types.type_declaration) => {
+    (~path, ~moduleName, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (id, loc) => {
     if (type_manifest == None) {
-      DeadCommon.export(path, u, DeadCommon.typeDecs, id, loc);
+      export(~analysisKind=Type, ~path, ~moduleName, ~id, ~loc);
     };
     let path =
       String.concat(".") @@ List.rev_map(id => id.Ident.name, [id, ...path]);
-    Hashtbl.replace(DeadCommon.fields, path, loc.Location.loc_start);
+    /* XXX clean up path string: ids plus moduleName */
+    Hashtbl.replace(fields, path, loc.Location.loc_start);
   };
 
   switch (type_kind) {
@@ -33,9 +38,64 @@ let addTypeReference = (~posDeclaration, ~posUsage) => {
       posDeclaration |> posToString(~printCol=true, ~shortFile=true),
     );
   };
-  DeadCommon.PosHash.addSet(
-    DeadCommon.valueReferences,
-    posDeclaration,
-    posUsage,
-  );
+  PosHash.addSet(typeReferences, posDeclaration, posUsage);
+};
+
+let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
+  /* XXX clean up name: how's this called elsewhere, not assoc */
+  let assoc = (name, pos) => {
+    let path =
+      /* XXX clean up path string: ids plus moduleName */
+      String.concat(".") @@
+      List.rev @@
+      [name.Asttypes.txt, typeDeclaration.typ_name.txt, ...mods^]
+      @ [getModuleName(currentSrc^)];
+
+    try(
+      switch (typeDeclaration.typ_manifest) {
+      | Some({ctyp_desc: [@implicit_arity] Ttyp_constr(_, {txt, _}, _), _}) =>
+        let pos1 =
+          Hashtbl.find(
+            fields,
+            /* XXX clean up path string: ids plus moduleName */
+            String.concat(".") @@
+            [
+              /* XXX clean up moduleName: from currentSrc of threaded around? */
+              getModuleName(currentSrc^),
+              ...Longident.flatten(txt),
+            ]
+            @ [name.Asttypes.txt],
+          );
+
+        let pos2 = Hashtbl.find(fields, path);
+        typeDependencies :=
+          [(pos2, pos1), (pos1, pos), ...typeDependencies^];
+      | _ => ()
+      }
+    ) {
+    | _ => ()
+    };
+    try({
+      let pos1 = Hashtbl.find(fields, path);
+      typeDependencies := [(pos1, pos), ...typeDependencies^];
+    }) {
+    | Not_found => Hashtbl.add(fields, path, pos)
+    };
+  };
+
+  switch (typeDeclaration.typ_kind) {
+  | Ttype_record(l) =>
+    l
+    |> List.iter(({Typedtree.ld_name, ld_loc, ld_type}) =>
+         assoc(ld_name, ld_loc.Location.loc_start)
+       )
+
+  | Ttype_variant(l) =>
+    l
+    |> List.iter(({Typedtree.cd_name, cd_loc}) =>
+         assoc(cd_name, cd_loc.Location.loc_start)
+       )
+
+  | _ => ()
+  };
 };

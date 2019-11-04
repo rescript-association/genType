@@ -1,6 +1,6 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/location/location.cmt
-  export id location.re:5:2
-  export name location.re:6:2
+  [type] export id location.re:5:2
+  [type] export name location.re:6:2
   export x location.re:9:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ManyComponents.cmt
   addValueReference ManyComponents.re:6:6 --> ReasonReact.rei:153:0
@@ -63,27 +63,27 @@
   addValueReference Types.re:143:4 --> Types.re:143:36
   export someIntList Types.re:5:4
   export map Types.re:8:4
-  export A Types.re:12:4
-  export B Types.re:13:4
+  [type] export A Types.re:12:4
+  [type] export B Types.re:13:4
   export swap Types.re:28:8
-  export self Types.re:35:22
-  export b Types.re:38:27
-  export a Types.re:39:26
+  [type] export self Types.re:35:22
+  [type] export b Types.re:38:27
+  [type] export a Types.re:39:26
   export selfRecursiveConverter Types.re:46:4
   export mutuallyRecursiveConverter Types.re:53:4
   export testFunctionOnOptionsAsArgument Types.re:56:4
-  export A Types.re:60:4
-  export B Types.re:61:4
+  [type] export A Types.re:60:4
+  [type] export B Types.re:61:4
   export stringT Types.re:64:4
   export jsStringT Types.re:67:4
   export jsonStringify Types.re:79:4
-  export i Types.re:88:2
-  export s Types.re:89:2
+  [type] export i Types.re:88:2
+  [type] export s Types.re:89:2
   export testConvertNull Types.re:93:4
   export testConvertLocation Types.re:99:4
   export testMarshalFields Types.re:117:4
   export setMatch Types.re:133:4
-  export id Types.re:138:19
+  [type] export id Types.re:138:19
   export testInstantiateTypeParameter Types.re:143:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
   addValueReference Tuples.re:4:4 --> Tuples.re:4:18
@@ -123,8 +123,8 @@
   export computeAreaWithIdent Tuples.re:17:4
   export computeAreaNoConverters Tuples.re:21:4
   export coord2d Tuples.re:24:4
-  export name Tuples.re:31:2
-  export age Tuples.re:32:2
+  [type] export name Tuples.re:31:2
+  [type] export age Tuples.re:32:2
   export getFirstName Tuples.re:39:4
   export marry Tuples.re:42:4
   export changeSecondAge Tuples.re:45:4
@@ -171,22 +171,22 @@
   addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:35
   addValueReference ReasonComponent.re:63:4 --> pervasives.mli:264:0
   export component ReasonComponent.re:3:4
-  export name ReasonComponent.re:7:2
-  export surname ReasonComponent.re:8:2
-  export type_ ReasonComponent.re:9:2
-  export polymorphicPayload ReasonComponent.re:11:2
+  [type] export name ReasonComponent.re:7:2
+  [type] export surname ReasonComponent.re:8:2
+  [type] export type_ ReasonComponent.re:9:2
+  [type] export polymorphicPayload ReasonComponent.re:11:2
   export onClick ReasonComponent.re:15:4
   export make ReasonComponent.re:18:4
   export minus ReasonComponent.re:43:4
   export useTypeDefinedInAnotherModule ReasonComponent.re:46:4
-  export A ReasonComponent.re:50:4
-  export B ReasonComponent.re:51:4
-  export C ReasonComponent.re:52:4
+  [type] export A ReasonComponent.re:50:4
+  [type] export B ReasonComponent.re:51:4
+  [type] export C ReasonComponent.re:52:4
   export tToString ReasonComponent.re:55:4
   export useRecordsCoord ReasonComponent.re:63:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
-  export x FirstClassModulesInterface.rei:3:2
-  export y FirstClassModulesInterface.rei:4:2
+  [type] export x FirstClassModulesInterface.rei:3:2
+  [type] export y FirstClassModulesInterface.rei:4:2
   export r FirstClassModulesInterface.rei:7:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
@@ -606,8 +606,8 @@
   clean ImmutableArray.re:118:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
   addValueReference TransitiveType3.re:8:4 --> TransitiveType3.re:8:17
-  export i TransitiveType3.re:3:2
-  export s TransitiveType3.re:4:2
+  [type] export i TransitiveType3.re:3:2
+  [type] export s TransitiveType3.re:4:2
   export convertT3 TransitiveType3.re:8:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
   addValueReference TransitiveType2.re:7:4 --> TransitiveType2.re:7:17
@@ -635,7 +635,7 @@
   export testConvert2to3 Variants.re:80:4
   export id1 Variants.re:89:4
   export id2 Variants.re:92:4
-  export Type Variants.re:97:4
+  [type] export Type Variants.re:97:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Uncurried.cmt
   addValueReference Uncurried.re:14:4 --> js.ml:72:1
   addValueReference Uncurried.re:17:4 --> Uncurried.re:17:20
@@ -709,8 +709,8 @@
   export uncurried3 Uncurried.re:23:4
   export curried3 Uncurried.re:27:4
   export callback Uncurried.re:30:4
-  export login Uncurried.re:32:13
-  export loginU Uncurried.re:33:14
+  [type] export login Uncurried.re:32:13
+  [type] export loginU Uncurried.re:33:14
   export callback2 Uncurried.re:36:4
   export callback2U Uncurried.re:39:4
   export sumU Uncurried.re:42:4
@@ -737,14 +737,14 @@
   export nested3Value NestedModules.re:34:10
   export nested3Function NestedModules.re:37:10
   export nested2Function NestedModules.re:41:8
-  export A NestedModules.re:46:6
-  export B NestedModules.re:47:6
+  [type] export A NestedModules.re:46:6
+  [type] export B NestedModules.re:47:6
   export someString NestedModules.re:50:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases2.cmt
-  export x ModuleAliases2.re:3:2
-  export y ModuleAliases2.re:4:2
-  export outer ModuleAliases2.re:9:16
-  export inner ModuleAliases2.re:13:18
+  [type] export x ModuleAliases2.re:3:2
+  [type] export y ModuleAliases2.re:4:2
+  [type] export outer ModuleAliases2.re:9:16
+  [type] export inner ModuleAliases2.re:13:18
   export q ModuleAliases2.re:21:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
   addValueReference TransitiveType1.re:2:4 --> TransitiveType1.re:2:15
@@ -752,7 +752,7 @@
   export convert TransitiveType1.re:2:4
   export convertAlias TransitiveType1.re:5:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
-  export id TypeParams2.re:2:13
+  [type] export id TypeParams2.re:2:13
   export exportSomething TypeParams2.re:10:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModules.cmt
   addValueReference FirstClassModules.re:25:8 --> FirstClassModules.re:25:13
@@ -788,7 +788,7 @@
   export someFunctorAsFunction FirstClassModules.re:53:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
   addValueReference ImportMyBanner.re:19:4 --> ImportMyBanner.re:8:0
-  export text ImportMyBanner.re:6:16
+  [type] export text ImportMyBanner.re:6:16
   export make ImportMyBanner.re:8:0
   export make ImportMyBanner.re:19:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams3.cmt
@@ -812,7 +812,7 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Opaque.cmt
   addValueReference Opaque.re:6:4 --> Opaque.re:6:20
   addValueReference Opaque.re:12:4 --> Opaque.re:12:44
-  export A Opaque.re:3:4
+  [type] export A Opaque.re:3:4
   export noConversion Opaque.re:6:4
   export testConvertNestedRecordFromOtherFile Opaque.re:12:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmti
@@ -883,34 +883,38 @@
   addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:70:31
   addValueReference VariantsWithPayload.re:103:4 --> VariantsWithPayload.re:103:23
   addValueReference VariantsWithPayload.re:110:4 --> VariantsWithPayload.re:110:26
-  export x VariantsWithPayload.re:2:2
-  export y VariantsWithPayload.re:3:2
+  [type] export x VariantsWithPayload.re:2:2
+  [type] export y VariantsWithPayload.re:3:2
   export testWithPayload VariantsWithPayload.re:16:4
   export printVariantWithPayload VariantsWithPayload.re:19:4
   export testManyPayloads VariantsWithPayload.re:38:4
   export printManyPayloads VariantsWithPayload.re:41:4
-  export A VariantsWithPayload.re:51:4
-  export B VariantsWithPayload.re:52:4
-  export C VariantsWithPayload.re:53:4
+  [type] export A VariantsWithPayload.re:51:4
+  [type] export B VariantsWithPayload.re:52:4
+  [type] export C VariantsWithPayload.re:53:4
   export testSimpleVariant VariantsWithPayload.re:56:4
-  export A VariantsWithPayload.re:60:4
-  export B VariantsWithPayload.re:61:4
-  export C VariantsWithPayload.re:62:4
-  export D VariantsWithPayload.re:63:4
-  export E VariantsWithPayload.re:64:4
+  [type] export A VariantsWithPayload.re:60:4
+  [type] export B VariantsWithPayload.re:61:4
+  [type] export C VariantsWithPayload.re:62:4
+  [type] export D VariantsWithPayload.re:63:4
+  [type] export E VariantsWithPayload.re:64:4
   export testVariantWithPayloads VariantsWithPayload.re:67:4
   export printVariantWithPayloads VariantsWithPayload.re:70:4
-  export R VariantsWithPayload.re:100:4
+  [type] export R VariantsWithPayload.re:100:4
   export testVariant1Int VariantsWithPayload.re:103:4
-  export R VariantsWithPayload.re:107:4
+  [type] export R VariantsWithPayload.re:107:4
   export testVariant1Object VariantsWithPayload.re:110:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
   mergeSet FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   mergeSet FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
   mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
+  [type] mergeSet FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2
+  [type] mergeSet FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2
   clean FirstClassModulesInterface.re:6:4
   clean FirstClassModulesInterface.re:8:18
   clean FirstClassModulesInterface.re:8:18
+  [type] clean FirstClassModulesInterface.re:3:2
+  [type] clean FirstClassModulesInterface.re:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
   addValueReference ImportJsValue.re:19:4 --> ImportJsValue.re:1:0
   addValueReference ImportJsValue.re:22:4 --> ImportJsValue.re:14:0
@@ -927,8 +931,8 @@
   addValueReference ImportJsValue.re:56:4 --> pervasives.mli:264:0
   addValueReference ImportJsValue.re:56:4 --> ImportJsValue.re:52:0
   export round ImportJsValue.re:1:0
-  export x ImportJsValue.re:10:2
-  export y ImportJsValue.re:11:2
+  [type] export x ImportJsValue.re:10:2
+  [type] export y ImportJsValue.re:11:2
   export area ImportJsValue.re:14:0
   export roundedNumber ImportJsValue.re:19:4
   export areaValue ImportJsValue.re:22:4
@@ -938,8 +942,8 @@
   export useColor ImportJsValue.re:50:0
   export higherOrder ImportJsValue.re:52:0
   export returnedFromHigherOrder ImportJsValue.re:56:4
-  export I ImportJsValue.re:59:4
-  export S ImportJsValue.re:60:4
+  [type] export I ImportJsValue.re:59:4
+  [type] export S ImportJsValue.re:60:4
   export convertVariant ImportJsValue.re:62:0
   export polymorphic ImportJsValue.re:65:0
   export default ImportJsValue.re:67:0
@@ -978,7 +982,7 @@
   export get References.re:32:4
   export make References.re:35:4
   export set References.re:38:4
-  export x References.re:40:27
+  [type] export x References.re:40:27
   export destroysRefIdentity References.re:44:4
   export preserveRefIdentity References.re:48:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
@@ -1000,8 +1004,8 @@
   addValueReference ModuleAliases.re:22:4 --> ModuleAliases.re:22:18
   addValueReference ModuleAliases.re:25:4 --> ModuleAliases.re:25:17
   addValueReference ModuleAliases.re:28:4 --> ModuleAliases.re:28:18
-  export inner ModuleAliases.re:3:19
-  export nested ModuleAliases.re:11:16
+  [type] export inner ModuleAliases.re:3:19
+  [type] export nested ModuleAliases.re:11:16
   export testNested ModuleAliases.re:22:4
   export testInner ModuleAliases.re:25:4
   export testInner2 ModuleAliases.re:28:4
@@ -1074,8 +1078,8 @@
   export eqU ImmutableArray.rei:108:0
   export eq ImmutableArray.rei:109:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHookDefault.cmt
-  export name ImportHookDefault.re:2:2
-  export age ImportHookDefault.re:3:2
+  [type] export name ImportHookDefault.re:2:2
+  [type] export age ImportHookDefault.re:3:2
   export make ImportHookDefault.re:6:0
   export make2 ImportHookDefault.re:16:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/UseImportJsValue.cmt
@@ -1093,7 +1097,7 @@
   export innerStuffContents TestImport.re:18:4
   export valueStartingWithUpperCaseLetter TestImport.re:20:0
   export defaultValue TestImport.re:24:0
-  export text TestImport.re:28:16
+  [type] export text TestImport.re:28:16
   export make TestImport.re:30:0
   export make TestImport.re:42:4
   export defaultValue2 TestImport.re:44:0
@@ -1108,8 +1112,8 @@
   export testBeltArrayGet TestImmutableArray.re:9:4
   export testBeltArraySet TestImmutableArray.re:11:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHooks.cmt
-  export name ImportHooks.re:3:2
-  export age ImportHooks.re:4:2
+  [type] export name ImportHooks.re:3:2
+  [type] export age ImportHooks.re:4:2
   export make ImportHooks.re:15:0
   export foo ImportHooks.re:21:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
@@ -1182,34 +1186,34 @@
   addValueReference Records.re:115:4 --> js.ml:70:1
   addValueReference Records.re:115:4 --> belt_Option.mli:58:0
   addValueReference Records.re:115:4 --> pervasives.mli:272:0
-  export x Records.re:5:2
-  export y Records.re:6:2
-  export z Records.re:7:2
+  [type] export x Records.re:5:2
+  [type] export y Records.re:6:2
+  [type] export z Records.re:7:2
   export origin Records.re:11:4
   export computeArea Records.re:14:4
   export coord2d Records.re:18:4
-  export name Records.re:22:2
-  export age Records.re:23:2
-  export address Records.re:24:2
-  export name Records.re:29:2
-  export owner Records.re:30:2
-  export address Records.re:31:2
+  [type] export name Records.re:22:2
+  [type] export age Records.re:23:2
+  [type] export address Records.re:24:2
+  [type] export name Records.re:29:2
+  [type] export owner Records.re:30:2
+  [type] export address Records.re:31:2
   export getOpt Records.re:34:4
   export findAddress Records.re:37:4
   export someBusiness Records.re:41:4
   export findAllAddresses Records.re:44:4
-  export num Records.re:56:2
-  export payload Records.re:57:2
+  [type] export num Records.re:56:2
+  [type] export payload Records.re:57:2
   export getPayload Records.re:61:4
-  export v Records.re:65:2
-  export w Records.re:66:2
+  [type] export v Records.re:65:2
+  [type] export w Records.re:66:2
   export getPayloadRecord Records.re:70:4
   export recordValue Records.re:73:4
   export payloadValue Records.re:76:4
   export getPayloadRecordPlusOne Records.re:79:4
-  export name Records.re:86:2
-  export owner Records.re:87:2
-  export address2 Records.re:88:2
+  [type] export name Records.re:86:2
+  [type] export owner Records.re:87:2
+  [type] export address2 Records.re:88:2
   export findAddress2 Records.re:92:4
   export someBusiness2 Records.re:96:4
   export computeArea3 Records.re:103:4
@@ -1343,7 +1347,7 @@
   addValueReference Hooks.re:156:4 --> Hooks.re:156:41
   addValueReference Hooks.re:156:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:156:4 --> ReactDOMRe.re:1097:0
-  export name Hooks.re:1:16
+  [type] export name Hooks.re:1:16
   export make Hooks.re:4:4
   export default Hooks.re:36:4
   export anotherComponent Hooks.re:40:4
@@ -1356,7 +1360,7 @@
   export componentWithRenamedArgs Hooks.re:87:4
   export makeWithRef Hooks.re:94:4
   export testForwardRef Hooks.re:105:4
-  export x Hooks.re:107:10
+  [type] export x Hooks.re:107:10
   export input Hooks.re:111:4
   export polymorphicComponent Hooks.re:130:4
   export functionReturningReactElement Hooks.re:134:4
@@ -1366,9 +1370,9 @@
   addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
   addValueReference TestPromise.re:14:4 --> js_promise.ml:39:0
   addValueReference TestPromise.re:14:4 --> js_promise.ml:50:0
-  export x TestPromise.re:6:2
-  export s TestPromise.re:7:2
-  export result TestPromise.re:11:18
+  [type] export x TestPromise.re:6:2
+  [type] export s TestPromise.re:7:2
+  [type] export result TestPromise.re:11:18
   export convert TestPromise.re:14:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
   mergeSet NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6
@@ -1383,13 +1387,13 @@
   export convertRecord TestFirstClassModules.re:8:4
   export convertFirstClassModuleWithTypeEquations TestFirstClassModules.re:26:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/AutoAnnotate.cmt
-  export R AutoAnnotate.re:2:4
-  export variant AutoAnnotate.re:5:15
-  export r2 AutoAnnotate.re:7:11
-  export r3 AutoAnnotate.re:9:11
-  export r4 AutoAnnotate.re:11:11
-  export R2 AutoAnnotate.re:15:4
-  export R4 AutoAnnotate.re:16:4
+  [type] export R AutoAnnotate.re:2:4
+  [type] export variant AutoAnnotate.re:5:15
+  [type] export r2 AutoAnnotate.re:7:11
+  [type] export r3 AutoAnnotate.re:9:11
+  [type] export r4 AutoAnnotate.re:11:11
+  [type] export R2 AutoAnnotate.re:15:4
+  [type] export R4 AutoAnnotate.re:16:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeImplementation.cmt
   mergeSet DeadCodeInterface.re:2:2 --> DeadCodeImplementation.re:2:6
   addValueReference DeadCodeInterface.re:2:2 --> DeadCodeImplementation.re:2:6
@@ -1413,7 +1417,7 @@
   export thisIsUsedTwice DeadTest.re:10:4
   export thisIsKeptAlive DeadTest.re:17:4
   export thisIsMarkedLive DeadTest.re:20:4
-  export A DeadTest.re:36:6
+  [type] export A DeadTest.re:36:6
   export a DeadTest.re:37:2
 
 UNUSED EXPORTED VALUES:

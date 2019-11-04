@@ -23,11 +23,11 @@ let rec collectExport = (~path, ~moduleName, si: Types.signature_item) =>
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      export(~path, ~moduleName, ~decs=valueDecs, ~id, ~loc=val_loc);
+      export(~analysisKind=Value, ~path, ~moduleName, ~id, ~loc=val_loc);
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes) {
-      DeadType.collectExport([id, ...path], moduleName, t);
+      DeadType.collectExport(~path=[id, ...path], ~moduleName, t);
     }
   | (
       Sig_module(id, {Types.md_type: moduleType, _}, _) |
@@ -126,7 +126,14 @@ let collectValueReferences = {
          ~getPos=x => x.vb_expr.exp_loc.loc_start,
          ~self,
        );
-  Tast_mapper.{...super, expr, value_binding};
+  let structure_item = (self, structureItem: Typedtree.structure_item) => {
+    switch (structureItem.str_desc) {
+    | Tstr_type(_, l) => l |> List.iter(DeadType.type_declaration)
+    | _ => ()
+    };
+    super.Tast_mapper.structure_item(self, structureItem);
+  };
+  Tast_mapper.{...super, expr, structure_item, value_binding};
 };
 
 let isImplementation = fn => fn.[String.length(fn) - 1] != 'i';
@@ -141,9 +148,24 @@ let processValueDependency = ((vd1, vd2)) => {
     !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
-    PosHash.mergeSet(valueReferences, pos1, pos2);
+    valueReferences
+    |> PosHash.mergeSet(~analysisKind=Value, ~from=pos2, ~to_=pos1);
     if (isInterface(fn1) && isInterface(fn2)) {
       addValueReference(~addFileReference=false, pos1, pos2);
+    };
+  };
+};
+
+let processTypeDependency = ((to_: Lexing.position, from: Lexing.position)) => {
+  let fnTo = to_.pos_fname
+  and fnFrom = from.pos_fname;
+  let isInterface = fn =>
+    !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
+
+  if (fnTo != none_ && fnFrom != none_ && to_ != from) {
+    typeReferences |> PosHash.mergeSet(~analysisKind=Type, ~from, ~to_);
+    if (isInterface(fnTo) && isInterface(fnFrom)) {
+      DeadType.addTypeReference(~posDeclaration=to_, ~posUsage=from);
     };
   };
 };
@@ -167,14 +189,18 @@ let processStructure =
   let valueDependencies = cmt_value_dependencies |> List.rev;
 
   valueDependencies |> List.iter(processValueDependency);
+
+  DeadType.typeDependencies^ |> List.iter(processTypeDependency);
+
   if (cmtiExists) {
-    let clean = pos => {
+    let clean = (~analysisKind, pos) => {
       let fn = pos.Lexing.pos_fname;
       if (isImplementation(fn)
           && getModuleName(fn) == getModuleName(currentSrc^)) {
         if (verbose) {
           GenTypeCommon.logItem(
-            "clean %s\n",
+            "%sclean %s\n",
+            analysisKind == Type ? "[type] " : "",
             pos |> posToString(~printCol=true, ~shortFile=true),
           );
         };
@@ -184,8 +210,14 @@ let processStructure =
     };
     valueDependencies
     |> List.iter(((vd1, vd2)) => {
-         clean(vd1.Types.val_loc.loc_start);
-         clean(vd2.Types.val_loc.loc_start);
+         clean(~analysisKind=Value, vd1.Types.val_loc.loc_start);
+         clean(~analysisKind=Value, vd2.Types.val_loc.loc_start);
+       });
+    DeadType.typeDependencies^
+    |> List.iter(((loc1, loc2)) => {
+         clean(~analysisKind=Type, loc1);
+         clean(~analysisKind=Type, loc2);
        });
   };
+  DeadType.typeDependencies := [];
 };

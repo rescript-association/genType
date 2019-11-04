@@ -43,15 +43,15 @@ let report = () => {
     item |> WriteDeadAnnotations.onDeadItem(~useColumn);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  valueDecs |> report(~useColumn=false, ~onDeadCode);
+  report(~analysisKind=Value, ~useColumn=false, ~onDeadCode);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  typeDecs |> report(~useColumn=true, ~onDeadCode);
+  report(~analysisKind=Type, ~useColumn=true, ~onDeadCode);
   WriteDeadAnnotations.write();
 };
 
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let extension = Filename.extension(cmtFile);
-  let moduleName = cmtFile |> DeadCommon.getModuleName;
+  let moduleName = cmtFile |> getModuleName;
   let sourceFile =
     (GenTypeCommon.projectRoot^ +++ sourceDir +++ moduleName)
     ++ (extension == ".cmti" ? ".rei" : ".re");
