@@ -57,7 +57,7 @@ let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
 
     try(
       switch (typeDeclaration.typ_manifest) {
-      | Some({ctyp_desc: [@implicit_arity] Ttyp_constr(_, {txt, _}, _), _}) =>
+      | Some({ctyp_desc: Ttyp_constr(_, {txt, _}, _), _}) =>
         let pos1 =
           Hashtbl.find(
             fields,
