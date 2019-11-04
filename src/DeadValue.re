@@ -127,10 +127,14 @@ let collectValueReferences = {
          ~self,
        );
   let structure_item = (self, structureItem: Typedtree.structure_item) => {
+    let oldModulePath = DeadType.modulePath^;
     switch (structureItem.str_desc) {
     | Tstr_type(_, l) => l |> List.iter(DeadType.type_declaration)
+    | Tstr_module({mb_name}) =>
+      DeadType.modulePath := [mb_name.txt, ...DeadType.modulePath^]
     | _ => ()
     };
+    DeadType.modulePath := oldModulePath;
     super.Tast_mapper.structure_item(self, structureItem);
   };
   Tast_mapper.{...super, expr, structure_item, value_binding};

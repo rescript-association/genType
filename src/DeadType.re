@@ -2,7 +2,8 @@
 
 open DeadCommon;
 
-let mods: ref(list(string)) = ref([]); /* XXX do we need this? */
+/* Keep track of the module path while traversing with Tast_mapper */
+let modulePath: ref(list(string)) = ref([]);
 
 let typeDependencies = ref([]);
 
@@ -13,8 +14,7 @@ let collectExport =
       export(~analysisKind=Type, ~path, ~id, ~loc);
     };
     let path =
-      String.concat(".") @@ List.rev_map(id => id.Ident.name, [id, ...path]);
-    /* XXX clean up path string: ids plus moduleName */
+      List.rev_map(id => id.Ident.name, [id, ...path]) |> String.concat(".");
     Hashtbl.replace(fields, path, loc.Location.loc_start);
   };
 
@@ -45,11 +45,15 @@ let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
   /* XXX clean up name: how's this called elsewhere, not assoc */
   let assoc = (name, pos) => {
     let path =
-      /* XXX clean up path string: ids plus moduleName */
-      String.concat(".") @@
-      List.rev @@
-      [name.Asttypes.txt, typeDeclaration.typ_name.txt, ...mods^]
-      @ [currentModuleName^];
+      [
+        currentModuleName^,
+        ...List.rev([
+             name.Asttypes.txt,
+             typeDeclaration.typ_name.txt,
+             ...modulePath^,
+           ]),
+      ]
+      |> String.concat(".");
 
     try(
       switch (typeDeclaration.typ_manifest) {
@@ -57,14 +61,9 @@ let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
         let pos1 =
           Hashtbl.find(
             fields,
-            /* XXX clean up path string: ids plus moduleName */
-            String.concat(".") @@
-            [
-              /* XXX clean up moduleName: from currentSrc of threaded around? */
-              currentModuleName^,
-              ...Longident.flatten(txt),
-            ]
-            @ [name.Asttypes.txt],
+            [currentModuleName^, ...Longident.flatten(txt)]
+            @ [name.Asttypes.txt]
+            |> String.concat("."),
           );
 
         let pos2 = Hashtbl.find(fields, path);
