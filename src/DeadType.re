@@ -42,8 +42,7 @@ let addTypeReference = (~posDeclaration, ~posUsage) => {
 };
 
 let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
-  /* XXX clean up name: how's this called elsewhere, not assoc */
-  let assoc = (name, pos) => {
+  let updateDependencies = (name, pos) => {
     let path =
       [
         currentModuleName^,
@@ -86,13 +85,13 @@ let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
   | Ttype_record(l) =>
     l
     |> List.iter(({Typedtree.ld_name, ld_loc, ld_type}) =>
-         assoc(ld_name, ld_loc.Location.loc_start)
+         updateDependencies(ld_name, ld_loc.Location.loc_start)
        )
 
   | Ttype_variant(l) =>
     l
     |> List.iter(({Typedtree.cd_name, cd_loc}) =>
-         assoc(cd_name, cd_loc.Location.loc_start)
+         updateDependencies(cd_name, cd_loc.Location.loc_start)
        )
 
   | _ => ()
