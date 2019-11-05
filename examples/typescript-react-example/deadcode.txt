@@ -915,6 +915,10 @@
   clean FirstClassModulesInterface.re:8:18
   [type] clean FirstClassModulesInterface.re:3:2
   [type] clean FirstClassModulesInterface.re:2:2
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmti
+  [type] export A DeadTypeTest.rei:2:4
+  [type] export B DeadTypeTest.rei:3:4
+  export a DeadTypeTest.rei:4:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
   addValueReference ImportJsValue.re:19:4 --> ImportJsValue.re:1:0
   addValueReference ImportJsValue.re:22:4 --> ImportJsValue.re:14:0
@@ -993,6 +997,14 @@
   mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   export notification CreateErrorHandler2.re:3:6
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
+  addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
+  mergeSet DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4
+  [type] mergeSet DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
+  [type] mergeSet DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
+  clean DeadTypeTest.re:4:4
+  [type] clean DeadTypeTest.re:3:4
+  [type] clean DeadTypeTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
@@ -1411,6 +1423,8 @@
   addValueReference DeadTest.re:44:0 --> DeadTest.re:37:2
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
+  [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6
+  addTypeReference DeadTest.re:40:6 --> DeadTest.re:36:6
   export fortytwo DeadTest.re:2:4
   export fortyTwoButExported DeadTest.re:5:4
   export thisIsUsedOnce DeadTest.re:7:4
@@ -1425,6 +1439,7 @@ UNUSED EXPORTED VALUES:
 File References
 
   TypeParams3.re -->> 
+  DeadTypeTest.re -->> 
   ManyComponents.re -->> ReactDOMRe.re, ReasonReact.rei
   Records.re -->> belt_Array.mli, belt_List.mli, belt_Option.mli, js_null_undefined.mli, js.ml, pervasives.mli
   UseImportJsValue.re -->> ImportJsValue.re, pervasives.mli
@@ -1467,6 +1482,7 @@ File References
   ImportHooks.re -->> 
   References.re -->> pervasives.mli
   ErrorHandler.re -->> 
+  DeadTypeTest.rei -->> 
   Hooks.re -->> React.re, ReactDOMRe.re, ReasonReact.rei, ImportHookDefault.re, ImportHooks.re, js_null_undefined.mli, js.ml, obj.mli, pervasives.mli
   ModuleAliases2.re -->> 
   CreateErrorHandler1.re -->> ErrorHandler.rei
@@ -1733,6 +1749,9 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei:7: r
 <-- line 7
 [@dead "r"] let r: record;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei:4: a
+<-- line 4
+[@dead "a"] let a: t;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re:2: fortytwo
 <-- line 2
 [@dead "fortytwo"] let fortytwo = 42;
@@ -1942,6 +1961,9 @@ type requiresConversion = {[@dead "requiresConversion.x"] x: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei:4: record.y
 <-- line 4
   [@dead "record.y"] y: string,
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei:3: t.B
+<-- line 3
+  | [@dead "t.B"] B;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re:2: variant.R
 <-- line 2
   | [@dead "variant.R"] R(int);

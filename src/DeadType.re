@@ -7,7 +7,7 @@ let modulePath: ref(list(string)) = ref([]);
 
 let typeDependencies = ref([]);
 
-let collectExport =
+let collectTypeExport =
     (~path, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (id, loc) => {
     if (type_manifest == None) {
@@ -41,7 +41,7 @@ let addTypeReference = (~posDeclaration, ~posUsage) => {
   PosHash.addSet(typeReferences, posDeclaration, posUsage);
 };
 
-let type_declaration = (typeDeclaration: Typedtree.type_declaration) => {
+let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
   let updateDependencies = (name, pos) => {
     let path =
       [

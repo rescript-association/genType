@@ -14,7 +14,7 @@ let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
   | _ => []
   };
 
-let rec collectExport = (~path, si: Types.signature_item) =>
+let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
   switch (si) {
   | Sig_value(id, {Types.val_loc, val_kind}) when !val_loc.Location.loc_ghost =>
     let isPrimitive =
@@ -27,7 +27,7 @@ let rec collectExport = (~path, si: Types.signature_item) =>
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes) {
-      DeadType.collectExport(~path=[id, ...path], t);
+      DeadType.collectTypeExport(~path=[id, ...path], t);
     }
   | (
       Sig_module(id, {Types.md_type: moduleType, _}, _) |
@@ -40,7 +40,7 @@ let rec collectExport = (~path, si: Types.signature_item) =>
       };
     if (collect) {
       getSignature(moduleType)
-      |> List.iter(collectExport(~path=[id, ...path]));
+      |> List.iter(collectExportFromSignatureItem(~path=[id, ...path]));
     };
   | _ => ()
   };
@@ -126,18 +126,28 @@ let collectValueReferences = {
          ~getPos=x => x.vb_expr.exp_loc.loc_start,
          ~self,
        );
+  let type_declaration = (self, typeDeclaration: Typedtree.type_declaration) => {
+    DeadType.processTypeDeclaration(typeDeclaration);
+    super.Tast_mapper.type_declaration(self, typeDeclaration);
+  };
   let structure_item = (self, structureItem: Typedtree.structure_item) => {
     let oldModulePath = DeadType.modulePath^;
     switch (structureItem.str_desc) {
-    | Tstr_type(_, l) => l |> List.iter(DeadType.type_declaration)
     | Tstr_module({mb_name}) =>
       DeadType.modulePath := [mb_name.txt, ...DeadType.modulePath^]
     | _ => ()
     };
+    let result = super.Tast_mapper.structure_item(self, structureItem);
     DeadType.modulePath := oldModulePath;
-    super.Tast_mapper.structure_item(self, structureItem);
+    result;
   };
-  Tast_mapper.{...super, expr, structure_item, value_binding};
+  Tast_mapper.{
+    ...super,
+    expr,
+    structure_item,
+    type_declaration,
+    value_binding,
+  };
 };
 
 let isImplementation = fn => fn.[String.length(fn) - 1] != 'i';
@@ -177,7 +187,9 @@ let processTypeDependency = ((to_: Lexing.position, from: Lexing.position)) => {
 let processSignature = (fn, signature: Types.signature) => {
   let module_id = Ident.create(String.capitalize_ascii(currentModuleName^));
   signature
-  |> List.iter(sig_item => collectExport(~path=[module_id], sig_item));
+  |> List.iter(sig_item =>
+       collectExportFromSignatureItem(~path=[module_id], sig_item)
+     );
   lastPos := Lexing.dummy_pos;
 };
 

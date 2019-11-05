@@ -33,7 +33,7 @@ module M: {
 
 module VariantUsedOnlyInImplementation: {
   type t =
-    | [@live] A; // TODO: discovered this automatically
+    | A; // TODO: discovered this automatically
   let a: t;
 } = {
   type t =
