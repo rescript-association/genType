@@ -11,6 +11,7 @@ let signFile = s => s;
 type cliCommand =
   | Add(string)
   | Clean
+  | DCE
   | NoOp
   | Rm(string);
 
@@ -44,6 +45,9 @@ let cli = () => {
   and setClean = () => {
     Clean |> setCliCommand;
   }
+  and setDCE = () => {
+    DCE |> setCliCommand;
+  }
   and speclist = [
     (
       "-bs-version",
@@ -53,6 +57,7 @@ let cli = () => {
     ("-clean", Arg.Unit(setClean), "clean all the generated files"),
     ("-cmt-add", Arg.String(setAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setRm), "remove a .cmt[i] file"),
+    ("-dce", Arg.Unit(setDCE), "experimental DCE"),
     (
       "-version",
       Arg.Unit(versionAndExit),
@@ -133,6 +138,8 @@ let cli = () => {
         Unix.unlink(outputFile);
       };
       exit(0);
+
+    | DCE => DeadCode.runAnalysis()
     };
 
   Arg.parse(speclist, print_endline, usage);
@@ -140,8 +147,4 @@ let cli = () => {
   executeCliCommand(~bsVersion=bsVersion^, cliCommand^);
 };
 
-if (DeadCommon.active) {
-  DeadCode.runAnalysis();
-} else {
-  cli();
-};
+cli();
