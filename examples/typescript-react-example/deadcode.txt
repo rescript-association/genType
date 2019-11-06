@@ -1128,6 +1128,7 @@
   [type] export age ImportHooks.re:4:2
   export make ImportHooks.re:15:0
   export foo ImportHooks.re:21:0
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BucklescriptAnnotations.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
   addValueReference Records.re:14:4 --> Records.re:14:20
   addValueReference Records.re:14:4 --> Records.re:14:23
@@ -1448,6 +1449,7 @@ File References
   DeadTest.re -->> ImmutableArray.rei, js.ml, pervasives.mli
   TestEmitInnerModules.re -->> 
   TypeParams1.re -->> 
+  BucklescriptAnnotations.re -->> 
   ImportHookDefault.re -->> 
   ModuleAliases.re -->> 
   TestModuleAliases.re -->> 
