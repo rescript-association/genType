@@ -37,6 +37,7 @@ type config = {
   namespace: option(string),
   propTypes: bool,
   reasonReactPath: string,
+  recordsAsObjects: bool,
   fileHeader: option(string),
 };
 
@@ -60,6 +61,7 @@ let default = {
   namespace: None,
   propTypes: false,
   reasonReactPath: "reason-react/src/ReasonReact.js",
+  recordsAsObjects: false,
   fileHeader: None,
 };
 
@@ -279,6 +281,13 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | _ => v1 > 6
       };
     };
+    let recordsAsObjects = {
+      switch (v1) {
+      | 5 => bsVersion >= (5, 3, 0)
+      | 6 => bsVersion >= (6, 3, 0)
+      | _ => v1 > 6
+      };
+    };
     if (Debug.config^) {
       logItem(
         "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
@@ -312,6 +321,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       namespace: None,
       propTypes,
       reasonReactPath,
+      recordsAsObjects,
       fileHeader,
     };
   };
