@@ -283,7 +283,9 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
     };
     let recordsAsObjects = {
       switch (v1) {
-      | _ => false /* TODO: insert appropriate version */
+      | 5 => bsVersion >= (5, 3, 0)
+      | 6 => bsVersion >= (6, 3, 0)
+      | _ => v1 > 6
       };
     };
     if (Debug.config^) {
