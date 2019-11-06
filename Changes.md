@@ -1,4 +1,6 @@
 # master
+
+# 3.2.0
 - Prepare support for bucklescript 6.3.x where records will be compiled to objects.
 - Add support for `[@bs.meth]`.
 
