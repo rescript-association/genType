@@ -12,5 +12,8 @@ type someMethods = {
   .
   [@bs.meth] "send": string => unit,
   [@bs.meth] "on": (string, (. int) => unit) => unit,
-  [@bs.meth] "treeargs": (int, string, int) => string,
+  [@bs.meth] "threeargs": (int, string, int) => string,
+  "twoAgs": (int, string) => int,
 };
+
+let foo = (x: someMethods) => x##threeargs(3, "a", 4);

@@ -349,16 +349,42 @@ let translateConstr =
     };
   | (
       ["Js", "Internal", "meth"],
-      [{dependencies: argsDependencies, type_: Variant({payloads})}, ret],
+      [
+        {
+          dependencies: argsDependencies,
+          type_: Variant({payloads: [({label: "Arity_1"}, _, type_)]}),
+        },
+        ret,
+      ],
     ) => {
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: payloads |> List.map(((_, _, type_)) => type_),
+          argTypes: [type_],
           componentName: None,
           retType: ret.type_,
           typeVars: [],
-          uncurried: true,
+          uncurried: false,
+        }),
+    }
+  | (
+      ["Js", "Internal", "meth"],
+      [
+        {
+          dependencies: argsDependencies,
+          type_: Variant({payloads: [(_, _, Tuple(argTypes))]}),
+        },
+        ret,
+      ],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      type_:
+        Function({
+          argTypes,
+          componentName: None,
+          retType: ret.type_,
+          typeVars: [],
+          uncurried: false,
         }),
     }
   | (["Js", "t"], _) =>
