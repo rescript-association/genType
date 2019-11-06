@@ -9,3 +9,10 @@ export type someMutableFields = {
   mutable1: string; 
   mutable2: string
 };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type someMethods = {
+  readonly send: (_1:string) => void; 
+  readonly on: (_1:[string, ((_1:number) => void)]) => void; 
+  readonly treeargs: (_1:[number, string, number]) => string
+};

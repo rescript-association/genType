@@ -311,7 +311,7 @@ let translateConstr =
       [
         {
           dependencies: argsDependencies,
-          type_: Variant({noPayloads: [{label: "Arity_0", _}]}),
+          type_: Variant({noPayloads: [{label: "Arity_0"}]}),
         },
         ret,
       ],
@@ -347,6 +347,20 @@ let translateConstr =
           uncurried: true,
         }),
     };
+  | (
+      ["Js", "Internal", "meth"],
+      [{dependencies: argsDependencies, type_: Variant({payloads})}, ret],
+    ) => {
+      dependencies: argsDependencies @ ret.dependencies,
+      type_:
+        Function({
+          argTypes: payloads |> List.map(((_, _, type_)) => type_),
+          componentName: None,
+          retType: ret.type_,
+          typeVars: [],
+          uncurried: true,
+        }),
+    }
   | (["Js", "t"], _) =>
     let dependencies =
       fieldsTranslations
