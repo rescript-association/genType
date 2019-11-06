@@ -1,0 +1,12 @@
+(
+  executable
+    (public_name Users.exe)
+
+    ; The main module that will become the binary.
+    (name Users)
+
+    (flags "-w" "-30-40")
+
+    ; Depends on:
+    (libraries str)
+)

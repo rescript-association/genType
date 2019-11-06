@@ -1,0 +1,6 @@
+(executable
+ (name DeadCodePPX)
+ (public_name deadcodeppx.exe)
+ (libraries compiler-libs.common)
+ (flags
+  (:standard -w -9)))
