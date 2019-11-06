@@ -33,7 +33,7 @@ let collectTypeExport =
 let addTypeReference = (~posDeclaration, ~posUsage) => {
   if (verbose) {
     GenTypeCommon.logItem(
-      "addTypeReference %s --> %s\n",
+      "[type] addTypeReference %s --> %s\n",
       posUsage |> posToString(~printCol=true, ~shortFile=true),
       posDeclaration |> posToString(~printCol=true, ~shortFile=true),
     );
