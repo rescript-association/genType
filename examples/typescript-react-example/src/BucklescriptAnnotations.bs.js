@@ -5,8 +5,14 @@ function foo(x) {
   return x.threeargs(3, "a", 4);
 }
 
+function bar(x) {
+  var f = x.twoArgs;
+  return f(3, "a");
+}
+
 export {
   foo ,
+  bar ,
   
 }
 /* No side effect */

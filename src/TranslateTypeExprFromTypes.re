@@ -364,7 +364,7 @@ let translateConstr =
           componentName: None,
           retType: ret.type_,
           typeVars: [],
-          uncurried: false,
+          uncurried: true,
         }),
     }
   | (
@@ -384,7 +384,7 @@ let translateConstr =
           componentName: None,
           retType: ret.type_,
           typeVars: [],
-          uncurried: false,
+          uncurried: true,
         }),
     }
   | (["Js", "t"], _) =>

@@ -15,5 +15,6 @@ export type someMutableFields = {|
 export type someMethods = {|
   +send: (string) => void, 
   +on: (string, ((number) => void)) => void, 
-  +treeargs: (number, string, number) => string
+  +threeargs: (number, string, number) => string, 
+  +twoArgs: (number, string) => number
 |};
