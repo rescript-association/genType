@@ -1,3 +1,6 @@
+# master
+- Prepare support for bucklescript 6.3.x where records will be compiled to objects.
+
 # 3.1.0
 - Make React.Ref more permissive: `{contents: null | T}`.
 - Make `ReactDOMRe.domRef` map to `React.Ref`.
