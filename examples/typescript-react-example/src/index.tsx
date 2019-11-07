@@ -150,3 +150,12 @@ printVariantWithPayloads(
 TestPromise.convert(Promise.resolve({ x: 3, s: "hello" })).then(x =>
   consoleLog("TestPromise result:", x.result)
 );
+
+type Props = {
+  readonly method?: "push" | "replace";
+};
+export const make: React.FC<Props> = (x: Props) => {
+  return <div></div>;
+};
+
+export default make;

@@ -1,4 +1,5 @@
 # master
+- Fix issue with `[@genType.import "./"]` when the conversion function would be called `.`.
 
 # 3.2.0
 - Prepare support for bucklescript 6.3.x where records will be compiled to objects.
