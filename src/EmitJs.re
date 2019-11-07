@@ -516,9 +516,10 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
+           ~importExtension=".bs",
            ~outputFileRelative,
            ~resolver,
-           ~importExtension=".bs",
+           ~useLibraries=false,
          );
     let moduleNameBs = fileName |> ModuleName.forBsFile;
     let moduleName =
@@ -670,9 +671,10 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
+           ~importExtension=".bs",
            ~outputFileRelative,
            ~resolver,
-           ~importExtension=".bs",
+           ~useLibraries=false,
          );
     let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =

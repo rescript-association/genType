@@ -18,11 +18,9 @@
   },
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],
-  "ppx-flags": [
-    "../DeadCodePPX.exe"
-  ],
+  "ppx-flags": ["../DeadCodePPX.exe"],
   "reason": { "react-jsx": 3 },
-  "bs-dependencies": ["reason-react"],
+  "bs-dependencies": ["reason-react", "bs-fetch"],
   "sources": [
     {
       "dir": "src",
