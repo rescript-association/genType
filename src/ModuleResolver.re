@@ -47,33 +47,29 @@ let sourcedirsJsonToMap = (~extensions, ~excludeFile) => {
     | exception _ => fname
     };
 
-  let createFileMap = (~filter, dirs) => {
-    let fileMap = ref(ModuleNameMap.empty);
-    dirs
-    |> List.iter(dir =>
-         dir
-         |> Filename.concat(projectRoot^)
-         |> Sys.readdir
-         |> Array.iter(fname =>
-              if (fname |> filter) {
-                fileMap :=
-                  fileMap^
-                  |> ModuleNameMap.add(
-                       fname |> chopExtensions |> ModuleName.fromStringUnsafe,
-                       dir,
-                     );
-              }
-            )
-       );
-    fileMap^;
-  };
+  let fileMap = ref(ModuleNameMap.empty);
 
-  readSourceDirs()
-  |> createFileMap(~filter=fileName =>
-       extensions
-       |> List.exists(ext => Filename.check_suffix(fileName, ext))
-       && !excludeFile(fileName)
-     );
+  let filter = fileName =>
+    extensions
+    |> List.exists(ext => Filename.check_suffix(fileName, ext))
+    && !excludeFile(fileName);
+
+  let addDir = (~root, dir) =>
+    dir
+    |> Filename.concat(root)
+    |> Sys.readdir
+    |> Array.iter(fname =>
+         if (fname |> filter) {
+           fileMap :=
+             fileMap^
+             |> ModuleNameMap.add(
+                  fname |> chopExtensions |> ModuleName.fromStringUnsafe,
+                  dir,
+                );
+         }
+       );
+  readSourceDirs() |> List.iter(addDir(~root=projectRoot^));
+  fileMap^;
 };
 
 type case =
