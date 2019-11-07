@@ -445,7 +445,12 @@ let rec emitCodeItem =
       switch (type_) {
       | Function({argTypes: [Object(_)], retType} as function_)
           when retType |> EmitType.isTypeReactElement(~config) =>
-        let componentName = importFile == "." ? None : Some(importFile);
+        let componentName =
+          switch (importFile) {
+          | "."
+          | ".." => None
+          | _ => Some(importFile)
+          };
         Function({...function_, componentName});
       | _ => type_
       };
