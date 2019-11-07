@@ -445,7 +445,8 @@ let rec emitCodeItem =
       switch (type_) {
       | Function({argTypes: [Object(_)], retType} as function_)
           when retType |> EmitType.isTypeReactElement(~config) =>
-        Function({...function_, componentName: Some(importFile)})
+        let componentName = importFile == "." ? None : Some(importFile);
+        Function({...function_, componentName});
       | _ => type_
       };
 
@@ -1236,7 +1237,7 @@ let emitTranslationAsString =
     );
 
   let lookupId_ = (~env, s) =>
-    try (exportTypeMap |> StringMap.find(s)) {
+    try(exportTypeMap |> StringMap.find(s)) {
     | Not_found => env.exportTypeMapFromOtherFiles |> StringMap.find(s)
     };
 
