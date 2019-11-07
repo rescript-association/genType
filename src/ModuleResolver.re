@@ -29,7 +29,7 @@ let readSourceDirs = () => {
   };
 
   if (sourceDirs |> Sys.file_exists) {
-    try (sourceDirs |> Ext_json_parse.parse_json_from_file |> getDirs) {
+    try(sourceDirs |> Ext_json_parse.parse_json_from_file |> getDirs) {
     | _ => []
     };
   } else {
@@ -84,20 +84,21 @@ type resolver = {lazyFind: Lazy.t(ModuleName.t => option((string, case)))};
 
 let createResolver = (~extensions, ~excludeFile) => {
   lazyFind:
-    lazy {
-      let map = sourcedirsJsonToMap(~extensions, ~excludeFile);
+    lazy({
+      let moduleNameMap = sourcedirsJsonToMap(~extensions, ~excludeFile);
       moduleName =>
-        switch (map |> ModuleNameMap.find(moduleName)) {
+        switch (moduleNameMap |> ModuleNameMap.find(moduleName)) {
         | resovedModuleDir => Some((resovedModuleDir, Uppercase))
         | exception Not_found =>
           switch (
-            map |> ModuleNameMap.find(moduleName |> ModuleName.uncapitalize)
+            moduleNameMap
+            |> ModuleNameMap.find(moduleName |> ModuleName.uncapitalize)
           ) {
           | resovedModuleDir => Some((resovedModuleDir, Lowercase))
           | exception Not_found => None
           }
         };
-    },
+    }),
 };
 
 let apply = (~resolver, moduleName) =>
@@ -160,16 +161,6 @@ let resolveModule =
   };
 };
 
-let resolveSourceModule = (~importPath, moduleName) => {
-  if (Debug.moduleResolution^) {
-    logItem("Resolve Source Module: %s\n", moduleName |> ModuleName.toString);
-  };
-  if (Debug.moduleResolution^) {
-    logItem("Import Path: %s\n", importPath |> ImportPath.dump);
-  };
-  importPath;
-};
-
 let resolveGeneratedModule =
     (~config, ~outputFileRelative, ~resolver, moduleName) => {
   if (Debug.moduleResolution^) {
@@ -199,7 +190,7 @@ let importPathForReasonModuleName =
   if (Debug.moduleResolution^) {
     logItem("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
   };
-  switch (config.modulesMap |> ModuleNameMap.find(moduleName)) {
+  switch (config.shimsMap |> ModuleNameMap.find(moduleName)) {
   | shimModuleName =>
     if (Debug.moduleResolution^) {
       logItem("ShimModuleName: %s\n", shimModuleName |> ModuleName.toString);

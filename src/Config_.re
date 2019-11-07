@@ -28,17 +28,17 @@ type config = {
   mutable emitImportReact: bool,
   mutable emitTypePropDone: bool,
   exportInterfaces: bool,
+  fileHeader: option(string),
   generatedFileExtension: option(string),
   importPath,
   language,
   module_,
   modulesAsObjects: bool,
-  modulesMap: ModuleNameMap.t(ModuleName.t),
   namespace: option(string),
   propTypes: bool,
   reasonReactPath: string,
   recordsAsObjects: bool,
-  fileHeader: option(string),
+  shimsMap: ModuleNameMap.t(ModuleName.t),
 };
 
 let default = {
@@ -52,17 +52,17 @@ let default = {
   emitImportReact: false,
   emitTypePropDone: false,
   exportInterfaces: false,
+  fileHeader: None,
   generatedFileExtension: None,
   importPath: Relative,
   language: Flow,
   module_: ES6,
   modulesAsObjects: false,
-  modulesMap: ModuleNameMap.empty,
   namespace: None,
   propTypes: false,
   reasonReactPath: "reason-react/src/ReasonReact.js",
   recordsAsObjects: false,
-  fileHeader: None,
+  shimsMap: ModuleNameMap.empty,
 };
 
 let bsPlatformLib = (~config) =>
@@ -198,7 +198,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
     let generatedFileExtensionStringOption =
       json |> getStringOption("generatedFileExtension");
     let propTypesBool = json |> getBool("propTypes");
-    let modulesMap =
+    let shimsMap =
       json
       |> getShims
       |> List.fold_left(
@@ -294,7 +294,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
         languageString,
         moduleString,
         importPathString,
-        modulesMap |> ModuleNameMap.cardinal,
+        shimsMap |> ModuleNameMap.cardinal,
         v1,
         v2,
         v3,
@@ -312,17 +312,17 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       emitImportReact: false,
       emitTypePropDone: false,
       exportInterfaces,
+      fileHeader,
       generatedFileExtension,
       importPath,
       language,
       module_,
       modulesAsObjects,
-      modulesMap,
       namespace: None,
       propTypes,
       reasonReactPath,
       recordsAsObjects,
-      fileHeader,
+      shimsMap,
     };
   };
 

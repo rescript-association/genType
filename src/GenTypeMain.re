@@ -150,7 +150,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let outputFile = cmt |> Paths.getOutputFile(~config);
     let outputFileRelative = cmt |> Paths.getOutputFileRelative(~config);
     let fileName = cmt |> Paths.getModuleName;
-    let resolver =
+    let resolver = // XXX
       ModuleResolver.createResolver(
         ~extensions=[".re", EmitType.shimExtension(~config)],
         ~excludeFile=fname =>
