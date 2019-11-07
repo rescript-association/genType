@@ -1,2 +1,3 @@
 [@genType.import "./"] [@react.component]
-external make: (~method: [ | `push | `replace]=?) => React.element = "default";
+external make: (~method: [@bs.string] [ | `push | `replace]=?) => React.element =
+  "default";
