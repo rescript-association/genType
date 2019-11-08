@@ -26,7 +26,7 @@ export const foo: mixed = fooTypeChecked;
 const TypesBS = require('./Types.bs');
 
 // flowlint-next-line nonstrict-import:off
-import type {anInterestingFlowType} from './SomeFlowTypes';
+import type {anInterestingFlowType as $$anInterestingFlowType} from './SomeFlowTypes';
 
 // flowlint-next-line nonstrict-import:off
 import type {annotatedVariant as AutoAnnotate_annotatedVariant} from './AutoAnnotate.gen';
@@ -38,7 +38,7 @@ import type {t as Obj_t} from '../src/shims/Obj.shim';
 import type {variant as AutoAnnotate_variant} from './AutoAnnotate.gen';
 
 // flowlint-next-line nonstrict-import:off
-import type {weekday} from './SomeFlowTypes';
+import type {weekday as $$weekday} from './SomeFlowTypes';
 
 export type typeWithVars<x,y,z> = 
   | {| tag: "A", value: [x, y] |}
@@ -62,9 +62,9 @@ export type peopleArray = Array<{| +name: string, +nickname: ?string |}>;
 
 export type myObj = Obj_t;
 
-export type { anInterestingFlowType };
+export type anInterestingFlowType = $$anInterestingFlowType;
 
-export type { weekday };
+export type weekday = $$weekday;
 
 export type someMutableFields = {|
   mutable0: string, 

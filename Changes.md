@@ -1,5 +1,7 @@
 # master
 - Fix issue with `[@genType.import "."]` and `[@genType.import "."]` when the conversion function would be called `.`.
+- When importing a type use a local alias: `import type {weekday as $$weekday}` to avoid TypeScript errors about redefining types.
+  The TS errors are from versions 3.7.x.
 
 # 3.2.0
 - Prepare support for bucklescript 6.3.x where records will be compiled to objects.

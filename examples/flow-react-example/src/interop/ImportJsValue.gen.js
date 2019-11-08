@@ -83,16 +83,16 @@ export const convertVariant: mixed = function (Arg1: $any) {
 const ImportJsValueBS = require('./ImportJsValue.bs');
 
 // flowlint-next-line nonstrict-import:off
-import type {AbsoluteValue as AbsoluteValue_t} from './MyMath';
+import type {AbsoluteValue as $$AbsoluteValue_t} from './MyMath';
 
 // flowlint-next-line nonstrict-import:off
-import type {stringFunction} from './MyMath';
+import type {stringFunction as $$stringFunction} from './MyMath';
 
 export type point = {| +x: number, +y?: number |};
 
-export type { AbsoluteValue_t };
+export type AbsoluteValue_t = $$AbsoluteValue_t;
 
-export type { stringFunction };
+export type stringFunction = $$stringFunction;
 
 export type color = "tomato" | "gray";
 
