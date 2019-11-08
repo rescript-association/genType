@@ -1,5 +1,8 @@
 /* @flow strict */
 
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
+
 const ImportJsValue = require("./ImportJsValue.gen");
 
 export const round: number => number = Math.round;
@@ -25,5 +28,26 @@ export const functionWithRenamedArgument: (
 ) => string = function(_) {
   return "";
 };
+
+export const useColor = function(x: "tomato" | "gray"): number {
+  return 0;
+};
+
+export const higherOrder = (foo: (_1: number, _2: number) => number) =>
+  foo(3, 4);
+
+export const convertVariant = (x: $any) => x;
+
+export class AbsoluteValue {
+  prop: number;
+  getProp(): number {
+    return this.prop;
+  }
+  getAbs(): number {
+    return this.prop < 0 ? -this.prop : this.prop;
+  }
+}
+
+export type stringFunction = (_: string) => string;
 
 export default 42;

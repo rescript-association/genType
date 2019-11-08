@@ -17,28 +17,50 @@ var areaValue = ImportJsValueGen.area(/* record */[
       /* y */undefined
     ]);
 
-function getValueAtIndex(prim, prim$1) {
-  return ImportJsValueGen.getValueAtIndex(prim, prim$1);
+function getAbs(x) {
+  return x.getAbs();
 }
 
-function functionWithRenamedArgument(prim, prim$1) {
-  return ImportJsValueGen.functionWithRenamedArgument(prim, prim$1);
+var AbsoluteValue = {
+  getAbs: getAbs
+};
+
+function useGetProp(x) {
+  return x.getProp() + 1 | 0;
 }
 
-var $$default = ImportJsValueGen.default;
+function useGetAbs(x) {
+  return x.getAbs() + 1 | 0;
+}
 
-var myArea = area;
+function useColor(prim) {
+  return ImportJsValueGen.useColor(prim);
+}
+
+function higherOrder(prim) {
+  return ImportJsValueGen.higherOrder(prim);
+}
+
+var returnedFromHigherOrder = ImportJsValueGen.higherOrder((function (prim, prim$1) {
+        return prim + prim$1 | 0;
+      }));
+
+function convertVariant(prim) {
+  return ImportJsValueGen.convertVariant(prim);
+}
 
 export {
   round ,
   area ,
-  myArea ,
   roundedNumber ,
   areaValue ,
-  getValueAtIndex ,
-  functionWithRenamedArgument ,
-  $$default ,
-  $$default as default,
+  AbsoluteValue ,
+  useGetProp ,
+  useGetAbs ,
+  useColor ,
+  higherOrder ,
+  returnedFromHigherOrder ,
+  convertVariant ,
   
 }
 /* roundedNumber Not a pure module */

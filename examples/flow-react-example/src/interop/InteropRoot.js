@@ -43,13 +43,6 @@ import * as WrapJsValue from "./ImportJsValue.gen";
 consoleLog("interopRoot.js roundedNumber:", WrapJsValue.roundedNumber);
 consoleLog("interopRoot.js areaValue:", WrapJsValue.areaValue);
 
-// type error: can't call that directly
-//  const callAreaDirectly = WrapJsValue.area({x:3,y:4});
-
-const callMyAreaDirectly = WrapJsValue.myArea({ x: 3, y: 4 });
-
-consoleLog("interopRoot.js callMyAreaDirectly:", callMyAreaDirectly);
-
 consoleLog("anInterestingFlowType ", SomeFlowTypes.c);
 
 consoleLog("Variants: swap(sunday) =", Variants.swap("sunday"));
