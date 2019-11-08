@@ -66,5 +66,8 @@ external convertVariant: variant => variant = "convertVariant";
 
 [@genType.import "./MyMath"] external default: int = "default";
 
-[@genType.import "./nested/MyType"]
-type person;
+[@genType.import ("./MyMath", "num")]
+type num;
+
+[@genType.import ("./MyMath", "num")]
+type myNum;

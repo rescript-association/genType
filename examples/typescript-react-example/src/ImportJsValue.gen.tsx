@@ -90,7 +90,9 @@ const ImportJsValueBS = require('./ImportJsValue.bs');
 
 import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
 
-import {person} from './nested/MyType';
+import {num as myNum} from './MyMath';
+
+import {num as num} from './MyMath';
 
 import {stringFunction} from './MyMath';
 
@@ -112,7 +114,10 @@ export type variant =
   | { tag: "S"; value: string };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type person = person;
+export type num = num;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type myNum = myNum;
 
 export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 
