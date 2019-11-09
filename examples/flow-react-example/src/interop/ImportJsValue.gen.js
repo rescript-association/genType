@@ -22,6 +22,12 @@ import {higherOrder as higherOrderNotChecked} from './MyMath';
 // flowlint-next-line nonstrict-import:off
 import {convertVariant as convertVariantNotChecked} from './MyMath';
 
+// flowlint-next-line nonstrict-import:off
+import {polymorphic as polymorphicNotChecked} from './MyMath';
+
+// flowlint-next-line nonstrict-import:off
+import {default as defaultNotChecked} from './MyMath';
+
 const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
 
 // $FlowExpectedError: Reason checked type sufficiently
@@ -79,11 +85,32 @@ export const convertVariant: mixed = function (Arg1: $any) {
     : CreateBucklescriptBlock.__(1, [result.value])
 };
 
+// In case of type error, check the type of 'polymorphic' in 'ImportJsValue.re' and './MyMath'.
+export const polymorphicTypeChecked: <a>(a) => a = polymorphicNotChecked;
+
+// Export 'polymorphic' early to allow circular import from the '.bs.js' file.
+export const polymorphic: mixed = polymorphicTypeChecked;
+
+// In case of type error, check the type of 'default' in 'ImportJsValue.re' and './MyMath'.
+export const defaultTypeChecked: number = defaultNotChecked;
+
+// Export '$$default' early to allow circular import from the '.bs.js' file.
+export const $$default: mixed = defaultTypeChecked;
+
 // $FlowExpectedError: Reason checked type sufficiently
 const ImportJsValueBS = require('./ImportJsValue.bs');
 
 // flowlint-next-line nonstrict-import:off
 import type {AbsoluteValue as $$AbsoluteValue_t} from './MyMath';
+
+// flowlint-next-line nonstrict-import:off
+import type {num as $$myNum} from './MyMath';
+
+// flowlint-next-line nonstrict-import:off
+import type {num as $$num} from './MyMath';
+
+// flowlint-next-line nonstrict-import:off
+import type {polyType as $$polyType} from './MyMath';
 
 // flowlint-next-line nonstrict-import:off
 import type {stringFunction as $$stringFunction} from './MyMath';
@@ -100,6 +127,12 @@ export type variant =
   | {| tag: "I", value: number |}
   | {| tag: "S", value: string |};
 
+export type num = $$num;
+
+export type myNum = $$myNum;
+
+export type polyType<a> = $$polyType<a>;
+
 export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 
 export const areaValue: number = ImportJsValueBS.areaValue;
@@ -109,3 +142,5 @@ export const useGetProp: (AbsoluteValue_t) => number = ImportJsValueBS.useGetPro
 export const useGetAbs: (AbsoluteValue_t) => number = ImportJsValueBS.useGetAbs;
 
 export const returnedFromHigherOrder: number = ImportJsValueBS.returnedFromHigherOrder;
+
+export default $$default;

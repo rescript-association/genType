@@ -33,4 +33,6 @@ export const polymorphic = <T>(x: T): T => x;
 
 export type num = number;
 
+export type polyType<T> = {x:T};
+
 export default 34;

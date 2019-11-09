@@ -144,8 +144,12 @@ let traslateDeclarationKind =
       |> createExportTypeFromTypeDeclaration(
            ~nameAs=None,
            ~opaque=Some(false),
-           ~typeVars=[],
-           ~optType=Some(ident(asTypeName)),
+           ~typeVars,
+           ~optType=
+             Some(
+               asTypeName
+               |> ident(~typeArgs=typeVars |> List.map(s => TypeVar(s))),
+             ),
            ~annotation=GenType,
            ~typeEnv,
          );
