@@ -128,13 +128,13 @@ let traslateDeclarationKind =
       typeName_ |> TypeEnv.addModulePath(~typeEnv) |> ResolvedName.toString;
     let (typeName, asTypeName) =
       switch (nameAs) {
-      | Some(asString) => (asString, Some(nameWithModulePath))
-      | None => (nameWithModulePath, None)
+      | Some(asString) => (asString, "$$" ++ nameWithModulePath)
+      | None => (nameWithModulePath, "$$" ++ nameWithModulePath)
       };
     let importTypes = [
       {
         CodeItem.typeName,
-        asTypeName,
+        asTypeName: Some(asTypeName),
         importPath: importString |> ImportPath.fromStringUnsafe,
       },
     ];
@@ -145,7 +145,7 @@ let traslateDeclarationKind =
            ~nameAs=None,
            ~opaque=Some(false),
            ~typeVars=[],
-           ~optType=None,
+           ~optType=Some(ident(asTypeName)),
            ~annotation=GenType,
            ~typeEnv,
          );

@@ -88,22 +88,22 @@ export const $$default: unknown = defaultTypeChecked as number;
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');
 
-import {AbsoluteValue as AbsoluteValue_t} from './MyMath';
+import {AbsoluteValue as $$AbsoluteValue_t} from './MyMath';
 
-import {num as myNum} from './MyMath';
+import {num as $$myNum} from './MyMath';
 
-import {num as num} from './MyMath';
+import {num as $$num} from './MyMath';
 
-import {stringFunction} from './MyMath';
+import {stringFunction as $$stringFunction} from './MyMath';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type point = { readonly x: number; readonly y?: number };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type AbsoluteValue_t = AbsoluteValue_t;
+export type AbsoluteValue_t = $$AbsoluteValue_t;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type stringFunction = stringFunction;
+export type stringFunction = $$stringFunction;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type color = "tomato" | "gray";
@@ -114,10 +114,10 @@ export type variant =
   | { tag: "S"; value: string };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type num = num;
+export type num = $$num;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type myNum = myNum;
+export type myNum = $$myNum;
 
 export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 
