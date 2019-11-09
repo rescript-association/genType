@@ -1,4 +1,6 @@
 # master
+
+# 3.3.0
 - Fix issue with `[@genType.import "."]` and `[@genType.import ".."]` where the conversion function would be called `.`, which is not a valid name. See https://github.com/cristianoc/genType/issues/296.
 - Fix type errors in generated code with TypeScript compilers version 3.7.0 and later.
 When importing a type use a local alias: `import type {weekday as $$weekday}` to avoid TypeScript errors about redefining types. See https://github.com/cristianoc/genType/issues/302.
