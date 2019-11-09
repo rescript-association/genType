@@ -94,6 +94,8 @@ import {num as $$myNum} from './MyMath';
 
 import {num as $$num} from './MyMath';
 
+import {polyType as $$polyType} from './MyMath';
+
 import {stringFunction as $$stringFunction} from './MyMath';
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -118,6 +120,9 @@ export type num = $$num;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type myNum = $$myNum;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type polyType<a> = $$polyType<a>;
 
 export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 

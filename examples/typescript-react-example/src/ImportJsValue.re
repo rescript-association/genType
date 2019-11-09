@@ -71,3 +71,6 @@ type num;
 
 [@genType.import ("./MyMath", "num")]
 type myNum;
+
+[@genType.import "./MyMath"]
+type polyType('a);
