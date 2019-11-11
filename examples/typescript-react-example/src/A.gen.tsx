@@ -2,7 +2,7 @@
 /* eslint-disable import/first */
 
 
-import {requestMethod as Fetch_requestMethod} from '..//Users/cristianoc/reasonml/genType/examples/typescript-react-example/node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {requestMethod as Fetch_requestMethod} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type z = Fetch_requestMethod;

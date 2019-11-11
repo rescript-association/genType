@@ -4,16 +4,17 @@ module ModuleNameMap = Map.Make(ModuleName);
 
 /* Read all the dirs from a library in node_modules */
 let readLibraryDirs = (~root) => {
-  let bsDir = ["lib", "bs"] |> List.fold_left(Filename.concat, root);
   let dirs = ref([]);
-  let rec findSubDirs = dir =>
-    if (Sys.is_directory(dir) && Sys.file_exists(dir)) {
+  let rec findSubDirs = dir => {
+    let absDir = Filename.concat(root, dir);
+    if (Sys.is_directory(absDir) && Sys.file_exists(absDir)) {
       dirs := [dir, ...dirs^];
-      dir
+      absDir
       |> Sys.readdir
       |> Array.iter(d => findSubDirs(Filename.concat(dir, d)));
     };
-  findSubDirs(bsDir);
+  };
+  findSubDirs(Filename.concat("lib", "bs"));
   dirs^;
 };
 
@@ -97,7 +98,10 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          [".cmt", ".cmti"]
          |> List.exists(ext => Filename.check_suffix(fileName, ext));
        readLibraryDirs(~root)
-       |> List.iter(s => s |> addDir(~filter, ~map=librariesCmtMap, ~root=""));
+       |> List.iter(dir =>
+            Filename.concat("node_modules", Filename.concat(s, dir))
+            |> addDir(~filter, ~map=librariesCmtMap, ~root=projectRoot^)
+          );
      });
 
   (fileMap^, librariesCmtMap^);
