@@ -200,7 +200,7 @@ let resolveModule =
 
       let fromOutputDirToModuleDir =
         /* e.g. "../dst" */
-        (walkUpOutputDir +++ resovedModuleDir);
+        walkUpOutputDir +++ resovedModuleDir;
 
       /* e.g. import "../dst/ModuleName.ext" */
       (case == Uppercase ? moduleName : moduleName |> ModuleName.uncapitalize)
