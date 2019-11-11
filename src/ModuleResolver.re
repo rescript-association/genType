@@ -2,16 +2,16 @@ open GenTypeCommon;
 
 module ModuleNameMap = Map.Make(ModuleName);
 
+let (+++) = Filename.concat;
+
 /* Read all the dirs from a library in node_modules */
 let readLibraryDirs = (~root) => {
   let dirs = ref([]);
   let rec findSubDirs = dir => {
-    let absDir = dir == "" ? root : Filename.concat(root, dir);
+    let absDir = dir == "" ? root : root +++ dir;
     if (Sys.is_directory(absDir) && Sys.file_exists(absDir)) {
       dirs := [dir, ...dirs^];
-      absDir
-      |> Sys.readdir
-      |> Array.iter(d => findSubDirs(Filename.concat(dir, d)));
+      absDir |> Sys.readdir |> Array.iter(d => findSubDirs(dir +++ d));
     };
   };
   findSubDirs("");
@@ -20,8 +20,7 @@ let readLibraryDirs = (~root) => {
 
 let readSourceDirs = () => {
   let sourceDirs =
-    ["lib", "bs", ".sourcedirs.json"]
-    |> List.fold_left(Filename.concat, projectRoot^);
+    ["lib", "bs", ".sourcedirs.json"] |> List.fold_left((+++), projectRoot^);
 
   let getDirs = json => {
     let dirs = ref([]);
@@ -72,8 +71,8 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     && !excludeFile(fileName);
 
   let addDir = (~filter, ~map, ~root, dir) =>
-    dir
-    |> Filename.concat(root)
+    root
+    +++ dir
     |> Sys.readdir
     |> Array.iter(fname =>
          if (fname |> filter) {
@@ -94,7 +93,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
   |> List.iter(s => {
        let root =
          ["node_modules", s, "lib", "bs"]
-         |> List.fold_left(Filename.concat, projectRoot^);
+         |> List.fold_left((+++), projectRoot^);
        let filter = fileName =>
          [".cmt", ".cmti"]
          |> List.exists(ext => Filename.check_suffix(fileName, ext));
@@ -102,7 +101,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
        |> List.iter(dir =>
             [s, "lib", "bs", dir]
             /* TODO: add upstream a new form of implicit paths into node_modules */
-            |> List.fold_left(Filename.concat, "node_modules")
+            |> List.fold_left((+++), "node_modules")
             |> addDir(~filter, ~map=librariesCmtMap, ~root=projectRoot^)
           );
      });
@@ -156,26 +155,29 @@ let resolveModule =
       ~useLibraries,
       moduleName,
     ) => {
-  open Filename;
-
   let outputFileRelativeDir =
     /* e.g. src if we're generating src/File.re.js */
-    dirname(outputFileRelative);
-  let outputFileAbsoluteDir = concat(projectRoot^, outputFileRelativeDir);
+    Filename.dirname(outputFileRelative);
+  let outputFileAbsoluteDir = projectRoot^ +++ outputFileRelativeDir;
   let moduleNameReFile =
     /* Check if the module is in the same directory as the file being generated.
        So if e.g. project_root/src/ModuleName.re exists. */
-    concat(outputFileAbsoluteDir, ModuleName.toString(moduleName) ++ ".re");
+    outputFileAbsoluteDir +++ ModuleName.toString(moduleName) ++ ".re";
   let candidate =
     /* e.g. import "./Modulename.ext" */
     moduleName
-    |> ImportPath.fromModule(~dir=current_dir_name, ~importExtension);
+    |> ImportPath.fromModule(~dir=Filename.current_dir_name, ~importExtension);
   if (Sys.file_exists(moduleNameReFile)) {
     candidate;
   } else {
     let rec pathToList = path => {
-      let isRoot = path |> basename == path;
-      isRoot ? [path] : [path |> basename, ...path |> dirname |> pathToList];
+      let isRoot = path |> Filename.basename == path;
+      isRoot
+        ? [path]
+        : [
+          path |> Filename.basename,
+          ...path |> Filename.dirname |> pathToList,
+        ];
     };
     switch (moduleName |> apply(~resolver, ~useLibraries)) {
     | None => candidate
@@ -186,18 +188,19 @@ let resolveModule =
         /* e.g. ".." in case dst is a path of length 1 */
         outputFileRelativeDir
         |> pathToList
-        |> List.map(_ => parent_dir_name)
+        |> List.map(_ => Filename.parent_dir_name)
         |> (
           l =>
             switch (l) {
             | [] => ""
-            | [_, ...rest] => rest |> List.fold_left(concat, parent_dir_name)
+            | [_, ...rest] =>
+              rest |> List.fold_left((+++), Filename.parent_dir_name)
             }
         );
 
       let fromOutputDirToModuleDir =
         /* e.g. "../dst" */
-        concat(walkUpOutputDir, resovedModuleDir);
+        (walkUpOutputDir +++ resovedModuleDir);
 
       /* e.g. import "../dst/ModuleName.ext" */
       (case == Uppercase ? moduleName : moduleName |> ModuleName.uncapitalize)
