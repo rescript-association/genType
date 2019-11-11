@@ -70,9 +70,9 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     |> List.exists(ext => Filename.check_suffix(fileName, ext))
     && !excludeFile(fileName);
 
-  let addDir = (~filter, ~map, ~root, dir) =>
+  let addDir = (~dirOnDisk, ~dirEmitted, ~filter, ~map, ~root) => {
     root
-    +++ dir
+    +++ dirOnDisk
     |> Sys.readdir
     |> Array.iter(fname =>
          if (fname |> filter) {
@@ -80,13 +80,20 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
              map^
              |> ModuleNameMap.add(
                   fname |> chopExtensions |> ModuleName.fromStringUnsafe,
-                  dir,
+                  dirEmitted,
                 );
          }
        );
+  };
   readSourceDirs()
-  |> List.iter(
-       addDir(~filter=filterGivenExtension, ~map=fileMap, ~root=projectRoot^),
+  |> List.iter(dir =>
+       addDir(
+         ~dirEmitted=dir,
+         ~dirOnDisk=dir,
+         ~filter=filterGivenExtension,
+         ~map=fileMap,
+         ~root=projectRoot^,
+       )
      );
 
   config.bsDependencies
@@ -98,12 +105,18 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          [".cmt", ".cmti"]
          |> List.exists(ext => Filename.check_suffix(fileName, ext));
        readLibraryDirs(~root)
-       |> List.iter(dir =>
-            [s, "lib", "bs", dir]
-            /* TODO: add upstream a new form of implicit paths into node_modules */
-            |> List.fold_left((+++), "node_modules")
-            |> addDir(~filter, ~map=librariesCmtMap, ~root=projectRoot^)
-          );
+       |> List.iter(dir => {
+            let dirOnDisk =
+              [s, "lib", "bs", dir] |> List.fold_left((+++), "node_modules");
+            let dirEmitted = s +++ dir;
+            addDir(
+              ~dirEmitted,
+              ~dirOnDisk,
+              ~filter,
+              ~map=librariesCmtMap,
+              ~root=projectRoot^,
+            );
+          });
      });
 
   (fileMap^, librariesCmtMap^);
@@ -115,7 +128,9 @@ type case =
 
 type resolver = {
   lazyFind:
-    Lazy.t((~useLibraries: bool, ModuleName.t) => option((string, case))),
+    Lazy.t(
+      (~useLibraries: bool, ModuleName.t) => option((string, case, bool)),
+    ),
 };
 
 let createResolver = (~config, ~extensions, ~excludeFile) => {
@@ -123,20 +138,22 @@ let createResolver = (~config, ~extensions, ~excludeFile) => {
     lazy({
       let (moduleNameMap, librariesCmtMap) =
         sourcedirsJsonToMap(~config, ~extensions, ~excludeFile);
-      let find = (~map, moduleName) =>
+      let find = (~isLibrary, ~map, moduleName) =>
         switch (map |> ModuleNameMap.find(moduleName)) {
-        | resovedModuleDir => Some((resovedModuleDir, Uppercase))
+        | resolvedModuleDir => Some((resolvedModuleDir, Uppercase, isLibrary))
         | exception Not_found =>
           switch (
             map |> ModuleNameMap.find(moduleName |> ModuleName.uncapitalize)
           ) {
-          | resovedModuleDir => Some((resovedModuleDir, Lowercase))
+          | resolvedModuleDir =>
+            Some((resolvedModuleDir, Lowercase, isLibrary))
           | exception Not_found => None
           }
         };
       (~useLibraries, moduleName) =>
-        switch (moduleName |> find(~map=moduleNameMap)) {
-        | None when useLibraries => moduleName |> find(~map=librariesCmtMap)
+        switch (moduleName |> find(~isLibrary=false, ~map=moduleNameMap)) {
+        | None when useLibraries =>
+          moduleName |> find(~isLibrary=true, ~map=librariesCmtMap)
         | res => res
         };
     }),
@@ -181,7 +198,7 @@ let resolveModule =
     };
     switch (moduleName |> apply(~resolver, ~useLibraries)) {
     | None => candidate
-    | Some((resovedModuleDir, case)) =>
+    | Some((resolvedModuleDir, case, isLibrary)) =>
       /* e.g. "dst" in case of dst/ModuleName.re */
 
       let walkUpOutputDir =
@@ -200,7 +217,7 @@ let resolveModule =
 
       let fromOutputDirToModuleDir =
         /* e.g. "../dst" */
-        walkUpOutputDir +++ resovedModuleDir;
+        isLibrary ? resolvedModuleDir : walkUpOutputDir +++ resolvedModuleDir;
 
       /* e.g. import "../dst/ModuleName.ext" */
       (case == Uppercase ? moduleName : moduleName |> ModuleName.uncapitalize)

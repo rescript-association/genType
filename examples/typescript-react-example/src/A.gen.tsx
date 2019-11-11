@@ -8,23 +8,23 @@ const Curry = require('bs-platform/lib/es6/curry.js');
 // tslint:disable-next-line:no-var-requires
 const ABS = require('./A.bs');
 
-import {RequestInit_t as Fetch_RequestInit_t} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {RequestInit_t as Fetch_RequestInit_t} from 'bs-fetch/src/Fetch.gen';
 
-import {bodyInit as Fetch_bodyInit} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {bodyInit as Fetch_bodyInit} from 'bs-fetch/src/Fetch.gen';
 
-import {headersInit as Fetch_headersInit} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {headersInit as Fetch_headersInit} from 'bs-fetch/src/Fetch.gen';
 
-import {referrerPolicy as Fetch_referrerPolicy} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {referrerPolicy as Fetch_referrerPolicy} from 'bs-fetch/src/Fetch.gen';
 
-import {requestCache as Fetch_requestCache} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {requestCache as Fetch_requestCache} from 'bs-fetch/src/Fetch.gen';
 
-import {requestCredentials as Fetch_requestCredentials} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {requestCredentials as Fetch_requestCredentials} from 'bs-fetch/src/Fetch.gen';
 
-import {requestMethod as Fetch_requestMethod} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {requestMethod as Fetch_requestMethod} from 'bs-fetch/src/Fetch.gen';
 
-import {requestMode as Fetch_requestMode} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {requestMode as Fetch_requestMode} from 'bs-fetch/src/Fetch.gen';
 
-import {requestRedirect as Fetch_requestRedirect} from '../node_modules/bs-fetch/lib/bs/src/Fetch.gen';
+import {requestRedirect as Fetch_requestRedirect} from 'bs-fetch/src/Fetch.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type z = Fetch_requestMethod;
