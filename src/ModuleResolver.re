@@ -6,7 +6,7 @@ module ModuleNameMap = Map.Make(ModuleName);
 let readLibraryDirs = (~root) => {
   let dirs = ref([]);
   let rec findSubDirs = dir => {
-    let absDir = Filename.concat(root, dir);
+    let absDir = dir == "" ? root : Filename.concat(root, dir);
     if (Sys.is_directory(absDir) && Sys.file_exists(absDir)) {
       dirs := [dir, ...dirs^];
       absDir
@@ -14,7 +14,7 @@ let readLibraryDirs = (~root) => {
       |> Array.iter(d => findSubDirs(Filename.concat(dir, d)));
     };
   };
-  findSubDirs(Filename.concat("lib", "bs"));
+  findSubDirs("");
   dirs^;
 };
 
@@ -93,13 +93,16 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
   config.bsDependencies
   |> List.iter(s => {
        let root =
-         ["node_modules", s] |> List.fold_left(Filename.concat, projectRoot^);
+         ["node_modules", s, "lib", "bs"]
+         |> List.fold_left(Filename.concat, projectRoot^);
        let filter = fileName =>
          [".cmt", ".cmti"]
          |> List.exists(ext => Filename.check_suffix(fileName, ext));
        readLibraryDirs(~root)
        |> List.iter(dir =>
-            Filename.concat("node_modules", Filename.concat(s, dir))
+            [s, "lib", "bs", dir]
+            /* TODO: add upstream a new form of implicit paths into node_modules */
+            |> List.fold_left(Filename.concat, "node_modules")
             |> addDir(~filter, ~map=librariesCmtMap, ~root=projectRoot^)
           );
      });
