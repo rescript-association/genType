@@ -1,4 +1,11 @@
 # master
+- Read type information from libraries.
+  For example, if the dependencies are `"bs-dependencies": ["reason-react", "somelibrary"]` and `somelibrary` contains `Commonr.re`, this looks up types in the library:
+  ```
+  [@genType]
+  let z = Common.foo;
+  ```
+
 
 # 3.3.0
 - Fix issue with `[@genType.import "."]` and `[@genType.import ".."]` where the conversion function would be called `.`, which is not a valid name. See https://github.com/cristianoc/genType/issues/296.
