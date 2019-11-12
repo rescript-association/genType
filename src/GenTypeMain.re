@@ -139,8 +139,8 @@ let readCmt = cmtFile =>
     logItem(
       "It looks like you might be using an old version of Bucklescript, or have stale compilation artifacts.\n",
     );
-    logItem("Check that bs-platform is version 6.2.x or later.\n")
-    logItem("And try to clean and rebuild.\n\n")
+    logItem("Check that bs-platform is version 6.2.x or later.\n");
+    logItem("And try to clean and rebuild.\n\n");
     assert(false);
   };
 
@@ -152,6 +152,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let fileName = cmt |> Paths.getModuleName;
     let resolver =
       ModuleResolver.createResolver(
+        ~config,
         ~extensions=[".re", EmitType.shimExtension(~config)],
         ~excludeFile=fname =>
         fname == "React.re" || fname == "ReasonReact.re"

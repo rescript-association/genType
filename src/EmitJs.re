@@ -13,14 +13,7 @@ type env = {
 let requireModule = (~import, ~env, ~importPath, ~strict=false, moduleName) => {
   let requires = import ? env.requiresEarly : env.requires;
   let requiresNew =
-    requires
-    |> ModuleNameMap.add(
-         moduleName,
-         (
-           moduleName |> ModuleResolver.resolveSourceModule(~importPath),
-           strict,
-         ),
-       );
+    requires |> ModuleNameMap.add(moduleName, (importPath, strict));
   import
     ? {...env, requiresEarly: requiresNew} : {...env, requires: requiresNew};
 };
@@ -523,9 +516,10 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
+           ~importExtension=".bs",
            ~outputFileRelative,
            ~resolver,
-           ~importExtension=".bs",
+           ~useLibraries=false,
          );
     let moduleNameBs = fileName |> ModuleName.forBsFile;
     let moduleName =
@@ -677,9 +671,10 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
+           ~importExtension=".bs",
            ~outputFileRelative,
            ~resolver,
-           ~importExtension=".bs",
+           ~useLibraries=false,
          );
     let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =

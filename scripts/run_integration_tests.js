@@ -103,7 +103,7 @@ function cleanBuildExamples() {
 
 function checkDiff() {
   exampleDirNames.forEach((example) => {
-    const exampleDir = path.join("examples", example);
+    const exampleDir = path.join(path.join("examples", example), "src");
     console.log(`Checking for changes in '${exampleDir}'`);
 
     const output = child_process.execFileSync("git", ["diff", "--", exampleDir + "/"], {
@@ -113,7 +113,7 @@ function checkDiff() {
     if (output.length > 0) {
       throw new Error(
         `Changed files detected in path '${exampleDir}'! Make sure genType is emitting the right code and commit the files to git` +
-        "\n"
+        "\n" + output + "\n"
       );
     }
   });

@@ -68,4 +68,4 @@ let rec removeExternalOuterModule = dep =>
   };
 
 let isShim = (~config, dep) =>
-  config.modulesMap |> ModuleNameMap.mem(dep |> getOuterModuleName);
+  config.shimsMap |> ModuleNameMap.mem(dep |> getOuterModuleName);
