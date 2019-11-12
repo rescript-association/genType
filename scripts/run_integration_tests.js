@@ -103,7 +103,7 @@ function cleanBuildExamples() {
 
 function checkDiff() {
   exampleDirNames.forEach((example) => {
-    const exampleDir = path.join("examples", example);
+    const exampleDir = path.join(path.join("examples", example), "src");
     console.log(`Checking for changes in '${exampleDir}'`);
 
     const output = child_process.execFileSync("git", ["diff", "--", exampleDir + "/"], {
