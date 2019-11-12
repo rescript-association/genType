@@ -1,5 +1,10 @@
-[@genType]
-type z = Fetch.requestMethod;
+/*
+ [@genType]
+ type z = Fetch.requestMethod;
+
+ [@genType]
+ let q = Fetch.RequestInit.make;
+ */
 
 [@genType]
-let q = Fetch.RequestInit.make;
+let z = Demo.foo;

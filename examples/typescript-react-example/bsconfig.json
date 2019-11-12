@@ -20,7 +20,7 @@
   "bsc-flags": ["-bs-super-errors"],
   "ppx-flags": ["../DeadCodePPX.exe"],
   "reason": { "react-jsx": 3 },
-  "bs-dependencies": ["reason-react", "bs-fetch"],
+  "bs-dependencies": ["reason-react", "somelibrary"],
   "sources": [
     {
       "dir": "src",

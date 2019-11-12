@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bs-fetch": "^0.5.0",
     "merge": "^1.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.0.0",
-    "reason-react": "^0.7.0"
+    "reason-react": "^0.7.0",
+    "somelibrary": "file:somelibrary"
   },
   "scripts": {
     "start": "node ../run_bsb.js -make-world -w",
