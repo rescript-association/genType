@@ -26,3 +26,8 @@ exports.innerStuffContentsTypeChecked = innerStuffContentsTypeChecked
 // Export 'innerStuffContents' early to allow circular import from the '.bs.js' file.
 const innerStuffContents: mixed = innerStuffContentsTypeChecked;;
 exports.innerStuffContents = innerStuffContents
+
+// flowlint-next-line nonstrict-import:off
+import type {someType as $$someType} from './exportValues';
+
+export type someType = $$someType;

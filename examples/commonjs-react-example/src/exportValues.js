@@ -15,4 +15,6 @@ class TopLevelClass {
 }
 
 module.exports = exportNestedValues;
-exports.InnerClass = InnerClass
+exports.InnerClass = InnerClass;
+
+export type someType = { x: number };
