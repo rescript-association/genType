@@ -113,7 +113,7 @@ function checkDiff() {
     if (output.length > 0) {
       throw new Error(
         `Changed files detected in path '${exampleDir}'! Make sure genType is emitting the right code and commit the files to git` +
-        "\n"
+        "\n" + output + "\n"
       );
     }
   });
