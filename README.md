@@ -541,6 +541,8 @@ These features are for experimentation only. They could be changed/removed any t
 
 - **BuckleScript in-source = true**. Currently only supports bucklescript projects with [in-source generation](https://bucklescript.github.io/docs/en/build-configuration#package-specs) and `.bs.js` file suffix.
 
+- **Limited namespace support**. Currently there's limited namespace support, and only `namespace:true` is possible, not e.g. `namespace:"custom"`.
+
 # Development/Contributing
 
 Please check out our [development instructions](DEVELOPMENT.md).
