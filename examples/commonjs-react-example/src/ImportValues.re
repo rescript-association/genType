@@ -8,3 +8,6 @@ external exportValues: int = "exportValues";
   )
 ]
 external innerStuffContents: {. "x": int} = "innerStuffContents";
+
+[@genType.import "./exportValues"]
+type someType;
