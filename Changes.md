@@ -1,7 +1,7 @@
 # master
 - Read type information from libraries.
   For example, if the dependencies are `"bs-dependencies": ["reason-react", "somelibrary"]` and `somelibrary` contains `Commonr.re`, this looks up types in the library:
-  ```
+  ```reason
   [@genType]
   let z = Common.foo;
   ```
