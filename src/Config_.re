@@ -40,6 +40,7 @@ type config = {
   reasonReactPath: string,
   recordsAsObjects: bool,
   shimsMap: ModuleNameMap.t(ModuleName.t),
+  nodeModulesPath: string,
 };
 
 let default = {
@@ -65,6 +66,7 @@ let default = {
   reasonReactPath: "reason-react/src/ReasonReact.js",
   recordsAsObjects: false,
   shimsMap: ModuleNameMap.empty,
+  nodeModulesPath: "node_modules",
 };
 
 let bsPlatformLib = (~config) =>
@@ -212,6 +214,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
            ModuleNameMap.empty,
          );
     json |> getDebug;
+    let nodeModulesPathString = json |> getString("nodeModulesPath");
     let language =
       switch (languageString) {
       | "typescript" => TypeScript
@@ -289,6 +292,12 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | _ => v1 > 6
       };
     };
+    let nodeModulesPath =
+      switch (nodeModulesPathString) {
+      | "" => default.nodeModulesPath
+      | _ => nodeModulesPathString
+      };
+
     if (Debug.config^) {
       logItem(
         "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
@@ -325,6 +334,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       reasonReactPath,
       recordsAsObjects,
       shimsMap,
+      nodeModulesPath,
     };
   };
 

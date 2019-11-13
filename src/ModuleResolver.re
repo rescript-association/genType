@@ -99,7 +99,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
   config.bsDependencies
   |> List.iter(s => {
        let root =
-         ["node_modules", s, "lib", "bs"]
+         [config.nodeModulesPath, s, "lib", "bs"]
          |> List.fold_left((+++), projectRoot^);
        let filter = fileName =>
          [".cmt", ".cmti"]
@@ -107,7 +107,8 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
        readLibraryDirs(~root)
        |> List.iter(dir => {
             let dirOnDisk =
-              [s, "lib", "bs", dir] |> List.fold_left((+++), "node_modules");
+              [s, "lib", "bs", dir]
+              |> List.fold_left((+++), config.nodeModulesPath);
             let dirEmitted = s +++ dir;
             addDir(
               ~dirEmitted,
