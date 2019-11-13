@@ -96,28 +96,31 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
        )
      );
 
-  config.bsDependencies
-  |> List.iter(s => {
-       let root =
-         ["node_modules", s, "lib", "bs"]
-         |> List.fold_left((+++), projectRoot^);
-       let filter = fileName =>
-         [".cmt", ".cmti"]
-         |> List.exists(ext => Filename.check_suffix(fileName, ext));
-       readLibraryDirs(~root)
-       |> List.iter(dir => {
-            let dirOnDisk =
-              [s, "lib", "bs", dir] |> List.fold_left((+++), "node_modules");
-            let dirEmitted = s +++ dir;
-            addDir(
-              ~dirEmitted,
-              ~dirOnDisk,
-              ~filter,
-              ~map=librariesCmtMap,
-              ~root=projectRoot^,
-            );
-          });
-     });
+  if (config.useBsDependencies) {
+    config.bsDependencies
+    |> List.iter(s => {
+         let root =
+           ["node_modules", s, "lib", "bs"]
+           |> List.fold_left((+++), projectRoot^);
+         let filter = fileName =>
+           [".cmt", ".cmti"]
+           |> List.exists(ext => Filename.check_suffix(fileName, ext));
+         readLibraryDirs(~root)
+         |> List.iter(dir => {
+              let dirOnDisk =
+                [s, "lib", "bs", dir]
+                |> List.fold_left((+++), "node_modules");
+              let dirEmitted = s +++ dir;
+              addDir(
+                ~dirEmitted,
+                ~dirOnDisk,
+                ~filter,
+                ~map=librariesCmtMap,
+                ~root=projectRoot^,
+              );
+            });
+       });
+  };
 
   (fileMap^, librariesCmtMap^);
 };
