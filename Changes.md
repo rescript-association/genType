@@ -1,4 +1,6 @@
 # master
+
+# 3.4.0
 - Read type information from libraries.
   For example, if the dependencies are `"bs-dependencies": ["somelibrary"]` and `somelibrary` contains `Common.re`, this looks up types in the library:
   ```reason
