@@ -221,8 +221,12 @@ let run = () => {
     };
   };
 
+  // Only set when hg log --stat is used.
+  // Some(".js") only counts .js files.
   let extension = None;
-  let csv = false;
+  
+  let csv = true;
+  
   let quarterly = true;
 
   readFile(~channel=stdin, ~onLine=processLine(~extension, ~quarterly));
