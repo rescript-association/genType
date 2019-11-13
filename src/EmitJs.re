@@ -519,7 +519,7 @@ let rec emitCodeItem =
            ~importExtension=".bs",
            ~outputFileRelative,
            ~resolver,
-           ~useLibraries=false,
+           ~useBsDependencies=false,
          );
     let moduleNameBs = fileName |> ModuleName.forBsFile;
     let moduleName =
@@ -674,7 +674,7 @@ let rec emitCodeItem =
            ~importExtension=".bs",
            ~outputFileRelative,
            ~resolver,
-           ~useLibraries=false,
+           ~useBsDependencies=false,
          );
     let fileNameBs = fileName |> ModuleName.forBsFile;
     let envWithRequires =

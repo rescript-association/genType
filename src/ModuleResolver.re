@@ -5,11 +5,11 @@ module ModuleNameMap = Map.Make(ModuleName);
 let (+++) = Filename.concat;
 
 /* Read all the dirs from a library in node_modules */
-let readLibraryDirs = (~root) => {
+let readBsDependenciesDirs = (~root) => {
   let dirs = ref([]);
   let rec findSubDirs = dir => {
     let absDir = dir == "" ? root : root +++ dir;
-    if (Sys.is_directory(absDir) && Sys.file_exists(absDir)) {
+    if (Sys.file_exists(absDir) && Sys.is_directory(absDir)) {
       dirs := [dir, ...dirs^];
       absDir |> Sys.readdir |> Array.iter(d => findSubDirs(dir +++ d));
     };
@@ -63,7 +63,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     };
 
   let fileMap = ref(ModuleNameMap.empty);
-  let librariesCmtMap = ref(ModuleNameMap.empty);
+  let bsDependenciesFileMap = ref(ModuleNameMap.empty);
 
   let filterGivenExtension = fileName =>
     extensions
@@ -105,7 +105,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          let filter = fileName =>
            [".cmt", ".cmti"]
            |> List.exists(ext => Filename.check_suffix(fileName, ext));
-         readLibraryDirs(~root)
+         readBsDependenciesDirs(~root)
          |> List.iter(dir => {
               let dirOnDisk =
                 [s, "lib", "bs", dir]
@@ -115,14 +115,14 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
                 ~dirEmitted,
                 ~dirOnDisk,
                 ~filter,
-                ~map=librariesCmtMap,
+                ~map=bsDependenciesFileMap,
                 ~root=projectRoot^,
               );
             });
        });
   };
 
-  (fileMap^, librariesCmtMap^);
+  (fileMap^, bsDependenciesFileMap^);
 };
 
 type case =
@@ -132,38 +132,40 @@ type case =
 type resolver = {
   lazyFind:
     Lazy.t(
-      (~useLibraries: bool, ModuleName.t) => option((string, case, bool)),
+      (~useBsDependencies: bool, ModuleName.t) =>
+      option((string, case, bool)),
     ),
 };
 
 let createResolver = (~config, ~extensions, ~excludeFile) => {
   lazyFind:
     lazy({
-      let (moduleNameMap, librariesCmtMap) =
+      let (moduleNameMap, bsDependenciesFileMap) =
         sourcedirsJsonToMap(~config, ~extensions, ~excludeFile);
-      let find = (~isLibrary, ~map, moduleName) =>
+      let find = (~bsDependencies, ~map, moduleName) =>
         switch (map |> ModuleNameMap.find(moduleName)) {
-        | resolvedModuleDir => Some((resolvedModuleDir, Uppercase, isLibrary))
+        | resolvedModuleDir =>
+          Some((resolvedModuleDir, Uppercase, bsDependencies))
         | exception Not_found =>
           switch (
             map |> ModuleNameMap.find(moduleName |> ModuleName.uncapitalize)
           ) {
           | resolvedModuleDir =>
-            Some((resolvedModuleDir, Lowercase, isLibrary))
+            Some((resolvedModuleDir, Lowercase, bsDependencies))
           | exception Not_found => None
           }
         };
-      (~useLibraries, moduleName) =>
-        switch (moduleName |> find(~isLibrary=false, ~map=moduleNameMap)) {
-        | None when useLibraries =>
-          moduleName |> find(~isLibrary=true, ~map=librariesCmtMap)
+      (~useBsDependencies, moduleName) =>
+        switch (moduleName |> find(~bsDependencies=false, ~map=moduleNameMap)) {
+        | None when useBsDependencies =>
+          moduleName |> find(~bsDependencies=true, ~map=bsDependenciesFileMap)
         | res => res
         };
     }),
 };
 
-let apply = (~resolver, ~useLibraries, moduleName) =>
-  moduleName |> Lazy.force(resolver.lazyFind, ~useLibraries);
+let apply = (~resolver, ~useBsDependencies, moduleName) =>
+  moduleName |> Lazy.force(resolver.lazyFind, ~useBsDependencies);
 
 /* Resolve a reference to ModuleName, and produce a path suitable for require.
    E.g. require "../foo/bar/ModuleName.ext" where ext is ".re" or ".js". */
@@ -172,7 +174,7 @@ let resolveModule =
       ~importExtension,
       ~outputFileRelative,
       ~resolver,
-      ~useLibraries,
+      ~useBsDependencies,
       moduleName,
     ) => {
   let outputFileRelativeDir =
@@ -199,7 +201,7 @@ let resolveModule =
           ...path |> Filename.dirname |> pathToList,
         ];
     };
-    switch (moduleName |> apply(~resolver, ~useLibraries)) {
+    switch (moduleName |> apply(~resolver, ~useBsDependencies)) {
     | None => candidate
     | Some((resolvedModuleDir, case, isLibrary)) =>
       /* e.g. "dst" in case of dst/ModuleName.re */
@@ -245,7 +247,7 @@ let resolveGeneratedModule =
       ~importExtension=EmitType.generatedModuleExtension(~config),
       ~outputFileRelative,
       ~resolver,
-      ~useLibraries=true,
+      ~useBsDependencies=true,
       moduleName,
     );
   if (Debug.moduleResolution^) {
@@ -272,7 +274,7 @@ let importPathForReasonModuleName =
         ~importExtension=".shim",
         ~outputFileRelative,
         ~resolver,
-        ~useLibraries=false,
+        ~useBsDependencies=false,
         shimModuleName,
       );
     if (Debug.moduleResolution^) {
