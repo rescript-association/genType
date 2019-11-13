@@ -1,7 +1,8 @@
 # master
 
-# 3.4.0
-- Read type information from libraries.
+# 3.4.1
+- Read type information from libraries when `"use-bs-dependencies": true` is specified in `gentypeconfig`.
+  This is an experimental feature under development.
   For example, if the dependencies are `"bs-dependencies": ["somelibrary"]` and `somelibrary` contains `Common.re`, this looks up types in the library:
   ```reason
   [@genType]
