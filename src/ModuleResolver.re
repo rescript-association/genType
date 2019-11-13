@@ -100,7 +100,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     config.bsDependencies
     |> List.iter(s => {
          let root =
-           ["node_moduless", s, "lib", "bs"]
+           ["node_modules", s, "lib", "bs"]
            |> List.fold_left((+++), projectRoot^);
          let filter = fileName =>
            [".cmt", ".cmti"]
