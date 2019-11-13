@@ -9,7 +9,7 @@ let readLibraryDirs = (~root) => {
   let dirs = ref([]);
   let rec findSubDirs = dir => {
     let absDir = dir == "" ? root : root +++ dir;
-    if (Sys.is_directory(absDir) && Sys.file_exists(absDir)) {
+    if (Sys.file_exists(absDir) && Sys.is_directory(absDir)) {
       dirs := [dir, ...dirs^];
       absDir |> Sys.readdir |> Array.iter(d => findSubDirs(dir +++ d));
     };
@@ -100,7 +100,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     config.bsDependencies
     |> List.iter(s => {
          let root =
-           ["node_modules", s, "lib", "bs"]
+           ["node_moduless", s, "lib", "bs"]
            |> List.fold_left((+++), projectRoot^);
          let filter = fileName =>
            [".cmt", ".cmti"]
