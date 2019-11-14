@@ -91,12 +91,12 @@ let cli = () => {
 
     | Clean =>
       let config = Paths.readConfig(~bsVersion, ~namespace=None);
-      let surdeDirs = ModuleResolver.readSourceDirs();
+      let sourceDirs = ModuleResolver.readSourceDirs();
       if (Debug.basic^) {
-        logItem("Clean %d dirs\n", surdeDirs.dirs |> List.length);
+        logItem("Clean %d dirs\n", sourceDirs.dirs |> List.length);
       };
       let count = ref(0);
-      surdeDirs.dirs
+      sourceDirs.dirs
       |> List.iter(dir => {
            let files = Sys.readdir(dir);
            files
