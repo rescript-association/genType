@@ -1,7 +1,6 @@
 /* Adapted from https://github.com/LexiFi/dead_code_analyzer */
 
-let reportUnderscore = ref(false);
-
+// Turn on type analysis
 let analyzeTypes = true;
 
 let analyzeExternals = false;
@@ -228,8 +227,6 @@ let iterFilesFromRootsToLeaves = iterFun => {
   };
 };
 
-let checkUnderscore = name => reportUnderscore^ || name.[0] != '_';
-
 let hashtblAddToList = (hashtbl, key, elt) => Hashtbl.add(hashtbl, key, elt);
 
 /********   PROCESSING  ********/
@@ -247,8 +244,7 @@ let export = (~analysisKind, ~path, ~id, ~loc) => {
        will create value definitions whose location is in set.mli
      */
   if (!loc.loc_ghost
-      && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)
-      && checkUnderscore(id.name)) {
+      && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)) {
     if (verbose) {
       GenTypeCommon.logItem(
         "%sexport %s %s\n",
