@@ -90,8 +90,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     && !excludeFile(fileName);
 
   let addDir = (~dirOnDisk, ~dirEmitted, ~filter, ~map, ~root) => {
-    root
-    +++ dirOnDisk
+    dirOnDisk
     |> Sys.readdir
     |> Array.iter(fname =>
          if (fname |> filter) {
@@ -109,7 +108,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
   |> List.iter(dir =>
        addDir(
          ~dirEmitted=dir,
-         ~dirOnDisk=dir,
+         ~dirOnDisk=projectRoot^ +++ dir,
          ~filter=filterGivenExtension,
          ~map=fileMap,
          ~root=projectRoot^,
@@ -118,27 +117,27 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
 
   if (config.useBsDependencies) {
     config.bsDependencies
-    |> List.iter(s => {
-         let root =
-           ["node_modules", s, "lib", "bs"]
-           |> List.fold_left((+++), projectRoot^);
-         let filter = fileName =>
-           [".cmt", ".cmti"]
-           |> List.exists(ext => Filename.check_suffix(fileName, ext));
-         readBsDependenciesDirs(~root)
-         |> List.iter(dir => {
-              let dirOnDisk =
-                [s, "lib", "bs", dir]
-                |> List.fold_left((+++), "node_modules");
-              let dirEmitted = s +++ dir;
-              addDir(
-                ~dirEmitted,
-                ~dirOnDisk,
-                ~filter,
-                ~map=bsDependenciesFileMap,
-                ~root=projectRoot^,
-              );
-            });
+    |> List.iter(packageName => {
+         switch (Hashtbl.find(pkgs, packageName)) {
+         | path =>
+           let root = ["lib", "bs"] |> List.fold_left((+++), path);
+           let filter = fileName =>
+             [".cmt", ".cmti"]
+             |> List.exists(ext => Filename.check_suffix(fileName, ext));
+           readBsDependenciesDirs(~root)
+           |> List.iter(dir => {
+                let dirOnDisk = root +++ dir;
+                let dirEmitted = packageName +++ dir;
+                addDir(
+                  ~dirEmitted,
+                  ~dirOnDisk,
+                  ~filter,
+                  ~map=bsDependenciesFileMap,
+                  ~root=projectRoot^,
+                );
+              });
+         | exception Not_found => assert(false)
+         }
        });
   };
 
