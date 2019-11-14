@@ -136,7 +136,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
                   ~root=projectRoot^,
                 );
               });
-         | exception Not_found => assert(false)
+         | exception Not_found => ()
          }
        });
   };
