@@ -75,7 +75,8 @@ let runAnalysis = () => {
     GenTypeCommon.projectRoot^ +++ "lib" +++ "bs";
   };
 
-  ModuleResolver.readSourceDirs()
+  let sourceDirs = ModuleResolver.readSourceDirs();
+  sourceDirs.dirs
   |> List.iter(sourceDir => {
        let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
        let files =
