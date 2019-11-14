@@ -612,6 +612,9 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
   addValueReference TransitiveType2.re:7:4 --> TransitiveType2.re:7:17
   export convertT2 TransitiveType2.re:7:4
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/UseLibrary.cmt
+  addValueReference UseLibrary.re:2:4 --> Common.re:4:4
+  export z UseLibrary.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Variants.cmt
   addValueReference Variants.re:13:4 --> Variants.re:13:17
   addValueReference Variants.re:31:4 --> Variants.re:31:11
@@ -1129,6 +1132,15 @@
   export make ImportHooks.re:15:0
   export foo ImportHooks.re:21:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BucklescriptAnnotations.cmt
+  addValueReference BucklescriptAnnotations.re:19:4 --> BucklescriptAnnotations.re:19:11
+  addValueReference BucklescriptAnnotations.re:19:4 --> js.ml:70:1
+  addValueReference BucklescriptAnnotations.re:19:4 --> js.ml:105:1
+  addValueReference BucklescriptAnnotations.re:22:6 --> BucklescriptAnnotations.re:21:11
+  addValueReference BucklescriptAnnotations.re:22:6 --> js.ml:70:1
+  addValueReference BucklescriptAnnotations.re:21:4 --> BucklescriptAnnotations.re:22:6
+  addValueReference BucklescriptAnnotations.re:21:4 --> js.ml:94:1
+  export foo BucklescriptAnnotations.re:19:4
+  export bar BucklescriptAnnotations.re:21:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
   addValueReference Records.re:14:4 --> Records.re:14:20
   addValueReference Records.re:14:4 --> Records.re:14:23
@@ -1231,6 +1243,8 @@
   export someBusiness2 Records.re:96:4
   export computeArea3 Records.re:103:4
   export computeArea4 Records.re:115:4
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
+  export make ImportIndex.re:1:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Hooks.cmt
   addValueReference Hooks.re:4:13 --> js.ml:70:1
   addValueReference Hooks.re:5:2 --> React.re:104:0
@@ -1449,7 +1463,7 @@ File References
   DeadTest.re -->> ImmutableArray.rei, js.ml, pervasives.mli
   TestEmitInnerModules.re -->> 
   TypeParams1.re -->> 
-  BucklescriptAnnotations.re -->> 
+  BucklescriptAnnotations.re -->> js.ml
   ImportHookDefault.re -->> 
   ModuleAliases.re -->> 
   TestModuleAliases.re -->> 
@@ -1465,6 +1479,7 @@ File References
   AutoAnnotate.re -->> 
   ComponentAsProp.re -->> ReactDOMRe.re, ReasonReact.rei
   ExportWithRename.re -->> React.re, js.ml
+  UseLibrary.re -->> Common.re
   ImmutableArray.rei -->> 
   NestedModulesInSignature.re -->> 
   DeadCodeImplementation.re -->> 
@@ -1492,6 +1507,7 @@ File References
   TestPromise.re -->> js_promise.ml
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
   ImmutableArray.re -->> belt_Array.mli
+  ImportIndex.re -->> 
   TypeParams2.re -->> 
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
@@ -1757,6 +1773,12 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re:2: fortytwo
 <-- line 2
 [@dead "fortytwo"] let fortytwo = 42;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re:19: foo
+<-- line 19
+[@dead "foo"] let foo = (x: someMethods) => x##threeargs(3, "a", 4);
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re:21: bar
+<-- line 21
+[@dead "bar"] let bar = (x: someMethods) => {
 
 UNUSED CONSTRUCTORS/RECORD FIELDS:
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re:6: message.text
