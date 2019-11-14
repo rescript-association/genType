@@ -18,38 +18,57 @@ let readBsDependenciesDirs = (~root) => {
   dirs^;
 };
 
+type pkgs = {
+  dirs: list(string),
+  pkgs: Hashtbl.t(string, string),
+};
+
 let readSourceDirs = () => {
   let sourceDirs =
     ["lib", "bs", ".sourcedirs.json"] |> List.fold_left((+++), projectRoot^);
+  let dirs = ref([]);
+  let pkgs = Hashtbl.create(1);
 
-  let getDirs = json => {
-    let dirs = ref([]);
+  let getDirsPkgs = json => {
     switch (json) {
-    | Ext_json_types.Obj({map, _}) =>
+    | Ext_json_types.Obj({map}) =>
       switch (map |> String_map.find_opt("dirs")) {
-      | Some(Arr({content, _})) =>
+      | Some(Arr({content})) =>
         content
         |> Array.iter(x =>
              switch (x) {
-             | Ext_json_types.Str({str, _}) => dirs := [str, ...dirs^]
+             | Ext_json_types.Str({str}) => dirs := [str, ...dirs^]
              | _ => ()
              }
            );
         ();
       | _ => ()
-      }
+      };
+      switch (map |> String_map.find_opt("pkgs")) {
+      | Some(Arr({content})) =>
+        content
+        |> Array.iter(x =>
+             switch (x) {
+             | Ext_json_types.Arr({
+                 content: [|Str({str: name}), Str({str: path})|],
+               }) =>
+               Hashtbl.add(pkgs, name, path)
+             | _ => ()
+             }
+           );
+        ();
+      | _ => ()
+      };
     | _ => ()
     };
-    dirs^;
   };
 
   if (sourceDirs |> Sys.file_exists) {
-    try(sourceDirs |> Ext_json_parse.parse_json_from_file |> getDirs) {
-    | _ => []
+    try(sourceDirs |> Ext_json_parse.parse_json_from_file |> getDirsPkgs) {
+    | _ => ()
     };
-  } else {
-    [];
   };
+  {dirs: dirs^, pkgs};
 };
 
 /* Read the project's .sourcedirs.json file if it exists
@@ -71,8 +90,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     && !excludeFile(fileName);
 
   let addDir = (~dirOnDisk, ~dirEmitted, ~filter, ~map, ~root) => {
-    root
-    +++ dirOnDisk
+    dirOnDisk
     |> Sys.readdir
     |> Array.iter(fname =>
          if (fname |> filter) {
@@ -85,11 +103,12 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          }
        );
   };
-  readSourceDirs()
+  let {dirs, pkgs} = readSourceDirs();
+  dirs
   |> List.iter(dir =>
        addDir(
          ~dirEmitted=dir,
-         ~dirOnDisk=dir,
+         ~dirOnDisk=projectRoot^ +++ dir,
          ~filter=filterGivenExtension,
          ~map=fileMap,
          ~root=projectRoot^,
@@ -98,27 +117,27 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
 
   if (config.useBsDependencies) {
     config.bsDependencies
-    |> List.iter(s => {
-         let root =
-           ["node_modules", s, "lib", "bs"]
-           |> List.fold_left((+++), projectRoot^);
-         let filter = fileName =>
-           [".cmt", ".cmti"]
-           |> List.exists(ext => Filename.check_suffix(fileName, ext));
-         readBsDependenciesDirs(~root)
-         |> List.iter(dir => {
-              let dirOnDisk =
-                [s, "lib", "bs", dir]
-                |> List.fold_left((+++), "node_modules");
-              let dirEmitted = s +++ dir;
-              addDir(
-                ~dirEmitted,
-                ~dirOnDisk,
-                ~filter,
-                ~map=bsDependenciesFileMap,
-                ~root=projectRoot^,
-              );
-            });
+    |> List.iter(packageName => {
+         switch (Hashtbl.find(pkgs, packageName)) {
+         | path =>
+           let root = ["lib", "bs"] |> List.fold_left((+++), path);
+           let filter = fileName =>
+             [".cmt", ".cmti"]
+             |> List.exists(ext => Filename.check_suffix(fileName, ext));
+           readBsDependenciesDirs(~root)
+           |> List.iter(dir => {
+                let dirOnDisk = root +++ dir;
+                let dirEmitted = packageName +++ dir;
+                addDir(
+                  ~dirEmitted,
+                  ~dirOnDisk,
+                  ~filter,
+                  ~map=bsDependenciesFileMap,
+                  ~root=projectRoot^,
+                );
+              });
+         | exception Not_found => ()
+         }
        });
   };
 
