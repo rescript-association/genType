@@ -7,9 +7,23 @@ let analyzeExternals = false;
 
 let transitive = true;
 
-let write = Sys.getenv_opt("Write") != None;
-
 let verbose = Sys.getenv_opt("Debug") != None;
+
+// Whitelist=prefix only considers source dirs with the given prefix
+let whitelistSourceDir = {
+  switch (Sys.getenv_opt("Whitelist")) {
+  | None => (_sourceDir => true)
+  | Some(prefix) =>
+    let prefixLen = prefix |> String.length;
+    (
+      sourceDir =>
+        String.length(sourceDir) >= prefixLen
+        && String.sub(sourceDir, 0, prefixLen) == prefix
+    );
+  };
+};
+
+let write = Sys.getenv_opt("Write") != None;
 
 let deadAnnotation = "dead";
 let liveAnnotation = "live";

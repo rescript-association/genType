@@ -78,19 +78,21 @@ let runAnalysis = () => {
   let sourceDirs = ModuleResolver.readSourceDirs();
   sourceDirs.dirs
   |> List.iter(sourceDir => {
-       let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
-       let files =
-         switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
-         | files => files
-         | exception (Sys_error(_)) => []
-         };
-       let cmtFiles =
-         files
-         |> List.filter(x =>
-              Filename.check_suffix(x, ".cmt")
-              || Filename.check_suffix(x, ".cmti")
-            );
-       cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
+       if (sourceDir |> whitelistSourceDir) {
+         let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
+         let files =
+           switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
+           | files => files
+           | exception (Sys_error(_)) => []
+           };
+         let cmtFiles =
+           files
+           |> List.filter(x =>
+                Filename.check_suffix(x, ".cmt")
+                || Filename.check_suffix(x, ".cmti")
+              );
+         cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
+       };
      });
 
   report();
