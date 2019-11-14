@@ -2,8 +2,6 @@
 
 let reportUnderscore = ref(false);
 
-let active = Sys.getenv_opt("DCE") != None;
-
 let analyzeTypes = true;
 
 let analyzeExternals = false;
