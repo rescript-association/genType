@@ -1,4 +1,5 @@
 # master
+- Add support for scoped packages (e.g. `@demo/somelibrary`) in `bs-dependencies`.
 
 # 3.4.1
 - Read type information from libraries when `"use-bs-dependencies": true` is specified in `gentypeconfig`.

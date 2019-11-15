@@ -11,14 +11,16 @@ let bsBlockPath = (~config) => ("", Config_.getBsBlockPath(~config));
 let bsCurryPath = (~config) => ("", Config_.getBsCurryPath(~config));
 
 let fromModule = (~dir, ~importExtension, moduleName) => {
-  let withNoPath = (moduleName |> ModuleName.toString) ++ importExtension;
+  let withNoPath =
+    (moduleName |> ModuleName.toString |> ScopedPackage.removeGeneratedModule)
+    ++ importExtension;
   (dir, withNoPath);
 };
 
 let fromStringUnsafe = s => ("", s);
 
 let chopExtensionSafe = s =>
-  try (s |> Filename.chop_extension) {
+  try(s |> Filename.chop_extension) {
   | Invalid_argument(_) => s
   };
 

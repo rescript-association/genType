@@ -116,9 +116,41 @@ type dep =
   | Internal(ResolvedName.t)
   | Dot(dep, string);
 
+module ScopedPackage = {
+  // @demo/somelibrary -> DemoSomelibrary
+  let packageNameToGeneratedModuleName = packageName =>
+    switch (packageName |> String.split_on_char('/')) {
+    | [scope, name] when scope != "" && scope.[0] == '@' =>
+      Some(
+        String.capitalize_ascii(
+          String.sub(scope, 1, String.length(scope) - 1),
+        )
+        ++ String.capitalize_ascii(name),
+      )
+    | _ => None
+    };
+
+  let isGeneratedModule = (id, ~config) =>
+    config.bsDependencies
+    |> List.exists(packageName =>
+         packageName
+         |> packageNameToGeneratedModuleName == Some(id |> Ident.name)
+       );
+
+  // (Common, DemoSomelibrary) -> Common-DemoSomelibrary
+  let addGeneratedModule = (s, ~generatedModule) => s ++ "-" ++ Ident.name(generatedModule);
+
+  // Common-DemoSomelibrary -> Common
+  let removeGeneratedModule = s =>
+    switch (s |> String.split_on_char('-')) {
+    | [name, _scope] => name
+    | _ => s
+    };
+};
+
 let rec depToString = dep =>
   switch (dep) {
-  | External(name) => name
+  | External(name) => name |> ScopedPackage.removeGeneratedModule
   | Internal(resolvedName) => resolvedName |> ResolvedName.toString
   | Dot(d, s) => depToString(d) ++ "_" ++ s
   };
@@ -176,7 +208,7 @@ module NodeFilename = {
   } = {
     type t = string;
 
-    let normalize = path: t =>
+    let normalize = (path): t =>
       switch (Sys.os_type) {
       | "Win32" =>
         path |> Str.split(Str.regexp("\\")) |> String.concat(dirSep)

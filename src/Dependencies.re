@@ -8,7 +8,7 @@ let rec handleNamespace = (~name, dep) =>
   | Dot(dep1, s) => Dot(dep1 |> handleNamespace(~name), s)
   };
 
-let rec fromPath1 = (~typeEnv, path: Path.t) =>
+let rec fromPath1 = (~config, ~typeEnv, path: Path.t) =>
   switch (path) {
   | Pident(id) =>
     let name = id |> Ident.name;
@@ -22,7 +22,11 @@ let rec fromPath1 = (~typeEnv, path: Path.t) =>
         Internal(resolvedName);
       }
     };
-  | Pdot(p, s, _pos) => Dot(p |> fromPath1(~typeEnv), s)
+
+  | Pdot(Pident(id), s, _pos) when id |> ScopedPackage.isGeneratedModule(~config) =>
+    External(s |> ScopedPackage.addGeneratedModule(~generatedModule=id))
+
+  | Pdot(p, s, _pos) => Dot(p |> fromPath1(~config, ~typeEnv), s)
   | Papply(_) =>
     Internal("__Papply_unsupported_genType__" |> ResolvedName.fromString)
   };
@@ -35,7 +39,7 @@ let rec isInternal = dep =>
   };
 
 let fromPath = (~config, ~typeEnv, path) => {
-  let dep = path |> fromPath1(~typeEnv);
+  let dep = path |> fromPath1(~config, ~typeEnv);
   if (Debug.typeResolution^) {
     logItem(
       "fromPath path:%s typeEnv:%s %s resolved:%s\n",

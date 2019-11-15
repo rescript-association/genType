@@ -5,6 +5,6 @@
 // tslint:disable-next-line:no-var-requires
 const UseLibraryBS = require('./UseLibrary.bs');
 
-import {Common_t as DemoSomelibrary_Common_t} from '@demo/somelibrary/DemoSomelibrary.gen';
+import {t as Common_t} from '@demo/somelibrary/src/Common.gen';
 
-export const z: (_1:void) => DemoSomelibrary_Common_t = UseLibraryBS.z;
+export const z: (_1:void) => Common_t = UseLibraryBS.z;
