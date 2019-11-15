@@ -13,6 +13,10 @@ let readBsDependenciesDirs = (~root) => {
       dirs := [dir, ...dirs^];
       absDir |> Sys.readdir |> Array.iter(d => findSubDirs(dir +++ d));
     };
+    logItem("readBsDependenciesDirs absDir:%s\n", absDir);
+    if (!Sys.file_exists(absDir)) {
+      assert(false);
+    };
   };
   findSubDirs("");
   dirs^;
