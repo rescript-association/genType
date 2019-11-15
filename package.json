@@ -8,8 +8,8 @@
     "build": "npx esy",
     "clean": "npx esy clean",
     "test": "node ./scripts/run_integration_tests.js",
-    "install:examples": "(cd examples/flow-react-example && npm install) & (cd examples/typescript-react-example && npm install) & (cd examples/untyped-react-example && npm install) & (cd examples/commonjs-react-example && npm install)",
-    "build:examples": "(cd examples/flow-react-example && npm run clean && npm run build) & (cd examples/typescript-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build) & (cd examples/commonjs-react-example && npm run clean && npm run build)",
+    "install:examples": "(cd examples/typescript-react-example && npm install) & (cd examples/flow-react-example && npm install) & (cd examples/untyped-react-example && npm install) & (cd examples/commonjs-react-example && npm install)",
+    "build:examples": "(cd examples/typescript-react-example && npm run clean && npm run build && cd use-some-library && npm run clean && npm run build) && (cd examples/flow-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build) & (cd examples/commonjs-react-example && npm run clean && npm run build)",
     "preversion": "npm test",
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"

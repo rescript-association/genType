@@ -13,7 +13,7 @@
     "jsx": "preserve",
     "skipLibCheck": true,
     "moduleResolution": "node",
-    "rootDir": "src",
+    "rootDir": ".",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -29,7 +29,9 @@
     "noEmit": true
   },
   "include": [
-    "src"
+    "src",
+    "some-library/src",
+    "use-some-library/src"
   ],
   "exclude": [
     "node_modules",
