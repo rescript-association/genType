@@ -1,5 +1,5 @@
 {
-  "name": "somelibrary",
+  "name": "@demo/somelibrary",
   "version": "0.1.0",
   "sources": {
     "dir": "src",
@@ -14,6 +14,7 @@
   "warnings": {
     "error": "+101"
   },
+  "namespace": true,
   "refmt": 3,
   "gentypeconfig": {
     "language": "typescript",

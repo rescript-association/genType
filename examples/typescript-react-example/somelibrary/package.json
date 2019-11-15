@@ -1,5 +1,5 @@
 {
-  "name": "somelibrary",
+  "name": "@demo/somelibrary",
   "version": "0.1.0",
   "scripts": {
     "clean": "bsb -clean-world",

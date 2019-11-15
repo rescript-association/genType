@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@demo/somelibrary": "file:somelibrary",
     "merge": "^1.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
