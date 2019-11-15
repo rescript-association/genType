@@ -19,6 +19,6 @@
   "gentypeconfig": {
     "language": "typescript",
     "module": "es6",
-    "path": "./GenType.exe"
+    "path": "../GenType.exe"
   }
 }

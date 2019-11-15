@@ -72,7 +72,6 @@ jobs:
       - bash: |
           rm examples/GenType.exe
           cp `find _esy -name GenType.exe` examples/	
-          cp `find _esy -name GenType.exe` examples/typescript-react-example/some-library/	
           rm examples/DeadCodePPX.exe
           cp `find _esy -name DeadCodePPX.exe` examples/	
         displayName: "Copy GenType.exe to examples/"
