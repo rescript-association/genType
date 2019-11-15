@@ -14,14 +14,13 @@
       "all": false
     },
     "exportInterfaces": false,
-    "use-bs-dependencies": true,
     "path": "../GenType.exe"
   },
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],
   "ppx-flags": ["../DeadCodePPX.exe"],
   "reason": { "react-jsx": 3 },
-  "bs-dependencies": ["reason-react", "@demo/some-library"],
+  "bs-dependencies": ["reason-react"],
   "sources": [
     {
       "dir": "src",

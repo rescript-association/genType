@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@demo/some-library": "file:some-library",
+    "@demo/use-some-library": "file:use-some-library",
     "merge": "^1.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
