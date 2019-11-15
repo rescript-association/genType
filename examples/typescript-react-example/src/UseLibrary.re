@@ -1,2 +1,2 @@
 [@genType]
-let z = DemoSomelibrary.Common.foo;
+let z = DemoSomeLibrary.Common.foo;

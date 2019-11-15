@@ -117,7 +117,7 @@ type dep =
   | Dot(dep, string);
 
 module ScopedPackage = {
-  // @demo/somelibrary -> DemoSomelibrary
+  // @demo/some-library -> DemoSomelibrary
   let packageNameToGeneratedModuleName = packageName =>
     switch (packageName |> String.split_on_char('/')) {
     | [scope, name] when scope != "" && scope.[0] == '@' =>
@@ -125,7 +125,12 @@ module ScopedPackage = {
         String.capitalize_ascii(
           String.sub(scope, 1, String.length(scope) - 1),
         )
-        ++ String.capitalize_ascii(name),
+        ++ (
+          name
+          |> String.split_on_char('-')
+          |> List.map(String.capitalize_ascii)
+          |> String.concat("")
+        ),
       )
     | _ => None
     };
@@ -138,7 +143,8 @@ module ScopedPackage = {
        );
 
   // (Common, DemoSomelibrary) -> Common-DemoSomelibrary
-  let addGeneratedModule = (s, ~generatedModule) => s ++ "-" ++ Ident.name(generatedModule);
+  let addGeneratedModule = (s, ~generatedModule) =>
+    s ++ "-" ++ Ident.name(generatedModule);
 
   // Common-DemoSomelibrary -> Common
   let removeGeneratedModule = s =>
