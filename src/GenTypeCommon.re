@@ -117,22 +117,46 @@ type dep =
   | Dot(dep, string);
 
 module ScopedPackage = {
+  // Taken from ext_namespace.ml in bukclescript
+  let namespace_of_package_name = (s: string): string => {
+    let len = String.length(s);
+    let buf = Buffer.create(len);
+    let add = (capital, ch) =>
+      Buffer.add_char(
+        buf,
+        if (capital) {
+          Char.uppercase_ascii(ch);
+        } else {
+          ch;
+        },
+      );
+    let rec aux = (capital, off, len) =>
+      if (off >= len) {
+        ();
+      } else {
+        let ch = String.unsafe_get(s, off);
+        switch (ch) {
+        | 'a'..'z'
+        | 'A'..'Z'
+        | '0'..'9' =>
+          add(capital, ch);
+          aux(false, off + 1, len);
+        | '/'
+        | '-' => aux(true, off + 1, len)
+        | _ => aux(capital, off + 1, len)
+        };
+      };
+
+    aux(true, 0, len);
+    Buffer.contents(buf);
+  };
+
   // @demo/some-library -> DemoSomelibrary
   let packageNameToGeneratedModuleName = packageName =>
-    switch (packageName |> String.split_on_char('/')) {
-    | [scope, name] when scope != "" && scope.[0] == '@' =>
-      Some(
-        String.capitalize_ascii(
-          String.sub(scope, 1, String.length(scope) - 1),
-        )
-        ++ (
-          name
-          |> String.split_on_char('-')
-          |> List.map(String.capitalize_ascii)
-          |> String.concat("")
-        ),
-      )
-    | _ => None
+    if (String.contains(packageName, '/')) {
+      Some(packageName |> namespace_of_package_name);
+    } else {
+      None;
     };
 
   let isGeneratedModule = (id, ~config) =>
