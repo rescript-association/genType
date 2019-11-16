@@ -298,6 +298,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       };
     };
     if (Debug.config^) {
+      logItem("Project root: %s\n", projectRoot^);
       logItem(
         "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
         languageString,

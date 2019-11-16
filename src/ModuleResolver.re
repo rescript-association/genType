@@ -67,6 +67,12 @@ let readSourceDirs = () => {
     try(sourceDirs |> Ext_json_parse.parse_json_from_file |> getDirsPkgs) {
     | _ => ()
     };
+  } else {
+    logItem(
+      "Warning: can't find source dirs: %s\n",
+      sourceDirs,
+    );
+    logItem("Types and shims will not be found by genType.\n")
   };
   {dirs: dirs^, pkgs};
 };
