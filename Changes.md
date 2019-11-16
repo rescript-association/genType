@@ -1,4 +1,6 @@
 # master
+
+# 3.4.2
 - Add support for scoped packages (e.g. `@demo/somelibrary`) in `bs-dependencies`
   when "use-bs-dependencies": true is specified in gentypeconfig.
   Note that dependent packages should be built first. If you rely on bucklescript to
