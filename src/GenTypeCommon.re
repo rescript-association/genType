@@ -116,9 +116,71 @@ type dep =
   | Internal(ResolvedName.t)
   | Dot(dep, string);
 
+module ScopedPackage = {
+  // Taken from ext_namespace.ml in bukclescript
+  let namespace_of_package_name = (s: string): string => {
+    let len = String.length(s);
+    let buf = Buffer.create(len);
+    let add = (capital, ch) =>
+      Buffer.add_char(
+        buf,
+        if (capital) {
+          Char.uppercase_ascii(ch);
+        } else {
+          ch;
+        },
+      );
+    let rec aux = (capital, off, len) =>
+      if (off >= len) {
+        ();
+      } else {
+        let ch = String.unsafe_get(s, off);
+        switch (ch) {
+        | 'a'..'z'
+        | 'A'..'Z'
+        | '0'..'9' =>
+          add(capital, ch);
+          aux(false, off + 1, len);
+        | '/'
+        | '-' => aux(true, off + 1, len)
+        | _ => aux(capital, off + 1, len)
+        };
+      };
+
+    aux(true, 0, len);
+    Buffer.contents(buf);
+  };
+
+  // @demo/some-library -> DemoSomelibrary
+  let packageNameToGeneratedModuleName = packageName =>
+    if (String.contains(packageName, '/')) {
+      Some(packageName |> namespace_of_package_name);
+    } else {
+      None;
+    };
+
+  let isGeneratedModule = (id, ~config) =>
+    config.bsDependencies
+    |> List.exists(packageName =>
+         packageName
+         |> packageNameToGeneratedModuleName == Some(id |> Ident.name)
+       );
+
+  // (Common, DemoSomelibrary) -> Common-DemoSomelibrary
+  let addGeneratedModule = (s, ~generatedModule) =>
+    s ++ "-" ++ Ident.name(generatedModule);
+
+  // Common-DemoSomelibrary -> Common
+  let removeGeneratedModule = s =>
+    switch (s |> String.split_on_char('-')) {
+    | [name, _scope] => name
+    | _ => s
+    };
+};
+
 let rec depToString = dep =>
   switch (dep) {
-  | External(name) => name
+  | External(name) => name |> ScopedPackage.removeGeneratedModule
   | Internal(resolvedName) => resolvedName |> ResolvedName.toString
   | Dot(d, s) => depToString(d) ++ "_" ++ s
   };
@@ -176,7 +238,7 @@ module NodeFilename = {
   } = {
     type t = string;
 
-    let normalize = path: t =>
+    let normalize = (path): t =>
       switch (Sys.os_type) {
       | "Win32" =>
         path |> Str.split(Str.regexp("\\")) |> String.concat(dirSep)

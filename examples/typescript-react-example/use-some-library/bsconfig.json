@@ -1,5 +1,5 @@
 {
-  "name": "somelibrary",
+  "name": "@demo/use-some-library",
   "version": "0.1.0",
   "sources": {
     "dir": "src",
@@ -10,14 +10,16 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": [],
+  "bs-dependencies": ["@demo/some-library"],
   "warnings": {
     "error": "+101"
   },
+  "namespace": true,
   "refmt": 3,
   "gentypeconfig": {
     "language": "typescript",
     "module": "es6",
+    "use-bs-dependencies": true,
     "path": "../../GenType.exe"
   }
 }

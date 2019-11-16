@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@demo/some-library": "file:some-library",
+    "@demo/use-some-library": "file:use-some-library",
     "merge": "^1.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.0.0",
-    "reason-react": "^0.7.0",
-    "somelibrary": "file:somelibrary"
+    "reason-react": "^0.7.0"
   },
   "scripts": {
     "start": "node ../run_bsb.js -make-world -w",

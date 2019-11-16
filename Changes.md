@@ -1,4 +1,9 @@
 # master
+- Add support for scoped packages (e.g. `@demo/somelibrary`) in `bs-dependencies`
+  when "use-bs-dependencies": true is specified in gentypeconfig.
+  Note that dependent packages should be built first. If you rely on bucklescript to
+  built them starting from the root package, it will not work (as the required `lib/bs/.sourcedirs.json` will be missing).
+  This will be addressed in a future version of bucklescript.
 
 # 3.4.1
 - Read type information from libraries when `"use-bs-dependencies": true` is specified in `gentypeconfig`.

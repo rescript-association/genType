@@ -1,0 +1,24 @@
+{
+  "name": "@demo/some-library",
+  "version": "0.1.0",
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "bs-dependencies": [],
+  "warnings": {
+    "error": "+101"
+  },
+  "namespace": true,
+  "refmt": 3,
+  "gentypeconfig": {
+    "language": "typescript",
+    "module": "es6",
+    "path": "../../GenType.exe"
+  }
+}

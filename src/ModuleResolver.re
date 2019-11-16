@@ -222,7 +222,7 @@ let resolveModule =
     };
     switch (moduleName |> apply(~resolver, ~useBsDependencies)) {
     | None => candidate
-    | Some((resolvedModuleDir, case, isLibrary)) =>
+    | Some((resolvedModuleDir, case, bsDependencies)) =>
       /* e.g. "dst" in case of dst/ModuleName.re */
 
       let walkUpOutputDir =
@@ -241,7 +241,8 @@ let resolveModule =
 
       let fromOutputDirToModuleDir =
         /* e.g. "../dst" */
-        isLibrary ? resolvedModuleDir : walkUpOutputDir +++ resolvedModuleDir;
+        bsDependencies
+          ? resolvedModuleDir : walkUpOutputDir +++ resolvedModuleDir;
 
       /* e.g. import "../dst/ModuleName.ext" */
       (case == Uppercase ? moduleName : moduleName |> ModuleName.uncapitalize)
