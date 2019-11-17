@@ -68,11 +68,8 @@ let readSourceDirs = () => {
     | _ => ()
     };
   } else {
-    logItem(
-      "Warning: can't find source dirs: %s\n",
-      sourceDirs,
-    );
-    logItem("Types and shims will not be found by genType.\n")
+    logItem("Warning: can't find source dirs: %s\n", sourceDirs);
+    logItem("Types and shims will not be found by genType.\n");
   };
   {dirs: dirs^, pkgs};
 };
