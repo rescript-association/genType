@@ -20,7 +20,13 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
   | (_, [(OptLabel(name), type_), ...tl]) =>
     groupReversed(
       ~revCurGroup=[
-        {mutable_: Immutable, name, optional: Optional, type_},
+        {
+          mutable_: Immutable,
+          nameJS: name,
+          nameRE: name,
+          optional: Optional,
+          type_,
+        },
         ...revCurGroup,
       ],
       ~revResult,
@@ -29,7 +35,13 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
   | (_, [(Label(name), type_), ...tl]) =>
     groupReversed(
       ~revCurGroup=[
-        {mutable_: Immutable, name, optional: Mandatory, type_},
+        {
+          mutable_: Immutable,
+          nameJS: name,
+          nameRE: name,
+          optional: Mandatory,
+          type_,
+        },
         ...revCurGroup,
       ],
       ~revResult,

@@ -1,6 +1,8 @@
 # master
 - Add support for building sub-projects from the root project.
   For more details, see: https://github.com/cristianoc/genType/pull/318.
+- With bucklescript 7.x.y, apply conversion when a record field requires conversion.
+
 
 # 3.4.2
 - Add support for scoped packages (e.g. `@demo/somelibrary`) in `bs-dependencies` when `"use-bs-dependencies": true` is specified in `gentypeconfig`. Note that dependent packages should be built first. If you rely on bucklescript to build them starting from the root package, it will not work (as the required `lib/bs/.sourcedirs.json` will be missing). This will be addressed in a future version of bucklescript.

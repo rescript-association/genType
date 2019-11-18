@@ -9,7 +9,6 @@ let access = r => r.contents + 1;
 [@genType]
 let update = r => r.contents = r.contents + 1;
 
-
 // Abstract version of references: works when conversion is required.
 
 module R: {

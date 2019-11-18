@@ -31,7 +31,8 @@ and exportModuleItemToFields: exportModuleItem => list((field, field)) =
           exportModuleValue |> exportModuleValueToType;
         let fieldForType = {
           mutable_: Mutable,
-          name: fieldName,
+          nameJS: fieldName,
+          nameRE: fieldName,
           optional: Mandatory,
           type_: typeForType,
         };

@@ -107,6 +107,22 @@ function computeArea4(o) {
                   })));
 }
 
+function testMyRec(x) {
+  return x[/* type_ */0];
+}
+
+function testMyRec2(x) {
+  return x;
+}
+
+function testMyObj(x) {
+  return x.type_;
+}
+
+function testMyObj2(x) {
+  return x;
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -136,6 +152,10 @@ export {
   someBusiness2 ,
   computeArea3 ,
   computeArea4 ,
+  testMyRec ,
+  testMyRec2 ,
+  testMyObj ,
+  testMyObj2 ,
   
 }
 /* No side effect */

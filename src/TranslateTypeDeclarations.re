@@ -81,14 +81,16 @@ let traslateDeclarationKind =
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
-           let name =
+           let nameRE = ld_id |> Ident.name;
+           let nameJS =
              switch (ld_attributes |> Annotation.getAttributeRenaming) {
              | Some(s) => s
-             | None => ld_id |> Ident.name
+             | None => nameRE
              };
            let mutability = ld_mutable == Mutable ? Mutable : Immutable;
            (
-             name,
+             nameJS,
+             nameRE,
              mutability,
              ld_type
              |> TranslateTypeExprFromTypes.translateTypeExprFromTypes(
@@ -100,20 +102,28 @@ let traslateDeclarationKind =
 
     let dependencies =
       fieldTranslations
-      |> List.map(((_, _, {TranslateTypeExprFromTypes.dependencies, _})) =>
+      |> List.map(((_, _, _, {TranslateTypeExprFromTypes.dependencies, _})) =>
            dependencies
          )
       |> List.concat;
 
     let fields =
       fieldTranslations
-      |> List.map(((name, mutable_, {TranslateTypeExprFromTypes.type_, _})) => {
+      |> List.map(
+           (
+             (
+               nameJS,
+               nameRE,
+               mutable_,
+               {TranslateTypeExprFromTypes.type_, _},
+             ),
+           ) => {
            let (optional, type1) =
              switch (type_) {
              | Option(type1) => (Optional, type1)
              | _ => (Mandatory, type_)
              };
-           {mutable_, name, optional, type_: type1};
+           {mutable_, nameJS, nameRE, optional, type_: type1};
          });
     let type_ =
       config.recordsAsObjects ? Object(Closed, fields) : Record(fields);

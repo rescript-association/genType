@@ -328,7 +328,7 @@ let rec emitCodeItem =
       (
         "function "
         ++ EmitText.parens(
-             (propsFields |> List.map(({name, _}: field) => name))
+             (propsFields |> List.map(({nameJS, _}: field) => nameJS))
              @ ["children"]
              |> List.map(EmitType.ofTypeAny(~config)),
            )
@@ -338,7 +338,7 @@ let rec emitCodeItem =
              "{"
              ++ (
                propsFields
-               |> List.map(({name: propName, optional, type_: propTyp, _}) =>
+               |> List.map(({nameJS: propName, optional, type_: propTyp, _}) =>
                     propName
                     ++ ": "
                     ++ (
@@ -704,7 +704,7 @@ let rec emitCodeItem =
           let fields =
             fields
             |> List.map((field: field) =>
-                 field.name == "children"
+                 field.nameJS == "children"
                  && field.type_
                  |> EmitType.isTypeReactElement(~config)
                    ? {...field, type_: EmitType.typeReactChild(~config)}
