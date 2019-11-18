@@ -13,7 +13,7 @@ In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-rea
 
 Here's an article describing how to use `genType` as part of a migration strategy where a tree of components is gradually converted to Reason bottom-up: [Adopting Reason: strategies, dual sources of truth, and why genType is a big deal](https://medium.com/p/c514265b466d).
 
-The implementation of [@genType] performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason variant `type t  | A(int) | B(string)` (which is represented as custom blocks at runtime) is exported to a JS function operating on the corresponding JS object of type `{ tag: "A"; value: number }
+The implementation of [@genType] performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason variant `type t  = | A(int) | B(string)` (which is represented as custom blocks at runtime) is exported to a JS function operating on the corresponding JS object of type `{ tag: "A"; value: number }
   | { tag: "B"; value: string }`.
 
 The output of `genType` can be configured by using one of 3 back-ends: `untyped` to generate wrappers in vanilla JS, `typescript` to generate [TypeScript](https://www.typescriptlang.org/), and `flow` to generate JS with [Flow](https://flow.org/en/) type annotations.
