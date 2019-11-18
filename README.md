@@ -13,12 +13,10 @@ In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-rea
 
 Here's an article describing how to use `genType` as part of a migration strategy where a tree of components is gradually converted to Reason bottom-up: [Adopting Reason: strategies, dual sources of truth, and why genType is a big deal](https://medium.com/p/c514265b466d).
 
-The implementation of [@genType] performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason record `{x:3}` (which is represented as `[3]` at runtime) is exported to a JS function operating on the corresponding JS object `{x:3}`.
+The implementation of [@genType] performs a type-directed transformation of Reason programs after [bucklescript](https://github.com/BuckleScript/bucklescript) compilation. The transformed programs operate on data types idiomatic to JS. For example, a Reason function operating on a Reason variant `type t  | A(int) | B(string)` (which is represented as custom blocks at runtime) is exported to a JS function operating on the corresponding JS object of type `{ tag: "A"; value: number }
+  | { tag: "B"; value: string }`.
 
 The output of `genType` can be configured by using one of 3 back-ends: `untyped` to generate wrappers in vanilla JS, `typescript` to generate [TypeScript](https://www.typescriptlang.org/), and `flow` to generate JS with [Flow](https://flow.org/en/) type annotations.
-
-[Here is a video illustrating the conversion of a ReasonReact component.](https://youtu.be/EV12EbxCPjM)
-[![IMAGE ALT TEXT HERE](assets/genTypeDemo.png)](https://youtu.be/EV12EbxCPjM)
 
 # Project status.
 
@@ -26,6 +24,8 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 
 # Requirements
+
+`bs-platform` 7.0.0 or higher: use `gentype` 3.2.0 or higher.
 
 `bs-platform` 6.2.0 or higher: use `gentype` 3.0.0 or higher.
 
