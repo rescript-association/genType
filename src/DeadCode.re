@@ -77,7 +77,7 @@ let runAnalysis = () => {
 
   let sourceDirs = ModuleResolver.readSourceDirs();
   sourceDirs.dirs
-  |> List.iter(sourceDir => {
+  |> List.iter(sourceDir =>
        if (sourceDir |> whitelistSourceDir) {
          let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
          let files =
@@ -92,8 +92,8 @@ let runAnalysis = () => {
                 || Filename.check_suffix(x, ".cmti")
               );
          cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
-       };
-     });
+       }
+     );
 
   report();
 };

@@ -1,5 +1,6 @@
 module ModuleNameMap = Map.Make(ModuleName);
 
+let bsbProjectRoot = ref("");
 let projectRoot = ref("");
 
 type language =
@@ -299,6 +300,9 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
     };
     if (Debug.config^) {
       logItem("Project root: %s\n", projectRoot^);
+      if (bsbProjectRoot^ != projectRoot^) {
+        logItem("bsb project root: %s\n", bsbProjectRoot^);
+      };
       logItem(
         "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
         languageString,

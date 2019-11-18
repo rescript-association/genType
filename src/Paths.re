@@ -17,7 +17,16 @@ let rec findProjectRoot = (~dir) =>
     };
   };
 
-let setProjectRoot = () => projectRoot := findProjectRoot(~dir=Sys.getcwd());
+let setProjectRoot = () => {
+  projectRoot := findProjectRoot(~dir=Sys.getcwd());
+  bsbProjectRoot :=
+    (
+      switch (Sys.getenv_opt("BSB_PROJECT_ROOT")) {
+      | None => projectRoot^
+      | Some(s) => s
+      }
+    );
+};
 
 let concat = Filename.concat;
 
@@ -93,8 +102,8 @@ let getCmtFile = cmt => {
 };
 
 let executable =
-  Sys.executable_name |> Filename.is_relative ?
-    concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
+  Sys.executable_name |> Filename.is_relative
+    ? concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
 
 let getConfigFile = () => {
   let gentypeconfig = concat(projectRoot^, "gentypeconfig.json");
@@ -113,9 +122,12 @@ let relativePathFromBsLib = fileName =>
   } else {
     let rec pathToList = path => {
       let isRoot = path |> Filename.basename == path;
-      isRoot ?
-        [path] :
-        [path |> Filename.basename, ...path |> Filename.dirname |> pathToList];
+      isRoot
+        ? [path]
+        : [
+          path |> Filename.basename,
+          ...path |> Filename.dirname |> pathToList,
+        ];
     };
     let rec fromLibBs = (~acc, reversedList) =>
       switch (reversedList) {
