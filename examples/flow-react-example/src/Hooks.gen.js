@@ -35,11 +35,7 @@ const $$default$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node 
 
 export type Props = {| +vehicle: vehicle |};
 
-export const $$default: typeof($$default$$forTypeof) = function Hooks(Arg1: $any) {
-  const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.default, $props);
-  return result
-};
+export const $$default: typeof($$default$$forTypeof) = HooksBS.default;
 
 export default $$default;
 
@@ -48,55 +44,35 @@ const anotherComponent$$forTypeof = function (_: {| +callback: ((void) => void),
 
 export type anotherComponent_Props = {| +callback: (void) => void, +vehicle: vehicle |};
 
-export const anotherComponent: typeof(anotherComponent$$forTypeof) = function Hooks_anotherComponent(Arg1: $any) {
-  const $props = {callback:Arg1.callback, vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.anotherComponent, $props);
-  return result
-};
+export const anotherComponent: typeof(anotherComponent$$forTypeof) = HooksBS.anotherComponent;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const Inner_make$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node { return null };
 
 export type Inner_make_Props = {| +vehicle: vehicle |};
 
-export const Inner_make: typeof(Inner_make$$forTypeof) = function Hooks_Inner(Arg1: $any) {
-  const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.make, $props);
-  return result
-};
+export const Inner_make: typeof(Inner_make$$forTypeof) = HooksBS.Inner.make;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const Inner_anotherComponent$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node { return null };
 
 export type Inner_anotherComponent_Props = {| +vehicle: vehicle |};
 
-export const Inner_anotherComponent: typeof(Inner_anotherComponent$$forTypeof) = function Hooks_Inner_anotherComponent(Arg1: $any) {
-  const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.anotherComponent, $props);
-  return result
-};
+export const Inner_anotherComponent: typeof(Inner_anotherComponent$$forTypeof) = HooksBS.Inner.anotherComponent;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const Inner_Inner2_make$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node { return null };
 
 export type Inner_Inner2_make_Props = {| +vehicle: vehicle |};
 
-export const Inner_Inner2_make: typeof(Inner_Inner2_make$$forTypeof) = function Hooks_Inner_Inner2(Arg1: $any) {
-  const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.Inner2.make, $props);
-  return result
-};
+export const Inner_Inner2_make: typeof(Inner_Inner2_make$$forTypeof) = HooksBS.Inner.Inner2.make;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const Inner_Inner2_anotherComponent$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node { return null };
 
 export type Inner_Inner2_anotherComponent_Props = {| +vehicle: vehicle |};
 
-export const Inner_Inner2_anotherComponent: typeof(Inner_Inner2_anotherComponent$$forTypeof) = function Hooks_Inner_Inner2_anotherComponent(Arg1: $any) {
-  const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.Inner.Inner2.anotherComponent, $props);
-  return result
-};
+export const Inner_Inner2_anotherComponent: typeof(Inner_Inner2_anotherComponent$$forTypeof) = HooksBS.Inner.Inner2.anotherComponent;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const NoProps_make$$forTypeof = function (_: {||}) : React$Node { return null };
@@ -110,8 +86,8 @@ export const functionWithRenamedArgs: ({|
   +Type: vehicle, 
   +cb: cb
 |}) => string = function (Arg1: $any) {
-  const result = Curry._3(HooksBS.functionWithRenamedArgs, [Arg1.to.name], [Arg1.Type.name], function (Argto: $any) {
-      const result1 = Arg1.cb({to:{name:Argto[0]}});
+  const result = Curry._3(HooksBS.functionWithRenamedArgs, Arg1.to, Arg1.Type, function (Argto: $any) {
+      const result1 = Arg1.cb({to:Argto});
       return result1
     });
   return result
@@ -131,8 +107,8 @@ export type componentWithRenamedArgs_Props = {|
 |};
 
 export const componentWithRenamedArgs: typeof(componentWithRenamedArgs$$forTypeof) = function Hooks_componentWithRenamedArgs(Arg1: $any) {
-  const $props = {Type:[Arg1.Type.name], to:[Arg1.to.name], cb:function (Argto: $any) {
-      const result1 = Arg1.cb({to:{name:Argto[0]}});
+  const $props = {Type:Arg1.Type, to:Arg1.to, cb:function (Argto: $any) {
+      const result1 = Arg1.cb({to:Argto});
       return result1
     }};
   const result = React.createElement(HooksBS.componentWithRenamedArgs, $props);
@@ -140,7 +116,7 @@ export const componentWithRenamedArgs: typeof(componentWithRenamedArgs$$forTypeo
 };
 
 export const makeWithRef: ({| +vehicle: vehicle |}, ?$any) => React$Node = function (Arg1: $any, Arg2: $any) {
-  const result = Curry._2(HooksBS.makeWithRef, {vehicle:[Arg1.vehicle.name]}, Arg2);
+  const result = Curry._2(HooksBS.makeWithRef, Arg1, Arg2);
   return result
 };
 
@@ -149,33 +125,21 @@ const testForwardRef$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$
 
 export type testForwardRef_Props = {| +vehicle: vehicle |};
 
-export const testForwardRef: typeof(testForwardRef$$forTypeof) = function Hooks_testForwardRef(Arg1: $any) {
-  const $props = {vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.testForwardRef, $props);
-  return result
-};
+export const testForwardRef: typeof(testForwardRef$$forTypeof) = HooksBS.testForwardRef;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const input$$forTypeof = function (_: {| +r: r |}) : React$Node { return null };
 
 export type input_Props = {| +r: r |};
 
-export const input: typeof(input$$forTypeof) = function Hooks_input(Arg1: $any) {
-  const $props = {r:[Arg1.r.x]};
-  const result = React.createElement(HooksBS.input, $props);
-  return result
-};
+export const input: typeof(input$$forTypeof) = HooksBS.input;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const polymorphicComponent$$forTypeof = function <T1>(_: {| +p: [vehicle, T1] |}) : React$Node { return null };
 
 export type polymorphicComponent_Props<T1> = {| +p: [vehicle, T1] |};
 
-export const polymorphicComponent: typeof(polymorphicComponent$$forTypeof) = function Hooks_polymorphicComponent<T1>(Arg1: $any) {
-  const $props = {p:[[Arg1.p[0].name], Arg1.p[1]]};
-  const result = React.createElement(HooksBS.polymorphicComponent, $props);
-  return result
-};
+export const polymorphicComponent: typeof(polymorphicComponent$$forTypeof) = HooksBS.polymorphicComponent;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const functionReturningReactElement$$forTypeof = function (_: {| +name: string |}) : React$Node { return null };
@@ -189,26 +153,14 @@ const RenderPropRequiresConversion_make$$forTypeof = function (_: {| +renderVehi
 
 export type RenderPropRequiresConversion_make_Props = {| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |};
 
-export const RenderPropRequiresConversion_make: typeof(RenderPropRequiresConversion_make$$forTypeof) = function Hooks_RenderPropRequiresConversion(Arg1: $any) {
-  const $props1 = {renderVehicle:function (Arg11: $any) {
-      const $props = {number:Arg11.number, vehicle:{name:Arg11.vehicle[0]}};
-      const result1 = React.createElement(Arg1.renderVehicle, $props);
-      return result1
-    }};
-  const result = React.createElement(HooksBS.RenderPropRequiresConversion.make, $props1);
-  return result
-};
+export const RenderPropRequiresConversion_make: typeof(RenderPropRequiresConversion_make$$forTypeof) = HooksBS.RenderPropRequiresConversion.make;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const aComponentWithChildren$$forTypeof = function (_: {| +children: React$Node, +vehicle: vehicle |}) : React$Node { return null };
 
 export type aComponentWithChildren_Props = {| +children: React$Node, +vehicle: vehicle |};
 
-export const aComponentWithChildren: typeof(aComponentWithChildren$$forTypeof) = function Hooks_aComponentWithChildren(Arg1: $any) {
-  const $props = {children:Arg1.children, vehicle:[Arg1.vehicle.name]};
-  const result = React.createElement(HooksBS.aComponentWithChildren, $props);
-  return result
-};
+export const aComponentWithChildren: typeof(aComponentWithChildren$$forTypeof) = HooksBS.aComponentWithChildren;
 
 export const NoProps: { make: React$ComponentType<{||}> } = HooksBS.NoProps
 

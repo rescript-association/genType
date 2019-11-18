@@ -13,11 +13,11 @@ function swap(tree) {
 }
 
 function selfRecursiveConverter(param) {
-  return param[/* self */0];
+  return param.self;
 }
 
 function mutuallyRecursiveConverter(param) {
-  return param[/* b */0];
+  return param.b;
 }
 
 function testFunctionOnOptionsAsArgument(a, foo) {

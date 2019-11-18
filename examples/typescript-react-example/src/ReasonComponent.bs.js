@@ -19,29 +19,31 @@ function make($staropt$star, person, $staropt$star$1, _children) {
       0,
       /* [] */0
     ];
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (_self) {
+  return {
+          debugName: component.debugName,
+          reactClassInternal: component.reactClassInternal,
+          handedOffState: component.handedOffState,
+          willReceiveProps: component.willReceiveProps,
+          didMount: component.didMount,
+          didUpdate: component.didUpdate,
+          willUnmount: component.willUnmount,
+          willUpdate: component.willUpdate,
+          shouldUpdate: component.shouldUpdate,
+          render: (function (_self) {
               return React.createElement("div", {
                           className: "App",
                           onClick: onClick
                         }, "ReasonReact " + (message + (" and intList: " + ($$String.concat(",", List.map((function (i) {
                                           return String(i);
-                                        }), intList)) + (" and person name: " + person[/* name */0])))), ReasonReact.element(undefined, undefined, ImportMyBanner.make(true, /* record */[/* text */"this is from ReasonComponent"], /* array */[])));
+                                        }), intList)) + (" and person name: " + person.name)))), ReasonReact.element(undefined, undefined, ImportMyBanner.make(true, {
+                                  text: "this is from ReasonComponent"
+                                }, /* array */[])));
             }),
-          /* initialState */component[/* initialState */10],
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+          initialState: component.initialState,
+          retainedProps: component.retainedProps,
+          reducer: component.reducer,
+          jsElementWrapped: component.jsElementWrapped
+        };
 }
 
 function minus($staropt$star, second) {
@@ -64,7 +66,7 @@ function tToString(t) {
 }
 
 function useRecordsCoord(param) {
-  return param[/* x */0] + param[/* y */1] | 0;
+  return param.x + param.y | 0;
 }
 
 export {

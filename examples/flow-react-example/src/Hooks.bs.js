@@ -12,26 +12,26 @@ function Hooks(Props) {
         }));
   var setCount = match[1];
   var count = match[0];
-  return React.createElement("div", undefined, React.createElement("p", undefined, "Hooks example " + (vehicle[/* name */0] + (" clicked " + (String(count) + " times")))), React.createElement("button", {
+  return React.createElement("div", undefined, React.createElement("p", undefined, "Hooks example " + (vehicle.name + (" clicked " + (String(count) + " times")))), React.createElement("button", {
                   onClick: (function (param) {
                       return Curry._1(setCount, (function (param) {
                                     return count + 1 | 0;
                                   }));
                     })
                 }, "Click me"), React.createElement(ImportHooks.make, {
-                  person: /* record */[
-                    /* name */"Mary",
-                    /* age */71
-                  ],
+                  person: {
+                    name: "Mary",
+                    age: 71
+                  },
                   children: null,
                   renderMe: (function (x) {
                       return x.randomString;
                     })
                 }, "child1", "child2"), React.createElement(ImportHookDefault.make, {
-                  person: /* record */[
-                    /* name */"DefaultImport",
-                    /* age */42
-                  ],
+                  person: {
+                    name: "DefaultImport",
+                    age: 42
+                  },
                   children: null,
                   renderMe: (function (x) {
                       return x.randomString;
@@ -43,27 +43,27 @@ function Hooks$anotherComponent(Props) {
   var vehicle = Props.vehicle;
   var callback = Props.callback;
   Curry._1(callback, /* () */0);
-  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+  return React.createElement("div", undefined, "Another Hook " + vehicle.name);
 }
 
 function Hooks$Inner(Props) {
   var vehicle = Props.vehicle;
-  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+  return React.createElement("div", undefined, "Another Hook " + vehicle.name);
 }
 
 function Hooks$Inner$anotherComponent(Props) {
   var vehicle = Props.vehicle;
-  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+  return React.createElement("div", undefined, "Another Hook " + vehicle.name);
 }
 
 function Hooks$Inner$Inner2(Props) {
   var vehicle = Props.vehicle;
-  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+  return React.createElement("div", undefined, "Another Hook " + vehicle.name);
 }
 
 function Hooks$Inner$Inner2$anotherComponent(Props) {
   var vehicle = Props.vehicle;
-  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0]);
+  return React.createElement("div", undefined, "Another Hook " + vehicle.name);
 }
 
 var Inner2 = {
@@ -87,7 +87,7 @@ var NoProps = {
 
 function functionWithRenamedArgs(_to, _Type, cb) {
   Curry._1(cb, _to);
-  return _to[/* name */0] + _Type[/* name */0];
+  return _to.name + _Type.name;
 }
 
 function Hooks$componentWithRenamedArgs(Props) {
@@ -95,7 +95,7 @@ function Hooks$componentWithRenamedArgs(Props) {
   var _Type = Props.Type;
   var cb = Props.cb;
   Curry._1(cb, _to);
-  return _to[/* name */0] + _Type[/* name */0];
+  return _to.name + _Type.name;
 }
 
 function Hooks$makeWithRef(Props, ref) {
@@ -105,7 +105,7 @@ function Hooks$makeWithRef(Props, ref) {
   } else {
     return React.createElement("button", {
                 ref: ref
-              }, vehicle[/* name */0]);
+              }, vehicle.name);
   }
 }
 
@@ -116,13 +116,13 @@ var input = React.forwardRef((function (Props, param) {
         return (function (ref) {
                     return React.createElement("div", {
                                 ref: ref
-                              }, r[/* x */0]);
+                              }, r.x);
                   })(param);
       }));
 
 function Hooks$polymorphicComponent(Props) {
   var match = Props.p;
-  return match[0][/* name */0];
+  return match[0].name;
 }
 
 function Hooks$functionReturningReactElement(Props) {
@@ -132,7 +132,9 @@ function Hooks$functionReturningReactElement(Props) {
 function Hooks$RenderPropRequiresConversion(Props) {
   var renderVehicle = Props.renderVehicle;
   return Curry._1(renderVehicle, {
-              vehicle: /* record */[/* name */"Car"],
+              vehicle: {
+                name: "Car"
+              },
               number: 42
             });
 }
@@ -144,7 +146,7 @@ var RenderPropRequiresConversion = {
 function Hooks$aComponentWithChildren(Props) {
   var vehicle = Props.vehicle;
   var children = Props.children;
-  return React.createElement("div", undefined, "Another Hook " + vehicle[/* name */0], React.createElement("div", undefined, children));
+  return React.createElement("div", undefined, "Another Hook " + vehicle.name, React.createElement("div", undefined, children));
 }
 
 var make = Hooks;

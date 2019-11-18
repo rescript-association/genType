@@ -86,7 +86,7 @@ export const testDefaultArgs: ({| +x?: number, +y: number |}) => number = functi
 };
 
 export const testDefaultArgsWithRecordConversion: ({| +size?: someRecord |}, void) => number = function (Arg1: $any, Arg2: $any) {
-  const result = Curry._2(GreetingBS.testDefaultArgsWithRecordConversion, (Arg1.size == null ? undefined : [Arg1.size.x, Arg1.size.y]), Arg2);
+  const result = Curry._2(GreetingBS.testDefaultArgsWithRecordConversion, Arg1.size, Arg2);
   return result
 };
 

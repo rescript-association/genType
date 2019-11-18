@@ -4,8 +4,6 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
-type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
@@ -34,17 +32,14 @@ export type r5 = {| +r5: number |};
 
 export type r6 = {| +r6: number |};
 
-export const useR5: (r5) => r5 = function (Arg1: $any) {
-  const result = AutoAnnotateBS.useR5([Arg1.r5]);
-  return {r5:result[0]}
-};
+export const useR5: (r5) => r5 = AutoAnnotateBS.useR5;
 
 export type Props = {| +r6: r6, +children?: mixed |};
 
 export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
   AutoAnnotateBS.component,
   (function _(jsProps: Props) {
-     return Curry._2(AutoAnnotateBS.make, [jsProps.r6.r6], jsProps.children);
+     return Curry._2(AutoAnnotateBS.make, jsProps.r6, jsProps.children);
   }));
 
 export default component;

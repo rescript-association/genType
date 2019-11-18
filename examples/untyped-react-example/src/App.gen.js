@@ -14,7 +14,7 @@ import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 export const App = ReasonReact.wrapReasonForJs(
   AppBS.component,
   (function _(jsProps) {
-     return Curry._5(AppBS.make, jsProps.array, jsProps.callback, [jsProps.person.name, jsProps.person.age, jsProps.person.optional, jsProps.person.unknown], jsProps.title, jsProps.children);
+     return Curry._5(AppBS.make, jsProps.array, jsProps.callback, jsProps.person, jsProps.title, jsProps.children);
   }));
 
 App.propTypes = {

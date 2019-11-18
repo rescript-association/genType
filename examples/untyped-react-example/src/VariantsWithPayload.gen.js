@@ -21,16 +21,16 @@ import * as VariantsWithPayloadBS from './VariantsWithPayload.bs';
 
 export const testWithPayload = function (Arg1) {
   const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
-    ? [/* c */99, [Arg1.x, Arg1.y]]
+    ? [/* c */99, Arg1]
     : $$toRE435467058[Arg1.toString()]);
   return typeof(result) === 'object'
-    ? {x:result[1][0], y:result[1][1]}
+    ? result[1]
     : $$toJS435467058[result]
 };
 
 export const printVariantWithPayload = function (Arg1) {
   const result = VariantsWithPayloadBS.printVariantWithPayload(typeof(Arg1) === 'object'
-    ? [/* c */99, [Arg1.x, Arg1.y]]
+    ? [/* c */99, Arg1]
     : $$toRE435467058[Arg1.toString()]);
   return result
 };
@@ -40,12 +40,12 @@ export const testManyPayloads = function (Arg1) {
     ? [/* one */5544550, Arg1.value]
     : Arg1.tag===2
     ? [/* two */5795212, Arg1.value]
-    : [/* three */261117022, [Arg1.value.x, Arg1.value.y]]);
+    : [/* three */261117022, Arg1.value]);
   return result[0]===/* one */5544550
     ? {tag:"oneRenamed", value:result[1]}
     : result[0]===/* two */5795212
     ? {tag:2, value:result[1]}
-    : {tag:"three", value:{x:result[1][0], y:result[1][1]}}
+    : {tag:"three", value:result[1]}
 };
 
 export const printManyPayloads = function (Arg1) {
@@ -53,7 +53,7 @@ export const printManyPayloads = function (Arg1) {
     ? [/* one */5544550, Arg1.value]
     : Arg1.tag===2
     ? [/* two */5795212, Arg1.value]
-    : [/* three */261117022, [Arg1.value.x, Arg1.value.y]]);
+    : [/* three */261117022, Arg1.value]);
   return result
 };
 
@@ -102,6 +102,6 @@ export const testVariant1Int = function (Arg1) {
 };
 
 export const testVariant1Object = function (Arg1) {
-  const result = VariantsWithPayloadBS.testVariant1Object(CreateBucklescriptBlock.__(0, [[Arg1.x, Arg1.y]]));
-  return {x:result[0][0], y:result[0][1]}
+  const result = VariantsWithPayloadBS.testVariant1Object(CreateBucklescriptBlock.__(0, [Arg1]));
+  return result[0]
 };

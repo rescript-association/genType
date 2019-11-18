@@ -29,7 +29,7 @@ function printVariantWithPayload(x) {
     }
   } else {
     var payload = x[1];
-    console.log("printVariantWithPayload x:", payload[/* x */0], "y:", payload[/* y */1]);
+    console.log("printVariantWithPayload x:", payload.x, "y:", payload.y);
     return /* () */0;
   }
 }
@@ -43,7 +43,7 @@ function printManyPayloads(x) {
   if (variant !== 5795212) {
     if (variant >= 261117022) {
       var payload = x[1];
-      console.log("printManyPayloads x:", payload[/* x */0], "y:", payload[/* y */1]);
+      console.log("printManyPayloads x:", payload.x, "y:", payload.y);
       return /* () */0;
     } else {
       console.log("printManyPayloads one:", x[1]);

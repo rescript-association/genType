@@ -6,8 +6,6 @@ import {default as makeNotChecked} from './hookExample';
 
 import {default as defaultNotChecked} from './hookExample';
 
-import * as React from 'react';
-
 // In case of type error, check the type of 'make' in 'ImportHookDefault.re' and './hookExample'.
 export const makeTypeChecked: React.ComponentType<{
   readonly person: person; 
@@ -16,11 +14,7 @@ export const makeTypeChecked: React.ComponentType<{
 }> = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function hookExample(Arg1: any) {
-  const $props = {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe};
-  const result = React.createElement(makeTypeChecked, $props);
-  return result
-} as React.ComponentType<{
+export const make: unknown = makeTypeChecked as React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: ImportHooks_renderMe<string>
@@ -34,11 +28,7 @@ export const defaultTypeChecked: React.ComponentType<{
 }> = defaultNotChecked;
 
 // Export '$$default' early to allow circular import from the '.bs.js' file.
-export const $$default: unknown = function hookExample(Arg1: any) {
-  const $props = {person:{name:Arg1.person[0], age:Arg1.person[1]}, children:Arg1.children, renderMe:Arg1.renderMe};
-  const result = React.createElement(defaultTypeChecked, $props);
-  return result
-} as React.ComponentType<{
+export const $$default: unknown = defaultTypeChecked as React.ComponentType<{
   readonly person: person; 
   readonly children: JSX.Element; 
   readonly renderMe: ImportHooks_renderMe<string>

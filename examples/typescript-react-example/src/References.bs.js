@@ -2,28 +2,32 @@
 
 
 function create(x) {
-  return /* record */[/* contents */x];
+  return {
+          contents: x
+        };
 }
 
 function access(r) {
-  return r[/* contents */0] + 1 | 0;
+  return r.contents + 1 | 0;
 }
 
 function update(r) {
-  r[/* contents */0] = r[/* contents */0] + 1 | 0;
+  r.contents = r.contents + 1 | 0;
   return /* () */0;
 }
 
 function get(r) {
-  return r[/* contents */0];
+  return r.contents;
 }
 
 function make(prim) {
-  return /* record */[/* contents */prim];
+  return {
+          contents: prim
+        };
 }
 
 function set(r, v) {
-  r[/* contents */0] = v;
+  r.contents = v;
   return /* () */0;
 }
 

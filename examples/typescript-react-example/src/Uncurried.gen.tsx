@@ -41,15 +41,9 @@ export const curried3: (_1:number, _2:string, _3:number) => string = function (A
 
 export const callback: (_1:((_1:void) => number)) => string = UncurriedBS.callback;
 
-export const callback2: (_1:auth) => string = function (Arg1: any) {
-  const result = UncurriedBS.callback2([Arg1.login]);
-  return result
-};
+export const callback2: (_1:auth) => string = UncurriedBS.callback2;
 
-export const callback2U: (_1:authU) => string = function (Arg1: any) {
-  const result = UncurriedBS.callback2U([Arg1.loginU]);
-  return result
-};
+export const callback2U: (_1:authU) => string = UncurriedBS.callback2U;
 
 export const sumU: (_1:number, _2:number) => void = UncurriedBS.sumU;
 

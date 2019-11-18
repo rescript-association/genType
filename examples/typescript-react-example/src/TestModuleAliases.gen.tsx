@@ -34,22 +34,10 @@ export type inner1 = ModuleAliases2_InnerAlias_inner;
 // tslint:disable-next-line:interface-over-type-literal
 export type inner2 = ModuleAliases2_Outer_Inner_inner;
 
-export const testInner1: (_1:inner1) => inner1 = function (Arg1: any) {
-  const result = TestModuleAliasesBS.testInner1([Arg1.inner]);
-  return {inner:result[0]}
-};
+export const testInner1: (_1:inner1) => inner1 = TestModuleAliasesBS.testInner1;
 
-export const testInner1Expanded: (_1:ModuleAliases2_InnerAlias_inner) => ModuleAliases2_InnerAlias_inner = function (Arg1: any) {
-  const result = TestModuleAliasesBS.testInner1Expanded([Arg1.inner]);
-  return {inner:result[0]}
-};
+export const testInner1Expanded: (_1:ModuleAliases2_InnerAlias_inner) => ModuleAliases2_InnerAlias_inner = TestModuleAliasesBS.testInner1Expanded;
 
-export const testInner2: (_1:inner2) => inner2 = function (Arg1: any) {
-  const result = TestModuleAliasesBS.testInner2([Arg1.inner]);
-  return {inner:result[0]}
-};
+export const testInner2: (_1:inner2) => inner2 = TestModuleAliasesBS.testInner2;
 
-export const testInner2Expanded: (_1:ModuleAliases2_Outer_Inner_inner) => ModuleAliases2_Outer_Inner_inner = function (Arg1: any) {
-  const result = TestModuleAliasesBS.testInner2Expanded([Arg1.inner]);
-  return {inner:result[0]}
-};
+export const testInner2Expanded: (_1:ModuleAliases2_Outer_Inner_inner) => ModuleAliases2_Outer_Inner_inner = TestModuleAliasesBS.testInner2Expanded;

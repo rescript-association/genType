@@ -51,7 +51,7 @@ export type Props = {
 export const ReasonComponent: React.ComponentType<Props> = ReasonReact.wrapReasonForJs(
   ReasonComponentBS.component,
   (function _(jsProps: Props) {
-     return Curry._4(ReasonComponentBS.make, jsProps.message, [jsProps.person.name, jsProps.person.surname, jsProps.person.type, jsProps.person.polymorphicPayload], jsProps.intList, jsProps.children);
+     return Curry._4(ReasonComponentBS.make, jsProps.message, {name:jsProps.person.name, surname:jsProps.person.surname, type_:jsProps.person.type, polymorphicPayload:jsProps.person.polymorphicPayload}, jsProps.intList, jsProps.children);
   }));
 
 export default ReasonComponent;
@@ -72,7 +72,4 @@ export const tToString: (_1:t) => string = function (Arg1: any) {
   return result
 };
 
-export const useRecordsCoord: (_1:Records_coord) => number = function (Arg1: any) {
-  const result = ReasonComponentBS.useRecordsCoord([Arg1.x, Arg1.y, Arg1.z]);
-  return result
-};
+export const useRecordsCoord: (_1:Records_coord) => number = ReasonComponentBS.useRecordsCoord;

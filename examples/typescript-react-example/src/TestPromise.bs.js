@@ -3,7 +3,9 @@
 
 function convert(param) {
   return param.then((function (param) {
-                return Promise.resolve(/* record */[/* result */param[/* s */1]]);
+                return Promise.resolve({
+                            result: param.s
+                          });
               }));
 }
 

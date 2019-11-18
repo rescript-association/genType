@@ -8,23 +8,23 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
 function computeArea(param) {
-  return Caml_int32.imul(Caml_int32.imul(param[/* x */0], param[/* y */1]), Belt_Option.mapWithDefault(param[/* z */2], 1, (function (n) {
+  return Caml_int32.imul(Caml_int32.imul(param.x, param.y), Belt_Option.mapWithDefault(param.z, 1, (function (n) {
                     return n;
                   })));
 }
 
 function coord2d(x, y) {
-  return /* record */[
-          /* x */x,
-          /* y */y,
-          /* z */undefined
-        ];
+  return {
+          x: x,
+          y: y,
+          z: undefined
+        };
 }
 
 var getOpt = Belt_Option.mapWithDefault;
 
 function findAddress(business) {
-  return Belt_Option.mapWithDefault(business[/* address */2], /* [] */0, (function (a) {
+  return Belt_Option.mapWithDefault(business.address, /* [] */0, (function (a) {
                 return /* :: */[
                         a,
                         /* [] */0
@@ -34,13 +34,13 @@ function findAddress(business) {
 
 function findAllAddresses(businesses) {
   return Belt_List.toArray(Belt_List.flatten(Belt_List.fromArray(Belt_Array.map(businesses, (function (business) {
-                            return Pervasives.$at(Belt_Option.mapWithDefault(business[/* address */2], /* [] */0, (function (a) {
+                            return Pervasives.$at(Belt_Option.mapWithDefault(business.address, /* [] */0, (function (a) {
                                               return /* :: */[
                                                       a,
                                                       /* [] */0
                                                     ];
-                                            })), Belt_Option.mapWithDefault(business[/* owner */1], /* [] */0, (function (p) {
-                                              return Belt_Option.mapWithDefault(p[/* address */2], /* [] */0, (function (a) {
+                                            })), Belt_Option.mapWithDefault(business.owner, /* [] */0, (function (p) {
+                                              return Belt_Option.mapWithDefault(p.address, /* [] */0, (function (a) {
                                                             return /* :: */[
                                                                     a,
                                                                     /* [] */0
@@ -51,33 +51,33 @@ function findAllAddresses(businesses) {
 }
 
 function getPayload(param) {
-  return param[/* payload */1];
+  return param.payload;
 }
 
 function getPayloadRecord(param) {
-  return param[/* payload */1];
+  return param.payload;
 }
 
-var recordValue = /* record */[
-  /* v */1,
-  /* w */1
-];
+var recordValue = {
+  v: 1,
+  w: 1
+};
 
-var payloadValue = /* record */[
-  /* num */1,
-  /* payload */recordValue
-];
+var payloadValue = {
+  num: 1,
+  payload: recordValue
+};
 
 function getPayloadRecordPlusOne(param) {
-  var payload = param[/* payload */1];
-  return /* record */[
-          /* v */payload[/* v */0] + 1 | 0,
-          /* w */payload[/* w */1]
-        ];
+  var payload = param.payload;
+  return {
+          v: payload.v + 1 | 0,
+          w: payload.w
+        };
 }
 
 function findAddress2(business) {
-  return Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(business[/* address2 */2]), /* [] */0, (function (a) {
+  return Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(business.address2), /* [] */0, (function (a) {
                 return /* :: */[
                         a,
                         /* [] */0
@@ -85,15 +85,15 @@ function findAddress2(business) {
               }));
 }
 
-var someBusiness2_001 = /* owner */null;
+var someBusiness2_owner = null;
 
-var someBusiness2_002 = /* address2 */null;
+var someBusiness2_address2 = null;
 
-var someBusiness2 = /* record */[
-  /* name */"SomeBusiness",
-  someBusiness2_001,
-  someBusiness2_002
-];
+var someBusiness2 = {
+  name: "SomeBusiness",
+  owner: someBusiness2_owner,
+  address2: someBusiness2_address2
+};
 
 function computeArea3(o) {
   return Caml_int32.imul(Caml_int32.imul(o.x, o.y), Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(o.z), 1, (function (n) {
@@ -108,7 +108,7 @@ function computeArea4(o) {
 }
 
 function testMyRec(x) {
-  return x[/* type_ */0];
+  return x.type_;
 }
 
 function testMyRec2(x) {
@@ -124,24 +124,24 @@ function testMyObj2(x) {
 }
 
 function testMyRecBsAs(x) {
-  return x[/* type_ */0];
+  return x.type_;
 }
 
 function testMyRecBsAs2(x) {
   return x;
 }
 
-var origin = /* record */[
-  /* x */0,
-  /* y */0,
-  /* z */0
-];
+var origin = {
+  x: 0,
+  y: 0,
+  z: 0
+};
 
-var someBusiness = /* record */[
-  /* name */"SomeBusiness",
-  /* owner */undefined,
-  /* address */undefined
-];
+var someBusiness = {
+  name: "SomeBusiness",
+  owner: undefined,
+  address: undefined
+};
 
 export {
   origin ,

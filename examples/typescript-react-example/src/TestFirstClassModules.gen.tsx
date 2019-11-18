@@ -18,9 +18,6 @@ export const convert: (_1:FirstClassModules_firstClassModule) => FirstClassModul
 
 export const convertInterface: (_1:FirstClassModulesInterface_firstClassModule) => FirstClassModulesInterface_firstClassModule = TestFirstClassModulesBS.convertInterface;
 
-export const convertRecord: (_1:FirstClassModulesInterface_record) => FirstClassModulesInterface_record = function (Arg1: any) {
-  const result = TestFirstClassModulesBS.convertRecord([Arg1.x, Arg1.y]);
-  return {x:result[0], y:result[1]}
-};
+export const convertRecord: (_1:FirstClassModulesInterface_record) => FirstClassModulesInterface_record = TestFirstClassModulesBS.convertRecord;
 
 export const convertFirstClassModuleWithTypeEquations: <T1,T2>(_1:{ readonly out: ((_1:T1) => T1); readonly Inner: { readonly inn: ((_1:T2) => T2) } }) => { readonly out: (_1:T1) => T1; readonly Inner: { readonly inn: (_1:T2) => T2 } } = TestFirstClassModulesBS.convertFirstClassModuleWithTypeEquations;

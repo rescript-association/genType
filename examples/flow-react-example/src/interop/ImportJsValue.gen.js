@@ -46,10 +46,7 @@ export const round: mixed = roundTypeChecked;
 export const areaTypeChecked: (point) => number = areaNotChecked;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
-export const area: mixed = function (Arg1: $any) {
-  const result = areaTypeChecked({x:Arg1[0], y:Arg1[1]});
-  return result
-};
+export const area: mixed = areaTypeChecked;
 
 // In case of type error, check the type of 'useColor' in 'ImportJsValue.re' and './MyMath'.
 export const useColorTypeChecked: (color) => number = useColorNotChecked;
