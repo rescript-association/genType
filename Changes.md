@@ -1,7 +1,7 @@
 # master
 - Add support for building sub-projects from the root project.
   For more details, see: https://github.com/cristianoc/genType/pull/318.
-- With bucklescript 7.x.y, apply conversion when a record field requires conversion.
+- With bucklescript 7.x.y, apply conversion when a record field requires renaming.
 
 
 # 3.4.2
