@@ -1,4 +1,4 @@
-(* Copyright (C) 2015-2016 Bloomberg Finance L.P.
+(* Copyright (C) 2019- Authors of BuckleScript
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,15 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. *)
 
 
+ let length = 16
 
-
-
-external unsafe_blit_string : string -> int -> bytes -> int -> int -> unit
-                     = "caml_blit_string" 
-[@@noalloc]
-    
-
-
-(** Port the {!Bytes.escaped} from trunk to make it not locale sensitive *)
-
-val escaped : bytes -> bytes
+ let hex_length = 32

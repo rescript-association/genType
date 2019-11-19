@@ -1,4 +1,4 @@
-(* Copyright (C) 2015-2016 Bloomberg Finance L.P.
+(* Copyright (C) 2019 - Present Authors of BuckleScript
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,15 +23,36 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. *)
 
 
+ 
+  
+type t
+
+type group = {
+   modules : string array ; 
+   dir_length : int ;
+   dir_info_offset : int ; 
+   module_info_offset : int ;
+ }
+
+(* exposed only for testing *)
+val decode_internal : 
+  string -> 
+  int ref ->
+  group array 
 
 
 
-external unsafe_blit_string : string -> int -> bytes -> int -> int -> unit
-                     = "caml_blit_string" 
-[@@noalloc]
-    
+val read_build_file : filename:string -> group array
 
 
-(** Port the {!Bytes.escaped} from trunk to make it not locale sensitive *)
 
-val escaped : bytes -> bytes
+type module_info = {
+  case : bool (* Bsb_db.case*);
+  dir_name : string
+} 
+
+val find_opt :
+  t -> (* contains global info *)
+  int -> (* more likely to be zero *)
+  string -> (* module name *)
+  module_info option 
