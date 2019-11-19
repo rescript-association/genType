@@ -75,7 +75,7 @@ let runAnalysis = () => {
     GenTypeCommon.projectRoot^ +++ "lib" +++ "bs";
   };
 
-  let sourceDirs = ModuleResolver.readSourceDirs();
+  let sourceDirs = ModuleResolver.readSourceDirs(~configSources=None);
   sourceDirs.dirs
   |> List.iter(sourceDir =>
        if (sourceDir |> whitelistSourceDir) {

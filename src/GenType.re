@@ -91,7 +91,8 @@ let cli = () => {
 
     | Clean =>
       let config = Paths.readConfig(~bsVersion, ~namespace=None);
-      let sourceDirs = ModuleResolver.readSourceDirs();
+      let sourceDirs =
+        ModuleResolver.readSourceDirs(~configSources=config.sources);
       if (Debug.basic^) {
         logItem("Clean %d dirs\n", sourceDirs.dirs |> List.length);
       };

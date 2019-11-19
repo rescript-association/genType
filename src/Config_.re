@@ -41,6 +41,7 @@ type config = {
   reasonReactPath: string,
   recordsAsObjects: bool,
   shimsMap: ModuleNameMap.t(ModuleName.t),
+  sources: option(Ext_json_types.t),
   useBsDependencies: bool,
 };
 
@@ -67,6 +68,7 @@ let default = {
   reasonReactPath: "reason-react/src/ReasonReact.js",
   recordsAsObjects: false,
   shimsMap: ModuleNameMap.empty,
+  sources: None,
   useBsDependencies: false,
 };
 
@@ -338,6 +340,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       reasonReactPath,
       recordsAsObjects,
       shimsMap,
+      sources: None,
       useBsDependencies,
     };
   };
@@ -369,6 +372,12 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
           {...config, bsDependencies: strings^};
         | _ => config
         };
+      let config = {
+        switch (map |> String_map.find_opt("sources")) {
+        | Some(sourceItem) => {...config, sources: Some(sourceItem)}
+        | _ => config
+        };
+      };
       config;
     | _ => default
     };
