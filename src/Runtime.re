@@ -195,7 +195,7 @@ module Mangle = {
   keywords |> Array.iter(x => Hashtbl.add(table, "_" ++ x, x));
 
   /*
-     Apply bucklescript's marshaling rules for object field names:
+     Apply bucklescript's mangling rules for object field names:
      Remove trailing "__" if present.
      Otherwise remove leading "_" when followed by an uppercase letter, or keyword.
    */
