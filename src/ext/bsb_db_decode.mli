@@ -42,7 +42,7 @@ val decode_internal :
 
 
 
-val read_build_file : filename:string -> t
+val read_build_file : filename:string -> group array
 
 
 

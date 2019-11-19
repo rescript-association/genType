@@ -89,10 +89,10 @@ and decode_modules (x : string) (offset : cursor) module_number : string array =
   
 
 (* TODO: shall we check the consistency of digest *)
-let read_build_file ~filename : t =   
+let read_build_file ~filename : group array =   
   let all_content = 
     Ext_io.load_file filename in   
-  decode_internal all_content (ref (Ext_digest.length + 1)), all_content
+  decode_internal all_content (ref (Ext_digest.length + 1))
 
 (* Invariant: the same as encoding String_map.compare_key  *)  
 let cmp  =  Ext_string.compare
