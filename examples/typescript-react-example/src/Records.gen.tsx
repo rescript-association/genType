@@ -123,12 +123,12 @@ export const computeArea4: (_1:{
 }) => number = RecordsBS.computeArea4;
 
 export const testMyRec: (_1:myRec) => string = function (Arg1: any) {
-  const result = RecordsBS.testMyRec([Arg1.type_]);
+  const result = RecordsBS.testMyRec([Arg1.type]);
   return result
 };
 
 export const testMyRec2: (_1:myRec) => myRec = function (Arg1: any) {
-  const result = RecordsBS.testMyRec2([Arg1.type_]);
+  const result = RecordsBS.testMyRec2([Arg1.type]);
   return {type:result[0]}
 };
 

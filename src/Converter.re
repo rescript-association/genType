@@ -767,9 +767,9 @@ let rec apply =
     } else {
       let fieldValues =
         fieldsC
-        |> List.map(({lblRE, c: fieldConverter}) =>
+        |> List.map(({lblJS, c: fieldConverter}) =>
              value
-             |> EmitText.fieldAccess(~label=lblRE)
+             |> EmitText.fieldAccess(~label=lblJS)
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
