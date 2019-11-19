@@ -28,6 +28,7 @@ type coord2 = (int, int, Js.Nullable.t(int));
 
 [@genType]
 type person = {
+  [@genType.as "Name"]
   name: string,
   age: int,
 };

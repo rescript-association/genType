@@ -135,3 +135,24 @@ type mix = {
       "surname": string,
     }),
 };
+
+[@genType]
+type myRec = {
+  [@genType.as "type"]
+  type_: string,
+};
+
+[@genType]
+type myObj = {. "type_": string};
+
+[@genType]
+let testMyRec = (x: myRec) => x.type_;
+
+[@genType]
+let testMyRec2 = (x: myRec) => x;
+
+[@genType]
+let testMyObj = (x: myObj) => x##type_;
+
+[@genType]
+let testMyObj2 = (x: myObj) => x;

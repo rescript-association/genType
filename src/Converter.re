@@ -15,7 +15,12 @@ type t =
 and groupedArgConverter =
   | ArgConverter(t)
   | GroupConverter(list((string, optional, t)))
-and fieldsC = list((string, t))
+and fieldC = {
+  lblJS: string,
+  lblRE: string,
+  c: t,
+}
+and fieldsC = list(fieldC)
 and functionC = {
   argConverters: list(groupedArgConverter),
   componentName: option(string),
@@ -83,7 +88,11 @@ let rec toString = converter =>
     ++ dot
     ++ (
       fieldsC
-      |> List.map(((lbl, c)) => lbl ++ ":" ++ (c |> toString))
+      |> List.map(({lblJS, lblRE, c}) =>
+           (lblJS == lblRE ? lblJS : "(" ++ lblJS ++ "/" ++ lblRE ++ ")")
+           ++ ":"
+           ++ (c |> toString)
+         )
       |> String.concat(", ")
     )
     ++ "}";
@@ -93,7 +102,7 @@ let rec toString = converter =>
   | TupleC(innerTypesC) =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
 
-  | VariantC({noPayloads, withPayload, _}) =>
+  | VariantC({noPayloads, withPayload}) =>
     "variant("
     ++ (
       (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
@@ -172,11 +181,11 @@ let typeGetConverterNormalized =
       } else {
         let visited = visited |> StringSet.add(name);
         switch (name |> lookupId) {
-        | {annotation: GenTypeOpaque, _} => (IdentC, normalized_)
-        | {annotation: NoGenType, _} => (IdentC, normalized_)
-        | {typeVars, type_, _} =>
+        | {annotation: GenTypeOpaque} => (IdentC, normalized_)
+        | {annotation: NoGenType} => (IdentC, normalized_)
+        | {typeVars, type_} =>
           let pairs =
-            try (List.combine(typeVars, typeArgs)) {
+            try(List.combine(typeVars, typeArgs)) {
             | Invalid_argument(_) => []
             };
 
@@ -218,8 +227,12 @@ let typeGetConverterNormalized =
       (
         ObjectC(
           fieldsConverted
-          |> List.map((({name, optional, _}, (converter, _))) =>
-               (name, optional == Mandatory ? converter : OptionC(converter))
+          |> List.map((({nameJS, nameRE, optional}, (converter, _))) =>
+               {
+                 lblJS: nameJS,
+                 lblRE: nameRE,
+                 c: optional == Mandatory ? converter : OptionC(converter),
+               }
              ),
         ),
         Object(
@@ -248,8 +261,12 @@ let typeGetConverterNormalized =
       (
         RecordC(
           fieldsConverted
-          |> List.map((({name, optional}, (converter, _))) =>
-               (name, optional == Mandatory ? converter : OptionC(converter))
+          |> List.map((({nameJS, nameRE, optional}, (converter, _))) =>
+               {
+                 lblJS: nameJS,
+                 lblRE: nameRE,
+                 c: optional == Mandatory ? converter : OptionC(converter),
+               }
              ),
         ),
         Record(
@@ -330,8 +347,8 @@ let typeGetConverterNormalized =
       let converter =
         GroupConverter(
           fieldsConverted
-          |> List.map((({name, optional, _}, (converter, _))) =>
-               (name, optional, converter)
+          |> List.map((({nameJS, optional}, (converter, _))) =>
+               (nameJS, optional, converter)
              ),
         );
       (converter, tNormalized);
@@ -400,11 +417,14 @@ let rec converterIsIdentity = (~toJS, converter) =>
 
   | ObjectC(fieldsC) =>
     fieldsC
-    |> List.for_all(((_, c)) =>
-         switch (c) {
-         | OptionC(c1) => c1 |> converterIsIdentity(~toJS)
-         | _ => c |> converterIsIdentity(~toJS)
-         }
+    |> List.for_all(({lblJS, lblRE, c}) =>
+         lblJS == lblRE
+         && (
+           switch (c) {
+           | OptionC(c1) => c1 |> converterIsIdentity(~toJS)
+           | _ => c |> converterIsIdentity(~toJS)
+           }
+         )
        )
 
   | OptionC(c) =>
@@ -640,12 +660,12 @@ let rec apply =
       };
     let fieldValues =
       fieldsC
-      |> List.map(((label, fieldConverter)) =>
-           label
+      |> List.map(({lblJS, lblRE, c: fieldConverter}) =>
+           (toJS ? lblJS : lblRE)
            ++ ":"
            ++ (
              value
-             |> EmitText.fieldAccess(~label)
+             |> EmitText.fieldAccess(~label=toJS ? lblRE : lblJS)
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
@@ -725,8 +745,8 @@ let rec apply =
     if (toJS) {
       let fieldValues =
         fieldsC
-        |> List.mapi((index, (lbl, fieldConverter)) =>
-             lbl
+        |> List.mapi((index, {lblJS, c: fieldConverter}) =>
+             lblJS
              ++ ":"
              ++ (
                value
@@ -747,9 +767,9 @@ let rec apply =
     } else {
       let fieldValues =
         fieldsC
-        |> List.map(((label, fieldConverter)) =>
+        |> List.map(({lblJS, c: fieldConverter}) =>
              value
-             |> EmitText.fieldAccess(~label)
+             |> EmitText.fieldAccess(~label=lblJS)
              |> apply(
                   ~config,
                   ~converter=fieldConverter |> simplifyFieldConverted,
@@ -782,7 +802,7 @@ let rec apply =
     )
     ++ "]"
 
-  | VariantC({noPayloads: [case], withPayload: [], polymorphic, _}) =>
+  | VariantC({noPayloads: [case], withPayload: [], polymorphic}) =>
     toJS
       ? case.labelJS |> labelJSToString
       : case.label |> Runtime.emitVariantLabel(~polymorphic)

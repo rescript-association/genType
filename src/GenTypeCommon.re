@@ -65,7 +65,8 @@ and builtin =
 and fields = list(field)
 and field = {
   mutable_,
-  name: string,
+  nameJS: string,
+  nameRE: string,
   optional,
   type_,
 }

@@ -91,7 +91,8 @@ let typeReactRef = (~config, ~type_) =>
     [
       {
         mutable_: Mutable,
-        name: "current",
+        nameJS: "current",
+        nameRE: "current",
         optional: Mandatory,
         type_: Null(type_),
       },
@@ -265,7 +266,8 @@ let rec renderType =
       noPayloads |> List.map(case => case.labelJS |> labelJSToString);
     let field = (~name, value) => {
       mutable_: Mutable,
-      name,
+      nameJS: name,
+      nameRE: name,
       optional: Mandatory,
       type_: TypeVar(value),
     };
@@ -307,7 +309,7 @@ and renderField =
       ~indent,
       ~typeNameIsInterface,
       ~inFunType,
-      {mutable_, name: lbl, optional, type_},
+      {mutable_, nameJS: lbl, optional, type_},
     ) => {
   let optMarker = optional === Optional ? "?" : "";
   let mutMarker =
@@ -681,7 +683,7 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
       ++ Indent.break(~indent=indent1)
       ++ (
         fields
-        |> List.filter(({name}: field) => name != "children")
+        |> List.filter(({nameJS}: field) => nameJS != "children")
         |> List.map(emitField(~indent=indent1))
         |> String.concat("," ++ Indent.break(~indent=indent1))
       )
@@ -697,8 +699,8 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
     | TypeVar(_)
     | Variant(_) => "any" |> prefix
     }
-  and emitField = (~indent, {name, optional, type_}: field) =>
-    name
+  and emitField = (~indent, {nameJS, optional, type_}: field) =>
+    nameJS
     ++ " : "
     ++ (type_ |> emitType(~indent))
     ++ (optional == Mandatory ? ".isRequired" : "");
@@ -711,7 +713,7 @@ let emitPropTypes = (~config, ~emitters, ~indent, ~name, fields) => {
   ++ Indent.break(~indent=indent1)
   ++ (
     fields
-    |> List.filter(({name}: field) => name != "children")
+    |> List.filter(({nameJS}: field) => nameJS != "children")
     |> List.map(emitField(~indent=indent1))
     |> String.concat("," ++ Indent.break(~indent=indent1))
   )

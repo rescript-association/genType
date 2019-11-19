@@ -412,7 +412,7 @@ let translateConstr =
              | _ => (Mandatory, t)
              };
            let name = name |> Runtime.mangleObjectField;
-           {mutable_, name, optional, type_};
+           {mutable_, nameJS: name, nameRE: name, optional, type_};
          });
     let type_ = Object(closedFlag, fields);
     {dependencies, type_};
@@ -792,7 +792,8 @@ and signatureToModuleRuntimeRepresentation =
                 );
            let field = {
              mutable_: Immutable,
-             name: id |> Ident.name,
+             nameJS: id |> Ident.name,
+             nameRE: id |> Ident.name,
              optional: Mandatory,
              type_,
            };
@@ -819,7 +820,8 @@ and signatureToModuleRuntimeRepresentation =
              };
            let field = {
              mutable_: Immutable,
-             name: id |> Ident.name,
+             nameJS: id |> Ident.name,
+             nameRE: id |> Ident.name,
              optional: Mandatory,
              type_,
            };

@@ -2,7 +2,7 @@ type variant =
   | R(int);
 
 [@genType]
-type record = {variant: variant};
+type record = {variant};
 
 type r2 = {r2: int};
 

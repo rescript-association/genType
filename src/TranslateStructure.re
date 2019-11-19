@@ -24,7 +24,7 @@ and addAnnotationsToFields =
     | Some(StringPayload(s)) =>
       let (nextFields1, types1) =
         addAnnotationsToFields(c_rhs, nextFields, types);
-      ([{...field, name: s}, ...nextFields1], types1);
+      ([{...field, nameJS: s}, ...nextFields1], types1);
     | _ =>
       let (nextFields1, types1) =
         addAnnotationsToFields(c_rhs, nextFields, types);
