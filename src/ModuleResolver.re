@@ -29,7 +29,7 @@ let readSourceDirs = () => {
   let dirs = ref([]);
   let pkgs = Hashtbl.create(1);
 
-  let getDirsPkgs = json => {
+  let readDirs = json => {
     switch (json) {
     | Ext_json_types.Obj({map}) =>
       switch (map |> String_map.find_opt("dirs")) {
@@ -43,7 +43,14 @@ let readSourceDirs = () => {
            );
         ();
       | _ => ()
-      };
+      }
+    | _ => ()
+    };
+  };
+
+  let readPkgs = json => {
+    switch (json) {
+    | Ext_json_types.Obj({map}) =>
       switch (map |> String_map.find_opt("pkgs")) {
       | Some(Arr({content})) =>
         content
@@ -58,13 +65,17 @@ let readSourceDirs = () => {
            );
         ();
       | _ => ()
-      };
+      }
     | _ => ()
     };
   };
 
   if (sourceDirs |> Sys.file_exists) {
-    try(sourceDirs |> Ext_json_parse.parse_json_from_file |> getDirsPkgs) {
+    try({
+      let json = sourceDirs |> Ext_json_parse.parse_json_from_file;
+      json |> readDirs;
+      json |> readPkgs;
+    }) {
     | _ => ()
     };
   } else {
