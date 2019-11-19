@@ -23,9 +23,52 @@ type pkgs = {
   pkgs: Hashtbl.t(string, string),
 };
 
-let readSourceDirs = () => {
+let readDirsFromConfig = (~configSources) => {
+  let dirs = ref([]);
+  let root = projectRoot^;
+  let (+++) = Filename.concat;
+
+  let rec processDir = (~subdirs, dir) => {
+    let absDir = dir == "" ? root : root +++ dir;
+    if (Sys.file_exists(absDir) && Sys.is_directory(absDir)) {
+      dirs := [dir, ...dirs^];
+      if (subdirs) {
+        absDir
+        |> Sys.readdir
+        |> Array.iter(d => processDir(~subdirs, dir +++ d));
+      };
+    };
+  };
+
+  let rec processSourceItem = (sourceItem: Ext_json_types.t) =>
+    switch (sourceItem) {
+    | Str({str}) => str |> processDir(~subdirs=false)
+    | Obj({map}) =>
+      switch (map |> String_map.find_opt("dir")) {
+      | Some(Str({str})) =>
+        let subdirs =
+          switch (map |> String_map.find_opt("subdirs")) {
+          | Some(True(_)) => true
+          | Some(False(_)) => false
+          | _ => false
+          };
+        str |> processDir(~subdirs);
+      | _ => ()
+      }
+    | Arr({content}) => Array.iter(processSourceItem, content)
+    | _ => ()
+    };
+
+  switch (configSources) {
+  | Some(sourceItem) => processSourceItem(sourceItem)
+  | None => ()
+  };
+  dirs^;
+};
+
+let readSourceDirs = (~configSources) => {
   let sourceDirs =
-    ["lib", "bs", ".sourcedirs.json"] |> List.fold_left((+++), projectRoot^);
+    ["lib", "bs", ".sourcedirs.json"] |> List.fold_left((+++), bsbProjectRoot^);
   let dirs = ref([]);
   let pkgs = Hashtbl.create(1);
 
@@ -73,14 +116,19 @@ let readSourceDirs = () => {
   if (sourceDirs |> Sys.file_exists) {
     try({
       let json = sourceDirs |> Ext_json_parse.parse_json_from_file;
-      json |> readDirs;
-      json |> readPkgs;
+      if (bsbProjectRoot^ != projectRoot^) {
+        dirs := readDirsFromConfig(~configSources);
+      } else {
+        readDirs(json);
+      };
+      readPkgs(json);
     }) {
     | _ => ()
     };
   } else {
     logItem("Warning: can't find source dirs: %s\n", sourceDirs);
-    logItem("Types and shims will not be found by genType.\n");
+    logItem("Types for cross-references will not be found by genType.\n");
+    dirs := readDirsFromConfig(~configSources);
   };
   {dirs: dirs^, pkgs};
 };
@@ -140,8 +188,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          }
        );
   };
-  // readBsBuild(); TODO: resolve modules using .bsbuild
-  let {dirs, pkgs} = readSourceDirs();
+  let {dirs, pkgs} = readSourceDirs(~configSources=config.sources);
   dirs
   |> List.iter(dir =>
        addDir(
