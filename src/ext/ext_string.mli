@@ -83,7 +83,10 @@ val for_all_from:
   (char -> bool) -> 
   bool 
 
-val for_all : (char -> bool) -> string -> bool
+val for_all : 
+  string -> 
+  (char -> bool) -> 
+  bool
 
 val is_empty : string -> bool
 
@@ -91,6 +94,34 @@ val repeat : int -> string -> string
 
 val equal : string -> string -> bool
 
+(**
+  [extract_until s cursor sep]
+   When [sep] not found, the cursor is updated to -1,
+   otherwise cursor is increased to 1 + [sep_position]
+   User can not determine whether it is found or not by
+   telling the return string is empty since 
+   "\n\n" would result in an empty string too.
+*)
+(* val extract_until:
+  string -> 
+  int ref -> (* cursor to be updated *)
+  char -> 
+  string *)
+
+val index_count:  
+  string -> 
+  int ->
+  char -> 
+  int -> 
+  int 
+
+(* val index_next :
+  string -> 
+  int ->
+  char -> 
+  int  *)
+
+  
 (**
   [find ~start ~sub s]
   returns [-1] if not found
@@ -114,15 +145,6 @@ val rindex_neg : string -> char -> int
 
 val rindex_opt : string -> char -> int option
 
-type check_result = 
-    | Good | Invalid_module_name | Suffix_mismatch
-
-val is_valid_source_name :
-   string -> check_result
-
-
-
-
 
 val no_char : string -> char -> int -> int -> bool 
 
@@ -132,6 +154,8 @@ val no_slash : string -> bool
 (** return negative means no slash, otherwise [i] means the place for first slash *)
 val no_slash_idx : string -> int 
 
+val no_slash_idx_from : string -> int -> int 
+
 (** if no conversion happens, reference equality holds *)
 val replace_slash_backward : string -> string 
 
@@ -140,7 +164,7 @@ val replace_backward_slash : string -> string
 
 val empty : string 
 
-val compare : string -> string -> int
+val compare : string -> string -> int;;  
 
 val single_space : string
 
@@ -159,3 +183,29 @@ val current_dir_lit : string
 
 val capitalize_ascii : string -> string
 
+val capitalize_sub:
+  string -> 
+  int -> 
+  string
+  
+val uncapitalize_ascii : string -> string
+
+val lowercase_ascii : string -> string 
+
+(** Play parity to {!Ext_buffer.add_int_1} *)
+val get_int_1 : string -> int -> int 
+val get_int_2 : string -> int -> int 
+val get_int_3 : string -> int -> int 
+val get_int_4 : string -> int -> int 
+
+val get_1_2_3_4 : 
+  string -> 
+  off:int ->  
+  int -> 
+  int 
+
+val unsafe_sub :   
+  string -> 
+  int -> 
+  int -> 
+  string

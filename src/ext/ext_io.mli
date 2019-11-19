@@ -22,16 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. *)
 
+val load_file : string -> string
 
+val rev_lines_of_file : string -> string list
 
+val rev_lines_of_chann : in_channel -> string list
 
-
-external unsafe_blit_string : string -> int -> bytes -> int -> int -> unit
-                     = "caml_blit_string" 
-[@@noalloc]
-    
-
-
-(** Port the {!Bytes.escaped} from trunk to make it not locale sensitive *)
-
-val escaped : bytes -> bytes
+val write_file : string -> string -> unit

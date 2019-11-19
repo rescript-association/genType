@@ -26,12 +26,47 @@
 
 
 
-external unsafe_blit_string : string -> int -> bytes -> int -> int -> unit
-                     = "caml_blit_string" 
-[@@noalloc]
-    
 
 
-(** Port the {!Bytes.escaped} from trunk to make it not locale sensitive *)
 
-val escaped : bytes -> bytes
+(** Extension to standard library [Pervavives] module, safe to open 
+  *)
+
+external reraise: exn -> 'a = "%reraise"
+
+val finally : 
+  'a ->
+  clean:('a -> 'c) -> 
+  ('a -> 'b) -> 'b
+
+val try_it : (unit -> 'a) ->  unit 
+
+val with_file_as_chan : string -> (out_channel -> 'a) -> 'a
+
+
+
+
+
+
+
+
+
+
+
+
+
+external id : 'a -> 'a = "%identity"
+
+(** Copied from {!Btype.hash_variant}:
+    need sync up and add test case
+ *)
+val hash_variant : string -> int
+
+val todo : string -> 'a
+
+val nat_of_string_exn : string -> int
+
+val parse_nat_of_string:
+  string -> 
+  int ref -> 
+  int 

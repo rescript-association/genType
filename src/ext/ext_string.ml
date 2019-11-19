@@ -98,7 +98,7 @@ let rec ends_aux s end_ j k =
 (** return an index which is minus when [s] does not 
     end with [beg]
 *)
-let ends_with_index s end_ = 
+let ends_with_index s end_ : int = 
   let s_finish = String.length s - 1 in
   let s_beg = String.length end_ - 1 in
   if s_beg > s_finish then -1
@@ -112,11 +112,11 @@ let ends_with_then_chop s beg =
   if i >= 0 then Some (String.sub s 0 i) 
   else None
 
-(* let check_suffix_case = ends_with *)
-(* let check_suffix_case_then_chop = ends_with_then_chop *)
+let check_suffix_case = ends_with 
+let check_suffix_case_then_chop = ends_with_then_chop
 
-(* let check_any_suffix_case s suffixes = 
-  List.exists (fun x -> check_suffix_case s x) suffixes *)
+let check_any_suffix_case s suffixes = 
+  List.exists (fun x -> check_suffix_case s x) suffixes
 
 let check_any_suffix_case_then_chop s suffixes = 
   let rec aux suffixes = 
@@ -162,7 +162,7 @@ let for_all_from s start  p =
   else unsafe_for_all_range s ~start ~finish:(len - 1) p 
 
 
-let for_all (p : char -> bool) s =   
+let for_all s (p : char -> bool)  =   
   unsafe_for_all_range s ~start:0  ~finish:(String.length s - 1) p 
 
 let is_empty s = String.length s = 0
@@ -176,7 +176,7 @@ let repeat n s  =
   done;
   Bytes.to_string res
 
-(* let equal (x : string) y  = x = y *)
+let equal (x : string) y  = x = y
 
 
 
@@ -225,7 +225,7 @@ let non_overlap_count ~sub s =
 let rfind ~sub s =
   let n = String.length sub in
   let i = ref (String.length s - n) in
-  (* let module M = struct exception Exit end in *)
+  let module M = struct exception Exit end in 
   try
     while !i >= 0 do
       if unsafe_is_sub ~sub 0 s !i ~len:n then 
@@ -243,6 +243,49 @@ let tail_from s x =
 
 let equal (x : string) y  = x = y
 
+(* let rec index_rec s lim i c =
+  if i >= lim then -1 else
+  if String.unsafe_get s i = c then i 
+  else index_rec s lim (i + 1) c *)
+
+
+
+let rec index_rec_count s lim i c count =
+  if i >= lim then -1 else
+  if String.unsafe_get s i = c then 
+    if count = 1 then i 
+    else index_rec_count s lim (i + 1) c (count - 1)
+  else index_rec_count s lim (i + 1) c count
+
+let index_count s i c count =     
+  let lim = String.length s in 
+  if i < 0 || i >= lim || count < 1 then 
+    invalid_arg ("index_count: ( " ^string_of_int i ^ "," ^string_of_int count ^ ")" );
+  index_rec_count s lim i c count 
+
+(* let index_next s i c =   
+  index_count s i c 1  *)
+
+(* let extract_until s cursor c =       
+  let len = String.length s in   
+  let start = !cursor in 
+  if start < 0 || start >= len then (
+    cursor := -1;
+    ""
+    )
+  else 
+    let i = index_rec s len start c in   
+    let finish = 
+      if i < 0 then (      
+        cursor := -1 ;
+        len 
+      )
+      else (
+        cursor := i + 1;
+        i 
+      ) in 
+    String.sub s start (finish - start) *)
+  
 let rec rindex_rec s i c =
   if i < 0 then i else
   if String.unsafe_get s i = c then i else rindex_rec s (i - 1) c;;
@@ -257,42 +300,6 @@ let rindex_neg s c =
 let rindex_opt s c = 
   rindex_rec_opt s (String.length s - 1) c;;
 
-let is_valid_module_file (s : string) = 
-  let len = String.length s in 
-  len > 0 &&
-  match String.unsafe_get s 0 with 
-  | 'A' .. 'Z'
-  | 'a' .. 'z' -> 
-    unsafe_for_all_range s ~start:1 ~finish:(len - 1)
-      (fun x -> 
-         match x with 
-         | 'A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '\'' -> true
-         | _ -> false )
-  | _ -> false 
-
-
-
-
-type check_result = 
-  | Good 
-  | Invalid_module_name 
-  | Suffix_mismatch
-  (** 
-     TODO: move to another module 
-     Make {!Ext_filename} not stateful
-  *)
-let is_valid_source_name name : check_result =
-  match check_any_suffix_case_then_chop name [
-      ".ml"; 
-      ".re";
-      ".mli"; 
-      ".rei"
-    ] with 
-  | None -> Suffix_mismatch
-  | Some x -> 
-    if is_valid_module_file  x then
-      Good
-    else Invalid_module_name  
 
 (** TODO: can be improved to return a positive integer instead *)
 let rec unsafe_no_char x ch i  last_idx = 
@@ -318,6 +325,11 @@ let no_slash x =
 let no_slash_idx x = 
   unsafe_no_char_idx x '/' 0 (String.length x - 1)
 
+let no_slash_idx_from x from = 
+  let last_idx = String.length x - 1  in 
+  assert (from >= 0); 
+  unsafe_no_char_idx x '/' from last_idx
+
 let replace_slash_backward (x : string ) = 
   let len = String.length x in 
   if unsafe_no_char x '/' 0  (len - 1) then x 
@@ -336,7 +348,7 @@ let replace_backward_slash (x : string)=
 
 let empty = ""
 
-let compare (s1:string) (s2:string) = compare s1 s2
+let compare : string -> string -> int = compare;;    
 
 let single_space = " "
 let single_colon = ":"
@@ -449,7 +461,65 @@ let capitalize_ascii (s : string) : string =
       else s 
     end
 
+let capitalize_sub (s : string) len : string = 
+  let slen = String.length s in 
+  if  len < 0 || len > slen then invalid_arg "Ext_string.capitalize_sub"
+  else 
+  if len = 0 then ""
+  else 
+    let bytes = Bytes.create len in 
+    let uc = 
+      let c = String.unsafe_get s 0 in 
+      if (c >= 'a' && c <= 'z')
+      || (c >= '\224' && c <= '\246')
+      || (c >= '\248' && c <= '\254') then 
+        Char.unsafe_chr (Char.code c - 32) else c in 
+    Bytes.unsafe_set bytes 0 uc;
+    for i = 1 to len - 1 do 
+      Bytes.unsafe_set bytes i (String.unsafe_get s i)
+    done ;
+    Bytes.unsafe_to_string bytes 
+
+    
+
+let uncapitalize_ascii =
+    String.uncapitalize_ascii
+
+let lowercase_ascii = String.lowercase_ascii
+
+
+let lowercase_ascii (s : string) = 
+    Bytes.unsafe_to_string 
+      (Bytes.map Char.lowercase_ascii (Bytes.unsafe_of_string s))
 
 
 
+let get_int_1 (x : string) off : int = 
+  Char.code x.[off]
 
+let get_int_2 (x : string) off : int = 
+  Char.code x.[off] lor   
+  Char.code x.[off+1] lsl 8
+  
+let get_int_3 (x : string) off : int = 
+  Char.code x.[off] lor   
+  Char.code x.[off+1] lsl 8  lor 
+  Char.code x.[off+2] lsl 16
+
+let get_int_4 (x : string) off : int =   
+  Char.code x.[off] lor   
+  Char.code x.[off+1] lsl 8  lor 
+  Char.code x.[off+2] lsl 16 lor
+  Char.code x.[off+3] lsl 24 
+
+let get_1_2_3_4 (x : string) ~off len : int =  
+  if len = 1 then get_int_1 x off 
+  else if len = 2 then get_int_2 x off 
+  else if len = 3 then get_int_3 x off 
+  else if len = 4 then get_int_4 x off 
+  else assert false
+
+let unsafe_sub  x offs len =
+  let b = Bytes.create len in 
+  Ext_bytes.unsafe_blit_string x offs b 0 len;
+  (Bytes.unsafe_to_string b);

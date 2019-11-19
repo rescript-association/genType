@@ -74,6 +74,19 @@ let readSourceDirs = () => {
   {dirs: dirs^, pkgs};
 };
 
+let readBsBuild = () => {
+  let bsBuild =
+    ["lib", "bs", ".bsbuild"] |> List.fold_left((+++), projectRoot^);
+
+  if (bsBuild |> Sys.file_exists) {
+    let decoded = Bsb_db_decode.read_build_file(bsBuild);
+    ();
+  } else {
+    logItem("Error: can't find bucklescript build file: %s\n", bsBuild);
+    assert(false);
+  };
+};
+
 /* Read the project's .sourcedirs.json file if it exists
    and build a map of the files with the given extension
    back to the directory where they belong.  */
@@ -106,6 +119,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          }
        );
   };
+  readBsBuild();
   let {dirs, pkgs} = readSourceDirs();
   dirs
   |> List.iter(dir =>
