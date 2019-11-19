@@ -75,12 +75,22 @@ let readSourceDirs = () => {
 };
 
 let readBsBuild = () => {
+  // See docs in: https://github.com/BuckleScript/bucklescript/pull/3971/files
   let bsBuild =
     ["lib", "bs", ".bsbuild"] |> List.fold_left((+++), projectRoot^);
 
   if (bsBuild |> Sys.file_exists) {
     let decoded = Bsb_db_decode.read_build_file(bsBuild);
-    ();
+    Array.iter(
+      (group: Bsb_db_decode.group) => {
+        logItem("XXX Read group\n");
+        logItem(
+          "XXX Modules: %s\n",
+          group.modules |> Array.to_list |> String.concat(", "),
+        );
+      },
+      decoded,
+    );
   } else {
     logItem("Error: can't find bucklescript build file: %s\n", bsBuild);
     assert(false);
@@ -119,7 +129,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          }
        );
   };
-  readBsBuild();
+  // readBsBuild(); TODO: resolve modules using .bsbuild
   let {dirs, pkgs} = readSourceDirs();
   dirs
   |> List.iter(dir =>
