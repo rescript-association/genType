@@ -484,7 +484,8 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let reportDead = (~analysisKind, ~useColumn, ~onDeadCode) => {
+let reportDead =
+    (~analysisKind, ~onDeadCode, ~useColumn, ~posInAliveWhitelist) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
@@ -501,7 +502,8 @@ let reportDead = (~analysisKind, ~useColumn, ~onDeadCode) => {
         |> PosSet.filter(pos => !ProcessDeadAnnotations.isAnnotatedDead(pos));
       if (liveReferences
           |> PosSet.cardinal == 0
-          && !ProcessDeadAnnotations.isAnnotatedLive(pos)) {
+          && !ProcessDeadAnnotations.isAnnotatedLive(pos)
+          && !posInAliveWhitelist(pos)) {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };

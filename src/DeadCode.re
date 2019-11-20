@@ -36,7 +36,7 @@ let loadFile = (~sourceFile, cmtFilePath) => {
   };
 };
 
-let reportResults = () => {
+let reportResults = (~posInAliveWhitelist) => {
   let onItem = ({pos, path}) => {
     print_string(pos |> posToString);
     print_string(path);
@@ -47,9 +47,19 @@ let reportResults = () => {
     item |> WriteDeadAnnotations.onDeadItem(~useColumn);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  reportDead(~analysisKind=Value, ~useColumn=false, ~onDeadCode);
+  reportDead(
+    ~analysisKind=Value,
+    ~onDeadCode,
+    ~useColumn=false,
+    ~posInAliveWhitelist,
+  );
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  reportDead(~analysisKind=Type, ~useColumn=true, ~onDeadCode);
+  reportDead(
+    ~analysisKind=Type,
+    ~onDeadCode,
+    ~useColumn=true,
+    ~posInAliveWhitelist,
+  );
   WriteDeadAnnotations.write();
 };
 
@@ -67,6 +77,21 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
 
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
   loadFile(~sourceFile, cmtFilePath);
+};
+
+let aliveWhitelist = ["DeadTestWhitelist"];
+let aliveWhitelistTable = {
+  let tbl = Hashtbl.create(1);
+  List.iter(
+    moduleName => Hashtbl.replace(tbl, moduleName, ()),
+    aliveWhitelist,
+  );
+  tbl;
+};
+
+let posInAliveWhitelist = (pos: Lexing.position) => {
+  let moduleName = pos.pos_fname |> getModuleName;
+  Hashtbl.mem(aliveWhitelistTable, moduleName);
 };
 
 let runAnalysis = () => {
@@ -95,5 +120,5 @@ let runAnalysis = () => {
        }
      );
 
-  reportResults();
+  reportResults(~posInAliveWhitelist);
 };

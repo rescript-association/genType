@@ -904,6 +904,8 @@
   export testVariant1Int VariantsWithPayload.re:103:4
   [type] export R VariantsWithPayload.re:107:4
   export testVariant1Object VariantsWithPayload.re:110:4
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWhitelist.cmt
+  export x DeadTestWhitelist.re:1:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
   mergeSet FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   mergeSet FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
@@ -1497,6 +1499,7 @@ File References
   IgnoreInterface.rei -->> 
   TestFirstClassModules.re -->> 
   FirstClassModulesInterface.rei -->> 
+  DeadTestWhitelist.re -->> 
   TransitiveType1.re -->> 
   TestImmutableArray.re -->> ImmutableArray.rei, belt_Array.mli
   Tuples.re -->> belt_Option.mli, pervasives.mli
@@ -1523,6 +1526,7 @@ File References
   DeadTest.thisIsKeptAlive: 1 references (DeadTest.re:20:4)
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
+  DeadTestWhitelist.x: 0 references ()
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
   FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
   FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4)
