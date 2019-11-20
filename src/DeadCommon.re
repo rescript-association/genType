@@ -327,8 +327,9 @@ module ProcessDeadAnnotations = {
     PosHash.replace(positionsAnnotated, pos, Live);
   };
 
-  let processAttributes = (~ignoreInterface, ~pos, attributes) => {
-    if (attributes |> Annotation.hasGenTypeAnnotation(~ignoreInterface)) {
+  let processAttributes = (~pos, attributes) => {
+    if (attributes
+        |> Annotation.hasGenTypeAnnotation(~ignoreInterface=ref(false))) {
       pos |> annotateGenType;
     };
     if (attributes
@@ -341,7 +342,7 @@ module ProcessDeadAnnotations = {
     };
   };
 
-  let collectExportLocations = (~ignoreInterface) => {
+  let collectExportLocations = () => {
     let super = Tast_mapper.default;
     let value_binding =
         (
@@ -350,8 +351,7 @@ module ProcessDeadAnnotations = {
         ) => {
       switch (vb_pat.pat_desc) {
       | Tpat_var(id, pLoc) =>
-        vb_attributes
-        |> processAttributes(~ignoreInterface, ~pos=pLoc.loc.loc_start)
+        vb_attributes |> processAttributes(~pos=pLoc.loc.loc_start)
 
       | _ => ()
       };
@@ -362,15 +362,13 @@ module ProcessDeadAnnotations = {
       | Ttype_record(labelDeclarations) =>
         labelDeclarations
         |> List.iter(({ld_attributes, ld_loc}: Typedtree.label_declaration) =>
-             ld_attributes
-             |> processAttributes(~ignoreInterface, ~pos=ld_loc.loc_start)
+             ld_attributes |> processAttributes(~pos=ld_loc.loc_start)
            )
       | Ttype_variant(constructorDeclarations) =>
         constructorDeclarations
         |> List.iter(
              ({cd_attributes, cd_loc}: Typedtree.constructor_declaration) =>
-             cd_attributes
-             |> processAttributes(~ignoreInterface, ~pos=cd_loc.loc_start)
+             cd_attributes |> processAttributes(~pos=cd_loc.loc_start)
            )
       | _ => ()
       };
@@ -381,23 +379,20 @@ module ProcessDeadAnnotations = {
           self,
           {val_attributes, val_id, val_val} as value_description: Typedtree.value_description,
         ) => {
-      val_attributes
-      |> processAttributes(~ignoreInterface, ~pos=val_val.val_loc.loc_start);
+      val_attributes |> processAttributes(~pos=val_val.val_loc.loc_start);
       super.value_description(self, value_description);
     };
     {...super, type_kind, value_binding, value_description};
   };
 
   let structure = structure => {
-    let ignoreInterface = ref(false);
-    let collectExportLocations = collectExportLocations(~ignoreInterface);
+    let collectExportLocations = collectExportLocations();
     structure
     |> collectExportLocations.structure(collectExportLocations)
     |> ignore;
   };
   let signature = signature => {
-    let ignoreInterface = ref(false);
-    let collectExportLocations = collectExportLocations(~ignoreInterface);
+    let collectExportLocations = collectExportLocations();
     signature
     |> collectExportLocations.signature(collectExportLocations)
     |> ignore;
