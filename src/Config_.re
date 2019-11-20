@@ -42,7 +42,6 @@ type config = {
   recordsAsObjects: bool,
   shimsMap: ModuleNameMap.t(ModuleName.t),
   sources: option(Ext_json_types.t),
-  useBsDependencies: bool,
 };
 
 let default = {
@@ -69,7 +68,6 @@ let default = {
   recordsAsObjects: false,
   shimsMap: ModuleNameMap.empty,
   sources: None,
-  useBsDependencies: false,
 };
 
 let bsPlatformLib = (~config) =>
@@ -204,7 +202,6 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
     let generatedFileExtensionStringOption =
       json |> getStringOption("generatedFileExtension");
     let propTypesBool = json |> getBool("propTypes");
-    let useBsDependenciesBool = json |> getBool("use-bs-dependencies");
     let shimsMap =
       json
       |> getShims
@@ -259,11 +256,6 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
     let propTypes =
       switch (propTypesBool) {
       | None => default.propTypes
-      | Some(b) => b
-      };
-    let useBsDependencies =
-      switch (useBsDependenciesBool) {
-      | None => default.useBsDependencies
       | Some(b) => b
       };
     let fileHeader = fileHeader;
@@ -341,7 +333,6 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       recordsAsObjects,
       shimsMap,
       sources: None,
-      useBsDependencies,
     };
   };
 

@@ -1,21 +1,16 @@
 # master
 
-# 3.4.3
-- Add support for building sub-projects from the root project.
-  For more details, see: https://github.com/cristianoc/genType/pull/318.
-- With bucklescript 7.x.y, apply conversion when a record field requires renaming.
-
-# 3.4.2
-- Add support for scoped packages (e.g. `@demo/somelibrary`) in `bs-dependencies` when `"use-bs-dependencies": true` is specified in `gentypeconfig`. Note that dependent packages should be built first. If you rely on bucklescript to build them starting from the root package, it will not work (as the required `lib/bs/.sourcedirs.json` will be missing). This will be addressed in a future version of bucklescript.
-
-# 3.4.1
-- Read type information from libraries when `"use-bs-dependencies": true` is specified in `gentypeconfig`.
-  This is an experimental feature under development.
-  For example, if the dependencies are `"bs-dependencies": ["somelibrary"]` and `somelibrary` contains `Common.re`, this looks up types in the library:
+# 3.4.4
+- Add support for bucklescript dependencies, specified in `bs-dependencies`.
+  For example, if the dependencies are `"bs-dependencies": ["somelibrary"]` and `somelibrary` contains `Common.re`, this looks up the types of `foo` in the library:
   ```reason
   [@genType]
   let z = Common.foo;
   ```
+  Scoped packages of the form e.g. `@demo/somelibrary` are also supported.
+  Note: the library must have been published with the `.gen.ts` files created by genType.
+  
+- With bucklescript 7.x.y, apply conversion when a record field requires renaming.
 
 # 3.3.0
 - Fix issue with `[@genType.import "."]` and `[@genType.import ".."]` where the conversion function would be called `.`, which is not a valid name. See https://github.com/cristianoc/genType/issues/296.

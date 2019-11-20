@@ -14,7 +14,6 @@
       "all": false
     },
     "exportInterfaces": false,
-    "use-bs-dependencies": true,
     "path": "../GenType.exe"
   },
   "name": "sample-typescript-app",

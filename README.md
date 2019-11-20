@@ -294,7 +294,20 @@ let functionWithGenTypeAs =
   (~date: float) => [@genType.as "type"] (~type_: string) => ...
 ```
 
-**NOTE** For technical reasons, it is not possible to use `g@enType.as` on the first argument of a function (restriction lifted on OCaml 4.0.6).
+**NOTE** For technical reasons, it is not possible to use `@genType.as` on the first argument of a function (restriction lifted on OCaml 4.0.6).
+
+### Dependent projects/libraries
+Bucklescript dependencies are specified in `bs-dependencies`.
+For example, if the dependencies are `"bs-dependencies": ["somelibrary"]` and `somelibrary` contains `Common.re`, this looks up the types of `foo` in the library:
+
+```reason
+  [@genType]
+  let z = Common.foo;
+```
+
+Scoped packages of the form e.g. `@demo/somelibrary` are also supported.
+
+**NOTE** The library must have been published with the `.gen.ts` files created by genType.
 
 
 ## Configuration
