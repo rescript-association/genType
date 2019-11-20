@@ -68,7 +68,8 @@ let readDirsFromConfig = (~configSources) => {
 
 let readSourceDirs = (~configSources) => {
   let sourceDirs =
-    ["lib", "bs", ".sourcedirs.json"] |> List.fold_left((+++), bsbProjectRoot^);
+    ["lib", "bs", ".sourcedirs.json"]
+    |> List.fold_left((+++), bsbProjectRoot^);
   let dirs = ref([]);
   let pkgs = Hashtbl.create(1);
 
@@ -200,31 +201,29 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
        )
      );
 
-  if (config.useBsDependencies) {
-    config.bsDependencies
-    |> List.iter(packageName => {
-         switch (Hashtbl.find(pkgs, packageName)) {
-         | path =>
-           let root = ["lib", "bs"] |> List.fold_left((+++), path);
-           let filter = fileName =>
-             [".cmt", ".cmti"]
-             |> List.exists(ext => Filename.check_suffix(fileName, ext));
-           readBsDependenciesDirs(~root)
-           |> List.iter(dir => {
-                let dirOnDisk = root +++ dir;
-                let dirEmitted = packageName +++ dir;
-                addDir(
-                  ~dirEmitted,
-                  ~dirOnDisk,
-                  ~filter,
-                  ~map=bsDependenciesFileMap,
-                  ~root=projectRoot^,
-                );
-              });
-         | exception Not_found => ()
-         }
-       });
-  };
+  config.bsDependencies
+  |> List.iter(packageName => {
+       switch (Hashtbl.find(pkgs, packageName)) {
+       | path =>
+         let root = ["lib", "bs"] |> List.fold_left((+++), path);
+         let filter = fileName =>
+           [".cmt", ".cmti"]
+           |> List.exists(ext => Filename.check_suffix(fileName, ext));
+         readBsDependenciesDirs(~root)
+         |> List.iter(dir => {
+              let dirOnDisk = root +++ dir;
+              let dirEmitted = packageName +++ dir;
+              addDir(
+                ~dirEmitted,
+                ~dirOnDisk,
+                ~filter,
+                ~map=bsDependenciesFileMap,
+                ~root=projectRoot^,
+              );
+            });
+       | exception Not_found => ()
+       }
+     });
 
   (fileMap^, bsDependenciesFileMap^);
 };
