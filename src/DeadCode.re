@@ -36,7 +36,7 @@ let loadFile = (~sourceFile, cmtFilePath) => {
   };
 };
 
-let report = () => {
+let reportResults = () => {
   let onItem = ({pos, path}) => {
     print_string(pos |> posToString);
     print_string(path);
@@ -95,5 +95,5 @@ let runAnalysis = () => {
        }
      );
 
-  report();
+  reportResults();
 };
