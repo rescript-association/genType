@@ -47,9 +47,9 @@ let report = () => {
     item |> WriteDeadAnnotations.onDeadItem(~useColumn);
   };
   Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  report(~analysisKind=Value, ~useColumn=false, ~onDeadCode);
+  reportDead(~analysisKind=Value, ~useColumn=false, ~onDeadCode);
   Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  report(~analysisKind=Type, ~useColumn=true, ~onDeadCode);
+  reportDead(~analysisKind=Type, ~useColumn=true, ~onDeadCode);
   WriteDeadAnnotations.write();
 };
 

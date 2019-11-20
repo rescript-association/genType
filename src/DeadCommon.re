@@ -484,7 +484,7 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let report = (~analysisKind, ~useColumn, ~onDeadCode) => {
+let reportDead = (~analysisKind, ~useColumn, ~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
