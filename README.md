@@ -244,6 +244,10 @@ type persons = array(person);
 ### Renaming, @genType.as, and object mangling convention.
 
 By default, entities with a given name are exported/imported with the same name. However, you might wish to change the appearence of the name on the JS side.
+
+**NOTE** From bucklescript 7.0.0, `@genType.as` on record fields will be discouraged,
+as it incurs a runtime conversion cost. Instead `@bs.as` will be supported and incur zero cost.
+
 For example, in case of a record field whose name is a keyword, such as `type`:
 
 ```reason
