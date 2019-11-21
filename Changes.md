@@ -1,4 +1,6 @@
 # master
+
+# 3.5.0
 - Fix issue when emitting optional variants.
   Variants are emitted as `| x | y`, remove the leading `|`.
   Also, Flow uses `?t`, so add parens: `? (foo | bar)`.
