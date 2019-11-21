@@ -122,6 +122,8 @@ export const stringT: string = TypesBS.stringT;
 
 export const jsStringT: string = TypesBS.jsStringT;
 
+export const jsString2T: string = TypesBS.jsString2T;
+
 export const jsonStringify: (_1:Js_Json_t) => string = TypesBS.jsonStringify;
 
 export const testConvertNull: (_1:(null | record)) => (null | record) = function (Arg1: any) {

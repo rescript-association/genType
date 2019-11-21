@@ -74,6 +74,8 @@ var stringT = "a";
 
 var jsStringT = "a";
 
+var jsString2T = "a";
+
 export {
   someIntList ,
   map ,
@@ -83,6 +85,7 @@ export {
   testFunctionOnOptionsAsArgument ,
   stringT ,
   jsStringT ,
+  jsString2T ,
   jsonStringify ,
   testConvertNull ,
   testConvertLocation ,

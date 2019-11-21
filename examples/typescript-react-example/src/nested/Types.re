@@ -67,6 +67,9 @@ let stringT: String.t = "a";
 let jsStringT: Js.String.t = "a";
 
 [@genType]
+let jsString2T: Js.String2.t = "a";
+
+[@genType]
 type twice('a) = ('a, 'a);
 
 [@gentype]

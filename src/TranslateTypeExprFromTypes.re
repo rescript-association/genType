@@ -178,7 +178,7 @@ let translateConstr =
 
   | (
       ["FB", "string"] | ["string"] | ["String", "t"] |
-      ["Js", "String", "t"],
+      ["Js", "String" | "String2", "t"],
       [],
     ) => {
       dependencies: [],
@@ -654,8 +654,7 @@ and translateTypeExprFromTypes_ =
   | Ttuple(listExp) =>
     let innerTypesTranslation =
       listExp |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let innerTypes =
-      innerTypesTranslation |> List.map(({type_}) => type_);
+    let innerTypes = innerTypesTranslation |> List.map(({type_}) => type_);
     let innerTypesDeps =
       innerTypesTranslation
       |> List.map(({dependencies}) => dependencies)
