@@ -97,19 +97,3 @@ npm publish gentype-*.tgz --tag beta
 
 Consult the [npm publish](https://docs.npmjs.com/cli/publish) documentation for more options.
 In case you get an `ENEEDAUTH` error, use `npm adduser` and authenticate with your npm account first.
-
-### Working on genType v2 / 4.02 patches
-
-For further DEVELOPMENT instructions for genType v2, check out the [4_02
-branch](https://github.com/cristianoc/genType/tree/4_02).
-
-We still have our CI around to be able to build cross platform builds for v2 
-(BuckleScript 5.x / OCaml 4.02). Be aware that we will not backport any new
-features to this branch.
-
-When a tag with a format of `v2.*` is pushed,
-[CircleCI](https://circleci.com/gh/cristianoc/genType) and
-[Appveyor](https://ci.appveyor.com/project/cristianoc/gentype) projects will be
-built, tested and automatically released to the Github
-[releases](https://github.com/cristianoc/genType/releases) tab when all tests
-were successful.
