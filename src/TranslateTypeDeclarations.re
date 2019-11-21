@@ -34,6 +34,16 @@ let createCase = ((label, attributes)) =>
   | _ => {label, labelJS: StringLabel(label)}
   };
 
+let renameRecordField = (~attributes, ~nameRE) => {
+  let nameJS =
+    // TODO: support @bs.as
+    switch (attributes |> Annotation.getAttributeRenaming) {
+    | Some(s) => s
+    | None => nameRE
+    };
+  (nameJS, nameRE);
+};
+
 let traslateDeclarationKind =
     (
       ~config,
@@ -81,13 +91,11 @@ let traslateDeclarationKind =
     let fieldTranslations =
       labelDeclarations
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes}) => {
-           let nameRE = ld_id |> Ident.name;
-           let nameJS =
-             // TODO: support @bs.as
-             switch (ld_attributes |> Annotation.getAttributeRenaming) {
-             | Some(s) => s
-             | None => nameRE
-             };
+           let (nameJS, nameRE) =
+             renameRecordField(
+               ~attributes=ld_attributes,
+               ~nameRE=ld_id |> Ident.name,
+             );
            let mutability = ld_mutable == Mutable ? Mutable : Immutable;
            (
              nameJS,
@@ -111,14 +119,7 @@ let traslateDeclarationKind =
     let fields =
       fieldTranslations
       |> List.map(
-           (
-             (
-               nameJS,
-               nameRE,
-               mutable_,
-               {TranslateTypeExprFromTypes.type_},
-             ),
-           ) => {
+           ((nameJS, nameRE, mutable_, {TranslateTypeExprFromTypes.type_})) => {
            let (optional, type1) =
              switch (type_) {
              | Option(type1) => (Optional, type1)

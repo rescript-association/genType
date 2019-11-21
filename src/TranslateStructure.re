@@ -17,20 +17,15 @@ and addAnnotationsToFields =
   switch (expr.exp_desc, fields, types) {
   | (_, [], _) => ([], types |> addAnnotationsToTypes(~expr))
   | (Texp_function({cases: [{c_rhs}]}), [field, ...nextFields], _) =>
-    let genTypeAsPayload =
-      expr.exp_attributes
-      |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
-    switch (genTypeAsPayload) {
-    | Some(StringPayload(s)) =>
-      let (nextFields1, types1) =
-        addAnnotationsToFields(c_rhs, nextFields, types);
-      // TODO: support @bs.as
-      ([{...field, nameJS: s}, ...nextFields1], types1);
-    | _ =>
-      let (nextFields1, types1) =
-        addAnnotationsToFields(c_rhs, nextFields, types);
-      ([field, ...nextFields1], types1);
-    };
+    let (nextFields1, types1) =
+      addAnnotationsToFields(c_rhs, nextFields, types);
+    let (nameJS, nameRE) =
+      TranslateTypeDeclarations.renameRecordField(
+        ~attributes=expr.exp_attributes,
+        ~nameRE=field.nameRE,
+      );
+    ([{...field, nameJS, nameRE}, ...nextFields1], types1);
+
   | _ => (fields, types)
   };
 
