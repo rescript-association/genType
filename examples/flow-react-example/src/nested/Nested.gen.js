@@ -19,7 +19,7 @@ import * as NestedBS from './Nested.bs';
 import type {variant as Component2_variant} from '../../src/Component2.gen';
 
 export type variant = 
-  | "A"
+    "A"
   | {| tag: "B", value: [number, number] |}
   | {| tag: "C", value: ?number |};
 

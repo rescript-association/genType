@@ -90,3 +90,12 @@ let id1 = (x: x1) => x;
 
 [@genType]
 let id2 = (x: x2) => x;
+
+[@genType]
+[@genType.as "type"]
+type type_ =
+  | [@genType.as "type"] Type;
+
+[@genType]
+let polyWithOpt = foo =>
+  foo === "bar" ? None : foo !== "baz" ? Some(`One(foo)) : Some(`Two(1));

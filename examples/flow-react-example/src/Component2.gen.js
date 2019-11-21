@@ -17,7 +17,7 @@ import * as Component2BS from './Component2.bs';
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 export type variant = 
-  | "A"
+    "A"
   | {| tag: "B", value: [number, number] |}
   | {| tag: "C", value: ?number |};
 

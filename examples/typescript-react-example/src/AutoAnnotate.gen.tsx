@@ -19,5 +19,5 @@ export type r4 = { readonly r4: number };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type annotatedVariant = 
-  | { tag: "R2"; value: [r2, r3] }
+    { tag: "R2"; value: [r2, r3] }
   | { tag: "R4"; value: r4 };

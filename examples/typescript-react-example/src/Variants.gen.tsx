@@ -29,7 +29,7 @@ const VariantsBS = require('./Variants.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
 export type weekday = 
-  | "monday"
+    "monday"
   | "tuesday"
   | "wednesday"
   | "thursday"
@@ -109,4 +109,13 @@ export const id1: (_1:x1) => x1 = function (Arg1: any) {
 export const id2: (_1:x2) => x2 = function (Arg1: any) {
   const result = VariantsBS.id2($$toRE1061900109[Arg1]);
   return $$toJS1061900109[result]
+};
+
+export const polyWithOpt: (_1:string) => (null | undefined | 
+    { tag: "One"; value: string }
+  | { tag: "Two"; value: number }) = function (Arg1: any) {
+  const result = VariantsBS.polyWithOpt(Arg1);
+  return (result == null ? result : result[0]===/* One */3953222
+    ? {tag:"One", value:result[1]}
+    : {tag:"Two", value:result[1]})
 };

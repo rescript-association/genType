@@ -41,7 +41,7 @@ import type {variant as AutoAnnotate_variant} from './AutoAnnotate.gen';
 import type {weekday as $$weekday} from './SomeFlowTypes';
 
 export type typeWithVars<x,y,z> = 
-  | {| tag: "A", value: [x, y] |}
+    {| tag: "A", value: [x, y] |}
   | {| tag: "B", value: z |};
 
 export type optionInt = ?number;

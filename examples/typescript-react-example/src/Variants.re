@@ -95,3 +95,7 @@ let id2 = (x: x2) => x;
 [@genType.as "type"]
 type type_ =
   | [@genType.as "type"] Type;
+
+[@genType]
+let polyWithOpt = foo =>
+  foo === "bar" ? None : foo !== "baz" ? Some(`One(foo)) : Some(`Two(1));
