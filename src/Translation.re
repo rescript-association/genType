@@ -94,7 +94,7 @@ let translateValue =
     )
     : t => {
   let nameAs =
-    switch (Annotation.getAttributeRenaming(attributes)) {
+    switch (Annotation.getGenTypeAsRenaming(attributes)) {
     | Some(s) => s
     | _ => name
     };

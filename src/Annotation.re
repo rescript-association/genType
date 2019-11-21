@@ -104,7 +104,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
   };
 };
 
-let getAttributeRenaming = attributes =>
+let getGenTypeAsRenaming = attributes =>
   switch (attributes |> getAttributePayload(tagIsGenTypeAs)) {
   | Some(StringPayload(s)) => Some(s)
   | None =>
@@ -117,11 +117,11 @@ let getAttributeRenaming = attributes =>
 
 let getAttributeImportRenaming = attributes => {
   let attributeImport = attributes |> getAttributePayload(tagIsGenTypeImport);
-  let attributeRenaming = attributes |> getAttributeRenaming;
-  switch (attributeImport, attributeRenaming) {
+  let genTypeAsRenaming = attributes |> getGenTypeAsRenaming;
+  switch (attributeImport, genTypeAsRenaming) {
   | (Some(StringPayload(importString)), _) => (
       Some(importString),
-      attributeRenaming,
+      genTypeAsRenaming,
     )
   | (
       Some(
@@ -135,7 +135,7 @@ let getAttributeImportRenaming = attributes => {
       Some(importString),
       Some(renameString),
     )
-  | _ => (None, attributeRenaming)
+  | _ => (None, genTypeAsRenaming)
   };
 };
 
