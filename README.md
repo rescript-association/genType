@@ -17,7 +17,6 @@ The output of `genType` can be configured by using one of 3 back-ends: `untyped`
 
 See [Changes.md](Changes.md) for a complete list of features, fixes, and changes for each release.
 
-
 # Requirements
 
 `bs-platform` 7.0.0 or higher: use `genType` 3.2.0 or higher.
