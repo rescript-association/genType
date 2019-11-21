@@ -39,7 +39,7 @@ let signatureItemIsDeclaration = signatureItem =>
 
 let inputCmtTranslateTypeDeclarations =
     (~config, ~outputFileRelative, ~resolver, inputCMT): CodeItem.translation => {
-  let {Cmt_format.cmt_annots, _} = inputCMT;
+  let {Cmt_format.cmt_annots} = inputCMT;
   let typeEnv = TypeEnv.root();
   let translations =
     switch (cmt_annots) {
@@ -80,7 +80,7 @@ let inputCmtTranslateTypeDeclarations =
 
 let translateCMT =
     (~config, ~outputFileRelative, ~resolver, inputCMT): Translation.t => {
-  let {Cmt_format.cmt_annots, _} = inputCMT;
+  let {Cmt_format.cmt_annots} = inputCMT;
   let typeEnv = TypeEnv.root();
   let translations =
     switch (cmt_annots) {

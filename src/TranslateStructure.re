@@ -7,7 +7,7 @@ let rec addAnnotationsToTypes =
     let (fields1, nextTypes1) =
       addAnnotationsToFields(expr, fields, nextTypes);
     [GroupOfLabeledArgs(fields1), ...nextTypes1];
-  | (Texp_function({cases: [{c_rhs, _}]}), [type_, ...nextTypes]) =>
+  | (Texp_function({cases: [{c_rhs}]}), [type_, ...nextTypes]) =>
     let nextTypes1 = nextTypes |> addAnnotationsToTypes(~expr=c_rhs);
     [type_, ...nextTypes1];
   | _ => types
@@ -16,7 +16,7 @@ and addAnnotationsToFields =
     (expr: Typedtree.expression, fields: fields, types: list(type_)) =>
   switch (expr.exp_desc, fields, types) {
   | (_, [], _) => ([], types |> addAnnotationsToTypes(~expr))
-  | (Texp_function({cases: [{c_rhs, _}]}), [field, ...nextFields], _) =>
+  | (Texp_function({cases: [{c_rhs}]}), [field, ...nextFields], _) =>
     let genTypeAsPayload =
       expr.exp_attributes
       |> Annotation.getAttributePayload(Annotation.tagIsGenTypeAs);
@@ -50,7 +50,7 @@ let translateValueBinding =
       ~resolver,
       ~moduleItemGen,
       ~typeEnv,
-      {Typedtree.vb_pat, vb_attributes, vb_expr, _},
+      {Typedtree.vb_pat, vb_attributes, vb_expr},
     )
     : Translation.t => {
   switch (vb_pat.pat_desc) {
@@ -88,7 +88,7 @@ let rec removeDuplicateValueBindings =
         (structureItems: list(Typedtree.structure_item)) =>
   switch (structureItems) {
   | [
-      {Typedtree.str_desc: Tstr_value(loc, valueBindings), _} as structureItem,
+      {Typedtree.str_desc: Tstr_value(loc, valueBindings)} as structureItem,
       ...rest,
     ] =>
     let (boundInRest, filteredRest) = rest |> removeDuplicateValueBindings;
@@ -133,7 +133,7 @@ let rec translateModuleBinding =
           ~resolver,
           ~typeEnv,
           ~moduleItemGen,
-          {mb_id, mb_expr, _}: Typedtree.module_binding,
+          {mb_id, mb_expr}: Typedtree.module_binding,
         )
         : Translation.t => {
   let name = mb_id |> Ident.name;
@@ -275,7 +275,7 @@ and translateStructureItem =
     )
     : Translation.t =>
   switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations), _} => {
+  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations)} => {
       importTypes: [],
       codeItems: [],
       typeDeclarations:
@@ -288,7 +288,7 @@ and translateStructureItem =
            ),
     }
 
-  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings), _} =>
+  | {Typedtree.str_desc: Tstr_value(_loc, valueBindings)} =>
     valueBindings
     |> List.map(
          translateValueBinding(
@@ -301,7 +301,7 @@ and translateStructureItem =
        )
     |> Translation.combine
 
-  | {Typedtree.str_desc: Tstr_primitive(valueDescription), _} =>
+  | {Typedtree.str_desc: Tstr_primitive(valueDescription)} =>
     /* external declaration */
     valueDescription
     |> Translation.translatePrimitive(
@@ -311,7 +311,7 @@ and translateStructureItem =
          ~typeEnv,
        )
 
-  | {Typedtree.str_desc: Tstr_module(moduleBinding), _} =>
+  | {Typedtree.str_desc: Tstr_module(moduleBinding)} =>
     moduleBinding
     |> translateModuleBinding(
          ~config,
@@ -321,7 +321,7 @@ and translateStructureItem =
          ~moduleItemGen,
        )
 
-  | {Typedtree.str_desc: Tstr_modtype(moduleTypeDeclaration), _} =>
+  | {Typedtree.str_desc: Tstr_modtype(moduleTypeDeclaration)} =>
     moduleTypeDeclaration
     |> TranslateSignature.translateModuleTypeDeclaration(
          ~config,
@@ -330,7 +330,7 @@ and translateStructureItem =
          ~typeEnv,
        )
 
-  | {Typedtree.str_desc: Tstr_recmodule(moduleBindings), _} =>
+  | {Typedtree.str_desc: Tstr_recmodule(moduleBindings)} =>
     moduleBindings
     |> List.map(
          translateModuleBinding(
@@ -376,7 +376,7 @@ and translateStructureItem =
          ~typeEnv,
        )
 
-  | {Typedtree.str_desc: Tstr_include({incl_type: signature, _}), _} =>
+  | {Typedtree.str_desc: Tstr_include({incl_type: signature})} =>
     signature
     |> TranslateSignatureFromTypes.translateSignatureFromTypes(
          ~config,
@@ -386,25 +386,25 @@ and translateStructureItem =
        )
     |> Translation.combine
 
-  | {Typedtree.str_desc: Tstr_eval(_), _} =>
+  | {Typedtree.str_desc: Tstr_eval(_)} =>
     logNotImplemented("Tstr_eval " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.str_desc: Tstr_typext(_), _} =>
+  | {Typedtree.str_desc: Tstr_typext(_)} =>
     logNotImplemented("Tstr_typext " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.str_desc: Tstr_exception(_), _} =>
+  | {Typedtree.str_desc: Tstr_exception(_)} =>
     logNotImplemented("Tstr_exception " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.str_desc: Tstr_open(_), _} =>
+  | {Typedtree.str_desc: Tstr_open(_)} =>
     logNotImplemented("Tstr_open " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.str_desc: Tstr_class(_), _} =>
+  | {Typedtree.str_desc: Tstr_class(_)} =>
     logNotImplemented("Tstr_class " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.str_desc: Tstr_class_type(_), _} =>
+  | {Typedtree.str_desc: Tstr_class_type(_)} =>
     logNotImplemented("Tstr_class_type " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.str_desc: Tstr_attribute(_), _} =>
+  | {Typedtree.str_desc: Tstr_attribute(_)} =>
     logNotImplemented("Tstr_attribute " ++ __LOC__);
     Translation.empty;
   }

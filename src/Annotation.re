@@ -36,18 +36,18 @@ let tagIsGenTypeIgnoreInterface = s =>
 let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
   let rec fromExpr = (expr: Parsetree.expression) =>
     switch (expr) {
-    | {pexp_desc: Pexp_constant(Pconst_string(s, _)), _} =>
+    | {pexp_desc: Pexp_constant(Pconst_string(s, _))} =>
       Some(StringPayload(s))
-    | {pexp_desc: Pexp_constant(Pconst_integer(n, _)), _} =>
+    | {pexp_desc: Pexp_constant(Pconst_integer(n, _))} =>
       Some(IntPayload(n))
-    | {pexp_desc: Pexp_constant(Pconst_float(s, _)), _} =>
+    | {pexp_desc: Pexp_constant(Pconst_float(s, _))} =>
       Some(FloatPayload(s))
     | {
         pexp_desc: Pexp_construct({txt: Lident(("true" | "false") as s)}, _),
         _,
       } =>
       Some(BoolPayload(s == "true"))
-    | {pexp_desc: Pexp_tuple(exprs), _} =>
+    | {pexp_desc: Pexp_tuple(exprs)} =>
       let payloads =
         exprs
         |> List.rev
@@ -64,37 +64,37 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
     };
   switch (attributes) {
   | [] => None
-  | [({Asttypes.txt, _}, payload), ..._tl] when checkText(txt) =>
+  | [({Asttypes.txt}, payload), ..._tl] when checkText(txt) =>
     switch (payload) {
     | PStr([]) => Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_eval(expr, _), _}, ..._]) => expr |> fromExpr
-    | PStr([{pstr_desc: Pstr_extension(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_eval(expr, _)}, ..._]) => expr |> fromExpr
+    | PStr([{pstr_desc: Pstr_extension(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_value(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_value(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_primitive(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_primitive(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_type(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_type(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_typext(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_typext(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_exception(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_exception(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_module(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_module(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_recmodule(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_recmodule(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_modtype(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_modtype(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_open(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_open(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_class(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_class(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_class_type(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_class_type(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_include(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_include(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_attribute(_), _}, ..._]) =>
+    | PStr([{pstr_desc: Pstr_attribute(_)}, ..._]) =>
       Some(UnrecognizedPayload)
     | PPat(_) => Some(UnrecognizedPayload)
     | PSig(_) => Some(UnrecognizedPayload)
@@ -162,7 +162,7 @@ let hasGenTypeAnnotation = (~ignoreInterface, attributes) => {
 };
 
 let rec moduleTypeHasGenTypeAnnotation =
-        (~ignoreInterface, {mty_desc, _}: Typedtree.module_type) =>
+        (~ignoreInterface, {mty_desc}: Typedtree.module_type) =>
   switch (mty_desc) {
   | Tmty_signature(signature) =>
     signature |> signatureHasGenTypeAnnotation(~ignoreInterface)
@@ -175,7 +175,7 @@ let rec moduleTypeHasGenTypeAnnotation =
 and moduleDeclarationHasGenTypeAnnotation =
     (
       ~ignoreInterface,
-      {md_attributes, md_type, _}: Typedtree.module_declaration,
+      {md_attributes, md_type}: Typedtree.module_declaration,
     ) =>
   md_attributes
   |> hasGenTypeAnnotation(~ignoreInterface)
@@ -184,18 +184,18 @@ and moduleDeclarationHasGenTypeAnnotation =
 and signatureItemHasGenTypeAnnotation =
     (~ignoreInterface, signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations)} =>
     typeDeclarations
     |> List.exists(dec =>
          dec.Typedtree.typ_attributes
          |> hasGenTypeAnnotation(~ignoreInterface)
        )
-  | {sig_desc: Tsig_value(valueDescription), _} =>
+  | {sig_desc: Tsig_value(valueDescription)} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation(~ignoreInterface)
-  | {sig_desc: Tsig_module(moduleDeclaration), _} =>
+  | {sig_desc: Tsig_module(moduleDeclaration)} =>
     moduleDeclaration
     |> moduleDeclarationHasGenTypeAnnotation(~ignoreInterface)
-  | {sig_desc: Tsig_attribute(attribute), _} =>
+  | {sig_desc: Tsig_attribute(attribute)} =>
     [attribute] |> hasGenTypeAnnotation(~ignoreInterface)
   | _ => false
   }
@@ -207,25 +207,25 @@ and signatureHasGenTypeAnnotation =
 let rec structureItemHasGenTypeAnnotation =
         (~ignoreInterface, structureItem: Typedtree.structure_item) =>
   switch (structureItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations), _} =>
+  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations)} =>
     typeDeclarations
     |> List.exists(dec =>
          dec.Typedtree.typ_attributes
          |> hasGenTypeAnnotation(~ignoreInterface)
        )
-  | {str_desc: Tstr_value(_loc, valueBindings), _} =>
+  | {str_desc: Tstr_value(_loc, valueBindings)} =>
     valueBindings
     |> List.exists(vb =>
          vb.Typedtree.vb_attributes |> hasGenTypeAnnotation(~ignoreInterface)
        )
-  | {str_desc: Tstr_primitive(valueDescription), _} =>
+  | {str_desc: Tstr_primitive(valueDescription)} =>
     valueDescription.val_attributes |> hasGenTypeAnnotation(~ignoreInterface)
-  | {str_desc: Tstr_module(moduleBinding), _} =>
+  | {str_desc: Tstr_module(moduleBinding)} =>
     moduleBinding |> moduleBindingHasGenTypeAnnotation(~ignoreInterface)
-  | {str_desc: Tstr_recmodule(moduleBindings), _} =>
+  | {str_desc: Tstr_recmodule(moduleBindings)} =>
     moduleBindings
     |> List.exists(moduleBindingHasGenTypeAnnotation(~ignoreInterface))
-  | {str_desc: Tstr_include({incl_attributes, incl_mod}), _} =>
+  | {str_desc: Tstr_include({incl_attributes, incl_mod})} =>
     incl_attributes
     |> hasGenTypeAnnotation(~ignoreInterface)
     || incl_mod
@@ -245,7 +245,7 @@ and moduleExprHasGenTypeAnnotation =
   | Tmod_unpack(_) => false
   }
 and moduleBindingHasGenTypeAnnotation =
-    (~ignoreInterface, {mb_expr, mb_attributes, _}: Typedtree.module_binding) =>
+    (~ignoreInterface, {mb_expr, mb_attributes}: Typedtree.module_binding) =>
   mb_attributes
   |> hasGenTypeAnnotation(~ignoreInterface)
   || mb_expr

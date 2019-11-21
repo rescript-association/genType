@@ -30,8 +30,8 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       DeadType.collectTypeExport(~path=[id, ...path], t);
     }
   | (
-      Sig_module(id, {Types.md_type: moduleType, _}, _) |
-      Sig_modtype(id, {Types.mtd_type: Some(moduleType), _})
+      Sig_module(id, {Types.md_type: moduleType}, _) |
+      Sig_modtype(id, {Types.mtd_type: Some(moduleType)})
     ) as s =>
     let collect =
       switch (s) {
@@ -81,14 +81,14 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       _,
       x,
       {
-        lbl_loc: {Location.loc_start: posDeclaration, loc_ghost: false, _},
+        lbl_loc: {Location.loc_start: posDeclaration, loc_ghost: false},
         _,
       },
     )
   | Texp_construct(
       x,
       {
-        cstr_loc: {Location.loc_start: posDeclaration, loc_ghost: false, _},
+        cstr_loc: {Location.loc_start: posDeclaration, loc_ghost: false},
         _,
       },
       _,
