@@ -1,4 +1,8 @@
 # master
+- Add support for `@bs.as` to rename record fields (from bukclescript 7.0.0).
+  At that point, use of `@genType.as` on record fields will be discouraged,
+  as it incurs the extra cost of runtime conversion.
+  But it will be kept for backwards compatibility for existing code.
 
 # 3.4.4
 - Add support for bucklescript dependencies, specified in `bs-dependencies`.
