@@ -26,6 +26,8 @@ let toString = annotation =>
 let tagIsGenType = s => s == "genType" || s == "gentype";
 let tagIsGenTypeAs = s => s == "genType.as" || s == "gentype.as";
 
+let tagIsBsAs = s => s == "bs.as";
+
 let tagIsGenTypeImport = s => s == "genType.import" || s == "gentype.import";
 
 let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "gentype.opaque";
@@ -70,26 +72,20 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
     | PStr([{pstr_desc: Pstr_eval(expr, _)}, ..._]) => expr |> fromExpr
     | PStr([{pstr_desc: Pstr_extension(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_value(_)}, ..._]) =>
-      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_value(_)}, ..._]) => Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_primitive(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_type(_)}, ..._]) =>
-      Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_typext(_)}, ..._]) =>
-      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_type(_)}, ..._]) => Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_typext(_)}, ..._]) => Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_exception(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_module(_)}, ..._]) =>
-      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_module(_)}, ..._]) => Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_recmodule(_)}, ..._]) =>
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_modtype(_)}, ..._]) =>
       Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_open(_)}, ..._]) =>
-      Some(UnrecognizedPayload)
-    | PStr([{pstr_desc: Pstr_class(_)}, ..._]) =>
-      Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_open(_)}, ..._]) => Some(UnrecognizedPayload)
+    | PStr([{pstr_desc: Pstr_class(_)}, ..._]) => Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_class_type(_)}, ..._]) =>
       Some(UnrecognizedPayload)
     | PStr([{pstr_desc: Pstr_include(_)}, ..._]) =>
@@ -112,6 +108,12 @@ let getGenTypeAsRenaming = attributes =>
     | Some(StringPayload(s)) => Some(s)
     | _ => None
     }
+  | _ => None
+  };
+
+let getBsAsRenaming = attributes =>
+  switch (attributes |> getAttributePayload(tagIsBsAs)) {
+  | Some(StringPayload(s)) => Some(s)
   | _ => None
   };
 
@@ -262,7 +264,7 @@ let importFromString = (importString): import => {
   let name = {
     let base = importString |> Filename.basename;
     (
-      try (base |> Filename.chop_extension) {
+      try(base |> Filename.chop_extension) {
       | Invalid_argument(_) => base
       }
     )

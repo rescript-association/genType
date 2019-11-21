@@ -1,27 +1,28 @@
 open GenTypeCommon;
 
 let rec addAnnotationsToTypes =
-        (~expr: Typedtree.expression, types: list(type_)) =>
+        (~config, ~expr: Typedtree.expression, types: list(type_)) =>
   switch (expr.exp_desc, types) {
   | (_, [GroupOfLabeledArgs(fields), ...nextTypes]) =>
     let (fields1, nextTypes1) =
-      addAnnotationsToFields(expr, fields, nextTypes);
+      addAnnotationsToFields(~config, expr, fields, nextTypes);
     [GroupOfLabeledArgs(fields1), ...nextTypes1];
   | (Texp_function({cases: [{c_rhs}]}), [type_, ...nextTypes]) =>
-    let nextTypes1 = nextTypes |> addAnnotationsToTypes(~expr=c_rhs);
+    let nextTypes1 = nextTypes |> addAnnotationsToTypes(~config, ~expr=c_rhs);
     [type_, ...nextTypes1];
   | _ => types
   }
 and addAnnotationsToFields =
-    (expr: Typedtree.expression, fields: fields, types: list(type_)) =>
+    (~config, expr: Typedtree.expression, fields: fields, types: list(type_)) =>
   switch (expr.exp_desc, fields, types) {
-  | (_, [], _) => ([], types |> addAnnotationsToTypes(~expr))
+  | (_, [], _) => ([], types |> addAnnotationsToTypes(~config, ~expr))
   | (Texp_function({cases: [{c_rhs}]}), [field, ...nextFields], _) =>
     let (nextFields1, types1) =
-      addAnnotationsToFields(c_rhs, nextFields, types);
+      addAnnotationsToFields(~config, c_rhs, nextFields, types);
     let (nameJS, nameRE) =
       TranslateTypeDeclarations.renameRecordField(
         ~attributes=expr.exp_attributes,
+        ~config,
         ~nameRE=field.nameRE,
       );
     ([{...field, nameJS, nameRE}, ...nextFields1], types1);
@@ -30,10 +31,12 @@ and addAnnotationsToFields =
   };
 
 /* Recover from expr the renaming annotations on named arguments. */
-let addAnnotationsToFunctionType = (expr: Typedtree.expression, type_: type_) =>
+let addAnnotationsToFunctionType =
+    (~config, expr: Typedtree.expression, type_: type_) =>
   switch (type_) {
   | Function(function_) =>
-    let argTypes = function_.argTypes |> addAnnotationsToTypes(~expr);
+    let argTypes =
+      function_.argTypes |> addAnnotationsToTypes(~config, ~expr);
     Function({...function_, argTypes});
   | _ => type_
   };
@@ -69,7 +72,8 @@ let translateValueBinding =
            ~resolver,
            ~typeEnv,
            ~typeExpr=vb_expr.exp_type,
-           ~addAnnotationsToFunction=addAnnotationsToFunctionType(vb_expr),
+           ~addAnnotationsToFunction=
+             addAnnotationsToFunctionType(~config, vb_expr),
          );
     } else {
       Translation.empty;

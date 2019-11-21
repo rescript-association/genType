@@ -34,17 +34,22 @@ let createCase = ((label, attributes)) =>
   | _ => {label, labelJS: StringLabel(label)}
   };
 
-let renameRecordField = (~attributes, ~nameRE) => {
-  let nameJS =
-    // TODO: support @bs.as
-    // Ignore @bs.as unless recordsAsObjects is active
-    // Need to keep genType.as for backwards compatibility
-    // If both genType.as and bs.as are present, decide on priority
-    switch (attributes |> Annotation.getGenTypeAsRenaming) {
-    | Some(s) => s
-    | None => nameRE
-    };
-  (nameJS, nameRE);
+// Rename record fields.
+// If @genType.as is used, perform renaming conversion.
+// If @bs.as is used (with records-as-objects active), no conversion is required.
+let renameRecordField = (~config, ~attributes, ~nameRE) => {
+  switch (attributes |> Annotation.getGenTypeAsRenaming) {
+  | Some(nameJS) => (nameJS, nameRE)
+  | None =>
+    if (config.recordsAsObjects) {
+      switch (attributes |> Annotation.getBsAsRenaming) {
+      | Some(name) => (name, name)
+      | None => (nameRE, nameRE)
+      };
+    } else {
+      (nameRE, nameRE);
+    }
+  };
 };
 
 let traslateDeclarationKind =
@@ -97,6 +102,7 @@ let traslateDeclarationKind =
            let (nameJS, nameRE) =
              renameRecordField(
                ~attributes=ld_attributes,
+               ~config,
                ~nameRE=ld_id |> Ident.name,
              );
            let mutability = ld_mutable == Mutable ? Mutable : Immutable;

@@ -60,6 +60,9 @@ export type myRec = { readonly type: string };
 // tslint:disable-next-line:interface-over-type-literal
 export type myObj = { readonly type_: string };
 
+// tslint:disable-next-line:interface-over-type-literal
+export type myRecBsAs = { readonly type_: string };
+
 export const origin: coord = {x:RecordsBS.origin[0], y:RecordsBS.origin[1], z:RecordsBS.origin[2]};
 
 export const computeArea: (_1:coord) => number = function (Arg1: any) {
@@ -135,3 +138,13 @@ export const testMyRec2: (_1:myRec) => myRec = function (Arg1: any) {
 export const testMyObj: (_1:myObj) => string = RecordsBS.testMyObj;
 
 export const testMyObj2: (_1:myObj) => myObj = RecordsBS.testMyObj2;
+
+export const testMyRecBsAs: (_1:myRecBsAs) => string = function (Arg1: any) {
+  const result = RecordsBS.testMyRecBsAs([Arg1.type_]);
+  return result
+};
+
+export const testMyRecBsAs2: (_1:myRecBsAs) => myRecBsAs = function (Arg1: any) {
+  const result = RecordsBS.testMyRecBsAs2([Arg1.type_]);
+  return {type_:result[0]}
+};
