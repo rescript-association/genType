@@ -83,6 +83,7 @@ let traslateDeclarationKind =
       |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
            let nameRE = ld_id |> Ident.name;
            let nameJS =
+             // TODO: support @bs.as
              switch (ld_attributes |> Annotation.getAttributeRenaming) {
              | Some(s) => s
              | None => nameRE
