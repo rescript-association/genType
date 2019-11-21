@@ -37,6 +37,9 @@ let createCase = ((label, attributes)) =>
 let renameRecordField = (~attributes, ~nameRE) => {
   let nameJS =
     // TODO: support @bs.as
+    // Ignore @bs.as unless recordsAsObjects is active
+    // Need to keep genType.as for backwards compatibility
+    // If both genType.as and bs.as are present, decide on priority
     switch (attributes |> Annotation.getAttributeRenaming) {
     | Some(s) => s
     | None => nameRE
