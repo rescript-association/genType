@@ -3,8 +3,6 @@
   Variants are emitted as `| x | y`, remove the leading `|`.
   Also, Flow uses `?t`, so add parens: `? (foo | bar)`.
 - Add builtin support for Js.String2.t as string.
-
-# 3.5.0
 - Add support for `@bs.as` to rename record fields (from bukclescript 7.0.0).
   At that point, use of `@genType.as` on record fields will be discouraged,
   as it incurs the extra cost of runtime conversion.
