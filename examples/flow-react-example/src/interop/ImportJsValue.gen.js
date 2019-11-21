@@ -124,7 +124,7 @@ export type stringFunction = $$stringFunction;
 export type color = "tomato" | "gray";
 
 export type variant = 
-  | {| tag: "I", value: number |}
+    {| tag: "I", value: number |}
   | {| tag: "S", value: string |};
 
 export type num = $$num;

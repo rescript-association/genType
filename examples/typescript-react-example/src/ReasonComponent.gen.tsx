@@ -34,7 +34,7 @@ export type person<a> = {
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = 
-  | "A"
+    "A"
   | { tag: "B"; value: number }
   | { tag: "C"; value: string };
 

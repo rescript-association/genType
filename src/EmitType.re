@@ -229,11 +229,18 @@ let rec renderType =
     switch (config.language) {
     | Flow
     | Untyped =>
+      let isComplex =
+        switch (type_) {
+        | Variant(_) => true
+        | _ => false
+        };
       "?"
+      ++ (isComplex ? " (" : "")
       ++ (
         type_
         |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
       )
+      ++ (isComplex ? ")" : "");
     | TypeScript =>
       "(null | undefined | "
       ++ (
@@ -298,10 +305,13 @@ let rec renderType =
          });
     let rendered = noPayloadsRendered @ payloadsRendered;
     let indent1 = rendered |> Indent.heuristicVariants(~indent);
-    (indent1 == None ? rendered : ["", ...rendered])
-    |> String.concat(
-         (indent1 == None ? " " : Indent.break(~indent=indent1)) ++ "| ",
-       );
+    (indent1 == None ? "" : Indent.break(~indent=indent1) ++ "  ")
+    ++ (
+      rendered
+      |> String.concat(
+           (indent1 == None ? " " : Indent.break(~indent=indent1)) ++ "| ",
+         )
+    );
   }
 and renderField =
     (

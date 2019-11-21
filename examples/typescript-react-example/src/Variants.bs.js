@@ -45,6 +45,26 @@ function id2(x) {
   return x;
 }
 
+function polyWithOpt(foo) {
+  var match = foo === "bar";
+  if (match) {
+    return ;
+  } else {
+    var match$1 = foo !== "baz";
+    if (match$1) {
+      return /* `One */[
+              3953222,
+              foo
+            ];
+    } else {
+      return /* `Two */[
+              4203884,
+              1
+            ];
+    }
+  }
+}
+
 var monday = /* monday */-949852400;
 
 var saturday = /* saturday */-29784519;
@@ -70,6 +90,7 @@ export {
   testConvert2to3 ,
   id1 ,
   id2 ,
+  polyWithOpt ,
   
 }
 /* No side effect */
