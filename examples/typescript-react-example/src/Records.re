@@ -156,3 +156,15 @@ let testMyObj = (x: myObj) => x##type_;
 
 [@genType]
 let testMyObj2 = (x: myObj) => x;
+
+[@genType]
+type myRecBsAs = {
+  [@bs.as "type"]
+  type_: string,
+};
+
+[@genType]
+let testMyRecBsAs = (x: myRecBsAs) => x.type_;
+
+[@genType]
+let testMyRecBsAs2 = (x: myRecBsAs) => x;

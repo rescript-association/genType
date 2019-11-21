@@ -123,6 +123,14 @@ function testMyObj2(x) {
   return x;
 }
 
+function testMyRecBsAs(x) {
+  return x[/* type_ */0];
+}
+
+function testMyRecBsAs2(x) {
+  return x;
+}
+
 var origin = /* record */[
   /* x */0,
   /* y */0,
@@ -156,6 +164,8 @@ export {
   testMyRec2 ,
   testMyObj ,
   testMyObj2 ,
+  testMyRecBsAs ,
+  testMyRecBsAs2 ,
   
 }
 /* No side effect */

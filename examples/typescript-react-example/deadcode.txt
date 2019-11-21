@@ -1216,6 +1216,9 @@
   addValueReference Records.re:155:4 --> Records.re:155:17
   addValueReference Records.re:155:4 --> js.ml:70:1
   addValueReference Records.re:158:4 --> Records.re:158:18
+  [type] addTypeReference Records.re:167:38 --> Records.re:162:2
+  addValueReference Records.re:167:4 --> Records.re:167:21
+  addValueReference Records.re:170:4 --> Records.re:170:22
   [type] export x Records.re:5:2
   [type] export y Records.re:6:2
   [type] export z Records.re:7:2
@@ -1253,6 +1256,9 @@
   export testMyRec2 Records.re:152:4
   export testMyObj Records.re:155:4
   export testMyObj2 Records.re:158:4
+  [type] export type_ Records.re:162:2
+  export testMyRecBsAs Records.re:167:4
+  export testMyRecBsAs2 Records.re:170:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
   export make ImportIndex.re:1:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Hooks.cmt
