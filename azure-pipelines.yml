@@ -1,37 +1,5 @@
 name: Build npm release
 
-# Tag triggering:
-# We build any tags starting prefixed with a `v`, based
-# on the way npm tags version releases (e.g. v3.0.0)
-#
-# v2.* tags should only be recognized by our old CI systems
-# (from branch 4_02), so we ignore everything starting with `v2.*`.
-#
-# Branch triggering:
-# We configured only a set of static branches, which will be automatically
-# built with every commit (even without PR).
-#
-# Branches with an open PR will automatically be built as well, so we don't
-# have to list them here (otherwise we will have two CI builds every time)
-trigger:
-  tags:
-    include:
-      - v*
-    exclude:
-      - v2.*
-  branches:
-    include:
-      - master
-    exclude:
-      - 4_02
-
-pr:
-  branches:
-    include:
-      - master
-    exclude:
-      - 4_02
-
 jobs:
   - template: .ci/build-platform.yml
     parameters:
