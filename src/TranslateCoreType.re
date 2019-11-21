@@ -86,7 +86,7 @@ let rec translateArrowType =
        );
   | Ttyp_arrow((Labelled(lbl) | Optional(lbl)) as label, coreType1, coreType2) =>
     let asLabel =
-      switch (coreType.ctyp_attributes |> Annotation.getAttributeRenaming) {
+      switch (coreType.ctyp_attributes |> Annotation.getGenTypeAsRenaming) {
       | Some(s) => s
       | None => ""
       };
