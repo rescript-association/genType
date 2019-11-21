@@ -9,7 +9,7 @@ let translateSignatureValue =
       valueDescription: Typedtree.value_description,
     )
     : Translation.t => {
-  let {Typedtree.val_id, val_desc, val_attributes, _} = valueDescription;
+  let {Typedtree.val_id, val_desc, val_attributes} = valueDescription;
   if (Debug.translation^) {
     logItem("Translate Signature Value %s\n", val_id |> Ident.name);
   };
@@ -40,7 +40,7 @@ let rec translateModuleDeclaration =
           ~outputFileRelative,
           ~resolver,
           ~typeEnv,
-          {md_id, md_type, _}: Typedtree.module_declaration,
+          {md_id, md_type}: Typedtree.module_declaration,
         ) => {
   let name = md_id |> Ident.name;
   if (Debug.translation^) {
@@ -97,8 +97,8 @@ and translateModuleTypeDeclaration =
     );
   };
   switch (moduleTypeDeclaration) {
-  | {mtd_type: None, _} => Translation.empty
-  | {mtd_id, mtd_type: Some(mtd_type), _} =>
+  | {mtd_type: None} => Translation.empty
+  | {mtd_id, mtd_type: Some(mtd_type)} =>
     switch (mtd_type.mty_desc) {
     | Tmty_signature(signature) =>
       let name = mtd_id |> Ident.name;
@@ -142,7 +142,7 @@ and translateSignatureItem =
     )
     : Translation.t =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations), _} => {
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations)} => {
       importTypes: [],
       codeItems: [],
       typeDeclarations:
@@ -155,7 +155,7 @@ and translateSignatureItem =
            ),
     }
 
-  | {Typedtree.sig_desc: Tsig_value(valueDescription), _} =>
+  | {Typedtree.sig_desc: Tsig_value(valueDescription)} =>
     if (valueDescription.val_prim != []) {
       valueDescription
       |> Translation.translatePrimitive(
@@ -178,7 +178,7 @@ and translateSignatureItem =
          );
     }
 
-  | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration)} =>
     moduleDeclaration
     |> translateModuleDeclaration(
          ~config,
@@ -187,7 +187,7 @@ and translateSignatureItem =
          ~typeEnv,
        )
 
-  | {Typedtree.sig_desc: Typedtree.Tsig_modtype(moduleTypeDeclaration), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_modtype(moduleTypeDeclaration)} =>
     let moduleItem =
       moduleItemGen
       |> Runtime.newModuleItem(
@@ -202,28 +202,28 @@ and translateSignatureItem =
          ~typeEnv,
        );
 
-  | {Typedtree.sig_desc: Typedtree.Tsig_typext(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_typext(_)} =>
     logNotImplemented("Tsig_typext " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_exception(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_exception(_)} =>
     logNotImplemented("Tsig_exception " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_recmodule(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_recmodule(_)} =>
     logNotImplemented("Tsig_recmodule " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_open(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_open(_)} =>
     logNotImplemented("Tsig_open " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_include(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_include(_)} =>
     logNotImplemented("Tsig_include " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_class(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_class(_)} =>
     logNotImplemented("Tsig_class " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_class_type(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_class_type(_)} =>
     logNotImplemented("Tsig_class_type " ++ __LOC__);
     Translation.empty;
-  | {Typedtree.sig_desc: Typedtree.Tsig_attribute(_), _} =>
+  | {Typedtree.sig_desc: Typedtree.Tsig_attribute(_)} =>
     logNotImplemented("Tsig_attribute " ++ __LOC__);
     Translation.empty;
   }

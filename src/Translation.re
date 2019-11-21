@@ -5,7 +5,7 @@ type t = CodeItem.translation;
 let empty: t = {importTypes: [], codeItems: [], typeDeclarations: []};
 
 let getImportTypeUniqueName =
-    ({typeName, asTypeName, _}: CodeItem.importType) =>
+    ({typeName, asTypeName}: CodeItem.importType) =>
   typeName
   ++ (
     switch (asTypeName) {
@@ -374,14 +374,14 @@ let translatePrimitive =
 
     let (propsFields, childrenTyp) =
       switch (type_) {
-      | Function({argTypes: [propOrChildren, ...childrenOrNil], _}) =>
+      | Function({argTypes: [propOrChildren, ...childrenOrNil]}) =>
         switch (childrenOrNil) {
         | [] => ([], mixedOrUnknown(~config))
         | [children, ..._] =>
           switch (propOrChildren) {
           | GroupOfLabeledArgs(fields) => (
               fields
-              |> List.map(({optional, type_, _} as field) =>
+              |> List.map(({optional, type_} as field) =>
                    switch (type_, optional) {
                    | (Option(type1), Optional) => {
                        ...field,

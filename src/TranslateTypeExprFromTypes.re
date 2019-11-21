@@ -153,10 +153,10 @@ let translateConstr =
     | Path.Papply(_) => raise(ContainsApply)
     };
   let defaultCase = () => {
-    let typeArgs = paramsTranslation |> List.map(({type_, _}) => type_);
+    let typeArgs = paramsTranslation |> List.map(({type_}) => type_);
     let typeParamDeps =
       paramsTranslation
-      |> List.map(({dependencies, _}) => dependencies)
+      |> List.map(({dependencies}) => dependencies)
       |> List.concat;
 
     switch (typeEnv |> TypeEnv.applyTypeEquations(~config, ~path)) {
@@ -390,15 +390,15 @@ let translateConstr =
   | (["Js", "t"], _) =>
     let dependencies =
       fieldsTranslations
-      |> List.map(((_, {dependencies, _})) => dependencies)
+      |> List.map(((_, {dependencies})) => dependencies)
       |> List.concat;
     let rec checkMutableField = (~acc=[], fields) =>
       switch (fields) {
-      | [(previousName, {type_: _, _}), (name, {type_, _}), ...rest]
+      | [(previousName, {type_: _}), (name, {type_}), ...rest]
           when Runtime.checkMutableObjectField(~previousName, ~name) =>
         /* The field was annotated "@bs.set" */
         rest |> checkMutableField(~acc=[(name, type_, Mutable), ...acc])
-      | [(name, {type_, _}), ...rest] =>
+      | [(name, {type_}), ...rest] =>
         rest |> checkMutableField(~acc=[(name, type_, Immutable), ...acc])
       | [] => acc |> List.rev
       };
@@ -571,8 +571,8 @@ and translateTypeExprFromTypes_ =
   | Tvar(Some(s)) => {dependencies: [], type_: TypeVar(s)}
 
   | Tconstr(
-      Pdot(Pident({name: "Js", _}), "t", _) as path,
-      [{desc: Tobject(tObj, _), _}],
+      Pdot(Pident({name: "Js"}), "t", _) as path,
+      [{desc: Tobject(tObj, _)}],
       _,
     ) =>
     let rec getFieldTypes = (texp: Types.type_expr) =>
@@ -610,7 +610,7 @@ and translateTypeExprFromTypes_ =
       ~typeEnv,
     );
 
-  | Tconstr(path, [{desc: Tlink(te), _}], r) =>
+  | Tconstr(path, [{desc: Tlink(te)}], r) =>
     {...typeExpr, desc: Types.Tconstr(path, [te], r)}
     |> translateTypeExprFromTypes_(
          ~config,
@@ -655,10 +655,10 @@ and translateTypeExprFromTypes_ =
     let innerTypesTranslation =
       listExp |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
     let innerTypes =
-      innerTypesTranslation |> List.map(({type_, _}) => type_);
+      innerTypesTranslation |> List.map(({type_}) => type_);
     let innerTypesDeps =
       innerTypesTranslation
-      |> List.map(({dependencies, _}) => dependencies)
+      |> List.map(({dependencies}) => dependencies)
       |> List.concat;
 
     let tupleType = Tuple(innerTypes);
@@ -718,7 +718,7 @@ and translateTypeExprFromTypes_ =
       let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
       let dependencies =
         payloadTranslations
-        |> List.map(((_, {dependencies, _})) => dependencies)
+        |> List.map(((_, {dependencies})) => dependencies)
         |> List.concat;
       {dependencies, type_};
 
@@ -780,8 +780,8 @@ and signatureToModuleRuntimeRepresentation =
     signature
     |> List.map(signatureItem =>
          switch (signatureItem) {
-         | Types.Sig_value(_id, {val_kind: Val_prim(_), _}) => ([], [])
-         | Types.Sig_value(id, {val_type: typeExpr, _}) =>
+         | Types.Sig_value(_id, {val_kind: Val_prim(_)}) => ([], [])
+         | Types.Sig_value(id, {val_type: typeExpr}) =>
            let {dependencies, type_} =
              typeExpr
              |> translateTypeExprFromTypes_(

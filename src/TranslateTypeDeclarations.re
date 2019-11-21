@@ -80,7 +80,7 @@ let traslateDeclarationKind =
   let translateLabelDeclarations = labelDeclarations => {
     let fieldTranslations =
       labelDeclarations
-      |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes, _}) => {
+      |> List.map(({Types.ld_id, ld_mutable, ld_type, ld_attributes}) => {
            let nameRE = ld_id |> Ident.name;
            let nameJS =
              // TODO: support @bs.as
@@ -103,7 +103,7 @@ let traslateDeclarationKind =
 
     let dependencies =
       fieldTranslations
-      |> List.map(((_, _, _, {TranslateTypeExprFromTypes.dependencies, _})) =>
+      |> List.map(((_, _, _, {TranslateTypeExprFromTypes.dependencies})) =>
            dependencies
          )
       |> List.concat;
@@ -116,7 +116,7 @@ let traslateDeclarationKind =
                nameJS,
                nameRE,
                mutable_,
-               {TranslateTypeExprFromTypes.type_, _},
+               {TranslateTypeExprFromTypes.type_},
              ),
            ) => {
            let (optional, type1) =
@@ -196,7 +196,7 @@ let traslateDeclarationKind =
       coreType |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
     let type_ =
       switch (coreType, translation.type_) {
-      | ({ctyp_desc: Ttyp_variant(rowFields, _, _), _}, Variant(variant)) =>
+      | ({ctyp_desc: Ttyp_variant(rowFields, _, _)}, Variant(variant)) =>
         let rowFieldsVariants = rowFields |> TranslateCoreType.processVariant;
         let noPayloads = rowFieldsVariants.noPayloads |> List.map(createCase);
         let payloads =
@@ -273,10 +273,10 @@ let traslateDeclarationKind =
 
            let argTypes =
              argsTranslation
-             |> List.map(({TranslateTypeExprFromTypes.type_, _}) => type_);
+             |> List.map(({TranslateTypeExprFromTypes.type_}) => type_);
            let importTypes =
              argsTranslation
-             |> List.map(({TranslateTypeExprFromTypes.dependencies, _}) =>
+             |> List.map(({TranslateTypeExprFromTypes.dependencies}) =>
                   dependencies
                 )
              |> List.concat
@@ -382,7 +382,7 @@ let translateTypeDeclaration =
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
-      {typ_attributes, typ_id, typ_manifest, typ_params, typ_type, _}: Typedtree.type_declaration,
+      {typ_attributes, typ_id, typ_manifest, typ_params, typ_type}: Typedtree.type_declaration,
     )
     : list(CodeItem.typeDeclaration) => {
   if (Debug.translation^) {

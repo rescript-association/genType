@@ -5,7 +5,7 @@ let extractFromTypeExpr = typeParams =>
   |> List.fold_left(
        (soFar, typeExpr) =>
          switch (typeExpr) {
-         | {Types.desc: Tvar(Some(s)), _} =>
+         | {Types.desc: Tvar(Some(s))} =>
            let typeName = s;
            [typeName, ...soFar];
          | _ => assert(false)
@@ -93,7 +93,7 @@ let rec free_ = type0: StringSet.t =>
   | Record(fields) =>
     fields
     |> List.fold_left(
-         (s, {type_, _}) => StringSet.union(s, type_ |> free_),
+         (s, {type_}) => StringSet.union(s, type_ |> free_),
          StringSet.empty,
        )
   | Ident({typeArgs}) =>

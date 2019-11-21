@@ -176,7 +176,7 @@ and translateCoreType_ =
        )
 
   | Ttyp_constr(
-      Pdot(Pident({name: "Js", _}), "t", _) as path,
+      Pdot(Pident({name: "Js"}), "t", _) as path,
       _,
       [
         {
@@ -246,10 +246,10 @@ and translateCoreType_ =
     let innerTypesTranslation =
       listExp |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
     let innerTypes =
-      innerTypesTranslation |> List.map(({type_, _}) => type_);
+      innerTypesTranslation |> List.map(({type_}) => type_);
     let innerTypesDeps =
       innerTypesTranslation
-      |> List.map(({dependencies, _}) => dependencies)
+      |> List.map(({dependencies}) => dependencies)
       |> List.concat;
 
     let tupleType = Tuple(innerTypes);
@@ -288,7 +288,7 @@ and translateCoreType_ =
       let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
       let dependencies =
         payloadsTranslations
-        |> List.map(((_, _, {dependencies, _})) => dependencies)
+        |> List.map(((_, _, {dependencies})) => dependencies)
         |> List.concat;
       {dependencies, type_};
 

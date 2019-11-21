@@ -261,7 +261,7 @@ let rec renderType =
     ++ "]"
   | TypeVar(s) => s
 
-  | Variant({noPayloads, payloads, unboxed, _}) =>
+  | Variant({noPayloads, payloads, unboxed}) =>
     let noPayloadsRendered =
       noPayloads |> List.map(case => case.labelJS |> labelJSToString);
     let field = (~name, value) => {

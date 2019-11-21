@@ -21,11 +21,11 @@ let collectTypeExport =
   switch (type_kind) {
   | Type_record(l, _) =>
     List.iter(
-      ({Types.ld_id, ld_loc, ld_type, _}) => save(ld_id, ld_loc),
+      ({Types.ld_id, ld_loc, ld_type}) => save(ld_id, ld_loc),
       l,
     )
   | Type_variant(l) =>
-    List.iter(({Types.cd_id, cd_loc, _}) => save(cd_id, cd_loc), l)
+    List.iter(({Types.cd_id, cd_loc}) => save(cd_id, cd_loc), l)
   | _ => ()
   };
 };
@@ -56,7 +56,7 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
 
     try(
       switch (typeDeclaration.typ_manifest) {
-      | Some({ctyp_desc: Ttyp_constr(_, {txt, _}, _), _}) =>
+      | Some({ctyp_desc: Ttyp_constr(_, {txt}, _)}) =>
         let pos1 =
           Hashtbl.find(
             fields,

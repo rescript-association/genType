@@ -33,7 +33,7 @@ let createExportTypeMap =
     let addExportType =
         (
           ~annotation,
-          {resolvedTypeName, typeVars, optType, _}: CodeItem.exportType,
+          {resolvedTypeName, typeVars, optType}: CodeItem.exportType,
         ) => {
       if (Debug.codeItems^) {
         logItem(
@@ -75,7 +75,7 @@ let createExportTypeMap =
 
 let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
   switch (codeItem) {
-  | ExportComponent({nestedModuleName, _}) =>
+  | ExportComponent({nestedModuleName}) =>
     "ExportComponent nestedModuleName:"
     ++ (
       switch (nestedModuleName) {
@@ -83,15 +83,15 @@ let codeItemToString = (~config, ~typeNameIsInterface, codeItem: CodeItem.t) =>
       | None => ""
       }
     )
-  | ExportValue({resolvedName, type_, _}) =>
+  | ExportValue({resolvedName, type_}) =>
     "ExportValue"
     ++ " resolvedName:"
     ++ ResolvedName.toString(resolvedName)
     ++ " type:"
     ++ EmitType.typeToString(~config, ~typeNameIsInterface, type_)
-  | ImportComponent({importAnnotation, _}) =>
+  | ImportComponent({importAnnotation}) =>
     "ImportComponent " ++ (importAnnotation.importPath |> ImportPath.dump)
-  | ImportValue({importAnnotation, _}) =>
+  | ImportValue({importAnnotation}) =>
     "ImportValue " ++ (importAnnotation.importPath |> ImportPath.dump)
   };
 
@@ -102,7 +102,7 @@ let emitExportType =
       ~config,
       ~typeGetNormalized,
       ~typeNameIsInterface,
-      {CodeItem.nameAs, opaque, optType, typeVars, resolvedTypeName, _},
+      {CodeItem.nameAs, opaque, optType, typeVars, resolvedTypeName},
     ) => {
   let (opaque, optType) =
     switch (opaque, optType) {
@@ -139,10 +139,10 @@ let typeNameIsInterface =
     | _ => false
     };
   switch (exportTypeMap |> StringMap.find(typeName)) {
-  | {type_, _} => type_ |> typeIsInterface
+  | {type_} => type_ |> typeIsInterface
   | exception Not_found =>
     switch (exportTypeMapFromOtherFiles |> StringMap.find(typeName)) {
-    | {type_, _} => type_ |> typeIsInterface
+    | {type_} => type_ |> typeIsInterface
     | exception Not_found => false
     }
   };
@@ -328,7 +328,7 @@ let rec emitCodeItem =
       (
         "function "
         ++ EmitText.parens(
-             (propsFields |> List.map(({nameJS, _}: field) => nameJS))
+             (propsFields |> List.map(({nameJS}: field) => nameJS))
              @ ["children"]
              |> List.map(EmitType.ofTypeAny(~config)),
            )
@@ -338,7 +338,7 @@ let rec emitCodeItem =
              "{"
              ++ (
                propsFields
-               |> List.map(({nameJS: propName, optional, type_: propTyp, _}) =>
+               |> List.map(({nameJS: propName, optional, type_: propTyp}) =>
                     propName
                     ++ ": "
                     ++ (
@@ -1107,7 +1107,7 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
      })
   |> List.filter(
        (
-         {exportFromTypeDeclaration: {annotation, _}, _}: CodeItem.typeDeclaration,
+         {exportFromTypeDeclaration: {annotation}}: CodeItem.typeDeclaration,
        ) =>
        annotation != NoGenType
      );
@@ -1118,15 +1118,15 @@ let propagateAnnotationToSubTypes =
   let initialAnnotatedTypes =
     typeMap
     |> StringMap.bindings
-    |> List.filter(((_, {CodeItem.annotation, _})) =>
+    |> List.filter(((_, {CodeItem.annotation})) =>
          annotation == Annotation.GenType
        )
-    |> List.map(((_, {CodeItem.type_, _})) => type_);
+    |> List.map(((_, {CodeItem.type_})) => type_);
   let typesOfExportedValue = (codeItem: CodeItem.t) =>
     switch (codeItem) {
-    | ExportComponent({type_, _})
-    | ExportValue({type_, _})
-    | ImportValue({type_, _}) => [type_]
+    | ExportComponent({type_})
+    | ExportValue({type_})
+    | ImportValue({type_}) => [type_]
     | _ => []
     };
   let typesOfExportedValues =
@@ -1143,8 +1143,8 @@ let propagateAnnotationToSubTypes =
           visited := visited^ |> StringSet.add(typeName);
           typeArgs |> List.iter(visit);
           switch (typeMap |> StringMap.find(typeName)) {
-          | {annotation: GenType | GenTypeOpaque, _} => ()
-          | {type_: type1, annotation: NoGenType, _} =>
+          | {annotation: GenType | GenTypeOpaque} => ()
+          | {type_: type1, annotation: NoGenType} =>
             if (Debug.translation^) {
               logItem("Marking Type As Annotated %s\n", typeName);
             };
@@ -1155,13 +1155,13 @@ let propagateAnnotationToSubTypes =
           };
         }
       | Array(t, _) => t |> visit
-      | Function({argTypes, retType, _}) =>
+      | Function({argTypes, retType}) =>
         argTypes |> List.iter(visit);
         retType |> visit;
       | GroupOfLabeledArgs(fields)
       | Object(_, fields)
       | Record(fields) =>
-        fields |> List.iter(({type_, _}) => type_ |> visit)
+        fields |> List.iter(({type_}) => type_ |> visit)
       | Option(t)
       | Null(t)
       | Nullable(t)
