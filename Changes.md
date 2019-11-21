@@ -1,7 +1,7 @@
 # master
 - Fix issue when emitting optional variants.
-  Variants are `| x | y`, remove the leading `|`.
-  Also, Flow uses ?t, so add parens: `? ( foo | bar)`.
+  Variants are emitted as `| x | y`, remove the leading `|`.
+  Also, Flow uses `?t`, so add parens: `? (foo | bar)`.
 - Add builtin support for Js.String2.t as string.
 
 # 3.5.0
