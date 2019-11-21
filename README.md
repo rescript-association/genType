@@ -170,7 +170,7 @@ Similarly, to import a value with a different JS name, use e.g. `[@genType.impor
 
 To import nested values, e.g. `Some.Nested.value`, use e.g. `[@genType.import ("./MyMath", "Some.Nested.value")]`.
 
-### Export and Import React Components
+### Export and Import React Components Using Deprecated Record API
 
 To export a ReasonReact component to JS, and automatically generate a wrapper for it, simply annotate the `make` function:
 
