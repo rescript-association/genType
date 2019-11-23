@@ -27,6 +27,10 @@ const $$toRE1061900109: { [key: string]: any } = {"x": 120, "same": 26810};
 // tslint:disable-next-line:no-var-requires
 const VariantsBS = require('./Variants.bs');
 
+import {Result_t as Belt_Result_t} from './Belt.gen';
+
+import {result as Pervasives_result} from './Pervasives.gen';
+
 // tslint:disable-next-line:interface-over-type-literal
 export type weekday = 
     "monday"
@@ -55,6 +59,12 @@ export type x2 = "x" | "same";
 // tslint:disable-next-line:interface-over-type-literal
 export type type_ = "type";
 export type type = type_;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type myResult<a,b> = Pervasives_result<a,b>;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type myResult2<a,b> = Belt_Result_t<a,b>;
 
 export const isWeekend: (_1:weekday) => boolean = function (Arg1: any) {
   const result = VariantsBS.isWeekend($$toRE288839514[Arg1]);

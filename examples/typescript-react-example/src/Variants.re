@@ -99,3 +99,9 @@ type type_ =
 [@genType]
 let polyWithOpt = foo =>
   foo === "bar" ? None : foo !== "baz" ? Some(`One(foo)) : Some(`Two(1));
+
+[@genType]
+type myResult('a, 'b) = result('a, 'b);
+
+[@genType]
+type myResult2('a, 'b) = Belt.Result.t('a, 'b);
