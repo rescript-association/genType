@@ -205,6 +205,33 @@ let translateConstr =
       type_: Tuple([paramTranslation.type_]),
     }
 
+  | (
+      ["Pervasives", "result"] | ["Belt", "Result", "t"],
+      [paramTranslation1, paramTranslation2],
+    ) =>
+    let variant =
+      createVariant(
+        ~noPayloads=[],
+        ~payloads=[
+          (
+            {label: "Ok", labelJS: StringLabel("Ok")},
+            0,
+            paramTranslation1.type_,
+          ),
+          (
+            {label: "Error", labelJS: StringLabel("Error")},
+            1,
+            paramTranslation1.type_,
+          ),
+        ],
+        ~polymorphic=false,
+      );
+    {
+      dependencies:
+        paramTranslation1.dependencies @ paramTranslation2.dependencies,
+      type_: variant,
+    };
+
   | (["React", "callback"], [fromTranslation, toTranslation]) => {
       dependencies: fromTranslation.dependencies @ toTranslation.dependencies,
       type_:
