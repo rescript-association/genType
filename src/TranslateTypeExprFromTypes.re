@@ -209,13 +209,17 @@ let translateConstr =
       ["Pervasives", "result"] | ["Belt", "Result", "t"],
       [paramTranslation1, paramTranslation2],
     ) =>
-    let case = name => {label: name, labelJS: StringLabel(name)};
+    let case = (n, name, type_) => (
+      {label: string_of_int(n), labelJS: StringLabel(name)},
+      1,
+      type_,
+    );
     let variant =
       createVariant(
         ~noPayloads=[],
         ~payloads=[
-          (case("Ok"), 0, paramTranslation1.type_),
-          (case("Error"), 1, paramTranslation1.type_),
+          case(0, "Ok", paramTranslation1.type_),
+          case(1, "Error", paramTranslation2.type_),
         ],
         ~polymorphic=false,
       );

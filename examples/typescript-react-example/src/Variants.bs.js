@@ -65,6 +65,18 @@ function polyWithOpt(foo) {
   }
 }
 
+function restResult1(x) {
+  return x;
+}
+
+function restResult2(x) {
+  return x;
+}
+
+function restResult3(x) {
+  return x;
+}
+
 var monday = /* monday */-949852400;
 
 var saturday = /* saturday */-29784519;
@@ -91,6 +103,9 @@ export {
   id1 ,
   id2 ,
   polyWithOpt ,
+  restResult1 ,
+  restResult2 ,
+  restResult3 ,
   
 }
 /* No side effect */

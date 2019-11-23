@@ -25,6 +25,9 @@ const $$toJS1061900109: { [key: string]: any } = {"120": "x", "26810": "same"};
 const $$toRE1061900109: { [key: string]: any } = {"x": 120, "same": 26810};
 
 // tslint:disable-next-line:no-var-requires
+const CreateBucklescriptBlock = require('bs-platform/lib/es6/block.js');
+
+// tslint:disable-next-line:no-var-requires
 const VariantsBS = require('./Variants.bs');
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -64,12 +67,12 @@ export type result1<a,b> =
 // tslint:disable-next-line:interface-over-type-literal
 export type result2<a,b> = 
     { tag: "Ok"; value: a }
-  | { tag: "Error"; value: a };
+  | { tag: "Error"; value: b };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type result3<a,b> = 
     { tag: "Ok"; value: a }
-  | { tag: "Error"; value: a };
+  | { tag: "Error"; value: b };
 
 export const isWeekend: (_1:weekday) => boolean = function (Arg1: any) {
   const result = VariantsBS.isWeekend($$toRE288839514[Arg1]);
@@ -133,4 +136,31 @@ export const polyWithOpt: (_1:string) => (null | undefined |
   return (result == null ? result : result[0]===/* One */3953222
     ? {tag:"One", value:result[1]}
     : {tag:"Two", value:result[1]})
+};
+
+export const restResult1: (_1:result1<number,string>) => result1<number,string> = function (Arg1: any) {
+  const result = VariantsBS.restResult1(Arg1.tag==="Ok"
+    ? CreateBucklescriptBlock.__(0, [Arg1.value])
+    : CreateBucklescriptBlock.__(1, [Arg1.value]));
+  return result.tag===0
+    ? {tag:"Ok", value:result[0]}
+    : {tag:"Error", value:result[0]}
+};
+
+export const restResult2: (_1:result2<number,string>) => result2<number,string> = function (Arg1: any) {
+  const result = VariantsBS.restResult2(Arg1.tag==="Ok"
+    ? CreateBucklescriptBlock.__(0, [Arg1.value])
+    : CreateBucklescriptBlock.__(1, [Arg1.value]));
+  return result.tag===0
+    ? {tag:"Ok", value:result[0]}
+    : {tag:"Error", value:result[0]}
+};
+
+export const restResult3: (_1:result3<number,string>) => result3<number,string> = function (Arg1: any) {
+  const result = VariantsBS.restResult3(Arg1.tag==="Ok"
+    ? CreateBucklescriptBlock.__(0, [Arg1.value])
+    : CreateBucklescriptBlock.__(1, [Arg1.value]));
+  return result.tag===0
+    ? {tag:"Ok", value:result[0]}
+    : {tag:"Error", value:result[0]}
 };

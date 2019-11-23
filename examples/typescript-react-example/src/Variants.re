@@ -110,3 +110,12 @@ type result2('a, 'b) = result('a, 'b);
 
 [@genType]
 type result3('a, 'b) = Belt.Result.t('a, 'b);
+
+[@genType]
+let restResult1 = (x: result1(int, string)) => x;
+
+[@genType]
+let restResult2 = (x: result2(int, string)) => x;
+
+[@genType]
+let restResult3 = (x: result3(int, string)) => x;
