@@ -1,5 +1,8 @@
 # master
 
+# 3.6.0
+- Add support for type `result` and `Belt.Result.t`.
+
 # 3.5.0
 - Fix issue when emitting optional variants.
   Variants are emitted as `| x | y`, remove the leading `|`.
