@@ -123,7 +123,7 @@ let emitTypeCast:
   ) =>
   string;
 
-let fileHeader: (~config: config) => string;
+let fileHeader: (~config: config, ~sourceFile: string) => string;
 
 let generatedModuleExtension: (~config: config) => string;
 

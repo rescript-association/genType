@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Opaque.rei
  * @nolint
  */
 /* eslint-disable */

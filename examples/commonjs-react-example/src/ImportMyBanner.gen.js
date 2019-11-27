@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from ImportMyBanner.re
  * @nolint
  */
 /* eslint-disable */

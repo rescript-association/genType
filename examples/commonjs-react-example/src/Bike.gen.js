@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Bike.re
  * @nolint
  */
 /* eslint-disable */

@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from RenameProps.re
  * @nolint
  */
 /* eslint-disable */

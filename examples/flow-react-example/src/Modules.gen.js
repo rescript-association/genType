@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Modules.re
  * @nolint
  */
 /* eslint-disable */
