@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Navigator.re
  * @nolint
  */
 /* eslint-disable */

@@ -111,6 +111,7 @@ let emitTranslation =
     (
       ~config,
       ~fileName,
+      ~hasInterface,
       ~outputFile,
       ~outputFileRelative,
       ~resolver,
@@ -127,7 +128,16 @@ let emitTranslation =
          ~inputCmtTranslateTypeDeclarations,
        );
   let fileContents =
-    signFile(EmitType.fileHeader(~config) ++ "\n" ++ codeText ++ "\n");
+    signFile(
+      EmitType.fileHeader(
+        ~config,
+        ~sourceFile=
+          (fileName |> ModuleName.toString) ++ (hasInterface ? ".rei" : ".re"),
+      )
+      ++ "\n"
+      ++ codeText
+      ++ "\n",
+    );
 
   GeneratedFiles.writeFileIfRequired(~outputFile, ~fileContents);
 };
@@ -150,6 +160,8 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let outputFile = cmt |> Paths.getOutputFile(~config);
     let outputFileRelative = cmt |> Paths.getOutputFileRelative(~config);
     let fileName = cmt |> Paths.getModuleName;
+    let hasInterface =
+      Sys.file_exists(Filename.remove_extension(cmt) ++ ".cmti");
     let resolver =
       ModuleResolver.createResolver(
         ~config,
@@ -178,6 +190,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       |> emitTranslation(
            ~config,
            ~fileName,
+           ~hasInterface,
            ~outputFile,
            ~outputFileRelative,
            ~resolver,

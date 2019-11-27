@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from VariantsWithPayload.re
  * @nolint
  */
 /* eslint-disable */

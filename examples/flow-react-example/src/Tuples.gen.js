@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Tuples.re
  * @nolint
  */
 /* eslint-disable */

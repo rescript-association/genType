@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from TestImmutableArray.re
  * @nolint
  */
 /* eslint-disable */

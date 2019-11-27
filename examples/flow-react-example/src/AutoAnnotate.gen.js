@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from AutoAnnotate.re
  * @nolint
  */
 /* eslint-disable */

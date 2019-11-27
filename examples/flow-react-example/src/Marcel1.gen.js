@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Marcel1.re
  * @nolint
  */
 /* eslint-disable */

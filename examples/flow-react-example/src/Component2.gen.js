@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Component2.re
  * @nolint
  */
 /* eslint-disable */

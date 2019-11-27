@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Uncurried.re
  * @nolint
  */
 /* eslint-disable */

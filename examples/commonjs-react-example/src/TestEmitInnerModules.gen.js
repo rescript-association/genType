@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from TestEmitInnerModules.re
  * @nolint
  */
 /* eslint-disable */

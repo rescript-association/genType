@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated
+ * @generated from Greeting.re
  * @nolint
  */
 /* eslint-disable */
