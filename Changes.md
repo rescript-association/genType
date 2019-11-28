@@ -1,4 +1,5 @@
 # master
+- Emit in comments the source file from which the .gen file was generated.
 
 # 3.6.0
 - Add support for type `result` and `Belt.Result.t`.
