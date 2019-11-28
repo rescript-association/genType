@@ -124,7 +124,7 @@ function testMyObj2(x) {
 }
 
 function testMyRecBsAs(x) {
-  return x.type_;
+  return x.type;
 }
 
 function testMyRecBsAs2(x) {

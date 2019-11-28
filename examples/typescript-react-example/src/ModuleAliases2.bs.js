@@ -7,9 +7,9 @@ var Outer = {
   Inner: Inner
 };
 
-var OuterAlias = 0;
+var OuterAlias = /* alias */0;
 
-var InnerAlias = 0;
+var InnerAlias = /* alias */0;
 
 var q = 42;
 
