@@ -11,7 +11,7 @@
       "ReasonReact": "ReactShim"
     },
     "debug": {
-      "all": true
+      "all": false
     },
     "exportInterfaces": false,
     "path": "../GenType.exe"
