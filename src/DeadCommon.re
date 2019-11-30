@@ -3,6 +3,8 @@
 // Turn on type analysis
 let analyzeTypes = true;
 
+let analyzeTermination = true;
+
 let analyzeExternals = false;
 
 let transitive = true;

@@ -32,6 +32,9 @@ let loadFile = (~sourceFile, cmtFilePath) => {
     if (!cmtiExists) {
       DeadValue.processSignature(cmtFilePath, structure.str_type);
     };
+    if (analyzeTermination) {
+      structure |> Arnold.processStructure;
+    };
   | _ => ()
   };
 };

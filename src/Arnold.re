@@ -1,0 +1,1 @@
+let processStructure = (structure: Typedtree.structure) => ();
