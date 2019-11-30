@@ -53,14 +53,14 @@
   addValueReference Types.re:53:4 --> Types.re:53:35
   addValueReference Types.re:56:4 --> Types.re:56:39
   addValueReference Types.re:56:4 --> Types.re:56:54
-  addValueReference Types.re:79:4 --> js_json.mli:183:0
-  addValueReference Types.re:93:4 --> Types.re:93:23
-  addValueReference Types.re:99:4 --> Types.re:99:27
-  addValueReference Types.re:117:4 --> Types.re:117:39
-  addValueReference Types.re:133:4 --> Types.re:133:16
-  addValueReference Types.re:133:4 --> js.ml:70:1
-  addValueReference Types.re:133:4 --> js.ml:103:1
-  addValueReference Types.re:143:4 --> Types.re:143:36
+  addValueReference Types.re:82:4 --> js_json.mli:183:0
+  addValueReference Types.re:96:4 --> Types.re:96:23
+  addValueReference Types.re:102:4 --> Types.re:102:27
+  addValueReference Types.re:120:4 --> Types.re:120:39
+  addValueReference Types.re:136:4 --> Types.re:136:16
+  addValueReference Types.re:136:4 --> js.ml:70:1
+  addValueReference Types.re:136:4 --> js.ml:103:1
+  addValueReference Types.re:146:4 --> Types.re:146:36
   export someIntList Types.re:5:4
   export map Types.re:8:4
   [type] export A Types.re:12:4
@@ -76,15 +76,16 @@
   [type] export B Types.re:61:4
   export stringT Types.re:64:4
   export jsStringT Types.re:67:4
-  export jsonStringify Types.re:79:4
-  [type] export i Types.re:88:2
-  [type] export s Types.re:89:2
-  export testConvertNull Types.re:93:4
-  export testConvertLocation Types.re:99:4
-  export testMarshalFields Types.re:117:4
-  export setMatch Types.re:133:4
-  [type] export id Types.re:138:19
-  export testInstantiateTypeParameter Types.re:143:4
+  export jsString2T Types.re:70:4
+  export jsonStringify Types.re:82:4
+  [type] export i Types.re:91:2
+  [type] export s Types.re:92:2
+  export testConvertNull Types.re:96:4
+  export testConvertLocation Types.re:102:4
+  export testMarshalFields Types.re:120:4
+  export setMatch Types.re:136:4
+  [type] export id Types.re:141:19
+  export testInstantiateTypeParameter Types.re:146:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
   addValueReference Tuples.re:4:4 --> Tuples.re:4:18
   addValueReference Tuples.re:4:4 --> Tuples.re:4:21
@@ -621,6 +622,14 @@
   addValueReference Variants.re:80:4 --> Variants.re:80:23
   addValueReference Variants.re:89:4 --> Variants.re:89:11
   addValueReference Variants.re:92:4 --> Variants.re:92:11
+  addValueReference Variants.re:100:4 --> Variants.re:100:18
+  addValueReference Variants.re:100:4 --> Variants.re:100:18
+  addValueReference Variants.re:100:4 --> pervasives.mli:130:0
+  addValueReference Variants.re:100:4 --> Variants.re:100:18
+  addValueReference Variants.re:100:4 --> pervasives.mli:119:0
+  addValueReference Variants.re:115:4 --> Variants.re:115:19
+  addValueReference Variants.re:118:4 --> Variants.re:118:19
+  addValueReference Variants.re:121:4 --> Variants.re:121:19
   export isWeekend Variants.re:13:4
   export monday Variants.re:21:4
   export saturday Variants.re:23:4
@@ -636,6 +645,12 @@
   export id1 Variants.re:89:4
   export id2 Variants.re:92:4
   [type] export Type Variants.re:97:4
+  export polyWithOpt Variants.re:100:4
+  [type] export Ok Variants.re:105:4
+  [type] export Error Variants.re:106:4
+  export restResult1 Variants.re:115:4
+  export restResult2 Variants.re:118:4
+  export restResult3 Variants.re:121:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Uncurried.cmt
   addValueReference Uncurried.re:14:4 --> js.ml:72:1
   addValueReference Uncurried.re:17:4 --> Uncurried.re:17:20
@@ -1511,7 +1526,7 @@ File References
   Tuples.re -->> belt_Option.mli, pervasives.mli
   NestedModules.re -->> 
   ImportJsValue.re -->> js.ml, pervasives.mli
-  Variants.re -->> 
+  Variants.re -->> pervasives.mli
   ImportHooks.re -->> 
   References.re -->> pervasives.mli
   ErrorHandler.re -->> 
@@ -1846,14 +1861,14 @@ and mutuallyRecursiveB = {[@dead "mutuallyRecursiveB.a"] a: mutuallyRecursiveA};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:61: opaqueVariant.B
 <-- line 61
   | [@dead "opaqueVariant.B"] B;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:88: record.i
-<-- line 88
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:91: record.i
+<-- line 91
   [@dead "record.i"] i: int,
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:89: record.s
-<-- line 89
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:92: record.s
+<-- line 92
   [@dead "record.s"] s: string,
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:138: someRecord.id
-<-- line 138
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:141: someRecord.id
+<-- line 141
 type someRecord = {[@dead "someRecord.id"] id: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re:5: t.id
 <-- line 5
@@ -1894,6 +1909,12 @@ type someRecord = {[@dead "someRecord.id"] id: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re:97: type_.Type
 <-- line 97
   | [@dead "type_.Type"] [@genType.as "type"] Type;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re:105: result1.Ok
+<-- line 105
+  | [@dead "result1.Ok"] Ok('a)
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re:106: result1.Error
+<-- line 106
+  | [@dead "result1.Error"] Error('b);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re:2: item.id
 <-- line 2
 type item = {[@dead "item.id"] id: int};
