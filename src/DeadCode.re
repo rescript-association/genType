@@ -33,7 +33,7 @@ let loadFile = (~sourceFile, cmtFilePath) => {
       DeadValue.processSignature(cmtFilePath, structure.str_type);
     };
     if (analyzeTermination) {
-      structure |> Arnold.processStructure;
+      Arnold.processStructure(structure);
     };
   | _ => ()
   };

@@ -766,6 +766,22 @@
   addValueReference TransitiveType1.re:5:4 --> TransitiveType1.re:5:20
   export convert TransitiveType1.re:2:4
   export convertAlias TransitiveType1.re:5:4
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestCyberTruck.cmt
+  addValueReference TestCyberTruck.re:1:8 --> TestCyberTruck.re:1:14
+  addValueReference TestCyberTruck.re:1:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:2:4 --> TestCyberTruck.re:2:10
+  addValueReference TestCyberTruck.re:2:4 --> TestCyberTruck.re:1:8
+  addValueReference TestCyberTruck.re:6:4 --> TestCyberTruck.re:4:4
+  addValueReference TestCyberTruck.re:6:4 --> pervasives.mli:264:0
+  export fox TestCyberTruck.re:1:8
+  export box TestCyberTruck.re:2:4
+  export a TestCyberTruck.re:4:4
+  export b TestCyberTruck.re:6:4
+  XXX recursive definition:fox
+  XXX inRecursion:true path:x
+  XXX recursive definition:box
+  XXX inRecursion:true path:x
+  XXX inRecursion:false path:a
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] export id TypeParams2.re:2:13
   export exportSomething TypeParams2.re:10:4
@@ -1490,6 +1506,7 @@ File References
   Records.re -->> belt_Array.mli, belt_List.mli, belt_Option.mli, js_null_undefined.mli, js.ml, pervasives.mli
   UseImportJsValue.re -->> ImportJsValue.re, pervasives.mli
   FirstClassModulesInterface.re -->> 
+  TestCyberTruck.re -->> pervasives.mli
   ReasonComponent.re -->> ReactDOMRe.re, ReasonReact.rei, ImportMyBanner.re, js.ml, list.mli, pervasives.mli, string.mli
   DeadTest.re -->> ImmutableArray.rei, js.ml, pervasives.mli
   TestEmitInnerModules.re -->> 
@@ -1559,6 +1576,8 @@ File References
   References.R.set: 1 references (References.re:37:4)
   References.R.make: 1 references (References.re:34:4)
   References.R.get: 1 references (References.re:31:4)
+  TestCyberTruck.box: 1 references (TestCyberTruck.re:1:8)
+  TestCyberTruck.fox: 1 references (TestCyberTruck.re:2:4)
   ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4)
   ManyComponents.component: 1 references (ManyComponents.re:39:4)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:19:6)
@@ -1772,6 +1791,12 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:11: testBeltArraySet
 <-- line 11
 [@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:4: a
+<-- line 4
+[@dead "a"] let a = 3;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:6: b
+<-- line 6
+[@dead "b"] let b = a + 1;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:8: Universe.notExported
 <-- line 8
 [@dead "Universe.notExported"]   let notExported = 33;
