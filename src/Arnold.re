@@ -1,38 +1,85 @@
 open DeadCommon;
 
-let traverseExpr = (~isRecursiveFunction) => {
-  let super = Tast_mapper.default;
+module NamedArgumentWithRecursiveFunction = {
+  let traverseExpr = (~isRecursiveFunction) => {
+    let super = Tast_mapper.default;
 
-  let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
-    switch (e.exp_desc) {
-    | Texp_ident(path, _, _) =>
-      if (isRecursiveFunction(path)) {
-        GenTypeCommon.logItem(
-          "XXX error: recursive function %s can only be called directly\n",
-          Path.name(path),
-        );
+    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
+      switch (e.exp_desc) {
+      | Texp_apply({exp_desc: Texp_ident(path, _, _)}, args)
+          when isRecursiveFunction(path) =>
+        args
+        |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
+             switch (argLabel, argOpt) {
+             | (
+                 Labelled(s),
+                 Some({
+                   Typedtree.exp_desc:
+                     Texp_ident(path1, {loc: {loc_start}}, _),
+                 }),
+               )
+                 when isRecursiveFunction(path1) =>
+               GenTypeCommon.logItem(
+                 "%s termination: recursive function %s has labeled argument %s taking recursive function %s\n",
+                 loc_start |> posToString(~printCol=true, ~shortFile=true),
+                 Path.name(path),
+                 s,
+                 Path.name(path1),
+               )
+
+             | _ => ()
+             }
+           )
+
+      | _ => ()
       };
-      e;
-    | Texp_apply({exp_desc: Texp_ident(path, _, _)}, args) =>
-      args
-      |> List.iter(((_, argOpt)) =>
-           switch (argOpt) {
-           | Some(arg) => self.expr(self, arg) |> ignore
-           | None => ()
-           }
-         );
-      e;
-
-    | _ => super.expr(self, e)
+      super.expr(self, e);
     };
 
-  Tast_mapper.{...super, expr};
+    Tast_mapper.{...super, expr};
+  };
+
+  let check = (expression: Typedtree.expression, ~isRecursiveFunction) => {
+    let traverseExpr = traverseExpr(~isRecursiveFunction);
+    expression |> traverseExpr.expr(traverseExpr) |> ignore;
+  };
 };
 
-let checkExpressionWellFormed =
-    (expression: Typedtree.expression, ~isRecursiveFunction) => {
-  let traverseExpr = traverseExpr(~isRecursiveFunction);
-  expression |> traverseExpr.expr(traverseExpr) |> ignore;
+module ExpressionWellFormed = {
+  let traverseExpr = (~isRecursiveFunction) => {
+    let super = Tast_mapper.default;
+
+    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
+      switch (e.exp_desc) {
+      | Texp_ident(path, {loc: {loc_start}}, _) =>
+        if (isRecursiveFunction(path)) {
+          GenTypeCommon.logItem(
+            "%s termination error: recursive function %s can only be called directly\n",
+            loc_start |> posToString(~printCol=true, ~shortFile=true),
+            Path.name(path),
+          );
+        };
+        e;
+      | Texp_apply({exp_desc: Texp_ident(path, _, _)}, args) =>
+        args
+        |> List.iter(((_, argOpt)) =>
+             switch (argOpt) {
+             | Some(arg) => self.expr(self, arg) |> ignore
+             | None => ()
+             }
+           );
+        e;
+
+      | _ => super.expr(self, e)
+      };
+
+    Tast_mapper.{...super, expr};
+  };
+
+  let check = (expression: Typedtree.expression, ~isRecursiveFunction) => {
+    let traverseExpr = traverseExpr(~isRecursiveFunction);
+    expression |> traverseExpr.expr(traverseExpr) |> ignore;
+  };
 };
 
 let traverseAst = {
@@ -66,7 +113,9 @@ let traverseAst = {
            if (recFlag == Asttypes.Recursive
                && currentModuleName^ == "TestCyberTruck") {
              valueBinding.vb_expr
-             |> checkExpressionWellFormed(~isRecursiveFunction);
+             |> ExpressionWellFormed.check(~isRecursiveFunction);
+             valueBinding.vb_expr
+             |> NamedArgumentWithRecursiveFunction.check(~isRecursiveFunction);
            }
          | _ => ()
          };

@@ -772,13 +772,22 @@
   addValueReference TestCyberTruck.re:1:8 --> TestCyberTruck.re:5:4
   addValueReference TestCyberTruck.re:5:4 --> TestCyberTruck.re:5:10
   addValueReference TestCyberTruck.re:5:4 --> TestCyberTruck.re:1:8
-  addValueReference TestCyberTruck.re:9:4 --> TestCyberTruck.re:7:4
-  addValueReference TestCyberTruck.re:9:4 --> pervasives.mli:264:0
+  addValueReference TestCyberTruck.re:5:4 --> TestCyberTruck.re:5:10
+  addValueReference TestCyberTruck.re:5:4 --> TestCyberTruck.re:1:8
+  addValueReference TestCyberTruck.re:5:4 --> TestCyberTruck.re:9:4
+  addValueReference TestCyberTruck.re:5:4 --> pervasives.mli:226:0
+  addValueReference TestCyberTruck.re:9:4 --> TestCyberTruck.re:9:25
+  addValueReference TestCyberTruck.re:9:4 --> TestCyberTruck.re:9:29
+  addValueReference TestCyberTruck.re:13:4 --> TestCyberTruck.re:11:4
+  addValueReference TestCyberTruck.re:13:4 --> pervasives.mli:264:0
   export fox TestCyberTruck.re:1:8
   export box TestCyberTruck.re:5:4
-  export a TestCyberTruck.re:7:4
-  export b TestCyberTruck.re:9:4
-  XXX error: recursive function fox can only be called directly
+  export takeParseFunction TestCyberTruck.re:9:4
+  export a TestCyberTruck.re:11:4
+  export b TestCyberTruck.re:13:4
+  TestCyberTruck.re:2:14 termination error: recursive function fox can only be called directly
+  TestCyberTruck.re:6:40 termination error: recursive function fox can only be called directly
+  TestCyberTruck.re:6:40 termination: recursive function takeParseFunction has labeled argument parseFunction taking recursive function fox
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] export id TypeParams2.re:2:13
   export exportSomething TypeParams2.re:10:4
@@ -1573,6 +1582,7 @@ File References
   References.R.set: 1 references (References.re:37:4)
   References.R.make: 1 references (References.re:34:4)
   References.R.get: 1 references (References.re:31:4)
+  TestCyberTruck.takeParseFunction: 1 references (TestCyberTruck.re:5:4)
   TestCyberTruck.box: 1 references (TestCyberTruck.re:1:8)
   TestCyberTruck.fox: 2 references (TestCyberTruck.re:2:6, TestCyberTruck.re:5:4)
   ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4)
@@ -1788,11 +1798,11 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:11: testBeltArraySet
 <-- line 11
 [@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:7: a
-<-- line 7
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:11: a
+<-- line 11
 [@dead "a"] let a = 3;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:9: b
-<-- line 9
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:13: b
+<-- line 13
 [@dead "b"] let b = a + 1;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:8: Universe.notExported
 <-- line 8
