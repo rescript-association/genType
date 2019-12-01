@@ -785,9 +785,8 @@
   export takeParseFunction TestCyberTruck.re:9:4
   export a TestCyberTruck.re:11:4
   export b TestCyberTruck.re:13:4
+  TestCyberTruck.re:6:40 termination: recursive function takeParseFunction has named argument parseFunction taking recursive function fox
   TestCyberTruck.re:2:14 termination error: recursive function fox can only be called directly
-  TestCyberTruck.re:6:40 termination error: recursive function fox can only be called directly
-  TestCyberTruck.re:6:40 termination: recursive function takeParseFunction has labeled argument parseFunction taking recursive function fox
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] export id TypeParams2.re:2:13
   export exportSomething TypeParams2.re:10:4
