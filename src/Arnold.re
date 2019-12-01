@@ -139,7 +139,7 @@ module ExpressionWellFormed = {
       | Texp_ident(path, {loc: {loc_start}}, _) =>
         if (path |> FunctionTable.isRecursiveFunction(~functionTable)) {
           GenTypeCommon.logItem(
-            "%s termination error: recursive function %s can only be called directly\n",
+            "%s termination error: checked recursive function \"%s\" can only be called directly, or passed as labeled argument to another checked recursive function.\n",
             loc_start |> posToString(~printCol=true, ~shortFile=true),
             Path.name(path),
           );
@@ -200,11 +200,8 @@ let traverseAst = {
       |> List.iter((valueBinding: Typedtree.value_binding) => {
            switch (valueBinding.vb_pat.pat_desc) {
            | Tpat_var(id, _) =>
-             if (recFlag == Asttypes.Recursive
-                 && currentModuleName^ == "TestCyberTruck") {
-               valueBinding.vb_expr
-               |> NamedArgumentWithRecursiveFunction.check(~functionTable);
-             }
+             valueBinding.vb_expr
+             |> NamedArgumentWithRecursiveFunction.check(~functionTable)
            | _ => ()
            }
          });
@@ -213,11 +210,8 @@ let traverseAst = {
       |> List.iter((valueBinding: Typedtree.value_binding) => {
            switch (valueBinding.vb_pat.pat_desc) {
            | Tpat_var(id, _) =>
-             if (recFlag == Asttypes.Recursive
-                 && currentModuleName^ == "TestCyberTruck") {
-               valueBinding.vb_expr
-               |> ExpressionWellFormed.check(~functionTable);
-             }
+             valueBinding.vb_expr
+             |> ExpressionWellFormed.check(~functionTable)
            | _ => ()
            }
          });
