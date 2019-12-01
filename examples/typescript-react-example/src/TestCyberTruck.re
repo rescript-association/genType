@@ -1,4 +1,7 @@
-let rec fox = x => box(x)
+let rec fox = x => {
+  let alias = fox;
+  box(x);
+}
 and box = x => fox(x);
 
 let a = 3;
