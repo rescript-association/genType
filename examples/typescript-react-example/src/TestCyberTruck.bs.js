@@ -24,15 +24,43 @@ function takeParseFunction(x, parseFunction) {
   return Curry._1(parseFunction, x);
 }
 
+var Loops = {
+  fox: fox,
+  box: box,
+  takeParseFunction: takeParseFunction
+};
+
+function fox$1(x) {
+  while(true) {
+    Caml_obj.caml_notequal(x, x);
+    fox$1(x);
+    continue ;
+  };
+}
+
+function box$1(x) {
+  fox$1(x);
+  return fox$1(x);
+}
+
+function takeParseFunction$1(x, parseFunction) {
+  return Curry._1(parseFunction, x);
+}
+
+var Terminates = {
+  fox: fox$1,
+  box: box$1,
+  takeParseFunction: takeParseFunction$1
+};
+
 var b = 4;
 
 var a = 3;
 
 export {
   progress ,
-  fox ,
-  box ,
-  takeParseFunction ,
+  Loops ,
+  Terminates ,
   a ,
   b ,
   

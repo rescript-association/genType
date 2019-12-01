@@ -320,19 +320,12 @@ module Eval = {
         ~command=Call(RecursiveFunction(recursiveFunction), pos),
       );
     | Sequence(commands) =>
-      let results =
-        commands
-        |> List.map(c =>
-             run(
-               ~cache,
-               ~callStack,
-               ~functionArgs,
-               ~functionTable,
-               ~command=c,
-             )
-           );
-      // if one makes progress, then the sequence makes progress
-      List.mem(true, results);
+      // if one command makes progress, then the sequence makes progress
+      commands
+      |> List.exists(c =>
+           run(~cache, ~callStack, ~functionArgs, ~functionTable, ~command=c)
+           == true
+         )
     | Nondet(commands) =>
       let results =
         commands
