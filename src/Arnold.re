@@ -156,7 +156,7 @@ module FunctionTable = {
       ? "" : "<" ++ (namedArguments |> String.concat(", ")) ++ ">";
 
   let dump = (tbl: t) => {
-    GenTypeCommon.logItem("  Function Table:\n");
+    GenTypeCommon.logItem("\n  Function Table:\n");
     let definitions =
       Hashtbl.fold(
         (functionName, {namedArguments, body}, definitions) =>
@@ -174,7 +174,6 @@ module FunctionTable = {
            Command.toString(body),
          )
        );
-    GenTypeCommon.logItem("\n");
   };
 
   let initialFunctionDefinition = {namedArguments: [], body: Sequence([])};

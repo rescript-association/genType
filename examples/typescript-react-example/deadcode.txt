@@ -767,84 +767,159 @@
   export convert TransitiveType1.re:2:4
   export convertAlias TransitiveType1.re:5:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestCyberTruck.cmt
-  addValueReference TestCyberTruck.re:13:8 --> TestCyberTruck.re:12:10
-  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:12:16
-  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:19:6
-  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:1:4
-  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:12:16
-  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:12:16
-  addValueReference TestCyberTruck.re:12:10 --> pervasives.mli:60:0
-  addValueReference TestCyberTruck.re:19:6 --> TestCyberTruck.re:19:12
-  addValueReference TestCyberTruck.re:19:6 --> TestCyberTruck.re:12:10
-  addValueReference TestCyberTruck.re:19:6 --> TestCyberTruck.re:22:6
-  addValueReference TestCyberTruck.re:19:6 --> pervasives.mli:226:0
-  addValueReference TestCyberTruck.re:22:6 --> TestCyberTruck.re:22:27
-  addValueReference TestCyberTruck.re:22:6 --> TestCyberTruck.re:22:31
-  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:27:17
-  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:35:6
-  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:1:4
-  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:1:4
-  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:27:17
-  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:27:17
-  addValueReference TestCyberTruck.re:27:10 --> pervasives.mli:60:0
-  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:35:13
-  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:27:10
-  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:35:13
-  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:27:10
-  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:39:6
-  addValueReference TestCyberTruck.re:35:6 --> pervasives.mli:226:0
-  addValueReference TestCyberTruck.re:39:6 --> TestCyberTruck.re:39:28
-  addValueReference TestCyberTruck.re:39:6 --> TestCyberTruck.re:39:32
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:10
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:6:8
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:50:6
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:50:6
-  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
-  addValueReference TestCyberTruck.re:42:10 --> pervasives.mli:68:0
-  addValueReference TestCyberTruck.re:55:4 --> TestCyberTruck.re:53:4
-  addValueReference TestCyberTruck.re:55:4 --> pervasives.mli:264:0
-  export progress TestCyberTruck.re:1:4
-  export progress2 TestCyberTruck.re:2:4
-  export f TestCyberTruck.re:6:8
-  export fox TestCyberTruck.re:12:10
-  export box TestCyberTruck.re:19:6
-  export takeParseFunction TestCyberTruck.re:22:6
-  export fox2 TestCyberTruck.re:27:10
-  export box2 TestCyberTruck.re:35:6
-  export takeParseFunction2 TestCyberTruck.re:39:6
-  export testCacheHit TestCyberTruck.re:42:10
-  export doNothing TestCyberTruck.re:50:6
-  export a TestCyberTruck.re:53:4
-  export b TestCyberTruck.re:55:4
-  TestCyberTruck.re:20:42 termination analysis: "takeParseFunction" is parametric ~parseFunction=fox
-  TestCyberTruck.re:13:16 termination error: "fox" can only be called directly, or passed as labeled argument.
-    Function Table:
-    box: takeParseFunction<parseFunction:fox>
-    fox: ( +progress | _ ); box
-    takeParseFunction<parseFunction>: parseFunction
+  addValueReference TestCyberTruck.re:3:6 --> random.mli:40:0
+  addValueReference TestCyberTruck.re:3:6 --> pervasives.mli:1179:0
+  addValueReference TestCyberTruck.re:2:4 --> TestCyberTruck.re:3:6
+  addValueReference TestCyberTruck.re:2:4 --> TestCyberTruck.re:3:6
+  addValueReference TestCyberTruck.re:2:4 --> pervasives.mli:1182:0
+  addValueReference TestCyberTruck.re:2:4 --> pervasives.mli:268:0
+  addValueReference TestCyberTruck.re:2:4 --> pervasives.mli:1187:0
+  addValueReference TestCyberTruck.re:2:4 --> TestCyberTruck.re:3:6
+  addValueReference TestCyberTruck.re:2:4 --> pervasives.mli:1182:0
+  addValueReference TestCyberTruck.re:2:4 --> pervasives.mli:64:0
+  addValueReference TestCyberTruck.re:13:4 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:18:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:27:8 --> TestCyberTruck.re:27:8
+  addValueReference TestCyberTruck.re:30:8 --> TestCyberTruck.re:30:8
+  addValueReference TestCyberTruck.re:30:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:37:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:37:8 --> TestCyberTruck.re:37:8
+  addValueReference TestCyberTruck.re:45:6 --> TestCyberTruck.re:43:8
+  addValueReference TestCyberTruck.re:43:8 --> TestCyberTruck.re:45:6
+  addValueReference TestCyberTruck.re:51:8 --> TestCyberTruck.re:51:33
+  addValueReference TestCyberTruck.re:51:8 --> TestCyberTruck.re:51:8
+  addValueReference TestCyberTruck.re:51:8 --> TestCyberTruck.re:13:4
+  addValueReference TestCyberTruck.re:51:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:51:8 --> TestCyberTruck.re:51:33
+  addValueReference TestCyberTruck.re:51:8 --> pervasives.mli:68:0
+  addValueReference TestCyberTruck.re:62:8 --> TestCyberTruck.re:62:30
+  addValueReference TestCyberTruck.re:62:8 --> TestCyberTruck.re:62:8
+  addValueReference TestCyberTruck.re:62:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:62:8 --> TestCyberTruck.re:62:30
+  addValueReference TestCyberTruck.re:62:8 --> pervasives.mli:68:0
+  addValueReference TestCyberTruck.re:71:8 --> TestCyberTruck.re:71:33
+  addValueReference TestCyberTruck.re:71:8 --> TestCyberTruck.re:77:4
+  addValueReference TestCyberTruck.re:71:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:71:8 --> TestCyberTruck.re:71:33
+  addValueReference TestCyberTruck.re:71:8 --> pervasives.mli:68:0
+  addValueReference TestCyberTruck.re:77:4 --> TestCyberTruck.re:77:30
+  addValueReference TestCyberTruck.re:77:4 --> TestCyberTruck.re:71:8
+  addValueReference TestCyberTruck.re:77:4 --> TestCyberTruck.re:80:4
+  addValueReference TestCyberTruck.re:77:4 --> pervasives.mli:226:0
+  addValueReference TestCyberTruck.re:80:4 --> TestCyberTruck.re:80:25
+  addValueReference TestCyberTruck.re:80:4 --> TestCyberTruck.re:80:29
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:83:23
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:83:8
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:18:8
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:83:23
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:91:4
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:83:23
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:91:4
+  addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:83:23
+  addValueReference TestCyberTruck.re:83:8 --> pervasives.mli:68:0
+  addValueReference TestCyberTruck.re:95:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:95:8 --> TestCyberTruck.re:95:36
+  addValueReference TestCyberTruck.re:95:8 --> TestCyberTruck.re:95:8
+  addValueReference TestCyberTruck.re:95:8 --> TestCyberTruck.re:96:6
+  addValueReference TestCyberTruck.re:102:8 --> TestCyberTruck.re:102:36
+  addValueReference TestCyberTruck.re:102:8 --> TestCyberTruck.re:102:8
+  addValueReference TestCyberTruck.re:102:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:102:8 --> TestCyberTruck.re:103:6
+  addValueReference TestCyberTruck.re:109:8 --> TestCyberTruck.re:109:44
+  addValueReference TestCyberTruck.re:109:8 --> TestCyberTruck.re:109:8
+  addValueReference TestCyberTruck.re:109:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:109:8 --> TestCyberTruck.re:110:6
+  addValueReference TestCyberTruck.re:117:8 --> TestCyberTruck.re:117:45
+  addValueReference TestCyberTruck.re:117:8 --> TestCyberTruck.re:117:8
+  addValueReference TestCyberTruck.re:117:8 --> TestCyberTruck.re:2:4
+  addValueReference TestCyberTruck.re:117:8 --> TestCyberTruck.re:118:6
+  export progress TestCyberTruck.re:2:4
+  export progress2 TestCyberTruck.re:13:4
+  export f TestCyberTruck.re:18:8
+  export justReturn TestCyberTruck.re:24:8
+  export alwaysLoop TestCyberTruck.re:27:8
+  export alwaysProgress TestCyberTruck.re:30:8
+  export alwaysProgressWrongOrder TestCyberTruck.re:37:8
+  export doNotAlias TestCyberTruck.re:43:8
+  export progressOnBothBranches TestCyberTruck.re:51:8
+  export progressOnOneBranch TestCyberTruck.re:62:8
+  export testParametricFunction TestCyberTruck.re:71:8
+  export testParametricFunction2 TestCyberTruck.re:77:4
+  export callParseFunction TestCyberTruck.re:80:4
+  export testCacheHit TestCyberTruck.re:83:8
+  export doNothing TestCyberTruck.re:91:4
+  export evalOrderIsNotLeftToRight TestCyberTruck.re:95:8
+  export evalOrderIsNotRightToLeft TestCyberTruck.re:102:8
+  export butFirstArgumentIsAlwaysEvaluated TestCyberTruck.re:109:8
+  export butSecondArgumentIsAlwaysEvaluated TestCyberTruck.re:117:8
   
-  TestCyberTruck.re:22:49 termination error: possilbe infinite loop when calling "parseFunction" which is "fox"
+  Function Table:
+    justReturn: _
+  
+  Function Table:
+    alwaysLoop: alwaysLoop
+  TestCyberTruck.re:27:27 termination error: possilbe infinite loop when calling "alwaysLoop"
     CallStack:
-    3 at takeParseFunction<parseFunction:fox> (TestCyberTruck.re:20:9)
-    2 at box (TestCyberTruck.re:17:4)
-    1 at fox (TestCyberTruck.re:12:16)
-  TestCyberTruck.re:36:43 termination analysis: "takeParseFunction2" is parametric ~parseFunction=fox2
-    Function Table:
-    box2: takeParseFunction2<parseFunction:fox2>; fox2
-    fox2: ( +progress | +progress ); box2
-    takeParseFunction2<parseFunction>: parseFunction
+    1 at alwaysLoop (TestCyberTruck.re:27:21)
   
-    Function Table:
+  Function Table:
+    alwaysProgress: +progress; alwaysProgress
+  
+  Function Table:
+    alwaysProgressWrongOrder: alwaysProgressWrongOrder; +progress
+  TestCyberTruck.re:38:2 termination error: possilbe infinite loop when calling "alwaysProgressWrongOrder"
+    CallStack:
+    1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
+  TestCyberTruck.re:45:14 termination error: "doNotAlias" can only be called directly, or passed as labeled argument.
+  
+  Function Table:
+    doNotAlias: _
+  
+  Function Table:
+    progressOnBothBranches: ( +progress | +progress2 ); progressOnBothBranches
+  
+  Function Table:
+    progressOnOneBranch: ( +progress | _ ); progressOnOneBranch
+  TestCyberTruck.re:66:2 termination error: possilbe infinite loop when calling "progressOnOneBranch"
+    CallStack:
+    1 at progressOnOneBranch (TestCyberTruck.re:62:30)
+  TestCyberTruck.re:78:40 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
+  
+  Function Table:
+    callParseFunction<parseFunction>: parseFunction
+    testParametricFunction: ( +progress | _ ); testParametricFunction2
+    testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
+  TestCyberTruck.re:80:47 termination error: possilbe infinite loop when calling "parseFunction" which is "testParametricFunction"
+    CallStack:
+    3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:78:7)
+    2 at testParametricFunction2 (TestCyberTruck.re:75:2)
+    1 at testParametricFunction (TestCyberTruck.re:71:33)
+  
+  Function Table:
     doNothing: _
     testCacheHit: ( doNothing; doNothing; +Progress.Nested.f | _ ); testCacheHit
-  
-  TestCyberTruck.re:45:6 termination analysis: cache hit for doNothing
-  TestCyberTruck.re:48:4 termination error: possilbe infinite loop when calling "testCacheHit"
+  TestCyberTruck.re:86:4 termination analysis: cache hit for doNothing
+  TestCyberTruck.re:89:2 termination error: possilbe infinite loop when calling "testCacheHit"
     CallStack:
-    1 at testCacheHit (TestCyberTruck.re:42:25)
+    1 at testCacheHit (TestCyberTruck.re:83:23)
+  
+  Function Table:
+    evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight, _}
+  TestCyberTruck.re:97:30 termination error: possilbe infinite loop when calling "evalOrderIsNotLeftToRight"
+    CallStack:
+    1 at evalOrderIsNotLeftToRight (TestCyberTruck.re:95:36)
+  
+  Function Table:
+    evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress, _}
+  TestCyberTruck.re:104:18 termination error: possilbe infinite loop when calling "evalOrderIsNotRightToLeft"
+    CallStack:
+    1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
+  
+  Function Table:
+    butFirstArgumentIsAlwaysEvaluated: +progress; butFirstArgumentIsAlwaysEvaluated
+  
+  Function Table:
+    butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] export id TypeParams2.re:2:13
   export exportSomething TypeParams2.re:10:4
@@ -1569,7 +1644,7 @@ File References
   Records.re -->> belt_Array.mli, belt_List.mli, belt_Option.mli, js_null_undefined.mli, js.ml, pervasives.mli
   UseImportJsValue.re -->> ImportJsValue.re, pervasives.mli
   FirstClassModulesInterface.re -->> 
-  TestCyberTruck.re -->> pervasives.mli
+  TestCyberTruck.re -->> pervasives.mli, random.mli
   ReasonComponent.re -->> ReactDOMRe.re, ReasonReact.rei, ImportMyBanner.re, js.ml, list.mli, pervasives.mli, string.mli
   DeadTest.re -->> ImmutableArray.rei, js.ml, pervasives.mli
   TestEmitInnerModules.re -->> 
@@ -1639,16 +1714,24 @@ File References
   References.R.set: 1 references (References.re:37:4)
   References.R.make: 1 references (References.re:34:4)
   References.R.get: 1 references (References.re:31:4)
-  TestCyberTruck.Terminates.doNothing: 1 references (TestCyberTruck.re:42:10)
-  TestCyberTruck.Terminates.testCacheHit: 1 references (TestCyberTruck.re:42:10)
-  TestCyberTruck.Terminates.takeParseFunction2: 1 references (TestCyberTruck.re:35:6)
-  TestCyberTruck.Terminates.box2: 1 references (TestCyberTruck.re:27:10)
-  TestCyberTruck.Terminates.fox2: 1 references (TestCyberTruck.re:35:6)
-  TestCyberTruck.Loops.takeParseFunction: 1 references (TestCyberTruck.re:19:6)
-  TestCyberTruck.Loops.box: 1 references (TestCyberTruck.re:12:10)
-  TestCyberTruck.Loops.fox: 2 references (TestCyberTruck.re:13:8, TestCyberTruck.re:19:6)
-  TestCyberTruck.Progress.Nested.f: 1 references (TestCyberTruck.re:42:10)
-  TestCyberTruck.progress: 2 references (TestCyberTruck.re:12:10, TestCyberTruck.re:27:10)
+  TestCyberTruck.butSecondArgumentIsAlwaysEvaluated: 1 references (TestCyberTruck.re:117:8)
+  TestCyberTruck.butFirstArgumentIsAlwaysEvaluated: 1 references (TestCyberTruck.re:109:8)
+  TestCyberTruck.evalOrderIsNotRightToLeft: 1 references (TestCyberTruck.re:102:8)
+  TestCyberTruck.evalOrderIsNotLeftToRight: 1 references (TestCyberTruck.re:95:8)
+  TestCyberTruck.doNothing: 1 references (TestCyberTruck.re:83:8)
+  TestCyberTruck.testCacheHit: 1 references (TestCyberTruck.re:83:8)
+  TestCyberTruck.callParseFunction: 1 references (TestCyberTruck.re:77:4)
+  TestCyberTruck.testParametricFunction2: 1 references (TestCyberTruck.re:71:8)
+  TestCyberTruck.testParametricFunction: 1 references (TestCyberTruck.re:77:4)
+  TestCyberTruck.progressOnOneBranch: 1 references (TestCyberTruck.re:62:8)
+  TestCyberTruck.progressOnBothBranches: 1 references (TestCyberTruck.re:51:8)
+  TestCyberTruck.doNotAlias: 1 references (TestCyberTruck.re:45:6)
+  TestCyberTruck.alwaysProgressWrongOrder: 1 references (TestCyberTruck.re:37:8)
+  TestCyberTruck.alwaysProgress: 1 references (TestCyberTruck.re:30:8)
+  TestCyberTruck.alwaysLoop: 1 references (TestCyberTruck.re:27:8)
+  TestCyberTruck.Progress.Nested.f: 1 references (TestCyberTruck.re:83:8)
+  TestCyberTruck.progress2: 1 references (TestCyberTruck.re:51:8)
+  TestCyberTruck.progress: 11 references (TestCyberTruck.re:13:4, TestCyberTruck.re:18:8, TestCyberTruck.re:30:8, TestCyberTruck.re:37:8, TestCyberTruck.re:51:8, TestCyberTruck.re:62:8, TestCyberTruck.re:71:8, TestCyberTruck.re:95:8, TestCyberTruck.re:102:8, TestCyberTruck.re:109:8, TestCyberTruck.re:117:8)
   ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4)
   ManyComponents.component: 1 references (ManyComponents.re:39:4)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:19:6)
@@ -1862,15 +1945,9 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:11: testBeltArraySet
 <-- line 11
 [@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:2: progress2
-<-- line 2
-[@dead "progress2"] let progress2 = () => ();
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:53: a
-<-- line 53
-[@dead "a"] let a = 3;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:55: b
-<-- line 55
-[@dead "b"] let b = a + 1;
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:24: justReturn
+<-- line 24
+[@dead "justReturn"] let rec justReturn = () => ();
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:8: Universe.notExported
 <-- line 8
 [@dead "Universe.notExported"]   let notExported = 33;

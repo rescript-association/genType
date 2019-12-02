@@ -1,55 +1,121 @@
-let progress = () => ();
-let progress2 = () => ();
-
-module Progress = {
-  module Nested = {
-    let f = () => ();
+// A progress function will eventually terminate
+let progress = {
+  let counter = ref(Random.int(100));
+  () => {
+    if (counter^ < 0) {
+      assert(false);
+    };
+    counter := counter^ - 1;
   };
 };
 
-module Loops = {
-  [@progress (progress, progress2)]
-  let rec fox = x => {
-    let alias = fox;
-    if (x != x) {
-      progress();
-    };
-    box(x);
-  }
-  and box = x => {
-    x |> takeParseFunction(~parseFunction=fox);
-  }
-  and takeParseFunction = (x, ~parseFunction) => parseFunction(x);
+// Another progress function
+let progress2 = progress;
+
+// A progress function can be taken from a module
+module Progress = {
+  module Nested = {
+    let f = progress;
+  };
 };
 
-module Terminates = {
-  [@progress progress]
-  let rec fox2 = x => {
-    if (x != x) {
-      progress();
-    } else {
-      progress();
-    };
-    box2(x);
-  }
-  and box2 = x => {
-    x |> takeParseFunction2(~parseFunction=fox2);
-    fox2(x);
-  }
-  and takeParseFunction2 = (x, ~parseFunction) => parseFunction(x);
+// Need to declare at least one progress function and one recursive definition
+[@progress progress]
+let rec justReturn = () => ();
 
-  [@progress Progress.Nested.f]
-  let rec testCacheHit = x => {
-    if (x > 0) {
-      doNothing(x);
-      doNothing(x); // this should hit the analysis cache
-      Progress.Nested.f();
-    };
-    testCacheHit(x);
-  }
-  and doNothing = _ => ();
+[@progress progress]
+let rec alwaysLoop = () => alwaysLoop(); // infinite loop
+
+[@progress progress]
+let rec alwaysProgress = () => {
+  // Terminates
+  progress();
+  alwaysProgress();
 };
 
-let a = 3;
+[@progress progress]
+let rec alwaysProgressWrongOrder = () => {
+  alwaysProgressWrongOrder();
+  progress(); // Oops: this is too late
+};
 
-let b = a + 1;
+[@progress progress]
+let rec doNotAlias = () => {
+  // Must not alias recursive functions
+  let alias = doNotAlias;
+  alias();
+};
+
+[@progress (progress, progress2)]
+// Terminates as each branch makes progress
+let rec progressOnBothBranches = x => {
+  if (x > 3) {
+    progress();
+  } else {
+    progress2();
+  };
+  progressOnBothBranches(x);
+};
+
+[@progress progress]
+// Loops as progress is only on one branch
+let rec progressOnOneBranch = x => {
+  if (x > 3) {
+    progress();
+  };
+  progressOnOneBranch(x);
+};
+
+[@progress progress]
+// callParseFunction is parametric: it takes a parse function and calls it
+let rec testParametricFunction = x => {
+  if (x > 3) {
+    progress();
+  };
+  testParametricFunction2(x);
+}
+and testParametricFunction2 = x => {
+  x |> callParseFunction(~parseFunction=testParametricFunction);
+}
+and callParseFunction = (x, ~parseFunction) => parseFunction(x); // loops
+
+[@progress Progress.Nested.f]
+let rec testCacheHit = x => {
+  if (x > 0) {
+    doNothing(x);
+    doNothing(x); // this should hit the analysis cache
+    Progress.Nested.f();
+  };
+  testCacheHit(x);
+}
+and doNothing = _ => ();
+
+[@progress progress]
+// Loops as can't rely on a specific evaluation order
+let rec evalOrderIsNotLeftToRight = x => {
+  let combineTwoUnits = ((), ()) => ();
+  combineTwoUnits(progress(), evalOrderIsNotLeftToRight(x));
+};
+
+[@progress progress]
+// Loops as can't rely on a specific evaluation order
+let rec evalOrderIsNotRightToLeft = x => {
+  let combineTwoUnits = ((), ()) => ();
+  combineTwoUnits(evalOrderIsNotRightToLeft(x), progress());
+};
+
+[@progress progress]
+// Terminates: all arguments are evaluated in some order
+let rec butFirstArgumentIsAlwaysEvaluated = x => {
+  let combineTwoUnits = ((), ()) => ();
+  combineTwoUnits(progress(), ());
+  butFirstArgumentIsAlwaysEvaluated(x);
+};
+
+[@progress progress]
+// Terminates: all arguments are evaluated in some order
+let rec butSecondArgumentIsAlwaysEvaluated = x => {
+  let combineTwoUnits = ((), ()) => ();
+  combineTwoUnits((), progress());
+  butSecondArgumentIsAlwaysEvaluated(x);
+};
