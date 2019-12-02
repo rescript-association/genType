@@ -160,8 +160,19 @@ module Parser = {
 };
 
 [@progress Parser.next]
-let rec parseListInt = p => parseList(p, ~f=parseInt)
+let rec parseListListInt = p => parseList(p, ~f=parseListInt)
 
+and parseListInt = p => parseList(p, ~f=parseInt)
+
+and parseList: 'a. (Parser.t, ~f: Parser.t => 'a) => list('a) =
+  (p: Parser.t, ~f) =>
+    if (p.token == Asterisk) {
+      [];
+    } else {
+      let item = f(p);
+      let l = parseList(p, ~f);
+      [item, ...l];
+    }
 and parseInt = (p: Parser.t) => {
   let res =
     switch (p.token) {
@@ -172,13 +183,4 @@ and parseInt = (p: Parser.t) => {
     };
   Parser.next(p);
   res;
-}
-
-and parseList = (p: Parser.t, ~f) =>
-  if (p.token == Asterisk) {
-    [];
-  } else {
-    let item = f(p);
-    let l = parseList(p, ~f);
-    [item, ...l];
-  };
+};

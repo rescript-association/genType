@@ -200,6 +200,10 @@ function parseListInt(p) {
   return parseList(p, $$parseInt);
 }
 
+function parseListListInt(p) {
+  return parseList(p, parseListInt);
+}
+
 var progress2 = progress;
 
 export {
@@ -223,9 +227,10 @@ export {
   butFirstArgumentIsAlwaysEvaluated ,
   butSecondArgumentIsAlwaysEvaluated ,
   Parser ,
+  parseListListInt ,
   parseListInt ,
-  $$parseInt ,
   parseList ,
+  $$parseInt ,
   
 }
 /* counter Not a pure module */
