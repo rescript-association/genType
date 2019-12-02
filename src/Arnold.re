@@ -4,7 +4,23 @@ type progressFunction = Path.t;
 
 type namedArgument = string;
 
-type namedArguments = list(namedArgument);
+module Kind = {
+  type t = list(namedArgument);
+
+  let empty = [];
+
+  let hasLabel = (~label, t: t) => List.mem(label, t);
+
+  let toString = kind =>
+    kind == [] ? "" : "<" ++ (kind |> String.concat(", ")) ++ ">";
+
+  let addLabel = (~label, kind) =>
+    if (!(kind |> List.mem(label))) {
+      [label, ...kind] |> List.sort(compare);
+    } else {
+      kind;
+    };
+};
 
 type functionName = string;
 
@@ -144,86 +160,71 @@ module Command = {
     };
 };
 
-type functionDefinition = {
-  namedArguments,
-  body: Command.t,
-};
-
 module FunctionTable = {
-  type t = Hashtbl.t(functionName, functionDefinition);
-  let create = (): t => Hashtbl.create(1);
+  type functionDefinition = {
+    mutable body: Command.t,
+    mutable kind: Kind.t,
+  };
 
-  let namedArgumentsToString = namedArguments =>
-    namedArguments == []
-      ? "" : "<" ++ (namedArguments |> String.concat(", ")) ++ ">";
+  type t = Hashtbl.t(functionName, functionDefinition);
+
+  let create = (): t => Hashtbl.create(1);
 
   let dump = (tbl: t) => {
     GenTypeCommon.logItem("\n  Function Table:\n");
     let definitions =
       Hashtbl.fold(
-        (functionName, {namedArguments, body}, definitions) =>
-          [(functionName, namedArguments, body), ...definitions],
+        (functionName, {kind, body}, definitions) =>
+          [(functionName, kind, body), ...definitions],
         tbl,
         [],
       )
       |> List.sort(((fn1, _, _), (fn2, _, _)) => String.compare(fn1, fn2));
     definitions
-    |> List.iter(((functionName, namedArguments, body)) =>
+    |> List.iter(((functionName, kind, body)) =>
          GenTypeCommon.logItem(
            "  %s%s: %s\n",
            functionName,
-           namedArgumentsToString(namedArguments),
+           Kind.toString(kind),
            Command.toString(body),
          )
        );
   };
 
-  let initialFunctionDefinition = {namedArguments: [], body: Sequence([])};
+  let initialFunctionDefinition = () => {
+    kind: Kind.empty,
+    body: Sequence([]),
+  };
 
   let getFunctionDefinition = (~functionName, tbl: t) =>
     try(Hashtbl.find(tbl, functionName)) {
     | Not_found => assert(false)
     };
 
-  let isInTable = (~functionTable, path) =>
+  let isFunctionInTable = (~functionTable, path) =>
     Hashtbl.mem(functionTable, Path.name(path));
 
   let addFunction = (~functionName, tbl: t) => {
     if (Hashtbl.mem(tbl, functionName)) {
       assert(false);
     };
-    Hashtbl.replace(tbl, functionName, initialFunctionDefinition);
+    Hashtbl.replace(tbl, functionName, initialFunctionDefinition());
   };
 
-  let addNamedArgument = (~functionName, ~namedArgument, tbl: t) => {
-    switch (Hashtbl.find(tbl, functionName)) {
-    | {namedArguments} as functionDefinition =>
-      if (!(namedArguments |> List.mem(namedArgument))) {
-        Hashtbl.replace(
-          tbl,
-          functionName,
-          {
-            ...functionDefinition,
-            namedArguments:
-              [namedArgument, ...namedArguments] |> List.sort(compare),
-          },
-        );
-      }
-    | exception Not_found => assert(false)
-    };
+  let addLabelToKind = (~functionName, ~label, tbl: t) => {
+    let functionDefinition = tbl |> getFunctionDefinition(~functionName);
+    functionDefinition.kind =
+      functionDefinition.kind |> Kind.addLabel(~label);
   };
 
   let addBody = (~body, ~functionName, tbl: t) => {
-    switch (Hashtbl.find(tbl, functionName)) {
-    | functionDefinition =>
-      Hashtbl.replace(tbl, functionName, {...functionDefinition, body})
-    | exception Not_found => assert(false)
-    };
+    let functionDefinition = tbl |> getFunctionDefinition(~functionName);
+    functionDefinition.body = body;
   };
 
-  let hasNamedArgument = (~functionName, ~namedArgument, tbl: t) => {
+  let functionKindHasLabel = (~functionName, ~label, tbl: t) => {
     switch (Hashtbl.find(tbl, functionName)) {
-    | {namedArguments} => namedArguments |> List.mem(namedArgument)
+    | {kind} => kind |> Kind.hasLabel(~label)
     | exception Not_found => false
     };
   };
@@ -387,12 +388,12 @@ module Eval = {
           };
           res;
         | None =>
-          let {namedArguments, body} =
+          let functionDefinition =
             functionTable
             |> FunctionTable.getFunctionDefinition(~functionName);
           callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
           let res =
-            body
+            functionDefinition.body
             |> run(
                  ~cache,
                  ~callStack,
@@ -456,31 +457,28 @@ module NamedArgumentWithRecursiveFunction = {
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
       switch (e.exp_desc) {
       | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-          when callee |> FunctionTable.isInTable(~functionTable) =>
+          when callee |> FunctionTable.isFunctionInTable(~functionTable) =>
         let functionName = Path.name(callee);
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
              switch (argLabel, argOpt) {
              | (
-                 Labelled(namedArgument),
+                 Labelled(label),
                  Some({
                    Typedtree.exp_desc:
-                     Texp_ident(labelArg, {loc: {loc_start}}, _),
+                     Texp_ident(path, {loc: {loc_start}}, _),
                  }),
                )
-                 when labelArg |> FunctionTable.isInTable(~functionTable) =>
+                 when path |> FunctionTable.isFunctionInTable(~functionTable) =>
                functionTable
-               |> FunctionTable.addNamedArgument(
-                    ~functionName,
-                    ~namedArgument,
-                  );
+               |> FunctionTable.addLabelToKind(~functionName, ~label);
                if (verbose) {
                  GenTypeCommon.logItem(
                    "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
                    loc_start |> posToString(~printCol=true, ~shortFile=true),
                    functionName,
-                   namedArgument,
-                   Path.name(labelArg),
+                   label,
+                   Path.name(path),
                  );
                };
 
@@ -509,7 +507,7 @@ module ExpressionWellFormed = {
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
       switch (e.exp_desc) {
       | Texp_ident(path, {loc: {loc_start}}, _) =>
-        if (path |> FunctionTable.isInTable(~functionTable)) {
+        if (path |> FunctionTable.isFunctionInTable(~functionTable)) {
           GenTypeCommon.logItem(
             "%s termination error: \"%s\" can only be called directly, or passed as labeled argument.\n",
             loc_start |> posToString(~printCol=true, ~shortFile=true),
@@ -522,14 +520,14 @@ module ExpressionWellFormed = {
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
              switch (argLabel, argOpt) {
              | (
-                 Labelled(namedArgument),
+                 Labelled(label),
                  Some({Typedtree.exp_desc: Texp_ident(_)}),
                )
                  when
                    functionTable
-                   |> FunctionTable.hasNamedArgument(
+                   |> FunctionTable.functionKindHasLabel(
                         ~functionName=Path.name(path),
-                        ~namedArgument,
+                        ~label,
                       ) =>
                ()
              | (_, Some(arg)) => self.expr(self, arg) |> ignore
@@ -563,9 +561,9 @@ module Compile = {
     switch (expr.exp_desc) {
     | Texp_ident(_) => Command.nothing
     | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-        when callee |> FunctionTable.isInTable(~functionTable) =>
+        when callee |> FunctionTable.isFunctionInTable(~functionTable) =>
       let functionName = Path.name(callee);
-      let {namedArguments} =
+      let functionDefinition =
         functionTable |> FunctionTable.getFunctionDefinition(~functionName);
       exception ArgError;
       let getFunctionArg = namedArgument => {
@@ -588,7 +586,7 @@ module Compile = {
             );
             raise(ArgError);
           | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
-              when path |> FunctionTable.isInTable(~functionTable) =>
+              when path |> FunctionTable.isFunctionInTable(~functionTable) =>
             let functionName = Path.name(path);
             FunctionArgs.{namedArgument, functionName};
           | _ =>
@@ -602,7 +600,7 @@ module Compile = {
         functionArg;
       };
       let functionArgsOpt =
-        try(Some(namedArguments |> List.map(getFunctionArg))) {
+        try(Some(functionDefinition.kind |> List.map(getFunctionArg))) {
         | ArgError => None
         };
       switch (functionArgsOpt) {
@@ -617,9 +615,9 @@ module Compile = {
     | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
         when
           functionTable
-          |> FunctionTable.hasNamedArgument(
+          |> FunctionTable.functionKindHasLabel(
                ~functionName=currentFunctionName,
-               ~namedArgument=Path.name(callee),
+               ~label=Path.name(callee),
              ) =>
       Command.Call(NamedArgument(Path.name(callee)), pos)
       |> evalArgs(~args, ~ctx)
@@ -797,11 +795,12 @@ let traverseAst = {
         let functionArgs = FunctionArgs.empty;
         let functionCall = FunctionCall.noArgs(functionName);
         callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
-        let {namedArguments, body} =
+        let functionDefinition =
           functionTable |> FunctionTable.getFunctionDefinition(~functionName);
-        assert(namedArguments == []);
+        assert(functionDefinition.kind == Kind.empty);
 
-        body |> Eval.run(~cache, ~callStack, ~functionArgs, ~functionTable);
+        functionDefinition.body
+        |> Eval.run(~cache, ~callStack, ~functionArgs, ~functionTable);
       };
       ignore(res);
     };
