@@ -120,7 +120,6 @@ module FunctionCall = {
 };
 
 type call =
-  | NamedArgument(namedArgument)
   | ProgressFunction(progressFunction)
   | FunctionCall(FunctionCall.t);
 
@@ -133,7 +132,6 @@ module Command = {
 
   let rec toString = command =>
     switch (command) {
-    | Call(NamedArgument(namedArgument), _pos) => namedArgument
     | Call(ProgressFunction(progressFunction), _pos) =>
       "+" ++ Path.name(progressFunction)
     | Call(FunctionCall(functionCall), _pos) =>
@@ -431,21 +429,6 @@ module Eval = {
         };
       };
     | Call(ProgressFunction(progressFunction), _pos) => true
-    | Call(NamedArgument(label), pos) =>
-      let functionCall = FunctionCall.noArgs(label);
-      let functionCallInstantiated =
-        functionCall |> FunctionCall.applySubstitution(~sub=functionArgs);
-      if (hasInfiniteLoop(
-            ~callStack,
-            ~pos,
-            ~functionCall,
-            ~functionCallInstantiated,
-          )) {
-        false; // continue as if it terminated without progress
-      } else {
-        Command.Call(FunctionCall(functionCallInstantiated), pos)
-        |> run(~cache, ~callStack, ~functionArgs, ~functionTable);
-      };
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
       commands
@@ -637,7 +620,10 @@ module Compile = {
                ~functionName=currentFunctionName,
                ~label=Path.name(callee),
              ) =>
-      Command.Call(NamedArgument(Path.name(callee)), pos)
+      Command.Call(
+        FunctionCall(Path.name(callee) |> FunctionCall.noArgs),
+        pos,
+      )
       |> evalArgs(~args, ~ctx)
 
     | Texp_apply(expr, args) =>
