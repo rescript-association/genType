@@ -6,6 +6,7 @@ type import = {
 type attributePayload =
   | BoolPayload(bool)
   | FloatPayload(string)
+  | IdentPayload(Longident.t)
   | IntPayload(string)
   | StringPayload(string)
   | TuplePayload(list(attributePayload))
@@ -62,6 +63,7 @@ let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
              [],
            );
       Some(TuplePayload(payloads));
+    | {pexp_desc: Pexp_ident({txt})} => Some(IdentPayload(txt))
     | _ => None
     };
   switch (attributes) {

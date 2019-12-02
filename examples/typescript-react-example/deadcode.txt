@@ -767,88 +767,84 @@
   export convert TransitiveType1.re:2:4
   export convertAlias TransitiveType1.re:5:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestCyberTruck.cmt
-  addValueReference TestCyberTruck.re:5:8 --> TestCyberTruck.re:4:10
-  addValueReference TestCyberTruck.re:4:10 --> TestCyberTruck.re:4:16
-  addValueReference TestCyberTruck.re:4:10 --> TestCyberTruck.re:11:6
-  addValueReference TestCyberTruck.re:4:10 --> TestCyberTruck.re:1:4
-  addValueReference TestCyberTruck.re:4:10 --> TestCyberTruck.re:4:16
-  addValueReference TestCyberTruck.re:4:10 --> TestCyberTruck.re:4:16
-  addValueReference TestCyberTruck.re:4:10 --> pervasives.mli:60:0
-  addValueReference TestCyberTruck.re:11:6 --> TestCyberTruck.re:11:12
-  addValueReference TestCyberTruck.re:11:6 --> TestCyberTruck.re:4:10
-  addValueReference TestCyberTruck.re:11:6 --> TestCyberTruck.re:14:6
-  addValueReference TestCyberTruck.re:11:6 --> pervasives.mli:226:0
-  addValueReference TestCyberTruck.re:14:6 --> TestCyberTruck.re:14:27
-  addValueReference TestCyberTruck.re:14:6 --> TestCyberTruck.re:14:31
-  addValueReference TestCyberTruck.re:18:10 --> TestCyberTruck.re:18:17
-  addValueReference TestCyberTruck.re:18:10 --> TestCyberTruck.re:26:6
-  addValueReference TestCyberTruck.re:18:10 --> TestCyberTruck.re:1:4
-  addValueReference TestCyberTruck.re:18:10 --> TestCyberTruck.re:1:4
-  addValueReference TestCyberTruck.re:18:10 --> TestCyberTruck.re:18:17
-  addValueReference TestCyberTruck.re:18:10 --> TestCyberTruck.re:18:17
-  addValueReference TestCyberTruck.re:18:10 --> pervasives.mli:60:0
-  addValueReference TestCyberTruck.re:26:6 --> TestCyberTruck.re:26:13
-  addValueReference TestCyberTruck.re:26:6 --> TestCyberTruck.re:18:10
-  addValueReference TestCyberTruck.re:26:6 --> TestCyberTruck.re:26:13
-  addValueReference TestCyberTruck.re:26:6 --> TestCyberTruck.re:18:10
-  addValueReference TestCyberTruck.re:26:6 --> TestCyberTruck.re:30:6
-  addValueReference TestCyberTruck.re:26:6 --> pervasives.mli:226:0
-  addValueReference TestCyberTruck.re:30:6 --> TestCyberTruck.re:30:28
-  addValueReference TestCyberTruck.re:30:6 --> TestCyberTruck.re:30:32
-  addValueReference TestCyberTruck.re:34:10 --> TestCyberTruck.re:34:15
-  addValueReference TestCyberTruck.re:34:10 --> TestCyberTruck.re:42:6
-  addValueReference TestCyberTruck.re:34:10 --> TestCyberTruck.re:34:15
-  addValueReference TestCyberTruck.re:34:10 --> TestCyberTruck.re:43:6
-  addValueReference TestCyberTruck.re:34:10 --> TestCyberTruck.re:34:15
-  addValueReference TestCyberTruck.re:34:10 --> TestCyberTruck.re:43:6
-  addValueReference TestCyberTruck.re:34:10 --> TestCyberTruck.re:34:15
-  addValueReference TestCyberTruck.re:34:10 --> pervasives.mli:68:0
-  addValueReference TestCyberTruck.re:42:6 --> TestCyberTruck.re:42:11
-  addValueReference TestCyberTruck.re:42:6 --> TestCyberTruck.re:34:10
-  addValueReference TestCyberTruck.re:43:6 --> TestCyberTruck.re:32:6
-  addValueReference TestCyberTruck.re:48:4 --> TestCyberTruck.re:46:4
-  addValueReference TestCyberTruck.re:48:4 --> pervasives.mli:264:0
+  addValueReference TestCyberTruck.re:13:8 --> TestCyberTruck.re:12:10
+  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:12:16
+  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:19:6
+  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:1:4
+  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:12:16
+  addValueReference TestCyberTruck.re:12:10 --> TestCyberTruck.re:12:16
+  addValueReference TestCyberTruck.re:12:10 --> pervasives.mli:60:0
+  addValueReference TestCyberTruck.re:19:6 --> TestCyberTruck.re:19:12
+  addValueReference TestCyberTruck.re:19:6 --> TestCyberTruck.re:12:10
+  addValueReference TestCyberTruck.re:19:6 --> TestCyberTruck.re:22:6
+  addValueReference TestCyberTruck.re:19:6 --> pervasives.mli:226:0
+  addValueReference TestCyberTruck.re:22:6 --> TestCyberTruck.re:22:27
+  addValueReference TestCyberTruck.re:22:6 --> TestCyberTruck.re:22:31
+  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:27:17
+  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:35:6
+  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:1:4
+  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:1:4
+  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:27:17
+  addValueReference TestCyberTruck.re:27:10 --> TestCyberTruck.re:27:17
+  addValueReference TestCyberTruck.re:27:10 --> pervasives.mli:60:0
+  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:35:13
+  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:27:10
+  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:35:13
+  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:27:10
+  addValueReference TestCyberTruck.re:35:6 --> TestCyberTruck.re:39:6
+  addValueReference TestCyberTruck.re:35:6 --> pervasives.mli:226:0
+  addValueReference TestCyberTruck.re:39:6 --> TestCyberTruck.re:39:28
+  addValueReference TestCyberTruck.re:39:6 --> TestCyberTruck.re:39:32
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:10
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:6:8
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:50:6
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:50:6
+  addValueReference TestCyberTruck.re:42:10 --> TestCyberTruck.re:42:25
+  addValueReference TestCyberTruck.re:42:10 --> pervasives.mli:68:0
+  addValueReference TestCyberTruck.re:55:4 --> TestCyberTruck.re:53:4
+  addValueReference TestCyberTruck.re:55:4 --> pervasives.mli:264:0
   export progress TestCyberTruck.re:1:4
-  export fox TestCyberTruck.re:4:10
-  export box TestCyberTruck.re:11:6
-  export takeParseFunction TestCyberTruck.re:14:6
-  export fox2 TestCyberTruck.re:18:10
-  export box2 TestCyberTruck.re:26:6
-  export takeParseFunction2 TestCyberTruck.re:30:6
-  export u TestCyberTruck.re:32:6
-  export aa TestCyberTruck.re:34:10
-  export bb TestCyberTruck.re:42:6
-  export cc TestCyberTruck.re:43:6
-  export a TestCyberTruck.re:46:4
-  export b TestCyberTruck.re:48:4
-  TestCyberTruck.re:12:42 termination analysis: "takeParseFunction" is parametric ~parseFunction=fox
-  TestCyberTruck.re:5:16 termination error: "fox" can only be called directly, or passed as labeled argument.
-  Function Table:
+  export progress2 TestCyberTruck.re:2:4
+  export f TestCyberTruck.re:6:8
+  export fox TestCyberTruck.re:12:10
+  export box TestCyberTruck.re:19:6
+  export takeParseFunction TestCyberTruck.re:22:6
+  export fox2 TestCyberTruck.re:27:10
+  export box2 TestCyberTruck.re:35:6
+  export takeParseFunction2 TestCyberTruck.re:39:6
+  export testCacheHit TestCyberTruck.re:42:10
+  export doNothing TestCyberTruck.re:50:6
+  export a TestCyberTruck.re:53:4
+  export b TestCyberTruck.re:55:4
+  TestCyberTruck.re:20:42 termination analysis: "takeParseFunction" is parametric ~parseFunction=fox
+  TestCyberTruck.re:13:16 termination error: "fox" can only be called directly, or passed as labeled argument.
+    Function Table:
     box: takeParseFunction<parseFunction:fox>
     fox: ( +progress | _ ); box
     takeParseFunction<parseFunction>: parseFunction
-  TestCyberTruck.re:14:49 termination error: possilbe infinite loop when calling "parseFunction" which is "fox"
-  CallStack:
-    3 at takeParseFunction<parseFunction:fox> (TestCyberTruck.re:12:9)
-    2 at box (TestCyberTruck.re:9:4)
-    1 at fox (TestCyberTruck.re:4:16)
-  termination analysis: Eval from fox returned false
-  TestCyberTruck.re:27:43 termination analysis: "takeParseFunction2" is parametric ~parseFunction=fox2
-  Function Table:
+  
+  TestCyberTruck.re:22:49 termination error: possilbe infinite loop when calling "parseFunction" which is "fox"
+    CallStack:
+    3 at takeParseFunction<parseFunction:fox> (TestCyberTruck.re:20:9)
+    2 at box (TestCyberTruck.re:17:4)
+    1 at fox (TestCyberTruck.re:12:16)
+  TestCyberTruck.re:36:43 termination analysis: "takeParseFunction2" is parametric ~parseFunction=fox2
+    Function Table:
     box2: takeParseFunction2<parseFunction:fox2>; fox2
     fox2: ( +progress | +progress ); box2
     takeParseFunction2<parseFunction>: parseFunction
-  termination analysis: Eval from fox2 returned true
-  Function Table:
-    aa: ( cc | cc ); bb
-    bb: aa
-    cc: _
-  termination analysis: cache hit for cc
-  TestCyberTruck.re:42:16 termination error: possilbe infinite loop when calling "aa"
-  CallStack:
-    2 at bb (TestCyberTruck.re:40:4)
-    1 at aa (TestCyberTruck.re:34:15)
-  termination analysis: Eval from aa returned false
+  
+    Function Table:
+    doNothing: _
+    testCacheHit: ( doNothing; doNothing; +Progress.Nested.f | _ ); testCacheHit
+  
+  TestCyberTruck.re:45:6 termination analysis: cache hit for doNothing
+  TestCyberTruck.re:48:4 termination error: possilbe infinite loop when calling "testCacheHit"
+    CallStack:
+    1 at testCacheHit (TestCyberTruck.re:42:25)
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] export id TypeParams2.re:2:13
   export exportSomething TypeParams2.re:10:4
@@ -1643,17 +1639,16 @@ File References
   References.R.set: 1 references (References.re:37:4)
   References.R.make: 1 references (References.re:34:4)
   References.R.get: 1 references (References.re:31:4)
-  TestCyberTruck.Terminates.cc: 1 references (TestCyberTruck.re:34:10)
-  TestCyberTruck.Terminates.bb: 1 references (TestCyberTruck.re:34:10)
-  TestCyberTruck.Terminates.aa: 1 references (TestCyberTruck.re:42:6)
-  TestCyberTruck.Terminates.u: 1 references (TestCyberTruck.re:43:6)
-  TestCyberTruck.Terminates.takeParseFunction2: 1 references (TestCyberTruck.re:26:6)
-  TestCyberTruck.Terminates.box2: 1 references (TestCyberTruck.re:18:10)
-  TestCyberTruck.Terminates.fox2: 1 references (TestCyberTruck.re:26:6)
-  TestCyberTruck.Loops.takeParseFunction: 1 references (TestCyberTruck.re:11:6)
-  TestCyberTruck.Loops.box: 1 references (TestCyberTruck.re:4:10)
-  TestCyberTruck.Loops.fox: 2 references (TestCyberTruck.re:5:8, TestCyberTruck.re:11:6)
-  TestCyberTruck.progress: 2 references (TestCyberTruck.re:4:10, TestCyberTruck.re:18:10)
+  TestCyberTruck.Terminates.doNothing: 1 references (TestCyberTruck.re:42:10)
+  TestCyberTruck.Terminates.testCacheHit: 1 references (TestCyberTruck.re:42:10)
+  TestCyberTruck.Terminates.takeParseFunction2: 1 references (TestCyberTruck.re:35:6)
+  TestCyberTruck.Terminates.box2: 1 references (TestCyberTruck.re:27:10)
+  TestCyberTruck.Terminates.fox2: 1 references (TestCyberTruck.re:35:6)
+  TestCyberTruck.Loops.takeParseFunction: 1 references (TestCyberTruck.re:19:6)
+  TestCyberTruck.Loops.box: 1 references (TestCyberTruck.re:12:10)
+  TestCyberTruck.Loops.fox: 2 references (TestCyberTruck.re:13:8, TestCyberTruck.re:19:6)
+  TestCyberTruck.Progress.Nested.f: 1 references (TestCyberTruck.re:42:10)
+  TestCyberTruck.progress: 2 references (TestCyberTruck.re:12:10, TestCyberTruck.re:27:10)
   ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4)
   ManyComponents.component: 1 references (ManyComponents.re:39:4)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:19:6)
@@ -1867,11 +1862,14 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re:11: testBeltArraySet
 <-- line 11
 [@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:46: a
-<-- line 46
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:2: progress2
+<-- line 2
+[@dead "progress2"] let progress2 = () => ();
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:53: a
+<-- line 53
 [@dead "a"] let a = 3;
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:48: b
-<-- line 48
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:55: b
+<-- line 55
 [@dead "b"] let b = a + 1;
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:8: Universe.notExported
 <-- line 8

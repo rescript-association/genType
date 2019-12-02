@@ -1,6 +1,14 @@
 let progress = () => ();
+let progress2 = () => ();
+
+module Progress = {
+  module Nested = {
+    let f = () => ();
+  };
+};
 
 module Loops = {
+  [@progress (progress, progress2)]
   let rec fox = x => {
     let alias = fox;
     if (x != x) {
@@ -15,6 +23,7 @@ module Loops = {
 };
 
 module Terminates = {
+  [@progress progress]
   let rec fox2 = x => {
     if (x != x) {
       progress();
@@ -29,18 +38,16 @@ module Terminates = {
   }
   and takeParseFunction2 = (x, ~parseFunction) => parseFunction(x);
 
-  let u = ();
-
-  let rec aa = x => {
+  [@progress Progress.Nested.f]
+  let rec testCacheHit = x => {
     if (x > 0) {
-      cc(x);
-    } else {
-      cc(x);
+      doNothing(x);
+      doNothing(x); // this should hit the analysis cache
+      Progress.Nested.f();
     };
-    bb(x);
+    testCacheHit(x);
   }
-  and bb = x => aa(x)
-  and cc = _ => u;
+  and doNothing = _ => ();
 };
 
 let a = 3;

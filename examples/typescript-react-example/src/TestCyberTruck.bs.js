@@ -7,6 +7,22 @@ function progress(param) {
   return /* () */0;
 }
 
+function progress2(param) {
+  return /* () */0;
+}
+
+function f(param) {
+  return /* () */0;
+}
+
+var Nested = {
+  f: f
+};
+
+var Progress = {
+  Nested: Nested
+};
+
 function fox(x) {
   while(true) {
     Caml_obj.caml_notequal(x, x);
@@ -43,16 +59,14 @@ function takeParseFunction2(x, parseFunction) {
   return Curry._1(parseFunction, x);
 }
 
-function aa(x) {
+function testCacheHit(x) {
   while(true) {
     x > 0;
     continue ;
   };
 }
 
-var bb = aa;
-
-function cc(param) {
+function doNothing(param) {
   return /* () */0;
 }
 
@@ -60,10 +74,8 @@ var Terminates = {
   fox2: fox2,
   box2: box2,
   takeParseFunction2: takeParseFunction2,
-  u: /* () */0,
-  aa: aa,
-  bb: bb,
-  cc: cc
+  testCacheHit: testCacheHit,
+  doNothing: doNothing
 };
 
 var b = 4;
@@ -72,6 +84,8 @@ var a = 3;
 
 export {
   progress ,
+  progress2 ,
+  Progress ,
   Loops ,
   Terminates ,
   a ,

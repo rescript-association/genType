@@ -156,7 +156,7 @@ module FunctionTable = {
       ? "" : "<" ++ (namedArguments |> String.concat(", ")) ++ ">";
 
   let dump = (tbl: t) => {
-    GenTypeCommon.logItem("Function Table:\n");
+    GenTypeCommon.logItem("  Function Table:\n");
     let definitions =
       Hashtbl.fold(
         (functionName, {namedArguments, body}, definitions) =>
@@ -174,6 +174,7 @@ module FunctionTable = {
            Command.toString(body),
          )
        );
+    GenTypeCommon.logItem("\n");
   };
 
   let initialFunctionDefinition = {namedArguments: [], body: Sequence([])};
@@ -249,7 +250,7 @@ module CallStack = {
   };
 
   let dump = (t: t) => {
-    GenTypeCommon.logItem("CallStack:\n");
+    GenTypeCommon.logItem("  CallStack:\n");
     let frames =
       Hashtbl.fold(
         (recursiveFunction, (i, pos), frames) =>
@@ -380,7 +381,8 @@ module Eval = {
         | Some(res) =>
           if (verbose) {
             GenTypeCommon.logItem(
-              "termination analysis: cache hit for %s\n",
+              "%s termination analysis: cache hit for %s\n",
+              pos |> posToString(~printCol=true, ~shortFile=true),
               RecursiveFunction.toString(recursiveFunction),
             );
           };
@@ -715,13 +717,43 @@ module Compile = {
     };
 };
 
+let progressFunctionsFromAttributes = attributes => {
+  let lidToString = lid => lid |> Longident.flatten |> String.concat(".");
+  switch (attributes |> Annotation.getAttributePayload((==)("progress"))) {
+  | None => []
+  | Some(IdentPayload(lid)) => [lidToString(lid)]
+  | Some(TuplePayload(l)) =>
+    l
+    |> List.filter(
+         fun
+         | Annotation.IdentPayload(_) => true
+         | _ => false,
+       )
+    |> List.map(
+         fun
+         | Annotation.IdentPayload(lid) => lidToString(lid)
+         | _ => assert(false),
+       )
+  | _ => []
+  };
+};
+
 let traverseAst = {
   let super = Tast_mapper.default;
 
   let value_bindings = (self: Tast_mapper.mapper, (recFlag, valueBindings)) => {
-    if (recFlag == Asttypes.Recursive && currentModuleName^ == "TestCyberTruck") {
+    let progressFunctions =
+      switch (valueBindings) {
+      | _ when recFlag == Asttypes.Nonrecursive => []
+      | [(valueBinding: Typedtree.value_binding), ..._] =>
+        progressFunctionsFromAttributes(valueBinding.vb_attributes)
+      | [] => []
+      };
+
+    if (progressFunctions != []) {
       let functionTable = FunctionTable.create();
-      let isProgressFunction = path => Path.name(path) == "progress";
+      let isProgressFunction = path =>
+        List.mem(Path.name(path), progressFunctions);
 
       let recursiveDefinitions =
         List.fold_left(
@@ -792,14 +824,7 @@ let traverseAst = {
           ~command=body,
         );
       };
-
-      if (verbose) {
-        GenTypeCommon.logItem(
-          "termination analysis: Eval from %s returned %b\n",
-          firstFunctionName,
-          res,
-        );
-      };
+      ignore(res);
     };
 
     valueBindings
