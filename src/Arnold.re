@@ -26,7 +26,7 @@ type functionName = string;
 
 module FunctionArgs = {
   type arg = {
-    namedArgument: string,
+    label: string,
     functionName,
   };
 
@@ -34,8 +34,7 @@ module FunctionArgs = {
 
   let empty = [];
 
-  let argToString = ({namedArgument, functionName}) =>
-    namedArgument ++ ":" ++ functionName;
+  let argToString = ({label, functionName}) => label ++ ":" ++ functionName;
 
   let toString = functionArgs => {
     functionArgs == []
@@ -45,14 +44,14 @@ module FunctionArgs = {
         ++ ">";
   };
 
-  let find = (t: t, ~namedArgument) =>
-    switch (t |> List.find_opt(arg => arg.namedArgument == namedArgument)) {
+  let find = (t: t, ~label) =>
+    switch (t |> List.find_opt(arg => arg.label == label)) {
     | Some({functionName}) => Some(functionName)
     | None => None
     };
 
   let compareArg = (a1, a2) => {
-    let n = compare(a1.namedArgument, a2.namedArgument);
+    let n = compare(a1.label, a2.label);
     if (n != 0) {
       n;
     } else {
@@ -80,6 +79,30 @@ module FunctionCall = {
     functionName,
     functionArgs: FunctionArgs.t,
   };
+
+  let substituteName = (~sub, name) => {
+    switch (sub |> FunctionArgs.find(~label=name)) {
+    | Some(functionName) => functionName
+    | None => name
+    };
+  };
+
+  let applySubstitution = (~sub: FunctionArgs.t, t: t) =>
+    if (sub == []) {
+      t;
+    } else {
+      {
+        functionName: t.functionName |> substituteName(~sub),
+        functionArgs:
+          t.functionArgs
+          |> List.map((arg: FunctionArgs.arg) =>
+               {
+                 ...arg,
+                 functionName: arg.functionName |> substituteName(~sub),
+               }
+             ),
+      };
+    };
 
   let noArgs = functionName => {functionName, functionArgs: []};
 
@@ -238,8 +261,8 @@ module CallStack = {
 
   let create = () => {tbl: Hashtbl.create(1), size: 0};
 
-  let hasFunctionCall = (~functionCall, t: t) =>
-    Hashtbl.mem(t.tbl, functionCall);
+  let hasFunctionCall = (~functionCallInstantiated, t: t) =>
+    Hashtbl.mem(t.tbl, functionCallInstantiated);
 
   let addFunctionCall = (~functionCall, ~pos, t: t) => {
     t.size = t.size + 1;
@@ -334,18 +357,17 @@ module Eval = {
     );
   };
 
-  let hasInfiniteLoop = (~namedArgument, ~callStack, ~functionCall, ~pos) =>
-    if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
+  let hasInfiniteLoop =
+      (~callStack, ~functionCall, ~functionCallInstantiated, ~pos) =>
+    if (callStack |> CallStack.hasFunctionCall(~functionCallInstantiated)) {
       let explainCall =
-        switch (namedArgument) {
-        | None => "\"" ++ (functionCall |> FunctionCall.toString) ++ "\""
-        | Some(arg) =>
-          "\""
-          ++ arg
-          ++ "\" which is \""
-          ++ (functionCall |> FunctionCall.toString)
-          ++ "\""
-        };
+        functionCall == functionCallInstantiated
+          ? "\"" ++ (functionCall |> FunctionCall.toString) ++ "\""
+          : "\""
+            ++ (functionCall |> FunctionCall.toString)
+            ++ "\" which is \""
+            ++ (functionCallInstantiated |> FunctionCall.toString)
+            ++ "\"";
       GenTypeCommon.logItem(
         "%s termination error: possilbe infinite loop when calling %s\n",
         pos |> posToString(~printCol=true, ~shortFile=true),
@@ -369,10 +391,12 @@ module Eval = {
           ) =>
     switch (command) {
     | Call(FunctionCall({functionName} as functionCall), pos) =>
+      let functionCallInstantiated =
+        functionCall |> FunctionCall.applySubstitution(~sub=functionArgs);
       if (hasInfiniteLoop(
             ~callStack,
             ~functionCall,
-            ~namedArgument=None,
+            ~functionCallInstantiated,
             ~pos,
           )) {
         false; // continue as if it terminated without progress
@@ -405,24 +429,21 @@ module Eval = {
           callStack |> CallStack.removeFunctionCall(~functionCall);
           res;
         };
-      }
+      };
     | Call(ProgressFunction(progressFunction), _pos) => true
-    | Call(NamedArgument(namedArgument), pos) =>
-      let functionName =
-        switch (functionArgs |> FunctionArgs.find(~namedArgument)) {
-        | Some(functionName) => functionName
-        | None => assert(false)
-        };
-      let functionCall = FunctionCall.noArgs(functionName);
+    | Call(NamedArgument(label), pos) =>
+      let functionCall = FunctionCall.noArgs(label);
+      let functionCallInstantiated =
+        functionCall |> FunctionCall.applySubstitution(~sub=functionArgs);
       if (hasInfiniteLoop(
-            ~namedArgument=Some(namedArgument),
             ~callStack,
             ~pos,
             ~functionCall,
+            ~functionCallInstantiated,
           )) {
         false; // continue as if it terminated without progress
       } else {
-        Command.Call(FunctionCall(functionCall), pos)
+        Command.Call(FunctionCall(functionCallInstantiated), pos)
         |> run(~cache, ~callStack, ~functionArgs, ~functionTable);
       };
     | Sequence(commands) =>
@@ -519,10 +540,7 @@ module ExpressionWellFormed = {
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
              switch (argLabel, argOpt) {
-             | (
-                 Labelled(label),
-                 Some({Typedtree.exp_desc: Texp_ident(_)}),
-               )
+             | (Labelled(label), Some({Typedtree.exp_desc: Texp_ident(_)}))
                  when
                    functionTable
                    |> FunctionTable.functionKindHasLabel(
@@ -566,12 +584,12 @@ module Compile = {
       let functionDefinition =
         functionTable |> FunctionTable.getFunctionDefinition(~functionName);
       exception ArgError;
-      let getFunctionArg = namedArgument => {
+      let getFunctionArg = label => {
         let argOpt =
           args
           |> List.find_opt(arg =>
                switch (arg) {
-               | (Asttypes.Labelled(s), Some(e)) => s == namedArgument
+               | (Asttypes.Labelled(s), Some(e)) => s == label
                | _ => false
                }
              );
@@ -582,18 +600,18 @@ module Compile = {
             GenTypeCommon.logItem(
               "%s termination error: call must have named argument \"%s\"\n",
               posString,
-              namedArgument,
+              label,
             );
             raise(ArgError);
           | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
               when path |> FunctionTable.isFunctionInTable(~functionTable) =>
             let functionName = Path.name(path);
-            FunctionArgs.{namedArgument, functionName};
+            {FunctionArgs.label, functionName};
           | _ =>
             GenTypeCommon.logItem(
               "%s termination error: named argument \"%s\" must be passed a recursive function\n",
               posString,
-              namedArgument,
+              label,
             );
             raise(ArgError);
           };
