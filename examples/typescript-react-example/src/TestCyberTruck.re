@@ -75,7 +75,7 @@ let rec testParametricFunction = x => {
   testParametricFunction2(x);
 }
 and testParametricFunction2 = x => {
-  x |> callParseFunction(~parseFunction=testParametricFunction);
+  callParseFunction(x, ~parseFunction=testParametricFunction);
 }
 and callParseFunction = (x, ~parseFunction) => parseFunction(x); // loops
 
@@ -119,3 +119,66 @@ let rec butSecondArgumentIsAlwaysEvaluated = x => {
   combineTwoUnits((), progress());
   butSecondArgumentIsAlwaysEvaluated(x);
 };
+
+module Parser = {
+  type token =
+    | Asterisk
+    | Int(int)
+    | Eof;
+
+  type position = {
+    lnum: int,
+    cnum: int,
+  };
+
+  type t = {
+    mutable position,
+    mutable errors: list(string),
+    mutable token,
+  };
+
+  let tokenToString = token =>
+    switch (token) {
+    | Asterisk => "*"
+    | Eof => "Eof"
+    | Int(n) => string_of_int(n)
+    };
+
+  let next = p => {
+    p.token = Random.bool() ? Eof : Int(Random.int(1000));
+    p.position = {lnum: Random.int(1000), cnum: Random.int(80)};
+  };
+
+  let err = (p, s) => p.errors = [s, ...p.errors];
+
+  let expect = (p, token) =>
+    if (p.token == token) {
+      next(p);
+    } else {
+      err(p, "expected token " ++ tokenToString(p.token));
+    };
+};
+
+[@progress Parser.next]
+let rec parseInt = (p: Parser.t) => {
+  let res =
+    switch (p.token) {
+    | Int(n) => n
+    | _ =>
+      Parser.err(p, "integer expected");
+      (-1);
+    };
+  Parser.next(p);
+  res;
+}
+
+and parseList = (p: Parser.t, ~f) =>
+  if (p.token == Asterisk) {
+    [];
+  } else {
+    let item = f(p);
+    let l = parseList(p, ~f);
+    [item, ...l];
+  }
+
+and parseListInt = p => parseList(p, ~f=parseInt);

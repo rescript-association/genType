@@ -2,6 +2,7 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Random from "bs-platform/lib/es6/random.js";
+import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
 import * as Caml_builtin_exceptions from "bs-platform/lib/es6/caml_builtin_exceptions.js";
 
 var counter = /* record */[/* contents */Random.$$int(100)];
@@ -130,6 +131,75 @@ function butSecondArgumentIsAlwaysEvaluated(x) {
   };
 }
 
+function tokenToString(token) {
+  if (typeof token === "number") {
+    if (token !== 0) {
+      return "Eof";
+    } else {
+      return "*";
+    }
+  } else {
+    return String(token[0]);
+  }
+}
+
+function next(p) {
+  var match = Random.bool(/* () */0);
+  p[/* token */2] = match ? /* Eof */1 : /* Int */[Random.$$int(1000)];
+  p[/* position */0] = /* record */[
+    /* lnum */Random.$$int(1000),
+    /* cnum */Random.$$int(80)
+  ];
+  return /* () */0;
+}
+
+function err(p, s) {
+  p[/* errors */1] = /* :: */[
+    s,
+    p[/* errors */1]
+  ];
+  return /* () */0;
+}
+
+function expect(p, token) {
+  if (Caml_obj.caml_equal(p[/* token */2], token)) {
+    return next(p);
+  } else {
+    return err(p, "expected token " + tokenToString(p[/* token */2]));
+  }
+}
+
+var Parser = {
+  tokenToString: tokenToString,
+  next: next,
+  err: err,
+  expect: expect
+};
+
+function parseList(p, f) {
+  if (p[/* token */2] === /* Asterisk */0) {
+    return /* [] */0;
+  } else {
+    var item = Curry._1(f, p);
+    var l = parseList(p, f);
+    return /* :: */[
+            item,
+            l
+          ];
+  }
+}
+
+function $$parseInt(p) {
+  var match = p[/* token */2];
+  var res = typeof match === "number" ? (err(p, "integer expected"), -1) : match[0];
+  next(p);
+  return res;
+}
+
+function parseListInt(p) {
+  return parseList(p, $$parseInt);
+}
+
 var progress2 = progress;
 
 export {
@@ -152,6 +222,10 @@ export {
   evalOrderIsNotRightToLeft ,
   butFirstArgumentIsAlwaysEvaluated ,
   butSecondArgumentIsAlwaysEvaluated ,
+  Parser ,
+  $$parseInt ,
+  parseList ,
+  parseListInt ,
   
 }
 /* counter Not a pure module */

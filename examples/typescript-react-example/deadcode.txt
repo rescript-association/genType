@@ -805,7 +805,6 @@
   addValueReference TestCyberTruck.re:77:4 --> TestCyberTruck.re:77:30
   addValueReference TestCyberTruck.re:77:4 --> TestCyberTruck.re:71:8
   addValueReference TestCyberTruck.re:77:4 --> TestCyberTruck.re:80:4
-  addValueReference TestCyberTruck.re:77:4 --> pervasives.mli:226:0
   addValueReference TestCyberTruck.re:80:4 --> TestCyberTruck.re:80:25
   addValueReference TestCyberTruck.re:80:4 --> TestCyberTruck.re:80:29
   addValueReference TestCyberTruck.re:83:8 --> TestCyberTruck.re:83:23
@@ -833,6 +832,55 @@
   addValueReference TestCyberTruck.re:117:8 --> TestCyberTruck.re:117:8
   addValueReference TestCyberTruck.re:117:8 --> TestCyberTruck.re:2:4
   addValueReference TestCyberTruck.re:117:8 --> TestCyberTruck.re:118:6
+  addValueReference TestCyberTruck.re:140:6 --> TestCyberTruck.re:144:10
+  addValueReference TestCyberTruck.re:140:6 --> pervasives.mli:723:0
+  addValueReference TestCyberTruck.re:140:6 --> TestCyberTruck.re:140:22
+  addValueReference TestCyberTruck.re:147:6 --> random.mli:40:0
+  addValueReference TestCyberTruck.re:147:6 --> random.mli:40:0
+  addValueReference TestCyberTruck.re:147:6 --> TestCyberTruck.re:147:13
+  [type] addTypeReference TestCyberTruck.re:148:30 --> TestCyberTruck.re:127:6
+  [type] addTypeReference TestCyberTruck.re:148:36 --> TestCyberTruck.re:126:6
+  addValueReference TestCyberTruck.re:147:6 --> random.mli:40:0
+  addValueReference TestCyberTruck.re:147:6 --> random.mli:63:0
+  addValueReference TestCyberTruck.re:147:6 --> TestCyberTruck.re:147:13
+  addValueReference TestCyberTruck.re:152:6 --> TestCyberTruck.re:152:16
+  [type] addTypeReference TestCyberTruck.re:152:40 --> TestCyberTruck.re:136:4
+  addValueReference TestCyberTruck.re:152:6 --> TestCyberTruck.re:152:13
+  addValueReference TestCyberTruck.re:152:6 --> TestCyberTruck.re:152:13
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:154:16
+  [type] addTypeReference TestCyberTruck.re:158:48 --> TestCyberTruck.re:137:4
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:154:16
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:140:6
+  addValueReference TestCyberTruck.re:154:6 --> pervasives.mli:670:0
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:152:6
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:154:16
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:147:6
+  [type] addTypeReference TestCyberTruck.re:155:8 --> TestCyberTruck.re:137:4
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:154:16
+  addValueReference TestCyberTruck.re:154:6 --> TestCyberTruck.re:154:19
+  addValueReference TestCyberTruck.re:154:6 --> pervasives.mli:51:0
+  addValueReference TestCyberTruck.re:164:6 --> TestCyberTruck.re:166:10
+  addValueReference TestCyberTruck.re:164:6 --> TestCyberTruck.re:163:20
+  addValueReference TestCyberTruck.re:164:6 --> TestCyberTruck.re:152:6
+  [type] addTypeReference TestCyberTruck.re:165:11 --> TestCyberTruck.re:137:4
+  addValueReference TestCyberTruck.re:164:6 --> TestCyberTruck.re:163:20
+  addValueReference TestCyberTruck.re:163:8 --> TestCyberTruck.re:164:6
+  addValueReference TestCyberTruck.re:163:8 --> TestCyberTruck.re:163:20
+  addValueReference TestCyberTruck.re:163:8 --> TestCyberTruck.re:147:6
+  addValueReference TestCyberTruck.re:179:8 --> TestCyberTruck.re:175:17
+  addValueReference TestCyberTruck.re:179:8 --> TestCyberTruck.re:175:31
+  addValueReference TestCyberTruck.re:180:8 --> TestCyberTruck.re:175:17
+  addValueReference TestCyberTruck.re:180:8 --> TestCyberTruck.re:175:31
+  addValueReference TestCyberTruck.re:180:8 --> TestCyberTruck.re:175:4
+  addValueReference TestCyberTruck.re:175:4 --> TestCyberTruck.re:179:8
+  addValueReference TestCyberTruck.re:175:4 --> TestCyberTruck.re:180:8
+  [type] addTypeReference TestCyberTruck.re:176:6 --> TestCyberTruck.re:137:4
+  addValueReference TestCyberTruck.re:175:4 --> TestCyberTruck.re:175:17
+  [type] addTypeReference TestCyberTruck.re:176:17 --> TestCyberTruck.re:125:6
+  addValueReference TestCyberTruck.re:175:4 --> pervasives.mli:51:0
+  addValueReference TestCyberTruck.re:184:4 --> TestCyberTruck.re:184:19
+  addValueReference TestCyberTruck.re:184:4 --> TestCyberTruck.re:163:8
+  addValueReference TestCyberTruck.re:184:4 --> TestCyberTruck.re:175:4
   export progress TestCyberTruck.re:2:4
   export progress2 TestCyberTruck.re:13:4
   export f TestCyberTruck.re:18:8
@@ -852,6 +900,21 @@
   export evalOrderIsNotRightToLeft TestCyberTruck.re:102:8
   export butFirstArgumentIsAlwaysEvaluated TestCyberTruck.re:109:8
   export butSecondArgumentIsAlwaysEvaluated TestCyberTruck.re:117:8
+  [type] export Asterisk TestCyberTruck.re:125:6
+  [type] export Int TestCyberTruck.re:126:6
+  [type] export Eof TestCyberTruck.re:127:6
+  [type] export lnum TestCyberTruck.re:130:4
+  [type] export cnum TestCyberTruck.re:131:4
+  [type] export position TestCyberTruck.re:135:4
+  [type] export errors TestCyberTruck.re:136:4
+  [type] export token TestCyberTruck.re:137:4
+  export tokenToString TestCyberTruck.re:140:6
+  export next TestCyberTruck.re:147:6
+  export err TestCyberTruck.re:152:6
+  export expect TestCyberTruck.re:154:6
+  export parseInt TestCyberTruck.re:163:8
+  export parseList TestCyberTruck.re:175:4
+  export parseListInt TestCyberTruck.re:184:4
   
   Function Table:
     justReturn: _
@@ -883,7 +946,7 @@
   TestCyberTruck.re:66:2 termination error: possilbe infinite loop when calling "progressOnOneBranch"
     CallStack:
     1 at progressOnOneBranch (TestCyberTruck.re:62:30)
-  TestCyberTruck.re:78:40 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
+  TestCyberTruck.re:78:38 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
   
   Function Table:
     callParseFunction<parseFunction>: parseFunction
@@ -891,7 +954,7 @@
     testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
   TestCyberTruck.re:80:47 termination error: possilbe infinite loop when calling "parseFunction" which is "testParametricFunction"
     CallStack:
-    3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:78:7)
+    3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:77:35)
     2 at testParametricFunction2 (TestCyberTruck.re:75:2)
     1 at testParametricFunction (TestCyberTruck.re:71:33)
   
@@ -920,6 +983,13 @@
   
   Function Table:
     butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
+  TestCyberTruck.re:184:40 termination analysis: "parseList" is parametric ~f=parseInt
+  TestCyberTruck.re:180:12 termination error: named argument "f" must be passed a recursive function
+  
+  Function Table:
+    parseInt: ( _ | _ ); +Parser.next
+    parseList<f>: ( _ | f )
+    parseListInt: parseList<f:parseInt>
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] export id TypeParams2.re:2:13
   export exportSomething TypeParams2.re:10:4
@@ -1714,6 +1784,8 @@ File References
   References.R.set: 1 references (References.re:37:4)
   References.R.make: 1 references (References.re:34:4)
   References.R.get: 1 references (References.re:31:4)
+  TestCyberTruck.parseList: 2 references (TestCyberTruck.re:180:8, TestCyberTruck.re:184:4)
+  TestCyberTruck.Parser.err: 2 references (TestCyberTruck.re:154:6, TestCyberTruck.re:164:6)
   TestCyberTruck.butSecondArgumentIsAlwaysEvaluated: 1 references (TestCyberTruck.re:117:8)
   TestCyberTruck.butFirstArgumentIsAlwaysEvaluated: 1 references (TestCyberTruck.re:109:8)
   TestCyberTruck.evalOrderIsNotRightToLeft: 1 references (TestCyberTruck.re:102:8)
@@ -1948,6 +2020,21 @@ File References
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:24: justReturn
 <-- line 24
 [@dead "justReturn"] let rec justReturn = () => ();
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:140: Parser.tokenToString
+<-- line 140
+[@dead "Parser.tokenToString"]   let tokenToString = token =>
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:147: Parser.next
+<-- line 147
+[@dead "Parser.next"]   let next = p => {
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:154: Parser.expect
+<-- line 154
+[@dead "Parser.expect"]   let expect = (p, token) =>
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:163: parseInt
+<-- line 163
+[@dead "parseInt"] let rec parseInt = (p: Parser.t) => {
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:184: parseListInt
+<-- line 184
+[@dead "parseListInt"] and parseListInt = p => parseList(p, ~f=parseInt);
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re:8: Universe.notExported
 <-- line 8
 [@dead "Universe.notExported"]   let notExported = 33;
@@ -2112,6 +2199,15 @@ type toPayload = {[@dead "toPayload.result"] result: string};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re:28: message.text
 <-- line 28
 type message = {[@dead "message.text"] text: string};
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:130: Parser.position.lnum
+<-- line 130
+    [@dead "Parser.position.lnum"] lnum: int,
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:131: Parser.position.cnum
+<-- line 131
+    [@dead "Parser.position.cnum"] cnum: int,
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestCyberTruck.re:135: Parser.t.position
+<-- line 135
+    [@dead "Parser.t.position"] mutable position,
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re:39: requiresConversion.x
 <-- line 39
 type requiresConversion = {[@dead "requiresConversion.x"] x: int};

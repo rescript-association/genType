@@ -16,6 +16,8 @@ module FunctionArgs = {
 
   type t = list(arg);
 
+  let empty = [];
+
   let argToString = ({namedArgument, functionName}) =>
     namedArgument ++ ":" ++ functionName;
 
@@ -57,7 +59,7 @@ module FunctionArgs = {
     };
 };
 
-module RecursiveFunction = {
+module FunctionCall = {
   type t = {
     functionName,
     functionArgs: FunctionArgs.t,
@@ -81,7 +83,7 @@ module RecursiveFunction = {
 type call =
   | NamedArgument(namedArgument)
   | ProgressFunction(progressFunction)
-  | RecursiveFunction(RecursiveFunction.t);
+  | FunctionCall(FunctionCall.t);
 
 module Command = {
   type t =
@@ -95,8 +97,8 @@ module Command = {
     | Call(NamedArgument(namedArgument), _pos) => namedArgument
     | Call(ProgressFunction(progressFunction), _pos) =>
       "+" ++ Path.name(progressFunction)
-    | Call(RecursiveFunction(recursiveFunction), _pos) =>
-      RecursiveFunction.toString(recursiveFunction)
+    | Call(FunctionCall(functionCall), _pos) =>
+      FunctionCall.toString(functionCall)
     | Sequence(commands) =>
       commands == []
         ? "_" : commands |> List.map(toString) |> String.concat("; ")
@@ -183,7 +185,7 @@ module FunctionTable = {
     | Not_found => assert(false)
     };
 
-  let isRecursiveFunction = (~functionTable, path) =>
+  let isInTable = (~functionTable, path) =>
     Hashtbl.mem(functionTable, Path.name(path));
 
   let addFunction = (~functionName, tbl: t) => {
@@ -229,41 +231,41 @@ module FunctionTable = {
 
 module CallStack = {
   type t = {
-    tbl: Hashtbl.t(RecursiveFunction.t, (int, Lexing.position)),
+    tbl: Hashtbl.t(FunctionCall.t, (int, Lexing.position)),
     mutable size: int,
   };
 
   let create = () => {tbl: Hashtbl.create(1), size: 0};
 
-  let hasRecursiveFunction = (~recursiveFunction, t: t) =>
-    Hashtbl.mem(t.tbl, recursiveFunction);
+  let hasFunctionCall = (~functionCall, t: t) =>
+    Hashtbl.mem(t.tbl, functionCall);
 
-  let addRecursiveFunction = (~pos, ~recursiveFunction, t: t) => {
+  let addFunctionCall = (~functionCall, ~pos, t: t) => {
     t.size = t.size + 1;
-    Hashtbl.replace(t.tbl, recursiveFunction, (t.size, pos));
+    Hashtbl.replace(t.tbl, functionCall, (t.size, pos));
   };
 
-  let removeRecursiveFunction = (~recursiveFunction, t: t) => {
+  let removeFunctionCall = (~functionCall, t: t) => {
     t.size = t.size - 1;
-    Hashtbl.remove(t.tbl, recursiveFunction);
+    Hashtbl.remove(t.tbl, functionCall);
   };
 
   let dump = (t: t) => {
     GenTypeCommon.logItem("  CallStack:\n");
     let frames =
       Hashtbl.fold(
-        (recursiveFunction, (i, pos), frames) =>
-          [(recursiveFunction, i, pos), ...frames],
+        (functionCall, (i, pos), frames) =>
+          [(functionCall, i, pos), ...frames],
         t.tbl,
         [],
       )
       |> List.sort(((_, i1, _), (_, i2, _)) => i2 - i1);
     frames
-    |> List.iter(((recursiveFunction: RecursiveFunction.t, i, pos)) =>
+    |> List.iter(((functionCall: FunctionCall.t, i, pos)) =>
          GenTypeCommon.logItem(
            "  %d at %s (%s)\n",
            i,
-           RecursiveFunction.toString(recursiveFunction),
+           FunctionCall.toString(functionCall),
            pos |> posToString(~printCol=true, ~shortFile=true),
          )
        );
@@ -271,29 +273,28 @@ module CallStack = {
 };
 
 module Eval = {
-  module RecursiveFunctionSet = Set.Make(RecursiveFunction);
+  module FunctionCallSet = Set.Make(FunctionCall);
 
-  type cache =
-    Hashtbl.t(RecursiveFunction.t, list((RecursiveFunctionSet.t, bool)));
+  type cache = Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, bool)));
 
   let createCache = (): cache => Hashtbl.create(1);
 
-  let recursiveFunctionSetOfCallStack = callStack =>
+  let functionCallSetOfCallStack = callStack =>
     Hashtbl.fold(
-      (frame, _i, set) => RecursiveFunctionSet.add(frame, set),
+      (frame, _i, set) => FunctionCallSet.add(frame, set),
       callStack.CallStack.tbl,
-      RecursiveFunctionSet.empty,
+      FunctionCallSet.empty,
     );
 
-  let lookupCache = (~callStack, ~recursiveFunction, cache: cache) => {
-    switch (Hashtbl.find(cache, recursiveFunction)) {
+  let lookupCache = (~callStack, ~functionCall, cache: cache) => {
+    switch (Hashtbl.find(cache, functionCall)) {
     | [] => None
     | results =>
-      let set = recursiveFunctionSetOfCallStack(callStack);
+      let set = functionCallSetOfCallStack(callStack);
       switch (
         results
         |> List.find(((cachedSet, _res)) =>
-             RecursiveFunctionSet.subset(set, cachedSet)
+             FunctionCallSet.subset(set, cachedSet)
            )
       ) {
       | (_, res) =>
@@ -305,16 +306,16 @@ module Eval = {
     };
   };
 
-  let updateCache = (~callStack, ~recursiveFunction, ~res, cache: cache) => {
-    let set = recursiveFunctionSetOfCallStack(callStack);
+  let updateCache = (~callStack, ~functionCall, ~res, cache: cache) => {
+    let set = functionCallSetOfCallStack(callStack);
     let modified = ref(false);
     let results =
-      switch (Hashtbl.find(cache, recursiveFunction)) {
+      switch (Hashtbl.find(cache, functionCall)) {
       | results =>
         results
         |> List.map(((cachedSet, res)) => {
              let newFrameSet =
-               if (RecursiveFunctionSet.subset(cachedSet, set)) {
+               if (FunctionCallSet.subset(cachedSet, set)) {
                  // termination on a bigger stack is a stronger result to cache
                  modified := true;
                  set;
@@ -327,22 +328,21 @@ module Eval = {
       };
     Hashtbl.replace(
       cache,
-      recursiveFunction,
+      functionCall,
       modified^ ? results : [(set, res), ...results],
     );
   };
 
-  let hasInfiniteLoop = (~namedArgument, ~callStack, ~pos, ~recursiveFunction) =>
-    if (callStack |> CallStack.hasRecursiveFunction(~recursiveFunction)) {
+  let hasInfiniteLoop = (~namedArgument, ~callStack, ~functionCall, ~pos) =>
+    if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
       let explainCall =
         switch (namedArgument) {
-        | None =>
-          "\"" ++ (recursiveFunction |> RecursiveFunction.toString) ++ "\""
+        | None => "\"" ++ (functionCall |> FunctionCall.toString) ++ "\""
         | Some(arg) =>
           "\""
           ++ arg
           ++ "\" which is \""
-          ++ (recursiveFunction |> RecursiveFunction.toString)
+          ++ (functionCall |> FunctionCall.toString)
           ++ "\""
         };
       GenTypeCommon.logItem(
@@ -364,25 +364,25 @@ module Eval = {
             ~callStack,
             ~functionArgs,
             ~functionTable,
-            ~command: Command.t,
+            command: Command.t,
           ) =>
     switch (command) {
-    | Call(RecursiveFunction({functionName} as recursiveFunction), pos) =>
+    | Call(FunctionCall({functionName} as functionCall), pos) =>
       if (hasInfiniteLoop(
             ~callStack,
+            ~functionCall,
             ~namedArgument=None,
             ~pos,
-            ~recursiveFunction,
           )) {
         false; // continue as if it terminated without progress
       } else {
-        switch (cache |> lookupCache(~callStack, ~recursiveFunction)) {
+        switch (cache |> lookupCache(~callStack, ~functionCall)) {
         | Some(res) =>
           if (verbose) {
             GenTypeCommon.logItem(
               "%s termination analysis: cache hit for %s\n",
               pos |> posToString(~printCol=true, ~shortFile=true),
-              RecursiveFunction.toString(recursiveFunction),
+              FunctionCall.toString(functionCall),
             );
           };
           res;
@@ -390,19 +390,18 @@ module Eval = {
           let {namedArguments, body} =
             functionTable
             |> FunctionTable.getFunctionDefinition(~functionName);
-          callStack
-          |> CallStack.addRecursiveFunction(~pos, ~recursiveFunction);
+          callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
           let res =
-            run(
-              ~cache,
-              ~callStack,
-              ~functionArgs=recursiveFunction.functionArgs,
-              ~functionTable,
-              ~command=body,
-            );
+            body
+            |> run(
+                 ~cache,
+                 ~callStack,
+                 ~functionArgs=functionCall.functionArgs,
+                 ~functionTable,
+               );
           // Invariant: run should restore the callStack
-          cache |> updateCache(~callStack, ~recursiveFunction, ~res);
-          callStack |> CallStack.removeRecursiveFunction(~recursiveFunction);
+          cache |> updateCache(~callStack, ~functionCall, ~res);
+          callStack |> CallStack.removeFunctionCall(~functionCall);
           res;
         };
       }
@@ -413,55 +412,37 @@ module Eval = {
         | Some(functionName) => functionName
         | None => assert(false)
         };
-      let recursiveFunction = RecursiveFunction.noArgs(functionName);
+      let functionCall = FunctionCall.noArgs(functionName);
       if (hasInfiniteLoop(
             ~namedArgument=Some(namedArgument),
             ~callStack,
             ~pos,
-            ~recursiveFunction,
+            ~functionCall,
           )) {
         false; // continue as if it terminated without progress
       } else {
-        run(
-          ~cache,
-          ~callStack,
-          ~functionArgs,
-          ~functionTable,
-          ~command=Call(RecursiveFunction(recursiveFunction), pos),
-        );
+        Command.Call(FunctionCall(functionCall), pos)
+        |> run(~cache, ~callStack, ~functionArgs, ~functionTable);
       };
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
       commands
       |> List.exists(c =>
-           run(~cache, ~callStack, ~functionArgs, ~functionTable, ~command=c)
-           == true
+           c |> run(~cache, ~callStack, ~functionArgs, ~functionTable) == true
          )
     | UnorderedSequence(commands) =>
       // the commands could be executed in any order: progess if any one does
       let results =
         commands
         |> List.map(c =>
-             run(
-               ~cache,
-               ~callStack,
-               ~functionArgs,
-               ~functionTable,
-               ~command=c,
-             )
+             c |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
            );
       results |> List.mem(true);
     | Nondet(commands) =>
       let results =
         commands
         |> List.map(c =>
-             run(
-               ~cache,
-               ~callStack,
-               ~functionArgs,
-               ~functionTable,
-               ~command=c,
-             )
+             c |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
            );
       // make progress only if all the commands do
       !List.mem(false, results);
@@ -475,7 +456,7 @@ module NamedArgumentWithRecursiveFunction = {
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
       switch (e.exp_desc) {
       | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-          when callee |> FunctionTable.isRecursiveFunction(~functionTable) =>
+          when callee |> FunctionTable.isInTable(~functionTable) =>
         let functionName = Path.name(callee);
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
@@ -487,9 +468,7 @@ module NamedArgumentWithRecursiveFunction = {
                      Texp_ident(labelArg, {loc: {loc_start}}, _),
                  }),
                )
-                 when
-                   labelArg
-                   |> FunctionTable.isRecursiveFunction(~functionTable) =>
+                 when labelArg |> FunctionTable.isInTable(~functionTable) =>
                functionTable
                |> FunctionTable.addNamedArgument(
                     ~functionName,
@@ -530,7 +509,7 @@ module ExpressionWellFormed = {
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
       switch (e.exp_desc) {
       | Texp_ident(path, {loc: {loc_start}}, _) =>
-        if (path |> FunctionTable.isRecursiveFunction(~functionTable)) {
+        if (path |> FunctionTable.isInTable(~functionTable)) {
           GenTypeCommon.logItem(
             "%s termination error: \"%s\" can only be called directly, or passed as labeled argument.\n",
             loc_start |> posToString(~printCol=true, ~shortFile=true),
@@ -582,11 +561,9 @@ module Compile = {
     let {currentFunctionName, functionTable, isProgressFunction} = ctx;
     let pos = expr.exp_loc.loc_start;
     switch (expr.exp_desc) {
-    | Texp_function({cases}) =>
-      cases |> List.map(case(~ctx)) |> Command.nondet
     | Texp_ident(_) => Command.nothing
     | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-        when callee |> FunctionTable.isRecursiveFunction(~functionTable) =>
+        when callee |> FunctionTable.isInTable(~functionTable) =>
       let functionName = Path.name(callee);
       let {namedArguments} =
         functionTable |> FunctionTable.getFunctionDefinition(~functionName);
@@ -611,7 +588,7 @@ module Compile = {
             );
             raise(ArgError);
           | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
-              when path |> FunctionTable.isRecursiveFunction(~functionTable) =>
+              when path |> FunctionTable.isInTable(~functionTable) =>
             let functionName = Path.name(path);
             FunctionArgs.{namedArgument, functionName};
           | _ =>
@@ -631,7 +608,7 @@ module Compile = {
       switch (functionArgsOpt) {
       | None => Command.nothing
       | Some(functionArgs) =>
-        Command.Call(RecursiveFunction({functionName, functionArgs}), pos)
+        Command.Call(FunctionCall({functionName, functionArgs}), pos)
         |> evalArgs(~args, ~ctx)
       };
     | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
@@ -671,13 +648,22 @@ module Compile = {
       expressions
       |> List.map(e => e |> expression(~ctx))
       |> Command.unorderedSequence
+    | Texp_function({cases}) =>
+      cases |> List.map(case(~ctx)) |> Command.nondet
 
-    | Texp_match(_) => assert(false)
+    | Texp_match(e, cases, [], _) =>
+      Command.seq(
+        e |> expression(~ctx),
+        cases |> List.map(case(~ctx)) |> Command.nondet,
+      )
+    | Texp_match(_, _, [_, ..._] as _casesExn, _) => assert(false)
+
+    | Texp_field(e, _lid, _desc) => e |> expression(~ctx)
+
     | Texp_try(_) => assert(false)
     | Texp_tuple(_) => assert(false)
     | Texp_variant(_) => assert(false)
     | Texp_record(_) => assert(false)
-    | Texp_field(_) => assert(false)
     | Texp_setfield(_) => assert(false)
     | Texp_array(_) => assert(false)
     | Texp_while(_) => assert(false)
@@ -808,20 +794,14 @@ let traverseAst = {
         let cache = Eval.createCache();
         let callStack = CallStack.create();
         let functionName = firstFunctionName;
-        let functionArgs = [];
-        let recursiveFunction = RecursiveFunction.noArgs(functionName);
-        callStack |> CallStack.addRecursiveFunction(~pos, ~recursiveFunction);
+        let functionArgs = FunctionArgs.empty;
+        let functionCall = FunctionCall.noArgs(functionName);
+        callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
         let {namedArguments, body} =
           functionTable |> FunctionTable.getFunctionDefinition(~functionName);
         assert(namedArguments == []);
 
-        Eval.run(
-          ~cache,
-          ~callStack,
-          ~functionArgs,
-          ~functionTable,
-          ~command=body,
-        );
+        body |> Eval.run(~cache, ~callStack, ~functionArgs, ~functionTable);
       };
       ignore(res);
     };
