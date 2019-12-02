@@ -2,21 +2,32 @@ open DeadCommon;
 
 type progressFunction = Path.t;
 
-type namedArgument = string;
-
 module Kind = {
-  type t = list(namedArgument);
+  type t = list(entry)
+  and entry = {
+    label: string,
+    k: t,
+  };
 
-  let empty = [];
+  let empty: t = [];
 
-  let hasLabel = (~label, t: t) => List.mem(label, t);
+  let hasLabel = (~label, k: t) =>
+    k |> List.exists(entry => entry.label == label);
 
-  let toString = kind =>
-    kind == [] ? "" : "<" ++ (kind |> String.concat(", ")) ++ ">";
+  let rec entryToString = ({label, k}) => {
+    k == [] ? label : label ++ ":" ++ (k |> toString);
+  }
 
-  let addLabel = (~label, kind) =>
-    if (!(kind |> List.mem(label))) {
-      [label, ...kind] |> List.sort(compare);
+  and toString = (kind: t) =>
+    kind == []
+      ? ""
+      : "<"
+        ++ (kind |> List.map(entryToString) |> String.concat(", "))
+        ++ ">";
+
+  let addLabelWithEmptyKind = (~label, kind) =>
+    if (!(kind |> hasLabel(~label))) {
+      [{label, k: empty}, ...kind] |> List.sort(compare);
     } else {
       kind;
     };
@@ -235,7 +246,7 @@ module FunctionTable = {
   let addLabelToKind = (~functionName, ~label, tbl: t) => {
     let functionDefinition = tbl |> getFunctionDefinition(~functionName);
     functionDefinition.kind =
-      functionDefinition.kind |> Kind.addLabel(~label);
+      functionDefinition.kind |> Kind.addLabelWithEmptyKind(~label);
   };
 
   let addBody = (~body, ~functionName, tbl: t) => {
@@ -569,7 +580,7 @@ module Compile = {
         let functionDefinition =
           functionTable |> FunctionTable.getFunctionDefinition(~functionName);
         exception ArgError;
-        let getFunctionArg = label => {
+        let getFunctionArg = ({Kind.label}) => {
           let argOpt =
             args
             |> List.find_opt(arg =>
