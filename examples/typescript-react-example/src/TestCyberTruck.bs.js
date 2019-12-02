@@ -10,15 +10,11 @@ function progress(param) {
 function fox(x) {
   while(true) {
     Caml_obj.caml_notequal(x, x);
-    fox(x);
     continue ;
   };
 }
 
-function box(x) {
-  fox(x);
-  return fox(x);
-}
+var box = fox;
 
 function takeParseFunction(x, parseFunction) {
   return Curry._1(parseFunction, x);
@@ -30,27 +26,44 @@ var Loops = {
   takeParseFunction: takeParseFunction
 };
 
-function fox$1(x) {
+function fox2(x) {
   while(true) {
     Caml_obj.caml_notequal(x, x);
-    fox$1(x);
+    fox2(x);
     continue ;
   };
 }
 
-function box$1(x) {
-  fox$1(x);
-  return fox$1(x);
+function box2(x) {
+  fox2(x);
+  return fox2(x);
 }
 
-function takeParseFunction$1(x, parseFunction) {
+function takeParseFunction2(x, parseFunction) {
   return Curry._1(parseFunction, x);
 }
 
+function aa(x) {
+  while(true) {
+    x > 0;
+    continue ;
+  };
+}
+
+var bb = aa;
+
+function cc(param) {
+  return /* () */0;
+}
+
 var Terminates = {
-  fox: fox$1,
-  box: box$1,
-  takeParseFunction: takeParseFunction$1
+  fox2: fox2,
+  box2: box2,
+  takeParseFunction2: takeParseFunction2,
+  u: /* () */0,
+  aa: aa,
+  bb: bb,
+  cc: cc
 };
 
 var b = 4;

@@ -10,25 +10,37 @@ module Loops = {
   }
   and box = x => {
     x |> takeParseFunction(~parseFunction=fox);
-    fox(x);
   }
   and takeParseFunction = (x, ~parseFunction) => parseFunction(x);
 };
 
 module Terminates = {
-  let rec fox = x => {
+  let rec fox2 = x => {
     if (x != x) {
       progress();
     } else {
-        progress();
+      progress();
     };
-    box(x);
+    box2(x);
   }
-  and box = x => {
-    x |> takeParseFunction(~parseFunction=fox);
-    fox(x);
+  and box2 = x => {
+    x |> takeParseFunction2(~parseFunction=fox2);
+    fox2(x);
   }
-  and takeParseFunction = (x, ~parseFunction) => parseFunction(x);
+  and takeParseFunction2 = (x, ~parseFunction) => parseFunction(x);
+
+  let u = ();
+
+  let rec aa = x => {
+    if (x > 0) {
+      cc(x);
+    } else {
+      cc(x);
+    };
+    bb(x);
+  }
+  and bb = x => aa(x)
+  and cc = _ => u;
 };
 
 let a = 3;
