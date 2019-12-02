@@ -243,10 +243,10 @@ module FunctionTable = {
     functionDefinition.body = body;
   };
 
-  let functionKindHasLabel = (~functionName, ~label, tbl: t) => {
+  let functionGetKindOfLabel = (~functionName, ~label, tbl: t) => {
     switch (Hashtbl.find(tbl, functionName)) {
-    | {kind} => kind |> Kind.hasLabel(~label)
-    | exception Not_found => false
+    | {kind} => kind |> Kind.hasLabel(~label) ? Some(Kind.empty) : None
+    | exception Not_found => None
     };
   };
 };
@@ -519,17 +519,18 @@ module ExpressionWellFormed = {
           );
         };
         e;
-      | Texp_apply({exp_desc: Texp_ident(path, _, _)}, args) =>
+      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args) =>
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
              switch (argLabel, argOpt) {
              | (Labelled(label), Some({Typedtree.exp_desc: Texp_ident(_)}))
                  when
                    functionTable
-                   |> FunctionTable.functionKindHasLabel(
-                        ~functionName=Path.name(path),
+                   |> FunctionTable.functionGetKindOfLabel(
+                        ~functionName=Path.name(callee),
                         ~label,
-                      ) =>
+                      )
+                   != None =>
                ()
              | (_, Some(arg)) => self.expr(self, arg) |> ignore
              | _ => ()
@@ -561,71 +562,79 @@ module Compile = {
     let pos = expr.exp_loc.loc_start;
     switch (expr.exp_desc) {
     | Texp_ident(_) => Command.nothing
-    | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-        when callee |> FunctionTable.isFunctionInTable(~functionTable) =>
-      let functionName = Path.name(callee);
-      let functionDefinition =
-        functionTable |> FunctionTable.getFunctionDefinition(~functionName);
-      exception ArgError;
-      let getFunctionArg = label => {
-        let argOpt =
-          args
-          |> List.find_opt(arg =>
-               switch (arg) {
-               | (Asttypes.Labelled(s), Some(e)) => s == label
-               | _ => false
-               }
-             );
-        let posString = pos |> posToString(~printCol=true, ~shortFile=true);
-        let functionArg =
-          switch (argOpt) {
-          | None =>
-            GenTypeCommon.logItem(
-              "%s termination error: call must have named argument \"%s\"\n",
-              posString,
-              label,
-            );
-            raise(ArgError);
-          | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
-              when path |> FunctionTable.isFunctionInTable(~functionTable) =>
-            let functionName = Path.name(path);
-            {FunctionArgs.label, functionName};
-          | _ =>
-            GenTypeCommon.logItem(
-              "%s termination error: named argument \"%s\" must be passed a recursive function\n",
-              posString,
-              label,
-            );
-            raise(ArgError);
-          };
-        functionArg;
-      };
-      let functionArgsOpt =
-        try(Some(functionDefinition.kind |> List.map(getFunctionArg))) {
-        | ArgError => None
+
+    | Texp_apply({exp_desc: Texp_ident(callee, _, _)} as expr, args) =>
+      if (callee |> FunctionTable.isFunctionInTable(~functionTable)) {
+        let functionName = Path.name(callee);
+        let functionDefinition =
+          functionTable |> FunctionTable.getFunctionDefinition(~functionName);
+        exception ArgError;
+        let getFunctionArg = label => {
+          let argOpt =
+            args
+            |> List.find_opt(arg =>
+                 switch (arg) {
+                 | (Asttypes.Labelled(s), Some(e)) => s == label
+                 | _ => false
+                 }
+               );
+          let posString = pos |> posToString(~printCol=true, ~shortFile=true);
+          let functionArg =
+            switch (argOpt) {
+            | None =>
+              GenTypeCommon.logItem(
+                "%s termination error: call must have named argument \"%s\"\n",
+                posString,
+                label,
+              );
+              raise(ArgError);
+            | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
+                when path |> FunctionTable.isFunctionInTable(~functionTable) =>
+              let functionName = Path.name(path);
+              {FunctionArgs.label, functionName};
+            | _ =>
+              GenTypeCommon.logItem(
+                "%s termination error: named argument \"%s\" must be passed a recursive function\n",
+                posString,
+                label,
+              );
+              raise(ArgError);
+            };
+          functionArg;
         };
-      switch (functionArgsOpt) {
-      | None => Command.nothing
-      | Some(functionArgs) =>
-        Command.Call(FunctionCall({functionName, functionArgs}), pos)
-        |> evalArgs(~args, ~ctx)
-      };
-    | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-        when callee |> isProgressFunction =>
-      Command.Call(ProgressFunction(callee), pos) |> evalArgs(~args, ~ctx)
-    | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-        when
+        let functionArgsOpt =
+          try(Some(functionDefinition.kind |> List.map(getFunctionArg))) {
+          | ArgError => None
+          };
+        switch (functionArgsOpt) {
+        | None => Command.nothing
+        | Some(functionArgs) =>
+          Command.Call(FunctionCall({functionName, functionArgs}), pos)
+          |> evalArgs(~args, ~ctx)
+        };
+      } else if (callee |> isProgressFunction) {
+        Command.Call(ProgressFunction(callee), pos) |> evalArgs(~args, ~ctx);
+      } else {
+        switch (
           functionTable
-          |> FunctionTable.functionKindHasLabel(
+          |> FunctionTable.functionGetKindOfLabel(
                ~functionName=currentFunctionName,
                ~label=Path.name(callee),
-             ) =>
-      Command.Call(
-        FunctionCall(Path.name(callee) |> FunctionCall.noArgs),
-        pos,
-      )
-      |> evalArgs(~args, ~ctx)
-
+             )
+        ) {
+        | Some(kind) when kind == Kind.empty =>
+          Command.Call(
+            FunctionCall(Path.name(callee) |> FunctionCall.noArgs),
+            pos,
+          )
+          |> evalArgs(~args, ~ctx)
+        | Some(_kind) =>
+          // TODO when kinds are extended in future: check that args matches with kind
+          // and create a function call with the appropriate arguments
+          assert(false)
+        | None => expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
+        };
+      }
     | Texp_apply(expr, args) =>
       expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
     | Texp_let(recFlag, valueBindings, inExpr) =>
