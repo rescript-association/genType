@@ -223,9 +223,9 @@ export {
   butFirstArgumentIsAlwaysEvaluated ,
   butSecondArgumentIsAlwaysEvaluated ,
   Parser ,
+  parseListInt ,
   $$parseInt ,
   parseList ,
-  parseListInt ,
   
 }
 /* counter Not a pure module */

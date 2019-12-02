@@ -399,9 +399,10 @@ module Eval = {
             command: Command.t,
           ) =>
     switch (command) {
-    | Call(FunctionCall({functionName} as functionCall), pos) =>
+    | Call(FunctionCall(functionCall), pos) =>
       let functionCallInstantiated =
         functionCall |> FunctionCall.applySubstitution(~sub=functionArgs);
+      let functionName = functionCallInstantiated.functionName;
       if (hasInfiniteLoop(
             ~callStack,
             ~functionCall,

@@ -160,7 +160,9 @@ module Parser = {
 };
 
 [@progress Parser.next]
-let rec parseInt = (p: Parser.t) => {
+let rec parseListInt = p => parseList(p, ~f=parseInt)
+
+and parseInt = (p: Parser.t) => {
   let res =
     switch (p.token) {
     | Int(n) => n
@@ -179,6 +181,4 @@ and parseList = (p: Parser.t, ~f) =>
     let item = f(p);
     let l = parseList(p, ~f);
     [item, ...l];
-  }
-
-and parseListInt = p => parseList(p, ~f=parseInt);
+  };
