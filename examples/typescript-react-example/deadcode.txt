@@ -984,11 +984,10 @@
   Function Table:
     butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
   TestCyberTruck.re:184:40 termination analysis: "parseList" is parametric ~f=parseInt
-  TestCyberTruck.re:180:12 termination error: named argument "f" must be passed a recursive function
   
   Function Table:
     parseInt: ( _ | _ ); +Parser.next
-    parseList<f>: ( _ | f )
+    parseList<f>: ( _ | f; parseList<f:f> )
     parseListInt: parseList<f:parseInt>
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] export id TypeParams2.re:2:13

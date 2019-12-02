@@ -603,6 +603,16 @@ module Compile = {
                 when path |> FunctionTable.isFunctionInTable(~functionTable) =>
               let functionName = Path.name(path);
               {FunctionArgs.label, functionName};
+            | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
+                when
+                  functionTable
+                  |> FunctionTable.functionGetKindOfLabel(
+                       ~functionName=currentFunctionName,
+                       ~label=Path.name(path),
+                     )
+                  == Some([]) /* TODO: when kinds are inferred, support and check non-empty kinds */ =>
+              let functionName = Path.name(path);
+              {FunctionArgs.label, functionName};
             | _ =>
               GenTypeCommon.logItem(
                 "%s termination error: named argument \"%s\" must be passed a recursive function\n",
