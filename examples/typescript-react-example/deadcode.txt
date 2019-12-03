@@ -1,48 +1,48 @@
-  XXX sourceFile does not exist:misc.re
-  XXX sourceFile does not exist:parse.re
-  XXX sourceFile does not exist:parse.rei
-  XXX sourceFile does not exist:arg_helper.rei
-  XXX sourceFile does not exist:clflags.rei
-  XXX sourceFile does not exist:asttypes.rei
-  XXX sourceFile does not exist:ast_helper.rei
-  XXX sourceFile does not exist:warnings.re
-  XXX sourceFile does not exist:syntaxerr.re
-  XXX sourceFile does not exist:numbers.rei
-  XXX sourceFile does not exist:lexer.re
-  XXX sourceFile does not exist:location.re
-  XXX sourceFile does not exist:profile.re
-  XXX sourceFile does not exist:longident.rei
-  XXX sourceFile does not exist:parsetree.rei
-  XXX sourceFile does not exist:lexer.rei
-  XXX sourceFile does not exist:pprintast.re
-  XXX sourceFile does not exist:arg_helper.re
-  XXX sourceFile does not exist:lexing.rei
-  XXX sourceFile does not exist:asttypes.re
-  XXX sourceFile does not exist:location.rei
-  XXX sourceFile does not exist:parsing.re
-  XXX sourceFile does not exist:terminfo.rei
-  XXX sourceFile does not exist:misc.rei
-  XXX sourceFile does not exist:longident.re
-  XXX sourceFile does not exist:numbers.re
-  XXX sourceFile does not exist:config.re
-  XXX sourceFile does not exist:printast.rei
-  XXX sourceFile does not exist:identifiable.re
-  XXX sourceFile does not exist:clflags.re
-  XXX sourceFile does not exist:parsing.rei
-  XXX sourceFile does not exist:parsetree.re
-  XXX sourceFile does not exist:identifiable.rei
-  XXX sourceFile does not exist:printast.re
-  XXX sourceFile does not exist:docstrings.rei
-  XXX sourceFile does not exist:ast_helper.re
-  XXX sourceFile does not exist:warnings.rei
-  XXX sourceFile does not exist:profile.rei
-  XXX sourceFile does not exist:parser.re
-  XXX sourceFile does not exist:syntaxerr.rei
-  XXX sourceFile does not exist:terminfo.re
-  XXX sourceFile does not exist:parser.rei
-  XXX sourceFile does not exist:docstrings.re
-  XXX sourceFile does not exist:lexing.re
-  XXX sourceFile does not exist:pprintast.rei
+  XXX sourceFile does not exist: misc.re
+  XXX sourceFile does not exist: parse.re
+  XXX sourceFile does not exist: parse.rei
+  XXX sourceFile does not exist: arg_helper.rei
+  XXX sourceFile does not exist: clflags.rei
+  XXX sourceFile does not exist: asttypes.rei
+  XXX sourceFile does not exist: ast_helper.rei
+  XXX sourceFile does not exist: warnings.re
+  XXX sourceFile does not exist: syntaxerr.re
+  XXX sourceFile does not exist: numbers.rei
+  XXX sourceFile does not exist: lexer.re
+  XXX sourceFile does not exist: location.re
+  XXX sourceFile does not exist: profile.re
+  XXX sourceFile does not exist: longident.rei
+  XXX sourceFile does not exist: parsetree.rei
+  XXX sourceFile does not exist: lexer.rei
+  XXX sourceFile does not exist: pprintast.re
+  XXX sourceFile does not exist: arg_helper.re
+  XXX sourceFile does not exist: lexing.rei
+  XXX sourceFile does not exist: asttypes.re
+  XXX sourceFile does not exist: location.rei
+  XXX sourceFile does not exist: parsing.re
+  XXX sourceFile does not exist: terminfo.rei
+  XXX sourceFile does not exist: misc.rei
+  XXX sourceFile does not exist: longident.re
+  XXX sourceFile does not exist: numbers.re
+  XXX sourceFile does not exist: config.re
+  XXX sourceFile does not exist: printast.rei
+  XXX sourceFile does not exist: identifiable.re
+  XXX sourceFile does not exist: clflags.re
+  XXX sourceFile does not exist: parsing.rei
+  XXX sourceFile does not exist: parsetree.re
+  XXX sourceFile does not exist: identifiable.rei
+  XXX sourceFile does not exist: printast.re
+  XXX sourceFile does not exist: docstrings.rei
+  XXX sourceFile does not exist: ast_helper.re
+  XXX sourceFile does not exist: warnings.rei
+  XXX sourceFile does not exist: profile.rei
+  XXX sourceFile does not exist: parser.re
+  XXX sourceFile does not exist: syntaxerr.rei
+  XXX sourceFile does not exist: terminfo.re
+  XXX sourceFile does not exist: parser.rei
+  XXX sourceFile does not exist: docstrings.re
+  XXX sourceFile does not exist: lexing.re
+  XXX sourceFile does not exist: pprintast.rei
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ManyComponents.cmt
   addValueReference ManyComponents.re:6:6 --> ReasonReact.rei:153:0
   addValueReference ManyComponents.re:9:6 --> ReasonReact.rei:17:0
