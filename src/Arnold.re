@@ -160,9 +160,11 @@ module Command = {
 
   let nothing = Sequence([]);
 
-  let nondet = commands =>
+  let rec nondet = commands =>
     switch (commands) {
     | [] => nothing
+    | [Sequence([]), Sequence([]), ...rest] =>
+      nondet([Sequence([]), ...rest])
     | [command] => command
     | _ => Nondet(commands)
     };
@@ -693,11 +695,37 @@ module Compile = {
 
     | Texp_field(e, _lid, _desc) => e |> expression(~ctx)
 
+    | Texp_record({fields, extended_expression}) =>
+      [
+        extended_expression,
+        ...fields
+           |> Array.to_list
+           |> List.map(
+                (
+                  (
+                    _desc,
+                    recordLabelDefinition: Typedtree.record_label_definition,
+                  ),
+                ) =>
+                switch (recordLabelDefinition) {
+                | Kept(_typeExpr) => None
+                | Overridden(_loc, e) => Some(e)
+                }
+              ),
+      ]
+      |> List.map(expressionOpt(~ctx))
+      |> Command.unorderedSequence
+
+    | Texp_setfield(e1, _loc, _desc, e2) =>
+      [e1, e2] |> List.map(expression(~ctx)) |> Command.unorderedSequence
+
+    | Texp_tuple(expressions) =>
+      expressions |> List.map(expression(~ctx)) |> Command.unorderedSequence
+
+    | Texp_assert(_) => Command.nothing
+
     | Texp_try(_) => assert(false)
-    | Texp_tuple(_) => assert(false)
     | Texp_variant(_) => assert(false)
-    | Texp_record(_) => assert(false)
-    | Texp_setfield(_) => assert(false)
     | Texp_array(_) => assert(false)
     | Texp_while(_) => assert(false)
     | Texp_for(_) => assert(false)
@@ -708,7 +736,6 @@ module Compile = {
     | Texp_override(_) => assert(false)
     | Texp_letmodule(_) => assert(false)
     | Texp_letexception(_) => assert(false)
-    | Texp_assert(_) => assert(false)
     | Texp_lazy(_) => assert(false)
     | Texp_object(_) => assert(false)
     | Texp_pack(_) => assert(false)
