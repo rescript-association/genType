@@ -73,13 +73,16 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
     (GenTypeCommon.projectRoot^ +++ sourceDir +++ moduleName)
     ++ (extension == ".cmti" ? ".rei" : ".re");
   if (!Sys.file_exists(sourceFile)) {
-    GenTypeCommon.logItem("XXX sourceFile:%s\n", sourceFile);
-    assert(false);
-  };
-  FileHash.addFile(fileReferences, sourceFile);
+    GenTypeCommon.logItem(
+      "XXX sourceFile does not exist: %s\n",
+      Filename.basename(sourceFile),
+    );
+  } else {
+    FileHash.addFile(fileReferences, sourceFile);
 
-  let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  loadFile(~sourceFile, cmtFilePath);
+    let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
+    loadFile(~sourceFile, cmtFilePath);
+  };
 };
 
 let aliveWhitelist = ["DeadTestWhitelist"];
