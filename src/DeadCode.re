@@ -14,28 +14,35 @@ let loadFile = (~sourceFile, cmtFilePath) => {
 
   let {Cmt_format.cmt_annots, cmt_value_dependencies} =
     Cmt_format.read_cmt(cmtFilePath);
-  switch (cmt_annots) {
-  | Interface(signature) =>
-    ProcessDeadAnnotations.signature(signature);
-    DeadValue.processSignature(cmtFilePath, signature.sig_type);
-  | Implementation(structure) =>
-    let cmtiExists =
-      Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
-    if (!cmtiExists) {
-      ProcessDeadAnnotations.structure(structure);
+
+  if (dce^) {
+    switch (cmt_annots) {
+    | Interface(signature) =>
+      ProcessDeadAnnotations.signature(signature);
+      DeadValue.processSignature(cmtFilePath, signature.sig_type);
+    | Implementation(structure) =>
+      let cmtiExists =
+        Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
+      if (!cmtiExists) {
+        ProcessDeadAnnotations.structure(structure);
+      };
+      DeadValue.processStructure(
+        ~cmtiExists,
+        cmt_value_dependencies,
+        structure,
+      );
+      if (!cmtiExists) {
+        DeadValue.processSignature(cmtFilePath, structure.str_type);
+      };
+    | _ => ()
     };
-    DeadValue.processStructure(
-      ~cmtiExists,
-      cmt_value_dependencies,
-      structure,
-    );
-    if (!cmtiExists) {
-      DeadValue.processSignature(cmtFilePath, structure.str_type);
+  };
+  if (analyzeTermination^) {
+    switch (cmt_annots) {
+    | Interface(signature) => ()
+    | Implementation(structure) => Arnold.processStructure(structure)
+    | _ => ()
     };
-    if (analyzeTermination) {
-      Arnold.processStructure(structure);
-    };
-  | _ => ()
   };
 };
 
@@ -127,4 +134,10 @@ let runAnalysis = () => {
      );
 
   reportResults(~posInAliveWhitelist);
+};
+
+let runTerminationAnalysis = () => {
+  dce := false;
+  analyzeTermination := true;
+  runAnalysis();
 };

@@ -6,7 +6,7 @@
     "start": "node ../run_bsb.js -make-world -w",
     "build": "node ../run_bsb.js -make-world",
     "clean": "node ../clean_bsb.js",
-    "test": "Debug=1 Whitelist=src ../GenType.exe -dce >deadcode.txt",
+    "test": "Debug=1 ../GenType.exe -termination >deadcode.txt",
     "eject": "react-scripts eject"
   },
   "devDependencies": {

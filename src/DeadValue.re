@@ -26,7 +26,7 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       export(~analysisKind=Value, ~path, ~id, ~loc=val_loc);
     };
   | Sig_type(id, t, _) =>
-    if (analyzeTypes) {
+    if (analyzeTypes^) {
       DeadType.collectTypeExport(~path=[id, ...path], t);
     }
   | (
@@ -92,7 +92,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       },
       _,
     ) =>
-    if (analyzeTypes) {
+    if (analyzeTypes^) {
       DeadType.addTypeReference(~posDeclaration, ~posUsage);
     }
 
