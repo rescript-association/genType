@@ -1,48 +1,3 @@
-  XXX sourceFile does not exist: misc.re
-  XXX sourceFile does not exist: parse.re
-  XXX sourceFile does not exist: parse.rei
-  XXX sourceFile does not exist: arg_helper.rei
-  XXX sourceFile does not exist: clflags.rei
-  XXX sourceFile does not exist: asttypes.rei
-  XXX sourceFile does not exist: ast_helper.rei
-  XXX sourceFile does not exist: warnings.re
-  XXX sourceFile does not exist: syntaxerr.re
-  XXX sourceFile does not exist: numbers.rei
-  XXX sourceFile does not exist: lexer.re
-  XXX sourceFile does not exist: location.re
-  XXX sourceFile does not exist: profile.re
-  XXX sourceFile does not exist: longident.rei
-  XXX sourceFile does not exist: parsetree.rei
-  XXX sourceFile does not exist: lexer.rei
-  XXX sourceFile does not exist: pprintast.re
-  XXX sourceFile does not exist: arg_helper.re
-  XXX sourceFile does not exist: lexing.rei
-  XXX sourceFile does not exist: asttypes.re
-  XXX sourceFile does not exist: location.rei
-  XXX sourceFile does not exist: parsing.re
-  XXX sourceFile does not exist: terminfo.rei
-  XXX sourceFile does not exist: misc.rei
-  XXX sourceFile does not exist: longident.re
-  XXX sourceFile does not exist: numbers.re
-  XXX sourceFile does not exist: config.re
-  XXX sourceFile does not exist: printast.rei
-  XXX sourceFile does not exist: identifiable.re
-  XXX sourceFile does not exist: clflags.re
-  XXX sourceFile does not exist: parsing.rei
-  XXX sourceFile does not exist: parsetree.re
-  XXX sourceFile does not exist: identifiable.rei
-  XXX sourceFile does not exist: printast.re
-  XXX sourceFile does not exist: docstrings.rei
-  XXX sourceFile does not exist: ast_helper.re
-  XXX sourceFile does not exist: warnings.rei
-  XXX sourceFile does not exist: profile.rei
-  XXX sourceFile does not exist: parser.re
-  XXX sourceFile does not exist: syntaxerr.rei
-  XXX sourceFile does not exist: terminfo.re
-  XXX sourceFile does not exist: parser.rei
-  XXX sourceFile does not exist: docstrings.re
-  XXX sourceFile does not exist: lexing.re
-  XXX sourceFile does not exist: pprintast.rei
   Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/TestCyberTruck.cmt
   
   Function Table:
@@ -50,7 +5,7 @@
   
   Function Table:
     alwaysLoop: alwaysLoop
-  TestCyberTruck.re:27:27 termination error: possilbe infinite loop when calling "alwaysLoop"
+  TestCyberTruck.re:27:27 termination error: possible infinite loop when calling "alwaysLoop"
     CallStack:
     1 at alwaysLoop (TestCyberTruck.re:27:21)
   
@@ -59,7 +14,7 @@
   
   Function Table:
     alwaysProgressWrongOrder: alwaysProgressWrongOrder; +progress
-  TestCyberTruck.re:38:2 termination error: possilbe infinite loop when calling "alwaysProgressWrongOrder"
+  TestCyberTruck.re:38:2 termination error: possible infinite loop when calling "alwaysProgressWrongOrder"
     CallStack:
     1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
   TestCyberTruck.re:45:14 termination error: "doNotAlias" can only be called directly, or passed as labeled argument.
@@ -72,7 +27,7 @@
   
   Function Table:
     progressOnOneBranch: ( +progress | _ ); progressOnOneBranch
-  TestCyberTruck.re:66:2 termination error: possilbe infinite loop when calling "progressOnOneBranch"
+  TestCyberTruck.re:66:2 termination error: possible infinite loop when calling "progressOnOneBranch"
     CallStack:
     1 at progressOnOneBranch (TestCyberTruck.re:62:30)
   TestCyberTruck.re:78:38 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
@@ -81,7 +36,9 @@
     callParseFunction<parseFunction>: parseFunction
     testParametricFunction: ( +progress | _ ); testParametricFunction2
     testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
-  TestCyberTruck.re:80:47 termination error: possilbe infinite loop when calling "parseFunction" which is "testParametricFunction"
+  TestCyberTruck.re:75:2 termination analysis: cache miss for testParametricFunction2
+  TestCyberTruck.re:77:35 termination analysis: cache miss for callParseFunction<parseFunction:testParametricFunction>
+  TestCyberTruck.re:80:47 termination error: possible infinite loop when calling "parseFunction" which is "testParametricFunction"
     CallStack:
     3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:77:35)
     2 at testParametricFunction2 (TestCyberTruck.re:75:2)
@@ -90,20 +47,21 @@
   Function Table:
     doNothing: _
     testCacheHit: ( doNothing; doNothing; +Progress.Nested.f | _ ); testCacheHit
+  TestCyberTruck.re:85:4 termination analysis: cache miss for doNothing
   TestCyberTruck.re:86:4 termination analysis: cache hit for doNothing
-  TestCyberTruck.re:89:2 termination error: possilbe infinite loop when calling "testCacheHit"
+  TestCyberTruck.re:89:2 termination error: possible infinite loop when calling "testCacheHit"
     CallStack:
     1 at testCacheHit (TestCyberTruck.re:83:23)
   
   Function Table:
     evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight, _}
-  TestCyberTruck.re:97:30 termination error: possilbe infinite loop when calling "evalOrderIsNotLeftToRight"
+  TestCyberTruck.re:97:30 termination error: possible infinite loop when calling "evalOrderIsNotLeftToRight"
     CallStack:
     1 at evalOrderIsNotLeftToRight (TestCyberTruck.re:95:36)
   
   Function Table:
     evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress, _}
-  TestCyberTruck.re:104:18 termination error: possilbe infinite loop when calling "evalOrderIsNotRightToLeft"
+  TestCyberTruck.re:104:18 termination error: possible infinite loop when calling "evalOrderIsNotRightToLeft"
     CallStack:
     1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
   
@@ -120,7 +78,11 @@
     parseList<f>: ( _ | f; parseList<f:f> )
     parseListInt: parseList<f:parseInt>
     parseListListInt: parseList<f:parseListInt>
-  TestCyberTruck.re:173:14 termination error: possilbe infinite loop when calling "parseList<f:f>" which is "parseList<f:parseListInt>"
+  TestCyberTruck.re:163:32 termination analysis: cache miss for parseList<f:parseListInt>
+  TestCyberTruck.re:172:17 termination analysis: cache miss for parseListInt
+  TestCyberTruck.re:165:24 termination analysis: cache miss for parseList<f:parseInt>
+  TestCyberTruck.re:172:17 termination analysis: cache miss for parseInt
+  TestCyberTruck.re:173:14 termination error: possible infinite loop when calling "parseList<f:f>" which is "parseList<f:parseListInt>"
     CallStack:
     2 at parseList<f:parseListInt> (TestCyberTruck.re:163:32)
     1 at parseListListInt (TestCyberTruck.re:163:27)

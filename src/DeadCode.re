@@ -76,19 +76,24 @@ let reportResults = (~posInAliveWhitelist) => {
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let extension = Filename.extension(cmtFile);
   let moduleName = cmtFile |> getModuleName;
-  let sourceFile =
-    (GenTypeCommon.projectRoot^ +++ sourceDir +++ moduleName)
-    ++ (extension == ".cmti" ? ".rei" : ".re");
-  if (!Sys.file_exists(sourceFile)) {
-    GenTypeCommon.logItem(
-      "XXX sourceFile does not exist: %s\n",
-      Filename.basename(sourceFile),
-    );
+  let sourceFile = ext =>
+    (GenTypeCommon.projectRoot^ +++ sourceDir +++ moduleName) ++ ext;
+  let sourceFileRE = sourceFile(extension == ".cmti" ? ".rei" : ".re");
+  let sourceFileML = sourceFile(extension == ".cmti" ? ".mli" : ".ml");
+  if (!Sys.file_exists(sourceFileRE)) {
+    if (!Sys.file_exists(sourceFileML))
+      {
+        GenTypeCommon.logItem(
+          "XXX sourceFile does not exist: %s\n",
+          Filename.basename(sourceFileRE),
+        );
+      };
+      // skip .ml files at the moment
   } else {
-    FileHash.addFile(fileReferences, sourceFile);
+    FileHash.addFile(fileReferences, sourceFileRE);
 
     let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-    loadFile(~sourceFile, cmtFilePath);
+    loadFile(~sourceFile=sourceFileRE, cmtFilePath);
   };
 };
 

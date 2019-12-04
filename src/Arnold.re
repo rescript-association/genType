@@ -380,7 +380,7 @@ module Eval = {
             ++ (functionCallInstantiated |> FunctionCall.toString)
             ++ "\"";
       GenTypeCommon.logItem(
-        "%s termination error: possilbe infinite loop when calling %s\n",
+        "%s termination error: possible infinite loop when calling %s\n",
         pos |> posToString(~printCol=true, ~shortFile=true),
         explainCall,
       );
@@ -419,11 +419,18 @@ module Eval = {
             GenTypeCommon.logItem(
               "%s termination analysis: cache hit for %s\n",
               pos |> posToString(~printCol=true, ~shortFile=true),
-              FunctionCall.toString(functionCall),
+              FunctionCall.toString(functionCallInstantiated),
             );
           };
           res;
         | None =>
+          if (verbose) {
+            GenTypeCommon.logItem(
+              "%s termination analysis: cache miss for %s\n",
+              pos |> posToString(~printCol=true, ~shortFile=true),
+              FunctionCall.toString(functionCallInstantiated),
+            );
+          };
           let functionDefinition =
             functionTable
             |> FunctionTable.getFunctionDefinition(~functionName);
@@ -662,6 +669,12 @@ module Compile = {
     | Texp_apply(expr, args) =>
       expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
     | Texp_let(recFlag, valueBindings, inExpr) =>
+      if (recFlag == Recursive) {
+        GenTypeCommon.logItem(
+          "%s termination error: nested let rec not supported yet\n",
+          pos |> posToString(~printCol=true, ~shortFile=true),
+        );
+      };
       let commands =
         (
           valueBindings
