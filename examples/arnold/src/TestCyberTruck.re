@@ -165,6 +165,8 @@ let rec parseListInt = p => parseList(p, ~f=parseInt)
 [@progress]
 and parseListListInt = p => parseList(p, ~f=parseListInt)
 
+// Annotating parseList is an error: can't be analyzed directly as it takes a parameter f
+[@progress]
 and parseList: 'a. (Parser.t, ~f: Parser.t => 'a) => list('a) =
   (p: Parser.t, ~f) =>
     if (p.token == Asterisk) {

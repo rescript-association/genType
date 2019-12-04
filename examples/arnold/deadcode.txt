@@ -107,17 +107,20 @@ Function Table:
   
 Termination analysis for "parseListInt"
   TestCyberTruck.re:163:28 termination analysis: cache miss for "parseList<f:parseInt>"
-  TestCyberTruck.re:173:17 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:175:17 termination analysis: cache miss for "parseInt"
   
 Termination analysis for "parseListListInt"
   TestCyberTruck.re:166:28 termination analysis: cache miss for "parseList<f:parseListInt>"
-  TestCyberTruck.re:173:17 termination analysis: cache miss for "parseListInt"
+  TestCyberTruck.re:175:17 termination analysis: cache miss for "parseListInt"
   TestCyberTruck.re:163:28 termination analysis: cache miss for "parseList<f:parseInt>"
-  TestCyberTruck.re:173:17 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:174:14 termination error: possible infinite loop when calling "parseList<f:f>" which is "parseList<f:parseListInt>"
+  TestCyberTruck.re:175:17 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:176:14 termination error: possible infinite loop when calling "parseList<f:f>" which is "parseList<f:parseListInt>"
     CallStack:
     2 at parseList<f:parseListInt> (TestCyberTruck.re:166:28)
     1 at parseListListInt (TestCyberTruck.re:166:23)
+  
+Termination analysis for "parseList"
+  TestCyberTruck.re:171:2 termination analysis error: "parseList" cannot be analyzed directly as it is parametric
 
 UNUSED EXPORTED VALUES:
   

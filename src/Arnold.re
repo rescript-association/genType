@@ -487,10 +487,17 @@ module Eval = {
     callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
     let functionDefinition =
       functionTable |> FunctionTable.getFunctionDefinition(~functionName);
-    assert(functionDefinition.kind == Kind.empty);
-    functionDefinition.body
-    |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
-    |> ignore;
+    if (functionDefinition.kind != Kind.empty) {
+      GenTypeCommon.logItem(
+        "%s termination analysis error: \"%s\" cannot be analyzed directly as it is parametric\n",
+        pos |> posToString(~printCol=true, ~shortFile=true),
+        functionName,
+      );
+    } else {
+      functionDefinition.body
+      |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
+      |> ignore;
+    };
   };
 };
 
