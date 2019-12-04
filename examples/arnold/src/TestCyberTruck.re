@@ -123,8 +123,11 @@ let rec butSecondArgumentIsAlwaysEvaluated = x => {
 module Parser = {
   type token =
     | Asterisk
+    | Eof
+    | Lparen
     | Int(int)
-    | Eof;
+    | Plus
+    | Rparen;
 
   type position = {
     lnum: int,
@@ -141,7 +144,10 @@ module Parser = {
     switch (token) {
     | Asterisk => "*"
     | Eof => "Eof"
+    | Lparen => "("
     | Int(n) => string_of_int(n)
+    | Plus => "+"
+    | Rparen => ")"
     };
 
   let next = p => {
@@ -157,6 +163,12 @@ module Parser = {
     } else {
       err(p, "expected token " ++ tokenToString(p.token));
     };
+};
+
+module Expr = {
+  type t =
+    | Int(int)
+    | Plus(t, t);
 };
 
 [@progress Parser.next]
@@ -186,4 +198,21 @@ and parseInt = (p: Parser.t) => {
     };
   Parser.next(p);
   res;
-};
+}
+
+[@progress]
+and parseExpression = (p: Parser.t) => {
+  switch (p.token) {
+  | Lparen =>
+    Parser.next(p);
+    let e1 = parseExpression(p);
+    Parser.expect(p, Plus);
+    let e2 = parseExpression(p);
+    Parser.expect(p, Lparen);
+    Expr.Plus(e1, e2);
+  | _ => Expr.Int(parseInt(p))
+  };
+}
+
+[@progress]
+and parseListExpression = p => parseList(p, ~f=parseExpression);

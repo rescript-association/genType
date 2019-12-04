@@ -349,7 +349,7 @@ module Eval = {
       | results =>
         results
         |> List.map(((cachedSet, res)) => {
-             let newFrameSet =
+             let newCachedSet =
                if (FunctionCallSet.subset(cachedSet, set)) {
                  // termination on a bigger stack is a stronger result to cache
                  modified := true;
@@ -357,7 +357,7 @@ module Eval = {
                } else {
                  cachedSet;
                };
-             (newFrameSet, res);
+             (newCachedSet, res);
            })
       | exception Not_found => []
       };
