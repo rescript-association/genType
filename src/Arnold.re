@@ -205,7 +205,7 @@ module FunctionTable = {
   let create = (): t => Hashtbl.create(1);
 
   let dump = (tbl: t) => {
-    GenTypeCommon.logItem("\n  Function Table:\n");
+    GenTypeCommon.logItem("\nFunction Table:\n");
     let definitions =
       Hashtbl.fold(
         (functionName, {kind, body}, definitions) =>
@@ -417,7 +417,7 @@ module Eval = {
         | Some(res) =>
           if (verbose) {
             GenTypeCommon.logItem(
-              "%s termination analysis: cache hit for %s\n",
+              "%s termination analysis: cache hit for \"%s\"\n",
               pos |> posToString(~printCol=true, ~shortFile=true),
               FunctionCall.toString(functionCallInstantiated),
             );
@@ -426,7 +426,7 @@ module Eval = {
         | None =>
           if (verbose) {
             GenTypeCommon.logItem(
-              "%s termination analysis: cache miss for %s\n",
+              "%s termination analysis: cache miss for \"%s\"\n",
               pos |> posToString(~printCol=true, ~shortFile=true),
               FunctionCall.toString(functionCallInstantiated),
             );
@@ -475,6 +475,12 @@ module Eval = {
     };
 
   let analyzeFunction = (~cache, ~functionTable, ~pos, functionName) => {
+    if (verbose) {
+      GenTypeCommon.logItem(
+        "\nTermination analysis for \"%s\"\n",
+        functionName,
+      );
+    };
     let callStack = CallStack.create();
     let functionArgs = FunctionArgs.empty;
     let functionCall = FunctionCall.noArgs(functionName);
@@ -790,22 +796,29 @@ module Compile = {
 
 let progressFunctionsFromAttributes = attributes => {
   let lidToString = lid => lid |> Longident.flatten |> String.concat(".");
-  switch (attributes |> Annotation.getAttributePayload((==)("progress"))) {
-  | None => []
-  | Some(IdentPayload(lid)) => [lidToString(lid)]
-  | Some(TuplePayload(l)) =>
-    l
-    |> List.filter(
-         fun
-         | Annotation.IdentPayload(_) => true
-         | _ => false,
-       )
-    |> List.map(
-         fun
-         | Annotation.IdentPayload(lid) => lidToString(lid)
-         | _ => assert(false),
-       )
-  | _ => []
+  let isProgress = (==)("progress");
+  if (attributes |> Annotation.hasAttribute(isProgress)) {
+    Some(
+      switch (attributes |> Annotation.getAttributePayload(isProgress)) {
+      | None => []
+      | Some(IdentPayload(lid)) => [lidToString(lid)]
+      | Some(TuplePayload(l)) =>
+        l
+        |> List.filter(
+             fun
+             | Annotation.IdentPayload(_) => true
+             | _ => false,
+           )
+        |> List.map(
+             fun
+             | Annotation.IdentPayload(lid) => lidToString(lid)
+             | _ => assert(false),
+           )
+      | _ => []
+      },
+    );
+  } else {
+    None;
   };
 };
 
@@ -813,15 +826,44 @@ let traverseAst = {
   let super = Tast_mapper.default;
 
   let value_bindings = (self: Tast_mapper.mapper, (recFlag, valueBindings)) => {
-    let progressFunctions =
-      switch (valueBindings) {
-      | _ when recFlag == Asttypes.Nonrecursive => []
-      | [(valueBinding: Typedtree.value_binding), ..._] =>
-        progressFunctionsFromAttributes(valueBinding.vb_attributes)
-      | [] => []
+    let (functionsToAnalyze, progressFunctions) =
+      if (recFlag == Asttypes.Nonrecursive) {
+        ([], []);
+      } else {
+        let (progressFunctions0, functionsToAnalyze0) =
+          valueBindings
+          |> List.fold_left(
+               (
+                 (progressFunctions, functionsToAnalyze),
+                 valueBinding: Typedtree.value_binding,
+               ) =>
+                 switch (
+                   progressFunctionsFromAttributes(valueBinding.vb_attributes)
+                 ) {
+                 | None => (progressFunctions, functionsToAnalyze)
+                 | Some(newProgressFunctions) => (
+                     newProgressFunctions @ progressFunctions,
+                     switch (valueBinding.vb_pat.pat_desc) {
+                     | Tpat_var(id, _) => [
+                         (
+                           Ident.name(id),
+                           valueBinding.vb_expr.exp_loc.loc_start,
+                         ),
+                         ...functionsToAnalyze,
+                       ]
+                     | _ => functionsToAnalyze
+                     },
+                   )
+                 },
+               ([], []),
+             );
+        (
+          functionsToAnalyze0 |> List.rev,
+          progressFunctions0 |> List.sort_uniq(String.compare),
+        );
       };
 
-    if (progressFunctions != []) {
+    if (functionsToAnalyze != []) {
       let functionTable = FunctionTable.create();
       let isProgressFunction = path =>
         List.mem(Path.name(path), progressFunctions);
@@ -874,11 +916,11 @@ let traverseAst = {
         FunctionTable.dump(functionTable);
       };
 
-      let (firstFunctionName, {Typedtree.exp_loc: {loc_start: pos}}) =
-        recursiveDefinitions |> List.hd;
-
       let cache = Eval.createCache();
-      firstFunctionName |> Eval.analyzeFunction(~cache, ~functionTable, ~pos);
+      functionsToAnalyze
+      |> List.iter(((functionName, pos)) =>
+           functionName |> Eval.analyzeFunction(~cache, ~functionTable, ~pos)
+         );
     };
 
     valueBindings

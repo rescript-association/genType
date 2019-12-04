@@ -160,9 +160,10 @@ module Parser = {
 };
 
 [@progress Parser.next]
-let rec parseListListInt = p => parseList(p, ~f=parseListInt)
+let rec parseListInt = p => parseList(p, ~f=parseInt)
 
-and parseListInt = p => parseList(p, ~f=parseInt)
+[@progress]
+and parseListListInt = p => parseList(p, ~f=parseListInt)
 
 and parseList: 'a. (Parser.t, ~f: Parser.t => 'a) => list('a) =
   (p: Parser.t, ~f) =>

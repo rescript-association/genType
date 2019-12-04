@@ -1,91 +1,123 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/TestCyberTruck.cmt
   
-  Function Table:
+Function Table:
     justReturn: _
   
-  Function Table:
+Termination analysis for "justReturn"
+  
+Function Table:
     alwaysLoop: alwaysLoop
+  
+Termination analysis for "alwaysLoop"
   TestCyberTruck.re:27:27 termination error: possible infinite loop when calling "alwaysLoop"
     CallStack:
     1 at alwaysLoop (TestCyberTruck.re:27:21)
   
-  Function Table:
+Function Table:
     alwaysProgress: +progress; alwaysProgress
   
-  Function Table:
+Termination analysis for "alwaysProgress"
+  
+Function Table:
     alwaysProgressWrongOrder: alwaysProgressWrongOrder; +progress
+  
+Termination analysis for "alwaysProgressWrongOrder"
   TestCyberTruck.re:38:2 termination error: possible infinite loop when calling "alwaysProgressWrongOrder"
     CallStack:
     1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
   TestCyberTruck.re:45:14 termination error: "doNotAlias" can only be called directly, or passed as labeled argument.
   
-  Function Table:
+Function Table:
     doNotAlias: _
   
-  Function Table:
+Termination analysis for "doNotAlias"
+  
+Function Table:
     progressOnBothBranches: ( +progress | +progress2 ); progressOnBothBranches
   
-  Function Table:
+Termination analysis for "progressOnBothBranches"
+  
+Function Table:
     progressOnOneBranch: ( +progress | _ ); progressOnOneBranch
+  
+Termination analysis for "progressOnOneBranch"
   TestCyberTruck.re:66:2 termination error: possible infinite loop when calling "progressOnOneBranch"
     CallStack:
     1 at progressOnOneBranch (TestCyberTruck.re:62:30)
   TestCyberTruck.re:78:38 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
   
-  Function Table:
+Function Table:
     callParseFunction<parseFunction>: parseFunction
     testParametricFunction: ( +progress | _ ); testParametricFunction2
     testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
-  TestCyberTruck.re:75:2 termination analysis: cache miss for testParametricFunction2
-  TestCyberTruck.re:77:35 termination analysis: cache miss for callParseFunction<parseFunction:testParametricFunction>
+  
+Termination analysis for "testParametricFunction"
+  TestCyberTruck.re:75:2 termination analysis: cache miss for "testParametricFunction2"
+  TestCyberTruck.re:77:35 termination analysis: cache miss for "callParseFunction<parseFunction:testParametricFunction>"
   TestCyberTruck.re:80:47 termination error: possible infinite loop when calling "parseFunction" which is "testParametricFunction"
     CallStack:
     3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:77:35)
     2 at testParametricFunction2 (TestCyberTruck.re:75:2)
     1 at testParametricFunction (TestCyberTruck.re:71:33)
   
-  Function Table:
+Function Table:
     doNothing: _
     testCacheHit: ( doNothing; doNothing; +Progress.Nested.f | _ ); testCacheHit
-  TestCyberTruck.re:85:4 termination analysis: cache miss for doNothing
-  TestCyberTruck.re:86:4 termination analysis: cache hit for doNothing
+  
+Termination analysis for "testCacheHit"
+  TestCyberTruck.re:85:4 termination analysis: cache miss for "doNothing"
+  TestCyberTruck.re:86:4 termination analysis: cache hit for "doNothing"
   TestCyberTruck.re:89:2 termination error: possible infinite loop when calling "testCacheHit"
     CallStack:
     1 at testCacheHit (TestCyberTruck.re:83:23)
   
-  Function Table:
+Function Table:
     evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight, _}
+  
+Termination analysis for "evalOrderIsNotLeftToRight"
   TestCyberTruck.re:97:30 termination error: possible infinite loop when calling "evalOrderIsNotLeftToRight"
     CallStack:
     1 at evalOrderIsNotLeftToRight (TestCyberTruck.re:95:36)
   
-  Function Table:
+Function Table:
     evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress, _}
+  
+Termination analysis for "evalOrderIsNotRightToLeft"
   TestCyberTruck.re:104:18 termination error: possible infinite loop when calling "evalOrderIsNotRightToLeft"
     CallStack:
     1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
   
-  Function Table:
+Function Table:
     butFirstArgumentIsAlwaysEvaluated: +progress; butFirstArgumentIsAlwaysEvaluated
   
-  Function Table:
-    butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
-  TestCyberTruck.re:163:48 termination analysis: "parseList" is parametric ~f=parseListInt
-  TestCyberTruck.re:165:40 termination analysis: "parseList" is parametric ~f=parseInt
+Termination analysis for "butFirstArgumentIsAlwaysEvaluated"
   
-  Function Table:
+Function Table:
+    butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
+  
+Termination analysis for "butSecondArgumentIsAlwaysEvaluated"
+  TestCyberTruck.re:163:44 termination analysis: "parseList" is parametric ~f=parseInt
+  TestCyberTruck.re:166:44 termination analysis: "parseList" is parametric ~f=parseListInt
+  
+Function Table:
     parseInt: +Parser.next
     parseList<f>: ( _ | f; parseList<f:f> )
     parseListInt: parseList<f:parseInt>
     parseListListInt: parseList<f:parseListInt>
-  TestCyberTruck.re:163:32 termination analysis: cache miss for parseList<f:parseListInt>
-  TestCyberTruck.re:172:17 termination analysis: cache miss for parseListInt
-  TestCyberTruck.re:165:24 termination analysis: cache miss for parseList<f:parseInt>
-  TestCyberTruck.re:172:17 termination analysis: cache miss for parseInt
-  TestCyberTruck.re:173:14 termination error: possible infinite loop when calling "parseList<f:f>" which is "parseList<f:parseListInt>"
+  
+Termination analysis for "parseListInt"
+  TestCyberTruck.re:163:28 termination analysis: cache miss for "parseList<f:parseInt>"
+  TestCyberTruck.re:173:17 termination analysis: cache miss for "parseInt"
+  
+Termination analysis for "parseListListInt"
+  TestCyberTruck.re:166:28 termination analysis: cache miss for "parseList<f:parseListInt>"
+  TestCyberTruck.re:173:17 termination analysis: cache miss for "parseListInt"
+  TestCyberTruck.re:163:28 termination analysis: cache miss for "parseList<f:parseInt>"
+  TestCyberTruck.re:173:17 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:174:14 termination error: possible infinite loop when calling "parseList<f:f>" which is "parseList<f:parseListInt>"
     CallStack:
-    2 at parseList<f:parseListInt> (TestCyberTruck.re:163:32)
-    1 at parseListListInt (TestCyberTruck.re:163:27)
+    2 at parseList<f:parseListInt> (TestCyberTruck.re:166:28)
+    1 at parseListListInt (TestCyberTruck.re:166:23)
 
 UNUSED EXPORTED VALUES:
   
