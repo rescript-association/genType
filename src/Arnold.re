@@ -473,6 +473,19 @@ module Eval = {
       // make progress only if all the commands do
       !List.mem(false, results);
     };
+
+  let analyzeFunction = (~cache, ~functionTable, ~pos, functionName) => {
+    let callStack = CallStack.create();
+    let functionArgs = FunctionArgs.empty;
+    let functionCall = FunctionCall.noArgs(functionName);
+    callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
+    let functionDefinition =
+      functionTable |> FunctionTable.getFunctionDefinition(~functionName);
+    assert(functionDefinition.kind == Kind.empty);
+    functionDefinition.body
+    |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
+    |> ignore;
+  };
 };
 
 module NamedArgumentWithRecursiveFunction = {
@@ -863,21 +876,9 @@ let traverseAst = {
 
       let (firstFunctionName, {Typedtree.exp_loc: {loc_start: pos}}) =
         recursiveDefinitions |> List.hd;
-      let res = {
-        let cache = Eval.createCache();
-        let callStack = CallStack.create();
-        let functionName = firstFunctionName;
-        let functionArgs = FunctionArgs.empty;
-        let functionCall = FunctionCall.noArgs(functionName);
-        callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
-        let functionDefinition =
-          functionTable |> FunctionTable.getFunctionDefinition(~functionName);
-        assert(functionDefinition.kind == Kind.empty);
 
-        functionDefinition.body
-        |> Eval.run(~cache, ~callStack, ~functionArgs, ~functionTable);
-      };
-      ignore(res);
+      let cache = Eval.createCache();
+      firstFunctionName |> Eval.analyzeFunction(~cache, ~functionTable, ~pos);
     };
 
     valueBindings
