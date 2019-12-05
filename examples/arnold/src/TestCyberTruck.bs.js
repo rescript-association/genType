@@ -207,13 +207,13 @@ function $$parseInt(p) {
   return res;
 }
 
-function parseExpression(p) {
+function parseExpression($staropt$star, p) {
   var match = p[/* token */2];
   if (typeof match === "number" && match === 2) {
     next(p);
-    var e1 = parseExpression(p);
+    var e1 = parseExpression(undefined, p);
     expect(p, /* Plus */3);
-    var e2 = parseExpression(p);
+    var e2 = parseExpression(undefined, p);
     expect(p, /* Lparen */2);
     return /* Plus */Block.__(1, [
               e1,
@@ -233,7 +233,9 @@ function parseListListInt(p) {
 }
 
 function parseListExpression(p) {
-  return parseList(p, parseExpression);
+  return parseList(p, (function (eta) {
+                return parseExpression(undefined, eta);
+              }));
 }
 
 var progress2 = progress;

@@ -509,6 +509,29 @@ module Eval = {
   };
 };
 
+let extractLabelledArgument = (argOpt: option(Typedtree.expression)) =>
+  switch (argOpt) {
+  | Some({
+      exp_desc:
+        Texp_ident(path, {loc: {loc_start: pos}}, _) |
+        Texp_let(
+          Nonrecursive,
+          [
+            {
+              vb_pat: {pat_desc: Tpat_var(_, _)},
+              vb_expr: {
+                exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _),
+              },
+              vb_loc: {loc_ghost: true},
+            },
+          ],
+          _,
+        ),
+    }) =>
+    Some((path, pos))
+  | _ => None
+  };
+
 module NamedArgumentWithRecursiveFunction = {
   let traverseExpr = (~functionTable) => {
     let super = Tast_mapper.default;
@@ -520,14 +543,8 @@ module NamedArgumentWithRecursiveFunction = {
         let functionName = Path.name(callee);
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
-             switch (argLabel, argOpt) {
-             | (
-                 Labelled(label),
-                 Some({
-                   Typedtree.exp_desc:
-                     Texp_ident(path, {loc: {loc_start}}, _),
-                 }),
-               )
+             switch (argLabel, argOpt |> extractLabelledArgument) {
+             | (Labelled(label), Some((path, pos)))
                  when
                    path |> FunctionTable.isInFunctionInTable(~functionTable) =>
                functionTable
@@ -535,7 +552,7 @@ module NamedArgumentWithRecursiveFunction = {
                if (verbose) {
                  GenTypeCommon.logItem(
                    "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
-                   loc_start |> posToString(~printCol=true, ~shortFile=true),
+                   pos |> posToString(~printCol=true, ~shortFile=true),
                    functionName,
                    label,
                    Path.name(path),
@@ -582,11 +599,8 @@ module ExpressionWellFormed = {
         let functionName = Path.name(functionPath);
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) => {
-             switch (argOpt) {
-             | Some({
-                 Typedtree.exp_desc:
-                   Texp_ident(path, {loc: {loc_start: pos}}, _),
-               }) =>
+             switch (argOpt |> extractLabelledArgument) {
+             | Some((path, pos)) =>
                switch (argLabel) {
                | Labelled(label) =>
                  if (functionTable
@@ -675,9 +689,14 @@ module Compile = {
                  | _ => false
                  }
                );
+          let argOpt =
+            switch (argOpt) {
+            | Some((_, Some(e))) => Some(e)
+            | _ => None
+            };
           let posString = pos |> posToString(~printCol=true, ~shortFile=true);
           let functionArg =
-            switch (argOpt) {
+            switch (argOpt |> extractLabelledArgument) {
             | None =>
               GenTypeCommon.logItem(
                 "%s termination error: call must have named argument \"%s\"\n",
@@ -685,11 +704,13 @@ module Compile = {
                 label,
               );
               raise(ArgError);
-            | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
+
+            | Some((path, _pos))
                 when path |> FunctionTable.isInFunctionInTable(~functionTable) =>
               let functionName = Path.name(path);
               {FunctionArgs.label, functionName};
-            | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
+
+            | Some((path, _pos))
                 when
                   functionTable
                   |> FunctionTable.functionGetKindOfLabel(
@@ -699,6 +720,7 @@ module Compile = {
                   == Some([]) /* TODO: when kinds are inferred, support and check non-empty kinds */ =>
               let functionName = Path.name(path);
               {FunctionArgs.label, functionName};
+
             | _ =>
               GenTypeCommon.logItem(
                 "%s termination error: named argument \"%s\" must be passed a recursive function\n",

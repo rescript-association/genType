@@ -171,15 +171,14 @@ module Expr = {
     | Plus(t, t);
 };
 
-let rec parseList: 'a. (Parser.t, ~f: Parser.t => 'a) => list('a) =
-  (p: Parser.t, ~f) =>
-    if (p.token == Asterisk) {
-      [];
-    } else {
-      let item = f(p);
-      let l = parseList(p, ~f);
-      [item, ...l];
-    };
+let rec parseList = (p: Parser.t, ~f) =>
+  if (p.token == Asterisk) {
+    [];
+  } else {
+    let item = f(p);
+    let l = parseList(p, ~f);
+    [item, ...l];
+  };
 
 [@progress Parser.next]
 let rec parseListInt = p => parseList(p, ~f=parseInt)
@@ -200,7 +199,7 @@ and parseInt = (p: Parser.t) => {
 }
 
 [@progress]
-and parseExpression = (p: Parser.t) => {
+and parseExpression = (~x=4, p: Parser.t) => {
   switch (p.token) {
   | Lparen =>
     Parser.next(p);
