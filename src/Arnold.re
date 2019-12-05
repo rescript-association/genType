@@ -204,7 +204,7 @@ module Command = {
 
 module FunctionTable = {
   type functionDefinition = {
-    mutable body: Command.t,
+    mutable body: option(Command.t),
     mutable kind: Kind.t,
   };
 
@@ -228,15 +228,15 @@ module FunctionTable = {
            "  %s%s: %s\n",
            functionName,
            Kind.toString(kind),
-           Command.toString(body),
+           switch (body) {
+           | Some(command) => Command.toString(command)
+           | None => "None"
+           },
          )
        );
   };
 
-  let initialFunctionDefinition = () => {
-    kind: Kind.empty,
-    body: Sequence([]),
-  };
+  let initialFunctionDefinition = () => {kind: Kind.empty, body: None};
 
   let getFunctionDefinition = (~functionName, tbl: t) =>
     try(Hashtbl.find(tbl, functionName)) {
@@ -446,8 +446,13 @@ module Eval = {
             functionTable
             |> FunctionTable.getFunctionDefinition(~functionName);
           callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
+          let body =
+            switch (functionDefinition.body) {
+            | Some(body) => body
+            | None => assert(false)
+            };
           let res =
-            functionDefinition.body
+            body
             |> run(
                  ~cache,
                  ~callStack,
@@ -505,9 +510,12 @@ module Eval = {
         functionName,
       );
     } else {
-      functionDefinition.body
-      |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
-      |> ignore;
+      let body =
+        switch (functionDefinition.body) {
+        | Some(body) => body
+        | None => assert(false)
+        };
+      body |> run(~cache, ~callStack, ~functionArgs, ~functionTable) |> ignore;
     };
   };
 };
@@ -832,7 +840,7 @@ module Compile = {
         oldFunctionName,
         newFunctionName,
       );
-      newFunctionDefinition.body = vb_expr |> expression(~ctx=newCtx);
+      newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
       GenTypeCommon.logItem(
         "%s termination analysis: adding recursive definition \"%s\"\n",
         posString,
@@ -1065,23 +1073,31 @@ let traverseAst = (~valueBindingsTable) => {
          });
 
       functionTable
-      |> Hashtbl.iter((functionName, _) => {
-           let body = Hashtbl.find(valueBindingsTable, functionName);
-           functionTable
-           |> FunctionTable.addBody(
-                ~body=
-                  body
-                  |> Compile.expression(
-                       ~ctx={
-                         currentFunctionName: functionName,
-                         functionTable,
-                         innerRecursiveFunctions: Hashtbl.create(1),
-                         isProgressFunction,
-                       },
-                     ),
-                ~functionName,
-              );
-         });
+      |> Hashtbl.iter(
+           (
+             functionName,
+             functionDefinition: FunctionTable.functionDefinition,
+           ) =>
+           if (functionDefinition.body == None) {
+             let body = Hashtbl.find(valueBindingsTable, functionName);
+             functionTable
+             |> FunctionTable.addBody(
+                  ~body=
+                    Some(
+                      body
+                      |> Compile.expression(
+                           ~ctx={
+                             currentFunctionName: functionName,
+                             functionTable,
+                             innerRecursiveFunctions: Hashtbl.create(1),
+                             isProgressFunction,
+                           },
+                         ),
+                    ),
+                  ~functionName,
+                );
+           }
+         );
 
       if (verbose) {
         FunctionTable.dump(functionTable);
