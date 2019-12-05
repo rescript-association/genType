@@ -38,7 +38,7 @@ Function Table:
 Termination analysis for "progressOnBothBranches"
   
 Function Table:
-    progressOnOneBranch: ( +progress | _ ); progressOnOneBranch
+    progressOnOneBranch: ( _ | +progress ); progressOnOneBranch
   
 Termination analysis for "progressOnOneBranch"
   TestCyberTruck.re:66:2 termination error: possible infinite loop when calling "progressOnOneBranch"
@@ -48,7 +48,7 @@ Termination analysis for "progressOnOneBranch"
   
 Function Table:
     callParseFunction<parseFunction>: parseFunction
-    testParametricFunction: ( +progress | _ ); testParametricFunction2
+    testParametricFunction: ( _ | +progress ); testParametricFunction2
     testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
   
 Termination analysis for "testParametricFunction"
@@ -62,7 +62,7 @@ Termination analysis for "testParametricFunction"
   
 Function Table:
     doNothing: _
-    testCacheHit: ( doNothing; doNothing; +Progress.Nested.f | _ ); testCacheHit
+    testCacheHit: ( _ | doNothing; doNothing; +Progress.Nested.f ); testCacheHit
   
 Termination analysis for "testCacheHit"
   TestCyberTruck.re:85:4 termination analysis: cache miss for "doNothing"

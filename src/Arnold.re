@@ -160,14 +160,22 @@ module Command = {
 
   let nothing = Sequence([]);
 
-  let rec nondet = commands =>
-    switch (commands) {
-    | [] => nothing
-    | [Sequence([]), Sequence([]), ...rest] =>
-      nondet([Sequence([]), ...rest])
-    | [command] => command
-    | _ => Nondet(commands)
-    };
+  let nondet = commands => {
+    let rec loop = commands =>
+      switch (commands) {
+      | [] => nothing
+      | [Sequence([]), Sequence([]), ...rest] =>
+        loop([Sequence([]), ...rest])
+      | [Nondet(commands), ...rest] => loop(commands @ rest)
+      | [Sequence([]), Nondet(commands), ...rest] =>
+        loop([Sequence([]), ...commands] @ rest)
+      | [command] => command
+      | _ => Nondet(commands)
+      };
+    let (nothings, others) =
+      commands |> List.partition(c => c == Sequence([]));
+    loop(nothings == [] ? others : [Sequence([]), ...others]);
+  };
 
   let seq = (c1, c2) =>
     switch (c1, c2) {
@@ -556,62 +564,74 @@ module ExpressionWellFormed = {
   let traverseExpr = (~functionTable, ~valueBindingsTable) => {
     let super = Tast_mapper.default;
 
+    let checkIdent = (~path, ~pos) =>
+      if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
+        GenTypeCommon.logItem(
+          "%s termination error: \"%s\" can only be called directly, or passed as labeled argument.\n",
+          pos |> posToString(~printCol=true, ~shortFile=true),
+          Path.name(path),
+        );
+      };
+
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
       switch (e.exp_desc) {
-      | Texp_ident(path, {loc: {loc_start}}, _) =>
-        if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
-          GenTypeCommon.logItem(
-            "%s termination error: \"%s\" can only be called directly, or passed as labeled argument.\n",
-            loc_start |> posToString(~printCol=true, ~shortFile=true),
-            Path.name(path),
-          );
-        };
+      | Texp_ident(path, {loc: {loc_start: pos}}, _) =>
+        checkIdent(~path, ~pos);
         e;
       | Texp_apply({exp_desc: Texp_ident(functionPath, _, _)}, args) =>
         let functionName = Path.name(functionPath);
         args
-        |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
-             switch (argLabel, argOpt) {
-             | (
-                 Labelled(label),
-                 Some({Typedtree.exp_desc: Texp_ident(path, _, _)} as arg),
-               ) =>
-               if (functionTable
-                   |> FunctionTable.functionGetKindOfLabel(
-                        ~functionName,
-                        ~label,
-                      )
-                   != None) {
-                 ();
-               } else {
-                 switch (Hashtbl.find_opt(valueBindingsTable, functionName)) {
-                 | Some((body: Typedtree.expression))
-                     when
-                       !(
-                         functionPath
-                         |> FunctionTable.isInFunctionInTable(~functionTable)
-                       ) =>
-                   functionTable |> FunctionTable.addFunction(~functionName);
-                   functionTable
-                   |> FunctionTable.addLabelToKind(~functionName, ~label);
-                   if (verbose) {
-                     GenTypeCommon.logItem(
-                       "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
-                       body.exp_loc.loc_start
-                       |> posToString(~printCol=true, ~shortFile=true),
-                       functionName,
-                       label,
-                       Path.name(path),
-                     );
+        |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) => {
+             switch (argOpt) {
+             | Some({
+                 Typedtree.exp_desc:
+                   Texp_ident(path, {loc: {loc_start: pos}}, _),
+               }) =>
+               switch (argLabel) {
+               | Labelled(label) =>
+                 if (functionTable
+                     |> FunctionTable.functionGetKindOfLabel(
+                          ~functionName,
+                          ~label,
+                        )
+                     != None) {
+                   ();
+                 } else {
+                   switch (Hashtbl.find_opt(valueBindingsTable, functionName)) {
+                   | Some((body: Typedtree.expression))
+                       when
+                         !(
+                           functionPath
+                           |> FunctionTable.isInFunctionInTable(
+                                ~functionTable,
+                              )
+                         )
+                         && path
+                         |> FunctionTable.isInFunctionInTable(~functionTable) =>
+                     functionTable |> FunctionTable.addFunction(~functionName);
+                     functionTable
+                     |> FunctionTable.addLabelToKind(~functionName, ~label);
+                     if (verbose) {
+                       GenTypeCommon.logItem(
+                         "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
+                         body.exp_loc.loc_start
+                         |> posToString(~printCol=true, ~shortFile=true),
+                         functionName,
+                         label,
+                         Path.name(path),
+                       );
+                     };
+                   | _ => checkIdent(~path, ~pos)
                    };
-                 | _ => self.expr(self, arg) |> ignore
-                 };
+                 }
+
+               | Optional(_)
+               | Nolabel => checkIdent(~path, ~pos)
                }
 
-             | (_, Some(arg)) => self.expr(self, arg) |> ignore
              | _ => ()
              }
-           );
+           });
         e;
 
       | _ => super.expr(self, e)
