@@ -171,14 +171,17 @@ module Expr = {
     | Plus(t, t);
 };
 
-let rec parseList = (p: Parser.t, ~f) =>
-  if (p.token == Asterisk) {
-    [];
-  } else {
-    let item = f(p);
-    let l = parseList(p, ~f);
-    [item, ...l];
-  };
+let parseList = (p: Parser.t, ~f) => {
+  let rec loop = (p: Parser.t) =>
+    if (p.token == Asterisk) {
+      [];
+    } else {
+      let item = f(p);
+      let l = loop(p);
+      [item, ...l];
+    };
+  loop(p);
+};
 
 [@progress Parser.next]
 let rec parseListInt = p => parseList(p, ~f=parseInt)

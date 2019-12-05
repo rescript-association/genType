@@ -280,8 +280,8 @@ module CallStack = {
 
   let create = () => {tbl: Hashtbl.create(1), size: 0};
 
-  let hasFunctionCall = (~functionCallInstantiated, t: t) =>
-    Hashtbl.mem(t.tbl, functionCallInstantiated);
+  let hasFunctionCall = (~functionCall, t: t) =>
+    Hashtbl.mem(t.tbl, functionCall);
 
   let addFunctionCall = (~functionCall, ~pos, t: t) => {
     t.size = t.size + 1;
@@ -377,15 +377,17 @@ module Eval = {
   };
 
   let hasInfiniteLoop =
-      (~callStack, ~functionCall, ~functionCallInstantiated, ~pos) =>
-    if (callStack |> CallStack.hasFunctionCall(~functionCallInstantiated)) {
+      (~callStack, ~functionCallToInstantiate, ~functionCall, ~pos) =>
+    if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
       let explainCall =
-        functionCall == functionCallInstantiated
-          ? "\"" ++ (functionCall |> FunctionCall.toString) ++ "\""
+        functionCallToInstantiate == functionCall
+          ? "\""
+            ++ (functionCallToInstantiate |> FunctionCall.toString)
+            ++ "\""
           : "\""
-            ++ (functionCall |> FunctionCall.toString)
+            ++ (functionCallToInstantiate |> FunctionCall.toString)
             ++ "\" which is \""
-            ++ (functionCallInstantiated |> FunctionCall.toString)
+            ++ (functionCall |> FunctionCall.toString)
             ++ "\"";
       GenTypeCommon.logItem(
         "%s termination error: possible infinite loop when calling %s\n",
@@ -409,14 +411,15 @@ module Eval = {
             command: Command.t,
           ) =>
     switch (command) {
-    | Call(FunctionCall(functionCall), pos) =>
-      let functionCallInstantiated =
-        functionCall |> FunctionCall.applySubstitution(~sub=functionArgs);
-      let functionName = functionCallInstantiated.functionName;
+    | Call(FunctionCall(functionCallToInstantiate), pos) =>
+      let functionCall =
+        functionCallToInstantiate
+        |> FunctionCall.applySubstitution(~sub=functionArgs);
+      let functionName = functionCall.functionName;
       if (hasInfiniteLoop(
             ~callStack,
+            ~functionCallToInstantiate,
             ~functionCall,
-            ~functionCallInstantiated,
             ~pos,
           )) {
         false; // continue as if it terminated without progress
@@ -427,7 +430,7 @@ module Eval = {
             GenTypeCommon.logItem(
               "%s termination analysis: cache hit for \"%s\"\n",
               pos |> posToString(~printCol=true, ~shortFile=true),
-              FunctionCall.toString(functionCallInstantiated),
+              FunctionCall.toString(functionCall),
             );
           };
           res;
@@ -436,7 +439,7 @@ module Eval = {
             GenTypeCommon.logItem(
               "%s termination analysis: cache miss for \"%s\"\n",
               pos |> posToString(~printCol=true, ~shortFile=true),
-              FunctionCall.toString(functionCallInstantiated),
+              FunctionCall.toString(functionCall),
             );
           };
           let functionDefinition =
@@ -665,16 +668,56 @@ module Compile = {
   type ctx = {
     currentFunctionName: functionName,
     functionTable: FunctionTable.t,
+    innerRecursiveFunctions: Hashtbl.t(functionName, functionName),
     isProgressFunction: Path.t => bool,
   };
 
   let rec expression = (~ctx, expr: Typedtree.expression) => {
     let {currentFunctionName, functionTable, isProgressFunction} = ctx;
     let pos = expr.exp_loc.loc_start;
+    let posString = pos |> posToString(~printCol=true, ~shortFile=true);
     switch (expr.exp_desc) {
     | Texp_ident(_) => Command.nothing
 
-    | Texp_apply({exp_desc: Texp_ident(callee, _, _)} as expr, args) =>
+    | Texp_apply(
+        {exp_desc: Texp_ident(calleeToRename, l, vd)} as expr,
+        argsToExtend,
+      ) =>
+      let (callee, args) =
+        switch (
+          Hashtbl.find_opt(
+            ctx.innerRecursiveFunctions,
+            Path.name(calleeToRename),
+          )
+        ) {
+        | Some(innerFunctionName) =>
+          let innerFunctionDefinition =
+            functionTable
+            |> FunctionTable.getFunctionDefinition(
+                 ~functionName=innerFunctionName,
+               );
+          let argsFromKind =
+            innerFunctionDefinition.kind
+            |> List.map((entry: Kind.entry) =>
+                 (
+                   Asttypes.Labelled(entry.label),
+                   Some({
+                     ...expr,
+                     exp_desc:
+                       Texp_ident(
+                         Path.Pident(Ident.create(entry.label)),
+                         l,
+                         vd,
+                       ),
+                   }),
+                 )
+               );
+          (
+            Path.Pident(Ident.create(innerFunctionName)),
+            argsFromKind @ argsToExtend,
+          );
+        | None => (calleeToRename, argsToExtend)
+        };
       if (callee |> FunctionTable.isInFunctionInTable(~functionTable)) {
         let functionName = Path.name(callee);
         let functionDefinition =
@@ -694,7 +737,6 @@ module Compile = {
             | Some((_, Some(e))) => Some(e)
             | _ => None
             };
-          let posString = pos |> posToString(~printCol=true, ~shortFile=true);
           let functionArg =
             switch (argOpt |> extractLabelledArgument) {
             | None =>
@@ -763,13 +805,45 @@ module Compile = {
           assert(false)
         | None => expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
         };
-      }
+      };
     | Texp_apply(expr, args) =>
       expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
+    | Texp_let(
+        Recursive,
+        [{vb_pat: {pat_desc: Tpat_var(id, _)}, vb_expr}],
+        inExpr,
+      ) =>
+      let oldFunctionName = Ident.name(id);
+      let newFunctionName = currentFunctionName ++ "$" ++ oldFunctionName;
+      functionTable
+      |> FunctionTable.addFunction(~functionName=newFunctionName);
+      let newFunctionDefinition =
+        functionTable
+        |> FunctionTable.getFunctionDefinition(~functionName=newFunctionName);
+      let currentFunctionDefinition =
+        functionTable
+        |> FunctionTable.getFunctionDefinition(
+             ~functionName=currentFunctionName,
+           );
+      newFunctionDefinition.kind = currentFunctionDefinition.kind;
+      let newCtx = {...ctx, currentFunctionName: newFunctionName};
+      Hashtbl.replace(
+        ctx.innerRecursiveFunctions,
+        oldFunctionName,
+        newFunctionName,
+      );
+      newFunctionDefinition.body = vb_expr |> expression(~ctx=newCtx);
+      GenTypeCommon.logItem(
+        "%s termination analysis: adding recursive definition \"%s\"\n",
+        posString,
+        newFunctionName,
+      );
+      inExpr |> expression(~ctx);
+
     | Texp_let(recFlag, valueBindings, inExpr) =>
       if (recFlag == Recursive) {
         GenTypeCommon.logItem(
-          "%s termination error: nested let rec not supported yet\n",
+          "%s termination error: nested multiple let rec not supported yet\n",
           pos |> posToString(~printCol=true, ~shortFile=true),
         );
       };
@@ -1001,6 +1075,7 @@ let traverseAst = (~valueBindingsTable) => {
                        ~ctx={
                          currentFunctionName: functionName,
                          functionTable,
+                         innerRecursiveFunctions: Hashtbl.create(1),
                          isProgressFunction,
                        },
                      ),

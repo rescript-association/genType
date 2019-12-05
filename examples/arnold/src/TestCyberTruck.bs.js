@@ -188,16 +188,19 @@ var Parser = {
 var Expr = { };
 
 function parseList(p, f) {
-  if (p[/* token */2] === /* Asterisk */0) {
-    return /* [] */0;
-  } else {
-    var item = Curry._1(f, p);
-    var l = parseList(p, f);
-    return /* :: */[
-            item,
-            l
-          ];
-  }
+  var loop = function (p) {
+    if (p[/* token */2] === /* Asterisk */0) {
+      return /* [] */0;
+    } else {
+      var item = Curry._1(f, p);
+      var l = loop(p);
+      return /* :: */[
+              item,
+              l
+            ];
+    }
+  };
+  return loop(p);
 }
 
 function $$parseInt(p) {

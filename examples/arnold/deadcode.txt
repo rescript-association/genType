@@ -96,37 +96,44 @@ Function Table:
     butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
   
 Termination analysis for "butSecondArgumentIsAlwaysEvaluated"
-  TestCyberTruck.re:174:20 termination analysis: extend Function Table with "parseList" as parametric ~f=parseInt
+  TestCyberTruck.re:174:16 termination analysis: extend Function Table with "parseList" as parametric ~f=parseInt
+  TestCyberTruck.re:174:37 termination analysis: adding recursive definition "parseList$loop"
   
 Function Table:
     parseExpression: ( +Parser.next; parseExpression; parseExpression | parseInt )
     parseInt: +Parser.next
-    parseList<f>: ( _ | f; parseList<f:f> )
+    parseList<f>: parseList$loop<f:f>
+    parseList$loop<f>: ( _ | f; parseList$loop<f:f> )
     parseListExpression: parseList<f:parseExpression>
     parseListInt: parseList<f:parseInt>
     parseListListInt: parseList<f:parseListInt>
   
 Termination analysis for "parseListInt"
-  TestCyberTruck.re:184:28 termination analysis: cache miss for "parseList<f:parseInt>"
-  TestCyberTruck.re:178:15 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:187:28 termination analysis: cache miss for "parseList<f:parseInt>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseInt>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseInt"
   
 Termination analysis for "parseListListInt"
-  TestCyberTruck.re:187:28 termination analysis: cache miss for "parseList<f:parseListInt>"
-  TestCyberTruck.re:178:15 termination analysis: cache miss for "parseListInt"
-  TestCyberTruck.re:184:28 termination analysis: cache miss for "parseList<f:parseInt>"
-  TestCyberTruck.re:178:15 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:179:12 termination error: possible infinite loop when calling "parseList<f:f>" which is "parseList<f:parseListInt>"
+  TestCyberTruck.re:190:28 termination analysis: cache miss for "parseList<f:parseListInt>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseListInt>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseListInt"
+  TestCyberTruck.re:187:28 termination analysis: cache miss for "parseList<f:parseInt>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseInt>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:180:14 termination error: possible infinite loop when calling "parseList$loop<f:f>" which is "parseList$loop<f:parseListInt>"
     CallStack:
-    2 at parseList<f:parseListInt> (TestCyberTruck.re:187:28)
-    1 at parseListListInt (TestCyberTruck.re:187:23)
+    3 at parseList$loop<f:parseListInt> (TestCyberTruck.re:183:2)
+    2 at parseList<f:parseListInt> (TestCyberTruck.re:190:28)
+    1 at parseListListInt (TestCyberTruck.re:190:23)
   
 Termination analysis for "parseExpression"
-  TestCyberTruck.re:211:18 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
   
 Termination analysis for "parseListExpression"
-  TestCyberTruck.re:216:31 termination analysis: cache miss for "parseList<f:parseExpression>"
-  TestCyberTruck.re:178:15 termination analysis: cache miss for "parseExpression"
-  TestCyberTruck.re:211:18 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:219:31 termination analysis: cache miss for "parseList<f:parseExpression>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseExpression"
+  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
 
 UNUSED EXPORTED VALUES:
   
