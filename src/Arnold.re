@@ -235,7 +235,7 @@ module FunctionTable = {
     | Not_found => assert(false)
     };
 
-  let isFunctionInTable = (~functionTable, path) =>
+  let isInFunctionInTable = (~functionTable, path) =>
     Hashtbl.mem(functionTable, Path.name(path));
 
   let addFunction = (~functionName, tbl: t) => {
@@ -508,7 +508,7 @@ module NamedArgumentWithRecursiveFunction = {
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
       switch (e.exp_desc) {
       | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-          when callee |> FunctionTable.isFunctionInTable(~functionTable) =>
+          when callee |> FunctionTable.isInFunctionInTable(~functionTable) =>
         let functionName = Path.name(callee);
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
@@ -520,7 +520,8 @@ module NamedArgumentWithRecursiveFunction = {
                      Texp_ident(path, {loc: {loc_start}}, _),
                  }),
                )
-                 when path |> FunctionTable.isFunctionInTable(~functionTable) =>
+                 when
+                   path |> FunctionTable.isInFunctionInTable(~functionTable) =>
                functionTable
                |> FunctionTable.addLabelToKind(~functionName, ~label);
                if (verbose) {
@@ -552,13 +553,13 @@ module NamedArgumentWithRecursiveFunction = {
 };
 
 module ExpressionWellFormed = {
-  let traverseExpr = (~functionTable) => {
+  let traverseExpr = (~functionTable, ~valueBindingsTable) => {
     let super = Tast_mapper.default;
 
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
       switch (e.exp_desc) {
       | Texp_ident(path, {loc: {loc_start}}, _) =>
-        if (path |> FunctionTable.isFunctionInTable(~functionTable)) {
+        if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
           GenTypeCommon.logItem(
             "%s termination error: \"%s\" can only be called directly, or passed as labeled argument.\n",
             loc_start |> posToString(~printCol=true, ~shortFile=true),
@@ -566,19 +567,47 @@ module ExpressionWellFormed = {
           );
         };
         e;
-      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args) =>
+      | Texp_apply({exp_desc: Texp_ident(functionPath, _, _)}, args) =>
+        let functionName = Path.name(functionPath);
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
              switch (argLabel, argOpt) {
-             | (Labelled(label), Some({Typedtree.exp_desc: Texp_ident(_)}))
-                 when
-                   functionTable
+             | (
+                 Labelled(label),
+                 Some({Typedtree.exp_desc: Texp_ident(path, _, _)} as arg),
+               ) =>
+               if (functionTable
                    |> FunctionTable.functionGetKindOfLabel(
-                        ~functionName=Path.name(callee),
+                        ~functionName,
                         ~label,
                       )
-                   != None =>
-               ()
+                   != None) {
+                 ();
+               } else {
+                 switch (Hashtbl.find_opt(valueBindingsTable, functionName)) {
+                 | Some((body: Typedtree.expression))
+                     when
+                       !(
+                         functionPath
+                         |> FunctionTable.isInFunctionInTable(~functionTable)
+                       ) =>
+                   functionTable |> FunctionTable.addFunction(~functionName);
+                   functionTable
+                   |> FunctionTable.addLabelToKind(~functionName, ~label);
+                   if (verbose) {
+                     GenTypeCommon.logItem(
+                       "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
+                       body.exp_loc.loc_start
+                       |> posToString(~printCol=true, ~shortFile=true),
+                       functionName,
+                       label,
+                       Path.name(path),
+                     );
+                   };
+                 | _ => self.expr(self, arg) |> ignore
+                 };
+               }
+
              | (_, Some(arg)) => self.expr(self, arg) |> ignore
              | _ => ()
              }
@@ -591,8 +620,9 @@ module ExpressionWellFormed = {
     Tast_mapper.{...super, expr};
   };
 
-  let check = (~functionTable, expression: Typedtree.expression) => {
-    let traverseExpr = traverseExpr(~functionTable);
+  let check =
+      (~functionTable, ~valueBindingsTable, expression: Typedtree.expression) => {
+    let traverseExpr = traverseExpr(~functionTable, ~valueBindingsTable);
     expression |> traverseExpr.expr(traverseExpr) |> ignore;
   };
 };
@@ -611,7 +641,7 @@ module Compile = {
     | Texp_ident(_) => Command.nothing
 
     | Texp_apply({exp_desc: Texp_ident(callee, _, _)} as expr, args) =>
-      if (callee |> FunctionTable.isFunctionInTable(~functionTable)) {
+      if (callee |> FunctionTable.isInFunctionInTable(~functionTable)) {
         let functionName = Path.name(callee);
         let functionDefinition =
           functionTable |> FunctionTable.getFunctionDefinition(~functionName);
@@ -636,7 +666,7 @@ module Compile = {
               );
               raise(ArgError);
             | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
-                when path |> FunctionTable.isFunctionInTable(~functionTable) =>
+                when path |> FunctionTable.isInFunctionInTable(~functionTable) =>
               let functionName = Path.name(path);
               {FunctionArgs.label, functionName};
             | Some((_, Some({exp_desc: Texp_ident(path, _, _)})))
@@ -829,10 +859,20 @@ let progressFunctionsFromAttributes = attributes => {
   };
 };
 
-let traverseAst = {
+let traverseAst = (~valueBindingsTable) => {
   let super = Tast_mapper.default;
 
   let value_bindings = (self: Tast_mapper.mapper, (recFlag, valueBindings)) => {
+    // Update the table of value bindings for variables
+    valueBindings
+    |> List.iter((vb: Typedtree.value_binding) =>
+         switch (vb.vb_pat.pat_desc) {
+         | Tpat_var(id, _) =>
+           Hashtbl.replace(valueBindingsTable, Ident.name(id), vb.vb_expr)
+         | _ => ()
+         }
+       );
+
     let (functionsToAnalyze, progressFunctions) =
       if (recFlag == Asttypes.Nonrecursive) {
         ([], []);
@@ -875,48 +915,55 @@ let traverseAst = {
       let isProgressFunction = path =>
         List.mem(Path.name(path), progressFunctions);
 
-      let recursiveDefinitions =
+      let recursiveFunctions =
         List.fold_left(
           (defs, valueBinding: Typedtree.value_binding) =>
             switch (valueBinding.vb_pat.pat_desc) {
-            | Tpat_var(id, _) => [
-                (Ident.name(id), valueBinding.vb_expr),
-                ...defs,
-              ]
+            | Tpat_var(id, _) => [Ident.name(id), ...defs]
             | _ => defs
             },
           [],
           valueBindings,
         )
         |> List.rev;
+      let recursiveDefinitions =
+        recursiveFunctions
+        |> List.map(functionName =>
+             (functionName, Hashtbl.find(valueBindingsTable, functionName))
+           );
 
       recursiveDefinitions
-      |> List.iter(((functionName, _expr)) => {
+      |> List.iter(((functionName, _body)) => {
            functionTable |> FunctionTable.addFunction(~functionName)
          });
 
       recursiveDefinitions
-      |> List.iter(((_, expr)) => {
-           expr |> NamedArgumentWithRecursiveFunction.check(~functionTable)
+      |> List.iter(((_, body)) => {
+           body |> NamedArgumentWithRecursiveFunction.check(~functionTable)
          });
 
       recursiveDefinitions
-      |> List.iter(((_, expr)) => {
-           expr |> ExpressionWellFormed.check(~functionTable)
+      |> List.iter(((_, body)) => {
+           body
+           |> ExpressionWellFormed.check(~functionTable, ~valueBindingsTable)
          });
 
-      recursiveDefinitions
-      |> List.iter(((functionName, expr)) => {
-           let body =
-             expr
-             |> Compile.expression(
-                  ~ctx={
-                    currentFunctionName: functionName,
-                    functionTable,
-                    isProgressFunction,
-                  },
-                );
-           functionTable |> FunctionTable.addBody(~body, ~functionName);
+      functionTable
+      |> Hashtbl.iter((functionName, _) => {
+           let body = Hashtbl.find(valueBindingsTable, functionName);
+           functionTable
+           |> FunctionTable.addBody(
+                ~body=
+                  body
+                  |> Compile.expression(
+                       ~ctx={
+                         currentFunctionName: functionName,
+                         functionTable,
+                         isProgressFunction,
+                       },
+                     ),
+                ~functionName,
+              );
          });
 
       if (verbose) {
@@ -941,5 +988,8 @@ let traverseAst = {
   Tast_mapper.{...super, value_bindings};
 };
 
-let processStructure = (structure: Typedtree.structure) =>
+let processStructure = (structure: Typedtree.structure) => {
+  let valueBindingsTable = Hashtbl.create(1);
+  let traverseAst = traverseAst(~valueBindingsTable);
   structure |> traverseAst.structure(traverseAst) |> ignore;
+};

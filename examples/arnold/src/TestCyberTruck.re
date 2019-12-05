@@ -171,15 +171,7 @@ module Expr = {
     | Plus(t, t);
 };
 
-[@progress Parser.next]
-let rec parseListInt = p => parseList(p, ~f=parseInt)
-
-[@progress]
-and parseListListInt = p => parseList(p, ~f=parseListInt)
-
-// Annotating parseList is an error: can't be analyzed directly as it takes a parameter f
-[@progress]
-and parseList: 'a. (Parser.t, ~f: Parser.t => 'a) => list('a) =
+let rec parseList: 'a. (Parser.t, ~f: Parser.t => 'a) => list('a) =
   (p: Parser.t, ~f) =>
     if (p.token == Asterisk) {
       [];
@@ -187,7 +179,14 @@ and parseList: 'a. (Parser.t, ~f: Parser.t => 'a) => list('a) =
       let item = f(p);
       let l = parseList(p, ~f);
       [item, ...l];
-    }
+    };
+
+[@progress Parser.next]
+let rec parseListInt = p => parseList(p, ~f=parseInt)
+
+[@progress]
+and parseListListInt = p => parseList(p, ~f=parseListInt)
+
 and parseInt = (p: Parser.t) => {
   let res =
     switch (p.token) {

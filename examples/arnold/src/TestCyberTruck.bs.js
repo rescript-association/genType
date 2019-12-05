@@ -200,6 +200,13 @@ function parseList(p, f) {
   }
 }
 
+function $$parseInt(p) {
+  var match = p[/* token */2];
+  var res = typeof match === "number" ? (err(p, "integer expected"), -1) : match[0];
+  next(p);
+  return res;
+}
+
 function parseExpression(p) {
   var match = p[/* token */2];
   if (typeof match === "number" && match === 2) {
@@ -215,13 +222,6 @@ function parseExpression(p) {
   } else {
     return /* Int */Block.__(0, [$$parseInt(p)]);
   }
-}
-
-function $$parseInt(p) {
-  var match = p[/* token */2];
-  var res = typeof match === "number" ? (err(p, "integer expected"), -1) : match[0];
-  next(p);
-  return res;
 }
 
 function parseListInt(p) {
@@ -260,9 +260,9 @@ export {
   butSecondArgumentIsAlwaysEvaluated ,
   Parser ,
   Expr ,
+  parseList ,
   parseListInt ,
   parseListListInt ,
-  parseList ,
   $$parseInt ,
   parseExpression ,
   parseListExpression ,
