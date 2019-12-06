@@ -56,11 +56,10 @@
   addValueReference Types.re:82:4 --> js_json.mli:183:0
   addValueReference Types.re:96:4 --> Types.re:96:23
   addValueReference Types.re:102:4 --> Types.re:102:27
-  addValueReference Types.re:120:4 --> Types.re:120:39
-  addValueReference Types.re:136:4 --> Types.re:136:16
-  addValueReference Types.re:136:4 --> js.ml:70:1
-  addValueReference Types.re:136:4 --> js.ml:103:1
-  addValueReference Types.re:146:4 --> Types.re:146:36
+  addValueReference Types.re:137:4 --> Types.re:137:16
+  addValueReference Types.re:137:4 --> js.ml:70:1
+  addValueReference Types.re:137:4 --> js.ml:103:1
+  addValueReference Types.re:147:4 --> Types.re:147:36
   export someIntList Types.re:5:4
   export map Types.re:8:4
   [type] export A Types.re:12:4
@@ -82,10 +81,9 @@
   [type] export s Types.re:92:2
   export testConvertNull Types.re:96:4
   export testConvertLocation Types.re:102:4
-  export testMarshalFields Types.re:120:4
-  export setMatch Types.re:136:4
-  [type] export id Types.re:141:19
-  export testInstantiateTypeParameter Types.re:146:4
+  export setMatch Types.re:137:4
+  [type] export id Types.re:142:19
+  export testInstantiateTypeParameter Types.re:147:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
   addValueReference Tuples.re:4:4 --> Tuples.re:4:18
   addValueReference Tuples.re:4:4 --> Tuples.re:4:21
@@ -1275,7 +1273,7 @@
   export testMyRecBsAs Records.re:167:4
   export testMyRecBsAs2 Records.re:170:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
-  export make ImportIndex.re:1:0
+  export make ImportIndex.re:2:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Hooks.cmt
   addValueReference Hooks.re:4:13 --> js.ml:70:1
   addValueReference Hooks.re:5:2 --> React.re:104:0
@@ -1867,8 +1865,8 @@ and mutuallyRecursiveB = {[@dead "mutuallyRecursiveB.a"] a: mutuallyRecursiveA};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:92: record.s
 <-- line 92
   [@dead "record.s"] s: string,
-/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:141: someRecord.id
-<-- line 141
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re:142: someRecord.id
+<-- line 142
 type someRecord = {[@dead "someRecord.id"] id: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re:5: t.id
 <-- line 5
