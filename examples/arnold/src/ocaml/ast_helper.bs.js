@@ -12,18 +12,20 @@ import * as Docstrings from "./docstrings.bs.js";
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
-var default_loc = /* record */[/* contents */$$Location.none];
+var default_loc = {
+  contents: $$Location.none
+};
 
 function with_default_loc(l, f) {
-  var old = default_loc[0];
-  default_loc[0] = l;
+  var old = default_loc.contents;
+  default_loc.contents = l;
   try {
     var r = Curry._1(f, /* () */0);
-    default_loc[0] = old;
+    default_loc.contents = old;
     return r;
   }
   catch (exn){
-    default_loc[0] = old;
+    default_loc.contents = old;
     throw exn;
   }
 }
@@ -85,24 +87,24 @@ function string(quotation_delimiter, s) {
 }
 
 function mk($staropt$star, $staropt$star$1, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
-  return /* record */[
-          /* ptyp_desc */d,
-          /* ptyp_loc */loc,
-          /* ptyp_attributes */attrs
-        ];
+  return {
+          ptyp_desc: d,
+          ptyp_loc: loc,
+          ptyp_attributes: attrs
+        };
 }
 
 function attr(d, a) {
-  return /* record */[
-          /* ptyp_desc */d[/* ptyp_desc */0],
-          /* ptyp_loc */d[/* ptyp_loc */1],
-          /* ptyp_attributes */Pervasives.$at(d[/* ptyp_attributes */2], /* :: */[
+  return {
+          ptyp_desc: d.ptyp_desc,
+          ptyp_loc: d.ptyp_loc,
+          ptyp_attributes: Pervasives.$at(d.ptyp_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function any(loc, attrs, param) {
@@ -180,11 +182,11 @@ function extension(loc, attrs, a) {
 }
 
 function force_poly(t) {
-  var match = t[/* ptyp_desc */0];
+  var match = t.ptyp_desc;
   if (typeof match !== "number" && match.tag === /* Ptyp_poly */8) {
     return t;
   }
-  return poly(t[/* ptyp_loc */1], undefined, /* [] */0, t);
+  return poly(t.ptyp_loc, undefined, /* [] */0, t);
 }
 
 function varify_constructors(var_names, t) {
@@ -202,10 +204,10 @@ function varify_constructors(var_names, t) {
     }
   };
   var var_names$1 = List.map((function (v) {
-          return v[/* txt */0];
+          return v.txt;
         }), var_names);
   var loop = function (t) {
-    var match = t[/* ptyp_desc */0];
+    var match = t.ptyp_desc;
     var desc;
     if (typeof match === "number") {
       desc = /* Ptyp_any */0;
@@ -213,7 +215,7 @@ function varify_constructors(var_names, t) {
       switch (match.tag | 0) {
         case /* Ptyp_var */0 :
             var x = match[0];
-            check_variable(var_names$1, t[/* ptyp_loc */1], x);
+            check_variable(var_names$1, t.ptyp_loc, x);
             desc = /* Ptyp_var */Block.__(0, [x]);
             break;
         case /* Ptyp_arrow */1 :
@@ -228,7 +230,7 @@ function varify_constructors(var_names, t) {
             break;
         case /* Ptyp_constr */3 :
             var longident = match[0];
-            var match$1 = longident[/* txt */0];
+            var match$1 = longident.txt;
             var exit = 0;
             switch (match$1.tag | 0) {
               case /* Lident */0 :
@@ -270,7 +272,7 @@ function varify_constructors(var_names, t) {
             break;
         case /* Ptyp_alias */6 :
             var string = match[1];
-            check_variable(var_names$1, t[/* ptyp_loc */1], string);
+            check_variable(var_names$1, t.ptyp_loc, string);
             desc = /* Ptyp_alias */Block.__(6, [
                 loop(match[0]),
                 string
@@ -286,7 +288,7 @@ function varify_constructors(var_names, t) {
         case /* Ptyp_poly */8 :
             var string_lst = match[0];
             List.iter((function (v) {
-                    return check_variable(var_names$1, t[/* ptyp_loc */1], v[/* txt */0]);
+                    return check_variable(var_names$1, t.ptyp_loc, v.txt);
                   }), string_lst);
             desc = /* Ptyp_poly */Block.__(8, [
                 string_lst,
@@ -315,11 +317,11 @@ function varify_constructors(var_names, t) {
         
       }
     }
-    return /* record */[
-            /* ptyp_desc */desc,
-            /* ptyp_loc */t[/* ptyp_loc */1],
-            /* ptyp_attributes */t[/* ptyp_attributes */2]
-          ];
+    return {
+            ptyp_desc: desc,
+            ptyp_loc: t.ptyp_loc,
+            ptyp_attributes: t.ptyp_attributes
+          };
   };
   var loop_row_field = function (param) {
     if (param.tag) {
@@ -367,24 +369,24 @@ var Typ = {
 };
 
 function mk$1($staropt$star, $staropt$star$1, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
-  return /* record */[
-          /* ppat_desc */d,
-          /* ppat_loc */loc,
-          /* ppat_attributes */attrs
-        ];
+  return {
+          ppat_desc: d,
+          ppat_loc: loc,
+          ppat_attributes: attrs
+        };
 }
 
 function attr$1(d, a) {
-  return /* record */[
-          /* ppat_desc */d[/* ppat_desc */0],
-          /* ppat_loc */d[/* ppat_loc */1],
-          /* ppat_attributes */Pervasives.$at(d[/* ppat_attributes */2], /* :: */[
+  return {
+          ppat_desc: d.ppat_desc,
+          ppat_loc: d.ppat_loc,
+          ppat_attributes: Pervasives.$at(d.ppat_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function any$1(loc, attrs, param) {
@@ -507,24 +509,24 @@ var Pat = {
 };
 
 function mk$2($staropt$star, $staropt$star$1, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
-  return /* record */[
-          /* pexp_desc */d,
-          /* pexp_loc */loc,
-          /* pexp_attributes */attrs
-        ];
+  return {
+          pexp_desc: d,
+          pexp_loc: loc,
+          pexp_attributes: attrs
+        };
 }
 
 function attr$2(d, a) {
-  return /* record */[
-          /* pexp_desc */d[/* pexp_desc */0],
-          /* pexp_loc */d[/* pexp_loc */1],
-          /* pexp_attributes */Pervasives.$at(d[/* pexp_attributes */2], /* :: */[
+  return {
+          pexp_desc: d.pexp_desc,
+          pexp_loc: d.pexp_loc,
+          pexp_attributes: Pervasives.$at(d.pexp_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function ident(loc, attrs, a) {
@@ -752,32 +754,32 @@ function unreachable(loc, attrs, param) {
 }
 
 function $$case(lhs, guard, rhs) {
-  return /* record */[
-          /* pc_lhs */lhs,
-          /* pc_guard */guard,
-          /* pc_rhs */rhs
-        ];
+  return {
+          pc_lhs: lhs,
+          pc_guard: guard,
+          pc_rhs: rhs
+        };
 }
 
 function mk$3($staropt$star, $staropt$star$1, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
-  return /* record */[
-          /* pmty_desc */d,
-          /* pmty_loc */loc,
-          /* pmty_attributes */attrs
-        ];
+  return {
+          pmty_desc: d,
+          pmty_loc: loc,
+          pmty_attributes: attrs
+        };
 }
 
 function attr$3(d, a) {
-  return /* record */[
-          /* pmty_desc */d[/* pmty_desc */0],
-          /* pmty_loc */d[/* pmty_loc */1],
-          /* pmty_attributes */Pervasives.$at(d[/* pmty_attributes */2], /* :: */[
+  return {
+          pmty_desc: d.pmty_desc,
+          pmty_loc: d.pmty_loc,
+          pmty_attributes: Pervasives.$at(d.pmty_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function ident$1(loc, attrs, a) {
@@ -828,24 +830,24 @@ var Mty = {
 };
 
 function mk$4($staropt$star, $staropt$star$1, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
-  return /* record */[
-          /* pmod_desc */d,
-          /* pmod_loc */loc,
-          /* pmod_attributes */attrs
-        ];
+  return {
+          pmod_desc: d,
+          pmod_loc: loc,
+          pmod_attributes: attrs
+        };
 }
 
 function attr$4(d, a) {
-  return /* record */[
-          /* pmod_desc */d[/* pmod_desc */0],
-          /* pmod_loc */d[/* pmod_loc */1],
-          /* pmod_attributes */Pervasives.$at(d[/* pmod_attributes */2], /* :: */[
+  return {
+          pmod_desc: d.pmod_desc,
+          pmod_loc: d.pmod_loc,
+          pmod_attributes: Pervasives.$at(d.pmod_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function ident$2(loc, attrs, x) {
@@ -899,11 +901,11 @@ var Mod = {
 };
 
 function mk$5($staropt$star, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
-  return /* record */[
-          /* psig_desc */d,
-          /* psig_loc */loc
-        ];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
+  return {
+          psig_desc: d,
+          psig_loc: loc
+        };
 }
 
 function value(loc, a) {
@@ -995,11 +997,11 @@ var Sig = {
 };
 
 function mk$6($staropt$star, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
-  return /* record */[
-          /* pstr_desc */d,
-          /* pstr_loc */loc
-        ];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
+  return {
+          pstr_desc: d,
+          pstr_loc: loc
+        };
 }
 
 function $$eval(loc, $staropt$star, a) {
@@ -1108,24 +1110,24 @@ var Str = {
 };
 
 function mk$7($staropt$star, $staropt$star$1, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
-  return /* record */[
-          /* pcl_desc */d,
-          /* pcl_loc */loc,
-          /* pcl_attributes */attrs
-        ];
+  return {
+          pcl_desc: d,
+          pcl_loc: loc,
+          pcl_attributes: attrs
+        };
 }
 
 function attr$5(d, a) {
-  return /* record */[
-          /* pcl_desc */d[/* pcl_desc */0],
-          /* pcl_loc */d[/* pcl_loc */1],
-          /* pcl_attributes */Pervasives.$at(d[/* pcl_attributes */2], /* :: */[
+  return {
+          pcl_desc: d.pcl_desc,
+          pcl_loc: d.pcl_loc,
+          pcl_attributes: Pervasives.$at(d.pcl_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function constr$1(loc, attrs, a, b) {
@@ -1196,24 +1198,24 @@ var Cl = {
 };
 
 function mk$8($staropt$star, $staropt$star$1, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
-  return /* record */[
-          /* pcty_desc */d,
-          /* pcty_loc */loc,
-          /* pcty_attributes */attrs
-        ];
+  return {
+          pcty_desc: d,
+          pcty_loc: loc,
+          pcty_attributes: attrs
+        };
 }
 
 function attr$6(d, a) {
-  return /* record */[
-          /* pcty_desc */d[/* pcty_desc */0],
-          /* pcty_loc */d[/* pcty_loc */1],
-          /* pcty_attributes */Pervasives.$at(d[/* pcty_attributes */2], /* :: */[
+  return {
+          pcty_desc: d.pcty_desc,
+          pcty_loc: d.pcty_loc,
+          pcty_attributes: Pervasives.$at(d.pcty_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function constr$2(loc, attrs, a, b) {
@@ -1258,14 +1260,14 @@ var Cty = {
 };
 
 function mk$9($staropt$star, $staropt$star$1, $staropt$star$2, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
-  return /* record */[
-          /* pctf_desc */d,
-          /* pctf_loc */loc,
-          /* pctf_attributes */Docstrings.add_docs_attrs(docs, attrs)
-        ];
+  return {
+          pctf_desc: d,
+          pctf_loc: loc,
+          pctf_attributes: Docstrings.add_docs_attrs(docs, attrs)
+        };
 }
 
 function inherit_(loc, attrs, a) {
@@ -1315,25 +1317,25 @@ function text$2(txt) {
 }
 
 function attr$7(d, a) {
-  return /* record */[
-          /* pctf_desc */d[/* pctf_desc */0],
-          /* pctf_loc */d[/* pctf_loc */1],
-          /* pctf_attributes */Pervasives.$at(d[/* pctf_attributes */2], /* :: */[
+  return {
+          pctf_desc: d.pctf_desc,
+          pctf_loc: d.pctf_loc,
+          pctf_attributes: Pervasives.$at(d.pctf_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function mk$10($staropt$star, $staropt$star$1, $staropt$star$2, d) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
-  return /* record */[
-          /* pcf_desc */d,
-          /* pcf_loc */loc,
-          /* pcf_attributes */Docstrings.add_docs_attrs(docs, attrs)
-        ];
+  return {
+          pcf_desc: d,
+          pcf_loc: loc,
+          pcf_attributes: Docstrings.add_docs_attrs(docs, attrs)
+        };
 }
 
 function inherit_$1(loc, attrs, a, b, c) {
@@ -1400,28 +1402,28 @@ function concrete(o, e) {
 }
 
 function attr$8(d, a) {
-  return /* record */[
-          /* pcf_desc */d[/* pcf_desc */0],
-          /* pcf_loc */d[/* pcf_loc */1],
-          /* pcf_attributes */Pervasives.$at(d[/* pcf_attributes */2], /* :: */[
+  return {
+          pcf_desc: d.pcf_desc,
+          pcf_loc: d.pcf_loc,
+          pcf_attributes: Pervasives.$at(d.pcf_attributes, /* :: */[
                 a,
                 /* [] */0
               ])
-        ];
+        };
 }
 
 function mk$11($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, name, typ) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var prim = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
-  return /* record */[
-          /* pval_name */name,
-          /* pval_type */typ,
-          /* pval_prim */prim,
-          /* pval_attributes */Docstrings.add_docs_attrs(docs, attrs),
-          /* pval_loc */loc
-        ];
+  return {
+          pval_name: name,
+          pval_type: typ,
+          pval_prim: prim,
+          pval_attributes: Docstrings.add_docs_attrs(docs, attrs),
+          pval_loc: loc
+        };
 }
 
 var Val = {
@@ -1429,16 +1431,16 @@ var Val = {
 };
 
 function mk$12($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, name, typ) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var text = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
-  return /* record */[
-          /* pmd_name */name,
-          /* pmd_type */typ,
-          /* pmd_attributes */Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
-          /* pmd_loc */loc
-        ];
+  return {
+          pmd_name: name,
+          pmd_type: typ,
+          pmd_attributes: Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
+          pmd_loc: loc
+        };
 }
 
 var Md = {
@@ -1446,16 +1448,16 @@ var Md = {
 };
 
 function mk$13($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, typ, name) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var text = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
-  return /* record */[
-          /* pmtd_name */name,
-          /* pmtd_type */typ,
-          /* pmtd_attributes */Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
-          /* pmtd_loc */loc
-        ];
+  return {
+          pmtd_name: name,
+          pmtd_type: typ,
+          pmtd_attributes: Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
+          pmtd_loc: loc
+        };
 }
 
 var Mtd = {
@@ -1463,16 +1465,16 @@ var Mtd = {
 };
 
 function mk$14($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, name, expr) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var text = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
-  return /* record */[
-          /* pmb_name */name,
-          /* pmb_expr */expr,
-          /* pmb_attributes */Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
-          /* pmb_loc */loc
-        ];
+  return {
+          pmb_name: name,
+          pmb_expr: expr,
+          pmb_attributes: Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
+          pmb_loc: loc
+        };
 }
 
 var Mb = {
@@ -1480,16 +1482,16 @@ var Mb = {
 };
 
 function mk$15($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, lid) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var override = $staropt$star$3 !== undefined ? $staropt$star$3 : /* Fresh */1;
-  return /* record */[
-          /* popen_lid */lid,
-          /* popen_override */override,
-          /* popen_loc */loc,
-          /* popen_attributes */Docstrings.add_docs_attrs(docs, attrs)
-        ];
+  return {
+          popen_lid: lid,
+          popen_override: override,
+          popen_loc: loc,
+          popen_attributes: Docstrings.add_docs_attrs(docs, attrs)
+        };
 }
 
 var Opn = {
@@ -1497,14 +1499,14 @@ var Opn = {
 };
 
 function mk$16($staropt$star, $staropt$star$1, $staropt$star$2, mexpr) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
-  return /* record */[
-          /* pincl_mod */mexpr,
-          /* pincl_loc */loc,
-          /* pincl_attributes */Docstrings.add_docs_attrs(docs, attrs)
-        ];
+  return {
+          pincl_mod: mexpr,
+          pincl_loc: loc,
+          pincl_attributes: Docstrings.add_docs_attrs(docs, attrs)
+        };
 }
 
 var Incl = {
@@ -1512,16 +1514,16 @@ var Incl = {
 };
 
 function mk$17($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, pat, expr) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var text = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
-  return /* record */[
-          /* pvb_pat */pat,
-          /* pvb_expr */expr,
-          /* pvb_attributes */Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
-          /* pvb_loc */loc
-        ];
+  return {
+          pvb_pat: pat,
+          pvb_expr: expr,
+          pvb_attributes: Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
+          pvb_loc: loc
+        };
 }
 
 var Vb = {
@@ -1529,20 +1531,20 @@ var Vb = {
 };
 
 function mk$18($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, $staropt$star$4, $staropt$star$5, name, expr) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var text = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
   var virt = $staropt$star$4 !== undefined ? $staropt$star$4 : /* Concrete */1;
   var params = $staropt$star$5 !== undefined ? $staropt$star$5 : /* [] */0;
-  return /* record */[
-          /* pci_virt */virt,
-          /* pci_params */params,
-          /* pci_name */name,
-          /* pci_expr */expr,
-          /* pci_loc */loc,
-          /* pci_attributes */Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs))
-        ];
+  return {
+          pci_virt: virt,
+          pci_params: params,
+          pci_name: name,
+          pci_expr: expr,
+          pci_loc: loc,
+          pci_attributes: Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs))
+        };
 }
 
 var Ci = {
@@ -1550,7 +1552,7 @@ var Ci = {
 };
 
 function mk$19($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, $staropt$star$4, $staropt$star$5, $staropt$star$6, $staropt$star$7, manifest, name) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var text = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
@@ -1558,44 +1560,44 @@ function mk$19($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3,
   var cstrs = $staropt$star$5 !== undefined ? $staropt$star$5 : /* [] */0;
   var kind = $staropt$star$6 !== undefined ? $staropt$star$6 : /* Ptype_abstract */0;
   var priv = $staropt$star$7 !== undefined ? $staropt$star$7 : /* Public */1;
-  return /* record */[
-          /* ptype_name */name,
-          /* ptype_params */params,
-          /* ptype_cstrs */cstrs,
-          /* ptype_kind */kind,
-          /* ptype_private */priv,
-          /* ptype_manifest */manifest,
-          /* ptype_attributes */Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
-          /* ptype_loc */loc
-        ];
+  return {
+          ptype_name: name,
+          ptype_params: params,
+          ptype_cstrs: cstrs,
+          ptype_kind: kind,
+          ptype_private: priv,
+          ptype_manifest: manifest,
+          ptype_attributes: Docstrings.add_text_attrs(text, Docstrings.add_docs_attrs(docs, attrs)),
+          ptype_loc: loc
+        };
 }
 
 function constructor($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, res, name) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var info = $staropt$star$2 !== undefined ? Caml_option.valFromOption($staropt$star$2) : Docstrings.empty_info;
   var args = $staropt$star$3 !== undefined ? $staropt$star$3 : /* Pcstr_tuple */Block.__(0, [/* [] */0]);
-  return /* record */[
-          /* pcd_name */name,
-          /* pcd_args */args,
-          /* pcd_res */res,
-          /* pcd_loc */loc,
-          /* pcd_attributes */Docstrings.add_info_attrs(info, attrs)
-        ];
+  return {
+          pcd_name: name,
+          pcd_args: args,
+          pcd_res: res,
+          pcd_loc: loc,
+          pcd_attributes: Docstrings.add_info_attrs(info, attrs)
+        };
 }
 
 function field$1($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, name, typ) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var info = $staropt$star$2 !== undefined ? Caml_option.valFromOption($staropt$star$2) : Docstrings.empty_info;
   var mut = $staropt$star$3 !== undefined ? $staropt$star$3 : /* Immutable */0;
-  return /* record */[
-          /* pld_name */name,
-          /* pld_mutable */mut,
-          /* pld_type */typ,
-          /* pld_loc */loc,
-          /* pld_attributes */Docstrings.add_info_attrs(info, attrs)
-        ];
+  return {
+          pld_name: name,
+          pld_mutable: mut,
+          pld_type: typ,
+          pld_loc: loc,
+          pld_attributes: Docstrings.add_info_attrs(info, attrs)
+        };
 }
 
 var Type = {
@@ -1609,56 +1611,56 @@ function mk$20($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3,
   var docs = $staropt$star$1 !== undefined ? $staropt$star$1 : Docstrings.empty_docs;
   var params = $staropt$star$2 !== undefined ? $staropt$star$2 : /* [] */0;
   var priv = $staropt$star$3 !== undefined ? $staropt$star$3 : /* Public */1;
-  return /* record */[
-          /* ptyext_path */path,
-          /* ptyext_params */params,
-          /* ptyext_constructors */constructors,
-          /* ptyext_private */priv,
-          /* ptyext_attributes */Docstrings.add_docs_attrs(docs, attrs)
-        ];
+  return {
+          ptyext_path: path,
+          ptyext_params: params,
+          ptyext_constructors: constructors,
+          ptyext_private: priv,
+          ptyext_attributes: Docstrings.add_docs_attrs(docs, attrs)
+        };
 }
 
 function constructor$1($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, name, kind) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var info = $staropt$star$3 !== undefined ? Caml_option.valFromOption($staropt$star$3) : Docstrings.empty_info;
-  return /* record */[
-          /* pext_name */name,
-          /* pext_kind */kind,
-          /* pext_loc */loc,
-          /* pext_attributes */Docstrings.add_docs_attrs(docs, Docstrings.add_info_attrs(info, attrs))
-        ];
+  return {
+          pext_name: name,
+          pext_kind: kind,
+          pext_loc: loc,
+          pext_attributes: Docstrings.add_docs_attrs(docs, Docstrings.add_info_attrs(info, attrs))
+        };
 }
 
 function decl($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, $staropt$star$4, res, name) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var info = $staropt$star$3 !== undefined ? Caml_option.valFromOption($staropt$star$3) : Docstrings.empty_info;
   var args = $staropt$star$4 !== undefined ? $staropt$star$4 : /* Pcstr_tuple */Block.__(0, [/* [] */0]);
-  return /* record */[
-          /* pext_name */name,
-          /* pext_kind : Pext_decl */Block.__(0, [
+  return {
+          pext_name: name,
+          pext_kind: /* Pext_decl */Block.__(0, [
               args,
               res
             ]),
-          /* pext_loc */loc,
-          /* pext_attributes */Docstrings.add_docs_attrs(docs, Docstrings.add_info_attrs(info, attrs))
-        ];
+          pext_loc: loc,
+          pext_attributes: Docstrings.add_docs_attrs(docs, Docstrings.add_info_attrs(info, attrs))
+        };
 }
 
 function rebind($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, name, lid) {
-  var loc = $staropt$star !== undefined ? $staropt$star : default_loc[0];
+  var loc = $staropt$star !== undefined ? $staropt$star : default_loc.contents;
   var attrs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var docs = $staropt$star$2 !== undefined ? $staropt$star$2 : Docstrings.empty_docs;
   var info = $staropt$star$3 !== undefined ? Caml_option.valFromOption($staropt$star$3) : Docstrings.empty_info;
-  return /* record */[
-          /* pext_name */name,
-          /* pext_kind : Pext_rebind */Block.__(1, [lid]),
-          /* pext_loc */loc,
-          /* pext_attributes */Docstrings.add_docs_attrs(docs, Docstrings.add_info_attrs(info, attrs))
-        ];
+  return {
+          pext_name: name,
+          pext_kind: /* Pext_rebind */Block.__(1, [lid]),
+          pext_loc: loc,
+          pext_attributes: Docstrings.add_docs_attrs(docs, Docstrings.add_info_attrs(info, attrs))
+        };
 }
 
 var Te = {
@@ -1669,10 +1671,10 @@ var Te = {
 };
 
 function mk$21(self, fields) {
-  return /* record */[
-          /* pcsig_self */self,
-          /* pcsig_fields */fields
-        ];
+  return {
+          pcsig_self: self,
+          pcsig_fields: fields
+        };
 }
 
 var Csig = {
@@ -1680,10 +1682,10 @@ var Csig = {
 };
 
 function mk$22(self, fields) {
-  return /* record */[
-          /* pcstr_self */self,
-          /* pcstr_fields */fields
-        ];
+  return {
+          pcstr_self: self,
+          pcstr_fields: fields
+        };
 }
 
 var Cstr = {

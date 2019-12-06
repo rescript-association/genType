@@ -6,10 +6,12 @@ import * as Random from "bs-platform/lib/es6/random.js";
 import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
 import * as Caml_builtin_exceptions from "bs-platform/lib/es6/caml_builtin_exceptions.js";
 
-var counter = /* record */[/* contents */Random.$$int(100)];
+var counter = {
+  contents: Random.$$int(100)
+};
 
 function progress(param) {
-  if (counter[0] < 0) {
+  if (counter.contents < 0) {
     throw [
           Caml_builtin_exceptions.assert_failure,
           /* tuple */[
@@ -19,7 +21,7 @@ function progress(param) {
           ]
         ];
   }
-  counter[0] = counter[0] - 1 | 0;
+  counter.contents = counter.contents - 1 | 0;
   return /* () */0;
 }
 
@@ -154,27 +156,27 @@ function tokenToString(token) {
 
 function next(p) {
   var match = Random.bool(/* () */0);
-  p[/* token */2] = match ? /* Eof */1 : /* Int */[Random.$$int(1000)];
-  p[/* position */0] = /* record */[
-    /* lnum */Random.$$int(1000),
-    /* cnum */Random.$$int(80)
-  ];
+  p.token = match ? /* Eof */1 : /* Int */[Random.$$int(1000)];
+  p.position = {
+    lnum: Random.$$int(1000),
+    cnum: Random.$$int(80)
+  };
   return /* () */0;
 }
 
 function err(p, s) {
-  p[/* errors */1] = /* :: */[
+  p.errors = /* :: */[
     s,
-    p[/* errors */1]
+    p.errors
   ];
   return /* () */0;
 }
 
 function expect(p, token) {
-  if (Caml_obj.caml_equal(p[/* token */2], token)) {
+  if (Caml_obj.caml_equal(p.token, token)) {
     return next(p);
   } else {
-    return err(p, "expected token " + tokenToString(p[/* token */2]));
+    return err(p, "expected token " + tokenToString(p.token));
   }
 }
 
@@ -189,7 +191,7 @@ var Expr = { };
 
 function parseList(p, f) {
   var loop = function (p) {
-    if (p[/* token */2] === /* Asterisk */0) {
+    if (p.token === /* Asterisk */0) {
       return /* [] */0;
     } else {
       var item = Curry._1(f, p);
@@ -204,14 +206,14 @@ function parseList(p, f) {
 }
 
 function $$parseInt(p) {
-  var match = p[/* token */2];
+  var match = p.token;
   var res = typeof match === "number" ? (err(p, "integer expected"), -1) : match[0];
   next(p);
   return res;
 }
 
 function parseExpression($staropt$star, p) {
-  var match = p[/* token */2];
+  var match = p.token;
   if (typeof match === "number" && match === 2) {
     next(p);
     var e1 = parseExpression(undefined, p);

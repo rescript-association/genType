@@ -159,7 +159,7 @@ function of_int64_exn(i) {
                     "Int16.of_int64_exn: %Ld is out of range"
                   ]), i);
   } else {
-    return i[1] | 0;
+    return Caml_int64.to_int32(i);
   }
 }
 
@@ -195,35 +195,7 @@ var include = Identifiable.Make({
       print: Format.pp_print_float
     });
 
-var Float_T = include.T;
-
-var Float_equal = include.equal;
-
-var Float_hash = include.hash;
-
-var Float_compare = include.compare;
-
-var Float_output = include.output;
-
-var Float_print = include.print;
-
-var Float_Set = include.$$Set;
-
-var Float_Map = include.$$Map;
-
-var Float_Tbl = include.Tbl;
-
-var Float = {
-  T: Float_T,
-  equal: Float_equal,
-  hash: Float_hash,
-  compare: Float_compare,
-  output: Float_output,
-  print: Float_print,
-  $$Set: Float_Set,
-  $$Map: Float_Map,
-  Tbl: Float_Tbl
-};
+var Float = include;
 
 var Int16 = {
   of_int_exn: of_int_exn$1,

@@ -79,9 +79,13 @@ var cmxs_magic_number = "Caml1999D022";
 
 var cmt_magic_number = "Caml1999T022";
 
-var load_path = /* record */[/* contents : [] */0];
+var load_path = {
+  contents: /* [] */0
+};
 
-var interface_suffix = /* record */[/* contents */".mli"];
+var interface_suffix = {
+  contents: ".mli"
+};
 
 var architecture = "amd64";
 

@@ -80,7 +80,7 @@ function try_finally(work, cleanup) {
 
 function set_refs(l) {
   return List.iter((function (param) {
-                param[0][0] = param[1];
+                param[0].contents = param[1];
                 return /* () */0;
               }), l);
 }
@@ -90,7 +90,7 @@ function protect_refs(refs, f) {
           var r = param[0];
           return /* R */[
                   r,
-                  r[0]
+                  r.contents
                 ];
         }), refs);
   set_refs(refs);
@@ -849,8 +849,8 @@ function rev_split_words(s) {
 }
 
 function get_ref(r) {
-  var v = r[0];
-  r[0] = /* [] */0;
+  var v = r.contents;
+  r.contents = /* [] */0;
   return v;
 }
 
@@ -1131,35 +1131,37 @@ function ansi_of_style_l(l) {
   return "\x1b[" + (s + "m");
 }
 
-var default_styles = /* record */[
-  /* error : :: */[
+var default_styles = {
+  error: /* :: */[
     /* Bold */0,
     /* :: */[
       /* FG */Block.__(0, [/* Red */1]),
       /* [] */0
     ]
   ],
-  /* warning : :: */[
+  warning: /* :: */[
     /* Bold */0,
     /* :: */[
       /* FG */Block.__(0, [/* Magenta */5]),
       /* [] */0
     ]
   ],
-  /* loc : :: */[
+  loc: /* :: */[
     /* Bold */0,
     /* [] */0
   ]
-];
+};
 
-var cur_styles = /* record */[/* contents */default_styles];
+var cur_styles = {
+  contents: default_styles
+};
 
 function get_styles(param) {
-  return cur_styles[0];
+  return cur_styles.contents;
 }
 
 function set_styles(s) {
-  cur_styles[0] = s;
+  cur_styles.contents = s;
   return /* () */0;
 }
 
@@ -1171,7 +1173,7 @@ function style_of_tag(s) {
                 /* [] */0
               ];
     case "error" :
-        return cur_styles[0][/* error */0];
+        return cur_styles.contents.error;
     case "filename" :
         return /* :: */[
                 /* FG */Block.__(0, [/* Cyan */6]),
@@ -1186,26 +1188,28 @@ function style_of_tag(s) {
                 ]
               ];
     case "loc" :
-        return cur_styles[0][/* loc */2];
+        return cur_styles.contents.loc;
     case "warning" :
-        return cur_styles[0][/* warning */1];
+        return cur_styles.contents.warning;
     default:
       throw Caml_builtin_exceptions.not_found;
   }
 }
 
-var color_enabled = /* record */[/* contents */true];
+var color_enabled = {
+  contents: true
+};
 
 function set_color_tag_handling(ppf) {
   var functions = Format.pp_get_formatter_tag_functions(ppf, /* () */0);
-  var partial_arg = functions[/* mark_open_tag */0];
-  var partial_arg$1 = functions[/* mark_close_tag */1];
-  var functions$prime_000 = function (param) {
+  var partial_arg = functions.mark_open_tag;
+  var partial_arg$1 = functions.mark_close_tag;
+  var functions$prime_mark_open_tag = function (param) {
     var or_else = partial_arg;
     var s = param;
     try {
       var style = style_of_tag(s);
-      if (color_enabled[0]) {
+      if (color_enabled.contents) {
         return ansi_of_style_l(style);
       } else {
         return "";
@@ -1219,12 +1223,12 @@ function set_color_tag_handling(ppf) {
       }
     }
   };
-  var functions$prime_001 = function (param) {
+  var functions$prime_mark_close_tag = function (param) {
     var or_else = partial_arg$1;
     var s = param;
     try {
       style_of_tag(s);
-      if (color_enabled[0]) {
+      if (color_enabled.contents) {
         return ansi_of_style_l(/* :: */[
                     /* Reset */1,
                     /* [] */0
@@ -1241,14 +1245,14 @@ function set_color_tag_handling(ppf) {
       }
     }
   };
-  var functions$prime_002 = /* print_open_tag */functions[/* print_open_tag */2];
-  var functions$prime_003 = /* print_close_tag */functions[/* print_close_tag */3];
-  var functions$prime = /* record */[
-    functions$prime_000,
-    functions$prime_001,
-    functions$prime_002,
-    functions$prime_003
-  ];
+  var functions$prime_print_open_tag = functions.print_open_tag;
+  var functions$prime_print_close_tag = functions.print_close_tag;
+  var functions$prime = {
+    mark_open_tag: functions$prime_mark_open_tag,
+    mark_close_tag: functions$prime_mark_close_tag,
+    print_open_tag: functions$prime_print_open_tag,
+    print_close_tag: functions$prime_print_close_tag
+  };
   Format.pp_set_mark_tags(ppf, true);
   Format.pp_set_formatter_tag_functions(ppf, functions$prime);
   Format.pp_set_margin(ppf, Format.pp_get_margin(Format.std_formatter, /* () */0));
@@ -1274,7 +1278,9 @@ function should_enable_color(param) {
   }
 }
 
-var first = /* record */[/* contents */true];
+var first = {
+  contents: true
+};
 
 var formatter_l_001 = /* :: */[
   Format.err_formatter,
@@ -1290,8 +1296,8 @@ var formatter_l = /* :: */[
 ];
 
 function setup(o) {
-  if (first[0]) {
-    first[0] = false;
+  if (first.contents) {
+    first.contents = false;
     Format.set_mark_tags(true);
     List.iter(set_color_tag_handling, formatter_l);
     var tmp;
@@ -1311,7 +1317,7 @@ function setup(o) {
     } else {
       tmp = should_enable_color(/* () */0);
     }
-    color_enabled[0] = tmp;
+    color_enabled.contents = tmp;
   }
   return /* () */0;
 }
@@ -1392,19 +1398,21 @@ function raise_direct_hook_exn(e) {
 }
 
 function MakeHooks(M) {
-  var hooks = /* record */[/* contents : [] */0];
+  var hooks = {
+    contents: /* [] */0
+  };
   var add_hook = function (name, f) {
-    hooks[0] = /* :: */[
+    hooks.contents = /* :: */[
       /* tuple */[
         name,
         f
       ],
-      hooks[0]
+      hooks.contents
     ];
     return /* () */0;
   };
   var apply_hooks = function (sourcefile, intf) {
-    var list = hooks[0];
+    var list = hooks.contents;
     var hook_info = sourcefile;
     var ast = intf;
     return List.fold_left((function (ast, param) {

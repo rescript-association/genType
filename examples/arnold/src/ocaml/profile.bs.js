@@ -19,60 +19,66 @@ import * as Caml_builtin_exceptions from "bs-platform/lib/es6/caml_builtin_excep
 
 function create(param) {
   var stat = Gc.quick_stat(/* () */0);
-  return /* record */[
-          /* time */Caml_external_polyfill.resolve("caml_sys_time_include_children")(true),
-          /* allocated_words */stat[/* minor_words */0] + stat[/* major_words */2],
-          /* top_heap_words */stat[/* top_heap_words */14]
-        ];
+  return {
+          time: Caml_external_polyfill.resolve("caml_sys_time_include_children")(true),
+          allocated_words: stat.minor_words + stat.major_words,
+          top_heap_words: stat.top_heap_words
+        };
 }
 
-var zero = /* record */[
-  /* time */0,
-  /* allocated_words */0,
-  /* top_heap_words */0
-];
+var zero = {
+  time: 0,
+  allocated_words: 0,
+  top_heap_words: 0
+};
 
-var r = /* record */[/* contents */-1];
+var r = {
+  contents: -1
+};
 
 function zero$1(param) {
-  return /* record */[
-          /* timestamp */(r[0] = r[0] + 1 | 0, r[0]),
-          /* duration */0,
-          /* allocated_words */0,
-          /* top_heap_words_increase */0
-        ];
+  return {
+          timestamp: (r.contents = r.contents + 1 | 0, r.contents),
+          duration: 0,
+          allocated_words: 0,
+          top_heap_words_increase: 0
+        };
 }
 
 function accumulate(t, m1, m2) {
-  return /* record */[
-          /* timestamp */t[/* timestamp */0],
-          /* duration */t[/* duration */1] + (m2[/* time */0] - m1[/* time */0]),
-          /* allocated_words */t[/* allocated_words */2] + (m2[/* allocated_words */1] - m1[/* allocated_words */1]),
-          /* top_heap_words_increase */t[/* top_heap_words_increase */3] + (m2[/* top_heap_words */2] - m1[/* top_heap_words */2] | 0) | 0
-        ];
+  return {
+          timestamp: t.timestamp,
+          duration: t.duration + (m2.time - m1.time),
+          allocated_words: t.allocated_words + (m2.allocated_words - m1.allocated_words),
+          top_heap_words_increase: t.top_heap_words_increase + (m2.top_heap_words - m1.top_heap_words | 0) | 0
+        };
 }
 
 function of_diff(m1, m2) {
   return accumulate(zero$1(/* () */0), m1, m2);
 }
 
-var hierarchy = /* record */[/* contents : E */[Hashtbl.create(undefined, 2)]];
+var hierarchy = {
+  contents: /* E */[Hashtbl.create(undefined, 2)]
+};
 
-var initial_measure = /* record */[/* contents */undefined];
+var initial_measure = {
+  contents: undefined
+};
 
 function reset(param) {
-  hierarchy[0] = /* E */[Hashtbl.create(undefined, 2)];
-  initial_measure[0] = undefined;
+  hierarchy.contents = /* E */[Hashtbl.create(undefined, 2)];
+  initial_measure.contents = undefined;
   return /* () */0;
 }
 
 function record_call($staropt$star, name, f) {
   var accumulate$1 = $staropt$star !== undefined ? $staropt$star : false;
-  var match = hierarchy[0];
+  var match = hierarchy.contents;
   var prev_hierarchy = match[0];
   var start_measure = create(/* () */0);
-  if (initial_measure[0] === undefined) {
-    initial_measure[0] = start_measure;
+  if (initial_measure.contents === undefined) {
+    initial_measure.contents = start_measure;
   }
   var match$1;
   if (accumulate$1) {
@@ -108,9 +114,9 @@ function record_call($staropt$star, name, f) {
   }
   var this_table = match$1[1];
   var this_measure_diff = match$1[0];
-  hierarchy[0] = /* E */[this_table];
+  hierarchy.contents = /* E */[this_table];
   return Misc.try_finally(f, (function (param) {
-                hierarchy[0] = /* E */[prev_hierarchy];
+                hierarchy.contents = /* E */[prev_hierarchy];
                 var end_measure = create(/* () */0);
                 var measure_diff = accumulate(this_measure_diff, start_measure, end_measure);
                 return Hashtbl.add(prev_hierarchy, name, /* tuple */[
@@ -144,10 +150,10 @@ function time_display(v) {
   var worth_displaying = function (param) {
     return Caml_format.caml_float_of_string(to_string_without_unit(v, 0)) !== 0;
   };
-  return /* record */[
-          /* to_string */to_string,
-          /* worth_displaying */worth_displaying
-        ];
+  return {
+          to_string: to_string,
+          worth_displaying: worth_displaying
+        };
 }
 
 function bytes_of_words(words) {
@@ -216,10 +222,10 @@ function memory_word_display(previous, v) {
       return false;
     }
   };
-  return /* record */[
-          /* to_string */to_string,
-          /* worth_displaying */worth_displaying
-        ];
+  return {
+          to_string: to_string,
+          worth_displaying: worth_displaying
+        };
 }
 
 function profile_list(param) {
@@ -233,24 +239,26 @@ function profile_list(param) {
                 ];
         }), param[0], /* [] */0);
   return List.sort((function (param, param$1) {
-                return Caml_primitive.caml_int_compare(param[1][0][/* timestamp */0], param$1[1][0][/* timestamp */0]);
+                return Caml_primitive.caml_int_compare(param[1][0].timestamp, param$1[1][0].timestamp);
               }), l);
 }
 
 function compute_other_category(param, total) {
-  var r = /* record */[/* contents */total];
+  var r = {
+    contents: total
+  };
   Hashtbl.iter((function (_pass, param) {
           var p2 = param[0];
-          var p1 = r[0];
-          r[0] = /* record */[
-            /* timestamp */p1[/* timestamp */0],
-            /* duration */p1[/* duration */1] - p2[/* duration */1],
-            /* allocated_words */p1[/* allocated_words */2] - p2[/* allocated_words */2],
-            /* top_heap_words_increase */p1[/* top_heap_words_increase */3] - p2[/* top_heap_words_increase */3] | 0
-          ];
+          var p1 = r.contents;
+          r.contents = {
+            timestamp: p1.timestamp,
+            duration: p1.duration - p2.duration,
+            allocated_words: p1.allocated_words - p2.allocated_words,
+            top_heap_words_increase: p1.top_heap_words_increase - p2.top_heap_words_increase | 0
+          };
           return /* () */0;
         }), param[0]);
-  return r[0];
+  return r.contents;
 }
 
 function rows_of_hierarchy(nesting, make_row, name, measure_diff, hierarchy, env) {
@@ -278,31 +286,33 @@ function rows_of_hierarchy_list(nesting, make_row, hierarchy, total, env) {
           ],
           /* [] */0
         ]) : /* [] */0;
-  var env$1 = /* record */[/* contents */env];
+  var env$1 = {
+    contents: env
+  };
   return List.map((function (param) {
                 var match = param[1];
-                var match$1 = rows_of_hierarchy(nesting, make_row, param[0], match[0], match[1], env$1[0]);
-                env$1[0] = match$1[1];
+                var match$1 = rows_of_hierarchy(nesting, make_row, param[0], match[0], match[1], env$1.contents);
+                env$1.contents = match$1[1];
                 return match$1[0];
               }), list$1);
 }
 
 function rows_of_hierarchy$1(hierarchy, measure_diff, initial_measure, columns) {
   var make_row = function (prev_top_heap_words, p, toplevel_other) {
-    var top_heap_words = (prev_top_heap_words + p[/* top_heap_words_increase */3] | 0) - (
-      toplevel_other ? initial_measure[/* top_heap_words */2] : 0
+    var top_heap_words = (prev_top_heap_words + p.top_heap_words_increase | 0) - (
+      toplevel_other ? initial_measure.top_heap_words : 0
     ) | 0;
     return /* tuple */[
             List.map((function (param) {
                     if (param >= 885068885) {
                       if (param >= 936769581) {
-                        var value = p[/* duration */1];
+                        var value = p.duration;
                         return /* tuple */[
                                 value,
                                 time_display(value)
                               ];
                       } else {
-                        var value$1 = p[/* allocated_words */2];
+                        var value$1 = p.allocated_words;
                         return /* tuple */[
                                 value$1,
                                 (function (eta) {
@@ -311,7 +321,7 @@ function rows_of_hierarchy$1(hierarchy, measure_diff, initial_measure, columns) 
                               ];
                       }
                     } else if (param >= 208707190) {
-                      var value$2 = p[/* top_heap_words_increase */3];
+                      var value$2 = p.top_heap_words_increase;
                       return /* tuple */[
                               value$2,
                               (function (eta) {
@@ -333,7 +343,7 @@ function rows_of_hierarchy$1(hierarchy, measure_diff, initial_measure, columns) 
             top_heap_words
           ];
   };
-  return rows_of_hierarchy_list(0, make_row, hierarchy, measure_diff, initial_measure[/* top_heap_words */2]);
+  return rows_of_hierarchy_list(0, make_row, hierarchy, measure_diff, initial_measure.top_heap_words);
 }
 
 function max_by_column(n_columns, rows) {
@@ -363,19 +373,19 @@ function width_by_column(n_columns, display_cell, rows) {
 
 function print(ppf, columns) {
   if (columns) {
-    var match = initial_measure[0];
+    var match = initial_measure.contents;
     var initial_measure$1 = match !== undefined ? match : zero;
     var total = of_diff(zero, create(/* () */0));
     var ppf$1 = ppf;
-    var rows = rows_of_hierarchy$1(hierarchy[0], total, initial_measure$1, columns);
+    var rows = rows_of_hierarchy$1(hierarchy.contents, total, initial_measure$1, columns);
     var n_columns = rows ? List.length(rows[0][1]) : 0;
     var maxs = max_by_column(n_columns, rows);
     var display_cell = function (i, param, width) {
       var c = param[1];
-      var display_cell$1 = Curry._1(c[/* worth_displaying */1], Caml_array.caml_array_get(maxs, i));
+      var display_cell$1 = Curry._1(c.worth_displaying, Caml_array.caml_array_get(maxs, i));
       return /* tuple */[
               display_cell$1,
-              display_cell$1 ? Curry._2(c[/* to_string */0], Caml_array.caml_array_get(maxs, i), width) : $$String.make(width, /* "-" */45)
+              display_cell$1 ? Curry._2(c.to_string, Caml_array.caml_array_get(maxs, i), width) : $$String.make(width, /* "-" */45)
             ];
     };
     var widths = width_by_column(n_columns, display_cell, rows);

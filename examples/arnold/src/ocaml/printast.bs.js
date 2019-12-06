@@ -11,8 +11,8 @@ import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
 function fmt_position(with_name, f, l) {
-  var fname = with_name ? l[/* pos_fname */0] : "";
-  if (l[/* pos_lnum */1] === -1) {
+  var fname = with_name ? l.pos_fname : "";
+  if (l.pos_lnum === -1) {
     return Curry._2(Format.fprintf(f, /* Format */[
                     /* String */Block.__(2, [
                         /* No_padding */0,
@@ -30,7 +30,7 @@ function fmt_position(with_name, f, l) {
                           ])
                       ]),
                     "%s[%d]"
-                  ]), fname, l[/* pos_cnum */3]);
+                  ]), fname, l.pos_cnum);
   } else {
     return Curry._4(Format.fprintf(f, /* Format */[
                     /* String */Block.__(2, [
@@ -65,13 +65,13 @@ function fmt_position(with_name, f, l) {
                           ])
                       ]),
                     "%s[%d,%d+%d]"
-                  ]), fname, l[/* pos_lnum */1], l[/* pos_bol */2], l[/* pos_cnum */3] - l[/* pos_bol */2] | 0);
+                  ]), fname, l.pos_lnum, l.pos_bol, l.pos_cnum - l.pos_bol | 0);
   }
 }
 
 function fmt_location(f, loc) {
-  if (Clflags.dump_location[0]) {
-    var p_2nd_name = loc[/* loc_start */0][/* pos_fname */0] !== loc[/* loc_end */1][/* pos_fname */0];
+  if (Clflags.dump_location.contents) {
+    var p_2nd_name = loc.loc_start.pos_fname !== loc.loc_end.pos_fname;
     Curry._4(Format.fprintf(f, /* Format */[
               /* Char_literal */Block.__(12, [
                   /* "(" */40,
@@ -86,10 +86,10 @@ function fmt_location(f, loc) {
               "(%a..%a)"
             ]), (function (param, param$1) {
             return fmt_position(true, param, param$1);
-          }), loc[/* loc_start */0], (function (param, param$1) {
+          }), loc.loc_start, (function (param, param$1) {
             return fmt_position(p_2nd_name, param, param$1);
-          }), loc[/* loc_end */1]);
-    if (loc[/* loc_ghost */2]) {
+          }), loc.loc_end);
+    if (loc.loc_ghost) {
       return Format.fprintf(f, /* Format */[
                   /* String_literal */Block.__(11, [
                       " ghost",
@@ -164,7 +164,7 @@ function fmt_longident_loc(f, x) {
                             ])])
                     ]),
                   "\"%a\" %a"
-                ]), fmt_longident_aux, x[/* txt */0], fmt_location, x[/* loc */1]);
+                ]), fmt_longident_aux, x.txt, fmt_location, x.loc);
 }
 
 function fmt_string_loc(f, x) {
@@ -180,7 +180,7 @@ function fmt_string_loc(f, x) {
                         ])
                     ]),
                   "\"%s\" %a"
-                ]), x[/* txt */0], fmt_location, x[/* loc */1]);
+                ]), x.txt, fmt_location, x.loc);
 }
 
 function fmt_char_option(f, param) {
@@ -586,10 +586,10 @@ function core_type(_i, ppf, _x) {
                         ])])
                 ]),
               "core_type %a\n"
-            ]), fmt_location, x[/* ptyp_loc */1]);
-    attributes(i, ppf, x[/* ptyp_attributes */2]);
+            ]), fmt_location, x.ptyp_loc);
+    attributes(i, ppf, x.ptyp_attributes);
     var i$1 = i + 1 | 0;
-    var match = x[/* ptyp_desc */0];
+    var match = x.ptyp_desc;
     if (typeof match === "number") {
       return line(i$1, ppf, /* Format */[
                   /* String_literal */Block.__(11, [
@@ -684,7 +684,7 @@ function core_type(_i, ppf, _x) {
                                           ])
                                       ]),
                                     "method %s\n"
-                                  ]), param[0][/* txt */0]);
+                                  ]), param[0].txt);
                           attributes(i$2, ppf, param[1]);
                           return core_type(i$2 + 1 | 0, ppf, param[2]);
                         }
@@ -758,7 +758,7 @@ function core_type(_i, ppf, _x) {
                                                             ])
                                                         ]),
                                                       " '%s"
-                                                    ]), x[/* txt */0]);
+                                                    ]), x.txt);
                                     }), param);
                       });
                   }), match[0]);
@@ -792,7 +792,7 @@ function core_type(_i, ppf, _x) {
                             ])
                         ]),
                       "Ptyp_extension \"%s\"\n"
-                    ]), match$2[0][/* txt */0]);
+                    ]), match$2[0].txt);
             return payload(i$1, ppf, match$2[1]);
         
       }
@@ -827,10 +827,10 @@ function pattern(_i, ppf, _x) {
                         ])])
                 ]),
               "pattern %a\n"
-            ]), fmt_location, x[/* ppat_loc */1]);
-    attributes(i, ppf, x[/* ppat_attributes */2]);
+            ]), fmt_location, x.ppat_loc);
+    attributes(i, ppf, x.ppat_attributes);
     var i$1 = i + 1 | 0;
-    var match = x[/* ppat_desc */0];
+    var match = x.ppat_desc;
     if (typeof match === "number") {
       return line(i$1, ppf, /* Format */[
                   /* String_literal */Block.__(11, [
@@ -1026,7 +1026,7 @@ function pattern(_i, ppf, _x) {
                             ])
                         ]),
                       "Ppat_extension \"%s\"\n"
-                    ]), match$1[0][/* txt */0]);
+                    ]), match$1[0].txt);
             return payload(i$1, ppf, match$1[1]);
         case /* Ppat_open */16 :
             Curry._2(line(i$1, ppf, /* Format */[
@@ -1061,10 +1061,10 @@ function expression(_i, ppf, _x) {
                         ])])
                 ]),
               "expression %a\n"
-            ]), fmt_location, x[/* pexp_loc */1]);
-    attributes(i, ppf, x[/* pexp_attributes */2]);
+            ]), fmt_location, x.pexp_loc);
+    attributes(i, ppf, x.pexp_attributes);
     var i$1 = i + 1 | 0;
-    var match = x[/* pexp_desc */0];
+    var match = x.pexp_desc;
     if (typeof match === "number") {
       return line(i$1, ppf, /* Format */[
                   /* String_literal */Block.__(11, [
@@ -1329,7 +1329,7 @@ function expression(_i, ppf, _x) {
                             ])
                         ]),
                       "Pexp_send \"%s\"\n"
-                    ]), match[1][/* txt */0]);
+                    ]), match[1].txt);
             _x = match[0];
             _i = i$1;
             continue ;
@@ -1448,7 +1448,7 @@ function expression(_i, ppf, _x) {
                             ])
                         ]),
                       "Pexp_newtype \"%s\"\n"
-                    ]), match[0][/* txt */0]);
+                    ]), match[0].txt);
             _x = match[1];
             _i = i$1;
             continue ;
@@ -1492,7 +1492,7 @@ function expression(_i, ppf, _x) {
                             ])
                         ]),
                       "Pexp_extension \"%s\"\n"
-                    ]), match$1[0][/* txt */0]);
+                    ]), match$1[0].txt);
             return payload(i$1, ppf, match$1[1]);
         
       }
@@ -1513,10 +1513,10 @@ function value_description(i, ppf, x) {
                       ])])
               ]),
             "value_description %a %a\n"
-          ]), fmt_string_loc, x[/* pval_name */0], fmt_location, x[/* pval_loc */4]);
-  attributes(i, ppf, x[/* pval_attributes */3]);
-  core_type(i + 1 | 0, ppf, x[/* pval_type */1]);
-  return list(i + 1 | 0, string, ppf, x[/* pval_prim */2]);
+          ]), fmt_string_loc, x.pval_name, fmt_location, x.pval_loc);
+  attributes(i, ppf, x.pval_attributes);
+  core_type(i + 1 | 0, ppf, x.pval_type);
+  return list(i + 1 | 0, string, ppf, x.pval_prim);
 }
 
 function type_parameter(i, ppf, param) {
@@ -1536,8 +1536,8 @@ function type_declaration(i, ppf, x) {
                       ])])
               ]),
             "type_declaration %a %a\n"
-          ]), fmt_string_loc, x[/* ptype_name */0], fmt_location, x[/* ptype_loc */7]);
-  attributes(i, ppf, x[/* ptype_attributes */6]);
+          ]), fmt_string_loc, x.ptype_name, fmt_location, x.ptype_loc);
+  attributes(i, ppf, x.ptype_attributes);
   var i$1 = i + 1 | 0;
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
@@ -1546,7 +1546,7 @@ function type_declaration(i, ppf, x) {
           ]),
         "ptype_params =\n"
       ]);
-  list(i$1 + 1 | 0, type_parameter, ppf, x[/* ptype_params */1]);
+  list(i$1 + 1 | 0, type_parameter, ppf, x.ptype_params);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "ptype_cstrs =\n",
@@ -1554,7 +1554,7 @@ function type_declaration(i, ppf, x) {
           ]),
         "ptype_cstrs =\n"
       ]);
-  list(i$1 + 1 | 0, core_type_x_core_type_x_location, ppf, x[/* ptype_cstrs */2]);
+  list(i$1 + 1 | 0, core_type_x_core_type_x_location, ppf, x.ptype_cstrs);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "ptype_kind =\n",
@@ -1562,7 +1562,7 @@ function type_declaration(i, ppf, x) {
           ]),
         "ptype_kind =\n"
       ]);
-  type_kind(i$1 + 1 | 0, ppf, x[/* ptype_kind */3]);
+  type_kind(i$1 + 1 | 0, ppf, x.ptype_kind);
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
                 "ptype_private = ",
@@ -1572,7 +1572,7 @@ function type_declaration(i, ppf, x) {
                       ])])
               ]),
             "ptype_private = %a\n"
-          ]), fmt_private_flag, x[/* ptype_private */4]);
+          ]), fmt_private_flag, x.ptype_private);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "ptype_manifest =\n",
@@ -1580,7 +1580,7 @@ function type_declaration(i, ppf, x) {
           ]),
         "ptype_manifest =\n"
       ]);
-  return option(i$1 + 1 | 0, core_type, ppf, x[/* ptype_manifest */5]);
+  return option(i$1 + 1 | 0, core_type, ppf, x.ptype_manifest);
 }
 
 function attributes(i, ppf, l) {
@@ -1602,7 +1602,7 @@ function attributes(i, ppf, l) {
                                     ])])
                             ]),
                           "attribute %a \"%s\"\n"
-                        ]), fmt_location, s[/* loc */1], s[/* txt */0]);
+                        ]), fmt_location, s.loc, s.txt);
                 return payload(i$1 + 1 | 0, ppf, param[1]);
               }), l);
 }
@@ -1683,7 +1683,7 @@ function type_extension(i, ppf, x) {
           ]),
         "type_extension\n"
       ]);
-  attributes(i, ppf, x[/* ptyext_attributes */4]);
+  attributes(i, ppf, x.ptyext_attributes);
   var i$1 = i + 1 | 0;
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
@@ -1694,7 +1694,7 @@ function type_extension(i, ppf, x) {
                       ])])
               ]),
             "ptyext_path = %a\n"
-          ]), fmt_longident_loc, x[/* ptyext_path */0]);
+          ]), fmt_longident_loc, x.ptyext_path);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "ptyext_params =\n",
@@ -1702,7 +1702,7 @@ function type_extension(i, ppf, x) {
           ]),
         "ptyext_params =\n"
       ]);
-  list(i$1 + 1 | 0, type_parameter, ppf, x[/* ptyext_params */1]);
+  list(i$1 + 1 | 0, type_parameter, ppf, x.ptyext_params);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "ptyext_constructors =\n",
@@ -1710,7 +1710,7 @@ function type_extension(i, ppf, x) {
           ]),
         "ptyext_constructors =\n"
       ]);
-  list(i$1 + 1 | 0, extension_constructor, ppf, x[/* ptyext_constructors */2]);
+  list(i$1 + 1 | 0, extension_constructor, ppf, x.ptyext_constructors);
   return Curry._2(line(i$1, ppf, /* Format */[
                   /* String_literal */Block.__(11, [
                       "ptyext_private = ",
@@ -1720,7 +1720,7 @@ function type_extension(i, ppf, x) {
                             ])])
                     ]),
                   "ptyext_private = %a\n"
-                ]), fmt_private_flag, x[/* ptyext_private */3]);
+                ]), fmt_private_flag, x.ptyext_private);
 }
 
 function extension_constructor(i, ppf, x) {
@@ -1733,8 +1733,8 @@ function extension_constructor(i, ppf, x) {
                       ])])
               ]),
             "extension_constructor %a\n"
-          ]), fmt_location, x[/* pext_loc */2]);
-  attributes(i, ppf, x[/* pext_attributes */3]);
+          ]), fmt_location, x.pext_loc);
+  attributes(i, ppf, x.pext_attributes);
   var i$1 = i + 1 | 0;
   Curry._1(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
@@ -1748,7 +1748,7 @@ function extension_constructor(i, ppf, x) {
                   ])
               ]),
             "pext_name = \"%s\"\n"
-          ]), x[/* pext_name */0][/* txt */0]);
+          ]), x.pext_name.txt);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "pext_kind =\n",
@@ -1758,7 +1758,7 @@ function extension_constructor(i, ppf, x) {
       ]);
   var i$2 = i$1 + 1 | 0;
   var ppf$1 = ppf;
-  var x$1 = x[/* pext_kind */1];
+  var x$1 = x.pext_kind;
   if (x$1.tag) {
     line(i$2, ppf$1, /* Format */[
           /* String_literal */Block.__(11, [
@@ -1800,10 +1800,10 @@ function class_type(_i, ppf, _x) {
                         ])])
                 ]),
               "class_type %a\n"
-            ]), fmt_location, x[/* pcty_loc */1]);
-    attributes(i, ppf, x[/* pcty_attributes */2]);
+            ]), fmt_location, x.pcty_loc);
+    attributes(i, ppf, x.pcty_attributes);
     var i$1 = i + 1 | 0;
-    var match = x[/* pcty_desc */0];
+    var match = x.pcty_desc;
     switch (match.tag | 0) {
       case /* Pcty_constr */0 :
           Curry._2(line(i$1, ppf, /* Format */[
@@ -1835,8 +1835,8 @@ function class_type(_i, ppf, _x) {
                   ]),
                 "class_signature\n"
               ]);
-          core_type(i$2 + 1 | 0, ppf$1, cs[/* pcsig_self */0]);
-          return list(i$2 + 1 | 0, class_type_field, ppf$1, cs[/* pcsig_fields */1]);
+          core_type(i$2 + 1 | 0, ppf$1, cs.pcsig_self);
+          return list(i$2 + 1 | 0, class_type_field, ppf$1, cs.pcsig_fields);
       case /* Pcty_arrow */2 :
           line(i$1, ppf, /* Format */[
                 /* String_literal */Block.__(11, [
@@ -1864,7 +1864,7 @@ function class_type(_i, ppf, _x) {
                           ])
                       ]),
                     "Pcty_extension \"%s\"\n"
-                  ]), match$1[0][/* txt */0]);
+                  ]), match$1[0].txt);
           return payload(i$1, ppf, match$1[1]);
       case /* Pcty_open */4 :
           Curry._4(line(i$1, ppf, /* Format */[
@@ -1898,10 +1898,10 @@ function class_type_field(i, ppf, x) {
                       ])])
               ]),
             "class_type_field %a\n"
-          ]), fmt_location, x[/* pctf_loc */1]);
+          ]), fmt_location, x.pctf_loc);
   var i$1 = i + 1 | 0;
-  attributes(i$1, ppf, x[/* pctf_attributes */2]);
-  var match = x[/* pctf_desc */0];
+  attributes(i$1, ppf, x.pctf_attributes);
+  var match = x.pctf_desc;
   switch (match.tag | 0) {
     case /* Pctf_inherit */0 :
         line(i$1, ppf, /* Format */[
@@ -1932,7 +1932,7 @@ function class_type_field(i, ppf, x) {
                         ])
                     ]),
                   "Pctf_val \"%s\" %a %a\n"
-                ]), match$1[0][/* txt */0], fmt_mutable_flag, match$1[1], fmt_virtual_flag, match$1[2]);
+                ]), match$1[0].txt, fmt_mutable_flag, match$1[1], fmt_virtual_flag, match$1[2]);
         return core_type(i$1 + 1 | 0, ppf, match$1[3]);
     case /* Pctf_method */2 :
         var match$2 = match[0];
@@ -1954,7 +1954,7 @@ function class_type_field(i, ppf, x) {
                         ])
                     ]),
                   "Pctf_method \"%s\" %a %a\n"
-                ]), match$2[0][/* txt */0], fmt_private_flag, match$2[1], fmt_virtual_flag, match$2[2]);
+                ]), match$2[0].txt, fmt_private_flag, match$2[1], fmt_virtual_flag, match$2[2]);
         return core_type(i$1 + 1 | 0, ppf, match$2[3]);
     case /* Pctf_constraint */3 :
         var match$3 = match[0];
@@ -1981,7 +1981,7 @@ function class_type_field(i, ppf, x) {
                         ])
                     ]),
                   "Pctf_attribute \"%s\"\n"
-                ]), match$4[0][/* txt */0]);
+                ]), match$4[0].txt);
         return payload(i$1, ppf, match$4[1]);
     case /* Pctf_extension */5 :
         var match$5 = match[0];
@@ -1997,7 +1997,7 @@ function class_type_field(i, ppf, x) {
                         ])
                     ]),
                   "Pctf_extension \"%s\"\n"
-                ]), match$5[0][/* txt */0]);
+                ]), match$5[0].txt);
         return payload(i$1, ppf, match$5[1]);
     
   }
@@ -2013,8 +2013,8 @@ function class_description(i, ppf, x) {
                       ])])
               ]),
             "class_description %a\n"
-          ]), fmt_location, x[/* pci_loc */4]);
-  attributes(i, ppf, x[/* pci_attributes */5]);
+          ]), fmt_location, x.pci_loc);
+  attributes(i, ppf, x.pci_attributes);
   var i$1 = i + 1 | 0;
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
@@ -2025,7 +2025,7 @@ function class_description(i, ppf, x) {
                       ])])
               ]),
             "pci_virt = %a\n"
-          ]), fmt_virtual_flag, x[/* pci_virt */0]);
+          ]), fmt_virtual_flag, x.pci_virt);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "pci_params =\n",
@@ -2033,7 +2033,7 @@ function class_description(i, ppf, x) {
           ]),
         "pci_params =\n"
       ]);
-  list(i$1 + 1 | 0, type_parameter, ppf, x[/* pci_params */1]);
+  list(i$1 + 1 | 0, type_parameter, ppf, x.pci_params);
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
                 "pci_name = ",
@@ -2043,7 +2043,7 @@ function class_description(i, ppf, x) {
                       ])])
               ]),
             "pci_name = %a\n"
-          ]), fmt_string_loc, x[/* pci_name */2]);
+          ]), fmt_string_loc, x.pci_name);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "pci_expr =\n",
@@ -2051,7 +2051,7 @@ function class_description(i, ppf, x) {
           ]),
         "pci_expr =\n"
       ]);
-  return class_type(i$1 + 1 | 0, ppf, x[/* pci_expr */3]);
+  return class_type(i$1 + 1 | 0, ppf, x.pci_expr);
 }
 
 function class_type_declaration(i, ppf, x) {
@@ -2064,8 +2064,8 @@ function class_type_declaration(i, ppf, x) {
                       ])])
               ]),
             "class_type_declaration %a\n"
-          ]), fmt_location, x[/* pci_loc */4]);
-  attributes(i, ppf, x[/* pci_attributes */5]);
+          ]), fmt_location, x.pci_loc);
+  attributes(i, ppf, x.pci_attributes);
   var i$1 = i + 1 | 0;
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
@@ -2076,7 +2076,7 @@ function class_type_declaration(i, ppf, x) {
                       ])])
               ]),
             "pci_virt = %a\n"
-          ]), fmt_virtual_flag, x[/* pci_virt */0]);
+          ]), fmt_virtual_flag, x.pci_virt);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "pci_params =\n",
@@ -2084,7 +2084,7 @@ function class_type_declaration(i, ppf, x) {
           ]),
         "pci_params =\n"
       ]);
-  list(i$1 + 1 | 0, type_parameter, ppf, x[/* pci_params */1]);
+  list(i$1 + 1 | 0, type_parameter, ppf, x.pci_params);
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
                 "pci_name = ",
@@ -2094,7 +2094,7 @@ function class_type_declaration(i, ppf, x) {
                       ])])
               ]),
             "pci_name = %a\n"
-          ]), fmt_string_loc, x[/* pci_name */2]);
+          ]), fmt_string_loc, x.pci_name);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "pci_expr =\n",
@@ -2102,7 +2102,7 @@ function class_type_declaration(i, ppf, x) {
           ]),
         "pci_expr =\n"
       ]);
-  return class_type(i$1 + 1 | 0, ppf, x[/* pci_expr */3]);
+  return class_type(i$1 + 1 | 0, ppf, x.pci_expr);
 }
 
 function class_expr(_i, ppf, _x) {
@@ -2118,10 +2118,10 @@ function class_expr(_i, ppf, _x) {
                         ])])
                 ]),
               "class_expr %a\n"
-            ]), fmt_location, x[/* pcl_loc */1]);
-    attributes(i, ppf, x[/* pcl_attributes */2]);
+            ]), fmt_location, x.pcl_loc);
+    attributes(i, ppf, x.pcl_attributes);
     var i$1 = i + 1 | 0;
-    var match = x[/* pcl_desc */0];
+    var match = x.pcl_desc;
     switch (match.tag | 0) {
       case /* Pcl_constr */0 :
           Curry._2(line(i$1, ppf, /* Format */[
@@ -2207,7 +2207,7 @@ function class_expr(_i, ppf, _x) {
                           ])
                       ]),
                     "Pcl_extension \"%s\"\n"
-                  ]), match$1[0][/* txt */0]);
+                  ]), match$1[0].txt);
           return payload(i$1, ppf, match$1[1]);
       case /* Pcl_open */7 :
           Curry._4(line(i$1, ppf, /* Format */[
@@ -2239,8 +2239,8 @@ function class_structure(i, ppf, param) {
           ]),
         "class_structure\n"
       ]);
-  pattern(i + 1 | 0, ppf, param[/* pcstr_self */0]);
-  return list(i + 1 | 0, class_field, ppf, param[/* pcstr_fields */1]);
+  pattern(i + 1 | 0, ppf, param.pcstr_self);
+  return list(i + 1 | 0, class_field, ppf, param.pcstr_fields);
 }
 
 function class_field(i, ppf, x) {
@@ -2253,10 +2253,10 @@ function class_field(i, ppf, x) {
                       ])])
               ]),
             "class_field %a\n"
-          ]), fmt_location, x[/* pcf_loc */1]);
+          ]), fmt_location, x.pcf_loc);
   var i$1 = i + 1 | 0;
-  attributes(i$1, ppf, x[/* pcf_attributes */2]);
-  var match = x[/* pcf_desc */0];
+  attributes(i$1, ppf, x.pcf_attributes);
+  var match = x.pcf_desc;
   switch (match.tag | 0) {
     case /* Pcf_inherit */0 :
         Curry._2(line(i$1, ppf, /* Format */[
@@ -2345,7 +2345,7 @@ function class_field(i, ppf, x) {
                         ])
                     ]),
                   "Pcf_attribute \"%s\"\n"
-                ]), match$4[0][/* txt */0]);
+                ]), match$4[0].txt);
         return payload(i$1, ppf, match$4[1]);
     case /* Pcf_extension */6 :
         var match$5 = match[0];
@@ -2361,7 +2361,7 @@ function class_field(i, ppf, x) {
                         ])
                     ]),
                   "Pcf_extension \"%s\"\n"
-                ]), match$5[0][/* txt */0]);
+                ]), match$5[0].txt);
         return payload(i$1, ppf, match$5[1]);
     
   }
@@ -2402,8 +2402,8 @@ function class_declaration(i, ppf, x) {
                       ])])
               ]),
             "class_declaration %a\n"
-          ]), fmt_location, x[/* pci_loc */4]);
-  attributes(i, ppf, x[/* pci_attributes */5]);
+          ]), fmt_location, x.pci_loc);
+  attributes(i, ppf, x.pci_attributes);
   var i$1 = i + 1 | 0;
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
@@ -2414,7 +2414,7 @@ function class_declaration(i, ppf, x) {
                       ])])
               ]),
             "pci_virt = %a\n"
-          ]), fmt_virtual_flag, x[/* pci_virt */0]);
+          ]), fmt_virtual_flag, x.pci_virt);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "pci_params =\n",
@@ -2422,7 +2422,7 @@ function class_declaration(i, ppf, x) {
           ]),
         "pci_params =\n"
       ]);
-  list(i$1 + 1 | 0, type_parameter, ppf, x[/* pci_params */1]);
+  list(i$1 + 1 | 0, type_parameter, ppf, x.pci_params);
   Curry._2(line(i$1, ppf, /* Format */[
             /* String_literal */Block.__(11, [
                 "pci_name = ",
@@ -2432,7 +2432,7 @@ function class_declaration(i, ppf, x) {
                       ])])
               ]),
             "pci_name = %a\n"
-          ]), fmt_string_loc, x[/* pci_name */2]);
+          ]), fmt_string_loc, x.pci_name);
   line(i$1, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "pci_expr =\n",
@@ -2440,7 +2440,7 @@ function class_declaration(i, ppf, x) {
           ]),
         "pci_expr =\n"
       ]);
-  return class_expr(i$1 + 1 | 0, ppf, x[/* pci_expr */3]);
+  return class_expr(i$1 + 1 | 0, ppf, x.pci_expr);
 }
 
 function module_type(_i, ppf, _x) {
@@ -2456,10 +2456,10 @@ function module_type(_i, ppf, _x) {
                         ])])
                 ]),
               "module_type %a\n"
-            ]), fmt_location, x[/* pmty_loc */1]);
-    attributes(i, ppf, x[/* pmty_attributes */2]);
+            ]), fmt_location, x.pmty_loc);
+    attributes(i, ppf, x.pmty_attributes);
     var i$1 = i + 1 | 0;
-    var match = x[/* pmty_desc */0];
+    var match = x.pmty_desc;
     switch (match.tag | 0) {
       case /* Pmty_ident */0 :
           return Curry._2(line(i$1, ppf, /* Format */[
@@ -2533,7 +2533,7 @@ function module_type(_i, ppf, _x) {
                           ])
                       ]),
                     "Pmod_extension \"%s\"\n"
-                  ]), match$1[0][/* txt */0]);
+                  ]), match$1[0].txt);
           return payload(i$1, ppf, match$1[1]);
       case /* Pmty_alias */6 :
           return Curry._2(line(i$1, ppf, /* Format */[
@@ -2565,9 +2565,9 @@ function signature_item(i, ppf, x) {
                       ])])
               ]),
             "signature_item %a\n"
-          ]), fmt_location, x[/* psig_loc */1]);
+          ]), fmt_location, x.psig_loc);
   var i$1 = i + 1 | 0;
-  var match = x[/* psig_desc */0];
+  var match = x.psig_desc;
   switch (match.tag | 0) {
     case /* Psig_value */0 :
         line(i$1, ppf, /* Format */[
@@ -2619,9 +2619,9 @@ function signature_item(i, ppf, x) {
                             ])])
                     ]),
                   "Psig_module %a\n"
-                ]), fmt_string_loc, pmd[/* pmd_name */0]);
-        attributes(i$1, ppf, pmd[/* pmd_attributes */2]);
-        return module_type(i$1, ppf, pmd[/* pmd_type */1]);
+                ]), fmt_string_loc, pmd.pmd_name);
+        attributes(i$1, ppf, pmd.pmd_attributes);
+        return module_type(i$1, ppf, pmd.pmd_type);
     case /* Psig_recmodule */5 :
         line(i$1, ppf, /* Format */[
               /* String_literal */Block.__(11, [
@@ -2642,9 +2642,9 @@ function signature_item(i, ppf, x) {
                             ])])
                     ]),
                   "Psig_modtype %a\n"
-                ]), fmt_string_loc, x$1[/* pmtd_name */0]);
-        attributes(i$1, ppf, x$1[/* pmtd_attributes */2]);
-        return modtype_declaration(i$1, ppf, x$1[/* pmtd_type */1]);
+                ]), fmt_string_loc, x$1.pmtd_name);
+        attributes(i$1, ppf, x$1.pmtd_attributes);
+        return modtype_declaration(i$1, ppf, x$1.pmtd_type);
     case /* Psig_open */7 :
         var od = match[0];
         Curry._4(line(i$1, ppf, /* Format */[
@@ -2659,8 +2659,8 @@ function signature_item(i, ppf, x) {
                             ])])
                     ]),
                   "Psig_open %a %a\n"
-                ]), fmt_override_flag, od[/* popen_override */1], fmt_longident_loc, od[/* popen_lid */0]);
-        return attributes(i$1, ppf, od[/* popen_attributes */3]);
+                ]), fmt_override_flag, od.popen_override, fmt_longident_loc, od.popen_lid);
+        return attributes(i$1, ppf, od.popen_attributes);
     case /* Psig_include */8 :
         var incl = match[0];
         line(i$1, ppf, /* Format */[
@@ -2670,8 +2670,8 @@ function signature_item(i, ppf, x) {
                 ]),
               "Psig_include\n"
             ]);
-        module_type(i$1, ppf, incl[/* pincl_mod */0]);
-        return attributes(i$1, ppf, incl[/* pincl_attributes */2]);
+        module_type(i$1, ppf, incl.pincl_mod);
+        return attributes(i$1, ppf, incl.pincl_attributes);
     case /* Psig_class */9 :
         line(i$1, ppf, /* Format */[
               /* String_literal */Block.__(11, [
@@ -2704,7 +2704,7 @@ function signature_item(i, ppf, x) {
                         ])
                     ]),
                   "Psig_attribute \"%s\"\n"
-                ]), match$1[0][/* txt */0]);
+                ]), match$1[0].txt);
         return payload(i$1, ppf, match$1[1]);
     case /* Psig_extension */12 :
         var match$2 = match[0];
@@ -2720,7 +2720,7 @@ function signature_item(i, ppf, x) {
                         ])
                     ]),
                   "Psig_extension \"%s\"\n"
-                ]), match$2[0][/* txt */0]);
+                ]), match$2[0].txt);
         attributes(i$1, ppf, match[1]);
         return payload(i$1, ppf, match$2[1]);
     
@@ -2812,10 +2812,10 @@ function module_expr(_i, ppf, _x) {
                         ])])
                 ]),
               "module_expr %a\n"
-            ]), fmt_location, x[/* pmod_loc */1]);
-    attributes(i, ppf, x[/* pmod_attributes */2]);
+            ]), fmt_location, x.pmod_loc);
+    attributes(i, ppf, x.pmod_attributes);
     var i$1 = i + 1 | 0;
-    var match = x[/* pmod_desc */0];
+    var match = x.pmod_desc;
     switch (match.tag | 0) {
       case /* Pmod_ident */0 :
           return Curry._2(line(i$1, ppf, /* Format */[
@@ -2901,7 +2901,7 @@ function module_expr(_i, ppf, _x) {
                           ])
                       ]),
                     "Pmod_extension \"%s\"\n"
-                  ]), match$1[0][/* txt */0]);
+                  ]), match$1[0].txt);
           return payload(i$1, ppf, match$1[1]);
       
     }
@@ -2922,9 +2922,9 @@ function structure_item(i, ppf, x) {
                       ])])
               ]),
             "structure_item %a\n"
-          ]), fmt_location, x[/* pstr_loc */1]);
+          ]), fmt_location, x.pstr_loc);
   var i$1 = i + 1 | 0;
-  var match = x[/* pstr_desc */0];
+  var match = x.pstr_desc;
   switch (match.tag | 0) {
     case /* Pstr_eval */0 :
         line(i$1, ppf, /* Format */[
@@ -3016,9 +3016,9 @@ function structure_item(i, ppf, x) {
                             ])])
                     ]),
                   "Pstr_modtype %a\n"
-                ]), fmt_string_loc, x$1[/* pmtd_name */0]);
-        attributes(i$1, ppf, x$1[/* pmtd_attributes */2]);
-        return modtype_declaration(i$1, ppf, x$1[/* pmtd_type */1]);
+                ]), fmt_string_loc, x$1.pmtd_name);
+        attributes(i$1, ppf, x$1.pmtd_attributes);
+        return modtype_declaration(i$1, ppf, x$1.pmtd_type);
     case /* Pstr_open */9 :
         var od = match[0];
         Curry._4(line(i$1, ppf, /* Format */[
@@ -3033,8 +3033,8 @@ function structure_item(i, ppf, x) {
                             ])])
                     ]),
                   "Pstr_open %a %a\n"
-                ]), fmt_override_flag, od[/* popen_override */1], fmt_longident_loc, od[/* popen_lid */0]);
-        return attributes(i$1, ppf, od[/* popen_attributes */3]);
+                ]), fmt_override_flag, od.popen_override, fmt_longident_loc, od.popen_lid);
+        return attributes(i$1, ppf, od.popen_attributes);
     case /* Pstr_class */10 :
         line(i$1, ppf, /* Format */[
               /* String_literal */Block.__(11, [
@@ -3062,8 +3062,8 @@ function structure_item(i, ppf, x) {
                 ]),
               "Pstr_include"
             ]);
-        attributes(i$1, ppf, incl[/* pincl_attributes */2]);
-        return module_expr(i$1, ppf, incl[/* pincl_mod */0]);
+        attributes(i$1, ppf, incl.pincl_attributes);
+        return module_expr(i$1, ppf, incl.pincl_mod);
     case /* Pstr_attribute */13 :
         var match$1 = match[0];
         Curry._1(line(i$1, ppf, /* Format */[
@@ -3078,7 +3078,7 @@ function structure_item(i, ppf, x) {
                         ])
                     ]),
                   "Pstr_attribute \"%s\"\n"
-                ]), match$1[0][/* txt */0]);
+                ]), match$1[0].txt);
         return payload(i$1, ppf, match$1[1]);
     case /* Pstr_extension */14 :
         var match$2 = match[0];
@@ -3094,7 +3094,7 @@ function structure_item(i, ppf, x) {
                         ])
                     ]),
                   "Pstr_extension \"%s\"\n"
-                ]), match$2[0][/* txt */0]);
+                ]), match$2[0].txt);
         attributes(i$1, ppf, match[1]);
         return payload(i$1, ppf, match$2[1]);
     
@@ -3102,15 +3102,15 @@ function structure_item(i, ppf, x) {
 }
 
 function module_declaration(i, ppf, pmd) {
-  string_loc(i, ppf, pmd[/* pmd_name */0]);
-  attributes(i, ppf, pmd[/* pmd_attributes */2]);
-  return module_type(i + 1 | 0, ppf, pmd[/* pmd_type */1]);
+  string_loc(i, ppf, pmd.pmd_name);
+  attributes(i, ppf, pmd.pmd_attributes);
+  return module_type(i + 1 | 0, ppf, pmd.pmd_type);
 }
 
 function module_binding(i, ppf, x) {
-  string_loc(i, ppf, x[/* pmb_name */0]);
-  attributes(i, ppf, x[/* pmb_attributes */2]);
-  return module_expr(i + 1 | 0, ppf, x[/* pmb_expr */1]);
+  string_loc(i, ppf, x.pmb_name);
+  attributes(i, ppf, x.pmb_attributes);
+  return module_expr(i + 1 | 0, ppf, x.pmb_expr);
 }
 
 function core_type_x_core_type_x_location(i, ppf, param) {
@@ -3135,17 +3135,17 @@ function constructor_decl(i, ppf, param) {
                     /* End_of_format */0
                   ])]),
             "%a\n"
-          ]), fmt_location, param[/* pcd_loc */3]);
+          ]), fmt_location, param.pcd_loc);
   Curry._2(line(i + 1 | 0, ppf, /* Format */[
             /* Alpha */Block.__(15, [/* Char_literal */Block.__(12, [
                     /* "\n" */10,
                     /* End_of_format */0
                   ])]),
             "%a\n"
-          ]), fmt_string_loc, param[/* pcd_name */0]);
-  attributes(i, ppf, param[/* pcd_attributes */4]);
-  constructor_arguments(i + 1 | 0, ppf, param[/* pcd_args */1]);
-  return option(i + 1 | 0, core_type, ppf, param[/* pcd_res */2]);
+          ]), fmt_string_loc, param.pcd_name);
+  attributes(i, ppf, param.pcd_attributes);
+  constructor_arguments(i + 1 | 0, ppf, param.pcd_args);
+  return option(i + 1 | 0, core_type, ppf, param.pcd_res);
 }
 
 function constructor_arguments(i, ppf, param) {
@@ -3163,20 +3163,20 @@ function label_decl(i, ppf, param) {
                     /* End_of_format */0
                   ])]),
             "%a\n"
-          ]), fmt_location, param[/* pld_loc */3]);
-  attributes(i, ppf, param[/* pld_attributes */4]);
+          ]), fmt_location, param.pld_loc);
+  attributes(i, ppf, param.pld_attributes);
   Curry._2(line(i + 1 | 0, ppf, /* Format */[
             /* Alpha */Block.__(15, [/* Char_literal */Block.__(12, [
                     /* "\n" */10,
                     /* End_of_format */0
                   ])]),
             "%a\n"
-          ]), fmt_mutable_flag, param[/* pld_mutable */1]);
+          ]), fmt_mutable_flag, param.pld_mutable);
   Curry._2(line(i + 1 | 0, ppf, /* Format */[
             /* Alpha */Block.__(15, [/* End_of_format */0]),
             "%a"
-          ]), fmt_string_loc, param[/* pld_name */0]);
-  return core_type(i + 1 | 0, ppf, param[/* pld_type */2]);
+          ]), fmt_string_loc, param.pld_name);
+  return core_type(i + 1 | 0, ppf, param.pld_type);
 }
 
 function longident_x_pattern(i, ppf, param) {
@@ -3191,7 +3191,7 @@ function longident_x_pattern(i, ppf, param) {
 }
 
 function $$case(i, ppf, param) {
-  var pc_guard = param[/* pc_guard */1];
+  var pc_guard = param.pc_guard;
   line(i, ppf, /* Format */[
         /* String_literal */Block.__(11, [
             "<case>\n",
@@ -3199,7 +3199,7 @@ function $$case(i, ppf, param) {
           ]),
         "<case>\n"
       ]);
-  pattern(i + 1 | 0, ppf, param[/* pc_lhs */0]);
+  pattern(i + 1 | 0, ppf, param.pc_lhs);
   if (pc_guard !== undefined) {
     line(i + 1 | 0, ppf, /* Format */[
           /* String_literal */Block.__(11, [
@@ -3210,7 +3210,7 @@ function $$case(i, ppf, param) {
         ]);
     expression(i + 2 | 0, ppf, pc_guard);
   }
-  return expression(i + 1 | 0, ppf, param[/* pc_rhs */2]);
+  return expression(i + 1 | 0, ppf, param.pc_rhs);
 }
 
 function value_binding(i, ppf, x) {
@@ -3221,9 +3221,9 @@ function value_binding(i, ppf, x) {
           ]),
         "<def>\n"
       ]);
-  attributes(i + 1 | 0, ppf, x[/* pvb_attributes */2]);
-  pattern(i + 1 | 0, ppf, x[/* pvb_pat */0]);
-  return expression(i + 1 | 0, ppf, x[/* pvb_expr */1]);
+  attributes(i + 1 | 0, ppf, x.pvb_attributes);
+  pattern(i + 1 | 0, ppf, x.pvb_pat);
+  return expression(i + 1 | 0, ppf, x.pvb_expr);
 }
 
 function string_x_expression(i, ppf, param) {
@@ -3292,7 +3292,7 @@ function label_x_bool_x_core_type_list(i, ppf, x) {
                     ])
                 ]),
               "Rtag \"%s\" %s\n"
-            ]), x[0][/* txt */0], Pervasives.string_of_bool(x[2]));
+            ]), x[0].txt, Pervasives.string_of_bool(x[2]));
     attributes(i + 1 | 0, ppf, x[1]);
     return list(i + 1 | 0, core_type, ppf, x[3]);
   }

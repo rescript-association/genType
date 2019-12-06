@@ -72,14 +72,14 @@ function wrap(parsing_fun, lexbuf) {
         throw err;
       } else if (tmp.tag) {
         throw err;
-      } else if ($$Location.input_name[0] === "//toplevel//") {
+      } else if ($$Location.input_name.contents === "//toplevel//") {
         skip_phrase(lexbuf);
         throw err;
       } else {
         throw err;
       }
     } else if (err[0] === Syntaxerr.$$Error) {
-      if ($$Location.input_name[0] === "//toplevel//") {
+      if ($$Location.input_name.contents === "//toplevel//") {
         maybe_skip_phrase(lexbuf);
         throw err;
       } else {
@@ -89,7 +89,7 @@ function wrap(parsing_fun, lexbuf) {
       throw err;
     }
     var loc = $$Location.curr(lexbuf);
-    if ($$Location.input_name[0] === "//toplevel//") {
+    if ($$Location.input_name.contents === "//toplevel//") {
       maybe_skip_phrase(lexbuf);
     }
     throw [

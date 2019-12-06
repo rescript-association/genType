@@ -10,82 +10,84 @@ import * as Warnings from "./warnings.bs.js";
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 import * as Caml_builtin_exceptions from "bs-platform/lib/es6/caml_builtin_exceptions.js";
 
-var docstrings = /* record */[/* contents : [] */0];
+var docstrings = {
+  contents: /* [] */0
+};
 
 function warn_bad_docstrings(param) {
   if (Warnings.is_active(/* Bad_docstring */Block.__(34, [true]))) {
     return List.iter((function (ds) {
-                  var match = ds[/* ds_attached */2];
+                  var match = ds.ds_attached;
                   switch (match) {
                     case /* Unattached */0 :
-                        return $$Location.prerr_warning(ds[/* ds_loc */1], /* Bad_docstring */Block.__(34, [true]));
+                        return $$Location.prerr_warning(ds.ds_loc, /* Bad_docstring */Block.__(34, [true]));
                     case /* Info */1 :
                         return /* () */0;
                     case /* Docs */2 :
-                        var match$1 = ds[/* ds_associated */3];
+                        var match$1 = ds.ds_associated;
                         if (match$1 >= 2) {
-                          return $$Location.prerr_warning(ds[/* ds_loc */1], /* Bad_docstring */Block.__(34, [false]));
+                          return $$Location.prerr_warning(ds.ds_loc, /* Bad_docstring */Block.__(34, [false]));
                         } else {
                           return /* () */0;
                         }
                     
                   }
-                }), List.rev(docstrings[0]));
+                }), List.rev(docstrings.contents));
   } else {
     return 0;
   }
 }
 
 function docstring(body, loc) {
-  return /* record */[
-          /* ds_body */body,
-          /* ds_loc */loc,
-          /* ds_attached : Unattached */0,
-          /* ds_associated : Zero */0
-        ];
+  return {
+          ds_body: body,
+          ds_loc: loc,
+          ds_attached: /* Unattached */0,
+          ds_associated: /* Zero */0
+        };
 }
 
 function register(ds) {
-  docstrings[0] = /* :: */[
+  docstrings.contents = /* :: */[
     ds,
-    docstrings[0]
+    docstrings.contents
   ];
   return /* () */0;
 }
 
 function docstring_body(ds) {
-  return ds[/* ds_body */0];
+  return ds.ds_body;
 }
 
 function docstring_loc(ds) {
-  return ds[/* ds_loc */1];
+  return ds.ds_loc;
 }
 
-var doc_loc = /* record */[
-  /* txt */"ocaml.doc",
-  /* loc */$$Location.none
-];
+var doc_loc = {
+  txt: "ocaml.doc",
+  loc: $$Location.none
+};
 
 function docs_attr(ds) {
-  var exp_000 = /* pexp_desc : Pexp_constant */Block.__(1, [/* Pconst_string */Block.__(2, [
-          ds[/* ds_body */0],
+  var exp_pexp_desc = /* Pexp_constant */Block.__(1, [/* Pconst_string */Block.__(2, [
+          ds.ds_body,
           undefined
         ])]);
-  var exp_001 = /* pexp_loc */ds[/* ds_loc */1];
-  var exp = /* record */[
-    exp_000,
-    exp_001,
-    /* pexp_attributes : [] */0
-  ];
-  var item_000 = /* pstr_desc : Pstr_eval */Block.__(0, [
+  var exp_pexp_loc = ds.ds_loc;
+  var exp = {
+    pexp_desc: exp_pexp_desc,
+    pexp_loc: exp_pexp_loc,
+    pexp_attributes: /* [] */0
+  };
+  var item_pstr_desc = /* Pstr_eval */Block.__(0, [
       exp,
       /* [] */0
     ]);
-  var item_001 = exp_001;
-  var item = /* record */[
-    item_000,
-    item_001
-  ];
+  var item_pstr_loc = exp_pexp_loc;
+  var item = {
+    pstr_desc: item_pstr_desc,
+    pstr_loc: item_pstr_loc
+  };
   return /* tuple */[
           doc_loc,
           /* PStr */Block.__(0, [/* :: */[
@@ -96,21 +98,21 @@ function docs_attr(ds) {
 }
 
 function add_docs_attrs(docs, attrs) {
-  var match = docs[/* docs_pre */0];
+  var match = docs.docs_pre;
   var attrs$1;
   if (match !== undefined) {
     var ds = match;
-    attrs$1 = ds[/* ds_body */0] === "" ? attrs : /* :: */[
+    attrs$1 = ds.ds_body === "" ? attrs : /* :: */[
         docs_attr(ds),
         attrs
       ];
   } else {
     attrs$1 = attrs;
   }
-  var match$1 = docs[/* docs_post */1];
+  var match$1 = docs.docs_post;
   if (match$1 !== undefined) {
     var ds$1 = match$1;
-    if (ds$1[/* ds_body */0] === "") {
+    if (ds$1.ds_body === "") {
       return attrs$1;
     } else {
       return Pervasives.$at(attrs$1, /* :: */[
@@ -126,7 +128,7 @@ function add_docs_attrs(docs, attrs) {
 function add_info_attrs(info, attrs) {
   if (info !== undefined) {
     var ds = info;
-    if (ds[/* ds_body */0] === "") {
+    if (ds.ds_body === "") {
       return attrs;
     } else {
       return Pervasives.$at(attrs, /* :: */[
@@ -139,31 +141,31 @@ function add_info_attrs(info, attrs) {
   }
 }
 
-var text_loc = /* record */[
-  /* txt */"ocaml.text",
-  /* loc */$$Location.none
-];
+var text_loc = {
+  txt: "ocaml.text",
+  loc: $$Location.none
+};
 
 function text_attr(ds) {
-  var exp_000 = /* pexp_desc : Pexp_constant */Block.__(1, [/* Pconst_string */Block.__(2, [
-          ds[/* ds_body */0],
+  var exp_pexp_desc = /* Pexp_constant */Block.__(1, [/* Pconst_string */Block.__(2, [
+          ds.ds_body,
           undefined
         ])]);
-  var exp_001 = /* pexp_loc */ds[/* ds_loc */1];
-  var exp = /* record */[
-    exp_000,
-    exp_001,
-    /* pexp_attributes : [] */0
-  ];
-  var item_000 = /* pstr_desc : Pstr_eval */Block.__(0, [
+  var exp_pexp_loc = ds.ds_loc;
+  var exp = {
+    pexp_desc: exp_pexp_desc,
+    pexp_loc: exp_pexp_loc,
+    pexp_attributes: /* [] */0
+  };
+  var item_pstr_desc = /* Pstr_eval */Block.__(0, [
       exp,
       /* [] */0
     ]);
-  var item_001 = exp_001;
-  var item = /* record */[
-    item_000,
-    item_001
-  ];
+  var item_pstr_loc = exp_pexp_loc;
+  var item = {
+    pstr_desc: item_pstr_desc,
+    pstr_loc: item_pstr_loc
+  };
   return /* tuple */[
           text_loc,
           /* PStr */Block.__(0, [/* :: */[
@@ -175,7 +177,7 @@ function text_attr(ds) {
 
 function add_text_attrs(dsl, attrs) {
   var fdsl = List.filter((function (param) {
-            if (param[/* ds_body */0] === "") {
+            if (param.ds_body === "") {
               return false;
             } else {
               return true;
@@ -190,9 +192,9 @@ function get_docstring(info, dsl) {
     var param = _param;
     if (param) {
       var ds = param[0];
-      var match = ds[/* ds_attached */2];
+      var match = ds.ds_attached;
       if (match !== 1) {
-        ds[/* ds_attached */2] = info ? /* Info */1 : /* Docs */2;
+        ds.ds_attached = info ? /* Info */1 : /* Docs */2;
         return ds;
       } else {
         _param = param[1];
@@ -212,9 +214,9 @@ function get_docstrings(dsl) {
     var acc = _acc;
     if (param) {
       var ds = param[0];
-      var match = ds[/* ds_attached */2];
+      var match = ds.ds_attached;
       if (match !== 1) {
-        ds[/* ds_attached */2] = /* Docs */2;
+        ds.ds_attached = /* Docs */2;
         _param = param[1];
         _acc = /* :: */[
           ds,
@@ -233,12 +235,12 @@ function get_docstrings(dsl) {
 
 function associate_docstrings(dsl) {
   return List.iter((function (ds) {
-                var match = ds[/* ds_associated */3];
+                var match = ds.ds_associated;
                 if (match !== 0) {
-                  ds[/* ds_associated */3] = /* Many */2;
+                  ds.ds_associated = /* Many */2;
                   return /* () */0;
                 } else {
-                  ds[/* ds_associated */3] = /* One */1;
+                  ds.ds_associated = /* One */1;
                   return /* () */0;
                 }
               }), dsl);
@@ -404,38 +406,38 @@ function get_post_extra_text(pos) {
 }
 
 function symbol_docs(param) {
-  return /* record */[
-          /* docs_pre */get_pre_docs(Parsing.symbol_start_pos(/* () */0)),
-          /* docs_post */get_post_docs(Parsing.symbol_end_pos(/* () */0))
-        ];
+  return {
+          docs_pre: get_pre_docs(Parsing.symbol_start_pos(/* () */0)),
+          docs_post: get_post_docs(Parsing.symbol_end_pos(/* () */0))
+        };
 }
 
 function symbol_docs_lazy(param) {
   var p1 = Parsing.symbol_start_pos(/* () */0);
   var p2 = Parsing.symbol_end_pos(/* () */0);
   return Caml_obj.caml_lazy_make((function (param) {
-                return /* record */[
-                        /* docs_pre */get_pre_docs(p1),
-                        /* docs_post */get_post_docs(p2)
-                      ];
+                return {
+                        docs_pre: get_pre_docs(p1),
+                        docs_post: get_post_docs(p2)
+                      };
               }));
 }
 
 function rhs_docs(pos1, pos2) {
-  return /* record */[
-          /* docs_pre */get_pre_docs(Parsing.rhs_start_pos(pos1)),
-          /* docs_post */get_post_docs(Parsing.rhs_end_pos(pos2))
-        ];
+  return {
+          docs_pre: get_pre_docs(Parsing.rhs_start_pos(pos1)),
+          docs_post: get_post_docs(Parsing.rhs_end_pos(pos2))
+        };
 }
 
 function rhs_docs_lazy(pos1, pos2) {
   var p1 = Parsing.rhs_start_pos(pos1);
   var p2 = Parsing.rhs_end_pos(pos2);
   return Caml_obj.caml_lazy_make((function (param) {
-                return /* record */[
-                        /* docs_pre */get_pre_docs(p1),
-                        /* docs_post */get_post_docs(p2)
-                      ];
+                return {
+                        docs_pre: get_pre_docs(p1),
+                        docs_post: get_post_docs(p2)
+                      };
               }));
 }
 
@@ -496,7 +498,7 @@ function rhs_post_extra_text(pos) {
 }
 
 function init(param) {
-  docstrings[0] = /* [] */0;
+  docstrings.contents = /* [] */0;
   Hashtbl.reset(pre_table);
   Hashtbl.reset(post_table);
   Hashtbl.reset(floating_table);
@@ -504,10 +506,10 @@ function init(param) {
   return Hashtbl.reset(post_extra_table);
 }
 
-var empty_docs = /* record */[
-  /* docs_pre */undefined,
-  /* docs_post */undefined
-];
+var empty_docs = {
+  docs_pre: undefined,
+  docs_post: undefined
+};
 
 var empty_info = undefined;
 

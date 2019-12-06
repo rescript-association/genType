@@ -17,8 +17,6 @@ import * as Caml_format from "bs-platform/lib/es6/caml_format.js";
 import * as Caml_js_exceptions from "bs-platform/lib/es6/caml_js_exceptions.js";
 import * as Caml_builtin_exceptions from "bs-platform/lib/es6/caml_builtin_exceptions.js";
 
-var $$Map = Numbers.Int.$$Map;
-
 var of_string = Caml_format.caml_int_of_string;
 
 var of_string$1 = Caml_format.caml_int_of_string;
@@ -26,49 +24,12 @@ var of_string$1 = Caml_format.caml_int_of_string;
 var Int_arg_helper = Arg_helper.Make({
       Key: {
         of_string: of_string,
-        $$Map: {
-          empty: $$Map.empty,
-          is_empty: $$Map.is_empty,
-          mem: $$Map.mem,
-          add: $$Map.add,
-          update: $$Map.update,
-          singleton: $$Map.singleton,
-          remove: $$Map.remove,
-          merge: $$Map.merge,
-          union: $$Map.union,
-          compare: $$Map.compare,
-          equal: $$Map.equal,
-          iter: $$Map.iter,
-          fold: $$Map.fold,
-          for_all: $$Map.for_all,
-          exists: $$Map.exists,
-          filter: $$Map.filter,
-          partition: $$Map.partition,
-          cardinal: $$Map.cardinal,
-          bindings: $$Map.bindings,
-          min_binding: $$Map.min_binding,
-          min_binding_opt: $$Map.min_binding_opt,
-          max_binding: $$Map.max_binding,
-          max_binding_opt: $$Map.max_binding_opt,
-          choose: $$Map.choose,
-          choose_opt: $$Map.choose_opt,
-          split: $$Map.split,
-          find: $$Map.find,
-          find_opt: $$Map.find_opt,
-          find_first: $$Map.find_first,
-          find_first_opt: $$Map.find_first_opt,
-          find_last: $$Map.find_last,
-          find_last_opt: $$Map.find_last_opt,
-          map: $$Map.map,
-          mapi: $$Map.mapi
-        }
+        $$Map: Numbers.Int.$$Map
       },
       Value: {
         of_string: of_string$1
       }
     });
-
-var $$Map$1 = Numbers.Int.$$Map;
 
 var of_string$2 = Caml_format.caml_int_of_string;
 
@@ -77,232 +38,379 @@ var of_string$3 = Caml_format.caml_float_of_string;
 var Float_arg_helper = Arg_helper.Make({
       Key: {
         of_string: of_string$2,
-        $$Map: {
-          empty: $$Map$1.empty,
-          is_empty: $$Map$1.is_empty,
-          mem: $$Map$1.mem,
-          add: $$Map$1.add,
-          update: $$Map$1.update,
-          singleton: $$Map$1.singleton,
-          remove: $$Map$1.remove,
-          merge: $$Map$1.merge,
-          union: $$Map$1.union,
-          compare: $$Map$1.compare,
-          equal: $$Map$1.equal,
-          iter: $$Map$1.iter,
-          fold: $$Map$1.fold,
-          for_all: $$Map$1.for_all,
-          exists: $$Map$1.exists,
-          filter: $$Map$1.filter,
-          partition: $$Map$1.partition,
-          cardinal: $$Map$1.cardinal,
-          bindings: $$Map$1.bindings,
-          min_binding: $$Map$1.min_binding,
-          min_binding_opt: $$Map$1.min_binding_opt,
-          max_binding: $$Map$1.max_binding,
-          max_binding_opt: $$Map$1.max_binding_opt,
-          choose: $$Map$1.choose,
-          choose_opt: $$Map$1.choose_opt,
-          split: $$Map$1.split,
-          find: $$Map$1.find,
-          find_opt: $$Map$1.find_opt,
-          find_first: $$Map$1.find_first,
-          find_first_opt: $$Map$1.find_first_opt,
-          find_last: $$Map$1.find_last,
-          find_last_opt: $$Map$1.find_last_opt,
-          map: $$Map$1.map,
-          mapi: $$Map$1.mapi
-        }
+        $$Map: Numbers.Int.$$Map
       },
       Value: {
         of_string: of_string$3
       }
     });
 
-var objfiles = /* record */[/* contents : [] */0];
-
-var ccobjs = /* record */[/* contents : [] */0];
-
-var dllibs = /* record */[/* contents : [] */0];
-
-var compile_only = /* record */[/* contents */false];
-
-var output_name = /* record */[/* contents */undefined];
-
-var include_dirs = /* record */[/* contents : [] */0];
-
-var no_std_include = /* record */[/* contents */false];
-
-var print_types = /* record */[/* contents */false];
-
-var make_archive = /* record */[/* contents */false];
-
-var debug = /* record */[/* contents */false];
-
-var fast = /* record */[/* contents */false];
-
-var use_linscan = /* record */[/* contents */false];
-
-var link_everything = /* record */[/* contents */false];
-
-var custom_runtime = /* record */[/* contents */false];
-
-var no_check_prims = /* record */[/* contents */false];
-
-var bytecode_compatible_32 = /* record */[/* contents */false];
-
-var output_c_object = /* record */[/* contents */false];
-
-var output_complete_object = /* record */[/* contents */false];
-
-var all_ccopts = /* record */[/* contents : [] */0];
-
-var classic = /* record */[/* contents */false];
-
-var nopervasives = /* record */[/* contents */false];
-
-var preprocessor = /* record */[/* contents */undefined];
-
-var all_ppx = /* record */[/* contents : [] */0];
-
-var annotations = /* record */[/* contents */false];
-
-var binary_annotations = /* record */[/* contents */false];
-
-var use_threads = /* record */[/* contents */false];
-
-var use_vmthreads = /* record */[/* contents */false];
-
-var noassert = /* record */[/* contents */false];
-
-var verbose = /* record */[/* contents */false];
-
-var noversion = /* record */[/* contents */false];
-
-var noprompt = /* record */[/* contents */false];
-
-var nopromptcont = /* record */[/* contents */false];
-
-var init_file = /* record */[/* contents */undefined];
-
-var noinit = /* record */[/* contents */false];
-
-var open_modules = /* record */[/* contents : [] */0];
-
-var use_prims = /* record */[/* contents */""];
-
-var use_runtime = /* record */[/* contents */""];
-
-var principal = /* record */[/* contents */false];
-
-var real_paths = /* record */[/* contents */true];
-
-var recursive_types = /* record */[/* contents */false];
-
-var strict_sequence = /* record */[/* contents */false];
-
-var strict_formats = /* record */[/* contents */false];
-
-var applicative_functors = /* record */[/* contents */true];
-
-var make_runtime = /* record */[/* contents */false];
-
-var gprofile = /* record */[/* contents */false];
-
-var c_compiler = /* record */[/* contents */undefined];
-
-var no_auto_link = /* record */[/* contents */false];
-
-var dllpaths = /* record */[/* contents : [] */0];
-
-var make_package = /* record */[/* contents */false];
-
-var for_package = /* record */[/* contents */undefined];
-
-var error_size = /* record */[/* contents */500];
-
-var float_const_prop = /* record */[/* contents */true];
-
-var transparent_modules = /* record */[/* contents */false];
-
-var dump_source = /* record */[/* contents */false];
-
-var dump_parsetree = /* record */[/* contents */false];
-
-var dump_typedtree = /* record */[/* contents */false];
-
-var dump_rawlambda = /* record */[/* contents */false];
-
-var dump_lambda = /* record */[/* contents */false];
-
-var dump_rawclambda = /* record */[/* contents */false];
-
-var dump_clambda = /* record */[/* contents */false];
-
-var dump_rawflambda = /* record */[/* contents */false];
-
-var dump_flambda = /* record */[/* contents */false];
-
-var dump_flambda_let = /* record */[/* contents */undefined];
-
-var dump_flambda_verbose = /* record */[/* contents */false];
-
-var dump_instr = /* record */[/* contents */false];
-
-var keep_asm_file = /* record */[/* contents */false];
-
-var optimize_for_speed = /* record */[/* contents */true];
-
-var opaque = /* record */[/* contents */false];
-
-var dump_cmm = /* record */[/* contents */false];
-
-var dump_selection = /* record */[/* contents */false];
-
-var dump_cse = /* record */[/* contents */false];
-
-var dump_live = /* record */[/* contents */false];
-
-var dump_avail = /* record */[/* contents */false];
-
-var dump_spill = /* record */[/* contents */false];
-
-var dump_split = /* record */[/* contents */false];
-
-var dump_interf = /* record */[/* contents */false];
-
-var dump_prefer = /* record */[/* contents */false];
-
-var dump_regalloc = /* record */[/* contents */false];
-
-var dump_reload = /* record */[/* contents */false];
-
-var dump_scheduling = /* record */[/* contents */false];
-
-var dump_linear = /* record */[/* contents */false];
-
-var dump_interval = /* record */[/* contents */false];
-
-var keep_startup_file = /* record */[/* contents */false];
-
-var dump_combine = /* record */[/* contents */false];
-
-var profile_columns = /* record */[/* contents : [] */0];
-
-var debug_runavail = /* record */[/* contents */false];
-
-var native_code = /* record */[/* contents */false];
-
-var force_slash = /* record */[/* contents */false];
-
-var clambda_checks = /* record */[/* contents */false];
-
-var flambda_invariant_checks = /* record */[/* contents */true];
-
-var dont_write_files = /* record */[/* contents */false];
+var objfiles = {
+  contents: /* [] */0
+};
+
+var ccobjs = {
+  contents: /* [] */0
+};
+
+var dllibs = {
+  contents: /* [] */0
+};
+
+var compile_only = {
+  contents: false
+};
+
+var output_name = {
+  contents: undefined
+};
+
+var include_dirs = {
+  contents: /* [] */0
+};
+
+var no_std_include = {
+  contents: false
+};
+
+var print_types = {
+  contents: false
+};
+
+var make_archive = {
+  contents: false
+};
+
+var debug = {
+  contents: false
+};
+
+var fast = {
+  contents: false
+};
+
+var use_linscan = {
+  contents: false
+};
+
+var link_everything = {
+  contents: false
+};
+
+var custom_runtime = {
+  contents: false
+};
+
+var no_check_prims = {
+  contents: false
+};
+
+var bytecode_compatible_32 = {
+  contents: false
+};
+
+var output_c_object = {
+  contents: false
+};
+
+var output_complete_object = {
+  contents: false
+};
+
+var all_ccopts = {
+  contents: /* [] */0
+};
+
+var classic = {
+  contents: false
+};
+
+var nopervasives = {
+  contents: false
+};
+
+var preprocessor = {
+  contents: undefined
+};
+
+var all_ppx = {
+  contents: /* [] */0
+};
+
+var annotations = {
+  contents: false
+};
+
+var binary_annotations = {
+  contents: false
+};
+
+var use_threads = {
+  contents: false
+};
+
+var use_vmthreads = {
+  contents: false
+};
+
+var noassert = {
+  contents: false
+};
+
+var verbose = {
+  contents: false
+};
+
+var noversion = {
+  contents: false
+};
+
+var noprompt = {
+  contents: false
+};
+
+var nopromptcont = {
+  contents: false
+};
+
+var init_file = {
+  contents: undefined
+};
+
+var noinit = {
+  contents: false
+};
+
+var open_modules = {
+  contents: /* [] */0
+};
+
+var use_prims = {
+  contents: ""
+};
+
+var use_runtime = {
+  contents: ""
+};
+
+var principal = {
+  contents: false
+};
+
+var real_paths = {
+  contents: true
+};
+
+var recursive_types = {
+  contents: false
+};
+
+var strict_sequence = {
+  contents: false
+};
+
+var strict_formats = {
+  contents: false
+};
+
+var applicative_functors = {
+  contents: true
+};
+
+var make_runtime = {
+  contents: false
+};
+
+var gprofile = {
+  contents: false
+};
+
+var c_compiler = {
+  contents: undefined
+};
+
+var no_auto_link = {
+  contents: false
+};
+
+var dllpaths = {
+  contents: /* [] */0
+};
+
+var make_package = {
+  contents: false
+};
+
+var for_package = {
+  contents: undefined
+};
+
+var error_size = {
+  contents: 500
+};
+
+var float_const_prop = {
+  contents: true
+};
+
+var transparent_modules = {
+  contents: false
+};
+
+var dump_source = {
+  contents: false
+};
+
+var dump_parsetree = {
+  contents: false
+};
+
+var dump_typedtree = {
+  contents: false
+};
+
+var dump_rawlambda = {
+  contents: false
+};
+
+var dump_lambda = {
+  contents: false
+};
+
+var dump_rawclambda = {
+  contents: false
+};
+
+var dump_clambda = {
+  contents: false
+};
+
+var dump_rawflambda = {
+  contents: false
+};
+
+var dump_flambda = {
+  contents: false
+};
+
+var dump_flambda_let = {
+  contents: undefined
+};
+
+var dump_flambda_verbose = {
+  contents: false
+};
+
+var dump_instr = {
+  contents: false
+};
+
+var keep_asm_file = {
+  contents: false
+};
+
+var optimize_for_speed = {
+  contents: true
+};
+
+var opaque = {
+  contents: false
+};
+
+var dump_cmm = {
+  contents: false
+};
+
+var dump_selection = {
+  contents: false
+};
+
+var dump_cse = {
+  contents: false
+};
+
+var dump_live = {
+  contents: false
+};
+
+var dump_avail = {
+  contents: false
+};
+
+var dump_spill = {
+  contents: false
+};
+
+var dump_split = {
+  contents: false
+};
+
+var dump_interf = {
+  contents: false
+};
+
+var dump_prefer = {
+  contents: false
+};
+
+var dump_regalloc = {
+  contents: false
+};
+
+var dump_reload = {
+  contents: false
+};
+
+var dump_scheduling = {
+  contents: false
+};
+
+var dump_linear = {
+  contents: false
+};
+
+var dump_interval = {
+  contents: false
+};
+
+var keep_startup_file = {
+  contents: false
+};
+
+var dump_combine = {
+  contents: false
+};
+
+var profile_columns = {
+  contents: /* [] */0
+};
+
+var debug_runavail = {
+  contents: false
+};
+
+var native_code = {
+  contents: false
+};
+
+var force_slash = {
+  contents: false
+};
+
+var clambda_checks = {
+  contents: false
+};
+
+var flambda_invariant_checks = {
+  contents: true
+};
+
+var dont_write_files = {
+  contents: false
+};
 
 function std_include_flag(prefix) {
-  if (no_std_include[0]) {
+  if (no_std_include.contents) {
     return "";
   } else {
     return prefix + Curry._1(Filename.quote, Config.standard_library);
@@ -310,7 +418,7 @@ function std_include_flag(prefix) {
 }
 
 function std_include_dir(param) {
-  if (no_std_include[0]) {
+  if (no_std_include.contents) {
     return /* [] */0;
   } else {
     return /* :: */[
@@ -320,40 +428,68 @@ function std_include_dir(param) {
   }
 }
 
-var shared = /* record */[/* contents */false];
+var shared = {
+  contents: false
+};
 
-var dlcode = /* record */[/* contents */true];
+var dlcode = {
+  contents: true
+};
 
 var tmp = Config.architecture === "amd64" ? true : false;
 
-var pic_code = /* record */[/* contents */tmp];
+var pic_code = {
+  contents: tmp
+};
 
-var runtime_variant = /* record */[/* contents */""];
+var runtime_variant = {
+  contents: ""
+};
 
-var keep_docs = /* record */[/* contents */false];
+var keep_docs = {
+  contents: false
+};
 
-var keep_locs = /* record */[/* contents */true];
+var keep_locs = {
+  contents: true
+};
 
-var unsafe_string = Config.safe_string ? /* record */[/* contents */false] : /* record */[/* contents */!Config.default_safe_string];
+var unsafe_string = Config.safe_string ? ({
+      contents: false
+    }) : ({
+      contents: !Config.default_safe_string
+    });
 
-var classic_inlining = /* record */[/* contents */false];
+var classic_inlining = {
+  contents: false
+};
 
-var inlining_report = /* record */[/* contents */false];
+var inlining_report = {
+  contents: false
+};
 
-var afl_instrument = /* record */[/* contents */Config.afl_instrument];
+var afl_instrument = {
+  contents: Config.afl_instrument
+};
 
-var afl_inst_ratio = /* record */[/* contents */100];
+var afl_inst_ratio = {
+  contents: 100
+};
 
-var simplify_rounds = /* record */[/* contents */undefined];
+var simplify_rounds = {
+  contents: undefined
+};
 
-var default_simplify_rounds = /* record */[/* contents */1];
+var default_simplify_rounds = {
+  contents: 1
+};
 
 function rounds(param) {
-  var match = simplify_rounds[0];
+  var match = simplify_rounds.contents;
   if (match !== undefined) {
     return match;
   } else {
-    return default_simplify_rounds[0];
+    return default_simplify_rounds.contents;
   }
 }
 
@@ -361,37 +497,69 @@ var default_inline_threshold = Config.flambda ? 10 : 10 / 8;
 
 var default_inline_toplevel_threshold = 16 * default_inline_threshold | 0;
 
-var inline_threshold = /* record */[/* contents */Curry._1(Float_arg_helper.$$default, default_inline_threshold)];
+var inline_threshold = {
+  contents: Curry._1(Float_arg_helper.$$default, default_inline_threshold)
+};
 
-var inline_toplevel_threshold = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, default_inline_toplevel_threshold)];
+var inline_toplevel_threshold = {
+  contents: Curry._1(Int_arg_helper.$$default, default_inline_toplevel_threshold)
+};
 
-var inline_call_cost = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 5)];
+var inline_call_cost = {
+  contents: Curry._1(Int_arg_helper.$$default, 5)
+};
 
-var inline_alloc_cost = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 7)];
+var inline_alloc_cost = {
+  contents: Curry._1(Int_arg_helper.$$default, 7)
+};
 
-var inline_prim_cost = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 3)];
+var inline_prim_cost = {
+  contents: Curry._1(Int_arg_helper.$$default, 3)
+};
 
-var inline_branch_cost = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 5)];
+var inline_branch_cost = {
+  contents: Curry._1(Int_arg_helper.$$default, 5)
+};
 
-var inline_indirect_cost = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 4)];
+var inline_indirect_cost = {
+  contents: Curry._1(Int_arg_helper.$$default, 4)
+};
 
-var inline_branch_factor = /* record */[/* contents */Curry._1(Float_arg_helper.$$default, 0.1)];
+var inline_branch_factor = {
+  contents: Curry._1(Float_arg_helper.$$default, 0.1)
+};
 
-var inline_lifting_benefit = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 1300)];
+var inline_lifting_benefit = {
+  contents: Curry._1(Int_arg_helper.$$default, 1300)
+};
 
-var inline_max_unroll = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 0)];
+var inline_max_unroll = {
+  contents: Curry._1(Int_arg_helper.$$default, 0)
+};
 
-var inline_max_depth = /* record */[/* contents */Curry._1(Int_arg_helper.$$default, 1)];
+var inline_max_depth = {
+  contents: Curry._1(Int_arg_helper.$$default, 1)
+};
 
-var unbox_specialised_args = /* record */[/* contents */true];
+var unbox_specialised_args = {
+  contents: true
+};
 
-var unbox_free_vars_of_closures = /* record */[/* contents */true];
+var unbox_free_vars_of_closures = {
+  contents: true
+};
 
-var unbox_closures = /* record */[/* contents */false];
+var unbox_closures = {
+  contents: false
+};
 
-var unbox_closures_factor = /* record */[/* contents */10];
+var unbox_closures_factor = {
+  contents: 10
+};
 
-var remove_unused_arguments = /* record */[/* contents */false];
+var remove_unused_arguments = {
+  contents: false
+};
 
 function use_inlining_arguments_set(round, arg) {
   var set_int = function (param, param$1, param$2) {
@@ -401,10 +569,10 @@ function use_inlining_arguments_set(round, arg) {
     var value = param$2;
     var value$1 = value !== undefined ? value : $$default;
     if (round$1 !== undefined) {
-      arg[0] = Curry._3(Int_arg_helper.add_base_override, round$1, value$1, arg[0]);
+      arg.contents = Curry._3(Int_arg_helper.add_base_override, round$1, value$1, arg.contents);
       return /* () */0;
     } else {
-      arg[0] = Curry._2(Int_arg_helper.set_base_default, value$1, Curry._1(Int_arg_helper.reset_base_overrides, arg[0]));
+      arg.contents = Curry._2(Int_arg_helper.set_base_default, value$1, Curry._1(Int_arg_helper.reset_base_overrides, arg.contents));
       return /* () */0;
     }
   };
@@ -415,114 +583,118 @@ function use_inlining_arguments_set(round, arg) {
     var value = param$2;
     var value$1 = value !== undefined ? value : $$default;
     if (round$1 !== undefined) {
-      arg[0] = Curry._3(Float_arg_helper.add_base_override, round$1, value$1, arg[0]);
+      arg.contents = Curry._3(Float_arg_helper.add_base_override, round$1, value$1, arg.contents);
       return /* () */0;
     } else {
-      arg[0] = Curry._2(Float_arg_helper.set_base_default, value$1, Curry._1(Float_arg_helper.reset_base_overrides, arg[0]));
+      arg.contents = Curry._2(Float_arg_helper.set_base_default, value$1, Curry._1(Float_arg_helper.reset_base_overrides, arg.contents));
       return /* () */0;
     }
   };
-  set_int(inline_call_cost, 5, arg[/* inline_call_cost */0]);
-  set_int(inline_alloc_cost, 7, arg[/* inline_alloc_cost */1]);
-  set_int(inline_prim_cost, 3, arg[/* inline_prim_cost */2]);
-  set_int(inline_branch_cost, 5, arg[/* inline_branch_cost */3]);
-  set_int(inline_indirect_cost, 4, arg[/* inline_indirect_cost */4]);
-  set_int(inline_lifting_benefit, 1300, arg[/* inline_lifting_benefit */5]);
-  set_float(inline_branch_factor, 0.1, arg[/* inline_branch_factor */6]);
-  set_int(inline_max_depth, 1, arg[/* inline_max_depth */7]);
-  set_int(inline_max_unroll, 0, arg[/* inline_max_unroll */8]);
-  set_float(inline_threshold, default_inline_threshold, arg[/* inline_threshold */9]);
-  return set_int(inline_toplevel_threshold, default_inline_toplevel_threshold, arg[/* inline_toplevel_threshold */10]);
+  set_int(inline_call_cost, 5, arg.inline_call_cost);
+  set_int(inline_alloc_cost, 7, arg.inline_alloc_cost);
+  set_int(inline_prim_cost, 3, arg.inline_prim_cost);
+  set_int(inline_branch_cost, 5, arg.inline_branch_cost);
+  set_int(inline_indirect_cost, 4, arg.inline_indirect_cost);
+  set_int(inline_lifting_benefit, 1300, arg.inline_lifting_benefit);
+  set_float(inline_branch_factor, 0.1, arg.inline_branch_factor);
+  set_int(inline_max_depth, 1, arg.inline_max_depth);
+  set_int(inline_max_unroll, 0, arg.inline_max_unroll);
+  set_float(inline_threshold, default_inline_threshold, arg.inline_threshold);
+  return set_int(inline_toplevel_threshold, default_inline_toplevel_threshold, arg.inline_toplevel_threshold);
 }
 
-var classic_arguments_009 = /* inline_threshold */10 / 8;
+var classic_arguments_inline_threshold = 10 / 8;
 
-var classic_arguments_010 = /* inline_toplevel_threshold */1;
+var classic_arguments_inline_toplevel_threshold = 1;
 
-var classic_arguments = /* record */[
-  /* inline_call_cost */undefined,
-  /* inline_alloc_cost */undefined,
-  /* inline_prim_cost */undefined,
-  /* inline_branch_cost */undefined,
-  /* inline_indirect_cost */undefined,
-  /* inline_lifting_benefit */undefined,
-  /* inline_branch_factor */undefined,
-  /* inline_max_depth */undefined,
-  /* inline_max_unroll */undefined,
-  classic_arguments_009,
-  classic_arguments_010
-];
+var classic_arguments = {
+  inline_call_cost: undefined,
+  inline_alloc_cost: undefined,
+  inline_prim_cost: undefined,
+  inline_branch_cost: undefined,
+  inline_indirect_cost: undefined,
+  inline_lifting_benefit: undefined,
+  inline_branch_factor: undefined,
+  inline_max_depth: undefined,
+  inline_max_unroll: undefined,
+  inline_threshold: classic_arguments_inline_threshold,
+  inline_toplevel_threshold: classic_arguments_inline_toplevel_threshold
+};
 
-var o2_arguments_000 = /* inline_call_cost */10;
+var o2_arguments_inline_call_cost = 10;
 
-var o2_arguments_001 = /* inline_alloc_cost */14;
+var o2_arguments_inline_alloc_cost = 14;
 
-var o2_arguments_002 = /* inline_prim_cost */6;
+var o2_arguments_inline_prim_cost = 6;
 
-var o2_arguments_003 = /* inline_branch_cost */10;
+var o2_arguments_inline_branch_cost = 10;
 
-var o2_arguments_004 = /* inline_indirect_cost */8;
+var o2_arguments_inline_indirect_cost = 8;
 
-var o2_arguments_007 = /* inline_max_depth */2;
+var o2_arguments_inline_max_depth = 2;
 
-var o2_arguments_009 = /* inline_threshold */25;
+var o2_arguments_inline_threshold = 25;
 
-var o2_arguments_010 = /* inline_toplevel_threshold */400;
+var o2_arguments_inline_toplevel_threshold = 400;
 
-var o2_arguments = /* record */[
-  o2_arguments_000,
-  o2_arguments_001,
-  o2_arguments_002,
-  o2_arguments_003,
-  o2_arguments_004,
-  /* inline_lifting_benefit */undefined,
-  /* inline_branch_factor */undefined,
-  o2_arguments_007,
-  /* inline_max_unroll */undefined,
-  o2_arguments_009,
-  o2_arguments_010
-];
+var o2_arguments = {
+  inline_call_cost: o2_arguments_inline_call_cost,
+  inline_alloc_cost: o2_arguments_inline_alloc_cost,
+  inline_prim_cost: o2_arguments_inline_prim_cost,
+  inline_branch_cost: o2_arguments_inline_branch_cost,
+  inline_indirect_cost: o2_arguments_inline_indirect_cost,
+  inline_lifting_benefit: undefined,
+  inline_branch_factor: undefined,
+  inline_max_depth: o2_arguments_inline_max_depth,
+  inline_max_unroll: undefined,
+  inline_threshold: o2_arguments_inline_threshold,
+  inline_toplevel_threshold: o2_arguments_inline_toplevel_threshold
+};
 
-var o3_arguments_000 = /* inline_call_cost */15;
+var o3_arguments_inline_call_cost = 15;
 
-var o3_arguments_001 = /* inline_alloc_cost */21;
+var o3_arguments_inline_alloc_cost = 21;
 
-var o3_arguments_002 = /* inline_prim_cost */9;
+var o3_arguments_inline_prim_cost = 9;
 
-var o3_arguments_003 = /* inline_branch_cost */15;
+var o3_arguments_inline_branch_cost = 15;
 
-var o3_arguments_004 = /* inline_indirect_cost */12;
+var o3_arguments_inline_indirect_cost = 12;
 
-var o3_arguments_006 = /* inline_branch_factor */0;
+var o3_arguments_inline_branch_factor = 0;
 
-var o3_arguments_007 = /* inline_max_depth */3;
+var o3_arguments_inline_max_depth = 3;
 
-var o3_arguments_008 = /* inline_max_unroll */1;
+var o3_arguments_inline_max_unroll = 1;
 
-var o3_arguments_009 = /* inline_threshold */50;
+var o3_arguments_inline_threshold = 50;
 
-var o3_arguments_010 = /* inline_toplevel_threshold */800;
+var o3_arguments_inline_toplevel_threshold = 800;
 
-var o3_arguments = /* record */[
-  o3_arguments_000,
-  o3_arguments_001,
-  o3_arguments_002,
-  o3_arguments_003,
-  o3_arguments_004,
-  /* inline_lifting_benefit */undefined,
-  o3_arguments_006,
-  o3_arguments_007,
-  o3_arguments_008,
-  o3_arguments_009,
-  o3_arguments_010
-];
+var o3_arguments = {
+  inline_call_cost: o3_arguments_inline_call_cost,
+  inline_alloc_cost: o3_arguments_inline_alloc_cost,
+  inline_prim_cost: o3_arguments_inline_prim_cost,
+  inline_branch_cost: o3_arguments_inline_branch_cost,
+  inline_indirect_cost: o3_arguments_inline_indirect_cost,
+  inline_lifting_benefit: undefined,
+  inline_branch_factor: o3_arguments_inline_branch_factor,
+  inline_max_depth: o3_arguments_inline_max_depth,
+  inline_max_unroll: o3_arguments_inline_max_unroll,
+  inline_threshold: o3_arguments_inline_threshold,
+  inline_toplevel_threshold: o3_arguments_inline_toplevel_threshold
+};
 
-var all_passes = /* record */[/* contents : [] */0];
+var all_passes = {
+  contents: /* [] */0
+};
 
-var dumped_passes_list = /* record */[/* contents : [] */0];
+var dumped_passes_list = {
+  contents: /* [] */0
+};
 
 function dumped_pass(s) {
-  if (!List.mem(s, all_passes[0])) {
+  if (!List.mem(s, all_passes.contents)) {
     throw [
           Caml_builtin_exceptions.assert_failure,
           /* tuple */[
@@ -532,19 +704,19 @@ function dumped_pass(s) {
           ]
         ];
   }
-  return List.mem(s, dumped_passes_list[0]);
+  return List.mem(s, dumped_passes_list.contents);
 }
 
 function set_dumped_pass(s, enabled) {
-  if (List.mem(s, all_passes[0])) {
+  if (List.mem(s, all_passes.contents)) {
     var passes_without_s = List.filter((function (param) {
               return s !== param;
-            }))(dumped_passes_list[0]);
+            }))(dumped_passes_list.contents);
     var dumped_passes = enabled ? /* :: */[
         s,
         passes_without_s
       ] : passes_without_s;
-    dumped_passes_list[0] = dumped_passes;
+    dumped_passes_list.contents = dumped_passes;
     return /* () */0;
   } else {
     return 0;
@@ -564,17 +736,25 @@ function parse_color_setting(param) {
   }
 }
 
-var color = /* record */[/* contents */undefined];
+var color = {
+  contents: undefined
+};
 
-var unboxed_types = /* record */[/* contents */false];
+var unboxed_types = {
+  contents: false
+};
 
-var arg_spec = /* record */[/* contents : [] */0];
+var arg_spec = {
+  contents: /* [] */0
+};
 
-var arg_names = /* record */[/* contents */Misc.StringMap.empty];
+var arg_names = {
+  contents: Misc.StringMap.empty
+};
 
 function reset_arguments(param) {
-  arg_spec[0] = /* [] */0;
-  arg_names[0] = Misc.StringMap.empty;
+  arg_spec.contents = /* [] */0;
+  arg_names.contents = Misc.StringMap.empty;
   return /* () */0;
 }
 
@@ -582,7 +762,7 @@ function add_arguments(loc, args) {
   return List.iter((function (arg) {
                 var arg_name = arg[0];
                 try {
-                  var loc2 = Curry._2(Misc.StringMap.find, arg_name, arg_names[0]);
+                  var loc2 = Curry._2(Misc.StringMap.find, arg_name, arg_names.contents);
                   Curry._1(Printf.eprintf(/* Format */[
                             /* String_literal */Block.__(11, [
                                 "Warning: plugin argument ",
@@ -625,11 +805,11 @@ function add_arguments(loc, args) {
                 }
                 catch (exn){
                   if (exn === Caml_builtin_exceptions.not_found) {
-                    arg_spec[0] = Pervasives.$at(arg_spec[0], /* :: */[
+                    arg_spec.contents = Pervasives.$at(arg_spec.contents, /* :: */[
                           arg,
                           /* [] */0
                         ]);
-                    arg_names[0] = Curry._3(Misc.StringMap.add, arg_name, loc, arg_names[0]);
+                    arg_names.contents = Curry._3(Misc.StringMap.add, arg_name, loc, arg_names.contents);
                     return /* () */0;
                   } else {
                     throw exn;
@@ -639,13 +819,17 @@ function add_arguments(loc, args) {
 }
 
 function print_arguments(usage) {
-  return Arg.usage(arg_spec[0], usage);
+  return Arg.usage(arg_spec.contents, usage);
 }
 
 function parse_arguments(f, msg) {
   try {
-    var argv = /* record */[/* contents */Sys.argv];
-    var current = /* record */[/* contents */Arg.current[0]];
+    var argv = {
+      contents: Sys.argv
+    };
+    var current = {
+      contents: Arg.current.contents
+    };
     return Arg.parse_and_expand_argv_dynamic(current, argv, arg_spec, f, msg);
   }
   catch (raw_exn){
@@ -674,11 +858,17 @@ function parse_arguments(f, msg) {
   }
 }
 
-var no_implicit_current_dir = /* record */[/* contents */false];
+var no_implicit_current_dir = {
+  contents: false
+};
 
-var assume_no_mli = /* record */[/* contents : Mli_na */0];
+var assume_no_mli = {
+  contents: /* Mli_na */0
+};
 
-var record_event_when_debug = /* record */[/* contents */true];
+var record_event_when_debug = {
+  contents: true
+};
 
 var bs_vscode;
 
@@ -690,17 +880,29 @@ catch (exn){
   bs_vscode = false;
 }
 
-var dont_record_crc_unit = /* record */[/* contents */undefined];
+var dont_record_crc_unit = {
+  contents: undefined
+};
 
-var bs_only = /* record */[/* contents */false];
+var bs_only = {
+  contents: false
+};
 
-var bs_gentype = /* record */[/* contents */undefined];
+var bs_gentype = {
+  contents: undefined
+};
 
-var no_assert_false = /* record */[/* contents */false];
+var no_assert_false = {
+  contents: false
+};
 
-var bs_quiet = /* record */[/* contents */false];
+var bs_quiet = {
+  contents: false
+};
 
-var dump_location = /* record */[/* contents */true];
+var dump_location = {
+  contents: true
+};
 
 var Int_arg_helper_parse = Int_arg_helper.parse;
 
@@ -726,19 +928,19 @@ var Float_arg_helper$1 = {
   get: Float_arg_helper_get
 };
 
-var o1_arguments = /* record */[
-  /* inline_call_cost */undefined,
-  /* inline_alloc_cost */undefined,
-  /* inline_prim_cost */undefined,
-  /* inline_branch_cost */undefined,
-  /* inline_indirect_cost */undefined,
-  /* inline_lifting_benefit */undefined,
-  /* inline_branch_factor */undefined,
-  /* inline_max_depth */undefined,
-  /* inline_max_unroll */undefined,
-  /* inline_threshold */undefined,
-  /* inline_toplevel_threshold */undefined
-];
+var o1_arguments = {
+  inline_call_cost: undefined,
+  inline_alloc_cost: undefined,
+  inline_prim_cost: undefined,
+  inline_branch_cost: undefined,
+  inline_indirect_cost: undefined,
+  inline_lifting_benefit: undefined,
+  inline_branch_factor: undefined,
+  inline_max_depth: undefined,
+  inline_max_unroll: undefined,
+  inline_threshold: undefined,
+  inline_toplevel_threshold: undefined
+};
 
 var default_inline_max_unroll = 0;
 

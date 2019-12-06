@@ -496,10 +496,7 @@ function Make(funarg) {
                   return Curry._3(add$1, v, set, m);
                 }), map, empty$1);
   };
-  var include$2 = Hashtbl.Make({
-        equal: funarg.equal,
-        hash: funarg.hash
-      });
+  var include$2 = Hashtbl.Make(funarg);
   var create = include$2.create;
   var add$2 = include$2.add;
   var find$1 = include$2.find;

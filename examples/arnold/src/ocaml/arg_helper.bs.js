@@ -14,52 +14,52 @@ import * as Caml_builtin_exceptions from "bs-platform/lib/es6/caml_builtin_excep
 
 function Make(funarg) {
   var $$default = function (v) {
-    return /* record */[
-            /* base_default */v,
-            /* base_override */funarg.Key.$$Map.empty,
-            /* user_default */undefined,
-            /* user_override */funarg.Key.$$Map.empty
-          ];
+    return {
+            base_default: v,
+            base_override: funarg.Key.$$Map.empty,
+            user_default: undefined,
+            user_override: funarg.Key.$$Map.empty
+          };
   };
   var set_base_default = function (value, t) {
-    return /* record */[
-            /* base_default */value,
-            /* base_override */t[/* base_override */1],
-            /* user_default */t[/* user_default */2],
-            /* user_override */t[/* user_override */3]
-          ];
+    return {
+            base_default: value,
+            base_override: t.base_override,
+            user_default: t.user_default,
+            user_override: t.user_override
+          };
   };
   var add_base_override = function (key, value, t) {
-    return /* record */[
-            /* base_default */t[/* base_default */0],
-            /* base_override */Curry._3(funarg.Key.$$Map.add, key, value, t[/* base_override */1]),
-            /* user_default */t[/* user_default */2],
-            /* user_override */t[/* user_override */3]
-          ];
+    return {
+            base_default: t.base_default,
+            base_override: Curry._3(funarg.Key.$$Map.add, key, value, t.base_override),
+            user_default: t.user_default,
+            user_override: t.user_override
+          };
   };
   var reset_base_overrides = function (t) {
-    return /* record */[
-            /* base_default */t[/* base_default */0],
-            /* base_override */funarg.Key.$$Map.empty,
-            /* user_default */t[/* user_default */2],
-            /* user_override */t[/* user_override */3]
-          ];
+    return {
+            base_default: t.base_default,
+            base_override: funarg.Key.$$Map.empty,
+            user_default: t.user_default,
+            user_override: t.user_override
+          };
   };
   var set_user_default = function (value, t) {
-    return /* record */[
-            /* base_default */t[/* base_default */0],
-            /* base_override */t[/* base_override */1],
-            /* user_default */Caml_option.some(value),
-            /* user_override */t[/* user_override */3]
-          ];
+    return {
+            base_default: t.base_default,
+            base_override: t.base_override,
+            user_default: Caml_option.some(value),
+            user_override: t.user_override
+          };
   };
   var add_user_override = function (key, value, t) {
-    return /* record */[
-            /* base_default */t[/* base_default */0],
-            /* base_override */t[/* base_override */1],
-            /* user_default */t[/* user_default */2],
-            /* user_override */Curry._3(funarg.Key.$$Map.add, key, value, t[/* user_override */3])
-          ];
+    return {
+            base_default: t.base_default,
+            base_override: t.base_override,
+            user_default: t.user_default,
+            user_override: Curry._3(funarg.Key.$$Map.add, key, value, t.user_override)
+          };
   };
   var Parse_failure = Caml_exceptions.create("Arg_helper.Make(S).Parse_failure");
   var parse_exn = function (str, update) {
@@ -139,8 +139,8 @@ function Make(funarg) {
                   ];
             }
             return add_user_override(key$1, value$3, acc);
-          }), update[0], values);
-    update[0] = parsed;
+          }), update.contents, values);
+    update.contents = parsed;
     return /* () */0;
   };
   var parse = function (str, help_text, update) {
@@ -187,20 +187,20 @@ function Make(funarg) {
   };
   var get = function (key, parsed) {
     try {
-      return Curry._2(funarg.Key.$$Map.find, key, parsed[/* user_override */3]);
+      return Curry._2(funarg.Key.$$Map.find, key, parsed.user_override);
     }
     catch (exn){
       if (exn === Caml_builtin_exceptions.not_found) {
-        var match = parsed[/* user_default */2];
+        var match = parsed.user_default;
         if (match !== undefined) {
           return Caml_option.valFromOption(match);
         } else {
           try {
-            return Curry._2(funarg.Key.$$Map.find, key, parsed[/* base_override */1]);
+            return Curry._2(funarg.Key.$$Map.find, key, parsed.base_override);
           }
           catch (exn$1){
             if (exn$1 === Caml_builtin_exceptions.not_found) {
-              return parsed[/* base_default */0];
+              return parsed.base_default;
             } else {
               throw exn$1;
             }

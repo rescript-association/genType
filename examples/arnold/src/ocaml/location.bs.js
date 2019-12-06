@@ -23,82 +23,92 @@ import * as Caml_js_exceptions from "bs-platform/lib/es6/caml_js_exceptions.js";
 import * as Caml_external_polyfill from "bs-platform/lib/es6/caml_external_polyfill.js";
 import * as Caml_builtin_exceptions from "bs-platform/lib/es6/caml_builtin_exceptions.js";
 
-var absname = /* record */[/* contents */false];
+var absname = {
+  contents: false
+};
 
 function in_file(name) {
-  var loc = /* record */[
-    /* pos_fname */name,
-    /* pos_lnum */1,
-    /* pos_bol */0,
-    /* pos_cnum */-1
-  ];
-  return /* record */[
-          /* loc_start */loc,
-          /* loc_end */loc,
-          /* loc_ghost */true
-        ];
+  var loc = {
+    pos_fname: name,
+    pos_lnum: 1,
+    pos_bol: 0,
+    pos_cnum: -1
+  };
+  return {
+          loc_start: loc,
+          loc_end: loc,
+          loc_ghost: true
+        };
 }
 
 var none = in_file("_none_");
 
 function curr(lexbuf) {
-  return /* record */[
-          /* loc_start */lexbuf[/* lex_start_p */10],
-          /* loc_end */lexbuf[/* lex_curr_p */11],
-          /* loc_ghost */false
-        ];
+  return {
+          loc_start: lexbuf.lex_start_p,
+          loc_end: lexbuf.lex_curr_p,
+          loc_ghost: false
+        };
 }
 
 function init(lexbuf, fname) {
-  lexbuf[/* lex_curr_p */11] = /* record */[
-    /* pos_fname */fname,
-    /* pos_lnum */1,
-    /* pos_bol */0,
-    /* pos_cnum */0
-  ];
+  lexbuf.lex_curr_p = {
+    pos_fname: fname,
+    pos_lnum: 1,
+    pos_bol: 0,
+    pos_cnum: 0
+  };
   return /* () */0;
 }
 
 function symbol_rloc(param) {
-  return /* record */[
-          /* loc_start */Parsing.symbol_start_pos(/* () */0),
-          /* loc_end */Parsing.symbol_end_pos(/* () */0),
-          /* loc_ghost */false
-        ];
+  return {
+          loc_start: Parsing.symbol_start_pos(/* () */0),
+          loc_end: Parsing.symbol_end_pos(/* () */0),
+          loc_ghost: false
+        };
 }
 
 function symbol_gloc(param) {
-  return /* record */[
-          /* loc_start */Parsing.symbol_start_pos(/* () */0),
-          /* loc_end */Parsing.symbol_end_pos(/* () */0),
-          /* loc_ghost */true
-        ];
+  return {
+          loc_start: Parsing.symbol_start_pos(/* () */0),
+          loc_end: Parsing.symbol_end_pos(/* () */0),
+          loc_ghost: true
+        };
 }
 
 function rhs_loc(n) {
-  return /* record */[
-          /* loc_start */Parsing.rhs_start_pos(n),
-          /* loc_end */Parsing.rhs_end_pos(n),
-          /* loc_ghost */false
-        ];
+  return {
+          loc_start: Parsing.rhs_start_pos(n),
+          loc_end: Parsing.rhs_end_pos(n),
+          loc_ghost: false
+        };
 }
 
-var input_name = /* record */[/* contents */"_none_"];
+var input_name = {
+  contents: "_none_"
+};
 
-var input_lexbuf = /* record */[/* contents */undefined];
+var input_lexbuf = {
+  contents: undefined
+};
 
 function set_input_name(name) {
   if (name !== "") {
-    input_name[0] = name;
+    input_name.contents = name;
     return /* () */0;
   } else {
     return 0;
   }
 }
 
-var status = /* record */[/* contents : Uninitialised */0];
+var status = {
+  contents: /* Uninitialised */0
+};
 
-var num_loc_lines = /* record */[/* contents */0];
+var num_loc_lines = {
+  contents: 0
+};
 
 function print_updating_num_loc_lines(ppf, f, arg) {
   var out_functions = Format.pp_get_formatter_out_functions(ppf, /* () */0);
@@ -119,16 +129,16 @@ function print_updating_num_loc_lines(ppf, f, arg) {
         }
       };
     };
-    num_loc_lines[0] = num_loc_lines[0] + count(start, 0) | 0;
-    return Curry._3(out_functions[/* out_string */0], str, start, len);
+    num_loc_lines.contents = num_loc_lines.contents + count(start, 0) | 0;
+    return Curry._3(out_functions.out_string, str, start, len);
   };
-  Format.pp_set_formatter_out_functions(ppf, /* record */[
-        /* out_string */out_string,
-        /* out_flush */out_functions[/* out_flush */1],
-        /* out_newline */out_functions[/* out_newline */2],
-        /* out_spaces */out_functions[/* out_spaces */3],
-        /* out_indent */out_functions[/* out_indent */4]
-      ]);
+  Format.pp_set_formatter_out_functions(ppf, {
+        out_string: out_string,
+        out_flush: out_functions.out_flush,
+        out_newline: out_functions.out_newline,
+        out_spaces: out_functions.out_spaces,
+        out_indent: out_functions.out_indent
+      });
   Curry._2(f, ppf, arg);
   Format.pp_print_flush(ppf, /* () */0);
   return Format.pp_set_formatter_out_functions(ppf, out_functions);
@@ -136,13 +146,13 @@ function print_updating_num_loc_lines(ppf, f, arg) {
 
 function highlight_terminfo(ppf, num_lines, lb, locs) {
   Format.pp_print_flush(ppf, /* () */0);
-  var pos0 = -lb[/* lex_abs_pos */3] | 0;
+  var pos0 = -lb.lex_abs_pos | 0;
   if (pos0 < 0) {
     throw Pervasives.Exit;
   }
-  var lines = num_loc_lines[0];
-  for(var i = pos0 ,i_finish = lb[/* lex_buffer_len */2] - 1 | 0; i <= i_finish; ++i){
-    if (Caml_bytes.get(lb[/* lex_buffer */1], i) === /* "\n" */10) {
+  var lines = num_loc_lines.contents;
+  for(var i = pos0 ,i_finish = lb.lex_buffer_len - 1 | 0; i <= i_finish; ++i){
+    if (Caml_bytes.get(lb.lex_buffer, i) === /* "\n" */10) {
       lines = lines + 1 | 0;
     }
     
@@ -154,48 +164,48 @@ function highlight_terminfo(ppf, num_lines, lb, locs) {
   Caml_external_polyfill.resolve("caml_terminfo_backup")(lines);
   var bol = false;
   Pervasives.print_string("# ");
-  for(var pos = 0 ,pos_finish = (lb[/* lex_buffer_len */2] - pos0 | 0) - 1 | 0; pos <= pos_finish; ++pos){
+  for(var pos = 0 ,pos_finish = (lb.lex_buffer_len - pos0 | 0) - 1 | 0; pos <= pos_finish; ++pos){
     if (bol) {
       Pervasives.print_string("  ");
       bol = false;
     }
     if (List.exists((function(pos){
           return function (loc) {
-            return pos === loc[/* loc_start */0][/* pos_cnum */3];
+            return pos === loc.loc_start.pos_cnum;
           }
           }(pos)), locs)) {
       Caml_external_polyfill.resolve("caml_terminfo_standout")(true);
     }
     if (List.exists((function(pos){
           return function (loc) {
-            return pos === loc[/* loc_end */1][/* pos_cnum */3];
+            return pos === loc.loc_end.pos_cnum;
           }
           }(pos)), locs)) {
       Caml_external_polyfill.resolve("caml_terminfo_standout")(false);
     }
-    var c = Caml_bytes.get(lb[/* lex_buffer */1], pos + pos0 | 0);
+    var c = Caml_bytes.get(lb.lex_buffer, pos + pos0 | 0);
     Pervasives.print_char(c);
     bol = c === /* "\n" */10;
   }
   Caml_external_polyfill.resolve("caml_terminfo_standout")(false);
-  Caml_external_polyfill.resolve("caml_terminfo_resume")(num_loc_lines[0]);
+  Caml_external_polyfill.resolve("caml_terminfo_resume")(num_loc_lines.contents);
   return Pervasives.flush(Pervasives.stdout);
 }
 
 function highlight_dumb(ppf, lb, loc) {
-  var pos0 = -lb[/* lex_abs_pos */3] | 0;
+  var pos0 = -lb.lex_abs_pos | 0;
   if (pos0 < 0) {
     throw Pervasives.Exit;
   }
-  var end_pos = (lb[/* lex_buffer_len */2] - pos0 | 0) - 1 | 0;
+  var end_pos = (lb.lex_buffer_len - pos0 | 0) - 1 | 0;
   var line_start = 0;
   var line_end = 0;
   for(var pos = 0; pos <= end_pos; ++pos){
-    if (Caml_bytes.get(lb[/* lex_buffer */1], pos + pos0 | 0) === /* "\n" */10) {
-      if (loc[/* loc_start */0][/* pos_cnum */3] > pos) {
+    if (Caml_bytes.get(lb.lex_buffer, pos + pos0 | 0) === /* "\n" */10) {
+      if (loc.loc_start.pos_cnum > pos) {
         line_start = line_start + 1 | 0;
       }
-      if (loc[/* loc_end */1][/* pos_cnum */3] > pos) {
+      if (loc.loc_end.pos_cnum > pos) {
         line_end = line_end + 1 | 0;
       }
       
@@ -240,24 +250,24 @@ function highlight_dumb(ppf, lb, loc) {
                   ])
               ]),
             "@[<v>Characters %i-%i:@,"
-          ]), loc[/* loc_start */0][/* pos_cnum */3], loc[/* loc_end */1][/* pos_cnum */3]);
+          ]), loc.loc_start.pos_cnum, loc.loc_end.pos_cnum);
   Format.pp_print_string(ppf, "  ");
   var line = 0;
   var pos_at_bol = 0;
   for(var pos$1 = 0; pos$1 <= end_pos; ++pos$1){
-    var c = Caml_bytes.get(lb[/* lex_buffer */1], pos$1 + pos0 | 0);
+    var c = Caml_bytes.get(lb.lex_buffer, pos$1 + pos0 | 0);
     if (c !== 10) {
       if (c !== 13) {
         if (line === line_start && line === line_end) {
           Format.pp_print_char(ppf, c);
         } else if (line === line_start) {
-          if (pos$1 < loc[/* loc_start */0][/* pos_cnum */3]) {
+          if (pos$1 < loc.loc_start.pos_cnum) {
             Format.pp_print_char(ppf, /* "." */46);
           } else {
             Format.pp_print_char(ppf, c);
           }
         } else if (line === line_end) {
-          if (pos$1 < loc[/* loc_end */1][/* pos_cnum */3]) {
+          if (pos$1 < loc.loc_end.pos_cnum) {
             Format.pp_print_char(ppf, c);
           } else {
             Format.pp_print_char(ppf, /* "." */46);
@@ -284,10 +294,10 @@ function highlight_dumb(ppf, lb, loc) {
                 ]),
               "@,  "
             ]);
-        for(var _i = pos_at_bol ,_i_finish = loc[/* loc_start */0][/* pos_cnum */3] - 1 | 0; _i <= _i_finish; ++_i){
+        for(var _i = pos_at_bol ,_i_finish = loc.loc_start.pos_cnum - 1 | 0; _i <= _i_finish; ++_i){
           Format.pp_print_char(ppf, /* " " */32);
         }
-        for(var _i$1 = loc[/* loc_start */0][/* pos_cnum */3] ,_i_finish$1 = loc[/* loc_end */1][/* pos_cnum */3] - 1 | 0; _i$1 <= _i_finish$1; ++_i$1){
+        for(var _i$1 = loc.loc_start.pos_cnum ,_i_finish$1 = loc.loc_end.pos_cnum - 1 | 0; _i$1 <= _i_finish$1; ++_i$1){
           Format.pp_print_char(ppf, /* "^" */94);
         }
       }
@@ -303,7 +313,7 @@ function highlight_dumb(ppf, lb, loc) {
                 ]),
               "@,"
             ]);
-        if (pos$1 < loc[/* loc_end */1][/* pos_cnum */3]) {
+        if (pos$1 < loc.loc_end.pos_cnum) {
           Format.pp_print_string(ppf, "  ");
         }
         
@@ -323,10 +333,10 @@ function highlight_dumb(ppf, lb, loc) {
 
 function highlight_locations(ppf, locs) {
   while(true) {
-    var match = status[0];
+    var match = status.contents;
     if (typeof match === "number") {
       if (match !== 0) {
-        var match$1 = input_lexbuf[0];
+        var match$1 = input_lexbuf.contents;
         if (match$1 !== undefined) {
           var norepeat;
           try {
@@ -359,11 +369,11 @@ function highlight_locations(ppf, locs) {
           return false;
         }
       } else {
-        status[0] = Caml_external_polyfill.resolve("caml_terminfo_setup")(Pervasives.stdout);
+        status.contents = Caml_external_polyfill.resolve("caml_terminfo_setup")(Pervasives.stdout);
         continue ;
       }
     } else {
-      var match$2 = input_lexbuf[0];
+      var match$2 = input_lexbuf.contents;
       if (match$2 !== undefined) {
         try {
           highlight_terminfo(ppf, match[0], match$2, locs);
@@ -406,7 +416,7 @@ function absolute_path(s) {
 }
 
 function show_filename(file) {
-  if (absname[0]) {
+  if (absname.contents) {
     return absolute_path(file);
   } else {
     return file;
@@ -424,25 +434,25 @@ function print_filename(ppf, file) {
 }
 
 function reset(param) {
-  num_loc_lines[0] = 0;
+  num_loc_lines.contents = 0;
   return /* () */0;
 }
 
 function get_pos_info(pos) {
   return /* tuple */[
-          pos[/* pos_fname */0],
-          pos[/* pos_lnum */1],
-          pos[/* pos_cnum */3] - pos[/* pos_bol */2] | 0
+          pos.pos_fname,
+          pos.pos_lnum,
+          pos.pos_cnum - pos.pos_bol | 0
         ];
 }
 
 function print_loc(ppf, loc) {
-  Misc.Color.setup(Clflags.color[0]);
-  var match = get_pos_info(loc[/* loc_start */0]);
+  Misc.Color.setup(Clflags.color.contents);
+  var match = get_pos_info(loc.loc_start);
   var startchar = match[2];
   var file = match[0];
   var startchar$1 = Clflags.bs_vscode ? startchar + 1 | 0 : startchar;
-  var endchar = (loc[/* loc_end */1][/* pos_cnum */3] - loc[/* loc_start */0][/* pos_cnum */3] | 0) + startchar$1 | 0;
+  var endchar = (loc.loc_end.pos_cnum - loc.loc_start.pos_cnum | 0) + startchar$1 | 0;
   if (file === "//toplevel//") {
     if (highlight_locations(ppf, /* :: */[
             loc,
@@ -469,7 +479,7 @@ function print_loc(ppf, loc) {
                             ])
                         ]),
                       "Characters %i-%i"
-                    ]), loc[/* loc_start */0][/* pos_cnum */3], loc[/* loc_end */1][/* pos_cnum */3]);
+                    ]), loc.loc_start.pos_cnum, loc.loc_end.pos_cnum);
     }
   } else {
     Curry._5(Format.fprintf(ppf, /* Format */[
@@ -529,8 +539,8 @@ function print_loc(ppf, loc) {
 }
 
 function default_printer(ppf, loc) {
-  Misc.Color.setup(Clflags.color[0]);
-  if (loc[/* loc_start */0][/* pos_fname */0] === "//toplevel//" && highlight_locations(ppf, /* :: */[
+  Misc.Color.setup(Clflags.color.contents);
+  if (loc.loc_start.pos_fname === "//toplevel//" && highlight_locations(ppf, /* :: */[
           loc,
           /* [] */0
         ])) {
@@ -565,10 +575,12 @@ function default_printer(ppf, loc) {
   }
 }
 
-var printer = /* record */[/* contents */default_printer];
+var printer = {
+  contents: default_printer
+};
 
 function print(ppf, loc) {
-  return Curry._2(printer[0], ppf, loc);
+  return Curry._2(printer.contents, ppf, loc);
 }
 
 var error_prefix = "Error";
@@ -576,7 +588,7 @@ var error_prefix = "Error";
 var warning_prefix = "Warning";
 
 function print_error_prefix(ppf) {
-  Misc.Color.setup(Clflags.color[0]);
+  Misc.Color.setup(Clflags.color.contents);
   return Curry._1(Format.fprintf(ppf, /* Format */[
                   /* Formatting_gen */Block.__(18, [
                       /* Open_tag */Block.__(0, [/* Format */[
@@ -599,15 +611,15 @@ function print_error_prefix(ppf) {
 }
 
 function print_compact(ppf, loc) {
-  if (loc[/* loc_start */0][/* pos_fname */0] === "//toplevel//" && highlight_locations(ppf, /* :: */[
+  if (loc.loc_start.pos_fname === "//toplevel//" && highlight_locations(ppf, /* :: */[
           loc,
           /* [] */0
         ])) {
     return /* () */0;
   } else {
-    var match = get_pos_info(loc[/* loc_start */0]);
+    var match = get_pos_info(loc.loc_start);
     var startchar = match[2];
-    var endchar = (loc[/* loc_end */1][/* pos_cnum */3] - loc[/* loc_start */0][/* pos_cnum */3] | 0) + startchar | 0;
+    var endchar = (loc.loc_end.pos_cnum - loc.loc_start.pos_cnum | 0) + startchar | 0;
     Curry._3(Format.fprintf(ppf, /* Format */[
               /* Alpha */Block.__(15, [/* Char_literal */Block.__(12, [
                       /* ":" */58,
@@ -658,7 +670,7 @@ function print_error(ppf, loc) {
 }
 
 function print_error_cur_file(ppf, param) {
-  return print_error(ppf, in_file(input_name[0]));
+  return print_error(ppf, in_file(input_name.contents));
 }
 
 function default_warning_printer(loc, ppf, w) {
@@ -667,9 +679,9 @@ function default_warning_printer(loc, ppf, w) {
     return /* () */0;
   } else {
     var match$1 = match[1];
-    var message = match$1[/* message */1];
-    var number = match$1[/* number */0];
-    Misc.Color.setup(Clflags.color[0]);
+    var message = match$1.message;
+    var number = match$1.number;
+    Misc.Color.setup(Clflags.color.contents);
     Format.fprintf(ppf, /* Format */[
           /* Formatting_gen */Block.__(18, [
               /* Open_box */Block.__(1, [/* Format */[
@@ -683,8 +695,8 @@ function default_warning_printer(loc, ppf, w) {
             ]),
           "@[<v>"
         ]);
-    Curry._2(printer[0], ppf, loc);
-    if (match$1[/* is_error */2]) {
+    Curry._2(printer.contents, ppf, loc);
+    if (match$1.is_error) {
       Curry._4(Format.fprintf(ppf, /* Format */[
                 /* Theta */Block.__(16, [/* String_literal */Block.__(11, [
                         " (",
@@ -784,7 +796,7 @@ function default_warning_printer(loc, ppf, w) {
             } else {
               return 0;
             }
-          }), match$1[/* sub_locs */3]);
+          }), match$1.sub_locs);
     return Format.fprintf(ppf, /* Format */[
                 /* Formatting_lit */Block.__(17, [
                     /* Close_box */0,
@@ -795,40 +807,44 @@ function default_warning_printer(loc, ppf, w) {
   }
 }
 
-var warning_printer = /* record */[/* contents */default_warning_printer];
+var warning_printer = {
+  contents: default_warning_printer
+};
 
 function print_warning(loc, ppf, w) {
-  return print_updating_num_loc_lines(ppf, Curry._1(warning_printer[0], loc), w);
+  return print_updating_num_loc_lines(ppf, Curry._1(warning_printer.contents, loc), w);
 }
 
-var formatter_for_warnings = /* record */[/* contents */Format.err_formatter];
+var formatter_for_warnings = {
+  contents: Format.err_formatter
+};
 
 function prerr_warning(loc, w) {
-  if (Clflags.bs_quiet[0]) {
+  if (Clflags.bs_quiet.contents) {
     return 0;
   } else {
-    return print_warning(loc, formatter_for_warnings[0], w);
+    return print_warning(loc, formatter_for_warnings.contents, w);
   }
 }
 
 function echo_eof(param) {
   Format.print_newline(/* () */0);
-  num_loc_lines[0] = num_loc_lines[0] + 1 | 0;
+  num_loc_lines.contents = num_loc_lines.contents + 1 | 0;
   return /* () */0;
 }
 
 function mkloc(txt, loc) {
-  return /* record */[
-          /* txt */txt,
-          /* loc */loc
-        ];
+  return {
+          txt: txt,
+          loc: loc
+        };
 }
 
 function mknoloc(txt) {
-  return /* record */[
-          /* txt */txt,
-          /* loc */none
-        ];
+  return {
+          txt: txt,
+          loc: none
+        };
 }
 
 function pp_ksprintf(before, k, fmt) {
@@ -853,12 +869,12 @@ function errorf($staropt$star, $staropt$star$1, $staropt$star$2, fmt) {
   var sub = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var if_highlight = $staropt$star$2 !== undefined ? $staropt$star$2 : "";
   return pp_ksprintf(print_phanton_error_prefix, (function (msg) {
-                return /* record */[
-                        /* loc */loc,
-                        /* msg */msg,
-                        /* sub */sub,
-                        /* if_highlight */if_highlight
-                      ];
+                return {
+                        loc: loc,
+                        msg: msg,
+                        sub: sub,
+                        if_highlight: if_highlight
+                      };
               }), fmt);
 }
 
@@ -866,20 +882,22 @@ function error($staropt$star, $staropt$star$1, $staropt$star$2, msg) {
   var loc = $staropt$star !== undefined ? $staropt$star : none;
   var sub = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var if_highlight = $staropt$star$2 !== undefined ? $staropt$star$2 : "";
-  return /* record */[
-          /* loc */loc,
-          /* msg */msg,
-          /* sub */sub,
-          /* if_highlight */if_highlight
-        ];
+  return {
+          loc: loc,
+          msg: msg,
+          sub: sub,
+          if_highlight: if_highlight
+        };
 }
 
-var error_of_exn = /* record */[/* contents : [] */0];
+var error_of_exn = {
+  contents: /* [] */0
+};
 
 function register_error_of_exn(f) {
-  error_of_exn[0] = /* :: */[
+  error_of_exn.contents = /* :: */[
     f,
-    error_of_exn[0]
+    error_of_exn.contents
   ];
   return /* () */0;
 }
@@ -888,7 +906,7 @@ function error_of_exn$1(exn) {
   if (exn === Warnings.Errors) {
     return /* Already_displayed */301815898;
   } else {
-    var _param = error_of_exn[0];
+    var _param = error_of_exn.contents;
     while(true) {
       var param = _param;
       if (param) {
@@ -910,15 +928,15 @@ function error_of_exn$1(exn) {
 }
 
 function default_error_reporter(ppf, err) {
-  var if_highlight = err[/* if_highlight */3];
-  var loc = err[/* loc */0];
+  var if_highlight = err.if_highlight;
+  var loc = err.loc;
   var highlighted;
-  if (if_highlight !== "" && loc[/* loc_start */0][/* pos_fname */0] === "//toplevel//") {
+  if (if_highlight !== "" && loc.loc_start.pos_fname === "//toplevel//") {
     var collect_locs = function (locs, param) {
       return List.fold_left(collect_locs, /* :: */[
-                  param[/* loc */0],
+                  param.loc,
                   locs
-                ], param[/* sub */2]);
+                ], param.sub);
     };
     var locs = collect_locs(/* [] */0, err);
     highlighted = highlight_locations(ppf, locs);
@@ -946,7 +964,7 @@ function default_error_reporter(ppf, err) {
                         ])])
                 ]),
               "@[<v>%a %s"
-            ]), print_error, loc, err[/* msg */1]);
+            ]), print_error, loc, err.msg);
     List.iter(Curry._1(Format.fprintf(ppf, /* Format */[
                   /* Formatting_lit */Block.__(17, [
                       /* Break */Block.__(0, [
@@ -969,7 +987,7 @@ function default_error_reporter(ppf, err) {
                         ])
                     ]),
                   "@,@[<2>%a@]"
-                ]), default_error_reporter), err[/* sub */2]);
+                ]), default_error_reporter), err.sub);
     return Format.fprintf(ppf, /* Format */[
                 /* Formatting_lit */Block.__(17, [
                     /* Close_box */0,
@@ -980,10 +998,12 @@ function default_error_reporter(ppf, err) {
   }
 }
 
-var error_reporter = /* record */[/* contents */default_error_reporter];
+var error_reporter = {
+  contents: default_error_reporter
+};
 
 function report_error(ppf, err) {
-  return print_updating_num_loc_lines(ppf, error_reporter[0], err);
+  return print_updating_num_loc_lines(ppf, error_reporter.contents, err);
 }
 
 function error_of_printer(loc, print, x) {
@@ -997,12 +1017,12 @@ function error_of_printer(loc, print, x) {
 }
 
 function error_of_printer_file(print, x) {
-  return error_of_printer(in_file(input_name[0]), print, x);
+  return error_of_printer(in_file(input_name.contents), print, x);
 }
 
 register_error_of_exn((function (param) {
         if (param[0] === Caml_builtin_exceptions.sys_error) {
-          return Curry._1(errorf(in_file(input_name[0]), undefined, undefined, /* Format */[
+          return Curry._1(errorf(in_file(input_name.contents), undefined, undefined, /* Format */[
                           /* String_literal */Block.__(11, [
                               "I/O error: ",
                               /* String */Block.__(2, [
@@ -1022,7 +1042,7 @@ register_error_of_exn((function (param) {
           } else {
             sub = error(undefined, undefined, undefined, Printexc.to_string(e));
           }
-          return Curry._1(errorf(in_file(param[/* hook_info */3][/* sourcefile */0]), /* :: */[
+          return Curry._1(errorf(in_file(param[/* hook_info */3].sourcefile), /* :: */[
                           sub,
                           /* [] */0
                         ], undefined, /* Format */[
@@ -1109,12 +1129,12 @@ function raise_errorf($staropt$star, $staropt$star$1, $staropt$star$2) {
       return pp_ksprintf(partial_arg, (function (msg) {
                     throw [
                           $$Error,
-                          /* record */[
-                            /* loc */loc,
-                            /* msg */msg,
-                            /* sub */sub,
-                            /* if_highlight */if_highlight
-                          ]
+                          {
+                            loc: loc,
+                            msg: msg,
+                            sub: sub,
+                            if_highlight: if_highlight
+                          }
                         ];
                   }), param);
     });

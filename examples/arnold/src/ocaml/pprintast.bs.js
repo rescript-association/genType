@@ -122,14 +122,14 @@ function fixity_of_string(s) {
 }
 
 function view_fixity_of_exp(param) {
-  var match = param[/* pexp_desc */0];
+  var match = param.pexp_desc;
   if (typeof match === "number" || match.tag) {
     return /* Normal */-453122489;
   } else {
-    var match$1 = match[0][/* txt */0];
+    var match$1 = match[0].txt;
     switch (match$1.tag | 0) {
       case /* Lident */0 :
-          if (param[/* pexp_attributes */2]) {
+          if (param.pexp_attributes) {
             return /* Normal */-453122489;
           } else {
             return fixity_of_string(match$1[0]);
@@ -239,12 +239,12 @@ function type_variance(param) {
 }
 
 function view_expr(x) {
-  var match = x[/* pexp_desc */0];
+  var match = x.pexp_desc;
   if (typeof match === "number" || match.tag !== /* Pexp_construct */9) {
     return /* normal */812216871;
   } else {
     var x$1 = match[0];
-    var match$1 = x$1[/* txt */0];
+    var match$1 = x$1.txt;
     switch (match$1.tag | 0) {
       case /* Lident */0 :
           switch (match$1[0]) {
@@ -256,9 +256,9 @@ function view_expr(x) {
                     while(true) {
                       var acc = _acc;
                       var exp = _exp;
-                      var match = exp[/* pexp_desc */0];
+                      var match = exp.pexp_desc;
                       if (typeof match !== "number" && match.tag === /* Pexp_construct */9) {
-                        var match$1 = match[0][/* txt */0];
+                        var match$1 = match[0].txt;
                         switch (match$1.tag | 0) {
                           case /* Lident */0 :
                               switch (match$1[0]) {
@@ -266,12 +266,12 @@ function view_expr(x) {
                                     var match$2 = match[1];
                                     if (match$2 !== undefined) {
                                       var match$3 = match$2;
-                                      var match$4 = match$3[/* pexp_desc */0];
+                                      var match$4 = match$3.pexp_desc;
                                       if (typeof match$4 !== "number" && match$4.tag === /* Pexp_tuple */8) {
                                         var match$5 = match$4[0];
                                         if (match$5) {
                                           var match$6 = match$5[1];
-                                          if (match$6 && !match$6[1] && !match$3[/* pexp_attributes */2] && !exp[/* pexp_attributes */2]) {
+                                          if (match$6 && !match$6[1] && !match$3.pexp_attributes && !exp.pexp_attributes) {
                                             _acc = /* :: */[
                                               match$5[0],
                                               acc
@@ -287,7 +287,7 @@ function view_expr(x) {
                                     }
                                     break;
                                 case "[]" :
-                                    if (!exp[/* pexp_attributes */2]) {
+                                    if (!exp.pexp_attributes) {
                                       return /* tuple */[
                                               List.rev(acc),
                                               true
@@ -344,7 +344,7 @@ function view_expr(x) {
     } else {
       return /* `simple */[
               947848242,
-              x$1[/* txt */0]
+              x$1.txt
             ];
     }
   }
@@ -358,34 +358,34 @@ function is_simple_construct(param) {
   }
 }
 
-var reset_ctxt = /* record */[
-  /* pipe */false,
-  /* semi */false,
-  /* ifthenelse */false
-];
+var reset_ctxt = {
+  pipe: false,
+  semi: false,
+  ifthenelse: false
+};
 
 function under_pipe(ctxt) {
-  return /* record */[
-          /* pipe */true,
-          /* semi */ctxt[/* semi */1],
-          /* ifthenelse */ctxt[/* ifthenelse */2]
-        ];
+  return {
+          pipe: true,
+          semi: ctxt.semi,
+          ifthenelse: ctxt.ifthenelse
+        };
 }
 
 function under_semi(ctxt) {
-  return /* record */[
-          /* pipe */ctxt[/* pipe */0],
-          /* semi */true,
-          /* ifthenelse */ctxt[/* ifthenelse */2]
-        ];
+  return {
+          pipe: ctxt.pipe,
+          semi: true,
+          ifthenelse: ctxt.ifthenelse
+        };
 }
 
 function under_ifthenelse(ctxt) {
-  return /* record */[
-          /* pipe */ctxt[/* pipe */0],
-          /* semi */ctxt[/* semi */1],
-          /* ifthenelse */true
-        ];
+  return {
+          pipe: ctxt.pipe,
+          semi: ctxt.semi,
+          ifthenelse: true
+        };
 }
 
 function list(sep, first, last, fu, f, xs) {
@@ -578,7 +578,7 @@ function longident_loc(f, x) {
   return Curry._2(Format.fprintf(f, /* Format */[
                   /* Alpha */Block.__(15, [/* End_of_format */0]),
                   "%a"
-                ]), longident, x[/* txt */0]);
+                ]), longident, x.txt);
 }
 
 function constant(f, param) {
@@ -830,7 +830,7 @@ function tyvar_loc(f, str) {
                         ])
                     ]),
                   "'%s"
-                ]), str[/* txt */0]);
+                ]), str.txt);
 }
 
 function string_quot(f, x) {
@@ -875,7 +875,7 @@ function class_params_def(ctxt, f, l) {
 }
 
 function expression(ctxt, f, x) {
-  if (x[/* pexp_attributes */2] !== /* [] */0) {
+  if (x.pexp_attributes !== /* [] */0) {
     return Curry._4(Format.fprintf(f, /* Format */[
                     /* String_literal */Block.__(11, [
                         "((",
@@ -897,15 +897,15 @@ function expression(ctxt, f, x) {
                     "((%a)@,%a)"
                   ]), (function (param, param$1) {
                   return expression(ctxt, param, param$1);
-                }), /* record */[
-                /* pexp_desc */x[/* pexp_desc */0],
-                /* pexp_loc */x[/* pexp_loc */1],
-                /* pexp_attributes : [] */0
-              ], (function (param, param$1) {
+                }), {
+                pexp_desc: x.pexp_desc,
+                pexp_loc: x.pexp_loc,
+                pexp_attributes: /* [] */0
+              }, (function (param, param$1) {
                   return attributes(ctxt, param, param$1);
-                }), x[/* pexp_attributes */2]);
+                }), x.pexp_attributes);
   } else {
-    var match = x[/* pexp_desc */0];
+    var match = x.pexp_desc;
     var exit = 0;
     var exit$1 = 0;
     if (typeof match === "number") {
@@ -946,7 +946,7 @@ function expression(ctxt, f, x) {
                           ])) {
                       var tmp$1;
                       if (l) {
-                        var tmp$2 = l[0][1][/* pexp_desc */0];
+                        var tmp$2 = l[0][1].pexp_desc;
                         tmp$1 = typeof tmp$2 === "number" || !(tmp$2.tag === /* Pexp_constant */1 && !l[1]) ? true : false;
                       } else {
                         tmp$1 = true;
@@ -1378,7 +1378,7 @@ function expression(ctxt, f, x) {
                                   ])
                               ]),
                             "@[<hov2>%s@ <-@ %a@]"
-                          ]), match[0][/* txt */0], (function (param, param$1) {
+                          ]), match[0].txt, (function (param, param$1) {
                           return expression(ctxt, param, param$1);
                         }), match[1]);
         case /* Pexp_override */24 :
@@ -1418,7 +1418,7 @@ function expression(ctxt, f, x) {
                                     ])
                                 ]),
                               "@[<hov2>%s@ =@ %a@]"
-                            ]), param[0][/* txt */0], (function (param, param$1) {
+                            ]), param[0].txt, (function (param, param$1) {
                             return expression(ctxt, param, param$1);
                           }), param[1]);
             };
@@ -1602,7 +1602,7 @@ function expression(ctxt, f, x) {
     }
     switch (exit$1) {
       case 2 :
-          if (ctxt[/* pipe */0] || ctxt[/* semi */1]) {
+          if (ctxt.pipe || ctxt.semi) {
             return paren(undefined, undefined, true, (function (param, param$1) {
                           return expression(reset_ctxt, param, param$1);
                         }), f, x);
@@ -1611,7 +1611,7 @@ function expression(ctxt, f, x) {
           }
           break;
       case 3 :
-          if (ctxt[/* semi */1]) {
+          if (ctxt.semi) {
             return paren(undefined, undefined, true, (function (param, param$1) {
                           return expression(reset_ctxt, param, param$1);
                         }), f, x);
@@ -1924,7 +1924,7 @@ function expression(ctxt, f, x) {
                                     ])
                                 ]),
                               "@[<hov2>let@ module@ %s@ =@ %a@ in@ %a@]"
-                            ]), match[0][/* txt */0], (function (param, param$1) {
+                            ]), match[0].txt, (function (param, param$1) {
                             return module_expr(reset_ctxt, param, param$1);
                           }), match[1], (function (param, param$1) {
                             return expression(ctxt, param, param$1);
@@ -2028,7 +2028,7 @@ function expression(ctxt, f, x) {
           
         }
       }
-      if (ctxt[/* ifthenelse */2]) {
+      if (ctxt.ifthenelse) {
         return paren(undefined, undefined, true, (function (param, param$1) {
                       return expression(reset_ctxt, param, param$1);
                     }), f, x);
@@ -2154,8 +2154,8 @@ function expression(ctxt, f, x) {
                 while(true) {
                   var v = _v;
                   var acc = _acc;
-                  var match = v[/* pexp_desc */0];
-                  if (typeof match === "number" || !(match.tag === /* Pexp_sequence */16 && !v[/* pexp_attributes */2])) {
+                  var match = v.pexp_desc;
+                  if (typeof match === "number" || !(match.tag === /* Pexp_sequence */16 && !v.pexp_attributes)) {
                     return List.rev(/* :: */[
                                 v,
                                 acc
@@ -2221,8 +2221,8 @@ function pattern(ctxt, f, x) {
     while(true) {
       var x = _x;
       var acc = _acc;
-      var match = x[/* ppat_desc */0];
-      if (typeof match === "number" || !(match.tag === /* Ppat_or */9 && !x[/* ppat_attributes */2])) {
+      var match = x.ppat_desc;
+      if (typeof match === "number" || !(match.tag === /* Ppat_or */9 && !x.ppat_attributes)) {
         return /* :: */[
                 x,
                 acc
@@ -2237,7 +2237,7 @@ function pattern(ctxt, f, x) {
       }
     };
   };
-  if (x[/* ppat_attributes */2] !== /* [] */0) {
+  if (x.ppat_attributes !== /* [] */0) {
     return Curry._4(Format.fprintf(f, /* Format */[
                     /* String_literal */Block.__(11, [
                         "((",
@@ -2252,15 +2252,15 @@ function pattern(ctxt, f, x) {
                     "((%a)%a)"
                   ]), (function (param, param$1) {
                   return pattern(ctxt, param, param$1);
-                }), /* record */[
-                /* ppat_desc */x[/* ppat_desc */0],
-                /* ppat_loc */x[/* ppat_loc */1],
-                /* ppat_attributes : [] */0
-              ], (function (param, param$1) {
+                }), {
+                ppat_desc: x.ppat_desc,
+                ppat_loc: x.ppat_loc,
+                ppat_attributes: /* [] */0
+              }, (function (param, param$1) {
                   return attributes(ctxt, param, param$1);
-                }), x[/* ppat_attributes */2]);
+                }), x.ppat_attributes);
   } else {
-    var match = x[/* ppat_desc */0];
+    var match = x.ppat_desc;
     if (typeof match === "number") {
       return pattern1(ctxt, f, x);
     } else {
@@ -2300,7 +2300,7 @@ function pattern(ctxt, f, x) {
                             "@[<2>%a@;as@;%a@]"
                           ]), (function (param, param$1) {
                           return pattern(ctxt, param, param$1);
-                        }), match[0], protect_ident, match[1][/* txt */0]);
+                        }), match[0], protect_ident, match[1].txt);
         case /* Ppat_or */9 :
             var partial_arg = /* Format */[
               /* Formatting_lit */Block.__(17, [
@@ -2347,7 +2347,7 @@ function type_def_list(ctxt, f, param) {
   var l = param[1];
   var rf = param[0];
   var type_decl = function (kwd, rf, f, x) {
-    var eq = x[/* ptype_kind */3] === /* Ptype_abstract */0 && x[/* ptype_manifest */5] === undefined ? "" : " =";
+    var eq = x.ptype_kind === /* Ptype_abstract */0 && x.ptype_manifest === undefined ? "" : " =";
     return Curry.app(Format.fprintf(f, /* Format */[
                     /* Formatting_gen */Block.__(18, [
                         /* Open_box */Block.__(1, [/* Format */[
@@ -2427,8 +2427,8 @@ function type_def_list(ctxt, f, param) {
                       return /* () */0;
                     }
                   }),
-                x[/* ptype_params */1],
-                x[/* ptype_name */0][/* txt */0],
+                x.ptype_params,
+                x.ptype_name.txt,
                 eq,
                 (function (param, param$1) {
                     return type_declaration(ctxt, param, param$1);
@@ -2437,7 +2437,7 @@ function type_def_list(ctxt, f, param) {
                 (function (param, param$1) {
                     return item_attributes(ctxt, param, param$1);
                   }),
-                x[/* ptype_attributes */6]
+                x.ptype_attributes
               ]);
   };
   if (l) {
@@ -2537,7 +2537,7 @@ function item_extension(ctxt, f, param) {
                         ])
                     ]),
                   "@[<2>[%%%%%s@ %a]@]"
-                ]), param[0][/* txt */0], (function (param, param$1) {
+                ]), param[0].txt, (function (param, param$1) {
                 return payload(ctxt, param, param$1);
               }), param[1]);
 }
@@ -2639,19 +2639,19 @@ function type_extension(ctxt, f, x) {
                     return /* () */0;
                   }
                 }),
-              x[/* ptyext_params */1],
+              x.ptyext_params,
               longident_loc,
-              x[/* ptyext_path */0],
+              x.ptyext_path,
               private_flag,
-              x[/* ptyext_private */3],
+              x.ptyext_private,
               (function (param, param$1) {
                   return list(partial_arg, undefined, undefined, extension_constructor$1, param, param$1);
                 }),
-              x[/* ptyext_constructors */2],
+              x.ptyext_constructors,
               (function (param, param$1) {
                   return item_attributes(ctxt, param, param$1);
                 }),
-              x[/* ptyext_attributes */4]
+              x.ptyext_attributes
             ]);
 }
 
@@ -2696,13 +2696,13 @@ function floating_attribute(ctxt, f, param) {
                         ])
                     ]),
                   "@[<2>[@@@@@@%s@ %a]@]"
-                ]), param[0][/* txt */0], (function (param, param$1) {
+                ]), param[0].txt, (function (param, param$1) {
                 return payload(ctxt, param, param$1);
               }), param[1]);
 }
 
 function module_type(ctxt, f, x) {
-  if (x[/* pmty_attributes */2] !== /* [] */0) {
+  if (x.pmty_attributes !== /* [] */0) {
     return Curry._4(Format.fprintf(f, /* Format */[
                     /* String_literal */Block.__(11, [
                         "((",
@@ -2717,15 +2717,15 @@ function module_type(ctxt, f, x) {
                     "((%a)%a)"
                   ]), (function (param, param$1) {
                   return module_type(ctxt, param, param$1);
-                }), /* record */[
-                /* pmty_desc */x[/* pmty_desc */0],
-                /* pmty_loc */x[/* pmty_loc */1],
-                /* pmty_attributes : [] */0
-              ], (function (param, param$1) {
+                }), {
+                pmty_desc: x.pmty_desc,
+                pmty_loc: x.pmty_loc,
+                pmty_attributes: /* [] */0
+              }, (function (param, param$1) {
                   return attributes(ctxt, param, param$1);
-                }), x[/* pmty_attributes */2]);
+                }), x.pmty_attributes);
   } else {
-    var match = x[/* pmty_desc */0];
+    var match = x.pmty_desc;
     switch (match.tag | 0) {
       case /* Pmty_ident */0 :
           return Curry._2(Format.fprintf(f, /* Format */[
@@ -2791,7 +2791,7 @@ function module_type(ctxt, f, x) {
           if (match$1 !== undefined) {
             var mt2 = match[2];
             var mt1 = match$1;
-            if (s[/* txt */0] === "_") {
+            if (s.txt === "_") {
               return Curry._4(Format.fprintf(f, /* Format */[
                               /* Formatting_gen */Block.__(18, [
                                   /* Open_box */Block.__(1, [/* Format */[
@@ -2898,7 +2898,7 @@ function module_type(ctxt, f, x) {
                                     ])
                                 ]),
                               "@[<hov2>functor@ (%s@ :@ %a)@ ->@ %a@]"
-                            ]), s[/* txt */0], (function (param, param$1) {
+                            ]), s.txt, (function (param, param$1) {
                             return module_type(ctxt, param, param$1);
                           }), mt1, (function (param, param$1) {
                             return module_type(ctxt, param, param$1);
@@ -2943,7 +2943,7 @@ function module_type(ctxt, f, x) {
                   var td = param[1];
                   var ls = List.map((function (prim) {
                           return prim[0];
-                        }), td[/* ptype_params */1]);
+                        }), td.ptype_params);
                   var partial_arg = /* Format */[
                     /* Char_literal */Block.__(12, [
                         /* ")" */41,
@@ -3020,7 +3020,7 @@ function module_type(ctxt, f, x) {
                   var td$1 = param[1];
                   var ls$1 = List.map((function (prim) {
                           return prim[0];
-                        }), td$1[/* ptype_params */1]);
+                        }), td$1.ptype_params);
                   var partial_arg$3 = /* Format */[
                     /* Char_literal */Block.__(12, [
                         /* ")" */41,
@@ -3294,20 +3294,20 @@ function class_type_declaration_list(ctxt, f, l) {
                   ]), [
                 kwd,
                 virtual_flag,
-                x[/* pci_virt */0],
+                x.pci_virt,
                 (function (param, param$1) {
                     return class_params_def(ctxt, param, param$1);
                   }),
-                x[/* pci_params */1],
-                x[/* pci_name */2][/* txt */0],
+                x.pci_params,
+                x.pci_name.txt,
                 (function (param, param$1) {
                     return class_type(ctxt, param, param$1);
                   }),
-                x[/* pci_expr */3],
+                x.pci_expr,
                 (function (param, param$1) {
                     return item_attributes(ctxt, param, param$1);
                   }),
-                x[/* pci_attributes */5]
+                x.pci_attributes
               ]);
   };
   if (l) {
@@ -3404,14 +3404,14 @@ function item_attributes(ctxt, f, l) {
                                       ])
                                   ]),
                                 "@[<2>[@@@@%s@ %a]@]"
-                              ]), param$1[0][/* txt */0], (function (param, param$1) {
+                              ]), param$1[0].txt, (function (param, param$1) {
                               return payload(ctxt$1, param, param$1);
                             }), param$1[1]);
               }), l);
 }
 
 function class_type(ctxt, f, x) {
-  var match = x[/* pcty_desc */0];
+  var match = x.pcty_desc;
   switch (match.tag | 0) {
     case /* Pcty_constr */0 :
         return Curry._6(Format.fprintf(f, /* Format */[
@@ -3452,10 +3452,10 @@ function class_type(ctxt, f, x) {
                       }
                     }), match[1], longident_loc, match[0], (function (param, param$1) {
                       return attributes(ctxt, param, param$1);
-                    }), x[/* pcty_attributes */2]);
+                    }), x.pcty_attributes);
     case /* Pcty_signature */1 :
         class_signature(ctxt, f, match[0]);
-        return attributes(ctxt, f, x[/* pcty_attributes */2]);
+        return attributes(ctxt, f, x.pcty_attributes);
     case /* Pcty_arrow */2 :
         return Curry._4(Format.fprintf(f, /* Format */[
                         /* Formatting_gen */Block.__(18, [
@@ -3499,7 +3499,7 @@ function class_type(ctxt, f, x) {
                     }), match[2]);
     case /* Pcty_extension */3 :
         extension(ctxt, f, match[0]);
-        return attributes(ctxt, f, x[/* pcty_attributes */2]);
+        return attributes(ctxt, f, x.pcty_attributes);
     case /* Pcty_open */4 :
         return Curry._5(Format.fprintf(f, /* Format */[
                         /* Formatting_gen */Block.__(18, [
@@ -3591,8 +3591,8 @@ function value_description(ctxt, f, x) {
                   "@[<hov2>%a%a@]"
                 ]), (function (param, param$1) {
                 return core_type(ctxt, param, param$1);
-              }), x[/* pval_type */1], (function (f, x) {
-                if (x[/* pval_prim */2] !== /* [] */0) {
+              }), x.pval_type, (function (f, x) {
+                if (x.pval_prim !== /* [] */0) {
                   return Curry._2(Format.fprintf(f, /* Format */[
                                   /* Formatting_lit */Block.__(17, [
                                       /* Break */Block.__(0, [
@@ -3615,7 +3615,7 @@ function value_description(ctxt, f, x) {
                                   "@ =@ %a"
                                 ]), (function (param, param$1) {
                                 return list(undefined, undefined, undefined, constant_string, param, param$1);
-                              }), x[/* pval_prim */2]);
+                              }), x.pval_prim);
                 } else {
                   return 0;
                 }
@@ -3623,7 +3623,7 @@ function value_description(ctxt, f, x) {
 }
 
 function extension_constructor(ctxt, f, x) {
-  var match = x[/* pext_kind */1];
+  var match = x.pext_kind;
   if (match.tag) {
     return Curry._5(Format.fprintf(f, /* Format */[
                     /* String */Block.__(2, [
@@ -3648,15 +3648,15 @@ function extension_constructor(ctxt, f, x) {
                               ])])
                       ]),
                     "%s%a@;=@;%a"
-                  ]), x[/* pext_name */0][/* txt */0], (function (param, param$1) {
+                  ]), x.pext_name.txt, (function (param, param$1) {
                   return attributes(ctxt, param, param$1);
-                }), x[/* pext_attributes */3], longident_loc, match[0]);
+                }), x.pext_attributes, longident_loc, match[0]);
   } else {
     return constructor_declaration(ctxt, f, /* tuple */[
-                x[/* pext_name */0][/* txt */0],
+                x.pext_name.txt,
                 match[0],
                 match[1],
-                x[/* pext_attributes */3]
+                x.pext_attributes
               ]);
   }
 }
@@ -3666,7 +3666,7 @@ function payload(ctxt, f, param) {
     case /* PStr */0 :
         var x = param[0];
         if (x) {
-          var match = x[0][/* pstr_desc */0];
+          var match = x[0].pstr_desc;
           if (match.tag || x[1]) {
             return structure(ctxt, f, x);
           } else {
@@ -3747,10 +3747,10 @@ function payload(ctxt, f, param) {
 }
 
 function simple_expr(ctxt, f, x) {
-  if (x[/* pexp_attributes */2] !== /* [] */0) {
+  if (x.pexp_attributes !== /* [] */0) {
     return expression(ctxt, f, x);
   } else {
-    var match = x[/* pexp_desc */0];
+    var match = x.pexp_desc;
     if (typeof match !== "number") {
       switch (match.tag | 0) {
         case /* Pexp_ident */0 :
@@ -3907,9 +3907,9 @@ function simple_expr(ctxt, f, x) {
         case /* Pexp_record */11 :
             var longident_x_expression = function (f, param) {
               var e = param[1];
-              var match = e[/* pexp_desc */0];
+              var match = e.pexp_desc;
               var li = param[0];
-              if (typeof match !== "number" && !match.tag && !e[/* pexp_attributes */2] && Caml_obj.caml_equal(li[/* txt */0], match[0][/* txt */0])) {
+              if (typeof match !== "number" && !match.tag && !e.pexp_attributes && Caml_obj.caml_equal(li.txt, match[0].txt)) {
                 return Curry._2(Format.fprintf(f, /* Format */[
                                 /* Formatting_gen */Block.__(18, [
                                     /* Open_box */Block.__(1, [/* Format */[
@@ -4356,7 +4356,7 @@ function simple_expr(ctxt, f, x) {
                                   ])
                               ]),
                             "fun@;(type@;%s)@;->@;%a"
-                          ]), match[0][/* txt */0], (function (param, param$1) {
+                          ]), match[0].txt, (function (param, param$1) {
                           return expression(ctxt, param, param$1);
                         }), match[1]);
         case /* Pexp_pack */32 :
@@ -4392,7 +4392,7 @@ function simple_expr(ctxt, f, x) {
 function core_type(ctxt, f, _x) {
   while(true) {
     var x = _x;
-    if (x[/* ptyp_attributes */2] !== /* [] */0) {
+    if (x.ptyp_attributes !== /* [] */0) {
       return Curry._4(Format.fprintf(f, /* Format */[
                       /* String_literal */Block.__(11, [
                           "((",
@@ -4407,15 +4407,15 @@ function core_type(ctxt, f, _x) {
                       "((%a)%a)"
                     ]), (function (param, param$1) {
                     return core_type(ctxt, param, param$1);
-                  }), /* record */[
-                  /* ptyp_desc */x[/* ptyp_desc */0],
-                  /* ptyp_loc */x[/* ptyp_loc */1],
-                  /* ptyp_attributes : [] */0
-                ], (function (param, param$1) {
+                  }), {
+                  ptyp_desc: x.ptyp_desc,
+                  ptyp_loc: x.ptyp_loc,
+                  ptyp_attributes: /* [] */0
+                }, (function (param, param$1) {
                     return attributes(ctxt, param, param$1);
-                  }), x[/* ptyp_attributes */2]);
+                  }), x.ptyp_attributes);
     } else {
-      var match = x[/* ptyp_desc */0];
+      var match = x.ptyp_desc;
       if (typeof match !== "number") {
         switch (match.tag | 0) {
           case /* Ptyp_arrow */1 :
@@ -4597,7 +4597,7 @@ function core_type(ctxt, f, _x) {
 }
 
 function module_expr(ctxt, f, x) {
-  if (x[/* pmod_attributes */2] !== /* [] */0) {
+  if (x.pmod_attributes !== /* [] */0) {
     return Curry._4(Format.fprintf(f, /* Format */[
                     /* String_literal */Block.__(11, [
                         "((",
@@ -4612,15 +4612,15 @@ function module_expr(ctxt, f, x) {
                     "((%a)%a)"
                   ]), (function (param, param$1) {
                   return module_expr(ctxt, param, param$1);
-                }), /* record */[
-                /* pmod_desc */x[/* pmod_desc */0],
-                /* pmod_loc */x[/* pmod_loc */1],
-                /* pmod_attributes : [] */0
-              ], (function (param, param$1) {
+                }), {
+                pmod_desc: x.pmod_desc,
+                pmod_loc: x.pmod_loc,
+                pmod_attributes: /* [] */0
+              }, (function (param, param$1) {
                   return attributes(ctxt, param, param$1);
-                }), x[/* pmod_attributes */2]);
+                }), x.pmod_attributes);
   } else {
-    var match = x[/* pmod_desc */0];
+    var match = x.pmod_desc;
     switch (match.tag | 0) {
       case /* Pmod_ident */0 :
           return Curry._2(Format.fprintf(f, /* Format */[
@@ -4746,7 +4746,7 @@ function module_expr(ctxt, f, x) {
                                   ])
                               ]),
                             "functor@ (%s@ :@ %a)@;->@;%a"
-                          ]), match[0][/* txt */0], (function (param, param$1) {
+                          ]), match[0].txt, (function (param, param$1) {
                           return module_type(ctxt, param, param$1);
                         }), match$1, (function (param, param$1) {
                           return module_expr(ctxt, param, param$1);
@@ -4881,10 +4881,10 @@ function type_param(ctxt, f, param) {
 }
 
 function simple_pattern(ctxt, f, x) {
-  if (x[/* ppat_attributes */2] !== /* [] */0) {
+  if (x.ppat_attributes !== /* [] */0) {
     return pattern(ctxt, f, x);
   } else {
-    var match = x[/* ppat_desc */0];
+    var match = x.ppat_desc;
     if (typeof match === "number") {
       return Format.fprintf(f, /* Format */[
                   /* Char_literal */Block.__(12, [
@@ -4896,7 +4896,7 @@ function simple_pattern(ctxt, f, x) {
     } else {
       switch (match.tag | 0) {
         case /* Ppat_var */0 :
-            return protect_ident(f, match[0][/* txt */0]);
+            return protect_ident(f, match[0].txt);
         case /* Ppat_constant */2 :
             return Curry._2(Format.fprintf(f, /* Format */[
                             /* Alpha */Block.__(15, [/* End_of_format */0]),
@@ -4952,7 +4952,7 @@ function simple_pattern(ctxt, f, x) {
                                       }), param, param$1);
                         }), match[0]);
         case /* Ppat_construct */5 :
-            var match$1 = match[0][/* txt */0];
+            var match$1 = match[0].txt;
             switch (match$1.tag | 0) {
               case /* Lident */0 :
                   var x$1 = match$1[0];
@@ -4995,11 +4995,11 @@ function simple_pattern(ctxt, f, x) {
             var longident_x_pattern = function (f, param) {
               var p = param[1];
               var li = param[0];
-              var match = li[/* txt */0];
+              var match = li.txt;
               switch (match.tag | 0) {
                 case /* Lident */0 :
-                    var match$1 = p[/* ppat_desc */0];
-                    if (typeof match$1 !== "number" && !match$1.tag && !p[/* ppat_attributes */2] && match[0] === match$1[0][/* txt */0]) {
+                    var match$1 = p.ppat_desc;
+                    if (typeof match$1 !== "number" && !match$1.tag && !p.ppat_attributes && match[0] === match$1[0].txt) {
                       return Curry._2(Format.fprintf(f, /* Format */[
                                       /* Formatting_gen */Block.__(18, [
                                           /* Open_box */Block.__(1, [/* Format */[
@@ -5307,7 +5307,7 @@ function simple_pattern(ctxt, f, x) {
                                   ])
                               ]),
                             "(module@ %s)@ "
-                          ]), match[0][/* txt */0]);
+                          ]), match[0].txt);
         case /* Ppat_exception */14 :
             return Curry._2(Format.fprintf(f, /* Format */[
                             /* Formatting_gen */Block.__(18, [
@@ -5341,14 +5341,14 @@ function simple_pattern(ctxt, f, x) {
             return extension(ctxt, f, match[0]);
         case /* Ppat_open */16 :
             var p = match[1];
-            var match$2 = p[/* ppat_desc */0];
+            var match$2 = p.ppat_desc;
             var with_paren;
             if (typeof match$2 === "number") {
               with_paren = true;
             } else {
               switch (match$2.tag | 0) {
                 case /* Ppat_construct */5 :
-                    var match$3 = match$2[0][/* txt */0];
+                    var match$3 = match$2[0].txt;
                     switch (match$3.tag | 0) {
                       case /* Lident */0 :
                           switch (match$3[0]) {
@@ -5429,9 +5429,9 @@ function label_exp(ctxt, f, param) {
                   return simple_pattern(ctxt, param, param$1);
                 }), p);
   } else if (l.tag) {
-    var match = p[/* ppat_desc */0];
+    var match = p.ppat_desc;
     var rest = l[0];
-    if (typeof match !== "number" && !match.tag && !p[/* ppat_attributes */2] && match[0][/* txt */0] === rest) {
+    if (typeof match !== "number" && !match.tag && !p.ppat_attributes && match[0].txt === rest) {
       if (opt !== undefined) {
         return Curry._3(Format.fprintf(f, /* Format */[
                         /* String_literal */Block.__(11, [
@@ -5548,9 +5548,9 @@ function label_exp(ctxt, f, param) {
                   }), p);
     }
   } else {
-    var match$1 = p[/* ppat_desc */0];
+    var match$1 = p.ppat_desc;
     var l$1 = l[0];
-    if (typeof match$1 !== "number" && !match$1.tag && !p[/* ppat_attributes */2] && match$1[0][/* txt */0] === l$1) {
+    if (typeof match$1 !== "number" && !match$1.tag && !p.ppat_attributes && match$1[0].txt === l$1) {
       return Curry._1(Format.fprintf(f, /* Format */[
                       /* Char_literal */Block.__(12, [
                           /* "~" */126,
@@ -5629,7 +5629,7 @@ function extension(ctxt, f, param) {
                         ])
                     ]),
                   "@[<2>[%%%s@ %a]@]"
-                ]), param[0][/* txt */0], (function (param, param$1) {
+                ]), param[0].txt, (function (param, param$1) {
                 return payload(ctxt, param, param$1);
               }), param[1]);
 }
@@ -5637,15 +5637,15 @@ function extension(ctxt, f, param) {
 function label_x_expression_param(ctxt, f, param) {
   var e = param[1];
   var l = param[0];
-  var match = e[/* pexp_desc */0];
+  var match = e.pexp_desc;
   var simple_name;
   if (typeof match === "number" || match.tag) {
     simple_name = undefined;
   } else {
-    var match$1 = match[0][/* txt */0];
+    var match$1 = match[0].txt;
     switch (match$1.tag | 0) {
       case /* Lident */0 :
-          simple_name = e[/* pexp_attributes */2] ? undefined : match$1[0];
+          simple_name = e.pexp_attributes ? undefined : match$1[0];
           break;
       case /* Ldot */1 :
       case /* Lapply */2 :
@@ -5768,7 +5768,7 @@ function class_structure(ctxt, f, param) {
                     ]),
                   "@[<hv0>@[<hv2>object%a@;%a@]@;end@]"
                 ]), (function (f, p) {
-                var match = p[/* ppat_desc */0];
+                var match = p.ppat_desc;
                 if (typeof match === "number") {
                   return /* () */0;
                 } else if (match.tag === /* Ppat_constraint */10) {
@@ -5795,12 +5795,12 @@ function class_structure(ctxt, f, param) {
                                 return pattern(ctxt, param, param$1);
                               }), p);
                 }
-              }), param[/* pcstr_self */0], (function (param, param$1) {
+              }), param.pcstr_self, (function (param, param$1) {
                 return list(undefined, undefined, undefined, (function (param, param$1) {
                               var ctxt$1 = ctxt;
                               var f = param;
                               var x = param$1;
-                              var match = x[/* pcf_desc */0];
+                              var match = x.pcf_desc;
                               switch (match.tag | 0) {
                                 case /* Pcf_inherit */0 :
                                     return Curry._7(Format.fprintf(f, /* Format */[
@@ -5858,13 +5858,13 @@ function class_structure(ctxt, f, param) {
                                                                           ])
                                                                       ]),
                                                                     "@ as %s"
-                                                                  ]), so[/* txt */0]);
+                                                                  ]), so.txt);
                                                   } else {
                                                     return /* () */0;
                                                   }
                                                 }), match[2], (function (param, param$1) {
                                                   return item_attributes(ctxt$1, param, param$1);
-                                                }), x[/* pcf_attributes */2]);
+                                                }), x.pcf_attributes);
                                 case /* Pcf_val */1 :
                                     var match$1 = match[0];
                                     var match$2 = match$1[2];
@@ -5908,11 +5908,11 @@ function class_structure(ctxt, f, param) {
                                                             ])
                                                         ]),
                                                       "@[<2>val%s %a%s =@;%a@]%a"
-                                                    ]), match$2[0] ? "" : "!", mutable_flag, mf, s[/* txt */0], (function (param, param$1) {
+                                                    ]), match$2[0] ? "" : "!", mutable_flag, mf, s.txt, (function (param, param$1) {
                                                     return expression(ctxt$1, param, param$1);
                                                   }), match$2[1], (function (param, param$1) {
                                                     return item_attributes(ctxt$1, param, param$1);
-                                                  }), x[/* pcf_attributes */2]);
+                                                  }), x.pcf_attributes);
                                     } else {
                                       return Curry._7(Format.fprintf(f, /* Format */[
                                                       /* Formatting_gen */Block.__(18, [
@@ -5945,11 +5945,11 @@ function class_structure(ctxt, f, param) {
                                                             ])
                                                         ]),
                                                       "@[<2>val virtual %a%s :@ %a@]%a"
-                                                    ]), mutable_flag, mf, s[/* txt */0], (function (param, param$1) {
+                                                    ]), mutable_flag, mf, s.txt, (function (param, param$1) {
                                                     return core_type(ctxt$1, param, param$1);
                                                   }), match$2[0], (function (param, param$1) {
                                                     return item_attributes(ctxt$1, param, param$1);
-                                                  }), x[/* pcf_attributes */2]);
+                                                  }), x.pcf_attributes);
                                     }
                                 case /* Pcf_method */2 :
                                     var match$3 = match[0];
@@ -5959,16 +5959,16 @@ function class_structure(ctxt, f, param) {
                                     if (match$4.tag) {
                                       var e = match$4[1];
                                       var bind = function (e) {
-                                        return binding(ctxt$1, f, /* record */[
-                                                    /* pvb_pat : record */[
-                                                      /* ppat_desc : Ppat_var */Block.__(0, [s$1]),
-                                                      /* ppat_loc */$$Location.none,
-                                                      /* ppat_attributes : [] */0
-                                                    ],
-                                                    /* pvb_expr */e,
-                                                    /* pvb_attributes : [] */0,
-                                                    /* pvb_loc */$$Location.none
-                                                  ]);
+                                        return binding(ctxt$1, f, {
+                                                    pvb_pat: {
+                                                      ppat_desc: /* Ppat_var */Block.__(0, [s$1]),
+                                                      ppat_loc: $$Location.none,
+                                                      ppat_attributes: /* [] */0
+                                                    },
+                                                    pvb_expr: e,
+                                                    pvb_attributes: /* [] */0,
+                                                    pvb_loc: $$Location.none
+                                                  });
                                       };
                                       return Curry._7(Format.fprintf(f, /* Format */[
                                                       /* Formatting_gen */Block.__(18, [
@@ -5995,14 +5995,14 @@ function class_structure(ctxt, f, param) {
                                                         ]),
                                                       "@[<2>method%s %a%a@]%a"
                                                     ]), match$4[0] ? "" : "!", private_flag, pf, (function (f, param) {
-                                                    var match = param[/* pexp_desc */0];
+                                                    var match = param.pexp_desc;
                                                     if (typeof match === "number" || match.tag !== /* Pexp_poly */29) {
                                                       return bind(e);
                                                     } else {
                                                       var match$1 = match[1];
                                                       var e$1 = match[0];
                                                       if (match$1 !== undefined) {
-                                                        if (param[/* pexp_attributes */2]) {
+                                                        if (param.pexp_attributes) {
                                                           return bind(e);
                                                         } else {
                                                           return Curry._5(Format.fprintf(f, /* Format */[
@@ -6031,13 +6031,13 @@ function class_structure(ctxt, f, param) {
                                                                                 ])
                                                                             ]),
                                                                           "%s :@;%a=@;%a"
-                                                                        ]), s$1[/* txt */0], (function (param, param$1) {
+                                                                        ]), s$1.txt, (function (param, param$1) {
                                                                         return core_type(ctxt$1, param, param$1);
                                                                       }), match$1, (function (param, param$1) {
                                                                         return expression(ctxt$1, param, param$1);
                                                                       }), e$1);
                                                         }
-                                                      } else if (param[/* pexp_attributes */2]) {
+                                                      } else if (param.pexp_attributes) {
                                                         return bind(e);
                                                       } else {
                                                         return bind(e$1);
@@ -6045,7 +6045,7 @@ function class_structure(ctxt, f, param) {
                                                     }
                                                   }), e, (function (param, param$1) {
                                                     return item_attributes(ctxt$1, param, param$1);
-                                                  }), x[/* pcf_attributes */2]);
+                                                  }), x.pcf_attributes);
                                     } else {
                                       return Curry._7(Format.fprintf(f, /* Format */[
                                                       /* Formatting_gen */Block.__(18, [
@@ -6081,11 +6081,11 @@ function class_structure(ctxt, f, param) {
                                                             ])
                                                         ]),
                                                       "@[<2>method virtual %a %s :@;%a@]%a"
-                                                    ]), private_flag, pf, s$1[/* txt */0], (function (param, param$1) {
+                                                    ]), private_flag, pf, s$1.txt, (function (param, param$1) {
                                                     return core_type(ctxt$1, param, param$1);
                                                   }), match$4[0], (function (param, param$1) {
                                                     return item_attributes(ctxt$1, param, param$1);
-                                                  }), x[/* pcf_attributes */2]);
+                                                  }), x.pcf_attributes);
                                     }
                                 case /* Pcf_constraint */3 :
                                     var match$5 = match[0];
@@ -6123,7 +6123,7 @@ function class_structure(ctxt, f, param) {
                                                   return core_type(ctxt$1, param, param$1);
                                                 }), match$5[1], (function (param, param$1) {
                                                   return item_attributes(ctxt$1, param, param$1);
-                                                }), x[/* pcf_attributes */2]);
+                                                }), x.pcf_attributes);
                                 case /* Pcf_initializer */4 :
                                     return Curry._4(Format.fprintf(f, /* Format */[
                                                     /* Formatting_gen */Block.__(18, [
@@ -6154,16 +6154,16 @@ function class_structure(ctxt, f, param) {
                                                   return expression(ctxt$1, param, param$1);
                                                 }), match[0], (function (param, param$1) {
                                                   return item_attributes(ctxt$1, param, param$1);
-                                                }), x[/* pcf_attributes */2]);
+                                                }), x.pcf_attributes);
                                 case /* Pcf_attribute */5 :
                                     return floating_attribute(ctxt$1, f, match[0]);
                                 case /* Pcf_extension */6 :
                                     item_extension(ctxt$1, f, match[0]);
-                                    return item_attributes(ctxt$1, f, x[/* pcf_attributes */2]);
+                                    return item_attributes(ctxt$1, f, x.pcf_attributes);
                                 
                               }
                             }), param, param$1);
-              }), param[/* pcstr_fields */1]);
+              }), param.pcstr_fields);
 }
 
 function bindings(ctxt, f, param) {
@@ -6195,7 +6195,7 @@ function bindings(ctxt, f, param) {
                   return binding(ctxt, param, param$1);
                 }), x, (function (param, param$1) {
                   return item_attributes(ctxt, param, param$1);
-                }), x[/* pvb_attributes */2]);
+                }), x.pvb_attributes);
   };
   if (l) {
     var xs = l[1];
@@ -6250,7 +6250,7 @@ function bindings(ctxt, f, param) {
 }
 
 function class_expr(ctxt, f, x) {
-  if (x[/* pcl_attributes */2] !== /* [] */0) {
+  if (x.pcl_attributes !== /* [] */0) {
     return Curry._4(Format.fprintf(f, /* Format */[
                     /* String_literal */Block.__(11, [
                         "((",
@@ -6265,15 +6265,15 @@ function class_expr(ctxt, f, x) {
                     "((%a)%a)"
                   ]), (function (param, param$1) {
                   return class_expr(ctxt, param, param$1);
-                }), /* record */[
-                /* pcl_desc */x[/* pcl_desc */0],
-                /* pcl_loc */x[/* pcl_loc */1],
-                /* pcl_attributes : [] */0
-              ], (function (param, param$1) {
+                }), {
+                pcl_desc: x.pcl_desc,
+                pcl_loc: x.pcl_loc,
+                pcl_attributes: /* [] */0
+              }, (function (param, param$1) {
                   return attributes(ctxt, param, param$1);
-                }), x[/* pcl_attributes */2]);
+                }), x.pcl_attributes);
   } else {
-    var match = x[/* pcl_desc */0];
+    var match = x.pcl_desc;
     switch (match.tag | 0) {
       case /* Pcl_constr */0 :
           return Curry._4(Format.fprintf(f, /* Format */[
@@ -6527,7 +6527,7 @@ function attributes(ctxt, f, l) {
                                       ])
                                   ]),
                                 "@[<2>[@@%s@ %a]@]"
-                              ]), param$1[0][/* txt */0], (function (param, param$1) {
+                              ]), param$1[0].txt, (function (param, param$1) {
                               return payload(ctxt$1, param, param$1);
                             }), param$1[1]);
               }), l);
@@ -6784,11 +6784,11 @@ function record_declaration(ctxt, f, lbls) {
                               ])])
                       ]),
                     "@[<2>%a%s:@;%a@;%a@]"
-                  ]), mutable_flag, pld[/* pld_mutable */1], pld[/* pld_name */0][/* txt */0], (function (param, param$1) {
+                  ]), mutable_flag, pld.pld_mutable, pld.pld_name.txt, (function (param, param$1) {
                   return core_type(ctxt, param, param$1);
-                }), pld[/* pld_type */2], (function (param, param$1) {
+                }), pld.pld_type, (function (param, param$1) {
                   return attributes(ctxt, param, param$1);
-                }), pld[/* pld_attributes */4]);
+                }), pld.pld_attributes);
   };
   var partial_arg = /* Format */[
     /* Char_literal */Block.__(12, [
@@ -6855,10 +6855,10 @@ function type_with_label(ctxt, f, param) {
 }
 
 function core_type1(ctxt, f, x) {
-  if (x[/* ptyp_attributes */2] !== /* [] */0) {
+  if (x.ptyp_attributes !== /* [] */0) {
     return core_type(ctxt, f, x);
   } else {
-    var match = x[/* ptyp_desc */0];
+    var match = x.ptyp_desc;
     if (typeof match === "number") {
       return Format.fprintf(f, /* Format */[
                   /* Char_literal */Block.__(12, [
@@ -7044,7 +7044,7 @@ function core_type1(ctxt, f, x) {
                                       ])
                                   ]),
                                 "@[<hov2>%s: %a@ %a@ @]"
-                              ]), param[0][/* txt */0], (function (param, param$1) {
+                              ]), param[0].txt, (function (param, param$1) {
                               return core_type(ctxt, param, param$1);
                             }), param[2], (function (param, param$1) {
                               return attributes(ctxt, param, param$1);
@@ -7194,7 +7194,7 @@ function core_type1(ctxt, f, x) {
                                               ])])])
                                   ]),
                                 "@[<2>%a%a@;%a@]"
-                              ]), string_quot, x[0][/* txt */0], (function (f, l) {
+                              ]), string_quot, x[0].txt, (function (f, l) {
                               if (l) {
                                 var partial_arg = /* Format */[
                                   /* Char_literal */Block.__(12, [
@@ -7474,10 +7474,10 @@ function core_type1(ctxt, f, x) {
 }
 
 function binding(ctxt, f, param) {
-  var x = param[/* pvb_expr */1];
-  var p = param[/* pvb_pat */0];
+  var x = param.pvb_expr;
+  var p = param.pvb_pat;
   var pp_print_pexp_function = function (f, x) {
-    if (x[/* pexp_attributes */2] !== /* [] */0) {
+    if (x.pexp_attributes !== /* [] */0) {
       return Curry._2(Format.fprintf(f, /* Format */[
                       /* Char_literal */Block.__(12, [
                           /* "=" */61,
@@ -7495,7 +7495,7 @@ function binding(ctxt, f, param) {
                     return expression(ctxt, param, param$1);
                   }), x);
     } else {
-      var match = x[/* pexp_desc */0];
+      var match = x.pexp_desc;
       if (typeof match !== "number") {
         switch (match.tag | 0) {
           case /* Pexp_fun */4 :
@@ -7562,7 +7562,7 @@ function binding(ctxt, f, param) {
                                     ])
                                 ]),
                               "(type@ %s)@ %a"
-                            ]), match[0][/* txt */0], pp_print_pexp_function, match[1]);
+                            ]), match[0].txt, pp_print_pexp_function, match[1]);
           default:
             
         }
@@ -7586,18 +7586,18 @@ function binding(ctxt, f, param) {
     }
   };
   var is_desugared_gadt = function (p, e) {
-    var match = p[/* ppat_desc */0];
+    var match = p.ppat_desc;
     var gadt_pattern;
     if (typeof match === "number" || match.tag !== /* Ppat_constraint */10) {
       gadt_pattern = undefined;
     } else {
       var pat = match[0];
-      var tmp = pat[/* ppat_desc */0];
+      var tmp = pat.ppat_desc;
       if (typeof tmp === "number" || tmp.tag) {
         gadt_pattern = undefined;
       } else {
-        var match$1 = match[1][/* ptyp_desc */0];
-        gadt_pattern = typeof match$1 === "number" || !(match$1.tag === /* Ptyp_poly */8 && !p[/* ppat_attributes */2]) ? undefined : /* tuple */[
+        var match$1 = match[1].ptyp_desc;
+        gadt_pattern = typeof match$1 === "number" || !(match$1.tag === /* Ptyp_poly */8 && !p.ppat_attributes) ? undefined : /* tuple */[
             pat,
             match$1[0],
             match$1[1]
@@ -7608,13 +7608,13 @@ function binding(ctxt, f, param) {
       while(true) {
         var e = _e;
         var tyvars = _tyvars;
-        var match = e[/* pexp_desc */0];
+        var match = e.pexp_desc;
         if (typeof match === "number") {
           return ;
         } else {
           switch (match.tag | 0) {
             case /* Pexp_constraint */19 :
-                if (e[/* pexp_attributes */2]) {
+                if (e.pexp_attributes) {
                   return ;
                 } else {
                   return /* tuple */[
@@ -7624,7 +7624,7 @@ function binding(ctxt, f, param) {
                         ];
                 }
             case /* Pexp_newtype */31 :
-                if (e[/* pexp_attributes */2]) {
+                if (e.pexp_attributes) {
                   return ;
                 } else {
                   _e = match[1];
@@ -7648,9 +7648,9 @@ function binding(ctxt, f, param) {
       var match$3 = gadt_pattern;
       var pt_tyvars = match$3[1];
       if (Caml_obj.caml_equal(List.map((function (v) {
-                    return v[/* txt */0];
+                    return v.txt;
                   }), pt_tyvars), List.map((function (v) {
-                    return v[/* txt */0];
+                    return v.txt;
                   }), e_tyvars))) {
         var ety = Ast_helper.Typ.varify_constructors(e_tyvars, e_ct);
         if (Caml_obj.caml_equal(ety, match$3[2])) {
@@ -7669,7 +7669,7 @@ function binding(ctxt, f, param) {
     }
     
   };
-  if (x[/* pexp_attributes */2] !== /* [] */0) {
+  if (x.pexp_attributes !== /* [] */0) {
     return Curry._4(Format.fprintf(f, /* Format */[
                     /* Alpha */Block.__(15, [/* Formatting_lit */Block.__(17, [
                             /* Break */Block.__(0, [
@@ -7765,7 +7765,7 @@ function binding(ctxt, f, param) {
                     }), p$1, (function (param, param$1) {
                       return list(partial_arg, undefined, undefined, Format.pp_print_string, param, param$1);
                     }), List.map((function (v) {
-                          return v[/* txt */0];
+                          return v.txt;
                         }), tyvars), (function (param, param$1) {
                       return core_type(ctxt, param, param$1);
                     }), match$1[2], (function (param, param$1) {
@@ -7811,11 +7811,11 @@ function binding(ctxt, f, param) {
                     }), match$1[3]);
       }
     } else {
-      var match$2 = p[/* ppat_desc */0];
+      var match$2 = p.ppat_desc;
       if (typeof match$2 !== "number") {
         switch (match$2.tag | 0) {
           case /* Ppat_var */0 :
-              if (!p[/* ppat_attributes */2]) {
+              if (!p.ppat_attributes) {
                 return Curry._4(Format.fprintf(f, /* Format */[
                                 /* Alpha */Block.__(15, [/* Formatting_lit */Block.__(17, [
                                         /* Break */Block.__(0, [
@@ -7832,12 +7832,12 @@ function binding(ctxt, f, param) {
               }
               break;
           case /* Ppat_constraint */10 :
-              if (!p[/* ppat_attributes */2]) {
+              if (!p.ppat_attributes) {
                 var ty = match$2[1];
                 var p$2 = match$2[0];
                 var exit = 0;
-                var tmp = ty[/* ptyp_desc */0];
-                if (typeof tmp === "number" || !(tmp.tag === /* Ptyp_poly */8 && !ty[/* ptyp_attributes */2])) {
+                var tmp = ty.ptyp_desc;
+                if (typeof tmp === "number" || !(tmp.tag === /* Ptyp_poly */8 && !ty.ptyp_attributes)) {
                   exit = 2;
                 } else {
                   return Curry._6(Format.fprintf(f, /* Format */[
@@ -7974,7 +7974,7 @@ function binding(ctxt, f, param) {
 }
 
 function structure_item(ctxt, f, x) {
-  var match = x[/* pstr_desc */0];
+  var match = x.pstr_desc;
   switch (match.tag | 0) {
     case /* Pstr_eval */0 :
         return Curry._4(Format.fprintf(f, /* Format */[
@@ -8066,11 +8066,11 @@ function structure_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<hov2>external@ %a@ :@ %a@]%a"
-                      ]), protect_ident, vd[/* pval_name */0][/* txt */0], (function (param, param$1) {
+                      ]), protect_ident, vd.pval_name.txt, (function (param, param$1) {
                       return value_description(ctxt, param, param$1);
                     }), vd, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), vd[/* pval_attributes */3]);
+                    }), vd.pval_attributes);
     case /* Pstr_type */3 :
         var l = match[1];
         if (l) {
@@ -8097,8 +8097,8 @@ function structure_item(ctxt, f, x) {
         var module_helper = function (_me) {
           while(true) {
             var me = _me;
-            var match = me[/* pmod_desc */0];
-            if (match.tag === /* Pmod_functor */2 && !me[/* pmod_attributes */2]) {
+            var match = me.pmod_desc;
+            if (match.tag === /* Pmod_functor */2 && !me.pmod_attributes) {
               var mt = match[1];
               if (mt === undefined) {
                 Format.fprintf(f, /* Format */[
@@ -8124,7 +8124,7 @@ function structure_item(ctxt, f, x) {
                                     ])
                                 ]),
                               "(%s:%a)"
-                            ]), match[0][/* txt */0], (function (param, param$1) {
+                            ]), match[0].txt, (function (param, param$1) {
                             return module_type(ctxt, param, param$1);
                           })), mt);
               }
@@ -8156,13 +8156,13 @@ function structure_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<hov2>module %s%a@]%a"
-                      ]), x$1[/* pmb_name */0][/* txt */0], (function (f, me) {
+                      ]), x$1.pmb_name.txt, (function (f, me) {
                       var me$1 = module_helper(me);
-                      var match = me$1[/* pmod_desc */0];
+                      var match = me$1.pmod_desc;
                       if (match.tag === /* Pmod_constraint */4) {
                         var mt = match[1];
                         var exit = 0;
-                        switch (mt[/* pmty_desc */0].tag | 0) {
+                        switch (mt.pmty_desc.tag | 0) {
                           case /* Pmty_ident */0 :
                           case /* Pmty_signature */1 :
                               exit = 2;
@@ -8170,7 +8170,7 @@ function structure_item(ctxt, f, x) {
                           default:
                             
                         }
-                        if (exit === 2 && !me$1[/* pmod_attributes */2]) {
+                        if (exit === 2 && !me$1.pmod_attributes) {
                           return Curry._4(Format.fprintf(f, /* Format */[
                                           /* String_literal */Block.__(11, [
                                               " :",
@@ -8232,14 +8232,14 @@ function structure_item(ctxt, f, x) {
                                     ]), (function (param, param$1) {
                                     return module_expr(ctxt, param, param$1);
                                   }), me$1);
-                    }), x$1[/* pmb_expr */1], (function (param, param$1) {
+                    }), x$1.pmb_expr, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), x$1[/* pmb_attributes */2]);
+                    }), x$1.pmb_attributes);
     case /* Pstr_recmodule */7 :
         var decls = match[0];
         if (decls) {
           var pmb = decls[0];
-          var match$1 = pmb[/* pmb_expr */1][/* pmod_desc */0];
+          var match$1 = pmb.pmb_expr.pmod_desc;
           if (match$1.tag === /* Pmod_constraint */4) {
             return Curry.app(Format.fprintf(f, /* Format */[
                             /* Formatting_gen */Block.__(18, [
@@ -8319,7 +8319,7 @@ function structure_item(ctxt, f, x) {
                               ]),
                             "@[<hv>@[<hov2>module@ rec@ %s:%a@ =@ %a@]%a@ %a@]"
                           ]), [
-                        pmb[/* pmb_name */0][/* txt */0],
+                        pmb.pmb_name.txt,
                         (function (param, param$1) {
                             return module_type(ctxt, param, param$1);
                           }),
@@ -8331,12 +8331,12 @@ function structure_item(ctxt, f, x) {
                         (function (param, param$1) {
                             return item_attributes(ctxt, param, param$1);
                           }),
-                        pmb[/* pmb_attributes */2],
+                        pmb.pmb_attributes,
                         (function (f, l2) {
                             return List.iter((function (param) {
                                           var f$1 = f;
                                           var pmb = param;
-                                          var match = pmb[/* pmb_expr */1][/* pmod_desc */0];
+                                          var match = pmb.pmb_expr.pmod_desc;
                                           if (match.tag === /* Pmod_constraint */4) {
                                             return Curry._7(Format.fprintf(f$1, /* Format */[
                                                             /* Formatting_gen */Block.__(18, [
@@ -8393,13 +8393,13 @@ function structure_item(ctxt, f, x) {
                                                                   ])
                                                               ]),
                                                             "@[<hov2>@ and@ %s:%a@ =@ %a@]%a"
-                                                          ]), pmb[/* pmb_name */0][/* txt */0], (function (param, param$1) {
+                                                          ]), pmb.pmb_name.txt, (function (param, param$1) {
                                                           return module_type(ctxt, param, param$1);
                                                         }), match[1], (function (param, param$1) {
                                                           return module_expr(ctxt, param, param$1);
                                                         }), match[0], (function (param, param$1) {
                                                           return item_attributes(ctxt, param, param$1);
-                                                        }), pmb[/* pmb_attributes */2]);
+                                                        }), pmb.pmb_attributes);
                                           } else {
                                             throw [
                                                   Caml_builtin_exceptions.assert_failure,
@@ -8474,7 +8474,7 @@ function structure_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<hov2>module@ type@ %s%a@]%a"
-                      ]), match$2[/* pmtd_name */0][/* txt */0], (function (f, md) {
+                      ]), match$2.pmtd_name.txt, (function (f, md) {
                       if (md !== undefined) {
                         Format.pp_print_space(f, /* () */0);
                         return Curry._2(Format.fprintf(f, /* Format */[
@@ -8503,9 +8503,9 @@ function structure_item(ctxt, f, x) {
                       } else {
                         return /* () */0;
                       }
-                    }), match$2[/* pmtd_type */1], (function (param, param$1) {
+                    }), match$2.pmtd_type, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), match$2[/* pmtd_attributes */2]);
+                    }), match$2.pmtd_attributes);
     case /* Pstr_open */9 :
         var od = match[0];
         return Curry._5(Format.fprintf(f, /* Format */[
@@ -8536,9 +8536,9 @@ function structure_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<2>open%s@;%a@]%a"
-                      ]), od[/* popen_override */1] ? "" : "!", longident_loc, od[/* popen_lid */0], (function (param, param$1) {
+                      ]), od.popen_override ? "" : "!", longident_loc, od.popen_lid, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), od[/* popen_attributes */3]);
+                    }), od.popen_attributes);
     case /* Pstr_class */10 :
         var l$1 = match[0];
         var extract_class_args = function (cl) {
@@ -8546,8 +8546,8 @@ function structure_item(ctxt, f, x) {
             while(true) {
               var cl = _cl;
               var acc = _acc;
-              var match = cl[/* pcl_desc */0];
-              if (match.tag === /* Pcl_fun */2 && !cl[/* pcl_attributes */2]) {
+              var match = cl.pcl_desc;
+              if (match.tag === /* Pcl_fun */2 && !cl.pcl_attributes) {
                 _cl = match[3];
                 _acc = /* :: */[
                   /* tuple */[
@@ -8568,9 +8568,9 @@ function structure_item(ctxt, f, x) {
           };
           var match = loop(/* [] */0, cl);
           var cl$1 = match[1];
-          var match$1 = cl$1[/* pcl_desc */0];
+          var match$1 = cl$1.pcl_desc;
           var match$2;
-          match$2 = match$1.tag === /* Pcl_constraint */5 && !cl$1[/* pcl_attributes */2] ? /* tuple */[
+          match$2 = match$1.tag === /* Pcl_constraint */5 && !cl$1.pcl_attributes ? /* tuple */[
               match$1[1],
               match$1[0]
             ] : /* tuple */[
@@ -8607,7 +8607,7 @@ function structure_item(ctxt, f, x) {
                       }), ct);
         };
         var class_declaration = function (kwd, f, x) {
-          var match = extract_class_args(x[/* pci_expr */3]);
+          var match = extract_class_args(x.pci_expr);
           return Curry.app(Format.fprintf(f, /* Format */[
                           /* Formatting_gen */Block.__(18, [
                               /* Open_box */Block.__(1, [/* Format */[
@@ -8648,12 +8648,12 @@ function structure_item(ctxt, f, x) {
                         ]), [
                       kwd,
                       virtual_flag,
-                      x[/* pci_virt */0],
+                      x.pci_virt,
                       (function (param, param$1) {
                           return class_params_def(ctxt, param, param$1);
                         }),
-                      x[/* pci_params */1],
-                      x[/* pci_name */2][/* txt */0],
+                      x.pci_params,
+                      x.pci_name.txt,
                       (function (param, param$1) {
                           return list(undefined, undefined, undefined, (function (param, param$1) {
                                         return label_exp(ctxt, param, param$1);
@@ -8671,7 +8671,7 @@ function structure_item(ctxt, f, x) {
                       (function (param, param$1) {
                           return item_attributes(ctxt, param, param$1);
                         }),
-                      x[/* pci_attributes */5]
+                      x.pci_attributes
                     ]);
         };
         if (l$1) {
@@ -8755,9 +8755,9 @@ function structure_item(ctxt, f, x) {
                         "@[<hov2>include@ %a@]%a"
                       ]), (function (param, param$1) {
                       return module_expr(ctxt, param, param$1);
-                    }), incl[/* pincl_mod */0], (function (param, param$1) {
+                    }), incl.pincl_mod, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), incl[/* pincl_attributes */2]);
+                    }), incl.pincl_attributes);
     case /* Pstr_attribute */13 :
         return floating_attribute(ctxt, f, match[0]);
     case /* Pstr_extension */14 :
@@ -8768,10 +8768,10 @@ function structure_item(ctxt, f, x) {
 }
 
 function expression2(ctxt, f, x) {
-  if (x[/* pexp_attributes */2] !== /* [] */0) {
+  if (x.pexp_attributes !== /* [] */0) {
     return expression(ctxt, f, x);
   } else {
-    var match = x[/* pexp_desc */0];
+    var match = x.pexp_desc;
     if (typeof match === "number") {
       return simple_expr(ctxt, f, x);
     } else {
@@ -8822,7 +8822,7 @@ function expression2(ctxt, f, x) {
                             "@[<hov2>%a#%s@]"
                           ]), (function (param, param$1) {
                           return simple_expr(ctxt, param, param$1);
-                        }), match[0], match[1][/* txt */0]);
+                        }), match[0], match[1].txt);
         default:
           return simple_expr(ctxt, f, x);
       }
@@ -8856,24 +8856,24 @@ function structure(ctxt, f, x) {
 
 function pattern1(ctxt, f, x) {
   var pattern_list_helper = function (f, p) {
-    var match = p[/* ppat_desc */0];
+    var match = p.ppat_desc;
     if (typeof match === "number" || match.tag !== /* Ppat_construct */5) {
       return pattern1(ctxt, f, p);
     } else {
-      var match$1 = match[0][/* txt */0];
+      var match$1 = match[0].txt;
       switch (match$1.tag | 0) {
         case /* Lident */0 :
             if (match$1[0] === "::") {
               var match$2 = match[1];
               if (match$2 !== undefined) {
-                var match$3 = match$2[/* ppat_desc */0];
+                var match$3 = match$2.ppat_desc;
                 if (typeof match$3 === "number" || match$3.tag !== /* Ppat_tuple */4) {
                   return pattern1(ctxt, f, p);
                 } else {
                   var match$4 = match$3[0];
                   if (match$4) {
                     var match$5 = match$4[1];
-                    if (match$5 && !(match$5[1] || p[/* ppat_attributes */2])) {
+                    if (match$5 && !(match$5[1] || p.ppat_attributes)) {
                       return Curry._4(Format.fprintf(f, /* Format */[
                                       /* Alpha */Block.__(15, [/* String_literal */Block.__(11, [
                                               "::",
@@ -8903,17 +8903,17 @@ function pattern1(ctxt, f, x) {
       }
     }
   };
-  if (x[/* ppat_attributes */2] !== /* [] */0) {
+  if (x.ppat_attributes !== /* [] */0) {
     return pattern(ctxt, f, x);
   } else {
-    var match = x[/* ppat_desc */0];
+    var match = x.ppat_desc;
     if (typeof match === "number") {
       return simple_pattern(ctxt, f, x);
     } else {
       switch (match.tag | 0) {
         case /* Ppat_construct */5 :
             var li = match[0];
-            var txt = li[/* txt */0];
+            var txt = li.txt;
             switch (txt.tag | 0) {
               case /* Lident */0 :
                   switch (txt[0]) {
@@ -9000,11 +9000,11 @@ function pattern1(ctxt, f, x) {
 }
 
 function signature_item(ctxt, f, x) {
-  var match = x[/* psig_desc */0];
+  var match = x.psig_desc;
   switch (match.tag | 0) {
     case /* Psig_value */0 :
         var vd = match[0];
-        var intro = vd[/* pval_prim */2] === /* [] */0 ? "val" : "external";
+        var intro = vd.pval_prim === /* [] */0 ? "val" : "external";
         return Curry._7(Format.fprintf(f, /* Format */[
                         /* Formatting_gen */Block.__(18, [
                             /* Open_box */Block.__(1, [/* Format */[
@@ -9047,11 +9047,11 @@ function signature_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<2>%s@ %a@ :@ %a@]%a"
-                      ]), intro, protect_ident, vd[/* pval_name */0][/* txt */0], (function (param, param$1) {
+                      ]), intro, protect_ident, vd.pval_name.txt, (function (param, param$1) {
                       return value_description(ctxt, param, param$1);
                     }), vd, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), vd[/* pval_attributes */3]);
+                    }), vd.pval_attributes);
     case /* Psig_type */1 :
         return type_def_list(ctxt, f, /* tuple */[
                     match[0],
@@ -9063,9 +9063,9 @@ function signature_item(ctxt, f, x) {
         return exception_declaration(ctxt, f, match[0]);
     case /* Psig_module */4 :
         var pmd = match[0];
-        var match$1 = pmd[/* pmd_type */1];
-        var match$2 = match$1[/* pmty_desc */0];
-        if (match$2.tag === /* Pmty_alias */6 && !match$1[/* pmty_attributes */2]) {
+        var match$1 = pmd.pmd_type;
+        var match$2 = match$1.pmty_desc;
+        if (match$2.tag === /* Pmty_alias */6 && !match$1.pmty_attributes) {
           return Curry._5(Format.fprintf(f, /* Format */[
                           /* Formatting_gen */Block.__(18, [
                               /* Open_box */Block.__(1, [/* Format */[
@@ -9111,9 +9111,9 @@ function signature_item(ctxt, f, x) {
                                 ])
                             ]),
                           "@[<hov>module@ %s@ =@ %a@]%a"
-                        ]), pmd[/* pmd_name */0][/* txt */0], longident_loc, match$2[0], (function (param, param$1) {
+                        ]), pmd.pmd_name.txt, longident_loc, match$2[0], (function (param, param$1) {
                         return item_attributes(ctxt, param, param$1);
-                      }), pmd[/* pmd_attributes */2]);
+                      }), pmd.pmd_attributes);
         }
         return Curry._5(Format.fprintf(f, /* Format */[
                         /* Formatting_gen */Block.__(18, [
@@ -9160,11 +9160,11 @@ function signature_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<hov>module@ %s@ :@ %a@]%a"
-                      ]), pmd[/* pmd_name */0][/* txt */0], (function (param, param$1) {
+                      ]), pmd.pmd_name.txt, (function (param, param$1) {
                       return module_type(ctxt, param, param$1);
-                    }), pmd[/* pmd_type */1], (function (param, param$1) {
+                    }), pmd.pmd_type, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), pmd[/* pmd_attributes */2]);
+                    }), pmd.pmd_attributes);
     case /* Psig_recmodule */5 :
         var f$1 = f;
         var _$staropt$star = undefined;
@@ -9224,11 +9224,11 @@ function signature_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<hov2>module@ rec@ %s:@ %a@]%a"
-                      ]), pmd$1[/* pmd_name */0][/* txt */0], (function (param, param$1) {
+                      ]), pmd$1.pmd_name.txt, (function (param, param$1) {
                       return module_type(ctxt, param, param$1);
-                    }), pmd$1[/* pmd_type */1], (function (param, param$1) {
+                    }), pmd$1.pmd_type, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), pmd$1[/* pmd_attributes */2]);
+                    }), pmd$1.pmd_attributes);
             } else {
               Curry._5(Format.fprintf(f$1, /* Format */[
                         /* Formatting_lit */Block.__(17, [
@@ -9275,11 +9275,11 @@ function signature_item(ctxt, f, x) {
                               ])
                           ]),
                         "@ @[<hov2>and@ %s:@ %a@]%a"
-                      ]), pmd$1[/* pmd_name */0][/* txt */0], (function (param, param$1) {
+                      ]), pmd$1.pmd_name.txt, (function (param, param$1) {
                       return module_type(ctxt, param, param$1);
-                    }), pmd$1[/* pmd_type */1], (function (param, param$1) {
+                    }), pmd$1.pmd_type, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), pmd$1[/* pmd_attributes */2]);
+                    }), pmd$1.pmd_attributes);
             }
             _l = l[1];
             _$staropt$star = false;
@@ -9328,7 +9328,7 @@ function signature_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<hov2>module@ type@ %s%a@]%a"
-                      ]), match$3[/* pmtd_name */0][/* txt */0], (function (f, md) {
+                      ]), match$3.pmtd_name.txt, (function (f, md) {
                       if (md !== undefined) {
                         Format.pp_print_space(f, /* () */0);
                         return Curry._2(Format.fprintf(f, /* Format */[
@@ -9357,9 +9357,9 @@ function signature_item(ctxt, f, x) {
                       } else {
                         return /* () */0;
                       }
-                    }), match$3[/* pmtd_type */1], (function (param, param$1) {
+                    }), match$3.pmtd_type, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), match$3[/* pmtd_attributes */2]);
+                    }), match$3.pmtd_attributes);
     case /* Psig_open */7 :
         var od = match[0];
         return Curry._5(Format.fprintf(f, /* Format */[
@@ -9390,9 +9390,9 @@ function signature_item(ctxt, f, x) {
                               ])
                           ]),
                         "@[<hov2>open%s@ %a@]%a"
-                      ]), od[/* popen_override */1] ? "" : "!", longident_loc, od[/* popen_lid */0], (function (param, param$1) {
+                      ]), od.popen_override ? "" : "!", longident_loc, od.popen_lid, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), od[/* popen_attributes */3]);
+                    }), od.popen_attributes);
     case /* Psig_include */8 :
         var incl = match[0];
         return Curry._4(Format.fprintf(f, /* Format */[
@@ -9422,9 +9422,9 @@ function signature_item(ctxt, f, x) {
                         "@[<hov2>include@ %a@]%a"
                       ]), (function (param, param$1) {
                       return module_type(ctxt, param, param$1);
-                    }), incl[/* pincl_mod */0], (function (param, param$1) {
+                    }), incl.pincl_mod, (function (param, param$1) {
                       return item_attributes(ctxt, param, param$1);
-                    }), incl[/* pincl_attributes */2]);
+                    }), incl.pincl_attributes);
     case /* Psig_class */9 :
         var l$1 = match[0];
         var class_description = function (kwd, f, x) {
@@ -9472,20 +9472,20 @@ function signature_item(ctxt, f, x) {
                         ]), [
                       kwd,
                       virtual_flag,
-                      x[/* pci_virt */0],
+                      x.pci_virt,
                       (function (param, param$1) {
                           return class_params_def(ctxt, param, param$1);
                         }),
-                      x[/* pci_params */1],
-                      x[/* pci_name */2][/* txt */0],
+                      x.pci_params,
+                      x.pci_name.txt,
                       (function (param, param$1) {
                           return class_type(ctxt, param, param$1);
                         }),
-                      x[/* pci_expr */3],
+                      x.pci_expr,
                       (function (param, param$1) {
                           return item_attributes(ctxt, param, param$1);
                         }),
-                      x[/* pci_attributes */5]
+                      x.pci_attributes
                     ]);
         };
         if (l$1) {
@@ -9551,7 +9551,7 @@ function signature_item(ctxt, f, x) {
 
 function type_declaration(ctxt, f, x) {
   var priv = function (f) {
-    var match = x[/* ptype_private */4];
+    var match = x.ptype_private;
     if (match) {
       return /* () */0;
     } else {
@@ -9572,10 +9572,10 @@ function type_declaration(ctxt, f, x) {
     }
   };
   var manifest = function (f) {
-    var match = x[/* ptype_manifest */5];
+    var match = x.ptype_manifest;
     if (match !== undefined) {
       var y = match;
-      if (x[/* ptype_kind */3] === /* Ptype_abstract */0) {
+      if (x.ptype_kind === /* Ptype_abstract */0) {
         return Curry._3(Format.fprintf(f, /* Format */[
                         /* Theta */Block.__(16, [/* Formatting_lit */Block.__(17, [
                                 /* Break */Block.__(0, [
@@ -9624,15 +9624,15 @@ function type_declaration(ctxt, f, x) {
           "|@;"
         ]);
     return constructor_declaration(ctxt, f, /* tuple */[
-                pcd[/* pcd_name */0][/* txt */0],
-                pcd[/* pcd_args */1],
-                pcd[/* pcd_res */2],
-                pcd[/* pcd_attributes */4]
+                pcd.pcd_name.txt,
+                pcd.pcd_args,
+                pcd.pcd_res,
+                pcd.pcd_attributes
               ]);
   };
   var repr = function (f) {
     var intro = function (f) {
-      if (x[/* ptype_manifest */5] === undefined) {
+      if (x.ptype_manifest === undefined) {
         return /* () */0;
       } else {
         return Format.fprintf(f, /* Format */[
@@ -9651,7 +9651,7 @@ function type_declaration(ctxt, f, x) {
                   ]);
       }
     };
-    var match = x[/* ptype_kind */3];
+    var match = x.ptype_kind;
     if (typeof match === "number") {
       if (match === /* Ptype_abstract */0) {
         return /* () */0;
@@ -9760,7 +9760,7 @@ function type_declaration(ctxt, f, x) {
                               }), param[0], (function (param, param$1) {
                                 return core_type(ctxt, param, param$1);
                               }), param[1]);
-                }), x[/* ptype_cstrs */2]);
+                }), x.ptype_cstrs);
   };
   return Curry._3(Format.fprintf(f, /* Format */[
                   /* Theta */Block.__(16, [/* Theta */Block.__(16, [/* Theta */Block.__(16, [/* End_of_format */0])])]),
@@ -9770,7 +9770,7 @@ function type_declaration(ctxt, f, x) {
 
 function class_signature(ctxt, f, param) {
   var class_type_field = function (f, x) {
-    var match = x[/* pctf_desc */0];
+    var match = x.pctf_desc;
     switch (match.tag | 0) {
       case /* Pctf_inherit */0 :
           return Curry._4(Format.fprintf(f, /* Format */[
@@ -9802,7 +9802,7 @@ function class_signature(ctxt, f, param) {
                         return class_type(ctxt, param, param$1);
                       }), match[0], (function (param, param$1) {
                         return item_attributes(ctxt, param, param$1);
-                      }), x[/* pctf_attributes */2]);
+                      }), x.pctf_attributes);
       case /* Pctf_val */1 :
           var match$1 = match[0];
           return Curry.app(Format.fprintf(f, /* Format */[
@@ -9855,7 +9855,7 @@ function class_signature(ctxt, f, param) {
                       match$1[1],
                       virtual_flag,
                       match$1[2],
-                      match$1[0][/* txt */0],
+                      match$1[0].txt,
                       (function (param, param$1) {
                           return core_type(ctxt, param, param$1);
                         }),
@@ -9863,7 +9863,7 @@ function class_signature(ctxt, f, param) {
                       (function (param, param$1) {
                           return item_attributes(ctxt, param, param$1);
                         }),
-                      x[/* pctf_attributes */2]
+                      x.pctf_attributes
                     ]);
       case /* Pctf_method */2 :
           var match$2 = match[0];
@@ -9906,7 +9906,7 @@ function class_signature(ctxt, f, param) {
                       match$2[1],
                       virtual_flag,
                       match$2[2],
-                      match$2[0][/* txt */0],
+                      match$2[0].txt,
                       (function (param, param$1) {
                           return core_type(ctxt, param, param$1);
                         }),
@@ -9914,7 +9914,7 @@ function class_signature(ctxt, f, param) {
                       (function (param, param$1) {
                           return item_attributes(ctxt, param, param$1);
                         }),
-                      x[/* pctf_attributes */2]
+                      x.pctf_attributes
                     ]);
       case /* Pctf_constraint */3 :
           var match$3 = match[0];
@@ -9966,12 +9966,12 @@ function class_signature(ctxt, f, param) {
                         return core_type(ctxt, param, param$1);
                       }), match$3[1], (function (param, param$1) {
                         return item_attributes(ctxt, param, param$1);
-                      }), x[/* pctf_attributes */2]);
+                      }), x.pctf_attributes);
       case /* Pctf_attribute */4 :
           return floating_attribute(ctxt, f, match[0]);
       case /* Pctf_extension */5 :
           item_extension(ctxt, f, match[0]);
-          return item_attributes(ctxt, f, x[/* pctf_attributes */2]);
+          return item_attributes(ctxt, f, x.pctf_attributes);
       
     }
   };
@@ -10046,7 +10046,7 @@ function class_signature(ctxt, f, param) {
                     ]),
                   "@[<hv0>@[<hv2>object@[<1>%a@]@ %a@]@ end@]"
                 ]), (function (f, ct) {
-                if (typeof ct[/* ptyp_desc */0] === "number" && !ct[/* ptyp_attributes */2]) {
+                if (typeof ct.ptyp_desc === "number" && !ct.ptyp_attributes) {
                   return /* () */0;
                 }
                 return Curry._2(Format.fprintf(f, /* Format */[
@@ -10061,16 +10061,16 @@ function class_signature(ctxt, f, param) {
                               ]), (function (param, param$1) {
                               return core_type(ctxt, param, param$1);
                             }), ct);
-              }), param[/* pcsig_self */0], (function (param, param$1) {
+              }), param.pcsig_self, (function (param, param$1) {
                 return list(partial_arg, undefined, undefined, class_type_field, param, param$1);
-              }), param[/* pcsig_fields */1]);
+              }), param.pcsig_fields);
 }
 
 function expression1(ctxt, f, x) {
-  if (x[/* pexp_attributes */2] !== /* [] */0) {
+  if (x.pexp_attributes !== /* [] */0) {
     return expression(ctxt, f, x);
   } else {
-    var match = x[/* pexp_desc */0];
+    var match = x.pexp_desc;
     if (typeof match === "number" || match.tag !== /* Pexp_object */30) {
       return expression2(ctxt, f, x);
     } else {
@@ -10152,13 +10152,13 @@ function case_list(ctxt, f, l) {
                     "@;| @[<2>%a%a@;->@;%a@]"
                   ]), (function (param, param$1) {
                   return pattern(ctxt, param, param$1);
-                }), param[/* pc_lhs */0], (function (param, param$1) {
+                }), param.pc_lhs, (function (param, param$1) {
                   return option(partial_arg, undefined, (function (param, param$1) {
                                 return expression(ctxt, param, param$1);
                               }), param, param$1);
-                }), param[/* pc_guard */1], (function (param, param$1) {
+                }), param.pc_guard, (function (param, param$1) {
                   return expression(partial_arg$1, param, param$1);
-                }), param[/* pc_rhs */2]);
+                }), param.pc_rhs);
   };
   return list(/* Format */[
               /* End_of_format */0,
@@ -10167,20 +10167,20 @@ function case_list(ctxt, f, l) {
 }
 
 function sugar_expr(ctxt, f, e) {
-  if (e[/* pexp_attributes */2] !== /* [] */0) {
+  if (e.pexp_attributes !== /* [] */0) {
     return false;
   } else {
-    var match = e[/* pexp_desc */0];
+    var match = e.pexp_desc;
     if (typeof match === "number" || match.tag !== /* Pexp_apply */5) {
       return false;
     } else {
       var match$1 = match[0];
-      var match$2 = match$1[/* pexp_desc */0];
-      if (typeof match$2 === "number" || match$2.tag || match$1[/* pexp_attributes */2]) {
+      var match$2 = match$1.pexp_desc;
+      if (typeof match$2 === "number" || match$2.tag || match$1.pexp_attributes) {
         return false;
       } else {
         var args = match[1];
-        var id = match$2[0][/* txt */0];
+        var id = match$2[0].txt;
         if (List.for_all((function (param) {
                   return param[0] === /* Nolabel */0;
                 }), args)) {
@@ -10448,8 +10448,8 @@ function sugar_expr(ctxt, f, e) {
                                     case "Genarray" :
                                         if (other_args) {
                                           var match$8 = other_args[0];
-                                          var match$9 = match$8[/* pexp_desc */0];
-                                          if (typeof match$9 === "number" || !(match$9.tag === /* Pexp_array */14 && !match$8[/* pexp_attributes */2])) {
+                                          var match$9 = match$8.pexp_desc;
+                                          if (typeof match$9 === "number" || !(match$9.tag === /* Pexp_array */14 && !match$8.pexp_attributes)) {
                                             return false;
                                           } else {
                                             return print(".{", "}", (function (param, param$1) {

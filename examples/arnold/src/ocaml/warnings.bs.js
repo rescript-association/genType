@@ -339,12 +339,16 @@ function letter(param) {
   }
 }
 
-var current = /* record */[/* contents : record */[
-    /* active */Caml_array.caml_make_vect(106, true),
-    /* error */Caml_array.caml_make_vect(106, false)
-  ]];
+var current = {
+  contents: {
+    active: Caml_array.caml_make_vect(106, true),
+    error: Caml_array.caml_make_vect(106, false)
+  }
+};
 
-var disabled = /* record */[/* contents */false];
+var disabled = {
+  contents: false
+};
 
 function without_warnings(f) {
   return Misc.protect_refs(/* :: */[
@@ -357,27 +361,27 @@ function without_warnings(f) {
 }
 
 function backup(param) {
-  return current[0];
+  return current.contents;
 }
 
 function restore(x) {
-  current[0] = x;
+  current.contents = x;
   return /* () */0;
 }
 
 function is_active(x) {
-  if (disabled[0]) {
+  if (disabled.contents) {
     return false;
   } else {
-    return Caml_array.caml_array_get(current[0][/* active */0], number(x));
+    return Caml_array.caml_array_get(current.contents.active, number(x));
   }
 }
 
 function is_error(x) {
-  if (disabled[0]) {
+  if (disabled.contents) {
     return false;
   } else {
-    return Caml_array.caml_array_get(current[0][/* error */1], number(x));
+    return Caml_array.caml_array_get(current.contents.error, number(x));
   }
 }
 
@@ -565,13 +569,13 @@ function parse_opt(error, active, flags, s) {
 }
 
 function parse_options(errflag, s) {
-  var error = $$Array.copy(current[0][/* error */1]);
-  var active = $$Array.copy(current[0][/* active */0]);
+  var error = $$Array.copy(current.contents.error);
+  var active = $$Array.copy(current.contents.active);
   parse_opt(error, active, errflag ? error : active, s);
-  current[0] = /* record */[
-    /* active */active,
-    /* error */error
-  ];
+  current.contents = {
+    active: active,
+    error: error
+  };
   return /* () */0;
 }
 
@@ -1148,22 +1152,24 @@ function sub_locs(param) {
   }
 }
 
-var nerrors = /* record */[/* contents */0];
+var nerrors = {
+  contents: 0
+};
 
 function report(w) {
   var match = is_active(w);
   if (match) {
     if (is_error(w)) {
-      nerrors[0] = nerrors[0] + 1 | 0;
+      nerrors.contents = nerrors.contents + 1 | 0;
     }
     return /* `Active */[
             -891636250,
-            /* record */[
-              /* number */number(w),
-              /* message */message(w),
-              /* is_error */is_error(w),
-              /* sub_locs */sub_locs(w)
-            ]
+            {
+              number: number(w),
+              message: message(w),
+              is_error: is_error(w),
+              sub_locs: sub_locs(w)
+            }
           ];
   } else {
     return /* Inactive */-1008610421;
@@ -1174,16 +1180,16 @@ function super_report(message, w) {
   var match = is_active(w);
   if (match) {
     if (is_error(w)) {
-      nerrors[0] = nerrors[0] + 1 | 0;
+      nerrors.contents = nerrors.contents + 1 | 0;
     }
     return /* `Active */[
             -891636250,
-            /* record */[
-              /* number */number(w),
-              /* message */Curry._1(message, w),
-              /* is_error */is_error(w),
-              /* sub_locs */sub_locs(w)
-            ]
+            {
+              number: number(w),
+              message: Curry._1(message, w),
+              is_error: is_error(w),
+              sub_locs: sub_locs(w)
+            }
           ];
   } else {
     return /* Inactive */-1008610421;
@@ -1193,13 +1199,13 @@ function super_report(message, w) {
 var Errors = Caml_exceptions.create("Warnings.Errors");
 
 function reset_fatal(param) {
-  nerrors[0] = 0;
+  nerrors.contents = 0;
   return /* () */0;
 }
 
 function check_fatal(param) {
-  if (nerrors[0] > 0) {
-    nerrors[0] = 0;
+  if (nerrors.contents > 0) {
+    nerrors.contents = 0;
     throw Errors;
   } else {
     return 0;
