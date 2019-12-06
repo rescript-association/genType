@@ -152,7 +152,7 @@ TestPromise.convert(Promise.resolve({ x: 3, s: "hello" })).then(x =>
 );
 
 type Props = {
-  readonly method?: "push" | "replace";
+  readonly methodd?: "push" | "replace";
 };
 export const make: React.FC<Props> = (x: Props) => {
   return <div></div>;

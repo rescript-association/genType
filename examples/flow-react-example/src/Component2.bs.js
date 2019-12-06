@@ -8,54 +8,56 @@ import * as ReasonReact from "reason-react/src/ReasonReact.js";
 var component = ReasonReact.reducerComponent("Example");
 
 function make(greeting, _children) {
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (self) {
-              var message = "You've clicked this " + (String(self[/* state */1][/* count */0]) + " times(s)");
-              var match = self[/* state */1][/* show */1];
+  return {
+          debugName: component.debugName,
+          reactClassInternal: component.reactClassInternal,
+          handedOffState: component.handedOffState,
+          willReceiveProps: component.willReceiveProps,
+          didMount: component.didMount,
+          didUpdate: component.didUpdate,
+          willUnmount: component.willUnmount,
+          willUpdate: component.willUpdate,
+          shouldUpdate: component.shouldUpdate,
+          render: (function (self) {
+              var message = "You've clicked this " + (String(self.state.count) + " times(s)");
+              var match = self.state.show;
               return React.createElement("div", undefined, React.createElement("button", {
                               onClick: (function (_event) {
-                                  return Curry._1(self[/* send */3], /* Click */0);
+                                  return Curry._1(self.send, /* Click */0);
                                 })
                             }, message), React.createElement("button", {
                               onClick: (function (_event) {
-                                  return Curry._1(self[/* send */3], /* Toggle */1);
+                                  return Curry._1(self.send, /* Toggle */1);
                                 })
                             }, "Toggle greeting"), match ? greeting : null);
             }),
-          /* initialState */(function (param) {
-              return /* record */[
-                      /* count */0,
-                      /* show */true,
-                      /* someRef : record */[/* contents */0]
-                    ];
+          initialState: (function (param) {
+              return {
+                      count: 0,
+                      show: true,
+                      someRef: {
+                        contents: 0
+                      }
+                    };
             }),
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */(function (action, state) {
+          retainedProps: component.retainedProps,
+          reducer: (function (action, state) {
               if (action) {
-                return /* Update */Block.__(0, [/* record */[
-                            /* count */state[/* count */0],
-                            /* show */!state[/* show */1],
-                            /* someRef */state[/* someRef */2]
-                          ]]);
+                return /* Update */Block.__(0, [{
+                            count: state.count,
+                            show: !state.show,
+                            someRef: state.someRef
+                          }]);
               } else {
-                return /* Update */Block.__(0, [/* record */[
-                            /* count */state[/* count */0] + 1 | 0,
-                            /* show */state[/* show */1],
-                            /* someRef */state[/* someRef */2]
-                          ]]);
+                return /* Update */Block.__(0, [{
+                            count: state.count + 1 | 0,
+                            show: state.show,
+                            someRef: state.someRef
+                          }]);
               }
             }),
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+          jsElementWrapped: component.jsElementWrapped
+        };
 }
 
 function getBlock(x) {

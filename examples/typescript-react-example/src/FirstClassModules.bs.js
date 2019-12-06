@@ -47,16 +47,14 @@ function testConvert(m) {
 }
 
 function SomeFunctor(X) {
-  var ww = X.y;
   return {
-          ww: ww
+          ww: X.y
         };
 }
 
 function someFunctorAsFunction(x) {
-  var ww = x.y;
   return {
-          ww: ww
+          ww: x.y
         };
 }
 

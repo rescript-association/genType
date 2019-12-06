@@ -99,19 +99,9 @@ export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = functio
 
 export const swap: (_1:tree) => tree = TypesBS.swap;
 
-export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = function (Arg1: any) {
-  const result = 
-/* WARNING: circular type selfRecursive. Only shallow converter applied. */
-  TypesBS.selfRecursiveConverter([Arg1.self]);
-  return {self:result[0]}
-};
+export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = TypesBS.selfRecursiveConverter;
 
-export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = function (Arg1: any) {
-  const result = 
-/* WARNING: circular type mutuallyRecursiveB. Only shallow converter applied. */
-  TypesBS.mutuallyRecursiveConverter([[Arg1.b.a]]);
-  return {a:{b:result[0][0]}}
-};
+export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = TypesBS.mutuallyRecursiveConverter;
 
 export const testFunctionOnOptionsAsArgument: <T1,a>(_1:(null | undefined | a), _2:((_1:(null | undefined | a)) => T1)) => T1 = function <T1,a>(Arg1: any, Arg2: any) {
   const result = Curry._2(TypesBS.testFunctionOnOptionsAsArgument, (Arg1 == null ? undefined : Arg1), Arg2);
@@ -126,21 +116,10 @@ export const jsString2T: string = TypesBS.jsString2T;
 
 export const jsonStringify: (_1:Js_Json_t) => string = TypesBS.jsonStringify;
 
-export const testConvertNull: (_1:(null | record)) => (null | record) = function (Arg1: any) {
-  const result = TypesBS.testConvertNull((Arg1 == null ? Arg1 : [Arg1.i, Arg1.s]));
-  return (result == null ? result : {i:result[0], s:result[1]})
-};
+export const testConvertNull: (_1:(null | record)) => (null | record) = TypesBS.testConvertNull;
 
-export const testConvertLocation: (_1:Location_t) => Location_t = function (Arg1: any) {
-  const result = TypesBS.testConvertLocation([Arg1.id, Arg1.name]);
-  return {id:result[0], name:result[1]}
-};
-
-export const testMarshalFields: marshalFields = TypesBS.testMarshalFields;
+export const testConvertLocation: (_1:Location_t) => Location_t = TypesBS.testConvertLocation;
 
 export const setMatch: (_1:marshalMutableField) => void = TypesBS.setMatch;
 
-export const testInstantiateTypeParameter: (_1:instantiateTypeParameter) => instantiateTypeParameter = function (Arg1: any) {
-  const result = TypesBS.testInstantiateTypeParameter(Arg1.map(function _element(ArrayItem: any) { return [ArrayItem.id]}));
-  return result.map(function _element(ArrayItem1: any) { return {id:ArrayItem1[0]}})
-};
+export const testInstantiateTypeParameter: (_1:instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;

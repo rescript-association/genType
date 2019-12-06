@@ -27,11 +27,11 @@ function callback(cb) {
 }
 
 function callback2(auth) {
-  return Curry._1(auth[/* login */0], /* () */0);
+  return Curry._1(auth.login, /* () */0);
 }
 
 function callback2U(auth) {
-  return auth[/* loginU */0]();
+  return auth.loginU();
 }
 
 function sumU(n, m) {

@@ -12,10 +12,10 @@ function area(prim) {
 
 var roundedNumber = ImportJsValueGen.round(1.8);
 
-var areaValue = ImportJsValueGen.area(/* record */[
-      /* x */3,
-      /* y */undefined
-    ]);
+var areaValue = ImportJsValueGen.area({
+      x: 3,
+      y: undefined
+    });
 
 function getAbs(x) {
   return x.getAbs();

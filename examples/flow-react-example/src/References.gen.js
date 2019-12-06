@@ -34,9 +34,6 @@ export const set: <T1>(R_t<T1>, T1) => void = function <T1>(Arg1: $any, Arg2: $a
   return result
 };
 
-export const destroysRefIdentity: ([requiresConversion]) => [requiresConversion] = function (Arg1: $any) {
-  const result = ReferencesBS.destroysRefIdentity([[Arg1[0].x]]);
-  return [{x:result[0][0]}]
-};
+export const destroysRefIdentity: ([requiresConversion]) => [requiresConversion] = ReferencesBS.destroysRefIdentity;
 
 export const preserveRefIdentity: (R_t<requiresConversion>) => R_t<requiresConversion> = ReferencesBS.preserveRefIdentity;

@@ -9,24 +9,24 @@ function useR5(x) {
 var component = ReasonReact.statelessComponent("AutoAnnotate");
 
 function make(param, _children) {
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (param) {
+  return {
+          debugName: component.debugName,
+          reactClassInternal: component.reactClassInternal,
+          handedOffState: component.handedOffState,
+          willReceiveProps: component.willReceiveProps,
+          didMount: component.didMount,
+          didUpdate: component.didUpdate,
+          willUnmount: component.willUnmount,
+          willUpdate: component.willUpdate,
+          shouldUpdate: component.shouldUpdate,
+          render: (function (param) {
               return null;
             }),
-          /* initialState */component[/* initialState */10],
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+          initialState: component.initialState,
+          retainedProps: component.retainedProps,
+          reducer: component.reducer,
+          jsElementWrapped: component.jsElementWrapped
+        };
 }
 
 export {

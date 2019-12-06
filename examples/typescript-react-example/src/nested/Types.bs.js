@@ -13,11 +13,11 @@ function swap(tree) {
 }
 
 function selfRecursiveConverter(param) {
-  return param[/* self */0];
+  return param.self;
 }
 
 function mutuallyRecursiveConverter(param) {
-  return param[/* b */0];
+  return param.b;
 }
 
 function testFunctionOnOptionsAsArgument(a, foo) {
@@ -35,18 +35,6 @@ function testConvertNull(x) {
 function testConvertLocation(x) {
   return x;
 }
-
-var testMarshalFields = {
-  rec: "rec",
-  _switch: "_switch",
-  switch: "switch",
-  __: "__",
-  _: "_",
-  foo: "foo",
-  _foo: "_foo",
-  Uppercase: "Uppercase",
-  _Uppercase: "_Uppercase"
-};
 
 function setMatch(x) {
   x.match = 34;
@@ -89,7 +77,6 @@ export {
   jsonStringify ,
   testConvertNull ,
   testConvertLocation ,
-  testMarshalFields ,
   setMatch ,
   testInstantiateTypeParameter ,
   

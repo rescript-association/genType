@@ -32,7 +32,7 @@ function coord2d(x, y) {
 }
 
 function getFirstName(param) {
-  return param[0][/* name */0];
+  return param[0].name;
 }
 
 function marry(first, second) {
@@ -46,10 +46,10 @@ function changeSecondAge(param) {
   var second = param[1];
   return /* tuple */[
           param[0],
-          /* record */[
-            /* name */second[/* name */0],
-            /* age */second[/* age */1] + 1 | 0
-          ]
+          {
+            name: second.name,
+            age: second.age + 1 | 0
+          }
         ];
 }
 

@@ -137,7 +137,4 @@ export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoA
 
 export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = TypesBS.convertObjectWithCallback;
 
-export const testInstantiateTypeParameter: (instantiateTypeParameter) => instantiateTypeParameter = function (Arg1: $any) {
-  const result = TypesBS.testInstantiateTypeParameter(Arg1.map(function _element(ArrayItem: $any) { return [ArrayItem.id]}));
-  return result.map(function _element(ArrayItem1: $any) { return {id:ArrayItem1[0]}})
-};
+export const testInstantiateTypeParameter: (instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;

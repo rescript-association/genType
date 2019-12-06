@@ -14,26 +14,26 @@ function handleClick(_event, _self) {
 
 function make($staropt$star, _children) {
   var message = $staropt$star !== undefined ? $staropt$star : "default message";
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (self) {
+  return {
+          debugName: component.debugName,
+          reactClassInternal: component.reactClassInternal,
+          handedOffState: component.handedOffState,
+          willReceiveProps: component.willReceiveProps,
+          didMount: component.didMount,
+          didUpdate: component.didUpdate,
+          willUnmount: component.willUnmount,
+          willUpdate: component.willUpdate,
+          shouldUpdate: component.shouldUpdate,
+          render: (function (self) {
               return React.createElement("div", {
-                          onClick: Curry._1(self[/* handle */0], handleClick)
+                          onClick: Curry._1(self.handle, handleClick)
                         }, message);
             }),
-          /* initialState */component[/* initialState */10],
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+          initialState: component.initialState,
+          retainedProps: component.retainedProps,
+          reducer: component.reducer,
+          jsElementWrapped: component.jsElementWrapped
+        };
 }
 
 function plus(x, _y) {

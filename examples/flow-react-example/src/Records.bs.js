@@ -5,21 +5,21 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
 function computeArea(param) {
-  return Caml_int32.imul(Caml_int32.imul(param[/* x */0], param[/* y */1]), Belt_Option.mapWithDefault(param[/* z */2], 1, (function (n) {
+  return Caml_int32.imul(Caml_int32.imul(param.x, param.y), Belt_Option.mapWithDefault(param.z, 1, (function (n) {
                     return n;
                   })));
 }
 
 function coord2d(x, y) {
-  return /* record */[
-          /* x */x,
-          /* y */y,
-          /* z */undefined
-        ];
+  return {
+          x: x,
+          y: y,
+          z: undefined
+        };
 }
 
 function computeArea2(param) {
-  return Caml_int32.imul(Caml_int32.imul(param[/* a */0], param[/* b */1]), Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(param[/* c */2]), 1, (function (n) {
+  return Caml_int32.imul(Caml_int32.imul(param.a, param.b), Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(param.c), 1, (function (n) {
                     return n;
                   })));
 }
@@ -64,11 +64,11 @@ function convertOuter(x) {
   return x;
 }
 
-var origin = /* record */[
-  /* x */0,
-  /* y */0,
-  /* z */0
-];
+var origin = {
+  x: 0,
+  y: 0,
+  z: 0
+};
 
 export {
   origin ,

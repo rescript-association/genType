@@ -12,7 +12,7 @@ function Hooks(Props) {
         }));
   var setCount = match[1];
   var count = match[0];
-  return React.createElement("div", undefined, React.createElement("p", undefined, "Hooks example " + (vehicle[/* name */0] + (" clicked " + (String(count) + " times")))), React.createElement("button", {
+  return React.createElement("div", undefined, React.createElement("p", undefined, "Hooks example " + (vehicle.name + (" clicked " + (String(count) + " times")))), React.createElement("button", {
                   onClick: (function (param) {
                       return Curry._1(setCount, (function (param) {
                                     return count + 1 | 0;

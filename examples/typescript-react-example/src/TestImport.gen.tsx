@@ -52,7 +52,7 @@ export function MyBannerInternalTypeChecked(props: Props): JSX.Element {
 }
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function (show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, message: (message == null ? message : {text:message[0]})}, children); };
+export const make: unknown = function (show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, message: message}, children); };
 
 // In case of type error, check the type of 'defaultValue2' in 'TestImport.re' and './exportNestedValues'.
 export const defaultValue2TypeChecked: number = defaultValue2NotChecked;

@@ -41,17 +41,11 @@ export const coord2d: <T1,T2,T3>(_1:T1, _2:T2) => [T1, T2, (null | undefined | T
   return result
 };
 
-export const getFirstName: (_1:couple) => string = function (Arg1: any) {
-  const result = TuplesBS.getFirstName([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]);
+export const getFirstName: (_1:couple) => string = TuplesBS.getFirstName;
+
+export const marry: (_1:person, _2:person) => couple = function (Arg1: any, Arg2: any) {
+  const result = Curry._2(TuplesBS.marry, Arg1, Arg2);
   return result
 };
 
-export const marry: (_1:person, _2:person) => couple = function (Arg1: any, Arg2: any) {
-  const result = Curry._2(TuplesBS.marry, [Arg1.name, Arg1.age], [Arg2.name, Arg2.age]);
-  return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}]
-};
-
-export const changeSecondAge: (_1:couple) => couple = function (Arg1: any) {
-  const result = TuplesBS.changeSecondAge([[Arg1[0].name, Arg1[0].age], [Arg1[1].name, Arg1[1].age]]);
-  return [{name:result[0][0], age:result[0][1]}, {name:result[1][0], age:result[1][1]}]
-};
+export const changeSecondAge: (_1:couple) => couple = TuplesBS.changeSecondAge;
