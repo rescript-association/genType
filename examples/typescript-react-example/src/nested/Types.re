@@ -116,7 +116,7 @@ type marshalFields = {
   "_Uppercase__": string,
 };
 
-// XXX commenting out: refmt broken
+// TODO commenting out: refmt broken
 // [@genType]
 // let testMarshalFields: marshalFields = {
 //   "_rec": "rec",
