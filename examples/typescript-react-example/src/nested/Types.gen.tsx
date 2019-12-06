@@ -120,8 +120,6 @@ export const testConvertNull: (_1:(null | record)) => (null | record) = TypesBS.
 
 export const testConvertLocation: (_1:Location_t) => Location_t = TypesBS.testConvertLocation;
 
-export const testMarshalFields: marshalFields = TypesBS.testMarshalFields;
-
 export const setMatch: (_1:marshalMutableField) => void = TypesBS.setMatch;
 
 export const testInstantiateTypeParameter: (_1:instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;

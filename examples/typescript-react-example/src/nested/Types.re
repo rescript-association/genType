@@ -116,18 +116,19 @@ type marshalFields = {
   "_Uppercase__": string,
 };
 
-[@genType]
-let testMarshalFields: marshalFields = {
-  "_rec": "rec",
-  "_switch": "_switch", /* reason keywords are not recognized */
-  "switch__": "switch",
-  "__": "__",
-  "___": "_",
-  "foo__": "foo",
-  "_foo__": "_foo",
-  "_Uppercase": "Uppercase",
-  "_Uppercase__": "_Uppercase",
-};
+// XXX commenting out: refmt broken
+// [@genType]
+// let testMarshalFields: marshalFields = {
+//   "_rec": "rec",
+//   "_switch": "_switch", /* reason keywords are not recognized */
+//   "switch__": "switch",
+//   "__": "__",
+//   "___": "_",
+//   "foo__": "foo",
+//   "_foo__": "_foo",
+//   "_Uppercase": "Uppercase",
+//   "_Uppercase__": "_Uppercase",
+// };
 
 [@genType]
 type marshalMutableField = {. [@bs.set] "_match": int};
