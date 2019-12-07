@@ -212,7 +212,7 @@ let processStructure =
           GenTypeCommon.logItem(
             "%sclean %s\n",
             analysisKind == Type ? "[type] " : "",
-            pos |> posToString(~printCol=true, ~shortFile=true),
+            pos |> posToString,
           );
         };
 

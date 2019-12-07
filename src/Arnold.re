@@ -1,4 +1,5 @@
-open DeadCommon;
+let verbose = DeadCommon.verbose;
+let posToString = DeadCommon.posToString;
 
 type progressFunction = Path.t;
 
@@ -312,7 +313,7 @@ module CallStack = {
            "  %d at %s (%s)\n",
            i,
            FunctionCall.toString(functionCall),
-           pos |> posToString(~printCol=true, ~shortFile=true),
+           pos |> posToString,
          )
        );
   };
@@ -394,7 +395,7 @@ module Eval = {
             ++ "\"";
       GenTypeCommon.logItem(
         "%s termination error: possible infinite loop when calling %s\n",
-        pos |> posToString(~printCol=true, ~shortFile=true),
+        pos |> posToString,
         explainCall,
       );
       if (verbose) {
@@ -432,7 +433,7 @@ module Eval = {
           if (verbose) {
             GenTypeCommon.logItem(
               "%s termination analysis: cache hit for \"%s\"\n",
-              pos |> posToString(~printCol=true, ~shortFile=true),
+              pos |> posToString,
               FunctionCall.toString(functionCall),
             );
           };
@@ -441,7 +442,7 @@ module Eval = {
           if (verbose) {
             GenTypeCommon.logItem(
               "%s termination analysis: cache miss for \"%s\"\n",
-              pos |> posToString(~printCol=true, ~shortFile=true),
+              pos |> posToString,
               FunctionCall.toString(functionCall),
             );
           };
@@ -509,7 +510,7 @@ module Eval = {
     if (functionDefinition.kind != Kind.empty) {
       GenTypeCommon.logItem(
         "%s termination analysis error: \"%s\" cannot be analyzed directly as it is parametric\n",
-        pos |> posToString(~printCol=true, ~shortFile=true),
+        pos |> posToString,
         functionName,
       );
     } else {
@@ -566,7 +567,7 @@ module NamedArgumentWithRecursiveFunction = {
                if (verbose) {
                  GenTypeCommon.logItem(
                    "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
-                   pos |> posToString(~printCol=true, ~shortFile=true),
+                   pos |> posToString,
                    functionName,
                    label,
                    Path.name(path),
@@ -599,7 +600,7 @@ module ExpressionWellFormed = {
       if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
         GenTypeCommon.logItem(
           "%s termination error: \"%s\" can only be called directly, or passed as labeled argument.\n",
-          pos |> posToString(~printCol=true, ~shortFile=true),
+          pos |> posToString,
           Path.name(path),
         );
       };
@@ -642,8 +643,7 @@ module ExpressionWellFormed = {
                      if (verbose) {
                        GenTypeCommon.logItem(
                          "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
-                         body.exp_loc.loc_start
-                         |> posToString(~printCol=true, ~shortFile=true),
+                         body.exp_loc.loc_start |> posToString,
                          functionName,
                          label,
                          Path.name(path),
@@ -686,7 +686,7 @@ module Compile = {
   let rec expression = (~ctx, expr: Typedtree.expression) => {
     let {currentFunctionName, functionTable, isProgressFunction} = ctx;
     let pos = expr.exp_loc.loc_start;
-    let posString = pos |> posToString(~printCol=true, ~shortFile=true);
+    let posString = pos |> posToString;
     switch (expr.exp_desc) {
     | Texp_ident(_) => Command.nothing
 
@@ -855,7 +855,7 @@ module Compile = {
       if (recFlag == Recursive) {
         GenTypeCommon.logItem(
           "%s termination error: nested multiple let rec not supported yet\n",
-          pos |> posToString(~printCol=true, ~shortFile=true),
+          pos |> posToString,
         );
       };
       let commands =

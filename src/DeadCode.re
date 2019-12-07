@@ -48,7 +48,7 @@ let loadFile = (~sourceFile, cmtFilePath) => {
 
 let reportResults = (~posInAliveWhitelist) => {
   let onItem = ({pos, path}) => {
-    print_string(pos |> posToString);
+    print_string(pos |> posToString(~printCol=false, ~shortFile=false));
     print_string(path);
     print_newline();
   };
