@@ -14,12 +14,12 @@ Termination analysis for "alwaysLoop"
     1 at alwaysLoop (TestCyberTruck.re:27:21)
   
 Function Table:
-    alwaysProgress: +progress; alwaysProgress
+    alwaysProgress: ( +progress; alwaysProgress )
   
 Termination analysis for "alwaysProgress"
   
 Function Table:
-    alwaysProgressWrongOrder: alwaysProgressWrongOrder; +progress
+    alwaysProgressWrongOrder: ( alwaysProgressWrongOrder; +progress )
   
 Termination analysis for "alwaysProgressWrongOrder"
   TestCyberTruck.re:38:2 termination error: possible infinite loop when calling "alwaysProgressWrongOrder"
@@ -33,12 +33,12 @@ Function Table:
 Termination analysis for "doNotAlias"
   
 Function Table:
-    progressOnBothBranches: ( +progress | +progress2 ); progressOnBothBranches
+    progressOnBothBranches: ( ( +progress | +progress2 ); progressOnBothBranches )
   
 Termination analysis for "progressOnBothBranches"
   
 Function Table:
-    progressOnOneBranch: ( _ | +progress ); progressOnOneBranch
+    progressOnOneBranch: ( ( _ | +progress ); progressOnOneBranch )
   
 Termination analysis for "progressOnOneBranch"
   TestCyberTruck.re:66:2 termination error: possible infinite loop when calling "progressOnOneBranch"
@@ -48,7 +48,7 @@ Termination analysis for "progressOnOneBranch"
   
 Function Table:
     callParseFunction<parseFunction>: parseFunction
-    testParametricFunction: ( _ | +progress ); testParametricFunction2
+    testParametricFunction: ( ( _ | +progress ); testParametricFunction2 )
     testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
   
 Termination analysis for "testParametricFunction"
@@ -62,7 +62,7 @@ Termination analysis for "testParametricFunction"
   
 Function Table:
     doNothing: _
-    testCacheHit: ( _ | doNothing; doNothing; +Progress.Nested.f ); testCacheHit
+    testCacheHit: ( ( _ | ( doNothing; doNothing; +Progress.Nested.f ) ); testCacheHit )
   
 Termination analysis for "testCacheHit"
   TestCyberTruck.re:85:4 termination analysis: cache miss for "doNothing"
@@ -88,22 +88,22 @@ Termination analysis for "evalOrderIsNotRightToLeft"
     1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
   
 Function Table:
-    butFirstArgumentIsAlwaysEvaluated: +progress; butFirstArgumentIsAlwaysEvaluated
+    butFirstArgumentIsAlwaysEvaluated: ( +progress; butFirstArgumentIsAlwaysEvaluated )
   
 Termination analysis for "butFirstArgumentIsAlwaysEvaluated"
   
 Function Table:
-    butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
+    butSecondArgumentIsAlwaysEvaluated: ( +progress; butSecondArgumentIsAlwaysEvaluated )
   
 Termination analysis for "butSecondArgumentIsAlwaysEvaluated"
   TestCyberTruck.re:174:16 termination analysis: extend Function Table with "parseList" as parametric ~f=parseInt
   TestCyberTruck.re:174:37 termination analysis: adding recursive definition "parseList$loop"
   
 Function Table:
-    parseExpression: ( +Parser.next; parseExpression; parseExpression | parseInt )
+    parseExpression: ( ( +Parser.next; parseExpression; parseExpression ) | parseInt )
     parseInt: +Parser.next
     parseList<f>: parseList$loop<f:f>
-    parseList$loop<f>: ( _ | f; parseList$loop<f:f> )
+    parseList$loop<f>: ( _ | ( f; parseList$loop<f:f> ) )
     parseListExpression: parseList<f:parseExpression>
     parseListInt: parseList<f:parseInt>
     parseListListInt: parseList<f:parseListInt>

@@ -149,7 +149,10 @@ module Command = {
       FunctionCall.toString(functionCall)
     | Sequence(commands) =>
       commands == []
-        ? "_" : commands |> List.map(toString) |> String.concat("; ")
+        ? "_"
+        : "( "
+          ++ (commands |> List.map(toString) |> String.concat("; "))
+          ++ " )"
     | UnorderedSequence(commands) =>
       "{" ++ (commands |> List.map(toString) |> String.concat(", ")) ++ "}"
     | Nondet(commands) =>
