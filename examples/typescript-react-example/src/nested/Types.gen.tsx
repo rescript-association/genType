@@ -70,6 +70,7 @@ export type marshalFields = {
   readonly rec: string; 
   readonly _switch: string; 
   readonly switch: string; 
+  readonly switch_: string; 
   readonly __: string; 
   readonly _: string; 
   readonly foo: string; 
@@ -119,6 +120,8 @@ export const jsonStringify: (_1:Js_Json_t) => string = TypesBS.jsonStringify;
 export const testConvertNull: (_1:(null | record)) => (null | record) = TypesBS.testConvertNull;
 
 export const testConvertLocation: (_1:Location_t) => Location_t = TypesBS.testConvertLocation;
+
+export const testMarshalFields: marshalFields = TypesBS.testMarshalFields;
 
 export const setMatch: (_1:marshalMutableField) => void = TypesBS.setMatch;
 
