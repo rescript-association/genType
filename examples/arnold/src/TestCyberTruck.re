@@ -216,4 +216,7 @@ and parseExpression = (~x=4, p: Parser.t) => {
 }
 
 [@progress]
-and parseListExpression = p => parseList(p, ~f=parseExpression);
+and parseListExpression = p => parseList(p, ~f=parseExpression)
+
+[@progress]
+and parseListExpression2 = p => parseList(p, ~f=parseExpression(~x=7));

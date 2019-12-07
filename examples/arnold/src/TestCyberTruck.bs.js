@@ -243,6 +243,13 @@ function parseListExpression(p) {
               }));
 }
 
+function parseListExpression2(p) {
+  var partial_arg = 7;
+  return parseList(p, (function (param) {
+                return parseExpression(partial_arg, param);
+              }));
+}
+
 var progress2 = progress;
 
 export {
@@ -273,6 +280,7 @@ export {
   $$parseInt ,
   parseExpression ,
   parseListExpression ,
+  parseListExpression2 ,
   
 }
 /* counter Not a pure module */

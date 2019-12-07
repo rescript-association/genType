@@ -150,6 +150,7 @@ Function Table:
     parseList<f>: parseList$loop<f:f>
     parseList$loop<f>: ( _ | ( f; parseList$loop<f:f> ) )
     parseListExpression: parseList<f:parseExpression>
+    parseListExpression2: {_, parseExpression, parseList<f:parseExpression>}
     parseListInt: parseList<f:parseInt>
     parseListListInt: parseList<f:parseListInt>
   
@@ -176,6 +177,14 @@ Termination analysis for "parseExpression"
   
 Termination analysis for "parseListExpression"
   TestCyberTruck.re:219:31 termination analysis: cache miss for "parseList<f:parseExpression>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseExpression"
+  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
+  
+Termination analysis for "parseListExpression2"
+  TestCyberTruck.re:222:48 termination analysis: cache miss for "parseExpression"
+  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:222:32 termination analysis: cache miss for "parseList<f:parseExpression>"
   TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
   TestCyberTruck.re:179:17 termination analysis: cache miss for "parseExpression"
   TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"

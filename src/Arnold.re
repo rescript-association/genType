@@ -579,11 +579,13 @@ module Eval = {
   };
 };
 
-let extractLabelledArgument = (argOpt: option(Typedtree.expression)) =>
+let extractLabelledArgument =
+    (~kindOpt=None, argOpt: option(Typedtree.expression)) =>
   switch (argOpt) {
+  | Some({exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)}) =>
+    Some((path, pos))
   | Some({
       exp_desc:
-        Texp_ident(path, {loc: {loc_start: pos}}, _) |
         Texp_let(
           Nonrecursive,
           [
@@ -599,6 +601,26 @@ let extractLabelledArgument = (argOpt: option(Typedtree.expression)) =>
         ),
     }) =>
     Some((path, pos))
+  | Some({
+      exp_desc:
+        Texp_apply(
+          {exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)},
+          args,
+        ),
+    })
+      when kindOpt != None =>
+    let checkArg = ((argLabel: Asttypes.arg_label, argOpt)) => {
+      switch (argLabel, kindOpt) {
+      | (Labelled(l) | Optional(l), Some(kind)) =>
+        kind |> List.for_all(({Kind.label}) => label != l)
+      | _ => true
+      };
+    };
+    if (args |> List.for_all(checkArg)) {
+      Some((path, pos));
+    } else {
+      None;
+    };
   | _ => None
   };
 
@@ -804,7 +826,12 @@ module Compile = {
             | _ => None
             };
           let functionArg =
-            switch (argOpt |> extractLabelledArgument) {
+            switch (
+              argOpt
+              |> extractLabelledArgument(
+                   ~kindOpt=Some(functionDefinition.kind),
+                 )
+            ) {
             | None =>
               GenTypeCommon.logItem(
                 "%s termination error: call must have named argument \"%s\"\n",
