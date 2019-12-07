@@ -1,3 +1,47 @@
+// Concrete Programs
+// x y l f                   Variables
+// arg := e | ~l=e           Function Argument
+// args := args, ..., argn   Function Arguments
+// e := x | e(args)          Expressions
+// k := <l1:k1, ..., ln:kn>  Kind
+// P := f1 = e1 ... fn = en  Program
+// E := x1:k1, ..., xn:kn    Environment
+//
+// The variables xi in E must be distinct from labels in kj and in args.
+//   E |- e  Well Formedness Relation
+//   For fi = ei in P, and fi:ki in E, check E,ki |- ei.
+//
+//   E |- x if x:k not in E  No Escape
+//
+//   E |- x   E |- e
+//   ---------------
+//      E |- ~x=e
+//
+//   E |- x   E |- args
+//   ------------------
+//      E |- e(args)
+//
+//            E(x) = <l1:k1, ... ln:kn>
+//         E(l1) = E(x1) ... E(ln) = E(xn)
+//             E |- arg1 ... E |- argk
+//   -------------------------------------------
+//   E |- x(~l1:x1, ... ~ln:xn, arg1, ..., argk)
+//
+// Abstract Programs
+// arg := l:x                Function Argument
+// args := arg1, ...., argn  Function Arguments
+// C ::=                     Commmand
+//       x<args>             Call
+//       C1 ; ... ; Cn       Sequential Composition
+//       C1 | ... | Cn       Nondeterministic Choice
+//       { C1, ..., Cn }     No Evaluation Order
+// P := f1<args1> = C1       Program
+//      ...
+//      fn<argsn> = Cn
+// Stack := f1<args1> ... fn<argsn>
+//
+// Eval.run: (P, Stack, f<args>, C) ---> Progresss | NoProgress | Loop
+
 let verbose = DeadCommon.verbose;
 let posToString = DeadCommon.posToString;
 
@@ -322,7 +366,12 @@ module CallStack = {
 module Eval = {
   module FunctionCallSet = Set.Make(FunctionCall);
 
-  type cache = Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, bool)));
+  type progress =
+    | Progress
+    | NoProgress;
+
+  type cache =
+    Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, progress)));
 
   let createCache = (): cache => Hashtbl.create(1);
 
@@ -413,7 +462,8 @@ module Eval = {
             ~functionArgs,
             ~functionTable,
             command: Command.t,
-          ) =>
+          )
+          : progress =>
     switch (command) {
     | Call(FunctionCall(functionCallToInstantiate), pos) =>
       let functionCall =
@@ -426,7 +476,7 @@ module Eval = {
             ~functionCall,
             ~pos,
           )) {
-        false; // continue as if it terminated without progress
+        NoProgress; // continue as if it terminated without progress
       } else {
         switch (cache |> lookupCache(~callStack, ~functionCall)) {
         | Some(res) =>
@@ -469,13 +519,16 @@ module Eval = {
           res;
         };
       };
-    | Call(ProgressFunction(progressFunction), _pos) => true
+    | Call(ProgressFunction(progressFunction), _pos) => Progress
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
       commands
       |> List.exists(c =>
-           c |> run(~cache, ~callStack, ~functionArgs, ~functionTable) == true
+           c
+           |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
+           == Progress
          )
+        ? Progress : NoProgress
     | UnorderedSequence(commands) =>
       // the commands could be executed in any order: progess if any one does
       let results =
@@ -483,7 +536,7 @@ module Eval = {
         |> List.map(c =>
              c |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
            );
-      results |> List.mem(true);
+      results |> List.mem(Progress) ? Progress : NoProgress;
     | Nondet(commands) =>
       let results =
         commands
@@ -491,7 +544,7 @@ module Eval = {
              c |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
            );
       // make progress only if all the commands do
-      !List.mem(false, results);
+      !List.mem(NoProgress, results) ? Progress : NoProgress;
     };
 
   let analyzeFunction = (~cache, ~functionTable, ~pos, functionName) => {
