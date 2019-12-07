@@ -9,13 +9,13 @@ import * as React from 'react';
 const $$toJS892729597: { [key: string]: any } = {"-899608102": "push", "724060212": "replace"};
 
 // In case of type error, check the type of 'default' in 'ImportIndex.re' and './'.
-export const defaultTypeChecked: React.ComponentType<{ readonly methodd?: "push" | "replace" }> = defaultNotChecked;
+export const defaultTypeChecked: React.ComponentType<{ readonly method?: "push" | "replace" }> = defaultNotChecked;
 
 // Export '$$default' early to allow circular import from the '.bs.js' file.
 export const $$default: unknown = function (Arg1: any) {
-  const $props = {methodd:(Arg1.methodd == null ? Arg1.methodd : $$toJS892729597[Arg1.methodd])};
+  const $props = {method:(Arg1.method == null ? Arg1.method : $$toJS892729597[Arg1.method])};
   const result = React.createElement(defaultTypeChecked, $props);
   return result
-} as React.ComponentType<{ readonly methodd?: "push" | "replace" }>;
+} as React.ComponentType<{ readonly method?: "push" | "replace" }>;
 
 export default $$default;
