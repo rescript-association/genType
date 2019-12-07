@@ -470,25 +470,27 @@ module Eval = {
         functionCallToInstantiate
         |> FunctionCall.applySubstitution(~sub=functionArgs);
       let functionName = functionCall.functionName;
-      if (hasInfiniteLoop(
-            ~callStack,
-            ~functionCallToInstantiate,
-            ~functionCall,
-            ~pos,
-          )) {
-        NoProgress; // continue as if it terminated without progress
-      } else {
-        switch (cache |> lookupCache(~callStack, ~functionCall)) {
-        | Some(res) =>
-          if (verbose) {
-            GenTypeCommon.logItem(
-              "%s termination analysis: cache hit for \"%s\"\n",
-              pos |> posToString,
-              FunctionCall.toString(functionCall),
-            );
-          };
+      switch (cache |> lookupCache(~callStack, ~functionCall)) {
+      | Some(res) =>
+        if (verbose) {
+          GenTypeCommon.logItem(
+            "%s termination analysis: cache hit for \"%s\"\n",
+            pos |> posToString,
+            FunctionCall.toString(functionCall),
+          );
+        };
+        res;
+      | None =>
+        if (hasInfiniteLoop(
+              ~callStack,
+              ~functionCallToInstantiate,
+              ~functionCall,
+              ~pos,
+            )) {
+          let res = NoProgress; // continue as if it terminated without progress
+          cache |> updateCache(~callStack, ~functionCall, ~res);
           res;
-        | None =>
+        } else {
           if (verbose) {
             GenTypeCommon.logItem(
               "%s termination analysis: cache miss for \"%s\"\n",
@@ -517,7 +519,7 @@ module Eval = {
           cache |> updateCache(~callStack, ~functionCall, ~res);
           callStack |> CallStack.removeFunctionCall(~functionCall);
           res;
-        };
+        }
       };
     | Call(ProgressFunction(progressFunction), _pos) => Progress
     | Sequence(commands) =>

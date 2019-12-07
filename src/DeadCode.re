@@ -80,21 +80,23 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
     (GenTypeCommon.projectRoot^ +++ sourceDir +++ moduleName) ++ ext;
   let sourceFileRE = sourceFile(extension == ".cmti" ? ".rei" : ".re");
   let sourceFileML = sourceFile(extension == ".cmti" ? ".mli" : ".ml");
-  if (!Sys.file_exists(sourceFileRE)) {
-    if (!Sys.file_exists(sourceFileML))
-      {
+  let sourceFile =
+    if (!Sys.file_exists(sourceFileRE)) {
+      if (!Sys.file_exists(sourceFileML)) {
         GenTypeCommon.logItem(
           "XXX sourceFile does not exist: %s\n",
           Filename.basename(sourceFileRE),
         );
+        assert(false);
       };
-      // skip .ml files at the moment
-  } else {
-    FileHash.addFile(fileReferences, sourceFileRE);
+      sourceFileML;
+    } else {
+      sourceFileRE;
+    };
 
-    let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-    loadFile(~sourceFile=sourceFileRE, cmtFilePath);
-  };
+  FileHash.addFile(fileReferences, sourceFile);
+  let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
+  loadFile(~sourceFile, cmtFilePath);
 };
 
 let aliveWhitelist = ["DeadTestWhitelist"];
