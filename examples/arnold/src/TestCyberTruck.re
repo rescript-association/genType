@@ -183,13 +183,7 @@ let parseList = (p: Parser.t, ~f) => {
   loop(p);
 };
 
-[@progress Parser.next]
-let rec parseListInt = p => parseList(p, ~f=parseInt)
-
-[@progress]
-and parseListListInt = p => parseList(p, ~f=parseListInt)
-
-and parseInt = (p: Parser.t) => {
+let parseInt = (p: Parser.t) => {
   let res =
     switch (p.token) {
     | Int(n) => n
@@ -199,7 +193,13 @@ and parseInt = (p: Parser.t) => {
     };
   Parser.next(p);
   res;
-}
+};
+
+[@progress Parser.next]
+let rec parseListInt = p => parseList(p, ~f=parseInt)
+
+[@progress]
+and parseListListInt = p => parseList(p, ~f=parseListInt)
 
 [@progress]
 and parseExpression = (~x=4, p: Parser.t) => {

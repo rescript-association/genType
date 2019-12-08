@@ -712,8 +712,35 @@ let extractLabelledArgument =
   | _ => None
   };
 
-module NamedArgumentWithRecursiveFunction = {
-  let traverseExpr = (~functionTable) => {
+module StringSet = Set.Make(String);
+
+module FunctionsCalled = {
+  let traverseExpr = (~callees) => {
+    let super = Tast_mapper.default;
+
+    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
+      switch (e.exp_desc) {
+      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args) =>
+        let functionName = Path.name(callee);
+        callees := StringSet.add(functionName, callees^);
+      | _ => ()
+      };
+      super.expr(self, e);
+    };
+
+    Tast_mapper.{...super, expr};
+  };
+
+  let findCallees = (expression: Typedtree.expression) => {
+    let callees = ref(StringSet.empty);
+    let traverseExpr = traverseExpr(~callees);
+    expression |> traverseExpr.expr(traverseExpr) |> ignore;
+    callees^;
+  };
+};
+
+module AddParametricFunctionsAndFunctionsCallingProgessFunctions = {
+  let traverseExpr = (~functionTable, ~progressFunctions, ~valueBindingsTable) => {
     let super = Tast_mapper.default;
 
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
@@ -742,7 +769,30 @@ module NamedArgumentWithRecursiveFunction = {
              | _ => ()
              }
            );
-
+      | Texp_apply(
+          {exp_desc: Texp_ident(callee, _, _), exp_loc: {loc_start: pos}},
+          _,
+        ) =>
+        switch (Hashtbl.find_opt(valueBindingsTable, Path.name(callee))) {
+        | None => ()
+        | Some((_, callees)) =>
+          if (!
+                StringSet.is_empty(
+                  StringSet.inter(Lazy.force(callees), progressFunctions),
+                )) {
+            let functionName = Path.name(callee);
+            if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
+              functionTable |> FunctionTable.addFunction(~functionName);
+              if (verbose) {
+                logItem(
+                  "%s termination analysis: extend Function Table with \"%s\" as it calls a progress function\n",
+                  pos |> posToString,
+                  functionName,
+                );
+              };
+            };
+          }
+        }
       | _ => ()
       };
       super.expr(self, e);
@@ -751,8 +801,15 @@ module NamedArgumentWithRecursiveFunction = {
     Tast_mapper.{...super, expr};
   };
 
-  let check = (~functionTable, expression: Typedtree.expression) => {
-    let traverseExpr = traverseExpr(~functionTable);
+  let run =
+      (
+        ~functionTable,
+        ~progressFunctions,
+        ~valueBindingsTable,
+        expression: Typedtree.expression,
+      ) => {
+    let traverseExpr =
+      traverseExpr(~functionTable, ~progressFunctions, ~valueBindingsTable);
     expression |> traverseExpr.expr(traverseExpr) |> ignore;
   };
 };
@@ -788,7 +845,7 @@ module ExpressionWellFormed = {
                    ();
                  } else {
                    switch (Hashtbl.find_opt(valueBindingsTable, functionName)) {
-                   | Some((body: Typedtree.expression))
+                   | Some((body: Typedtree.expression, _))
                        when
                          !(
                            functionPath
@@ -1150,14 +1207,19 @@ let traverseAst = (~valueBindingsTable) => {
     |> List.iter((vb: Typedtree.value_binding) =>
          switch (vb.vb_pat.pat_desc) {
          | Tpat_var(id, _) =>
-           Hashtbl.replace(valueBindingsTable, Ident.name(id), vb.vb_expr)
+           let callees = lazy(FunctionsCalled.findCallees(vb.vb_expr));
+           Hashtbl.replace(
+             valueBindingsTable,
+             Ident.name(id),
+             (vb.vb_expr, callees),
+           );
          | _ => ()
          }
        );
 
-    let (functionsToAnalyze, progressFunctions) =
+    let (progressFunctions, functionsToAnalyze) =
       if (recFlag == Asttypes.Nonrecursive) {
-        ([], []);
+        (StringSet.empty, []);
       } else {
         let (progressFunctions0, functionsToAnalyze0) =
           valueBindings
@@ -1171,7 +1233,10 @@ let traverseAst = (~valueBindingsTable) => {
                  ) {
                  | None => (progressFunctions, functionsToAnalyze)
                  | Some(newProgressFunctions) => (
-                     newProgressFunctions @ progressFunctions,
+                     StringSet.union(
+                       StringSet.of_list(newProgressFunctions),
+                       progressFunctions,
+                     ),
                      switch (valueBinding.vb_pat.pat_desc) {
                      | Tpat_var(id, _) => [
                          (
@@ -1184,18 +1249,15 @@ let traverseAst = (~valueBindingsTable) => {
                      },
                    )
                  },
-               ([], []),
+               (StringSet.empty, []),
              );
-        (
-          functionsToAnalyze0 |> List.rev,
-          progressFunctions0 |> List.sort_uniq(String.compare),
-        );
+        (progressFunctions0, functionsToAnalyze0 |> List.rev);
       };
 
     if (functionsToAnalyze != []) {
       let functionTable = FunctionTable.create();
       let isProgressFunction = path =>
-        List.mem(Path.name(path), progressFunctions);
+        StringSet.mem(Path.name(path), progressFunctions);
 
       let recursiveFunctions =
         List.fold_left(
@@ -1211,7 +1273,10 @@ let traverseAst = (~valueBindingsTable) => {
       let recursiveDefinitions =
         recursiveFunctions
         |> List.map(functionName =>
-             (functionName, Hashtbl.find(valueBindingsTable, functionName))
+             (
+               functionName,
+               fst(Hashtbl.find(valueBindingsTable, functionName)),
+             )
            );
 
       recursiveDefinitions
@@ -1221,7 +1286,12 @@ let traverseAst = (~valueBindingsTable) => {
 
       recursiveDefinitions
       |> List.iter(((_, body)) => {
-           body |> NamedArgumentWithRecursiveFunction.check(~functionTable)
+           body
+           |> AddParametricFunctionsAndFunctionsCallingProgessFunctions.run(
+                ~functionTable,
+                ~progressFunctions,
+                ~valueBindingsTable,
+              )
          });
 
       recursiveDefinitions
@@ -1237,7 +1307,7 @@ let traverseAst = (~valueBindingsTable) => {
              functionDefinition: FunctionTable.functionDefinition,
            ) =>
            if (functionDefinition.body == None) {
-             let body = Hashtbl.find(valueBindingsTable, functionName);
+             let (body, _) = Hashtbl.find(valueBindingsTable, functionName);
              functionTable
              |> FunctionTable.addBody(
                   ~body=
