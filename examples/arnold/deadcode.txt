@@ -70,7 +70,7 @@ Termination analysis for "alwaysProgressWrongOrder"
   TestCyberTruck.re:38:2 termination error: possible infinite loop when calling "alwaysProgressWrongOrder"
     CallStack:
     1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
-  TestCyberTruck.re:45:14 termination error: "doNotAlias" can only be called directly, or passed as labeled argument.
+  TestCyberTruck.re:45:14 hygiene error: "doNotAlias" can only be called directly, or passed as labeled argument.
   
 Function Table:
     doNotAlias: _
@@ -188,56 +188,11 @@ Termination analysis for "parseListExpression2"
   TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
   TestCyberTruck.re:179:17 termination analysis: cache miss for "parseExpression"
   TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
-
-UNUSED EXPORTED VALUES:
   
-File References
-
-  syntaxerr.mli -->> 
-  warnings.mli -->> 
-  parsing.mli -->> 
-  profile.mli -->> 
-  arg_helper.mli -->> 
-  TestCyberTruck.re -->> 
-  printast.mli -->> 
-  misc.mli -->> 
-  parsing.ml -->> 
-  profile.ml -->> 
-  syntaxerr.ml -->> 
-  lexing.mli -->> 
-  parse.mli -->> 
-  pprintast.mli -->> 
-  clflags.ml -->> 
-  clflags.mli -->> 
-  lexing.ml -->> 
-  parser.ml -->> 
-  config.ml -->> 
-  location.ml -->> 
-  parser.mli -->> 
-  parsetree.ml -->> 
-  parse.ml -->> 
-  ast_helper.mli -->> 
-  misc.ml -->> 
-  arg_helper.ml -->> 
-  parsetree.mli -->> 
-  docstrings.ml -->> 
-  longident.mli -->> 
-  identifiable.mli -->> 
-  pprintast.ml -->> 
-  identifiable.ml -->> 
-  lexer.ml -->> 
-  asttypes.ml -->> 
-  docstrings.mli -->> 
-  lexer.mli -->> 
-  terminfo.mli -->> 
-  printast.ml -->> 
-  location.mli -->> 
-  ast_helper.ml -->> 
-  longident.ml -->> 
-  warnings.ml -->> 
-  asttypes.mli -->> 
-  numbers.mli -->> 
-  terminfo.ml -->> 
-  numbers.ml -->> 
-
-UNUSED CONSTRUCTORS/RECORD FIELDS:
+Termination Analysis Stats
+  Files:24
+  Recursive Blocks:14
+  Functions:18
+  Infinite Loops:8
+  Hygiene Errors:1
+  Cache Hits:1/24

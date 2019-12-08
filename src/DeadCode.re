@@ -140,7 +140,12 @@ let runAnalysis = () => {
        }
      );
 
-  reportResults(~posInAliveWhitelist);
+  if (dce^) {
+    reportResults(~posInAliveWhitelist);
+  };
+  if (analyzeTermination^) {
+    Arnold.reportResults();
+  };
 };
 
 let runTerminationAnalysis = () => {

@@ -42,8 +42,13 @@
 //
 // Eval.run: (P, Stack, f<args>, C) ---> Progresss | NoProgress | Loop
 
-let verbose = DeadCommon.verbose;
+let logItem = GenTypeCommon.logItem;
+
 let posToString = DeadCommon.posToString;
+
+let verbose = DeadCommon.verbose;
+
+// Type Definitions
 
 type progressFunction = Path.t;
 
@@ -175,6 +180,101 @@ module FunctionCall = {
   };
 };
 
+module Stats = {
+  let nCacheChecks = ref(0);
+  let nCacheHits = ref(0);
+  let nFiles = ref(0);
+  let nFunctions = ref(0);
+  let nHygieneErrors = ref(0);
+  let nInfiniteLoops = ref(0);
+  let nRecursiveBlocks = ref(0);
+
+  let dump = () => {
+    logItem("\nTermination Analysis Stats\n");
+    logItem("Files:%d\n", nFiles^);
+    logItem("Recursive Blocks:%d\n", nRecursiveBlocks^);
+    logItem("Functions:%d\n", nFunctions^);
+    logItem("Infinite Loops:%d\n", nInfiniteLoops^);
+    logItem("Hygiene Errors:%d\n", nHygieneErrors^);
+    logItem("Cache Hits:%d/%d\n", nCacheHits^, nCacheChecks^);
+  };
+
+  let newFile = () => incr(nFiles);
+
+  let newRecursiveFunctions = (~functionsToAnalyze) => {
+    incr(nRecursiveBlocks);
+    nFunctions := nFunctions^ + List.length(functionsToAnalyze);
+  };
+
+  let logLoop = (~explainCall, ~pos) => {
+    incr(nInfiniteLoops);
+    logItem(
+      "%s termination error: possible infinite loop when calling %s\n",
+      pos |> posToString,
+      explainCall,
+    );
+  };
+
+  let logCache = (~functionCall, ~hit, ~pos) => {
+    incr(nCacheChecks);
+    if (hit) {
+      incr(nCacheHits);
+    };
+    if (verbose) {
+      logItem(
+        "%s termination analysis: cache %s for \"%s\"\n",
+        pos |> posToString,
+        hit ? "hit" : "miss",
+        FunctionCall.toString(functionCall),
+      );
+    };
+  };
+
+  let logHygieneParametric = (~functionName, ~pos) => {
+    incr(nHygieneErrors);
+    logItem(
+      "%s hygiene error: \"%s\" cannot be analyzed directly as it is parametric\n",
+      pos |> posToString,
+      functionName,
+    );
+  };
+
+  let logHygieneOnlyCallDirectly = (~path, ~pos) => {
+    incr(nHygieneErrors);
+    logItem(
+      "%s hygiene error: \"%s\" can only be called directly, or passed as labeled argument.\n",
+      pos |> posToString,
+      Path.name(path),
+    );
+  };
+
+  let logHygieneMustHaveNamedArgument = (~label, ~pos) => {
+    incr(nHygieneErrors);
+    logItem(
+      "%s hygiene error: call must have named argument \"%s\"\n",
+      pos |> posToString,
+      label,
+    );
+  };
+
+  let logHygieneNamedArgValue = (~label, ~pos) => {
+    incr(nHygieneErrors);
+    logItem(
+      "%s hygiene error: named argument \"%s\" must be passed a recursive function\n",
+      pos |> posToString,
+      label,
+    );
+  };
+
+  let logHygieneNoNestedLetRec = (~pos) => {
+    incr(nHygieneErrors);
+    logItem(
+      "%s hygiene error: nested multiple let rec not supported yet\n",
+      pos |> posToString,
+    );
+  };
+};
+
 type call =
   | ProgressFunction(progressFunction)
   | FunctionCall(FunctionCall.t);
@@ -261,7 +361,7 @@ module FunctionTable = {
   let create = (): t => Hashtbl.create(1);
 
   let dump = (tbl: t) => {
-    GenTypeCommon.logItem("\nFunction Table:\n");
+    logItem("\nFunction Table:\n");
     let definitions =
       Hashtbl.fold(
         (functionName, {kind, body}, definitions) =>
@@ -272,7 +372,7 @@ module FunctionTable = {
       |> List.sort(((fn1, _, _), (fn2, _, _)) => String.compare(fn1, fn2));
     definitions
     |> List.iter(((functionName, kind, body)) =>
-         GenTypeCommon.logItem(
+         logItem(
            "  %s%s: %s\n",
            functionName,
            Kind.toString(kind),
@@ -342,7 +442,7 @@ module CallStack = {
   };
 
   let dump = (t: t) => {
-    GenTypeCommon.logItem("  CallStack:\n");
+    logItem("  CallStack:\n");
     let frames =
       Hashtbl.fold(
         (functionCall, (i, pos), frames) =>
@@ -353,7 +453,7 @@ module CallStack = {
       |> List.sort(((_, i1, _), (_, i2, _)) => i2 - i1);
     frames
     |> List.iter(((functionCall: FunctionCall.t, i, pos)) =>
-         GenTypeCommon.logItem(
+         logItem(
            "  %d at %s (%s)\n",
            i,
            FunctionCall.toString(functionCall),
@@ -442,11 +542,7 @@ module Eval = {
             ++ "\" which is \""
             ++ (functionCall |> FunctionCall.toString)
             ++ "\"";
-      GenTypeCommon.logItem(
-        "%s termination error: possible infinite loop when calling %s\n",
-        pos |> posToString,
-        explainCall,
-      );
+      Stats.logLoop(~explainCall, ~pos);
       if (verbose) {
         CallStack.dump(callStack);
       };
@@ -472,13 +568,7 @@ module Eval = {
       let functionName = functionCall.functionName;
       switch (cache |> lookupCache(~callStack, ~functionCall)) {
       | Some(res) =>
-        if (verbose) {
-          GenTypeCommon.logItem(
-            "%s termination analysis: cache hit for \"%s\"\n",
-            pos |> posToString,
-            FunctionCall.toString(functionCall),
-          );
-        };
+        Stats.logCache(~functionCall, ~hit=true, ~pos);
         res;
       | None =>
         if (hasInfiniteLoop(
@@ -491,13 +581,7 @@ module Eval = {
           cache |> updateCache(~callStack, ~functionCall, ~res);
           res;
         } else {
-          if (verbose) {
-            GenTypeCommon.logItem(
-              "%s termination analysis: cache miss for \"%s\"\n",
-              pos |> posToString,
-              FunctionCall.toString(functionCall),
-            );
-          };
+          Stats.logCache(~functionCall, ~hit=false, ~pos);
           let functionDefinition =
             functionTable
             |> FunctionTable.getFunctionDefinition(~functionName);
@@ -551,10 +635,7 @@ module Eval = {
 
   let analyzeFunction = (~cache, ~functionTable, ~pos, functionName) => {
     if (verbose) {
-      GenTypeCommon.logItem(
-        "\nTermination analysis for \"%s\"\n",
-        functionName,
-      );
+      logItem("\nTermination analysis for \"%s\"\n", functionName);
     };
     let callStack = CallStack.create();
     let functionArgs = FunctionArgs.empty;
@@ -563,11 +644,7 @@ module Eval = {
     let functionDefinition =
       functionTable |> FunctionTable.getFunctionDefinition(~functionName);
     if (functionDefinition.kind != Kind.empty) {
-      GenTypeCommon.logItem(
-        "%s termination analysis error: \"%s\" cannot be analyzed directly as it is parametric\n",
-        pos |> posToString,
-        functionName,
-      );
+      Stats.logHygieneParametric(~functionName, ~pos);
     } else {
       let body =
         switch (functionDefinition.body) {
@@ -642,7 +719,7 @@ module NamedArgumentWithRecursiveFunction = {
                functionTable
                |> FunctionTable.addLabelToKind(~functionName, ~label);
                if (verbose) {
-                 GenTypeCommon.logItem(
+                 logItem(
                    "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
                    pos |> posToString,
                    functionName,
@@ -675,11 +752,7 @@ module ExpressionWellFormed = {
 
     let checkIdent = (~path, ~pos) =>
       if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
-        GenTypeCommon.logItem(
-          "%s termination error: \"%s\" can only be called directly, or passed as labeled argument.\n",
-          pos |> posToString,
-          Path.name(path),
-        );
+        Stats.logHygieneOnlyCallDirectly(~path, ~pos);
       };
 
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
@@ -718,7 +791,7 @@ module ExpressionWellFormed = {
                      functionTable
                      |> FunctionTable.addLabelToKind(~functionName, ~label);
                      if (verbose) {
-                       GenTypeCommon.logItem(
+                       logItem(
                          "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
                          body.exp_loc.loc_start |> posToString,
                          functionName,
@@ -833,11 +906,7 @@ module Compile = {
                  )
             ) {
             | None =>
-              GenTypeCommon.logItem(
-                "%s termination error: call must have named argument \"%s\"\n",
-                posString,
-                label,
-              );
+              Stats.logHygieneMustHaveNamedArgument(~label, ~pos);
               raise(ArgError);
 
             | Some((path, _pos))
@@ -857,11 +926,7 @@ module Compile = {
               {FunctionArgs.label, functionName};
 
             | _ =>
-              GenTypeCommon.logItem(
-                "%s termination error: named argument \"%s\" must be passed a recursive function\n",
-                posString,
-                label,
-              );
+              Stats.logHygieneNamedArgValue(~label, ~pos);
               raise(ArgError);
             };
           functionArg;
@@ -926,7 +991,7 @@ module Compile = {
         newFunctionName,
       );
       newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
-      GenTypeCommon.logItem(
+      logItem(
         "%s termination analysis: adding recursive definition \"%s\"\n",
         posString,
         newFunctionName,
@@ -935,10 +1000,7 @@ module Compile = {
 
     | Texp_let(recFlag, valueBindings, inExpr) =>
       if (recFlag == Recursive) {
-        GenTypeCommon.logItem(
-          "%s termination error: nested multiple let rec not supported yet\n",
-          pos |> posToString,
-        );
+        Stats.logHygieneNoNestedLetRec(~pos);
       };
       let commands =
         (
@@ -1120,6 +1182,7 @@ let traverseAst = (~valueBindingsTable) => {
       };
 
     if (functionsToAnalyze != []) {
+      Stats.newRecursiveFunctions(~functionsToAnalyze);
       let functionTable = FunctionTable.create();
       let isProgressFunction = path =>
         List.mem(Path.name(path), progressFunctions);
@@ -1207,7 +1270,13 @@ let traverseAst = (~valueBindingsTable) => {
 };
 
 let processStructure = (structure: Typedtree.structure) => {
+  Stats.newFile();
   let valueBindingsTable = Hashtbl.create(1);
   let traverseAst = traverseAst(~valueBindingsTable);
   structure |> traverseAst.structure(traverseAst) |> ignore;
 };
+
+let reportResults = () =>
+  if (verbose) {
+    Stats.dump();
+  };
