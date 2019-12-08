@@ -192,7 +192,7 @@ Termination analysis for "parseListExpression2"
 Termination Analysis Stats
   Files:24
   Recursive Blocks:14
-  Functions:18
+  Functions:24
   Infinite Loops:8
   Hygiene Errors:1
   Cache Hits:1/24

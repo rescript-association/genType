@@ -201,9 +201,9 @@ module Stats = {
 
   let newFile = () => incr(nFiles);
 
-  let newRecursiveFunctions = (~functionsToAnalyze) => {
+  let newRecursiveFunctions = (~numFunctions) => {
     incr(nRecursiveBlocks);
-    nFunctions := nFunctions^ + List.length(functionsToAnalyze);
+    nFunctions := nFunctions^ + numFunctions;
   };
 
   let logLoop = (~explainCall, ~pos) => {
@@ -1182,7 +1182,6 @@ let traverseAst = (~valueBindingsTable) => {
       };
 
     if (functionsToAnalyze != []) {
-      Stats.newRecursiveFunctions(~functionsToAnalyze);
       let functionTable = FunctionTable.create();
       let isProgressFunction = path =>
         List.mem(Path.name(path), progressFunctions);
@@ -1256,6 +1255,7 @@ let traverseAst = (~valueBindingsTable) => {
       |> List.iter(((functionName, pos)) =>
            functionName |> Eval.analyzeFunction(~cache, ~functionTable, ~pos)
          );
+      Stats.newRecursiveFunctions(~numFunctions=Hashtbl.length(functionTable));
     };
 
     valueBindings
