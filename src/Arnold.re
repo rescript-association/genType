@@ -180,6 +180,10 @@ module FunctionCall = {
   };
 };
 
+type progress =
+  | Progress
+  | NoProgress;
+
 module Stats = {
   let nCacheChecks = ref(0);
   let nCacheHits = ref(0);
@@ -229,6 +233,16 @@ module Stats = {
       );
     };
   };
+
+  let logResult = (~functionCall, ~pos, ~res) =>
+    if (verbose) {
+      logItem(
+        "%s termination analysis: \"%s\" returns %s\n",
+        pos |> posToString,
+        FunctionCall.toString(functionCall),
+        res == Progress ? "Progress" : "NoProgress",
+      );
+    };
 
   let logHygieneParametric = (~functionName, ~pos) => {
     incr(nHygieneErrors);
@@ -466,10 +480,6 @@ module CallStack = {
 module Eval = {
   module FunctionCallSet = Set.Make(FunctionCall);
 
-  type progress =
-    | Progress
-    | NoProgress;
-
   type cache =
     Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, progress)));
 
@@ -599,8 +609,9 @@ module Eval = {
                  ~functionArgs=functionCall.functionArgs,
                  ~functionTable,
                );
-          // Invariant: run should restore the callStack
+          Stats.logResult(~functionCall, ~res, ~pos);
           cache |> updateCache(~callStack, ~functionCall, ~res);
+          // Invariant: run should restore the callStack
           callStack |> CallStack.removeFunctionCall(~functionCall);
           res;
         }
