@@ -219,4 +219,15 @@ and parseExpression = (~x=4, p: Parser.t) => {
 and parseListExpression = p => parseList(p, ~f=parseExpression)
 
 [@progress]
-and parseListExpression2 = p => parseList(p, ~f=parseExpression(~x=7));
+and parseListExpression2 = p => parseList(p, ~f=parseExpression(~x=7))
+
+[@progress]
+and parseListIntTailRecursive = p => {
+  let rec loop = (p: Parser.t, l) =>
+    if (p.token == Asterisk) {
+      List.rev(l);
+    } else {
+      loop(p, [parseInt(p), ...l]);
+    };
+  loop(p, []);
+};

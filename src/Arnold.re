@@ -1092,7 +1092,7 @@ module Compile = {
     // Don't assume any evaluation order on the arguments
     let commands =
       args |> List.map(((_, eOpt)) => eOpt |> expressionOpt(~ctx));
-    Command.unorderedSequence(commands @ [command]);
+    Command.seq(Command.unorderedSequence(commands), command);
   }
   and case = (~ctx, {c_guard, c_rhs}: Typedtree.case) =>
     switch (c_guard) {
@@ -1255,7 +1255,9 @@ let traverseAst = (~valueBindingsTable) => {
       |> List.iter(((functionName, pos)) =>
            functionName |> Eval.analyzeFunction(~cache, ~functionTable, ~pos)
          );
-      Stats.newRecursiveFunctions(~numFunctions=Hashtbl.length(functionTable));
+      Stats.newRecursiveFunctions(
+        ~numFunctions=Hashtbl.length(functionTable),
+      );
     };
 
     valueBindings
