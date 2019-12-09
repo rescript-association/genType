@@ -56,10 +56,6 @@ type functionName = string;
 
 type progressFunction = Path.t;
 
-type progress =
-  | Progress
-  | NoProgress;
-
 module Kind = {
   type t = list(entry)
   and entry = {
@@ -236,13 +232,13 @@ module Stats = {
     };
   };
 
-  let logResult = (~functionCall, ~pos, ~res) =>
+  let logResult = (~functionCall, ~pos, ~resString) =>
     if (verbose) {
       logItem(
         "%s termination analysis: \"%s\" returns %s\n",
         pos |> posToString,
         FunctionCall.toString(functionCall),
-        res == Progress ? "Progress" : "NoProgress",
+        resString,
       );
     };
 
@@ -984,6 +980,44 @@ module CallStack = {
 };
 
 module Eval = {
+  type progress =
+    | Progress
+    | NoProgress;
+
+  type trace =
+    | Tcall(Command.call, progress)
+    | Tsub(list(trace));
+
+  type res = {
+    progress,
+    trace,
+  };
+
+  let progressToString = progress =>
+    progress == Progress ? "Progress" : "NoProgress";
+  let rec traceToString = trace =>
+    switch (trace) {
+    | Tcall(ProgressFunction(progressFunction), progress) =>
+      Path.name(progressFunction) ++ ":" ++ progressToString(progress)
+    | Tcall(FunctionCall(functionCall), progress) =>
+      FunctionCall.toString(functionCall)
+      ++ ":"
+      ++ progressToString(progress)
+    | Tsub(traces) =>
+      let tracesNoEmpty = traces |> List.filter((!=)(Tsub([])));
+      tracesNoEmpty == []
+        ? "_"
+        : "("
+          ++ (
+            tracesNoEmpty |> List.map(traceToString) |> String.concat("; ")
+          )
+          ++ ")";
+    };
+
+  let resToString = ({progress, trace}) => {
+    progressToString(progress) ++ " trace " ++ traceToString(trace);
+  };
+
   module FunctionCallSet = Set.Make(FunctionCall);
 
   type cache =
@@ -1018,7 +1052,7 @@ module Eval = {
     };
   };
 
-  let updateCache = (~callStack, ~functionCall, ~res, cache: cache) => {
+  let updateCache = (~callStack, ~functionCall, ~progress, cache: cache) => {
     let set = functionCallSetOfCallStack(callStack);
     let modified = ref(false);
     let results =
@@ -1041,7 +1075,7 @@ module Eval = {
     Hashtbl.replace(
       cache,
       functionCall,
-      modified^ ? results : [(set, res), ...results],
+      modified^ ? results : [(set, progress), ...results],
     );
   };
 
@@ -1075,17 +1109,17 @@ module Eval = {
             ~functionTable,
             command: Command.t,
           )
-          : progress =>
+          : res =>
     switch (command) {
-    | Call(FunctionCall(functionCallToInstantiate), pos) =>
+    | Call(FunctionCall(functionCallToInstantiate) as call, pos) =>
       let functionCall =
         functionCallToInstantiate
         |> FunctionCall.applySubstitution(~sub=functionArgs);
       let functionName = functionCall.functionName;
       switch (cache |> lookupCache(~callStack, ~functionCall)) {
-      | Some(res) =>
+      | Some(progress) =>
         Stats.logCache(~functionCall, ~hit=true, ~pos);
-        res;
+        {progress, trace: Tcall(call, progress)};
       | None =>
         if (hasInfiniteLoop(
               ~callStack,
@@ -1093,9 +1127,9 @@ module Eval = {
               ~functionCall,
               ~pos,
             )) {
-          let res = NoProgress; // continue as if it terminated without progress
-          cache |> updateCache(~callStack, ~functionCall, ~res);
-          res;
+          let progress = NoProgress; // continue as if it terminated without progress
+          cache |> updateCache(~callStack, ~functionCall, ~progress);
+          {progress, trace: Tcall(call, progress)};
         } else {
           Stats.logCache(~functionCall, ~hit=false, ~pos);
           let functionDefinition =
@@ -1115,23 +1149,34 @@ module Eval = {
                  ~functionArgs=functionCall.functionArgs,
                  ~functionTable,
                );
-          Stats.logResult(~functionCall, ~res, ~pos);
-          cache |> updateCache(~callStack, ~functionCall, ~res);
+          let resString = resToString(res);
+          Stats.logResult(~functionCall, ~resString, ~pos);
+          cache
+          |> updateCache(~callStack, ~functionCall, ~progress=res.progress);
           // Invariant: run should restore the callStack
           callStack |> CallStack.removeFunctionCall(~functionCall);
-          res;
+          {progress: res.progress, trace: Tcall(call, res.progress)};
         }
       };
-    | Call(ProgressFunction(progressFunction), _pos) => Progress
+    | Call(ProgressFunction(progressFunction) as call, _pos) => {
+        progress: Progress,
+        trace: Tcall(call, Progress),
+      }
+
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
-      commands
-      |> List.exists(c =>
-           c
-           |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
-           == Progress
-         )
-        ? Progress : NoProgress
+      let rec findFirstProgress = (commands, traces) =>
+        switch (commands) {
+        | [] => {progress: NoProgress, trace: Tsub(traces |> List.rev)}
+        | [c, ...nextCommands] =>
+          let res =
+            c |> run(~cache, ~callStack, ~functionArgs, ~functionTable);
+          let newTraces = [res.trace, ...traces];
+          res.progress == Progress
+            ? {progress: Progress, trace: Tsub(newTraces |> List.rev)}
+            : findFirstProgress(nextCommands, newTraces);
+        };
+      findFirstProgress(commands, []);
     | UnorderedSequence(commands) =>
       // the commands could be executed in any order: progess if any one does
       let results =
@@ -1139,7 +1184,13 @@ module Eval = {
         |> List.map(c =>
              c |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
            );
-      results |> List.mem(Progress) ? Progress : NoProgress;
+      switch (results |> List.find_opt(({progress}) => progress == Progress)) {
+      | None => {
+          progress: NoProgress,
+          trace: Tsub(results |> List.map(({trace}) => trace)),
+        }
+      | Some({trace}) => {progress: Progress, trace}
+      };
     | Nondet(commands) =>
       let results =
         commands
@@ -1147,7 +1198,15 @@ module Eval = {
              c |> run(~cache, ~callStack, ~functionArgs, ~functionTable)
            );
       // make progress only if all the commands do
-      !List.mem(NoProgress, results) ? Progress : NoProgress;
+      switch (
+        results |> List.find_opt(({progress}) => progress == NoProgress)
+      ) {
+      | None => {
+          progress: Progress,
+          trace: Tsub(results |> List.map(({trace}) => trace)),
+        }
+      | Some({trace}) => {progress: NoProgress, trace}
+      };
     };
 
   let analyzeFunction = (~cache, ~functionTable, ~pos, functionName) => {
