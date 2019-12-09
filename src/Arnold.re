@@ -48,9 +48,17 @@ let posToString = DeadCommon.posToString;
 
 let verbose = DeadCommon.verbose;
 
+module StringSet = Set.Make(String);
+
 // Type Definitions
 
+type functionName = string;
+
 type progressFunction = Path.t;
+
+type progress =
+  | Progress
+  | NoProgress;
 
 module Kind = {
   type t = list(entry)
@@ -82,8 +90,6 @@ module Kind = {
       kind;
     };
 };
-
-type functionName = string;
 
 module FunctionArgs = {
   type arg = {
@@ -179,10 +185,6 @@ module FunctionCall = {
     };
   };
 };
-
-type progress =
-  | Progress
-  | NoProgress;
 
 module Stats = {
   let nCacheChecks = ref(0);
@@ -289,11 +291,11 @@ module Stats = {
   };
 };
 
-type call =
-  | ProgressFunction(progressFunction)
-  | FunctionCall(FunctionCall.t);
-
 module Command = {
+  type call =
+    | ProgressFunction(progressFunction)
+    | FunctionCall(FunctionCall.t);
+
   type t =
     | Call(call, Lexing.position)
     | Sequence(list(t))
@@ -432,6 +434,510 @@ module FunctionTable = {
     | exception Not_found => None
     };
   };
+};
+
+module FindFunctionsCalled = {
+  let traverseExpr = (~callees) => {
+    let super = Tast_mapper.default;
+
+    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
+      switch (e.exp_desc) {
+      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args) =>
+        let functionName = Path.name(callee);
+        callees := StringSet.add(functionName, callees^);
+      | _ => ()
+      };
+      super.expr(self, e);
+    };
+
+    Tast_mapper.{...super, expr};
+  };
+
+  let findCallees = (expression: Typedtree.expression) => {
+    let callees = ref(StringSet.empty);
+    let traverseExpr = traverseExpr(~callees);
+    expression |> traverseExpr.expr(traverseExpr) |> ignore;
+    callees^;
+  };
+};
+
+module ExtendFunctionTable = {
+  // Add functions passed a recursive function via a labeled argument,
+  // and functions calling progress functions, to the function table.
+
+  let extractLabelledArgument =
+      (~kindOpt=None, argOpt: option(Typedtree.expression)) =>
+    switch (argOpt) {
+    | Some({exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)}) =>
+      Some((path, pos))
+    | Some({
+        exp_desc:
+          Texp_let(
+            Nonrecursive,
+            [
+              {
+                vb_pat: {pat_desc: Tpat_var(_, _)},
+                vb_expr: {
+                  exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _),
+                },
+                vb_loc: {loc_ghost: true},
+              },
+            ],
+            _,
+          ),
+      }) =>
+      Some((path, pos))
+    | Some({
+        exp_desc:
+          Texp_apply(
+            {exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)},
+            args,
+          ),
+      })
+        when kindOpt != None =>
+      let checkArg = ((argLabel: Asttypes.arg_label, argOpt)) => {
+        switch (argLabel, kindOpt) {
+        | (Labelled(l) | Optional(l), Some(kind)) =>
+          kind |> List.for_all(({Kind.label}) => label != l)
+        | _ => true
+        };
+      };
+      if (args |> List.for_all(checkArg)) {
+        Some((path, pos));
+      } else {
+        None;
+      };
+    | _ => None
+    };
+
+  let traverseExpr = (~functionTable, ~progressFunctions, ~valueBindingsTable) => {
+    let super = Tast_mapper.default;
+
+    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
+      switch (e.exp_desc) {
+      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
+          when callee |> FunctionTable.isInFunctionInTable(~functionTable) =>
+        let functionName = Path.name(callee);
+        args
+        |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
+             switch (argLabel, argOpt |> extractLabelledArgument) {
+             | (Labelled(label), Some((path, pos)))
+                 when
+                   path |> FunctionTable.isInFunctionInTable(~functionTable) =>
+               functionTable
+               |> FunctionTable.addLabelToKind(~functionName, ~label);
+               if (verbose) {
+                 logItem(
+                   "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
+                   pos |> posToString,
+                   functionName,
+                   label,
+                   Path.name(path),
+                 );
+               };
+
+             | _ => ()
+             }
+           );
+      | Texp_apply(
+          {exp_desc: Texp_ident(callee, _, _), exp_loc: {loc_start: pos}},
+          _,
+        ) =>
+        switch (Hashtbl.find_opt(valueBindingsTable, Path.name(callee))) {
+        | None => ()
+        | Some((_, callees)) =>
+          if (!
+                StringSet.is_empty(
+                  StringSet.inter(Lazy.force(callees), progressFunctions),
+                )) {
+            let functionName = Path.name(callee);
+            if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
+              functionTable |> FunctionTable.addFunction(~functionName);
+              if (verbose) {
+                logItem(
+                  "%s termination analysis: extend Function Table with \"%s\" as it calls a progress function\n",
+                  pos |> posToString,
+                  functionName,
+                );
+              };
+            };
+          }
+        }
+      | _ => ()
+      };
+      super.expr(self, e);
+    };
+
+    Tast_mapper.{...super, expr};
+  };
+
+  let run =
+      (
+        ~functionTable,
+        ~progressFunctions,
+        ~valueBindingsTable,
+        expression: Typedtree.expression,
+      ) => {
+    let traverseExpr =
+      traverseExpr(~functionTable, ~progressFunctions, ~valueBindingsTable);
+    expression |> traverseExpr.expr(traverseExpr) |> ignore;
+  };
+};
+
+module CheckExpressionWellFormed = {
+  let traverseExpr = (~functionTable, ~valueBindingsTable) => {
+    let super = Tast_mapper.default;
+
+    let checkIdent = (~path, ~pos) =>
+      if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
+        Stats.logHygieneOnlyCallDirectly(~path, ~pos);
+      };
+
+    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
+      switch (e.exp_desc) {
+      | Texp_ident(path, {loc: {loc_start: pos}}, _) =>
+        checkIdent(~path, ~pos);
+        e;
+      | Texp_apply({exp_desc: Texp_ident(functionPath, _, _)}, args) =>
+        let functionName = Path.name(functionPath);
+        args
+        |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) => {
+             switch (argOpt |> ExtendFunctionTable.extractLabelledArgument) {
+             | Some((path, pos)) =>
+               switch (argLabel) {
+               | Labelled(label) =>
+                 if (functionTable
+                     |> FunctionTable.functionGetKindOfLabel(
+                          ~functionName,
+                          ~label,
+                        )
+                     != None) {
+                   ();
+                 } else {
+                   switch (Hashtbl.find_opt(valueBindingsTable, functionName)) {
+                   | Some((body: Typedtree.expression, _))
+                       when
+                         !(
+                           functionPath
+                           |> FunctionTable.isInFunctionInTable(
+                                ~functionTable,
+                              )
+                         )
+                         && path
+                         |> FunctionTable.isInFunctionInTable(~functionTable) =>
+                     functionTable |> FunctionTable.addFunction(~functionName);
+                     functionTable
+                     |> FunctionTable.addLabelToKind(~functionName, ~label);
+                     if (verbose) {
+                       logItem(
+                         "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
+                         body.exp_loc.loc_start |> posToString,
+                         functionName,
+                         label,
+                         Path.name(path),
+                       );
+                     };
+                   | _ => checkIdent(~path, ~pos)
+                   };
+                 }
+
+               | Optional(_)
+               | Nolabel => checkIdent(~path, ~pos)
+               }
+
+             | _ => ()
+             }
+           });
+        e;
+
+      | _ => super.expr(self, e)
+      };
+
+    Tast_mapper.{...super, expr};
+  };
+
+  let run =
+      (~functionTable, ~valueBindingsTable, expression: Typedtree.expression) => {
+    let traverseExpr = traverseExpr(~functionTable, ~valueBindingsTable);
+    expression |> traverseExpr.expr(traverseExpr) |> ignore;
+  };
+};
+
+module Compile = {
+  type ctx = {
+    currentFunctionName: functionName,
+    functionTable: FunctionTable.t,
+    innerRecursiveFunctions: Hashtbl.t(functionName, functionName),
+    isProgressFunction: Path.t => bool,
+  };
+
+  let rec expression = (~ctx, expr: Typedtree.expression) => {
+    let {currentFunctionName, functionTable, isProgressFunction} = ctx;
+    let pos = expr.exp_loc.loc_start;
+    let posString = pos |> posToString;
+    switch (expr.exp_desc) {
+    | Texp_ident(_) => Command.nothing
+
+    | Texp_apply(
+        {exp_desc: Texp_ident(calleeToRename, l, vd)} as expr,
+        argsToExtend,
+      ) =>
+      let (callee, args) =
+        switch (
+          Hashtbl.find_opt(
+            ctx.innerRecursiveFunctions,
+            Path.name(calleeToRename),
+          )
+        ) {
+        | Some(innerFunctionName) =>
+          let innerFunctionDefinition =
+            functionTable
+            |> FunctionTable.getFunctionDefinition(
+                 ~functionName=innerFunctionName,
+               );
+          let argsFromKind =
+            innerFunctionDefinition.kind
+            |> List.map((entry: Kind.entry) =>
+                 (
+                   Asttypes.Labelled(entry.label),
+                   Some({
+                     ...expr,
+                     exp_desc:
+                       Texp_ident(
+                         Path.Pident(Ident.create(entry.label)),
+                         l,
+                         vd,
+                       ),
+                   }),
+                 )
+               );
+          (
+            Path.Pident(Ident.create(innerFunctionName)),
+            argsFromKind @ argsToExtend,
+          );
+        | None => (calleeToRename, argsToExtend)
+        };
+      if (callee |> FunctionTable.isInFunctionInTable(~functionTable)) {
+        let functionName = Path.name(callee);
+        let functionDefinition =
+          functionTable |> FunctionTable.getFunctionDefinition(~functionName);
+        exception ArgError;
+        let getFunctionArg = ({Kind.label}) => {
+          let argOpt =
+            args
+            |> List.find_opt(arg =>
+                 switch (arg) {
+                 | (Asttypes.Labelled(s), Some(e)) => s == label
+                 | _ => false
+                 }
+               );
+          let argOpt =
+            switch (argOpt) {
+            | Some((_, Some(e))) => Some(e)
+            | _ => None
+            };
+          let functionArg =
+            switch (
+              argOpt
+              |> ExtendFunctionTable.extractLabelledArgument(
+                   ~kindOpt=Some(functionDefinition.kind),
+                 )
+            ) {
+            | None =>
+              Stats.logHygieneMustHaveNamedArgument(~label, ~pos);
+              raise(ArgError);
+
+            | Some((path, _pos))
+                when path |> FunctionTable.isInFunctionInTable(~functionTable) =>
+              let functionName = Path.name(path);
+              {FunctionArgs.label, functionName};
+
+            | Some((path, _pos))
+                when
+                  functionTable
+                  |> FunctionTable.functionGetKindOfLabel(
+                       ~functionName=currentFunctionName,
+                       ~label=Path.name(path),
+                     )
+                  == Some([]) /* TODO: when kinds are inferred, support and check non-empty kinds */ =>
+              let functionName = Path.name(path);
+              {FunctionArgs.label, functionName};
+
+            | _ =>
+              Stats.logHygieneNamedArgValue(~label, ~pos);
+              raise(ArgError);
+            };
+          functionArg;
+        };
+        let functionArgsOpt =
+          try(Some(functionDefinition.kind |> List.map(getFunctionArg))) {
+          | ArgError => None
+          };
+        switch (functionArgsOpt) {
+        | None => Command.nothing
+        | Some(functionArgs) =>
+          Command.Call(FunctionCall({functionName, functionArgs}), pos)
+          |> evalArgs(~args, ~ctx)
+        };
+      } else if (callee |> isProgressFunction) {
+        Command.Call(ProgressFunction(callee), pos) |> evalArgs(~args, ~ctx);
+      } else {
+        switch (
+          functionTable
+          |> FunctionTable.functionGetKindOfLabel(
+               ~functionName=currentFunctionName,
+               ~label=Path.name(callee),
+             )
+        ) {
+        | Some(kind) when kind == Kind.empty =>
+          Command.Call(
+            FunctionCall(Path.name(callee) |> FunctionCall.noArgs),
+            pos,
+          )
+          |> evalArgs(~args, ~ctx)
+        | Some(_kind) =>
+          // TODO when kinds are extended in future: check that args matches with kind
+          // and create a function call with the appropriate arguments
+          assert(false)
+        | None => expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
+        };
+      };
+    | Texp_apply(expr, args) =>
+      expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
+    | Texp_let(
+        Recursive,
+        [{vb_pat: {pat_desc: Tpat_var(id, _)}, vb_expr}],
+        inExpr,
+      ) =>
+      let oldFunctionName = Ident.name(id);
+      let newFunctionName = currentFunctionName ++ "$" ++ oldFunctionName;
+      functionTable
+      |> FunctionTable.addFunction(~functionName=newFunctionName);
+      let newFunctionDefinition =
+        functionTable
+        |> FunctionTable.getFunctionDefinition(~functionName=newFunctionName);
+      let currentFunctionDefinition =
+        functionTable
+        |> FunctionTable.getFunctionDefinition(
+             ~functionName=currentFunctionName,
+           );
+      newFunctionDefinition.kind = currentFunctionDefinition.kind;
+      let newCtx = {...ctx, currentFunctionName: newFunctionName};
+      Hashtbl.replace(
+        ctx.innerRecursiveFunctions,
+        oldFunctionName,
+        newFunctionName,
+      );
+      newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
+      logItem(
+        "%s termination analysis: adding recursive definition \"%s\"\n",
+        posString,
+        newFunctionName,
+      );
+      inExpr |> expression(~ctx);
+
+    | Texp_let(recFlag, valueBindings, inExpr) =>
+      if (recFlag == Recursive) {
+        Stats.logHygieneNoNestedLetRec(~pos);
+      };
+      let commands =
+        (
+          valueBindings
+          |> List.map((vb: Typedtree.value_binding) =>
+               vb.vb_expr |> expression(~ctx)
+             )
+        )
+        @ [inExpr |> expression(~ctx)];
+      Command.sequence(commands);
+    | Texp_sequence(e1, e2) =>
+      Command.seq(e1 |> expression(~ctx), e2 |> expression(~ctx))
+    | Texp_ifthenelse(e1, e2, eOpt) =>
+      let c1 = e1 |> expression(~ctx);
+      let c2 = e2 |> expression(~ctx);
+      let c3 = eOpt |> expressionOpt(~ctx);
+      Command.seq(c1, Command.nondet([c2, c3]));
+    | Texp_constant(_) => Command.nothing
+    | Texp_construct(_loc, _desc, expressions) =>
+      expressions
+      |> List.map(e => e |> expression(~ctx))
+      |> Command.unorderedSequence
+    | Texp_function({cases}) =>
+      cases |> List.map(case(~ctx)) |> Command.nondet
+
+    | Texp_match(e, cases, [], _) =>
+      Command.seq(
+        e |> expression(~ctx),
+        cases |> List.map(case(~ctx)) |> Command.nondet,
+      )
+    | Texp_match(_, _, [_, ..._] as _casesExn, _) => assert(false)
+
+    | Texp_field(e, _lid, _desc) => e |> expression(~ctx)
+
+    | Texp_record({fields, extended_expression}) =>
+      [
+        extended_expression,
+        ...fields
+           |> Array.to_list
+           |> List.map(
+                (
+                  (
+                    _desc,
+                    recordLabelDefinition: Typedtree.record_label_definition,
+                  ),
+                ) =>
+                switch (recordLabelDefinition) {
+                | Kept(_typeExpr) => None
+                | Overridden(_loc, e) => Some(e)
+                }
+              ),
+      ]
+      |> List.map(expressionOpt(~ctx))
+      |> Command.unorderedSequence
+
+    | Texp_setfield(e1, _loc, _desc, e2) =>
+      [e1, e2] |> List.map(expression(~ctx)) |> Command.unorderedSequence
+
+    | Texp_tuple(expressions) =>
+      expressions |> List.map(expression(~ctx)) |> Command.unorderedSequence
+
+    | Texp_assert(_) => Command.nothing
+
+    | Texp_try(_) => assert(false)
+    | Texp_variant(_) => assert(false)
+    | Texp_array(_) => assert(false)
+    | Texp_while(_) => assert(false)
+    | Texp_for(_) => assert(false)
+    | Texp_send(_) => assert(false)
+    | Texp_new(_) => assert(false)
+    | Texp_instvar(_) => assert(false)
+    | Texp_setinstvar(_) => assert(false)
+    | Texp_override(_) => assert(false)
+    | Texp_letmodule(_) => assert(false)
+    | Texp_letexception(_) => assert(false)
+    | Texp_lazy(_) => assert(false)
+    | Texp_object(_) => assert(false)
+    | Texp_pack(_) => assert(false)
+    | Texp_unreachable => assert(false)
+    | Texp_extension_constructor(_) => assert(false)
+    };
+  }
+  and expressionOpt = (~ctx, eOpt) =>
+    switch (eOpt) {
+    | None => Command.nothing
+    | Some(e) => e |> expression(~ctx)
+    }
+  and evalArgs = (~args, ~ctx, command) => {
+    // Don't assume any evaluation order on the arguments
+    let commands =
+      args |> List.map(((_, eOpt)) => eOpt |> expressionOpt(~ctx));
+    Command.seq(Command.unorderedSequence(commands), command);
+  }
+  and case = (~ctx, {c_guard, c_rhs}: Typedtree.case) =>
+    switch (c_guard) {
+    | None => c_rhs |> expression(~ctx)
+    | Some(e) =>
+      Command.seq(e |> expression(~ctx), c_rhs |> expression(~ctx))
+    };
 };
 
 module CallStack = {
@@ -667,509 +1173,6 @@ module Eval = {
   };
 };
 
-let extractLabelledArgument =
-    (~kindOpt=None, argOpt: option(Typedtree.expression)) =>
-  switch (argOpt) {
-  | Some({exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)}) =>
-    Some((path, pos))
-  | Some({
-      exp_desc:
-        Texp_let(
-          Nonrecursive,
-          [
-            {
-              vb_pat: {pat_desc: Tpat_var(_, _)},
-              vb_expr: {
-                exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _),
-              },
-              vb_loc: {loc_ghost: true},
-            },
-          ],
-          _,
-        ),
-    }) =>
-    Some((path, pos))
-  | Some({
-      exp_desc:
-        Texp_apply(
-          {exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)},
-          args,
-        ),
-    })
-      when kindOpt != None =>
-    let checkArg = ((argLabel: Asttypes.arg_label, argOpt)) => {
-      switch (argLabel, kindOpt) {
-      | (Labelled(l) | Optional(l), Some(kind)) =>
-        kind |> List.for_all(({Kind.label}) => label != l)
-      | _ => true
-      };
-    };
-    if (args |> List.for_all(checkArg)) {
-      Some((path, pos));
-    } else {
-      None;
-    };
-  | _ => None
-  };
-
-module StringSet = Set.Make(String);
-
-module FunctionsCalled = {
-  let traverseExpr = (~callees) => {
-    let super = Tast_mapper.default;
-
-    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
-      switch (e.exp_desc) {
-      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args) =>
-        let functionName = Path.name(callee);
-        callees := StringSet.add(functionName, callees^);
-      | _ => ()
-      };
-      super.expr(self, e);
-    };
-
-    Tast_mapper.{...super, expr};
-  };
-
-  let findCallees = (expression: Typedtree.expression) => {
-    let callees = ref(StringSet.empty);
-    let traverseExpr = traverseExpr(~callees);
-    expression |> traverseExpr.expr(traverseExpr) |> ignore;
-    callees^;
-  };
-};
-
-module AddParametricFunctionsAndFunctionsCallingProgessFunctions = {
-  let traverseExpr = (~functionTable, ~progressFunctions, ~valueBindingsTable) => {
-    let super = Tast_mapper.default;
-
-    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
-      switch (e.exp_desc) {
-      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
-          when callee |> FunctionTable.isInFunctionInTable(~functionTable) =>
-        let functionName = Path.name(callee);
-        args
-        |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
-             switch (argLabel, argOpt |> extractLabelledArgument) {
-             | (Labelled(label), Some((path, pos)))
-                 when
-                   path |> FunctionTable.isInFunctionInTable(~functionTable) =>
-               functionTable
-               |> FunctionTable.addLabelToKind(~functionName, ~label);
-               if (verbose) {
-                 logItem(
-                   "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
-                   pos |> posToString,
-                   functionName,
-                   label,
-                   Path.name(path),
-                 );
-               };
-
-             | _ => ()
-             }
-           );
-      | Texp_apply(
-          {exp_desc: Texp_ident(callee, _, _), exp_loc: {loc_start: pos}},
-          _,
-        ) =>
-        switch (Hashtbl.find_opt(valueBindingsTable, Path.name(callee))) {
-        | None => ()
-        | Some((_, callees)) =>
-          if (!
-                StringSet.is_empty(
-                  StringSet.inter(Lazy.force(callees), progressFunctions),
-                )) {
-            let functionName = Path.name(callee);
-            if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
-              functionTable |> FunctionTable.addFunction(~functionName);
-              if (verbose) {
-                logItem(
-                  "%s termination analysis: extend Function Table with \"%s\" as it calls a progress function\n",
-                  pos |> posToString,
-                  functionName,
-                );
-              };
-            };
-          }
-        }
-      | _ => ()
-      };
-      super.expr(self, e);
-    };
-
-    Tast_mapper.{...super, expr};
-  };
-
-  let run =
-      (
-        ~functionTable,
-        ~progressFunctions,
-        ~valueBindingsTable,
-        expression: Typedtree.expression,
-      ) => {
-    let traverseExpr =
-      traverseExpr(~functionTable, ~progressFunctions, ~valueBindingsTable);
-    expression |> traverseExpr.expr(traverseExpr) |> ignore;
-  };
-};
-
-module ExpressionWellFormed = {
-  let traverseExpr = (~functionTable, ~valueBindingsTable) => {
-    let super = Tast_mapper.default;
-
-    let checkIdent = (~path, ~pos) =>
-      if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
-        Stats.logHygieneOnlyCallDirectly(~path, ~pos);
-      };
-
-    let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
-      switch (e.exp_desc) {
-      | Texp_ident(path, {loc: {loc_start: pos}}, _) =>
-        checkIdent(~path, ~pos);
-        e;
-      | Texp_apply({exp_desc: Texp_ident(functionPath, _, _)}, args) =>
-        let functionName = Path.name(functionPath);
-        args
-        |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) => {
-             switch (argOpt |> extractLabelledArgument) {
-             | Some((path, pos)) =>
-               switch (argLabel) {
-               | Labelled(label) =>
-                 if (functionTable
-                     |> FunctionTable.functionGetKindOfLabel(
-                          ~functionName,
-                          ~label,
-                        )
-                     != None) {
-                   ();
-                 } else {
-                   switch (Hashtbl.find_opt(valueBindingsTable, functionName)) {
-                   | Some((body: Typedtree.expression, _))
-                       when
-                         !(
-                           functionPath
-                           |> FunctionTable.isInFunctionInTable(
-                                ~functionTable,
-                              )
-                         )
-                         && path
-                         |> FunctionTable.isInFunctionInTable(~functionTable) =>
-                     functionTable |> FunctionTable.addFunction(~functionName);
-                     functionTable
-                     |> FunctionTable.addLabelToKind(~functionName, ~label);
-                     if (verbose) {
-                       logItem(
-                         "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
-                         body.exp_loc.loc_start |> posToString,
-                         functionName,
-                         label,
-                         Path.name(path),
-                       );
-                     };
-                   | _ => checkIdent(~path, ~pos)
-                   };
-                 }
-
-               | Optional(_)
-               | Nolabel => checkIdent(~path, ~pos)
-               }
-
-             | _ => ()
-             }
-           });
-        e;
-
-      | _ => super.expr(self, e)
-      };
-
-    Tast_mapper.{...super, expr};
-  };
-
-  let check =
-      (~functionTable, ~valueBindingsTable, expression: Typedtree.expression) => {
-    let traverseExpr = traverseExpr(~functionTable, ~valueBindingsTable);
-    expression |> traverseExpr.expr(traverseExpr) |> ignore;
-  };
-};
-
-module Compile = {
-  type ctx = {
-    currentFunctionName: functionName,
-    functionTable: FunctionTable.t,
-    innerRecursiveFunctions: Hashtbl.t(functionName, functionName),
-    isProgressFunction: Path.t => bool,
-  };
-
-  let rec expression = (~ctx, expr: Typedtree.expression) => {
-    let {currentFunctionName, functionTable, isProgressFunction} = ctx;
-    let pos = expr.exp_loc.loc_start;
-    let posString = pos |> posToString;
-    switch (expr.exp_desc) {
-    | Texp_ident(_) => Command.nothing
-
-    | Texp_apply(
-        {exp_desc: Texp_ident(calleeToRename, l, vd)} as expr,
-        argsToExtend,
-      ) =>
-      let (callee, args) =
-        switch (
-          Hashtbl.find_opt(
-            ctx.innerRecursiveFunctions,
-            Path.name(calleeToRename),
-          )
-        ) {
-        | Some(innerFunctionName) =>
-          let innerFunctionDefinition =
-            functionTable
-            |> FunctionTable.getFunctionDefinition(
-                 ~functionName=innerFunctionName,
-               );
-          let argsFromKind =
-            innerFunctionDefinition.kind
-            |> List.map((entry: Kind.entry) =>
-                 (
-                   Asttypes.Labelled(entry.label),
-                   Some({
-                     ...expr,
-                     exp_desc:
-                       Texp_ident(
-                         Path.Pident(Ident.create(entry.label)),
-                         l,
-                         vd,
-                       ),
-                   }),
-                 )
-               );
-          (
-            Path.Pident(Ident.create(innerFunctionName)),
-            argsFromKind @ argsToExtend,
-          );
-        | None => (calleeToRename, argsToExtend)
-        };
-      if (callee |> FunctionTable.isInFunctionInTable(~functionTable)) {
-        let functionName = Path.name(callee);
-        let functionDefinition =
-          functionTable |> FunctionTable.getFunctionDefinition(~functionName);
-        exception ArgError;
-        let getFunctionArg = ({Kind.label}) => {
-          let argOpt =
-            args
-            |> List.find_opt(arg =>
-                 switch (arg) {
-                 | (Asttypes.Labelled(s), Some(e)) => s == label
-                 | _ => false
-                 }
-               );
-          let argOpt =
-            switch (argOpt) {
-            | Some((_, Some(e))) => Some(e)
-            | _ => None
-            };
-          let functionArg =
-            switch (
-              argOpt
-              |> extractLabelledArgument(
-                   ~kindOpt=Some(functionDefinition.kind),
-                 )
-            ) {
-            | None =>
-              Stats.logHygieneMustHaveNamedArgument(~label, ~pos);
-              raise(ArgError);
-
-            | Some((path, _pos))
-                when path |> FunctionTable.isInFunctionInTable(~functionTable) =>
-              let functionName = Path.name(path);
-              {FunctionArgs.label, functionName};
-
-            | Some((path, _pos))
-                when
-                  functionTable
-                  |> FunctionTable.functionGetKindOfLabel(
-                       ~functionName=currentFunctionName,
-                       ~label=Path.name(path),
-                     )
-                  == Some([]) /* TODO: when kinds are inferred, support and check non-empty kinds */ =>
-              let functionName = Path.name(path);
-              {FunctionArgs.label, functionName};
-
-            | _ =>
-              Stats.logHygieneNamedArgValue(~label, ~pos);
-              raise(ArgError);
-            };
-          functionArg;
-        };
-        let functionArgsOpt =
-          try(Some(functionDefinition.kind |> List.map(getFunctionArg))) {
-          | ArgError => None
-          };
-        switch (functionArgsOpt) {
-        | None => Command.nothing
-        | Some(functionArgs) =>
-          Command.Call(FunctionCall({functionName, functionArgs}), pos)
-          |> evalArgs(~args, ~ctx)
-        };
-      } else if (callee |> isProgressFunction) {
-        Command.Call(ProgressFunction(callee), pos) |> evalArgs(~args, ~ctx);
-      } else {
-        switch (
-          functionTable
-          |> FunctionTable.functionGetKindOfLabel(
-               ~functionName=currentFunctionName,
-               ~label=Path.name(callee),
-             )
-        ) {
-        | Some(kind) when kind == Kind.empty =>
-          Command.Call(
-            FunctionCall(Path.name(callee) |> FunctionCall.noArgs),
-            pos,
-          )
-          |> evalArgs(~args, ~ctx)
-        | Some(_kind) =>
-          // TODO when kinds are extended in future: check that args matches with kind
-          // and create a function call with the appropriate arguments
-          assert(false)
-        | None => expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
-        };
-      };
-    | Texp_apply(expr, args) =>
-      expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
-    | Texp_let(
-        Recursive,
-        [{vb_pat: {pat_desc: Tpat_var(id, _)}, vb_expr}],
-        inExpr,
-      ) =>
-      let oldFunctionName = Ident.name(id);
-      let newFunctionName = currentFunctionName ++ "$" ++ oldFunctionName;
-      functionTable
-      |> FunctionTable.addFunction(~functionName=newFunctionName);
-      let newFunctionDefinition =
-        functionTable
-        |> FunctionTable.getFunctionDefinition(~functionName=newFunctionName);
-      let currentFunctionDefinition =
-        functionTable
-        |> FunctionTable.getFunctionDefinition(
-             ~functionName=currentFunctionName,
-           );
-      newFunctionDefinition.kind = currentFunctionDefinition.kind;
-      let newCtx = {...ctx, currentFunctionName: newFunctionName};
-      Hashtbl.replace(
-        ctx.innerRecursiveFunctions,
-        oldFunctionName,
-        newFunctionName,
-      );
-      newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
-      logItem(
-        "%s termination analysis: adding recursive definition \"%s\"\n",
-        posString,
-        newFunctionName,
-      );
-      inExpr |> expression(~ctx);
-
-    | Texp_let(recFlag, valueBindings, inExpr) =>
-      if (recFlag == Recursive) {
-        Stats.logHygieneNoNestedLetRec(~pos);
-      };
-      let commands =
-        (
-          valueBindings
-          |> List.map((vb: Typedtree.value_binding) =>
-               vb.vb_expr |> expression(~ctx)
-             )
-        )
-        @ [inExpr |> expression(~ctx)];
-      Command.sequence(commands);
-    | Texp_sequence(e1, e2) =>
-      Command.seq(e1 |> expression(~ctx), e2 |> expression(~ctx))
-    | Texp_ifthenelse(e1, e2, eOpt) =>
-      let c1 = e1 |> expression(~ctx);
-      let c2 = e2 |> expression(~ctx);
-      let c3 = eOpt |> expressionOpt(~ctx);
-      Command.seq(c1, Command.nondet([c2, c3]));
-    | Texp_constant(_) => Command.nothing
-    | Texp_construct(_loc, _desc, expressions) =>
-      expressions
-      |> List.map(e => e |> expression(~ctx))
-      |> Command.unorderedSequence
-    | Texp_function({cases}) =>
-      cases |> List.map(case(~ctx)) |> Command.nondet
-
-    | Texp_match(e, cases, [], _) =>
-      Command.seq(
-        e |> expression(~ctx),
-        cases |> List.map(case(~ctx)) |> Command.nondet,
-      )
-    | Texp_match(_, _, [_, ..._] as _casesExn, _) => assert(false)
-
-    | Texp_field(e, _lid, _desc) => e |> expression(~ctx)
-
-    | Texp_record({fields, extended_expression}) =>
-      [
-        extended_expression,
-        ...fields
-           |> Array.to_list
-           |> List.map(
-                (
-                  (
-                    _desc,
-                    recordLabelDefinition: Typedtree.record_label_definition,
-                  ),
-                ) =>
-                switch (recordLabelDefinition) {
-                | Kept(_typeExpr) => None
-                | Overridden(_loc, e) => Some(e)
-                }
-              ),
-      ]
-      |> List.map(expressionOpt(~ctx))
-      |> Command.unorderedSequence
-
-    | Texp_setfield(e1, _loc, _desc, e2) =>
-      [e1, e2] |> List.map(expression(~ctx)) |> Command.unorderedSequence
-
-    | Texp_tuple(expressions) =>
-      expressions |> List.map(expression(~ctx)) |> Command.unorderedSequence
-
-    | Texp_assert(_) => Command.nothing
-
-    | Texp_try(_) => assert(false)
-    | Texp_variant(_) => assert(false)
-    | Texp_array(_) => assert(false)
-    | Texp_while(_) => assert(false)
-    | Texp_for(_) => assert(false)
-    | Texp_send(_) => assert(false)
-    | Texp_new(_) => assert(false)
-    | Texp_instvar(_) => assert(false)
-    | Texp_setinstvar(_) => assert(false)
-    | Texp_override(_) => assert(false)
-    | Texp_letmodule(_) => assert(false)
-    | Texp_letexception(_) => assert(false)
-    | Texp_lazy(_) => assert(false)
-    | Texp_object(_) => assert(false)
-    | Texp_pack(_) => assert(false)
-    | Texp_unreachable => assert(false)
-    | Texp_extension_constructor(_) => assert(false)
-    };
-  }
-  and expressionOpt = (~ctx, eOpt) =>
-    switch (eOpt) {
-    | None => Command.nothing
-    | Some(e) => e |> expression(~ctx)
-    }
-  and evalArgs = (~args, ~ctx, command) => {
-    // Don't assume any evaluation order on the arguments
-    let commands =
-      args |> List.map(((_, eOpt)) => eOpt |> expressionOpt(~ctx));
-    Command.seq(Command.unorderedSequence(commands), command);
-  }
-  and case = (~ctx, {c_guard, c_rhs}: Typedtree.case) =>
-    switch (c_guard) {
-    | None => c_rhs |> expression(~ctx)
-    | Some(e) =>
-      Command.seq(e |> expression(~ctx), c_rhs |> expression(~ctx))
-    };
-};
-
 let progressFunctionsFromAttributes = attributes => {
   let lidToString = lid => lid |> Longident.flatten |> String.concat(".");
   let isProgress = (==)("progress");
@@ -1207,7 +1210,7 @@ let traverseAst = (~valueBindingsTable) => {
     |> List.iter((vb: Typedtree.value_binding) =>
          switch (vb.vb_pat.pat_desc) {
          | Tpat_var(id, _) =>
-           let callees = lazy(FunctionsCalled.findCallees(vb.vb_expr));
+           let callees = lazy(FindFunctionsCalled.findCallees(vb.vb_expr));
            Hashtbl.replace(
              valueBindingsTable,
              Ident.name(id),
@@ -1287,7 +1290,7 @@ let traverseAst = (~valueBindingsTable) => {
       recursiveDefinitions
       |> List.iter(((_, body)) => {
            body
-           |> AddParametricFunctionsAndFunctionsCallingProgessFunctions.run(
+           |> ExtendFunctionTable.run(
                 ~functionTable,
                 ~progressFunctions,
                 ~valueBindingsTable,
@@ -1297,7 +1300,10 @@ let traverseAst = (~valueBindingsTable) => {
       recursiveDefinitions
       |> List.iter(((_, body)) => {
            body
-           |> ExpressionWellFormed.check(~functionTable, ~valueBindingsTable)
+           |> CheckExpressionWellFormed.run(
+                ~functionTable,
+                ~valueBindingsTable,
+              )
          });
 
       functionTable
