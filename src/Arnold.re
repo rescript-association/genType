@@ -35,7 +35,7 @@
 //       C1 ; ... ; Cn       Sequential Composition
 //       C1 | ... | Cn       Nondeterministic Choice
 //       { C1, ..., Cn }     No Evaluation Order
-// P := f1<args1> = C1       Program
+// FT := f1<args1> = C1      Function Table
 //      ...
 //      fn<argsn> = Cn
 // Stack := f1<args1> ... fn<argsn>
@@ -52,45 +52,14 @@ module StringSet = Set.Make(String);
 
 // Type Definitions
 
-type functionName = string;
-
-type progressFunction = Path.t;
-
-module Kind = {
-  type t = list(entry)
-  and entry = {
-    label: string,
-    k: t,
-  };
-
-  let empty: t = [];
-
-  let hasLabel = (~label, k: t) =>
-    k |> List.exists(entry => entry.label == label);
-
-  let rec entryToString = ({label, k}) => {
-    k == [] ? label : label ++ ":" ++ (k |> toString);
-  }
-
-  and toString = (kind: t) =>
-    kind == []
-      ? ""
-      : "<"
-        ++ (kind |> List.map(entryToString) |> String.concat(", "))
-        ++ ">";
-
-  let addLabelWithEmptyKind = (~label, kind) =>
-    if (!(kind |> hasLabel(~label))) {
-      [{label, k: empty}, ...kind] |> List.sort(compare);
-    } else {
-      kind;
-    };
+module FunctionName = {
+  type t = string;
 };
 
 module FunctionArgs = {
   type arg = {
     label: string,
-    functionName,
+    functionName: FunctionName.t,
   };
 
   type t = list(arg);
@@ -139,7 +108,7 @@ module FunctionArgs = {
 
 module FunctionCall = {
   type t = {
-    functionName,
+    functionName: FunctionName.t,
     functionArgs: FunctionArgs.t,
   };
 
@@ -288,6 +257,8 @@ module Stats = {
 };
 
 module Command = {
+  type progressFunction = Path.t;
+
   type call =
     | ProgressFunction(progressFunction)
     | FunctionCall(FunctionCall.t);
@@ -362,13 +333,44 @@ module Command = {
     };
 };
 
+module Kind = {
+  type t = list(entry)
+  and entry = {
+    label: string,
+    k: t,
+  };
+
+  let empty: t = [];
+
+  let hasLabel = (~label, k: t) =>
+    k |> List.exists(entry => entry.label == label);
+
+  let rec entryToString = ({label, k}) => {
+    k == [] ? label : label ++ ":" ++ (k |> toString);
+  }
+
+  and toString = (kind: t) =>
+    kind == []
+      ? ""
+      : "<"
+        ++ (kind |> List.map(entryToString) |> String.concat(", "))
+        ++ ">";
+
+  let addLabelWithEmptyKind = (~label, kind) =>
+    if (!(kind |> hasLabel(~label))) {
+      [{label, k: empty}, ...kind] |> List.sort(compare);
+    } else {
+      kind;
+    };
+};
+
 module FunctionTable = {
   type functionDefinition = {
     mutable body: option(Command.t),
     mutable kind: Kind.t,
   };
 
-  type t = Hashtbl.t(functionName, functionDefinition);
+  type t = Hashtbl.t(FunctionName.t, functionDefinition);
 
   let create = (): t => Hashtbl.create(1);
 
@@ -661,9 +663,9 @@ module CheckExpressionWellFormed = {
 
 module Compile = {
   type ctx = {
-    currentFunctionName: functionName,
+    currentFunctionName: FunctionName.t,
     functionTable: FunctionTable.t,
-    innerRecursiveFunctions: Hashtbl.t(functionName, functionName),
+    innerRecursiveFunctions: Hashtbl.t(FunctionName.t, FunctionName.t),
     isProgressFunction: Path.t => bool,
   };
 
