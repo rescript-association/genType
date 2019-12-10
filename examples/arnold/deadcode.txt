@@ -214,10 +214,16 @@ Termination analysis for "parseListIntTailRecursive"
   TestCyberTruck.re:230:15 termination analysis: "parseInt" returns Progress trace Parser.next:Progress
   TestCyberTruck.re:232:2 termination analysis: "parseListIntTailRecursive$loop" returns NoProgress trace _
   
+Function Table:
+    loopAfterProgress: loopAfterProgress
+    testLoopAfterProgress: ( +progress; loopAfterProgress )
+  
+Termination analysis for "testLoopAfterProgress"
+  
 Termination Analysis Stats
   Files:24
-  Recursive Blocks:14
-  Functions:26
+  Recursive Blocks:15
+  Functions:28
   Infinite Loops:8
   Hygiene Errors:1
   Cache Hits:1/22

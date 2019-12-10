@@ -231,3 +231,10 @@ and parseListIntTailRecursive = p => {
     };
   loop(p, []);
 };
+
+[@progress progress]
+let rec testLoopAfterProgress = () => {
+  progress();
+  loopAfterProgress();
+}
+and loopAfterProgress = () => loopAfterProgress();

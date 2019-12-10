@@ -268,6 +268,18 @@ function parseListIntTailRecursive(p) {
   };
 }
 
+function loopAfterProgress(_param) {
+  while(true) {
+    _param = /* () */0;
+    continue ;
+  };
+}
+
+function testLoopAfterProgress(param) {
+  progress(/* () */0);
+  return loopAfterProgress(/* () */0);
+}
+
 var progress2 = progress;
 
 export {
@@ -300,6 +312,8 @@ export {
   parseListExpression ,
   parseListExpression2 ,
   parseListIntTailRecursive ,
+  testLoopAfterProgress ,
+  loopAfterProgress ,
   
 }
 /* counter Not a pure module */
