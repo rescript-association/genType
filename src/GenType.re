@@ -14,7 +14,7 @@ type cliCommand =
   | DCE
   | NoOp
   | Rm(string)
-  | Termination;
+  | Termination(option(string));
 
 let cli = () => {
   let bsVersion = ref(None);
@@ -49,8 +49,8 @@ let cli = () => {
   and setDCE = () => {
     DCE |> setCliCommand;
   }
-  and setTermination = () => {
-    Termination |> setCliCommand;
+  and setTermination = cmtFile => {
+    Termination(cmtFile) |> setCliCommand;
   }
   and speclist = [
     (
@@ -62,7 +62,16 @@ let cli = () => {
     ("-cmt-add", Arg.String(setAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setRm), "remove a .cmt[i] file"),
     ("-dce", Arg.Unit(setDCE), "experimental DCE"),
-    ("-termination", Arg.Unit(setTermination), "experimental termination"),
+    (
+      "-termination",
+      Arg.Unit(() => setTermination(None)),
+      "experimental termination",
+    ),
+    (
+      "-termination-cmt",
+      Arg.String(s => setTermination(Some(s))),
+      "file.cmt experimental termination",
+    ),
     (
       "-version",
       Arg.Unit(versionAndExit),
@@ -145,8 +154,8 @@ let cli = () => {
       };
       exit(0);
 
-    | DCE => DeadCode.runAnalysis()
-    | Termination => DeadCode.runTerminationAnalysis()
+    | DCE => DeadCode.runAnalysis(~cmtFileOpt=None)
+    | Termination(cmtFileOpt) => DeadCode.runTerminationAnalysis(~cmtFileOpt)
     };
 
   Arg.parse(speclist, print_endline, usage);

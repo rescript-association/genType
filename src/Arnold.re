@@ -831,11 +831,13 @@ module Compile = {
         newFunctionName,
       );
       newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
-      logItem(
-        "%s termination analysis: adding recursive definition \"%s\"\n",
-        posString,
-        newFunctionName,
-      );
+      if (verbose) {
+        logItem(
+          "%s termination analysis: adding recursive definition \"%s\"\n",
+          posString,
+          newFunctionName,
+        );
+      };
       inExpr |> expression(~ctx);
 
     | Texp_let(recFlag, valueBindings, inExpr) =>

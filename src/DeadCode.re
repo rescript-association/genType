@@ -96,7 +96,7 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
 
   FileHash.addFile(fileReferences, sourceFile);
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  loadFile(~sourceFile, cmtFilePath);
+  cmtFilePath |> loadFile(~sourceFile);
 };
 
 let aliveWhitelist = ["DeadTestWhitelist"];
@@ -114,42 +114,49 @@ let posInAliveWhitelist = (pos: Lexing.position) => {
   Hashtbl.mem(aliveWhitelistTable, moduleName);
 };
 
-let runAnalysis = () => {
-  Paths.setProjectRoot();
-  let lib_bs = {
-    GenTypeCommon.projectRoot^ +++ "lib" +++ "bs";
-  };
-
-  let sourceDirs = ModuleResolver.readSourceDirs(~configSources=None);
-  sourceDirs.dirs
-  |> List.iter(sourceDir =>
-       if (sourceDir |> whitelistSourceDir) {
-         let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
-         let files =
-           switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
-           | files => files
-           | exception (Sys_error(_)) => []
-           };
-         let cmtFiles =
-           files
-           |> List.filter(x =>
-                Filename.check_suffix(x, ".cmt")
-                || Filename.check_suffix(x, ".cmti")
-              );
-         cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
-       }
-     );
-
-  if (dce^) {
-    reportResults(~posInAliveWhitelist);
-  };
-  if (analyzeTermination^) {
+let runAnalysis = (~cmtFileOpt) =>
+  switch (cmtFileOpt, analyzeTermination^) {
+  | (Some(cmtFile), true) =>
+    let cmtFilePath = cmtFile;
+    let sourceFile = Filename.basename(cmtFile) ++ ".ml";
+    cmtFilePath |> loadFile(~sourceFile);
     Arnold.reportResults();
-  };
-};
+  | _ =>
+    Paths.setProjectRoot();
+    let lib_bs = {
+      GenTypeCommon.projectRoot^ +++ "lib" +++ "bs";
+    };
 
-let runTerminationAnalysis = () => {
+    let sourceDirs = ModuleResolver.readSourceDirs(~configSources=None);
+    sourceDirs.dirs
+    |> List.iter(sourceDir =>
+         if (sourceDir |> whitelistSourceDir) {
+           let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
+           let files =
+             switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
+             | files => files
+             | exception (Sys_error(_)) => []
+             };
+           let cmtFiles =
+             files
+             |> List.filter(x =>
+                  Filename.check_suffix(x, ".cmt")
+                  || Filename.check_suffix(x, ".cmti")
+                );
+           cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
+         }
+       );
+
+    if (dce^) {
+      reportResults(~posInAliveWhitelist);
+    };
+    if (analyzeTermination^) {
+      Arnold.reportResults();
+    };
+  };
+
+let runTerminationAnalysis = (~cmtFileOpt) => {
   dce := false;
   analyzeTermination := true;
-  runAnalysis();
+  runAnalysis(~cmtFileOpt);
 };
