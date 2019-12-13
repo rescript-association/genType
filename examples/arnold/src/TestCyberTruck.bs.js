@@ -280,7 +280,14 @@ function testLoopAfterProgress(param) {
   return loopAfterProgress(/* () */0);
 }
 
-var progress2 = progress;
+throw [
+      Caml_builtin_exceptions.assert_failure,
+      /* tuple */[
+        "TestCyberTruck.re",
+        252,
+        17
+      ]
+    ];
 
 export {
   progress ,
@@ -314,6 +321,7 @@ export {
   parseListIntTailRecursive ,
   testLoopAfterProgress ,
   loopAfterProgress ,
+  UITermination ,
   
 }
 /* counter Not a pure module */

@@ -238,3 +238,59 @@ let rec testLoopAfterProgress = () => {
   loopAfterProgress();
 }
 and loopAfterProgress = () => loopAfterProgress();
+
+module UITermination = {
+  type state = int;
+  type setState = (~f: state => option(state)) => unit;
+
+  type onClick = unit => unit;
+  type dom;
+
+  let nothing: onClick = () => ();
+
+  type div = (~text: string, ~onClick: onClick) => dom;
+  let div: div = assert(false);
+
+  let initState = n => n == 0 ? Some(42) : None;
+  let increment = n => Some(n + 1);
+
+  let incrementOnClick = (~setState: setState): onClick =>
+    () => setState(~f=increment);
+
+  let counter = (state: state, ~setState: setState) => {
+    setState(~f=initState);
+    div(~text=string_of_int(state), ~onClick=() => setState(~f=increment));
+  };
+
+  [@progress initState]
+  let rec counterCompiled = (state: state) => {
+    switch (initState(state)) {
+    | None => ()
+    | Some(newState) => ignore(counterCompiled(newState))
+    };
+    ignore(string_of_int(state));
+  }
+
+  and onClick1 = state =>
+    switch (increment(state)) {
+    | None => ()
+    | Some(newState) => counterCompiled(newState)
+    };
+
+  let countRenders = (state: state, ~setState: setState) => {
+    setState(~f=increment);
+    div(
+      ~text="I have been rendered " ++ string_of_int(state) ++ " times",
+      ~onClick=nothing,
+    );
+  };
+
+  [@progress initState]
+  let rec countRendersCompiled = (state: state) => {
+    switch (increment(state)) {
+    | None => ()
+    | Some(newState) => ignore(countRendersCompiled(newState))
+    };
+    ignore("I have been rendered " ++ string_of_int(state) ++ " times");
+  };
+};

@@ -220,10 +220,24 @@ Function Table:
   
 Termination analysis for "testLoopAfterProgress"
   
+Function Table:
+    counterCompiled: ( +initState; ( _ | counterCompiled ) )
+    onClick1: ( _ | counterCompiled )
+  
+Termination analysis for "counterCompiled"
+  
+Function Table:
+    countRendersCompiled: ( _ | countRendersCompiled )
+  
+Termination analysis for "countRendersCompiled"
+  TestCyberTruck.re:292:31 termination error: possible infinite loop when calling "countRendersCompiled"
+    CallStack:
+    1 at countRendersCompiled (TestCyberTruck.re:289:33)
+  
 Termination Analysis Stats
   Files:24
-  Recursive Blocks:15
-  Functions:28
-  Infinite Loops:8
+  Recursive Blocks:17
+  Functions:31
+  Infinite Loops:9
   Hygiene Errors:1
   Cache Hits:1/22
