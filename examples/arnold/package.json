@@ -1,0 +1,15 @@
+{
+  "name": "typescript-react-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node ../run_bsb.js -make-world -w",
+    "build": "node ../run_bsb.js -make-world",
+    "clean": "node ../clean_bsb.js",
+    "test": "Debug=1 time ../GenType.exe -termination >deadcode.txt",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "bs-platform": "7.0.1"
+  }
+}

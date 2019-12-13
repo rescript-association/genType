@@ -1,7 +1,12 @@
 /* Adapted from https://github.com/LexiFi/dead_code_analyzer */
 
+// Turn on the main dead code analysis
+let dce = ref(true);
+
 // Turn on type analysis
-let analyzeTypes = true;
+let analyzeTypes = ref(true);
+
+let analyzeTermination = ref(false);
 
 let analyzeExternals = false;
 
@@ -33,7 +38,7 @@ type analysisKind =
   | Type;
 
 /* Location printer: `filename:line: ' */
-let posToString = (~printCol=false, ~shortFile=false, pos: Lexing.position) => {
+let posToString = (~printCol=true, ~shortFile=true, pos: Lexing.position) => {
   let file = pos.Lexing.pos_fname;
   let line = pos.Lexing.pos_lnum;
   let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
@@ -81,8 +86,8 @@ module PosHash = {
       GenTypeCommon.logItem(
         "%smergeSet %s --> %s\n",
         analysisKind == Type ? "[type] " : "",
-        from |> posToString(~printCol=true, ~shortFile=true),
-        to_ |> posToString(~printCol=true, ~shortFile=true),
+        from |> posToString,
+        to_ |> posToString,
       );
     };
   };
@@ -145,8 +150,8 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
   if (verbose) {
     GenTypeCommon.logItem(
       "addValueReference %s --> %s\n",
-      posUsage |> posToString(~printCol=true, ~shortFile=true),
-      posDeclaration |> posToString(~printCol=true, ~shortFile=true),
+      posUsage |> posToString,
+      posDeclaration |> posToString,
     );
   };
   PosHash.addSet(valueReferences, posDeclaration, posUsage);
@@ -264,7 +269,7 @@ let export = (~analysisKind, ~path, ~id, ~loc) => {
         "%sexport %s %s\n",
         analysisKind == Type ? "[type] " : "",
         id.name,
-        pos |> posToString(~printCol=true, ~shortFile=true),
+        pos |> posToString,
       );
     };
 
@@ -513,7 +518,7 @@ let reportDead =
           let refsString =
             referencesToLoc
             |> PosSet.elements
-            |> List.map(posToString(~printCol=true, ~shortFile=true))
+            |> List.map(posToString)
             |> String.concat(", ");
           GenTypeCommon.logItem(
             "%s: %d references (%s)\n",

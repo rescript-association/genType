@@ -26,7 +26,7 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       export(~analysisKind=Value, ~path, ~id, ~loc=val_loc);
     };
   | Sig_type(id, t, _) =>
-    if (analyzeTypes) {
+    if (analyzeTypes^) {
       DeadType.collectTypeExport(~path=[id, ...path], t);
     }
   | (
@@ -61,7 +61,6 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 
 let collectExpr = (super, self, e: Typedtree.expression) => {
   let posUsage = e.exp_loc.loc_start;
-  open Ident;
   switch (e.exp_desc) {
   | Texp_ident(
       path,
@@ -93,7 +92,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       },
       _,
     ) =>
-    if (analyzeTypes) {
+    if (analyzeTypes^) {
       DeadType.addTypeReference(~posDeclaration, ~posUsage);
     }
 
@@ -128,7 +127,7 @@ let collectValueReferences = {
        );
   let type_declaration = (self, typeDeclaration: Typedtree.type_declaration) => {
     DeadType.processTypeDeclaration(typeDeclaration);
-    super.Tast_mapper.type_declaration(self, typeDeclaration);
+    super.type_declaration(self, typeDeclaration);
   };
   let structure_item = (self, structureItem: Typedtree.structure_item) => {
     let oldModulePath = DeadType.modulePath^;
@@ -137,7 +136,7 @@ let collectValueReferences = {
       DeadType.modulePath := [mb_name.txt, ...DeadType.modulePath^]
     | _ => ()
     };
-    let result = super.Tast_mapper.structure_item(self, structureItem);
+    let result = super.structure_item(self, structureItem);
     DeadType.modulePath := oldModulePath;
     result;
   };
@@ -213,7 +212,7 @@ let processStructure =
           GenTypeCommon.logItem(
             "%sclean %s\n",
             analysisKind == Type ? "[type] " : "",
-            pos |> posToString(~printCol=true, ~shortFile=true),
+            pos |> posToString,
           );
         };
 

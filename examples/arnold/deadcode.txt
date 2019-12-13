@@ -1,0 +1,229 @@
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/misc.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parse.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parse.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/arg_helper.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/clflags.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/asttypes.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/ast_helper.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/warnings.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/syntaxerr.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/numbers.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexer.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/location.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/profile.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/longident.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsetree.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexer.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/pprintast.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/arg_helper.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexing.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/asttypes.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/location.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsing.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/terminfo.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/misc.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/longident.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/numbers.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/config.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/printast.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/identifiable.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/clflags.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsing.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsetree.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/identifiable.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/printast.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/docstrings.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/ast_helper.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/warnings.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/profile.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parser.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/syntaxerr.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/terminfo.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parser.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/docstrings.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexing.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/pprintast.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/TestCyberTruck.cmt
+  
+Function Table:
+    justReturn: _
+  
+Termination analysis for "justReturn"
+  
+Function Table:
+    alwaysLoop: alwaysLoop
+  
+Termination analysis for "alwaysLoop"
+  TestCyberTruck.re:27:27 termination error: possible infinite loop when calling "alwaysLoop"
+    CallStack:
+    1 at alwaysLoop (TestCyberTruck.re:27:21)
+  
+Function Table:
+    alwaysProgress: ( +progress; alwaysProgress )
+  
+Termination analysis for "alwaysProgress"
+  
+Function Table:
+    alwaysProgressWrongOrder: ( alwaysProgressWrongOrder; +progress )
+  
+Termination analysis for "alwaysProgressWrongOrder"
+  TestCyberTruck.re:38:2 termination error: possible infinite loop when calling "alwaysProgressWrongOrder"
+    CallStack:
+    1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
+  TestCyberTruck.re:45:14 hygiene error: "doNotAlias" can only be called directly, or passed as labeled argument.
+  
+Function Table:
+    doNotAlias: _
+  
+Termination analysis for "doNotAlias"
+  
+Function Table:
+    progressOnBothBranches: ( ( +progress | +progress2 ); progressOnBothBranches )
+  
+Termination analysis for "progressOnBothBranches"
+  
+Function Table:
+    progressOnOneBranch: ( ( _ | +progress ); progressOnOneBranch )
+  
+Termination analysis for "progressOnOneBranch"
+  TestCyberTruck.re:66:2 termination error: possible infinite loop when calling "progressOnOneBranch"
+    CallStack:
+    1 at progressOnOneBranch (TestCyberTruck.re:62:30)
+  TestCyberTruck.re:78:38 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
+  
+Function Table:
+    callParseFunction<parseFunction>: parseFunction
+    testParametricFunction: ( ( _ | +progress ); testParametricFunction2 )
+    testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
+  
+Termination analysis for "testParametricFunction"
+  TestCyberTruck.re:75:2 termination analysis: cache miss for "testParametricFunction2"
+  TestCyberTruck.re:77:35 termination analysis: cache miss for "callParseFunction<parseFunction:testParametricFunction>"
+  TestCyberTruck.re:80:47 termination error: possible infinite loop when calling "parseFunction" which is "testParametricFunction"
+    CallStack:
+    3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:77:35)
+    2 at testParametricFunction2 (TestCyberTruck.re:75:2)
+    1 at testParametricFunction (TestCyberTruck.re:71:33)
+  TestCyberTruck.re:77:35 termination analysis: "callParseFunction<parseFunction:testParametricFunction>" returns NoProgress trace parseFunction:NoProgress
+  TestCyberTruck.re:75:2 termination analysis: "testParametricFunction2" returns NoProgress trace callParseFunction<parseFunction:testParametricFunction>:NoProgress
+  
+Function Table:
+    doNothing: _
+    testCacheHit: ( ( _ | ( doNothing; doNothing; +Progress.Nested.f ) ); testCacheHit )
+  
+Termination analysis for "testCacheHit"
+  TestCyberTruck.re:85:4 termination analysis: cache miss for "doNothing"
+  TestCyberTruck.re:85:4 termination analysis: "doNothing" returns NoProgress trace _
+  TestCyberTruck.re:86:4 termination analysis: cache hit for "doNothing"
+  TestCyberTruck.re:89:2 termination error: possible infinite loop when calling "testCacheHit"
+    CallStack:
+    1 at testCacheHit (TestCyberTruck.re:83:23)
+  
+Function Table:
+    evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight}
+  
+Termination analysis for "evalOrderIsNotLeftToRight"
+  TestCyberTruck.re:97:30 termination error: possible infinite loop when calling "evalOrderIsNotLeftToRight"
+    CallStack:
+    1 at evalOrderIsNotLeftToRight (TestCyberTruck.re:95:36)
+  
+Function Table:
+    evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress}
+  
+Termination analysis for "evalOrderIsNotRightToLeft"
+  TestCyberTruck.re:104:18 termination error: possible infinite loop when calling "evalOrderIsNotRightToLeft"
+    CallStack:
+    1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
+  
+Function Table:
+    butFirstArgumentIsAlwaysEvaluated: ( +progress; butFirstArgumentIsAlwaysEvaluated )
+  
+Termination analysis for "butFirstArgumentIsAlwaysEvaluated"
+  
+Function Table:
+    butSecondArgumentIsAlwaysEvaluated: ( +progress; butSecondArgumentIsAlwaysEvaluated )
+  
+Termination analysis for "butSecondArgumentIsAlwaysEvaluated"
+  TestCyberTruck.re:214:18 termination analysis: extend Function Table with "parseInt" as it calls a progress function
+  TestCyberTruck.re:174:16 termination analysis: extend Function Table with "parseList" as parametric ~f=parseInt
+  TestCyberTruck.re:225:37 termination analysis: adding recursive definition "parseListIntTailRecursive$loop"
+  TestCyberTruck.re:174:37 termination analysis: adding recursive definition "parseList$loop"
+  
+Function Table:
+    parseExpression: ( ( +Parser.next; parseExpression; parseExpression ) | parseInt )
+    parseInt: +Parser.next
+    parseList<f>: parseList$loop<f:f>
+    parseList$loop<f>: ( _ | ( f; parseList$loop<f:f> ) )
+    parseListExpression: parseList<f:parseExpression>
+    parseListExpression2: ( parseExpression; parseList<f:parseExpression> )
+    parseListInt: parseList<f:parseInt>
+    parseListIntTailRecursive: parseListIntTailRecursive$loop
+    parseListIntTailRecursive$loop: ( _ | ( parseInt; parseListIntTailRecursive$loop ) )
+    parseListListInt: parseList<f:parseListInt>
+  
+Termination analysis for "parseListInt"
+  TestCyberTruck.re:199:28 termination analysis: cache miss for "parseList<f:parseInt>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseInt>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:179:17 termination analysis: "parseInt" returns Progress trace Parser.next:Progress
+  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseInt>" returns NoProgress trace _
+  TestCyberTruck.re:199:28 termination analysis: "parseList<f:parseInt>" returns NoProgress trace parseList$loop<f:f>:NoProgress
+  
+Termination analysis for "parseListListInt"
+  TestCyberTruck.re:202:28 termination analysis: cache miss for "parseList<f:parseListInt>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseListInt>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseListInt"
+  TestCyberTruck.re:199:28 termination analysis: cache miss for "parseList<f:parseInt>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseInt>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:179:17 termination analysis: "parseInt" returns Progress trace Parser.next:Progress
+  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseInt>" returns NoProgress trace _
+  TestCyberTruck.re:199:28 termination analysis: "parseList<f:parseInt>" returns NoProgress trace parseList$loop<f:f>:NoProgress
+  TestCyberTruck.re:179:17 termination analysis: "parseListInt" returns NoProgress trace parseList<f:parseInt>:NoProgress
+  TestCyberTruck.re:180:14 termination error: possible infinite loop when calling "parseList$loop<f:f>" which is "parseList$loop<f:parseListInt>"
+    CallStack:
+    3 at parseList$loop<f:parseListInt> (TestCyberTruck.re:183:2)
+    2 at parseList<f:parseListInt> (TestCyberTruck.re:202:28)
+    1 at parseListListInt (TestCyberTruck.re:202:23)
+  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseListInt>" returns NoProgress trace _
+  TestCyberTruck.re:202:28 termination analysis: "parseList<f:parseListInt>" returns NoProgress trace parseList$loop<f:f>:NoProgress
+  
+Termination analysis for "parseExpression"
+  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:214:18 termination analysis: "parseInt" returns Progress trace Parser.next:Progress
+  
+Termination analysis for "parseListExpression"
+  TestCyberTruck.re:219:31 termination analysis: cache miss for "parseList<f:parseExpression>"
+  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
+  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseExpression"
+  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:214:18 termination analysis: "parseInt" returns Progress trace Parser.next:Progress
+  TestCyberTruck.re:179:17 termination analysis: "parseExpression" returns Progress trace ((Parser.next:Progress); parseInt:Progress)
+  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseExpression>" returns NoProgress trace _
+  TestCyberTruck.re:219:31 termination analysis: "parseList<f:parseExpression>" returns NoProgress trace parseList$loop<f:f>:NoProgress
+  
+Termination analysis for "parseListExpression2"
+  TestCyberTruck.re:222:48 termination analysis: cache miss for "parseExpression"
+  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:214:18 termination analysis: "parseInt" returns Progress trace Parser.next:Progress
+  TestCyberTruck.re:222:48 termination analysis: "parseExpression" returns Progress trace ((Parser.next:Progress); parseInt:Progress)
+  
+Termination analysis for "parseListIntTailRecursive"
+  TestCyberTruck.re:232:2 termination analysis: cache miss for "parseListIntTailRecursive$loop"
+  TestCyberTruck.re:230:15 termination analysis: cache miss for "parseInt"
+  TestCyberTruck.re:230:15 termination analysis: "parseInt" returns Progress trace Parser.next:Progress
+  TestCyberTruck.re:232:2 termination analysis: "parseListIntTailRecursive$loop" returns NoProgress trace _
+  
+Function Table:
+    loopAfterProgress: loopAfterProgress
+    testLoopAfterProgress: ( +progress; loopAfterProgress )
+  
+Termination analysis for "testLoopAfterProgress"
+  
+Termination Analysis Stats
+  Files:24
+  Recursive Blocks:15
+  Functions:28
+  Infinite Loops:8
+  Hygiene Errors:1
+  Cache Hits:1/22

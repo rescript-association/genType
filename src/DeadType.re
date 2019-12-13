@@ -34,8 +34,8 @@ let addTypeReference = (~posDeclaration, ~posUsage) => {
   if (verbose) {
     GenTypeCommon.logItem(
       "[type] addTypeReference %s --> %s\n",
-      posUsage |> posToString(~printCol=true, ~shortFile=true),
-      posDeclaration |> posToString(~printCol=true, ~shortFile=true),
+      posUsage |> posToString,
+      posDeclaration |> posToString,
     );
   };
   PosHash.addSet(typeReferences, posDeclaration, posUsage);

@@ -13,7 +13,8 @@ type cliCommand =
   | Clean
   | DCE
   | NoOp
-  | Rm(string);
+  | Rm(string)
+  | Termination;
 
 let cli = () => {
   let bsVersion = ref(None);
@@ -48,6 +49,9 @@ let cli = () => {
   and setDCE = () => {
     DCE |> setCliCommand;
   }
+  and setTermination = () => {
+    Termination |> setCliCommand;
+  }
   and speclist = [
     (
       "-bs-version",
@@ -58,6 +62,7 @@ let cli = () => {
     ("-cmt-add", Arg.String(setAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setRm), "remove a .cmt[i] file"),
     ("-dce", Arg.Unit(setDCE), "experimental DCE"),
+    ("-termination", Arg.Unit(setTermination), "experimental termination"),
     (
       "-version",
       Arg.Unit(versionAndExit),
@@ -141,6 +146,7 @@ let cli = () => {
       exit(0);
 
     | DCE => DeadCode.runAnalysis()
+    | Termination => DeadCode.runTerminationAnalysis()
     };
 
   Arg.parse(speclist, print_endline, usage);
