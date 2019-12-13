@@ -1,4 +1,4 @@
-# master
+# 3.7.0
 - Emit in comments the source file from which the .gen file was generated.
 
 # 3.6.0
