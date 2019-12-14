@@ -1,48 +1,3 @@
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/misc.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parse.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parse.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/arg_helper.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/clflags.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/asttypes.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/ast_helper.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/warnings.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/syntaxerr.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/numbers.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexer.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/location.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/profile.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/longident.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsetree.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexer.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/pprintast.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/arg_helper.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexing.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/asttypes.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/location.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsing.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/terminfo.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/misc.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/longident.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/numbers.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/config.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/printast.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/identifiable.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/clflags.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsing.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parsetree.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/identifiable.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/printast.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/docstrings.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/ast_helper.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/warnings.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/profile.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parser.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/syntaxerr.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/terminfo.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/parser.cmti
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/docstrings.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/lexing.cmt
-  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/ocaml/pprintast.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/TestCyberTruck.cmt
   
 Function Table:
@@ -235,7 +190,7 @@ Termination analysis for "countRendersCompiled"
     1 at countRendersCompiled (TestCyberTruck.re:289:33)
   
 Termination Analysis Stats
-  Files:24
+  Files:1
   Recursive Blocks:17
   Functions:31
   Infinite Loops:9
