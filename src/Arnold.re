@@ -642,7 +642,7 @@ module ExtendFunctionTable = {
         let pos = e.exp_loc.loc_start;
         switch (Hashtbl.find_opt(valueBindingsTable, Path.name(callee))) {
         | None => ()
-        | Some((_, callees)) =>
+        | Some((id_pos, _, callees)) =>
           if (!
                 StringSet.is_empty(
                   StringSet.inter(Lazy.force(callees), progressFunctions),
@@ -652,9 +652,10 @@ module ExtendFunctionTable = {
               functionTable |> FunctionTable.addFunction(~functionName);
               if (verbose) {
                 logItem(
-                  "%s termination analysis: extend Function Table with \"%s\" as it calls a progress function\n",
+                  "%s termination analysis: extend Function Table with \"%s\" (%s) as it calls a progress function\n",
                   pos |> posToString,
                   functionName,
+                  id_pos |> posToString,
                 );
               };
             };
@@ -736,17 +737,17 @@ module CheckExpressionWellFormed = {
                    ();
                  } else {
                    switch (Hashtbl.find_opt(valueBindingsTable, functionName)) {
-                   | Some((body: Typedtree.expression, _))
+                   | Some((_pos, body: Typedtree.expression, _))
                        when
-                         !(
-                           functionPath
-                           |> FunctionTable.isInFunctionInTable(
-                                ~functionTable,
-                              )
-                         )
-                         && path
+                         path
                          |> FunctionTable.isInFunctionInTable(~functionTable) =>
-                     functionTable |> FunctionTable.addFunction(~functionName);
+                     let inTable =
+                       functionPath
+                       |> FunctionTable.isInFunctionInTable(~functionTable);
+                     if (!inTable) {
+                       functionTable
+                       |> FunctionTable.addFunction(~functionName);
+                     };
                      functionTable
                      |> FunctionTable.addLabelToKind(~functionName, ~label);
                      if (verbose) {
@@ -758,6 +759,7 @@ module CheckExpressionWellFormed = {
                          Path.name(path),
                        );
                      };
+
                    | _ => checkIdent(~path, ~pos)
                    };
                  }
@@ -1579,12 +1581,12 @@ let traverseAst = (~valueBindingsTable) => {
     valueBindings
     |> List.iter((vb: Typedtree.value_binding) =>
          switch (vb.vb_pat.pat_desc) {
-         | Tpat_var(id, _) =>
+         | Tpat_var(id, {loc: {loc_start: pos}}) =>
            let callees = lazy(FindFunctionsCalled.findCallees(vb.vb_expr));
            Hashtbl.replace(
              valueBindingsTable,
              Ident.name(id),
-             (vb.vb_expr, callees),
+             (pos, vb.vb_expr, callees),
            );
          | _ => ()
          }
@@ -1648,7 +1650,11 @@ let traverseAst = (~valueBindingsTable) => {
         |> List.map(functionName =>
              (
                functionName,
-               fst(Hashtbl.find(valueBindingsTable, functionName)),
+               {
+                 let (_pos, e, _set) =
+                   Hashtbl.find(valueBindingsTable, functionName);
+                 e;
+               },
              )
            );
 
@@ -1683,7 +1689,8 @@ let traverseAst = (~valueBindingsTable) => {
              functionDefinition: FunctionTable.functionDefinition,
            ) =>
            if (functionDefinition.body == None) {
-             let (body, _) = Hashtbl.find(valueBindingsTable, functionName);
+             let (_pos, body, _) =
+               Hashtbl.find(valueBindingsTable, functionName);
              functionTable
              |> FunctionTable.addBody(
                   ~body=

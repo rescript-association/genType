@@ -297,18 +297,17 @@ module UITermination = {
 
 module ParserWihtOptionals = {
   let parseListO = (p: Parser.t, ~f) => {
-    let rec loop = (p: Parser.t) =>
+    let rec loop = nodes =>
       if (p.token == Asterisk) {
+        Parser.next(p);
         [];
       } else {
         switch (f(p)) {
-        | None => []
-        | Some(item) =>
-          let l = loop(p);
-          [item, ...l];
+        | None => List.rev(nodes)
+        | Some(item) => loop([item, ...nodes])
         };
       };
-    Some(loop(p));
+    loop([]);
   };
 
   let parseIntO = (p: Parser.t) => {
