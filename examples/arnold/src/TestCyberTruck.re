@@ -294,3 +294,34 @@ module UITermination = {
     ignore("I have been rendered " ++ string_of_int(state) ++ " times");
   };
 };
+
+module ParserWihtOptionals = {
+  let parseListO = (p: Parser.t, ~f) => {
+    let rec loop = (p: Parser.t) =>
+      if (p.token == Asterisk) {
+        [];
+      } else {
+        switch (f(p)) {
+        | None => []
+        | Some(item) =>
+          let l = loop(p);
+          [item, ...l];
+        };
+      };
+    Some(loop(p));
+  };
+
+  let parseIntO = (p: Parser.t) => {
+    switch (p.token) {
+    | Int(n) =>
+      Parser.next(p);
+      Some(n);
+    | _ =>
+      Parser.err(p, "integer expected");
+      None;
+    };
+  };
+
+  [@progress (Parser.next, Parser.next)]
+  let rec parseListIntO = p => parseListO(p, ~f=parseIntO);
+};

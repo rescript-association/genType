@@ -3,7 +3,7 @@ build:
 clean:
 	./node_modules/.bin/bsb -clean
 
-test:
+test: build
 	Debug=1 time ../GenType.exe -termination >deadcode.txt
 
 
