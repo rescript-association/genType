@@ -577,9 +577,16 @@ module FindFunctionsCalled = {
   };
 
   let findCallees = (expression: Typedtree.expression) => {
+    let isFunction =
+      switch (expression.exp_desc) {
+      | Texp_function(_) => true
+      | _ => false
+      };
     let callees = ref(StringSet.empty);
     let traverseExpr = traverseExpr(~callees);
-    expression |> traverseExpr.expr(traverseExpr) |> ignore;
+    if (isFunction) {
+      expression |> traverseExpr.expr(traverseExpr) |> ignore;
+    };
     callees^;
   };
 };
