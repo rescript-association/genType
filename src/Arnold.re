@@ -267,11 +267,25 @@ module Command = {
     | ProgressFunction(progressFunction)
     | FunctionCall(FunctionCall.t);
 
+  type retOption =
+    | Rsome
+    | Rnone;
+
   type t =
     | Call(call, Lexing.position)
-    | Sequence(list(t))
     | Nondet(list(t))
+    | ConstrOption(retOption)
+    | Sequence(list(t))
     | UnorderedSequence(list(t));
+
+  type resKind =
+    | ResAnything(t)
+    | ResOption({
+        some: list(t),
+        none: list(t),
+      });
+
+  let retOptionToString = r => r == Rsome ? "Some" : "None";
 
   let rec toString = command =>
     switch (command) {
@@ -279,6 +293,11 @@ module Command = {
       "+" ++ Path.name(progressFunction)
     | Call(FunctionCall(functionCall), _pos) =>
       FunctionCall.toString(functionCall)
+    | ConstrOption(r) => r |> retOptionToString
+    | Nondet(commands) =>
+      "( "
+      ++ (commands |> List.map(toString) |> String.concat(" | "))
+      ++ " )"
     | Sequence(commands) =>
       commands == []
         ? "_"
@@ -287,13 +306,37 @@ module Command = {
           ++ " )"
     | UnorderedSequence(commands) =>
       "{" ++ (commands |> List.map(toString) |> String.concat(", ")) ++ "}"
-    | Nondet(commands) =>
-      "( "
-      ++ (commands |> List.map(toString) |> String.concat(" | "))
-      ++ " )"
     };
 
   let nothing = Sequence([]);
+
+  let rec bodyToResKind = body =>
+    switch (body) {
+    | Call(_)
+    | UnorderedSequence(_) => ResAnything(body)
+    | ConstrOption(Rsome) => ResOption({none: [], some: [body]})
+    | ConstrOption(Rnone) => ResOption({none: [body], some: []})
+    | Nondet(commands) =>
+      let combine = (rk1, rk2) =>
+        switch (rk1, rk2) {
+        | (ResAnything(_), _)
+        | (_, ResAnything(_)) => ResAnything(body)
+        | (ResOption({some: s1, none: n1}), ResOption({some: s2, none: n2})) =>
+          ResOption({
+            some: List.rev_append(s1, s2),
+            none: List.rev_append(n1, n2),
+          })
+        };
+      commands
+      |> List.map(bodyToResKind)
+      |> List.fold_left(combine, ResOption({none: [], some: []}));
+    | Sequence(commands) =>
+      switch (List.rev(commands)) {
+      | [ConstrOption(Rsome), ..._] => ResOption({none: [], some: [body]})
+      | [ConstrOption(Rnone), ..._] => ResOption({none: [body], some: []})
+      | _ => ResAnything(body)
+      }
+    };
 
   let nondet = commands => {
     let rec loop = commands =>
@@ -517,6 +560,28 @@ module ExtendFunctionTable = {
 
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
       switch (e.exp_desc) {
+      | Texp_ident(callee, _, _) =>
+        let pos = e.exp_loc.loc_start;
+        switch (Hashtbl.find_opt(valueBindingsTable, Path.name(callee))) {
+        | None => ()
+        | Some((_, callees)) =>
+          if (!
+                StringSet.is_empty(
+                  StringSet.inter(Lazy.force(callees), progressFunctions),
+                )) {
+            let functionName = Path.name(callee);
+            if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
+              functionTable |> FunctionTable.addFunction(~functionName);
+              if (verbose) {
+                logItem(
+                  "%s termination analysis: extend Function Table with \"%s\" as it calls a progress function\n",
+                  pos |> posToString,
+                  functionName,
+                );
+              };
+            };
+          }
+        };
       | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args)
           when callee |> FunctionTable.isInFunctionInTable(~functionTable) =>
         let functionName = Path.name(callee);
@@ -541,30 +606,6 @@ module ExtendFunctionTable = {
              | _ => ()
              }
            );
-      | Texp_apply(
-          {exp_desc: Texp_ident(callee, _, _), exp_loc: {loc_start: pos}},
-          _,
-        ) =>
-        switch (Hashtbl.find_opt(valueBindingsTable, Path.name(callee))) {
-        | None => ()
-        | Some((_, callees)) =>
-          if (!
-                StringSet.is_empty(
-                  StringSet.inter(Lazy.force(callees), progressFunctions),
-                )) {
-            let functionName = Path.name(callee);
-            if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
-              functionTable |> FunctionTable.addFunction(~functionName);
-              if (verbose) {
-                logItem(
-                  "%s termination analysis: extend Function Table with \"%s\" as it calls a progress function\n",
-                  pos |> posToString,
-                  functionName,
-                );
-              };
-            };
-          }
-        }
       | _ => ()
       };
       super.expr(self, e);
@@ -861,10 +902,20 @@ module Compile = {
       let c3 = eOpt |> expressionOpt(~ctx);
       Command.seq(c1, Command.nondet([c2, c3]));
     | Texp_constant(_) => Command.nothing
-    | Texp_construct(_loc, _desc, expressions) =>
-      expressions
-      |> List.map(e => e |> expression(~ctx))
-      |> Command.unorderedSequence
+    | Texp_construct(
+        {loc: {loc_start: pos, loc_ghost}},
+        {cstr_name},
+        expressions,
+      ) =>
+      let c =
+        expressions
+        |> List.map(e => e |> expression(~ctx))
+        |> Command.unorderedSequence;
+      switch (cstr_name) {
+      | "Some" when loc_ghost == false => Command.seq(c, ConstrOption(Rsome))
+      | "None" when loc_ghost == false => Command.seq(c, ConstrOption(Rnone))
+      | _ => c
+      };
     | Texp_function({cases}) =>
       cases |> List.map(case(~ctx)) |> Command.nondet
 
@@ -995,47 +1046,85 @@ module CallStack = {
   };
 };
 
-module Eval = {
-  type progress =
+module Progress = {
+  type t =
     | Progress
     | NoProgress;
 
-  type trace =
+  let toString = progress => progress == Progress ? "Progress" : "NoProgress";
+};
+
+module Trace = {
+  type progress = Progress.t;
+
+  type t =
     | Tcall(Command.call, progress)
-    | Tsub(list(trace));
+    | Tnondet(list(t))
+    | Toption(Command.retOption)
+    | Tsub(list(t));
 
-  type res = {
-    progress,
-    trace,
-  };
+  let empty = Tsub([]);
 
-  let progressToString = progress =>
-    progress == Progress ? "Progress" : "NoProgress";
-  let rec traceToString = trace =>
+  let nondet = (t1, t2) => Tnondet([t1, t2]);
+
+  let rec toString = trace =>
     switch (trace) {
     | Tcall(ProgressFunction(progressFunction), progress) =>
-      Path.name(progressFunction) ++ ":" ++ progressToString(progress)
+      Path.name(progressFunction) ++ ":" ++ Progress.toString(progress)
     | Tcall(FunctionCall(functionCall), progress) =>
       FunctionCall.toString(functionCall)
       ++ ":"
-      ++ progressToString(progress)
+      ++ Progress.toString(progress)
+    | Tnondet(traces) =>
+      "(" ++ (traces |> List.map(toString) |> String.concat("| ")) ++ ")"
+    | Toption(retOption) => retOption |> Command.retOptionToString
     | Tsub(traces) =>
-      let tracesNoEmpty = traces |> List.filter((!=)(Tsub([])));
+      let tracesNoEmpty = traces |> List.filter((!=)(empty));
       tracesNoEmpty == []
         ? "_"
         : "("
-          ++ (
-            tracesNoEmpty |> List.map(traceToString) |> String.concat("; ")
-          )
+          ++ (tracesNoEmpty |> List.map(toString) |> String.concat("; "))
           ++ ")";
     };
+};
 
-  let resToString = ({progress, trace}) => {
-    progressToString(progress) ++ " trace " ++ traceToString(trace);
+module Eval = {
+  type progress = Progress.t;
+
+  type res = {
+    progress,
+    trace: Trace.t,
+  };
+
+  type callRes = {
+    res,
+    resSome: option(progress),
+    resNone: option(progress),
+  };
+
+  let callResToString = ({res, resSome, resNone}) => {
+    let progressStr =
+      if (resSome != None || resNone != None) {
+        (
+          switch (resSome) {
+          | None => ""
+          | Some(p) => " some:" ++ Progress.toString(p)
+          }
+        )
+        ++ (
+          switch (resNone) {
+          | None => ""
+          | Some(p) => " none:" ++ Progress.toString(p)
+          }
+        );
+      } else {
+        res.progress |> Progress.toString;
+      };
+    progressStr ++ " trace " ++ Trace.toString(res.trace);
   };
 
   type cache =
-    Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, progress)));
+    Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, callRes)));
 
   let createCache = (): cache => Hashtbl.create(1);
 
@@ -1050,16 +1139,16 @@ module Eval = {
              FunctionCallSet.subset(set, cachedSet)
            )
       ) {
-      | (_, res) =>
+      | (_, callRes) =>
         // if it terminates on a stack, it terminates also on a smaller one
-        Some(res)
+        Some(callRes)
       | exception Not_found => None
       };
     | exception Not_found => None
     };
   };
 
-  let updateCache = (~callStack, ~functionCall, ~progress, cache: cache) => {
+  let updateCache = (~callStack, ~callRes, ~functionCall, cache: cache) => {
     let set = callStack |> CallStack.toSet;
     let modified = ref(false);
     let results =
@@ -1082,7 +1171,7 @@ module Eval = {
     Hashtbl.replace(
       cache,
       functionCall,
-      modified^ ? results : [(set, progress), ...results],
+      modified^ ? results : [(set, callRes), ...results],
     );
   };
 
@@ -1125,8 +1214,9 @@ module Eval = {
         |> FunctionCall.applySubstitution(~sub=functionArgs);
       let functionName = functionCall.functionName;
       switch (cache |> lookupCache(~callStack, ~functionCall)) {
-      | Some(progress) =>
+      | Some((callRes: callRes)) =>
         Stats.logCache(~functionCall, ~hit=true, ~pos);
+        let progress = callRes.res.progress;
         {progress, trace: Tcall(call, progress)};
       | None =>
         if (FunctionCallSet.mem(functionCall, madeProgressOn)) {
@@ -1137,8 +1227,16 @@ module Eval = {
                      ~functionCall,
                      ~pos,
                    )) {
-          let progress = NoProgress; // continue as if it terminated without progress
-          cache |> updateCache(~callStack, ~functionCall, ~progress);
+          let progress = Progress.NoProgress; // continue as if it terminated without progress
+          let callRes = {
+            res: {
+              progress,
+              trace: Trace.empty,
+            },
+            resSome: None,
+            resNone: None,
+          };
+          cache |> updateCache(~callStack, ~callRes, ~functionCall);
           {progress, trace: Tcall(call, progress)};
         } else {
           Stats.logCache(~functionCall, ~hit=false, ~pos);
@@ -1151,8 +1249,8 @@ module Eval = {
             | Some(body) => body
             | None => assert(false)
             };
-          let res =
-            body
+          let runCommand = c =>
+            c
             |> run(
                  ~cache,
                  ~callStack,
@@ -1160,19 +1258,43 @@ module Eval = {
                  ~functionTable,
                  ~madeProgressOn,
                );
-          let resString = resToString(res);
+          let resKind = Command.bodyToResKind(body);
+          let callRes =
+            switch (resKind) {
+            | ResAnything(c) => {
+                res: c |> runCommand,
+                resSome: None,
+                resNone: None,
+              }
+            | ResOption({some: commands1, none: commands2}) =>
+              let r1 = Command.Nondet(commands1) |> runCommand;
+              let r2 = Command.Nondet(commands2) |> runCommand;
+              let progress =
+                r1.progress == Progress && r2.progress == Progress
+                  ? Progress.Progress : NoProgress;
+              let trace = Trace.nondet(r1.trace, r2.trace);
+              let res = {progress, trace};
+              {res, resSome: Some(r1.progress), resNone: Some(r2.progress)};
+            };
+
+          let resString = callResToString(callRes);
           Stats.logResult(~functionCall, ~resString, ~pos);
-          cache
-          |> updateCache(~callStack, ~functionCall, ~progress=res.progress);
+          cache |> updateCache(~callStack, ~functionCall, ~callRes);
           // Invariant: run should restore the callStack
           callStack |> CallStack.removeFunctionCall(~functionCall);
-          {progress: res.progress, trace: Tcall(call, res.progress)};
+          {
+            progress: callRes.res.progress,
+            trace: Tcall(call, callRes.res.progress),
+          };
         }
       };
     | Call(ProgressFunction(progressFunction) as call, _pos) => {
         progress: Progress,
         trace: Tcall(call, Progress),
       }
+
+    | ConstrOption(r) =>
+      {progress: NoProgress, trace: Toption(r)}
 
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
