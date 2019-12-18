@@ -1076,15 +1076,18 @@ module Trace = {
       ++ ":"
       ++ Progress.toString(progress)
     | Tnondet(traces) =>
-      "(" ++ (traces |> List.map(toString) |> String.concat("| ")) ++ ")"
+      "(" ++ (traces |> List.map(toString) |> String.concat(" | ")) ++ ")"
     | Toption(retOption) => retOption |> Command.retOptionToString
     | Tsub(traces) =>
-      let tracesNoEmpty = traces |> List.filter((!=)(empty));
-      tracesNoEmpty == []
-        ? "_"
-        : "("
-          ++ (tracesNoEmpty |> List.map(toString) |> String.concat("; "))
-          ++ ")";
+      let tracesNotEmpty = traces |> List.filter((!=)(empty));
+      switch (tracesNotEmpty) {
+      | [] => "_"
+      | [t] => t |> toString
+      | [_, ..._] =>
+        "("
+        ++ (tracesNotEmpty |> List.map(toString) |> String.concat("; "))
+        ++ ")"
+      };
     };
 };
 
@@ -1103,24 +1106,26 @@ module Eval = {
   };
 
   let callResToString = ({res, resSome, resNone}) => {
+    let optionStr =
+      (
+        switch (resSome) {
+        | None => []
+        | Some(p) => ["some: " ++ Progress.toString(p)]
+        }
+      )
+      @ (
+        switch (resNone) {
+        | None => []
+        | Some(p) => ["none: " ++ Progress.toString(p)]
+        }
+      );
     let progressStr =
-      if (resSome != None || resNone != None) {
-        (
-          switch (resSome) {
-          | None => ""
-          | Some(p) => " some:" ++ Progress.toString(p)
-          }
-        )
-        ++ (
-          switch (resNone) {
-          | None => ""
-          | Some(p) => " none:" ++ Progress.toString(p)
-          }
-        );
+      if (optionStr != []) {
+        "{" ++ (optionStr |> String.concat(", ")) ++ "}";
       } else {
         res.progress |> Progress.toString;
       };
-    progressStr ++ " trace " ++ Trace.toString(res.trace);
+    progressStr ++ " with trace " ++ Trace.toString(res.trace);
   };
 
   type cache =
@@ -1293,8 +1298,7 @@ module Eval = {
         trace: Tcall(call, Progress),
       }
 
-    | ConstrOption(r) =>
-      {progress: NoProgress, trace: Toption(r)}
+    | ConstrOption(r) => {progress: NoProgress, trace: Toption(r)}
 
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
