@@ -1,3 +1,6 @@
+# master
+- Alias `Js.Array2.t` to array type.
+
 # 3.7.0
 - Emit in comments the source file from which the .gen file was generated.
 
