@@ -68,6 +68,8 @@ let traslateDeclarationKind =
   let opaque = annotation == Annotation.GenTypeOpaque ? Some(true) : None /* None means don't know */;
   let (importStringOpt, nameAs) =
     typeAttributes |> Annotation.getAttributeImportRenaming;
+  let unboxedAnnotation =
+    typeAttributes |> Annotation.hasAttribute(Annotation.tagIsUnboxed);
 
   let returnTypeDeclaration = (typeDeclaration: CodeItem.typeDeclaration) =>
     opaque == Some(true)
@@ -137,7 +139,12 @@ let traslateDeclarationKind =
            {mutable_, nameJS, nameRE, optional, type_: type1};
          });
     let type_ =
-      config.recordsAsObjects ? Object(Closed, fields) : Record(fields);
+      switch (fields) {
+      | [field] when unboxedAnnotation && config.useUnboxedAnnotations =>
+        field.type_
+      | _ =>
+        config.recordsAsObjects ? Object(Closed, fields) : Record(fields)
+      };
     {TranslateTypeExprFromTypes.dependencies, type_};
   };
 
@@ -232,6 +239,7 @@ let traslateDeclarationKind =
   | (RecordDeclarationFromTypes(labelDeclarations), None) =>
     let {TranslateTypeExprFromTypes.dependencies, type_} =
       labelDeclarations |> translateLabelDeclarations;
+
     let optType = Some(type_);
     let importTypes =
       dependencies
@@ -355,9 +363,6 @@ let traslateDeclarationKind =
              type_,
            );
          });
-
-    let unboxedAnnotation =
-      typeAttributes |> Annotation.hasAttribute(Annotation.tagIsUnboxed);
 
     let variantTyp =
       switch (noPayloads, payloads) {
