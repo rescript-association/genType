@@ -69,7 +69,7 @@ export type decorator<a,b> = (_1:a) => b;
 export type marshalFields = {
   readonly rec: string; 
   readonly _switch: string; 
-  readonly switch: string; 
+  readonly switch_: string; 
   readonly __: string; 
   readonly _: string; 
   readonly foo: string; 
