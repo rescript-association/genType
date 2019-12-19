@@ -1,4 +1,6 @@
 # master
+
+# 3.8.0
 - Alias `Js.Array2.t` to array type.
 - Add support for `[@unboxed]` which will be introduced in the next buclescript version.
   See https://caml.inria.fr/pub/docs/manual-ocaml/manual035.html.
