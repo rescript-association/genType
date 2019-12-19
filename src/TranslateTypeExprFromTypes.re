@@ -188,7 +188,7 @@ let translateConstr =
   | (["FB", "unit"] | ["unit"], []) => {dependencies: [], type_: unitT}
 
   | (
-      ["FB", "array"] | ["array"] | ["Js", "Array", "t"],
+      ["FB", "array"] | ["array"] | ["Js", "Array" | "Array2", "t"],
       [paramTranslation],
     ) => {
       ...paramTranslation,
