@@ -42,6 +42,7 @@ type config = {
   recordsAsObjects: bool,
   shimsMap: ModuleNameMap.t(ModuleName.t),
   sources: option(Ext_json_types.t),
+  useUnboxedAnnotations: bool,
 };
 
 let default = {
@@ -68,6 +69,7 @@ let default = {
   recordsAsObjects: false,
   shimsMap: ModuleNameMap.empty,
   sources: None,
+  useUnboxedAnnotations: false,
 };
 
 let bsPlatformLib = (~config) =>
@@ -292,6 +294,12 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | _ => v1 > 6
       };
     };
+    let useUnboxedAnnotations = {
+      switch (v1) {
+      | 7 => bsVersion > (7, 0, 1)
+      | _ => v1 > 7
+      };
+    };
     if (Debug.config^) {
       logItem("Project root: %s\n", projectRoot^);
       if (bsbProjectRoot^ != projectRoot^) {
@@ -333,6 +341,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       recordsAsObjects,
       shimsMap,
       sources: None,
+      useUnboxedAnnotations,
     };
   };
 

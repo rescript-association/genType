@@ -204,6 +204,7 @@ let traslateDeclarationKind =
   | (GeneralDeclaration(Some(coreType)), None) =>
     let translation =
       coreType |> TranslateCoreType.translateCoreType(~config, ~typeEnv);
+
     let type_ =
       switch (coreType, translation.type_) {
       | ({ctyp_desc: Ttyp_variant(rowFields, _, _)}, Variant(variant)) =>
@@ -355,8 +356,15 @@ let traslateDeclarationKind =
            );
          });
 
+    let unboxedAnnotation =
+      typeAttributes |> Annotation.hasAttribute(Annotation.tagIsUnboxed);
+
     let variantTyp =
-      createVariant(~noPayloads, ~payloads, ~polymorphic=false);
+      switch (noPayloads, payloads) {
+      | ([], [(_c, _, type_)])
+          when unboxedAnnotation && config.useUnboxedAnnotations => type_
+      | _ => createVariant(~noPayloads, ~payloads, ~polymorphic=false)
+      };
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
     let exportFromTypeDeclaration = {
