@@ -29,6 +29,8 @@ let tagIsGenTypeAs = s => s == "genType.as" || s == "gentype.as";
 
 let tagIsBsAs = s => s == "bs.as";
 
+let tagIsUnboxed = s => s == "unboxed" || s == "ocaml.unboxed";
+
 let tagIsGenTypeImport = s => s == "genType.import" || s == "gentype.import";
 
 let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "gentype.opaque";

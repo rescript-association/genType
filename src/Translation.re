@@ -4,8 +4,7 @@ type t = CodeItem.translation;
 
 let empty: t = {importTypes: [], codeItems: [], typeDeclarations: []};
 
-let getImportTypeUniqueName =
-    ({typeName, asTypeName}: CodeItem.importType) =>
+let getImportTypeUniqueName = ({typeName, asTypeName}: CodeItem.importType) =>
   typeName
   ++ (
     switch (asTypeName) {

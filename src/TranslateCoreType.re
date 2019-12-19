@@ -191,9 +191,9 @@ and translateCoreType_ =
       switch (objectField) {
       | Typedtree.OTtag({txt: name}, _, t) => (
           name,
-          name |> Runtime.isMutableObjectField ?
-            {dependencies: [], type_: ident("")} :
-            t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
+          name |> Runtime.isMutableObjectField
+            ? {dependencies: [], type_: ident("")}
+            : t |> translateCoreType_(~config, ~typeVarsGen, ~typeEnv),
         )
       | OTinherit(t) => (
           "Inherit",
@@ -245,8 +245,7 @@ and translateCoreType_ =
   | Ttyp_tuple(listExp) =>
     let innerTypesTranslation =
       listExp |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
-    let innerTypes =
-      innerTypesTranslation |> List.map(({type_}) => type_);
+    let innerTypes = innerTypesTranslation |> List.map(({type_}) => type_);
     let innerTypesDeps =
       innerTypesTranslation
       |> List.map(({dependencies}) => dependencies)
