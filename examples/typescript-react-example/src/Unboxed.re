@@ -13,4 +13,12 @@ let testV1 = (x: v1) => x;
 
 [@genType]
 [@unboxed]
-type r = {x: int};
+type r1 = {x: int};
+
+[@genType]
+[@ocaml.unboxed]
+type r2 =
+  | B({g: string});
+
+[@genType]
+let r2Test = (x: r2) => x;

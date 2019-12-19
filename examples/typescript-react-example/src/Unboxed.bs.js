@@ -5,8 +5,13 @@ function testV1(x) {
   return x;
 }
 
+function r2Test(x) {
+  return x;
+}
+
 export {
   testV1 ,
+  r2Test ,
   
 }
 /* No side effect */
