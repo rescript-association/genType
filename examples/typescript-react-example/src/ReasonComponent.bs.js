@@ -37,7 +37,7 @@ function make($staropt$star, person, $staropt$star$1, _children) {
                                           return String(i);
                                         }), intList)) + (" and person name: " + person.name)))), ReasonReact.element(undefined, undefined, ImportMyBanner.make(true, {
                                   text: "this is from ReasonComponent"
-                                }, /* array */[])));
+                                }, [])));
             }),
           initialState: component.initialState,
           retainedProps: component.retainedProps,
