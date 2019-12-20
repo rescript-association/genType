@@ -930,6 +930,15 @@
   clean FirstClassModulesInterface.re:8:18
   [type] clean FirstClassModulesInterface.re:3:2
   [type] clean FirstClassModulesInterface.re:2:2
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
+  addValueReference Unboxed.re:12:4 --> Unboxed.re:12:14
+  addValueReference Unboxed.re:24:4 --> Unboxed.re:24:14
+  [type] export A Unboxed.re:4:4
+  [type] export A Unboxed.re:9:4
+  export testV1 Unboxed.re:12:4
+  [type] export x Unboxed.re:16:11
+  [type] export B Unboxed.re:21:4
+  export r2Test Unboxed.re:24:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmti
   [type] export A DeadTypeTest.rei:2:4
   [type] export B DeadTypeTest.rei:3:4
@@ -1510,6 +1519,7 @@ File References
   ExportWithRename.re -->> React.re, js.ml
   ImmutableArray.rei -->> 
   NestedModulesInSignature.re -->> 
+  Unboxed.re -->> 
   DeadCodeImplementation.re -->> 
   DeadCodeInterface.re -->> 
   TransitiveType3.re -->> 
@@ -1913,6 +1923,18 @@ type someRecord = {[@dead "someRecord.id"] id: int};
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re:106: result1.Error
 <-- line 106
   | [@dead "result1.Error"] Error('b);
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re:4: v1.A
+<-- line 4
+  | [@dead "v1.A"] A(int);
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re:9: v2.A
+<-- line 9
+  | [@dead "v2.A"] A(int);
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re:16: r1.x
+<-- line 16
+type r1 = {[@dead "r1.x"] x: int};
+/Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re:21: r2.B
+<-- line 21
+  | [@dead "r2.B"] B({g: string});
 /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re:2: item.id
 <-- line 2
 type item = {[@dead "item.id"] id: int};
