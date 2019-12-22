@@ -322,5 +322,16 @@ module ParserWihtOptionals = {
   };
 
   [@progress (Parser.next, Parser.next)]
-  let rec parseListIntO = p => parseListO(p, ~f=parseIntO);
+  let rec parseListIntO = p => parseListO(p, ~f=parseIntO)
+
+  and alwaysReturnNone = (p: Parser.t) =>
+    switch (p.token) {
+    | Int(_) =>
+      Parser.next(p);
+      alwaysReturnNone(p);
+    | _ => None
+    }
+
+  [@progress]
+  and testAlwaysReturnNone = p => alwaysReturnNone(p);
 };

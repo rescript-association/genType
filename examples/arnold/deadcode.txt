@@ -194,10 +194,12 @@ Termination analysis for "countRendersCompiled"
   TestCyberTruck.re:299:40 termination analysis: adding recursive definition "parseListO$loop"
   
 Function Table:
+    alwaysReturnNone: ( ( +Parser.next; alwaysReturnNone ) | None )
     parseIntO: ( ( +Parser.next; Some ) | None )
     parseListIntO: parseListO<f:parseIntO>
     parseListO<f>: parseListO$loop<f:f>
     parseListO$loop<f>: ( +Parser.next | switch f {some: parseListO$loop<f:f>, none: _} )
+    testAlwaysReturnNone: alwaysReturnNone
   
 Termination analysis for "parseListIntO"
   TestCyberTruck.re:325:31 termination analysis: cache miss for "parseListO<f:parseIntO>"
@@ -207,10 +209,14 @@ Termination analysis for "parseListIntO"
   TestCyberTruck.re:310:4 termination analysis: "parseListO$loop<f:parseIntO>" returns NoProgress with trace parseIntO:NoProgress
   TestCyberTruck.re:325:31 termination analysis: "parseListO<f:parseIntO>" returns NoProgress with trace parseListO$loop<f:parseIntO>:NoProgress
   
+Termination analysis for "testAlwaysReturnNone"
+  TestCyberTruck.re:336:34 termination analysis: cache miss for "alwaysReturnNone"
+  TestCyberTruck.re:336:34 termination analysis: "alwaysReturnNone" returns {none: NoProgress} with trace (None | Parser.next:Progress)
+  
 Termination Analysis Stats
   Files:1
   Recursive Blocks:18
-  Functions:35
+  Functions:37
   Infinite Loops:9
   Hygiene Errors:1
-  Cache Hits:1/25
+  Cache Hits:1/26

@@ -294,7 +294,7 @@ module Trace = {
 
   let empty = Tsub([]);
 
-  let nondet = (t1, t2) => Tnondet([t1, t2]);
+  let nondet = ts => Tnondet(ts);
 
   let retOptionToString = r => r == Rsome ? "Some" : "None";
 
@@ -353,8 +353,9 @@ module Command = {
   type resKind =
     | ResAnything(t)
     | ResOption({
-        some: list(t),
         none: list(t),
+        self: list(t),
+        some: list(t),
       });
 
   let rec toString = command =>
@@ -385,36 +386,6 @@ module Command = {
     };
 
   let nothing = Sequence([]);
-
-  let rec bodyToResKind = body =>
-    switch (body) {
-    | Call(_)
-    | Res(_)
-    | SwitchOption(_)
-    | UnorderedSequence(_) => ResAnything(body)
-    | ConstrOption(Rsome) => ResOption({none: [], some: [body]})
-    | ConstrOption(Rnone) => ResOption({none: [body], some: []})
-    | Nondet(commands) =>
-      let combine = (rk1, rk2) =>
-        switch (rk1, rk2) {
-        | (ResAnything(_), _)
-        | (_, ResAnything(_)) => ResAnything(body)
-        | (ResOption({some: s1, none: n1}), ResOption({some: s2, none: n2})) =>
-          ResOption({
-            some: List.rev_append(s1, s2),
-            none: List.rev_append(n1, n2),
-          })
-        };
-      commands
-      |> List.map(bodyToResKind)
-      |> List.fold_left(combine, ResOption({none: [], some: []}));
-    | Sequence(commands) =>
-      switch (List.rev(commands)) {
-      | [ConstrOption(Rsome), ..._] => ResOption({none: [], some: [body]})
-      | [ConstrOption(Rnone), ..._] => ResOption({none: [body], some: []})
-      | _ => ResAnything(body)
-      }
-    };
 
   let nondet = commands => {
     let rec loop = commands =>
@@ -456,6 +427,63 @@ module Command = {
     | [_] => sequence(commands)
     | [_, _, ..._] => UnorderedSequence(commands)
     };
+
+  let bodyToResKind = (~self: FunctionCall.t, body) => {
+    let rec loop = body =>
+      switch (body) {
+      | Call(FunctionCall(functionCall), _pos) =>
+        if (functionCall == self) {
+          ResOption({none: [], some: [], self: [body]});
+        } else {
+          ResAnything(body);
+        }
+      | Call(_)
+      | Res(_)
+      | SwitchOption(_)
+      | UnorderedSequence(_) => ResAnything(body)
+      | ConstrOption(Rsome) => ResOption({none: [], some: [body], self: []})
+      | ConstrOption(Rnone) => ResOption({none: [body], some: [], self: []})
+      | Nondet(commands) =>
+        let combine = (rk1, rk2) =>
+          switch (rk1, rk2) {
+          | (ResAnything(_), _)
+          | (_, ResAnything(_)) => ResAnything(body)
+          | (
+              ResOption({some: s1, none: n1, self: se1}),
+              ResOption({some: s2, none: n2, self: se2}),
+            ) =>
+            ResOption({
+              some: List.rev_append(s1, s2),
+              none: List.rev_append(n1, n2),
+              self: List.rev_append(se1, se2),
+            })
+          };
+        commands
+        |> List.map(loop)
+        |> List.fold_left(combine, ResOption({none: [], some: [], self: []}));
+      | Sequence(commands) =>
+        switch (List.rev(commands)) {
+        | [lastCommand, ...otherCommandsReversed] =>
+          switch (lastCommand |> loop) {
+          | ResOption({none, some, self})
+              when none != [] || some != [] || self != [] =>
+            let otherCommands = otherCommandsReversed |> List.rev;
+            let addOtherCommands = c => sequence(otherCommands @ [c]);
+            ResOption({
+              none: none |> List.map(addOtherCommands),
+              some: some |> List.map(addOtherCommands),
+              self: self |> List.map(addOtherCommands),
+            });
+          | _ => ResAnything(body)
+          }
+        | _ => ResAnything(body)
+        }
+      };
+    switch (loop(body)) {
+    | ResOption({some, none, self}) as r when some != [] || none != [] => r
+    | _ => ResAnything(body)
+    };
+  };
 };
 
 module Kind = {
@@ -1325,7 +1353,7 @@ module Eval = {
                ~functionTable,
                ~madeProgressOn,
              );
-        let resKind = Command.bodyToResKind(body);
+        let resKind = body |> Command.bodyToResKind(~self=functionCall);
         let callRes =
           switch (resKind) {
           | ResAnything(c) => {
@@ -1333,15 +1361,27 @@ module Eval = {
               resSome: None,
               resNone: None,
             }
-          | ResOption({some: commands1, none: commands2}) =>
-            let r1 = Command.Nondet(commands1) |> runCommand;
-            let r2 = Command.Nondet(commands2) |> runCommand;
+          | ResOption({some, none, self}) =>
+            let rSome = Command.Nondet(some) |> runCommand;
+            let rNone = Command.Nondet(none) |> runCommand;
+            let rSelf = Command.Nondet(self) |> runCommand;
             let progress =
-              r1.progress == Progress && r2.progress == Progress
+              (some == [] || rSome.progress == Progress)
+              && (none == [] || rNone.progress == Progress)
+              && (self == [] || rSelf.progress == Progress)
                 ? Progress.Progress : NoProgress;
-            let trace = Trace.nondet(r1.trace, r2.trace);
+            let trace =
+              Trace.nondet(
+                (some == [] ? [] : [rSome.trace])
+                @ (none == [] ? [] : [rNone.trace])
+                @ (self == [] ? [] : [rSelf.trace]),
+              );
             let res = Res.{progress, trace};
-            {res, resSome: Some(r1.progress), resNone: Some(r2.progress)};
+            {
+              res,
+              resSome: some == [] ? None : Some(rSome.progress),
+              resNone: none == [] ? None : Some(rNone.progress),
+            };
           };
 
         let resString = callResToString(callRes);
