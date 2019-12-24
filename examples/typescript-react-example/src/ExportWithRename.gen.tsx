@@ -2,6 +2,8 @@
 /* eslint-disable import/first */
 
 
+import * as React from 'react';
+
 // tslint:disable-next-line:no-var-requires
 const ExportWithRenameBS = require('./ExportWithRename.bs');
 

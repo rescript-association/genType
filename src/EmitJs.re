@@ -783,6 +783,9 @@ let rec emitCodeItem =
           typeVars,
           resolvedTypeName,
         };
+        if (config.language == TypeScript) {
+          config.emitImportReact = true; // For doc gen (https://github.com/cristianoc/genType/issues/342)
+        };
         emitExportType(
           ~emitters,
           ~config,
@@ -1106,9 +1109,7 @@ let getAnnotatedTypedDeclarations = (~annotatedSet, typeDeclarations) =>
        };
      })
   |> List.filter(
-       (
-         {exportFromTypeDeclaration: {annotation}}: CodeItem.typeDeclaration,
-       ) =>
+       ({exportFromTypeDeclaration: {annotation}}: CodeItem.typeDeclaration) =>
        annotation != NoGenType
      );
 
@@ -1160,8 +1161,7 @@ let propagateAnnotationToSubTypes =
         retType |> visit;
       | GroupOfLabeledArgs(fields)
       | Object(_, fields)
-      | Record(fields) =>
-        fields |> List.iter(({type_}) => type_ |> visit)
+      | Record(fields) => fields |> List.iter(({type_}) => type_ |> visit)
       | Option(t)
       | Null(t)
       | Nullable(t)
