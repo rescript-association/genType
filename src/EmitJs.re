@@ -784,7 +784,7 @@ let rec emitCodeItem =
           resolvedTypeName,
         };
         if (config.language == TypeScript) {
-          config.emitImportReact = true;
+          config.emitImportReact = true; // For doc gen (https://github.com/cristianoc/genType/issues/342)
         };
         emitExportType(
           ~emitters,

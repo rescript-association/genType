@@ -1,4 +1,6 @@
 # master
+- With TypeScript back-end, emit import of React when function components are exported.
+  See https://github.com/cristianoc/genType/issues/342.
 
 # 3.8.0
 - Alias `Js.Array2.t` to array type.
