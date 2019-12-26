@@ -897,7 +897,6 @@ module Compile = {
   let rec expression = (~ctx, expr: Typedtree.expression) => {
     let {currentFunctionName, functionTable, isProgressFunction} = ctx;
     let pos = expr.exp_loc.loc_start;
-    let posString = pos |> posToString;
     switch (expr.exp_desc) {
     | Texp_ident(_) => Command.nothing
 
@@ -1211,8 +1210,13 @@ module Compile = {
 };
 
 module CallStack = {
+  type frame = {
+    frameNumber: int,
+    pos: Lexing.position,
+  };
+
   type t = {
-    tbl: Hashtbl.t(FunctionCall.t, (int, Lexing.position)),
+    tbl: Hashtbl.t(FunctionCall.t, frame),
     mutable size: int,
   };
 
@@ -1231,7 +1235,7 @@ module CallStack = {
 
   let addFunctionCall = (~functionCall, ~pos, t: t) => {
     t.size = t.size + 1;
-    Hashtbl.replace(t.tbl, functionCall, (t.size, pos));
+    Hashtbl.replace(t.tbl, functionCall, {frameNumber: t.size, pos});
   };
 
   let removeFunctionCall = (~functionCall, t: t) => {
@@ -1243,8 +1247,8 @@ module CallStack = {
     logItem("  CallStack:\n");
     let frames =
       Hashtbl.fold(
-        (functionCall, (i, pos), frames) =>
-          [(functionCall, i, pos), ...frames],
+        (functionCall, {frameNumber, pos}, frames) =>
+          [(functionCall, frameNumber, pos), ...frames],
         t.tbl,
         [],
       )
