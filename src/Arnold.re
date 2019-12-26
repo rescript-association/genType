@@ -42,8 +42,6 @@
 //
 // Eval.run: (P, Stack, f<args>, C) ---> Progresss | NoProgress | Loop
 
-let continueAfterProgress = Sys.getenv_opt("ContinueAfterProgress") != None;
-
 let logItem = GenTypeCommon.logItem;
 
 let posToString = DeadCommon.posToString;
@@ -283,7 +281,7 @@ module Trace = {
     | Tcall(call, Progress.t)
     | Tnondet(list(t))
     | Toption(retOption)
-    | Tsub(list(t));
+    | Tseq(list(t));
 
   let callToString = call =>
     switch (call) {
@@ -292,7 +290,26 @@ module Trace = {
     | FunctionCall(functionCall) => FunctionCall.toString(functionCall)
     };
 
-  let empty = Tsub([]);
+  let empty = Tseq([]);
+
+  let nd = (t1: t, t2: t): t =>
+    switch (t1, t2) {
+    | (Tnondet(l1), Tnondet(l2)) => Tnondet(l1 @ l2)
+    | (_, Tnondet(l2)) => Tnondet([t1, ...l2])
+    | (Tnondet(l1), _) => Tnondet(l1 @ [t2])
+    | _ => Tnondet([t1, t2])
+    };
+
+  let seq = (t1: t, t2: t): t =>
+    switch (t1, t2) {
+    | (Tseq(l1), Tseq(l2)) => Tseq(l1 @ l2)
+    | (_, Tseq(l2)) => Tseq([t1, ...l2])
+    | (Tseq(l1), _) => Tseq(l1 @ [t2])
+    | _ => Tseq([t1, t2])
+    };
+
+  let some = Toption(Rsome);
+  let none = Toption(Rnone);
 
   let nondet = ts => Tnondet(ts);
 
@@ -309,7 +326,7 @@ module Trace = {
     | Tnondet(traces) =>
       "(" ++ (traces |> List.map(toString) |> String.concat(" | ")) ++ ")"
     | Toption(retOption) => retOption |> retOptionToString
-    | Tsub(traces) =>
+    | Tseq(traces) =>
       let tracesNotEmpty = traces |> List.filter((!=)(empty));
       switch (tracesNotEmpty) {
       | [] => "_"
@@ -322,11 +339,126 @@ module Trace = {
     };
 };
 
-module Res = {
+module Values = {
+  type t = {
+    none: option(Progress.t),
+    some: option(Progress.t),
+  };
+
+  let none = (~progress) => {none: Some(progress), some: None};
+  let some = (~progress) => {none: None, some: Some(progress)};
+
+  let nd = (v1: t, v2: t): t => {
+    let combine = (x, y) =>
+      switch (x, y) {
+      | (Some(progress1), Some(progress2)) =>
+        Some(
+          progress1 == Progress.Progress && progress2 == Progress
+            ? Progress.Progress : NoProgress,
+        )
+      | (None, progressOpt)
+      | (progressOpt, None) => progressOpt
+      };
+    let none = combine(v1.none, v2.none);
+    let some = combine(v1.some, v2.some);
+    {none, some};
+  };
+};
+
+module State = {
   type t = {
     progress: Progress.t,
     trace: Trace.t,
+    valuesOpt: option(Values.t),
   };
+
+  let toString = ({progress, trace, valuesOpt}) => {
+    let valuesStr = (values: Values.t) =>
+      (
+        switch (values.some) {
+        | None => []
+        | Some(p) => ["some: " ++ Progress.toString(p)]
+        }
+      )
+      @ (
+        switch (values.none) {
+        | None => []
+        | Some(p) => ["none: " ++ Progress.toString(p)]
+        }
+      );
+    let progressStr =
+      switch (valuesOpt) {
+      | None => progress |> Progress.toString
+      | Some(values) =>
+        "{" ++ (valuesStr(values) |> String.concat(", ")) ++ "}"
+      };
+    progressStr ++ " with trace " ++ Trace.toString(trace);
+  };
+
+  let init =
+      (~progress=Progress.NoProgress, ~trace=Trace.empty, ~valuesOpt=None, ()) => {
+    progress,
+    trace,
+    valuesOpt,
+  };
+
+  let seq = (s1, s2) => {
+    let progress =
+      s1.progress == Progress || s2.progress == Progress
+        ? Progress.Progress : NoProgress;
+    let trace = {
+      Trace.seq(s1.trace, s2.trace);
+    };
+    let valuesOpt = s2.valuesOpt;
+    {progress, trace, valuesOpt};
+  };
+
+  let sequence = states =>
+    switch (states) {
+    | [] => assert(false)
+    | [s, ...nextStates] => List.fold_left(seq, s, nextStates)
+    };
+
+  let nd = (s1, s2) => {
+    let progress =
+      s1.progress == Progress && s2.progress == Progress
+        ? Progress.Progress : NoProgress;
+    let trace = {
+      Trace.nd(s1.trace, s2.trace);
+    };
+    let valuesOpt =
+      switch (s1.valuesOpt, s2.valuesOpt) {
+      | (None, valuesOpt) => s1.progress == Progress ? valuesOpt : None
+      | (valuesOpt, None) => s2.progress == Progress ? valuesOpt : None
+      | (Some(values1), Some(values2)) =>
+        Some(Values.nd(values1, values2))
+      };
+    {progress, trace, valuesOpt};
+  };
+
+  let nondet = states =>
+    switch (states) {
+    | [] => assert(false)
+    | [s, ...nextStates] => List.fold_left(nd, s, nextStates)
+    };
+
+  let unorderedSequence = states => {...states |> sequence, valuesOpt: None};
+
+  let none = (~progress) =>
+    init(
+      ~progress,
+      ~trace=Trace.none,
+      ~valuesOpt=Some(Values.none(~progress)),
+      (),
+    );
+
+  let some = (~progress) =>
+    init(
+      ~progress,
+      ~trace=Trace.some,
+      ~valuesOpt=Some(Values.some(~progress)),
+      (),
+    );
 };
 
 module Command = {
@@ -340,7 +472,6 @@ module Command = {
     | Call(call, Lexing.position)
     | ConstrOption(retOption)
     | Nondet(list(t))
-    | Res(Res.t)
     | Sequence(list(t))
     | SwitchOption({
         functionCall: FunctionCall.t,
@@ -350,14 +481,6 @@ module Command = {
       })
     | UnorderedSequence(list(t));
 
-  type resKind =
-    | ResAnything(t)
-    | ResOption({
-        none: list(t),
-        self: list(t),
-        some: list(t),
-      });
-
   let rec toString = command =>
     switch (command) {
     | Call(call, _pos) => call |> Trace.callToString
@@ -366,7 +489,6 @@ module Command = {
       "( "
       ++ (commands |> List.map(toString) |> String.concat(" | "))
       ++ " )"
-    | Res({progress}) => progress |> Progress.toString
     | Sequence(commands) =>
       commands == []
         ? "_"
@@ -427,63 +549,6 @@ module Command = {
     | [_] => sequence(commands)
     | [_, _, ..._] => UnorderedSequence(commands)
     };
-
-  let bodyToResKind = (~self: FunctionCall.t, body) => {
-    let rec loop = body =>
-      switch (body) {
-      | Call(FunctionCall(functionCall), _pos) =>
-        if (functionCall == self) {
-          ResOption({none: [], some: [], self: [body]});
-        } else {
-          ResAnything(body);
-        }
-      | Call(_)
-      | Res(_)
-      | SwitchOption(_)
-      | UnorderedSequence(_) => ResAnything(body)
-      | ConstrOption(Rsome) => ResOption({none: [], some: [body], self: []})
-      | ConstrOption(Rnone) => ResOption({none: [body], some: [], self: []})
-      | Nondet(commands) =>
-        let combine = (rk1, rk2) =>
-          switch (rk1, rk2) {
-          | (ResAnything(_), _)
-          | (_, ResAnything(_)) => ResAnything(body)
-          | (
-              ResOption({some: s1, none: n1, self: se1}),
-              ResOption({some: s2, none: n2, self: se2}),
-            ) =>
-            ResOption({
-              some: List.rev_append(s1, s2),
-              none: List.rev_append(n1, n2),
-              self: List.rev_append(se1, se2),
-            })
-          };
-        commands
-        |> List.map(loop)
-        |> List.fold_left(combine, ResOption({none: [], some: [], self: []}));
-      | Sequence(commands) =>
-        switch (List.rev(commands)) {
-        | [lastCommand, ...otherCommandsReversed] =>
-          switch (lastCommand |> loop) {
-          | ResOption({none, some, self})
-              when none != [] || some != [] || self != [] =>
-            let otherCommands = otherCommandsReversed |> List.rev;
-            let addOtherCommands = c => sequence(otherCommands @ [c]);
-            ResOption({
-              none: none |> List.map(addOtherCommands),
-              some: some |> List.map(addOtherCommands),
-              self: self |> List.map(addOtherCommands),
-            });
-          | _ => ResAnything(body)
-          }
-        | _ => ResAnything(body)
-        }
-      };
-    switch (loop(body)) {
-    | ResOption({some, none, self}) as r when some != [] || none != [] => r
-    | _ => ResAnything(body)
-    };
-  };
 };
 
 module Kind = {
@@ -1191,37 +1256,8 @@ module CallStack = {
 module Eval = {
   type progress = Progress.t;
 
-  type callRes = {
-    res: Res.t,
-    resSome: option(progress),
-    resNone: option(progress),
-  };
-
-  let callResToString = ({res, resSome, resNone}) => {
-    let optionStr =
-      (
-        switch (resSome) {
-        | None => []
-        | Some(p) => ["some: " ++ Progress.toString(p)]
-        }
-      )
-      @ (
-        switch (resNone) {
-        | None => []
-        | Some(p) => ["none: " ++ Progress.toString(p)]
-        }
-      );
-    let progressStr =
-      if (optionStr != []) {
-        "{" ++ (optionStr |> String.concat(", ")) ++ "}";
-      } else {
-        res.progress |> Progress.toString;
-      };
-    progressStr ++ " with trace " ++ Trace.toString(res.trace);
-  };
-
   type cache =
-    Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, callRes)));
+    Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, State.t)));
 
   let createCache = (): cache => Hashtbl.create(1);
 
@@ -1245,7 +1281,7 @@ module Eval = {
     };
   };
 
-  let updateCache = (~callStack, ~callRes, ~functionCall, cache: cache) => {
+  let updateCache = (~callStack, ~functionCall, ~state, cache: cache) => {
     let set = callStack |> CallStack.toSet;
     let modified = ref(false);
     let results =
@@ -1268,26 +1304,28 @@ module Eval = {
     Hashtbl.replace(
       cache,
       functionCall,
-      modified^ ? results : [(set, callRes), ...results],
+      modified^ ? results : [(set, state), ...results],
     );
   };
 
   let hasInfiniteLoop =
-      (~callStack, ~functionCallToInstantiate, ~functionCall, ~pos) =>
+      (~callStack, ~functionCallToInstantiate, ~functionCall, ~pos, ~state0) =>
     if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
-      let explainCall =
-        functionCallToInstantiate == functionCall
-          ? "\""
-            ++ (functionCallToInstantiate |> FunctionCall.toString)
-            ++ "\""
-          : "\""
-            ++ (functionCallToInstantiate |> FunctionCall.toString)
-            ++ "\" which is \""
-            ++ (functionCall |> FunctionCall.toString)
-            ++ "\"";
-      Stats.logLoop(~explainCall, ~pos);
-      if (verbose) {
-        CallStack.dump(callStack);
+      if (state0.State.progress == NoProgress) {
+        let explainCall =
+          functionCallToInstantiate == functionCall
+            ? "\""
+              ++ (functionCallToInstantiate |> FunctionCall.toString)
+              ++ "\""
+            : "\""
+              ++ (functionCallToInstantiate |> FunctionCall.toString)
+              ++ "\" which is \""
+              ++ (functionCall |> FunctionCall.toString)
+              ++ "\"";
+        Stats.logLoop(~explainCall, ~pos);
+        if (verbose) {
+          CallStack.dump(callStack);
+        };
       };
       true;
     } else {
@@ -1302,98 +1340,70 @@ module Eval = {
             ~functionTable,
             ~madeProgressOn,
             ~pos,
+            ~state0,
             functionCallToInstantiate,
-          ) => {
+          )
+          : State.t => {
     let functionCall =
       functionCallToInstantiate
       |> FunctionCall.applySubstitution(~sub=functionArgs);
     let functionName = functionCall.functionName;
     let call = Trace.FunctionCall(functionCall);
-    switch (cache |> lookupCache(~callStack, ~functionCall)) {
-    | Some((callRes: callRes)) =>
-      Stats.logCache(~functionCall, ~hit=true, ~pos);
-      let progress = callRes.res.progress;
-      let trace = Trace.Tcall(call, progress);
-      let res = Res.{progress, trace};
-      {res, resSome: None, resNone: None};
-    | None =>
-      if (FunctionCallSet.mem(functionCall, madeProgressOn)) {
-        let progress = Progress.Progress;
-        let trace = Trace.Tcall(call, Progress);
-        let res = Res.{progress, trace};
-        {res, resSome: None, resNone: None};
-      } else if (hasInfiniteLoop(
-                   ~callStack,
-                   ~functionCallToInstantiate,
-                   ~functionCall,
-                   ~pos,
-                 )) {
-        let progress = Progress.NoProgress; // continue as if it terminated without progress
-        let trace = Trace.Tcall(call, progress);
-        let res = Res.{progress, trace};
-        let callRes = {res, resSome: None, resNone: None};
-        cache |> updateCache(~callStack, ~callRes, ~functionCall);
-        callRes;
-      } else {
-        Stats.logCache(~functionCall, ~hit=false, ~pos);
-        let functionDefinition =
-          functionTable |> FunctionTable.getFunctionDefinition(~functionName);
-        callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
-        let body =
-          switch (functionDefinition.body) {
-          | Some(body) => body
-          | None => assert(false)
-          };
-        let runCommand = c =>
-          c
-          |> run(
-               ~cache,
-               ~callStack,
-               ~functionArgs=functionCall.functionArgs,
-               ~functionTable,
-               ~madeProgressOn,
-             );
-        let resKind = body |> Command.bodyToResKind(~self=functionCall);
-        let callRes =
-          switch (resKind) {
-          | ResAnything(c) => {
-              res: c |> runCommand,
-              resSome: None,
-              resNone: None,
-            }
-          | ResOption({some, none, self}) =>
-            let rSome = Command.Nondet(some) |> runCommand;
-            let rNone = Command.Nondet(none) |> runCommand;
-            let rSelf = Command.Nondet(self) |> runCommand;
-            let progress =
-              (some == [] || rSome.progress == Progress)
-              && (none == [] || rNone.progress == Progress)
-              && (self == [] || rSelf.progress == Progress)
-                ? Progress.Progress : NoProgress;
-            let trace =
-              Trace.nondet(
-                (some == [] ? [] : [rSome.trace])
-                @ (none == [] ? [] : [rNone.trace])
-                @ (self == [] ? [] : [rSelf.trace]),
-              );
-            let res = Res.{progress, trace};
-            {
-              res,
-              resSome: some == [] ? None : Some(rSome.progress),
-              resNone: none == [] ? None : Some(rNone.progress),
+    let state =
+      switch (cache |> lookupCache(~callStack, ~functionCall)) {
+      | Some((state: State.t)) =>
+        Stats.logCache(~functionCall, ~hit=true, ~pos);
+        let state = {...state, trace: Trace.Tcall(call, state.progress)};
+        state;
+      | None =>
+        if (FunctionCallSet.mem(functionCall, madeProgressOn)) {
+          let state =
+            State.init(
+              ~progress=Progress,
+              ~trace=Trace.Tcall(call, Progress),
+              (),
+            );
+          state;
+        } else if (hasInfiniteLoop(
+                     ~callStack,
+                     ~functionCallToInstantiate,
+                     ~functionCall,
+                     ~pos,
+                     ~state0,
+                   )) {
+          let trace = Trace.Tcall(call, state0.progress);
+          {...state0, trace};
+        } else {
+          Stats.logCache(~functionCall, ~hit=false, ~pos);
+          let functionDefinition =
+            functionTable
+            |> FunctionTable.getFunctionDefinition(~functionName);
+          callStack |> CallStack.addFunctionCall(~functionCall, ~pos);
+          let body =
+            switch (functionDefinition.body) {
+            | Some(body) => body
+            | None => assert(false)
             };
-          };
-
-        let resString = callResToString(callRes);
-        Stats.logResult(~functionCall, ~resString, ~pos);
-        cache |> updateCache(~callStack, ~functionCall, ~callRes);
-        // Invariant: run should restore the callStack
-        callStack |> CallStack.removeFunctionCall(~functionCall);
-        let trace = Trace.Tcall(call, callRes.res.progress);
-        let res = {...callRes.res, trace};
-        {...callRes, res};
-      }
-    };
+          let state =
+            body
+            |> run(
+                 ~cache,
+                 ~callStack,
+                 ~functionArgs=functionCall.functionArgs,
+                 ~functionTable,
+                 ~madeProgressOn,
+                 ~state0=State.init(),
+               );
+          let resString = state |> State.toString;
+          Stats.logResult(~functionCall, ~resString, ~pos);
+          cache |> updateCache(~callStack, ~functionCall, ~state);
+          // Invariant: run should restore the callStack
+          callStack |> CallStack.removeFunctionCall(~functionCall);
+          let trace = Trace.Tcall(call, state.progress);
+          {...state, trace};
+        }
+      };
+    State.seq(state0, state);
   }
   and run =
       (
@@ -1402,39 +1412,42 @@ module Eval = {
         ~functionArgs,
         ~functionTable,
         ~madeProgressOn,
+        ~state0,
         command: Command.t,
       )
-      : Res.t =>
+      : State.t =>
     switch (command) {
     | Call(FunctionCall(functionCall), pos) =>
-      let callRes =
-        functionCall
-        |> runFunctionCall(
-             ~cache,
-             ~callStack,
-             ~functionArgs,
-             ~functionTable,
-             ~madeProgressOn,
-             ~pos,
-           );
-      callRes.res;
-    | Call(ProgressFunction(progressFunction) as call, _pos) => {
-        progress: Progress,
-        trace: Tcall(call, Progress),
-      }
+      functionCall
+      |> runFunctionCall(
+           ~cache,
+           ~callStack,
+           ~functionArgs,
+           ~functionTable,
+           ~madeProgressOn,
+           ~pos,
+           ~state0,
+         )
+    | Call(ProgressFunction(progressFunction) as call, _pos) =>
+      let state =
+        State.init(~progress=Progress, ~trace=Tcall(call, Progress), ());
+      State.seq(state0, state);
 
-    | ConstrOption(r) => {progress: NoProgress, trace: Toption(r)}
-
-    | Res(res) => res
+    | ConstrOption(r) =>
+      let state =
+        r == Rsome
+          ? State.some(~progress=state0.progress)
+          : State.none(~progress=state0.progress);
+      State.seq(state0, state);
 
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
       let rec findFirstProgress =
-              (~callStack, ~commands, ~madeProgressOn, ~traces) =>
+              (~callStack, ~commands, ~madeProgressOn, ~state) =>
         switch (commands) {
-        | [] => Res.{progress: NoProgress, trace: Tsub(traces |> List.rev)}
+        | [] => state
         | [c, ...nextCommands] =>
-          let res =
+          let state1 =
             c
             |> run(
                  ~cache,
@@ -1442,38 +1455,39 @@ module Eval = {
                  ~functionArgs,
                  ~functionTable,
                  ~madeProgressOn,
+                 ~state0=state,
                );
-          let newTraces = [res.trace, ...traces];
-          switch (res.progress) {
-          | Progress =>
-            // look for infinite loops in the rest of the sequence, remembering what has made progress
-            if (continueAfterProgress) {
-              findFirstProgress(
-                ~callStack=CallStack.create(),
-                ~commands=nextCommands,
-                ~madeProgressOn=
-                  FunctionCallSet.union(
-                    madeProgressOn,
-                    callStack |> CallStack.toSet,
-                  ),
-                ~traces=newTraces,
+          let (madeProgressOn, callStack) =
+            switch (state1.progress) {
+            | Progress =>
+              // look for infinite loops in the rest of the sequence, remembering what has made progress
+              (
+                FunctionCallSet.union(
+                  madeProgressOn,
+                  callStack |> CallStack.toSet,
+                ),
+                CallStack.create(),
               )
-              |> ignore;
+            | NoProgress => (madeProgressOn, callStack)
             };
-            {progress: Progress, trace: Tsub(newTraces |> List.rev)};
-          | NoProgress =>
-            findFirstProgress(
-              ~callStack,
-              ~commands=nextCommands,
-              ~madeProgressOn,
-              ~traces=newTraces,
-            )
-          };
+          findFirstProgress(
+            ~callStack,
+            ~commands=nextCommands,
+            ~madeProgressOn,
+            ~state=state1,
+          );
         };
-      findFirstProgress(~callStack, ~commands, ~madeProgressOn, ~traces=[]);
+      findFirstProgress(
+        ~callStack,
+        ~commands,
+        ~madeProgressOn,
+        ~state=state0,
+      );
+
     | UnorderedSequence(commands) =>
+      let state00 = {...state0, trace: Trace.empty};
       // the commands could be executed in any order: progess if any one does
-      let results =
+      let states =
         commands
         |> List.map(c =>
              c
@@ -1483,19 +1497,15 @@ module Eval = {
                   ~functionArgs,
                   ~functionTable,
                   ~madeProgressOn,
+                  ~state0=state00,
                 )
            );
-      switch (
-        results |> List.find_opt(({Res.progress}) => progress == Progress)
-      ) {
-      | None => {
-          progress: NoProgress,
-          trace: Tsub(results |> List.map(({Res.trace}) => trace)),
-        }
-      | Some({trace}) => {progress: Progress, trace}
-      };
+      State.seq(state0, states |> State.unorderedSequence);
+
     | Nondet(commands) =>
-      let results =
+      let state00 = {...state0, trace: Trace.empty};
+      // the commands could be executed in any order: progess if any one does
+      let states =
         commands
         |> List.map(c =>
              c
@@ -1505,20 +1515,13 @@ module Eval = {
                   ~functionArgs,
                   ~functionTable,
                   ~madeProgressOn,
+                  ~state0=state00,
                 )
            );
-      // make progress only if all the commands do
-      switch (
-        results |> List.find_opt(({Res.progress}) => progress == NoProgress)
-      ) {
-      | None => {
-          progress: Progress,
-          trace: Tsub(results |> List.map(({Res.trace}) => trace)),
-        }
-      | Some({trace}) => {progress: NoProgress, trace}
-      };
+      State.seq(state0, states |> State.nondet);
+
     | SwitchOption({functionCall, pos, some, none}) =>
-      let callRes =
+      let state =
         functionCall
         |> runFunctionCall(
              ~cache,
@@ -1527,38 +1530,38 @@ module Eval = {
              ~functionTable,
              ~madeProgressOn,
              ~pos,
+             ~state0,
            );
-      let rSomeOpt =
-        switch (callRes.resSome) {
-        | Some(progress) => Some(Command.Res({...callRes.res, progress}))
-        | None => None
-        };
-      let rNoneOpt =
-        switch (callRes.resNone) {
-        | Some(progress) => Some(Command.Res({...callRes.res, progress}))
-        | None => None
-        };
-      let cmd =
-        switch (rSomeOpt, rNoneOpt) {
-        | (None, None) =>
-          let rCall = Command.Res(callRes.res);
-          Command.seq(rCall, Command.nondet([some, none]));
-        | (Some(rSome), None) => Command.seq(rSome, some)
-        | (None, Some(rNone)) => Command.seq(rNone, none)
-        | (Some(rSome), Some(rNone)) =>
-          Command.nondet([
-            Command.seq(rSome, some),
-            Command.seq(rNone, none),
-          ])
-        };
-      cmd
-      |> run(
-           ~cache,
-           ~callStack,
-           ~functionArgs,
-           ~functionTable,
-           ~madeProgressOn,
-         );
+      switch (state.valuesOpt) {
+      | None =>
+        Command.nondet([some, none])
+        |> run(
+             ~cache,
+             ~callStack,
+             ~functionArgs,
+             ~functionTable,
+             ~madeProgressOn,
+             ~state0=state,
+           )
+      | Some(values) =>
+        let runOpt = (c, progressOpt) =>
+          switch (progressOpt) {
+          | None => State.init(~progress=Progress, ())
+          | Some(progress) =>
+            c
+            |> run(
+                 ~cache,
+                 ~callStack,
+                 ~functionArgs,
+                 ~functionTable,
+                 ~madeProgressOn,
+                 ~state0=State.init(~progress, ()),
+               )
+          };
+        let stateSome = values.some |> runOpt(some);
+        let stateNone = values.none |> runOpt(none);
+        State.seq(state, State.nondet([stateSome, stateNone]));
+      };
     };
 
   let analyzeFunction = (~cache, ~functionTable, ~pos, functionName) => {
@@ -1579,15 +1582,19 @@ module Eval = {
         | Some(body) => body
         | None => assert(false)
         };
-      body
-      |> run(
-           ~cache,
-           ~callStack,
-           ~functionArgs,
-           ~functionTable,
-           ~madeProgressOn=FunctionCallSet.empty,
-         )
-      |> ignore;
+      let state =
+        body
+        |> run(
+             ~cache,
+             ~callStack,
+             ~functionArgs,
+             ~functionTable,
+             ~madeProgressOn=FunctionCallSet.empty,
+             ~state0=State.init(),
+           );
+      let resString = state |> State.toString;
+      Stats.logResult(~functionCall, ~resString, ~pos);
+      cache |> updateCache(~callStack, ~functionCall, ~state);
     };
   };
 };
