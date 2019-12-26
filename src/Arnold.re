@@ -1335,9 +1335,7 @@ module Eval = {
               ++ (functionCall |> FunctionCall.toString)
               ++ "\"";
         Stats.logLoop(~explainCall, ~pos);
-        if (verbose) {
-          CallStack.dump(callStack);
-        };
+        CallStack.dump(callStack);
       };
       true;
     } else {
