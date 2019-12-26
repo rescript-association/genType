@@ -333,5 +333,8 @@ module ParserWihtOptionals = {
     }
 
   [@progress]
-  and testAlwaysReturnNone = p => alwaysReturnNone(p);
+  and testAlwaysReturnNone = p => alwaysReturnNone(p)
+
+  [@progress]
+  and parseIntOWrapper = p => parseIntO(p);
 };
