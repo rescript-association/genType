@@ -1,4 +1,6 @@
 # master
+
+# 3.9.0
 - With TypeScript back-end, emit import of React when function components are exported.
   See https://github.com/cristianoc/genType/issues/342.
 
