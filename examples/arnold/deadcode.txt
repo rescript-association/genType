@@ -114,8 +114,8 @@ Termination analysis for "butSecondArgumentIsAlwaysEvaluated"
   TestCyberTruck.re:117:45 termination analysis: "butSecondArgumentIsAlwaysEvaluated" returns Progress with trace (progress:Progress; butSecondArgumentIsAlwaysEvaluated:Progress)
   TestCyberTruck.re:199:44 termination analysis: extend Function Table with "parseInt" (TestCyberTruck.re:186:4) as it calls a progress function
   TestCyberTruck.re:174:16 termination analysis: extend Function Table with "parseList" as parametric ~f=parseInt
-  TestCyberTruck.re:225:37 termination analysis: adding recursive definition "parseListIntTailRecursive$loop"
-  TestCyberTruck.re:174:37 termination analysis: adding recursive definition "parseList$loop"
+  TestCyberTruck.re:226:10 termination analysis: adding recursive definition "parseListIntTailRecursive$loop"
+  TestCyberTruck.re:175:10 termination analysis: adding recursive definition "parseList$loop"
   
 Function Table:
     parseExpression: ( ( +Parser.next; parseExpression; parseExpression ) | parseInt )
@@ -224,7 +224,7 @@ Termination analysis for "countRendersCompiled"
   TestCyberTruck.re:325:48 termination analysis: extend Function Table with "parseIntO" (TestCyberTruck.re:313:6) as it calls a progress function
   TestCyberTruck.re:325:31 termination analysis: extend Function Table with "parseListO" (TestCyberTruck.re:299:6) as it calls a progress function
   TestCyberTruck.re:299:19 termination analysis: extend Function Table with "parseListO" as parametric ~f=parseIntO
-  TestCyberTruck.re:299:40 termination analysis: adding recursive definition "parseListO$loop"
+  TestCyberTruck.re:300:12 termination analysis: adding recursive definition "parseListO$loop"
   
 Function Table:
     alwaysReturnNone: ( ( +Parser.next; alwaysReturnNone ) | None )

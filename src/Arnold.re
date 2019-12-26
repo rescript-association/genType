@@ -1029,7 +1029,15 @@ module Compile = {
       expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
     | Texp_let(
         Recursive,
-        [{vb_pat: {pat_desc: Tpat_var(id, _)}, vb_expr}],
+        [
+          {
+            vb_pat: {
+              pat_desc: Tpat_var(id, _),
+              pat_loc: {loc_start: funPos},
+            },
+            vb_expr,
+          },
+        ],
         inExpr,
       ) =>
       let oldFunctionName = Ident.name(id);
@@ -1055,7 +1063,7 @@ module Compile = {
       if (verbose) {
         logItem(
           "%s termination analysis: adding recursive definition \"%s\"\n",
-          posString,
+          funPos |> posToString,
           newFunctionName,
         );
       };
