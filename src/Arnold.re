@@ -32,6 +32,10 @@
 // args := arg1, ...., argn  Function Arguments
 // C ::=                     Commmand
 //       x<args>             Call
+//       Some | None         Optional Value
+//       switch x<args> {    Switch on Optionals
+//         | Some -> C1
+//         | None -> C2 }
 //       C1 ; ... ; Cn       Sequential Composition
 //       C1 | ... | Cn       Nondeterministic Choice
 //       { C1, ..., Cn }     No Evaluation Order
@@ -39,8 +43,11 @@
 //      ...
 //      fn<argsn> = Cn
 // Stack := f1<args1> ... fn<argsn>
+// progress := Progress | NoProgress
+// values := {some, none} -> ?progress
+// State := (progress, ?values)
 //
-// Eval.run: (P, Stack, f<args>, C) ---> Progresss | NoProgress | Loop
+// Eval.run: (FT, Stack, f<args>, C, State) ---> State
 
 let logItem = GenTypeCommon.logItem;
 
