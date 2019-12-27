@@ -214,6 +214,7 @@ Function Table:
     parseListO<f>: parseListO$loop<f:f>
     parseListO$loop<f>: ( +Parser.next | switch f {some: parseListO$loop<f:f>, none: _} )
     testAlwaysReturnNone: alwaysReturnNone
+    thisMakesNoProgress: ( None; ( _ | ( +Parser.next; Some ) ) )
   
 Termination analysis for "parseListIntO"
   TestCyberTruck.re:325:31 termination analysis: cache miss for "parseListO<f:parseIntO>"
@@ -233,10 +234,13 @@ Termination analysis for "parseIntOWrapper"
   TestCyberTruck.re:339:30 termination analysis: cache hit for "parseIntO"
   TestCyberTruck.re:339:25 termination analysis: "parseIntOWrapper" returns {some: Progress, none: NoProgress} with trace parseIntO:NoProgress
   
+Termination analysis for "thisMakesNoProgress"
+  TestCyberTruck.re:343:28 termination analysis: "thisMakesNoProgress" returns {some: Progress, none: NoProgress} with trace (None; (_ | (Parser.next:Progress; Some)))
+  
 Termination Analysis Stats
   Files:1
   Recursive Blocks:18
-  Functions:38
+  Functions:39
   Infinite Loops:10
   Hygiene Errors:1
   Cache Hits:8/24

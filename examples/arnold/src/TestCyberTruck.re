@@ -336,5 +336,16 @@ module ParserWihtOptionals = {
   and testAlwaysReturnNone = p => alwaysReturnNone(p)
 
   [@progress]
-  and parseIntOWrapper = p => parseIntO(p);
+  and parseIntOWrapper = p => parseIntO(p)
+
+  [@progress]
+  and thisMakesNoProgress = (p: Parser.t, y) => {
+    let x = None;
+    switch (y) {
+    | Some(_) => x
+    | _ =>
+      Parser.next(p);
+      Some(10);
+    };
+  };
 };
