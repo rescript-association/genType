@@ -352,6 +352,23 @@ module Values = {
     some: option(Progress.t),
   };
 
+  let getNone = ({none}) => none;
+  let getSome = ({some}) => some;
+
+  let toString = values =>
+    (
+      switch (values.some) {
+      | None => []
+      | Some(p) => ["some: " ++ Progress.toString(p)]
+      }
+    )
+    @ (
+      switch (values.none) {
+      | None => []
+      | Some(p) => ["none: " ++ Progress.toString(p)]
+      }
+    );
+
   let none = (~progress) => {none: Some(progress), some: None};
   let some = (~progress) => {none: None, some: Some(progress)};
 
@@ -380,24 +397,11 @@ module State = {
   };
 
   let toString = ({progress, trace, valuesOpt}) => {
-    let valuesStr = (values: Values.t) =>
-      (
-        switch (values.some) {
-        | None => []
-        | Some(p) => ["some: " ++ Progress.toString(p)]
-        }
-      )
-      @ (
-        switch (values.none) {
-        | None => []
-        | Some(p) => ["none: " ++ Progress.toString(p)]
-        }
-      );
     let progressStr =
       switch (valuesOpt) {
       | None => progress |> Progress.toString
       | Some(values) =>
-        "{" ++ (valuesStr(values) |> String.concat(", ")) ++ "}"
+        "{" ++ (values |> Values.toString |> String.concat(", ")) ++ "}"
       };
     progressStr ++ " with trace " ++ Trace.toString(trace);
   };
@@ -1575,8 +1579,8 @@ module Eval = {
                  ~state0=State.init(~progress, ()),
                )
           };
-        let stateSome = values.some |> runOpt(some);
-        let stateNone = values.none |> runOpt(none);
+        let stateNone = values |> Values.getNone |> runOpt(none);
+        let stateSome = values |> Values.getSome |> runOpt(some);
         State.seq(state, State.nondet([stateSome, stateNone]));
       };
     };
