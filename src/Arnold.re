@@ -273,29 +273,30 @@ module Progress = {
   let toString = progress => progress == Progress ? "Progress" : "NoProgress";
 };
 
-module Trace = {
+module Call = {
   type progressFunction = Path.t;
-
-  type call =
+  type t =
     | FunctionCall(FunctionCall.t)
     | ProgressFunction(progressFunction);
 
-  type retOption =
-    | Rsome
-    | Rnone;
-
-  type t =
-    | Tcall(call, Progress.t)
-    | Tnondet(list(t))
-    | Toption(retOption)
-    | Tseq(list(t));
-
-  let callToString = call =>
+  let toString = call =>
     switch (call) {
     | ProgressFunction(progressFunction) =>
       "+" ++ Path.name(progressFunction)
     | FunctionCall(functionCall) => FunctionCall.toString(functionCall)
     };
+};
+
+module Trace = {
+  type retOption =
+    | Rsome
+    | Rnone;
+
+  type t =
+    | Tcall(Call.t, Progress.t)
+    | Tnondet(list(t))
+    | Toption(retOption)
+    | Tseq(list(t));
 
   let empty = Tseq([]);
 
@@ -346,7 +347,15 @@ module Trace = {
     };
 };
 
-module Values = {
+module Values: {
+  type t;
+  let getNone: t => option(Progress.t);
+  let getSome: t => option(Progress.t);
+  let nd: (t, t) => t;
+  let none: (~progress: Progress.t) => t;
+  let some: (~progress: Progress.t) => t;
+  let toString: t => string;
+} = {
   type t = {
     none: option(Progress.t),
     some: option(Progress.t),
@@ -355,19 +364,20 @@ module Values = {
   let getNone = ({none}) => none;
   let getSome = ({some}) => some;
 
-  let toString = values =>
+  let toString = x =>
     (
-      switch (values.some) {
+      switch (x.some) {
       | None => []
       | Some(p) => ["some: " ++ Progress.toString(p)]
       }
     )
     @ (
-      switch (values.none) {
+      switch (x.none) {
       | None => []
       | Some(p) => ["none: " ++ Progress.toString(p)]
       }
-    );
+    )
+    |> String.concat(", ");
 
   let none = (~progress) => {none: Some(progress), some: None};
   let some = (~progress) => {none: None, some: Some(progress)};
@@ -400,8 +410,7 @@ module State = {
     let progressStr =
       switch (valuesOpt) {
       | None => progress |> Progress.toString
-      | Some(values) =>
-        "{" ++ (values |> Values.toString |> String.concat(", ")) ++ "}"
+      | Some(values) => "{" ++ (values |> Values.toString) ++ "}"
       };
     progressStr ++ " with trace " ++ Trace.toString(trace);
   };
@@ -475,12 +484,10 @@ module State = {
 module Command = {
   type progress = Progress.t;
 
-  type call = Trace.call;
-
   type retOption = Trace.retOption;
 
   type t =
-    | Call(call, Lexing.position)
+    | Call(Call.t, Lexing.position)
     | ConstrOption(retOption)
     | Nondet(list(t))
     | Sequence(list(t))
@@ -494,7 +501,7 @@ module Command = {
 
   let rec toString = command =>
     switch (command) {
-    | Call(call, _pos) => call |> Trace.callToString
+    | Call(call, _pos) => call |> Call.toString
     | ConstrOption(r) => r |> Trace.retOptionToString
     | Nondet(commands) =>
       "( "
@@ -1304,7 +1311,8 @@ module Eval = {
     };
   };
 
-  let updateCache = (~callStack, ~functionCall, ~state, cache: cache) => {
+  let updateCache = (~callStack, ~functionCall, ~pos, ~state, cache: cache) => {
+    Stats.logResult(~functionCall, ~resString=state |> State.toString, ~pos);
     let set = callStack |> CallStack.toSet;
     let modified = ref(false);
     let results =
@@ -1332,9 +1340,9 @@ module Eval = {
   };
 
   let hasInfiniteLoop =
-      (~callStack, ~functionCallToInstantiate, ~functionCall, ~pos, ~state0) =>
+      (~callStack, ~functionCallToInstantiate, ~functionCall, ~pos, ~state) =>
     if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
-      if (state0.State.progress == NoProgress) {
+      if (state.State.progress == NoProgress) {
         let explainCall =
           functionCallToInstantiate == functionCall
             ? "\""
@@ -1361,7 +1369,7 @@ module Eval = {
             ~functionTable,
             ~madeProgressOn,
             ~pos,
-            ~state0,
+            ~state,
             functionCallToInstantiate,
           )
           : State.t => {
@@ -1369,31 +1377,30 @@ module Eval = {
       functionCallToInstantiate
       |> FunctionCall.applySubstitution(~sub=functionArgs);
     let functionName = functionCall.functionName;
-    let call = Trace.FunctionCall(functionCall);
-    let state =
+    let call = Call.FunctionCall(functionCall);
+    let stateAfterCall =
       switch (cache |> lookupCache(~callStack, ~functionCall)) {
-      | Some((state: State.t)) =>
+      | Some(stateAfterCall) =>
         Stats.logCache(~functionCall, ~hit=true, ~pos);
-        let state = {...state, trace: Trace.Tcall(call, state.progress)};
-        state;
+        {
+          ...stateAfterCall,
+          trace: Trace.Tcall(call, stateAfterCall.progress),
+        };
       | None =>
         if (FunctionCallSet.mem(functionCall, madeProgressOn)) {
-          let state =
-            State.init(
-              ~progress=Progress,
-              ~trace=Trace.Tcall(call, Progress),
-              (),
-            );
-          state;
+          State.init(
+            ~progress=Progress,
+            ~trace=Trace.Tcall(call, Progress),
+            (),
+          );
         } else if (hasInfiniteLoop(
                      ~callStack,
                      ~functionCallToInstantiate,
                      ~functionCall,
                      ~pos,
-                     ~state0,
+                     ~state,
                    )) {
-          let trace = Trace.Tcall(call, state0.progress);
-          {...state0, trace};
+          {...state, trace: Trace.Tcall(call, state.progress)};
         } else {
           Stats.logCache(~functionCall, ~hit=false, ~pos);
           let functionDefinition =
@@ -1405,7 +1412,7 @@ module Eval = {
             | Some(body) => body
             | None => assert(false)
             };
-          let state =
+          let stateAfterCall =
             body
             |> run(
                  ~cache,
@@ -1413,18 +1420,22 @@ module Eval = {
                  ~functionArgs=functionCall.functionArgs,
                  ~functionTable,
                  ~madeProgressOn,
-                 ~state0=State.init(),
+                 ~state=State.init(),
                );
-          let resString = state |> State.toString;
-          Stats.logResult(~functionCall, ~resString, ~pos);
-          cache |> updateCache(~callStack, ~functionCall, ~state);
+          cache
+          |> updateCache(
+               ~callStack,
+               ~functionCall,
+               ~pos,
+               ~state=stateAfterCall,
+             );
           // Invariant: run should restore the callStack
           callStack |> CallStack.removeFunctionCall(~functionCall);
-          let trace = Trace.Tcall(call, state.progress);
-          {...state, trace};
+          let trace = Trace.Tcall(call, stateAfterCall.progress);
+          {...stateAfterCall, trace};
         }
       };
-    State.seq(state0, state);
+    State.seq(state, stateAfterCall);
   }
   and run =
       (
@@ -1433,7 +1444,7 @@ module Eval = {
         ~functionArgs,
         ~functionTable,
         ~madeProgressOn,
-        ~state0,
+        ~state,
         command: Command.t,
       )
       : State.t =>
@@ -1447,19 +1458,19 @@ module Eval = {
            ~functionTable,
            ~madeProgressOn,
            ~pos,
-           ~state0,
+           ~state,
          )
     | Call(ProgressFunction(progressFunction) as call, _pos) =>
-      let state =
+      let state1 =
         State.init(~progress=Progress, ~trace=Tcall(call, Progress), ());
-      State.seq(state0, state);
+      State.seq(state, state1);
 
     | ConstrOption(r) =>
-      let state =
+      let state1 =
         r == Rsome
-          ? State.some(~progress=state0.progress)
-          : State.none(~progress=state0.progress);
-      State.seq(state0, state);
+          ? State.some(~progress=state.progress)
+          : State.none(~progress=state.progress);
+      State.seq(state, state1);
 
     | Sequence(commands) =>
       // if one command makes progress, then the sequence makes progress
@@ -1476,7 +1487,7 @@ module Eval = {
                  ~functionArgs,
                  ~functionTable,
                  ~madeProgressOn,
-                 ~state0=state,
+                 ~state,
                );
           let (madeProgressOn, callStack) =
             switch (state1.progress) {
@@ -1498,15 +1509,10 @@ module Eval = {
             ~state=state1,
           );
         };
-      findFirstProgress(
-        ~callStack,
-        ~commands,
-        ~madeProgressOn,
-        ~state=state0,
-      );
+      findFirstProgress(~callStack, ~commands, ~madeProgressOn, ~state);
 
     | UnorderedSequence(commands) =>
-      let state00 = {...state0, trace: Trace.empty};
+      let stateNoTrace = {...state, trace: Trace.empty};
       // the commands could be executed in any order: progess if any one does
       let states =
         commands
@@ -1518,13 +1524,13 @@ module Eval = {
                   ~functionArgs,
                   ~functionTable,
                   ~madeProgressOn,
-                  ~state0=state00,
+                  ~state=stateNoTrace,
                 )
            );
-      State.seq(state0, states |> State.unorderedSequence);
+      State.seq(state, states |> State.unorderedSequence);
 
     | Nondet(commands) =>
-      let state00 = {...state0, trace: Trace.empty};
+      let stateNoTrace = {...state, trace: Trace.empty};
       // the commands could be executed in any order: progess if any one does
       let states =
         commands
@@ -1536,13 +1542,13 @@ module Eval = {
                   ~functionArgs,
                   ~functionTable,
                   ~madeProgressOn,
-                  ~state0=state00,
+                  ~state=stateNoTrace,
                 )
            );
-      State.seq(state0, states |> State.nondet);
+      State.seq(state, states |> State.nondet);
 
     | SwitchOption({functionCall, pos, some, none}) =>
-      let state =
+      let stateAfterCall =
         functionCall
         |> runFunctionCall(
              ~cache,
@@ -1551,9 +1557,9 @@ module Eval = {
              ~functionTable,
              ~madeProgressOn,
              ~pos,
-             ~state0,
+             ~state,
            );
-      switch (state.valuesOpt) {
+      switch (stateAfterCall.valuesOpt) {
       | None =>
         Command.nondet([some, none])
         |> run(
@@ -1562,7 +1568,7 @@ module Eval = {
              ~functionArgs,
              ~functionTable,
              ~madeProgressOn,
-             ~state0=state,
+             ~state=stateAfterCall,
            )
       | Some(values) =>
         let runOpt = (c, progressOpt) =>
@@ -1576,12 +1582,12 @@ module Eval = {
                  ~functionArgs,
                  ~functionTable,
                  ~madeProgressOn,
-                 ~state0=State.init(~progress, ()),
+                 ~state=State.init(~progress, ()),
                )
           };
         let stateNone = values |> Values.getNone |> runOpt(none);
         let stateSome = values |> Values.getSome |> runOpt(some);
-        State.seq(state, State.nondet([stateSome, stateNone]));
+        State.seq(stateAfterCall, State.nondet([stateSome, stateNone]));
       };
     };
 
@@ -1611,11 +1617,9 @@ module Eval = {
              ~functionArgs,
              ~functionTable,
              ~madeProgressOn=FunctionCallSet.empty,
-             ~state0=State.init(),
+             ~state=State.init(),
            );
-      let resString = state |> State.toString;
-      Stats.logResult(~functionCall, ~resString, ~pos);
-      cache |> updateCache(~callStack, ~functionCall, ~state);
+      cache |> updateCache(~callStack, ~functionCall, ~pos, ~state);
     };
   };
 };
