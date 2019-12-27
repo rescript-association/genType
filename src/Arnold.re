@@ -1286,57 +1286,19 @@ module CallStack = {
 module Eval = {
   type progress = Progress.t;
 
-  type cache =
-    Hashtbl.t(FunctionCall.t, list((FunctionCallSet.t, State.t)));
+  type cache = Hashtbl.t(FunctionCall.t, State.t);
 
   let createCache = (): cache => Hashtbl.create(1);
 
-  let lookupCache = (~callStack, ~functionCall, cache: cache) => {
-    switch (Hashtbl.find(cache, functionCall)) {
-    | [] => None
-    | results =>
-      let set = callStack |> CallStack.toSet;
-      switch (
-        results
-        |> List.find(((cachedSet, _res)) =>
-             FunctionCallSet.subset(set, cachedSet)
-           )
-      ) {
-      | (_, callRes) =>
-        // if it terminates on a stack, it terminates also on a smaller one
-        Some(callRes)
-      | exception Not_found => None
-      };
-    | exception Not_found => None
-    };
+  let lookupCache = (~functionCall, cache: cache) => {
+    Hashtbl.find_opt(cache, functionCall);
   };
 
-  let updateCache = (~callStack, ~functionCall, ~pos, ~state, cache: cache) => {
+  let updateCache = (~functionCall, ~pos, ~state, cache: cache) => {
     Stats.logResult(~functionCall, ~resString=state |> State.toString, ~pos);
-    let set = callStack |> CallStack.toSet;
-    let modified = ref(false);
-    let results =
-      switch (Hashtbl.find(cache, functionCall)) {
-      | results =>
-        results
-        |> List.map(((cachedSet, res)) => {
-             let newCachedSet =
-               if (FunctionCallSet.subset(cachedSet, set)) {
-                 // termination on a bigger stack is a stronger result to cache
-                 modified := true;
-                 set;
-               } else {
-                 cachedSet;
-               };
-             (newCachedSet, res);
-           })
-      | exception Not_found => []
-      };
-    Hashtbl.replace(
-      cache,
-      functionCall,
-      modified^ ? results : [(set, state), ...results],
-    );
+    if (!Hashtbl.mem(cache, functionCall)) {
+      Hashtbl.replace(cache, functionCall, state);
+    };
   };
 
   let hasInfiniteLoop =
@@ -1379,7 +1341,7 @@ module Eval = {
     let functionName = functionCall.functionName;
     let call = Call.FunctionCall(functionCall);
     let stateAfterCall =
-      switch (cache |> lookupCache(~callStack, ~functionCall)) {
+      switch (cache |> lookupCache(~functionCall)) {
       | Some(stateAfterCall) =>
         Stats.logCache(~functionCall, ~hit=true, ~pos);
         {
@@ -1422,13 +1384,7 @@ module Eval = {
                  ~madeProgressOn,
                  ~state=State.init(),
                );
-          cache
-          |> updateCache(
-               ~callStack,
-               ~functionCall,
-               ~pos,
-               ~state=stateAfterCall,
-             );
+          cache |> updateCache(~functionCall, ~pos, ~state=stateAfterCall);
           // Invariant: run should restore the callStack
           callStack |> CallStack.removeFunctionCall(~functionCall);
           let trace = Trace.Tcall(call, stateAfterCall.progress);
@@ -1619,7 +1575,7 @@ module Eval = {
              ~madeProgressOn=FunctionCallSet.empty,
              ~state=State.init(),
            );
-      cache |> updateCache(~callStack, ~functionCall, ~pos, ~state);
+      cache |> updateCache(~functionCall, ~pos, ~state);
     };
   };
 };

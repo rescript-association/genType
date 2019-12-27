@@ -141,15 +141,7 @@ Termination analysis for "parseListInt"
 Termination analysis for "parseListListInt"
   TestCyberTruck.re:202:28 termination analysis: cache miss for "parseList<f:parseListInt>"
   TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseListInt>"
-  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseListInt"
-  TestCyberTruck.re:199:28 termination analysis: cache miss for "parseList<f:parseInt>"
-  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseInt>"
-  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:179:17 termination analysis: "parseInt" returns Progress with trace Parser.next:Progress
-  TestCyberTruck.re:180:14 termination analysis: cache hit for "parseList$loop<f:parseInt>"
-  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseInt>" returns NoProgress with trace (_ | (parseInt:Progress; parseList$loop<f:parseInt>:NoProgress))
-  TestCyberTruck.re:199:28 termination analysis: "parseList<f:parseInt>" returns NoProgress with trace parseList$loop<f:parseInt>:NoProgress
-  TestCyberTruck.re:179:17 termination analysis: "parseListInt" returns NoProgress with trace parseList<f:parseInt>:NoProgress
+  TestCyberTruck.re:179:17 termination analysis: cache hit for "parseListInt"
   TestCyberTruck.re:180:14 termination error: possible infinite loop when calling "parseList$loop<f:f>" which is "parseList$loop<f:parseListInt>"
     CallStack:
     3 at parseList$loop<f:parseListInt> (TestCyberTruck.re:183:2)
@@ -160,37 +152,25 @@ Termination analysis for "parseListListInt"
   TestCyberTruck.re:202:23 termination analysis: "parseListListInt" returns NoProgress with trace parseList<f:parseListInt>:NoProgress
   
 Termination analysis for "parseExpression"
-  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:214:18 termination analysis: "parseInt" returns Progress with trace Parser.next:Progress
+  TestCyberTruck.re:214:18 termination analysis: cache hit for "parseInt"
   TestCyberTruck.re:205:22 termination analysis: "parseExpression" returns Progress with trace ((Parser.next:Progress; parseExpression:Progress; parseExpression:Progress) | parseInt:Progress)
   
 Termination analysis for "parseListExpression"
   TestCyberTruck.re:219:31 termination analysis: cache miss for "parseList<f:parseExpression>"
   TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
-  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseExpression"
-  TestCyberTruck.re:209:13 termination analysis: cache hit for "parseExpression"
-  TestCyberTruck.re:211:13 termination analysis: cache hit for "parseExpression"
-  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:214:18 termination analysis: "parseInt" returns Progress with trace Parser.next:Progress
-  TestCyberTruck.re:179:17 termination analysis: "parseExpression" returns Progress with trace ((Parser.next:Progress; parseExpression:Progress; parseExpression:Progress) | parseInt:Progress)
+  TestCyberTruck.re:179:17 termination analysis: cache hit for "parseExpression"
   TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseExpression>" returns NoProgress with trace (_ | (parseExpression:Progress; parseList$loop<f:parseExpression>:Progress))
   TestCyberTruck.re:219:31 termination analysis: "parseList<f:parseExpression>" returns NoProgress with trace parseList$loop<f:parseExpression>:NoProgress
   TestCyberTruck.re:219:26 termination analysis: "parseListExpression" returns NoProgress with trace parseList<f:parseExpression>:NoProgress
   
 Termination analysis for "parseListExpression2"
-  TestCyberTruck.re:222:48 termination analysis: cache miss for "parseExpression"
-  TestCyberTruck.re:209:13 termination analysis: cache hit for "parseExpression"
-  TestCyberTruck.re:211:13 termination analysis: cache hit for "parseExpression"
-  TestCyberTruck.re:214:18 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:214:18 termination analysis: "parseInt" returns Progress with trace Parser.next:Progress
-  TestCyberTruck.re:222:48 termination analysis: "parseExpression" returns Progress with trace ((Parser.next:Progress; parseExpression:Progress; parseExpression:Progress) | parseInt:Progress)
+  TestCyberTruck.re:222:48 termination analysis: cache hit for "parseExpression"
   TestCyberTruck.re:222:32 termination analysis: cache hit for "parseList<f:parseExpression>"
   TestCyberTruck.re:222:27 termination analysis: "parseListExpression2" returns Progress with trace (parseExpression:Progress; parseList<f:parseExpression>:NoProgress)
   
 Termination analysis for "parseListIntTailRecursive"
   TestCyberTruck.re:232:2 termination analysis: cache miss for "parseListIntTailRecursive$loop"
-  TestCyberTruck.re:230:15 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:230:15 termination analysis: "parseInt" returns Progress with trace Parser.next:Progress
+  TestCyberTruck.re:230:15 termination analysis: cache hit for "parseInt"
   TestCyberTruck.re:232:2 termination analysis: "parseListIntTailRecursive$loop" returns NoProgress with trace (_ | (parseInt:Progress; parseListIntTailRecursive$loop:Progress))
   TestCyberTruck.re:225:32 termination analysis: "parseListIntTailRecursive" returns NoProgress with trace parseListIntTailRecursive$loop:NoProgress
   
@@ -250,8 +230,7 @@ Termination analysis for "testAlwaysReturnNone"
   TestCyberTruck.re:336:29 termination analysis: "testAlwaysReturnNone" returns {none: NoProgress} with trace alwaysReturnNone:NoProgress
   
 Termination analysis for "parseIntOWrapper"
-  TestCyberTruck.re:339:30 termination analysis: cache miss for "parseIntO"
-  TestCyberTruck.re:339:30 termination analysis: "parseIntO" returns {some: Progress, none: NoProgress} with trace ((Parser.next:Progress; Some) | None)
+  TestCyberTruck.re:339:30 termination analysis: cache hit for "parseIntO"
   TestCyberTruck.re:339:25 termination analysis: "parseIntOWrapper" returns {some: Progress, none: NoProgress} with trace parseIntO:NoProgress
   
 Termination Analysis Stats
@@ -260,4 +239,4 @@ Termination Analysis Stats
   Functions:38
   Infinite Loops:10
   Hygiene Errors:1
-  Cache Hits:7/34
+  Cache Hits:8/24
