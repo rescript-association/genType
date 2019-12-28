@@ -332,7 +332,7 @@ module Trace = {
       ++ ":"
       ++ Progress.toString(progress)
     | Tnondet(traces) =>
-      "(" ++ (traces |> List.map(toString) |> String.concat(" | ")) ++ ")"
+      "[" ++ (traces |> List.map(toString) |> String.concat(" || ")) ++ "]"
     | Toption(retOption) => retOption |> retOptionToString
     | Tseq(traces) =>
       let tracesNotEmpty = traces |> List.filter((!=)(empty));
@@ -340,9 +340,7 @@ module Trace = {
       | [] => "_"
       | [t] => t |> toString
       | [_, ..._] =>
-        "("
-        ++ (tracesNotEmpty |> List.map(toString) |> String.concat("; "))
-        ++ ")"
+        tracesNotEmpty |> List.map(toString) |> String.concat("; ")
       };
     };
 };
@@ -490,6 +488,7 @@ module Command = {
     | Call(Call.t, Lexing.position)
     | ConstrOption(retOption)
     | Nondet(list(t))
+    | Nothing
     | Sequence(list(t))
     | SwitchOption({
         functionCall: FunctionCall.t,
@@ -504,15 +503,10 @@ module Command = {
     | Call(call, _pos) => call |> Call.toString
     | ConstrOption(r) => r |> Trace.retOptionToString
     | Nondet(commands) =>
-      "( "
-      ++ (commands |> List.map(toString) |> String.concat(" | "))
-      ++ " )"
+      "[" ++ (commands |> List.map(toString) |> String.concat(" || ")) ++ "]"
+    | Nothing => "_"
     | Sequence(commands) =>
-      commands == []
-        ? "_"
-        : "( "
-          ++ (commands |> List.map(toString) |> String.concat("; "))
-          ++ " )"
+      commands |> List.map(toString) |> String.concat("; ")
     | SwitchOption({functionCall, some: cSome, none: cNone}) =>
       "switch "
       ++ FunctionCall.toString(functionCall)
@@ -525,48 +519,43 @@ module Command = {
       "{" ++ (commands |> List.map(toString) |> String.concat(", ")) ++ "}"
     };
 
-  let nothing = Sequence([]);
+  let nothing = Nothing;
 
   let nondet = commands => {
     let rec loop = commands =>
       switch (commands) {
       | [] => nothing
-      | [Sequence([]), Sequence([]), ...rest] =>
-        loop([Sequence([]), ...rest])
       | [Nondet(commands), ...rest] => loop(commands @ rest)
-      | [Sequence([]), Nondet(commands), ...rest] =>
-        loop([Sequence([]), ...commands] @ rest)
       | [command] => command
       | _ => Nondet(commands)
       };
-    let (nothings, others) =
-      commands |> List.partition(c => c == Sequence([]));
-    loop(nothings == [] ? others : [Sequence([]), ...others]);
+    loop(commands);
   };
 
-  let seq = (c1, c2) =>
-    switch (c1, c2) {
-    | (Sequence([]), _) => c2
-    | (_, Sequence([])) => c1
-    | (Sequence(s1), Sequence(s2)) => Sequence(s1 @ s2)
-    | (Sequence(s1), _) => Sequence(s1 @ [c2])
-    | (_, Sequence(s2)) => Sequence([c1, ...s2])
-    | _ => Sequence([c1, c2])
+  let sequence = commands => {
+    let rec loop = (acc, commands) =>
+      switch (commands) {
+      | [] => List.rev(acc)
+      | [Nothing, ...cs] when cs != [] => loop(acc, cs)
+      | [Sequence(cs1), ...cs2] => loop(acc, cs1 @ cs2)
+      | [c, ...cs] => loop([c, ...acc], cs)
+      };
+    switch (loop([], commands)) {
+    | [c] => c
+    | cs => Sequence(cs)
     };
+  };
 
-  let rec sequence = commands =>
-    switch (commands) {
+  let (+++) = (c1, c2) => sequence([c1, c2]);
+
+  let unorderedSequence = commands => {
+    let relevantCommands = commands |> List.filter(x => x != nothing);
+    switch (relevantCommands) {
     | [] => nothing
-    | [command] => command
-    | [command, ...nextCommands] => seq(command, sequence(nextCommands))
+    | [c] => c
+    | [_, _, ..._] => UnorderedSequence(relevantCommands)
     };
-
-  let unorderedSequence = commands =>
-    switch (commands |> List.filter(x => x != nothing)) {
-    | []
-    | [_] => sequence(commands)
-    | [_, _, ..._] => UnorderedSequence(commands)
-    };
+  };
 };
 
 module Kind = {
@@ -1100,12 +1089,12 @@ module Compile = {
         @ [inExpr |> expression(~ctx)];
       Command.sequence(commands);
     | Texp_sequence(e1, e2) =>
-      Command.seq(e1 |> expression(~ctx), e2 |> expression(~ctx))
+      Command.(expression(~ctx, e1) +++ expression(~ctx, e2))
     | Texp_ifthenelse(e1, e2, eOpt) =>
       let c1 = e1 |> expression(~ctx);
       let c2 = e2 |> expression(~ctx);
       let c3 = eOpt |> expressionOpt(~ctx);
-      Command.seq(c1, Command.nondet([c2, c3]));
+      Command.(c1 +++ nondet([c2, c3]));
     | Texp_constant(_) => Command.nothing
     | Texp_construct(
         {loc: {loc_start: pos, loc_ghost}},
@@ -1117,8 +1106,8 @@ module Compile = {
         |> List.map(e => e |> expression(~ctx))
         |> Command.unorderedSequence;
       switch (cstr_name) {
-      | "Some" when loc_ghost == false => Command.seq(c, ConstrOption(Rsome))
-      | "None" when loc_ghost == false => Command.seq(c, ConstrOption(Rnone))
+      | "Some" when loc_ghost == false => Command.(c +++ ConstrOption(Rsome))
+      | "None" when loc_ghost == false => Command.(c +++ ConstrOption(Rnone))
       | _ => c
       };
     | Texp_function({cases}) =>
@@ -1153,7 +1142,7 @@ module Compile = {
           name1 == "Some"
             ? (casesArr[0], casesArr[1]) : (casesArr[1], casesArr[0]);
         SwitchOption({functionCall, pos, some, none});
-      | _ => Command.seq(cE, cCases |> Command.nondet)
+      | _ => Command.(cE +++ nondet(cCases))
       };
 
     | Texp_match(_, _, [_, ..._] as _casesExn, _) => assert(false)
@@ -1217,13 +1206,12 @@ module Compile = {
     // Don't assume any evaluation order on the arguments
     let commands =
       args |> List.map(((_, eOpt)) => eOpt |> expressionOpt(~ctx));
-    Command.seq(Command.unorderedSequence(commands), command);
+    Command.(unorderedSequence(commands) +++ command);
   }
   and case = (~ctx, {c_guard, c_rhs}: Typedtree.case) =>
     switch (c_guard) {
     | None => c_rhs |> expression(~ctx)
-    | Some(e) =>
-      Command.seq(e |> expression(~ctx), c_rhs |> expression(~ctx))
+    | Some(e) => Command.(expression(~ctx, e) +++ expression(~ctx, c_rhs))
     };
 };
 
@@ -1426,6 +1414,10 @@ module Eval = {
         r == Rsome
           ? State.some(~progress=state.progress)
           : State.none(~progress=state.progress);
+      State.seq(state, state1);
+
+    | Nothing =>
+      let state1 = State.init();
       State.seq(state, state1);
 
     | Sequence(commands) =>

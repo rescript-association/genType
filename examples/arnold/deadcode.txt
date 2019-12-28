@@ -16,19 +16,19 @@ Termination analysis for "alwaysLoop"
   TestCyberTruck.re:27:21 termination analysis: "alwaysLoop" returns NoProgress with trace alwaysLoop:NoProgress
   
 Function Table:
-    alwaysProgress: ( +progress; alwaysProgress )
+    alwaysProgress: +progress; alwaysProgress
   
 Termination analysis for "alwaysProgress"
-  TestCyberTruck.re:30:25 termination analysis: "alwaysProgress" returns Progress with trace (progress:Progress; alwaysProgress:Progress)
+  TestCyberTruck.re:30:25 termination analysis: "alwaysProgress" returns Progress with trace progress:Progress; alwaysProgress:Progress
   
 Function Table:
-    alwaysProgressWrongOrder: ( alwaysProgressWrongOrder; +progress )
+    alwaysProgressWrongOrder: alwaysProgressWrongOrder; +progress
   
 Termination analysis for "alwaysProgressWrongOrder"
   TestCyberTruck.re:38:2 termination error: possible infinite loop when calling "alwaysProgressWrongOrder"
     CallStack:
     1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
-  TestCyberTruck.re:37:35 termination analysis: "alwaysProgressWrongOrder" returns Progress with trace (alwaysProgressWrongOrder:NoProgress; progress:Progress)
+  TestCyberTruck.re:37:35 termination analysis: "alwaysProgressWrongOrder" returns Progress with trace alwaysProgressWrongOrder:NoProgress; progress:Progress
   TestCyberTruck.re:45:14 hygiene error: "doNotAlias" can only be called directly, or passed as labeled argument.
   
 Function Table:
@@ -38,24 +38,24 @@ Termination analysis for "doNotAlias"
   TestCyberTruck.re:43:21 termination analysis: "doNotAlias" returns NoProgress with trace _
   
 Function Table:
-    progressOnBothBranches: ( ( +progress | +progress2 ); progressOnBothBranches )
+    progressOnBothBranches: [+progress || +progress2]; progressOnBothBranches
   
 Termination analysis for "progressOnBothBranches"
-  TestCyberTruck.re:51:33 termination analysis: "progressOnBothBranches" returns Progress with trace ((progress:Progress | progress2:Progress); progressOnBothBranches:Progress)
+  TestCyberTruck.re:51:33 termination analysis: "progressOnBothBranches" returns Progress with trace [progress:Progress || progress2:Progress]; progressOnBothBranches:Progress
   
 Function Table:
-    progressOnOneBranch: ( ( _ | +progress ); progressOnOneBranch )
+    progressOnOneBranch: [+progress || _]; progressOnOneBranch
   
 Termination analysis for "progressOnOneBranch"
   TestCyberTruck.re:66:2 termination error: possible infinite loop when calling "progressOnOneBranch"
     CallStack:
     1 at progressOnOneBranch (TestCyberTruck.re:62:30)
-  TestCyberTruck.re:62:30 termination analysis: "progressOnOneBranch" returns NoProgress with trace ((_ | progress:Progress); progressOnOneBranch:NoProgress)
+  TestCyberTruck.re:62:30 termination analysis: "progressOnOneBranch" returns NoProgress with trace [progress:Progress || _]; progressOnOneBranch:NoProgress
   TestCyberTruck.re:78:38 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
   
 Function Table:
     callParseFunction<parseFunction>: parseFunction
-    testParametricFunction: ( ( _ | +progress ); testParametricFunction2 )
+    testParametricFunction: [+progress || _]; testParametricFunction2
     testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
   
 Termination analysis for "testParametricFunction"
@@ -68,11 +68,11 @@ Termination analysis for "testParametricFunction"
     1 at testParametricFunction (TestCyberTruck.re:71:33)
   TestCyberTruck.re:77:35 termination analysis: "callParseFunction<parseFunction:testParametricFunction>" returns NoProgress with trace testParametricFunction:NoProgress
   TestCyberTruck.re:75:2 termination analysis: "testParametricFunction2" returns NoProgress with trace callParseFunction<parseFunction:testParametricFunction>:NoProgress
-  TestCyberTruck.re:71:33 termination analysis: "testParametricFunction" returns NoProgress with trace ((_ | progress:Progress); testParametricFunction2:NoProgress)
+  TestCyberTruck.re:71:33 termination analysis: "testParametricFunction" returns NoProgress with trace [progress:Progress || _]; testParametricFunction2:NoProgress
   
 Function Table:
     doNothing: _
-    testCacheHit: ( ( _ | ( doNothing; doNothing; +Progress.Nested.f ) ); testCacheHit )
+    testCacheHit: [doNothing; doNothing; +Progress.Nested.f || _]; testCacheHit
   
 Termination analysis for "testCacheHit"
   TestCyberTruck.re:85:4 termination analysis: cache miss for "doNothing"
@@ -81,60 +81,60 @@ Termination analysis for "testCacheHit"
   TestCyberTruck.re:89:2 termination error: possible infinite loop when calling "testCacheHit"
     CallStack:
     1 at testCacheHit (TestCyberTruck.re:83:23)
-  TestCyberTruck.re:83:23 termination analysis: "testCacheHit" returns NoProgress with trace ((_ | (doNothing:NoProgress; doNothing:NoProgress; Progress.Nested.f:Progress)); testCacheHit:NoProgress)
+  TestCyberTruck.re:83:23 termination analysis: "testCacheHit" returns NoProgress with trace [doNothing:NoProgress; doNothing:NoProgress; Progress.Nested.f:Progress || _]; testCacheHit:NoProgress
   
 Function Table:
-    evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight}
+    evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight}; _
   
 Termination analysis for "evalOrderIsNotLeftToRight"
   TestCyberTruck.re:97:30 termination error: possible infinite loop when calling "evalOrderIsNotLeftToRight"
     CallStack:
     1 at evalOrderIsNotLeftToRight (TestCyberTruck.re:95:36)
-  TestCyberTruck.re:95:36 termination analysis: "evalOrderIsNotLeftToRight" returns Progress with trace (progress:Progress; evalOrderIsNotLeftToRight:NoProgress)
+  TestCyberTruck.re:95:36 termination analysis: "evalOrderIsNotLeftToRight" returns Progress with trace progress:Progress; evalOrderIsNotLeftToRight:NoProgress
   
 Function Table:
-    evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress}
+    evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress}; _
   
 Termination analysis for "evalOrderIsNotRightToLeft"
   TestCyberTruck.re:104:18 termination error: possible infinite loop when calling "evalOrderIsNotRightToLeft"
     CallStack:
     1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
-  TestCyberTruck.re:102:36 termination analysis: "evalOrderIsNotRightToLeft" returns Progress with trace (evalOrderIsNotRightToLeft:NoProgress; progress:Progress)
+  TestCyberTruck.re:102:36 termination analysis: "evalOrderIsNotRightToLeft" returns Progress with trace evalOrderIsNotRightToLeft:NoProgress; progress:Progress
   
 Function Table:
-    butFirstArgumentIsAlwaysEvaluated: ( +progress; butFirstArgumentIsAlwaysEvaluated )
+    butFirstArgumentIsAlwaysEvaluated: +progress; butFirstArgumentIsAlwaysEvaluated
   
 Termination analysis for "butFirstArgumentIsAlwaysEvaluated"
-  TestCyberTruck.re:109:44 termination analysis: "butFirstArgumentIsAlwaysEvaluated" returns Progress with trace (progress:Progress; butFirstArgumentIsAlwaysEvaluated:Progress)
+  TestCyberTruck.re:109:44 termination analysis: "butFirstArgumentIsAlwaysEvaluated" returns Progress with trace progress:Progress; butFirstArgumentIsAlwaysEvaluated:Progress
   
 Function Table:
-    butSecondArgumentIsAlwaysEvaluated: ( +progress; butSecondArgumentIsAlwaysEvaluated )
+    butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
   
 Termination analysis for "butSecondArgumentIsAlwaysEvaluated"
-  TestCyberTruck.re:117:45 termination analysis: "butSecondArgumentIsAlwaysEvaluated" returns Progress with trace (progress:Progress; butSecondArgumentIsAlwaysEvaluated:Progress)
+  TestCyberTruck.re:117:45 termination analysis: "butSecondArgumentIsAlwaysEvaluated" returns Progress with trace progress:Progress; butSecondArgumentIsAlwaysEvaluated:Progress
   TestCyberTruck.re:199:44 termination analysis: extend Function Table with "parseInt" (TestCyberTruck.re:186:4) as it calls a progress function
   TestCyberTruck.re:174:16 termination analysis: extend Function Table with "parseList" as parametric ~f=parseInt
   TestCyberTruck.re:226:10 termination analysis: adding recursive definition "parseListIntTailRecursive$loop"
   TestCyberTruck.re:175:10 termination analysis: adding recursive definition "parseList$loop"
   
 Function Table:
-    parseExpression: ( ( +Parser.next; parseExpression; parseExpression ) | parseInt )
-    parseInt: +Parser.next
+    parseExpression: [_ || _]; [+Parser.next; parseExpression; parseExpression; _ || parseInt]
+    parseInt: [_ || _]; +Parser.next; _
     parseList<f>: parseList$loop<f:f>
-    parseList$loop<f>: ( _ | ( f; parseList$loop<f:f> ) )
+    parseList$loop<f>: [_ || f; parseList$loop<f:f>; _]
     parseListExpression: parseList<f:parseExpression>
-    parseListExpression2: ( parseExpression; parseList<f:parseExpression> )
+    parseListExpression2: parseExpression; parseList<f:parseExpression>
     parseListInt: parseList<f:parseInt>
     parseListIntTailRecursive: parseListIntTailRecursive$loop
-    parseListIntTailRecursive$loop: ( _ | ( parseInt; parseListIntTailRecursive$loop ) )
+    parseListIntTailRecursive$loop: [_ || parseInt; parseListIntTailRecursive$loop]
     parseListListInt: parseList<f:parseListInt>
   
 Termination analysis for "parseListInt"
   TestCyberTruck.re:199:28 termination analysis: cache miss for "parseList<f:parseInt>"
   TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseInt>"
   TestCyberTruck.re:179:17 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:179:17 termination analysis: "parseInt" returns Progress with trace Parser.next:Progress
-  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseInt>" returns NoProgress with trace (_ | (parseInt:Progress; parseList$loop<f:parseInt>:Progress))
+  TestCyberTruck.re:179:17 termination analysis: "parseInt" returns Progress with trace [_ || _]; Parser.next:Progress
+  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseInt>" returns NoProgress with trace [_ || parseInt:Progress; parseList$loop<f:parseInt>:Progress]
   TestCyberTruck.re:199:28 termination analysis: "parseList<f:parseInt>" returns NoProgress with trace parseList$loop<f:parseInt>:NoProgress
   TestCyberTruck.re:199:23 termination analysis: "parseListInt" returns NoProgress with trace parseList<f:parseInt>:NoProgress
   
@@ -147,36 +147,36 @@ Termination analysis for "parseListListInt"
     3 at parseList$loop<f:parseListInt> (TestCyberTruck.re:183:2)
     2 at parseList<f:parseListInt> (TestCyberTruck.re:202:28)
     1 at parseListListInt (TestCyberTruck.re:202:23)
-  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseListInt>" returns NoProgress with trace (_ | (parseListInt:NoProgress; parseList$loop<f:parseListInt>:NoProgress))
+  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseListInt>" returns NoProgress with trace [_ || parseListInt:NoProgress; parseList$loop<f:parseListInt>:NoProgress]
   TestCyberTruck.re:202:28 termination analysis: "parseList<f:parseListInt>" returns NoProgress with trace parseList$loop<f:parseListInt>:NoProgress
   TestCyberTruck.re:202:23 termination analysis: "parseListListInt" returns NoProgress with trace parseList<f:parseListInt>:NoProgress
   
 Termination analysis for "parseExpression"
   TestCyberTruck.re:214:18 termination analysis: cache hit for "parseInt"
-  TestCyberTruck.re:205:22 termination analysis: "parseExpression" returns Progress with trace ((Parser.next:Progress; parseExpression:Progress; parseExpression:Progress) | parseInt:Progress)
+  TestCyberTruck.re:205:22 termination analysis: "parseExpression" returns Progress with trace [_ || _]; [Parser.next:Progress; parseExpression:Progress; parseExpression:Progress || parseInt:Progress]
   
 Termination analysis for "parseListExpression"
   TestCyberTruck.re:219:31 termination analysis: cache miss for "parseList<f:parseExpression>"
   TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
   TestCyberTruck.re:179:17 termination analysis: cache hit for "parseExpression"
-  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseExpression>" returns NoProgress with trace (_ | (parseExpression:Progress; parseList$loop<f:parseExpression>:Progress))
+  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseExpression>" returns NoProgress with trace [_ || parseExpression:Progress; parseList$loop<f:parseExpression>:Progress]
   TestCyberTruck.re:219:31 termination analysis: "parseList<f:parseExpression>" returns NoProgress with trace parseList$loop<f:parseExpression>:NoProgress
   TestCyberTruck.re:219:26 termination analysis: "parseListExpression" returns NoProgress with trace parseList<f:parseExpression>:NoProgress
   
 Termination analysis for "parseListExpression2"
   TestCyberTruck.re:222:48 termination analysis: cache hit for "parseExpression"
   TestCyberTruck.re:222:32 termination analysis: cache hit for "parseList<f:parseExpression>"
-  TestCyberTruck.re:222:27 termination analysis: "parseListExpression2" returns Progress with trace (parseExpression:Progress; parseList<f:parseExpression>:NoProgress)
+  TestCyberTruck.re:222:27 termination analysis: "parseListExpression2" returns Progress with trace parseExpression:Progress; parseList<f:parseExpression>:NoProgress
   
 Termination analysis for "parseListIntTailRecursive"
   TestCyberTruck.re:232:2 termination analysis: cache miss for "parseListIntTailRecursive$loop"
   TestCyberTruck.re:230:15 termination analysis: cache hit for "parseInt"
-  TestCyberTruck.re:232:2 termination analysis: "parseListIntTailRecursive$loop" returns NoProgress with trace (_ | (parseInt:Progress; parseListIntTailRecursive$loop:Progress))
+  TestCyberTruck.re:232:2 termination analysis: "parseListIntTailRecursive$loop" returns NoProgress with trace [_ || parseInt:Progress; parseListIntTailRecursive$loop:Progress]
   TestCyberTruck.re:225:32 termination analysis: "parseListIntTailRecursive" returns NoProgress with trace parseListIntTailRecursive$loop:NoProgress
   
 Function Table:
     loopAfterProgress: loopAfterProgress
-    testLoopAfterProgress: ( +progress; loopAfterProgress )
+    testLoopAfterProgress: +progress; loopAfterProgress
   
 Termination analysis for "testLoopAfterProgress"
   TestCyberTruck.re:238:2 termination analysis: cache miss for "loopAfterProgress"
@@ -184,50 +184,50 @@ Termination analysis for "testLoopAfterProgress"
     CallStack:
     1 at loopAfterProgress (TestCyberTruck.re:238:2)
   TestCyberTruck.re:238:2 termination analysis: "loopAfterProgress" returns NoProgress with trace loopAfterProgress:NoProgress
-  TestCyberTruck.re:236:32 termination analysis: "testLoopAfterProgress" returns Progress with trace (progress:Progress; loopAfterProgress:NoProgress)
+  TestCyberTruck.re:236:32 termination analysis: "testLoopAfterProgress" returns Progress with trace progress:Progress; loopAfterProgress:NoProgress
   
 Function Table:
-    counterCompiled: ( +initState; ( _ | counterCompiled ) )
-    onClick1: ( _ | counterCompiled )
+    counterCompiled: +initState; [_ || counterCompiled; _]; _
+    onClick1: [_ || counterCompiled]
   
 Termination analysis for "counterCompiled"
-  TestCyberTruck.re:266:28 termination analysis: "counterCompiled" returns Progress with trace (initState:Progress; (_ | counterCompiled:Progress))
+  TestCyberTruck.re:266:28 termination analysis: "counterCompiled" returns Progress with trace initState:Progress; [_ || counterCompiled:Progress]
   
 Function Table:
-    countRendersCompiled: ( _ | countRendersCompiled )
+    countRendersCompiled: [_ || countRendersCompiled; _]; _
   
 Termination analysis for "countRendersCompiled"
   TestCyberTruck.re:292:31 termination error: possible infinite loop when calling "countRendersCompiled"
     CallStack:
     1 at countRendersCompiled (TestCyberTruck.re:289:33)
-  TestCyberTruck.re:289:33 termination analysis: "countRendersCompiled" returns NoProgress with trace (_ | countRendersCompiled:NoProgress)
+  TestCyberTruck.re:289:33 termination analysis: "countRendersCompiled" returns NoProgress with trace [_ || countRendersCompiled:NoProgress]
   TestCyberTruck.re:325:48 termination analysis: extend Function Table with "parseIntO" (TestCyberTruck.re:313:6) as it calls a progress function
   TestCyberTruck.re:325:31 termination analysis: extend Function Table with "parseListO" (TestCyberTruck.re:299:6) as it calls a progress function
   TestCyberTruck.re:299:19 termination analysis: extend Function Table with "parseListO" as parametric ~f=parseIntO
   TestCyberTruck.re:300:12 termination analysis: adding recursive definition "parseListO$loop"
   
 Function Table:
-    alwaysReturnNone: ( ( +Parser.next; alwaysReturnNone ) | None )
-    parseIntO: ( ( +Parser.next; Some ) | None )
+    alwaysReturnNone: [+Parser.next; alwaysReturnNone || None]
+    parseIntO: [+Parser.next; Some || None]
     parseIntOWrapper: parseIntO
     parseListIntO: parseListO<f:parseIntO>
     parseListO<f>: parseListO$loop<f:f>
-    parseListO$loop<f>: ( +Parser.next | switch f {some: parseListO$loop<f:f>, none: _} )
+    parseListO$loop<f>: [+Parser.next; _ || switch f {some: parseListO$loop<f:f>, none: _}]
     testAlwaysReturnNone: alwaysReturnNone
-    thisMakesNoProgress: ( None; ( _ | ( +Parser.next; Some ) ) )
+    thisMakesNoProgress: None; [_ || +Parser.next; Some]
   
 Termination analysis for "parseListIntO"
   TestCyberTruck.re:325:31 termination analysis: cache miss for "parseListO<f:parseIntO>"
   TestCyberTruck.re:310:4 termination analysis: cache miss for "parseListO$loop<f:parseIntO>"
   TestCyberTruck.re:305:15 termination analysis: cache miss for "parseIntO"
-  TestCyberTruck.re:305:15 termination analysis: "parseIntO" returns {some: Progress, none: NoProgress} with trace ((Parser.next:Progress; Some) | None)
-  TestCyberTruck.re:310:4 termination analysis: "parseListO$loop<f:parseIntO>" returns NoProgress with trace (Parser.next:Progress | (parseIntO:NoProgress; (parseListO$loop<f:parseIntO>:Progress | _)))
+  TestCyberTruck.re:305:15 termination analysis: "parseIntO" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
+  TestCyberTruck.re:310:4 termination analysis: "parseListO$loop<f:parseIntO>" returns NoProgress with trace [Parser.next:Progress || parseIntO:NoProgress; [parseListO$loop<f:parseIntO>:Progress || _]]
   TestCyberTruck.re:325:31 termination analysis: "parseListO<f:parseIntO>" returns NoProgress with trace parseListO$loop<f:parseIntO>:NoProgress
   TestCyberTruck.re:325:26 termination analysis: "parseListIntO" returns NoProgress with trace parseListO<f:parseIntO>:NoProgress
   
 Termination analysis for "testAlwaysReturnNone"
   TestCyberTruck.re:336:34 termination analysis: cache miss for "alwaysReturnNone"
-  TestCyberTruck.re:336:34 termination analysis: "alwaysReturnNone" returns {none: NoProgress} with trace ((Parser.next:Progress; alwaysReturnNone:Progress) | None)
+  TestCyberTruck.re:336:34 termination analysis: "alwaysReturnNone" returns {none: NoProgress} with trace [Parser.next:Progress; alwaysReturnNone:Progress || None]
   TestCyberTruck.re:336:29 termination analysis: "testAlwaysReturnNone" returns {none: NoProgress} with trace alwaysReturnNone:NoProgress
   
 Termination analysis for "parseIntOWrapper"
@@ -235,7 +235,7 @@ Termination analysis for "parseIntOWrapper"
   TestCyberTruck.re:339:25 termination analysis: "parseIntOWrapper" returns {some: Progress, none: NoProgress} with trace parseIntO:NoProgress
   
 Termination analysis for "thisMakesNoProgress"
-  TestCyberTruck.re:343:28 termination analysis: "thisMakesNoProgress" returns {some: Progress, none: NoProgress} with trace (None; (_ | (Parser.next:Progress; Some)))
+  TestCyberTruck.re:342:28 termination analysis: "thisMakesNoProgress" returns NoProgress with trace None; [_ || Parser.next:Progress; Some]
   
 Termination Analysis Stats
   Files:1
