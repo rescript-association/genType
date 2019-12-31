@@ -236,11 +236,24 @@ Termination analysis for "parseIntOWrapper"
   
 Termination analysis for "thisMakesNoProgress"
   TestCyberTruck.re:342:28 termination analysis: "thisMakesNoProgress" returns NoProgress with trace None; [_ || Parser.next:Progress; Some]
+  TestCyberTruck.re:373:15 termination analysis: "gParam" is parametric ~g=g
+  
+Function Table:
+    f: [g; _ || _ || +Parser.next; f]
+    g: +Parser.next; gParam<g:g>
+    gParam<g>: [g; _ || f]
+  
+Termination analysis for "f"
+  TestCyberTruck.re:357:16 termination analysis: cache miss for "g"
+  TestCyberTruck.re:373:4 termination analysis: cache miss for "gParam<g:g>"
+  TestCyberTruck.re:373:4 termination analysis: "gParam<g:g>" returns Progress with trace [g:Progress || f:Progress]
+  TestCyberTruck.re:357:16 termination analysis: "g" returns Progress with trace Parser.next:Progress; gParam<g:g>:Progress
+  TestCyberTruck.re:355:14 termination analysis: "f" returns NoProgress with trace [g:Progress || _ || Parser.next:Progress; f:Progress]
   
 Termination Analysis Stats
   Files:1
-  Recursive Blocks:18
-  Functions:39
+  Recursive Blocks:19
+  Functions:42
   Infinite Loops:10
   Hygiene Errors:1
-  Cache Hits:8/24
+  Cache Hits:8/26

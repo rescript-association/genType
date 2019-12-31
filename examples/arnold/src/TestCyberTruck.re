@@ -349,3 +349,27 @@ module ParserWihtOptionals = {
     };
   };
 };
+
+module Riddle = {
+  [@progress Parser.next]
+  let rec f = (p: Parser.t) =>
+    switch (p.token) {
+    | Int(i) => g(p) + i
+    | Eof => 0
+    | _ =>
+      Parser.next(p);
+      f(p);
+    }
+
+  and gParam = (p: Parser.t, ~g) => {
+    switch (p.token) {
+    | Int(i) => g(p) + i
+    | _ => f(p)
+    };
+  }
+
+  and g = p => {
+    Parser.next(p);
+    gParam(p, ~g);
+  };
+};
