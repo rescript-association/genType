@@ -249,11 +249,35 @@ Termination analysis for "f"
   TestCyberTruck.re:373:4 termination analysis: "gParam<g:g>" returns Progress with trace [g:Progress || f:Progress]
   TestCyberTruck.re:357:16 termination analysis: "g" returns Progress with trace Parser.next:Progress; gParam<g:g>:Progress
   TestCyberTruck.re:355:14 termination analysis: "f" returns NoProgress with trace [g:Progress || _ || Parser.next:Progress; f:Progress]
+  TestCyberTruck.re:441:45 termination analysis: "kleene" is parametric ~f=oneTwo
+  TestCyberTruck.re:404:6 termination analysis: extend Function Table with "concat" as parametric ~f=one
+  TestCyberTruck.re:404:6 termination analysis: extend Function Table with "concat" as parametric ~g=two
+  
+Function Table:
+    concat<f, g>: switch f {some: switch g {some: Some, none: None}, none: None}
+    kleene<f>: switch f {some: kleene<f:f>, none: _}
+    one: [+Parser.next; Some || None]
+    oneTwo: concat<f:one,g:two>
+    oneTwoStar: kleene<f:oneTwo>
+    two: [+Parser.next; Some || None]
+  
+Termination analysis for "oneTwoStar"
+  TestCyberTruck.re:441:35 termination analysis: cache miss for "kleene<f:oneTwo>"
+  TestCyberTruck.re:416:11 termination analysis: cache miss for "oneTwo"
+  TestCyberTruck.re:438:46 termination analysis: cache miss for "concat<f:one,g:two>"
+  TestCyberTruck.re:405:11 termination analysis: cache miss for "one"
+  TestCyberTruck.re:405:11 termination analysis: "one" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
+  TestCyberTruck.re:408:13 termination analysis: cache miss for "two"
+  TestCyberTruck.re:408:13 termination analysis: "two" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
+  TestCyberTruck.re:438:46 termination analysis: "concat<f:one,g:two>" returns {some: Progress, none: NoProgress} with trace one:NoProgress; [two:NoProgress; [Some || None] || None]
+  TestCyberTruck.re:416:11 termination analysis: "oneTwo" returns {some: Progress, none: NoProgress} with trace concat<f:one,g:two>:NoProgress
+  TestCyberTruck.re:441:35 termination analysis: "kleene<f:oneTwo>" returns NoProgress with trace oneTwo:NoProgress; [kleene<f:oneTwo>:Progress || _]
+  TestCyberTruck.re:441:30 termination analysis: "oneTwoStar" returns NoProgress with trace kleene<f:oneTwo>:NoProgress
   
 Termination Analysis Stats
   Files:1
-  Recursive Blocks:19
-  Functions:42
+  Recursive Blocks:20
+  Functions:48
   Infinite Loops:10
   Hygiene Errors:1
-  Cache Hits:8/26
+  Cache Hits:8/31

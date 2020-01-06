@@ -373,3 +373,70 @@ module Riddle = {
     gParam(p, ~g);
   };
 };
+
+module TerminationTypes = {
+  // p ::= P | N   (P progress, or N no progress)
+  // r ::= p | {Some:p, None:p}    (result, in case of optional specify progress separately)
+  // t ::= _ | t1=>r[f1,... fn]t2  (when called, the function makes progress or not
+  //                                and calls f1,...,fn without making progeess first)
+  // Abbreviations: omit empty [], and rhs _
+
+  let rec f /* _=>P[g] */ = p => g(p)
+  and g /* _=>P */ = p => {
+    Parser.next(p);
+    f(p);
+  };
+
+  let rec kleene0 /* (~f:_=>P, _) => P */ = (~f, p) => {
+    f(p);
+    kleene0(~f, p);
+  };
+
+  let union /* (~f:_=>{Some:P, None:N}, ~g:_=>{Some:P, None:N}, _) => {Some:P, None:N} */ =
+      (~f, ~g, p) => {
+    switch (f(p)) {
+    | None => g(p)
+    | Some(x) => x
+    };
+  };
+
+  let concat /* (~f:_=>{Some:P, None:N}, ~g:_=>{Some:P, None:N}, _) => {Some:P, None:N} */ =
+      (~f, ~g, p) => {
+    switch (f(p)) {
+    | None => None
+    | Some(x) =>
+      switch (g(p)) {
+      | None => None
+      | Some(y) => Some(x ++ y)
+      }
+    };
+  };
+
+  let rec kleene /* (~f:_=>{Some:P, None:N}, _) => N  */ = (~f, p) => {
+    switch (f(p)) {
+    | None => []
+    | Some(x) => [x, ...kleene(~f, p)]
+    };
+  }
+
+  and one /* _=>{Some:P, None:N} */ = (p: Parser.t) =>
+    switch (p.token) {
+    | Int(1) =>
+      Parser.next(p);
+      Some("1");
+    | _ => None
+    }
+
+  and two /* _=>{Some:P, None:N} */ = (p: Parser.t) =>
+    switch (p.token) {
+    | Int(2) =>
+      Parser.next(p);
+      Some("2");
+    | _ => None
+    }
+
+  and oneTwo /* _=>{Some:P, None:N} */ = p => concat(~f=one, ~g=two, p)
+
+  [@progress Parser.next]
+  and oneTwoStar /* _=>N */ = p => kleene(~f=oneTwo, p);
+};
