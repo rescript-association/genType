@@ -524,7 +524,14 @@ let emitExportType =
   let exportNameAs =
     switch (nameAs) {
     | None => ""
-    | Some(s) => "\nexport type " ++ s ++ " = " ++ resolvedTypeName ++ ";"
+    | Some(s) =>
+      "\nexport type "
+      ++ s
+      ++ typeParamsString
+      ++ " = "
+      ++ resolvedTypeName
+      ++ typeParamsString
+      ++ ";"
     };
 
   switch (config.language) {

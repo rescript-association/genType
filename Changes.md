@@ -1,4 +1,5 @@
 # master
+- Fix issues where `@genType.as` on a type definition would omit type parameters.
 
 # 3.9.0
 - With TypeScript back-end, emit import of React when function components are exported.

@@ -91,6 +91,10 @@ export type someRecord = { readonly id: number };
 // tslint:disable-next-line:interface-over-type-literal
 export type instantiateTypeParameter = ocaml_array<someRecord>;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type vector<a> = [a, a];
+export type Vector<a> = vector<a>;
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = function <T1,T2>(Arg1: any, Arg2: any) {
