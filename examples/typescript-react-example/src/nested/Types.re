@@ -146,3 +146,7 @@ type instantiateTypeParameter = ocaml_array(someRecord);
 
 [@genType]
 let testInstantiateTypeParameter = (x: instantiateTypeParameter) => x;
+
+[@genType]
+[@genType.as "Vector"]
+type vector('a) = ('a, 'a);
