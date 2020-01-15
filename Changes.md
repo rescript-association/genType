@@ -1,4 +1,6 @@
 # master
+
+# 3.10.0
 - Fix issues where `@genType.as` on a type definition would omit type parameters.
 
 # 3.9.0
