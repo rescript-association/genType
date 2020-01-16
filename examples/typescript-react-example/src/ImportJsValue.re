@@ -15,6 +15,12 @@ type point = {
 /* Name and type of the JS value to bind to. */
 external area: point => int = "area";
 
+[@genType.import "./MyMath"]
+type numberOrString;
+
+[@genType.import "./MyMath"]
+external returnMixedArray: unit => array(numberOrString) = "returnMixedArray";
+
 [@genType]
 let roundedNumber = round(1.8);
 

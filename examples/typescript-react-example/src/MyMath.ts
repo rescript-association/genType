@@ -7,6 +7,12 @@ export const area = function(point: { x: number; y?: number }): number {
   return point.x * (point.y === undefined ? 1 : point.y);
 };
 
+export type numberOrString = number | string;
+
+export const returnMixedArray = function() : Array<number | string> {
+  return [1,2];
+};
+
 export class AbsoluteValue {
   public prop!: number;
   public getProp(): number {
@@ -33,6 +39,6 @@ export const polymorphic = <T>(x: T): T => x;
 
 export type num = number;
 
-export type polyType<T> = {x:T};
+export type polyType<T> = { x: T };
 
 export default 34;

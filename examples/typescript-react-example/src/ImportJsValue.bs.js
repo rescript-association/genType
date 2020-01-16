@@ -10,6 +10,10 @@ function area(prim) {
   return ImportJsValueGen.area(prim);
 }
 
+function returnMixedArray(prim) {
+  return ImportJsValueGen.returnMixedArray();
+}
+
 var roundedNumber = ImportJsValueGen.round(1.8);
 
 var areaValue = ImportJsValueGen.area({
@@ -58,6 +62,7 @@ var $$default = ImportJsValueGen.default;
 export {
   round ,
   area ,
+  returnMixedArray ,
   roundedNumber ,
   areaValue ,
   AbsoluteValue ,

@@ -6,6 +6,8 @@ import {round as roundNotChecked} from './MyMath';
 
 import {area as areaNotChecked} from './MyMath';
 
+import {returnMixedArray as returnMixedArrayNotChecked} from './MyMath';
+
 import {useColor as useColorNotChecked} from './MyMath';
 
 import {higherOrder as higherOrderNotChecked} from './MyMath';
@@ -35,6 +37,12 @@ export const areaTypeChecked: (_1:point) => number = areaNotChecked;
 
 // Export 'area' early to allow circular import from the '.bs.js' file.
 export const area: unknown = areaTypeChecked as (_1:point) => number;
+
+// In case of type error, check the type of 'returnMixedArray' in 'ImportJsValue.re' and './MyMath'.
+export const returnMixedArrayTypeChecked: (_1:void) => numberOrString[] = returnMixedArrayNotChecked;
+
+// Export 'returnMixedArray' early to allow circular import from the '.bs.js' file.
+export const returnMixedArray: unknown = returnMixedArrayTypeChecked as (_1:void) => numberOrString[];
 
 // In case of type error, check the type of 'useColor' in 'ImportJsValue.re' and './MyMath'.
 export const useColorTypeChecked: (_1:color) => number = useColorNotChecked;
@@ -91,12 +99,17 @@ import {num as $$myNum} from './MyMath';
 
 import {num as $$num} from './MyMath';
 
+import {numberOrString as $$numberOrString} from './MyMath';
+
 import {polyType as $$polyType} from './MyMath';
 
 import {stringFunction as $$stringFunction} from './MyMath';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type point = { readonly x: number; readonly y?: number };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type numberOrString = $$numberOrString;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type AbsoluteValue_t = $$AbsoluteValue_t;
