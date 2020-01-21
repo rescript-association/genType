@@ -21,8 +21,8 @@ G|-p0 e1:p1[S1]t1  G|-p1 e2:p2[S2](t1->p[S]t2)
          G|-p0 e2(e1): p3[S3]t2
 
 
-G, fi: ti->pi[Si,fi]t'i, x: ti |-N ei: pi[Si]t'i
-     G, fi: ti->pi[Si]t'i |-p0 e': p[S]t
+G, fi: ti->pi[Si,fi]ti', x: ti |-N ei: pi[Si]ti'
+     G, fi: ti->pi[Si]ti' |-p0 e': p[S]t
               fi not in Si
 ------------------------------------------------
     G |-p0 let rec fi = (xi)=>ei; e : p[S]t
