@@ -67,19 +67,19 @@ jobs:
       - bash: cd $(ESY_CACHE_SOURCE_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/$(ESY_CACHE_SOURCE_TGZ) .
         displayName: "Create esy cache source .tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
-      - bash: "echo `npx esy x which GenType.exe`"
-        displayName: "Find GenType.exe"
+      - bash: "echo `npx esy x which gentype.exe`"
+        displayName: "Find gentype.exe"
       - bash: |
           rm examples/GenType.exe
-          cp `npx esy x which GenType.exe` examples/	
+          cp `npx esy x which gentype.exe` examples/GenType.exe	
           rm examples/DeadCodePPX.exe
-          cp `npx esy x which DeadCodePPX.exe` examples/	
+          cp `npx esy x which deadcodeppx.exe` examples/DeadCodePPX.exe
         displayName: "Copy GenType.exe to examples/"
       - bash: npm test
         displayName: "Test command"
       - bash: mkdir _release
         displayName: "Create _release directory"
-      - bash: cp `find _esy -name GenType.exe` _release/gentype.exe
+      - bash: cp `npx esy x which gentype.exe` _release/gentype.exe
         displayName: "Copy gentype.exe to _release"
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
