@@ -14,11 +14,10 @@
       "all": false
     },
     "exportInterfaces": false,
-    "path": "../GenType.exe"
+    "path": "../gentype.exe"
   },
   "name": "arnold",
   "bsc-flags": ["-bs-super-errors"],
-  "ppx-flags": ["../DeadCodePPX.exe"],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": [],
   "sources": [

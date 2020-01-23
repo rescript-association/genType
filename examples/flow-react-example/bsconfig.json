@@ -16,7 +16,7 @@
       "all": false
     },
     "exportInterfaces": false,
-    "path": "../GenType.exe"
+    "path": "../gentype.exe"
 },
   "name": "flow-react-example",
   "bsc-flags": ["-bs-super-errors -verbose"],

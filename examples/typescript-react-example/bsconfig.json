@@ -14,11 +14,11 @@
       "all": false
     },
     "exportInterfaces": false,
-    "path": "../GenType.exe"
+    "path": "../gentype.exe"
   },
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],
-  "ppx-flags": ["../DeadCodePPX.exe"],
+  "ppx-flags": ["../deadcodeppx.exe"],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],
   "sources": [
