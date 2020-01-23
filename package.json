@@ -16,7 +16,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "esy": "0.5.8",
+    "esy": "0.6.0",
     "debug": "^4.1.0"
   },
   "author": "Cristiano Calcagno",
