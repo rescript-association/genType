@@ -39,6 +39,10 @@ s ::=
       p.s      If p==P then empty else s.
       s1+s2    Union.
 
+p ::=
+      P        Progress
+      N        Not progress
+
 G|-p0 e1:p1[s1]t1  G|-p1 e2:p2[s2](t1->p[s]t2)
 ----------------------------------------------
       G|-p0 e2(e1): (p2+p)[s1+s2+p2.s]t2
