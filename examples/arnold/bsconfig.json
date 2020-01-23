@@ -18,7 +18,6 @@
   },
   "name": "arnold",
   "bsc-flags": ["-bs-super-errors"],
-  "ppx-flags": ["../DeadCodePPX.exe"],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": [],
   "sources": [
