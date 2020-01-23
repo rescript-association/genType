@@ -14,7 +14,7 @@
       "all": false
     },
     "exportInterfaces": false,
-    "path": "../GenType.exe"
+    "path": "../gentype.exe"
   },
   "name": "arnold",
   "bsc-flags": ["-bs-super-errors"],

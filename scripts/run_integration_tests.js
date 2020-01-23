@@ -35,7 +35,7 @@ const isWindows = /^win/i.test(process.platform);
 // creates on each platform. Linux & MacOS usually work fine, but Windows
 // caused a lot of troubles. Be aware that this was a concious decision,
 // refactoring this will eventually cause you man hours of work on AzureCI.
-const genTypeFile = path.join(__dirname, "../examples/GenType.exe");
+const genTypeFile = path.join(__dirname, "../examples/gentype.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise

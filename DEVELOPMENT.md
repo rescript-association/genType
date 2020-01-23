@@ -16,7 +16,7 @@ This will create a symlink
 `_esy/default/build/install/default/bin/gentype.exe` which is pointing to the
 executable BuckleScript picks up automatically when installed via npm.
 
-**Note:** There is also a file called `examples/GenType.exe`, which is actually
+**Note:** There is also a file called `examples/gentype.exe`, which is actually
 also a symlink to the built genType binary. It is used for our integration
 tests.
 

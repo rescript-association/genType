@@ -70,11 +70,11 @@ jobs:
       - bash: "echo `npx esy x which gentype.exe`"
         displayName: "Find gentype.exe"
       - bash: |
-          rm examples/GenType.exe
-          cp `npx esy x which gentype.exe` examples/GenType.exe	
-          rm examples/DeadCodePPX.exe
-          cp `npx esy x which deadcodeppx.exe` examples/DeadCodePPX.exe
-        displayName: "Copy GenType.exe to examples/"
+          rm examples/gentype.exe
+          cp `npx esy x which gentype.exe` examples/gentype.exe	
+          rm examples/deadcodeppx.exe
+          cp `npx esy x which deadcodeppx.exe` examples/deadcodeppx.exe
+        displayName: "Copy gentype.exe and deadcodeppx.exe to examples/"
       - bash: npm test
         displayName: "Test command"
       - bash: mkdir _release
