@@ -67,13 +67,13 @@ jobs:
       - bash: cd $(ESY_CACHE_SOURCE_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/$(ESY_CACHE_SOURCE_TGZ) .
         displayName: "Create esy cache source .tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
-      - bash: "echo `find _esy -name GenType.exe`"
+      - bash: "echo `npx esy x which GenType.exe`"
         displayName: "Find GenType.exe"
       - bash: |
           rm examples/GenType.exe
-          cp `find _esy -name GenType.exe` examples/	
+          cp `npx esy x which GenType.exe` examples/	
           rm examples/DeadCodePPX.exe
-          cp `find _esy -name DeadCodePPX.exe` examples/	
+          cp `npx esy x which DeadCodePPX.exe` examples/	
         displayName: "Copy GenType.exe to examples/"
       - bash: npm test
         displayName: "Test command"
