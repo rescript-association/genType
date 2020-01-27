@@ -64,4 +64,13 @@ G|-p0 (x)=>e: p0[](T1->p[s]t2)
 G|-p0 e1:p1[s1]t1  G|-p1 e2:p2[s2]t  P,S,T2 fresh
 -------------------------------------------------
 G|-p0 e2(e1): (p2+P)[s1+s2+p2.S]T2  t=t1->P[S]T2
+
+
+G, fi: Ti->Pi[Si+fi]Ti', x: Ti |-0 ei: pi[si]ti'
+             Ti,Ti',Pi,Si fresh
+     G, fi: ti->pi[si]ti' |-p0 e': p[s]t          
+------------------------------------------------
+    G |-p0 let rec fi = (xi)=>ei; e : p[s]t 
+    pi=Pi si=Si ti'=Ti'  fi not in si
+
 ```
