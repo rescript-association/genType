@@ -79,5 +79,5 @@ G, fi: Ti=>Pi[Si+fi]Ti', x: Ti |-0 ei: pi[si]ti'
 
 
 ```reason
-let rec iter = (f, x) => f(x); iter(f,x)
+let rec iter = (f, x) => { f(x); iter(f,x); };
 ```
