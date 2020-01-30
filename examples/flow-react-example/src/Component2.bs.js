@@ -20,7 +20,6 @@ function make(greeting, _children) {
           shouldUpdate: component.shouldUpdate,
           render: (function (self) {
               var message = "You've clicked this " + (String(self.state.count) + " times(s)");
-              var match = self.state.show;
               return React.createElement("div", undefined, React.createElement("button", {
                               onClick: (function (_event) {
                                   return Curry._1(self.send, /* Click */0);
@@ -29,7 +28,7 @@ function make(greeting, _children) {
                               onClick: (function (_event) {
                                   return Curry._1(self.send, /* Toggle */1);
                                 })
-                            }, "Toggle greeting"), match ? greeting : null);
+                            }, "Toggle greeting"), self.state.show ? greeting : null);
             }),
           initialState: (function (param) {
               return {

@@ -46,22 +46,18 @@ function id2(x) {
 }
 
 function polyWithOpt(foo) {
-  var match = foo === "bar";
-  if (match) {
+  if (foo === "bar") {
     return ;
+  } else if (foo !== "baz") {
+    return /* `One */[
+            3953222,
+            foo
+          ];
   } else {
-    var match$1 = foo !== "baz";
-    if (match$1) {
-      return /* `One */[
-              3953222,
-              foo
-            ];
-    } else {
-      return /* `Two */[
-              4203884,
-              1
-            ];
-    }
+    return /* `Two */[
+            4203884,
+            1
+          ];
   }
 }
 

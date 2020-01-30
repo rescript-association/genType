@@ -5,9 +5,9 @@ import * as Component2 from "./Component2.bs.js";
 import * as ReactDOMRe from "reason-react/src/ReactDOMRe.js";
 import * as ReasonReact from "reason-react/src/ReasonReact.js";
 
-ReactDOMRe.renderToElementWithId(ReasonReact.element(undefined, undefined, Component1.make("Hello!", /* array */[])), "index1");
+ReactDOMRe.renderToElementWithId(ReasonReact.element(undefined, undefined, Component1.make("Hello!", [])), "index1");
 
-ReactDOMRe.renderToElementWithId(ReasonReact.element(undefined, undefined, Component2.make("Hello!", /* array */[])), "index2");
+ReactDOMRe.renderToElementWithId(ReasonReact.element(undefined, undefined, Component2.make("Hello!", [])), "index2");
 
 export {
   

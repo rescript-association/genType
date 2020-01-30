@@ -27,7 +27,7 @@ function make(message, someNumber, extraGreeting, _children) {
               var greeting = extraGreeting !== undefined ? extraGreeting : "How are you?";
               return React.createElement("div", {
                           onClick: onClick
-                        }, ReasonReact.element(undefined, undefined, ImportMyBanner$CommonjsReactExample.make(true, message + (" " + greeting), /* array */[])), "someNumber:" + String(someNumber));
+                        }, ReasonReact.element(undefined, undefined, ImportMyBanner$CommonjsReactExample.make(true, message + (" " + greeting), [])), "someNumber:" + String(someNumber));
             }),
           initialState: component.initialState,
           retainedProps: component.retainedProps,
