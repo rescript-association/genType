@@ -75,7 +75,7 @@ function make$2(_children) {
           willUpdate: component$2.willUpdate,
           shouldUpdate: component$2.shouldUpdate,
           render: (function (param) {
-              return React.createElement("div", undefined, "Outer Component", ReasonReact.element(undefined, undefined, make(/* array */[])));
+              return React.createElement("div", undefined, "Outer Component", ReasonReact.element(undefined, undefined, make([])));
             }),
           initialState: component$2.initialState,
           retainedProps: component$2.retainedProps,
