@@ -108,7 +108,6 @@ type marshalFields = {
   "_rec": string,
   "_switch": string,
   "switch": string,
-  "switch__": string,
   "__": string,
   "___": string,
   "foo__": string,
@@ -122,7 +121,6 @@ let testMarshalFields: marshalFields = {
   "_rec": "rec",
   "_switch": "_switch", /* reason keywords are not recognized */
   "switch": "switch",
-  "switch__": "switch_",
   "__": "__",
   "___": "_",
   "foo__": "foo",

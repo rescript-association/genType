@@ -40,7 +40,6 @@ var testMarshalFields = {
   rec: "rec",
   _switch: "_switch",
   switch: "switch",
-  switch_: "switch_",
   __: "__",
   _: "_",
   foo: "foo",

@@ -100,11 +100,12 @@ function Hooks$componentWithRenamedArgs(Props) {
 
 function Hooks$makeWithRef(Props, ref) {
   var vehicle = Props.vehicle;
-  if (ref == null) {
+  var ref$1 = ref;
+  if (ref$1 == null) {
     return null;
   } else {
     return React.createElement("button", {
-                ref: ref
+                ref: ref$1
               }, vehicle.name);
   }
 }
@@ -112,8 +113,10 @@ function Hooks$makeWithRef(Props, ref) {
 var testForwardRef = React.forwardRef(Hooks$makeWithRef);
 
 var input = React.forwardRef((function (Props, param) {
-        var r = Props.r;
-        return (function (ref) {
+        var partial_arg = Props.r;
+        return (function (param) {
+                    var r = partial_arg;
+                    var ref = param;
                     return React.createElement("div", {
                                 ref: ref
                               }, r.x);
@@ -121,8 +124,8 @@ var input = React.forwardRef((function (Props, param) {
       }));
 
 function Hooks$polymorphicComponent(Props) {
-  var match = Props.p;
-  return match[0].name;
+  var param = Props.p;
+  return param[0].name;
 }
 
 function Hooks$functionReturningReactElement(Props) {
