@@ -10,6 +10,6 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "bs-platform": "7.0.1"
+    "bs-platform": "7.1.0"
   }
 }
