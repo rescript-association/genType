@@ -1,4 +1,5 @@
 # master
+- Fix issue where a shadowed declaration would be emitted instead of the shadowing one. See https://github.com/cristianoc/genType/issues/354.
 
 # 3.10.0
 - Fix issues where `@genType.as` on a type definition would omit type parameters.
