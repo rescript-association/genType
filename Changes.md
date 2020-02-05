@@ -1,5 +1,6 @@
 # master
 - Fix issue where a shadowed declaration would be emitted instead of the shadowing one. See https://github.com/cristianoc/genType/issues/354.
+- Emit Flow inexact types e.g. `{name:string, ...}`, supported from Flow version 0.84 onwards.
 
 # 3.10.0
 - Fix issues where `@genType.as` on a type definition would omit type parameters.
