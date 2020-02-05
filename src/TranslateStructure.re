@@ -41,6 +41,41 @@ let addAnnotationsToFunctionType =
   | _ => type_
   };
 
+let removeValueBindingDuplicates = structureItems => {
+  let rec processBindings = (bindings: list(Typedtree.value_binding), ~seen) =>
+    switch (bindings) {
+    | [{vb_pat: {pat_desc: Tpat_var(id, _)}} as binding, ...otherBindings] =>
+      let name = Ident.name(id);
+      if (seen^ |> StringSet.mem(name)) {
+        otherBindings |> processBindings(~seen);
+      } else {
+        seen := seen^ |> StringSet.add(name);
+        [binding, ...otherBindings |> processBindings(~seen)];
+      };
+    | [binding, ...otherBindings] => [
+        binding,
+        ...otherBindings |> processBindings(~seen),
+      ]
+    | [] => []
+    };
+  let rec processItems = (items: list(Typedtree.structure_item), ~acc, ~seen) =>
+    switch (items) {
+    | [
+        {Typedtree.str_desc: Tstr_value(loc, valueBindings)} as item,
+        ...otherItems,
+      ] =>
+      let bindings = valueBindings |> processBindings(~seen);
+      let item = {...item, str_desc: Tstr_value(loc, bindings)};
+      otherItems |> processItems(~acc=[item, ...acc], ~seen);
+    | [item, ...otherItems] =>
+      otherItems |> processItems(~acc=[item, ...acc], ~seen)
+    | [] => acc
+    };
+  structureItems
+  |> List.rev
+  |> processItems(~acc=[], ~seen=ref(StringSet.empty));
+};
+
 let translateValueBinding =
     (
       ~config,
@@ -415,6 +450,7 @@ and translateStructure =
   };
   let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
+  |> removeValueBindingDuplicates
   |> List.map(structItem =>
        structItem
        |> translateStructureItem(
