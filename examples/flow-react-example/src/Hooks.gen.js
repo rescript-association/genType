@@ -171,14 +171,16 @@ export const Inner: {
     |}>, 
     make: React$ComponentType<{|
       +vehicle: vehicle
-    |}>, ...
+    |}>, 
+    ...
   }, 
   anotherComponent: React$ComponentType<{|
     +vehicle: vehicle
   |}>, 
   make: React$ComponentType<{|
     +vehicle: vehicle
-  |}>, ...
+  |}>, 
+  ...
 } = HooksBS.Inner
 
 export const RenderPropRequiresConversion: { make: React$ComponentType<{| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |}>, ... } = HooksBS.RenderPropRequiresConversion

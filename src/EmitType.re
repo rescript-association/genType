@@ -360,7 +360,9 @@ and renderFields =
            ~inFunType,
          ),
        );
-  let dotdotdot = config.language == Flow && !exact ? ["..."] : [];
+  let dotdotdot =
+    config.language == Flow && !exact
+      ? [Indent.break(~indent=indent1) ++ "..."] : [];
   ((exact ? "{|" : "{") ++ space)
   ++ String.concat(
        config.language == TypeScript ? "; " : ", ",
