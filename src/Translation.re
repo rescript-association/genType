@@ -230,9 +230,9 @@ let translateComponent =
           },
         ])
       /* Then we had both props and children. */
-      | [(childrenType, _argName), ..._] =>
-        switch (propOrChildren) {
-        | (GroupOfLabeledArgs(fields), _argName) =>
+      | [{type_: childrenType}, ..._] =>
+        switch (propOrChildren.type_) {
+        | GroupOfLabeledArgs(fields) =>
           GroupOfLabeledArgs(
             fields
             @ [
@@ -245,7 +245,7 @@ let translateComponent =
               },
             ],
           )
-        | _ => propOrChildren |> fst
+        | t => t
         }
       };
     let resolvedTypeName = "Props" |> TypeEnv.addModulePath(~typeEnv);
@@ -380,9 +380,9 @@ let translatePrimitive =
       | Function({argTypes: [propOrChildren, ...childrenOrNil]}) =>
         switch (childrenOrNil) {
         | [] => ([], mixedOrUnknown(~config))
-        | [(children, _argName), ..._] =>
+        | [{type_: children}, ..._] =>
           switch (propOrChildren) {
-          | (GroupOfLabeledArgs(fields), _argName) => (
+          | {type_: GroupOfLabeledArgs(fields)} => (
               fields
               |> List.map(({optional, type_} as field) =>
                    switch (type_, optional) {
