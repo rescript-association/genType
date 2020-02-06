@@ -38,6 +38,8 @@ let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "gentype.opaque";
 let tagIsGenTypeIgnoreInterface = s =>
   s == "genType.ignoreInterface" || s == "gentype.ignoreInterface";
 
+let tagIsOcamlDoc = s => s == "ocaml.doc";
+
 let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
   let rec fromExpr = (expr: Parsetree.expression) =>
     switch (expr) {
@@ -142,6 +144,14 @@ let getAttributeImportRenaming = attributes => {
       Some(renameString),
     )
   | _ => (None, genTypeAsRenaming)
+  };
+};
+
+let getDocString = attributes => {
+  let docPayload = attributes |> getAttributePayload(tagIsOcamlDoc);
+  switch (docPayload) {
+  | Some(StringPayload(docString)) => "/** " ++ docString ++ " */\n"
+  | _ => ""
   };
 };
 

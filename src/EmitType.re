@@ -455,6 +455,7 @@ let emitExportConst_ =
       ~early,
       ~comment="",
       ~config,
+      ~docString="",
       ~emitters,
       ~name,
       ~type_,
@@ -462,6 +463,7 @@ let emitExportConst_ =
       line,
     ) =>
   (comment == "" ? comment : "// " ++ comment ++ "\n")
+  ++ docString
   ++ (
     switch (config.module_, config.language) {
     | (_, TypeScript)

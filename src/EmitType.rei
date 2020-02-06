@@ -8,6 +8,7 @@ let emitExportConst:
   (
     ~comment: string=?,
     ~config: config,
+    ~docString: string=?,
     ~emitters: Emitters.t,
     ~name: string,
     ~type_: type_,
@@ -20,6 +21,7 @@ let emitExportConstEarly:
   (
     ~comment: string=?,
     ~config: config,
+    ~docString: string=?,
     ~emitters: Emitters.t,
     ~name: string,
     ~type_: type_,

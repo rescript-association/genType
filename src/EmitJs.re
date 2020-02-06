@@ -663,7 +663,13 @@ let rec emitCodeItem =
     config.emitImportCurry = config.emitImportCurry || useCurry;
     (env, emitters);
 
-  | ExportValue({moduleAccessPath, originalName, resolvedName, type_}) =>
+  | ExportValue({
+      docString,
+      moduleAccessPath,
+      originalName,
+      resolvedName,
+      type_,
+    }) =>
     resolvedName
     |> ExportModule.extendExportModules(~moduleItemsEmitter, ~type_);
     let resolvedName = ResolvedName.toString(resolvedName);
@@ -784,7 +790,8 @@ let rec emitCodeItem =
           resolvedTypeName,
         };
         if (config.language == TypeScript) {
-          config.emitImportReact = true; // For doc gen (https://github.com/cristianoc/genType/issues/342)
+          config.emitImportReact =
+            true; // For doc gen (https://github.com/cristianoc/genType/issues/342)
         };
         emitExportType(
           ~emitters,
@@ -812,6 +819,7 @@ let rec emitCodeItem =
       ++ ";"
       |> EmitType.emitExportConst(
            ~config,
+           ~docString,
            ~emitters,
            ~name,
            ~type_,

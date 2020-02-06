@@ -24,6 +24,7 @@ let translateSignatureValue =
        )(
          ~attributes=val_attributes,
          ~config,
+         ~docString=Annotation.getDocString(val_attributes),
          ~outputFileRelative,
          ~resolver,
          ~typeEnv,

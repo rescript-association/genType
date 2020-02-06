@@ -103,6 +103,7 @@ let translateValueBinding =
          )(
            ~attributes=vb_attributes,
            ~config,
+           ~docString=Annotation.getDocString(vb_attributes),
            ~outputFileRelative,
            ~resolver,
            ~typeEnv,
