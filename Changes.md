@@ -1,4 +1,6 @@
 # master
+
+# 3.11.0
 - Fix issue where a shadowed declaration would be emitted instead of the shadowing one. See https://github.com/cristianoc/genType/issues/354.
 - Emit Flow inexact types e.g. `{name:string, ...}`, supported from Flow version 0.84 onwards.
 - Emit `eslint-disable` in Untyped back-end.
