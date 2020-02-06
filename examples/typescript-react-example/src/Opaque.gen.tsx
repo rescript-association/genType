@@ -14,6 +14,6 @@ export abstract class opaqueFromRecords { protected opaque!: any }; /* simulate 
 // tslint:disable-next-line:interface-over-type-literal
 export type pair = [opaqueFromRecords, opaqueFromRecords];
 
-export const noConversion: (_1:opaqueFromRecords) => opaqueFromRecords = OpaqueBS.noConversion;
+export const noConversion: (x:opaqueFromRecords) => opaqueFromRecords = OpaqueBS.noConversion;
 
-export const testConvertNestedRecordFromOtherFile: (_1:Records_business) => Records_business = OpaqueBS.testConvertNestedRecordFromOtherFile;
+export const testConvertNestedRecordFromOtherFile: (x:Records_business) => Records_business = OpaqueBS.testConvertNestedRecordFromOtherFile;

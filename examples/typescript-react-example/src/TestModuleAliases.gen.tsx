@@ -34,10 +34,10 @@ export type inner1 = ModuleAliases2_InnerAlias_inner;
 // tslint:disable-next-line:interface-over-type-literal
 export type inner2 = ModuleAliases2_Outer_Inner_inner;
 
-export const testInner1: (_1:inner1) => inner1 = TestModuleAliasesBS.testInner1;
+export const testInner1: (x:inner1) => inner1 = TestModuleAliasesBS.testInner1;
 
-export const testInner1Expanded: (_1:ModuleAliases2_InnerAlias_inner) => ModuleAliases2_InnerAlias_inner = TestModuleAliasesBS.testInner1Expanded;
+export const testInner1Expanded: (x:ModuleAliases2_InnerAlias_inner) => ModuleAliases2_InnerAlias_inner = TestModuleAliasesBS.testInner1Expanded;
 
-export const testInner2: (_1:inner2) => inner2 = TestModuleAliasesBS.testInner2;
+export const testInner2: (x:inner2) => inner2 = TestModuleAliasesBS.testInner2;
 
-export const testInner2Expanded: (_1:ModuleAliases2_Outer_Inner_inner) => ModuleAliases2_Outer_Inner_inner = TestModuleAliasesBS.testInner2Expanded;
+export const testInner2Expanded: (x:ModuleAliases2_Outer_Inner_inner) => ModuleAliases2_Outer_Inner_inner = TestModuleAliasesBS.testInner2Expanded;

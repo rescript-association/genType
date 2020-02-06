@@ -25,20 +25,20 @@ export const Universe_Nested2_nested2Value: number = NestedModulesBS.Universe.Ne
 
 export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesBS.Universe.Nested2.Nested3.nested3Value;
 
-export const Universe_Nested2_Nested3_nested3Function: (_1:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type = NestedModulesBS.Universe.Nested2.Nested3.nested3Function;
+export const Universe_Nested2_Nested3_nested3Function: (x:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type = NestedModulesBS.Universe.Nested2.Nested3.nested3Function;
 
-export const Universe_Nested2_nested2Function: (_1:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type = NestedModulesBS.Universe.Nested2.nested2Function;
+export const Universe_Nested2_nested2Function: (x:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type = NestedModulesBS.Universe.Nested2.nested2Function;
 
 export const Universe_someString: string = NestedModulesBS.Universe.someString;
 
 export const Universe: {
   theAnswer: number; 
   Nested2: {
-    nested2Function: (_1:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type; 
+    nested2Function: (x:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type; 
     nested2Value: number; 
     Nested3: {
       nested3Value: string; 
-      nested3Function: (_1:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type
+      nested3Function: (x:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type
     }
   }; 
   someString: string

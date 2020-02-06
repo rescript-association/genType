@@ -26,8 +26,8 @@ export type Outer2Alias_Inner2_OuterInnerAlias2_innerT = Outer2_Inner2_OuterInne
 // tslint:disable-next-line:interface-over-type-literal
 export type InnerNestedAlias_t = Outer2_Inner2_InnerNested_t;
 
-export const testNested: (_1:InnerNestedAlias_t) => InnerNestedAlias_t = ModuleAliasesBS.testNested;
+export const testNested: (x:InnerNestedAlias_t) => InnerNestedAlias_t = ModuleAliasesBS.testNested;
 
-export const testInner: (_1:Outer2Alias_OuterInnerAlias_innerT) => Outer2Alias_OuterInnerAlias_innerT = ModuleAliasesBS.testInner;
+export const testInner: (x:Outer2Alias_OuterInnerAlias_innerT) => Outer2Alias_OuterInnerAlias_innerT = ModuleAliasesBS.testInner;
 
-export const testInner2: (_1:Outer2Alias_Inner2_OuterInnerAlias2_innerT) => Outer2Alias_Inner2_OuterInnerAlias2_innerT = ModuleAliasesBS.testInner2;
+export const testInner2: (x:Outer2Alias_Inner2_OuterInnerAlias2_innerT) => Outer2Alias_Inner2_OuterInnerAlias2_innerT = ModuleAliasesBS.testInner2;

@@ -49,7 +49,7 @@ export type variant1Int = { tag: "R"; value: number };
 // tslint:disable-next-line:interface-over-type-literal
 export type variant1Object = payload;
 
-export const testWithPayload: (_1:withPayload) => withPayload = function (Arg1: any) {
+export const testWithPayload: (x:withPayload) => withPayload = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
     ? [/* c */99, Arg1]
     : $$toRE435467058[Arg1.toString()]);
@@ -58,14 +58,14 @@ export const testWithPayload: (_1:withPayload) => withPayload = function (Arg1: 
     : $$toJS435467058[result]
 };
 
-export const printVariantWithPayload: (_1:withPayload) => void = function (Arg1: any) {
+export const printVariantWithPayload: (x:withPayload) => void = function (Arg1: any) {
   const result = VariantsWithPayloadBS.printVariantWithPayload(typeof(Arg1) === 'object'
     ? [/* c */99, Arg1]
     : $$toRE435467058[Arg1.toString()]);
   return result
 };
 
-export const testManyPayloads: (_1:manyPayloads) => manyPayloads = function (Arg1: any) {
+export const testManyPayloads: (x:manyPayloads) => manyPayloads = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testManyPayloads(Arg1.tag==="oneRenamed"
     ? [/* one */5544550, Arg1.value]
     : Arg1.tag===2
@@ -78,7 +78,7 @@ export const testManyPayloads: (_1:manyPayloads) => manyPayloads = function (Arg
     : {tag:"three", value:result[1]}
 };
 
-export const printManyPayloads: (_1:manyPayloads) => void = function (Arg1: any) {
+export const printManyPayloads: (x:manyPayloads) => void = function (Arg1: any) {
   const result = VariantsWithPayloadBS.printManyPayloads(Arg1.tag==="oneRenamed"
     ? [/* one */5544550, Arg1.value]
     : Arg1.tag===2
@@ -87,12 +87,12 @@ export const printManyPayloads: (_1:manyPayloads) => void = function (Arg1: any)
   return result
 };
 
-export const testSimpleVariant: (_1:simpleVariant) => simpleVariant = function (Arg1: any) {
+export const testSimpleVariant: (x:simpleVariant) => simpleVariant = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testSimpleVariant($$toRE346759412[Arg1]);
   return $$toJS346759412[result]
 };
 
-export const testVariantWithPayloads: (_1:variantWithPayloads) => variantWithPayloads = function (Arg1: any) {
+export const testVariantWithPayloads: (x:variantWithPayloads) => variantWithPayloads = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testVariantWithPayloads(typeof(Arg1) === 'object'
     ? Arg1.tag==="B"
       ? CreateBucklescriptBlock.__(0, [Arg1.value])
@@ -113,7 +113,7 @@ export const testVariantWithPayloads: (_1:variantWithPayloads) => variantWithPay
     : $$toJS13337556[result]
 };
 
-export const printVariantWithPayloads: (_1:variantWithPayloads) => void = function (Arg1: any) {
+export const printVariantWithPayloads: (x:variantWithPayloads) => void = function (Arg1: any) {
   const result = VariantsWithPayloadBS.printVariantWithPayloads(typeof(Arg1) === 'object'
     ? Arg1.tag==="B"
       ? CreateBucklescriptBlock.__(0, [Arg1.value])
@@ -126,12 +126,12 @@ export const printVariantWithPayloads: (_1:variantWithPayloads) => void = functi
   return result
 };
 
-export const testVariant1Int: (_1:variant1Int) => variant1Int = function (Arg1: any) {
+export const testVariant1Int: (x:variant1Int) => variant1Int = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testVariant1Int(CreateBucklescriptBlock.__(0, [Arg1.value]));
   return {tag:"R", value:result[0]}
 };
 
-export const testVariant1Object: (_1:variant1Object) => variant1Object = function (Arg1: any) {
+export const testVariant1Object: (x:variant1Object) => variant1Object = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testVariant1Object(CreateBucklescriptBlock.__(0, [Arg1]));
   return result[0]
 };

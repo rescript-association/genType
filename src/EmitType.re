@@ -158,7 +158,11 @@ let rec renderType =
       ++ ">";
     };
 
-  | Function({argTypes: [Object(closedFlag, fields)], retType, typeVars})
+  | Function({
+      argTypes: [(Object(closedFlag, fields), _argName)],
+      retType,
+      typeVars,
+    })
       when retType |> isTypeReactElement(~config) =>
     let fields =
       fields
@@ -389,10 +393,13 @@ and renderFunType =
   ++ String.concat(
        ", ",
        List.mapi(
-         (i, t) => {
+         (i, (t, argName)) => {
            let parameterName =
-             config.language == Flow
-               ? "" : "_" ++ string_of_int(i + 1) ++ ":";
+             if (config.language == Flow) {
+               "";
+             } else {
+               (argName == "" ? "_" ++ string_of_int(i + 1) : argName) ++ ":";
+             };
            parameterName
            ++ (
              t
