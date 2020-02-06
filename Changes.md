@@ -1,4 +1,6 @@
 # master
+- Emit doc commments `/** this is a doc comment*/` in the TypeScript output.
+- Preserve the parameter names in function types emitted by the TypeScript back-end.
 
 # 3.11.0
 - Fix issue where a shadowed declaration would be emitted instead of the shadowing one. See https://github.com/cristianoc/genType/issues/354.
