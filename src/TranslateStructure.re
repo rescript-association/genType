@@ -1,24 +1,17 @@
 open GenTypeCommon;
 
 let rec addAnnotationsToTypes_ =
-        (
-          ~config,
-          ~expr: Typedtree.expression,
-          argTypes: list((type_, string)),
-        ) =>
+        (~config, ~expr: Typedtree.expression, argTypes: list(argType)) =>
   switch (expr.exp_desc, argTypes) {
-  | (_, [(GroupOfLabeledArgs(fields), argName), ...nextTypes]) =>
+  | (_, [{argName, type_: GroupOfLabeledArgs(fields)}, ...nextTypes]) =>
     let (fields1, nextTypes1) =
       addAnnotationsToFields(~config, expr, fields, nextTypes);
-    [(GroupOfLabeledArgs(fields1), argName), ...nextTypes1];
-  | (
-      Texp_function({param, cases: [{c_rhs}]}),
-      [(type_, _argName), ...nextTypes],
-    ) =>
+    [{argName, type_: GroupOfLabeledArgs(fields1)}, ...nextTypes1];
+  | (Texp_function({param, cases: [{c_rhs}]}), [{type_}, ...nextTypes]) =>
     let nextTypes1 =
       nextTypes |> addAnnotationsToTypes_(~config, ~expr=c_rhs);
     let argName = Ident.name(param);
-    [(type_, argName), ...nextTypes1];
+    [{argName, type_}, ...nextTypes1];
   | (
       Texp_apply({exp_desc: Texp_ident(path, _, _)}, [(_, Some(expr1))]),
       _,
@@ -33,20 +26,15 @@ let rec addAnnotationsToTypes_ =
   | _ => argTypes
   }
 and addAnnotationsToTypes =
-    (~config, ~expr: Typedtree.expression, argTypes: list((type_, string))) => {
-  let argTypes =
-    addAnnotationsToTypes_(
-      ~config,
-      ~expr: Typedtree.expression,
-      argTypes: list((type_, string)),
-    );
+    (~config, ~expr: Typedtree.expression, argTypes: list(argType)) => {
+  let argTypes = addAnnotationsToTypes_(~config, ~expr, argTypes);
   if (argTypes
-      |> List.filter(((_, argName)) => argName == "param")
+      |> List.filter(({argName}) => argName == "param")
       |> List.length > 1) {
     // Underscore "_" appears as "param", can occur more than once
     argTypes
-    |> List.mapi((i, (t, argName)) =>
-         (t, argName ++ "_" ++ string_of_int(i))
+    |> List.mapi((i, {argName, type_}) =>
+         {argName: argName ++ "_" ++ string_of_int(i), type_}
        );
   } else {
     argTypes;
@@ -57,7 +45,7 @@ and addAnnotationsToFields =
       ~config,
       expr: Typedtree.expression,
       fields: fields,
-      argTypes: list((type_, string)),
+      argTypes: list(argType),
     ) =>
   switch (expr.exp_desc, fields, argTypes) {
   | (_, [], _) => ([], argTypes |> addAnnotationsToTypes(~config, ~expr))

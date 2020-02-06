@@ -63,6 +63,10 @@ type type_ =
 and builtin =
   | Promise(type_)
 and fields = list(field)
+and argType = {
+  argName: string,
+  type_,
+}
 and field = {
   mutable_,
   nameJS: string,
@@ -70,7 +74,6 @@ and field = {
   optional,
   type_,
 }
-and argType = (type_, string)
 and function_ = {
   argTypes: list(argType),
   componentName: option(string),

@@ -39,7 +39,9 @@ let rec substitute = (~f, type0) =>
       ...function_,
       argTypes:
         function_.argTypes
-        |> List.map(((t, argName)) => (t |> substitute(~f), argName)),
+        |> List.map(({argName, type_: t}) =>
+             {argName, type_: t |> substitute(~f)}
+           ),
       retType: function_.retType |> substitute(~f),
     })
   | GroupOfLabeledArgs(fields) =>
@@ -124,7 +126,10 @@ let rec free_ = (type0): StringSet.t =>
   }
 and freeOfList_ = types =>
   types
-  |> List.fold_left((s, (t, _argName)) => s +++ (t |> free_), StringSet.empty)
+  |> List.fold_left(
+       (s, {type_}: argType) => s +++ (type_ |> free_),
+       StringSet.empty,
+     )
 and (+++) = StringSet.union;
 
 let free = type_ => type_ |> free_ |> StringSet.elements;

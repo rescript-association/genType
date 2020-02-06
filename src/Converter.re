@@ -144,12 +144,12 @@ let typeGetConverterNormalized =
         {argTypes, componentName, retType, typeVars, uncurried} as function_,
       ) =>
       let argConverted =
-        argTypes |> List.map(typeToGroupedArgConverter(~visited));
+        argTypes |> List.map(argTypeToGroupedArgConverter(~visited));
       let argConverters = argConverted |> List.map(fst);
       let (retConverter, retNormalized) = retType |> visit(~visited);
       let isHook =
         switch (argTypes) {
-        | [(Object(_), _argName)] =>
+        | [{type_: Object(_)}] =>
           retType |> EmitType.isTypeReactElement(~config)
         | _ => false
         };
@@ -332,7 +332,7 @@ let typeGetConverterNormalized =
       (converter, normalized);
     };
   }
-  and typeToGroupedArgConverter = (~visited, (type_, argName)) =>
+  and argTypeToGroupedArgConverter = (~visited, {argName, type_}) =>
     switch (type_) {
     | GroupOfLabeledArgs(fields) =>
       let fieldsConverted =
@@ -352,11 +352,11 @@ let typeGetConverterNormalized =
                (nameJS, optional, converter)
              ),
         );
-      (converter, (tNormalized, argName));
+      (converter, {argName, type_: tNormalized});
     | _ =>
       let (converter, tNormalized) = type_ |> visit(~visited);
       let converter = ArgConverter(converter);
-      (converter, (tNormalized, argName));
+      (converter, {argName, type_: tNormalized});
     };
 
   let (converter, normalized) = type0 |> visit(~visited=StringSet.empty);
