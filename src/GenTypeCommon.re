@@ -70,8 +70,9 @@ and field = {
   optional,
   type_,
 }
+and argType = (type_, string)
 and function_ = {
-  argTypes: list(type_),
+  argTypes: list(argType),
   componentName: option(string),
   retType: type_,
   typeVars: list(string),

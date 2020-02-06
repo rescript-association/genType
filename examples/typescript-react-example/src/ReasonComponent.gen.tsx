@@ -38,7 +38,7 @@ export type t =
   | { tag: "B"; value: number }
   | { tag: "C"; value: string };
 
-export const onClick: (_1:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
+export const onClick: (param:ReactEvent_Mouse_t) => void = ReasonComponentBS.onClick;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = {
@@ -61,9 +61,9 @@ export const minus: (_1:{ readonly first?: number; readonly second: number }) =>
   return result
 };
 
-export const useTypeDefinedInAnotherModule: (_1:Types_t) => Types_t = ReasonComponentBS.useTypeDefinedInAnotherModule;
+export const useTypeDefinedInAnotherModule: (x:Types_t) => Types_t = ReasonComponentBS.useTypeDefinedInAnotherModule;
 
-export const tToString: (_1:t) => string = function (Arg1: any) {
+export const tToString: (t:t) => string = function (Arg1: any) {
   const result = ReasonComponentBS.tToString(typeof(Arg1) === 'object'
     ? Arg1.tag==="B"
       ? CreateBucklescriptBlock.__(0, [Arg1.value])
@@ -72,4 +72,4 @@ export const tToString: (_1:t) => string = function (Arg1: any) {
   return result
 };
 
-export const useRecordsCoord: (_1:Records_coord) => number = ReasonComponentBS.useRecordsCoord;
+export const useRecordsCoord: (param:Records_coord) => number = ReasonComponentBS.useRecordsCoord;

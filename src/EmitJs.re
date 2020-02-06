@@ -436,7 +436,7 @@ let rec emitCodeItem =
 
     let type_ =
       switch (type_) {
-      | Function({argTypes: [Object(_)], retType} as function_)
+      | Function({argTypes: [(Object(_), _argName)], retType} as function_)
           when retType |> EmitType.isTypeReactElement(~config) =>
         let componentName =
           switch (importFile) {
@@ -703,7 +703,11 @@ let rec emitCodeItem =
     let (type_, hookType) =
       switch (type_) {
       | Function(
-          {argTypes: [Object(closedFlags, fields)], retType, typeVars} as function_,
+          {
+            argTypes: [(Object(closedFlags, fields), _argName)],
+            retType,
+            typeVars,
+          } as function_,
         )
           when retType |> EmitType.isTypeReactElement(~config) =>
         let propsType = {
@@ -718,7 +722,7 @@ let rec emitCodeItem =
                );
           Object(closedFlags, fields);
         };
-        let function_ = {...function_, argTypes: [propsType]};
+        let function_ = {...function_, argTypes: [(propsType, "")]};
         let chopSuffix = suffix =>
           resolvedName == suffix
             ? ""
@@ -1165,7 +1169,7 @@ let propagateAnnotationToSubTypes =
         }
       | Array(t, _) => t |> visit
       | Function({argTypes, retType}) =>
-        argTypes |> List.iter(visit);
+        argTypes |> List.iter(((t, _argName)) => visit(t));
         retType |> visit;
       | GroupOfLabeledArgs(fields)
       | Object(_, fields)

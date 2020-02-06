@@ -138,9 +138,9 @@ export const roundedNumber: number = ImportJsValueBS.roundedNumber;
 
 export const areaValue: number = ImportJsValueBS.areaValue;
 
-export const useGetProp: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGetProp;
+export const useGetProp: (x:AbsoluteValue_t) => number = ImportJsValueBS.useGetProp;
 
-export const useGetAbs: (_1:AbsoluteValue_t) => number = ImportJsValueBS.useGetAbs;
+export const useGetAbs: (x:AbsoluteValue_t) => number = ImportJsValueBS.useGetAbs;
 
 export const returnedFromHigherOrder: number = ImportJsValueBS.returnedFromHigherOrder;
 

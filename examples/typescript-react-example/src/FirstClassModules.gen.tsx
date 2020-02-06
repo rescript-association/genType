@@ -28,7 +28,7 @@ export type firstClassModule = {
 
 export const firstClassModule: firstClassModule = FirstClassModulesBS.firstClassModule;
 
-export const testConvert: (_1:{
+export const testConvert: (m:{
   readonly x: number; 
   readonly EmptyInnerModule: {
   }; 
@@ -54,7 +54,7 @@ export const testConvert: (_1:{
   readonly y: string
 } = FirstClassModulesBS.testConvert;
 
-export const someFunctorAsFunction: (_1:{
+export const someFunctorAsFunction: (x:{
   readonly x: number; 
   readonly EmptyInnerModule: {
   }; 

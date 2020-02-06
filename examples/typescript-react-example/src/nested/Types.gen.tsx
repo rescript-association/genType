@@ -101,13 +101,13 @@ export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = functio
   return result
 };
 
-export const swap: (_1:tree) => tree = TypesBS.swap;
+export const swap: (tree:tree) => tree = TypesBS.swap;
 
-export const selfRecursiveConverter: (_1:selfRecursive) => selfRecursive = TypesBS.selfRecursiveConverter;
+export const selfRecursiveConverter: (param:selfRecursive) => selfRecursive = TypesBS.selfRecursiveConverter;
 
-export const mutuallyRecursiveConverter: (_1:mutuallyRecursiveA) => mutuallyRecursiveB = TypesBS.mutuallyRecursiveConverter;
+export const mutuallyRecursiveConverter: (param:mutuallyRecursiveA) => mutuallyRecursiveB = TypesBS.mutuallyRecursiveConverter;
 
-export const testFunctionOnOptionsAsArgument: <T1,a>(_1:(null | undefined | a), _2:((_1:(null | undefined | a)) => T1)) => T1 = function <T1,a>(Arg1: any, Arg2: any) {
+export const testFunctionOnOptionsAsArgument: <T1,a>(a:(null | undefined | a), foo:((_1:(null | undefined | a)) => T1)) => T1 = function <T1,a>(Arg1: any, Arg2: any) {
   const result = Curry._2(TypesBS.testFunctionOnOptionsAsArgument, (Arg1 == null ? undefined : Arg1), Arg2);
   return result
 };
@@ -120,12 +120,12 @@ export const jsString2T: string = TypesBS.jsString2T;
 
 export const jsonStringify: (_1:Js_Json_t) => string = TypesBS.jsonStringify;
 
-export const testConvertNull: (_1:(null | record)) => (null | record) = TypesBS.testConvertNull;
+export const testConvertNull: (x:(null | record)) => (null | record) = TypesBS.testConvertNull;
 
-export const testConvertLocation: (_1:Location_t) => Location_t = TypesBS.testConvertLocation;
+export const testConvertLocation: (x:Location_t) => Location_t = TypesBS.testConvertLocation;
 
 export const testMarshalFields: marshalFields = TypesBS.testMarshalFields;
 
-export const setMatch: (_1:marshalMutableField) => void = TypesBS.setMatch;
+export const setMatch: (x:marshalMutableField) => void = TypesBS.setMatch;
 
-export const testInstantiateTypeParameter: (_1:instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;
+export const testInstantiateTypeParameter: (x:instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;

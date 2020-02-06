@@ -1,24 +1,69 @@
 open GenTypeCommon;
 
-let rec addAnnotationsToTypes =
-        (~config, ~expr: Typedtree.expression, types: list(type_)) =>
-  switch (expr.exp_desc, types) {
-  | (_, [GroupOfLabeledArgs(fields), ...nextTypes]) =>
+let rec addAnnotationsToTypes_ =
+        (
+          ~config,
+          ~expr: Typedtree.expression,
+          argTypes: list((type_, string)),
+        ) =>
+  switch (expr.exp_desc, argTypes) {
+  | (_, [(GroupOfLabeledArgs(fields), argName), ...nextTypes]) =>
     let (fields1, nextTypes1) =
       addAnnotationsToFields(~config, expr, fields, nextTypes);
-    [GroupOfLabeledArgs(fields1), ...nextTypes1];
-  | (Texp_function({cases: [{c_rhs}]}), [type_, ...nextTypes]) =>
-    let nextTypes1 = nextTypes |> addAnnotationsToTypes(~config, ~expr=c_rhs);
-    [type_, ...nextTypes1];
-  | _ => types
+    [(GroupOfLabeledArgs(fields1), argName), ...nextTypes1];
+  | (
+      Texp_function({param, cases: [{c_rhs}]}),
+      [(type_, _argName), ...nextTypes],
+    ) =>
+    let nextTypes1 =
+      nextTypes |> addAnnotationsToTypes_(~config, ~expr=c_rhs);
+    let argName = Ident.name(param);
+    [(type_, argName), ...nextTypes1];
+  | (
+      Texp_apply({exp_desc: Texp_ident(path, _, _)}, [(_, Some(expr1))]),
+      _,
+    ) =>
+    switch (path |> TranslateTypeExprFromTypes.pathToList |> List.rev) {
+    | ["Js", "Internal", fn_mk]
+        // Uncurried function definition uses Js.Internal.fn_mkX(...)
+        when String.length(fn_mk) >= 5 && String.sub(fn_mk, 0, 5) == "fn_mk" =>
+      argTypes |> addAnnotationsToTypes_(~config, ~expr=expr1)
+    | _ => argTypes
+    }
+  | _ => argTypes
   }
+and addAnnotationsToTypes =
+    (~config, ~expr: Typedtree.expression, argTypes: list((type_, string))) => {
+  let argTypes =
+    addAnnotationsToTypes_(
+      ~config,
+      ~expr: Typedtree.expression,
+      argTypes: list((type_, string)),
+    );
+  if (argTypes
+      |> List.filter(((_, argName)) => argName == "param")
+      |> List.length > 1) {
+    // Underscore "_" appears as "param", can occur more than once
+    argTypes
+    |> List.mapi((i, (t, argName)) =>
+         (t, argName ++ "_" ++ string_of_int(i))
+       );
+  } else {
+    argTypes;
+  };
+}
 and addAnnotationsToFields =
-    (~config, expr: Typedtree.expression, fields: fields, types: list(type_)) =>
-  switch (expr.exp_desc, fields, types) {
-  | (_, [], _) => ([], types |> addAnnotationsToTypes(~config, ~expr))
+    (
+      ~config,
+      expr: Typedtree.expression,
+      fields: fields,
+      argTypes: list((type_, string)),
+    ) =>
+  switch (expr.exp_desc, fields, argTypes) {
+  | (_, [], _) => ([], argTypes |> addAnnotationsToTypes(~config, ~expr))
   | (Texp_function({cases: [{c_rhs}]}), [field, ...nextFields], _) =>
     let (nextFields1, types1) =
-      addAnnotationsToFields(~config, c_rhs, nextFields, types);
+      addAnnotationsToFields(~config, c_rhs, nextFields, argTypes);
     let (nameJS, nameRE) =
       TranslateTypeDeclarations.renameRecordField(
         ~attributes=expr.exp_attributes,
@@ -27,7 +72,7 @@ and addAnnotationsToFields =
       );
     ([{...field, nameJS, nameRE}, ...nextFields1], types1);
 
-  | _ => (fields, types)
+  | _ => (fields, argTypes)
   };
 
 /* Recover from expr the renaming annotations on named arguments. */

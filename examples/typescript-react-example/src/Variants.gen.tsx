@@ -74,7 +74,7 @@ export type result3<a,b> =
     { tag: "Ok"; value: a }
   | { tag: "Error"; value: b };
 
-export const isWeekend: (_1:weekday) => boolean = function (Arg1: any) {
+export const isWeekend: (x:weekday) => boolean = function (Arg1: any) {
   const result = VariantsBS.isWeekend($$toRE288839514[Arg1]);
   return result
 };
@@ -85,17 +85,17 @@ export const saturday: "saturday" = "saturday";
 
 export const sunday: "sunday" = "sunday";
 
-export const onlySunday: (_1:"sunday") => void = function (Arg1: any) {
+export const onlySunday: (param:"sunday") => void = function (Arg1: any) {
   const result = VariantsBS.onlySunday(/* sunday */569248848);
   return result
 };
 
-export const swap: (_1:"saturday" | "sunday") => "saturday" | "sunday" = function (Arg1: any) {
+export const swap: (x:"saturday" | "sunday") => "saturday" | "sunday" = function (Arg1: any) {
   const result = VariantsBS.swap($$toRE694113598[Arg1]);
   return $$toJS694113598[result]
 };
 
-export const testConvert: (_1:testGenTypeAs) => testGenTypeAs = function (Arg1: any) {
+export const testConvert: (x:testGenTypeAs) => testGenTypeAs = function (Arg1: any) {
   const result = VariantsBS.testConvert($$toRE508922110[Arg1]);
   return $$toJS508922110[result]
 };
@@ -104,32 +104,32 @@ export const fortytwoOK: testGenTypeAs = $$toJS508922110[VariantsBS.fortytwoOK];
 
 export const fortytwoBAD: "fortytwo" = "fortytwo";
 
-export const testConvert2: (_1:testGenTypeAs2) => testGenTypeAs2 = function (Arg1: any) {
+export const testConvert2: (x:testGenTypeAs2) => testGenTypeAs2 = function (Arg1: any) {
   const result = VariantsBS.testConvert2($$toRE508922110[Arg1]);
   return $$toJS508922110[result]
 };
 
-export const testConvert3: (_1:testGenTypeAs3) => testGenTypeAs3 = function (Arg1: any) {
+export const testConvert3: (x:testGenTypeAs3) => testGenTypeAs3 = function (Arg1: any) {
   const result = VariantsBS.testConvert3($$toRE584768163[Arg1]);
   return $$toJS584768163[result]
 };
 
-export const testConvert2to3: (_1:testGenTypeAs2) => testGenTypeAs3 = function (Arg1: any) {
+export const testConvert2to3: (x:testGenTypeAs2) => testGenTypeAs3 = function (Arg1: any) {
   const result = VariantsBS.testConvert2to3($$toRE508922110[Arg1]);
   return $$toJS584768163[result]
 };
 
-export const id1: (_1:x1) => x1 = function (Arg1: any) {
+export const id1: (x:x1) => x1 = function (Arg1: any) {
   const result = VariantsBS.id1($$toRE930788378[Arg1]);
   return $$toJS930788378[result]
 };
 
-export const id2: (_1:x2) => x2 = function (Arg1: any) {
+export const id2: (x:x2) => x2 = function (Arg1: any) {
   const result = VariantsBS.id2($$toRE1061900109[Arg1]);
   return $$toJS1061900109[result]
 };
 
-export const polyWithOpt: (_1:string) => (null | undefined | 
+export const polyWithOpt: (foo:string) => (null | undefined | 
     { tag: "One"; value: string }
   | { tag: "Two"; value: number }) = function (Arg1: any) {
   const result = VariantsBS.polyWithOpt(Arg1);
@@ -138,7 +138,7 @@ export const polyWithOpt: (_1:string) => (null | undefined |
     : {tag:"Two", value:result[1]})
 };
 
-export const restResult1: (_1:result1<number,string>) => result1<number,string> = function (Arg1: any) {
+export const restResult1: (x:result1<number,string>) => result1<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult1(Arg1.tag==="Ok"
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
@@ -147,7 +147,7 @@ export const restResult1: (_1:result1<number,string>) => result1<number,string> 
     : {tag:"Error", value:result[0]}
 };
 
-export const restResult2: (_1:result2<number,string>) => result2<number,string> = function (Arg1: any) {
+export const restResult2: (x:result2<number,string>) => result2<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult2(Arg1.tag==="Ok"
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
@@ -156,7 +156,7 @@ export const restResult2: (_1:result2<number,string>) => result2<number,string> 
     : {tag:"Error", value:result[0]}
 };
 
-export const restResult3: (_1:result3<number,string>) => result3<number,string> = function (Arg1: any) {
+export const restResult3: (x:result3<number,string>) => result3<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult3(Arg1.tag==="Ok"
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));

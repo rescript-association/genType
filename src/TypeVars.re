@@ -37,7 +37,9 @@ let rec substitute = (~f, type0) =>
   | Function(function_) =>
     Function({
       ...function_,
-      argTypes: function_.argTypes |> List.map(substitute(~f)),
+      argTypes:
+        function_.argTypes
+        |> List.map(((t, argName)) => (t |> substitute(~f), argName)),
       retType: function_.retType |> substitute(~f),
     })
   | GroupOfLabeledArgs(fields) =>
@@ -80,7 +82,7 @@ let rec substitute = (~f, type0) =>
     })
   };
 
-let rec free_ = type0: StringSet.t =>
+let rec free_ = (type0): StringSet.t =>
   switch (type0) {
   | Array(t, _) => t |> free_
   | Function({argTypes, retType, typeVars}) =>
@@ -121,7 +123,8 @@ let rec free_ = type0: StringSet.t =>
        )
   }
 and freeOfList_ = types =>
-  types |> List.fold_left((s, t) => s +++ (t |> free_), StringSet.empty)
+  types
+  |> List.fold_left((s, (t, _argName)) => s +++ (t |> free_), StringSet.empty)
 and (+++) = StringSet.union;
 
 let free = type_ => type_ |> free_ |> StringSet.elements;

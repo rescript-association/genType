@@ -17,11 +17,11 @@ export type t<a> = R_t<a>;
 // tslint:disable-next-line:interface-over-type-literal
 export type requiresConversion = { readonly x: number };
 
-export const create: (_1:number) => [number] = ReferencesBS.create;
+export const create: (x:number) => [number] = ReferencesBS.create;
 
-export const access: (_1:[number]) => number = ReferencesBS.access;
+export const access: (r:[number]) => number = ReferencesBS.access;
 
-export const update: (_1:[number]) => void = ReferencesBS.update;
+export const update: (r:[number]) => void = ReferencesBS.update;
 
 export const get: <T1>(_1:R_t<T1>) => T1 = ReferencesBS.get;
 
@@ -32,6 +32,6 @@ export const set: <T1>(_1:R_t<T1>, _2:T1) => void = function <T1>(Arg1: any, Arg
   return result
 };
 
-export const destroysRefIdentity: (_1:[requiresConversion]) => [requiresConversion] = ReferencesBS.destroysRefIdentity;
+export const destroysRefIdentity: (x:[requiresConversion]) => [requiresConversion] = ReferencesBS.destroysRefIdentity;
 
-export const preserveRefIdentity: (_1:R_t<requiresConversion>) => R_t<requiresConversion> = ReferencesBS.preserveRefIdentity;
+export const preserveRefIdentity: (x:R_t<requiresConversion>) => R_t<requiresConversion> = ReferencesBS.preserveRefIdentity;

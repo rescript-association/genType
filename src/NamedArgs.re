@@ -66,9 +66,12 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
-  | [Arg(type_), ...tl] => reverse(~soFar=[type_, ...soFar], tl)
+  | [Arg(type_), ...tl] => reverse(~soFar=[(type_, ""), ...soFar], tl)
   | [Group(fields), ...tl] =>
-    reverse(~soFar=[GroupOfLabeledArgs(List.rev(fields)), ...soFar], tl)
+    reverse(
+      ~soFar=[(GroupOfLabeledArgs(List.rev(fields)), ""), ...soFar],
+      tl,
+    )
   };
 
 let group = labeledTypes =>

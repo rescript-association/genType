@@ -17,6 +17,13 @@ let rec removeOption = (~label: Asttypes.arg_label, typeExpr: Types.type_expr) =
   | _ => None
   };
 
+let rec pathToList = path =>
+  switch (path) {
+  | Path.Pident(id) => [id |> Ident.name]
+  | Path.Pdot(p, s, _) => [s, ...p |> pathToList]
+  | Path.Papply(_) => []
+  };
+
 let translateConstr =
     (
       ~config,
@@ -26,13 +33,6 @@ let translateConstr =
       ~path: Path.t,
       ~typeEnv,
     ) => {
-  exception ContainsApply;
-  let rec pathToList = path =>
-    switch (path) {
-    | Path.Pident(id) => [id |> Ident.name]
-    | Path.Pdot(p, s, _) => [s, ...p |> pathToList]
-    | Path.Papply(_) => raise(ContainsApply)
-    };
   let defaultCase = () => {
     let typeArgs = paramsTranslation |> List.map(({type_}) => type_);
     let typeParamDeps =
@@ -114,7 +114,7 @@ let translateConstr =
       dependencies: fromTranslation.dependencies @ toTranslation.dependencies,
       type_:
         Function({
-          argTypes: [fromTranslation.type_],
+          argTypes: [(fromTranslation.type_, "")],
           componentName: None,
           retType: toTranslation.type_,
           typeVars: [],
@@ -127,7 +127,7 @@ let translateConstr =
         propsTranslation.dependencies @ retTranslation.dependencies,
       type_:
         Function({
-          argTypes: [propsTranslation.type_],
+          argTypes: [(propsTranslation.type_, "")],
           componentName: None,
           retType: retTranslation.type_,
           typeVars: [],
@@ -139,7 +139,7 @@ let translateConstr =
       dependencies: propsTranslation.dependencies,
       type_:
         Function({
-          argTypes: [propsTranslation.type_],
+          argTypes: [(propsTranslation.type_, "")],
           componentName: None,
           retType: EmitType.typeReactElement(~config),
           typeVars: [],
@@ -203,7 +203,7 @@ let translateConstr =
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: ts,
+          argTypes: ts |> List.map(t => (t, "")),
           componentName: None,
           retType: ret.type_,
           typeVars: [],
@@ -236,11 +236,14 @@ let translateConstr =
       [{dependencies: argsDependencies, type_: singleT}, ret],
     ) =>
     let argTypes =
-      switch (singleT) {
-      | Variant({payloads: [(_, _, Tuple(argTypes))]}) => argTypes
-      | Variant({payloads: [(_, _, type_)]}) => [type_]
-      | _ => [singleT]
-      };
+      (
+        switch (singleT) {
+        | Variant({payloads: [(_, _, Tuple(argTypes))]}) => argTypes
+        | Variant({payloads: [(_, _, type_)]}) => [type_]
+        | _ => [singleT]
+        }
+      )
+      |> List.map(t => (t, ""));
     {
       dependencies: argsDependencies @ ret.dependencies,
       type_:
@@ -265,7 +268,7 @@ let translateConstr =
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: [type_],
+          argTypes: [(type_, "")],
           componentName: None,
           retType: ret.type_,
           typeVars: [],
@@ -285,7 +288,7 @@ let translateConstr =
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes,
+          argTypes: argTypes |> List.map(t => (t, "")),
           componentName: None,
           retType: ret.type_,
           typeVars: [],
@@ -323,7 +326,6 @@ let translateConstr =
     {dependencies, type_};
 
   | _ => defaultCase()
-  | exception ContainsApply => defaultCase()
   };
 };
 

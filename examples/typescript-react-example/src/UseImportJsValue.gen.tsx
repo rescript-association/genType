@@ -9,6 +9,6 @@ import {AbsoluteValue_t as ImportJsValue_AbsoluteValue_t} from './ImportJsValue.
 
 import {stringFunction as ImportJsValue_stringFunction} from './ImportJsValue.gen';
 
-export const useGetProp: (_1:ImportJsValue_AbsoluteValue_t) => number = UseImportJsValueBS.useGetProp;
+export const useGetProp: (x:ImportJsValue_AbsoluteValue_t) => number = UseImportJsValueBS.useGetProp;
 
-export const useTypeImportedInOtherModule: (_1:ImportJsValue_stringFunction) => ImportJsValue_stringFunction = UseImportJsValueBS.useTypeImportedInOtherModule;
+export const useTypeImportedInOtherModule: (x:ImportJsValue_stringFunction) => ImportJsValue_stringFunction = UseImportJsValueBS.useTypeImportedInOtherModule;

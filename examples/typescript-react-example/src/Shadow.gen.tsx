@@ -5,4 +5,4 @@
 // tslint:disable-next-line:no-var-requires
 const ShadowBS = require('./Shadow.bs');
 
-export const test: (_1:void) => string = ShadowBS.test;
+export const test: (param:void) => string = ShadowBS.test;
