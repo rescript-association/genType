@@ -33,6 +33,7 @@ type exportComponent = {
 };
 
 type exportValue = {
+  docString: string,
   moduleAccessPath: Runtime.moduleAccessPath,
   originalName: string,
   resolvedName: ResolvedName.t,

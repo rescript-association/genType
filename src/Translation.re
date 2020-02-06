@@ -84,6 +84,7 @@ let translateValue =
     (
       ~attributes,
       ~config,
+      ~docString,
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
@@ -116,6 +117,7 @@ let translateValue =
 
   let codeItems = [
     CodeItem.ExportValue({
+      docString,
       moduleAccessPath,
       originalName: name,
       resolvedName,
@@ -156,6 +158,7 @@ let translateComponent =
     (
       ~attributes,
       ~config,
+      ~docString,
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
@@ -284,6 +287,7 @@ let translateComponent =
     |> translateValue(
          ~attributes,
          ~config,
+         ~docString,
          ~outputFileRelative,
          ~resolver,
          ~typeEnv,
