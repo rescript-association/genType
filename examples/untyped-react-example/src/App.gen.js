@@ -2,6 +2,7 @@
  * this is a custom header you can add to every file!
  * Untyped file generated from App.re by genType.
  */
+/* eslint-disable */
 
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 

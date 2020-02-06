@@ -2,6 +2,7 @@
  * this is a custom header you can add to every file!
  * Untyped file generated from VariantsWithPayload.re by genType.
  */
+/* eslint-disable */
 
 const $$toJS13337556 = {"0": "ARenamed"};
 

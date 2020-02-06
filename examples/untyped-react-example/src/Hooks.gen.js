@@ -2,6 +2,7 @@
  * this is a custom header you can add to every file!
  * Untyped file generated from Hooks.re by genType.
  */
+/* eslint-disable */
 
 import * as PropTypes from 'prop-types';
 

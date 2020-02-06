@@ -43,6 +43,7 @@ let fileHeader = (~config, ~sourceFile) => {
     makeHeader(
       ~lines=["Untyped file generated from " ++ sourceFile ++ " by genType."],
     )
+    ++ "/* eslint-disable */\n"
   };
 };
 

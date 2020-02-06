@@ -2,6 +2,7 @@
  * this is a custom header you can add to every file!
  * Untyped file generated from ImportMyBanner.re by genType.
  */
+/* eslint-disable */
 
 import MyBanner from './MyBanner';
 
