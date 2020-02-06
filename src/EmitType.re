@@ -350,18 +350,23 @@ and renderFields =
   let exact =
     config.language == Flow && !config.exportInterfaces && closedFlag == Closed;
   let space = indent == None && fields != [] ? " " : "";
-  ((exact ? "{|" : "{") ++ space)
-  ++ String.concat(
-       config.language == TypeScript ? "; " : ", ",
-       List.map(
+  let renderedFields =
+    fields
+    |> List.map(
          renderField(
            ~config,
            ~indent=indent1,
            ~typeNameIsInterface,
            ~inFunType,
          ),
-         fields,
-       ),
+       );
+  let dotdotdot =
+    config.language == Flow && !exact
+      ? [Indent.break(~indent=indent1) ++ "..."] : [];
+  ((exact ? "{|" : "{") ++ space)
+  ++ String.concat(
+       config.language == TypeScript ? "; " : ", ",
+       renderedFields @ dotdotdot,
      )
   ++ Indent.break(~indent)
   ++ space

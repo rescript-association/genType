@@ -162,7 +162,7 @@ export type aComponentWithChildren_Props = {| +children: React$Node, +vehicle: v
 
 export const aComponentWithChildren: typeof(aComponentWithChildren$$forTypeof) = HooksBS.aComponentWithChildren;
 
-export const NoProps: { make: React$ComponentType<{||}> } = HooksBS.NoProps
+export const NoProps: { make: React$ComponentType<{||}>, ... } = HooksBS.NoProps
 
 export const Inner: {
   Inner2: {
@@ -171,14 +171,16 @@ export const Inner: {
     |}>, 
     make: React$ComponentType<{|
       +vehicle: vehicle
-    |}>
+    |}>, 
+    ...
   }, 
   anotherComponent: React$ComponentType<{|
     +vehicle: vehicle
   |}>, 
   make: React$ComponentType<{|
     +vehicle: vehicle
-  |}>
+  |}>, 
+  ...
 } = HooksBS.Inner
 
-export const RenderPropRequiresConversion: { make: React$ComponentType<{| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |}> } = HooksBS.RenderPropRequiresConversion
+export const RenderPropRequiresConversion: { make: React$ComponentType<{| +renderVehicle: React$ComponentType<{| +number: number, +vehicle: vehicle |}> |}>, ... } = HooksBS.RenderPropRequiresConversion
