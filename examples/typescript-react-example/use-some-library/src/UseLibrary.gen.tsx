@@ -7,4 +7,4 @@ const UseLibraryBS = require('./UseLibrary.bs');
 
 import {t as Common_t} from '@demo/some-library/src/Common.gen';
 
-export const z: (_1:void) => Common_t = UseLibraryBS.z;
+export const z: () => Common_t = UseLibraryBS.z;

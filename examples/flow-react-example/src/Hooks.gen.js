@@ -40,9 +40,9 @@ export const $$default: typeof($$default$$forTypeof) = HooksBS.default;
 export default $$default;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
-const anotherComponent$$forTypeof = function (_: {| +callback: ((void) => void), +vehicle: vehicle |}) : React$Node { return null };
+const anotherComponent$$forTypeof = function (_: {| +callback: (() => void), +vehicle: vehicle |}) : React$Node { return null };
 
-export type anotherComponent_Props = {| +callback: (void) => void, +vehicle: vehicle |};
+export type anotherComponent_Props = {| +callback: () => void, +vehicle: vehicle |};
 
 export const anotherComponent: typeof(anotherComponent$$forTypeof) = HooksBS.anotherComponent;
 

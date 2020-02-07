@@ -39,9 +39,9 @@ export const $$default: React.ComponentType<{ readonly vehicle: vehicle }> = Hoo
 export default $$default;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type anotherComponent_Props = { readonly callback: (_1:void) => void; readonly vehicle: vehicle };
+export type anotherComponent_Props = { readonly callback: () => void; readonly vehicle: vehicle };
 
-export const anotherComponent: React.ComponentType<{ readonly callback: (_1:void) => void; readonly vehicle: vehicle }> = HooksBS.anotherComponent;
+export const anotherComponent: React.ComponentType<{ readonly callback: () => void; readonly vehicle: vehicle }> = HooksBS.anotherComponent;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Inner_make_Props = { readonly vehicle: vehicle };

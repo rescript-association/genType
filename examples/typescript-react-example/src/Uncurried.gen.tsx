@@ -21,7 +21,7 @@ export type u2 = (_1:number, _2:string) => string;
 export type u3 = (_1:number, _2:string, _3:number) => string;
 
 // tslint:disable-next-line:interface-over-type-literal
-export type auth = { readonly login: (_1:void) => string };
+export type auth = { readonly login: () => string };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type authU = { readonly loginU: () => string };
@@ -39,7 +39,7 @@ export const curried3: (x:number, y:string, z:number) => string = function (Arg1
   return result
 };
 
-export const callback: (cb:((_1:void) => number)) => string = UncurriedBS.callback;
+export const callback: (cb:(() => number)) => string = UncurriedBS.callback;
 
 export const callback2: (auth:auth) => string = UncurriedBS.callback2;
 

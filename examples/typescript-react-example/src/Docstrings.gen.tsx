@@ -2,11 +2,16 @@
 /* eslint-disable import/first */
 
 
+const $$toJS453167283: { [key: string]: any } = {"0": "A", "1": "B"};
+
 // tslint:disable-next-line:no-var-requires
 const Curry = require('bs-platform/lib/es6/curry.js');
 
 // tslint:disable-next-line:no-var-requires
 const DocstringsBS = require('./Docstrings.bs');
+
+// tslint:disable-next-line:interface-over-type-literal
+export type t = "A" | "B";
 
 /**  hello  */
 export const flat: number = DocstringsBS.flat;
@@ -56,4 +61,18 @@ export const unnamed2U: (param_0:number, param_1:number) => number = DocstringsB
 export const grouped: (_1:{ readonly x: number; readonly y: number }, a:number, b:number, c:number, _5:{ readonly z: number }) => number = function (Arg1: any, Arg2: any, Arg3: any, Arg4: any, Arg5: any) {
   const result = Curry._6(DocstringsBS.grouped, Arg1.x, Arg1.y, Arg2, Arg3, Arg4, Arg5.z);
   return result
+};
+
+export const unitArgWithoutConversion: () => string = DocstringsBS.unitArgWithoutConversion;
+
+export const unitArgWithoutConversionU: () => string = DocstringsBS.unitArgWithoutConversionU;
+
+export const unitArgWithConversion: () => t = function () {
+  const result = DocstringsBS.unitArgWithConversion();
+  return $$toJS453167283[result]
+};
+
+export const unitArgWithConversionU: () => t = function () {
+  const result = DocstringsBS.unitArgWithConversionU();
+  return $$toJS453167283[result]
 };

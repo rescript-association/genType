@@ -66,6 +66,9 @@ let rec groupReversed = (~revCurGroup, ~revResult, labeledTypes) =>
 let rec reverse = (~soFar=[], lst) =>
   switch (lst) {
   | [] => soFar
+  | [Arg(type_)] when type_ == unitT && soFar == [] =>
+    // treat a single argument of type unit as no argument
+    []
   | [Arg(type_), ...tl] =>
     reverse(~soFar=[{argName: "", type_}, ...soFar], tl)
   | [Group(fields), ...tl] =>
