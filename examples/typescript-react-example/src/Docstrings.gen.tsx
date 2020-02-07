@@ -17,13 +17,13 @@ export type t = "A" | "B";
 export const flat: number = DocstringsBS.flat;
 
 /** 
-  * Returns the average of two numbers.
+  * Sign a message with a key.
   *
   * @param message - A message to be signed
-  * @param key - The keypair with which to sign the message
+  * @param key - The key with which to sign the message
   * @returns A signed message
   */
-export const multiline: (message:string, key:number) => string = DocstringsBS.multiline;
+export const signMessage: (message:string, key:number) => string = DocstringsBS.signMessage;
 
 export const one: (a:number) => number = DocstringsBS.one;
 

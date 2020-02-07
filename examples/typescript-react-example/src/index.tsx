@@ -15,6 +15,7 @@ import * as Records from "./Records.gen";
 import registerServiceWorker from "./registerServiceWorker";
 import * as Variants from "./Variants.gen";
 import Hooks from "./Hooks.gen";
+import * as DocStrings from "./Docstrings.gen";
 import {
   printManyPayloads,
   printVariantWithPayload,
@@ -54,7 +55,10 @@ consoleLog(
   ImportJsValue.returnedFromHigherOrder
 );
 
-consoleLog("index.tsx callback:", Uncurried.callback(() => 3));
+consoleLog(
+  "index.tsx callback:",
+  Uncurried.callback(() => 3)
+);
 consoleLog(
   "index.tsx callback2:",
   Uncurried.callback2({ login: () => "hello" })
@@ -157,5 +161,8 @@ type Props = {
 export const make: React.FC<Props> = (x: Props) => {
   return <div></div>;
 };
+
+const signedMessage = DocStrings.signMessage("hello", 42);
+consoleLog("signedMessage:", signedMessage);
 
 export default make;

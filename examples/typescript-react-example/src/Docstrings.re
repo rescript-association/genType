@@ -3,14 +3,14 @@
 let flat = 34;
 
 /**
-  * Returns the average of two numbers.
+  * Sign a message with a key.
   *
   * @param message - A message to be signed
-  * @param key - The keypair with which to sign the message
+  * @param key - The key with which to sign the message
   * @returns A signed message
  */
 [@genType]
-let multiline = (. message, key) => message ++ string_of_int(key);
+let signMessage = (. message, key) => message ++ string_of_int(key);
 
 [@genType]
 let one = a => a + 0;

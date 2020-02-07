@@ -3,6 +3,31 @@
 - Preserve the parameter names in function types emitted by the TypeScript back-end.
 - Treat a function with a single argument of unit type as if it had no arguments.
 
+Example:
+```reason
+/**
+  * Sign a message with a key.
+  *
+  * @param message - A message to be signed
+  * @param key - The key with which to sign the message
+  * @returns A signed message
+ */
+[@genType]
+let signMessage = (. message, key) => message ++ string_of_int(key);
+```
+
+produces
+```ts
+/** 
+  * Sign a message with a key.
+  *
+  * @param message - A message to be signed
+  * @param key - The key with which to sign the message
+  * @returns A signed message
+  */
+export const signMessage: (message:string, key:number) => string = DocstringsBS.signMessage;
+```
+
 # 3.11.0
 - Fix issue where a shadowed declaration would be emitted instead of the shadowing one. See https://github.com/cristianoc/genType/issues/354.
 - Emit Flow inexact types e.g. `{name:string, ...}`, supported from Flow version 0.84 onwards.
