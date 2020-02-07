@@ -1,5 +1,5 @@
 # master
-- Emit doc commments `/** this is a doc comment*/` in the TypeScript output.
+- Emit doc commments `/** this is a doc comment */` in the TypeScript output.
 - Preserve the parameter names in function types emitted by the TypeScript back-end.
 - Treat a function with a single argument of unit type as if it had no arguments.
 
