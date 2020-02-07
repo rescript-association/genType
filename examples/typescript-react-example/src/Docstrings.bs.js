@@ -57,6 +57,22 @@ function grouped(x, y, a, b, c, z) {
   return ((((x + y | 0) + a | 0) + b | 0) + c | 0) + z | 0;
 }
 
+function unitArgWithoutConversion(param) {
+  return "abc";
+}
+
+function unitArgWithoutConversionU() {
+  return "abc";
+}
+
+function unitArgWithConversion(param) {
+  return /* A */0;
+}
+
+function unitArgWithConversionU() {
+  return /* A */0;
+}
+
 var flat = 34;
 
 export {
@@ -75,6 +91,10 @@ export {
   unnamed2 ,
   unnamed2U ,
   grouped ,
+  unitArgWithoutConversion ,
+  unitArgWithoutConversionU ,
+  unitArgWithConversion ,
+  unitArgWithConversionU ,
   
 }
 /* No side effect */

@@ -50,3 +50,19 @@ let unnamed2U = (. _: int, _: int) => 34;
 
 [@genType]
 let grouped = (~x, ~y, a, b, c, ~z) => x + y + a + b + c + z;
+
+[@genType]
+let unitArgWithoutConversion = () => "abc";
+
+[@genType]
+let unitArgWithoutConversionU = (.) => "abc";
+
+type t =
+  | A
+  | B;
+
+[@genType]
+let unitArgWithConversion = () => A;
+
+[@genType]
+let unitArgWithConversionU = (.) => A;

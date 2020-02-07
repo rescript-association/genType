@@ -90,7 +90,7 @@ export type twice<a> = [a, a];
 
 export type gadt = "F";
 
-export type objectWithCallback = {| +y?: {| +z?: (void) => number |}, +x?: (void) => number |};
+export type objectWithCallback = {| +y?: {| +z?: () => number |}, +x?: () => number |};
 
 export type ocaml_array<a> = Array<a>;
 

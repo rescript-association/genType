@@ -8,7 +8,7 @@ const CommonBS = require('./Common.bs');
 // tslint:disable-next-line:interface-over-type-literal
 export type t = { readonly lib: string };
 
-export const foo: (param:void) => t = function (Arg1: any) {
-  const result = CommonBS.foo(Arg1);
+export const foo: () => t = function () {
+  const result = CommonBS.foo();
   return {lib:result[0]}
 };

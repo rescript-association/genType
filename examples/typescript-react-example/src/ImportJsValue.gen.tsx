@@ -39,10 +39,10 @@ export const areaTypeChecked: (_1:point) => number = areaNotChecked;
 export const area: unknown = areaTypeChecked as (_1:point) => number;
 
 // In case of type error, check the type of 'returnMixedArray' in 'ImportJsValue.re' and './MyMath'.
-export const returnMixedArrayTypeChecked: (_1:void) => numberOrString[] = returnMixedArrayNotChecked;
+export const returnMixedArrayTypeChecked: () => numberOrString[] = returnMixedArrayNotChecked;
 
 // Export 'returnMixedArray' early to allow circular import from the '.bs.js' file.
-export const returnMixedArray: unknown = returnMixedArrayTypeChecked as (_1:void) => numberOrString[];
+export const returnMixedArray: unknown = returnMixedArrayTypeChecked as () => numberOrString[];
 
 // In case of type error, check the type of 'useColor' in 'ImportJsValue.re' and './MyMath'.
 export const useColorTypeChecked: (_1:color) => number = useColorNotChecked;
