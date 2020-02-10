@@ -156,8 +156,7 @@ function tokenToString(token) {
 }
 
 function next(p) {
-  var match = Random.bool(/* () */0);
-  p.token = match ? /* Eof */1 : /* Int */[Random.$$int(1000)];
+  p.token = Random.bool(/* () */0) ? /* Eof */1 : /* Int */[Random.$$int(1000)];
   p.position = {
     lnum: Random.$$int(1000),
     cnum: Random.$$int(80)
