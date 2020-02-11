@@ -1,278 +1,371 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/TestCyberTruck.cmt
   
 Function Table:
-    justReturn: _
+  justReturn: _
   
 Termination analysis for "justReturn"
-  TestCyberTruck.re:24:21 termination analysis: "justReturn" returns NoProgress with trace _
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 24, characters 21-29:
+termination analysis: "justReturn" returns NoProgress with trace _
   
 Function Table:
-    alwaysLoop: alwaysLoop
+  alwaysLoop: alwaysLoop
   
 Termination analysis for "alwaysLoop"
-  TestCyberTruck.re:27:27 termination error: possible infinite loop when calling "alwaysLoop"
-    CallStack:
-    1 at alwaysLoop (TestCyberTruck.re:27:21)
-  TestCyberTruck.re:27:21 termination analysis: "alwaysLoop" returns NoProgress with trace alwaysLoop:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 27, characters 27-39:
+Error Termination: possible infinite loop when calling "alwaysLoop"
+  CallStack:
+  1 at alwaysLoop (TestCyberTruck.re:27:21)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 27, characters 21-39:
+termination analysis: "alwaysLoop" returns NoProgress with trace alwaysLoop:NoProgress
   
 Function Table:
-    alwaysProgress: +progress; alwaysProgress
+  alwaysProgress: +progress; alwaysProgress
   
 Termination analysis for "alwaysProgress"
-  TestCyberTruck.re:30:25 termination analysis: "alwaysProgress" returns Progress with trace progress:Progress; alwaysProgress:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 30, characters 25-84:
+termination analysis: "alwaysProgress" returns Progress with trace progress:Progress; alwaysProgress:Progress
   
 Function Table:
-    alwaysProgressWrongOrder: alwaysProgressWrongOrder; +progress
+  alwaysProgressWrongOrder: alwaysProgressWrongOrder; +progress
   
 Termination analysis for "alwaysProgressWrongOrder"
-  TestCyberTruck.re:38:2 termination error: possible infinite loop when calling "alwaysProgressWrongOrder"
-    CallStack:
-    1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
-  TestCyberTruck.re:37:35 termination analysis: "alwaysProgressWrongOrder" returns Progress with trace alwaysProgressWrongOrder:NoProgress; progress:Progress
-  TestCyberTruck.re:45:14 hygiene error: "doNotAlias" can only be called directly, or passed as labeled argument.
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 38, characters 2-28:
+Error Termination: possible infinite loop when calling "alwaysProgressWrongOrder"
+  CallStack:
+  1 at alwaysProgressWrongOrder (TestCyberTruck.re:37:35)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 37, characters 35-114:
+termination analysis: "alwaysProgressWrongOrder" returns Progress with trace alwaysProgressWrongOrder:NoProgress; progress:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 45, characters 14-24:
+Error hygiene: "doNotAlias" can only be called directly, or passed as labeled argument.
   
 Function Table:
-    doNotAlias: _
+  doNotAlias: _
   
 Termination analysis for "doNotAlias"
-  TestCyberTruck.re:43:21 termination analysis: "doNotAlias" returns NoProgress with trace _
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 43, characters 21-107:
+termination analysis: "doNotAlias" returns NoProgress with trace _
   
 Function Table:
-    progressOnBothBranches: [+progress || +progress2]; progressOnBothBranches
+  progressOnBothBranches: [+progress || +progress2]; progressOnBothBranches
   
 Termination analysis for "progressOnBothBranches"
-  TestCyberTruck.re:51:33 termination analysis: "progressOnBothBranches" returns Progress with trace [progress:Progress || progress2:Progress]; progressOnBothBranches:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 51, characters 33-134:
+termination analysis: "progressOnBothBranches" returns Progress with trace [progress:Progress || progress2:Progress]; progressOnBothBranches:Progress
   
 Function Table:
-    progressOnOneBranch: [+progress || _]; progressOnOneBranch
+  progressOnOneBranch: [+progress || _]; progressOnOneBranch
   
 Termination analysis for "progressOnOneBranch"
-  TestCyberTruck.re:66:2 termination error: possible infinite loop when calling "progressOnOneBranch"
-    CallStack:
-    1 at progressOnOneBranch (TestCyberTruck.re:62:30)
-  TestCyberTruck.re:62:30 termination analysis: "progressOnOneBranch" returns NoProgress with trace [progress:Progress || _]; progressOnOneBranch:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 66, characters 2-25:
+Error Termination: possible infinite loop when calling "progressOnOneBranch"
+  CallStack:
+  1 at progressOnOneBranch (TestCyberTruck.re:62:30)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 62, characters 30-100:
+termination analysis: "progressOnOneBranch" returns NoProgress with trace [progress:Progress || _]; progressOnOneBranch:NoProgress
   TestCyberTruck.re:78:38 termination analysis: "callParseFunction" is parametric ~parseFunction=testParametricFunction
   
 Function Table:
-    callParseFunction<parseFunction>: parseFunction
-    testParametricFunction: [+progress || _]; testParametricFunction2
-    testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
+  callParseFunction<parseFunction>: parseFunction
+  testParametricFunction: [+progress || _]; testParametricFunction2
+  testParametricFunction2: callParseFunction<parseFunction:testParametricFunction>
   
 Termination analysis for "testParametricFunction"
-  TestCyberTruck.re:75:2 termination analysis: cache miss for "testParametricFunction2"
-  TestCyberTruck.re:77:35 termination analysis: cache miss for "callParseFunction<parseFunction:testParametricFunction>"
-  TestCyberTruck.re:80:47 termination error: possible infinite loop when calling "parseFunction" which is "testParametricFunction"
-    CallStack:
-    3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:77:35)
-    2 at testParametricFunction2 (TestCyberTruck.re:75:2)
-    1 at testParametricFunction (TestCyberTruck.re:71:33)
-  TestCyberTruck.re:77:35 termination analysis: "callParseFunction<parseFunction:testParametricFunction>" returns NoProgress with trace testParametricFunction:NoProgress
-  TestCyberTruck.re:75:2 termination analysis: "testParametricFunction2" returns NoProgress with trace callParseFunction<parseFunction:testParametricFunction>:NoProgress
-  TestCyberTruck.re:71:33 termination analysis: "testParametricFunction" returns NoProgress with trace [progress:Progress || _]; testParametricFunction2:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 75, characters 2-29:
+termination analysis: cache miss for "testParametricFunction2"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 77, characters 35-101:
+termination analysis: cache miss for "callParseFunction<parseFunction:testParametricFunction>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 80, characters 47-63:
+Error Termination: possible infinite loop when calling "parseFunction" which is "testParametricFunction"
+  CallStack:
+  3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re:77:35)
+  2 at testParametricFunction2 (TestCyberTruck.re:75:2)
+  1 at testParametricFunction (TestCyberTruck.re:71:33)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 77, characters 35-101:
+termination analysis: "callParseFunction<parseFunction:testParametricFunction>" returns NoProgress with trace testParametricFunction:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 75, characters 2-29:
+termination analysis: "testParametricFunction2" returns NoProgress with trace callParseFunction<parseFunction:testParametricFunction>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 71, characters 33-107:
+termination analysis: "testParametricFunction" returns NoProgress with trace [progress:Progress || _]; testParametricFunction2:NoProgress
   
 Function Table:
-    doNothing: _
-    testCacheHit: [doNothing; doNothing; +Progress.Nested.f || _]; testCacheHit
+  doNothing: _
+  testCacheHit: [doNothing; doNothing; +Progress.Nested.f || _]; testCacheHit
   
 Termination analysis for "testCacheHit"
-  TestCyberTruck.re:85:4 termination analysis: cache miss for "doNothing"
-  TestCyberTruck.re:85:4 termination analysis: "doNothing" returns NoProgress with trace _
-  TestCyberTruck.re:86:4 termination analysis: cache hit for "doNothing"
-  TestCyberTruck.re:89:2 termination error: possible infinite loop when calling "testCacheHit"
-    CallStack:
-    1 at testCacheHit (TestCyberTruck.re:83:23)
-  TestCyberTruck.re:83:23 termination analysis: "testCacheHit" returns NoProgress with trace [doNothing:NoProgress; doNothing:NoProgress; Progress.Nested.f:Progress || _]; testCacheHit:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 85, characters 4-16:
+termination analysis: cache miss for "doNothing"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 85, characters 4-16:
+termination analysis: "doNothing" returns NoProgress with trace _
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 86, characters 4-16:
+termination analysis: cache hit for "doNothing"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 89, characters 2-18:
+Error Termination: possible infinite loop when calling "testCacheHit"
+  CallStack:
+  1 at testCacheHit (TestCyberTruck.re:83:23)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 83, characters 23-169:
+termination analysis: "testCacheHit" returns NoProgress with trace [doNothing:NoProgress; doNothing:NoProgress; Progress.Nested.f:Progress || _]; testCacheHit:NoProgress
   
 Function Table:
-    evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight}; _
+  evalOrderIsNotLeftToRight: {+progress, evalOrderIsNotLeftToRight}; _
   
 Termination analysis for "evalOrderIsNotLeftToRight"
-  TestCyberTruck.re:97:30 termination error: possible infinite loop when calling "evalOrderIsNotLeftToRight"
-    CallStack:
-    1 at evalOrderIsNotLeftToRight (TestCyberTruck.re:95:36)
-  TestCyberTruck.re:95:36 termination analysis: "evalOrderIsNotLeftToRight" returns Progress with trace progress:Progress; evalOrderIsNotLeftToRight:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 97, characters 30-58:
+Error Termination: possible infinite loop when calling "evalOrderIsNotLeftToRight"
+  CallStack:
+  1 at evalOrderIsNotLeftToRight (TestCyberTruck.re:95:36)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 95, characters 36-145:
+termination analysis: "evalOrderIsNotLeftToRight" returns Progress with trace progress:Progress; evalOrderIsNotLeftToRight:NoProgress
   
 Function Table:
-    evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress}; _
+  evalOrderIsNotRightToLeft: {evalOrderIsNotRightToLeft, +progress}; _
   
 Termination analysis for "evalOrderIsNotRightToLeft"
-  TestCyberTruck.re:104:18 termination error: possible infinite loop when calling "evalOrderIsNotRightToLeft"
-    CallStack:
-    1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
-  TestCyberTruck.re:102:36 termination analysis: "evalOrderIsNotRightToLeft" returns Progress with trace evalOrderIsNotRightToLeft:NoProgress; progress:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 104, characters 18-46:
+Error Termination: possible infinite loop when calling "evalOrderIsNotRightToLeft"
+  CallStack:
+  1 at evalOrderIsNotRightToLeft (TestCyberTruck.re:102:36)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 102, characters 36-145:
+termination analysis: "evalOrderIsNotRightToLeft" returns Progress with trace evalOrderIsNotRightToLeft:NoProgress; progress:Progress
   
 Function Table:
-    butFirstArgumentIsAlwaysEvaluated: +progress; butFirstArgumentIsAlwaysEvaluated
+  butFirstArgumentIsAlwaysEvaluated: +progress; butFirstArgumentIsAlwaysEvaluated
   
 Termination analysis for "butFirstArgumentIsAlwaysEvaluated"
-  TestCyberTruck.re:109:44 termination analysis: "butFirstArgumentIsAlwaysEvaluated" returns Progress with trace progress:Progress; butFirstArgumentIsAlwaysEvaluated:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 109, characters 44-167:
+termination analysis: "butFirstArgumentIsAlwaysEvaluated" returns Progress with trace progress:Progress; butFirstArgumentIsAlwaysEvaluated:Progress
   
 Function Table:
-    butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
+  butSecondArgumentIsAlwaysEvaluated: +progress; butSecondArgumentIsAlwaysEvaluated
   
 Termination analysis for "butSecondArgumentIsAlwaysEvaluated"
-  TestCyberTruck.re:117:45 termination analysis: "butSecondArgumentIsAlwaysEvaluated" returns Progress with trace progress:Progress; butSecondArgumentIsAlwaysEvaluated:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 117, characters 45-169:
+termination analysis: "butSecondArgumentIsAlwaysEvaluated" returns Progress with trace progress:Progress; butSecondArgumentIsAlwaysEvaluated:Progress
   TestCyberTruck.re:199:44 termination analysis: extend Function Table with "parseInt" (TestCyberTruck.re:186:4) as it calls a progress function
   TestCyberTruck.re:174:16 termination analysis: extend Function Table with "parseList" as parametric ~f=parseInt
   TestCyberTruck.re:226:10 termination analysis: adding recursive definition "parseListIntTailRecursive$loop"
   TestCyberTruck.re:175:10 termination analysis: adding recursive definition "parseList$loop"
   
 Function Table:
-    parseExpression: [_ || _]; [+Parser.next; parseExpression; parseExpression; _ || parseInt]
-    parseInt: [_ || _]; +Parser.next; _
-    parseList<f>: parseList$loop<f:f>
-    parseList$loop<f>: [_ || f; parseList$loop<f:f>; _]
-    parseListExpression: parseList<f:parseExpression>
-    parseListExpression2: parseExpression; parseList<f:parseExpression>
-    parseListInt: parseList<f:parseInt>
-    parseListIntTailRecursive: parseListIntTailRecursive$loop
-    parseListIntTailRecursive$loop: [_ || parseInt; parseListIntTailRecursive$loop]
-    parseListListInt: parseList<f:parseListInt>
+  parseExpression: [_ || _]; [+Parser.next; parseExpression; parseExpression; _ || parseInt]
+  parseInt: [_ || _]; +Parser.next; _
+  parseList<f>: parseList$loop<f:f>
+  parseList$loop<f>: [_ || f; parseList$loop<f:f>; _]
+  parseListExpression: parseList<f:parseExpression>
+  parseListExpression2: parseExpression; parseList<f:parseExpression>
+  parseListInt: parseList<f:parseInt>
+  parseListIntTailRecursive: parseListIntTailRecursive$loop
+  parseListIntTailRecursive$loop: [_ || parseInt; parseListIntTailRecursive$loop]
+  parseListListInt: parseList<f:parseListInt>
   
 Termination analysis for "parseListInt"
-  TestCyberTruck.re:199:28 termination analysis: cache miss for "parseList<f:parseInt>"
-  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseInt>"
-  TestCyberTruck.re:179:17 termination analysis: cache miss for "parseInt"
-  TestCyberTruck.re:179:17 termination analysis: "parseInt" returns Progress with trace [_ || _]; Parser.next:Progress
-  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseInt>" returns NoProgress with trace [_ || parseInt:Progress; parseList$loop<f:parseInt>:Progress]
-  TestCyberTruck.re:199:28 termination analysis: "parseList<f:parseInt>" returns NoProgress with trace parseList$loop<f:parseInt>:NoProgress
-  TestCyberTruck.re:199:23 termination analysis: "parseListInt" returns NoProgress with trace parseList<f:parseInt>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 199, characters 28-53:
+termination analysis: cache miss for "parseList<f:parseInt>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 183, characters 2-10:
+termination analysis: cache miss for "parseList$loop<f:parseInt>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 179, characters 17-21:
+termination analysis: cache miss for "parseInt"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 179, characters 17-21:
+termination analysis: "parseInt" returns Progress with trace [_ || _]; Parser.next:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 183, characters 2-10:
+termination analysis: "parseList$loop<f:parseInt>" returns NoProgress with trace [_ || parseInt:Progress; parseList$loop<f:parseInt>:Progress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 199, characters 28-53:
+termination analysis: "parseList<f:parseInt>" returns NoProgress with trace parseList$loop<f:parseInt>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 199, characters 23-53:
+termination analysis: "parseListInt" returns NoProgress with trace parseList<f:parseInt>:NoProgress
   
 Termination analysis for "parseListListInt"
-  TestCyberTruck.re:202:28 termination analysis: cache miss for "parseList<f:parseListInt>"
-  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseListInt>"
-  TestCyberTruck.re:179:17 termination analysis: cache hit for "parseListInt"
-  TestCyberTruck.re:180:14 termination error: possible infinite loop when calling "parseList$loop<f:f>" which is "parseList$loop<f:parseListInt>"
-    CallStack:
-    3 at parseList$loop<f:parseListInt> (TestCyberTruck.re:183:2)
-    2 at parseList<f:parseListInt> (TestCyberTruck.re:202:28)
-    1 at parseListListInt (TestCyberTruck.re:202:23)
-  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseListInt>" returns NoProgress with trace [_ || parseListInt:NoProgress; parseList$loop<f:parseListInt>:NoProgress]
-  TestCyberTruck.re:202:28 termination analysis: "parseList<f:parseListInt>" returns NoProgress with trace parseList$loop<f:parseListInt>:NoProgress
-  TestCyberTruck.re:202:23 termination analysis: "parseListListInt" returns NoProgress with trace parseList<f:parseListInt>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 202, characters 28-57:
+termination analysis: cache miss for "parseList<f:parseListInt>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 183, characters 2-10:
+termination analysis: cache miss for "parseList$loop<f:parseListInt>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 179, characters 17-21:
+termination analysis: cache hit for "parseListInt"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 180, characters 14-21:
+Error Termination: possible infinite loop when calling "parseList$loop<f:f>" which is "parseList$loop<f:parseListInt>"
+  CallStack:
+  3 at parseList$loop<f:parseListInt> (TestCyberTruck.re:183:2)
+  2 at parseList<f:parseListInt> (TestCyberTruck.re:202:28)
+  1 at parseListListInt (TestCyberTruck.re:202:23)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 183, characters 2-10:
+termination analysis: "parseList$loop<f:parseListInt>" returns NoProgress with trace [_ || parseListInt:NoProgress; parseList$loop<f:parseListInt>:NoProgress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 202, characters 28-57:
+termination analysis: "parseList<f:parseListInt>" returns NoProgress with trace parseList$loop<f:parseListInt>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 202, characters 23-57:
+termination analysis: "parseListListInt" returns NoProgress with trace parseList<f:parseListInt>:NoProgress
   
 Termination analysis for "parseExpression"
-  TestCyberTruck.re:214:18 termination analysis: cache hit for "parseInt"
-  TestCyberTruck.re:205:22 termination analysis: "parseExpression" returns Progress with trace [_ || _]; [Parser.next:Progress; parseExpression:Progress; parseExpression:Progress || parseInt:Progress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 214, characters 18-29:
+termination analysis: cache hit for "parseInt"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 205, characters 22-286:
+termination analysis: "parseExpression" returns Progress with trace [_ || _]; [Parser.next:Progress; parseExpression:Progress; parseExpression:Progress || parseInt:Progress]
   
 Termination analysis for "parseListExpression"
-  TestCyberTruck.re:219:31 termination analysis: cache miss for "parseList<f:parseExpression>"
-  TestCyberTruck.re:183:2 termination analysis: cache miss for "parseList$loop<f:parseExpression>"
-  TestCyberTruck.re:179:17 termination analysis: cache hit for "parseExpression"
-  TestCyberTruck.re:183:2 termination analysis: "parseList$loop<f:parseExpression>" returns NoProgress with trace [_ || parseExpression:Progress; parseList$loop<f:parseExpression>:Progress]
-  TestCyberTruck.re:219:31 termination analysis: "parseList<f:parseExpression>" returns NoProgress with trace parseList$loop<f:parseExpression>:NoProgress
-  TestCyberTruck.re:219:26 termination analysis: "parseListExpression" returns NoProgress with trace parseList<f:parseExpression>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 219, characters 31-63:
+termination analysis: cache miss for "parseList<f:parseExpression>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 183, characters 2-10:
+termination analysis: cache miss for "parseList$loop<f:parseExpression>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 179, characters 17-21:
+termination analysis: cache hit for "parseExpression"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 183, characters 2-10:
+termination analysis: "parseList$loop<f:parseExpression>" returns NoProgress with trace [_ || parseExpression:Progress; parseList$loop<f:parseExpression>:Progress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 219, characters 31-63:
+termination analysis: "parseList<f:parseExpression>" returns NoProgress with trace parseList$loop<f:parseExpression>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 219, characters 26-63:
+termination analysis: "parseListExpression" returns NoProgress with trace parseList<f:parseExpression>:NoProgress
   
 Termination analysis for "parseListExpression2"
-  TestCyberTruck.re:222:48 termination analysis: cache hit for "parseExpression"
-  TestCyberTruck.re:222:32 termination analysis: cache hit for "parseList<f:parseExpression>"
-  TestCyberTruck.re:222:27 termination analysis: "parseListExpression2" returns Progress with trace parseExpression:Progress; parseList<f:parseExpression>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 222, characters 48-69:
+termination analysis: cache hit for "parseExpression"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 222, characters 32-70:
+termination analysis: cache hit for "parseList<f:parseExpression>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 222, characters 27-70:
+termination analysis: "parseListExpression2" returns Progress with trace parseExpression:Progress; parseList<f:parseExpression>:NoProgress
   
 Termination analysis for "parseListIntTailRecursive"
-  TestCyberTruck.re:232:2 termination analysis: cache miss for "parseListIntTailRecursive$loop"
-  TestCyberTruck.re:230:15 termination analysis: cache hit for "parseInt"
-  TestCyberTruck.re:232:2 termination analysis: "parseListIntTailRecursive$loop" returns NoProgress with trace [_ || parseInt:Progress; parseListIntTailRecursive$loop:Progress]
-  TestCyberTruck.re:225:32 termination analysis: "parseListIntTailRecursive" returns NoProgress with trace parseListIntTailRecursive$loop:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 232, characters 2-14:
+termination analysis: cache miss for "parseListIntTailRecursive$loop"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 230, characters 15-26:
+termination analysis: cache hit for "parseInt"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 232, characters 2-14:
+termination analysis: "parseListIntTailRecursive$loop" returns NoProgress with trace [_ || parseInt:Progress; parseListIntTailRecursive$loop:Progress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 225, characters 32-198:
+termination analysis: "parseListIntTailRecursive" returns NoProgress with trace parseListIntTailRecursive$loop:NoProgress
   
 Function Table:
-    loopAfterProgress: loopAfterProgress
-    testLoopAfterProgress: +progress; loopAfterProgress
+  loopAfterProgress: loopAfterProgress
+  testLoopAfterProgress: +progress; loopAfterProgress
   
 Termination analysis for "testLoopAfterProgress"
-  TestCyberTruck.re:238:2 termination analysis: cache miss for "loopAfterProgress"
-  TestCyberTruck.re:240:30 termination error: possible infinite loop when calling "loopAfterProgress"
-    CallStack:
-    1 at loopAfterProgress (TestCyberTruck.re:238:2)
-  TestCyberTruck.re:238:2 termination analysis: "loopAfterProgress" returns NoProgress with trace loopAfterProgress:NoProgress
-  TestCyberTruck.re:236:32 termination analysis: "testLoopAfterProgress" returns Progress with trace progress:Progress; loopAfterProgress:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 238, characters 2-22:
+termination analysis: cache miss for "loopAfterProgress"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 240, characters 30-49:
+Error Termination: possible infinite loop when calling "loopAfterProgress"
+  CallStack:
+  1 at loopAfterProgress (TestCyberTruck.re:238:2)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 238, characters 2-22:
+termination analysis: "loopAfterProgress" returns NoProgress with trace loopAfterProgress:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 236, characters 32-78:
+termination analysis: "testLoopAfterProgress" returns Progress with trace progress:Progress; loopAfterProgress:NoProgress
   
 Function Table:
-    counterCompiled: +initState; [_ || counterCompiled; _]; _
-    onClick1: [_ || counterCompiled]
+  counterCompiled: +initState; [_ || counterCompiled; _]; _
+  onClick1: [_ || counterCompiled]
   
 Termination analysis for "counterCompiled"
-  TestCyberTruck.re:266:28 termination analysis: "counterCompiled" returns Progress with trace initState:Progress; [_ || counterCompiled:Progress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 266, characters 28-199:
+termination analysis: "counterCompiled" returns Progress with trace initState:Progress; [_ || counterCompiled:Progress]
   
 Function Table:
-    countRendersCompiled: [_ || countRendersCompiled; _]; _
+  countRendersCompiled: [_ || countRendersCompiled; _]; _
   
 Termination analysis for "countRendersCompiled"
-  TestCyberTruck.re:292:31 termination error: possible infinite loop when calling "countRendersCompiled"
-    CallStack:
-    1 at countRendersCompiled (TestCyberTruck.re:289:33)
-  TestCyberTruck.re:289:33 termination analysis: "countRendersCompiled" returns NoProgress with trace [_ || countRendersCompiled:NoProgress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 292, characters 31-61:
+Error Termination: possible infinite loop when calling "countRendersCompiled"
+  CallStack:
+  1 at countRendersCompiled (TestCyberTruck.re:289:33)
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 289, characters 33-248:
+termination analysis: "countRendersCompiled" returns NoProgress with trace [_ || countRendersCompiled:NoProgress]
   TestCyberTruck.re:325:48 termination analysis: extend Function Table with "parseIntO" (TestCyberTruck.re:313:6) as it calls a progress function
   TestCyberTruck.re:325:31 termination analysis: extend Function Table with "parseListO" (TestCyberTruck.re:299:6) as it calls a progress function
   TestCyberTruck.re:299:19 termination analysis: extend Function Table with "parseListO" as parametric ~f=parseIntO
   TestCyberTruck.re:300:12 termination analysis: adding recursive definition "parseListO$loop"
   
 Function Table:
-    alwaysReturnNone: [+Parser.next; alwaysReturnNone || None]
-    parseIntO: [+Parser.next; Some || None]
-    parseIntOWrapper: parseIntO
-    parseListIntO: parseListO<f:parseIntO>
-    parseListO<f>: parseListO$loop<f:f>
-    parseListO$loop<f>: [+Parser.next; _ || switch f {some: parseListO$loop<f:f>, none: _}]
-    testAlwaysReturnNone: alwaysReturnNone
-    thisMakesNoProgress: None; [_ || +Parser.next; Some]
+  alwaysReturnNone: [+Parser.next; alwaysReturnNone || None]
+  parseIntO: [+Parser.next; Some || None]
+  parseIntOWrapper: parseIntO
+  parseListIntO: parseListO<f:parseIntO>
+  parseListO<f>: parseListO$loop<f:f>
+  parseListO$loop<f>: [+Parser.next; _ || switch f {some: parseListO$loop<f:f>, none: _}]
+  testAlwaysReturnNone: alwaysReturnNone
+  thisMakesNoProgress: None; [_ || +Parser.next; Some]
   
 Termination analysis for "parseListIntO"
-  TestCyberTruck.re:325:31 termination analysis: cache miss for "parseListO<f:parseIntO>"
-  TestCyberTruck.re:310:4 termination analysis: cache miss for "parseListO$loop<f:parseIntO>"
-  TestCyberTruck.re:305:15 termination analysis: cache miss for "parseIntO"
-  TestCyberTruck.re:305:15 termination analysis: "parseIntO" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
-  TestCyberTruck.re:310:4 termination analysis: "parseListO$loop<f:parseIntO>" returns NoProgress with trace [Parser.next:Progress || parseIntO:NoProgress; [parseListO$loop<f:parseIntO>:Progress || _]]
-  TestCyberTruck.re:325:31 termination analysis: "parseListO<f:parseIntO>" returns NoProgress with trace parseListO$loop<f:parseIntO>:NoProgress
-  TestCyberTruck.re:325:26 termination analysis: "parseListIntO" returns NoProgress with trace parseListO<f:parseIntO>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 325, characters 31-58:
+termination analysis: cache miss for "parseListO<f:parseIntO>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 310, characters 4-13:
+termination analysis: cache miss for "parseListO$loop<f:parseIntO>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 305, characters 15-21:
+termination analysis: cache miss for "parseIntO"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 305, characters 15-21:
+termination analysis: "parseIntO" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 310, characters 4-13:
+termination analysis: "parseListO$loop<f:parseIntO>" returns NoProgress with trace [Parser.next:Progress || parseIntO:NoProgress; [parseListO$loop<f:parseIntO>:Progress || _]]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 325, characters 31-58:
+termination analysis: "parseListO<f:parseIntO>" returns NoProgress with trace parseListO$loop<f:parseIntO>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 325, characters 26-58:
+termination analysis: "parseListIntO" returns NoProgress with trace parseListO<f:parseIntO>:NoProgress
   
 Termination analysis for "testAlwaysReturnNone"
-  TestCyberTruck.re:336:34 termination analysis: cache miss for "alwaysReturnNone"
-  TestCyberTruck.re:336:34 termination analysis: "alwaysReturnNone" returns {none: NoProgress} with trace [Parser.next:Progress; alwaysReturnNone:Progress || None]
-  TestCyberTruck.re:336:29 termination analysis: "testAlwaysReturnNone" returns {none: NoProgress} with trace alwaysReturnNone:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 336, characters 34-53:
+termination analysis: cache miss for "alwaysReturnNone"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 336, characters 34-53:
+termination analysis: "alwaysReturnNone" returns {none: NoProgress} with trace [Parser.next:Progress; alwaysReturnNone:Progress || None]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 336, characters 29-53:
+termination analysis: "testAlwaysReturnNone" returns {none: NoProgress} with trace alwaysReturnNone:NoProgress
   
 Termination analysis for "parseIntOWrapper"
-  TestCyberTruck.re:339:30 termination analysis: cache hit for "parseIntO"
-  TestCyberTruck.re:339:25 termination analysis: "parseIntOWrapper" returns {some: Progress, none: NoProgress} with trace parseIntO:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 339, characters 30-42:
+termination analysis: cache hit for "parseIntO"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 339, characters 25-42:
+termination analysis: "parseIntOWrapper" returns {some: Progress, none: NoProgress} with trace parseIntO:NoProgress
   
 Termination analysis for "thisMakesNoProgress"
-  TestCyberTruck.re:342:28 termination analysis: "thisMakesNoProgress" returns NoProgress with trace None; [_ || Parser.next:Progress; Some]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 342, characters 28-163:
+termination analysis: "thisMakesNoProgress" returns NoProgress with trace None; [_ || Parser.next:Progress; Some]
   TestCyberTruck.re:373:15 termination analysis: "gParam" is parametric ~g=g
   
 Function Table:
-    f: [g; _ || _ || +Parser.next; f]
-    g: +Parser.next; gParam<g:g>
-    gParam<g>: [g; _ || f]
+  f: [g; _ || _ || +Parser.next; f]
+  g: +Parser.next; gParam<g:g>
+  gParam<g>: [g; _ || f]
   
 Termination analysis for "f"
-  TestCyberTruck.re:357:16 termination analysis: cache miss for "g"
-  TestCyberTruck.re:373:4 termination analysis: cache miss for "gParam<g:g>"
-  TestCyberTruck.re:373:4 termination analysis: "gParam<g:g>" returns Progress with trace [g:Progress || f:Progress]
-  TestCyberTruck.re:357:16 termination analysis: "g" returns Progress with trace Parser.next:Progress; gParam<g:g>:Progress
-  TestCyberTruck.re:355:14 termination analysis: "f" returns NoProgress with trace [g:Progress || _ || Parser.next:Progress; f:Progress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 357, characters 16-20:
+termination analysis: cache miss for "g"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 373, characters 4-18:
+termination analysis: cache miss for "gParam<g:g>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 373, characters 4-18:
+termination analysis: "gParam<g:g>" returns Progress with trace [g:Progress || f:Progress]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 357, characters 16-20:
+termination analysis: "g" returns Progress with trace Parser.next:Progress; gParam<g:g>:Progress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 355, characters 14-144:
+termination analysis: "f" returns NoProgress with trace [g:Progress || _ || Parser.next:Progress; f:Progress]
   TestCyberTruck.re:441:45 termination analysis: "kleene" is parametric ~f=oneTwo
   TestCyberTruck.re:404:6 termination analysis: extend Function Table with "concat" as parametric ~f=one
   TestCyberTruck.re:404:6 termination analysis: extend Function Table with "concat" as parametric ~g=two
   
 Function Table:
-    concat<f, g>: switch f {some: switch g {some: Some, none: None}, none: None}
-    kleene<f>: switch f {some: kleene<f:f>, none: _}
-    one: [+Parser.next; Some || None]
-    oneTwo: concat<f:one,g:two>
-    oneTwoStar: kleene<f:oneTwo>
-    two: [+Parser.next; Some || None]
+  concat<f, g>: switch f {some: switch g {some: Some, none: None}, none: None}
+  kleene<f>: switch f {some: kleene<f:f>, none: _}
+  one: [+Parser.next; Some || None]
+  oneTwo: concat<f:one,g:two>
+  oneTwoStar: kleene<f:oneTwo>
+  two: [+Parser.next; Some || None]
   
 Termination analysis for "oneTwoStar"
-  TestCyberTruck.re:441:35 termination analysis: cache miss for "kleene<f:oneTwo>"
-  TestCyberTruck.re:416:11 termination analysis: cache miss for "oneTwo"
-  TestCyberTruck.re:438:46 termination analysis: cache miss for "concat<f:one,g:two>"
-  TestCyberTruck.re:405:11 termination analysis: cache miss for "one"
-  TestCyberTruck.re:405:11 termination analysis: "one" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
-  TestCyberTruck.re:408:13 termination analysis: cache miss for "two"
-  TestCyberTruck.re:408:13 termination analysis: "two" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
-  TestCyberTruck.re:438:46 termination analysis: "concat<f:one,g:two>" returns {some: Progress, none: NoProgress} with trace one:NoProgress; [two:NoProgress; [Some || None] || None]
-  TestCyberTruck.re:416:11 termination analysis: "oneTwo" returns {some: Progress, none: NoProgress} with trace concat<f:one,g:two>:NoProgress
-  TestCyberTruck.re:441:35 termination analysis: "kleene<f:oneTwo>" returns NoProgress with trace oneTwo:NoProgress; [kleene<f:oneTwo>:Progress || _]
-  TestCyberTruck.re:441:30 termination analysis: "oneTwoStar" returns NoProgress with trace kleene<f:oneTwo>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 441, characters 35-55:
+termination analysis: cache miss for "kleene<f:oneTwo>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 416, characters 11-17:
+termination analysis: cache miss for "oneTwo"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 438, characters 46-71:
+termination analysis: cache miss for "concat<f:one,g:two>"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 405, characters 11-17:
+termination analysis: cache miss for "one"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 405, characters 11-17:
+termination analysis: "one" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 408, characters 13-19:
+termination analysis: cache miss for "two"
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 408, characters 13-19:
+termination analysis: "two" returns {some: Progress, none: NoProgress} with trace [Parser.next:Progress; Some || None]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 438, characters 46-71:
+termination analysis: "concat<f:one,g:two>" returns {some: Progress, none: NoProgress} with trace one:NoProgress; [two:NoProgress; [Some || None] || None]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 416, characters 11-17:
+termination analysis: "oneTwo" returns {some: Progress, none: NoProgress} with trace concat<f:one,g:two>:NoProgress
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 441, characters 35-55:
+termination analysis: "kleene<f:oneTwo>" returns NoProgress with trace oneTwo:NoProgress; [kleene<f:oneTwo>:Progress || _]
+File "/Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re", line 441, characters 30-55:
+termination analysis: "oneTwoStar" returns NoProgress with trace kleene<f:oneTwo>:NoProgress
   
 Termination Analysis Stats
   Files:1

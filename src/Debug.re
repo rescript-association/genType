@@ -1,8 +1,3 @@
-type channel =
-  | Stdout
-  | Logfile;
-let channel = Stdout;
-
 /* log Add and Remove and file actions to see that the cmt hook is working */
 let basic = ref(false);
 let codeItems = ref(false);
