@@ -188,32 +188,22 @@ let logItem = x => {
   Printf.fprintf(stdout, x);
 };
 
-let logWarning = (x, ~loc, ~name) => {
+let logColor = (x, ~color, ~loc, ~name) => {
   Format.fprintf(
     Format.std_formatter,
     "\n%a:\n%s%s%s: ",
     Location.print_loc,
     loc,
-    Misc.Color.ansi_of_style_l([FG(Yellow)]),
+    Misc.Color.ansi_of_style_l([FG(color)]),
     name,
     Misc.Color.ansi_of_style_l([]),
   );
   Format.fprintf(Format.std_formatter, x);
 };
 
+let logWarning = (x, ~loc, ~name) => logColor(x, ~color=Yellow, ~loc, ~name);
 
-let logError = (x, ~loc, ~name) => {
-  Format.fprintf(
-    Format.std_formatter,
-    "\n%a:\n%sError %s%s: ",
-    Location.print_loc,
-    loc,
-    Misc.Color.ansi_of_style_l([FG(Red)]),
-    name,
-    Misc.Color.ansi_of_style_l([]),
-  );
-  Format.fprintf(Format.std_formatter, x);
-};
+let logError = (x, ~loc, ~name) => logColor(x, ~color=Red, ~loc, ~name);
 
 let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
   let fromJson = json => {
