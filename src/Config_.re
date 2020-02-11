@@ -181,12 +181,12 @@ let getLogFile = () =>
   | Some(f) => f
   };
 
+let log = x => Printf.fprintf(stdout, x);
+
 let logItem = x => {
   Printf.fprintf(stdout, "  ");
   Printf.fprintf(stdout, x);
 };
-
-Misc.Color.setup(Some(Never));
 
 let logWarning = (x, ~loc) => {
   Format.fprintf(Format.std_formatter, "%a:\n", Location.print_loc, loc);
