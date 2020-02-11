@@ -182,13 +182,15 @@ let getLogFile = () =>
   };
 
 let logItem = x => {
-  let outChannel =
-    switch (Debug.channel) {
-    | Stdout => stdout
-    | Logfile => getLogFile()
-    };
-  Printf.fprintf(outChannel, "  ");
-  Printf.fprintf(outChannel, x);
+  Printf.fprintf(stdout, "  ");
+  Printf.fprintf(stdout, x);
+};
+
+Misc.Color.setup(Some(Never));
+
+let logWarning = (x, ~loc) => {
+  Format.fprintf(Format.std_formatter, "%a:\n", Location.print_loc, loc);
+  Format.fprintf(Format.std_formatter, x);
 };
 
 let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {

@@ -50,6 +50,7 @@
 // Eval.run: (FT, Stack, f<args>, C, State) ---> State
 
 let logItem = GenTypeCommon.logItem;
+let logWarning = GenTypeCommon.logWarning;
 
 let posToString = DeadCommon.posToString;
 
@@ -186,81 +187,81 @@ module Stats = {
     nFunctions := nFunctions^ + numFunctions;
   };
 
-  let logLoop = (~explainCall, ~pos) => {
+  let logLoop = (~explainCall, ~loc) => {
     incr(nInfiniteLoops);
-    logItem(
-      "%s termination error: possible infinite loop when calling %s\n",
-      pos |> posToString,
+    logWarning(
+      ~loc,
+      "Error Termination: possible infinite loop when calling %s\n",
       explainCall,
     );
   };
 
-  let logCache = (~functionCall, ~hit, ~pos) => {
+  let logCache = (~functionCall, ~hit, ~loc) => {
     incr(nCacheChecks);
     if (hit) {
       incr(nCacheHits);
     };
     if (verbose) {
-      logItem(
-        "%s termination analysis: cache %s for \"%s\"\n",
-        pos |> posToString,
+      logWarning(
+        ~loc,
+        "termination analysis: cache %s for \"%s\"\n",
         hit ? "hit" : "miss",
         FunctionCall.toString(functionCall),
       );
     };
   };
 
-  let logResult = (~functionCall, ~pos, ~resString) =>
+  let logResult = (~functionCall, ~loc, ~resString) =>
     if (verbose) {
-      logItem(
-        "%s termination analysis: \"%s\" returns %s\n",
-        pos |> posToString,
+      logWarning(
+        ~loc,
+        "termination analysis: \"%s\" returns %s\n",
         FunctionCall.toString(functionCall),
         resString,
       );
     };
 
-  let logHygieneParametric = (~functionName, ~pos) => {
+  let logHygieneParametric = (~functionName, ~loc) => {
     incr(nHygieneErrors);
-    logItem(
-      "%s hygiene error: \"%s\" cannot be analyzed directly as it is parametric\n",
-      pos |> posToString,
+    logWarning(
+      ~loc,
+      "Error Hygiene: \"%s\" cannot be analyzed directly as it is parametric\n",
       functionName,
     );
   };
 
-  let logHygieneOnlyCallDirectly = (~path, ~pos) => {
+  let logHygieneOnlyCallDirectly = (~path, ~loc) => {
     incr(nHygieneErrors);
-    logItem(
-      "%s hygiene error: \"%s\" can only be called directly, or passed as labeled argument.\n",
-      pos |> posToString,
+    logWarning(
+      ~loc,
+      "Error hygiene: \"%s\" can only be called directly, or passed as labeled argument.\n",
       Path.name(path),
     );
   };
 
-  let logHygieneMustHaveNamedArgument = (~label, ~pos) => {
+  let logHygieneMustHaveNamedArgument = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logItem(
-      "%s hygiene error: call must have named argument \"%s\"\n",
-      pos |> posToString,
+    logWarning(
+      ~loc,
+      "Error hygiene: call must have named argument \"%s\"\n",
       label,
     );
   };
 
-  let logHygieneNamedArgValue = (~label, ~pos) => {
+  let logHygieneNamedArgValue = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logItem(
-      "%s hygiene error: named argument \"%s\" must be passed a recursive function\n",
-      pos |> posToString,
+    logWarning(
+      ~loc,
+      "Error hygiene: named argument \"%s\" must be passed a recursive function\n",
       label,
     );
   };
 
-  let logHygieneNoNestedLetRec = (~pos) => {
+  let logHygieneNoNestedLetRec = (~loc) => {
     incr(nHygieneErrors);
-    logItem(
-      "%s hygiene error: nested multiple let rec not supported yet\n",
-      pos |> posToString,
+    logWarning(
+      ~loc,
+      "Error hygiene: nested multiple let rec not supported yet\n",
     );
   };
 };
@@ -485,14 +486,14 @@ module Command = {
   type retOption = Trace.retOption;
 
   type t =
-    | Call(Call.t, Lexing.position)
+    | Call(Call.t, Location.t)
     | ConstrOption(retOption)
     | Nondet(list(t))
     | Nothing
     | Sequence(list(t))
     | SwitchOption({
         functionCall: FunctionCall.t,
-        pos: Lexing.position,
+        loc: Location.t,
         some: t,
         none: t,
       })
@@ -612,7 +613,7 @@ module FunctionTable = {
     definitions
     |> List.iter(((functionName, kind, body)) =>
          logItem(
-           "  %s%s: %s\n",
+           "%s%s: %s\n",
            functionName,
            Kind.toString(kind),
            switch (body) {
@@ -698,8 +699,7 @@ module ExtendFunctionTable = {
   let extractLabelledArgument =
       (~kindOpt=None, argOpt: option(Typedtree.expression)) =>
     switch (argOpt) {
-    | Some({exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)}) =>
-      Some((path, pos))
+    | Some({exp_desc: Texp_ident(path, {loc}, _)}) => Some((path, loc))
     | Some({
         exp_desc:
           Texp_let(
@@ -707,22 +707,16 @@ module ExtendFunctionTable = {
             [
               {
                 vb_pat: {pat_desc: Tpat_var(_, _)},
-                vb_expr: {
-                  exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _),
-                },
+                vb_expr: {exp_desc: Texp_ident(path, {loc}, _)},
                 vb_loc: {loc_ghost: true},
               },
             ],
             _,
           ),
       }) =>
-      Some((path, pos))
+      Some((path, loc))
     | Some({
-        exp_desc:
-          Texp_apply(
-            {exp_desc: Texp_ident(path, {loc: {loc_start: pos}}, _)},
-            args,
-          ),
+        exp_desc: Texp_apply({exp_desc: Texp_ident(path, {loc}, _)}, args),
       })
         when kindOpt != None =>
       let checkArg = ((argLabel: Asttypes.arg_label, argOpt)) => {
@@ -733,7 +727,7 @@ module ExtendFunctionTable = {
         };
       };
       if (args |> List.for_all(checkArg)) {
-        Some((path, pos));
+        Some((path, loc));
       } else {
         None;
       };
@@ -774,7 +768,7 @@ module ExtendFunctionTable = {
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) =>
              switch (argLabel, argOpt |> extractLabelledArgument) {
-             | (Labelled(label), Some((path, pos)))
+             | (Labelled(label), Some((path, loc)))
                  when
                    path |> FunctionTable.isInFunctionInTable(~functionTable) =>
                functionTable
@@ -782,7 +776,7 @@ module ExtendFunctionTable = {
                if (verbose) {
                  logItem(
                    "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
-                   pos |> posToString,
+                   loc.loc_start |> posToString,
                    functionName,
                    label,
                    Path.name(path),
@@ -817,22 +811,22 @@ module CheckExpressionWellFormed = {
   let traverseExpr = (~functionTable, ~valueBindingsTable) => {
     let super = Tast_mapper.default;
 
-    let checkIdent = (~path, ~pos) =>
+    let checkIdent = (~path, ~loc) =>
       if (path |> FunctionTable.isInFunctionInTable(~functionTable)) {
-        Stats.logHygieneOnlyCallDirectly(~path, ~pos);
+        Stats.logHygieneOnlyCallDirectly(~path, ~loc);
       };
 
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) =>
       switch (e.exp_desc) {
-      | Texp_ident(path, {loc: {loc_start: pos}}, _) =>
-        checkIdent(~path, ~pos);
+      | Texp_ident(path, {loc}, _) =>
+        checkIdent(~path, ~loc);
         e;
       | Texp_apply({exp_desc: Texp_ident(functionPath, _, _)}, args) =>
         let functionName = Path.name(functionPath);
         args
         |> List.iter(((argLabel: Asttypes.arg_label, argOpt)) => {
              switch (argOpt |> ExtendFunctionTable.extractLabelledArgument) {
-             | Some((path, pos)) =>
+             | Some((path, loc)) =>
                switch (argLabel) {
                | Labelled(label) =>
                  if (functionTable
@@ -867,12 +861,12 @@ module CheckExpressionWellFormed = {
                        );
                      };
 
-                   | _ => checkIdent(~path, ~pos)
+                   | _ => checkIdent(~path, ~loc)
                    };
                  }
 
                | Optional(_)
-               | Nolabel => checkIdent(~path, ~pos)
+               | Nolabel => checkIdent(~path, ~loc)
                }
 
              | _ => ()
@@ -903,7 +897,7 @@ module Compile = {
 
   let rec expression = (~ctx, expr: Typedtree.expression) => {
     let {currentFunctionName, functionTable, isProgressFunction} = ctx;
-    let pos = expr.exp_loc.loc_start;
+    let loc = expr.exp_loc;
     switch (expr.exp_desc) {
     | Texp_ident(_) => Command.nothing
 
@@ -973,7 +967,7 @@ module Compile = {
                  )
             ) {
             | None =>
-              Stats.logHygieneMustHaveNamedArgument(~label, ~pos);
+              Stats.logHygieneMustHaveNamedArgument(~label, ~loc);
               raise(ArgError);
 
             | Some((path, _pos))
@@ -993,7 +987,7 @@ module Compile = {
               {FunctionArgs.label, functionName};
 
             | _ =>
-              Stats.logHygieneNamedArgValue(~label, ~pos);
+              Stats.logHygieneNamedArgValue(~label, ~loc);
               raise(ArgError);
             };
           functionArg;
@@ -1005,11 +999,11 @@ module Compile = {
         switch (functionArgsOpt) {
         | None => Command.nothing
         | Some(functionArgs) =>
-          Command.Call(FunctionCall({functionName, functionArgs}), pos)
+          Command.Call(FunctionCall({functionName, functionArgs}), loc)
           |> evalArgs(~args, ~ctx)
         };
       } else if (callee |> isProgressFunction) {
-        Command.Call(ProgressFunction(callee), pos) |> evalArgs(~args, ~ctx);
+        Command.Call(ProgressFunction(callee), loc) |> evalArgs(~args, ~ctx);
       } else {
         switch (
           functionTable
@@ -1021,7 +1015,7 @@ module Compile = {
         | Some(kind) when kind == Kind.empty =>
           Command.Call(
             FunctionCall(Path.name(callee) |> FunctionCall.noArgs),
-            pos,
+            loc,
           )
           |> evalArgs(~args, ~ctx)
         | Some(_kind) =>
@@ -1077,7 +1071,7 @@ module Compile = {
 
     | Texp_let(recFlag, valueBindings, inExpr) =>
       if (recFlag == Recursive) {
-        Stats.logHygieneNoNestedLetRec(~pos);
+        Stats.logHygieneNoNestedLetRec(~loc);
       };
       let commands =
         (
@@ -1118,7 +1112,7 @@ module Compile = {
       let cCases = cases |> List.map(case(~ctx));
       switch (cE, cases) {
       | (
-          Call(FunctionCall(functionCall), pos),
+          Call(FunctionCall(functionCall), loc),
           [
             {
               c_lhs: {
@@ -1141,7 +1135,7 @@ module Compile = {
         let (some, none) =
           name1 == "Some"
             ? (casesArr[0], casesArr[1]) : (casesArr[1], casesArr[0]);
-        SwitchOption({functionCall, pos, some, none});
+        SwitchOption({functionCall, loc, some, none});
       | _ => Command.(cE +++ nondet(cCases))
       };
 
@@ -1250,7 +1244,7 @@ module CallStack = {
   };
 
   let dump = (t: t) => {
-    logItem("  CallStack:\n");
+    logItem("CallStack:\n");
     let frames =
       Hashtbl.fold(
         (functionCall, {frameNumber, pos}, frames) =>
@@ -1262,7 +1256,7 @@ module CallStack = {
     frames
     |> List.iter(((functionCall: FunctionCall.t, i, pos)) =>
          logItem(
-           "  %d at %s (%s)\n",
+           "%d at %s (%s)\n",
            i,
            FunctionCall.toString(functionCall),
            pos |> posToString,
@@ -1282,15 +1276,15 @@ module Eval = {
     Hashtbl.find_opt(cache, functionCall);
   };
 
-  let updateCache = (~functionCall, ~pos, ~state, cache: cache) => {
-    Stats.logResult(~functionCall, ~resString=state |> State.toString, ~pos);
+  let updateCache = (~functionCall, ~loc, ~state, cache: cache) => {
+    Stats.logResult(~functionCall, ~resString=state |> State.toString, ~loc);
     if (!Hashtbl.mem(cache, functionCall)) {
       Hashtbl.replace(cache, functionCall, state);
     };
   };
 
   let hasInfiniteLoop =
-      (~callStack, ~functionCallToInstantiate, ~functionCall, ~pos, ~state) =>
+      (~callStack, ~functionCallToInstantiate, ~functionCall, ~loc, ~state) =>
     if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
       if (state.State.progress == NoProgress) {
         let explainCall =
@@ -1303,7 +1297,7 @@ module Eval = {
               ++ "\" which is \""
               ++ (functionCall |> FunctionCall.toString)
               ++ "\"";
-        Stats.logLoop(~explainCall, ~pos);
+        Stats.logLoop(~explainCall, ~loc);
         CallStack.dump(callStack);
       };
       true;
@@ -1318,11 +1312,12 @@ module Eval = {
             ~functionArgs,
             ~functionTable,
             ~madeProgressOn,
-            ~pos,
+            ~loc,
             ~state,
             functionCallToInstantiate,
           )
           : State.t => {
+    let pos = loc.Location.loc_start;
     let functionCall =
       functionCallToInstantiate
       |> FunctionCall.applySubstitution(~sub=functionArgs);
@@ -1331,7 +1326,7 @@ module Eval = {
     let stateAfterCall =
       switch (cache |> lookupCache(~functionCall)) {
       | Some(stateAfterCall) =>
-        Stats.logCache(~functionCall, ~hit=true, ~pos);
+        Stats.logCache(~functionCall, ~hit=true, ~loc);
         {
           ...stateAfterCall,
           trace: Trace.Tcall(call, stateAfterCall.progress),
@@ -1347,12 +1342,12 @@ module Eval = {
                      ~callStack,
                      ~functionCallToInstantiate,
                      ~functionCall,
-                     ~pos,
+                     ~loc,
                      ~state,
                    )) {
           {...state, trace: Trace.Tcall(call, state.progress)};
         } else {
-          Stats.logCache(~functionCall, ~hit=false, ~pos);
+          Stats.logCache(~functionCall, ~hit=false, ~loc);
           let functionDefinition =
             functionTable
             |> FunctionTable.getFunctionDefinition(~functionName);
@@ -1372,7 +1367,7 @@ module Eval = {
                  ~madeProgressOn,
                  ~state=State.init(),
                );
-          cache |> updateCache(~functionCall, ~pos, ~state=stateAfterCall);
+          cache |> updateCache(~functionCall, ~loc, ~state=stateAfterCall);
           // Invariant: run should restore the callStack
           callStack |> CallStack.removeFunctionCall(~functionCall);
           let trace = Trace.Tcall(call, stateAfterCall.progress);
@@ -1393,7 +1388,7 @@ module Eval = {
       )
       : State.t =>
     switch (command) {
-    | Call(FunctionCall(functionCall), pos) =>
+    | Call(FunctionCall(functionCall), loc) =>
       functionCall
       |> runFunctionCall(
            ~cache,
@@ -1401,7 +1396,7 @@ module Eval = {
            ~functionArgs,
            ~functionTable,
            ~madeProgressOn,
-           ~pos,
+           ~loc,
            ~state,
          )
     | Call(ProgressFunction(progressFunction) as call, _pos) =>
@@ -1495,7 +1490,7 @@ module Eval = {
            );
       State.seq(state, states |> State.nondet);
 
-    | SwitchOption({functionCall, pos, some, none}) =>
+    | SwitchOption({functionCall, loc, some, none}) =>
       let stateAfterCall =
         functionCall
         |> runFunctionCall(
@@ -1504,7 +1499,7 @@ module Eval = {
              ~functionArgs,
              ~functionTable,
              ~madeProgressOn,
-             ~pos,
+             ~loc,
              ~state,
            );
       switch (stateAfterCall.valuesOpt) {
@@ -1539,10 +1534,11 @@ module Eval = {
       };
     };
 
-  let analyzeFunction = (~cache, ~functionTable, ~pos, functionName) => {
+  let analyzeFunction = (~cache, ~functionTable, ~loc, functionName) => {
     if (verbose) {
       logItem("\nTermination analysis for \"%s\"\n", functionName);
     };
+    let pos = loc.Location.loc_start;
     let callStack = CallStack.create();
     let functionArgs = FunctionArgs.empty;
     let functionCall = FunctionCall.noArgs(functionName);
@@ -1550,7 +1546,7 @@ module Eval = {
     let functionDefinition =
       functionTable |> FunctionTable.getFunctionDefinition(~functionName);
     if (functionDefinition.kind != Kind.empty) {
-      Stats.logHygieneParametric(~functionName, ~pos);
+      Stats.logHygieneParametric(~functionName, ~loc);
     } else {
       let body =
         switch (functionDefinition.body) {
@@ -1567,7 +1563,7 @@ module Eval = {
              ~madeProgressOn=FunctionCallSet.empty,
              ~state=State.init(),
            );
-      cache |> updateCache(~functionCall, ~pos, ~state);
+      cache |> updateCache(~functionCall, ~loc, ~state);
     };
   };
 };
@@ -1641,10 +1637,7 @@ let traverseAst = (~valueBindingsTable) => {
                      ),
                      switch (valueBinding.vb_pat.pat_desc) {
                      | Tpat_var(id, _) => [
-                         (
-                           Ident.name(id),
-                           valueBinding.vb_expr.exp_loc.loc_start,
-                         ),
+                         (Ident.name(id), valueBinding.vb_expr.exp_loc),
                          ...functionsToAnalyze,
                        ]
                      | _ => functionsToAnalyze
@@ -1743,8 +1736,8 @@ let traverseAst = (~valueBindingsTable) => {
 
       let cache = Eval.createCache();
       functionsToAnalyze
-      |> List.iter(((functionName, pos)) =>
-           functionName |> Eval.analyzeFunction(~cache, ~functionTable, ~pos)
+      |> List.iter(((functionName, loc)) =>
+           functionName |> Eval.analyzeFunction(~cache, ~functionTable, ~loc)
          );
       Stats.newRecursiveFunctions(
         ~numFunctions=Hashtbl.length(functionTable),
