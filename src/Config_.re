@@ -188,8 +188,30 @@ let logItem = x => {
   Printf.fprintf(stdout, x);
 };
 
-let logWarning = (x, ~loc) => {
-  Format.fprintf(Format.std_formatter, "%a:\n", Location.print_loc, loc);
+let logWarning = (x, ~loc, ~name) => {
+  Format.fprintf(
+    Format.std_formatter,
+    "\n%a:\n%s%s%s: ",
+    Location.print_loc,
+    loc,
+    Misc.Color.ansi_of_style_l([FG(Yellow)]),
+    name,
+    Misc.Color.ansi_of_style_l([]),
+  );
+  Format.fprintf(Format.std_formatter, x);
+};
+
+
+let logError = (x, ~loc, ~name) => {
+  Format.fprintf(
+    Format.std_formatter,
+    "\n%a:\n%sError %s%s: ",
+    Location.print_loc,
+    loc,
+    Misc.Color.ansi_of_style_l([FG(Red)]),
+    name,
+    Misc.Color.ansi_of_style_l([]),
+  );
   Format.fprintf(Format.std_formatter, x);
 };
 

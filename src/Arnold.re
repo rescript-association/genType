@@ -50,6 +50,7 @@
 // Eval.run: (FT, Stack, f<args>, C, State) ---> State
 
 let log = GenTypeCommon.log;
+let logError = GenTypeCommon.logError;
 let logWarning = GenTypeCommon.logWarning;
 
 let posToString = DeadCommon.posToString;
@@ -189,9 +190,10 @@ module Stats = {
 
   let logLoop = (~explainCall, ~loc) => {
     incr(nInfiniteLoops);
-    logWarning(
+    logError(
       ~loc,
-      "Error Termination: possible infinite loop when calling %s\n",
+      ~name="Termination",
+      "possible infinite loop when calling %s\n",
       explainCall,
     );
   };
@@ -204,7 +206,8 @@ module Stats = {
     if (verbose) {
       logWarning(
         ~loc,
-        "termination analysis: cache %s for \"%s\"\n",
+        ~name="Termination Analysis",
+        "cache %s for \"%s\"\n",
         hit ? "hit" : "miss",
         FunctionCall.toString(functionCall),
       );
@@ -215,7 +218,8 @@ module Stats = {
     if (verbose) {
       logWarning(
         ~loc,
-        "termination analysis: \"%s\" returns %s\n",
+        ~name="Termination Analysis",
+        "\"%s\" returns %s\n",
         FunctionCall.toString(functionCall),
         resString,
       );
@@ -223,45 +227,50 @@ module Stats = {
 
   let logHygieneParametric = (~functionName, ~loc) => {
     incr(nHygieneErrors);
-    logWarning(
+    logError(
       ~loc,
-      "Error Hygiene: \"%s\" cannot be analyzed directly as it is parametric\n",
+      ~name="Hygiene",
+      "\"%s\" cannot be analyzed directly as it is parametric\n",
       functionName,
     );
   };
 
   let logHygieneOnlyCallDirectly = (~path, ~loc) => {
     incr(nHygieneErrors);
-    logWarning(
+    logError(
       ~loc,
-      "Error hygiene: \"%s\" can only be called directly, or passed as labeled argument.\n",
+      ~name="Hygiene",
+      "\"%s\" can only be called directly, or passed as labeled argument.\n",
       Path.name(path),
     );
   };
 
   let logHygieneMustHaveNamedArgument = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logWarning(
+    logError(
       ~loc,
-      "Error hygiene: call must have named argument \"%s\"\n",
+      ~name="Hygiene",
+      "call must have named argument \"%s\"\n",
       label,
     );
   };
 
   let logHygieneNamedArgValue = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logWarning(
+    logError(
       ~loc,
-      "Error hygiene: named argument \"%s\" must be passed a recursive function\n",
+      ~name="Hygiene",
+      "named argument \"%s\" must be passed a recursive function\n",
       label,
     );
   };
 
   let logHygieneNoNestedLetRec = (~loc) => {
     incr(nHygieneErrors);
-    logWarning(
+    logError(
       ~loc,
-      "Error hygiene: nested multiple let rec not supported yet\n",
+      ~name="Hygiene",
+      "nested multiple let rec not supported yet\n",
     );
   };
 };
@@ -754,7 +763,8 @@ module ExtendFunctionTable = {
               if (verbose) {
                 logWarning(
                   ~loc,
-                  "termination analysis: extend Function Table with \"%s\" (%s) as it calls a progress function\n",
+                  ~name="Termination Analysis",
+                  "extend Function Table with \"%s\" (%s) as it calls a progress function\n",
                   functionName,
                   id_pos |> posToString,
                 );
@@ -776,7 +786,8 @@ module ExtendFunctionTable = {
                if (verbose) {
                  logWarning(
                    ~loc,
-                   "termination analysis: \"%s\" is parametric ~%s=%s\n",
+                   ~name="Termination Analysis",
+                   "\"%s\" is parametric ~%s=%s\n",
                    functionName,
                    label,
                    Path.name(path),
@@ -854,7 +865,8 @@ module CheckExpressionWellFormed = {
                      if (verbose) {
                        logWarning(
                          ~loc=body.exp_loc,
-                         "termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
+                         ~name="Termination Analysis",
+                         "extend Function Table with \"%s\" as parametric ~%s=%s\n",
                          functionName,
                          label,
                          Path.name(path),
@@ -1055,7 +1067,8 @@ module Compile = {
       if (verbose) {
         logWarning(
           ~loc=pat_loc,
-          "termination analysis: adding recursive definition \"%s\"\n",
+          ~name="Termination Analysis",
+          "adding recursive definition \"%s\"\n",
           newFunctionName,
         );
       };
@@ -1748,7 +1761,6 @@ let traverseAst = (~valueBindingsTable) => {
 };
 
 let processStructure = (structure: Typedtree.structure) => {
-  Misc.Color.setup(Some(Never));
   Stats.newFile();
   let valueBindingsTable = Hashtbl.create(1);
   let traverseAst = traverseAst(~valueBindingsTable);
