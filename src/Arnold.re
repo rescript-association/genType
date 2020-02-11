@@ -192,7 +192,7 @@ module Stats = {
     incr(nInfiniteLoops);
     logError(
       ~loc,
-      ~name="Termination",
+      ~name="Error Termination",
       "possible infinite loop when calling %s\n",
       explainCall,
     );
@@ -229,7 +229,7 @@ module Stats = {
     incr(nHygieneErrors);
     logError(
       ~loc,
-      ~name="Hygiene",
+      ~name="Error Hygiene",
       "\"%s\" cannot be analyzed directly as it is parametric\n",
       functionName,
     );
@@ -239,7 +239,7 @@ module Stats = {
     incr(nHygieneErrors);
     logError(
       ~loc,
-      ~name="Hygiene",
+      ~name="Error Hygiene",
       "\"%s\" can only be called directly, or passed as labeled argument.\n",
       Path.name(path),
     );
@@ -249,7 +249,7 @@ module Stats = {
     incr(nHygieneErrors);
     logError(
       ~loc,
-      ~name="Hygiene",
+      ~name="Error Hygiene",
       "call must have named argument \"%s\"\n",
       label,
     );
@@ -259,7 +259,7 @@ module Stats = {
     incr(nHygieneErrors);
     logError(
       ~loc,
-      ~name="Hygiene",
+      ~name="Error Hygiene",
       "named argument \"%s\" must be passed a recursive function\n",
       label,
     );
@@ -269,7 +269,7 @@ module Stats = {
     incr(nHygieneErrors);
     logError(
       ~loc,
-      ~name="Hygiene",
+      ~name="Error Hygiene",
       "nested multiple let rec not supported yet\n",
     );
   };
