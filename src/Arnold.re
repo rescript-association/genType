@@ -49,7 +49,7 @@
 //
 // Eval.run: (FT, Stack, f<args>, C, State) ---> State
 
-let logItem = GenTypeCommon.logItem;
+let log = GenTypeCommon.log;
 let logWarning = GenTypeCommon.logWarning;
 
 let posToString = DeadCommon.posToString;
@@ -171,13 +171,13 @@ module Stats = {
   let nRecursiveBlocks = ref(0);
 
   let dump = () => {
-    logItem("\nTermination Analysis Stats\n");
-    logItem("Files:%d\n", nFiles^);
-    logItem("Recursive Blocks:%d\n", nRecursiveBlocks^);
-    logItem("Functions:%d\n", nFunctions^);
-    logItem("Infinite Loops:%d\n", nInfiniteLoops^);
-    logItem("Hygiene Errors:%d\n", nHygieneErrors^);
-    logItem("Cache Hits:%d/%d\n", nCacheHits^, nCacheChecks^);
+    log("\nTermination Analysis Stats\n");
+    log("Files:%d\n", nFiles^);
+    log("Recursive Blocks:%d\n", nRecursiveBlocks^);
+    log("Functions:%d\n", nFunctions^);
+    log("Infinite Loops:%d\n", nInfiniteLoops^);
+    log("Hygiene Errors:%d\n", nHygieneErrors^);
+    log("Cache Hits:%d/%d\n", nCacheHits^, nCacheChecks^);
   };
 
   let newFile = () => incr(nFiles);
@@ -601,7 +601,7 @@ module FunctionTable = {
   let create = (): t => Hashtbl.create(1);
 
   let dump = (tbl: t) => {
-    logItem("\nFunction Table:\n");
+    log("\nFunction Table:\n");
     let definitions =
       Hashtbl.fold(
         (functionName, {kind, body}, definitions) =>
@@ -612,8 +612,8 @@ module FunctionTable = {
       |> List.sort(((fn1, _, _), (fn2, _, _)) => String.compare(fn1, fn2));
     definitions
     |> List.iter(((functionName, kind, body)) =>
-         logItem(
-           "%s%s: %s\n",
+         log(
+           "  %s%s: %s\n",
            functionName,
            Kind.toString(kind),
            switch (body) {
@@ -740,7 +740,7 @@ module ExtendFunctionTable = {
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
       switch (e.exp_desc) {
       | Texp_ident(callee, _, _) =>
-        let pos = e.exp_loc.loc_start;
+        let loc = e.exp_loc;
         switch (Hashtbl.find_opt(valueBindingsTable, Path.name(callee))) {
         | None => ()
         | Some((id_pos, _, callees)) =>
@@ -752,9 +752,9 @@ module ExtendFunctionTable = {
             if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
               functionTable |> FunctionTable.addFunction(~functionName);
               if (verbose) {
-                logItem(
-                  "%s termination analysis: extend Function Table with \"%s\" (%s) as it calls a progress function\n",
-                  pos |> posToString,
+                logWarning(
+                  ~loc,
+                  "termination analysis: extend Function Table with \"%s\" (%s) as it calls a progress function\n",
                   functionName,
                   id_pos |> posToString,
                 );
@@ -774,9 +774,9 @@ module ExtendFunctionTable = {
                functionTable
                |> FunctionTable.addLabelToKind(~functionName, ~label);
                if (verbose) {
-                 logItem(
-                   "%s termination analysis: \"%s\" is parametric ~%s=%s\n",
-                   loc.loc_start |> posToString,
+                 logWarning(
+                   ~loc,
+                   "termination analysis: \"%s\" is parametric ~%s=%s\n",
                    functionName,
                    label,
                    Path.name(path),
@@ -852,9 +852,9 @@ module CheckExpressionWellFormed = {
                      functionTable
                      |> FunctionTable.addLabelToKind(~functionName, ~label);
                      if (verbose) {
-                       logItem(
-                         "%s termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
-                         body.exp_loc.loc_start |> posToString,
+                       logWarning(
+                         ~loc=body.exp_loc,
+                         "termination analysis: extend Function Table with \"%s\" as parametric ~%s=%s\n",
                          functionName,
                          label,
                          Path.name(path),
@@ -1029,15 +1029,7 @@ module Compile = {
       expr |> expression(~ctx) |> evalArgs(~args, ~ctx)
     | Texp_let(
         Recursive,
-        [
-          {
-            vb_pat: {
-              pat_desc: Tpat_var(id, _),
-              pat_loc: {loc_start: funPos},
-            },
-            vb_expr,
-          },
-        ],
+        [{vb_pat: {pat_desc: Tpat_var(id, _), pat_loc}, vb_expr}],
         inExpr,
       ) =>
       let oldFunctionName = Ident.name(id);
@@ -1061,9 +1053,9 @@ module Compile = {
       );
       newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
       if (verbose) {
-        logItem(
-          "%s termination analysis: adding recursive definition \"%s\"\n",
-          funPos |> posToString,
+        logWarning(
+          ~loc=pat_loc,
+          "termination analysis: adding recursive definition \"%s\"\n",
           newFunctionName,
         );
       };
@@ -1244,7 +1236,7 @@ module CallStack = {
   };
 
   let dump = (t: t) => {
-    logItem("CallStack:\n");
+    log("  CallStack:\n");
     let frames =
       Hashtbl.fold(
         (functionCall, {frameNumber, pos}, frames) =>
@@ -1255,8 +1247,8 @@ module CallStack = {
       |> List.sort(((_, i1, _), (_, i2, _)) => i2 - i1);
     frames
     |> List.iter(((functionCall: FunctionCall.t, i, pos)) =>
-         logItem(
-           "%d at %s (%s)\n",
+         log(
+           "  %d at %s (%s)\n",
            i,
            FunctionCall.toString(functionCall),
            pos |> posToString,
@@ -1536,7 +1528,7 @@ module Eval = {
 
   let analyzeFunction = (~cache, ~functionTable, ~loc, functionName) => {
     if (verbose) {
-      logItem("\nTermination analysis for \"%s\"\n", functionName);
+      log("\nTermination analysis for \"%s\"\n", functionName);
     };
     let pos = loc.Location.loc_start;
     let callStack = CallStack.create();
@@ -1756,6 +1748,7 @@ let traverseAst = (~valueBindingsTable) => {
 };
 
 let processStructure = (structure: Typedtree.structure) => {
+  Misc.Color.setup(Some(Never));
   Stats.newFile();
   let valueBindingsTable = Hashtbl.create(1);
   let traverseAst = traverseAst(~valueBindingsTable);
