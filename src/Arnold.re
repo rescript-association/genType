@@ -51,11 +51,20 @@
 
 let log = GenTypeCommon.log;
 let logError = GenTypeCommon.logError;
-let logWarning = GenTypeCommon.logWarning;
-
-let posToString = DeadCommon.posToString;
+let logInfo = GenTypeCommon.logInfo;
 
 let verbose = DeadCommon.verbose;
+
+let printPos = (ppf, pos: Lexing.position) => {
+  let file = pos.Lexing.pos_fname;
+  let line = pos.Lexing.pos_lnum;
+  Format.fprintf(
+    ppf,
+    "@{<filename>%s@} @{<dim>%i@}",
+    file |> Filename.basename,
+    line,
+  );
+};
 
 module StringSet = Set.Make(String);
 
@@ -171,15 +180,23 @@ module Stats = {
   let nInfiniteLoops = ref(0);
   let nRecursiveBlocks = ref(0);
 
-  let dump = () => {
-    log("\nTermination Analysis Stats\n");
-    log("Files:%d\n", nFiles^);
-    log("Recursive Blocks:%d\n", nRecursiveBlocks^);
-    log("Functions:%d\n", nFunctions^);
-    log("Infinite Loops:%d\n", nInfiniteLoops^);
-    log("Hygiene Errors:%d\n", nHygieneErrors^);
-    log("Cache Hits:%d/%d\n", nCacheHits^, nCacheChecks^);
+  let print = (ppf, ()) => {
+    Format.fprintf(ppf, "@[<v 2>@,@{<warning>Termination Analysis Stats@}@,");
+    Format.fprintf(ppf, "Files:@{<dim>%d@}@,", nFiles^);
+    Format.fprintf(ppf, "Recursive Blocks:@{<dim>%d@}@,", nRecursiveBlocks^);
+    Format.fprintf(ppf, "Functions:@{<dim>%d@}@,", nFunctions^);
+    Format.fprintf(ppf, "Infinite Loops:@{<dim>%d@}@,", nInfiniteLoops^);
+    Format.fprintf(ppf, "Hygiene Errors:@{<dim>%d@}@,", nHygieneErrors^);
+    Format.fprintf(
+      ppf,
+      "Cache Hits:@{<dim>%d@}/@{<dim>%d@}@,",
+      nCacheHits^,
+      nCacheChecks^,
+    );
+    Format.fprintf(ppf, "@]");
   };
+
+  let dump = () => Format.fprintf(Format.std_formatter, "%a@.", print, ());
 
   let newFile = () => incr(nFiles);
 
@@ -190,11 +207,13 @@ module Stats = {
 
   let logLoop = (~explainCall, ~loc) => {
     incr(nInfiniteLoops);
-    logError(
-      ~loc,
-      ~name="Error Termination",
-      "possible infinite loop when calling %s\n",
-      explainCall,
+    logError(~loc, ~name="Error Termination", (ppf, ()) =>
+      Format.fprintf(
+        ppf,
+        "Possible infinite loop when calling %a",
+        explainCall,
+        (),
+      )
     );
   };
 
@@ -204,73 +223,73 @@ module Stats = {
       incr(nCacheHits);
     };
     if (verbose) {
-      logWarning(
-        ~loc,
-        ~name="Termination Analysis",
-        "cache %s for \"%s\"\n",
-        hit ? "hit" : "miss",
-        FunctionCall.toString(functionCall),
+      logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+        Format.fprintf(
+          ppf,
+          "Cache %s for @{<info>%s@}",
+          hit ? "hit" : "miss",
+          FunctionCall.toString(functionCall),
+        )
       );
     };
   };
 
   let logResult = (~functionCall, ~loc, ~resString) =>
     if (verbose) {
-      logWarning(
-        ~loc,
-        ~name="Termination Analysis",
-        "\"%s\" returns %s\n",
-        FunctionCall.toString(functionCall),
-        resString,
+      logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+        Format.fprintf(
+          ppf,
+          "@{<info>%s@} returns %s",
+          FunctionCall.toString(functionCall),
+          resString,
+        )
       );
     };
 
   let logHygieneParametric = (~functionName, ~loc) => {
     incr(nHygieneErrors);
-    logError(
-      ~loc,
-      ~name="Error Hygiene",
-      "\"%s\" cannot be analyzed directly as it is parametric\n",
-      functionName,
+    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+      Format.fprintf(
+        ppf,
+        "@{<info>%s@} cannot be analyzed directly as it is parametric",
+        functionName,
+      )
     );
   };
 
   let logHygieneOnlyCallDirectly = (~path, ~loc) => {
     incr(nHygieneErrors);
-    logError(
-      ~loc,
-      ~name="Error Hygiene",
-      "\"%s\" can only be called directly, or passed as labeled argument.\n",
-      Path.name(path),
+    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+      Format.fprintf(
+        ppf,
+        "@{<info>%s@} can only be called directly, or passed as labeled argument",
+        Path.name(path),
+      )
     );
   };
 
   let logHygieneMustHaveNamedArgument = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logError(
-      ~loc,
-      ~name="Error Hygiene",
-      "call must have named argument \"%s\"\n",
-      label,
+    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+      Format.fprintf(ppf, "Call must have named argument @{<info>%s@}", label)
     );
   };
 
   let logHygieneNamedArgValue = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logError(
-      ~loc,
-      ~name="Error Hygiene",
-      "named argument \"%s\" must be passed a recursive function\n",
-      label,
+    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+      Format.fprintf(
+        ppf,
+        "Named argument @{<info>%s@} must be passed a recursive function",
+        label,
+      )
     );
   };
 
   let logHygieneNoNestedLetRec = (~loc) => {
     incr(nHygieneErrors);
-    logError(
-      ~loc,
-      ~name="Error Hygiene",
-      "nested multiple let rec not supported yet\n",
+    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+      Format.fprintf(ppf, "Nested multiple let rec not supported yet")
     );
   };
 };
@@ -609,8 +628,8 @@ module FunctionTable = {
 
   let create = (): t => Hashtbl.create(1);
 
-  let dump = (tbl: t) => {
-    log("\nFunction Table:\n");
+  let print = (ppf, tbl: t) => {
+    Format.fprintf(ppf, "@[<v 2>@,@{<warning>Function Table@}");
     let definitions =
       Hashtbl.fold(
         (functionName, {kind, body}, definitions) =>
@@ -620,9 +639,11 @@ module FunctionTable = {
       )
       |> List.sort(((fn1, _, _), (fn2, _, _)) => String.compare(fn1, fn2));
     definitions
-    |> List.iter(((functionName, kind, body)) =>
-         log(
-           "  %s%s: %s\n",
+    |> List.iteri((i, (functionName, kind, body)) =>
+         Format.fprintf(
+           ppf,
+           "@,@{<dim>%d@} @{<info>%s%s@}: %s",
+           i + 1,
            functionName,
            Kind.toString(kind),
            switch (body) {
@@ -631,7 +652,10 @@ module FunctionTable = {
            },
          )
        );
+    Format.fprintf(ppf, "@]");
   };
+
+  let dump = tbl => Format.fprintf(Format.std_formatter, "%a@.", print, tbl);
 
   let initialFunctionDefinition = () => {kind: Kind.empty, body: None};
 
@@ -761,12 +785,14 @@ module ExtendFunctionTable = {
             if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
               functionTable |> FunctionTable.addFunction(~functionName);
               if (verbose) {
-                logWarning(
-                  ~loc,
-                  ~name="Termination Analysis",
-                  "extend Function Table with \"%s\" (%s) as it calls a progress function\n",
-                  functionName,
-                  id_pos |> posToString,
+                logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+                  Format.fprintf(
+                    ppf,
+                    "Extend Function Table with @{<info>%s@} (%a) as it calls a progress function",
+                    functionName,
+                    printPos,
+                    id_pos,
+                  )
                 );
               };
             };
@@ -784,13 +810,14 @@ module ExtendFunctionTable = {
                functionTable
                |> FunctionTable.addLabelToKind(~functionName, ~label);
                if (verbose) {
-                 logWarning(
-                   ~loc,
-                   ~name="Termination Analysis",
-                   "\"%s\" is parametric ~%s=%s\n",
-                   functionName,
-                   label,
-                   Path.name(path),
+                 logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+                   Format.fprintf(
+                     ppf,
+                     "@{<info>%s@} is parametric ~@{<info>%s@}=@{<info>%s@}",
+                     functionName,
+                     label,
+                     Path.name(path),
+                   )
                  );
                };
 
@@ -863,13 +890,17 @@ module CheckExpressionWellFormed = {
                      functionTable
                      |> FunctionTable.addLabelToKind(~functionName, ~label);
                      if (verbose) {
-                       logWarning(
+                       logInfo(
                          ~loc=body.exp_loc,
                          ~name="Termination Analysis",
-                         "extend Function Table with \"%s\" as parametric ~%s=%s\n",
-                         functionName,
-                         label,
-                         Path.name(path),
+                         (ppf, ()) =>
+                         Format.fprintf(
+                           ppf,
+                           "Extend Function Table with @{<info>%s@} as parametric ~@{<info>%s@}=@{<info>%s@}",
+                           functionName,
+                           label,
+                           Path.name(path),
+                         )
                        );
                      };
 
@@ -1065,11 +1096,12 @@ module Compile = {
       );
       newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
       if (verbose) {
-        logWarning(
-          ~loc=pat_loc,
-          ~name="Termination Analysis",
-          "adding recursive definition \"%s\"\n",
-          newFunctionName,
+        logInfo(~loc=pat_loc, ~name="Termination Analysis", (ppf, ()) =>
+          Format.fprintf(
+            ppf,
+            "Adding recursive definition @{<info>%s@}",
+            newFunctionName,
+          )
         );
       };
       inExpr |> expression(~ctx);
@@ -1248,8 +1280,8 @@ module CallStack = {
     Hashtbl.remove(t.tbl, functionCall);
   };
 
-  let dump = (t: t) => {
-    log("  CallStack:\n");
+  let dump = (ppf, t: t) => {
+    Format.fprintf(ppf, "@[<v 2>CallStack:");
     let frames =
       Hashtbl.fold(
         (functionCall, {frameNumber, pos}, frames) =>
@@ -1260,13 +1292,16 @@ module CallStack = {
       |> List.sort(((_, i1, _), (_, i2, _)) => i2 - i1);
     frames
     |> List.iter(((functionCall: FunctionCall.t, i, pos)) =>
-         log(
-           "  %d at %s (%s)\n",
+         Format.fprintf(
+           ppf,
+           "@,@{<dim>%d@} at @{<info>%s@} (%a)",
            i,
            FunctionCall.toString(functionCall),
-           pos |> posToString,
+           printPos,
+           pos,
          )
        );
+    Format.fprintf(ppf, "@]");
   };
 };
 
@@ -1292,18 +1327,22 @@ module Eval = {
       (~callStack, ~functionCallToInstantiate, ~functionCall, ~loc, ~state) =>
     if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
       if (state.State.progress == NoProgress) {
-        let explainCall =
+        let explainCall = (ppf, ()) => {
           functionCallToInstantiate == functionCall
-            ? "\""
-              ++ (functionCallToInstantiate |> FunctionCall.toString)
-              ++ "\""
-            : "\""
-              ++ (functionCallToInstantiate |> FunctionCall.toString)
-              ++ "\" which is \""
-              ++ (functionCall |> FunctionCall.toString)
-              ++ "\"";
+            ? Format.fprintf(
+                ppf,
+                "@{<info>%s@}",
+                functionCallToInstantiate |> FunctionCall.toString,
+              )
+            : Format.fprintf(
+                ppf,
+                "@{<info>%s@} which is @{<info>%s@}",
+                functionCallToInstantiate |> FunctionCall.toString,
+                functionCall |> FunctionCall.toString,
+              );
+          Format.fprintf(ppf, "@,%a", CallStack.dump, callStack);
+        };
         Stats.logLoop(~explainCall, ~loc);
-        CallStack.dump(callStack);
       };
       true;
     } else {
@@ -1541,7 +1580,10 @@ module Eval = {
 
   let analyzeFunction = (~cache, ~functionTable, ~loc, functionName) => {
     if (verbose) {
-      log("\nTermination analysis for \"%s\"\n", functionName);
+      log(
+        "@[<v 2>@,@{<warning>Termination Analysis@} for @{<info>%s@}@]@.",
+        functionName,
+      );
     };
     let pos = loc.Location.loc_start;
     let callStack = CallStack.create();
@@ -1761,6 +1803,7 @@ let traverseAst = (~valueBindingsTable) => {
 };
 
 let processStructure = (structure: Typedtree.structure) => {
+  GenTypeCommon.Color.setup();
   Stats.newFile();
   let valueBindingsTable = Hashtbl.create(1);
   let traverseAst = traverseAst(~valueBindingsTable);
