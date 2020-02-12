@@ -205,16 +205,8 @@ module Stats = {
     nFunctions := nFunctions^ + numFunctions;
   };
 
-  let logLoop = (~explainCall, ~loc) => {
+  let logLoop = () => {
     incr(nInfiniteLoops);
-    logError(~loc, ~name="Error Termination", (ppf, ()) =>
-      Format.fprintf(
-        ppf,
-        "Possible infinite loop when calling %a",
-        explainCall,
-        (),
-      )
-    );
   };
 
   let logCache = (~functionCall, ~hit, ~loc) => {
@@ -1327,22 +1319,27 @@ module Eval = {
       (~callStack, ~functionCallToInstantiate, ~functionCall, ~loc, ~state) =>
     if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
       if (state.State.progress == NoProgress) {
-        let explainCall = (ppf, ()) => {
-          functionCallToInstantiate == functionCall
-            ? Format.fprintf(
-                ppf,
-                "@{<info>%s@}",
-                functionCallToInstantiate |> FunctionCall.toString,
-              )
-            : Format.fprintf(
-                ppf,
-                "@{<info>%s@} which is @{<info>%s@}",
-                functionCallToInstantiate |> FunctionCall.toString,
-                functionCall |> FunctionCall.toString,
-              );
-          Format.fprintf(ppf, "@,%a", CallStack.dump, callStack);
-        };
-        Stats.logLoop(~explainCall, ~loc);
+        logError(
+          ~loc,
+          ~name="Error Termination",
+          (ppf, ()) => {
+            Format.fprintf(ppf, "Possible infinite loop when calling ");
+            functionCallToInstantiate == functionCall
+              ? Format.fprintf(
+                  ppf,
+                  "@{<info>%s@}",
+                  functionCallToInstantiate |> FunctionCall.toString,
+                )
+              : Format.fprintf(
+                  ppf,
+                  "@{<info>%s@} which is @{<info>%s@}",
+                  functionCallToInstantiate |> FunctionCall.toString,
+                  functionCall |> FunctionCall.toString,
+                );
+            Format.fprintf(ppf, "@,%a", CallStack.dump, callStack);
+          },
+        );
+        Stats.logLoop();
       };
       true;
     } else {
