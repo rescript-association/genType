@@ -255,6 +255,10 @@ module Color = {
       color_functions,
     );
   };
+
+  let error = (ppf, s) => Format.fprintf(ppf, "@{<error>%s@}", s);
+  let info = (ppf, s) => Format.fprintf(ppf, "@{<info>%s@}", s);
+  let warning = (ppf, s) => Format.fprintf(ppf, "@{<warning>%s@}", s);
 };
 
 module Loc = {
@@ -353,15 +357,11 @@ let logItem = x => {
   Format.fprintf(Format.std_formatter, x);
 };
 
-let error = (ppf, s) => Format.fprintf(ppf, "@{<error>%s@}", s);
-let info = (ppf, s) => Format.fprintf(ppf, "@{<info>%s@}", s);
-let warning = (ppf, s) => Format.fprintf(ppf, "@{<warning>%s@}", s);
-
-let logKind = (body, ~kind, ~loc, ~name) => {
+let logKind = (body, ~color, ~loc, ~name) => {
   Format.fprintf(
     Format.std_formatter,
     "@[<v 2>@,%a@,%a@,%a@]@.",
-    kind,
+    color,
     name,
     Loc.print,
     loc,
@@ -371,10 +371,11 @@ let logKind = (body, ~kind, ~loc, ~name) => {
 };
 
 let logWarning = (body, ~loc, ~name) =>
-  logKind(body, ~kind=warning, ~loc, ~name);
-let logInfo = (body, ~loc, ~name) => logKind(body, ~kind=info, ~loc, ~name);
+  logKind(body, ~color=Color.warning, ~loc, ~name);
+let logInfo = (body, ~loc, ~name) =>
+  logKind(body, ~color=Color.info, ~loc, ~name);
 let logError = (body, ~loc, ~name) =>
-  logKind(body, ~kind=error, ~loc, ~name);
+  logKind(body, ~color=Color.error, ~loc, ~name);
 
 let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
   let fromJson = json => {
