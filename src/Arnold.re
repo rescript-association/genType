@@ -243,7 +243,7 @@ module Stats = {
     logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(
         ppf,
-        "@{<info>%s@} cannot be analyzed directly as it is parametric",
+        "@{<error>%s@} cannot be analyzed directly as it is parametric",
         functionName,
       )
     );
@@ -254,7 +254,7 @@ module Stats = {
     logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(
         ppf,
-        "@{<info>%s@} can only be called directly, or passed as labeled argument",
+        "@{<error>%s@} can only be called directly, or passed as labeled argument",
         Path.name(path),
       )
     );
@@ -263,7 +263,7 @@ module Stats = {
   let logHygieneMustHaveNamedArgument = (~label, ~loc) => {
     incr(nHygieneErrors);
     logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
-      Format.fprintf(ppf, "Call must have named argument @{<info>%s@}", label)
+      Format.fprintf(ppf, "Call must have named argument @{<error>%s@}", label)
     );
   };
 
@@ -272,7 +272,7 @@ module Stats = {
     logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(
         ppf,
-        "Named argument @{<info>%s@} must be passed a recursive function",
+        "Named argument @{<error>%s@} must be passed a recursive function",
         label,
       )
     );
@@ -1272,7 +1272,7 @@ module CallStack = {
     Hashtbl.remove(t.tbl, functionCall);
   };
 
-  let dump = (ppf, t: t) => {
+  let print = (ppf, t: t) => {
     Format.fprintf(ppf, "@[<v 2>CallStack:");
     let frames =
       Hashtbl.fold(
@@ -1286,7 +1286,7 @@ module CallStack = {
     |> List.iter(((functionCall: FunctionCall.t, i, pos)) =>
          Format.fprintf(
            ppf,
-           "@,@{<dim>%d@} at @{<info>%s@} (%a)",
+           "@,@{<dim>%d@} %s (%a)",
            i,
            FunctionCall.toString(functionCall),
            printPos,
@@ -1327,16 +1327,16 @@ module Eval = {
             functionCallToInstantiate == functionCall
               ? Format.fprintf(
                   ppf,
-                  "@{<info>%s@}",
+                  "@{<error>%s@}",
                   functionCallToInstantiate |> FunctionCall.toString,
                 )
               : Format.fprintf(
                   ppf,
-                  "@{<info>%s@} which is @{<info>%s@}",
+                  "@{<error>%s@} which is @{<error>%s@}",
                   functionCallToInstantiate |> FunctionCall.toString,
                   functionCall |> FunctionCall.toString,
                 );
-            Format.fprintf(ppf, "@,%a", CallStack.dump, callStack);
+            Format.fprintf(ppf, "@,%a", CallStack.print, callStack);
           },
         );
         Stats.logLoop();

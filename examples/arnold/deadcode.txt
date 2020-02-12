@@ -19,7 +19,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 27:28-39
   Possible infinite loop when calling alwaysLoop
   CallStack:
-    1 at alwaysLoop (TestCyberTruck.re 27)
+    1 alwaysLoop (TestCyberTruck.re 27)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 27:22-39
@@ -43,7 +43,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 38:3-28
   Possible infinite loop when calling alwaysProgressWrongOrder
   CallStack:
-    1 at alwaysProgressWrongOrder (TestCyberTruck.re 37)
+    1 alwaysProgressWrongOrder (TestCyberTruck.re 37)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 37:36-40:1
@@ -80,7 +80,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 66:3-25
   Possible infinite loop when calling progressOnOneBranch
   CallStack:
-    1 at progressOnOneBranch (TestCyberTruck.re 62)
+    1 progressOnOneBranch (TestCyberTruck.re 62)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 62:31-67:1
@@ -109,9 +109,9 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 80:48-63
   Possible infinite loop when calling parseFunction which is testParametricFunction
   CallStack:
-    3 at callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re 77)
-    2 at testParametricFunction2 (TestCyberTruck.re 75)
-    1 at testParametricFunction (TestCyberTruck.re 71)
+    3 callParseFunction<parseFunction:testParametricFunction> (TestCyberTruck.re 77)
+    2 testParametricFunction2 (TestCyberTruck.re 75)
+    1 testParametricFunction (TestCyberTruck.re 71)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 77:36-79:1
@@ -147,7 +147,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 89:3-18
   Possible infinite loop when calling testCacheHit
   CallStack:
-    1 at testCacheHit (TestCyberTruck.re 83)
+    1 testCacheHit (TestCyberTruck.re 83)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 83:24-90:1
@@ -162,7 +162,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 97:31-58
   Possible infinite loop when calling evalOrderIsNotLeftToRight
   CallStack:
-    1 at evalOrderIsNotLeftToRight (TestCyberTruck.re 95)
+    1 evalOrderIsNotLeftToRight (TestCyberTruck.re 95)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 95:37-98:1
@@ -177,7 +177,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 104:19-46
   Possible infinite loop when calling evalOrderIsNotRightToLeft
   CallStack:
-    1 at evalOrderIsNotRightToLeft (TestCyberTruck.re 102)
+    1 evalOrderIsNotRightToLeft (TestCyberTruck.re 102)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 102:37-105:1
@@ -277,9 +277,9 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 180:15-21
   Possible infinite loop when calling parseList$loop<f:f> which is parseList$loop<f:parseListInt>
   CallStack:
-    3 at parseList$loop<f:parseListInt> (TestCyberTruck.re 183)
-    2 at parseList<f:parseListInt> (TestCyberTruck.re 202)
-    1 at parseListListInt (TestCyberTruck.re 202)
+    3 parseList$loop<f:parseListInt> (TestCyberTruck.re 183)
+    2 parseList<f:parseListInt> (TestCyberTruck.re 202)
+    1 parseListListInt (TestCyberTruck.re 202)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 183:3-10
@@ -375,7 +375,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 240:31-49
   Possible infinite loop when calling loopAfterProgress
   CallStack:
-    1 at loopAfterProgress (TestCyberTruck.re 238)
+    1 loopAfterProgress (TestCyberTruck.re 238)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 238:3-22
@@ -404,7 +404,7 @@
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 292:32-61
   Possible infinite loop when calling countRendersCompiled
   CallStack:
-    1 at countRendersCompiled (TestCyberTruck.re 289)
+    1 countRendersCompiled (TestCyberTruck.re 289)
 
   Termination Analysis
   /Users/cristianoc/reasonml/genType/examples/arnold/src/TestCyberTruck.re 289:34-295:3
