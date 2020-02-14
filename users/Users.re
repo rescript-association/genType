@@ -13,7 +13,7 @@ module Month: {
   type t;
   let compare: (t, t) => int;
   let fromDate: (~quarterly: bool, string) => t;
-  let toString: (~csv: bool, t) => string;
+  let toString: (~csv: bool, ~quarterly: bool, t) => string;
 } = {
   type t = {
     month: string,
@@ -38,9 +38,15 @@ module Month: {
     | "Nov" => 11
     | "Dec" => 12
     | _ => assert(false);
-  let toString = (~csv, {month, year}) =>
+  let toString = (~csv, ~quarterly, {month, year}) =>
     if (csv) {
       Printf.sprintf("%s-%s", month, year);
+    } else if (quarterly) {
+      Printf.sprintf(
+        "%s_Q%d",
+        String.sub(year, 2, 2),
+        month |> monthToNumber,
+      );
     } else {
       Printf.sprintf(
         "%s_%02d",
@@ -110,7 +116,7 @@ module DiffsPerMonth = {
        });
   };
 
-  let print = (~csv, ~diffsPerMonth, ~users) => {
+  let print = (~csv, ~diffsPerMonth, ~quarterly, ~users) => {
     let sortedDiffs =
       Hashtbl.fold(
         (month, num, acc) => [(month, num), ...acc],
@@ -120,7 +126,7 @@ module DiffsPerMonth = {
       |> List.sort(((m1, _), (m2, _)) => Month.compare(m1, m2));
     let months =
       sortedDiffs
-      |> List.map(((m, _n)) => m |> Month.toString(~csv))
+      |> List.map(((m, _n)) => m |> Month.toString(~csv, ~quarterly))
       |> String.concat(csv ? ", " : " ");
     let nums =
       sortedDiffs
@@ -236,7 +242,7 @@ let run = () => {
 
   readFile(~channel=stdin, ~onLine=processLine(~extension, ~quarterly));
   Diffs.processCurrentItem(~quarterly);
-  Diffs.print(~csv);
+  Diffs.print(~csv, ~quarterly);
   exit(-1) |> ignore;
 };
 
