@@ -21,10 +21,14 @@ module Month: {
   };
   let monthToNumber =
     fun
-    | "Jan" => 1
-    | "Feb" => 2
-    | "Mar" => 3
-    | "Apr" => 4
+    | "Jan"
+    | "Q1" => 1
+    | "Feb"
+    | "Q2" => 2
+    | "Mar"
+    | "Q3" => 3
+    | "Apr"
+    | "Q4" => 4
     | "May" => 5
     | "Jun" => 6
     | "Jul" => 7
@@ -49,14 +53,15 @@ module Month: {
     let month = String.sub(date, 8, 3);
     let month =
       quarterly
-        ? switch (monthToNumber(month) mod 4) {
-          | 1 => "Mar"
-          | 2 => "Jun"
-          | 3 => "Sep"
-          | 0 => "Dec"
+        ? switch ((monthToNumber(month) + 2) / 3) {
+          | 1 => "Q1"
+          | 2 => "Q2"
+          | 3 => "Q3"
+          | 4 => "Q4"
           | _ => assert(false)
           }
         : month;
+
     {month, year};
   };
   let compare = ({month: m1, year: y1}, {month: m2, year: y2}) =>
@@ -224,9 +229,9 @@ let run = () => {
   // Only set when hg log --stat is used.
   // Some(".js") only counts .js files.
   let extension = None;
-  
+
   let csv = true;
-  
+
   let quarterly = true;
 
   readFile(~channel=stdin, ~onLine=processLine(~extension, ~quarterly));
