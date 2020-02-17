@@ -1,54 +1,3 @@
-// Concrete Programs
-// x y l f                   Variables
-// arg := e | ~l=e           Function Argument
-// args := args, ..., argn   Function Arguments
-// e := x | e(args)          Expressions
-// k := <l1:k1, ..., ln:kn>  Kind
-// P := f1 = e1 ... fn = en  Program
-// E := x1:k1, ..., xn:kn    Environment
-//
-// The variables xi in E must be distinct from labels in kj and in args.
-//   E |- e  Well Formedness Relation
-//   For fi = ei in P, and fi:ki in E, check E,ki |- ei.
-//
-//   E |- x if x:k not in E  No Escape
-//
-//   E |- x   E |- e
-//   ---------------
-//      E |- ~x=e
-//
-//   E |- x   E |- args
-//   ------------------
-//      E |- e(args)
-//
-//            E(x) = <l1:k1, ... ln:kn>
-//         E(l1) = E(x1) ... E(ln) = E(xn)
-//             E |- arg1 ... E |- argk
-//   -------------------------------------------
-//   E |- x(~l1:x1, ... ~ln:xn, arg1, ..., argk)
-//
-// Abstract Programs
-// arg := l:x                Function Argument
-// args := arg1, ...., argn  Function Arguments
-// C ::=                     Commmand
-//       x<args>             Call
-//       Some | None         Optional Value
-//       switch x<args> {    Switch on Optionals
-//         | Some -> C1
-//         | None -> C2 }
-//       C1 ; ... ; Cn       Sequential Composition
-//       C1 | ... | Cn       Nondeterministic Choice
-//       { C1, ..., Cn }     No Evaluation Order
-// FT := f1<args1> = C1      Function Table
-//      ...
-//      fn<argsn> = Cn
-// Stack := f1<args1> ... fn<argsn>
-// progress := Progress | NoProgress
-// values := {some, none} -> ?progress
-// State := (progress, ?values)
-//
-// Eval.run: (FT, Stack, f<args>, C, State) ---> State
-
 let log = GenTypeCommon.log;
 let logError = GenTypeCommon.logError;
 let logInfo = GenTypeCommon.logInfo;
@@ -263,7 +212,11 @@ module Stats = {
   let logHygieneMustHaveNamedArgument = (~label, ~loc) => {
     incr(nHygieneErrors);
     logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
-      Format.fprintf(ppf, "Call must have named argument @{<error>%s@}", label)
+      Format.fprintf(
+        ppf,
+        "Call must have named argument @{<error>%s@}",
+        label,
+      )
     );
   };
 

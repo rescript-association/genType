@@ -212,7 +212,7 @@ function $$parseInt(p) {
   return res;
 }
 
-function parseExpression($staropt$star, p) {
+function parseExpression(xOpt, p) {
   var match = p.token;
   if (typeof match === "number" && match === 2) {
     next(p);
