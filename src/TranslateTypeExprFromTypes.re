@@ -257,7 +257,7 @@ let translateConstr =
         }),
     };
   | (
-      ["Js", "Internal", "meth"],
+      ["Js", "Internal", "meth"] | ["Js_internalOO", "meth"],
       [
         {
           dependencies: argsDependencies,
@@ -277,7 +277,7 @@ let translateConstr =
         }),
     }
   | (
-      ["Js", "Internal", "meth"],
+      ["Js", "Internal", "meth"] | ["Js_internalOO", "meth"],
       [
         {
           dependencies: argsDependencies,

@@ -1,4 +1,5 @@
 # master
+- Support new internal representation of `bs.meth` used in the forthcoming bucklescript 7.2.0.
 
 # 3.12.0
 - Emit doc commments `/** this is a doc comment */` in the TypeScript output.
