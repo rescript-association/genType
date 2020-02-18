@@ -16,7 +16,14 @@ let loadFile = cmtFilePath => {
   let sourceFile =
     switch (cmt_sourcefile) {
     | None => assert(false)
-    | Some(sourceFile) => sourceFile
+    | Some(sourceFile) =>
+      if (Filename.check_suffix(sourceFile, ".re.ml")) {
+        Filename.chop_suffix(sourceFile, ".ml");
+      } else if (Filename.check_suffix(sourceFile, ".re.mli")) {
+        Filename.chop_suffix(sourceFile, ".re.mli") ++ ".rei";
+      } else {
+        sourceFile;
+      }
     };
   FileHash.addFile(fileReferences, sourceFile);
   currentSrc := sourceFile;
@@ -98,11 +105,12 @@ let runAnalysis = (~cmtFileOpt) => {
   if (dce^ || analyzeTermination^) {
     Log_.Color.setup();
   };
-  switch (cmtFileOpt, analyzeTermination^) {
+  switch (cmtFileOpt, dce^) {
   | (Some(cmtFile), true) =>
     let cmtFilePath = cmtFile;
     cmtFilePath |> loadFile;
-    Arnold.reportResults();
+    reportResults(~posInAliveWhitelist);
+
   | _ =>
     Paths.setProjectRoot();
     let lib_bs = {
