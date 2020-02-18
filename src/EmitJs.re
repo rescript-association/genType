@@ -22,7 +22,7 @@ let createExportTypeMap =
     (~config, ~file, typeDeclarations: list(CodeItem.typeDeclaration))
     : CodeItem.exportTypeMap => {
   if (Debug.codeItems^) {
-    logItem("Create Type Map for %s\n", file);
+    Log_.item("Create Type Map for %s\n", file);
   };
   let updateExportTypeMap =
       (
@@ -36,7 +36,7 @@ let createExportTypeMap =
           {resolvedTypeName, typeVars, optType}: CodeItem.exportType,
         ) => {
       if (Debug.codeItems^) {
-        logItem(
+        Log_.item(
           "Type Map: %s%s%s\n",
           resolvedTypeName |> ResolvedName.toString,
           typeVars == []
@@ -207,7 +207,7 @@ let rec emitCodeItem =
         ) => {
   let language = config.language;
   if (Debug.codeItems^) {
-    logItem(
+    Log_.item(
       "Code Item: %s\n",
       codeItem |> codeItemToString(~config, ~typeNameIsInterface),
     );
@@ -1162,7 +1162,7 @@ let propagateAnnotationToSubTypes =
           | {annotation: GenType | GenTypeOpaque} => ()
           | {type_: type1, annotation: NoGenType} =>
             if (Debug.translation^) {
-              logItem("Marking Type As Annotated %s\n", typeName);
+              Log_.item("Marking Type As Annotated %s\n", typeName);
             };
             annotatedSet := annotatedSet^ |> StringSet.add(typeName);
             type1 |> visit;

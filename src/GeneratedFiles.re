@@ -9,7 +9,7 @@ type fileAction =
 
 let logFileAction = (fileAction, fileName) =>
   if (Debug.basic^) {
-    logItem(
+    Log_.item(
       "%s  %s\n",
       switch (fileAction) {
       | NoMatch => "NoMatch"

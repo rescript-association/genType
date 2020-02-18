@@ -123,7 +123,7 @@ let translateValueBinding =
   | Tpat_var(id, _) =>
     let name = id |> Ident.name;
     if (Debug.translation^) {
-      logItem("Translate Value Binding %s\n", name);
+      Log_.item("Translate Value Binding %s\n", name);
     };
     let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
     typeEnv |> TypeEnv.updateModuleItem(~nameOpt=Some(name), ~moduleItem);
@@ -206,7 +206,7 @@ let rec translateModuleBinding =
         : Translation.t => {
   let name = mb_id |> Ident.name;
   if (Debug.translation^) {
-    logItem("Translate Module Binding %s\n", name);
+    Log_.item("Translate Module Binding %s\n", name);
   };
   let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
@@ -480,7 +480,7 @@ and translateStructure =
     (~config, ~outputFileRelative, ~resolver, ~typeEnv, structure)
     : list(Translation.t) => {
   if (Debug.translation^) {
-    logItem("Translate Structure\n");
+    Log_.item("Translate Structure\n");
   };
   let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items

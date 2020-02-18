@@ -98,7 +98,7 @@ let cli = () => {
       let config =
         Paths.readConfig(~bsVersion, ~namespace=cmt |> Paths.findNameSpace);
       if (Debug.basic^) {
-        logItem("Add %s  %s\n", cmt, mlast);
+        Log_.item("Add %s  %s\n", cmt, mlast);
       };
       cmt |> GenTypeMain.processCmtFile(~signFile, ~config);
       exit(0);
@@ -108,7 +108,7 @@ let cli = () => {
       let sourceDirs =
         ModuleResolver.readSourceDirs(~configSources=config.sources);
       if (Debug.basic^) {
-        logItem("Clean %d dirs\n", sourceDirs.dirs |> List.length);
+        Log_.item("Clean %d dirs\n", sourceDirs.dirs |> List.length);
       };
       let count = ref(0);
       sourceDirs.dirs
@@ -131,7 +131,7 @@ let cli = () => {
               );
          });
       if (Debug.basic^) {
-        logItem("Cleaned %d files\n", count^);
+        Log_.item("Cleaned %d files\n", count^);
       };
       exit(0);
 
@@ -147,7 +147,7 @@ let cli = () => {
         Paths.readConfig(~bsVersion, ~namespace=cmt |> Paths.findNameSpace);
       let outputFile = cmt |> Paths.getOutputFile(~config);
       if (Debug.basic^) {
-        logItem("Remove %s\n", cmt);
+        Log_.item("Remove %s\n", cmt);
       };
       if (Sys.file_exists(outputFile)) {
         Unix.unlink(outputFile);

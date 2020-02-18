@@ -100,7 +100,7 @@ let emitPropTypes:
     ~emitters: Emitters.t,
     ~indent: Indent.t,
     ~name: string,
-    list(GenTypeCommon.field)
+    list(field)
   ) =>
   Emitters.t;
 

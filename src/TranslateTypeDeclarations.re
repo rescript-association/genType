@@ -409,7 +409,7 @@ let translateTypeDeclaration =
     )
     : list(CodeItem.typeDeclaration) => {
   if (Debug.translation^) {
-    logItem("Translate Type Declaration %s\n", typ_id |> Ident.name);
+    Log_.item("Translate Type Declaration %s\n", typ_id |> Ident.name);
   };
   typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
 

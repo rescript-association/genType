@@ -83,7 +83,7 @@ module PosHash = {
     let setUnion = PosSet.union(set1, set2);
     replace(table, to_, setUnion);
     if (verbose) {
-      GenTypeCommon.logItem(
+      Log_.item(
         "%smergeSet %s --> %s\n",
         analysisKind == Type ? "[type] " : "",
         from |> posToString,
@@ -148,7 +148,7 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
     !transitive || currentBindingPos^ == Lexing.dummy_pos
       ? posUsage : currentBindingPos^;
   if (verbose) {
-    GenTypeCommon.logItem(
+    Log_.item(
       "addValueReference %s --> %s\n",
       posUsage |> posToString,
       posDeclaration |> posToString,
@@ -265,7 +265,7 @@ let export = (~analysisKind, ~path, ~id, ~loc) => {
   if (!loc.loc_ghost
       && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)) {
     if (verbose) {
-      GenTypeCommon.logItem(
+      Log_.item(
         "%sexport %s %s\n",
         analysisKind == Type ? "[type] " : "",
         id.name,
@@ -533,7 +533,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
             |> PosSet.elements
             |> List.map(posToString)
             |> String.concat(", ");
-          GenTypeCommon.logItem(
+          Log_.item(
             "%s: %d references (%s)\n",
             path,
             referencesToLoc |> PosSet.cardinal,
@@ -548,10 +548,10 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
   };
 
   if (verbose) {
-    GenTypeCommon.logItem("\nFile References\n\n");
+    Log_.item("\nFile References\n\n");
     fileReferences
     |> FileHash.iter((file, files) =>
-         GenTypeCommon.logItem(
+         Log_.item(
            "%s -->> %s\n",
            file |> Filename.basename,
            files

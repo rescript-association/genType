@@ -11,7 +11,7 @@ let translateSignatureValue =
     : Translation.t => {
   let {Typedtree.val_id, val_desc, val_attributes} = valueDescription;
   if (Debug.translation^) {
-    logItem("Translate Signature Value %s\n", val_id |> Ident.name);
+    Log_.item("Translate Signature Value %s\n", val_id |> Ident.name);
   };
   let typeExpr = val_desc.ctyp_type;
   let addAnnotationsToFunction = type_ => type_;
@@ -45,7 +45,7 @@ let rec translateModuleDeclaration =
         ) => {
   let name = md_id |> Ident.name;
   if (Debug.translation^) {
-    logItem("Translate Module Declaration %s\n", name);
+    Log_.item("Translate Module Declaration %s\n", name);
   };
   let typeEnv = typeEnv |> TypeEnv.newModule(~name);
 
@@ -92,7 +92,7 @@ and translateModuleTypeDeclaration =
       moduleTypeDeclaration: Typedtree.module_type_declaration,
     ) => {
   if (Debug.translation^) {
-    logItem(
+    Log_.item(
       "Translate Module Type Declaration %s\n",
       moduleTypeDeclaration.mtd_id |> Ident.name,
     );
@@ -232,7 +232,7 @@ and translateSignature =
     (~config, ~outputFileRelative, ~resolver, ~typeEnv, signature)
     : list(Translation.t) => {
   if (Debug.translation^) {
-    logItem("Translate Signature\n");
+    Log_.item("Translate Signature\n");
   };
   let moduleItemGen = Runtime.moduleItemGen();
   signature.Typedtree.sig_items

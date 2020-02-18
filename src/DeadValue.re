@@ -79,17 +79,11 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
   | Texp_field(
       _,
       x,
-      {
-        lbl_loc: {Location.loc_start: posDeclaration, loc_ghost: false},
-        _,
-      },
+      {lbl_loc: {Location.loc_start: posDeclaration, loc_ghost: false}, _},
     )
   | Texp_construct(
       x,
-      {
-        cstr_loc: {Location.loc_start: posDeclaration, loc_ghost: false},
-        _,
-      },
+      {cstr_loc: {Location.loc_start: posDeclaration, loc_ghost: false}, _},
       _,
     ) =>
     if (analyzeTypes^) {
@@ -209,7 +203,7 @@ let processStructure =
       let fn = pos.Lexing.pos_fname;
       if (isImplementation(fn) && fn == currentSrc^) {
         if (verbose) {
-          GenTypeCommon.logItem(
+          Log_.item(
             "%sclean %s\n",
             analysisKind == Type ? "[type] " : "",
             pos |> posToString,

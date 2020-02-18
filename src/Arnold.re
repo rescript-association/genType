@@ -1,7 +1,3 @@
-let log = GenTypeCommon.log;
-let logError = GenTypeCommon.logError;
-let logInfo = GenTypeCommon.logInfo;
-
 let verbose = DeadCommon.verbose;
 
 let printPos = (ppf, pos: Lexing.position) => {
@@ -164,7 +160,7 @@ module Stats = {
       incr(nCacheHits);
     };
     if (verbose) {
-      logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+      Log_.info(~loc, ~name="Termination Analysis", (ppf, ()) =>
         Format.fprintf(
           ppf,
           "Cache %s for @{<info>%s@}",
@@ -177,7 +173,7 @@ module Stats = {
 
   let logResult = (~functionCall, ~loc, ~resString) =>
     if (verbose) {
-      logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+      Log_.info(~loc, ~name="Termination Analysis", (ppf, ()) =>
         Format.fprintf(
           ppf,
           "@{<info>%s@} returns %s",
@@ -189,7 +185,7 @@ module Stats = {
 
   let logHygieneParametric = (~functionName, ~loc) => {
     incr(nHygieneErrors);
-    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+    Log_.error(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(
         ppf,
         "@{<error>%s@} cannot be analyzed directly as it is parametric",
@@ -200,7 +196,7 @@ module Stats = {
 
   let logHygieneOnlyCallDirectly = (~path, ~loc) => {
     incr(nHygieneErrors);
-    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+    Log_.error(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(
         ppf,
         "@{<error>%s@} can only be called directly, or passed as labeled argument",
@@ -211,7 +207,7 @@ module Stats = {
 
   let logHygieneMustHaveNamedArgument = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+    Log_.error(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(
         ppf,
         "Call must have named argument @{<error>%s@}",
@@ -222,7 +218,7 @@ module Stats = {
 
   let logHygieneNamedArgValue = (~label, ~loc) => {
     incr(nHygieneErrors);
-    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+    Log_.error(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(
         ppf,
         "Named argument @{<error>%s@} must be passed a recursive function",
@@ -233,7 +229,7 @@ module Stats = {
 
   let logHygieneNoNestedLetRec = (~loc) => {
     incr(nHygieneErrors);
-    logError(~loc, ~name="Error Hygiene", (ppf, ()) =>
+    Log_.error(~loc, ~name="Error Hygiene", (ppf, ()) =>
       Format.fprintf(ppf, "Nested multiple let rec not supported yet")
     );
   };
@@ -730,7 +726,7 @@ module ExtendFunctionTable = {
             if (!(callee |> FunctionTable.isInFunctionInTable(~functionTable))) {
               functionTable |> FunctionTable.addFunction(~functionName);
               if (verbose) {
-                logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+                Log_.info(~loc, ~name="Termination Analysis", (ppf, ()) =>
                   Format.fprintf(
                     ppf,
                     "Extend Function Table with @{<info>%s@} (%a) as it calls a progress function",
@@ -755,7 +751,7 @@ module ExtendFunctionTable = {
                functionTable
                |> FunctionTable.addLabelToKind(~functionName, ~label);
                if (verbose) {
-                 logInfo(~loc, ~name="Termination Analysis", (ppf, ()) =>
+                 Log_.info(~loc, ~name="Termination Analysis", (ppf, ()) =>
                    Format.fprintf(
                      ppf,
                      "@{<info>%s@} is parametric ~@{<info>%s@}=@{<info>%s@}",
@@ -835,7 +831,7 @@ module CheckExpressionWellFormed = {
                      functionTable
                      |> FunctionTable.addLabelToKind(~functionName, ~label);
                      if (verbose) {
-                       logInfo(
+                       Log_.info(
                          ~loc=body.exp_loc,
                          ~name="Termination Analysis",
                          (ppf, ()) =>
@@ -1041,7 +1037,7 @@ module Compile = {
       );
       newFunctionDefinition.body = Some(vb_expr |> expression(~ctx=newCtx));
       if (verbose) {
-        logInfo(~loc=pat_loc, ~name="Termination Analysis", (ppf, ()) =>
+        Log_.info(~loc=pat_loc, ~name="Termination Analysis", (ppf, ()) =>
           Format.fprintf(
             ppf,
             "Adding recursive definition @{<info>%s@}",
@@ -1272,7 +1268,7 @@ module Eval = {
       (~callStack, ~functionCallToInstantiate, ~functionCall, ~loc, ~state) =>
     if (callStack |> CallStack.hasFunctionCall(~functionCall)) {
       if (state.State.progress == NoProgress) {
-        logError(
+        Log_.error(
           ~loc,
           ~name="Error Termination",
           (ppf, ()) => {
@@ -1530,7 +1526,7 @@ module Eval = {
 
   let analyzeFunction = (~cache, ~functionTable, ~loc, functionName) => {
     if (verbose) {
-      log(
+      Log_.log(
         "@[<v 2>@,@{<warning>Termination Analysis@} for @{<info>%s@}@]@.",
         functionName,
       );

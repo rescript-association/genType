@@ -127,8 +127,8 @@ let readSourceDirs = (~configSources) => {
     | _ => ()
     };
   } else {
-    logItem("Warning: can't find source dirs: %s\n", sourceDirs);
-    logItem("Types for cross-references will not be found by genType.\n");
+    Log_.item("Warning: can't find source dirs: %s\n", sourceDirs);
+    Log_.item("Types for cross-references will not be found by genType.\n");
     dirs := readDirsFromConfig(~configSources);
   };
   {dirs: dirs^, pkgs};
@@ -143,8 +143,8 @@ let readBsBuild = () => {
     let decoded = Bsb_db_decode.read_build_file(bsBuild);
     Array.iter(
       (group: Bsb_db_decode.group) => {
-        logItem("XXX Read group\n");
-        logItem(
+        Log_.item("XXX Read group\n");
+        Log_.item(
           "XXX Modules: %s\n",
           group.modules |> Array.to_list |> String.concat(", "),
         );
@@ -152,7 +152,7 @@ let readBsBuild = () => {
       decoded,
     );
   } else {
-    logItem("Error: can't find bucklescript build file: %s\n", bsBuild);
+    Log_.item("Error: can't find bucklescript build file: %s\n", bsBuild);
     assert(false);
   };
 };
@@ -341,7 +341,7 @@ let resolveModule =
 let resolveGeneratedModule =
     (~config, ~outputFileRelative, ~resolver, moduleName) => {
   if (Debug.moduleResolution^) {
-    logItem(
+    Log_.item(
       "Resolve Generated Module: %s\n",
       moduleName |> ModuleName.toString,
     );
@@ -355,7 +355,7 @@ let resolveGeneratedModule =
       moduleName,
     );
   if (Debug.moduleResolution^) {
-    logItem("Import Path: %s\n", importPath |> ImportPath.dump);
+    Log_.item("Import Path: %s\n", importPath |> ImportPath.dump);
   };
   importPath;
 };
@@ -366,12 +366,12 @@ let resolveGeneratedModule =
 let importPathForReasonModuleName =
     (~config, ~outputFileRelative, ~resolver, moduleName) => {
   if (Debug.moduleResolution^) {
-    logItem("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
+    Log_.item("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
   };
   switch (config.shimsMap |> ModuleNameMap.find(moduleName)) {
   | shimModuleName =>
     if (Debug.moduleResolution^) {
-      logItem("ShimModuleName: %s\n", shimModuleName |> ModuleName.toString);
+      Log_.item("ShimModuleName: %s\n", shimModuleName |> ModuleName.toString);
     };
     let importPath =
       resolveModule(
@@ -382,7 +382,7 @@ let importPathForReasonModuleName =
         shimModuleName,
       );
     if (Debug.moduleResolution^) {
-      logItem("Import Path: %s\n", importPath |> ImportPath.dump);
+      Log_.item("Import Path: %s\n", importPath |> ImportPath.dump);
     };
     importPath;
   | exception Not_found =>
