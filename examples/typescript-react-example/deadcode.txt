@@ -1679,6 +1679,60 @@ File References
   ImportMyBanner.make: 1 references (ReasonComponent.re:18:4)
 
 
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
+  message.text is never used
+  <-- line 6
+  type message = {[@dead "message.text"] text: string};
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 10:3
+  point.x is never used
+  <-- line 10
+    [@dead "point.x"] x: int,
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 11:3
+  point.y is never used
+  <-- line 11
+    [@dead "point.y"] y: option(int),
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 65:5
+  variant.I is never used
+  <-- line 65
+    | [@dead "variant.I"] I(int)
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 66:5
+  variant.S is never used
+  <-- line 66
+    | [@dead "variant.S"] S(string);
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re 3:3
+  person.name is never used
+  <-- line 3
+    [@dead "person.name"] name: string,
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re 4:3
+  person.age is never used
+  <-- line 4
+    [@dead "person.age"] age: int,
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re 2:3
+  person.name is never used
+  <-- line 2
+    [@dead "person.name"] name: string,
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re 3:3
+  person.age is never used
+  <-- line 3
+    [@dead "person.age"] age: int,
+
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei 10:1
   toArray is never used
@@ -2033,198 +2087,6 @@ File References
   <-- line 109
   [@dead "eq"] let eq: (t('a), t('a), ('a, 'a) => bool) => bool;
 
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re 9:5
-  x is never used
-  <-- line 9
-  [@dead "x"] let x = 42;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re 4:7
-  InnerComponent.someValueSoModuleOffsetsAreShifted is never used
-  <-- line 4
-  [@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"]   let someValueSoModuleOffsetsAreShifted = 77;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re 10:5
-  exportSomething is never used
-  <-- line 10
-  [@dead "exportSomething"] let exportSomething = 10;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams1.re 4:5
-  exportSomething is never used
-  <-- line 4
-  [@dead "exportSomething"] let exportSomething = 10;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType2.re 7:5
-  convertT2 is never used
-  <-- line 7
-  [@dead "convertT2"] let convertT2 = (x: t2) => x;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re 18:5
-  innerStuffContents is never used
-  <-- line 18
-  [@dead "innerStuffContents"] let innerStuffContents = innerStuffContents;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re 42:5
-  make is never used
-  <-- line 42
-  [@dead "make"] let make = make;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re 9:5
-  testBeltArrayGet is never used
-  <-- line 9
-  [@dead "testBeltArrayGet"] let testBeltArrayGet = arr => Belt.(arr[3]);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re 11:5
-  testBeltArraySet is never used
-  <-- line 11
-  [@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Shadow.re 11:7
-  M.test is never used
-  <-- line 11
-  [@dead "M.test"]   let test = () => "a";
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 8:7
-  Universe.notExported is never used
-  <-- line 8
-  [@dead "Universe.notExported"]   let notExported = 33;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 14:9
-  Universe.Nested2.x is never used
-  <-- line 14
-  [@dead "Universe.Nested2.x"]     let x = 0;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 19:9
-  Universe.Nested2.y is never used
-  <-- line 19
-  [@dead "Universe.Nested2.y"]     let y = 2;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 25:11
-  Universe.Nested2.Nested3.x is never used
-  <-- line 25
-  [@dead "Universe.Nested2.Nested3.x"]       let x = 0;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 26:11
-  Universe.Nested2.Nested3.y is never used
-  <-- line 26
-  [@dead "Universe.Nested2.Nested3.y"]       let y = 1;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 27:11
-  Universe.Nested2.Nested3.z is never used
-  <-- line 27
-  [@dead "Universe.Nested2.Nested3.z"]       let z = 2;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 28:11
-  Universe.Nested2.Nested3.w is never used
-  <-- line 28
-  [@dead "Universe.Nested2.Nested3.w"]       let w = 3;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re 21:5
-  q is never used
-  <-- line 21
-  [@dead "q"] let q = 42;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei 7:1
-  r is never used
-  <-- line 7
-  [@dead "r"] let r: record;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 4:1
-  a is never used
-  <-- line 4
-  [@dead "a"] let a: t;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 2:5
-  fortytwo is never used
-  <-- line 2
-  [@dead "fortytwo"] let fortytwo = 42;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5
-  foo is never used
-  <-- line 19
-  [@dead "foo"] let foo = (x: someMethods) => x##threeargs(3, "a", 4);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 21:5
-  bar is never used
-  <-- line 21
-  [@dead "bar"] let bar = (x: someMethods) => {
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
-  message.text is never used
-  <-- line 6
-  type message = {[@dead "message.text"] text: string};
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 10:3
-  point.x is never used
-  <-- line 10
-    [@dead "point.x"] x: int,
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 11:3
-  point.y is never used
-  <-- line 11
-    [@dead "point.y"] y: option(int),
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 65:5
-  variant.I is never used
-  <-- line 65
-    | [@dead "variant.I"] I(int)
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 66:5
-  variant.S is never used
-  <-- line 66
-    | [@dead "variant.S"] S(string);
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re 3:3
-  person.name is never used
-  <-- line 3
-    [@dead "person.name"] name: string,
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re 4:3
-  person.age is never used
-  <-- line 4
-    [@dead "person.age"] age: int,
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re 2:3
-  person.name is never used
-  <-- line 2
-    [@dead "person.name"] name: string,
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re 3:3
-  person.age is never used
-  <-- line 3
-    [@dead "person.age"] age: int,
-
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 12:5
   typeWithVars.A is never used
@@ -2296,6 +2158,18 @@ File References
   t.name is never used
   <-- line 6
     [@dead "t.name"] name: string,
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re 9:5
+  x is never used
+  <-- line 9
+  [@dead "x"] let x = 42;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re 4:7
+  InnerComponent.someValueSoModuleOffsetsAreShifted is never used
+  <-- line 4
+  [@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"]   let someValueSoModuleOffsetsAreShifted = 77;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 51:5
@@ -2405,6 +2279,18 @@ File References
   <-- line 2
   type item = {[@dead "item.id"] id: int};
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re 10:5
+  exportSomething is never used
+  <-- line 10
+  [@dead "exportSomething"] let exportSomething = 10;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams1.re 4:5
+  exportSomething is never used
+  <-- line 4
+  [@dead "exportSomething"] let exportSomething = 10;
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType3.re 3:3
   t3.i is never used
@@ -2416,6 +2302,12 @@ File References
   t3.s is never used
   <-- line 4
     [@dead "t3.s"] s: string,
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType2.re 7:5
+  convertT2 is never used
+  <-- line 7
+  [@dead "convertT2"] let convertT2 = (x: t2) => x;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re 6:3
@@ -2435,11 +2327,41 @@ File References
   <-- line 11
   type toPayload = {[@dead "toPayload.result"] result: string};
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re 18:5
+  innerStuffContents is never used
+  <-- line 18
+  [@dead "innerStuffContents"] let innerStuffContents = innerStuffContents;
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re 28:17
   message.text is never used
   <-- line 28
   type message = {[@dead "message.text"] text: string};
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re 42:5
+  make is never used
+  <-- line 42
+  [@dead "make"] let make = make;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re 9:5
+  testBeltArrayGet is never used
+  <-- line 9
+  [@dead "testBeltArrayGet"] let testBeltArrayGet = arr => Belt.(arr[3]);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImmutableArray.re 11:5
+  testBeltArraySet is never used
+  <-- line 11
+  [@dead "testBeltArraySet"] let testBeltArraySet = arr => Belt.(arr[3] = 4);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Shadow.re 11:7
+  M.test is never used
+  <-- line 11
+  [@dead "M.test"]   let test = () => "a";
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 39:28
@@ -2555,6 +2477,48 @@ File References
   <-- line 3
     | [@dead "opaqueFromRecords.A"] A(Records.coord);
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 8:7
+  Universe.notExported is never used
+  <-- line 8
+  [@dead "Universe.notExported"]   let notExported = 33;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 14:9
+  Universe.Nested2.x is never used
+  <-- line 14
+  [@dead "Universe.Nested2.x"]     let x = 0;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 19:9
+  Universe.Nested2.y is never used
+  <-- line 19
+  [@dead "Universe.Nested2.y"]     let y = 2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 25:11
+  Universe.Nested2.Nested3.x is never used
+  <-- line 25
+  [@dead "Universe.Nested2.Nested3.x"]       let x = 0;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 26:11
+  Universe.Nested2.Nested3.y is never used
+  <-- line 26
+  [@dead "Universe.Nested2.Nested3.y"]       let y = 1;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 27:11
+  Universe.Nested2.Nested3.z is never used
+  <-- line 27
+  [@dead "Universe.Nested2.Nested3.z"]       let z = 2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 28:11
+  Universe.Nested2.Nested3.w is never used
+  <-- line 28
+  [@dead "Universe.Nested2.Nested3.w"]       let w = 3;
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 46:7
   Universe.variant.A is never used
@@ -2591,6 +2555,12 @@ File References
   <-- line 13
       type inner = {[@dead "Outer.Inner.inner.inner"] inner: string};
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re 21:5
+  q is never used
+  <-- line 21
+  [@dead "q"] let q = 42;
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases.re 3:20
   Outer.Inner.innerT.inner is never used
@@ -2615,6 +2585,12 @@ File References
   <-- line 4
     [@dead "record.y"] y: string,
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei 7:1
+  r is never used
+  <-- line 7
+  [@dead "r"] let r: record;
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Docstrings.re 62:5
   t.B is never used
@@ -2626,6 +2602,30 @@ File References
   t.B is never used
   <-- line 3
     | [@dead "t.B"] B;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 4:1
+  a is never used
+  <-- line 4
+  [@dead "a"] let a: t;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 2:5
+  fortytwo is never used
+  <-- line 2
+  [@dead "fortytwo"] let fortytwo = 42;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5
+  foo is never used
+  <-- line 19
+  [@dead "foo"] let foo = (x: someMethods) => x##threeargs(3, "a", 4);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 21:5
+  bar is never used
+  <-- line 21
+  [@dead "bar"] let bar = (x: someMethods) => {
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 2:5

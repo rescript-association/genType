@@ -63,8 +63,7 @@ let reportResults = (~posInAliveWhitelist) => {
     item |> onItem;
     item |> WriteDeadAnnotations.onDeadItem(~ppf);
   };
-  reportDead(~analysisKind=Value, ~onDeadCode, ~posInAliveWhitelist);
-  reportDead(~analysisKind=Type, ~onDeadCode, ~posInAliveWhitelist);
+  reportDead(~onDeadCode, ~posInAliveWhitelist);
   WriteDeadAnnotations.write();
 };
 
