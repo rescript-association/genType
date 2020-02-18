@@ -12,8 +12,8 @@ function handleClick(_event, _self) {
   return /* () */0;
 }
 
-function make($staropt$star, _children) {
-  var message = $staropt$star !== undefined ? $staropt$star : "default message";
+function make(messageOpt, _children) {
+  var message = messageOpt !== undefined ? messageOpt : "default message";
   return {
           debugName: component.debugName,
           reactClassInternal: component.reactClassInternal,
