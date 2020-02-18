@@ -503,7 +503,7 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
+let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
@@ -547,7 +547,7 @@ let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
     };
   };
 
-  if (analysisKind == Value && verbose) {
+  if (verbose) {
     GenTypeCommon.logItem("\nFile References\n\n");
     fileReferences
     |> FileHash.iter((file, files) =>
@@ -562,12 +562,19 @@ let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
        );
   };
 
-  let items =
+  let items0 =
     Hashtbl.fold(
-      (pos, path, items) => [{analysisKind, pos, path}, ...items],
-      analysisKind == Value ? valueDecs : typeDecs,
+      (pos, path, items) => [{analysisKind: Value, pos, path}, ...items],
+      valueDecs,
       [],
     );
+  let items1 =
+    Hashtbl.fold(
+      (pos, path, items) => [{analysisKind: Type, pos, path}, ...items],
+      typeDecs,
+      items0,
+    );
+
   let orderedFiles = Hashtbl.create(256);
   iterFilesFromRootsToLeaves(
     {
@@ -608,8 +615,8 @@ let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
       (fname2 |> findPosition, lnum1, bol1, cnum1, path2),
     );
   };
-  
-  items
+
+  items1
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
   |> List.fold_left(folder, [])
   |> List.iter(item => item |> onDeadCode);
