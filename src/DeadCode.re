@@ -4,16 +4,23 @@ let (+++) = Filename.concat;
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
 
-let loadFile = (~sourceFile, cmtFilePath) => {
+let loadFile = cmtFilePath => {
   lastPos := Lexing.dummy_pos;
   if (verbose) {
     Log_.item("Scanning %s\n", cmtFilePath);
   };
+
+  let {Cmt_format.cmt_annots, cmt_sourcefile, cmt_value_dependencies} =
+    Cmt_format.read_cmt(cmtFilePath);
+
+  let sourceFile =
+    switch (cmt_sourcefile) {
+    | None => assert(false)
+    | Some(sourceFile) => sourceFile
+    };
+  FileHash.addFile(fileReferences, sourceFile);
   currentSrc := sourceFile;
   currentModuleName := getModuleName(sourceFile);
-
-  let {Cmt_format.cmt_annots, cmt_value_dependencies} =
-    Cmt_format.read_cmt(cmtFilePath);
 
   if (dce^) {
     switch (cmt_annots) {
@@ -68,29 +75,8 @@ let reportResults = (~posInAliveWhitelist) => {
 };
 
 let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
-  let extension = Filename.extension(cmtFile);
-  let moduleName = cmtFile |> getModuleName;
-  let sourceFile = ext =>
-    (GenTypeCommon.projectRoot^ +++ sourceDir +++ moduleName) ++ ext;
-  let sourceFileRE = sourceFile(extension == ".cmti" ? ".rei" : ".re");
-  let sourceFileML = sourceFile(extension == ".cmti" ? ".mli" : ".ml");
-  let sourceFile =
-    if (!Sys.file_exists(sourceFileRE)) {
-      if (!Sys.file_exists(sourceFileML)) {
-        Log_.item(
-          "XXX sourceFile does not exist: %s\n",
-          Filename.basename(sourceFileRE),
-        );
-        assert(false);
-      };
-      sourceFileML;
-    } else {
-      sourceFileRE;
-    };
-
-  FileHash.addFile(fileReferences, sourceFile);
   let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  cmtFilePath |> loadFile(~sourceFile);
+  cmtFilePath |> loadFile;
 };
 
 let aliveWhitelist = ["DeadTestWhitelist"];
@@ -115,8 +101,7 @@ let runAnalysis = (~cmtFileOpt) => {
   switch (cmtFileOpt, analyzeTermination^) {
   | (Some(cmtFile), true) =>
     let cmtFilePath = cmtFile;
-    let sourceFile = Filename.basename(cmtFile) ++ ".ml";
-    cmtFilePath |> loadFile(~sourceFile);
+    cmtFilePath |> loadFile;
     Arnold.reportResults();
   | _ =>
     Paths.setProjectRoot();
