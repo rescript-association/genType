@@ -588,6 +588,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
   let compareItemsUsingDependencies =
       (
         {
+          analysisKind: kind1,
           path: path1,
           pos: {
             pos_fname: fname1,
@@ -597,6 +598,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
           },
         },
         {
+          analysisKind: kind2,
           path: path2,
           pos: {
             pos_fname: fname2,
@@ -611,8 +613,8 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
     /* From the root of the file dependency DAG to the leaves.
        From the bottom of the file to the top */
     compare(
-      (fname1 |> findPosition, lnum2, bol2, cnum2, path1),
-      (fname2 |> findPosition, lnum1, bol1, cnum1, path2),
+      (fname1 |> findPosition, lnum2, bol2, cnum2, kind1, path1, kind1),
+      (fname2 |> findPosition, lnum1, bol1, cnum1, kind2, path2, kind2),
     );
   };
 
