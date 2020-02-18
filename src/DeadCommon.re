@@ -423,8 +423,19 @@ module WriteDeadAnnotations = {
     switch (annotation) {
     | None => original
     | Some({item: {pos, path}, useColumn}) =>
-      let annotationStr = "[@" ++ deadAnnotation ++ " \"" ++ path ++ "\"] ";
-      if (useColumn) {
+      let isReason =
+        Filename.check_suffix(pos.pos_fname, ".re")
+        || Filename.check_suffix(pos.pos_fname, ".rei");
+      let annotationStr =
+        "["
+        ++ (isReason ? "@" : "@@")
+        ++ deadAnnotation
+        ++ " \""
+        ++ path
+        ++ "\"] ";
+      if (!isReason) {
+        original ++ " (* " ++ annotationStr ++ "*)";
+      } else if (useColumn) {
         let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
         let originalLen = String.length(original);
         assert(String.length(original) >= col);
