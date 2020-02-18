@@ -47,29 +47,24 @@ let loadFile = (~sourceFile, cmtFilePath) => {
 };
 
 let reportResults = (~posInAliveWhitelist) => {
-  let onItem = ({pos, path}) => {
-    print_string(pos |> posToString(~printCol=false, ~shortFile=false));
-    print_string(path);
-    print_newline();
+  let ppf = Format.std_formatter;
+  let onItem = ({pos, path}, ~analysisKind) => {
+    let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
+    let name =
+      switch (analysisKind) {
+      | Value => "Warning Dead Value"
+      | Type => "Warning Dead Type"
+      };
+    GenTypeCommon.logInfo(~loc, ~name, (ppf, ()) =>
+      Format.fprintf(ppf, "@{<info>%s@} is never used", path)
+    );
   };
-  let onDeadCode = (~useColumn, item) => {
-    onItem(item);
-    item |> WriteDeadAnnotations.onDeadItem(~useColumn);
+  let onDeadCode = (~analysisKind, item) => {
+    item |> onItem(~analysisKind);
+    item |> WriteDeadAnnotations.onDeadItem(~ppf, ~analysisKind);
   };
-  Printf.printf("\n%s:\n", "UNUSED EXPORTED VALUES");
-  reportDead(
-    ~analysisKind=Value,
-    ~onDeadCode,
-    ~useColumn=false,
-    ~posInAliveWhitelist,
-  );
-  Printf.printf("\n%s:\n", "UNUSED CONSTRUCTORS/RECORD FIELDS");
-  reportDead(
-    ~analysisKind=Type,
-    ~onDeadCode,
-    ~useColumn=true,
-    ~posInAliveWhitelist,
-  );
+  reportDead(~analysisKind=Value, ~onDeadCode, ~posInAliveWhitelist);
+  reportDead(~analysisKind=Type, ~onDeadCode, ~posInAliveWhitelist);
   WriteDeadAnnotations.write();
 };
 
@@ -114,7 +109,10 @@ let posInAliveWhitelist = (pos: Lexing.position) => {
   Hashtbl.mem(aliveWhitelistTable, moduleName);
 };
 
-let runAnalysis = (~cmtFileOpt) =>
+let runAnalysis = (~cmtFileOpt) => {
+  if (dce^ || analyzeTermination^) {
+    GenTypeCommon.Color.setup();
+  };
   switch (cmtFileOpt, analyzeTermination^) {
   | (Some(cmtFile), true) =>
     let cmtFilePath = cmtFile;
@@ -154,6 +152,7 @@ let runAnalysis = (~cmtFileOpt) =>
       Arnold.reportResults();
     };
   };
+};
 
 let runTerminationAnalysis = (~cmtFileOpt) => {
   dce := false;

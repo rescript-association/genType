@@ -480,7 +480,8 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~useColumn, {pos, path} as item) => {
+  let onDeadItem = (~ppf, ~analysisKind, {pos, path} as item) => {
+    let useColumn = analysisKind == Type;
     let fileName = pos.Lexing.pos_fname;
     if (fileName != currentFile^) {
       writeFile(currentFile^, currentFileLines^);
@@ -490,8 +491,9 @@ module WriteDeadAnnotations = {
     let indexInLines = pos.Lexing.pos_lnum - 1;
     let line = currentFileLines^[indexInLines];
     line.annotation = Some({item, useColumn});
-    Printf.printf(
-      "<-- line %d\n%s\n",
+    Format.fprintf(
+      ppf,
+      "  <-- line %d@.  %s@.",
       pos.Lexing.pos_lnum,
       currentFileLines^[indexInLines] |> lineToString,
     );
@@ -500,8 +502,7 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let reportDead =
-    (~analysisKind, ~onDeadCode, ~useColumn, ~posInAliveWhitelist) => {
+let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
@@ -609,5 +610,5 @@ let reportDead =
   items
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
   |> List.fold_left(folder, [])
-  |> List.iter(item => item |> onDeadCode(~useColumn));
+  |> List.iter(item => item |> onDeadCode(~analysisKind));
 };

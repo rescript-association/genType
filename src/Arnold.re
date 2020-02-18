@@ -1753,7 +1753,6 @@ let traverseAst = (~valueBindingsTable) => {
 };
 
 let processStructure = (structure: Typedtree.structure) => {
-  GenTypeCommon.Color.setup();
   Stats.newFile();
   let valueBindingsTable = Hashtbl.create(1);
   let traverseAst = traverseAst(~valueBindingsTable);
