@@ -48,7 +48,7 @@ let loadFile = (~sourceFile, cmtFilePath) => {
 
 let reportResults = (~posInAliveWhitelist) => {
   let ppf = Format.std_formatter;
-  let onItem = ({pos, path}, ~analysisKind) => {
+  let onItem = ({analysisKind, pos, path}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let name =
       switch (analysisKind) {
@@ -59,9 +59,9 @@ let reportResults = (~posInAliveWhitelist) => {
       Format.fprintf(ppf, "@{<info>%s@} is never used", path)
     );
   };
-  let onDeadCode = (~analysisKind, item) => {
-    item |> onItem(~analysisKind);
-    item |> WriteDeadAnnotations.onDeadItem(~ppf, ~analysisKind);
+  let onDeadCode = item => {
+    item |> onItem;
+    item |> WriteDeadAnnotations.onDeadItem(~ppf);
   };
   reportDead(~analysisKind=Value, ~onDeadCode, ~posInAliveWhitelist);
   reportDead(~analysisKind=Type, ~onDeadCode, ~posInAliveWhitelist);
