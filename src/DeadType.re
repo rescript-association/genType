@@ -20,10 +20,7 @@ let collectTypeExport =
 
   switch (type_kind) {
   | Type_record(l, _) =>
-    List.iter(
-      ({Types.ld_id, ld_loc, ld_type}) => save(ld_id, ld_loc),
-      l,
-    )
+    List.iter(({Types.ld_id, ld_loc, ld_type}) => save(ld_id, ld_loc), l)
   | Type_variant(l) =>
     List.iter(({Types.cd_id, cd_loc}) => save(cd_id, cd_loc), l)
   | _ => ()
@@ -32,7 +29,7 @@ let collectTypeExport =
 
 let addTypeReference = (~posDeclaration, ~posUsage) => {
   if (verbose) {
-    GenTypeCommon.logItem(
+    Log_.item(
       "[type] addTypeReference %s --> %s\n",
       posUsage |> posToString,
       posDeclaration |> posToString,

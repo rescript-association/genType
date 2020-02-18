@@ -15,7 +15,7 @@ let translateTypeDeclarationFromTypes =
   let typeName = Ident.name(id);
   let typeVars = type_params |> TypeVars.extractFromTypeExpr;
   if (Debug.translation^) {
-    logItem("Translate Types.type_declaration %s\n", typeName);
+    Log_.item("Translate Types.type_declaration %s\n", typeName);
   };
 
   let declarationKind =
@@ -144,7 +144,7 @@ and translateSignatureFromTypes =
     )
     : list(Translation.t) => {
   if (Debug.translation^) {
-    logItem("Translate Types.signature\n");
+    Log_.item("Translate Types.signature\n");
   };
   let moduleItemGen = Runtime.moduleItemGen();
   signature

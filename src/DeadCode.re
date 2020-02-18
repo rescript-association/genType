@@ -7,7 +7,7 @@ let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
 let loadFile = (~sourceFile, cmtFilePath) => {
   lastPos := Lexing.dummy_pos;
   if (verbose) {
-    GenTypeCommon.logItem("Scanning %s\n", cmtFilePath);
+    Log_.item("Scanning %s\n", cmtFilePath);
   };
   currentSrc := sourceFile;
   currentModuleName := getModuleName(sourceFile);
@@ -55,7 +55,7 @@ let reportResults = (~posInAliveWhitelist) => {
       | Value => "Warning Dead Value"
       | Type => "Warning Dead Type"
       };
-    GenTypeCommon.logInfo(~loc, ~name, (ppf, ()) =>
+    Log_.info(~loc, ~name, (ppf, ()) =>
       Format.fprintf(ppf, "@{<info>%s@} is never used", path)
     );
   };
@@ -77,7 +77,7 @@ let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
   let sourceFile =
     if (!Sys.file_exists(sourceFileRE)) {
       if (!Sys.file_exists(sourceFileML)) {
-        GenTypeCommon.logItem(
+        Log_.item(
           "XXX sourceFile does not exist: %s\n",
           Filename.basename(sourceFileRE),
         );
@@ -110,7 +110,7 @@ let posInAliveWhitelist = (pos: Lexing.position) => {
 
 let runAnalysis = (~cmtFileOpt) => {
   if (dce^ || analyzeTermination^) {
-    GenTypeCommon.Color.setup();
+    Log_.Color.setup();
   };
   switch (cmtFileOpt, analyzeTermination^) {
   | (Some(cmtFile), true) =>

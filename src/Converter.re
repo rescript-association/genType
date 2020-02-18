@@ -363,7 +363,7 @@ let typeGetConverterNormalized =
   let finalConverter =
     circular^ != "" ? CircularC(circular^, converter) : converter;
   if (Debug.converter^) {
-    logItem(
+    Log_.item(
       "Converter type0:%s converter:%s\n",
       type0 |> EmitType.typeToString(~config, ~typeNameIsInterface),
       finalConverter |> toString,

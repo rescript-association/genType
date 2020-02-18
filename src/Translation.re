@@ -311,7 +311,7 @@ let translatePrimitive =
     )
     : t => {
   if (Debug.translation^) {
-    logItem("Translate Primitive\n");
+    Log_.item("Translate Primitive\n");
   };
   let valueName =
     switch (valueDescription.val_prim) {

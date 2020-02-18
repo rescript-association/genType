@@ -41,7 +41,7 @@ let rec isInternal = dep =>
 let fromPath = (~config, ~typeEnv, path) => {
   let dep = path |> fromPath1(~config, ~typeEnv);
   if (Debug.typeResolution^) {
-    logItem(
+    Log_.item(
       "fromPath path:%s typeEnv:%s %s resolved:%s\n",
       path |> Path.name,
       typeEnv |> TypeEnv.toString,

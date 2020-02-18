@@ -765,7 +765,7 @@ let translateTypeExprFromTypes =
 
   if (Debug.dependencies^) {
     translation.dependencies
-    |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString));
+    |> List.iter(dep => Log_.item("Dependency: %s\n", dep |> depToString));
   };
   translation;
 };
@@ -779,7 +779,7 @@ let translateTypeExprsFromTypes = (~config, ~typeEnv, typeExprs) => {
     translations
     |> List.iter(translation =>
          translation.dependencies
-         |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString))
+         |> List.iter(dep => Log_.item("Dependency: %s\n", dep |> depToString))
        );
   };
   translations;

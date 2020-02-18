@@ -145,12 +145,12 @@ let emitTranslation =
 let readCmt = cmtFile =>
   try(Cmt_format.read_cmt(cmtFile)) {
   | Cmi_format.Error(_) =>
-    logItem("Error loading %s\n\n", cmtFile);
-    logItem(
+    Log_.item("Error loading %s\n\n", cmtFile);
+    Log_.item(
       "It looks like you might be using an old version of Bucklescript, or have stale compilation artifacts.\n",
     );
-    logItem("Check that bs-platform is version 6.2.x or later.\n");
-    logItem("And try to clean and rebuild.\n\n");
+    Log_.item("Check that bs-platform is version 6.2.x or later.\n");
+    Log_.item("And try to clean and rebuild.\n\n");
     assert(false);
   };
 

@@ -350,7 +350,7 @@ let translateCoreType =
 
   if (Debug.dependencies^) {
     translation.dependencies
-    |> List.iter(dep => logItem("Dependency: %s\n", dep |> depToString));
+    |> List.iter(dep => Log_.item("Dependency: %s\n", dep |> depToString));
   };
   translation;
 };

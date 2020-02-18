@@ -39,7 +39,7 @@ let toString = typeEnv => typeEnv.name;
 
 let newModule = (~name, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.newModule %s %s\n", typeEnv |> toString, name);
+    Log_.item("TypeEnv.newModule %s %s\n", typeEnv |> toString, name);
   };
   let newTypeEnv = Some(typeEnv) |> createTypeEnv(~name);
   typeEnv.map = typeEnv.map |> StringMap.add(name, Module(newTypeEnv));
@@ -48,7 +48,7 @@ let newModule = (~name, typeEnv) => {
 
 let newModuleType = (~name, ~signature, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.newModuleType %s %s\n", typeEnv |> toString, name);
+    Log_.item("TypeEnv.newModuleType %s %s\n", typeEnv |> toString, name);
   };
   let newTypeEnv = Some(typeEnv) |> createTypeEnv(~name);
   typeEnv.mapModuleTypes =
@@ -58,7 +58,7 @@ let newModuleType = (~name, ~signature, typeEnv) => {
 
 let newType = (~name, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem("TypeEnv.newType %s %s\n", typeEnv |> toString, name);
+    Log_.item("TypeEnv.newType %s %s\n", typeEnv |> toString, name);
   };
   typeEnv.map = typeEnv.map |> StringMap.add(name, Type(name));
 };
@@ -74,7 +74,7 @@ let expandAliasToExternalModule = (~name, typeEnv) =>
   switch (typeEnv |> getModule(~name)) {
   | Some({moduleEquation: Some({internal: false, dep})}) =>
     if (Debug.typeEnv^) {
-      logItem(
+      Log_.item(
         "TypeEnv.expandAliasToExternalModule %s %s aliased to %s\n",
         typeEnv |> toString,
         name,
@@ -87,7 +87,7 @@ let expandAliasToExternalModule = (~name, typeEnv) =>
 
 let addModuleEquation = (~dep, ~internal, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem(
+    Log_.item(
       "Typenv.addModuleEquation %s %s dep:%s\n",
       typeEnv |> toString,
       internal ? "Internal" : "External",
@@ -134,7 +134,7 @@ let applyTypeEquations = (~config, ~path, typeEnv) =>
     switch (typeEnv.typeEquations |> StringMap.find(id |> Ident.name)) {
     | type_ =>
       if (Debug.typeResolution^) {
-        logItem(
+        Log_.item(
           "Typenv.applyTypeEquations %s name:%s type_:%s\n",
           typeEnv |> toString,
           id |> Ident.name,
@@ -163,7 +163,7 @@ let rec lookupModuleType = (~path, typeEnv) =>
   switch (path) {
   | [moduleTypeName] =>
     if (Debug.typeEnv^) {
-      logItem(
+      Log_.item(
         "Typenv.lookupModuleType %s moduleTypeName:%s\n",
         typeEnv |> toString,
         moduleTypeName,
@@ -179,7 +179,7 @@ let rec lookupModuleType = (~path, typeEnv) =>
     };
   | [moduleName, ...path1] =>
     if (Debug.typeEnv^) {
-      logItem(
+      Log_.item(
         "Typenv.lookupModuleType %s moduleName:%s\n",
         typeEnv |> toString,
         moduleName,
@@ -206,7 +206,7 @@ let rec pathToList = path =>
 
 let lookupModuleTypeSignature = (~path, typeEnv) => {
   if (Debug.typeEnv^) {
-    logItem(
+    Log_.item(
       "TypeEnv.lookupModuleTypeSignature %s %s\n",
       typeEnv |> toString,
       path |> Path.name,

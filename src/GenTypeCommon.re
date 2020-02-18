@@ -10,7 +10,7 @@ include Config;
 
 let logNotImplemented = x =>
   if (Debug.notImplemented^) {
-    logItem("Not Implemented: %s\n", x);
+    Log_.item("Not Implemented: %s\n", x);
   };
 
 type optional =
