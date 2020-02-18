@@ -60,8 +60,8 @@ function testCallNamedArgs(foo, a, b) {
   return Curry._2(foo, a, b);
 }
 
-function testDefaultArgs($staropt$star, y) {
-  var x = $staropt$star !== undefined ? $staropt$star : 3;
+function testDefaultArgs(xOpt, y) {
+  var x = xOpt !== undefined ? xOpt : 3;
   return x + y | 0;
 }
 
