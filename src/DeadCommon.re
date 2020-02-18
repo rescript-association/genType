@@ -405,6 +405,7 @@ module ProcessDeadAnnotations = {
 };
 
 type item = {
+  analysisKind,
   pos: Lexing.position,
   path: string,
 };
@@ -480,7 +481,7 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~ppf, ~analysisKind, {pos, path} as item) => {
+  let onDeadItem = (~ppf, {analysisKind, pos, path} as item) => {
     let useColumn = analysisKind == Type;
     let fileName = pos.Lexing.pos_fname;
     if (fileName != currentFile^) {
@@ -506,7 +507,7 @@ let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let folder = (items, {pos, path}) => {
+  let folder = (items, {analysisKind, pos, path}) => {
     switch (
       pos
       |> PosHash.findSet(
@@ -524,7 +525,7 @@ let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
-        [{pos, path: pathWithoutHead(path)}, ...items];
+        [{analysisKind, pos, path: pathWithoutHead(path)}, ...items];
       } else {
         if (verbose && analysisKind == Value) {
           let refsString =
@@ -563,7 +564,7 @@ let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
 
   let items =
     Hashtbl.fold(
-      (pos, path, items) => [{pos, path}, ...items],
+      (pos, path, items) => [{analysisKind, pos, path}, ...items],
       analysisKind == Value ? valueDecs : typeDecs,
       [],
     );
@@ -607,8 +608,9 @@ let reportDead = (~analysisKind, ~onDeadCode, ~posInAliveWhitelist) => {
       (fname2 |> findPosition, lnum1, bol1, cnum1, path2),
     );
   };
+  
   items
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
   |> List.fold_left(folder, [])
-  |> List.iter(item => item |> onDeadCode(~analysisKind));
+  |> List.iter(item => item |> onDeadCode);
 };
