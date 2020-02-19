@@ -96,17 +96,32 @@ let posInAliveWhitelist = (pos: Lexing.position) => {
   Hashtbl.mem(aliveWhitelistTable, moduleName);
 };
 
-let runAnalysis = (~cmtFileOpt) => {
+let runAnalysis = (~cmtRoot) => {
   if (dce^ || analyzeTermination^) {
     Log_.Color.setup();
   };
-  switch (cmtFileOpt, dce^) {
-  | (Some(cmtFile), true) =>
-    let cmtFilePath = cmtFile;
-    cmtFilePath |> loadCmtFile;
-    reportResults(~posInAliveWhitelist);
+  switch (cmtRoot) {
+  | Some(root) =>
+    let rec walkSubDirs = dir => {
+      let absDir = dir == "" ? root : root +++ dir;
+      if (Sys.file_exists(absDir)) {
+        if (Sys.is_directory(absDir)) {
+          absDir |> Sys.readdir |> Array.iter(d => walkSubDirs(dir +++ d));
+        } else if (Filename.check_suffix(absDir, ".cmt")
+                   || Filename.check_suffix(absDir, ".cmti")) {
+          absDir |> loadCmtFile;
+        };
+      };
+    };
+    walkSubDirs("");
+    if (dce^) {
+      reportResults(~posInAliveWhitelist);
+    };
+    if (analyzeTermination^) {
+      Arnold.reportResults();
+    };
 
-  | _ =>
+  | None =>
     Paths.setProjectRoot();
     let lib_bs = {
       GenTypeCommon.projectRoot^ +++ "lib" +++ "bs";
@@ -145,8 +160,8 @@ let runAnalysis = (~cmtFileOpt) => {
   };
 };
 
-let runTerminationAnalysis = (~cmtFileOpt) => {
+let runTerminationAnalysis = (~cmtRoot) => {
   dce := false;
   analyzeTermination := true;
-  runAnalysis(~cmtFileOpt);
+  runAnalysis(~cmtRoot);
 };

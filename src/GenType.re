@@ -14,7 +14,7 @@ type cliCommand =
   | DCE(option(string))
   | NoOp
   | Rm(string)
-  | Termination;
+  | Termination(option(string));
 
 let cli = () => {
   let bsVersion = ref(None);
@@ -46,11 +46,11 @@ let cli = () => {
   and setClean = () => {
     Clean |> setCliCommand;
   }
-  and setDCE = cmtFile => {
-    DCE(cmtFile) |> setCliCommand;
+  and setDCE = cmtRoot => {
+    DCE(cmtRoot) |> setCliCommand;
   }
-  and setTermination = () => {
-    Termination |> setCliCommand;
+  and setTermination = cmtRoot => {
+    Termination(cmtRoot) |> setCliCommand;
   }
   and speclist = [
     (
@@ -65,9 +65,18 @@ let cli = () => {
     (
       "-dce-cmt",
       Arg.String(s => setDCE(Some(s))),
-      "file.cmt experimental DCE",
+      "root_path experimental DCE for all the .cmt files under the root path",
     ),
-    ("-termination", Arg.Unit(setTermination), "experimental termination"),
+    (
+      "-termination",
+      Arg.Unit(() => setTermination(None)),
+      "experimental termination",
+    ),
+    (
+      "-termination-cmt",
+      Arg.String(s => setTermination(Some(s))),
+      "root_path experimental termination for all the .cmt files under the root path",
+    ),
     (
       "-version",
       Arg.Unit(versionAndExit),
@@ -150,8 +159,8 @@ let cli = () => {
       };
       exit(0);
 
-    | DCE(cmtFileOpt) => DeadCode.runAnalysis(~cmtFileOpt)
-    | Termination => DeadCode.runTerminationAnalysis(~cmtFileOpt=None)
+    | DCE(cmtRoot) => DeadCode.runAnalysis(~cmtRoot)
+    | Termination(cmtRoot) => DeadCode.runTerminationAnalysis(~cmtRoot)
     };
 
   Arg.parse(speclist, print_endline, usage);
