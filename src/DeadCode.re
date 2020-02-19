@@ -4,7 +4,7 @@ let (+++) = Filename.concat;
 
 let getModuleName = fn => fn |> Paths.getModuleName |> ModuleName.toString;
 
-let loadFile = cmtFilePath => {
+let loadCmtFile = cmtFilePath => {
   lastPos := Lexing.dummy_pos;
   if (verbose) {
     Log_.item("Scanning %s\n", cmtFilePath);
@@ -81,11 +81,6 @@ let reportResults = (~posInAliveWhitelist) => {
   WriteDeadAnnotations.write();
 };
 
-let processCmt = (~libBsSourceDir, ~sourceDir, cmtFile) => {
-  let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-  cmtFilePath |> loadFile;
-};
-
 let aliveWhitelist = ["DeadTestWhitelist"];
 let aliveWhitelistTable = {
   let tbl = Hashtbl.create(1);
@@ -108,7 +103,7 @@ let runAnalysis = (~cmtFileOpt) => {
   switch (cmtFileOpt, dce^) {
   | (Some(cmtFile), true) =>
     let cmtFilePath = cmtFile;
-    cmtFilePath |> loadFile;
+    cmtFilePath |> loadCmtFile;
     reportResults(~posInAliveWhitelist);
 
   | _ =>
@@ -133,7 +128,11 @@ let runAnalysis = (~cmtFileOpt) => {
                   Filename.check_suffix(x, ".cmt")
                   || Filename.check_suffix(x, ".cmti")
                 );
-           cmtFiles |> List.iter(processCmt(~libBsSourceDir, ~sourceDir));
+           cmtFiles
+           |> List.iter(cmtFile => {
+                let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
+                cmtFilePath |> loadCmtFile;
+              });
          }
        );
 
