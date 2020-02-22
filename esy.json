@@ -14,7 +14,7 @@
     "clean": "dune clean -p #{self.name}"
   },
   "esy": {
-    "build": "dune build -p #{self.name} @check",
+    "build": "dune build @check @all -p #{self.name}",
     "release": {
       "bin": [
         "gentype.exe"
