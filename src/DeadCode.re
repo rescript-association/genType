@@ -27,11 +27,21 @@ let rec collectExportFromSignatureItem =
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      export(~analysisKind=Value, ~path, ~id, ~loc=val_loc);
+      export(
+        ~analysisKind=Value,
+        ~path,
+        ~id,
+        ~implementationWithInterface,
+        ~loc=val_loc,
+      );
     };
   | Sig_type(id, t, _) =>
-    if (analyzeTypes^ && !implementationWithInterface) {
-      DeadType.collectTypeExport(~path=[id, ...path], t);
+    if (analyzeTypes^) {
+      DeadType.collectTypeExport(
+        ~implementationWithInterface,
+        ~path=[id, ...path],
+        t,
+      );
     }
   | (
       Sig_module(id, {Types.md_type: moduleType}, _) |
@@ -136,13 +146,13 @@ let reportResults = (~posInAliveWhitelist) => {
   let ppf = Format.std_formatter;
   let onItem = ({analysisKind, pos, path}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
-    let name =
+    let (name, message) =
       switch (analysisKind) {
-      | Value => "Warning Dead Value"
-      | Type => "Warning Dead Type"
+      | Value => ("Warning Dead Value", "is never used")
+      | Type => ("Warning Dead Type", "is never used to construct a value")
       };
     Log_.info(~loc, ~name, (ppf, ()) =>
-      Format.fprintf(ppf, "@{<info>%s@} is never used", path)
+      Format.fprintf(ppf, "@{<info>%s@} %s", path, message)
     );
   };
   let onDeadCode = item => {

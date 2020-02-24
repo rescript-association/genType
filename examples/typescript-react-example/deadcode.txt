@@ -938,6 +938,8 @@
   clean FirstClassModulesInterface.re:8:18
   [type] clean FirstClassModulesInterface.re:3:2
   [type] clean FirstClassModulesInterface.re:2:2
+  [type] export x FirstClassModulesInterface.re:2:2
+  [type] export y FirstClassModulesInterface.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
   addValueReference Unboxed.re:12:4 --> Unboxed.re:12:14
   addValueReference Unboxed.re:24:4 --> Unboxed.re:24:14
@@ -1038,6 +1040,8 @@
   clean DeadTypeTest.re:4:4
   [type] clean DeadTypeTest.re:3:4
   [type] clean DeadTypeTest.re:2:4
+  [type] export A DeadTypeTest.re:2:4
+  [type] export B DeadTypeTest.re:3:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
@@ -1649,12 +1653,15 @@ File References
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
   DeadTestWhitelist.x: 0 references ()
+  TODO: mark DeadTypeTest.t.B as dead in the implementation
   ExportWithRename.make: 1 references (_none_:1:-1)
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
   FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
   FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4)
   FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24)
   FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:6)
+  TODO: mark FirstClassModulesInterface.record.y as dead in the implementation
+  TODO: mark FirstClassModulesInterface.record.x as dead in the implementation
   Hooks.aComponentWithChildren: 1 references (_none_:1:-1)
   Hooks.functionReturningReactElement: 1 references (_none_:1:-1)
   Hooks.polymorphicComponent: 1 references (_none_:1:-1)
@@ -1681,55 +1688,55 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
-  message.text is never used
+  message.text is never used to construct a value
   <-- line 6
   type message = {[@dead "message.text"] text: string};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 10:3
-  point.x is never used
+  point.x is never used to construct a value
   <-- line 10
     [@dead "point.x"] x: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 11:3
-  point.y is never used
+  point.y is never used to construct a value
   <-- line 11
     [@dead "point.y"] y: option(int),
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 65:5
-  variant.I is never used
+  variant.I is never used to construct a value
   <-- line 65
     | [@dead "variant.I"] I(int)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 66:5
-  variant.S is never used
+  variant.S is never used to construct a value
   <-- line 66
     | [@dead "variant.S"] S(string);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re 3:3
-  person.name is never used
+  person.name is never used to construct a value
   <-- line 3
     [@dead "person.name"] name: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHooks.re 4:3
-  person.age is never used
+  person.age is never used to construct a value
   <-- line 4
     [@dead "person.age"] age: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re 2:3
-  person.name is never used
+  person.name is never used to construct a value
   <-- line 2
     [@dead "person.name"] name: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportHookDefault.re 3:3
-  person.age is never used
+  person.age is never used to construct a value
   <-- line 3
     [@dead "person.age"] age: int,
 
@@ -2089,73 +2096,73 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 12:5
-  typeWithVars.A is never used
+  typeWithVars.A is never used to construct a value
   <-- line 12
     | [@dead "typeWithVars.A"] A('x, 'y)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 13:5
-  typeWithVars.B is never used
+  typeWithVars.B is never used to construct a value
   <-- line 13
     | [@dead "typeWithVars.B"] B('z);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 35:23
-  selfRecursive.self is never used
+  selfRecursive.self is never used to construct a value
   <-- line 35
   type selfRecursive = {[@dead "selfRecursive.self"] self: selfRecursive};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 38:28
-  mutuallyRecursiveA.b is never used
+  mutuallyRecursiveA.b is never used to construct a value
   <-- line 38
   type mutuallyRecursiveA = {[@dead "mutuallyRecursiveA.b"] b: mutuallyRecursiveB}
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 39:27
-  mutuallyRecursiveB.a is never used
+  mutuallyRecursiveB.a is never used to construct a value
   <-- line 39
   and mutuallyRecursiveB = {[@dead "mutuallyRecursiveB.a"] a: mutuallyRecursiveA};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 60:5
-  opaqueVariant.A is never used
+  opaqueVariant.A is never used to construct a value
   <-- line 60
     | [@dead "opaqueVariant.A"] A
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 61:5
-  opaqueVariant.B is never used
+  opaqueVariant.B is never used to construct a value
   <-- line 61
     | [@dead "opaqueVariant.B"] B;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 91:3
-  record.i is never used
+  record.i is never used to construct a value
   <-- line 91
     [@dead "record.i"] i: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 92:3
-  record.s is never used
+  record.s is never used to construct a value
   <-- line 92
     [@dead "record.s"] s: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 141:20
-  someRecord.id is never used
+  someRecord.id is never used to construct a value
   <-- line 141
   type someRecord = {[@dead "someRecord.id"] id: int};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re 5:3
-  t.id is never used
+  t.id is never used to construct a value
   <-- line 5
     [@dead "t.id"] id: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/location/location.re 6:3
-  t.name is never used
+  t.name is never used to construct a value
   <-- line 6
     [@dead "t.name"] name: string,
 
@@ -2173,109 +2180,109 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 51:5
-  simpleVariant.A is never used
+  simpleVariant.A is never used to construct a value
   <-- line 51
     | [@dead "simpleVariant.A"] A
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 52:5
-  simpleVariant.B is never used
+  simpleVariant.B is never used to construct a value
   <-- line 52
     | [@dead "simpleVariant.B"] B
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 53:5
-  simpleVariant.C is never used
+  simpleVariant.C is never used to construct a value
   <-- line 53
     | [@dead "simpleVariant.C"] C;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 60:5
-  variantWithPayloads.A is never used
+  variantWithPayloads.A is never used to construct a value
   <-- line 60
     | [@dead "variantWithPayloads.A"] [@genType.as "ARenamed"] A
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 61:5
-  variantWithPayloads.B is never used
+  variantWithPayloads.B is never used to construct a value
   <-- line 61
     | [@dead "variantWithPayloads.B"] B(int)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 62:5
-  variantWithPayloads.C is never used
+  variantWithPayloads.C is never used to construct a value
   <-- line 62
     | [@dead "variantWithPayloads.C"] C(int, int)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 63:5
-  variantWithPayloads.D is never used
+  variantWithPayloads.D is never used to construct a value
   <-- line 63
     | [@dead "variantWithPayloads.D"] D((int, int))
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 64:5
-  variantWithPayloads.E is never used
+  variantWithPayloads.E is never used to construct a value
   <-- line 64
     | [@dead "variantWithPayloads.E"] E(int, string, int);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 100:5
-  variant1Int.R is never used
+  variant1Int.R is never used to construct a value
   <-- line 100
     | [@dead "variant1Int.R"] R(int);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 107:5
-  variant1Object.R is never used
+  variant1Object.R is never used to construct a value
   <-- line 107
     | [@dead "variant1Object.R"] R(payload);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re 97:5
-  type_.Type is never used
+  type_.Type is never used to construct a value
   <-- line 97
     | [@dead "type_.Type"] [@genType.as "type"] Type;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re 105:5
-  result1.Ok is never used
+  result1.Ok is never used to construct a value
   <-- line 105
     | [@dead "result1.Ok"] Ok('a)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Variants.re 106:5
-  result1.Error is never used
+  result1.Error is never used to construct a value
   <-- line 106
     | [@dead "result1.Error"] Error('b);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re 4:5
-  v1.A is never used
+  v1.A is never used to construct a value
   <-- line 4
     | [@dead "v1.A"] A(int);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re 9:5
-  v2.A is never used
+  v2.A is never used to construct a value
   <-- line 9
     | [@dead "v2.A"] A(int);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re 16:12
-  r1.x is never used
+  r1.x is never used to construct a value
   <-- line 16
   type r1 = {[@dead "r1.x"] x: int};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Unboxed.re 21:5
-  r2.B is never used
+  r2.B is never used to construct a value
   <-- line 21
     | [@dead "r2.B"] B({g: string});
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TypeParams2.re 2:14
-  item.id is never used
+  item.id is never used to construct a value
   <-- line 2
   type item = {[@dead "item.id"] id: int};
 
@@ -2293,13 +2300,13 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType3.re 3:3
-  t3.i is never used
+  t3.i is never used to construct a value
   <-- line 3
     [@dead "t3.i"] i: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TransitiveType3.re 4:3
-  t3.s is never used
+  t3.s is never used to construct a value
   <-- line 4
     [@dead "t3.s"] s: string,
 
@@ -2311,19 +2318,19 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re 6:3
-  fromPayload.x is never used
+  fromPayload.x is never used to construct a value
   <-- line 6
     [@dead "fromPayload.x"] x: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re 7:3
-  fromPayload.s is never used
+  fromPayload.s is never used to construct a value
   <-- line 7
     [@dead "fromPayload.s"] s: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re 11:19
-  toPayload.result is never used
+  toPayload.result is never used to construct a value
   <-- line 11
   type toPayload = {[@dead "toPayload.result"] result: string};
 
@@ -2335,7 +2342,7 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestImport.re 28:17
-  message.text is never used
+  message.text is never used to construct a value
   <-- line 28
   type message = {[@dead "message.text"] text: string};
 
@@ -2365,115 +2372,115 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 39:28
-  requiresConversion.x is never used
+  requiresConversion.x is never used to construct a value
   <-- line 39
   type requiresConversion = {[@dead "requiresConversion.x"] x: int};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 5:3
-  coord.x is never used
+  coord.x is never used to construct a value
   <-- line 5
     [@dead "coord.x"] x: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 6:3
-  coord.y is never used
+  coord.y is never used to construct a value
   <-- line 6
     [@dead "coord.y"] y: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 7:3
-  coord.z is never used
+  coord.z is never used to construct a value
   <-- line 7
     [@dead "coord.z"] z: option(int),
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 22:3
-  person.name is never used
+  person.name is never used to construct a value
   <-- line 22
     [@dead "person.name"] name: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 23:3
-  person.age is never used
+  person.age is never used to construct a value
   <-- line 23
     [@dead "person.age"] age: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 29:3
-  business.name is never used
+  business.name is never used to construct a value
   <-- line 29
     [@dead "business.name"] name: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 56:3
-  payload.num is never used
+  payload.num is never used to construct a value
   <-- line 56
     [@dead "payload.num"] num: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 57:3
-  payload.payload is never used
+  payload.payload is never used to construct a value
   <-- line 57
     [@dead "payload.payload"] payload: 'a,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 66:3
-  record.w is never used
+  record.w is never used to construct a value
   <-- line 66
     [@dead "record.w"] w: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 86:3
-  business2.name is never used
+  business2.name is never used to construct a value
   <-- line 86
     [@dead "business2.name"] name: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 87:3
-  business2.owner is never used
+  business2.owner is never used to construct a value
   <-- line 87
     [@dead "business2.owner"] owner: Js.Nullable.t(person),
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 8:3
-  person.surname is never used
+  person.surname is never used to construct a value
   <-- line 8
     [@dead "person.surname"] surname: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 9:3
-  person.type_ is never used
+  person.type_ is never used to construct a value
   <-- line 9
     [@dead "person.type_"] [@genType.as "type"]
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 11:3
-  person.polymorphicPayload is never used
+  person.polymorphicPayload is never used to construct a value
   <-- line 11
     [@dead "person.polymorphicPayload"] polymorphicPayload: 'a,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 50:5
-  t.A is never used
+  t.A is never used to construct a value
   <-- line 50
     | [@dead "t.A"] A
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 51:5
-  t.B is never used
+  t.B is never used to construct a value
   <-- line 51
     | [@dead "t.B"] B(int)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 52:5
-  t.C is never used
+  t.C is never used to construct a value
   <-- line 52
     | [@dead "t.C"] C(string);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Opaque.re 3:5
-  opaqueFromRecords.A is never used
+  opaqueFromRecords.A is never used to construct a value
   <-- line 3
     | [@dead "opaqueFromRecords.A"] A(Records.coord);
 
@@ -2521,37 +2528,37 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 46:7
-  Universe.variant.A is never used
+  Universe.variant.A is never used to construct a value
   <-- line 46
       | [@dead "Universe.variant.A"] A
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 47:7
-  Universe.variant.B is never used
+  Universe.variant.B is never used to construct a value
   <-- line 47
       | [@dead "Universe.variant.B"] B(string);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re 3:3
-  record.x is never used
+  record.x is never used to construct a value
   <-- line 3
     [@dead "record.x"] x: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re 4:3
-  record.y is never used
+  record.y is never used to construct a value
   <-- line 4
     [@dead "record.y"] y: string,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re 9:17
-  Outer.outer.outer is never used
+  Outer.outer.outer is never used to construct a value
   <-- line 9
     type outer = {[@dead "Outer.outer.outer"] outer: string};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases2.re 13:19
-  Outer.Inner.inner.inner is never used
+  Outer.Inner.inner.inner is never used to construct a value
   <-- line 13
       type inner = {[@dead "Outer.Inner.inner.inner"] inner: string};
 
@@ -2563,25 +2570,25 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases.re 3:20
-  Outer.Inner.innerT.inner is never used
+  Outer.Inner.innerT.inner is never used to construct a value
   <-- line 3
       type innerT = {[@dead "Outer.Inner.innerT.inner"] inner: string};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ModuleAliases.re 11:17
-  Outer2.Inner2.InnerNested.t.nested is never used
+  Outer2.Inner2.InnerNested.t.nested is never used to construct a value
   <-- line 11
         type t = {[@dead "Outer2.Inner2.InnerNested.t.nested"] nested: int};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei 3:3
-  record.x is never used
+  record.x is never used to construct a value
   <-- line 3
     [@dead "record.x"] x: int,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei 4:3
-  record.y is never used
+  record.y is never used to construct a value
   <-- line 4
     [@dead "record.y"] y: string,
 
@@ -2593,13 +2600,13 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Docstrings.re 62:5
-  t.B is never used
+  t.B is never used to construct a value
   <-- line 62
     | [@dead "t.B"] B;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 3:5
-  t.B is never used
+  t.B is never used to construct a value
   <-- line 3
     | [@dead "t.B"] B;
 
@@ -2629,42 +2636,42 @@ File References
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 2:5
-  variant.R is never used
+  variant.R is never used to construct a value
   <-- line 2
     | [@dead "variant.R"] R(int);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 5:16
-  record.variant is never used
+  record.variant is never used to construct a value
   <-- line 5
   type record = {[@dead "record.variant"] variant};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 7:12
-  r2.r2 is never used
+  r2.r2 is never used to construct a value
   <-- line 7
   type r2 = {[@dead "r2.r2"] r2: int};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 9:12
-  r3.r3 is never used
+  r3.r3 is never used to construct a value
   <-- line 9
   type r3 = {[@dead "r3.r3"] r3: int};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 11:12
-  r4.r4 is never used
+  r4.r4 is never used to construct a value
   <-- line 11
   type r4 = {[@dead "r4.r4"] r4: int};
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 15:5
-  annotatedVariant.R2 is never used
+  annotatedVariant.R2 is never used to construct a value
   <-- line 15
     | [@dead "annotatedVariant.R2"] R2(r2, r3)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 16:5
-  annotatedVariant.R4 is never used
+  annotatedVariant.R4 is never used to construct a value
   <-- line 16
     | [@dead "annotatedVariant.R4"] R4(r4);

@@ -8,10 +8,20 @@ let modulePath: ref(list(string)) = ref([]);
 let typeDependencies = ref([]);
 
 let collectTypeExport =
-    (~path, {type_kind, type_manifest}: Types.type_declaration) => {
+    (
+      ~implementationWithInterface,
+      ~path,
+      {type_kind, type_manifest}: Types.type_declaration,
+    ) => {
   let save = (id, loc) => {
     if (type_manifest == None) {
-      export(~analysisKind=Type, ~path, ~id, ~loc);
+      export(
+        ~analysisKind=Type,
+        ~path,
+        ~id,
+        ~implementationWithInterface,
+        ~loc,
+      );
     };
     let path =
       List.rev_map(id => id.Ident.name, [id, ...path]) |> String.concat(".");

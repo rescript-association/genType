@@ -128,6 +128,7 @@ let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value ref
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
 
 let fileReferences: FileHash.t(FileSet.t) = FileHash.create(256);
+let filesWithInterface: ref(FileSet.t) = ref(FileSet.empty);
 
 let fields: Hashtbl.t(string, Lexing.position) = (
   Hashtbl.create(256): Hashtbl.t(string, Lexing.position)
@@ -271,7 +272,7 @@ let hashtblAddToList = (hashtbl, key, elt) => Hashtbl.add(hashtbl, key, elt);
 
 /********   PROCESSING  ********/
 
-let export = (~analysisKind, ~path, ~id, ~loc) => {
+let export = (~analysisKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
   let value =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
@@ -292,6 +293,10 @@ let export = (~analysisKind, ~path, ~id, ~loc) => {
         id.name,
         pos |> posToString,
       );
+    };
+
+    if (implementationWithInterface && analysisKind == Type) {
+      filesWithInterface := filesWithInterface^ |> FileSet.add(pos.pos_fname);
     };
 
     hashtblAddToList(
@@ -558,7 +563,14 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
-        [{analysisKind, pos, path: pathWithoutHead(path)}, ...items];
+        if (analysisKind == Type
+            && filesWithInterface^
+            |> FileSet.mem(pos.pos_fname)) {
+          Log_.item("TODO: mark %s as dead in the implementation@.", path);
+          items;
+        } else {
+          [{analysisKind, pos, path: pathWithoutHead(path)}, ...items];
+        };
       } else {
         if (verbose && analysisKind == Value) {
           let refsString =
