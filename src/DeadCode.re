@@ -13,49 +13,53 @@ let loadCmtFile = cmtFilePath => {
   let {Cmt_format.cmt_annots, cmt_sourcefile, cmt_value_dependencies} =
     Cmt_format.read_cmt(cmtFilePath);
 
-  let sourceFile =
-    switch (cmt_sourcefile) {
-    | None => assert(false)
-    | Some(sourceFile) =>
-      if (Filename.check_suffix(sourceFile, ".re.ml")) {
-        Filename.chop_suffix(sourceFile, ".ml");
-      } else if (Filename.check_suffix(sourceFile, ".re.mli")) {
-        Filename.chop_suffix(sourceFile, ".re.mli") ++ ".rei";
-      } else {
-        sourceFile;
-      }
-    };
-  FileHash.addFile(fileReferences, sourceFile);
-  currentSrc := sourceFile;
-  currentModuleName := getModuleName(sourceFile);
+  switch (cmt_sourcefile) {
+  | None => ()
 
-  if (dce^) {
-    switch (cmt_annots) {
-    | Interface(signature) =>
-      ProcessDeadAnnotations.signature(signature);
-      DeadValue.processSignature(cmtFilePath, signature.sig_type);
-    | Implementation(structure) =>
-      let cmtiExists =
-        Sys.file_exists((cmtFilePath |> Filename.chop_extension) ++ ".cmti");
-      if (!cmtiExists) {
-        ProcessDeadAnnotations.structure(structure);
+  | Some(sourceFile_) =>
+    let sourceFile =
+      if (Filename.check_suffix(sourceFile_, ".re.ml")) {
+        Filename.chop_suffix(sourceFile_, ".ml");
+      } else if (Filename.check_suffix(sourceFile_, ".re.mli")) {
+        Filename.chop_suffix(sourceFile_, ".re.mli") ++ ".rei";
+      } else {
+        sourceFile_;
       };
-      DeadValue.processStructure(
-        ~cmtiExists,
-        cmt_value_dependencies,
-        structure,
-      );
-      if (!cmtiExists) {
-        DeadValue.processSignature(cmtFilePath, structure.str_type);
+
+    FileHash.addFile(fileReferences, sourceFile);
+    currentSrc := sourceFile;
+    currentModuleName := getModuleName(sourceFile);
+
+    if (dce^) {
+      switch (cmt_annots) {
+      | Interface(signature) =>
+        ProcessDeadAnnotations.signature(signature);
+        DeadValue.processSignature(cmtFilePath, signature.sig_type);
+      | Implementation(structure) =>
+        let cmtiExists =
+          Sys.file_exists(
+            (cmtFilePath |> Filename.chop_extension) ++ ".cmti",
+          );
+        if (!cmtiExists) {
+          ProcessDeadAnnotations.structure(structure);
+        };
+        DeadValue.processStructure(
+          ~cmtiExists,
+          cmt_value_dependencies,
+          structure,
+        );
+        if (!cmtiExists) {
+          DeadValue.processSignature(cmtFilePath, structure.str_type);
+        };
+      | _ => ()
       };
-    | _ => ()
     };
-  };
-  if (analyzeTermination^) {
-    switch (cmt_annots) {
-    | Interface(signature) => ()
-    | Implementation(structure) => Arnold.processStructure(structure)
-    | _ => ()
+    if (analyzeTermination^) {
+      switch (cmt_annots) {
+      | Interface(signature) => ()
+      | Implementation(structure) => Arnold.processStructure(structure)
+      | _ => ()
+      };
     };
   };
 };

@@ -244,6 +244,27 @@ let iterFilesFromRootsToLeaves = iterFun => {
          references |> FileSet.iter(toFile => removeEdge(fileName, toFile));
        });
   };
+  // Process any remaining items in case of circular references
+  referencesByNumber
+  |> Hashtbl.iter((num, set) =>
+       if (FileSet.is_empty(set)) {
+         ();
+       } else {
+         set
+         |> FileSet.iter(fileName => {
+              let pos = {...Lexing.dummy_pos, pos_fname: fileName};
+              let loc = {...Location.none, loc_start: pos, loc_end: pos};
+              Log_.info(~loc, ~name="Warning Dead Analysis Cycle", (ppf, ()) =>
+                Format.fprintf(
+                  ppf,
+                  "Results for %s could be inaccurate because of circular references",
+                  fileName,
+                )
+              );
+              iterFun(fileName);
+            });
+       }
+     );
 };
 
 let hashtblAddToList = (hashtbl, key, elt) => Hashtbl.add(hashtbl, key, elt);
@@ -484,20 +505,32 @@ module WriteDeadAnnotations = {
   let onDeadItem = (~ppf, {analysisKind, pos, path} as item) => {
     let useColumn = analysisKind == Type;
     let fileName = pos.Lexing.pos_fname;
-    if (fileName != currentFile^) {
-      writeFile(currentFile^, currentFileLines^);
-      currentFile := fileName;
-      currentFileLines := readFile(fileName);
+    if (Sys.file_exists(fileName)) {
+      if (fileName != currentFile^) {
+        writeFile(currentFile^, currentFileLines^);
+        currentFile := fileName;
+        currentFileLines := readFile(fileName);
+      };
+      let indexInLines = pos.Lexing.pos_lnum - 1;
+      if (indexInLines < Array.length(currentFileLines^)) {
+        let line = currentFileLines^[indexInLines];
+        line.annotation = Some({item, useColumn});
+        Format.fprintf(
+          ppf,
+          "  <-- line %d@.  %s@.",
+          pos.Lexing.pos_lnum,
+          line |> lineToString,
+        );
+      } else {
+        Format.fprintf(
+          ppf,
+          "  <-- Can't find line %d@.",
+          pos.Lexing.pos_lnum,
+        );
+      };
+    } else {
+      Format.fprintf(ppf, "  <-- can't find file@.");
     };
-    let indexInLines = pos.Lexing.pos_lnum - 1;
-    let line = currentFileLines^[indexInLines];
-    line.annotation = Some({item, useColumn});
-    Format.fprintf(
-      ppf,
-      "  <-- line %d@.  %s@.",
-      pos.Lexing.pos_lnum,
-      currentFileLines^[indexInLines] |> lineToString,
-    );
   };
 
   let write = () => writeFile(currentFile^, currentFileLines^);
