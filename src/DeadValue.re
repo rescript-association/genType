@@ -2,49 +2,6 @@
 
 open DeadCommon;
 
-let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
-  switch (moduleType) {
-  | Mty_signature(signature) => signature
-  | Mty_functor(_, tOpt, _) when isfunc =>
-    switch (tOpt) {
-    | None => []
-    | Some(moduleType) => getSignature(moduleType)
-    }
-  | Mty_functor(_, _, moduleType) => getSignature(moduleType)
-  | _ => []
-  };
-
-let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
-  switch (si) {
-  | Sig_value(id, {Types.val_loc, val_kind}) when !val_loc.Location.loc_ghost =>
-    let isPrimitive =
-      switch (val_kind) {
-      | Val_prim(_) => true
-      | _ => false
-      };
-    if (!isPrimitive || analyzeExternals) {
-      export(~analysisKind=Value, ~path, ~id, ~loc=val_loc);
-    };
-  | Sig_type(id, t, _) =>
-    if (analyzeTypes^) {
-      DeadType.collectTypeExport(~path=[id, ...path], t);
-    }
-  | (
-      Sig_module(id, {Types.md_type: moduleType}, _) |
-      Sig_modtype(id, {Types.mtd_type: Some(moduleType)})
-    ) as s =>
-    let collect =
-      switch (s) {
-      | Sig_modtype(_) => false
-      | _ => true
-      };
-    if (collect) {
-      getSignature(moduleType)
-      |> List.iter(collectExportFromSignatureItem(~path=[id, ...path]));
-    };
-  | _ => ()
-  };
-
 let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let oldPos = currentBindingPos^;
   let pos =
@@ -175,15 +132,6 @@ let processTypeDependency = ((to_: Lexing.position, from: Lexing.position)) => {
       DeadType.addTypeReference(~posDeclaration=to_, ~posUsage=from);
     };
   };
-};
-
-let processSignature = (fn, signature: Types.signature) => {
-  let module_id = Ident.create(String.capitalize_ascii(currentModuleName^));
-  signature
-  |> List.iter(sig_item =>
-       collectExportFromSignatureItem(~path=[module_id], sig_item)
-     );
-  lastPos := Lexing.dummy_pos;
 };
 
 let processStructure =
