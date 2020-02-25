@@ -1591,6 +1591,9 @@
   addValueReference DeadTest.re:44:0 --> DeadTest.re:37:2
   [type] addTypeReference DeadTest.re:46:8 --> DeadTypeTest.rei:8:4
   [type] addTypeReference DeadTest.re:47:8 --> DeadTypeTest.rei:9:4
+  [type] addTypeReference DeadTest.re:54:13 --> DeadTest.re:50:2
+  addValueReference DeadTest.re:54:0 --> DeadTest.re:54:8
+  addValueReference DeadTest.re:55:0 --> DeadTest.re:55:10
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6
@@ -1603,6 +1606,8 @@
   export thisIsMarkedLive DeadTest.re:20:4
   [type] export A DeadTest.re:36:6
   export a DeadTest.re:37:2
+  [type] export xxx DeadTest.re:50:2
+  [type] export yyy DeadTest.re:51:2
   
 File References
 
@@ -1667,6 +1672,7 @@ File References
   TypeParams2.re -->> 
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
+  [type] DeadTest.record.xxx: 1 references (DeadTest.re:54:13)
   DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:0)
   [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10)
   DeadTest.thisIsMarkedLive: 0 references ()
@@ -2669,6 +2675,12 @@ File References
   fortytwo is never used
   <-- line 2
   [@dead "fortytwo"] let fortytwo = 42;
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 51:3
+  record.yyy is never used to construct a value
+  <-- line 51
+    [@dead "record.yyy"] yyy: int,
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5
