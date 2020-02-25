@@ -45,3 +45,11 @@ let _ = VariantUsedOnlyInImplementation.a;
 
 let _ = DeadTypeTest.OnlyInInterface;
 let _ = DeadTypeTest.InBoth;
+
+type record = {
+  xxx: int,
+  yyy: int,
+};
+
+let _ = r => r.xxx;
+let _ = ({yyy}) => yyy;
