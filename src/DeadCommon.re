@@ -574,14 +574,15 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
           [{analysisKind, pos, path: pathWithoutHead(path)}, ...items];
         };
       } else {
-        if (verbose && analysisKind == Value) {
+        if (verbose) {
           let refsString =
             referencesToLoc
             |> PosSet.elements
             |> List.map(posToString)
             |> String.concat(", ");
           Log_.item(
-            "%s: %d references (%s)\n",
+            "%s%s: %d references (%s)\n",
+            analysisKind == Type ? "[type] " : "",
             path,
             referencesToLoc |> PosSet.cardinal,
             refsString,
