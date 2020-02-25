@@ -655,11 +655,25 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
       ) => {
     let findPosition = fn => Hashtbl.find(orderedFiles, fn);
 
+    let rec checkSub = (s1, s2, n) =>
+      n <= 0 || s1.[n] == s2.[n] && checkSub(s1, s2, n - 1);
+    let isImplementationOf = (s1, s2) => {
+      let n1 = String.length(s1)
+      and n2 = String.length(s2);
+      n2 == n1 + 1 && checkSub(s1, s2, n1 - 1);
+    };
+
     /* From the root of the file dependency DAG to the leaves.
-       From the bottom of the file to the top */
+       From the bottom of the file to the top.
+       But implementation before interface. */
+    let (position1, position2) =
+      isImplementationOf(fname1, fname2)
+        ? (1, 0)
+        : isImplementationOf(fname2, fname1)
+            ? (0, 1) : (fname1 |> findPosition, fname2 |> findPosition);
     compare(
-      (fname1 |> findPosition, lnum2, bol2, cnum2, kind1, path1, kind1),
-      (fname2 |> findPosition, lnum1, bol1, cnum1, kind2, path2, kind2),
+      (position1, lnum2, bol2, cnum2, kind1, path1, kind1),
+      (position2, lnum1, bol1, cnum1, kind2, path2, kind2),
     );
   };
 
