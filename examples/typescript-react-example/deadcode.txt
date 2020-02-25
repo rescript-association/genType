@@ -953,6 +953,10 @@
   [type] export A DeadTypeTest.rei:2:4
   [type] export B DeadTypeTest.rei:3:4
   export a DeadTypeTest.rei:4:0
+  [type] export OnlyInImplementation DeadTypeTest.rei:7:4
+  [type] export OnlyInInterface DeadTypeTest.rei:8:4
+  [type] export InBoth DeadTypeTest.rei:9:4
+  [type] export InNeither DeadTypeTest.rei:10:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
   addValueReference ImportJsValue.re:25:4 --> ImportJsValue.re:1:0
   addValueReference ImportJsValue.re:28:4 --> ImportJsValue.re:14:0
@@ -1034,14 +1038,28 @@
   export notification CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
   [type] addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
+  [type] addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
+  [type] addTypeReference DeadTypeTest.re:13:8 --> DeadTypeTest.re:9:4
   mergeSet DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4
+  [type] mergeSet DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
+  [type] mergeSet DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4
+  [type] mergeSet DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
+  [type] mergeSet DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4
   [type] mergeSet DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
   [type] mergeSet DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
   clean DeadTypeTest.re:4:4
+  [type] clean DeadTypeTest.re:10:4
+  [type] clean DeadTypeTest.re:9:4
+  [type] clean DeadTypeTest.re:8:4
+  [type] clean DeadTypeTest.re:7:4
   [type] clean DeadTypeTest.re:3:4
   [type] clean DeadTypeTest.re:2:4
   [type] export A DeadTypeTest.re:2:4
   [type] export B DeadTypeTest.re:3:4
+  [type] export OnlyInImplementation DeadTypeTest.re:7:4
+  [type] export OnlyInInterface DeadTypeTest.re:8:4
+  [type] export InBoth DeadTypeTest.re:9:4
+  [type] export InNeither DeadTypeTest.re:10:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
@@ -1571,6 +1589,8 @@
   addValueReference DeadTest.re:20:4 --> DeadTest.re:17:4
   [type] addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
   addValueReference DeadTest.re:44:0 --> DeadTest.re:37:2
+  [type] addTypeReference DeadTest.re:46:8 --> DeadTypeTest.rei:8:4
+  [type] addTypeReference DeadTest.re:47:8 --> DeadTypeTest.rei:9:4
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6
@@ -1653,15 +1673,12 @@ File References
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
   DeadTestWhitelist.x: 0 references ()
-  TODO: mark DeadTypeTest.t.B as dead in the implementation
   ExportWithRename.make: 1 references (_none_:1:-1)
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
   FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
   FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4)
   FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24)
   FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:6)
-  TODO: mark FirstClassModulesInterface.record.y as dead in the implementation
-  TODO: mark FirstClassModulesInterface.record.x as dead in the implementation
   Hooks.aComponentWithChildren: 1 references (_none_:1:-1)
   Hooks.functionReturningReactElement: 1 references (_none_:1:-1)
   Hooks.polymorphicComponent: 1 references (_none_:1:-1)
@@ -2615,6 +2632,12 @@ File References
   a is never used
   <-- line 4
   [@dead "a"] let a: t;
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 10:5
+  deadType.InNeither is never used to construct a value
+  <-- line 10
+    | [@dead "deadType.InNeither"] InNeither;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 2:5

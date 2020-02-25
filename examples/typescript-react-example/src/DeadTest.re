@@ -42,3 +42,6 @@ module VariantUsedOnlyInImplementation: {
 };
 
 let _ = VariantUsedOnlyInImplementation.a;
+
+let _ = DeadTypeTest.OnlyInInterface;
+let _ = DeadTypeTest.InBoth;
