@@ -127,8 +127,9 @@ let typeDecs: decs = Hashtbl.create(256);
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
 
-let fileReferences: FileHash.t(FileSet.t) = FileHash.create(256);
-let filesWithInterface: ref(FileSet.t) = ref(FileSet.empty);
+let fileReferences: FileHash.t(FileSet.t) = FileHash.create(256); /* references across files */
+let implementationFilesWithInterface: FileHash.t(unit) =
+  FileHash.create(256); /* implementation files that have an interface */
 
 let fields: Hashtbl.t(string, Lexing.position) = (
   Hashtbl.create(256): Hashtbl.t(string, Lexing.position)
@@ -296,7 +297,9 @@ let export = (~analysisKind, ~path, ~id, ~implementationWithInterface, ~loc) => 
     };
 
     if (implementationWithInterface && analysisKind == Type) {
-      filesWithInterface := filesWithInterface^ |> FileSet.add(pos.pos_fname);
+      if (!FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
+        FileHash.replace(implementationFilesWithInterface, pos.pos_fname, ());
+      };
     };
 
     hashtblAddToList(
@@ -564,9 +567,8 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
         if (analysisKind == Type
-            && filesWithInterface^
-            |> FileSet.mem(pos.pos_fname)) {
-          Log_.item("TODO: mark %s as dead in the implementation@.", path);
+            && FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
+          // Don't report types dead in an implementation, if there's an interface.
           items;
         } else {
           [{analysisKind, pos, path: pathWithoutHead(path)}, ...items];
