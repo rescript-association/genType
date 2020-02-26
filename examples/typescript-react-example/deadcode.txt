@@ -51,7 +51,9 @@
   addValueReference Types.re:28:8 --> belt_Option.mli:73:0
   addValueReference Types.re:28:8 --> Types.re:28:37
   addValueReference Types.re:46:4 --> Types.re:46:31
+  [type] addTypeReference Types.re:46:30 --> Types.re:35:22
   addValueReference Types.re:53:4 --> Types.re:53:35
+  [type] addTypeReference Types.re:53:34 --> Types.re:38:27
   addValueReference Types.re:56:4 --> Types.re:56:39
   addValueReference Types.re:56:4 --> Types.re:56:54
   addValueReference Types.re:82:4 --> js_json.mli:183:0
@@ -173,6 +175,8 @@
   addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:24
   addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:35
   addValueReference ReasonComponent.re:63:4 --> pervasives.mli:264:0
+  [type] addTypeReference ReasonComponent.re:63:23 --> Records.re:5:2
+  [type] addTypeReference ReasonComponent.re:63:23 --> Records.re:6:2
   export component ReasonComponent.re:3:4
   [type] export name ReasonComponent.re:7:2
   [type] export surname ReasonComponent.re:8:2
@@ -1202,6 +1206,9 @@
   addValueReference Records.re:14:4 --> Records.re:15:40
   addValueReference Records.re:14:4 --> belt_Option.mli:58:0
   addValueReference Records.re:14:4 --> pervasives.mli:272:0
+  [type] addTypeReference Records.re:14:19 --> Records.re:5:2
+  [type] addTypeReference Records.re:14:19 --> Records.re:6:2
+  [type] addTypeReference Records.re:14:19 --> Records.re:7:2
   addValueReference Records.re:18:4 --> Records.re:18:15
   addValueReference Records.re:18:4 --> Records.re:18:18
   addValueReference Records.re:34:4 --> Records.re:34:19
@@ -1230,12 +1237,15 @@
   addValueReference Records.re:44:4 --> belt_List.mli:211:0
   addValueReference Records.re:44:4 --> belt_List.mli:279:0
   addValueReference Records.re:61:4 --> Records.re:61:19
+  [type] addTypeReference Records.re:61:18 --> Records.re:57:2
   addValueReference Records.re:70:4 --> Records.re:70:25
+  [type] addTypeReference Records.re:70:24 --> Records.re:57:2
   addValueReference Records.re:76:4 --> Records.re:73:4
   [type] addTypeReference Records.re:81:5 --> Records.re:65:2
   addValueReference Records.re:79:4 --> Records.re:79:32
   addValueReference Records.re:79:4 --> pervasives.mli:264:0
   addValueReference Records.re:79:4 --> Records.re:79:32
+  [type] addTypeReference Records.re:79:31 --> Records.re:57:2
   addValueReference Records.re:92:4 --> Records.re:93:54
   [type] addTypeReference Records.re:93:2 --> Records.re:88:2
   addValueReference Records.re:92:4 --> Records.re:92:20
@@ -1473,6 +1483,7 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestPromise.cmt
   addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
   addValueReference TestPromise.re:14:4 --> js_promise.ml:39:0
+  [type] addTypeReference TestPromise.re:14:32 --> TestPromise.re:7:2
   addValueReference TestPromise.re:14:4 --> js_promise.ml:50:0
   [type] export x TestPromise.re:6:2
   [type] export s TestPromise.re:7:2
@@ -1594,6 +1605,7 @@
   [type] addTypeReference DeadTest.re:54:13 --> DeadTest.re:50:2
   addValueReference DeadTest.re:54:0 --> DeadTest.re:54:8
   addValueReference DeadTest.re:55:0 --> DeadTest.re:55:10
+  [type] addTypeReference DeadTest.re:55:9 --> DeadTest.re:51:2
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6
@@ -1672,6 +1684,7 @@ File References
   TypeParams2.re -->> 
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
+  [type] DeadTest.record.yyy: 1 references (DeadTest.re:55:9)
   [type] DeadTest.record.xxx: 1 references (DeadTest.re:54:13)
   DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:0)
   [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10)
@@ -1710,13 +1723,18 @@ File References
   [type] Records.myRec.type_: 1 references (Records.re:149:30)
   [type] Records.business2.address2: 1 references (Records.re:93:2)
   [type] Records.record.v: 1 references (Records.re:81:5)
+  [type] Records.payload.payload: 3 references (Records.re:61:18, Records.re:70:24, Records.re:79:31)
   Records.getOpt: 3 references (Records.re:37:4, Records.re:44:4, Records.re:92:4)
   [type] Records.business.address: 2 references (Records.re:38:2, Records.re:47:6)
   [type] Records.business.owner: 1 references (Records.re:48:8)
   [type] Records.person.address: 1 references (Records.re:48:40)
+  [type] Records.coord.z: 1 references (Records.re:14:19)
+  [type] Records.coord.y: 2 references (ReasonComponent.re:63:23, Records.re:14:19)
+  [type] Records.coord.x: 2 references (ReasonComponent.re:63:23, Records.re:14:19)
   References.R.set: 1 references (References.re:37:4)
   References.R.make: 1 references (References.re:34:4)
   References.R.get: 1 references (References.re:31:4)
+  [type] TestPromise.fromPayload.s: 1 references (TestPromise.re:14:32)
   [type] Uncurried.authU.loginU: 1 references (Uncurried.re:39:25)
   [type] Uncurried.auth.login: 1 references (Uncurried.re:36:24)
   [type] VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53)
@@ -1727,6 +1745,8 @@ File References
   ManyComponents.InnerComponent.component: 1 references (ManyComponents.re:9:6)
   [type] Tuples.person.age: 1 references (Tuples.re:47:19)
   [type] Tuples.person.name: 1 references (Tuples.re:39:49)
+  [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34)
+  [type] Types.selfRecursive.self: 1 references (Types.re:46:30)
   ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0)
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:0)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4)
@@ -2155,18 +2175,6 @@ File References
     | [@dead "typeWithVars.B"] B('z);
 
   Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 35:23
-  selfRecursive.self is never used to construct a value
-  <-- line 35
-  type selfRecursive = {[@dead "selfRecursive.self"] self: selfRecursive};
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 38:28
-  mutuallyRecursiveA.b is never used to construct a value
-  <-- line 38
-  type mutuallyRecursiveA = {[@dead "mutuallyRecursiveA.b"] b: mutuallyRecursiveB}
-
-  Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 39:27
   mutuallyRecursiveB.a is never used to construct a value
   <-- line 39
@@ -2371,12 +2379,6 @@ File References
     [@dead "fromPayload.x"] x: int,
 
   Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re 7:3
-  fromPayload.s is never used to construct a value
-  <-- line 7
-    [@dead "fromPayload.s"] s: string,
-
-  Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/TestPromise.re 11:19
   toPayload.result is never used to construct a value
   <-- line 11
@@ -2425,24 +2427,6 @@ File References
   type requiresConversion = {[@dead "requiresConversion.x"] x: int};
 
   Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 5:3
-  coord.x is never used to construct a value
-  <-- line 5
-    [@dead "coord.x"] x: int,
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 6:3
-  coord.y is never used to construct a value
-  <-- line 6
-    [@dead "coord.y"] y: int,
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 7:3
-  coord.z is never used to construct a value
-  <-- line 7
-    [@dead "coord.z"] z: option(int),
-
-  Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 22:3
   person.name is never used to construct a value
   <-- line 22
@@ -2465,12 +2449,6 @@ File References
   payload.num is never used to construct a value
   <-- line 56
     [@dead "payload.num"] num: int,
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 57:3
-  payload.payload is never used to construct a value
-  <-- line 57
-    [@dead "payload.payload"] payload: 'a,
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 66:3
@@ -2675,12 +2653,6 @@ File References
   fortytwo is never used
   <-- line 2
   [@dead "fortytwo"] let fortytwo = 42;
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 51:3
-  record.yyy is never used to construct a value
-  <-- line 51
-    [@dead "record.yyy"] yyy: int,
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5

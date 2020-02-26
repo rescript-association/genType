@@ -52,6 +52,22 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
   super.Tast_mapper.expr(self, e);
 };
 
+let collectPattern = (super, self, pat: Typedtree.pattern) => {
+  let posUsage = pat.pat_loc.loc_start;
+  switch (pat.pat_desc) {
+  | Tpat_record(cases, _clodsedFlag) =>
+    cases
+    |> List.iter(
+         ((_loc, {Types.lbl_loc: {loc_start: posDeclaration}}, _pat)) =>
+         if (analyzeTypes^) {
+           DeadType.addTypeReference(~posDeclaration, ~posUsage);
+         }
+       )
+  | _ => ()
+  };
+  super.Tast_mapper.pat(self, pat);
+};
+
 /* Traverse the AST */
 let collectValueReferences = {
   /* Tast_mapper */
@@ -69,6 +85,8 @@ let collectValueReferences = {
 
   let expr = (self, e) =>
     e |> wrap(collectExpr, ~getPos=x => x.exp_loc.loc_start, ~self);
+  let pat = (self, p) =>
+    p |> wrap(collectPattern, ~getPos=x => x.pat_loc.loc_start, ~self);
   let value_binding = (self, vb) =>
     vb
     |> wrap(
@@ -94,6 +112,7 @@ let collectValueReferences = {
   Tast_mapper.{
     ...super,
     expr,
+    pat,
     structure_item,
     type_declaration,
     value_binding,
