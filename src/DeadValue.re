@@ -131,8 +131,7 @@ let processValueDependency = ((vd1, vd2)) => {
     !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
-    valueReferences
-    |> PosHash.mergeSet(~analysisKind=Value, ~from=pos2, ~to_=pos1);
+    valueReferences |> PosHash.mergeSet(~isType=false, ~from=pos2, ~to_=pos1);
     if (isInterface(fn1) && isInterface(fn2)) {
       addValueReference(~addFileReference=false, pos1, pos2);
     };
@@ -146,7 +145,7 @@ let processTypeDependency = ((to_: Lexing.position, from: Lexing.position)) => {
     !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
 
   if (fnTo != none_ && fnFrom != none_ && to_ != from) {
-    typeReferences |> PosHash.mergeSet(~analysisKind=Type, ~from, ~to_);
+    typeReferences |> PosHash.mergeSet(~isType=true, ~from, ~to_);
     if (isInterface(fnTo) && isInterface(fnFrom)) {
       DeadType.addTypeReference(~posDeclaration=to_, ~posUsage=from);
     };
@@ -166,13 +165,13 @@ let processStructure =
   DeadType.typeDependencies^ |> List.iter(processTypeDependency);
 
   if (cmtiExists) {
-    let clean = (~analysisKind, pos) => {
+    let clean = (~isType, pos) => {
       let fn = pos.Lexing.pos_fname;
       if (isImplementation(fn) && fn == currentSrc^) {
         if (verbose) {
           Log_.item(
             "%sclean %s\n",
-            analysisKind == Type ? "[type] " : "",
+            isType ? "[type] " : "",
             pos |> posToString,
           );
         };
@@ -182,13 +181,13 @@ let processStructure =
     };
     valueDependencies
     |> List.iter(((vd1, vd2)) => {
-         clean(~analysisKind=Value, vd1.Types.val_loc.loc_start);
-         clean(~analysisKind=Value, vd2.Types.val_loc.loc_start);
+         clean(~isType=false, vd1.Types.val_loc.loc_start);
+         clean(~isType=false, vd2.Types.val_loc.loc_start);
        });
     DeadType.typeDependencies^
     |> List.iter(((loc1, loc2)) => {
-         clean(~analysisKind=Type, loc1);
-         clean(~analysisKind=Type, loc2);
+         clean(~isType=true, loc1);
+         clean(~isType=true, loc2);
        });
   };
   DeadType.typeDependencies := [];

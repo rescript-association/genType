@@ -33,9 +33,10 @@ let write = Sys.getenv_opt("Write") != None;
 let deadAnnotation = "dead";
 let liveAnnotation = "live";
 
-type analysisKind =
-  | Value
-  | Type;
+type decKind =
+  | RecordLabel
+  | VariantCase
+  | Value;
 
 /* Location printer: `filename:line: ' */
 let posToString = (~printCol=true, ~shortFile=true, pos: Lexing.position) => {
@@ -77,7 +78,7 @@ module PosHash = {
     replace(h, k, PosSet.add(v, set));
   };
 
-  let mergeSet = (~analysisKind, ~from, ~to_, table) => {
+  let mergeSet = (~isType, ~from, ~to_, table) => {
     let set1 = findSet(table, to_);
     let set2 = findSet(table, from);
     let setUnion = PosSet.union(set1, set2);
@@ -85,7 +86,7 @@ module PosHash = {
     if (verbose) {
       Log_.item(
         "%smergeSet %s --> %s\n",
-        analysisKind == Type ? "[type] " : "",
+        isType ? "[type] " : "",
         from |> posToString,
         to_ |> posToString,
       );
@@ -120,10 +121,6 @@ module FileHash = {
   };
 };
 
-type decKind =
-  | RecordLabel
-  | VariantCase
-  | Val;
 type decs = Hashtbl.t(Lexing.position, (string, decKind));
 let decs: decs = Hashtbl.create(256); /* all exported declarations */
 
@@ -274,8 +271,7 @@ let iterFilesFromRootsToLeaves = iterFun => {
 
 /********   PROCESSING  ********/
 
-let export =
-    (~analysisKind, ~decKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
+let export = (~decKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
   let path =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
@@ -292,13 +288,13 @@ let export =
     if (verbose) {
       Log_.item(
         "%sexport %s %s\n",
-        analysisKind == Type ? "[type] " : "",
+        decKind != Value ? "[type] " : "",
         id.name,
         pos |> posToString,
       );
     };
 
-    if (implementationWithInterface && analysisKind == Type) {
+    if (implementationWithInterface && decKind != Value) {
       if (!FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
         FileHash.replace(implementationFilesWithInterface, pos.pos_fname, ());
       };
@@ -509,7 +505,7 @@ module WriteDeadAnnotations = {
     };
 
   let onDeadItem = (~ppf, {decKind, pos, path} as item) => {
-    let useColumn = decKind != Val;
+    let useColumn = decKind != Value;
     let fileName = pos.Lexing.pos_fname;
     if (Sys.file_exists(fileName)) {
       if (fileName != currentFile^) {
@@ -549,7 +545,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
   let folder = (items, {decKind, pos, path} as item) => {
     switch (
       pos
-      |> PosHash.findSet(decKind == Val ? valueReferences : typeReferences)
+      |> PosHash.findSet(decKind == Value ? valueReferences : typeReferences)
     ) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
@@ -562,7 +558,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
-        if (decKind != Val
+        if (decKind != Value
             && FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
           // Don't report types dead in an implementation, if there's an interface.
           items;
@@ -578,7 +574,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
             |> String.concat(", ");
           Log_.item(
             "%s%s: %d references (%s)\n",
-            decKind != Val ? "[type] " : "",
+            decKind != Value ? "[type] " : "",
             path,
             referencesToLoc |> PosSet.cardinal,
             refsString,

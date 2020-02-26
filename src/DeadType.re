@@ -15,14 +15,7 @@ let collectTypeExport =
     ) => {
   let save = (~decKind, ~id, ~loc) => {
     if (type_manifest == None) {
-      export(
-        ~analysisKind=Type,
-        ~decKind,
-        ~path,
-        ~id,
-        ~implementationWithInterface,
-        ~loc,
-      );
+      export(~decKind, ~path, ~id, ~implementationWithInterface, ~loc);
     };
     let path =
       List.rev_map(id => id.Ident.name, [id, ...path]) |> String.concat(".");
