@@ -2,8 +2,6 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  */
 
-open GenTypeCommon;
-
 module StringSet = Set.Make(String);
 
 let cmtHasGenTypeAnnotations = (~ignoreInterface, inputCMT) =>

@@ -140,7 +140,7 @@ let readBsBuild = () => {
     ["lib", "bs", ".bsbuild"] |> List.fold_left((+++), projectRoot^);
 
   if (bsBuild |> Sys.file_exists) {
-    let decoded = Bsb_db_decode.read_build_file(bsBuild);
+    let decoded = Bsb_db_decode.read_build_file(~filename=bsBuild);
     Array.iter(
       (group: Bsb_db_decode.group) => {
         Log_.item("XXX Read group\n");

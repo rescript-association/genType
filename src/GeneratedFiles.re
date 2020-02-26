@@ -1,5 +1,3 @@
-open GenTypeCommon;
-
 type fileAction =
   | NoMatch /* No @genType annotation found. */
   | Replace /* Replace existing file on disk with new contents. */
@@ -26,7 +24,7 @@ let readLines = (file: string): list(string) => {
   let lines = ref([]);
   let chan = open_in(file);
   let finished_lines =
-    try (
+    try(
       {
         while (true) {
           lines := [input_line(chan), ...lines^];
