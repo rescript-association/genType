@@ -33,13 +33,13 @@ let collectTypeExport =
   | Type_record(l, _) =>
     List.iter(
       ({Types.ld_id, ld_loc, ld_type}) =>
-        save(~decKind=Record, ~id=ld_id, ~loc=ld_loc),
+        save(~decKind=RecordLabel, ~id=ld_id, ~loc=ld_loc),
       l,
     )
   | Type_variant(l) =>
     List.iter(
       ({Types.cd_id, cd_loc}) =>
-        save(~decKind=Variant, ~id=cd_id, ~loc=cd_loc),
+        save(~decKind=VariantCase, ~id=cd_id, ~loc=cd_loc),
       l,
     )
   | _ => ()
