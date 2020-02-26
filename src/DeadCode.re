@@ -28,8 +28,7 @@ let rec collectExportFromSignatureItem =
       };
     if (!isPrimitive || analyzeExternals) {
       export(
-        ~analysisKind=Value,
-        ~decKind=Val,
+        ~decKind=Value,
         ~path,
         ~id,
         ~implementationWithInterface,
@@ -149,7 +148,7 @@ let reportResults = (~posInAliveWhitelist) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let (name, message) =
       switch (decKind) {
-      | Val => ("Warning Dead Value", "is never used")
+      | Value => ("Warning Dead Value", "is never used")
       | RecordLabel => (
           "Warning Dead Type",
           "is a record label never used to read a value",
