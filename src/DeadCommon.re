@@ -125,8 +125,7 @@ type decKind =
   | VariantCase
   | Val;
 type decs = Hashtbl.t(Lexing.position, (string, decKind));
-let valueDecs: decs = Hashtbl.create(256); /* all exported value declarations */
-let typeDecs: decs = Hashtbl.create(256);
+let decs: decs = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
@@ -305,11 +304,7 @@ let export =
       };
     };
 
-    Hashtbl.add(
-      analysisKind == Value ? valueDecs : typeDecs,
-      pos,
-      (path, decKind),
-    );
+    Hashtbl.add(decs, pos, (path, decKind));
   };
 };
 
@@ -611,17 +606,11 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
        );
   };
 
-  let items0 =
+  let items =
     Hashtbl.fold(
       (pos, (path, decKind), items) => [{decKind, pos, path}, ...items],
-      valueDecs,
+      decs,
       [],
-    );
-  let items1 =
-    Hashtbl.fold(
-      (pos, (path, decKind), items) => [{decKind, pos, path}, ...items],
-      typeDecs,
-      items0,
     );
 
   let orderedFiles = Hashtbl.create(256);
@@ -681,7 +670,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
     );
   };
 
-  items1
+  items
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
   |> List.fold_left(folder, [])
   |> List.iter(item => item |> onDeadCode);
