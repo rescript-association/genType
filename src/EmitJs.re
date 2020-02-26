@@ -1172,7 +1172,7 @@ let propagateAnnotationToSubTypes =
         }
       | Array(t, _) => t |> visit
       | Function({argTypes, retType}) =>
-        argTypes |> List.iter(({argName, type_}) => visit(type_));
+        argTypes |> List.iter(({type_}: argType) => visit(type_));
         retType |> visit;
       | GroupOfLabeledArgs(fields)
       | Object(_, fields)

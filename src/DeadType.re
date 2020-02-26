@@ -25,7 +25,7 @@ let collectTypeExport =
   switch (type_kind) {
   | Type_record(l, _) =>
     List.iter(
-      ({Types.ld_id, ld_loc, ld_type}) =>
+      ({Types.ld_id, ld_loc}) =>
         save(~decKind=RecordLabel, ~id=ld_id, ~loc=ld_loc),
       l,
     )
@@ -93,7 +93,7 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
   switch (typeDeclaration.typ_kind) {
   | Ttype_record(l) =>
     l
-    |> List.iter(({Typedtree.ld_name, ld_loc, ld_type}) =>
+    |> List.iter(({Typedtree.ld_name, ld_loc}) =>
          updateDependencies(ld_name, ld_loc.Location.loc_start)
        )
 

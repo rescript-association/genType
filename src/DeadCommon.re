@@ -248,7 +248,7 @@ let iterFilesFromRootsToLeaves = iterFun => {
   };
   // Process any remaining items in case of circular references
   referencesByNumber
-  |> Hashtbl.iter((num, set) =>
+  |> Hashtbl.iter((_num, set) =>
        if (FileSet.is_empty(set)) {
          ();
        } else {
@@ -378,7 +378,7 @@ module ProcessDeadAnnotations = {
           {vb_attributes, vb_pat} as value_binding: Typedtree.value_binding,
         ) => {
       switch (vb_pat.pat_desc) {
-      | Tpat_var(id, pLoc) =>
+      | Tpat_var(_id, pLoc) =>
         vb_attributes |> processAttributes(~pos=pLoc.loc.loc_start)
 
       | _ => ()
@@ -405,7 +405,7 @@ module ProcessDeadAnnotations = {
     let value_description =
         (
           self,
-          {val_attributes, val_id, val_val} as value_description: Typedtree.value_description,
+          {val_attributes, val_val} as value_description: Typedtree.value_description,
         ) => {
       val_attributes |> processAttributes(~pos=val_val.val_loc.loc_start);
       super.value_description(self, value_description);
@@ -504,7 +504,7 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~ppf, {declKind, pos, path} as item) => {
+  let onDeadItem = (~ppf, {declKind, pos} as item) => {
     let useColumn = declKind != Value;
     let fileName = pos.Lexing.pos_fname;
     if (Sys.file_exists(fileName)) {

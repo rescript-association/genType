@@ -156,7 +156,7 @@ let translateConstr =
 
   | (["React", "Ref", "t"], [paramTranslation]) => {
       dependencies: paramTranslation.dependencies,
-      type_: EmitType.typeReactRef(~config, ~type_=paramTranslation.type_),
+      type_: EmitType.typeReactRef(~type_=paramTranslation.type_),
     }
 
   | (["ReactDOMRe", "domRef"], []) => {
@@ -779,7 +779,9 @@ let translateTypeExprsFromTypes = (~config, ~typeEnv, typeExprs) => {
     translations
     |> List.iter(translation =>
          translation.dependencies
-         |> List.iter(dep => Log_.item("Dependency: %s\n", dep |> depToString))
+         |> List.iter(dep =>
+              Log_.item("Dependency: %s\n", dep |> depToString)
+            )
        );
   };
   translations;

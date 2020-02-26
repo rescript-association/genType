@@ -112,23 +112,6 @@ let ends_with_then_chop s beg =
   if i >= 0 then Some (String.sub s 0 i) 
   else None
 
-let check_suffix_case = ends_with 
-let check_suffix_case_then_chop = ends_with_then_chop
-
-let check_any_suffix_case s suffixes = 
-  List.exists (fun x -> check_suffix_case s x) suffixes
-
-let check_any_suffix_case_then_chop s suffixes = 
-  let rec aux suffixes = 
-    match suffixes with 
-    | [] -> None 
-    | x::xs -> 
-      let id = ends_with_index s x in 
-      if id >= 0 then Some (String.sub s 0 id)
-      else aux xs in 
-  aux suffixes    
-
-
 
 (**  In OCaml 4.02.3, {!String.escaped} is locale senstive, 
      this version try to make it not locale senstive, this bug is fixed
@@ -175,8 +158,6 @@ let repeat n s  =
     String.blit s 0 res (i * len) len
   done;
   Bytes.to_string res
-
-let equal (x : string) y  = x = y
 
 
 
@@ -484,8 +465,6 @@ let capitalize_sub (s : string) len : string =
 
 let uncapitalize_ascii =
     String.uncapitalize_ascii
-
-let lowercase_ascii = String.lowercase_ascii
 
 
 let lowercase_ascii (s : string) = 
