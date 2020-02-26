@@ -144,10 +144,10 @@ let loadCmtFile = cmtFilePath => {
 
 let reportResults = (~posInAliveWhitelist) => {
   let ppf = Format.std_formatter;
-  let onItem = ({decKind, pos, path}) => {
+  let onItem = ({declKind, pos, path}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let (name, message) =
-      switch (decKind) {
+      switch (declKind) {
       | Value => ("Warning Dead Value", "is never used")
       | RecordLabel => (
           "Warning Dead Type",
