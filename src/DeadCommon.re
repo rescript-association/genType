@@ -33,7 +33,7 @@ let write = Sys.getenv_opt("Write") != None;
 let deadAnnotation = "dead";
 let liveAnnotation = "live";
 
-type decKind =
+type declKind =
   | RecordLabel
   | VariantCase
   | Value;
@@ -121,7 +121,7 @@ module FileHash = {
   };
 };
 
-type decs = Hashtbl.t(Lexing.position, (string, decKind));
+type decs = Hashtbl.t(Lexing.position, (string, declKind));
 let decs: decs = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
@@ -428,7 +428,7 @@ module ProcessDeadAnnotations = {
 };
 
 type item = {
-  decKind,
+  declKind,
   pos: Lexing.position,
   path: string,
 };
@@ -504,8 +504,8 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~ppf, {decKind, pos, path} as item) => {
-    let useColumn = decKind != Value;
+  let onDeadItem = (~ppf, {declKind, pos, path} as item) => {
+    let useColumn = declKind != Value;
     let fileName = pos.Lexing.pos_fname;
     if (Sys.file_exists(fileName)) {
       if (fileName != currentFile^) {
@@ -542,10 +542,10 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let folder = (items, {decKind, pos, path} as item) => {
+  let folder = (items, {declKind, pos, path} as item) => {
     switch (
       pos
-      |> PosHash.findSet(decKind == Value ? valueReferences : typeReferences)
+      |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
     ) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let liveReferences =
@@ -558,7 +558,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
-        if (decKind != Value
+        if (declKind != Value
             && FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
           // Don't report types dead in an implementation, if there's an interface.
           items;
@@ -574,7 +574,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
             |> String.concat(", ");
           Log_.item(
             "%s%s: %d references (%s)\n",
-            decKind != Value ? "[type] " : "",
+            declKind != Value ? "[type] " : "",
             path,
             referencesToLoc |> PosSet.cardinal,
             refsString,
@@ -604,7 +604,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
 
   let items =
     Hashtbl.fold(
-      (pos, (path, decKind), items) => [{decKind, pos, path}, ...items],
+      (pos, (path, declKind), items) => [{declKind, pos, path}, ...items],
       decs,
       [],
     );
@@ -622,7 +622,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
   let compareItemsUsingDependencies =
       (
         {
-          decKind: kind1,
+          declKind: kind1,
           path: path1,
           pos: {
             pos_fname: fname1,
@@ -632,7 +632,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
           },
         },
         {
-          decKind: kind2,
+          declKind: kind2,
           path: path2,
           pos: {
             pos_fname: fname2,
