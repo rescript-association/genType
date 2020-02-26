@@ -159,7 +159,7 @@ let rec renderType =
     };
 
   | Function({
-      argTypes: [{type_: Object(closedFlag, fields)}],
+      argTypes: [{aType: Object(closedFlag, fields)}],
       retType,
       typeVars,
     })
@@ -393,16 +393,16 @@ and renderFunType =
   ++ String.concat(
        ", ",
        List.mapi(
-         (i, {argName, type_}) => {
+         (i, {aName, aType}) => {
            let parameterName =
              if (config.language == Flow) {
                "";
              } else {
-               (argName == "" ? "_" ++ string_of_int(i + 1) : argName) ++ ":";
+               (aName == "" ? "_" ++ string_of_int(i + 1) : aName) ++ ":";
              };
            parameterName
            ++ (
-             type_
+             aType
              |> renderType(
                   ~config,
                   ~indent,

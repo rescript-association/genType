@@ -62,8 +62,8 @@ type type_ =
   | Variant(variant)
 and fields = list(field)
 and argType = {
-  argName: string,
-  type_,
+  aName: string,
+  aType: type_,
 }
 and field = {
   mutable_,
