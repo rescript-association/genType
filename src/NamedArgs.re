@@ -70,11 +70,11 @@ let rec reverse = (~soFar=[], lst) =>
     // treat a single argument of type unit as no argument
     []
   | [Arg(type_), ...tl] =>
-    reverse(~soFar=[{argName: "", type_}, ...soFar], tl)
+    reverse(~soFar=[{aName: "", aType: type_}, ...soFar], tl)
   | [Group(fields), ...tl] =>
     reverse(
       ~soFar=[
-        {argName: "", type_: GroupOfLabeledArgs(List.rev(fields))},
+        {aName: "", aType: GroupOfLabeledArgs(List.rev(fields))},
         ...soFar,
       ],
       tl,

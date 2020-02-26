@@ -230,8 +230,8 @@ let translateComponent =
           },
         ])
       /* Then we had both props and children. */
-      | [{type_: childrenType}, ..._] =>
-        switch (propOrChildren.type_) {
+      | [{aType: childrenType}, ..._] =>
+        switch (propOrChildren.aType) {
         | GroupOfLabeledArgs(fields) =>
           GroupOfLabeledArgs(
             fields
@@ -380,9 +380,9 @@ let translatePrimitive =
       | Function({argTypes: [propOrChildren, ...childrenOrNil]}) =>
         switch (childrenOrNil) {
         | [] => ([], mixedOrUnknown(~config))
-        | [{type_: children}, ..._] =>
+        | [{aType: children}, ..._] =>
           switch (propOrChildren) {
-          | {type_: GroupOfLabeledArgs(fields)} => (
+          | {aType: GroupOfLabeledArgs(fields)} => (
               fields
               |> List.map(({optional, type_} as field) =>
                    switch (type_, optional) {

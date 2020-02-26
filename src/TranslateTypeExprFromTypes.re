@@ -115,7 +115,7 @@ let translateConstr =
       dependencies: fromTranslation.dependencies @ toTranslation.dependencies,
       type_:
         Function({
-          argTypes: [{argName: "", type_: fromTranslation.type_}],
+          argTypes: [{aName: "", aType: fromTranslation.type_}],
           componentName: None,
           retType: toTranslation.type_,
           typeVars: [],
@@ -128,7 +128,7 @@ let translateConstr =
         propsTranslation.dependencies @ retTranslation.dependencies,
       type_:
         Function({
-          argTypes: [{argName: "", type_: propsTranslation.type_}],
+          argTypes: [{aName: "", aType: propsTranslation.type_}],
           componentName: None,
           retType: retTranslation.type_,
           typeVars: [],
@@ -140,7 +140,7 @@ let translateConstr =
       dependencies: propsTranslation.dependencies,
       type_:
         Function({
-          argTypes: [{argName: "", type_: propsTranslation.type_}],
+          argTypes: [{aName: "", aType: propsTranslation.type_}],
           componentName: None,
           retType: EmitType.typeReactElement(~config),
           typeVars: [],
@@ -204,7 +204,7 @@ let translateConstr =
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: ts |> List.map(type_ => {argName: "", type_}),
+          argTypes: ts |> List.map(type_ => {aName: "", aType: type_}),
           componentName: None,
           retType: ret.type_,
           typeVars: [],
@@ -244,7 +244,7 @@ let translateConstr =
         | _ => [singleT]
         }
       )
-      |> List.map(type_ => {argName: "", type_});
+      |> List.map(type_ => {aName: "", aType: type_});
     {
       dependencies: argsDependencies @ ret.dependencies,
       type_:
@@ -269,7 +269,7 @@ let translateConstr =
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: [{argName: "", type_}],
+          argTypes: [{aName: "", aType: type_}],
           componentName: None,
           retType: ret.type_,
           typeVars: [],
@@ -289,7 +289,7 @@ let translateConstr =
       dependencies: argsDependencies @ ret.dependencies,
       type_:
         Function({
-          argTypes: ts |> List.map(type_ => {type_, argName: ""}),
+          argTypes: ts |> List.map(type_ => {aName: "", aType: type_}),
           componentName: None,
           retType: ret.type_,
           typeVars: [],
