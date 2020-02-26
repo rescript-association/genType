@@ -13,10 +13,11 @@ let collectTypeExport =
       ~path,
       {type_kind, type_manifest}: Types.type_declaration,
     ) => {
-  let save = (id, loc) => {
+  let save = (~decKind, ~id, ~loc) => {
     if (type_manifest == None) {
       export(
         ~analysisKind=Type,
+        ~decKind,
         ~path,
         ~id,
         ~implementationWithInterface,
@@ -30,9 +31,17 @@ let collectTypeExport =
 
   switch (type_kind) {
   | Type_record(l, _) =>
-    List.iter(({Types.ld_id, ld_loc, ld_type}) => save(ld_id, ld_loc), l)
+    List.iter(
+      ({Types.ld_id, ld_loc, ld_type}) =>
+        save(~decKind=Record, ~id=ld_id, ~loc=ld_loc),
+      l,
+    )
   | Type_variant(l) =>
-    List.iter(({Types.cd_id, cd_loc}) => save(cd_id, cd_loc), l)
+    List.iter(
+      ({Types.cd_id, cd_loc}) =>
+        save(~decKind=Variant, ~id=cd_id, ~loc=cd_loc),
+      l,
+    )
   | _ => ()
   };
 };

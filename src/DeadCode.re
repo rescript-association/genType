@@ -29,6 +29,7 @@ let rec collectExportFromSignatureItem =
     if (!isPrimitive || analyzeExternals) {
       export(
         ~analysisKind=Value,
+        ~decKind=Val,
         ~path,
         ~id,
         ~implementationWithInterface,
@@ -144,12 +145,13 @@ let loadCmtFile = cmtFilePath => {
 
 let reportResults = (~posInAliveWhitelist) => {
   let ppf = Format.std_formatter;
-  let onItem = ({analysisKind, pos, path}) => {
+  let onItem = ({analysisKind, decKind, pos, path}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let (name, message) =
-      switch (analysisKind) {
-      | Value => ("Warning Dead Value", "is never used")
-      | Type => ("Warning Dead Type", "is never used to construct a value")
+      switch (decKind) {
+      | Val => ("Warning Dead Value", "is never used")
+      | Record => ("Warning Dead Type", "is a record label never used to read a value")
+      | Variant => ("Warning Dead Type", "is a variant case which is never constructed")
       };
     Log_.info(~loc, ~name, (ppf, ()) =>
       Format.fprintf(ppf, "@{<info>%s@} %s", path, message)

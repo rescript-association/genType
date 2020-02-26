@@ -120,7 +120,11 @@ module FileHash = {
   };
 };
 
-type decs = Hashtbl.t(Lexing.position, string);
+type decKind =
+  | Record
+  | Variant
+  | Val;
+type decs = Hashtbl.t(Lexing.position, (string, decKind));
 let valueDecs: decs = Hashtbl.create(256); /* all exported value declarations */
 let typeDecs: decs = Hashtbl.create(256);
 
@@ -269,12 +273,11 @@ let iterFilesFromRootsToLeaves = iterFun => {
      );
 };
 
-let hashtblAddToList = (hashtbl, key, elt) => Hashtbl.add(hashtbl, key, elt);
-
 /********   PROCESSING  ********/
 
-let export = (~analysisKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
-  let value =
+let export =
+    (~analysisKind, ~decKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
+  let path =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
     ++ id.Ident.name;
@@ -302,10 +305,10 @@ let export = (~analysisKind, ~path, ~id, ~implementationWithInterface, ~loc) => 
       };
     };
 
-    hashtblAddToList(
+    Hashtbl.add(
       analysisKind == Value ? valueDecs : typeDecs,
       pos,
-      value,
+      (path, decKind),
     );
   };
 };
@@ -435,6 +438,7 @@ module ProcessDeadAnnotations = {
 
 type item = {
   analysisKind,
+  decKind,
   pos: Lexing.position,
   path: string,
 };
@@ -548,7 +552,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let folder = (items, {analysisKind, pos, path}) => {
+  let folder = (items, {analysisKind, decKind, pos, path} as item) => {
     switch (
       pos
       |> PosHash.findSet(
@@ -571,7 +575,7 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
           // Don't report types dead in an implementation, if there's an interface.
           items;
         } else {
-          [{analysisKind, pos, path: pathWithoutHead(path)}, ...items];
+          [{...item, path: pathWithoutHead(path)}, ...items];
         };
       } else {
         if (verbose) {
@@ -612,13 +616,15 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
 
   let items0 =
     Hashtbl.fold(
-      (pos, path, items) => [{analysisKind: Value, pos, path}, ...items],
+      (pos, (path, decKind), items) =>
+        [{analysisKind: Value, decKind, pos, path}, ...items],
       valueDecs,
       [],
     );
   let items1 =
     Hashtbl.fold(
-      (pos, path, items) => [{analysisKind: Type, pos, path}, ...items],
+      (pos, (path, decKind), items) =>
+        [{analysisKind: Type, decKind, pos, path}, ...items],
       typeDecs,
       items0,
     );
