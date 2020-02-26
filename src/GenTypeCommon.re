@@ -60,8 +60,6 @@ type type_ =
   | Tuple(list(type_))
   | TypeVar(string)
   | Variant(variant)
-and builtin =
-  | Promise(type_)
 and fields = list(field)
 and argType = {
   argName: string,
