@@ -165,7 +165,7 @@ module Loc = {
   };
 
   let print = (ppf, loc: Location.t) => {
-    let (file, start_line, start_char) =
+    let (_file, start_line, start_char) =
       Location.get_pos_info(loc.loc_start);
     let (_, end_line, end_char) = Location.get_pos_info(loc.loc_end);
     let normalizedRange =

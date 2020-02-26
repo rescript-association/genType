@@ -134,7 +134,7 @@ let loadCmtFile = cmtFilePath => {
     };
     if (analyzeTermination^) {
       switch (cmt_annots) {
-      | Interface(signature) => ()
+      | Interface(_) => ()
       | Implementation(structure) => Arnold.processStructure(structure)
       | _ => ()
       };

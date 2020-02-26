@@ -23,9 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. *)
 
 
-let bsbuild_cache = ".bsbuild"
-
-
  type group = {
    modules : string array ; 
    dir_length : int;

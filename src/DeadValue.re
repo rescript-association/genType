@@ -6,7 +6,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let oldPos = currentBindingPos^;
   let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(id, loc) when !loc.loc.loc_ghost => loc.loc.loc_start
+    | Tpat_var(_id, loc) when !loc.loc.loc_ghost => loc.loc.loc_start
     | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
     | _ => currentBindingPos^
     };
@@ -20,7 +20,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
   let posUsage = e.exp_loc.loc_start;
   switch (e.exp_desc) {
   | Texp_ident(
-      path,
+      _path,
       _,
       {
         Types.val_loc: {
@@ -35,11 +35,11 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
 
   | Texp_field(
       _,
-      x,
+      _,
       {lbl_loc: {Location.loc_start: posDeclaration, loc_ghost: false}, _},
     )
   | Texp_construct(
-      x,
+      _,
       {cstr_loc: {Location.loc_start: posDeclaration, loc_ghost: false}, _},
       _,
     ) =>

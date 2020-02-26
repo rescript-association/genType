@@ -175,7 +175,7 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
     |> List.exists(ext => Filename.check_suffix(fileName, ext))
     && !excludeFile(fileName);
 
-  let addDir = (~dirOnDisk, ~dirEmitted, ~filter, ~map, ~root) => {
+  let addDir = (~dirOnDisk, ~dirEmitted, ~filter, ~map) => {
     dirOnDisk
     |> Sys.readdir
     |> Array.iter(fname =>
@@ -197,7 +197,6 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
          ~dirOnDisk=projectRoot^ +++ dir,
          ~filter=filterGivenExtension,
          ~map=fileMap,
-         ~root=projectRoot^,
        )
      );
 
@@ -218,7 +217,6 @@ let sourcedirsJsonToMap = (~config, ~extensions, ~excludeFile) => {
                 ~dirOnDisk,
                 ~filter,
                 ~map=bsDependenciesFileMap,
-                ~root=projectRoot^,
               );
             });
        | exception Not_found => ()
@@ -366,12 +364,18 @@ let resolveGeneratedModule =
 let importPathForReasonModuleName =
     (~config, ~outputFileRelative, ~resolver, moduleName) => {
   if (Debug.moduleResolution^) {
-    Log_.item("Resolve Reason Module: %s\n", moduleName |> ModuleName.toString);
+    Log_.item(
+      "Resolve Reason Module: %s\n",
+      moduleName |> ModuleName.toString,
+    );
   };
   switch (config.shimsMap |> ModuleNameMap.find(moduleName)) {
   | shimModuleName =>
     if (Debug.moduleResolution^) {
-      Log_.item("ShimModuleName: %s\n", shimModuleName |> ModuleName.toString);
+      Log_.item(
+        "ShimModuleName: %s\n",
+        shimModuleName |> ModuleName.toString,
+      );
     };
     let importPath =
       resolveModule(

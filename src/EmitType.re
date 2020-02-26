@@ -99,7 +99,7 @@ let typeReactDOMReDomRef = (~config) =>
   (config.language == Flow ? "React$Ref" : "React.Ref")
   |> ident(~builtin=true, ~typeArgs=[mixedOrUnknown(~config)]);
 
-let typeReactRef = (~config, ~type_) =>
+let typeReactRef = (~type_) =>
   Object(
     Closed,
     [

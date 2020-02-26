@@ -640,7 +640,7 @@ module FindFunctionsCalled = {
 
     let expr = (self: Tast_mapper.mapper, e: Typedtree.expression) => {
       switch (e.exp_desc) {
-      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, args) =>
+      | Texp_apply({exp_desc: Texp_ident(callee, _, _)}, _args) =>
         let functionName = Path.name(callee);
         callees := StringSet.add(functionName, callees^);
       | _ => ()
@@ -693,7 +693,7 @@ module ExtendFunctionTable = {
         exp_desc: Texp_apply({exp_desc: Texp_ident(path, {loc}, _)}, args),
       })
         when kindOpt != None =>
-      let checkArg = ((argLabel: Asttypes.arg_label, argOpt)) => {
+      let checkArg = ((argLabel: Asttypes.arg_label, _argOpt)) => {
         switch (argLabel, kindOpt) {
         | (Labelled(l) | Optional(l), Some(kind)) =>
           kind |> List.for_all(({Kind.label}) => label != l)
@@ -934,7 +934,7 @@ module Compile = {
             args
             |> List.find_opt(arg =>
                  switch (arg) {
-                 | (Asttypes.Labelled(s), Some(e)) => s == label
+                 | (Asttypes.Labelled(s), Some(_)) => s == label
                  | _ => false
                  }
                );
@@ -1068,11 +1068,7 @@ module Compile = {
       let c3 = eOpt |> expressionOpt(~ctx);
       Command.(c1 +++ nondet([c2, c3]));
     | Texp_constant(_) => Command.nothing
-    | Texp_construct(
-        {loc: {loc_start: pos, loc_ghost}},
-        {cstr_name},
-        expressions,
-      ) =>
+    | Texp_construct({loc: {loc_ghost}}, {cstr_name}, expressions) =>
       let c =
         expressions
         |> List.map(e => e |> expression(~ctx))
@@ -1389,7 +1385,7 @@ module Eval = {
            ~loc,
            ~state,
          )
-    | Call(ProgressFunction(progressFunction) as call, _pos) =>
+    | Call(ProgressFunction(_) as call, _pos) =>
       let state1 =
         State.init(~progress=Progress, ~trace=Tcall(call, Progress), ());
       State.seq(state, state1);
