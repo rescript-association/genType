@@ -1,6 +1,7 @@
 # master
 - Support new internal representation of `bs.meth` used in the forthcoming bucklescript 7.2.0.
-- Experimental global dead code/type analysis with `-dce` and `-dce-cmt` for bucklescript and native projects respectively.
+- Experimental global dead code/type analysis with CLI `-dce` and `-dce-cmt` for bucklescript and native projects respectively.
+Environment variables `Whitelist=prefix` and `Blacklist=prefix` can be used to filter which results are reported based on their paths. Use `Write=1` to write `@dead` annotations directly in the source files.
 
 # 3.12.0
 - Emit doc commments `/** this is a doc comment */` in the TypeScript output.
