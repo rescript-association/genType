@@ -1,5 +1,6 @@
 # master
 - Support new internal representation of `bs.meth` used in the forthcoming bucklescript 7.2.0.
+- Experimental global dead code/type analysis with `-dce` and `-dce-cmt` for bucklescript and native projects respectively.
 
 # 3.12.0
 - Emit doc commments `/** this is a doc comment */` in the TypeScript output.
