@@ -142,7 +142,7 @@ let loadCmtFile = cmtFilePath => {
   };
 };
 
-let reportResults = (~posInAliveWhitelist) => {
+let reportResults = () => {
   let ppf = Format.std_formatter;
   let onItem = ({declKind, pos, path}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
@@ -166,23 +166,8 @@ let reportResults = (~posInAliveWhitelist) => {
     item |> onItem;
     item |> WriteDeadAnnotations.onDeadItem(~ppf);
   };
-  reportDead(~onDeadCode, ~posInAliveWhitelist);
+  reportDead(~onDeadCode);
   WriteDeadAnnotations.write();
-};
-
-let aliveWhitelist = ["DeadTestWhitelist"];
-let aliveWhitelistTable = {
-  let tbl = Hashtbl.create(1);
-  List.iter(
-    moduleName => Hashtbl.replace(tbl, moduleName, ()),
-    aliveWhitelist,
-  );
-  tbl;
-};
-
-let posInAliveWhitelist = (pos: Lexing.position) => {
-  let moduleName = pos.pos_fname |> getModuleName;
-  Hashtbl.mem(aliveWhitelistTable, moduleName);
 };
 
 let runAnalysis = (~cmtRoot) => {
@@ -204,7 +189,7 @@ let runAnalysis = (~cmtRoot) => {
     };
     walkSubDirs("");
     if (dce^) {
-      reportResults(~posInAliveWhitelist);
+      reportResults();
     };
     if (analyzeTermination^) {
       Arnold.reportResults();
@@ -218,30 +203,28 @@ let runAnalysis = (~cmtRoot) => {
 
     let sourceDirs = ModuleResolver.readSourceDirs(~configSources=None);
     sourceDirs.dirs
-    |> List.iter(sourceDir =>
-         if (sourceDir |> whitelistSourceDir) {
-           let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
-           let files =
-             switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
-             | files => files
-             | exception (Sys_error(_)) => []
-             };
-           let cmtFiles =
-             files
-             |> List.filter(x =>
-                  Filename.check_suffix(x, ".cmt")
-                  || Filename.check_suffix(x, ".cmti")
-                );
-           cmtFiles
-           |> List.iter(cmtFile => {
-                let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
-                cmtFilePath |> loadCmtFile;
-              });
-         }
-       );
+    |> List.iter(sourceDir => {
+         let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
+         let files =
+           switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
+           | files => files
+           | exception (Sys_error(_)) => []
+           };
+         let cmtFiles =
+           files
+           |> List.filter(x =>
+                Filename.check_suffix(x, ".cmt")
+                || Filename.check_suffix(x, ".cmti")
+              );
+         cmtFiles
+         |> List.iter(cmtFile => {
+              let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
+              cmtFilePath |> loadCmtFile;
+            });
+       });
 
     if (dce^) {
-      reportResults(~posInAliveWhitelist);
+      reportResults();
     };
     if (analyzeTermination^) {
       Arnold.reportResults();

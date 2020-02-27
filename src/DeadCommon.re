@@ -14,18 +14,44 @@ let transitive = true;
 
 let verbose = Sys.getenv_opt("Debug") != None;
 
-// Whitelist=prefix only considers source dirs with the given prefix
-let whitelistSourceDir = {
-  switch (Sys.getenv_opt("Whitelist")) {
-  | None => (_sourceDir => true)
-  | Some(prefix) =>
-    let prefixLen = prefix |> String.length;
-    (
-      sourceDir =>
-        String.length(sourceDir) >= prefixLen
-        && String.sub(sourceDir, 0, prefixLen) == prefix
-    );
-  };
+let checkPrefix = prefix_ => {
+  let prefix =
+    GenTypeCommon.projectRoot^ == ""
+      ? prefix_ : Filename.concat(GenTypeCommon.projectRoot^, prefix_);
+  let prefixLen = prefix |> String.length;
+  sourceDir =>
+    String.length(sourceDir) >= prefixLen
+    && String.sub(sourceDir, 0, prefixLen) == prefix;
+};
+
+// Whitelist=prefix only report on source dirs with the given prefix
+let whitelistSourceDir =
+  lazy(
+    {
+      switch (Sys.getenv_opt("Whitelist")) {
+      | None => (_sourceDir => true)
+      | Some(prefix) => checkPrefix(prefix)
+      };
+    }
+  );
+
+let posInWhitelist = (pos: Lexing.position) => {
+  pos.pos_fname |> Lazy.force(whitelistSourceDir);
+};
+
+// Blacklist=prefix don't report on source dirs with the given prefix
+let blacklistSourceDir =
+  lazy(
+    {
+      switch (Sys.getenv_opt("Blacklist")) {
+      | None => (_sourceDir => false)
+      | Some(prefix) => checkPrefix(prefix)
+      };
+    }
+  );
+
+let posInBlacklist = (pos: Lexing.position) => {
+  pos.pos_fname |> Lazy.force(blacklistSourceDir);
 };
 
 let write = Sys.getenv_opt("Write") != None;
@@ -538,7 +564,7 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
+let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
@@ -554,7 +580,8 @@ let reportDead = (~onDeadCode, ~posInAliveWhitelist) => {
       if (liveReferences
           |> PosSet.cardinal == 0
           && !ProcessDeadAnnotations.isAnnotatedLive(pos)
-          && !posInAliveWhitelist(pos)) {
+          && posInWhitelist(pos)
+          && !posInBlacklist(pos)) {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };

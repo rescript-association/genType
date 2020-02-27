@@ -16,7 +16,7 @@
     "ts:watch": "react-scripts start",
     "build": "node ../run_bsb.js -make-world",
     "clean": "node ../clean_bsb.js",
-    "dce": "Debug=1 Whitelist=src ../gentype.exe -dce >deadcode.txt",
+    "dce": "Debug=1 Whitelist=src Blacklist=src/DeadTestWhitelist.re ../gentype.exe -dce >deadcode.txt",
     "eject": "react-scripts eject",
     "tsc": "tsc -p tsconfig.json"
   },
