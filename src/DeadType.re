@@ -13,9 +13,9 @@ let collectTypeExport =
       ~path,
       {type_kind, type_manifest}: Types.type_declaration,
     ) => {
-  let save = (~decKind, ~id, ~loc) => {
+  let save = (~declKind, ~id, ~loc) => {
     if (type_manifest == None) {
-      export(~decKind, ~path, ~id, ~implementationWithInterface, ~loc);
+      export(~declKind, ~path, ~id, ~implementationWithInterface, ~loc);
     };
     let path =
       List.rev_map(id => id.Ident.name, [id, ...path]) |> String.concat(".");
@@ -26,13 +26,13 @@ let collectTypeExport =
   | Type_record(l, _) =>
     List.iter(
       ({Types.ld_id, ld_loc}) =>
-        save(~decKind=RecordLabel, ~id=ld_id, ~loc=ld_loc),
+        save(~declKind=RecordLabel, ~id=ld_id, ~loc=ld_loc),
       l,
     )
   | Type_variant(l) =>
     List.iter(
       ({Types.cd_id, cd_loc}) =>
-        save(~decKind=VariantCase, ~id=cd_id, ~loc=cd_loc),
+        save(~declKind=VariantCase, ~id=cd_id, ~loc=cd_loc),
       l,
     )
   | _ => ()

@@ -28,7 +28,7 @@ let rec collectExportFromSignatureItem =
       };
     if (!isPrimitive || analyzeExternals) {
       export(
-        ~decKind=Value,
+        ~declKind=Value,
         ~path,
         ~id,
         ~implementationWithInterface,
