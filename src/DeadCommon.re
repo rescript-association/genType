@@ -147,8 +147,8 @@ module FileHash = {
   };
 };
 
-type decs = Hashtbl.t(Lexing.position, (string, declKind));
-let decs: decs = Hashtbl.create(256); /* all exported declarations */
+type decls = Hashtbl.t(Lexing.position, (string, declKind));
+let decls: decls = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
@@ -297,7 +297,7 @@ let iterFilesFromRootsToLeaves = iterFun => {
 
 /********   PROCESSING  ********/
 
-let export = (~decKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
+let export = (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
   let path =
     String.concat(".", List.rev_map(Ident.name, path))
     ++ "."
@@ -314,19 +314,19 @@ let export = (~decKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
     if (verbose) {
       Log_.item(
         "%sexport %s %s\n",
-        decKind != Value ? "[type] " : "",
+        declKind != Value ? "[type] " : "",
         id.name,
         pos |> posToString,
       );
     };
 
-    if (implementationWithInterface && decKind != Value) {
+    if (implementationWithInterface && declKind != Value) {
       if (!FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
         FileHash.replace(implementationFilesWithInterface, pos.pos_fname, ());
       };
     };
 
-    Hashtbl.add(decs, pos, (path, decKind));
+    Hashtbl.add(decls, pos, (path, declKind));
   };
 };
 
@@ -472,13 +472,13 @@ module WriteDeadAnnotations = {
   let lineToString = ({original, annotation}) => {
     switch (annotation) {
     | None => original
-    | Some({item: {pos, path}, useColumn}) =>
+    | Some({item: {declKind, pos, path}, useColumn}) =>
       let isReason =
         Filename.check_suffix(pos.pos_fname, ".re")
         || Filename.check_suffix(pos.pos_fname, ".rei");
       let annotationStr =
         "["
-        ++ (isReason ? "@" : "@@")
+        ++ (isReason || declKind != Value ? "@" : "@@")
         ++ deadAnnotation
         ++ " \""
         ++ path
@@ -632,7 +632,7 @@ let reportDead = (~onDeadCode) => {
   let items =
     Hashtbl.fold(
       (pos, (path, declKind), items) => [{declKind, pos, path}, ...items],
-      decs,
+      decls,
       [],
     );
 
