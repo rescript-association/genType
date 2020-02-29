@@ -162,7 +162,6 @@ let fields: Hashtbl.t(string, Lexing.position) = (
   Hashtbl.create(256): Hashtbl.t(string, Lexing.position)
 ); /* link from fields (record/variant) paths and locations */
 
-let lastPos = ref(Lexing.dummy_pos); /* helper to diagnose occurrences of Location.none in the typedtree */
 let currentSrc = ref("");
 let currentModuleName = ref("");
 let currentBindingPos = ref(Lexing.dummy_pos);
