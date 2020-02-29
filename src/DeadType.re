@@ -20,7 +20,7 @@ let addTypeDeclaration =
         ~loc,
       );
     };
-    let path = [id, ...path] |> pathToString;
+    let path = [id |> Ident.name, ...path] |> pathToString;
     Hashtbl.replace(fields, path, loc.Location.loc_start);
   };
 
