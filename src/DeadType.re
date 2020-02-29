@@ -17,8 +17,7 @@ let collectTypeExport =
     if (type_manifest == None) {
       export(~declKind, ~path, ~id, ~implementationWithInterface, ~loc);
     };
-    let path =
-      List.rev_map(id => id.Ident.name, [id, ...path]) |> String.concat(".");
+    let path = [id, ...path] |> pathToString;
     Hashtbl.replace(fields, path, loc.Location.loc_start);
   };
 

@@ -147,7 +147,7 @@ module FileHash = {
   };
 };
 
-type decls = Hashtbl.t(Lexing.position, (string, declKind));
+type decls = Hashtbl.t(Lexing.position, (list(Ident.t), declKind));
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
@@ -322,24 +322,17 @@ let export = (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
       };
     };
 
-    let path =
-      [id, ...path] |> List.rev_map(Ident.name) |> String.concat(".");
-    Hashtbl.add(decls, pos, (path, declKind));
+    Hashtbl.add(decls, pos, ([id, ...path], declKind));
   };
 };
 
 /**** REPORTING ****/
 
+let pathToString = path =>
+  path |> List.rev_map(Ident.name) |> String.concat(".");
+
 let pathWithoutHead = path => {
-  let rec cutFromNextDot = (s, pos) =>
-    if (pos == String.length(s)) {
-      s;
-    } else if (s.[pos] == '.') {
-      String.sub(s, pos + 1, String.length(s) - pos - 1);
-    } else {
-      cutFromNextDot(s, pos + 1);
-    };
-  cutFromNextDot(path, 0);
+  path |> List.rev_map(Ident.name) |> List.tl |> String.concat(".");
 };
 
 /* Keep track of the location of values annotated @genType or @dead */
@@ -454,7 +447,7 @@ module ProcessDeadAnnotations = {
 type item = {
   declKind,
   pos: Lexing.position,
-  path: string,
+  path: list(Ident.t),
 };
 
 module WriteDeadAnnotations = {
@@ -479,7 +472,7 @@ module WriteDeadAnnotations = {
         ++ (isReason || declKind != Value ? "@" : "@@")
         ++ deadAnnotation
         ++ " \""
-        ++ path
+        ++ (path |> pathWithoutHead)
         ++ "\"] ";
       if (!isReason) {
         original ++ " (* " ++ annotationStr ++ "*)";
@@ -588,7 +581,7 @@ let reportDead = (~onDeadCode) => {
           // Don't report types dead in an implementation, if there's an interface.
           items;
         } else {
-          [{...item, path: pathWithoutHead(path)}, ...items];
+          [{...item, path}, ...items];
         };
       } else {
         if (verbose) {
@@ -600,7 +593,7 @@ let reportDead = (~onDeadCode) => {
           Log_.item(
             "%s%s: %d references (%s)\n",
             declKind != Value ? "[type] " : "",
-            path,
+            path |> pathToString,
             referencesToLoc |> PosSet.cardinal,
             refsString,
           );
@@ -648,7 +641,7 @@ let reportDead = (~onDeadCode) => {
       (
         {
           declKind: kind1,
-          path: path1,
+          path: _,
           pos: {
             pos_fname: fname1,
             pos_lnum: lnum1,
@@ -658,7 +651,7 @@ let reportDead = (~onDeadCode) => {
         },
         {
           declKind: kind2,
-          path: path2,
+          path: _,
           pos: {
             pos_fname: fname2,
             pos_lnum: lnum2,
@@ -686,8 +679,8 @@ let reportDead = (~onDeadCode) => {
         : isImplementationOf(fname2, fname1)
             ? (0, 1) : (fname1 |> findPosition, fname2 |> findPosition);
     compare(
-      (position1, lnum2, bol2, cnum2, kind1, path1, kind1),
-      (position2, lnum1, bol1, cnum1, kind2, path2, kind2),
+      (position1, lnum2, bol2, cnum2, kind1),
+      (position2, lnum1, bol1, cnum1, kind2),
     );
   };
 
