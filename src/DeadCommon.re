@@ -147,7 +147,8 @@ module FileHash = {
   };
 };
 
-type decls = Hashtbl.t(Lexing.position, (list(Ident.t), declKind));
+type path = list(string);
+type decls = Hashtbl.t(Lexing.position, (path, declKind));
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
@@ -166,7 +167,7 @@ let currentSrc = ref("");
 let currentModuleName = ref("");
 let currentBindingPos = ref(Lexing.dummy_pos);
 /* Keep track of the module path while traversing with Tast_mapper */
-let currentModulePath: ref(list(string)) = ref([]);
+let currentModulePath: ref(path) = ref([]);
 
 let none_ = "_none_";
 let include_ = "*include*";
@@ -299,6 +300,12 @@ let iterFilesFromRootsToLeaves = iterFun => {
 
 /********   PROCESSING  ********/
 
+let pathToString = path => path |> List.rev |> String.concat(".");
+
+let pathWithoutHead = path => {
+  path |> List.rev |> List.tl |> String.concat(".");
+};
+
 let addDeclaration =
     (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
   let pos = loc.Location.loc_start;
@@ -325,18 +332,11 @@ let addDeclaration =
       };
     };
 
-    Hashtbl.add(decls, pos, ([id, ...path], declKind));
+    Hashtbl.add(decls, pos, ([id |> Ident.name, ...path], declKind));
   };
 };
 
 /**** REPORTING ****/
-
-let pathToString = path =>
-  path |> List.rev_map(Ident.name) |> String.concat(".");
-
-let pathWithoutHead = path => {
-  path |> List.rev_map(Ident.name) |> List.tl |> String.concat(".");
-};
 
 /* Keep track of the location of values annotated @genType or @dead */
 module ProcessDeadAnnotations = {
@@ -450,7 +450,7 @@ module ProcessDeadAnnotations = {
 type item = {
   declKind,
   pos: Lexing.position,
-  path: list(Ident.t),
+  path,
 };
 
 module WriteDeadAnnotations = {

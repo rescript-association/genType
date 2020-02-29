@@ -39,7 +39,7 @@ let rec collectExportFromSignatureItem =
     if (analyzeTypes^) {
       DeadType.addTypeDeclaration(
         ~implementationWithInterface,
-        ~path=[id, ...path],
+        ~path=[id |> Ident.name, ...path],
         t,
       );
     }
@@ -57,7 +57,7 @@ let rec collectExportFromSignatureItem =
       |> List.iter(
            collectExportFromSignatureItem(
              ~implementationWithInterface,
-             ~path=[id, ...path],
+             ~path=[id |> Ident.name, ...path],
            ),
          );
     };
@@ -66,7 +66,7 @@ let rec collectExportFromSignatureItem =
 
 let processSignature =
     (~implementationWithInterface, signature: Types.signature) => {
-  let module_id = Ident.create(String.capitalize_ascii(currentModuleName^));
+  let module_id = String.capitalize_ascii(currentModuleName^);
   signature
   |> List.iter(sig_item =>
        collectExportFromSignatureItem(
