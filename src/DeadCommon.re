@@ -165,6 +165,8 @@ let lastPos = ref(Lexing.dummy_pos); /* helper to diagnose occurrences of Locati
 let currentSrc = ref("");
 let currentModuleName = ref("");
 let currentBindingPos = ref(Lexing.dummy_pos);
+/* Keep track of the module path while traversing with Tast_mapper */
+let currentModulePath: ref(list(string)) = ref([]);
 
 let none_ = "_none_";
 let include_ = "*include*";

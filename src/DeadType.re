@@ -2,9 +2,6 @@
 
 open DeadCommon;
 
-/* Keep track of the module path while traversing with Tast_mapper */
-let modulePath: ref(list(string)) = ref([]);
-
 let typeDependencies = ref([]);
 
 let addTypeDeclaration =
@@ -63,7 +60,7 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
         ...List.rev([
              name.Asttypes.txt,
              typeDeclaration.typ_name.txt,
-             ...modulePath^,
+             ...currentModulePath^,
            ]),
       ]
       |> String.concat(".");
