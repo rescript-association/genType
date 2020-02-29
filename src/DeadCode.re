@@ -159,7 +159,7 @@ let reportResults = () => {
         )
       };
     Log_.info(~loc, ~name, (ppf, ()) =>
-      Format.fprintf(ppf, "@{<info>%s@} %s", path, message)
+      Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
     );
   };
   let onDeadCode = item => {
