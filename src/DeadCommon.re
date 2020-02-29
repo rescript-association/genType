@@ -298,10 +298,7 @@ let iterFilesFromRootsToLeaves = iterFun => {
 /********   PROCESSING  ********/
 
 let export = (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
-  let path =
-    String.concat(".", List.rev_map(Ident.name, path))
-    ++ "."
-    ++ id.Ident.name;
+  let path = String.concat(".", List.rev_map(Ident.name, [id, ...path]));
   let pos = loc.Location.loc_start;
 
   /* a .cmi file can contain locations from other files.
