@@ -7,7 +7,7 @@ let modulePath: ref(list(string)) = ref([]);
 
 let typeDependencies = ref([]);
 
-let collectTypeExport =
+let addTypeDeclaration =
     (
       ~implementationWithInterface,
       ~path,
@@ -15,7 +15,13 @@ let collectTypeExport =
     ) => {
   let save = (~declKind, ~id, ~loc) => {
     if (type_manifest == None) {
-      export(~declKind, ~path, ~id, ~implementationWithInterface, ~loc);
+      addDeclaration(
+        ~declKind,
+        ~path,
+        ~id,
+        ~implementationWithInterface,
+        ~loc,
+      );
     };
     let path = [id, ...path] |> pathToString;
     Hashtbl.replace(fields, path, loc.Location.loc_start);
