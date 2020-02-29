@@ -6,7 +6,8 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let oldPos = currentBindingPos^;
   let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(_id, loc) when !loc.loc.loc_ghost => loc.loc.loc_start
+    | Tpat_var(id, {loc: {loc_start, loc_ghost}}) when !loc_ghost =>
+      loc_start;
     | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
     | _ => currentBindingPos^
     };
@@ -72,28 +73,10 @@ let collectPattern = (super, self, pat: Typedtree.pattern) => {
 let collectValueReferences = {
   /* Tast_mapper */
   let super = Tast_mapper.default;
-  let wrap = (f, ~getPos, ~self, x) => {
-    let last = lastPos^;
-    let thisPos = getPos(x);
-    if (thisPos != Lexing.dummy_pos) {
-      lastPos := thisPos;
-    };
-    let r = f(super, self, x);
-    lastPos := last;
-    r;
-  };
 
-  let expr = (self, e) =>
-    e |> wrap(collectExpr, ~getPos=x => x.exp_loc.loc_start, ~self);
-  let pat = (self, p) =>
-    p |> wrap(collectPattern, ~getPos=x => x.pat_loc.loc_start, ~self);
-  let value_binding = (self, vb) =>
-    vb
-    |> wrap(
-         collectValueBinding,
-         ~getPos=x => x.vb_expr.exp_loc.loc_start,
-         ~self,
-       );
+  let expr = (self, e) => e |> collectExpr(super, self);
+  let pat = (self, p) => p |> collectPattern(super, self);
+  let value_binding = (self, vb) => vb |> collectValueBinding(super, self);
   let type_declaration = (self, typeDeclaration: Typedtree.type_declaration) => {
     DeadType.processTypeDeclaration(typeDeclaration);
     super.type_declaration(self, typeDeclaration);

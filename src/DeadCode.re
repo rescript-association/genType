@@ -75,11 +75,9 @@ let processSignature =
          sig_item,
        )
      );
-  lastPos := Lexing.dummy_pos;
 };
 
 let loadCmtFile = cmtFilePath => {
-  lastPos := Lexing.dummy_pos;
   if (verbose) {
     Log_.item("Scanning %s\n", cmtFilePath);
   };
