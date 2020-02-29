@@ -27,7 +27,7 @@ let rec collectExportFromSignatureItem =
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      export(
+      addDeclaration(
         ~declKind=Value,
         ~path,
         ~id,
@@ -37,7 +37,7 @@ let rec collectExportFromSignatureItem =
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes^) {
-      DeadType.collectTypeExport(
+      DeadType.addTypeDeclaration(
         ~implementationWithInterface,
         ~path=[id, ...path],
         t,

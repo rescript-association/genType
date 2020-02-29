@@ -297,7 +297,8 @@ let iterFilesFromRootsToLeaves = iterFun => {
 
 /********   PROCESSING  ********/
 
-let export = (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
+let addDeclaration =
+    (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
   let pos = loc.Location.loc_start;
 
   /* a .cmi file can contain locations from other files.
