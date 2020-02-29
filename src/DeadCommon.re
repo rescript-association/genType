@@ -298,7 +298,6 @@ let iterFilesFromRootsToLeaves = iterFun => {
 /********   PROCESSING  ********/
 
 let export = (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
-  let path = String.concat(".", List.rev_map(Ident.name, [id, ...path]));
   let pos = loc.Location.loc_start;
 
   /* a .cmi file can contain locations from other files.
@@ -312,7 +311,7 @@ let export = (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
       Log_.item(
         "%sexport %s %s\n",
         declKind != Value ? "[type] " : "",
-        id.name,
+        Ident.name(id),
         pos |> posToString,
       );
     };
@@ -323,6 +322,8 @@ let export = (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
       };
     };
 
+    let path =
+      [id, ...path] |> List.rev_map(Ident.name) |> String.concat(".");
     Hashtbl.add(decls, pos, (path, declKind));
   };
 };
