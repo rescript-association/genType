@@ -2670,7 +2670,7 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 15:5
   thisHasSemicolons is never used
   <-- line 15
-  let thisHasSemicolons = 3;; (* [@@dead "thisHasSemicolons"] *)
+  let thisHasSemicolons = 3 (* [@@dead "thisHasSemicolons"] *);;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5

@@ -476,7 +476,11 @@ module WriteDeadAnnotations = {
         ++ (path |> pathWithoutHead)
         ++ "\"] ";
       if (!isReason) {
-        original ++ " (* " ++ annotationStr ++ "*)";
+        let (noSemi, semis) =
+          Filename.check_suffix(original, ";;")
+            ? (String.sub(original, 0, String.length(original) - 2), ";;")
+            : (original, "");
+        noSemi ++ " (* " ++ annotationStr ++ "*)" ++ semis;
       } else if (useColumn) {
         let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
         let originalLen = String.length(original);
