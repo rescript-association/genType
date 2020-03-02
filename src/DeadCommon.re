@@ -75,6 +75,10 @@ let posToString = (~printCol=true, ~shortFile=true, pos: Lexing.position) => {
   ++ (printCol ? ":" ++ string_of_int(col) : ": ");
 };
 
+let posIsReason = (pos: Lexing.position) =>
+  Filename.check_suffix(pos.pos_fname, ".re")
+  || Filename.check_suffix(pos.pos_fname, ".rei");
+
 /********   ATTRIBUTES   ********/
 module PosSet =
   Set.Make({
@@ -148,7 +152,7 @@ module FileHash = {
 };
 
 type path = list(string);
-type decls = Hashtbl.t(Lexing.position, (path, declKind));
+type decls = Hashtbl.t(Lexing.position, (path, declKind, Lexing.position));
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
@@ -303,8 +307,9 @@ let pathWithoutHead = path => {
   path |> List.rev |> List.tl |> String.concat(".");
 };
 
-let addDeclaration = (~declKind, ~path, ~id, ~loc) => {
-  let pos = loc.Location.loc_start;
+let addDeclaration = (~declKind, ~path, ~id, ~loc: Location.t) => {
+  let pos = loc.loc_start;
+  let posEnd = loc.loc_end;
 
   /* a .cmi file can contain locations from other files.
        For instance:
@@ -322,7 +327,11 @@ let addDeclaration = (~declKind, ~path, ~id, ~loc) => {
       );
     };
 
-    Hashtbl.add(decls, pos, ([id |> Ident.name, ...path], declKind));
+    Hashtbl.add(
+      decls,
+      pos,
+      ([id |> Ident.name, ...path], declKind, posEnd),
+    );
   };
 };
 
@@ -439,8 +448,9 @@ module ProcessDeadAnnotations = {
 
 type item = {
   declKind,
-  pos: Lexing.position,
   path,
+  pos: Lexing.position,
+  posEnd: Lexing.position,
 };
 
 module WriteDeadAnnotations = {
@@ -457,9 +467,7 @@ module WriteDeadAnnotations = {
     switch (annotation) {
     | None => original
     | Some({item: {declKind, pos, path}, useColumn}) =>
-      let isReason =
-        Filename.check_suffix(pos.pos_fname, ".re")
-        || Filename.check_suffix(pos.pos_fname, ".rei");
+      let isReason = posIsReason(pos);
       let annotationStr =
         "["
         ++ (isReason || declKind != Value ? "@" : "@@")
@@ -514,7 +522,7 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~ppf, {declKind, pos} as item) => {
+  let onDeadItem = (~ppf, {declKind, pos, posEnd} as item) => {
     let useColumn = declKind != Value;
     let fileName = pos.Lexing.pos_fname;
     if (Sys.file_exists(fileName)) {
@@ -523,7 +531,11 @@ module WriteDeadAnnotations = {
         currentFile := fileName;
         currentFileLines := readFile(fileName);
       };
-      let indexInLines = pos.Lexing.pos_lnum - 1;
+
+      let indexInLines =
+        (!posIsReason(pos) && declKind == Value ? posEnd : pos).Lexing.pos_lnum
+        - 1;
+
       if (indexInLines < Array.length(currentFileLines^)) {
         let line = currentFileLines^[indexInLines];
         line.annotation = Some({item, useColumn});
@@ -609,7 +621,8 @@ let reportDead = (~onDeadCode) => {
 
   let items =
     Hashtbl.fold(
-      (pos, (path, declKind), items) => [{declKind, pos, path}, ...items],
+      (pos, (path, declKind, posEnd), items) =>
+        [{declKind, path, pos, posEnd}, ...items],
       decls,
       [],
     );
