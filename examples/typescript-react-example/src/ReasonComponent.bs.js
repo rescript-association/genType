@@ -13,9 +13,9 @@ function onClick(param) {
   return /* () */0;
 }
 
-function make(messageOpt, person, intListOpt, _children) {
-  var message = messageOpt !== undefined ? messageOpt : "default message";
-  var intList = intListOpt !== undefined ? intListOpt : /* :: */[
+function make($staropt$star, person, $staropt$star$1, _children) {
+  var message = $staropt$star !== undefined ? $staropt$star : "default message";
+  var intList = $staropt$star$1 !== undefined ? $staropt$star$1 : /* :: */[
       0,
       /* [] */0
     ];
@@ -46,8 +46,8 @@ function make(messageOpt, person, intListOpt, _children) {
         };
 }
 
-function minus(firstOpt, second) {
-  var first = firstOpt !== undefined ? firstOpt : 0;
+function minus($staropt$star, second) {
+  var first = $staropt$star !== undefined ? $staropt$star : 0;
   return first - second | 0;
 }
 
