@@ -7,8 +7,8 @@ import * as ReasonReact from "reason-react/src/ReasonReact.js";
 
 var component = ReasonReact.statelessComponent("App");
 
-function make(array, $staropt$star, person, title, _children) {
-  var callback = $staropt$star !== undefined ? $staropt$star : (function (param) {
+function make(array, callbackOpt, person, title, _children) {
+  var callback = callbackOpt !== undefined ? callbackOpt : (function (param) {
         return /* () */0;
       });
   return {
