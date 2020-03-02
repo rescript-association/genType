@@ -16,32 +16,20 @@ let rec getSignature = (~isfunc=false, moduleType: Types.module_type) =>
   | _ => []
   };
 
-let rec collectExportFromSignatureItem =
-        (~implementationWithInterface, ~path, si: Types.signature_item) =>
+let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
   switch (si) {
-  | Sig_value(id, {Types.val_loc, val_kind})
-      when !val_loc.Location.loc_ghost && !implementationWithInterface =>
+  | Sig_value(id, {Types.val_loc, val_kind}) when !val_loc.Location.loc_ghost =>
     let isPrimitive =
       switch (val_kind) {
       | Val_prim(_) => true
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      addDeclaration(
-        ~declKind=Value,
-        ~path,
-        ~id,
-        ~implementationWithInterface,
-        ~loc=val_loc,
-      );
+      addDeclaration(~declKind=Value, ~path, ~id, ~loc=val_loc);
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes^) {
-      DeadType.addTypeDeclaration(
-        ~implementationWithInterface,
-        ~path=[id |> Ident.name, ...path],
-        t,
-      );
+      DeadType.addTypeDeclaration(~path=[id |> Ident.name, ...path], t);
     }
   | (
       Sig_module(id, {Types.md_type: moduleType}, _) |
@@ -55,25 +43,17 @@ let rec collectExportFromSignatureItem =
     if (collect) {
       getSignature(moduleType)
       |> List.iter(
-           collectExportFromSignatureItem(
-             ~implementationWithInterface,
-             ~path=[id |> Ident.name, ...path],
-           ),
+           collectExportFromSignatureItem(~path=[id |> Ident.name, ...path]),
          );
     };
   | _ => ()
   };
 
-let processSignature =
-    (~implementationWithInterface, signature: Types.signature) => {
+let processSignature = (signature: Types.signature) => {
   let module_id = String.capitalize_ascii(currentModuleName^);
   signature
   |> List.iter(sig_item =>
-       collectExportFromSignatureItem(
-         ~implementationWithInterface,
-         ~path=[module_id],
-         sig_item,
-       )
+       collectExportFromSignatureItem(~path=[module_id], sig_item)
      );
 };
 
@@ -106,10 +86,7 @@ let loadCmtFile = cmtFilePath => {
       switch (cmt_annots) {
       | Interface(signature) =>
         ProcessDeadAnnotations.signature(signature);
-        processSignature(
-          ~implementationWithInterface=false,
-          signature.sig_type,
-        );
+        processSignature(signature.sig_type);
       | Implementation(structure) =>
         let cmtiExists =
           Sys.file_exists(
@@ -124,10 +101,7 @@ let loadCmtFile = cmtFilePath => {
           structure,
         );
         if (!cmtiExists) {
-          processSignature(
-            ~implementationWithInterface=cmtiExists,
-            structure.str_type,
-          );
+          processSignature(structure.str_type);
         };
       | _ => ()
       };
