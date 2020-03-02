@@ -811,6 +811,16 @@
   addValueReference FirstClassModules.re:14:2 --> FirstClassModules.re:17:6
   mergeSet FirstClassModules.re:46:20 --> FirstClassModules.re:49:6
   addValueReference FirstClassModules.re:46:20 --> FirstClassModules.re:49:6
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadMl.cmt
+  addDeclaration thisSpansSeveralLines DeadMl.ml:3:8
+  addDeclaration thisIsInInterface DeadMl.ml:9:2
+  addDeclaration thisHasSemicolons DeadMl.ml:15:4
+  addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
+  addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
+  addValueReference DeadMl.ml:3:8 --> pervasives.mli:264:0
+  addValueReference DeadMl.ml:12:6 --> DeadMl.ml:12:24
+  mergeSet DeadMl.ml:9:2 --> DeadMl.ml:12:6
+  addValueReference DeadMl.ml:9:2 --> DeadMl.ml:12:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
   [type] addDeclaration text ImportMyBanner.re:6:16
   addDeclaration make ImportMyBanner.re:8:0
@@ -1670,6 +1680,7 @@ File References
   CreateErrorHandler1.re -->> ErrorHandler.rei
   ImportMyBanner.re -->> 
   TestPromise.re -->> js_promise.ml
+  DeadMl.ml -->> pervasives.mli
   Types.re -->> belt_Option.mli, js_json.mli, js.ml, list.mli
   ImmutableArray.re -->> belt_Array.mli
   ImportIndex.re -->> 
@@ -2642,6 +2653,24 @@ File References
   fortytwo is never used
   <-- line 2
   [@dead "fortytwo"] let fortytwo = 42;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9
+  QQ.thisSpansSeveralLines is never used
+  <-- line 3
+            x + y : int -> int -> int) (* [@@dead "QQ.thisSpansSeveralLines"] *)
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 9:3
+  AA.thisIsInInterface is never used
+  <-- line 9
+      int -> int (* [@@dead "AA.thisIsInInterface"] *)
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 15:5
+  thisHasSemicolons is never used
+  <-- line 15
+  let thisHasSemicolons = 3;; (* [@@dead "thisHasSemicolons"] *)
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5

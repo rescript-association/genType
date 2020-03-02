@@ -7,6 +7,17 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let pos =
     switch (vb.vb_pat.pat_desc) {
     | Tpat_var(_id, {loc: {loc_start, loc_ghost}}) when !loc_ghost =>
+      switch (Hashtbl.find_opt(decls, loc_start)) {
+      | None => ()
+      | Some((path, declKind, _posEnd)) =>
+        // Value bindings contain the correct location for the entire declaration: update final position.
+        // The previous value was taken from the signature, which only has positions for the id.
+        Hashtbl.replace(
+          decls,
+          loc_start,
+          (path, declKind, vb.vb_loc.loc_end),
+        )
+      };
       loc_start;
     | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
     | _ => currentBindingPos^
