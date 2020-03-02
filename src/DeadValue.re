@@ -6,7 +6,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let oldPos = currentBindingPos^;
   let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(id, {loc: {loc_start, loc_ghost}}) when !loc_ghost =>
+    | Tpat_var(_id, {loc: {loc_start, loc_ghost}}) when !loc_ghost =>
       loc_start;
     | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
     | _ => currentBindingPos^

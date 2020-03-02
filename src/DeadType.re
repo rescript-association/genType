@@ -5,20 +5,10 @@ open DeadCommon;
 let typeDependencies = ref([]);
 
 let addTypeDeclaration =
-    (
-      ~implementationWithInterface,
-      ~path,
-      {type_kind, type_manifest}: Types.type_declaration,
-    ) => {
+    (~path, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (~declKind, ~id, ~loc) => {
     if (type_manifest == None) {
-      addDeclaration(
-        ~declKind,
-        ~path,
-        ~id,
-        ~implementationWithInterface,
-        ~loc,
-      );
+      addDeclaration(~declKind, ~path, ~id, ~loc);
     };
     let path = [id |> Ident.name, ...path] |> pathToString;
     Hashtbl.replace(fields, path, loc.Location.loc_start);

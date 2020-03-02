@@ -155,8 +155,6 @@ let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value ref
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
 
 let fileReferences: FileHash.t(FileSet.t) = FileHash.create(256); /* references across files */
-let implementationFilesWithInterface: FileHash.t(unit) =
-  FileHash.create(256); /* implementation files that have an interface */
 
 let fields: Hashtbl.t(string, Lexing.position) = (
   Hashtbl.create(256): Hashtbl.t(string, Lexing.position)
@@ -305,8 +303,7 @@ let pathWithoutHead = path => {
   path |> List.rev |> List.tl |> String.concat(".");
 };
 
-let addDeclaration =
-    (~declKind, ~path, ~id, ~implementationWithInterface, ~loc) => {
+let addDeclaration = (~declKind, ~path, ~id, ~loc) => {
   let pos = loc.Location.loc_start;
 
   /* a .cmi file can contain locations from other files.
@@ -323,12 +320,6 @@ let addDeclaration =
         Ident.name(id),
         pos |> posToString,
       );
-    };
-
-    if (implementationWithInterface && declKind != Value) {
-      if (!FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
-        FileHash.replace(implementationFilesWithInterface, pos.pos_fname, ());
-      };
     };
 
     Hashtbl.add(decls, pos, ([id |> Ident.name, ...path], declKind));
@@ -578,13 +569,7 @@ let reportDead = (~onDeadCode) => {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
-        if (declKind != Value
-            && FileHash.mem(implementationFilesWithInterface, pos.pos_fname)) {
-          // Don't report types dead in an implementation, if there's an interface.
-          items;
-        } else {
-          [{...item, path}, ...items];
-        };
+        [{...item, path}, ...items];
       } else {
         if (verbose) {
           let refsString =
