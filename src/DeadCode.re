@@ -94,15 +94,13 @@ let loadCmtFile = cmtFilePath => {
           );
         if (!cmtiExists) {
           ProcessDeadAnnotations.structure(structure);
+          processSignature(structure.str_type);
         };
         DeadValue.processStructure(
           ~cmtiExists,
           cmt_value_dependencies,
           structure,
         );
-        if (!cmtiExists) {
-          processSignature(structure.str_type);
-        };
       | _ => ()
       };
     };
