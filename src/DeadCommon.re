@@ -315,7 +315,7 @@ let addDeclaration = (~declKind, ~path, ~id, ~loc) => {
       && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)) {
     if (verbose) {
       Log_.item(
-        "%sexport %s %s\n",
+        "%saddDeclaration %s %s\n",
         declKind != Value ? "[type] " : "",
         Ident.name(id),
         pos |> posToString,
