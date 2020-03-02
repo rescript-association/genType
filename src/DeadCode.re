@@ -123,10 +123,12 @@ let loadCmtFile = cmtFilePath => {
           cmt_value_dependencies,
           structure,
         );
-        processSignature(
-          ~implementationWithInterface=cmtiExists,
-          structure.str_type,
-        );
+        if (!cmtiExists) {
+          processSignature(
+            ~implementationWithInterface=cmtiExists,
+            structure.str_type,
+          );
+        };
       | _ => ()
       };
     };

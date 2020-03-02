@@ -942,8 +942,6 @@
   clean FirstClassModulesInterface.re:8:18
   [type] clean FirstClassModulesInterface.re:3:2
   [type] clean FirstClassModulesInterface.re:2:2
-  [type] export x FirstClassModulesInterface.re:2:2
-  [type] export y FirstClassModulesInterface.re:3:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
   addValueReference Unboxed.re:12:4 --> Unboxed.re:12:14
   addValueReference Unboxed.re:24:4 --> Unboxed.re:24:14
@@ -1058,12 +1056,6 @@
   [type] clean DeadTypeTest.re:7:4
   [type] clean DeadTypeTest.re:3:4
   [type] clean DeadTypeTest.re:2:4
-  [type] export A DeadTypeTest.re:2:4
-  [type] export B DeadTypeTest.re:3:4
-  [type] export OnlyInImplementation DeadTypeTest.re:7:4
-  [type] export OnlyInInterface DeadTypeTest.re:8:4
-  [type] export InBoth DeadTypeTest.re:9:4
-  [type] export InNeither DeadTypeTest.re:10:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
@@ -1695,9 +1687,6 @@ File References
   DeadTestWhitelist.x: 0 references ()
   [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8)
   [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8)
-  [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8)
-  [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8)
-  [type] DeadTypeTest.deadType.InBoth: 1 references (DeadTypeTest.re:13:8)
   [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8)
   [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8)
   [type] Docstrings.t.A: 2 references (Docstrings.re:65:34, Docstrings.re:68:36)
