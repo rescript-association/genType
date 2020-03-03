@@ -28,9 +28,6 @@ let extractFromCoreType = typeParams =>
      )
   |> List.rev;
 
-let names = freeTypeVars => List.map(((name, _id)) => name, freeTypeVars);
-let toTyp = freeTypeVars => freeTypeVars |> List.map(name => TypeVar(name));
-
 let rec substitute = (~f, type0) =>
   switch (type0) {
   | Array(t, arrayKind) => Array(t |> substitute(~f), arrayKind)

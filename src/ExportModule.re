@@ -97,9 +97,6 @@ let rev_fold = (f, tbl, base) => {
   List.fold_left((x, (k, v)) => f(k, v, x), base, list);
 };
 
-let moduleItemToString = ((moduleName, exportModuleItem)) =>
-  "export const " ++ moduleName ++ " = " ++ exportModuleItem ++ ";";
-
 let emitAllModuleItems =
     (~config, ~emitters, ~fileName, exportModuleItems: exportModuleItems) => {
   emitters

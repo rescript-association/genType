@@ -289,8 +289,6 @@ module Trace = {
   let some = Toption(Rsome);
   let none = Toption(Rnone);
 
-  let nondet = ts => Tnondet(ts);
-
   let retOptionToString = r => r == Rsome ? "Some" : "None";
 
   let rec toString = trace =>

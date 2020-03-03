@@ -352,9 +352,6 @@ module ProcessDeadAnnotations = {
   let isAnnotatedLive = pos =>
     PosHash.find_opt(positionsAnnotated, pos) == Some(Live);
 
-  let isAnnotatedGenType = pos =>
-    PosHash.find_opt(positionsAnnotated, pos) == Some(GenType);
-
   let isAnnotatedGenTypeOrDead = pos =>
     switch (PosHash.find_opt(positionsAnnotated, pos)) {
     | Some(Dead | GenType) => true

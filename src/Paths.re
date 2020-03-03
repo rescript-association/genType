@@ -101,10 +101,6 @@ let getCmtFile = cmt => {
   cmtFile;
 };
 
-let executable =
-  Sys.executable_name |> Filename.is_relative
-    ? concat(Unix.getcwd(), Sys.executable_name) : Sys.executable_name;
-
 let getConfigFile = () => {
   let gentypeconfig = concat(projectRoot^, "gentypeconfig.json");
   gentypeconfig |> Sys.file_exists ? Some(gentypeconfig) : None;

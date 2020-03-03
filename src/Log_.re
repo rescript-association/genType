@@ -6,40 +6,22 @@ module Color = {
   };
 
   type color =
-    | Black
     | Red
-    | Green
     | Yellow
-    | Blue
     | Magenta
-    | Cyan
-    | White;
+    | Cyan;
 
   type style =
     | FG(color)
-    | BG(color)
     | Bold
     | Dim;
 
   let code_of_style =
     fun
-    | FG(Black) => "30"
     | FG(Red) => "31"
-    | FG(Green) => "32"
     | FG(Yellow) => "33"
-    | FG(Blue) => "34"
     | FG(Magenta) => "35"
     | FG(Cyan) => "36"
-    | FG(White) => "37"
-
-    | BG(Black) => "40"
-    | BG(Red) => "41"
-    | BG(Green) => "42"
-    | BG(Yellow) => "43"
-    | BG(Blue) => "44"
-    | BG(Magenta) => "45"
-    | BG(Cyan) => "46"
-    | BG(White) => "47"
 
     | Bold => "1"
     | Dim => "2";
@@ -91,7 +73,6 @@ module Color = {
 
   let error = (ppf, s) => Format.fprintf(ppf, "@{<error>%s@}", s);
   let info = (ppf, s) => Format.fprintf(ppf, "@{<info>%s@}", s);
-  let warning = (ppf, s) => Format.fprintf(ppf, "@{<warning>%s@}", s);
 };
 
 module Loc = {
@@ -203,8 +184,6 @@ let logKind = (body, ~color, ~loc, ~name) => {
   );
 };
 
-let warning = (body, ~loc, ~name) =>
-  logKind(body, ~color=Color.warning, ~loc, ~name);
 let info = (body, ~loc, ~name) =>
   logKind(body, ~color=Color.info, ~loc, ~name);
 let error = (body, ~loc, ~name) =>

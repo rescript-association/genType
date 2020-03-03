@@ -236,7 +236,6 @@ module NodeFilename = {
     type t;
     let normalize: string => t;
     let concat: (t, string) => t;
-    let length: t => int;
     let toString: t => string;
   } = {
     type t = string;
