@@ -23,7 +23,8 @@ let rec fromPath1 = (~config, ~typeEnv, path: Path.t) =>
       }
     };
 
-  | Pdot(Pident(id), s, _pos) when id |> ScopedPackage.isGeneratedModule(~config) =>
+  | Pdot(Pident(id), s, _pos)
+      when id |> ScopedPackage.isGeneratedModule(~config) =>
     External(s |> ScopedPackage.addGeneratedModule(~generatedModule=id))
 
   | Pdot(p, s, _pos) => Dot(p |> fromPath1(~config, ~typeEnv), s)
@@ -70,6 +71,3 @@ let rec removeExternalOuterModule = dep =>
   | Dot(External(_), s) => External(s)
   | Dot(dep1, s) => Dot(dep1 |> removeExternalOuterModule, s)
   };
-
-let isShim = (~config, dep) =>
-  config.shimsMap |> ModuleNameMap.mem(dep |> getOuterModuleName);

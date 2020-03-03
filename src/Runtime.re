@@ -20,12 +20,6 @@ type moduleAccessPath =
   | Root(string)
   | Dot(moduleAccessPath, moduleItem);
 
-let blockTagValue = (~config, i) =>
-  string_of_int(i) ++ (config.language == TypeScript ? " as any" : "");
-
-let emitRecordAsInt = (~config, recordValue) =>
-  recordValue |> blockTagValue(~config);
-
 let recordValueToString = recordValue => recordValue |> string_of_int;
 
 let recordGen = () => {unboxed: 0, boxed: 0};
