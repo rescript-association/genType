@@ -778,16 +778,6 @@
   clean FirstClassModulesInterface.re:8:18
   [type] clean FirstClassModulesInterface.re:3:2
   [type] clean FirstClassModulesInterface.re:2:2
-  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/whole_compiler.cmt
-  addDeclaration add_hook whole_compiler.ml:4:4
-  mergeSet whole_compiler.ml:11:4 --> whole_compiler.ml:17:8
-  addValueReference whole_compiler.ml:11:4 --> whole_compiler.ml:17:8
-  mergeSet whole_compiler.ml:4:4 --> whole_compiler.ml:11:4
-  addValueReference whole_compiler.ml:4:4 --> whole_compiler.ml:11:4
-  mergeSet whole_compiler.ml:11:4 --> whole_compiler.ml:4:4
-  addValueReference whole_compiler.ml:11:4 --> whole_compiler.ml:4:4
-  mergeSet whole_compiler.ml:4:4 --> whole_compiler.ml:11:4
-  addValueReference whole_compiler.ml:4:4 --> whole_compiler.ml:11:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
   [type] addDeclaration A Unboxed.re:4:4
   [type] addDeclaration A Unboxed.re:9:4
@@ -1343,7 +1333,6 @@
 File References
 
   Docstrings.re -->> 
-  whole_compiler.ml -->> 
   TypeParams3.re -->> 
   DeadTypeTest.re -->> 
   ManyComponents.re -->> ReactDOMRe.re, ReasonReact.rei
@@ -1465,7 +1454,6 @@ File References
   [type] Tuples.person.name: 1 references (Tuples.re:39:49)
   [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34)
   [type] Types.selfRecursive.self: 1 references (Types.re:46:30)
-  Whole_compiler.Misc.MakeHooks.add_hook: 2 references (whole_compiler.ml:4:4, whole_compiler.ml:11:4)
   ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0)
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:0)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4)
