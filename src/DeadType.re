@@ -6,11 +6,11 @@ let typeDependencies = ref([]);
 
 let addTypeDeclaration =
     (~path, {type_kind, type_manifest}: Types.type_declaration) => {
-  let save = (~declKind, ~id, ~loc) => {
+  let save = (~declKind, ~name, ~loc) => {
     if (type_manifest == None) {
-      addDeclaration(~declKind, ~path, ~id, ~loc);
+      addDeclaration(~declKind, ~path, ~name, ~loc);
     };
-    let path = [id |> Ident.name, ...path] |> pathToString;
+    let path = [name, ...path] |> pathToString;
     Hashtbl.replace(fields, path, loc.Location.loc_start);
   };
 
@@ -18,13 +18,13 @@ let addTypeDeclaration =
   | Type_record(l, _) =>
     List.iter(
       ({Types.ld_id, ld_loc}) =>
-        save(~declKind=RecordLabel, ~id=ld_id, ~loc=ld_loc),
+        save(~declKind=RecordLabel, ~name=Ident.name(ld_id), ~loc=ld_loc),
       l,
     )
   | Type_variant(l) =>
     List.iter(
       ({Types.cd_id, cd_loc}) =>
-        save(~declKind=VariantCase, ~id=cd_id, ~loc=cd_loc),
+        save(~declKind=VariantCase, ~name=Ident.name(cd_id), ~loc=cd_loc),
       l,
     )
   | _ => ()

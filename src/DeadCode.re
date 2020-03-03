@@ -25,7 +25,12 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      addDeclaration(~declKind=Value, ~path, ~id, ~loc=val_loc);
+      addDeclaration(
+        ~declKind=Value,
+        ~path,
+        ~name=Ident.name(id),
+        ~loc=val_loc,
+      );
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes^) {
@@ -120,7 +125,13 @@ let reportResults = () => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let (name, message) =
       switch (declKind) {
-      | Value => ("Warning Dead Value", "is never used")
+      | Value => (
+          "Warning Dead Value",
+          switch (path) {
+          | ["_", ..._] => "has no side effects and can be removed"
+          | _ => "is never used"
+          },
+        )
       | RecordLabel => (
           "Warning Dead Type",
           "is a record label never used to read a value",
