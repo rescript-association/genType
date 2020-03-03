@@ -307,7 +307,7 @@ let pathWithoutHead = path => {
   path |> List.rev |> List.tl |> String.concat(".");
 };
 
-let addDeclaration = (~declKind, ~path, ~id, ~loc: Location.t) => {
+let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
   let pos = loc.loc_start;
   let posEnd = loc.loc_end;
 
@@ -322,16 +322,12 @@ let addDeclaration = (~declKind, ~path, ~id, ~loc: Location.t) => {
       Log_.item(
         "%saddDeclaration %s %s\n",
         declKind != Value ? "[type] " : "",
-        Ident.name(id),
+        name,
         pos |> posToString,
       );
     };
 
-    Hashtbl.add(
-      decls,
-      pos,
-      ([id |> Ident.name, ...path], declKind, posEnd),
-    );
+    Hashtbl.add(decls, pos, ([name, ...path], declKind, posEnd));
   };
 };
 

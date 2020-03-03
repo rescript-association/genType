@@ -863,7 +863,9 @@
   addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
   [type] addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
+  addDeclaration _ DeadTypeTest.re:12:0
   [type] addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
+  addDeclaration _ DeadTypeTest.re:13:0
   [type] addTypeReference DeadTypeTest.re:13:8 --> DeadTypeTest.re:9:4
   mergeSet DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4
   [type] mergeSet DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
@@ -1319,12 +1321,18 @@
   addValueReference DeadTest.re:20:4 --> DeadTest.re:17:4
   [type] addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
   addValueReference DeadTest.re:44:0 --> DeadTest.re:37:2
+  addValueReference DeadTest.re:44:0 --> DeadTest.re:44:9
+  addDeclaration _ DeadTest.re:46:0
   [type] addTypeReference DeadTest.re:46:8 --> DeadTypeTest.rei:8:4
+  addDeclaration _ DeadTest.re:47:0
   [type] addTypeReference DeadTest.re:47:8 --> DeadTypeTest.rei:9:4
+  addDeclaration _ DeadTest.re:54:0
   [type] addTypeReference DeadTest.re:54:13 --> DeadTest.re:50:2
   addValueReference DeadTest.re:54:0 --> DeadTest.re:54:8
+  addDeclaration _ DeadTest.re:55:0
   addValueReference DeadTest.re:55:0 --> DeadTest.re:55:10
   [type] addTypeReference DeadTest.re:55:9 --> DeadTest.re:51:2
+  addDeclaration _ DeadTest.re:58:2
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6
@@ -2337,6 +2345,18 @@ File References
   <-- line 62
     | [@dead "t.B"] B;
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 12:1
+  _ has no side effects and can be removed
+  <-- line 12
+  [@dead "_"] let _ = OnlyInImplementation;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 13:1
+  _ has no side effects and can be removed
+  <-- line 13
+  [@dead "_"] let _ = InBoth;
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 3:5
   t.B is a variant case which is never constructed
@@ -2360,6 +2380,36 @@ File References
   fortytwo is never used
   <-- line 2
   [@dead "fortytwo"] let fortytwo = 42;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 46:1
+  _ has no side effects and can be removed
+  <-- line 46
+  [@dead "_"] let _ = DeadTypeTest.OnlyInInterface;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 47:1
+  _ has no side effects and can be removed
+  <-- line 47
+  [@dead "_"] let _ = DeadTypeTest.InBoth;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 54:1
+  _ has no side effects and can be removed
+  <-- line 54
+  [@dead "_"] let _ = r => r.xxx;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 55:1
+  _ has no side effects and can be removed
+  <-- line 55
+  [@dead "_"] let _ = ({yyy}) => yyy;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 58:3
+  UnderscoreInside._ has no side effects and can be removed
+  <-- line 58
+  [@dead "UnderscoreInside._"]   let _ = 13;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9

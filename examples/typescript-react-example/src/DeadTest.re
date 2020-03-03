@@ -41,7 +41,7 @@ module VariantUsedOnlyInImplementation: {
   let a = A;
 };
 
-let _ = VariantUsedOnlyInImplementation.a;
+let _ = (x => x)(VariantUsedOnlyInImplementation.a);
 
 let _ = DeadTypeTest.OnlyInInterface;
 let _ = DeadTypeTest.InBoth;
@@ -53,3 +53,7 @@ type record = {
 
 let _ = r => r.xxx;
 let _ = ({yyy}) => yyy;
+
+module UnderscoreInside = {
+  let _ = 13;
+};

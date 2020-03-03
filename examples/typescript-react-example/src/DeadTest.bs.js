@@ -12,6 +12,8 @@ var VariantUsedOnlyInImplementation = {
   a: /* A */0
 };
 
+var UnderscoreInside = { };
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -34,6 +36,7 @@ export {
   Inner ,
   M ,
   VariantUsedOnlyInImplementation ,
+  UnderscoreInside ,
   
 }
 /*  Not a pure module */
