@@ -90,7 +90,7 @@ let checkAnyBindingWithNoSideEffects =
   | Tpat_any when exprNoSideEffects(expr) && !loc.loc_ghost =>
     let name = "_";
     let path = currentModulePath^ @ [currentModuleName^];
-    addDeclaration(~declKind=Value, ~path, ~name, ~loc);
+    addDeclaration(~declKind=Value, ~path, ~loc, ~name);
   | _ => ()
   };
 

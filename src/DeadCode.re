@@ -28,8 +28,8 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       addDeclaration(
         ~declKind=Value,
         ~path,
-        ~name=Ident.name(id),
         ~loc=val_loc,
+        ~name=Ident.name(id),
       );
     };
   | Sig_type(id, t, _) =>
