@@ -44,7 +44,7 @@ let addTypeReference = (~posDeclaration, ~posUsage) => {
 
 let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
   let updateDependencies = (name, pos) => {
-    let path =
+    let path2 =
       [
         currentModuleName^,
         ...List.rev([
@@ -58,15 +58,12 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
     try(
       switch (typeDeclaration.typ_manifest) {
       | Some({ctyp_desc: Ttyp_constr(_, {txt}, _)}) =>
-        let pos1 =
-          Hashtbl.find(
-            fields,
-            [currentModuleName^, ...Longident.flatten(txt)]
-            @ [name.Asttypes.txt]
-            |> String.concat("."),
-          );
-
-        let pos2 = Hashtbl.find(fields, path);
+        let path1 =
+          [currentModuleName^, ...Longident.flatten(txt)]
+          @ [name.Asttypes.txt]
+          |> String.concat(".");
+        let pos1 = Hashtbl.find(fields, path1);
+        let pos2 = Hashtbl.find(fields, path2);
         typeDependencies :=
           [(pos2, pos1), (pos1, pos), ...typeDependencies^];
       | _ => ()
@@ -75,10 +72,10 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
     | _ => ()
     };
     try({
-      let pos1 = Hashtbl.find(fields, path);
-      typeDependencies := [(pos1, pos), ...typeDependencies^];
+      let pos2 = Hashtbl.find(fields, path2);
+      typeDependencies := [(pos2, pos), ...typeDependencies^];
     }) {
-    | Not_found => Hashtbl.add(fields, path, pos)
+    | Not_found => Hashtbl.add(fields, path2, pos)
     };
   };
 
