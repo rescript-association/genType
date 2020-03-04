@@ -768,6 +768,8 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWhitelist.cmt
   addDeclaration x DeadTestWhitelist.re:1:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
+  [type] extendTypeDependencies FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2
+  [type] extendTypeDependencies FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2
   mergeSet FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   mergeSet FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
   mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
@@ -862,7 +864,13 @@
   mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
+  [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
+  [type] extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
   [type] addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
+  [type] extendTypeDependencies DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4
+  [type] extendTypeDependencies DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
+  [type] extendTypeDependencies DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4
+  [type] extendTypeDependencies DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
   addDeclaration _ DeadTypeTest.re:12:0
   [type] addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
   addDeclaration _ DeadTypeTest.re:13:0
@@ -1319,6 +1327,7 @@
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:12:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:20:4 --> DeadTest.re:17:4
+  [type] extendTypeDependencies DeadTest.re:40:6 --> DeadTest.re:36:6
   [type] addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
   addValueReference DeadTest.re:44:0 --> DeadTest.re:37:2
   addValueReference DeadTest.re:44:0 --> DeadTest.re:44:9

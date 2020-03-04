@@ -225,7 +225,7 @@ let processValueDependency = ((vd1, vd2)) => {
   };
 };
 
-let processTypeDependency = ((to_: Lexing.position, from: Lexing.position)) => {
+let processTypeDependency = ((from: Lexing.position, to_: Lexing.position)) => {
   let fnTo = to_.pos_fname
   and fnFrom = from.pos_fname;
   let isInterface = fn =>

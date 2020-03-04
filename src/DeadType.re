@@ -43,6 +43,18 @@ let addTypeReference = (~posDeclaration, ~posUsage) => {
 };
 
 let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
+  let extendTypeDependencies = (pos1, pos2) =>
+    if (pos1 != pos2) {
+      if (verbose) {
+        Log_.item(
+          "[type] extendTypeDependencies %s --> %s\n",
+          pos1 |> posToString,
+          pos2 |> posToString,
+        );
+      };
+
+      typeDependencies := [(pos1, pos2), ...typeDependencies^];
+    };
   let updateDependencies = (name, pos) => {
     let path2 =
       [
@@ -64,18 +76,16 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
           |> String.concat(".");
         let pos1 = Hashtbl.find(fields, path1);
         let pos2 = Hashtbl.find(fields, path2);
-        typeDependencies :=
-          [(pos2, pos1), (pos1, pos), ...typeDependencies^];
+        extendTypeDependencies(pos, pos1);
+        extendTypeDependencies(pos1, pos2);
       | _ => ()
       }
     ) {
     | _ => ()
     };
-    try({
-      let pos2 = Hashtbl.find(fields, path2);
-      typeDependencies := [(pos2, pos), ...typeDependencies^];
-    }) {
-    | Not_found => Hashtbl.add(fields, path2, pos)
+    switch (Hashtbl.find_opt(fields, path2)) {
+    | Some(pos2) => extendTypeDependencies(pos, pos2)
+    | None => Hashtbl.add(fields, path2, pos)
     };
   };
 
