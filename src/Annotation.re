@@ -40,6 +40,8 @@ let tagIsGenTypeIgnoreInterface = s =>
 
 let tagIsOcamlDoc = s => s == "ocaml.doc";
 
+let tagIsInternLocal = s => s == "internal.local";
+
 let rec getAttributePayload = (checkText, attributes: Typedtree.attributes) => {
   let rec fromExpr = (expr: Parsetree.expression) =>
     switch (expr) {

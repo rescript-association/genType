@@ -201,7 +201,7 @@ let rec translateModuleBinding =
           ~resolver,
           ~typeEnv,
           ~moduleItemGen,
-          {mb_id, mb_expr}: Typedtree.module_binding,
+          {mb_id, mb_expr, mb_attributes}: Typedtree.module_binding,
         )
         : Translation.t => {
   let name = mb_id |> Ident.name;
@@ -214,10 +214,20 @@ let rec translateModuleBinding =
 
   switch (mb_expr.mod_desc) {
   | Tmod_structure(structure) =>
-    structure
-    |> translateStructure(~config, ~outputFileRelative, ~resolver, ~typeEnv)
-    |> Translation.combine
-
+    let isLetPrivate =
+      mb_attributes |> Annotation.hasAttribute(Annotation.tagIsInternLocal);
+    if (isLetPrivate) {
+      Translation.empty;
+    } else {
+      structure
+      |> translateStructure(
+           ~config,
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+         )
+      |> Translation.combine;
+    };
   | Tmod_apply(_) =>
     /* Only look at the resulting type of the module */
     switch (mb_expr.mod_type) {
