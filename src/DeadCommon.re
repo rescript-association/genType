@@ -459,7 +459,7 @@ module WriteDeadAnnotations = {
   let lineToString = ({original, annotation}) => {
     switch (annotation) {
     | None => original
-    | Some({item: {declKind, pos, path}, useColumn}) =>
+    | Some({item: {declKind, pos, posEnd, path}, useColumn}) =>
       let isReason = posIsReason(pos);
       let annotationStr =
         "["
@@ -469,21 +469,12 @@ module WriteDeadAnnotations = {
         ++ (path |> pathWithoutHead)
         ++ "\"] ";
       if (!isReason) {
-        let (noSemi, semis) =
-          if (Filename.check_suffix(original, ";;")) {
-            (String.sub(original, 0, String.length(original) - 2), ";;");
-          } else if (Filename.check_suffix(original, "in")) {
-            (String.sub(original, 0, String.length(original) - 2), "in");
-          } else if (Filename.check_suffix(original, "in ")) {
-            (String.sub(original, 0, String.length(original) - 3), "in ");
-          } else {
-            (original, "");
-          };
-        noSemi
-        ++ (declKind == Value ? " " : " (* ")
-        ++ annotationStr
-        ++ (declKind == Value ? "" : "*)")
-        ++ semis;
+        let col = posEnd.Lexing.pos_cnum - posEnd.Lexing.pos_bol;
+        let originalLen = String.length(original);
+        assert(String.length(original) >= col);
+        let original1 = String.sub(original, 0, col);
+        let original2 = String.sub(original, col, originalLen - col);
+        original1 ++ " " ++ annotationStr ++ original2;
       } else if (useColumn) {
         let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
         let originalLen = String.length(original);
@@ -530,7 +521,7 @@ module WriteDeadAnnotations = {
     };
 
   let onDeadItem = (~ppf, {declKind, pos, posEnd} as item) => {
-    let useColumn = declKind != Value;
+    let useColumn = declKind != Value || !posIsReason(pos);
     let fileName = pos.Lexing.pos_fname;
     if (Sys.file_exists(fileName)) {
       if (fileName != currentFile^) {

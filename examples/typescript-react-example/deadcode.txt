@@ -681,6 +681,9 @@
   addDeclaration thisHasSemicolons DeadMl.ml:15:4
   [type] addDeclaration DeadA DeadMl.ml:17:18
   [type] addDeclaration DeadB DeadMl.ml:17:26
+  addDeclaration version DeadMl.ml:26:6
+  addDeclaration header DeadMl.ml:26:27
+  addDeclaration package_name DeadMl.ml:26:47
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
   addValueReference DeadMl.ml:12:6 --> DeadMl.ml:12:24
@@ -688,6 +691,12 @@
   addDeclaration _ DeadMl.ml:22:2
   mergeSet DeadMl.ml:9:2 --> DeadMl.ml:12:6
   addValueReference DeadMl.ml:9:2 --> DeadMl.ml:12:6
+  mergeSet DeadMl.ml:26:6 --> DeadMl.ml:29:8
+  addValueReference DeadMl.ml:26:6 --> DeadMl.ml:29:8
+  mergeSet DeadMl.ml:26:27 --> DeadMl.ml:30:8
+  addValueReference DeadMl.ml:26:27 --> DeadMl.ml:30:8
+  mergeSet DeadMl.ml:26:47 --> DeadMl.ml:31:8
+  addValueReference DeadMl.ml:26:47 --> DeadMl.ml:31:8
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
   [type] addDeclaration text ImportMyBanner.re:6:16
   addDeclaration make ImportMyBanner.re:8:0
@@ -2446,25 +2455,43 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 17:19
   thisIsDead.DeadA is a variant case which is never constructed
   <-- line 17
-  type thisIsDead = | DeadA | DeadB (* [@dead "thisIsDead.DeadA"] *)
+  type thisIsDead = | DeadA [@dead "thisIsDead.DeadA"]  | DeadB
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 17:27
   thisIsDead.DeadB is a variant case which is never constructed
   <-- line 17
-  type thisIsDead = | DeadA | DeadB (* [@dead "thisIsDead.DeadB"] *)
+  type thisIsDead = | DeadA | DeadB [@dead "thisIsDead.DeadB"] 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 21:3
   _ has no side effects and can be removed
   <-- line 21
-    let _ = 3  [@@dead "_"] in
+    let _ = 3 [@@dead "_"]  in
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 22:3
   _ has no side effects and can be removed
   <-- line 22
-    let _ = [1,2,3]  [@@dead "_"] in 
+    let _ = [1,2,3] [@@dead "_"]  in 
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 26:7
+  Bs_version.version is never used
+  <-- line 26
+    sig val version : string [@@dead "Bs_version.version"]  val header : string val package_name : string end 
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 26:28
+  Bs_version.header is never used
+  <-- line 26
+    sig val version : string val header : string [@@dead "Bs_version.header"]  val package_name : string end 
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 26:48
+  Bs_version.package_name is never used
+  <-- line 26
+    sig val version : string val header : string val package_name : string [@@dead "Bs_version.package_name"]  end 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5
