@@ -13,3 +13,11 @@ end = struct
 end
 
 let thisHasSemicolons = 3;;
+
+type thisIsDead = | DeadA | DeadB
+
+
+let () = 
+  let _ = 3 in
+  let _ = [1,2,3] in 
+  ()

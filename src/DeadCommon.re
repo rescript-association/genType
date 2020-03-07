@@ -470,10 +470,20 @@ module WriteDeadAnnotations = {
         ++ "\"] ";
       if (!isReason) {
         let (noSemi, semis) =
-          Filename.check_suffix(original, ";;")
-            ? (String.sub(original, 0, String.length(original) - 2), ";;")
-            : (original, "");
-        noSemi ++ " (* " ++ annotationStr ++ "*)" ++ semis;
+          if (Filename.check_suffix(original, ";;")) {
+            (String.sub(original, 0, String.length(original) - 2), ";;");
+          } else if (Filename.check_suffix(original, "in")) {
+            (String.sub(original, 0, String.length(original) - 2), "in");
+          } else if (Filename.check_suffix(original, "in ")) {
+            (String.sub(original, 0, String.length(original) - 3), "in ");
+          } else {
+            (original, "");
+          };
+        noSemi
+        ++ (declKind == Value ? " " : " (* ")
+        ++ annotationStr
+        ++ (declKind == Value ? "" : "*)")
+        ++ semis;
       } else if (useColumn) {
         let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
         let originalLen = String.length(original);

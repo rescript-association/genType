@@ -679,9 +679,13 @@
   addDeclaration thisSpansSeveralLines DeadMl.ml:3:8
   addDeclaration thisIsInInterface DeadMl.ml:9:2
   addDeclaration thisHasSemicolons DeadMl.ml:15:4
+  [type] addDeclaration DeadA DeadMl.ml:17:18
+  [type] addDeclaration DeadB DeadMl.ml:17:26
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
   addValueReference DeadMl.ml:12:6 --> DeadMl.ml:12:24
+  addDeclaration _ DeadMl.ml:21:2
+  addDeclaration _ DeadMl.ml:22:2
   mergeSet DeadMl.ml:9:2 --> DeadMl.ml:12:6
   addValueReference DeadMl.ml:9:2 --> DeadMl.ml:12:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
@@ -2424,19 +2428,43 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9
   QQ.thisSpansSeveralLines is never used
   <-- line 3
-            x + y : int -> int -> int) (* [@@dead "QQ.thisSpansSeveralLines"] *)
+            x + y : int -> int -> int) [@@dead "QQ.thisSpansSeveralLines"] 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 9:3
   AA.thisIsInInterface is never used
   <-- line 9
-      int -> int (* [@@dead "AA.thisIsInInterface"] *)
+      int -> int [@@dead "AA.thisIsInInterface"] 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 15:5
   thisHasSemicolons is never used
   <-- line 15
-  let thisHasSemicolons = 3 (* [@@dead "thisHasSemicolons"] *);;
+  let thisHasSemicolons = 3 [@@dead "thisHasSemicolons"] ;;
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 17:19
+  thisIsDead.DeadA is a variant case which is never constructed
+  <-- line 17
+  type thisIsDead = | DeadA | DeadB (* [@dead "thisIsDead.DeadA"] *)
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 17:27
+  thisIsDead.DeadB is a variant case which is never constructed
+  <-- line 17
+  type thisIsDead = | DeadA | DeadB (* [@dead "thisIsDead.DeadB"] *)
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 21:3
+  _ has no side effects and can be removed
+  <-- line 21
+    let _ = 3  [@@dead "_"] in
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 22:3
+  _ has no side effects and can be removed
+  <-- line 22
+    let _ = [1,2,3]  [@@dead "_"] in 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5
