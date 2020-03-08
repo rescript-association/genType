@@ -477,10 +477,13 @@ module WriteDeadAnnotations = {
       let posForCol = isReason ? posStart : posEnd;
       let col = posForCol.Lexing.pos_cnum - posForCol.Lexing.pos_bol;
       let originalLen = String.length(original);
-      assert(String.length(original) >= col);
-      let original1 = String.sub(original, 0, col);
-      let original2 = String.sub(original, col, originalLen - col);
-      original1 ++ annotationStr ++ original2;
+      if (String.length(original) >= col) {
+        let original1 = String.sub(original, 0, col);
+        let original2 = String.sub(original, col, originalLen - col);
+        original1 ++ annotationStr ++ original2;
+      } else {
+        isReason ? annotationStr ++ original : original ++ annotationStr;
+      };
     };
   };
 
