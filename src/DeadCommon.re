@@ -467,27 +467,20 @@ module WriteDeadAnnotations = {
     | Some({declKind, path, pos, posEnd, posStart}) =>
       let isReason = posIsReason(pos);
       let annotationStr =
-        "["
+        (isReason ? "" : " ")
+        ++ "["
         ++ (isReason || declKind != Value ? "@" : "@@")
         ++ deadAnnotation
         ++ " \""
         ++ (path |> pathWithoutHead)
         ++ "\"] ";
-      if (!isReason) {
-        let col = posEnd.Lexing.pos_cnum - posEnd.Lexing.pos_bol;
-        let originalLen = String.length(original);
-        assert(String.length(original) >= col);
-        let original1 = String.sub(original, 0, col);
-        let original2 = String.sub(original, col, originalLen - col);
-        original1 ++ " " ++ annotationStr ++ original2;
-      } else {
-        let col = posStart.Lexing.pos_cnum - posStart.Lexing.pos_bol;
-        let originalLen = String.length(original);
-        assert(String.length(original) >= col);
-        let original1 = String.sub(original, 0, col);
-        let original2 = String.sub(original, col, originalLen - col);
-        original1 ++ annotationStr ++ original2;
-      };
+      let posForCol = isReason ? posStart : posEnd;
+      let col = posForCol.Lexing.pos_cnum - posForCol.Lexing.pos_bol;
+      let originalLen = String.length(original);
+      assert(String.length(original) >= col);
+      let original1 = String.sub(original, 0, col);
+      let original2 = String.sub(original, col, originalLen - col);
+      original1 ++ annotationStr ++ original2;
     };
   };
 
