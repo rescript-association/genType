@@ -1969,7 +1969,7 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re 4:7
   InnerComponent.someValueSoModuleOffsetsAreShifted is never used
   <-- line 4
-  [@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"]   let someValueSoModuleOffsetsAreShifted = 77;
+    [@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"] let someValueSoModuleOffsetsAreShifted = 77;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 51:5
@@ -2155,7 +2155,7 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Shadow.re 11:7
   M.test is never used
   <-- line 11
-  [@dead "M.test"]   let test = () => "a";
+    [@dead "M.test"] let test = () => "a";
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 39:28
@@ -2251,43 +2251,43 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 8:7
   Universe.notExported is never used
   <-- line 8
-  [@dead "Universe.notExported"]   let notExported = 33;
+    [@dead "Universe.notExported"] let notExported = 33;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 14:9
   Universe.Nested2.x is never used
   <-- line 14
-  [@dead "Universe.Nested2.x"]     let x = 0;
+      [@dead "Universe.Nested2.x"] let x = 0;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 19:9
   Universe.Nested2.y is never used
   <-- line 19
-  [@dead "Universe.Nested2.y"]     let y = 2;
+      [@dead "Universe.Nested2.y"] let y = 2;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 25:11
   Universe.Nested2.Nested3.x is never used
   <-- line 25
-  [@dead "Universe.Nested2.Nested3.x"]       let x = 0;
+        [@dead "Universe.Nested2.Nested3.x"] let x = 0;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 26:11
   Universe.Nested2.Nested3.y is never used
   <-- line 26
-  [@dead "Universe.Nested2.Nested3.y"]       let y = 1;
+        [@dead "Universe.Nested2.Nested3.y"] let y = 1;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 27:11
   Universe.Nested2.Nested3.z is never used
   <-- line 27
-  [@dead "Universe.Nested2.Nested3.z"]       let z = 2;
+        [@dead "Universe.Nested2.Nested3.z"] let z = 2;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 28:11
   Universe.Nested2.Nested3.w is never used
   <-- line 28
-  [@dead "Universe.Nested2.Nested3.w"]       let w = 3;
+        [@dead "Universe.Nested2.Nested3.w"] let w = 3;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 46:7
@@ -2431,7 +2431,7 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 58:3
   UnderscoreInside._ has no side effects and can be removed
   <-- line 58
-  [@dead "UnderscoreInside._"]   let _ = 13;
+    [@dead "UnderscoreInside._"] let _ = 13;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9

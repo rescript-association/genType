@@ -102,13 +102,13 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
     | Tpat_var(_id, {loc: {loc_start, loc_ghost}}) when !loc_ghost =>
       switch (Hashtbl.find_opt(decls, loc_start)) {
       | None => ()
-      | Some((path, declKind, _posEnd)) =>
+      | Some((path, declKind, _posEnd, _posStart)) =>
         // Value bindings contain the correct location for the entire declaration: update final position.
         // The previous value was taken from the signature, which only has positions for the id.
         Hashtbl.replace(
           decls,
           loc_start,
-          (path, declKind, vb.vb_loc.loc_end),
+          (path, declKind, vb.vb_loc.loc_end, vb.vb_loc.loc_start),
         )
       };
       loc_start;

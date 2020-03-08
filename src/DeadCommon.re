@@ -152,7 +152,11 @@ module FileHash = {
 };
 
 type path = list(string);
-type decls = Hashtbl.t(Lexing.position, (path, declKind, Lexing.position));
+type decls =
+  Hashtbl.t(
+    Lexing.position,
+    (path, declKind, Lexing.position, Lexing.position),
+  );
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
@@ -308,7 +312,7 @@ let pathWithoutHead = path => {
 };
 
 let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
-  let pos = loc.loc_start;
+  let posStart = loc.loc_start;
   let posEnd = loc.loc_end;
 
   /* a .cmi file can contain locations from other files.
@@ -317,17 +321,21 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
        will create value definitions whose location is in set.mli
      */
   if (!loc.loc_ghost
-      && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)) {
+      && (currentSrc^ == posStart.pos_fname || currentModuleName^ === include_)) {
     if (verbose) {
       Log_.item(
         "%saddDeclaration %s %s\n",
         declKind != Value ? "[type] " : "",
         name,
-        pos |> posToString,
+        posStart |> posToString,
       );
     };
 
-    Hashtbl.add(decls, pos, ([name, ...path], declKind, posEnd));
+    Hashtbl.add(
+      decls,
+      posStart,
+      ([name, ...path], declKind, posEnd, posStart),
+    );
   };
 };
 
@@ -444,22 +452,19 @@ type item = {
   path,
   pos: Lexing.position,
   posEnd: Lexing.position,
+  posStart: Lexing.position,
 };
 
 module WriteDeadAnnotations = {
-  type annotation = {
-    item,
-    useColumn: bool,
-  };
   type line = {
-    mutable annotation: option(annotation),
+    mutable annotation: option(item),
     original: string,
   };
 
   let lineToString = ({original, annotation}) => {
     switch (annotation) {
     | None => original
-    | Some({item: {declKind, pos, posEnd, path}, useColumn}) =>
+    | Some({declKind, path, pos, posEnd, posStart}) =>
       let isReason = posIsReason(pos);
       let annotationStr =
         "["
@@ -475,15 +480,13 @@ module WriteDeadAnnotations = {
         let original1 = String.sub(original, 0, col);
         let original2 = String.sub(original, col, originalLen - col);
         original1 ++ " " ++ annotationStr ++ original2;
-      } else if (useColumn) {
-        let col = pos.Lexing.pos_cnum - pos.Lexing.pos_bol;
+      } else {
+        let col = posStart.Lexing.pos_cnum - posStart.Lexing.pos_bol;
         let originalLen = String.length(original);
         assert(String.length(original) >= col);
         let original1 = String.sub(original, 0, col);
         let original2 = String.sub(original, col, originalLen - col);
         original1 ++ annotationStr ++ original2;
-      } else {
-        annotationStr ++ original;
       };
     };
   };
@@ -520,9 +523,8 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~ppf, {declKind, pos, posEnd} as item) => {
-    let useColumn = declKind != Value || !posIsReason(pos);
-    let fileName = pos.Lexing.pos_fname;
+  let onDeadItem = (~ppf, {declKind, posEnd, posStart} as item) => {
+    let fileName = posStart.Lexing.pos_fname;
     if (Sys.file_exists(fileName)) {
       if (fileName != currentFile^) {
         writeFile(currentFile^, currentFileLines^);
@@ -531,23 +533,23 @@ module WriteDeadAnnotations = {
       };
 
       let indexInLines =
-        (!posIsReason(pos) && declKind == Value ? posEnd : pos).Lexing.pos_lnum
+        (!posIsReason(posStart) && declKind == Value ? posEnd : posStart).Lexing.pos_lnum
         - 1;
 
       if (indexInLines < Array.length(currentFileLines^)) {
         let line = currentFileLines^[indexInLines];
-        line.annotation = Some({item, useColumn});
+        line.annotation = Some(item);
         Format.fprintf(
           ppf,
           "  <-- line %d@.  %s@.",
-          pos.Lexing.pos_lnum,
+          posStart.Lexing.pos_lnum,
           line |> lineToString,
         );
       } else {
         Format.fprintf(
           ppf,
           "  <-- Can't find line %d@.",
-          pos.Lexing.pos_lnum,
+          posStart.Lexing.pos_lnum,
         );
       };
     } else {
@@ -619,8 +621,8 @@ let reportDead = (~onDeadCode) => {
 
   let items =
     Hashtbl.fold(
-      (pos, (path, declKind, posEnd), items) =>
-        [{declKind, path, pos, posEnd}, ...items],
+      (pos, (path, declKind, posEnd, posStart), items) =>
+        [{declKind, path, pos, posEnd, posStart}, ...items],
       decls,
       [],
     );
