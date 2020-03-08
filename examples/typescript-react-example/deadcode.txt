@@ -2461,7 +2461,7 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 17:27
   thisIsDead.DeadB is a variant case which is never constructed
   <-- line 17
-  type thisIsDead = | DeadA | DeadB [@dead "thisIsDead.DeadB"] 
+  type thisIsDead = | DeadA [@dead "thisIsDead.DeadA"]  | DeadB [@dead "thisIsDead.DeadB"] 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 21:3
@@ -2485,13 +2485,13 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 26:28
   Bs_version.header is never used
   <-- line 26
-    sig val version : string val header : string [@@dead "Bs_version.header"]  val package_name : string end 
+    sig val version : string [@@dead "Bs_version.version"]  val header : string [@@dead "Bs_version.header"]  val package_name : string end 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 26:48
   Bs_version.package_name is never used
   <-- line 26
-    sig val version : string val header : string val package_name : string [@@dead "Bs_version.package_name"]  end 
+    sig val version : string [@@dead "Bs_version.version"]  val header : string [@@dead "Bs_version.header"]  val package_name : string [@@dead "Bs_version.package_name"]  end 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5

@@ -457,14 +457,14 @@ type item = {
 
 module WriteDeadAnnotations = {
   type line = {
-    mutable annotation: option(item),
+    mutable items: list(item),
     original: string,
   };
 
-  let lineToString = ({original, annotation}) => {
-    switch (annotation) {
-    | None => original
-    | Some({declKind, path, pos, posEnd, posStart}) =>
+  let rec lineToString = ({original, items}) => {
+    switch (items) {
+    | [] => original
+    | [{declKind, path, pos, posEnd, posStart}, ...otherItems] =>
       let isReason = posIsReason(pos);
       let annotationStr =
         (isReason ? "" : " ")
@@ -477,13 +477,18 @@ module WriteDeadAnnotations = {
       let posForCol = isReason ? posStart : posEnd;
       let col = posForCol.Lexing.pos_cnum - posForCol.Lexing.pos_bol;
       let originalLen = String.length(original);
-      if (String.length(original) >= col) {
-        let original1 = String.sub(original, 0, col);
-        let original2 = String.sub(original, col, originalLen - col);
-        original1 ++ annotationStr ++ original2;
-      } else {
-        isReason ? annotationStr ++ original : original ++ annotationStr;
-      };
+      {
+        original:
+          if (String.length(original) >= col) {
+            let original1 = String.sub(original, 0, col);
+            let original2 = String.sub(original, col, originalLen - col);
+            original1 ++ annotationStr ++ original2;
+          } else {
+            isReason ? annotationStr ++ original : original ++ annotationStr;
+          },
+        items: otherItems,
+      }
+      |> lineToString;
     };
   };
 
@@ -494,7 +499,7 @@ module WriteDeadAnnotations = {
     let channel = open_in(fileName);
     let lines = ref([]);
     let rec loop = () => {
-      let line = {original: input_line(channel), annotation: None};
+      let line = {original: input_line(channel), items: []};
       lines := [line, ...lines^];
       loop();
     };
@@ -534,7 +539,7 @@ module WriteDeadAnnotations = {
 
       if (indexInLines < Array.length(currentFileLines^)) {
         let line = currentFileLines^[indexInLines];
-        line.annotation = Some(item);
+        line.items = [item, ...line.items];
         Format.fprintf(
           ppf,
           "  <-- line %d@.  %s@.",
