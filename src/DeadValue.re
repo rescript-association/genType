@@ -99,7 +99,21 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   checkAnyBindingWithNoSideEffects(vb);
   let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(_id, {loc: {loc_start, loc_ghost}}) when !loc_ghost =>
+    | Tpat_var(id, {loc: {loc_start, loc_ghost}}) when !loc_ghost =>
+      let exists =
+        switch (Hashtbl.find_opt(decls, loc_start)) {
+        | Some((_, Value, _, _)) => true
+        | Some(_) => assert(false)
+        | None => false
+        };
+      let path = currentModulePath^ @ [currentModuleName^];
+      Log_.item(
+        "XXX declaration %s %s exists:%b path:%s@.",
+        Ident.name(id),
+        loc_start |> posToString,
+        exists,
+        path |> pathToString,
+      );
       switch (Hashtbl.find_opt(decls, loc_start)) {
       | None => ()
       | Some((path, declKind, _posEnd, _posStart)) =>
