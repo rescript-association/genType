@@ -63,8 +63,12 @@ module MM: {
   let y: int;
 } = {
   let y = 55;
-  let x = {y
+  let x = {
+    y;
   };
 };
 
-// let _ = {Js.log(MM.x); 44};
+let _ = {
+  Js.log(MM.x);
+  44;
+};

@@ -19,6 +19,8 @@ var MM = {
   y: 55
 };
 
+console.log(55);
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
