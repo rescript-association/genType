@@ -57,3 +57,14 @@ let _ = ({yyy}) => yyy;
 module UnderscoreInside = {
   let _ = 13;
 };
+
+module MM: {
+  let x: int;
+  let y: int;
+} = {
+  let y = 55;
+  let x = {y
+  };
+};
+
+// let _ = {Js.log(MM.x); 44};

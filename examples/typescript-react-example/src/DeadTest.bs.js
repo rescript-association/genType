@@ -14,6 +14,11 @@ var VariantUsedOnlyInImplementation = {
 
 var UnderscoreInside = { };
 
+var MM = {
+  x: 55,
+  y: 55
+};
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -37,6 +42,7 @@ export {
   M ,
   VariantUsedOnlyInImplementation ,
   UnderscoreInside ,
+  MM ,
   
 }
 /*  Not a pure module */
