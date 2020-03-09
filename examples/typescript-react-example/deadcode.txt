@@ -2,6 +2,7 @@
   [type] addDeclaration id location.re:5:2
   [type] addDeclaration name location.re:6:2
   addDeclaration x location.re:9:4
+  XXX declaration x location.re:9:4 exists:true path:location
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ManyComponents.cmt
   addDeclaration someValueSoModuleOffsetsAreShifted ManyComponents.re:4:6
   addDeclaration component ManyComponents.re:6:6
@@ -10,16 +11,24 @@
   addDeclaration make ManyComponents.re:19:6
   addDeclaration component ManyComponents.re:36:4
   addDeclaration make ManyComponents.re:39:4
+  XXX declaration someValueSoModuleOffsetsAreShifted ManyComponents.re:4:6 exists:true path:ManyComponents.InnerComponent
+  XXX declaration component ManyComponents.re:6:6 exists:true path:ManyComponents.InnerComponent
   addValueReference ManyComponents.re:6:6 --> ReasonReact.rei:153:0
+  XXX declaration make ManyComponents.re:9:6 exists:true path:ManyComponents.InnerComponent
   addValueReference ManyComponents.re:9:6 --> ReasonReact.rei:17:0
   addValueReference ManyComponents.re:9:6 --> ReactDOMRe.re:2105:0
   addValueReference ManyComponents.re:9:6 --> ManyComponents.re:6:6
+  XXX declaration component ManyComponents.re:16:6 exists:true path:ManyComponents.ManyProps
   addValueReference ManyComponents.re:16:6 --> ReasonReact.rei:153:0
+  XXX declaration make ManyComponents.re:19:6 exists:true path:ManyComponents.ManyProps
   addValueReference ManyComponents.re:19:6 --> ReasonReact.rei:17:0
   addValueReference ManyComponents.re:19:6 --> ReactDOMRe.re:2105:0
   addValueReference ManyComponents.re:19:6 --> ManyComponents.re:16:6
+  XXX declaration component ManyComponents.re:36:4 exists:true path:ManyComponents
   addValueReference ManyComponents.re:36:4 --> ReasonReact.rei:153:0
+  XXX declaration make ManyComponents.re:39:4 exists:true path:ManyComponents
   addValueReference ManyComponents.re:39:4 --> ReasonReact.rei:17:0
+  XXX declaration emptyArray ManyComponents.re:42:49 exists:false path:ManyComponents
   addValueReference ManyComponents.re:39:4 --> ManyComponents.re:42:49
   addValueReference ManyComponents.re:39:4 --> ManyComponents.re:9:6
   addValueReference ManyComponents.re:39:4 --> ReasonReact.rei:181:0
@@ -28,7 +37,9 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ComponentAsProp.cmt
   addDeclaration component ComponentAsProp.re:1:4
   addDeclaration make ComponentAsProp.re:5:4
+  XXX declaration component ComponentAsProp.re:1:4 exists:true path:ComponentAsProp
   addValueReference ComponentAsProp.re:1:4 --> ReasonReact.rei:153:0
+  XXX declaration make ComponentAsProp.re:5:4 exists:true path:ComponentAsProp
   addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:5:13
   addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:5:21
   addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:13:16
@@ -63,22 +74,37 @@
   addDeclaration setMatch Types.re:136:4
   [type] addDeclaration id Types.re:141:19
   addDeclaration testInstantiateTypeParameter Types.re:146:4
+  XXX declaration someIntList Types.re:5:4 exists:true path:Types
+  XXX declaration map Types.re:8:4 exists:true path:Types
+  XXX declaration swap Types.re:28:8 exists:true path:Types
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
   addValueReference Types.re:28:8 --> Types.re:28:37
+  XXX declaration selfRecursiveConverter Types.re:46:4 exists:true path:Types
   addValueReference Types.re:46:4 --> Types.re:46:31
   [type] addTypeReference Types.re:46:30 --> Types.re:35:22
+  XXX declaration mutuallyRecursiveConverter Types.re:53:4 exists:true path:Types
   addValueReference Types.re:53:4 --> Types.re:53:35
   [type] addTypeReference Types.re:53:34 --> Types.re:38:27
+  XXX declaration testFunctionOnOptionsAsArgument Types.re:56:4 exists:true path:Types
   addValueReference Types.re:56:4 --> Types.re:56:39
   addValueReference Types.re:56:4 --> Types.re:56:54
+  XXX declaration stringT Types.re:64:4 exists:true path:Types
+  XXX declaration jsStringT Types.re:67:4 exists:true path:Types
+  XXX declaration jsString2T Types.re:70:4 exists:true path:Types
+  XXX declaration jsonStringify Types.re:82:4 exists:true path:Types
+  XXX declaration testConvertNull Types.re:96:4 exists:true path:Types
   addValueReference Types.re:96:4 --> Types.re:96:23
+  XXX declaration testConvertLocation Types.re:102:4 exists:true path:Types
   addValueReference Types.re:102:4 --> Types.re:102:27
+  XXX declaration testMarshalFields Types.re:120:4 exists:true path:Types
   addValueReference Types.re:120:4 --> Types.re:120:39
+  XXX declaration setMatch Types.re:136:4 exists:true path:Types
   addValueReference Types.re:136:4 --> Types.re:136:16
+  XXX declaration testInstantiateTypeParameter Types.re:146:4 exists:true path:Types
   addValueReference Types.re:146:4 --> Types.re:146:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
   addDeclaration testTuple Tuples.re:4:4
@@ -92,24 +118,33 @@
   addDeclaration getFirstName Tuples.re:39:4
   addDeclaration marry Tuples.re:42:4
   addDeclaration changeSecondAge Tuples.re:45:4
+  XXX declaration testTuple Tuples.re:4:4 exists:true path:Tuples
   addValueReference Tuples.re:4:4 --> Tuples.re:4:18
   addValueReference Tuples.re:4:4 --> Tuples.re:4:21
+  XXX declaration origin Tuples.re:10:4 exists:true path:Tuples
+  XXX declaration computeArea Tuples.re:13:4 exists:true path:Tuples
   addValueReference Tuples.re:13:4 --> Tuples.re:13:20
   addValueReference Tuples.re:13:4 --> Tuples.re:13:23
   addValueReference Tuples.re:13:4 --> Tuples.re:13:26
   addValueReference Tuples.re:13:4 --> Tuples.re:14:40
+  XXX declaration computeAreaWithIdent Tuples.re:17:4 exists:true path:Tuples
   addValueReference Tuples.re:17:4 --> Tuples.re:17:29
   addValueReference Tuples.re:17:4 --> Tuples.re:17:32
   addValueReference Tuples.re:17:4 --> Tuples.re:17:35
   addValueReference Tuples.re:17:4 --> Tuples.re:18:40
+  XXX declaration computeAreaNoConverters Tuples.re:21:4 exists:true path:Tuples
   addValueReference Tuples.re:21:4 --> Tuples.re:21:32
   addValueReference Tuples.re:21:4 --> Tuples.re:21:40
+  XXX declaration coord2d Tuples.re:24:4 exists:true path:Tuples
   addValueReference Tuples.re:24:4 --> Tuples.re:24:15
   addValueReference Tuples.re:24:4 --> Tuples.re:24:18
+  XXX declaration getFirstName Tuples.re:39:4 exists:true path:Tuples
   [type] addTypeReference Tuples.re:39:49 --> Tuples.re:31:2
   addValueReference Tuples.re:39:4 --> Tuples.re:39:21
+  XXX declaration marry Tuples.re:42:4 exists:true path:Tuples
   addValueReference Tuples.re:42:4 --> Tuples.re:42:13
   addValueReference Tuples.re:42:4 --> Tuples.re:42:20
+  XXX declaration changeSecondAge Tuples.re:45:4 exists:true path:Tuples
   addValueReference Tuples.re:45:4 --> Tuples.re:45:24
   [type] addTypeReference Tuples.re:47:19 --> Tuples.re:32:2
   addValueReference Tuples.re:45:4 --> Tuples.re:45:31
@@ -129,8 +164,13 @@
   [type] addDeclaration C ReasonComponent.re:52:4
   addDeclaration tToString ReasonComponent.re:55:4
   addDeclaration useRecordsCoord ReasonComponent.re:63:4
+  XXX declaration component ReasonComponent.re:3:4 exists:true path:ReasonComponent
   addValueReference ReasonComponent.re:3:4 --> ReasonReact.rei:153:0
+  XXX declaration onClick ReasonComponent.re:15:4 exists:true path:ReasonComponent
+  XXX declaration make ReasonComponent.re:18:4 exists:true path:ReasonComponent
+  XXX declaration message ReasonComponent.re:19:6 exists:false path:ReasonComponent
   addValueReference ReasonComponent.re:19:6 --> ReasonComponent.re:19:14
+  XXX declaration intList ReasonComponent.re:19:43 exists:false path:ReasonComponent
   addValueReference ReasonComponent.re:19:43 --> ReasonComponent.re:19:51
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:15:4
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:6
@@ -139,18 +179,24 @@
   [type] addTypeReference ReasonComponent.re:32:12 --> ReasonComponent.re:7:2
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:34
   addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:17:0
+  XXX declaration emptyArray ReasonComponent.re:35:7 exists:false path:ReasonComponent
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:35:7
   addValueReference ReasonComponent.re:18:4 --> ImportMyBanner.re:19:4
   addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:181:0
   addValueReference ReasonComponent.re:18:4 --> ReactDOMRe.re:2105:0
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:3:4
+  XXX declaration minus ReasonComponent.re:43:4 exists:true path:ReasonComponent
+  XXX declaration first ReasonComponent.re:43:14 exists:false path:ReasonComponent
   addValueReference ReasonComponent.re:43:14 --> ReasonComponent.re:43:20
   addValueReference ReasonComponent.re:43:4 --> ReasonComponent.re:43:14
   addValueReference ReasonComponent.re:43:4 --> ReasonComponent.re:43:24
+  XXX declaration useTypeDefinedInAnotherModule ReasonComponent.re:46:4 exists:true path:ReasonComponent
   addValueReference ReasonComponent.re:46:4 --> ReasonComponent.re:46:37
+  XXX declaration tToString ReasonComponent.re:55:4 exists:true path:ReasonComponent
   addValueReference ReasonComponent.re:55:4 --> ReasonComponent.re:58:6
   addValueReference ReasonComponent.re:55:4 --> ReasonComponent.re:59:6
   addValueReference ReasonComponent.re:55:4 --> ReasonComponent.re:55:16
+  XXX declaration useRecordsCoord ReasonComponent.re:63:4 exists:true path:ReasonComponent
   addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:24
   addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:35
   [type] addTypeReference ReasonComponent.re:63:23 --> Records.re:5:2
@@ -160,6 +206,7 @@
   [type] addDeclaration y FirstClassModulesInterface.rei:4:2
   addDeclaration r FirstClassModulesInterface.rei:7:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
+  XXX declaration notify ErrorHandler.re:7:6 exists:false path:ErrorHandler.Make
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
   mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:1:30
@@ -169,225 +216,285 @@
   clean ErrorHandler.re:3:2
   clean ErrorHandler.re:7:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
+  XXX declaration fromArray ImmutableArray.re:14:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:14:18
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:8:2
+  XXX declaration toArray ImmutableArray.re:16:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:16:6 --> ImmutableArray.re:16:16
   addValueReference ImmutableArray.re:16:6 --> ImmutableArray.re:5:2
+  XXX declaration length ImmutableArray.re:20:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:20:6 --> ImmutableArray.re:20:15
   addValueReference ImmutableArray.re:20:6 --> ImmutableArray.re:5:2
+  XXX declaration size ImmutableArray.re:22:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:22:6 --> ImmutableArray.re:22:13
   addValueReference ImmutableArray.re:22:6 --> ImmutableArray.re:5:2
+  XXX declaration get ImmutableArray.re:24:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:24:13
   addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:24:16
+  XXX declaration getExn ImmutableArray.re:26:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:26:16
   addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:26:19
+  XXX declaration getUnsafe ImmutableArray.re:28:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:28:19
   addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:28:22
+  XXX declaration getUndefined ImmutableArray.re:30:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:30:22
   addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:30:25
+  XXX declaration shuffle ImmutableArray.re:32:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:32:16
   addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:8:2
+  XXX declaration reverse ImmutableArray.re:34:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:34:16
   addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:8:2
+  XXX declaration makeUninitialized ImmutableArray.re:36:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:36:6 --> ImmutableArray.re:36:26
   addValueReference ImmutableArray.re:36:6 --> ImmutableArray.re:8:2
+  XXX declaration makeUninitializedUnsafe ImmutableArray.re:38:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:38:6 --> ImmutableArray.re:38:32
   addValueReference ImmutableArray.re:38:6 --> ImmutableArray.re:8:2
+  XXX declaration make ImmutableArray.re:40:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:40:14
   addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:40:17
   addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:8:2
+  XXX declaration range ImmutableArray.re:42:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:42:15
   addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:42:18
   addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:8:2
+  XXX declaration rangeBy ImmutableArray.re:44:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:17
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:20
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:24
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:8:2
+  XXX declaration makeByU ImmutableArray.re:46:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:46:17
   addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:46:20
   addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:8:2
+  XXX declaration makeBy ImmutableArray.re:47:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:47:16
   addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:47:19
   addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:8:2
+  XXX declaration makeByAndShuffleU ImmutableArray.re:49:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:49:27
   addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:49:30
   addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:8:2
+  XXX declaration makeByAndShuffle ImmutableArray.re:50:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:50:26
   addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:50:29
   addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:8:2
+  XXX declaration zip ImmutableArray.re:52:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:52:13
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:52:17
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:9:2
+  XXX declaration zipByU ImmutableArray.re:54:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:16
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:20
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:24
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:8:2
+  XXX declaration zipBy ImmutableArray.re:55:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:15
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:19
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:23
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:8:2
+  XXX declaration unzip ImmutableArray.re:57:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:57:14
   addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:6:2
   addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:10:2
+  XXX declaration concat ImmutableArray.re:59:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:59:16
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:59:20
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:8:2
+  XXX declaration concatMany ImmutableArray.re:61:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:61:20
   addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:7:2
   addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:8:2
+  XXX declaration slice ImmutableArray.re:63:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:15
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:19
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:28
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:8:2
+  XXX declaration sliceToEnd ImmutableArray.re:66:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:66:20
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:66:23
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:8:2
+  XXX declaration copy ImmutableArray.re:68:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:68:13
   addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:8:2
+  XXX declaration forEachU ImmutableArray.re:70:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:70:18
   addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:70:21
+  XXX declaration forEach ImmutableArray.re:71:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:71:17
   addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:71:20
+  XXX declaration mapU ImmutableArray.re:73:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:73:14
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:73:17
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:8:2
+  XXX declaration map ImmutableArray.re:74:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:74:13
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:74:16
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:8:2
+  XXX declaration keepWithIndexU ImmutableArray.re:76:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:76:24
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:76:27
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:8:2
+  XXX declaration keepWithIndex ImmutableArray.re:77:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:77:23
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:77:26
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:8:2
+  XXX declaration keepMapU ImmutableArray.re:79:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:79:18
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:79:21
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:8:2
+  XXX declaration keepMap ImmutableArray.re:80:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:80:17
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:80:20
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:8:2
+  XXX declaration forEachWithIndexU ImmutableArray.re:82:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:82:27
   addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:82:30
+  XXX declaration forEachWithIndex ImmutableArray.re:83:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:83:26
   addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:83:29
+  XXX declaration mapWithIndexU ImmutableArray.re:85:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:85:23
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:85:26
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:8:2
+  XXX declaration mapWithIndex ImmutableArray.re:86:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:86:22
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:86:25
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:8:2
+  XXX declaration partitionU ImmutableArray.re:88:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:88:20
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:88:23
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:10:2
+  XXX declaration partition ImmutableArray.re:89:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:89:19
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:89:22
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:10:2
+  XXX declaration reduceU ImmutableArray.re:91:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:17
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:20
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:23
+  XXX declaration reduce ImmutableArray.re:92:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:16
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:19
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:22
+  XXX declaration reduceReverseU ImmutableArray.re:94:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:24
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:27
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:30
+  XXX declaration reduceReverse ImmutableArray.re:95:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:23
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:26
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:29
+  XXX declaration reduceReverse2U ImmutableArray.re:97:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:25
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:29
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:33
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:36
+  XXX declaration reduceReverse2 ImmutableArray.re:99:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:24
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:28
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:32
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:35
+  XXX declaration someU ImmutableArray.re:102:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:102:15
   addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:102:18
+  XXX declaration some ImmutableArray.re:103:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:103:14
   addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:103:17
+  XXX declaration everyU ImmutableArray.re:105:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:105:16
   addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:105:19
+  XXX declaration every ImmutableArray.re:106:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:106:15
   addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:106:18
+  XXX declaration every2U ImmutableArray.re:108:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:17
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:21
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:25
+  XXX declaration every2 ImmutableArray.re:109:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:16
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:20
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:24
+  XXX declaration some2U ImmutableArray.re:111:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:16
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:20
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:24
+  XXX declaration some2 ImmutableArray.re:112:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:15
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:19
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:23
+  XXX declaration cmpU ImmutableArray.re:114:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:14
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:18
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:22
+  XXX declaration cmp ImmutableArray.re:115:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:13
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:17
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:21
+  XXX declaration eqU ImmutableArray.re:117:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:13
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:17
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:21
+  XXX declaration eq ImmutableArray.re:118:6 exists:false path:ImmutableArray.Array
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:12
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:16
@@ -519,9 +626,11 @@
   [type] addDeclaration i TransitiveType3.re:3:2
   [type] addDeclaration s TransitiveType3.re:4:2
   addDeclaration convertT3 TransitiveType3.re:8:4
+  XXX declaration convertT3 TransitiveType3.re:8:4 exists:true path:TransitiveType3
   addValueReference TransitiveType3.re:8:4 --> TransitiveType3.re:8:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
   addDeclaration convertT2 TransitiveType2.re:7:4
+  XXX declaration convertT2 TransitiveType2.re:7:4 exists:true path:TransitiveType2
   addValueReference TransitiveType2.re:7:4 --> TransitiveType2.re:7:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Variants.cmt
   addDeclaration isWeekend Variants.re:13:4
@@ -545,19 +654,37 @@
   addDeclaration restResult1 Variants.re:115:4
   addDeclaration restResult2 Variants.re:118:4
   addDeclaration restResult3 Variants.re:121:4
+  XXX declaration isWeekend Variants.re:13:4 exists:true path:Variants
   addValueReference Variants.re:13:4 --> Variants.re:13:17
+  XXX declaration monday Variants.re:21:4 exists:true path:Variants
+  XXX declaration saturday Variants.re:23:4 exists:true path:Variants
+  XXX declaration sunday Variants.re:25:4 exists:true path:Variants
+  XXX declaration onlySunday Variants.re:28:4 exists:true path:Variants
+  XXX declaration swap Variants.re:31:4 exists:true path:Variants
   addValueReference Variants.re:31:4 --> Variants.re:31:11
+  XXX declaration testConvert Variants.re:45:4 exists:true path:Variants
   addValueReference Variants.re:45:4 --> Variants.re:45:19
+  XXX declaration fortytwoOK Variants.re:48:4 exists:true path:Variants
+  XXX declaration fortytwoBAD Variants.re:52:4 exists:true path:Variants
+  XXX declaration testConvert2 Variants.re:64:4 exists:true path:Variants
   addValueReference Variants.re:64:4 --> Variants.re:64:20
+  XXX declaration testConvert3 Variants.re:76:4 exists:true path:Variants
   addValueReference Variants.re:76:4 --> Variants.re:76:20
+  XXX declaration testConvert2to3 Variants.re:80:4 exists:true path:Variants
   addValueReference Variants.re:80:4 --> Variants.re:80:23
+  XXX declaration id1 Variants.re:89:4 exists:true path:Variants
   addValueReference Variants.re:89:4 --> Variants.re:89:11
+  XXX declaration id2 Variants.re:92:4 exists:true path:Variants
   addValueReference Variants.re:92:4 --> Variants.re:92:11
+  XXX declaration polyWithOpt Variants.re:100:4 exists:true path:Variants
   addValueReference Variants.re:100:4 --> Variants.re:100:18
   addValueReference Variants.re:100:4 --> Variants.re:100:18
   addValueReference Variants.re:100:4 --> Variants.re:100:18
+  XXX declaration restResult1 Variants.re:115:4 exists:true path:Variants
   addValueReference Variants.re:115:4 --> Variants.re:115:19
+  XXX declaration restResult2 Variants.re:118:4 exists:true path:Variants
   addValueReference Variants.re:118:4 --> Variants.re:118:19
+  XXX declaration restResult3 Variants.re:121:4 exists:true path:Variants
   addValueReference Variants.re:121:4 --> Variants.re:121:19
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Uncurried.cmt
   addDeclaration uncurried0 Uncurried.re:14:4
@@ -574,30 +701,42 @@
   addDeclaration sumU2 Uncurried.re:48:4
   addDeclaration sumCurried Uncurried.re:55:4
   addDeclaration sumLblCurried Uncurried.re:63:4
+  XXX declaration uncurried0 Uncurried.re:14:4 exists:true path:Uncurried
+  XXX declaration uncurried1 Uncurried.re:17:4 exists:true path:Uncurried
   addValueReference Uncurried.re:17:4 --> Uncurried.re:17:20
+  XXX declaration uncurried2 Uncurried.re:20:4 exists:true path:Uncurried
   addValueReference Uncurried.re:20:4 --> Uncurried.re:20:20
   addValueReference Uncurried.re:20:4 --> Uncurried.re:20:23
+  XXX declaration uncurried3 Uncurried.re:23:4 exists:true path:Uncurried
   addValueReference Uncurried.re:23:4 --> Uncurried.re:24:5
   addValueReference Uncurried.re:23:4 --> Uncurried.re:24:8
   addValueReference Uncurried.re:23:4 --> Uncurried.re:24:11
+  XXX declaration curried3 Uncurried.re:27:4 exists:true path:Uncurried
   addValueReference Uncurried.re:27:4 --> Uncurried.re:27:16
   addValueReference Uncurried.re:27:4 --> Uncurried.re:27:19
   addValueReference Uncurried.re:27:4 --> Uncurried.re:27:22
+  XXX declaration callback Uncurried.re:30:4 exists:true path:Uncurried
   addValueReference Uncurried.re:30:4 --> Uncurried.re:30:15
+  XXX declaration callback2 Uncurried.re:36:4 exists:true path:Uncurried
   [type] addTypeReference Uncurried.re:36:24 --> Uncurried.re:32:13
   addValueReference Uncurried.re:36:4 --> Uncurried.re:36:16
+  XXX declaration callback2U Uncurried.re:39:4 exists:true path:Uncurried
   [type] addTypeReference Uncurried.re:39:25 --> Uncurried.re:33:14
   addValueReference Uncurried.re:39:4 --> Uncurried.re:39:17
+  XXX declaration sumU Uncurried.re:42:4 exists:true path:Uncurried
   addValueReference Uncurried.re:42:4 --> Uncurried.re:43:8
   addValueReference Uncurried.re:42:4 --> Uncurried.re:43:5
   addValueReference Uncurried.re:42:4 --> Uncurried.re:43:8
+  XXX declaration sumU2 Uncurried.re:48:4 exists:true path:Uncurried
   addValueReference Uncurried.re:48:4 --> Uncurried.re:50:7
   addValueReference Uncurried.re:48:4 --> Uncurried.re:49:5
   addValueReference Uncurried.re:48:4 --> Uncurried.re:50:7
+  XXX declaration sumCurried Uncurried.re:55:4 exists:true path:Uncurried
   addValueReference Uncurried.re:55:4 --> Uncurried.re:57:2
   addValueReference Uncurried.re:55:4 --> Uncurried.re:55:17
   addValueReference Uncurried.re:55:4 --> Uncurried.re:57:2
   addValueReference Uncurried.re:55:4 --> Uncurried.re:55:17
+  XXX declaration sumLblCurried Uncurried.re:63:4 exists:true path:Uncurried
   addValueReference Uncurried.re:63:4 --> Uncurried.re:65:4
   addValueReference Uncurried.re:63:4 --> Uncurried.re:63:33
   addValueReference Uncurried.re:63:4 --> Uncurried.re:65:4
@@ -607,6 +746,9 @@
   addDeclaration x TestEmitInnerModules.re:3:6
   addDeclaration y TestEmitInnerModules.re:5:6
   addDeclaration y TestEmitInnerModules.re:12:10
+  XXX declaration x TestEmitInnerModules.re:3:6 exists:true path:TestEmitInnerModules.Inner
+  XXX declaration y TestEmitInnerModules.re:5:6 exists:true path:TestEmitInnerModules.Inner
+  XXX declaration y TestEmitInnerModules.re:12:10 exists:true path:TestEmitInnerModules.Outer.Medium.Inner
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModules.cmt
   addDeclaration notNested NestedModules.re:2:4
   addDeclaration theAnswer NestedModules.re:6:6
@@ -624,26 +766,48 @@
   [type] addDeclaration A NestedModules.re:46:6
   [type] addDeclaration B NestedModules.re:47:6
   addDeclaration someString NestedModules.re:50:6
+  XXX declaration notNested NestedModules.re:2:4 exists:true path:NestedModules
+  XXX declaration theAnswer NestedModules.re:6:6 exists:true path:NestedModules.Universe
+  XXX declaration notExported NestedModules.re:8:6 exists:true path:NestedModules.Universe
+  XXX declaration x NestedModules.re:14:8 exists:true path:NestedModules.Universe.Nested2
+  XXX declaration nested2Value NestedModules.re:17:8 exists:true path:NestedModules.Universe.Nested2
+  XXX declaration y NestedModules.re:19:8 exists:true path:NestedModules.Universe.Nested2
+  XXX declaration x NestedModules.re:25:10 exists:true path:NestedModules.Universe.Nested2.Nested3
+  XXX declaration y NestedModules.re:26:10 exists:true path:NestedModules.Universe.Nested2.Nested3
+  XXX declaration z NestedModules.re:27:10 exists:true path:NestedModules.Universe.Nested2.Nested3
+  XXX declaration w NestedModules.re:28:10 exists:true path:NestedModules.Universe.Nested2.Nested3
+  XXX declaration nested3Value NestedModules.re:34:10 exists:true path:NestedModules.Universe.Nested2.Nested3
+  XXX declaration nested3Function NestedModules.re:37:10 exists:true path:NestedModules.Universe.Nested2.Nested3
   addValueReference NestedModules.re:37:10 --> NestedModules.re:37:29
+  XXX declaration nested2Function NestedModules.re:41:8 exists:true path:NestedModules.Universe.Nested2
   addValueReference NestedModules.re:41:8 --> NestedModules.re:41:27
+  XXX declaration someString NestedModules.re:50:6 exists:true path:NestedModules.Universe
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Shadow.cmt
   addDeclaration test Shadow.re:2:4
   addDeclaration test Shadow.re:5:4
   addDeclaration test Shadow.re:11:6
+  XXX declaration test Shadow.re:2:4 exists:true path:Shadow
+  XXX declaration test Shadow.re:5:4 exists:true path:Shadow
+  XXX declaration test Shadow.re:9:6 exists:false path:Shadow.M
+  XXX declaration test Shadow.re:11:6 exists:true path:Shadow.M
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases2.cmt
   [type] addDeclaration x ModuleAliases2.re:3:2
   [type] addDeclaration y ModuleAliases2.re:4:2
   [type] addDeclaration outer ModuleAliases2.re:9:16
   [type] addDeclaration inner ModuleAliases2.re:13:18
   addDeclaration q ModuleAliases2.re:21:4
+  XXX declaration q ModuleAliases2.re:21:4 exists:true path:ModuleAliases2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
   addDeclaration convert TransitiveType1.re:2:4
   addDeclaration convertAlias TransitiveType1.re:5:4
+  XXX declaration convert TransitiveType1.re:2:4 exists:true path:TransitiveType1
   addValueReference TransitiveType1.re:2:4 --> TransitiveType1.re:2:15
+  XXX declaration convertAlias TransitiveType1.re:5:4 exists:true path:TransitiveType1
   addValueReference TransitiveType1.re:5:4 --> TransitiveType1.re:5:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
   [type] addDeclaration id TypeParams2.re:2:13
   addDeclaration exportSomething TypeParams2.re:10:4
+  XXX declaration exportSomething TypeParams2.re:10:4 exists:true path:TypeParams2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModules.cmt
   addDeclaration y FirstClassModules.re:17:6
   addDeclaration k FirstClassModules.re:21:8
@@ -653,9 +817,18 @@
   addDeclaration firstClassModule FirstClassModules.re:41:4
   addDeclaration testConvert FirstClassModules.re:44:4
   addDeclaration someFunctorAsFunction FirstClassModules.re:53:4
+  XXX declaration y FirstClassModules.re:17:6 exists:true path:FirstClassModules.M
+  XXX declaration k FirstClassModules.re:21:8 exists:true path:FirstClassModules.M.InnerModule2
+  XXX declaration k3 FirstClassModules.re:25:8 exists:true path:FirstClassModules.M.InnerModule3
   addValueReference FirstClassModules.re:25:8 --> FirstClassModules.re:25:13
+  XXX declaration u FirstClassModules.re:30:8 exists:true path:FirstClassModules.M.Z
+  XXX declaration x FirstClassModules.re:34:6 exists:true path:FirstClassModules.M
+  XXX declaration firstClassModule FirstClassModules.re:41:4 exists:true path:FirstClassModules
+  XXX declaration testConvert FirstClassModules.re:44:4 exists:true path:FirstClassModules
   addValueReference FirstClassModules.re:44:4 --> FirstClassModules.re:44:19
+  XXX declaration ww FirstClassModules.re:49:6 exists:false path:FirstClassModules.SomeFunctor
   addValueReference FirstClassModules.re:49:6 --> FirstClassModules.re:14:2
+  XXX declaration someFunctorAsFunction FirstClassModules.re:53:4 exists:true path:FirstClassModules
   addValueReference FirstClassModules.re:53:4 --> FirstClassModules.re:53:29
   mergeSet FirstClassModules.re:34:6 --> FirstClassModules.re:2:2
   addValueReference FirstClassModules.re:2:2 --> FirstClassModules.re:34:6
@@ -684,11 +857,17 @@
   addDeclaration version DeadMl.ml:26:6
   addDeclaration header DeadMl.ml:26:27
   addDeclaration package_name DeadMl.ml:26:47
+  XXX declaration thisSpansSeveralLines DeadMl.ml:3:8 exists:true path:DeadMl.QQ
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
+  XXX declaration thisIsInInterface DeadMl.ml:12:6 exists:false path:DeadMl.AA
   addValueReference DeadMl.ml:12:6 --> DeadMl.ml:12:24
+  XXX declaration thisHasSemicolons DeadMl.ml:15:4 exists:true path:DeadMl
   addDeclaration _ DeadMl.ml:21:2
   addDeclaration _ DeadMl.ml:22:2
+  XXX declaration version DeadMl.ml:29:8 exists:false path:DeadMl.Bs_version
+  XXX declaration header DeadMl.ml:30:8 exists:false path:DeadMl.Bs_version
+  XXX declaration package_name DeadMl.ml:31:8 exists:false path:DeadMl.Bs_version
   mergeSet DeadMl.ml:12:6 --> DeadMl.ml:9:2
   addValueReference DeadMl.ml:9:2 --> DeadMl.ml:12:6
   mergeSet DeadMl.ml:29:8 --> DeadMl.ml:26:6
@@ -701,30 +880,40 @@
   [type] addDeclaration text ImportMyBanner.re:6:16
   addDeclaration make ImportMyBanner.re:8:0
   addDeclaration make ImportMyBanner.re:19:4
+  XXX declaration make ImportMyBanner.re:19:4 exists:true path:ImportMyBanner
   addValueReference ImportMyBanner.re:19:4 --> ImportMyBanner.re:8:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams3.cmt
   addDeclaration test TypeParams3.re:2:4
   addDeclaration test2 TypeParams3.re:5:4
+  XXX declaration test TypeParams3.re:2:4 exists:true path:TypeParams3
   addValueReference TypeParams3.re:2:4 --> TypeParams3.re:2:12
+  XXX declaration test2 TypeParams3.re:5:4 exists:true path:TypeParams3
   addValueReference TypeParams3.re:5:4 --> TypeParams3.re:5:13
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams1.cmt
   addDeclaration exportSomething TypeParams1.re:4:4
+  XXX declaration exportSomething TypeParams1.re:4:4 exists:true path:TypeParams1
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestModuleAliases.cmt
   addDeclaration testInner1 TestModuleAliases.re:32:4
   addDeclaration testInner1Expanded TestModuleAliases.re:35:4
   addDeclaration testInner2 TestModuleAliases.re:38:4
   addDeclaration testInner2Expanded TestModuleAliases.re:41:4
+  XXX declaration testInner1 TestModuleAliases.re:32:4 exists:true path:TestModuleAliases
   addValueReference TestModuleAliases.re:32:4 --> TestModuleAliases.re:32:18
+  XXX declaration testInner1Expanded TestModuleAliases.re:35:4 exists:true path:TestModuleAliases
   addValueReference TestModuleAliases.re:35:4 --> TestModuleAliases.re:35:26
+  XXX declaration testInner2 TestModuleAliases.re:38:4 exists:true path:TestModuleAliases
   addValueReference TestModuleAliases.re:38:4 --> TestModuleAliases.re:38:18
+  XXX declaration testInner2Expanded TestModuleAliases.re:41:4 exists:true path:TestModuleAliases
   addValueReference TestModuleAliases.re:41:4 --> TestModuleAliases.re:41:26
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Opaque.cmt
   [type] addDeclaration A Opaque.re:3:4
   addDeclaration noConversion Opaque.re:6:4
   addDeclaration testConvertNestedRecordFromOtherFile Opaque.re:12:4
+  XXX declaration noConversion Opaque.re:6:4 exists:true path:Opaque
   addValueReference Opaque.re:6:4 --> Opaque.re:6:20
+  XXX declaration testConvertNestedRecordFromOtherFile Opaque.re:12:4 exists:true path:Opaque
   addValueReference Opaque.re:12:4 --> Opaque.re:12:44
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmti
   addDeclaration notify ErrorHandler.rei:2:34
@@ -750,13 +939,17 @@
   addDeclaration testVariant1Int VariantsWithPayload.re:103:4
   [type] addDeclaration R VariantsWithPayload.re:107:4
   addDeclaration testVariant1Object VariantsWithPayload.re:110:4
+  XXX declaration testWithPayload VariantsWithPayload.re:16:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:16:4 --> VariantsWithPayload.re:16:23
+  XXX declaration printVariantWithPayload VariantsWithPayload.re:19:4 exists:true path:VariantsWithPayload
   [type] addTypeReference VariantsWithPayload.re:27:42 --> VariantsWithPayload.re:2:2
   addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:26:6
   [type] addTypeReference VariantsWithPayload.re:27:59 --> VariantsWithPayload.re:3:2
   addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:26:6
   addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:19:31
+  XXX declaration testManyPayloads VariantsWithPayload.re:38:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:38:4 --> VariantsWithPayload.re:38:24
+  XXX declaration printManyPayloads VariantsWithPayload.re:41:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:43:8
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:44:9
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:44:13
@@ -765,8 +958,11 @@
   [type] addTypeReference VariantsWithPayload.re:46:53 --> VariantsWithPayload.re:3:2
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:45:10
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:41:25
+  XXX declaration testSimpleVariant VariantsWithPayload.re:56:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:56:4 --> VariantsWithPayload.re:56:25
+  XXX declaration testVariantWithPayloads VariantsWithPayload.re:67:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:67:4 --> VariantsWithPayload.re:67:31
+  XXX declaration printVariantWithPayloads VariantsWithPayload.re:70:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:73:6
   addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:75:6
   addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:75:9
@@ -776,13 +972,17 @@
   addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:85:9
   addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:85:12
   addValueReference VariantsWithPayload.re:70:4 --> VariantsWithPayload.re:70:31
+  XXX declaration testVariant1Int VariantsWithPayload.re:103:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:103:4 --> VariantsWithPayload.re:103:23
+  XXX declaration testVariant1Object VariantsWithPayload.re:110:4 exists:true path:VariantsWithPayload
   addValueReference VariantsWithPayload.re:110:4 --> VariantsWithPayload.re:110:26
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWhitelist.cmt
   addDeclaration x DeadTestWhitelist.re:1:4
+  XXX declaration x DeadTestWhitelist.re:1:4 exists:true path:DeadTestWhitelist
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
   [type] extendTypeDependencies FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2
   [type] extendTypeDependencies FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2
+  XXX declaration r FirstClassModulesInterface.re:6:4 exists:false path:FirstClassModulesInterface
   mergeSet FirstClassModulesInterface.re:6:4 --> FirstClassModulesInterface.rei:7:0
   mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
   mergeSet FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
@@ -800,7 +1000,9 @@
   [type] addDeclaration x Unboxed.re:16:11
   [type] addDeclaration B Unboxed.re:21:4
   addDeclaration r2Test Unboxed.re:24:4
+  XXX declaration testV1 Unboxed.re:12:4 exists:true path:Unboxed
   addValueReference Unboxed.re:12:4 --> Unboxed.re:12:14
+  XXX declaration r2Test Unboxed.re:24:4 exists:true path:Unboxed
   addValueReference Unboxed.re:24:4 --> Unboxed.re:24:14
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmti
   [type] addDeclaration A DeadTypeTest.rei:2:4
@@ -829,14 +1031,21 @@
   addDeclaration convertVariant ImportJsValue.re:68:0
   addDeclaration polymorphic ImportJsValue.re:71:0
   addDeclaration default ImportJsValue.re:73:0
+  XXX declaration roundedNumber ImportJsValue.re:25:4 exists:true path:ImportJsValue
   addValueReference ImportJsValue.re:25:4 --> ImportJsValue.re:1:0
+  XXX declaration areaValue ImportJsValue.re:28:4 exists:true path:ImportJsValue
   addValueReference ImportJsValue.re:28:4 --> ImportJsValue.re:14:0
+  XXX declaration getAbs ImportJsValue.re:38:6 exists:true path:ImportJsValue.AbsoluteValue
+  XXX declaration getAbs ImportJsValue.re:39:8 exists:false path:ImportJsValue.AbsoluteValue
   addValueReference ImportJsValue.re:39:8 --> ImportJsValue.re:38:16
   addValueReference ImportJsValue.re:38:6 --> ImportJsValue.re:39:8
+  XXX declaration useGetProp ImportJsValue.re:45:4 exists:true path:ImportJsValue
   addValueReference ImportJsValue.re:45:4 --> ImportJsValue.re:45:18
   addValueReference ImportJsValue.re:45:4 --> ImportJsValue.re:35:2
+  XXX declaration useGetAbs ImportJsValue.re:48:4 exists:true path:ImportJsValue
   addValueReference ImportJsValue.re:48:4 --> ImportJsValue.re:48:17
   addValueReference ImportJsValue.re:48:4 --> ImportJsValue.re:38:6
+  XXX declaration returnedFromHigherOrder ImportJsValue.re:62:4 exists:true path:ImportJsValue
   addValueReference ImportJsValue.re:62:4 --> ImportJsValue.re:58:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/References.cmt
   addDeclaration create References.re:4:4
@@ -851,17 +1060,28 @@
   [type] addDeclaration x References.re:39:27
   addDeclaration destroysRefIdentity References.re:43:4
   addDeclaration preserveRefIdentity References.re:47:4
+  XXX declaration create References.re:4:4 exists:true path:References
   addValueReference References.re:4:4 --> References.re:4:14
+  XXX declaration access References.re:7:4 exists:true path:References
   addValueReference References.re:7:4 --> References.re:7:13
+  XXX declaration update References.re:10:4 exists:true path:References
   addValueReference References.re:10:4 --> References.re:10:13
   addValueReference References.re:10:4 --> References.re:10:13
+  XXX declaration get References.re:22:6 exists:false path:References.R
   addValueReference References.re:22:6 --> References.re:22:12
+  XXX declaration make References.re:23:6 exists:false path:References.R
+  XXX declaration set References.re:24:6 exists:false path:References.R
   addValueReference References.re:24:6 --> References.re:24:16
   addValueReference References.re:24:6 --> References.re:24:13
+  XXX declaration get References.re:31:4 exists:true path:References
   addValueReference References.re:31:4 --> References.re:17:2
+  XXX declaration make References.re:34:4 exists:true path:References
   addValueReference References.re:34:4 --> References.re:18:2
+  XXX declaration set References.re:37:4 exists:true path:References
   addValueReference References.re:37:4 --> References.re:19:2
+  XXX declaration destroysRefIdentity References.re:43:4 exists:true path:References
   addValueReference References.re:43:4 --> References.re:43:27
+  XXX declaration preserveRefIdentity References.re:47:4 exists:true path:References
   addValueReference References.re:47:4 --> References.re:47:27
   mergeSet References.re:22:6 --> References.re:17:2
   addValueReference References.re:17:2 --> References.re:22:6
@@ -873,12 +1093,14 @@
   addDeclaration theAnswer NestedModulesInSignature.rei:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   addDeclaration notification CreateErrorHandler2.re:3:6
+  XXX declaration notification CreateErrorHandler2.re:3:6 exists:true path:CreateErrorHandler2.Error2
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
   mergeSet CreateErrorHandler2.re:3:6 --> ErrorHandler.rei:1:30
   addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
   [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
   [type] extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
+  XXX declaration a DeadTypeTest.re:4:4 exists:false path:DeadTypeTest
   [type] addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
   [type] extendTypeDependencies DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4
   [type] extendTypeDependencies DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
@@ -904,6 +1126,7 @@
   [type] clean DeadTypeTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addDeclaration notification CreateErrorHandler1.re:3:6
+  XXX declaration notification CreateErrorHandler1.re:3:6 exists:true path:CreateErrorHandler1.Error1
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:2:34
@@ -915,12 +1138,16 @@
   addDeclaration testNested ModuleAliases.re:22:4
   addDeclaration testInner ModuleAliases.re:25:4
   addDeclaration testInner2 ModuleAliases.re:28:4
+  XXX declaration testNested ModuleAliases.re:22:4 exists:true path:ModuleAliases
   addValueReference ModuleAliases.re:22:4 --> ModuleAliases.re:22:18
+  XXX declaration testInner ModuleAliases.re:25:4 exists:true path:ModuleAliases
   addValueReference ModuleAliases.re:25:4 --> ModuleAliases.re:25:17
+  XXX declaration testInner2 ModuleAliases.re:28:4 exists:true path:ModuleAliases
   addValueReference ModuleAliases.re:28:4 --> ModuleAliases.re:28:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeInterface.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ExportWithRename.cmt
   addDeclaration make ExportWithRename.re:3:4
+  XXX declaration make ExportWithRename.re:3:4 exists:true path:ExportWithRename
   addValueReference ExportWithRename.re:3:4 --> ExportWithRename.re:3:13
   addValueReference ExportWithRename.re:3:4 --> React.re:5:0
   addValueReference _none_:1:-1 --> ExportWithRename.re:3:4
@@ -994,8 +1221,10 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/UseImportJsValue.cmt
   addDeclaration useGetProp UseImportJsValue.re:2:4
   addDeclaration useTypeImportedInOtherModule UseImportJsValue.re:6:4
+  XXX declaration useGetProp UseImportJsValue.re:2:4 exists:true path:UseImportJsValue
   addValueReference UseImportJsValue.re:2:4 --> UseImportJsValue.re:2:18
   addValueReference UseImportJsValue.re:2:4 --> ImportJsValue.re:35:2
+  XXX declaration useTypeImportedInOtherModule UseImportJsValue.re:6:4 exists:true path:UseImportJsValue
   addValueReference UseImportJsValue.re:6:4 --> UseImportJsValue.re:6:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImport.cmt
   addDeclaration innerStuffContents TestImport.re:1:0
@@ -1007,15 +1236,20 @@
   addDeclaration make TestImport.re:30:0
   addDeclaration make TestImport.re:42:4
   addDeclaration defaultValue2 TestImport.re:44:0
+  XXX declaration innerStuffContents TestImport.re:18:4 exists:true path:TestImport
   addValueReference TestImport.re:18:4 --> TestImport.re:1:0
+  XXX declaration make TestImport.re:42:4 exists:true path:TestImport
   addValueReference TestImport.re:42:4 --> TestImport.re:30:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImmutableArray.cmt
   addDeclaration testImmutableArrayGet TestImmutableArray.re:2:4
   addDeclaration testBeltArrayGet TestImmutableArray.re:9:4
   addDeclaration testBeltArraySet TestImmutableArray.re:11:4
+  XXX declaration testImmutableArrayGet TestImmutableArray.re:2:4 exists:true path:TestImmutableArray
   addValueReference TestImmutableArray.re:2:4 --> TestImmutableArray.re:2:28
   addValueReference TestImmutableArray.re:2:4 --> ImmutableArray.rei:5:15
+  XXX declaration testBeltArrayGet TestImmutableArray.re:9:4 exists:true path:TestImmutableArray
   addValueReference TestImmutableArray.re:9:4 --> TestImmutableArray.re:9:23
+  XXX declaration testBeltArraySet TestImmutableArray.re:11:4 exists:true path:TestImmutableArray
   addValueReference TestImmutableArray.re:11:4 --> TestImmutableArray.re:11:23
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHooks.cmt
   [type] addDeclaration name ImportHooks.re:3:2
@@ -1025,7 +1259,10 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BucklescriptAnnotations.cmt
   addDeclaration foo BucklescriptAnnotations.re:19:4
   addDeclaration bar BucklescriptAnnotations.re:21:4
+  XXX declaration foo BucklescriptAnnotations.re:19:4 exists:true path:BucklescriptAnnotations
   addValueReference BucklescriptAnnotations.re:19:4 --> BucklescriptAnnotations.re:19:11
+  XXX declaration bar BucklescriptAnnotations.re:21:4 exists:true path:BucklescriptAnnotations
+  XXX declaration f BucklescriptAnnotations.re:22:6 exists:false path:BucklescriptAnnotations
   addValueReference BucklescriptAnnotations.re:22:6 --> BucklescriptAnnotations.re:21:11
   addValueReference BucklescriptAnnotations.re:21:4 --> BucklescriptAnnotations.re:22:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
@@ -1069,6 +1306,8 @@
   [type] addDeclaration type_ Records.re:162:2
   addDeclaration testMyRecBsAs Records.re:167:4
   addDeclaration testMyRecBsAs2 Records.re:170:4
+  XXX declaration origin Records.re:11:4 exists:true path:Records
+  XXX declaration computeArea Records.re:14:4 exists:true path:Records
   addValueReference Records.re:14:4 --> Records.re:14:20
   addValueReference Records.re:14:4 --> Records.re:14:23
   addValueReference Records.re:14:4 --> Records.re:14:26
@@ -1076,15 +1315,20 @@
   [type] addTypeReference Records.re:14:19 --> Records.re:5:2
   [type] addTypeReference Records.re:14:19 --> Records.re:6:2
   [type] addTypeReference Records.re:14:19 --> Records.re:7:2
+  XXX declaration coord2d Records.re:18:4 exists:true path:Records
   addValueReference Records.re:18:4 --> Records.re:18:15
   addValueReference Records.re:18:4 --> Records.re:18:18
+  XXX declaration getOpt Records.re:34:4 exists:true path:Records
   addValueReference Records.re:34:4 --> Records.re:34:19
   addValueReference Records.re:34:4 --> Records.re:34:28
   addValueReference Records.re:34:4 --> Records.re:34:14
+  XXX declaration findAddress Records.re:37:4 exists:true path:Records
   addValueReference Records.re:37:4 --> Records.re:38:31
   [type] addTypeReference Records.re:38:2 --> Records.re:31:2
   addValueReference Records.re:37:4 --> Records.re:37:19
   addValueReference Records.re:37:4 --> Records.re:34:4
+  XXX declaration someBusiness Records.re:41:4 exists:true path:Records
+  XXX declaration findAllAddresses Records.re:44:4 exists:true path:Records
   addValueReference Records.re:44:4 --> Records.re:47:35
   [type] addTypeReference Records.re:47:6 --> Records.re:31:2
   addValueReference Records.re:44:4 --> Records.re:46:14
@@ -1097,34 +1341,49 @@
   addValueReference Records.re:44:4 --> Records.re:46:14
   addValueReference Records.re:44:4 --> Records.re:34:4
   addValueReference Records.re:44:4 --> Records.re:44:24
+  XXX declaration getPayload Records.re:61:4 exists:true path:Records
   addValueReference Records.re:61:4 --> Records.re:61:19
   [type] addTypeReference Records.re:61:18 --> Records.re:57:2
+  XXX declaration getPayloadRecord Records.re:70:4 exists:true path:Records
   addValueReference Records.re:70:4 --> Records.re:70:25
   [type] addTypeReference Records.re:70:24 --> Records.re:57:2
+  XXX declaration recordValue Records.re:73:4 exists:true path:Records
+  XXX declaration payloadValue Records.re:76:4 exists:true path:Records
   addValueReference Records.re:76:4 --> Records.re:73:4
+  XXX declaration getPayloadRecordPlusOne Records.re:79:4 exists:true path:Records
   [type] addTypeReference Records.re:81:5 --> Records.re:65:2
   addValueReference Records.re:79:4 --> Records.re:79:32
   addValueReference Records.re:79:4 --> Records.re:79:32
   [type] addTypeReference Records.re:79:31 --> Records.re:57:2
+  XXX declaration findAddress2 Records.re:92:4 exists:true path:Records
   addValueReference Records.re:92:4 --> Records.re:93:54
   [type] addTypeReference Records.re:93:2 --> Records.re:88:2
   addValueReference Records.re:92:4 --> Records.re:92:20
   addValueReference Records.re:92:4 --> Records.re:34:4
+  XXX declaration someBusiness2 Records.re:96:4 exists:true path:Records
+  XXX declaration computeArea3 Records.re:103:4 exists:true path:Records
   addValueReference Records.re:103:4 --> Records.re:105:6
   addValueReference Records.re:103:4 --> Records.re:105:6
   addValueReference Records.re:103:4 --> Records.re:112:69
   addValueReference Records.re:103:4 --> Records.re:105:6
+  XXX declaration computeArea4 Records.re:115:4 exists:true path:Records
   addValueReference Records.re:115:4 --> Records.re:117:6
   addValueReference Records.re:115:4 --> Records.re:117:6
   addValueReference Records.re:115:4 --> Records.re:124:47
   addValueReference Records.re:115:4 --> Records.re:117:6
+  XXX declaration testMyRec Records.re:149:4 exists:true path:Records
   [type] addTypeReference Records.re:149:30 --> Records.re:141:2
   addValueReference Records.re:149:4 --> Records.re:149:17
+  XXX declaration testMyRec2 Records.re:152:4 exists:true path:Records
   addValueReference Records.re:152:4 --> Records.re:152:18
+  XXX declaration testMyObj Records.re:155:4 exists:true path:Records
   addValueReference Records.re:155:4 --> Records.re:155:17
+  XXX declaration testMyObj2 Records.re:158:4 exists:true path:Records
   addValueReference Records.re:158:4 --> Records.re:158:18
+  XXX declaration testMyRecBsAs Records.re:167:4 exists:true path:Records
   [type] addTypeReference Records.re:167:38 --> Records.re:162:2
   addValueReference Records.re:167:4 --> Records.re:167:21
+  XXX declaration testMyRecBsAs2 Records.re:170:4 exists:true path:Records
   addValueReference Records.re:170:4 --> Records.re:170:22
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
   addDeclaration make ImportIndex.re:2:0
@@ -1142,6 +1401,7 @@
   addDeclaration polymorphicComponent Hooks.re:130:4
   addDeclaration functionReturningReactElement Hooks.re:134:4
   addDeclaration aComponentWithChildren Hooks.re:156:4
+  XXX declaration make Hooks.re:4:4 exists:true path:Hooks
   addValueReference Hooks.re:5:2 --> React.re:104:0
   [type] addTypeReference Hooks.re:11:12 --> Hooks.re:1:16
   addValueReference Hooks.re:4:4 --> Hooks.re:4:13
@@ -1170,41 +1430,50 @@
   addValueReference Hooks.re:4:4 --> React.re:16:0
   addValueReference Hooks.re:4:4 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:4:4
+  XXX declaration default Hooks.re:36:4 exists:true path:Hooks
+  XXX declaration anotherComponent Hooks.re:40:4 exists:true path:Hooks
   [type] addTypeReference Hooks.re:42:41 --> Hooks.re:1:16
   addValueReference Hooks.re:40:4 --> Hooks.re:40:25
   addValueReference Hooks.re:40:4 --> React.re:5:0
   addValueReference Hooks.re:40:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:40:4 --> Hooks.re:40:35
   addValueReference _none_:1:-1 --> Hooks.re:40:4
+  XXX declaration make Hooks.re:48:6 exists:false path:Hooks.Inner
   [type] addTypeReference Hooks.re:49:43 --> Hooks.re:1:16
   addValueReference Hooks.re:48:6 --> Hooks.re:48:15
   addValueReference Hooks.re:48:6 --> React.re:5:0
   addValueReference Hooks.re:48:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:48:6
+  XXX declaration anotherComponent Hooks.re:53:6 exists:false path:Hooks.Inner
   [type] addTypeReference Hooks.re:54:43 --> Hooks.re:1:16
   addValueReference Hooks.re:53:6 --> Hooks.re:53:27
   addValueReference Hooks.re:53:6 --> React.re:5:0
   addValueReference Hooks.re:53:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:53:6
+  XXX declaration make Hooks.re:59:8 exists:false path:Hooks.Inner.Inner2
   [type] addTypeReference Hooks.re:60:45 --> Hooks.re:1:16
   addValueReference Hooks.re:59:8 --> Hooks.re:59:17
   addValueReference Hooks.re:59:8 --> React.re:5:0
   addValueReference Hooks.re:59:8 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:59:8
+  XXX declaration anotherComponent Hooks.re:64:8 exists:false path:Hooks.Inner.Inner2
   [type] addTypeReference Hooks.re:65:45 --> Hooks.re:1:16
   addValueReference Hooks.re:64:8 --> Hooks.re:64:29
   addValueReference Hooks.re:64:8 --> React.re:5:0
   addValueReference Hooks.re:64:8 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:64:8
+  XXX declaration make Hooks.re:72:6 exists:false path:Hooks.NoProps
   addValueReference Hooks.re:72:6 --> ReasonReact.rei:15:0
   addValueReference Hooks.re:72:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:72:6
+  XXX declaration functionWithRenamedArgs Hooks.re:80:4 exists:true path:Hooks
   [type] addTypeReference Hooks.re:82:2 --> Hooks.re:1:16
   addValueReference Hooks.re:80:4 --> Hooks.re:80:32
   [type] addTypeReference Hooks.re:82:14 --> Hooks.re:1:16
   addValueReference Hooks.re:80:4 --> Hooks.re:80:38
   addValueReference Hooks.re:80:4 --> Hooks.re:80:32
   addValueReference Hooks.re:80:4 --> Hooks.re:80:46
+  XXX declaration componentWithRenamedArgs Hooks.re:87:4 exists:true path:Hooks
   [type] addTypeReference Hooks.re:89:15 --> Hooks.re:1:16
   addValueReference Hooks.re:87:4 --> Hooks.re:87:33
   [type] addTypeReference Hooks.re:89:27 --> Hooks.re:1:16
@@ -1213,6 +1482,7 @@
   addValueReference Hooks.re:87:4 --> Hooks.re:87:33
   addValueReference Hooks.re:87:4 --> Hooks.re:87:47
   addValueReference _none_:1:-1 --> Hooks.re:87:4
+  XXX declaration makeWithRef Hooks.re:94:4 exists:true path:Hooks
   addValueReference Hooks.re:94:4 --> Hooks.re:96:9
   addValueReference Hooks.re:94:4 --> ReactDOMRe.re:96:2
   [type] addTypeReference Hooks.re:98:20 --> Hooks.re:1:16
@@ -1222,7 +1492,9 @@
   addValueReference Hooks.re:94:4 --> React.re:3:0
   addValueReference Hooks.re:94:4 --> Hooks.re:94:29
   addValueReference _none_:1:-1 --> Hooks.re:94:4
+  XXX declaration testForwardRef Hooks.re:105:4 exists:true path:Hooks
   addValueReference Hooks.re:105:4 --> React.re:44:0
+  XXX declaration input Hooks.re:111:4 exists:true path:Hooks
   addValueReference Hooks.re:111:4 --> Hooks.re:112:28
   [type] addTypeReference Hooks.re:113:45 --> Hooks.re:107:10
   addValueReference Hooks.re:111:4 --> Hooks.re:112:21
@@ -1230,17 +1502,22 @@
   addValueReference Hooks.re:111:4 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:111:4
   addValueReference Hooks.re:112:2 --> React.re:44:0
+  XXX declaration polymorphicComponent Hooks.re:130:4 exists:true path:Hooks
   [type] addTypeReference Hooks.re:130:58 --> Hooks.re:1:16
   addValueReference Hooks.re:130:4 --> Hooks.re:130:35
   addValueReference Hooks.re:130:4 --> React.re:5:0
   addValueReference _none_:1:-1 --> Hooks.re:130:4
+  XXX declaration functionReturningReactElement Hooks.re:134:4 exists:true path:Hooks
   addValueReference Hooks.re:134:4 --> Hooks.re:134:38
   addValueReference Hooks.re:134:4 --> React.re:5:0
   addValueReference _none_:1:-1 --> Hooks.re:134:4
+  XXX declaration make Hooks.re:139:6 exists:false path:Hooks.RenderPropRequiresConversion
+  XXX declaration car Hooks.re:149:8 exists:false path:Hooks.RenderPropRequiresConversion
   addValueReference Hooks.re:139:6 --> Hooks.re:149:8
   addValueReference Hooks.re:139:6 --> Hooks.re:150:18
   addValueReference Hooks.re:139:6 --> Hooks.re:141:9
   addValueReference _none_:1:-1 --> Hooks.re:139:6
+  XXX declaration aComponentWithChildren Hooks.re:156:4 exists:true path:Hooks
   [type] addTypeReference Hooks.re:158:37 --> Hooks.re:1:16
   addValueReference Hooks.re:156:4 --> Hooks.re:156:31
   addValueReference Hooks.re:156:4 --> React.re:5:0
@@ -1253,9 +1530,11 @@
   [type] addDeclaration s TestPromise.re:7:2
   [type] addDeclaration result TestPromise.re:11:18
   addDeclaration convert TestPromise.re:14:4
+  XXX declaration convert TestPromise.re:14:4 exists:true path:TestPromise
   addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
   [type] addTypeReference TestPromise.re:14:32 --> TestPromise.re:7:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
+  XXX declaration theAnswer NestedModulesInSignature.re:2:6 exists:false path:NestedModulesInSignature.Universe
   mergeSet NestedModulesInSignature.re:2:6 --> NestedModulesInSignature.rei:2:2
   clean NestedModulesInSignature.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Docstrings.cmt
@@ -1280,38 +1559,61 @@
   [type] addDeclaration B Docstrings.re:62:4
   addDeclaration unitArgWithConversion Docstrings.re:65:4
   addDeclaration unitArgWithConversionU Docstrings.re:68:4
+  XXX declaration flat Docstrings.re:3:4 exists:true path:Docstrings
+  XXX declaration signMessage Docstrings.re:13:4 exists:true path:Docstrings
   addValueReference Docstrings.re:13:4 --> Docstrings.re:13:21
   addValueReference Docstrings.re:13:4 --> Docstrings.re:13:30
+  XXX declaration one Docstrings.re:16:4 exists:true path:Docstrings
   addValueReference Docstrings.re:16:4 --> Docstrings.re:16:10
+  XXX declaration two Docstrings.re:19:4 exists:true path:Docstrings
   addValueReference Docstrings.re:19:4 --> Docstrings.re:19:11
   addValueReference Docstrings.re:19:4 --> Docstrings.re:19:14
+  XXX declaration tree Docstrings.re:22:4 exists:true path:Docstrings
   addValueReference Docstrings.re:22:4 --> Docstrings.re:22:12
   addValueReference Docstrings.re:22:4 --> Docstrings.re:22:15
   addValueReference Docstrings.re:22:4 --> Docstrings.re:22:18
+  XXX declaration oneU Docstrings.re:25:4 exists:true path:Docstrings
   addValueReference Docstrings.re:25:4 --> Docstrings.re:25:14
+  XXX declaration twoU Docstrings.re:28:4 exists:true path:Docstrings
   addValueReference Docstrings.re:28:4 --> Docstrings.re:28:14
   addValueReference Docstrings.re:28:4 --> Docstrings.re:28:17
+  XXX declaration treeU Docstrings.re:31:4 exists:true path:Docstrings
   addValueReference Docstrings.re:31:4 --> Docstrings.re:31:15
   addValueReference Docstrings.re:31:4 --> Docstrings.re:31:18
   addValueReference Docstrings.re:31:4 --> Docstrings.re:31:21
+  XXX declaration useParam Docstrings.re:34:4 exists:true path:Docstrings
   addValueReference Docstrings.re:34:4 --> Docstrings.re:34:15
+  XXX declaration useParamU Docstrings.re:37:4 exists:true path:Docstrings
   addValueReference Docstrings.re:37:4 --> Docstrings.re:37:19
+  XXX declaration unnamed1 Docstrings.re:40:4 exists:true path:Docstrings
+  XXX declaration unnamed1U Docstrings.re:43:4 exists:true path:Docstrings
+  XXX declaration unnamed2 Docstrings.re:46:4 exists:true path:Docstrings
+  XXX declaration unnamed2U Docstrings.re:49:4 exists:true path:Docstrings
+  XXX declaration grouped Docstrings.re:52:4 exists:true path:Docstrings
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:16
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:20
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:23
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:26
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:29
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:33
+  XXX declaration unitArgWithoutConversion Docstrings.re:55:4 exists:true path:Docstrings
+  XXX declaration unitArgWithoutConversionU Docstrings.re:58:4 exists:true path:Docstrings
+  XXX declaration unitArgWithConversion Docstrings.re:65:4 exists:true path:Docstrings
   [type] addTypeReference Docstrings.re:65:34 --> Docstrings.re:61:4
+  XXX declaration unitArgWithConversionU Docstrings.re:68:4 exists:true path:Docstrings
   [type] addTypeReference Docstrings.re:68:36 --> Docstrings.re:61:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestFirstClassModules.cmt
   addDeclaration convert TestFirstClassModules.re:2:4
   addDeclaration convertInterface TestFirstClassModules.re:5:4
   addDeclaration convertRecord TestFirstClassModules.re:8:4
   addDeclaration convertFirstClassModuleWithTypeEquations TestFirstClassModules.re:26:4
+  XXX declaration convert TestFirstClassModules.re:2:4 exists:true path:TestFirstClassModules
   addValueReference TestFirstClassModules.re:2:4 --> TestFirstClassModules.re:2:15
+  XXX declaration convertInterface TestFirstClassModules.re:5:4 exists:true path:TestFirstClassModules
   addValueReference TestFirstClassModules.re:5:4 --> TestFirstClassModules.re:5:24
+  XXX declaration convertRecord TestFirstClassModules.re:8:4 exists:true path:TestFirstClassModules
   addValueReference TestFirstClassModules.re:8:4 --> TestFirstClassModules.re:8:21
+  XXX declaration convertFirstClassModuleWithTypeEquations TestFirstClassModules.re:26:4 exists:true path:TestFirstClassModules
   addValueReference TestFirstClassModules.re:26:4 --> TestFirstClassModules.re:30:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/AutoAnnotate.cmt
   [type] addDeclaration R AutoAnnotate.re:2:4
@@ -1322,6 +1624,7 @@
   [type] addDeclaration R2 AutoAnnotate.re:15:4
   [type] addDeclaration R4 AutoAnnotate.re:16:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeImplementation.cmt
+  XXX declaration x DeadCodeImplementation.re:2:6 exists:false path:DeadCodeImplementation.M
   mergeSet DeadCodeImplementation.re:2:6 --> DeadCodeInterface.re:1:17
   addValueReference DeadCodeInterface.re:1:17 --> DeadCodeImplementation.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTest.cmt
@@ -1338,11 +1641,19 @@
   addDeclaration x DeadTest.re:62:2
   addDeclaration y DeadTest.re:63:2
   addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
+  XXX declaration fortytwo DeadTest.re:2:4 exists:true path:DeadTest
+  XXX declaration fortyTwoButExported DeadTest.re:5:4 exists:true path:DeadTest
+  XXX declaration thisIsUsedOnce DeadTest.re:7:4 exists:true path:DeadTest
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
+  XXX declaration thisIsUsedTwice DeadTest.re:10:4 exists:true path:DeadTest
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:12:7 --> DeadTest.re:10:4
+  XXX declaration thisIsKeptAlive DeadTest.re:17:4 exists:true path:DeadTest
+  XXX declaration thisIsMarkedLive DeadTest.re:20:4 exists:true path:DeadTest
   addValueReference DeadTest.re:20:4 --> DeadTest.re:17:4
+  XXX declaration thisSignatureItemIsDead DeadTest.re:31:6 exists:false path:DeadTest.M
   [type] extendTypeDependencies DeadTest.re:40:6 --> DeadTest.re:36:6
+  XXX declaration a DeadTest.re:41:6 exists:false path:DeadTest.VariantUsedOnlyInImplementation
   [type] addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
   addValueReference DeadTest.re:44:0 --> DeadTest.re:37:2
   addValueReference DeadTest.re:44:0 --> DeadTest.re:44:9
@@ -1357,6 +1668,8 @@
   addValueReference DeadTest.re:55:0 --> DeadTest.re:55:10
   [type] addTypeReference DeadTest.re:55:9 --> DeadTest.re:51:2
   addDeclaration _ DeadTest.re:58:2
+  XXX declaration y DeadTest.re:65:6 exists:false path:DeadTest.MM
+  XXX declaration x DeadTest.re:66:6 exists:false path:DeadTest.MM
   addValueReference DeadTest.re:66:6 --> DeadTest.re:65:6
   mergeSet DeadTest.re:41:6 --> DeadTest.re:37:2
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
