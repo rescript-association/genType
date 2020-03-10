@@ -55,7 +55,7 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
   };
 
 let processSignature = (signature: Types.signature) => {
-  let module_id = String.capitalize_ascii(currentModuleName^);
+  let module_id = currentModuleName^;
   signature
   |> List.iter(sig_item =>
        collectExportFromSignatureItem(~path=[module_id], sig_item)
