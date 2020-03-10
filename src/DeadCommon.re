@@ -643,7 +643,7 @@ let reportDead = (~onDeadCode) => {
       (
         {
           declKind: kind1,
-          path: _,
+          path: path1,
           pos: {
             pos_fname: fname1,
             pos_lnum: lnum1,
@@ -653,7 +653,7 @@ let reportDead = (~onDeadCode) => {
         },
         {
           declKind: kind2,
-          path: _,
+          path: path2,
           pos: {
             pos_fname: fname2,
             pos_lnum: lnum2,
@@ -666,23 +666,33 @@ let reportDead = (~onDeadCode) => {
 
     let rec checkSub = (s1, s2, n) =>
       n <= 0 || s1.[n] == s2.[n] && checkSub(s1, s2, n - 1);
-    let isImplementationOf = (s1, s2) => {
+    let fileIsImplementationOf = (s1, s2) => {
       let n1 = String.length(s1)
       and n2 = String.length(s2);
       n2 == n1 + 1 && checkSub(s1, s2, n1 - 1);
     };
+    let pathIsImplementationOf = (path1, path2) =>
+      switch (path1, path2) {
+      | ([name1, ...restPath1], [name2, ...restPath2]) =>
+        name1.[0] == '+' && name1 == "+" ++ name2 && restPath1 == restPath2
+      | ([], _)
+      | (_, []) => false
+      };
 
     /* From the root of the file dependency DAG to the leaves.
        From the bottom of the file to the top.
        But implementation before interface. */
     let (position1, position2) =
-      isImplementationOf(fname1, fname2)
+      fileIsImplementationOf(fname1, fname2)
         ? (1, 0)
-        : isImplementationOf(fname2, fname1)
+        : fileIsImplementationOf(fname2, fname1)
             ? (0, 1) : (fname1 |> findPosition, fname2 |> findPosition);
+    let (p1, p2) =
+      pathIsImplementationOf(path1, path2)
+        ? (1, 0) : pathIsImplementationOf(path2, path1) ? (0, 1) : (0, 0);
     compare(
-      (position1, lnum2, bol2, cnum2, kind1),
-      (position2, lnum1, bol1, cnum1, kind2),
+      (position1, p1, lnum2, bol2, cnum2, kind1),
+      (position2, p2, lnum1, bol1, cnum1, kind2),
     );
   };
 
