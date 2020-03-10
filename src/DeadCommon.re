@@ -680,13 +680,11 @@ let reportDead = (~onDeadCode) => {
       };
 
     /* From the root of the file dependency DAG to the leaves.
-       From the bottom of the file to the top.
-       But implementation before interface. */
-    let (position1, position2) =
-      fileIsImplementationOf(fname1, fname2)
-        ? (1, 0)
-        : fileIsImplementationOf(fname2, fname1)
-            ? (0, 1) : (fname1 |> findPosition, fname2 |> findPosition);
+       From the bottom of the file to the top. */
+    let (position1, position2) = (
+      fname1 |> findPosition,
+      fname2 |> findPosition,
+    );
     let (p1, p2) =
       pathIsImplementationOf(path1, path2)
         ? (1, 0) : pathIsImplementationOf(path2, path1) ? (0, 1) : (0, 0);
