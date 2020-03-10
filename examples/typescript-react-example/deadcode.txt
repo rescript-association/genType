@@ -1210,6 +1210,12 @@
   addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:2:34
   mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6 (1 new items)
   addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/LetPrivate.cmt
+  addDeclaration y LetPrivate.re:5:4
+  XXX declaration +x LetPrivate.re:2:12 exists:false path:LetPrivate.local_1
+  addDeclaration +x LetPrivate.re:2:12
+  XXX declaration +y LetPrivate.re:5:4 exists:true path:LetPrivate
+  addValueReference LetPrivate.re:5:4 --> LetPrivate.re:2:12
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
   [type] addDeclaration inner ModuleAliases.re:3:19
   [type] addDeclaration nested ModuleAliases.re:11:16
@@ -1833,6 +1839,7 @@ File References
   DeadMl.ml -->> 
   Types.re -->> 
   ImmutableArray.re -->> 
+  LetPrivate.re -->> 
   ImportIndex.re -->> 
   TypeParams2.re -->> 
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
