@@ -270,15 +270,11 @@ let processStructure =
   DeadType.typeDependencies^ |> List.iter(processTypeDependency);
 
   if (cmtiExists) {
-    let clean = (~isType, pos) => {
+    let clean = pos => {
       let fn = pos.Lexing.pos_fname;
       if (isImplementation(fn) && fn == currentSrc^) {
         if (verbose) {
-          Log_.item(
-            "%sclean %s@.",
-            isType ? "[type] " : "",
-            pos |> posToString,
-          );
+          Log_.item("clean %s@.", pos |> posToString);
         };
 
         PosHash.remove(valueReferences, pos);
@@ -286,13 +282,8 @@ let processStructure =
     };
     valueDependencies
     |> List.iter(((vd1, vd2)) => {
-         clean(~isType=false, vd1.Types.val_loc.loc_start);
-         clean(~isType=false, vd2.Types.val_loc.loc_start);
-       });
-    DeadType.typeDependencies^
-    |> List.iter(((loc1, loc2)) => {
-         clean(~isType=true, loc1);
-         clean(~isType=true, loc2);
+         clean(vd1.Types.val_loc.loc_start);
+         clean(vd2.Types.val_loc.loc_start);
        });
   };
   DeadType.typeDependencies := [];
