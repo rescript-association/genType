@@ -115,10 +115,11 @@ module PosHash = {
     replace(table, to_, setUnion);
     if (verbose) {
       Log_.item(
-        "%smergeSet %s --> %s\n",
+        "%smergeSet %s --> %s (%d new items)\n",
         isType ? "[type] " : "",
         from |> posToString,
         to_ |> posToString,
+        PosSet.cardinal(setUnion) - PosSet.cardinal(set1),
       );
     };
   };
