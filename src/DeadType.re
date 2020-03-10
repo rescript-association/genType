@@ -34,7 +34,7 @@ let addTypeDeclaration =
 let addTypeReference = (~posDeclaration, ~posUsage) => {
   if (verbose) {
     Log_.item(
-      "[type] addTypeReference %s --> %s\n",
+      "[type] addTypeReference %s --> %s@.",
       posUsage |> posToString,
       posDeclaration |> posToString,
     );
@@ -47,7 +47,7 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
     if (pos1 != pos2) {
       if (verbose) {
         Log_.item(
-          "[type] extendTypeDependencies %s --> %s\n",
+          "[type] extendTypeDependencies %s --> %s@.",
           pos1 |> posToString,
           pos2 |> posToString,
         );

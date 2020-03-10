@@ -275,7 +275,7 @@ let processStructure =
       if (isImplementation(fn) && fn == currentSrc^) {
         if (verbose) {
           Log_.item(
-            "%sclean %s\n",
+            "%sclean %s@.",
             isType ? "[type] " : "",
             pos |> posToString,
           );

@@ -64,7 +64,7 @@ let processSignature = (signature: Types.signature) => {
 
 let loadCmtFile = cmtFilePath => {
   if (verbose) {
-    Log_.item("Scanning %s\n", cmtFilePath);
+    Log_.item("Scanning %s@.", cmtFilePath);
   };
 
   let {Cmt_format.cmt_annots, cmt_sourcefile, cmt_value_dependencies} =
