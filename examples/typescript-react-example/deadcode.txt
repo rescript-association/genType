@@ -1064,8 +1064,6 @@
   clean FirstClassModulesInterface.re:6:4
   clean FirstClassModulesInterface.re:8:18
   clean FirstClassModulesInterface.re:8:18
-  [type] clean FirstClassModulesInterface.re:3:2
-  [type] clean FirstClassModulesInterface.re:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
   [type] addDeclaration A Unboxed.re:4:4
   [type] addDeclaration A Unboxed.re:9:4
@@ -1196,12 +1194,6 @@
   [type] mergeSet DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4 (0 new items)
   [type] mergeSet DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4 (1 new items)
   clean DeadTypeTest.re:4:4
-  [type] clean DeadTypeTest.re:10:4
-  [type] clean DeadTypeTest.re:9:4
-  [type] clean DeadTypeTest.re:8:4
-  [type] clean DeadTypeTest.re:7:4
-  [type] clean DeadTypeTest.re:3:4
-  [type] clean DeadTypeTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addDeclaration notification CreateErrorHandler1.re:3:6
   XXX declaration +notification CreateErrorHandler1.re:3:6 exists:true path:CreateErrorHandler1.Error1
