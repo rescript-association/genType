@@ -1927,7 +1927,6 @@ File References
   ImportJsValue.AbsoluteValue.+getAbs: 1 references (ImportJsValue.re:38:6)
   ImportMyBanner.make: 1 references (ReasonComponent.re:18:4)
 
-
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
   message.text is a record label never used to read a value

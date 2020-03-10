@@ -115,7 +115,7 @@ module PosHash = {
     replace(table, to_, setUnion);
     if (verbose) {
       Log_.item(
-        "%smergeSet %s --> %s (%d new items)\n",
+        "%smergeSet %s --> %s (%d new items)@.",
         isType ? "[type] " : "",
         from |> posToString,
         to_ |> posToString,
@@ -186,7 +186,7 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
       ? posUsage : currentBindingPos^;
   if (verbose) {
     Log_.item(
-      "addValueReference %s --> %s\n",
+      "addValueReference %s --> %s@.",
       posUsage |> posToString,
       posDeclaration |> posToString,
     );
@@ -325,7 +325,7 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
       && (currentSrc^ == posStart.pos_fname || currentModuleName^ === include_)) {
     if (verbose) {
       Log_.item(
-        "%saddDeclaration %s %s\n",
+        "%saddDeclaration %s %s@.",
         declKind != Value ? "[type] " : "",
         name,
         posStart |> posToString,
@@ -592,7 +592,7 @@ let reportDead = (~onDeadCode) => {
             |> List.map(posToString)
             |> String.concat(", ");
           Log_.item(
-            "%s%s: %d references (%s)\n",
+            "%s%s: %d references (%s)@.",
             declKind != Value ? "[type] " : "",
             path |> pathToString,
             referencesToLoc |> PosSet.cardinal,
@@ -607,11 +607,11 @@ let reportDead = (~onDeadCode) => {
   };
 
   if (verbose) {
-    Log_.item("\nFile References\n\n");
+    Log_.item("@.File References@.@.");
     fileReferences
     |> FileHash.iter((file, files) =>
          Log_.item(
-           "%s -->> %s\n",
+           "%s -->> %s@.",
            file |> Filename.basename,
            files
            |> FileSet.elements
