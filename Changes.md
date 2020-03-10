@@ -1,4 +1,5 @@
 # master
+- Add support for let%private: nothing is exported even when a `@genType` annotation is added.
 
 # 3.14.0
 - Extensions of experimental dead code/type analysis. Better annotations for .ml files, bug fixes, report on `let _ = e` when `e` has no side effects.
