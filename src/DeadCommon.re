@@ -24,6 +24,14 @@ let checkPrefix = prefix_ => {
     && String.sub(sourceDir, 0, prefixLen) == prefix;
 };
 
+let rec checkSub = (s1, s2, n) =>
+  n <= 0 || s1.[n] == s2.[n] && checkSub(s1, s2, n - 1);
+let fileIsImplementationOf = (s1, s2) => {
+  let n1 = String.length(s1)
+  and n2 = String.length(s2);
+  n2 == n1 + 1 && checkSub(s1, s2, n1 - 1);
+};
+
 // Whitelist=prefix only report on source dirs with the given prefix
 let whitelistSourceDir =
   lazy(
@@ -664,13 +672,6 @@ let reportDead = (~onDeadCode) => {
       ) => {
     let findPosition = fn => Hashtbl.find(orderedFiles, fn);
 
-    let rec checkSub = (s1, s2, n) =>
-      n <= 0 || s1.[n] == s2.[n] && checkSub(s1, s2, n - 1);
-    let fileIsImplementationOf = (s1, s2) => {
-      let n1 = String.length(s1)
-      and n2 = String.length(s2);
-      n2 == n1 + 1 && checkSub(s1, s2, n1 - 1);
-    };
     let pathIsImplementationOf = (path1, path2) =>
       switch (path1, path2) {
       | ([name1, ...restPath1], [name2, ...restPath2]) =>
