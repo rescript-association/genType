@@ -864,6 +864,15 @@
   [type] addDeclaration inner ModuleAliases2.re:13:18
   addDeclaration q ModuleAliases2.re:21:4
   XXX declaration +q ModuleAliases2.re:21:4 exists:true path:ModuleAliases2
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadValueTest.cmt
+  XXX declaration +valueAlive DeadValueTest.re:1:4 exists:false path:DeadValueTest
+  addDeclaration +valueAlive DeadValueTest.re:1:4
+  XXX declaration +valueDead DeadValueTest.re:2:4 exists:false path:DeadValueTest
+  addDeclaration +valueDead DeadValueTest.re:2:4
+  mergeSet DeadValueTest.rei:1:0 --> DeadValueTest.re:1:4 (0 new items)
+  mergeSet DeadValueTest.rei:2:0 --> DeadValueTest.re:2:4 (0 new items)
+  clean DeadValueTest.re:1:4
+  clean DeadValueTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
   addDeclaration convert TransitiveType1.re:2:4
   addDeclaration convertAlias TransitiveType1.re:5:4
@@ -962,6 +971,9 @@
   XXX declaration +test2 TypeParams3.re:5:4 exists:true path:TypeParams3
   addValueReference TypeParams3.re:5:4 --> TypeParams3.re:5:13
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadValueTest.cmti
+  addDeclaration valueAlive DeadValueTest.rei:1:0
+  addDeclaration valueDead DeadValueTest.rei:2:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams1.cmt
   addDeclaration exportSomething TypeParams1.re:4:4
@@ -1762,6 +1774,7 @@
   addDeclaration +x DeadTest.re:66:6
   addValueReference DeadTest.re:66:6 --> DeadTest.re:65:6
   addValueReference DeadTest.re:71:0 --> DeadTest.re:62:2
+  addValueReference DeadTest.re:76:0 --> DeadValueTest.rei:1:0
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
@@ -1781,9 +1794,10 @@ File References
   UseImportJsValue.re -->> ImportJsValue.re
   FirstClassModulesInterface.re -->> 
   ReasonComponent.re -->> ReactDOMRe.re, ReasonReact.rei, ImportMyBanner.re
-  DeadTest.re -->> ImmutableArray.rei
+  DeadTest.re -->> DeadValueTest.rei, ImmutableArray.rei
   TestEmitInnerModules.re -->> 
   TypeParams1.re -->> 
+  DeadValueTest.rei -->> 
   BucklescriptAnnotations.re -->> 
   ImportHookDefault.re -->> 
   ModuleAliases.re -->> 
@@ -1798,6 +1812,7 @@ File References
   ErrorHandler.rei -->> 
   IgnoreInterface.re -->> 
   NestedModulesInSignature.rei -->> 
+  DeadValueTest.re -->> 
   AutoAnnotate.re -->> 
   ComponentAsProp.re -->> ReactDOMRe.re, ReasonReact.rei
   ExportWithRename.re -->> React.re
@@ -1917,6 +1932,7 @@ File References
   [type] Tuples.person.name: 1 references (Tuples.re:39:49)
   [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34)
   [type] Types.selfRecursive.self: 1 references (Types.re:46:30)
+  DeadValueTest.valueAlive: 1 references (DeadTest.re:76:0)
   ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0)
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:0)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4)
@@ -2331,6 +2347,12 @@ File References
   eq is never used
   <-- line 109
   [@dead "eq"] let eq: (t('a), t('a), ('a, 'a) => bool) => bool;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.rei 2:1
+  valueDead is never used
+  <-- line 2
+  [@dead "valueDead"] let valueDead: int;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 12:5
@@ -3177,6 +3199,18 @@ File References
   t.B is a variant case which is never constructed
   <-- line 62
     | [@dead "t.B"] B;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 1:5
+  +valueAlive is never used
+  <-- line 1
+  [@dead "+valueAlive"] let valueAlive = 1;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 2:5
+  +valueDead is never used
+  <-- line 2
+  [@dead "+valueDead"] let valueDead = 2;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 3:5
