@@ -161,11 +161,7 @@ module FileHash = {
 };
 
 type path = list(string);
-type decls =
-  Hashtbl.t(
-    Lexing.position,
-    (path, declKind, Lexing.position, Lexing.position),
-  );
+type decls = Hashtbl.t(Lexing.position, (path, declKind, Lexing.position));
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
@@ -320,9 +316,13 @@ let pathWithoutHead = path => {
   path |> List.rev |> List.tl |> String.concat(".");
 };
 
+let annotateAtEnd = (~declKind, ~pos) =>
+  !posIsReason(pos) && (declKind == Value || declKind == VariantCase);
+
 let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
   let pos = loc.loc_start;
   let posEnd = loc.loc_end;
+  let posAnnotation = annotateAtEnd(~declKind, ~pos) ? posEnd : pos;
 
   /* a .cmi file can contain locations from other files.
        For instance:
@@ -340,11 +340,7 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
       );
     };
 
-    Hashtbl.add(
-      decls,
-      pos,
-      ([name, ...path], declKind, posEnd, pos),
-    );
+    Hashtbl.add(decls, pos, ([name, ...path], declKind, posAnnotation));
   };
 };
 
@@ -460,8 +456,7 @@ type item = {
   declKind,
   path,
   pos: Lexing.position,
-  posEnd: Lexing.position,
-  posStart: Lexing.position,
+  posAnnotation: Lexing.position,
 };
 
 module WriteDeadAnnotations = {
@@ -470,14 +465,10 @@ module WriteDeadAnnotations = {
     original: string,
   };
 
-  let getPosForAnnotation = ({declKind, pos, posStart, posEnd}) =>
-    !posIsReason(pos) && (declKind == Value || declKind == VariantCase)
-      ? posEnd : posStart;
-
   let rec lineToString = ({original, items}) => {
     switch (items) {
     | [] => original
-    | [{declKind, path, pos} as item, ...otherItems] =>
+    | [{declKind, path, pos, posAnnotation}, ...otherItems] =>
       let isReason = posIsReason(pos);
       let annotationStr =
         (isReason ? "" : " ")
@@ -487,8 +478,7 @@ module WriteDeadAnnotations = {
         ++ " \""
         ++ (path |> pathWithoutHead)
         ++ "\"] ";
-      let posForAnnotation = item |> getPosForAnnotation;
-      let col = posForAnnotation.pos_cnum - posForAnnotation.pos_bol;
+      let col = posAnnotation.pos_cnum - posAnnotation.pos_bol;
       let originalLen = String.length(original);
       {
         original:
@@ -546,8 +536,7 @@ module WriteDeadAnnotations = {
         currentFileLines := readFile(fileName);
       };
 
-      let posForAnnotation = item |> getPosForAnnotation;
-      let indexInLines = posForAnnotation.pos_lnum - 1;
+      let indexInLines = item.posAnnotation.pos_lnum - 1;
 
       if (indexInLines < Array.length(currentFileLines^)) {
         let line = currentFileLines^[indexInLines];
@@ -559,11 +548,7 @@ module WriteDeadAnnotations = {
           line |> lineToString,
         );
       } else {
-        Format.fprintf(
-          ppf,
-          "  <-- Can't find line %d@.",
-          item.pos.pos_lnum,
-        );
+        Format.fprintf(ppf, "  <-- Can't find line %d@.", item.pos.pos_lnum);
       };
     } else {
       Format.fprintf(ppf, "  <-- can't find file@.");
@@ -634,8 +619,8 @@ let reportDead = (~onDeadCode) => {
 
   let items =
     Hashtbl.fold(
-      (pos, (path, declKind, posEnd, posStart), items) =>
-        [{declKind, path, pos, posEnd, posStart}, ...items],
+      (pos, (path, declKind, posAnnotation), items) =>
+        [{declKind, path, pos, posAnnotation}, ...items],
       decls,
       [],
     );
