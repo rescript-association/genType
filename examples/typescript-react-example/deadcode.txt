@@ -218,9 +218,6 @@
   mergeSet ErrorHandler.rei:1:30 --> ErrorHandler.re:3:2 (0 new items)
   mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:1:30 (1 new items)
   mergeSet ErrorHandler.rei:2:34 --> ErrorHandler.re:7:6 (0 new items)
-  clean ErrorHandler.re:3:2
-  clean ErrorHandler.re:3:2
-  clean ErrorHandler.re:7:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
   XXX declaration +fromArray ImmutableArray.re:14:6 exists:false path:ImmutableArray.Array
   addDeclaration +fromArray ImmutableArray.re:14:6
@@ -627,67 +624,6 @@
   mergeSet ImmutableArray.rei:106:0 --> ImmutableArray.re:115:6 (0 new items)
   mergeSet ImmutableArray.rei:108:0 --> ImmutableArray.re:117:6 (0 new items)
   mergeSet ImmutableArray.rei:109:0 --> ImmutableArray.re:118:6 (0 new items)
-  clean ImmutableArray.re:24:6
-  clean ImmutableArray.re:14:6
-  clean ImmutableArray.re:16:6
-  clean ImmutableArray.re:20:6
-  clean ImmutableArray.re:22:6
-  clean ImmutableArray.re:24:6
-  clean ImmutableArray.re:26:6
-  clean ImmutableArray.re:28:6
-  clean ImmutableArray.re:30:6
-  clean ImmutableArray.re:32:6
-  clean ImmutableArray.re:34:6
-  clean ImmutableArray.re:36:6
-  clean ImmutableArray.re:38:6
-  clean ImmutableArray.re:40:6
-  clean ImmutableArray.re:42:6
-  clean ImmutableArray.re:44:6
-  clean ImmutableArray.re:46:6
-  clean ImmutableArray.re:47:6
-  clean ImmutableArray.re:49:6
-  clean ImmutableArray.re:50:6
-  clean ImmutableArray.re:52:6
-  clean ImmutableArray.re:54:6
-  clean ImmutableArray.re:55:6
-  clean ImmutableArray.re:57:6
-  clean ImmutableArray.re:59:6
-  clean ImmutableArray.re:61:6
-  clean ImmutableArray.re:63:6
-  clean ImmutableArray.re:66:6
-  clean ImmutableArray.re:68:6
-  clean ImmutableArray.re:70:6
-  clean ImmutableArray.re:71:6
-  clean ImmutableArray.re:73:6
-  clean ImmutableArray.re:74:6
-  clean ImmutableArray.re:76:6
-  clean ImmutableArray.re:77:6
-  clean ImmutableArray.re:79:6
-  clean ImmutableArray.re:80:6
-  clean ImmutableArray.re:82:6
-  clean ImmutableArray.re:83:6
-  clean ImmutableArray.re:85:6
-  clean ImmutableArray.re:86:6
-  clean ImmutableArray.re:88:6
-  clean ImmutableArray.re:89:6
-  clean ImmutableArray.re:91:6
-  clean ImmutableArray.re:92:6
-  clean ImmutableArray.re:94:6
-  clean ImmutableArray.re:95:6
-  clean ImmutableArray.re:97:6
-  clean ImmutableArray.re:99:6
-  clean ImmutableArray.re:102:6
-  clean ImmutableArray.re:103:6
-  clean ImmutableArray.re:105:6
-  clean ImmutableArray.re:106:6
-  clean ImmutableArray.re:108:6
-  clean ImmutableArray.re:109:6
-  clean ImmutableArray.re:111:6
-  clean ImmutableArray.re:112:6
-  clean ImmutableArray.re:114:6
-  clean ImmutableArray.re:115:6
-  clean ImmutableArray.re:117:6
-  clean ImmutableArray.re:118:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
   [type] addDeclaration i TransitiveType3.re:3:2
   [type] addDeclaration s TransitiveType3.re:4:2
@@ -871,8 +807,6 @@
   addDeclaration +valueDead DeadValueTest.re:2:4
   mergeSet DeadValueTest.rei:1:0 --> DeadValueTest.re:1:4 (0 new items)
   mergeSet DeadValueTest.rei:2:0 --> DeadValueTest.re:2:4 (0 new items)
-  clean DeadValueTest.re:1:4
-  clean DeadValueTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
   addDeclaration convert TransitiveType1.re:2:4
   addDeclaration convertAlias TransitiveType1.re:5:4
@@ -1073,9 +1007,6 @@
   mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18 (0 new items)
   [type] mergeSet FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2 (0 new items)
   [type] mergeSet FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2 (0 new items)
-  clean FirstClassModulesInterface.re:6:4
-  clean FirstClassModulesInterface.re:8:18
-  clean FirstClassModulesInterface.re:8:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
   [type] addDeclaration A Unboxed.re:4:4
   [type] addDeclaration A Unboxed.re:9:4
@@ -1205,7 +1136,6 @@
   [type] mergeSet DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4 (1 new items)
   [type] mergeSet DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4 (0 new items)
   [type] mergeSet DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4 (1 new items)
-  clean DeadTypeTest.re:4:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addDeclaration notification CreateErrorHandler1.re:3:6
   XXX declaration +notification CreateErrorHandler1.re:3:6 exists:true path:CreateErrorHandler1.Error1
@@ -1633,7 +1563,6 @@
   XXX declaration +theAnswer NestedModulesInSignature.re:2:6 exists:false path:NestedModulesInSignature.Universe
   addDeclaration +theAnswer NestedModulesInSignature.re:2:6
   mergeSet NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6 (0 new items)
-  clean NestedModulesInSignature.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Docstrings.cmt
   addDeclaration flat Docstrings.re:3:4
   addDeclaration signMessage Docstrings.re:13:4
