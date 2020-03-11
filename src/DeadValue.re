@@ -103,7 +103,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
       let name = "+" ++ Ident.name(id);
       let exists =
         switch (Hashtbl.find_opt(decls, loc_start)) {
-        | Some((_, Value, _, _)) => true
+        | Some((_, Value, _)) => true
         | Some(_) => assert(false)
         | None => false
         };
@@ -113,14 +113,15 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
       };
       switch (Hashtbl.find_opt(decls, loc_start)) {
       | None => ()
-      | Some((path, declKind, _posEnd, _posStart)) =>
+      | Some((path, declKind, _posAnnotation)) =>
         // Value bindings contain the correct location for the entire declaration: update final position.
         // The previous value was taken from the signature, which only has positions for the id.
-        Hashtbl.replace(
-          decls,
-          loc_start,
-          (path, declKind, vb.vb_loc.loc_end, vb.vb_loc.loc_start),
-        )
+
+        let posAnnotation =
+          annotateAtEnd(~declKind, ~pos=loc_start)
+            ? vb.vb_loc.loc_end : vb.vb_loc.loc_start;
+
+        Hashtbl.replace(decls, loc_start, (path, declKind, posAnnotation));
       };
       loc_start;
     | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
