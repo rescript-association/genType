@@ -57,6 +57,8 @@ function testInstantiateTypeParameter(x) {
   return x;
 }
 
+var currentTime = new Date();
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -92,6 +94,7 @@ export {
   testMarshalFields ,
   setMatch ,
   testInstantiateTypeParameter ,
+  currentTime ,
   
 }
-/* No side effect */
+/* currentTime Not a pure module */

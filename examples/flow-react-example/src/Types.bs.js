@@ -67,6 +67,8 @@ function testInstantiateTypeParameter(x) {
   return x;
 }
 
+var currentTime = new Date();
+
 export {
   consumeOption ,
   consumeOption2 ,
@@ -83,6 +85,7 @@ export {
   testAutoAnnotateVariants2 ,
   convertObjectWithCallback ,
   testInstantiateTypeParameter ,
+  currentTime ,
   
 }
 /* saturday Not a pure module */

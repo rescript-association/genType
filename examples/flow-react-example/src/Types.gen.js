@@ -98,6 +98,8 @@ export type someRecord = {| +id: number |};
 
 export type instantiateTypeParameter = ocaml_array<someRecord>;
 
+export type date = Date;
+
 export const consumeOption: (?number) => number = function (Arg1: $any) {
   const result = TypesBS.consumeOption((Arg1 == null ? undefined : Arg1));
   return result
@@ -138,3 +140,5 @@ export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoA
 export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = TypesBS.convertObjectWithCallback;
 
 export const testInstantiateTypeParameter: (instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;
+
+export const currentTime: Date = TypesBS.currentTime;

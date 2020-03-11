@@ -1,6 +1,7 @@
 # master
 - Add support for let%private: nothing is exported even when a `@genType` annotation is added.
 - [dce] Add `@dead` annotations to both interface and implementation.
+- Add builtin support for `Js.Date.t`.
 
 # 3.14.0
 - Extensions of experimental dead code/type analysis. Better annotations for .ml files, bug fixes, report on `let _ = e` when `e` has no side effects.

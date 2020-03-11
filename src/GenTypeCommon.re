@@ -222,6 +222,7 @@ let mixedOrUnknown = (~config) =>
   );
 
 let booleanT = ident("boolean");
+let dateT = ident("Date");
 let numberT = ident("number");
 let stringT = ident("string");
 let unitT = ident("void");

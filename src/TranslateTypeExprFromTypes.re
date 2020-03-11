@@ -67,6 +67,8 @@ let translateConstr =
       type_: stringT,
     }
 
+  | (["Js", "Date", "t"], []) => {dependencies: [], type_: dateT}
+
   | (["FB", "unit"] | ["unit"], []) => {dependencies: [], type_: unitT}
 
   | (

@@ -134,3 +134,9 @@ type instantiateTypeParameter = ocaml_array(someRecord);
 
 [@genType]
 let testInstantiateTypeParameter = (x: instantiateTypeParameter) => x;
+
+[@genType]
+type date = Js.Date.t;
+
+[@genType]
+let currentTime = Js.Date.make();
