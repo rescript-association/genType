@@ -543,7 +543,11 @@ module WriteDeadAnnotations = {
       };
 
       let indexInLines =
-        (!posIsReason(posStart) && declKind == Value ? posEnd : posStart).Lexing.pos_lnum
+        (
+          !posIsReason(posStart)
+          && (declKind == Value || declKind == VariantCase)
+            ? posEnd : posStart
+        ).Lexing.pos_lnum
         - 1;
 
       if (indexInLines < Array.length(currentFileLines^)) {

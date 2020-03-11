@@ -693,6 +693,7 @@
   addDeclaration version DeadMl.ml:26:6
   addDeclaration header DeadMl.ml:26:27
   addDeclaration package_name DeadMl.ml:26:47
+  [type] addDeclaration Lfunction DeadMl.ml:35:2
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
   addDeclaration +thisIsInInterface DeadMl.ml:12:6
@@ -2966,6 +2967,12 @@ File References
   Bs_version.package_name is never used
   <-- line 26
     sig val version : string [@@dead "Bs_version.version"]  val header : string [@@dead "Bs_version.header"]  val package_name : string [@@dead "Bs_version.package_name"]  end 
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 35:3
+  l.Lfunction is a variant case which is never constructed
+  <-- line 35
+                         } [@dead "l.Lfunction"] 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 22:7
