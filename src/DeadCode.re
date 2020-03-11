@@ -101,11 +101,7 @@ let loadCmtFile = cmtFilePath => {
           ProcessDeadAnnotations.structure(structure);
           processSignature(structure.str_type);
         };
-        DeadValue.processStructure(
-          ~cmtiExists,
-          cmt_value_dependencies,
-          structure,
-        );
+        DeadValue.processStructure(~cmt_value_dependencies, structure);
       | _ => ()
       };
     };

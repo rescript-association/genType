@@ -263,7 +263,7 @@ let processTypeDependency = ((from: Lexing.position, to_: Lexing.position)) => {
 };
 
 let processStructure =
-    (~cmtiExists, cmt_value_dependencies, structure: Typedtree.structure) => {
+    (~cmt_value_dependencies, structure: Typedtree.structure) => {
   structure
   |> collectValueReferences.structure(collectValueReferences)
   |> ignore;
