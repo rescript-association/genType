@@ -321,7 +321,7 @@ let pathWithoutHead = path => {
 };
 
 let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
-  let posStart = loc.loc_start;
+  let pos = loc.loc_start;
   let posEnd = loc.loc_end;
 
   /* a .cmi file can contain locations from other files.
@@ -330,20 +330,20 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
        will create value definitions whose location is in set.mli
      */
   if (!loc.loc_ghost
-      && (currentSrc^ == posStart.pos_fname || currentModuleName^ === include_)) {
+      && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)) {
     if (verbose) {
       Log_.item(
         "%saddDeclaration %s %s@.",
         declKind != Value ? "[type] " : "",
         name,
-        posStart |> posToString,
+        pos |> posToString,
       );
     };
 
     Hashtbl.add(
       decls,
-      posStart,
-      ([name, ...path], declKind, posEnd, posStart),
+      pos,
+      ([name, ...path], declKind, posEnd, pos),
     );
   };
 };
@@ -470,10 +470,14 @@ module WriteDeadAnnotations = {
     original: string,
   };
 
+  let getPosForAnnotation = ({declKind, pos, posStart, posEnd}) =>
+    !posIsReason(pos) && (declKind == Value || declKind == VariantCase)
+      ? posEnd : posStart;
+
   let rec lineToString = ({original, items}) => {
     switch (items) {
     | [] => original
-    | [{declKind, path, pos, posEnd, posStart}, ...otherItems] =>
+    | [{declKind, path, pos} as item, ...otherItems] =>
       let isReason = posIsReason(pos);
       let annotationStr =
         (isReason ? "" : " ")
@@ -483,8 +487,8 @@ module WriteDeadAnnotations = {
         ++ " \""
         ++ (path |> pathWithoutHead)
         ++ "\"] ";
-      let posForCol = isReason ? posStart : posEnd;
-      let col = posForCol.Lexing.pos_cnum - posForCol.Lexing.pos_bol;
+      let posForAnnotation = item |> getPosForAnnotation;
+      let col = posForAnnotation.pos_cnum - posForAnnotation.pos_bol;
       let originalLen = String.length(original);
       {
         original:
@@ -533,8 +537,8 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~ppf, {declKind, posEnd, posStart} as item) => {
-    let fileName = posStart.Lexing.pos_fname;
+  let onDeadItem = (~ppf, item) => {
+    let fileName = item.pos.pos_fname;
     if (Sys.file_exists(fileName)) {
       if (fileName != currentFile^) {
         writeFile(currentFile^, currentFileLines^);
@@ -542,13 +546,8 @@ module WriteDeadAnnotations = {
         currentFileLines := readFile(fileName);
       };
 
-      let indexInLines =
-        (
-          !posIsReason(posStart)
-          && (declKind == Value || declKind == VariantCase)
-            ? posEnd : posStart
-        ).Lexing.pos_lnum
-        - 1;
+      let posForAnnotation = item |> getPosForAnnotation;
+      let indexInLines = posForAnnotation.pos_lnum - 1;
 
       if (indexInLines < Array.length(currentFileLines^)) {
         let line = currentFileLines^[indexInLines];
@@ -556,14 +555,14 @@ module WriteDeadAnnotations = {
         Format.fprintf(
           ppf,
           "  <-- line %d@.  %s@.",
-          posStart.Lexing.pos_lnum,
+          item.pos.pos_lnum,
           line |> lineToString,
         );
       } else {
         Format.fprintf(
           ppf,
           "  <-- Can't find line %d@.",
-          posStart.Lexing.pos_lnum,
+          item.pos.pos_lnum,
         );
       };
     } else {
