@@ -1,4 +1,6 @@
 # master
+
+# 3.15.0
 - Add support for let%private: nothing is exported even when a `@genType` annotation is added.
 - [dce] Add `@dead` annotations to both interface and implementation.
 - Add builtin support for `Js.Date.t`.
