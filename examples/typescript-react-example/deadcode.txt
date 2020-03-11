@@ -216,8 +216,10 @@
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
   mergeSet ErrorHandler.rei:1:30 --> ErrorHandler.re:3:2 (0 new items)
-  mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:1:30 (1 new items)
+  addValueReference ErrorHandler.rei:1:30 --> ErrorHandler.re:3:2
+  mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:1:30 (2 new items)
   mergeSet ErrorHandler.rei:2:34 --> ErrorHandler.re:7:6 (0 new items)
+  addValueReference ErrorHandler.rei:2:34 --> ErrorHandler.re:7:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
   XXX declaration +fromArray ImmutableArray.re:14:6 exists:false path:ImmutableArray.Array
   addDeclaration +fromArray ImmutableArray.re:14:6
@@ -564,66 +566,127 @@
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:20
   mergeSet ImmutableArray.rei:5:15 --> ImmutableArray.re:24:6 (0 new items)
+  addValueReference ImmutableArray.rei:5:15 --> ImmutableArray.re:24:6
   mergeSet ImmutableArray.rei:7:0 --> ImmutableArray.re:14:6 (0 new items)
+  addValueReference ImmutableArray.rei:7:0 --> ImmutableArray.re:14:6
   mergeSet ImmutableArray.rei:10:0 --> ImmutableArray.re:16:6 (0 new items)
+  addValueReference ImmutableArray.rei:10:0 --> ImmutableArray.re:16:6
   mergeSet ImmutableArray.rei:12:0 --> ImmutableArray.re:20:6 (0 new items)
+  addValueReference ImmutableArray.rei:12:0 --> ImmutableArray.re:20:6
   mergeSet ImmutableArray.rei:16:0 --> ImmutableArray.re:22:6 (0 new items)
+  addValueReference ImmutableArray.rei:16:0 --> ImmutableArray.re:22:6
   mergeSet ImmutableArray.rei:18:0 --> ImmutableArray.re:24:6 (0 new items)
+  addValueReference ImmutableArray.rei:18:0 --> ImmutableArray.re:24:6
   mergeSet ImmutableArray.rei:20:0 --> ImmutableArray.re:26:6 (0 new items)
+  addValueReference ImmutableArray.rei:20:0 --> ImmutableArray.re:26:6
   mergeSet ImmutableArray.rei:22:0 --> ImmutableArray.re:28:6 (0 new items)
+  addValueReference ImmutableArray.rei:22:0 --> ImmutableArray.re:28:6
   mergeSet ImmutableArray.rei:24:0 --> ImmutableArray.re:30:6 (0 new items)
+  addValueReference ImmutableArray.rei:24:0 --> ImmutableArray.re:30:6
   mergeSet ImmutableArray.rei:26:0 --> ImmutableArray.re:32:6 (0 new items)
+  addValueReference ImmutableArray.rei:26:0 --> ImmutableArray.re:32:6
   mergeSet ImmutableArray.rei:28:0 --> ImmutableArray.re:34:6 (0 new items)
+  addValueReference ImmutableArray.rei:28:0 --> ImmutableArray.re:34:6
   mergeSet ImmutableArray.rei:30:0 --> ImmutableArray.re:36:6 (0 new items)
+  addValueReference ImmutableArray.rei:30:0 --> ImmutableArray.re:36:6
   mergeSet ImmutableArray.rei:32:0 --> ImmutableArray.re:38:6 (0 new items)
+  addValueReference ImmutableArray.rei:32:0 --> ImmutableArray.re:38:6
   mergeSet ImmutableArray.rei:34:0 --> ImmutableArray.re:40:6 (0 new items)
+  addValueReference ImmutableArray.rei:34:0 --> ImmutableArray.re:40:6
   mergeSet ImmutableArray.rei:36:0 --> ImmutableArray.re:42:6 (0 new items)
+  addValueReference ImmutableArray.rei:36:0 --> ImmutableArray.re:42:6
   mergeSet ImmutableArray.rei:38:0 --> ImmutableArray.re:44:6 (0 new items)
+  addValueReference ImmutableArray.rei:38:0 --> ImmutableArray.re:44:6
   mergeSet ImmutableArray.rei:40:0 --> ImmutableArray.re:46:6 (0 new items)
+  addValueReference ImmutableArray.rei:40:0 --> ImmutableArray.re:46:6
   mergeSet ImmutableArray.rei:41:0 --> ImmutableArray.re:47:6 (0 new items)
+  addValueReference ImmutableArray.rei:41:0 --> ImmutableArray.re:47:6
   mergeSet ImmutableArray.rei:43:0 --> ImmutableArray.re:49:6 (0 new items)
+  addValueReference ImmutableArray.rei:43:0 --> ImmutableArray.re:49:6
   mergeSet ImmutableArray.rei:44:0 --> ImmutableArray.re:50:6 (0 new items)
+  addValueReference ImmutableArray.rei:44:0 --> ImmutableArray.re:50:6
   mergeSet ImmutableArray.rei:46:0 --> ImmutableArray.re:52:6 (0 new items)
+  addValueReference ImmutableArray.rei:46:0 --> ImmutableArray.re:52:6
   mergeSet ImmutableArray.rei:48:0 --> ImmutableArray.re:54:6 (0 new items)
+  addValueReference ImmutableArray.rei:48:0 --> ImmutableArray.re:54:6
   mergeSet ImmutableArray.rei:49:0 --> ImmutableArray.re:55:6 (0 new items)
+  addValueReference ImmutableArray.rei:49:0 --> ImmutableArray.re:55:6
   mergeSet ImmutableArray.rei:51:0 --> ImmutableArray.re:57:6 (0 new items)
+  addValueReference ImmutableArray.rei:51:0 --> ImmutableArray.re:57:6
   mergeSet ImmutableArray.rei:53:0 --> ImmutableArray.re:59:6 (0 new items)
+  addValueReference ImmutableArray.rei:53:0 --> ImmutableArray.re:59:6
   mergeSet ImmutableArray.rei:55:0 --> ImmutableArray.re:61:6 (0 new items)
+  addValueReference ImmutableArray.rei:55:0 --> ImmutableArray.re:61:6
   mergeSet ImmutableArray.rei:57:0 --> ImmutableArray.re:63:6 (0 new items)
+  addValueReference ImmutableArray.rei:57:0 --> ImmutableArray.re:63:6
   mergeSet ImmutableArray.rei:59:0 --> ImmutableArray.re:66:6 (0 new items)
+  addValueReference ImmutableArray.rei:59:0 --> ImmutableArray.re:66:6
   mergeSet ImmutableArray.rei:61:0 --> ImmutableArray.re:68:6 (0 new items)
+  addValueReference ImmutableArray.rei:61:0 --> ImmutableArray.re:68:6
   mergeSet ImmutableArray.rei:63:0 --> ImmutableArray.re:70:6 (0 new items)
+  addValueReference ImmutableArray.rei:63:0 --> ImmutableArray.re:70:6
   mergeSet ImmutableArray.rei:64:0 --> ImmutableArray.re:71:6 (0 new items)
+  addValueReference ImmutableArray.rei:64:0 --> ImmutableArray.re:71:6
   mergeSet ImmutableArray.rei:66:0 --> ImmutableArray.re:73:6 (0 new items)
+  addValueReference ImmutableArray.rei:66:0 --> ImmutableArray.re:73:6
   mergeSet ImmutableArray.rei:67:0 --> ImmutableArray.re:74:6 (0 new items)
+  addValueReference ImmutableArray.rei:67:0 --> ImmutableArray.re:74:6
   mergeSet ImmutableArray.rei:69:0 --> ImmutableArray.re:76:6 (0 new items)
+  addValueReference ImmutableArray.rei:69:0 --> ImmutableArray.re:76:6
   mergeSet ImmutableArray.rei:70:0 --> ImmutableArray.re:77:6 (0 new items)
+  addValueReference ImmutableArray.rei:70:0 --> ImmutableArray.re:77:6
   mergeSet ImmutableArray.rei:72:0 --> ImmutableArray.re:79:6 (0 new items)
+  addValueReference ImmutableArray.rei:72:0 --> ImmutableArray.re:79:6
   mergeSet ImmutableArray.rei:73:0 --> ImmutableArray.re:80:6 (0 new items)
+  addValueReference ImmutableArray.rei:73:0 --> ImmutableArray.re:80:6
   mergeSet ImmutableArray.rei:75:0 --> ImmutableArray.re:82:6 (0 new items)
+  addValueReference ImmutableArray.rei:75:0 --> ImmutableArray.re:82:6
   mergeSet ImmutableArray.rei:76:0 --> ImmutableArray.re:83:6 (0 new items)
+  addValueReference ImmutableArray.rei:76:0 --> ImmutableArray.re:83:6
   mergeSet ImmutableArray.rei:78:0 --> ImmutableArray.re:85:6 (0 new items)
+  addValueReference ImmutableArray.rei:78:0 --> ImmutableArray.re:85:6
   mergeSet ImmutableArray.rei:79:0 --> ImmutableArray.re:86:6 (0 new items)
+  addValueReference ImmutableArray.rei:79:0 --> ImmutableArray.re:86:6
   mergeSet ImmutableArray.rei:81:0 --> ImmutableArray.re:88:6 (0 new items)
+  addValueReference ImmutableArray.rei:81:0 --> ImmutableArray.re:88:6
   mergeSet ImmutableArray.rei:82:0 --> ImmutableArray.re:89:6 (0 new items)
+  addValueReference ImmutableArray.rei:82:0 --> ImmutableArray.re:89:6
   mergeSet ImmutableArray.rei:84:0 --> ImmutableArray.re:91:6 (0 new items)
+  addValueReference ImmutableArray.rei:84:0 --> ImmutableArray.re:91:6
   mergeSet ImmutableArray.rei:85:0 --> ImmutableArray.re:92:6 (0 new items)
+  addValueReference ImmutableArray.rei:85:0 --> ImmutableArray.re:92:6
   mergeSet ImmutableArray.rei:87:0 --> ImmutableArray.re:94:6 (0 new items)
+  addValueReference ImmutableArray.rei:87:0 --> ImmutableArray.re:94:6
   mergeSet ImmutableArray.rei:88:0 --> ImmutableArray.re:95:6 (0 new items)
+  addValueReference ImmutableArray.rei:88:0 --> ImmutableArray.re:95:6
   mergeSet ImmutableArray.rei:90:0 --> ImmutableArray.re:97:6 (0 new items)
+  addValueReference ImmutableArray.rei:90:0 --> ImmutableArray.re:97:6
   mergeSet ImmutableArray.rei:91:0 --> ImmutableArray.re:99:6 (0 new items)
+  addValueReference ImmutableArray.rei:91:0 --> ImmutableArray.re:99:6
   mergeSet ImmutableArray.rei:93:0 --> ImmutableArray.re:102:6 (0 new items)
+  addValueReference ImmutableArray.rei:93:0 --> ImmutableArray.re:102:6
   mergeSet ImmutableArray.rei:94:0 --> ImmutableArray.re:103:6 (0 new items)
+  addValueReference ImmutableArray.rei:94:0 --> ImmutableArray.re:103:6
   mergeSet ImmutableArray.rei:96:0 --> ImmutableArray.re:105:6 (0 new items)
+  addValueReference ImmutableArray.rei:96:0 --> ImmutableArray.re:105:6
   mergeSet ImmutableArray.rei:97:0 --> ImmutableArray.re:106:6 (0 new items)
+  addValueReference ImmutableArray.rei:97:0 --> ImmutableArray.re:106:6
   mergeSet ImmutableArray.rei:99:0 --> ImmutableArray.re:108:6 (0 new items)
+  addValueReference ImmutableArray.rei:99:0 --> ImmutableArray.re:108:6
   mergeSet ImmutableArray.rei:100:0 --> ImmutableArray.re:109:6 (0 new items)
+  addValueReference ImmutableArray.rei:100:0 --> ImmutableArray.re:109:6
   mergeSet ImmutableArray.rei:102:0 --> ImmutableArray.re:111:6 (0 new items)
+  addValueReference ImmutableArray.rei:102:0 --> ImmutableArray.re:111:6
   mergeSet ImmutableArray.rei:103:0 --> ImmutableArray.re:112:6 (0 new items)
+  addValueReference ImmutableArray.rei:103:0 --> ImmutableArray.re:112:6
   mergeSet ImmutableArray.rei:105:0 --> ImmutableArray.re:114:6 (0 new items)
+  addValueReference ImmutableArray.rei:105:0 --> ImmutableArray.re:114:6
   mergeSet ImmutableArray.rei:106:0 --> ImmutableArray.re:115:6 (0 new items)
+  addValueReference ImmutableArray.rei:106:0 --> ImmutableArray.re:115:6
   mergeSet ImmutableArray.rei:108:0 --> ImmutableArray.re:117:6 (0 new items)
+  addValueReference ImmutableArray.rei:108:0 --> ImmutableArray.re:117:6
   mergeSet ImmutableArray.rei:109:0 --> ImmutableArray.re:118:6 (0 new items)
+  addValueReference ImmutableArray.rei:109:0 --> ImmutableArray.re:118:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
   [type] addDeclaration i TransitiveType3.re:3:2
   [type] addDeclaration s TransitiveType3.re:4:2
@@ -806,7 +869,9 @@
   XXX declaration +valueDead DeadValueTest.re:2:4 exists:false path:DeadValueTest
   addDeclaration +valueDead DeadValueTest.re:2:4
   mergeSet DeadValueTest.rei:1:0 --> DeadValueTest.re:1:4 (0 new items)
+  addValueReference DeadValueTest.rei:1:0 --> DeadValueTest.re:1:4
   mergeSet DeadValueTest.rei:2:0 --> DeadValueTest.re:2:4 (0 new items)
+  addValueReference DeadValueTest.rei:2:0 --> DeadValueTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
   addDeclaration convert TransitiveType1.re:2:4
   addDeclaration convertAlias TransitiveType1.re:5:4
@@ -1003,8 +1068,10 @@
   XXX declaration +r FirstClassModulesInterface.re:6:4 exists:false path:FirstClassModulesInterface
   addDeclaration +r FirstClassModulesInterface.re:6:4
   mergeSet FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4 (0 new items)
+  addValueReference FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   mergeSet FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18 (0 new items)
-  mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18 (0 new items)
+  addValueReference FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
+  mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18 (1 new items)
   [type] mergeSet FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2 (0 new items)
   [type] mergeSet FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2 (0 new items)
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
@@ -1113,7 +1180,7 @@
   addDeclaration notification CreateErrorHandler2.re:3:6
   XXX declaration +notification CreateErrorHandler2.re:3:6 exists:true path:CreateErrorHandler2.Error2
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
-  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6 (1 new items)
+  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6 (2 new items)
   addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
   [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
@@ -1130,6 +1197,7 @@
   addDeclaration _ DeadTypeTest.re:13:0
   [type] addTypeReference DeadTypeTest.re:13:8 --> DeadTypeTest.re:9:4
   mergeSet DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4 (0 new items)
+  addValueReference DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4
   [type] mergeSet DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4 (0 new items)
   [type] mergeSet DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4 (1 new items)
   [type] mergeSet DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4 (0 new items)
@@ -1142,7 +1210,7 @@
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:2:34
-  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6 (1 new items)
+  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6 (2 new items)
   addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/LetPrivate.cmt
   addDeclaration y LetPrivate.re:5:4
@@ -1563,6 +1631,7 @@
   XXX declaration +theAnswer NestedModulesInSignature.re:2:6 exists:false path:NestedModulesInSignature.Universe
   addDeclaration +theAnswer NestedModulesInSignature.re:2:6
   mergeSet NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6 (0 new items)
+  addValueReference NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Docstrings.cmt
   addDeclaration flat Docstrings.re:3:4
   addDeclaration signMessage Docstrings.re:13:4
@@ -1726,7 +1795,7 @@ File References
   DeadTest.re -->> DeadValueTest.rei, ImmutableArray.rei
   TestEmitInnerModules.re -->> 
   TypeParams1.re -->> 
-  DeadValueTest.rei -->> 
+  DeadValueTest.rei -->> DeadValueTest.re
   BucklescriptAnnotations.re -->> 
   ImportHookDefault.re -->> 
   ModuleAliases.re -->> 
@@ -1738,14 +1807,14 @@ File References
   Opaque.re -->> 
   location.re -->> 
   Shadow.re -->> 
-  ErrorHandler.rei -->> 
+  ErrorHandler.rei -->> ErrorHandler.re
   IgnoreInterface.re -->> 
-  NestedModulesInSignature.rei -->> 
+  NestedModulesInSignature.rei -->> NestedModulesInSignature.re
   DeadValueTest.re -->> 
   AutoAnnotate.re -->> 
   ComponentAsProp.re -->> ReactDOMRe.re, ReasonReact.rei
   ExportWithRename.re -->> React.re
-  ImmutableArray.rei -->> 
+  ImmutableArray.rei -->> ImmutableArray.re
   NestedModulesInSignature.re -->> 
   Unboxed.re -->> 
   DeadCodeImplementation.re -->> 
@@ -1755,7 +1824,7 @@ File References
   TransitiveType2.re -->> 
   IgnoreInterface.rei -->> 
   TestFirstClassModules.re -->> 
-  FirstClassModulesInterface.rei -->> 
+  FirstClassModulesInterface.rei -->> FirstClassModulesInterface.re
   DeadTestWhitelist.re -->> 
   TransitiveType1.re -->> 
   TestImmutableArray.re -->> ImmutableArray.rei
@@ -1766,7 +1835,7 @@ File References
   ImportHooks.re -->> 
   References.re -->> 
   ErrorHandler.re -->> 
-  DeadTypeTest.rei -->> 
+  DeadTypeTest.rei -->> DeadTypeTest.re
   Hooks.re -->> React.re, ReactDOMRe.re, ReasonReact.rei, ImportHookDefault.re, ImportHooks.re
   ModuleAliases2.re -->> 
   CreateErrorHandler1.re -->> ErrorHandler.rei
@@ -1868,6 +1937,365 @@ File References
   ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:48:4)
   ImportJsValue.AbsoluteValue.+getAbs: 1 references (ImportJsValue.re:38:6)
   ImportMyBanner.make: 1 references (ReasonComponent.re:18:4)
+  NestedModulesInSignature.Universe.+theAnswer: 1 references (NestedModulesInSignature.rei:2:2)
+  DeadValueTest.+valueAlive: 1 references (DeadValueTest.rei:1:0)
+  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:2:34)
+  ImmutableArray.Array.+get: 2 references (ImmutableArray.rei:5:15, ImmutableArray.rei:18:0)
+  ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0)
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 16:7
+  Array.+toArray is never used
+  <-- line 16
+    [@dead "Array.+toArray"] let toArray = a => Array.copy(a->fromT);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 20:7
+  Array.+length is never used
+  <-- line 20
+    [@dead "Array.+length"] let length = a => Array.length(a->fromT);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 22:7
+  Array.+size is never used
+  <-- line 22
+    [@dead "Array.+size"] let size = a => Array.size(a->fromT);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 26:7
+  Array.+getExn is never used
+  <-- line 26
+    [@dead "Array.+getExn"] let getExn = (a, x) => Array.getExn(a->fromT, x);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 28:7
+  Array.+getUnsafe is never used
+  <-- line 28
+    [@dead "Array.+getUnsafe"] let getUnsafe = (a, x) => Array.getUnsafe(a->fromT, x);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 30:7
+  Array.+getUndefined is never used
+  <-- line 30
+    [@dead "Array.+getUndefined"] let getUndefined = (a, x) => Array.getUndefined(a->fromT, x);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 32:7
+  Array.+shuffle is never used
+  <-- line 32
+    [@dead "Array.+shuffle"] let shuffle = x => Array.shuffle(x->fromT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 34:7
+  Array.+reverse is never used
+  <-- line 34
+    [@dead "Array.+reverse"] let reverse = x => Array.reverse(x->fromT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 36:7
+  Array.+makeUninitialized is never used
+  <-- line 36
+    [@dead "Array.+makeUninitialized"] let makeUninitialized = x => Array.makeUninitialized(x)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 38:7
+  Array.+makeUninitializedUnsafe is never used
+  <-- line 38
+    [@dead "Array.+makeUninitializedUnsafe"] let makeUninitializedUnsafe = x => Array.makeUninitializedUnsafe(x)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 40:7
+  Array.+make is never used
+  <-- line 40
+    [@dead "Array.+make"] let make = (x, y) => Array.make(x, y)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 42:7
+  Array.+range is never used
+  <-- line 42
+    [@dead "Array.+range"] let range = (x, y) => Array.range(x, y)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 44:7
+  Array.+rangeBy is never used
+  <-- line 44
+    [@dead "Array.+rangeBy"] let rangeBy = (x, y, ~step) => Array.rangeBy(x, y, ~step)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 46:7
+  Array.+makeByU is never used
+  <-- line 46
+    [@dead "Array.+makeByU"] let makeByU = (c, f) => Array.makeByU(c, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 47:7
+  Array.+makeBy is never used
+  <-- line 47
+    [@dead "Array.+makeBy"] let makeBy = (c, f) => Array.makeBy(c, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 49:7
+  Array.+makeByAndShuffleU is never used
+  <-- line 49
+    [@dead "Array.+makeByAndShuffleU"] let makeByAndShuffleU = (c, f) => Array.makeByAndShuffleU(c, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 50:7
+  Array.+makeByAndShuffle is never used
+  <-- line 50
+    [@dead "Array.+makeByAndShuffle"] let makeByAndShuffle = (c, f) => Array.makeByAndShuffle(c, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 52:7
+  Array.+zip is never used
+  <-- line 52
+    [@dead "Array.+zip"] let zip = (a1, a2) => Array.zip(fromT(a1), fromT(a2))->toTp;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 54:7
+  Array.+zipByU is never used
+  <-- line 54
+    [@dead "Array.+zipByU"] let zipByU = (a1, a2, f) => Array.zipByU(fromT(a1), fromT(a2), f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 55:7
+  Array.+zipBy is never used
+  <-- line 55
+    [@dead "Array.+zipBy"] let zipBy = (a1, a2, f) => Array.zipBy(fromT(a1), fromT(a2), f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 57:7
+  Array.+unzip is never used
+  <-- line 57
+    [@dead "Array.+unzip"] let unzip = a => Array.unzip(a->fromTp)->toT2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 59:7
+  Array.+concat is never used
+  <-- line 59
+    [@dead "Array.+concat"] let concat = (a1, a2) => Array.concat(a1->fromT, a2->fromT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 61:7
+  Array.+concatMany is never used
+  <-- line 61
+    [@dead "Array.+concatMany"] let concatMany = (a: t(t(_))) => Array.concatMany(a->fromTT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 63:7
+  Array.+slice is never used
+  <-- line 63
+    [@dead "Array.+slice"] let slice = (a, ~offset, ~len) =>
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 66:7
+  Array.+sliceToEnd is never used
+  <-- line 66
+    [@dead "Array.+sliceToEnd"] let sliceToEnd = (a, b) => Array.sliceToEnd(a->fromT, b)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 68:7
+  Array.+copy is never used
+  <-- line 68
+    [@dead "Array.+copy"] let copy = a => Array.copy(a->fromT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 70:7
+  Array.+forEachU is never used
+  <-- line 70
+    [@dead "Array.+forEachU"] let forEachU = (a, f) => Array.forEachU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 71:7
+  Array.+forEach is never used
+  <-- line 71
+    [@dead "Array.+forEach"] let forEach = (a, f) => Array.forEach(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 73:7
+  Array.+mapU is never used
+  <-- line 73
+    [@dead "Array.+mapU"] let mapU = (a, f) => Array.mapU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 74:7
+  Array.+map is never used
+  <-- line 74
+    [@dead "Array.+map"] let map = (a, f) => Array.map(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 76:7
+  Array.+keepWithIndexU is never used
+  <-- line 76
+    [@dead "Array.+keepWithIndexU"] let keepWithIndexU = (a, f) => Array.keepWithIndexU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 77:7
+  Array.+keepWithIndex is never used
+  <-- line 77
+    [@dead "Array.+keepWithIndex"] let keepWithIndex = (a, f) => Array.keepWithIndex(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 79:7
+  Array.+keepMapU is never used
+  <-- line 79
+    [@dead "Array.+keepMapU"] let keepMapU = (a, f) => Array.keepMapU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 80:7
+  Array.+keepMap is never used
+  <-- line 80
+    [@dead "Array.+keepMap"] let keepMap = (a, f) => Array.keepMap(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 82:7
+  Array.+forEachWithIndexU is never used
+  <-- line 82
+    [@dead "Array.+forEachWithIndexU"] let forEachWithIndexU = (a, f) => Array.forEachWithIndexU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 83:7
+  Array.+forEachWithIndex is never used
+  <-- line 83
+    [@dead "Array.+forEachWithIndex"] let forEachWithIndex = (a, f) => Array.forEachWithIndex(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 85:7
+  Array.+mapWithIndexU is never used
+  <-- line 85
+    [@dead "Array.+mapWithIndexU"] let mapWithIndexU = (a, f) => Array.mapWithIndexU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 86:7
+  Array.+mapWithIndex is never used
+  <-- line 86
+    [@dead "Array.+mapWithIndex"] let mapWithIndex = (a, f) => Array.mapWithIndex(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 88:7
+  Array.+partitionU is never used
+  <-- line 88
+    [@dead "Array.+partitionU"] let partitionU = (a, f) => Array.partitionU(a->fromT, f)->toT2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 89:7
+  Array.+partition is never used
+  <-- line 89
+    [@dead "Array.+partition"] let partition = (a, f) => Array.partition(a->fromT, f)->toT2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 91:7
+  Array.+reduceU is never used
+  <-- line 91
+    [@dead "Array.+reduceU"] let reduceU = (a, b, f) => Array.reduceU(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 92:7
+  Array.+reduce is never used
+  <-- line 92
+    [@dead "Array.+reduce"] let reduce = (a, b, f) => Array.reduce(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 94:7
+  Array.+reduceReverseU is never used
+  <-- line 94
+    [@dead "Array.+reduceReverseU"] let reduceReverseU = (a, b, f) => Array.reduceReverseU(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 95:7
+  Array.+reduceReverse is never used
+  <-- line 95
+    [@dead "Array.+reduceReverse"] let reduceReverse = (a, b, f) => Array.reduceReverse(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 97:7
+  Array.+reduceReverse2U is never used
+  <-- line 97
+    [@dead "Array.+reduceReverse2U"] let reduceReverse2U = (a1, a2, c, f) =>
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 99:7
+  Array.+reduceReverse2 is never used
+  <-- line 99
+    [@dead "Array.+reduceReverse2"] let reduceReverse2 = (a1, a2, c, f) =>
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 102:7
+  Array.+someU is never used
+  <-- line 102
+    [@dead "Array.+someU"] let someU = (a, f) => Array.someU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 103:7
+  Array.+some is never used
+  <-- line 103
+    [@dead "Array.+some"] let some = (a, f) => Array.some(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 105:7
+  Array.+everyU is never used
+  <-- line 105
+    [@dead "Array.+everyU"] let everyU = (a, f) => Array.everyU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 106:7
+  Array.+every is never used
+  <-- line 106
+    [@dead "Array.+every"] let every = (a, f) => Array.every(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 108:7
+  Array.+every2U is never used
+  <-- line 108
+    [@dead "Array.+every2U"] let every2U = (a1, a2, f) => Array.every2U(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 109:7
+  Array.+every2 is never used
+  <-- line 109
+    [@dead "Array.+every2"] let every2 = (a1, a2, f) => Array.every2(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 111:7
+  Array.+some2U is never used
+  <-- line 111
+    [@dead "Array.+some2U"] let some2U = (a1, a2, f) => Array.some2U(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 112:7
+  Array.+some2 is never used
+  <-- line 112
+    [@dead "Array.+some2"] let some2 = (a1, a2, f) => Array.some2(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 114:7
+  Array.+cmpU is never used
+  <-- line 114
+    [@dead "Array.+cmpU"] let cmpU = (a1, a2, f) => Array.cmpU(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 115:7
+  Array.+cmp is never used
+  <-- line 115
+    [@dead "Array.+cmp"] let cmp = (a1, a2, f) => Array.cmp(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 117:7
+  Array.+eqU is never used
+  <-- line 117
+    [@dead "Array.+eqU"] let eqU = (a1, a2, f) => Array.eqU(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 118:7
+  Array.+eq is never used
+  <-- line 118
+    [@dead "Array.+eq"] let eq = (a1, a2, f) => Array.eq(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 2:5
+  +valueDead is never used
+  <-- line 2
+  [@dead "+valueDead"] let valueDead = 2;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
@@ -2278,10 +2706,34 @@ File References
   [@dead "eq"] let eq: (t('a), t('a), ('a, 'a) => bool) => bool;
 
   Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.re 6:5
+  +r is never used
+  <-- line 6
+  [@dead "+r"] let r = {x: 3, y: "hello"};
+
+  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.rei 2:1
   valueDead is never used
   <-- line 2
   [@dead "valueDead"] let valueDead: int;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 4:5
+  +a is never used
+  <-- line 4
+  [@dead "+a"] let a = A;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 12:1
+  _ has no side effects and can be removed
+  <-- line 12
+  [@dead "_"] let _ = OnlyInImplementation;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 13:1
+  _ has no side effects and can be removed
+  <-- line 13
+  [@dead "_"] let _ = InBoth;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 12:5
@@ -2632,12 +3084,6 @@ File References
     | [@dead "opaqueFromRecords.A"] A(Records.coord);
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModulesInSignature.re 2:7
-  Universe.+theAnswer is never used
-  <-- line 2
-    [@dead "Universe.+theAnswer"] let theAnswer = 42;
-
-  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModules.re 8:7
   Universe.notExported is never used
   <-- line 8
@@ -2733,366 +3179,6 @@ File References
   <-- line 11
         type t = {[@dead "Outer2.Inner2.InnerNested.t.nested"] nested: int};
 
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 14:7
-  Array.+fromArray is never used
-  <-- line 14
-    [@dead "Array.+fromArray"] let fromArray = a => Array.copy(a)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 16:7
-  Array.+toArray is never used
-  <-- line 16
-    [@dead "Array.+toArray"] let toArray = a => Array.copy(a->fromT);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 20:7
-  Array.+length is never used
-  <-- line 20
-    [@dead "Array.+length"] let length = a => Array.length(a->fromT);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 22:7
-  Array.+size is never used
-  <-- line 22
-    [@dead "Array.+size"] let size = a => Array.size(a->fromT);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 24:7
-  Array.+get is never used
-  <-- line 24
-    [@dead "Array.+get"] let get = (a, x) => a->fromT[x];
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 26:7
-  Array.+getExn is never used
-  <-- line 26
-    [@dead "Array.+getExn"] let getExn = (a, x) => Array.getExn(a->fromT, x);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 28:7
-  Array.+getUnsafe is never used
-  <-- line 28
-    [@dead "Array.+getUnsafe"] let getUnsafe = (a, x) => Array.getUnsafe(a->fromT, x);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 30:7
-  Array.+getUndefined is never used
-  <-- line 30
-    [@dead "Array.+getUndefined"] let getUndefined = (a, x) => Array.getUndefined(a->fromT, x);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 32:7
-  Array.+shuffle is never used
-  <-- line 32
-    [@dead "Array.+shuffle"] let shuffle = x => Array.shuffle(x->fromT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 34:7
-  Array.+reverse is never used
-  <-- line 34
-    [@dead "Array.+reverse"] let reverse = x => Array.reverse(x->fromT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 36:7
-  Array.+makeUninitialized is never used
-  <-- line 36
-    [@dead "Array.+makeUninitialized"] let makeUninitialized = x => Array.makeUninitialized(x)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 38:7
-  Array.+makeUninitializedUnsafe is never used
-  <-- line 38
-    [@dead "Array.+makeUninitializedUnsafe"] let makeUninitializedUnsafe = x => Array.makeUninitializedUnsafe(x)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 40:7
-  Array.+make is never used
-  <-- line 40
-    [@dead "Array.+make"] let make = (x, y) => Array.make(x, y)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 42:7
-  Array.+range is never used
-  <-- line 42
-    [@dead "Array.+range"] let range = (x, y) => Array.range(x, y)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 44:7
-  Array.+rangeBy is never used
-  <-- line 44
-    [@dead "Array.+rangeBy"] let rangeBy = (x, y, ~step) => Array.rangeBy(x, y, ~step)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 46:7
-  Array.+makeByU is never used
-  <-- line 46
-    [@dead "Array.+makeByU"] let makeByU = (c, f) => Array.makeByU(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 47:7
-  Array.+makeBy is never used
-  <-- line 47
-    [@dead "Array.+makeBy"] let makeBy = (c, f) => Array.makeBy(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 49:7
-  Array.+makeByAndShuffleU is never used
-  <-- line 49
-    [@dead "Array.+makeByAndShuffleU"] let makeByAndShuffleU = (c, f) => Array.makeByAndShuffleU(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 50:7
-  Array.+makeByAndShuffle is never used
-  <-- line 50
-    [@dead "Array.+makeByAndShuffle"] let makeByAndShuffle = (c, f) => Array.makeByAndShuffle(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 52:7
-  Array.+zip is never used
-  <-- line 52
-    [@dead "Array.+zip"] let zip = (a1, a2) => Array.zip(fromT(a1), fromT(a2))->toTp;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 54:7
-  Array.+zipByU is never used
-  <-- line 54
-    [@dead "Array.+zipByU"] let zipByU = (a1, a2, f) => Array.zipByU(fromT(a1), fromT(a2), f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 55:7
-  Array.+zipBy is never used
-  <-- line 55
-    [@dead "Array.+zipBy"] let zipBy = (a1, a2, f) => Array.zipBy(fromT(a1), fromT(a2), f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 57:7
-  Array.+unzip is never used
-  <-- line 57
-    [@dead "Array.+unzip"] let unzip = a => Array.unzip(a->fromTp)->toT2;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 59:7
-  Array.+concat is never used
-  <-- line 59
-    [@dead "Array.+concat"] let concat = (a1, a2) => Array.concat(a1->fromT, a2->fromT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 61:7
-  Array.+concatMany is never used
-  <-- line 61
-    [@dead "Array.+concatMany"] let concatMany = (a: t(t(_))) => Array.concatMany(a->fromTT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 63:7
-  Array.+slice is never used
-  <-- line 63
-    [@dead "Array.+slice"] let slice = (a, ~offset, ~len) =>
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 66:7
-  Array.+sliceToEnd is never used
-  <-- line 66
-    [@dead "Array.+sliceToEnd"] let sliceToEnd = (a, b) => Array.sliceToEnd(a->fromT, b)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 68:7
-  Array.+copy is never used
-  <-- line 68
-    [@dead "Array.+copy"] let copy = a => Array.copy(a->fromT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 70:7
-  Array.+forEachU is never used
-  <-- line 70
-    [@dead "Array.+forEachU"] let forEachU = (a, f) => Array.forEachU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 71:7
-  Array.+forEach is never used
-  <-- line 71
-    [@dead "Array.+forEach"] let forEach = (a, f) => Array.forEach(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 73:7
-  Array.+mapU is never used
-  <-- line 73
-    [@dead "Array.+mapU"] let mapU = (a, f) => Array.mapU(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 74:7
-  Array.+map is never used
-  <-- line 74
-    [@dead "Array.+map"] let map = (a, f) => Array.map(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 76:7
-  Array.+keepWithIndexU is never used
-  <-- line 76
-    [@dead "Array.+keepWithIndexU"] let keepWithIndexU = (a, f) => Array.keepWithIndexU(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 77:7
-  Array.+keepWithIndex is never used
-  <-- line 77
-    [@dead "Array.+keepWithIndex"] let keepWithIndex = (a, f) => Array.keepWithIndex(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 79:7
-  Array.+keepMapU is never used
-  <-- line 79
-    [@dead "Array.+keepMapU"] let keepMapU = (a, f) => Array.keepMapU(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 80:7
-  Array.+keepMap is never used
-  <-- line 80
-    [@dead "Array.+keepMap"] let keepMap = (a, f) => Array.keepMap(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 82:7
-  Array.+forEachWithIndexU is never used
-  <-- line 82
-    [@dead "Array.+forEachWithIndexU"] let forEachWithIndexU = (a, f) => Array.forEachWithIndexU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 83:7
-  Array.+forEachWithIndex is never used
-  <-- line 83
-    [@dead "Array.+forEachWithIndex"] let forEachWithIndex = (a, f) => Array.forEachWithIndex(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 85:7
-  Array.+mapWithIndexU is never used
-  <-- line 85
-    [@dead "Array.+mapWithIndexU"] let mapWithIndexU = (a, f) => Array.mapWithIndexU(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 86:7
-  Array.+mapWithIndex is never used
-  <-- line 86
-    [@dead "Array.+mapWithIndex"] let mapWithIndex = (a, f) => Array.mapWithIndex(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 88:7
-  Array.+partitionU is never used
-  <-- line 88
-    [@dead "Array.+partitionU"] let partitionU = (a, f) => Array.partitionU(a->fromT, f)->toT2;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 89:7
-  Array.+partition is never used
-  <-- line 89
-    [@dead "Array.+partition"] let partition = (a, f) => Array.partition(a->fromT, f)->toT2;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 91:7
-  Array.+reduceU is never used
-  <-- line 91
-    [@dead "Array.+reduceU"] let reduceU = (a, b, f) => Array.reduceU(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 92:7
-  Array.+reduce is never used
-  <-- line 92
-    [@dead "Array.+reduce"] let reduce = (a, b, f) => Array.reduce(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 94:7
-  Array.+reduceReverseU is never used
-  <-- line 94
-    [@dead "Array.+reduceReverseU"] let reduceReverseU = (a, b, f) => Array.reduceReverseU(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 95:7
-  Array.+reduceReverse is never used
-  <-- line 95
-    [@dead "Array.+reduceReverse"] let reduceReverse = (a, b, f) => Array.reduceReverse(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 97:7
-  Array.+reduceReverse2U is never used
-  <-- line 97
-    [@dead "Array.+reduceReverse2U"] let reduceReverse2U = (a1, a2, c, f) =>
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 99:7
-  Array.+reduceReverse2 is never used
-  <-- line 99
-    [@dead "Array.+reduceReverse2"] let reduceReverse2 = (a1, a2, c, f) =>
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 102:7
-  Array.+someU is never used
-  <-- line 102
-    [@dead "Array.+someU"] let someU = (a, f) => Array.someU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 103:7
-  Array.+some is never used
-  <-- line 103
-    [@dead "Array.+some"] let some = (a, f) => Array.some(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 105:7
-  Array.+everyU is never used
-  <-- line 105
-    [@dead "Array.+everyU"] let everyU = (a, f) => Array.everyU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 106:7
-  Array.+every is never used
-  <-- line 106
-    [@dead "Array.+every"] let every = (a, f) => Array.every(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 108:7
-  Array.+every2U is never used
-  <-- line 108
-    [@dead "Array.+every2U"] let every2U = (a1, a2, f) => Array.every2U(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 109:7
-  Array.+every2 is never used
-  <-- line 109
-    [@dead "Array.+every2"] let every2 = (a1, a2, f) => Array.every2(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 111:7
-  Array.+some2U is never used
-  <-- line 111
-    [@dead "Array.+some2U"] let some2U = (a1, a2, f) => Array.some2U(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 112:7
-  Array.+some2 is never used
-  <-- line 112
-    [@dead "Array.+some2"] let some2 = (a1, a2, f) => Array.some2(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 114:7
-  Array.+cmpU is never used
-  <-- line 114
-    [@dead "Array.+cmpU"] let cmpU = (a1, a2, f) => Array.cmpU(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 115:7
-  Array.+cmp is never used
-  <-- line 115
-    [@dead "Array.+cmp"] let cmp = (a1, a2, f) => Array.cmp(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 117:7
-  Array.+eqU is never used
-  <-- line 117
-    [@dead "Array.+eqU"] let eqU = (a1, a2, f) => Array.eqU(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 118:7
-  Array.+eq is never used
-  <-- line 118
-    [@dead "Array.+eq"] let eq = (a1, a2, f) => Array.eq(fromT(a1), fromT(a2), f);
-
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei 3:3
   record.x is a record label never used to read a value
@@ -3111,35 +3197,11 @@ File References
   <-- line 7
   [@dead "r"] let r: record;
 
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.re 6:5
-  +r is never used
-  <-- line 6
-  [@dead "+r"] let r = {x: 3, y: "hello"};
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ErrorHandler.re 7:7
-  Make.+notify is never used
-  <-- line 7
-    [@dead "Make.+notify"] let notify = x => Error.notification(x);
-
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Docstrings.re 62:5
   t.B is a variant case which is never constructed
   <-- line 62
     | [@dead "t.B"] B;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 1:5
-  +valueAlive is never used
-  <-- line 1
-  [@dead "+valueAlive"] let valueAlive = 1;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 2:5
-  +valueDead is never used
-  <-- line 2
-  [@dead "+valueDead"] let valueDead = 2;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 3:5
@@ -3158,24 +3220,6 @@ File References
   deadType.InNeither is a variant case which is never constructed
   <-- line 10
     | [@dead "deadType.InNeither"] InNeither;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 4:5
-  +a is never used
-  <-- line 4
-  [@dead "+a"] let a = A;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 12:1
-  _ has no side effects and can be removed
-  <-- line 12
-  [@dead "_"] let _ = OnlyInImplementation;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 13:1
-  _ has no side effects and can be removed
-  <-- line 13
-  [@dead "_"] let _ = InBoth;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 2:5
