@@ -236,9 +236,12 @@ let processValueDependency = ((vd1, vd2)) => {
     !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
 
   if (fn1 != none_ && fn2 != none_ && pos1 != pos2) {
-    valueReferences |> PosHash.mergeSet(~isType=false, ~from=pos2, ~to_=pos1);
     let addFileReference =
       fileIsImplementationOf(pos1.pos_fname, pos2.pos_fname);
+    if (!addFileReference) {
+      valueReferences
+      |> PosHash.mergeSet(~isType=false, ~from=pos2, ~to_=pos1);
+    };
     if (addFileReference || isInterface(fn1) && isInterface(fn2)) {
       addValueReference(~addFileReference, pos1, pos2);
     };
