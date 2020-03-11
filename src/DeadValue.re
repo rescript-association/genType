@@ -108,13 +108,6 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
         | None => false
         };
       let path = currentModulePath^ @ [currentModuleName^];
-      Log_.item(
-        "XXX declaration %s %s exists:%b path:%s@.",
-        name,
-        loc_start |> posToString,
-        exists,
-        path |> pathToString,
-      );
       if (!exists) {
         addDeclaration(~declKind=Value, ~path, ~loc, ~name);
       };
