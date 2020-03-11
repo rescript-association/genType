@@ -72,3 +72,5 @@ let _ = {
   Js.log(MM.x);
   44;
 };
+
+let () = Js.log(DeadValueTest.valueAlive);
