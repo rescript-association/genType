@@ -109,7 +109,7 @@ let emitTranslation =
     (
       ~config,
       ~fileName,
-      ~hasInterface,
+      ~isInterface,
       ~outputFile,
       ~outputFileRelative,
       ~resolver,
@@ -130,7 +130,7 @@ let emitTranslation =
       EmitType.fileHeader(
         ~config,
         ~sourceFile=
-          (fileName |> ModuleName.toString) ++ (hasInterface ? ".rei" : ".re"),
+          (fileName |> ModuleName.toString) ++ (isInterface ? ".rei" : ".re"),
       )
       ++ "\n"
       ++ codeText
@@ -158,8 +158,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let outputFile = cmt |> Paths.getOutputFile(~config);
     let outputFileRelative = cmt |> Paths.getOutputFileRelative(~config);
     let fileName = cmt |> Paths.getModuleName;
-    let hasInterface =
-      Sys.file_exists(Filename.remove_extension(cmt) ++ ".cmti");
+    let isInterface = Filename.check_suffix(cmtFile, ".cmti");
     let resolver =
       ModuleResolver.createLazyResolver(
         ~config,
@@ -188,7 +187,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       |> emitTranslation(
            ~config,
            ~fileName,
-           ~hasInterface,
+           ~isInterface,
            ~outputFile,
            ~outputFileRelative,
            ~resolver,
