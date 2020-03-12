@@ -66,6 +66,7 @@ module MM: {
   let x = {
     y;
   };
+  let valueOnlyInImplementation = 7;
 };
 
 let _ = {

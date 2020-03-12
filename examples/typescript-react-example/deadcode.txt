@@ -645,6 +645,7 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadValueTest.cmt
   addDeclaration +valueAlive DeadValueTest.re:1:4
   addDeclaration +valueDead DeadValueTest.re:2:4
+  addDeclaration +valueOnlyInImplementation DeadValueTest.re:4:4
   addValueReference DeadValueTest.rei:1:0 --> DeadValueTest.re:1:4
   addValueReference DeadValueTest.rei:2:0 --> DeadValueTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
@@ -1390,8 +1391,9 @@
   addDeclaration +y DeadTest.re:65:6
   addDeclaration +x DeadTest.re:66:6
   addValueReference DeadTest.re:66:6 --> DeadTest.re:65:6
-  addValueReference DeadTest.re:71:0 --> DeadTest.re:62:2
-  addValueReference DeadTest.re:76:0 --> DeadValueTest.rei:1:0
+  addDeclaration +valueOnlyInImplementation DeadTest.re:69:6
+  addValueReference DeadTest.re:72:0 --> DeadTest.re:62:2
+  addValueReference DeadTest.re:77:0 --> DeadValueTest.rei:1:0
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
@@ -1469,8 +1471,8 @@ File References
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
-  DeadTest.MM.x: 1 references (DeadTest.re:71:0)
-  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:71:0)
+  DeadTest.MM.x: 1 references (DeadTest.re:72:0)
+  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0)
   DeadTest.MM.+y: 2 references (DeadTest.re:63:2, DeadTest.re:66:6)
   [type] DeadTest.record.yyy: 1 references (DeadTest.re:55:9)
   [type] DeadTest.record.xxx: 1 references (DeadTest.re:54:13)
@@ -1511,12 +1513,12 @@ File References
   Hooks.anotherComponent: 1 references (_none_:1:-1)
   Hooks.make: 1 references (_none_:1:-1)
   [type] Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37)
+  ReasonComponent.component: 1 references (ReasonComponent.re:18:4)
   ReasonComponent.+first: 1 references (ReasonComponent.re:43:4)
   ReasonComponent.+emptyArray: 1 references (ReasonComponent.re:18:4)
   ReasonComponent.+intList: 1 references (ReasonComponent.re:18:4)
   ReasonComponent.+message: 1 references (ReasonComponent.re:18:4)
   [type] ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12)
-  ReasonComponent.component: 1 references (ReasonComponent.re:18:4)
   [type] Records.myRecBsAs.type_: 1 references (Records.re:167:38)
   [type] Records.myRec.type_: 1 references (Records.re:149:30)
   [type] Records.business2.address2: 1 references (Records.re:93:2)
@@ -1549,7 +1551,7 @@ File References
   [type] Tuples.person.name: 1 references (Tuples.re:39:49)
   [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34)
   [type] Types.selfRecursive.self: 1 references (Types.re:46:30)
-  DeadValueTest.valueAlive: 1 references (DeadTest.re:76:0)
+  DeadValueTest.valueAlive: 1 references (DeadTest.re:77:0)
   ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0)
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:0)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4)
@@ -1921,6 +1923,12 @@ File References
   +valueDead is never used
   <-- line 2
   [@dead "+valueDead"] let valueDead = 2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 4:5
+  +valueOnlyInImplementation is never used
+  <-- line 4
+  [@dead "+valueOnlyInImplementation"] let valueOnlyInImplementation = 3;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
@@ -2893,6 +2901,12 @@ File References
   UnderscoreInside._ has no side effects and can be removed
   <-- line 58
     [@dead "UnderscoreInside._"] let _ = 13;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 69:7
+  MM.+valueOnlyInImplementation is never used
+  <-- line 69
+    [@dead "MM.+valueOnlyInImplementation"] let valueOnlyInImplementation = 7;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 63:3
