@@ -35,6 +35,9 @@ let tagIsGenTypeImport = s => s == "genType.import" || s == "gentype.import";
 
 let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "gentype.opaque";
 
+let tagIsOneOfTheGenTypeAnnotations = s =>
+  tagIsGenType(s) || tagIsGenTypeImport(s) || tagIsGenTypeOpaque(s);
+
 let tagIsGenTypeIgnoreInterface = s =>
   s == "genType.ignoreInterface" || s == "gentype.ignoreInterface";
 

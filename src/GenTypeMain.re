@@ -177,10 +177,10 @@ let processCmtFile = (~signFile, ~config, cmt) => {
             != None) {
           ignoreInterface := true;
         };
-        [Annotation.GenType, GenTypeOpaque]
-        |> List.mem(Annotation.fromAttributes(attributes))
-        || attributes
-        |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
+        attributes
+        |> Annotation.getAttributePayload(
+             Annotation.tagIsOneOfTheGenTypeAnnotations,
+           )
         != None;
       };
 

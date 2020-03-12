@@ -382,7 +382,10 @@ module ProcessDeadAnnotations = {
 
   let processAttributes = (~pos, attributes) => {
     if (attributes
-        |> Annotation.getAttributePayload(Annotation.tagIsGenType) != None) {
+        |> Annotation.getAttributePayload(
+             Annotation.tagIsOneOfTheGenTypeAnnotations,
+           )
+        != None) {
       pos |> annotateGenType;
     };
     if (attributes

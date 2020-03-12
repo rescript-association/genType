@@ -64,6 +64,7 @@
   addDeclaration setMatch Types.re:136:4
   [type] addDeclaration id Types.re:141:19
   addDeclaration testInstantiateTypeParameter Types.re:146:4
+  addDeclaration currentTime Types.re:156:4
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
