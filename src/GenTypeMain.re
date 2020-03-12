@@ -4,12 +4,12 @@
 
 module StringSet = Set.Make(String);
 
-let cmtHasGenTypeAnnotations = (~ignoreInterface, inputCMT) =>
+let cmtCheckAnnotations = (~checkAnnotation, inputCMT) =>
   switch (inputCMT.Cmt_format.cmt_annots) {
   | Implementation(structure) =>
-    structure |> Annotation.structureHasGenTypeAnnotation(~ignoreInterface)
+    structure |> Annotation.structureCheckAnnotation(~checkAnnotation)
   | Interface(signature) =>
-    signature |> Annotation.signatureHasGenTypeAnnotation(~ignoreInterface)
+    signature |> Annotation.signatureCheckAnnotation(~checkAnnotation)
   | _ => false
   };
 
@@ -169,15 +169,30 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let (inputCMT, hasGenTypeAnnotations) = {
       let inputCMT = readCmt(cmtFile);
       let ignoreInterface = ref(false);
+      let checkAnnotation = attributes => {
+        if (attributes
+            |> Annotation.getAttributePayload(
+                 Annotation.tagIsGenTypeIgnoreInterface,
+               )
+            != None) {
+          ignoreInterface := true;
+        };
+        [Annotation.GenType, GenTypeOpaque]
+        |> List.mem(Annotation.fromAttributes(attributes))
+        || attributes
+        |> Annotation.getAttributePayload(Annotation.tagIsGenTypeImport)
+        != None;
+      };
+
       let hasGenTypeAnnotations =
-        inputCMT |> cmtHasGenTypeAnnotations(~ignoreInterface);
+        inputCMT |> cmtCheckAnnotations(~checkAnnotation);
       if (! ignoreInterface^) {
         (inputCMT, hasGenTypeAnnotations);
       } else {
         let cmtFile = (cmtFile |> Filename.chop_extension) ++ ".cmt";
         let inputCMT = readCmt(cmtFile);
         let hasGenTypeAnnotations =
-          inputCMT |> cmtHasGenTypeAnnotations(~ignoreInterface);
+          inputCMT |> cmtCheckAnnotations(~checkAnnotation);
         (inputCMT, hasGenTypeAnnotations);
       };
     };

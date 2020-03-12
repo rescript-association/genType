@@ -169,109 +169,89 @@ let fromAttributes = (attributes: Typedtree.attributes) =>
     NoGenType;
   };
 
-let hasGenTypeAnnotation = (~ignoreInterface, attributes) => {
-  if (attributes |> getAttributePayload(tagIsGenTypeIgnoreInterface) != None) {
-    ignoreInterface := true;
-  };
-  [GenType, GenTypeOpaque]
-  |> List.mem(fromAttributes(attributes))
-  || attributes
-  |> getAttributePayload(tagIsGenTypeImport) != None;
-};
-
-let rec moduleTypeHasGenTypeAnnotation =
-        (~ignoreInterface, {mty_desc}: Typedtree.module_type) =>
+let rec moduleTypeCheckAnnotation =
+        (~checkAnnotation, {mty_desc}: Typedtree.module_type) =>
   switch (mty_desc) {
   | Tmty_signature(signature) =>
-    signature |> signatureHasGenTypeAnnotation(~ignoreInterface)
+    signature |> signatureCheckAnnotation(~checkAnnotation)
   | Tmty_ident(_)
   | Tmty_functor(_)
   | Tmty_with(_)
   | Tmty_typeof(_)
   | Tmty_alias(_) => false
   }
-and moduleDeclarationHasGenTypeAnnotation =
+and moduleDeclarationCheckAnnotation =
     (
-      ~ignoreInterface,
+      ~checkAnnotation,
       {md_attributes, md_type}: Typedtree.module_declaration,
     ) =>
   md_attributes
-  |> hasGenTypeAnnotation(~ignoreInterface)
+  |> checkAnnotation
   || md_type
-  |> moduleTypeHasGenTypeAnnotation(~ignoreInterface)
-and signatureItemHasGenTypeAnnotation =
-    (~ignoreInterface, signatureItem: Typedtree.signature_item) =>
+  |> moduleTypeCheckAnnotation(~checkAnnotation)
+and signatureItemCheckAnnotation =
+    (~checkAnnotation, signatureItem: Typedtree.signature_item) =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations)} =>
     typeDeclarations
-    |> List.exists(dec =>
-         dec.Typedtree.typ_attributes
-         |> hasGenTypeAnnotation(~ignoreInterface)
-       )
+    |> List.exists(dec => dec.Typedtree.typ_attributes |> checkAnnotation)
   | {sig_desc: Tsig_value(valueDescription)} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation(~ignoreInterface)
+    valueDescription.val_attributes |> checkAnnotation
   | {sig_desc: Tsig_module(moduleDeclaration)} =>
-    moduleDeclaration
-    |> moduleDeclarationHasGenTypeAnnotation(~ignoreInterface)
-  | {sig_desc: Tsig_attribute(attribute)} =>
-    [attribute] |> hasGenTypeAnnotation(~ignoreInterface)
+    moduleDeclaration |> moduleDeclarationCheckAnnotation(~checkAnnotation)
+  | {sig_desc: Tsig_attribute(attribute)} => [attribute] |> checkAnnotation
   | _ => false
   }
-and signatureHasGenTypeAnnotation =
-    (~ignoreInterface, signature: Typedtree.signature) =>
+and signatureCheckAnnotation =
+    (~checkAnnotation, signature: Typedtree.signature) =>
   signature.sig_items
-  |> List.exists(signatureItemHasGenTypeAnnotation(~ignoreInterface));
+  |> List.exists(signatureItemCheckAnnotation(~checkAnnotation));
 
-let rec structureItemHasGenTypeAnnotation =
-        (~ignoreInterface, structureItem: Typedtree.structure_item) =>
+let rec structureItemCheckAnnotation =
+        (~checkAnnotation, structureItem: Typedtree.structure_item) =>
   switch (structureItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations)} =>
     typeDeclarations
-    |> List.exists(dec =>
-         dec.Typedtree.typ_attributes
-         |> hasGenTypeAnnotation(~ignoreInterface)
-       )
+    |> List.exists(dec => dec.Typedtree.typ_attributes |> checkAnnotation)
   | {str_desc: Tstr_value(_loc, valueBindings)} =>
     valueBindings
-    |> List.exists(vb =>
-         vb.Typedtree.vb_attributes |> hasGenTypeAnnotation(~ignoreInterface)
-       )
+    |> List.exists(vb => vb.Typedtree.vb_attributes |> checkAnnotation)
   | {str_desc: Tstr_primitive(valueDescription)} =>
-    valueDescription.val_attributes |> hasGenTypeAnnotation(~ignoreInterface)
+    valueDescription.val_attributes |> checkAnnotation
   | {str_desc: Tstr_module(moduleBinding)} =>
-    moduleBinding |> moduleBindingHasGenTypeAnnotation(~ignoreInterface)
+    moduleBinding |> moduleBindingCheckAnnotation(~checkAnnotation)
   | {str_desc: Tstr_recmodule(moduleBindings)} =>
     moduleBindings
-    |> List.exists(moduleBindingHasGenTypeAnnotation(~ignoreInterface))
+    |> List.exists(moduleBindingCheckAnnotation(~checkAnnotation))
   | {str_desc: Tstr_include({incl_attributes, incl_mod})} =>
     incl_attributes
-    |> hasGenTypeAnnotation(~ignoreInterface)
+    |> checkAnnotation
     || incl_mod
-    |> moduleExprHasGenTypeAnnotation(~ignoreInterface)
+    |> moduleExprCheckAnnotation(~checkAnnotation)
   | _ => false
   }
-and moduleExprHasGenTypeAnnotation =
-    (~ignoreInterface, moduleExpr: Typedtree.module_expr) =>
+and moduleExprCheckAnnotation =
+    (~checkAnnotation, moduleExpr: Typedtree.module_expr) =>
   switch (moduleExpr.mod_desc) {
   | Tmod_structure(structure)
   | Tmod_constraint({mod_desc: Tmod_structure(structure)}, _, _, _) =>
-    structure |> structureHasGenTypeAnnotation(~ignoreInterface)
+    structure |> structureCheckAnnotation(~checkAnnotation)
   | Tmod_constraint(_)
   | Tmod_ident(_)
   | Tmod_functor(_)
   | Tmod_apply(_)
   | Tmod_unpack(_) => false
   }
-and moduleBindingHasGenTypeAnnotation =
-    (~ignoreInterface, {mb_expr, mb_attributes}: Typedtree.module_binding) =>
+and moduleBindingCheckAnnotation =
+    (~checkAnnotation, {mb_expr, mb_attributes}: Typedtree.module_binding) =>
   mb_attributes
-  |> hasGenTypeAnnotation(~ignoreInterface)
+  |> checkAnnotation
   || mb_expr
-  |> moduleExprHasGenTypeAnnotation(~ignoreInterface)
-and structureHasGenTypeAnnotation =
-    (~ignoreInterface, structure: Typedtree.structure) =>
+  |> moduleExprCheckAnnotation(~checkAnnotation)
+and structureCheckAnnotation =
+    (~checkAnnotation, structure: Typedtree.structure) =>
   structure.str_items
-  |> List.exists(structureItemHasGenTypeAnnotation(~ignoreInterface));
+  |> List.exists(structureItemCheckAnnotation(~checkAnnotation));
 
 let sanitizeVariableName = name =>
   name |> Str.global_replace(Str.regexp("-"), "_");
