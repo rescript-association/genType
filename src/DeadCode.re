@@ -150,9 +150,7 @@ let reportResults = () => {
 };
 
 let runAnalysis = (~cmtRoot) => {
-  if (dce^ || analyzeTermination^) {
-    Log_.Color.setup();
-  };
+  Log_.Color.setup();
   switch (cmtRoot) {
   | Some(root) =>
     let rec walkSubDirs = dir => {

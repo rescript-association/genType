@@ -186,10 +186,10 @@ let rec moduleTypeCheckAnnotation =
 and moduleDeclarationCheckAnnotation =
     (
       ~checkAnnotation,
-      {md_attributes, md_type}: Typedtree.module_declaration,
+      {md_attributes, md_type, md_loc: loc}: Typedtree.module_declaration,
     ) =>
   md_attributes
-  |> checkAnnotation
+  |> checkAnnotation(~loc)
   || md_type
   |> moduleTypeCheckAnnotation(~checkAnnotation)
 and signatureItemCheckAnnotation =
@@ -197,12 +197,16 @@ and signatureItemCheckAnnotation =
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations)} =>
     typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> checkAnnotation)
-  | {sig_desc: Tsig_value(valueDescription)} =>
-    valueDescription.val_attributes |> checkAnnotation
+    |> List.exists(
+         ({typ_attributes, typ_loc: loc}: Typedtree.type_declaration) =>
+         typ_attributes |> checkAnnotation(~loc)
+       )
+  | {sig_desc: Tsig_value({val_attributes, val_loc: loc})} =>
+    val_attributes |> checkAnnotation(~loc)
   | {sig_desc: Tsig_module(moduleDeclaration)} =>
     moduleDeclaration |> moduleDeclarationCheckAnnotation(~checkAnnotation)
-  | {sig_desc: Tsig_attribute(attribute)} => [attribute] |> checkAnnotation
+  | {sig_desc: Tsig_attribute(attribute), sig_loc: loc} =>
+    [attribute] |> checkAnnotation(~loc)
   | _ => false
   }
 and signatureCheckAnnotation =
@@ -215,20 +219,25 @@ let rec structureItemCheckAnnotation =
   switch (structureItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations)} =>
     typeDeclarations
-    |> List.exists(dec => dec.Typedtree.typ_attributes |> checkAnnotation)
+    |> List.exists(
+         ({typ_attributes, typ_loc: loc}: Typedtree.type_declaration) =>
+         typ_attributes |> checkAnnotation(~loc)
+       )
   | {str_desc: Tstr_value(_loc, valueBindings)} =>
     valueBindings
-    |> List.exists(vb => vb.Typedtree.vb_attributes |> checkAnnotation)
-  | {str_desc: Tstr_primitive(valueDescription)} =>
-    valueDescription.val_attributes |> checkAnnotation
+    |> List.exists(({vb_attributes, vb_loc: loc}: Typedtree.value_binding) =>
+         vb_attributes |> checkAnnotation(~loc)
+       )
+  | {str_desc: Tstr_primitive({val_attributes, val_loc: loc})} =>
+    val_attributes |> checkAnnotation(~loc)
   | {str_desc: Tstr_module(moduleBinding)} =>
     moduleBinding |> moduleBindingCheckAnnotation(~checkAnnotation)
   | {str_desc: Tstr_recmodule(moduleBindings)} =>
     moduleBindings
     |> List.exists(moduleBindingCheckAnnotation(~checkAnnotation))
-  | {str_desc: Tstr_include({incl_attributes, incl_mod})} =>
+  | {str_desc: Tstr_include({incl_attributes, incl_mod, incl_loc: loc})} =>
     incl_attributes
-    |> checkAnnotation
+    |> checkAnnotation(~loc)
     || incl_mod
     |> moduleExprCheckAnnotation(~checkAnnotation)
   | _ => false
@@ -246,9 +255,12 @@ and moduleExprCheckAnnotation =
   | Tmod_unpack(_) => false
   }
 and moduleBindingCheckAnnotation =
-    (~checkAnnotation, {mb_expr, mb_attributes}: Typedtree.module_binding) =>
+    (
+      ~checkAnnotation,
+      {mb_expr, mb_attributes, mb_loc: loc}: Typedtree.module_binding,
+    ) =>
   mb_attributes
-  |> checkAnnotation
+  |> checkAnnotation(~loc)
   || mb_expr
   |> moduleExprCheckAnnotation(~checkAnnotation)
 and structureCheckAnnotation =

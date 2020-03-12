@@ -1,8 +1,9 @@
 module Color = {
   let color_enabled = lazy(Unix.isatty(Unix.stdout));
+  let forceColor = ref(false);
 
   let get_color_enabled = () => {
-    Lazy.force(color_enabled);
+    forceColor^ || Lazy.force(color_enabled);
   };
 
   type color =
