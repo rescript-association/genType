@@ -1,4 +1,5 @@
 # master
+- When `@genType` annotation appears in a `.re`, but the `.rei` also exists, print a warning on the command-line that the annotation is ignored.
 
 # 3.15.0
 - Add support for let%private: nothing is exported even when a `@genType` annotation is added.
