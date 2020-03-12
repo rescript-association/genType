@@ -161,7 +161,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let hasInterface =
       Sys.file_exists(Filename.remove_extension(cmt) ++ ".cmti");
     let resolver =
-      ModuleResolver.createResolver(
+      ModuleResolver.createLazyResolver(
         ~config,
         ~extensions=[".re", EmitType.shimExtension(~config)],
         ~excludeFile=fname =>

@@ -215,7 +215,7 @@ type resolver = {
     ),
 };
 
-let createResolver = (~config, ~extensions, ~excludeFile) => {
+let createLazyResolver = (~config, ~extensions, ~excludeFile) => {
   lazyFind:
     lazy({
       let (moduleNameMap, bsDependenciesFileMap) =
