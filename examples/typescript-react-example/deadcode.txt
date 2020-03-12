@@ -169,9 +169,11 @@
   addDeclaration +notify ErrorHandler.re:7:6
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
-  addValueReference ErrorHandler.rei:1:30 --> ErrorHandler.re:3:2
-  mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:1:30 (2 new items)
-  addValueReference ErrorHandler.rei:2:34 --> ErrorHandler.re:7:6
+  addDeclaration +x ErrorHandler.re:12:4
+  addValueReference ErrorHandler.rei:3:2 --> ErrorHandler.re:3:2
+  mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:3:2 (2 new items)
+  addValueReference ErrorHandler.rei:5:32 --> ErrorHandler.re:7:6
+  addValueReference ErrorHandler.rei:7:0 --> ErrorHandler.re:12:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
   addDeclaration +fromArray ImmutableArray.re:14:6
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:14:18
@@ -745,7 +747,8 @@
   addValueReference Opaque.re:6:4 --> Opaque.re:6:20
   addValueReference Opaque.re:12:4 --> Opaque.re:12:44
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmti
-  addDeclaration notify ErrorHandler.rei:2:34
+  addDeclaration notify ErrorHandler.rei:5:32
+  addDeclaration x ErrorHandler.rei:7:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/VariantsWithPayload.cmt
   [type] addDeclaration x VariantsWithPayload.re:2:2
   [type] addDeclaration y VariantsWithPayload.re:3:2
@@ -892,8 +895,8 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   addDeclaration notification CreateErrorHandler2.re:3:6
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
-  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6 (2 new items)
-  addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler2.re:3:6
+  mergeSet ErrorHandler.rei:3:2 --> CreateErrorHandler2.re:3:6 (2 new items)
+  addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
   [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
   [type] extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
@@ -918,9 +921,9 @@
   addDeclaration notification CreateErrorHandler1.re:3:6
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
-  addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:2:34
-  mergeSet ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6 (2 new items)
-  addValueReference ErrorHandler.rei:1:30 --> CreateErrorHandler1.re:3:6
+  addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:5:32
+  mergeSet ErrorHandler.rei:3:2 --> CreateErrorHandler1.re:3:6 (2 new items)
+  addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler1.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/LetPrivate.cmt
   addDeclaration y LetPrivate.re:5:4
   addDeclaration +x LetPrivate.re:2:12
@@ -1463,8 +1466,8 @@ File References
   LetPrivate.re -->> 
   ImportIndex.re -->> 
   TypeParams2.re -->> 
-  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
-  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:1:30)
+  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
+  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
   DeadTest.MM.x: 1 references (DeadTest.re:71:0)
   DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:71:0)
@@ -1555,7 +1558,7 @@ File References
   ImportMyBanner.make: 1 references (ReasonComponent.re:18:4)
   NestedModulesInSignature.Universe.+theAnswer: 1 references (NestedModulesInSignature.rei:2:2)
   DeadValueTest.+valueAlive: 1 references (DeadValueTest.rei:1:0)
-  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:2:34)
+  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:5:32)
   ImmutableArray.Array.+get: 2 references (ImmutableArray.rei:5:15, ImmutableArray.rei:18:0)
   ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0)
 
@@ -1906,6 +1909,12 @@ File References
   Array.+eq is never used
   <-- line 118
     [@dead "Array.+eq"] let eq = (a1, a2, f) => Array.eq(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ErrorHandler.re 12:5
+  +x is never used
+  <-- line 12
+  [@dead "+x"] [@genType]
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 2:5
@@ -2326,6 +2335,12 @@ File References
   +r is never used
   <-- line 6
   [@dead "+r"] let r = {x: 3, y: "hello"};
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ErrorHandler.rei 7:1
+  x is never used
+  <-- line 7
+  [@dead "x"] let x: int;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.rei 2:1

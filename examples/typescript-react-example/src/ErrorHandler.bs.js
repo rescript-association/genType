@@ -11,8 +11,11 @@ function Make($$Error) {
         };
 }
 
+var x = 42;
+
 export {
   Make ,
+  x ,
   
 }
 /* No side effect */

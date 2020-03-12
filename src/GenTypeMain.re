@@ -169,7 +169,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let (inputCMT, hasGenTypeAnnotations) = {
       let inputCMT = readCmt(cmtFile);
       let ignoreInterface = ref(false);
-      let checkAnnotation = attributes => {
+      let checkAnnotation = (~loc as _, attributes) => {
         if (attributes
             |> Annotation.getAttributePayload(
                  Annotation.tagIsGenTypeIgnoreInterface,
@@ -186,13 +186,32 @@ let processCmtFile = (~signFile, ~config, cmt) => {
 
       let hasGenTypeAnnotations =
         inputCMT |> cmtCheckAnnotations(~checkAnnotation);
-      if (! ignoreInterface^) {
-        (inputCMT, hasGenTypeAnnotations);
+      if (isInterface) {
+        let cmtFileImpl = (cmtFile |> Filename.chop_extension) ++ ".cmt";
+        let inputCMTImpl = readCmt(cmtFileImpl);
+        let hasGenTypeAnnotationsImpl =
+          inputCMTImpl
+          |> cmtCheckAnnotations(~checkAnnotation=(~loc, attributes) =>
+               if (attributes |> checkAnnotation(~loc)) {
+                 if (! ignoreInterface^) {
+                   Log_.Color.setup();
+                   Log_.info(~loc, ~name="Warning genType", (ppf, ()) =>
+                     Format.fprintf(
+                       ppf,
+                       "Annotation is ignored as there's a .rei file",
+                     )
+                   );
+                 };
+                 true;
+               } else {
+                 false;
+               }
+             );
+        (
+          ignoreInterface^ ? inputCMTImpl : inputCMT,
+          ignoreInterface^ ? hasGenTypeAnnotationsImpl : hasGenTypeAnnotations,
+        );
       } else {
-        let cmtFile = (cmtFile |> Filename.chop_extension) ++ ".cmt";
-        let inputCMT = readCmt(cmtFile);
-        let hasGenTypeAnnotations =
-          inputCMT |> cmtCheckAnnotations(~checkAnnotation);
         (inputCMT, hasGenTypeAnnotations);
       };
     };

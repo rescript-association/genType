@@ -92,6 +92,7 @@ let cli = () => {
   let executeCliCommand = (~bsVersion, cliCommand) =>
     switch (cliCommand) {
     | Add(s) =>
+      Log_.Color.forceColor := true;
       let splitColon = Str.split(Str.regexp(":"), s);
       let (cmt, mlast) =
         switch (splitColon) {
