@@ -75,3 +75,5 @@ let _ = {
 };
 
 let () = Js.log(DeadValueTest.valueAlive);
+
+let rec unusedRec = () => unusedRec();

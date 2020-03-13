@@ -24,6 +24,13 @@ console.log(55);
 
 console.log(DeadValueTest.valueAlive);
 
+function unusedRec(_param) {
+  while(true) {
+    _param = /* () */0;
+    continue ;
+  };
+}
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -48,6 +55,7 @@ export {
   VariantUsedOnlyInImplementation ,
   UnderscoreInside ,
   MM ,
+  unusedRec ,
   
 }
 /*  Not a pure module */
