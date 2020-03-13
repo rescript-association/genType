@@ -31,6 +31,11 @@ function unusedRec(_param) {
   };
 }
 
+function split_map(l) {
+  split_map(l);
+  return /* [] */0;
+}
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -56,6 +61,7 @@ export {
   UnderscoreInside ,
   MM ,
   unusedRec ,
+  split_map ,
   
 }
 /*  Not a pure module */

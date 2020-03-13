@@ -77,3 +77,8 @@ let _ = {
 let () = Js.log(DeadValueTest.valueAlive);
 
 let rec unusedRec = () => unusedRec();
+
+let rec split_map = l => {
+  let _ = split_map(l);
+  [];
+};
