@@ -3010,13 +3010,13 @@ File References
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 41:3
   module_info.module_name is a record label never used to read a value
   <-- line 41
-     [@dead "module_info.module_name"] module_name: string;
+    module_name: string; [@dead "module_info.module_name"] 
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 42:3
   module_info.case is a record label never used to read a value
   <-- line 42
-     [@dead "module_info.case"] case: bool
+    case: bool [@dead "module_info.case"] 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 22:7

@@ -317,7 +317,8 @@ let pathWithoutHead = path => {
 };
 
 let annotateAtEnd = (~declKind, ~pos) =>
-  !posIsReason(pos) && (declKind == Value || declKind == VariantCase);
+  !posIsReason(pos)
+  && (declKind == Value || declKind == VariantCase || declKind == RecordLabel);
 
 let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
   let pos = loc.loc_start;
