@@ -36,6 +36,20 @@ function split_map(l) {
   return /* [] */0;
 }
 
+function rec1(_param) {
+  while(true) {
+    _param = /* () */0;
+    continue ;
+  };
+}
+
+function rec2(_param) {
+  while(true) {
+    _param = /* () */0;
+    continue ;
+  };
+}
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -62,6 +76,8 @@ export {
   MM ,
   unusedRec ,
   split_map ,
+  rec1 ,
+  rec2 ,
   
 }
 /*  Not a pure module */

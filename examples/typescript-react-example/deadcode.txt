@@ -1370,6 +1370,8 @@
   addDeclaration y DeadTest.re:63:2
   addDeclaration unusedRec DeadTest.re:79:8
   addDeclaration split_map DeadTest.re:81:8
+  addDeclaration rec1 DeadTest.re:86:8
+  addDeclaration rec2 DeadTest.re:87:4
   addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1401,6 +1403,8 @@
   addValueReference DeadTest.re:79:8 --> DeadTest.re:79:8
   addValueReference DeadTest.re:82:2 --> DeadTest.re:81:20
   addValueReference DeadTest.re:82:2 --> DeadTest.re:81:8
+  addValueReference DeadTest.re:86:8 --> DeadTest.re:87:4
+  addValueReference DeadTest.re:87:4 --> DeadTest.re:86:8
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
@@ -1478,6 +1482,8 @@ File References
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
+  DeadTest.rec2: 1 references (DeadTest.re:86:8)
+  DeadTest.rec1: 1 references (DeadTest.re:87:4)
   DeadTest.split_map: 1 references (DeadTest.re:82:2)
   DeadTest.unusedRec: 1 references (DeadTest.re:79:8)
   DeadTest.MM.x: 1 references (DeadTest.re:72:0)
