@@ -36,3 +36,8 @@ type l =
                      params : int list ;
                      body : string 
                        }
+
+type module_info = {
+  module_name: string;
+  case: bool
+}
