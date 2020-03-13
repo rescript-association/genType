@@ -564,7 +564,7 @@ let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let folder = (items, {declKind, pos, path} as item) => {
+  let iterOrderedItem = (items, {declKind, pos, path} as item) => {
     switch (
       pos
       |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
@@ -687,6 +687,6 @@ let reportDead = (~onDeadCode) => {
 
   items
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
-  |> List.fold_left(folder, [])
+  |> List.fold_left(iterOrderedItem, [])
   |> List.iter(item => item |> onDeadCode);
 };
