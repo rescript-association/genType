@@ -118,7 +118,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
         // The previous value was taken from the signature, which only has positions for the id.
 
         let posAnnotation =
-          annotateAtEnd(~declKind, ~pos=loc_start)
+          annotateAtEnd(~pos=loc_start)
             ? vb.vb_loc.loc_end : vb.vb_loc.loc_start;
 
         Hashtbl.replace(decls, loc_start, (path, declKind, posAnnotation));

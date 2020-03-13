@@ -316,14 +316,12 @@ let pathWithoutHead = path => {
   path |> List.rev |> List.tl |> String.concat(".");
 };
 
-let annotateAtEnd = (~declKind, ~pos) =>
-  !posIsReason(pos)
-  && (declKind == Value || declKind == VariantCase || declKind == RecordLabel);
+let annotateAtEnd = (~pos) => !posIsReason(pos);
 
 let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
   let pos = loc.loc_start;
   let posEnd = loc.loc_end;
-  let posAnnotation = annotateAtEnd(~declKind, ~pos) ? posEnd : pos;
+  let posAnnotation = annotateAtEnd(~pos) ? posEnd : pos;
 
   /* a .cmi file can contain locations from other files.
        For instance:
