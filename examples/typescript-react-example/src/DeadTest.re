@@ -85,3 +85,8 @@ let rec split_map = l => {
 
 let rec rec1 = () => rec2()
 and rec2 = () => rec1();
+
+let rec recWithCallback = () => {
+  let cb = () => recWithCallback();
+  cb();
+};

@@ -50,6 +50,13 @@ function rec2(_param) {
   };
 }
 
+function recWithCallback(_param) {
+  while(true) {
+    _param = /* () */0;
+    continue ;
+  };
+}
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -78,6 +85,7 @@ export {
   split_map ,
   rec1 ,
   rec2 ,
+  recWithCallback ,
   
 }
 /*  Not a pure module */
