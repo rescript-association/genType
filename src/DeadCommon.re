@@ -195,6 +195,27 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
   let posUsage =
     !transitive || currentBinding == Lexing.dummy_pos
       ? posUsage : currentBinding;
+  let reRouted =
+    // if posDeclaration is recursive toghether with {x,y,z},
+    // and there exists y in {x,y,z} which is a current binding
+    // then rerout the binding to y --> posDeclaration
+    switch (PosHash.find_opt(recursiveDecls, posDeclaration)) {
+    | Some(recSet) =>
+      switch (
+        PosSet.find_first_opt(pos => List.mem(pos, currentBindings^), recSet)
+      ) {
+      | Some(posReRouted) => posReRouted
+      | None => posUsage
+      }
+    | None => posUsage
+    };
+  if (verbose && reRouted != posUsage) {
+    Log_.item(
+      "addValueReference: %s rerouted to %s@.",
+      posUsage |> posToString,
+      reRouted |> posToString,
+    );
+  };
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
