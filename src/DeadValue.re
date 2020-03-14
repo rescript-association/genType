@@ -140,29 +140,35 @@ let collectValueBindings =
       (rec_flag: Asttypes.rec_flag, vbs: list(Typedtree.value_binding)) as value_bindings,
     ) => {
   if (rec_flag == Recursive) {
-    let (idsBound, set) =
+    let (namePosList, recSet) =
       vbs
       |> List.fold_left(
-           ((r, set), {vb_pat: {pat_desc}}: Typedtree.value_binding) =>
+           (
+             (namePosList, recSet),
+             {vb_pat: {pat_desc}}: Typedtree.value_binding,
+           ) =>
              switch (pat_desc) {
              | Tpat_var(id, {loc: {loc_start, loc_ghost}}) when !loc_ghost => (
-                 [(Ident.name(id), loc_start), ...r],
-                 PosSet.add(loc_start, set),
+                 [(Ident.name(id), loc_start), ...namePosList],
+                 PosSet.add(loc_start, recSet),
                )
-             | _ => (r, set)
+             | _ => (namePosList, recSet)
              },
            ([], PosSet.empty),
          );
-    idsBound
-    |> List.iter(((_name, pos)) =>
-         PosHash.replace(recursiveDecls, pos, set)
-       );
-    Log_.item(
-      "XXX recursive %s@.",
-      idsBound
-      |> List.map(((name, pos)) => name ++ ":" ++ (pos |> posToString))
-      |> String.concat(", "),
-    );
+    namePosList
+    |> List.iter(((name, pos)) => {
+         let recInfo = {recSet, name, resolved: false};
+         PosHash.replace(recursiveDecls, pos, recInfo);
+       });
+    if (verbose) {
+      Log_.item(
+        "addRecursiveDeclarations %s@.",
+        namePosList
+        |> List.map(((name, pos)) => name ++ ":" ++ (pos |> posToString))
+        |> String.concat(", "),
+      );
+    };
   };
   super.Tast_mapper.value_bindings(self, value_bindings);
 };

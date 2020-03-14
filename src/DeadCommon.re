@@ -163,7 +163,12 @@ module FileHash = {
 type path = list(string);
 type decls = Hashtbl.t(Lexing.position, (path, declKind, Lexing.position));
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
-let recursiveDecls: PosHash.t(PosSet.t) = PosHash.create(256); /* all recursive declarations */
+type recInfo = {
+  name: string,
+  recSet: PosSet.t,
+  mutable resolved: bool,
+};
+let recursiveDecls: PosHash.t(recInfo) = PosHash.create(256); /* all recursive declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
@@ -195,27 +200,29 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
   let posUsage =
     !transitive || currentBinding == Lexing.dummy_pos
       ? posUsage : currentBinding;
-  let reRouted =
+  let posReRouted =
     // if posDeclaration is recursive toghether with {x,y,z},
     // and there exists y in {x,y,z} which is a current binding
     // then rerout the binding to y --> posDeclaration
     switch (PosHash.find_opt(recursiveDecls, posDeclaration)) {
-    | Some(recSet) =>
+    | Some({name, recSet}) =>
       switch (
         PosSet.find_first_opt(pos => List.mem(pos, currentBindings^), recSet)
       ) {
-      | Some(posReRouted) => posReRouted
+      | Some(posReRouted) =>
+        if (verbose && posReRouted != posUsage) {
+          Log_.item(
+            "recursiveCall to %s: %s rerouted to %s@.",
+            name,
+            posUsage |> posToString,
+            posReRouted |> posToString,
+          );
+        };
+        posReRouted;
       | None => posUsage
       }
     | None => posUsage
     };
-  if (verbose && reRouted != posUsage) {
-    Log_.item(
-      "addValueReference: %s rerouted to %s@.",
-      posUsage |> posToString,
-      reRouted |> posToString,
-    );
-  };
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
