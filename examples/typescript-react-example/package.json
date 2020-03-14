@@ -6,7 +6,7 @@
     "@demo/some-library": "file:some-library",
     "@demo/use-some-library": "file:use-some-library",
     "acorn": "^7.1.1",
-    "bs-platform": "7.2.1",
+    "bs-platform": "7.2.2",
     "merge": "^1.2.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
