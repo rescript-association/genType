@@ -181,12 +181,10 @@ let fields: Hashtbl.t(string, Lexing.position) = (
 
 let currentSrc = ref("");
 let currentModuleName = ref("");
-let currentBindings: ref(list(Lexing.position)) = ref([]);
-let getCurrentBinding = () =>
-  switch (currentBindings^) {
-  | [] => Lexing.dummy_pos
-  | [pos, ..._] => pos
-  };
+let currentBindings = ref(PosSet.empty);
+let lastBinding = ref(Lexing.dummy_pos);
+let getLastBinding = () => lastBinding^;
+
 /* Keep track of the module path while traversing with Tast_mapper */
 let currentModulePath: ref(path) = ref([]);
 
@@ -196,10 +194,9 @@ let include_ = "*include*";
 /********   HELPERS   ********/
 
 let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
-  let currentBinding = getCurrentBinding();
+  let lastBinding = getLastBinding();
   let posUsage =
-    !transitive || currentBinding == Lexing.dummy_pos
-      ? posUsage : currentBinding;
+    !transitive || lastBinding == Lexing.dummy_pos ? posUsage : lastBinding;
   let posReRouted =
     // if posDeclaration is recursive toghether with {x,y,z},
     // and there exists y in {x,y,z} which is a current binding
@@ -207,7 +204,10 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
     switch (PosHash.find_opt(recursiveDecls, posDeclaration)) {
     | Some({name, recSet}) =>
       switch (
-        PosSet.find_first_opt(pos => List.mem(pos, currentBindings^), recSet)
+        PosSet.find_first_opt(
+          pos => PosSet.mem(pos, currentBindings^),
+          recSet,
+        )
       ) {
       | Some(posReRouted) =>
         if (verbose && posReRouted != posUsage) {
