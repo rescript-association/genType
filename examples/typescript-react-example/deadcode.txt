@@ -1374,6 +1374,8 @@
   addDeclaration rec1 DeadTest.re:86:8
   addDeclaration rec2 DeadTest.re:87:4
   addDeclaration recWithCallback DeadTest.re:89:8
+  addDeclaration foo DeadTest.re:94:8
+  addDeclaration bar DeadTest.re:98:4
   addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1416,6 +1418,12 @@
   recursiveCall to recWithCallback: DeadTest.re:90:6 rerouted to DeadTest.re:89:8
   addValueReference DeadTest.re:90:6 --> DeadTest.re:89:8
   addValueReference DeadTest.re:89:8 --> DeadTest.re:90:6
+  addRecursiveDeclarations bar:DeadTest.re:98:4, foo:DeadTest.re:94:8
+  addDeclaration +cb DeadTest.re:95:6
+  recursiveCall to bar: DeadTest.re:95:6 rerouted to DeadTest.re:94:8
+  addValueReference DeadTest.re:95:6 --> DeadTest.re:98:4
+  addValueReference DeadTest.re:94:8 --> DeadTest.re:95:6
+  addValueReference DeadTest.re:98:4 --> DeadTest.re:94:8
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
@@ -1493,11 +1501,14 @@ File References
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
+  DeadTest.bar: 1 references (DeadTest.re:95:6)
+  DeadTest.foo: 1 references (DeadTest.re:98:4)
   DeadTest.recWithCallback: 1 references (DeadTest.re:90:6)
   DeadTest.rec2: 1 references (DeadTest.re:86:8)
   DeadTest.rec1: 1 references (DeadTest.re:87:4)
   DeadTest.split_map: 1 references (DeadTest.re:82:2)
   DeadTest.unusedRec: 1 references (DeadTest.re:79:8)
+  DeadTest.+cb: 1 references (DeadTest.re:94:8)
   DeadTest.+cb: 1 references (DeadTest.re:89:8)
   DeadTest.MM.x: 1 references (DeadTest.re:72:0)
   DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0)

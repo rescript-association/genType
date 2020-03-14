@@ -57,6 +57,17 @@ function recWithCallback(_param) {
   };
 }
 
+function foo(_param) {
+  while(true) {
+    _param = /* () */0;
+    continue ;
+  };
+}
+
+function bar(param) {
+  return foo(/* () */0);
+}
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -86,6 +97,8 @@ export {
   rec1 ,
   rec2 ,
   recWithCallback ,
+  foo ,
+  bar ,
   
 }
 /*  Not a pure module */
