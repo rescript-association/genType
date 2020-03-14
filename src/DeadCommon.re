@@ -163,6 +163,7 @@ module FileHash = {
 type path = list(string);
 type decls = Hashtbl.t(Lexing.position, (path, declKind, Lexing.position));
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
+let recursiveDecls : PosHash.t(PosSet.t) = PosHash.create(256); /* all recursive declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */

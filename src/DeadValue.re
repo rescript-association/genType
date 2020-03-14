@@ -133,6 +133,40 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   r;
 };
 
+let collectValueBindings =
+    (
+      super,
+      self,
+      (rec_flag: Asttypes.rec_flag, vbs: list(Typedtree.value_binding)) as value_bindings,
+    ) => {
+  if (rec_flag == Recursive) {
+    let (idsBound, set) =
+      vbs
+      |> List.fold_left(
+           ((r, set), {vb_pat: {pat_desc}}: Typedtree.value_binding) =>
+             switch (pat_desc) {
+             | Tpat_var(id, {loc: {loc_start, loc_ghost}}) when !loc_ghost => (
+                 [(Ident.name(id), loc_start), ...r],
+                 PosSet.add(loc_start, set),
+               )
+             | _ => (r, set)
+             },
+           ([], PosSet.empty),
+         );
+    idsBound
+    |> List.iter(((_name, pos)) =>
+         PosHash.replace(recursiveDecls, pos, set)
+       );
+    Log_.item(
+      "XXX recursive %s@.",
+      idsBound
+      |> List.map(((name, pos)) => name ++ ":" ++ (pos |> posToString))
+      |> String.concat(", "),
+    );
+  };
+  super.Tast_mapper.value_bindings(self, value_bindings);
+};
+
 let collectExpr = (super, self, e: Typedtree.expression) => {
   let posUsage = e.exp_loc.loc_start;
   switch (e.exp_desc) {
@@ -193,6 +227,8 @@ let collectValueReferences = {
   let expr = (self, e) => e |> collectExpr(super, self);
   let pat = (self, p) => p |> collectPattern(super, self);
   let value_binding = (self, vb) => vb |> collectValueBinding(super, self);
+  let value_bindings = (self, vbs) =>
+    vbs |> collectValueBindings(super, self);
   let type_declaration = (self, typeDeclaration: Typedtree.type_declaration) => {
     DeadType.processTypeDeclaration(typeDeclaration);
     super.type_declaration(self, typeDeclaration);
@@ -215,6 +251,7 @@ let collectValueReferences = {
     structure_item,
     type_declaration,
     value_binding,
+    value_bindings,
   };
 };
 
