@@ -95,7 +95,7 @@ let checkAnyBindingWithNoSideEffects =
   };
 
 let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
-  let oldPos = currentBindingPos^;
+  let oldBindings = currentBindings^;
   checkAnyBindingWithNoSideEffects(vb);
   let pos =
     switch (vb.vb_pat.pat_desc) {
@@ -125,11 +125,11 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
       };
       loc_start;
     | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
-    | _ => currentBindingPos^
+    | _ => getCurrentBinding()
     };
-  currentBindingPos := pos;
+  currentBindings := [pos, ...currentBindings^];
   let r = super.Tast_mapper.value_binding(self, vb);
-  currentBindingPos := oldPos;
+  currentBindings := oldBindings;
   r;
 };
 
