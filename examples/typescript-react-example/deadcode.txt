@@ -65,7 +65,7 @@
   [type] addDeclaration id Types.re:141:19
   addDeclaration testInstantiateTypeParameter Types.re:146:4
   addDeclaration currentTime Types.re:156:4
-  XXX recursive swap:Types.re:28:8
+  addRecursiveDeclarations swap:Types.re:28:8
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
@@ -1402,18 +1402,18 @@
   addDeclaration +valueOnlyInImplementation DeadTest.re:69:6
   addValueReference DeadTest.re:72:0 --> DeadTest.re:62:2
   addValueReference DeadTest.re:77:0 --> DeadValueTest.rei:1:0
-  XXX recursive unusedRec:DeadTest.re:79:8
+  addRecursiveDeclarations unusedRec:DeadTest.re:79:8
   addValueReference DeadTest.re:79:8 --> DeadTest.re:79:8
-  XXX recursive split_map:DeadTest.re:81:8
+  addRecursiveDeclarations split_map:DeadTest.re:81:8
   addValueReference DeadTest.re:82:2 --> DeadTest.re:81:20
-  addValueReference: DeadTest.re:82:2 rerouted to DeadTest.re:81:8
+  recursiveCall to split_map: DeadTest.re:82:2 rerouted to DeadTest.re:81:8
   addValueReference DeadTest.re:82:2 --> DeadTest.re:81:8
-  XXX recursive rec2:DeadTest.re:87:4, rec1:DeadTest.re:86:8
+  addRecursiveDeclarations rec2:DeadTest.re:87:4, rec1:DeadTest.re:86:8
   addValueReference DeadTest.re:86:8 --> DeadTest.re:87:4
   addValueReference DeadTest.re:87:4 --> DeadTest.re:86:8
-  XXX recursive recWithCallback:DeadTest.re:89:8
+  addRecursiveDeclarations recWithCallback:DeadTest.re:89:8
   addDeclaration +cb DeadTest.re:90:6
-  addValueReference: DeadTest.re:90:6 rerouted to DeadTest.re:89:8
+  recursiveCall to recWithCallback: DeadTest.re:90:6 rerouted to DeadTest.re:89:8
   addValueReference DeadTest.re:90:6 --> DeadTest.re:89:8
   addValueReference DeadTest.re:89:8 --> DeadTest.re:90:6
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
