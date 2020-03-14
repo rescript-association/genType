@@ -163,7 +163,7 @@ module FileHash = {
 type path = list(string);
 type decls = Hashtbl.t(Lexing.position, (path, declKind, Lexing.position));
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
-let recursiveDecls : PosHash.t(PosSet.t) = PosHash.create(256); /* all recursive declarations */
+let recursiveDecls: PosHash.t(PosSet.t) = PosHash.create(256); /* all recursive declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
@@ -176,7 +176,12 @@ let fields: Hashtbl.t(string, Lexing.position) = (
 
 let currentSrc = ref("");
 let currentModuleName = ref("");
-let currentBindingPos = ref(Lexing.dummy_pos);
+let currentBindings: ref(list(Lexing.position)) = ref([]);
+let getCurrentBinding = () =>
+  switch (currentBindings^) {
+  | [] => Lexing.dummy_pos
+  | [pos, ..._] => pos
+  };
 /* Keep track of the module path while traversing with Tast_mapper */
 let currentModulePath: ref(path) = ref([]);
 
@@ -186,9 +191,10 @@ let include_ = "*include*";
 /********   HELPERS   ********/
 
 let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
+  let currentBinding = getCurrentBinding();
   let posUsage =
-    !transitive || currentBindingPos^ == Lexing.dummy_pos
-      ? posUsage : currentBindingPos^;
+    !transitive || currentBinding == Lexing.dummy_pos
+      ? posUsage : currentBinding;
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
