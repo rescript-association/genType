@@ -1406,12 +1406,14 @@
   addValueReference DeadTest.re:79:8 --> DeadTest.re:79:8
   XXX recursive split_map:DeadTest.re:81:8
   addValueReference DeadTest.re:82:2 --> DeadTest.re:81:20
+  addValueReference: DeadTest.re:82:2 rerouted to DeadTest.re:81:8
   addValueReference DeadTest.re:82:2 --> DeadTest.re:81:8
   XXX recursive rec2:DeadTest.re:87:4, rec1:DeadTest.re:86:8
   addValueReference DeadTest.re:86:8 --> DeadTest.re:87:4
   addValueReference DeadTest.re:87:4 --> DeadTest.re:86:8
   XXX recursive recWithCallback:DeadTest.re:89:8
   addDeclaration +cb DeadTest.re:90:6
+  addValueReference: DeadTest.re:90:6 rerouted to DeadTest.re:89:8
   addValueReference DeadTest.re:90:6 --> DeadTest.re:89:8
   addValueReference DeadTest.re:89:8 --> DeadTest.re:90:6
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
