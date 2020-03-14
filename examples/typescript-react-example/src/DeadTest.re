@@ -90,3 +90,9 @@ let rec recWithCallback = () => {
   let cb = () => recWithCallback();
   cb();
 };
+
+let rec foo = () => {
+  let cb = () => bar();
+  cb();
+}
+and bar = () => foo();
