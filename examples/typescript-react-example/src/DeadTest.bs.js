@@ -57,6 +57,10 @@ function recWithCallback(_param) {
   };
 }
 
+function aaa(param) {
+  return /* () */0;
+}
+
 function foo(_param) {
   while(true) {
     _param = /* () */0;
@@ -97,6 +101,7 @@ export {
   rec1 ,
   rec2 ,
   recWithCallback ,
+  aaa ,
   foo ,
   bar ,
   

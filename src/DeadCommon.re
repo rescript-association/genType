@@ -226,18 +226,18 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
-      posUsage |> posToString,
+      posReRouted |> posToString,
       posDeclaration |> posToString,
     );
   };
-  PosHash.addSet(valueReferences, posDeclaration, posUsage);
+  PosHash.addSet(valueReferences, posDeclaration, posReRouted);
   if (addFileReference
       && posDeclaration.pos_fname != none_
-      && posUsage.pos_fname != none_
-      && posUsage.pos_fname != posDeclaration.pos_fname) {
+      && posReRouted.pos_fname != none_
+      && posReRouted.pos_fname != posDeclaration.pos_fname) {
     FileHash.addSet(
       fileReferences,
-      posUsage.pos_fname,
+      posReRouted.pos_fname,
       posDeclaration.pos_fname,
     );
   };
@@ -519,7 +519,7 @@ module WriteDeadAnnotations = {
       let originalLen = String.length(original);
       {
         original:
-          if (String.length(original) >= col) {
+          if (String.length(original) >= col && col > 0) {
             let original1 = String.sub(original, 0, col);
             let original2 = String.sub(original, col, originalLen - col);
             original1 ++ annotationStr ++ original2;
@@ -595,6 +595,70 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
+let rec resolveRecursiveRefs = (~refsTodo, ~refsBeingResolved, pos) => {
+  switch (PosHash.find_opt(recursiveDecls, pos)) {
+  | None => refsTodo
+  | Some({name, resolved: true}) =>
+    Log_.item("XXX %s already resolved@.", name);
+    refsTodo;
+  | Some(recInfo) when PosSet.mem(pos, refsBeingResolved) =>
+    Log_.item(
+      "XXX %s is being resolved already: assume no new dependencies@.",
+      recInfo.name,
+    );
+    PosSet.empty;
+  | Some({name, recSet} as recInfo) =>
+    Log_.item("@.XXX resolving %s@.", name);
+    let unresolved = ref(false);
+    let newRefsTodo =
+      refsTodo
+      |> PosSet.filter(x =>
+           if (x == pos) {
+             Log_.item("XXX %s ignoring reference to self@.", name);
+             false;
+           } else if (!PosSet.mem(x, recSet)) {
+             Log_.item(
+               "XXX %s: one dependency is not mutually recursive@.",
+               name,
+             );
+             true;
+           } else {
+             let xRecSet = PosHash.find(recursiveDecls, x);
+             let xRefsTodo = PosHash.findSet(valueReferences, x);
+             if (xRecSet.resolved) {
+               !ProcessDeadAnnotations.isAnnotatedDead(x)
+               && !PosSet.is_empty(xRefsTodo);
+             } else {
+               let xNewRefsTodo =
+                 x
+                 |> resolveRecursiveRefs(
+                      ~refsTodo=xRefsTodo,
+                      ~refsBeingResolved=PosSet.add(pos, refsBeingResolved),
+                    );
+               if (!xRecSet.resolved) {
+                 unresolved := true;
+               };
+               !PosSet.is_empty(xNewRefsTodo);
+             };
+           }
+         );
+    if (! unresolved^ || PosSet.is_empty(refsBeingResolved)) {
+      recInfo.resolved = true;
+      if (PosSet.is_empty(newRefsTodo)) {
+        pos |> ProcessDeadAnnotations.annotateDead;
+      };
+      Log_.item(
+        "XXX %s resolved with %d dependencies@.",
+        name,
+        newRefsTodo |> PosSet.cardinal,
+      );
+    } else {
+      Log_.item("XXX %s still unresolved@.", name);
+    };
+    newRefsTodo;
+  };
+};
+
 let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
@@ -605,9 +669,15 @@ let reportDead = (~onDeadCode) => {
       |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
     ) {
     | referencesToLoc when !(pos |> dontReportDead) =>
+      let referencesToLoc =
+        resolveRecursiveRefs(
+          ~refsBeingResolved=PosSet.empty,
+          ~refsTodo=referencesToLoc,
+          pos,
+        );
       let liveReferences =
         referencesToLoc
-        |> PosSet.filter(pos => !ProcessDeadAnnotations.isAnnotatedDead(pos));
+        |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
       if (liveReferences
           |> PosSet.cardinal == 0
           && !ProcessDeadAnnotations.isAnnotatedLive(pos)
