@@ -1498,6 +1498,7 @@ File References
   LetPrivate.re -->> 
   ImportIndex.re -->> 
   TypeParams2.re -->> 
+  BucklescriptAnnotations.+f: 1 references (BucklescriptAnnotations.re:21:4)
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
@@ -1508,9 +1509,11 @@ XXX resolving foo
   XXX bar is being resolved already: assume no new dependencies
   XXX foo still unresolved
   XXX bar resolved with 0 dependencies
+  DeadTest.+cb: 1 references (DeadTest.re:94:8)
   
 XXX resolving foo
   XXX foo resolved with 0 dependencies
+  DeadTest.+cb: 1 references (DeadTest.re:89:8)
   
 XXX resolving recWithCallback
   XXX recWithCallback ignoring reference to self
@@ -1575,12 +1578,12 @@ XXX resolving unusedRec
   Hooks.anotherComponent: 1 references (_none_:1:-1)
   Hooks.make: 1 references (_none_:1:-1)
   [type] Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37)
-  ReasonComponent.component: 1 references (ReasonComponent.re:18:4)
   ReasonComponent.+first: 1 references (ReasonComponent.re:43:4)
   ReasonComponent.+emptyArray: 1 references (ReasonComponent.re:18:4)
   ReasonComponent.+intList: 1 references (ReasonComponent.re:18:4)
   ReasonComponent.+message: 1 references (ReasonComponent.re:18:4)
   [type] ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12)
+  ReasonComponent.component: 1 references (ReasonComponent.re:18:4)
   [type] Records.myRecBsAs.type_: 1 references (Records.re:167:38)
   [type] Records.myRec.type_: 1 references (Records.re:149:30)
   [type] Records.business2.address2: 1 references (Records.re:93:2)
@@ -1605,8 +1608,8 @@ XXX resolving unusedRec
   [type] VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53)
   [type] VariantsWithPayload.payload.x: 2 references (VariantsWithPayload.re:27:42, VariantsWithPayload.re:46:36)
   ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4)
-  ManyComponents.component: 1 references (ManyComponents.re:39:4)
   ManyComponents.+emptyArray: 1 references (ManyComponents.re:39:4)
+  ManyComponents.component: 1 references (ManyComponents.re:39:4)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:19:6)
   ManyComponents.InnerComponent.component: 1 references (ManyComponents.re:9:6)
   [type] Tuples.person.age: 1 references (Tuples.re:47:19)
@@ -2977,18 +2980,6 @@ XXX resolving unusedRec
     [@dead "MM.y"] let y: int;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 90:7
-  +cb is never used
-  <-- line 90
-    [@dead "+cb"] let cb = () => recWithCallback();
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 95:7
-  +cb is never used
-  <-- line 95
-    [@dead "+cb"] let cb = () => bar();
-
-  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 79:9
   unusedRec is never used
   <-- line 79
@@ -3131,12 +3122,6 @@ XXX resolving unusedRec
   module_info.case is a record label never used to read a value
   <-- line 42
     case: bool [@dead "module_info.case"] 
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 22:7
-  +f is never used
-  <-- line 22
-    [@dead "+f"] let f = x##twoArgs;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5

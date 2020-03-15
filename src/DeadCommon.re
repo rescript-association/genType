@@ -770,7 +770,10 @@ let reportDead = (~onDeadCode) => {
     let pathIsImplementationOf = (path1, path2) =>
       switch (path1, path2) {
       | ([name1, ...restPath1], [name2, ...restPath2]) =>
-        name1.[0] == '+' && name2.[0] != '+' && restPath1 == restPath2
+        name1.[0] == '+'
+        && name2.[0] != '+'
+        && List.length(restPath1) > 1
+        && restPath1 == restPath2
       | ([], _)
       | (_, []) => false
       };
