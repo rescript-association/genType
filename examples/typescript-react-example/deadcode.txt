@@ -1498,10 +1498,18 @@ File References
   LetPrivate.re -->> 
   ImportIndex.re -->> 
   TypeParams2.re -->> 
+  resolveRecursiveRefs: out-of-order dependency BucklescriptAnnotations.re:21:4 -> BucklescriptAnnotations.re:22:6
   BucklescriptAnnotations.+f: 1 references (BucklescriptAnnotations.re:21:4)
+  resolveRecursiveRefs: out-of-order dependency ErrorHandler.re:7:6 -> CreateErrorHandler1.re:3:6
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
+  resolveRecursiveRefs: out-of-order dependency ErrorHandler.re:7:6 -> CreateErrorHandler2.re:3:6
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
+  resolveRecursiveRefs: out-of-order dependency DeadCodeInterface.re:1:17 -> DeadCodeImplementation.re:2:6
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
+  resolveRecursiveRefs: out-of-order dependency DeadMl.ml:26:47 -> DeadMl.ml:31:8
+  resolveRecursiveRefs: out-of-order dependency DeadMl.ml:26:27 -> DeadMl.ml:30:8
+  resolveRecursiveRefs: out-of-order dependency DeadMl.ml:26:6 -> DeadMl.ml:29:8
+  resolveRecursiveRefs: out-of-order dependency DeadMl.ml:9:2 -> DeadMl.ml:12:6
   
 XXX resolving bar
   
@@ -1509,10 +1517,12 @@ XXX resolving foo
   XXX bar is being resolved already: assume no new dependencies
   XXX foo still unresolved
   XXX bar resolved with 0 dependencies
+  resolveRecursiveRefs: out-of-order dependency DeadTest.re:94:8 -> DeadTest.re:95:6
   DeadTest.+cb: 1 references (DeadTest.re:94:8)
   
 XXX resolving foo
   XXX foo resolved with 0 dependencies
+  resolveRecursiveRefs: out-of-order dependency DeadTest.re:89:8 -> DeadTest.re:90:6
   DeadTest.+cb: 1 references (DeadTest.re:89:8)
   
 XXX resolving recWithCallback
@@ -1537,11 +1547,14 @@ XXX resolving unusedRec
   XXX unusedRec ignoring reference to self
   XXX unusedRec resolved with 0 dependencies
   DeadTest.MM.x: 1 references (DeadTest.re:72:0)
+  resolveRecursiveRefs: out-of-order dependency DeadTest.re:62:2 -> DeadTest.re:66:6
   DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0)
+  resolveRecursiveRefs: out-of-order dependency DeadTest.re:63:2 -> DeadTest.re:65:6
   DeadTest.MM.+y: 2 references (DeadTest.re:63:2, DeadTest.re:66:6)
   [type] DeadTest.record.yyy: 1 references (DeadTest.re:55:9)
   [type] DeadTest.record.xxx: 1 references (DeadTest.re:54:13)
   DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:0)
+  resolveRecursiveRefs: out-of-order dependency DeadTest.re:37:2 -> DeadTest.re:41:6
   DeadTest.VariantUsedOnlyInImplementation.+a: 2 references (DeadTest.re:37:2, DeadTest.re:44:0)
   [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10)
   DeadTest.thisIsMarkedLive: 0 references ()
@@ -1549,19 +1562,29 @@ XXX resolving unusedRec
   DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
   DeadTestWhitelist.x: 0 references ()
+  resolveRecursiveRefs: out-of-order dependency DeadTypeTest.re:13:8 -> DeadTypeTest.rei:9:4
   [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8)
   [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8)
+  resolveRecursiveRefs: out-of-order dependency DeadTypeTest.re:12:8 -> DeadTypeTest.rei:7:4
   [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8)
+  resolveRecursiveRefs: out-of-order dependency DeadTypeTest.re:4:8 -> DeadTypeTest.rei:2:4
   [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8)
   [type] Docstrings.t.A: 2 references (Docstrings.re:65:34, Docstrings.re:68:36)
   ExportWithRename.make: 1 references (_none_:1:-1)
+  resolveRecursiveRefs: out-of-order dependency FirstClassModules.re:46:20 -> FirstClassModules.re:49:6
   FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20)
+  resolveRecursiveRefs: out-of-order dependency FirstClassModules.re:2:2 -> FirstClassModules.re:34:6
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
+  resolveRecursiveRefs: out-of-order dependency FirstClassModules.re:12:20 -> FirstClassModules.re:30:8
   FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
+  resolveRecursiveRefs: out-of-order dependency FirstClassModules.re:10:4 -> FirstClassModules.re:25:8
   FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4)
+  resolveRecursiveRefs: out-of-order dependency FirstClassModules.re:7:24 -> FirstClassModules.re:21:8
   FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24)
+  resolveRecursiveRefs: out-of-order dependency FirstClassModules.re:14:2 -> FirstClassModules.re:17:6
   FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:6)
   Hooks.aComponentWithChildren: 1 references (_none_:1:-1)
+  resolveRecursiveRefs: out-of-order dependency Hooks.re:139:6 -> Hooks.re:149:8
   Hooks.RenderPropRequiresConversion.+car: 1 references (Hooks.re:139:6)
   Hooks.RenderPropRequiresConversion.+make: 1 references (_none_:1:-1)
   Hooks.functionReturningReactElement: 1 references (_none_:1:-1)
@@ -1578,9 +1601,13 @@ XXX resolving unusedRec
   Hooks.anotherComponent: 1 references (_none_:1:-1)
   Hooks.make: 1 references (_none_:1:-1)
   [type] Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37)
+  resolveRecursiveRefs: out-of-order dependency ReasonComponent.re:43:4 -> ReasonComponent.re:43:14
   ReasonComponent.+first: 1 references (ReasonComponent.re:43:4)
+  resolveRecursiveRefs: out-of-order dependency ReasonComponent.re:18:4 -> ReasonComponent.re:35:7
   ReasonComponent.+emptyArray: 1 references (ReasonComponent.re:18:4)
+  resolveRecursiveRefs: out-of-order dependency ReasonComponent.re:18:4 -> ReasonComponent.re:19:43
   ReasonComponent.+intList: 1 references (ReasonComponent.re:18:4)
+  resolveRecursiveRefs: out-of-order dependency ReasonComponent.re:18:4 -> ReasonComponent.re:19:6
   ReasonComponent.+message: 1 references (ReasonComponent.re:18:4)
   [type] ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12)
   ReasonComponent.component: 1 references (ReasonComponent.re:18:4)
@@ -1599,8 +1626,11 @@ XXX resolving unusedRec
   References.R.set: 1 references (References.re:37:4)
   References.R.make: 1 references (References.re:34:4)
   References.R.get: 1 references (References.re:31:4)
+  resolveRecursiveRefs: out-of-order dependency References.re:19:2 -> References.re:24:6
   References.R.+set: 2 references (References.re:19:2, References.re:37:4)
+  resolveRecursiveRefs: out-of-order dependency References.re:18:2 -> References.re:23:6
   References.R.+make: 2 references (References.re:18:2, References.re:34:4)
+  resolveRecursiveRefs: out-of-order dependency References.re:17:2 -> References.re:22:6
   References.R.+get: 2 references (References.re:17:2, References.re:31:4)
   [type] TestPromise.fromPayload.s: 1 references (TestPromise.re:14:32)
   [type] Uncurried.authU.loginU: 1 references (Uncurried.re:39:25)
@@ -1608,6 +1638,7 @@ XXX resolving unusedRec
   [type] VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53)
   [type] VariantsWithPayload.payload.x: 2 references (VariantsWithPayload.re:27:42, VariantsWithPayload.re:46:36)
   ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4)
+  resolveRecursiveRefs: out-of-order dependency ManyComponents.re:39:4 -> ManyComponents.re:42:49
   ManyComponents.+emptyArray: 1 references (ManyComponents.re:39:4)
   ManyComponents.component: 1 references (ManyComponents.re:39:4)
   ManyComponents.ManyProps.component: 1 references (ManyComponents.re:19:6)
@@ -1621,6 +1652,7 @@ XXX resolving unusedRec
   ImmutableArray.fromArray: 1 references (DeadTest.re:1:0)
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4)
   ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:48:4)
+  resolveRecursiveRefs: out-of-order dependency ImportJsValue.re:38:6 -> ImportJsValue.re:39:8
   ImportJsValue.AbsoluteValue.+getAbs: 1 references (ImportJsValue.re:38:6)
   ImportMyBanner.make: 1 references (ReasonComponent.re:18:4)
   NestedModulesInSignature.Universe.+theAnswer: 1 references (NestedModulesInSignature.rei:2:2)
