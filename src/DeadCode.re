@@ -117,7 +117,7 @@ let loadCmtFile = cmtFilePath => {
 
 let reportResults = () => {
   let ppf = Format.std_formatter;
-  let onItem = ({declKind, pos, path}) => {
+  let onDecl = ({declKind, pos, path}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let (name, message) =
       switch (declKind) {
@@ -141,9 +141,9 @@ let reportResults = () => {
       Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
     );
   };
-  let onDeadCode = item => {
-    item |> onItem;
-    item |> WriteDeadAnnotations.onDeadItem(~ppf);
+  let onDeadCode = decl => {
+    decl |> onDecl;
+    decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
   };
   reportDead(~onDeadCode);
   WriteDeadAnnotations.write();
