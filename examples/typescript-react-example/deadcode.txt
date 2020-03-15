@@ -1374,9 +1374,8 @@
   addDeclaration rec1 DeadTest.re:86:8
   addDeclaration rec2 DeadTest.re:87:4
   addDeclaration recWithCallback DeadTest.re:89:8
-  addDeclaration aaa DeadTest.re:94:4
-  addDeclaration foo DeadTest.re:96:8
-  addDeclaration bar DeadTest.re:100:4
+  addDeclaration foo DeadTest.re:94:8
+  addDeclaration bar DeadTest.re:98:4
   addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1419,12 +1418,12 @@
   recursiveCall to recWithCallback: DeadTest.re:90:6 rerouted to DeadTest.re:89:8
   addValueReference DeadTest.re:89:8 --> DeadTest.re:89:8
   addValueReference DeadTest.re:89:8 --> DeadTest.re:90:6
-  addRecursiveDeclarations bar:DeadTest.re:100:4, foo:DeadTest.re:96:8
-  addDeclaration +cb DeadTest.re:97:6
-  recursiveCall to bar: DeadTest.re:97:6 rerouted to DeadTest.re:96:8
-  addValueReference DeadTest.re:96:8 --> DeadTest.re:100:4
-  addValueReference DeadTest.re:96:8 --> DeadTest.re:97:6
-  addValueReference DeadTest.re:100:4 --> DeadTest.re:96:8
+  addRecursiveDeclarations bar:DeadTest.re:98:4, foo:DeadTest.re:94:8
+  addDeclaration +cb DeadTest.re:95:6
+  recursiveCall to bar: DeadTest.re:95:6 rerouted to DeadTest.re:94:8
+  addValueReference DeadTest.re:94:8 --> DeadTest.re:98:4
+  addValueReference DeadTest.re:94:8 --> DeadTest.re:95:6
+  addValueReference DeadTest.re:98:4 --> DeadTest.re:94:8
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
@@ -2984,9 +2983,9 @@ XXX resolving unusedRec
     [@dead "+cb"] let cb = () => recWithCallback();
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 97:7
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 95:7
   +cb is never used
-  <-- line 97
+  <-- line 95
     [@dead "+cb"] let cb = () => bar();
 
   Warning Dead Value
@@ -3020,21 +3019,15 @@ XXX resolving unusedRec
   [@dead "recWithCallback"] let rec recWithCallback = () => {
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 94:5
-  aaa is never used
-  <-- line 94
-  [@dead "aaa"] let aaa = () => ();
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 96:9
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 94:9
   foo is never used
-  <-- line 96
+  <-- line 94
   [@dead "foo"] let rec foo = () => {
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 100:5
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 98:5
   bar is never used
-  <-- line 100
+  <-- line 98
   [@dead "bar"] and bar = () => foo();
 
   Warning Dead Value
