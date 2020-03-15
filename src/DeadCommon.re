@@ -595,9 +595,57 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-let rec resolveRecursiveRefs = (~refsTodo, ~refsBeingResolved, pos) => {
+// TODO: replace compareItemsUsingDependencies
+let comparePos =
+    (
+      ~orderedFiles,
+      {
+        Lexing.pos_fname: fname1,
+        pos_lnum: lnum1,
+        pos_bol: bol1,
+        pos_cnum: cnum1,
+      },
+      {
+        Lexing.pos_fname: fname2,
+        pos_lnum: lnum2,
+        pos_bol: bol2,
+        pos_cnum: cnum2,
+      },
+    ) => {
+  let findPosition = fn => Hashtbl.find(orderedFiles, fn);
+
+  /* From the root of the file dependency DAG to the leaves.
+     From the bottom of the file to the top. */
+  let (position1, position2) = (
+    fname1 |> findPosition,
+    fname2 |> findPosition,
+  );
+  compare((position1, lnum2, bol2, cnum2), (position2, lnum1, bol1, cnum1));
+};
+
+let rec resolveRecursiveRefs =
+        (~orderedFiles, ~refsTodo, ~refsBeingResolved, pos) => {
   switch (PosHash.find_opt(recursiveDecls, pos)) {
-  | None => refsTodo
+  | None =>
+    // Check for out-of-order dependencies
+    if (refsTodo
+        |> PosSet.exists(x => {
+             let r =
+               try(comparePos(~orderedFiles, pos, x) < 0) {
+               | Not_found => false
+               };
+             if (r) {
+               Log_.item(
+                 "resolveRecursiveRefs: out-of-order dependency %s -> %s@.",
+                 x |> posToString,
+                 pos |> posToString,
+               );
+             };
+             r;
+           })) {
+      ();
+    };
+    refsTodo;
   | Some({name, resolved: true}) =>
     Log_.item("XXX %s already resolved@.", name);
     refsTodo;
@@ -632,6 +680,7 @@ let rec resolveRecursiveRefs = (~refsTodo, ~refsBeingResolved, pos) => {
                let xNewRefsTodo =
                  x
                  |> resolveRecursiveRefs(
+                      ~orderedFiles,
                       ~refsTodo=xRefsTodo,
                       ~refsBeingResolved=PosSet.add(pos, refsBeingResolved),
                     );
@@ -663,7 +712,7 @@ let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let iterOrderedItem = (items, {declKind, pos, path} as item) => {
+  let iterOrderedItem = (~orderedFiles, items, {declKind, pos, path} as item) => {
     switch (
       pos
       |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
@@ -671,6 +720,7 @@ let reportDead = (~onDeadCode) => {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let referencesToLoc =
         resolveRecursiveRefs(
+          ~orderedFiles,
           ~refsBeingResolved=PosSet.empty,
           ~refsTodo=referencesToLoc,
           pos,
@@ -742,6 +792,7 @@ let reportDead = (~onDeadCode) => {
       };
     },
   );
+
   let compareItemsUsingDependencies =
       (
         {
@@ -795,6 +846,6 @@ let reportDead = (~onDeadCode) => {
 
   items
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
-  |> List.fold_left(iterOrderedItem, [])
+  |> List.fold_left(iterOrderedItem(~orderedFiles), [])
   |> List.iter(item => item |> onDeadCode);
 };
