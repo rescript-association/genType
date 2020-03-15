@@ -1374,8 +1374,9 @@
   addDeclaration rec1 DeadTest.re:86:8
   addDeclaration rec2 DeadTest.re:87:4
   addDeclaration recWithCallback DeadTest.re:89:8
-  addDeclaration foo DeadTest.re:94:8
-  addDeclaration bar DeadTest.re:98:4
+  addDeclaration aaa DeadTest.re:94:4
+  addDeclaration foo DeadTest.re:96:8
+  addDeclaration bar DeadTest.re:100:4
   addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1409,21 +1410,21 @@
   addRecursiveDeclarations split_map:DeadTest.re:81:8
   addValueReference DeadTest.re:82:2 --> DeadTest.re:81:20
   recursiveCall to split_map: DeadTest.re:82:2 rerouted to DeadTest.re:81:8
-  addValueReference DeadTest.re:82:2 --> DeadTest.re:81:8
+  addValueReference DeadTest.re:81:8 --> DeadTest.re:81:8
   addRecursiveDeclarations rec2:DeadTest.re:87:4, rec1:DeadTest.re:86:8
   addValueReference DeadTest.re:86:8 --> DeadTest.re:87:4
   addValueReference DeadTest.re:87:4 --> DeadTest.re:86:8
   addRecursiveDeclarations recWithCallback:DeadTest.re:89:8
   addDeclaration +cb DeadTest.re:90:6
   recursiveCall to recWithCallback: DeadTest.re:90:6 rerouted to DeadTest.re:89:8
-  addValueReference DeadTest.re:90:6 --> DeadTest.re:89:8
+  addValueReference DeadTest.re:89:8 --> DeadTest.re:89:8
   addValueReference DeadTest.re:89:8 --> DeadTest.re:90:6
-  addRecursiveDeclarations bar:DeadTest.re:98:4, foo:DeadTest.re:94:8
-  addDeclaration +cb DeadTest.re:95:6
-  recursiveCall to bar: DeadTest.re:95:6 rerouted to DeadTest.re:94:8
-  addValueReference DeadTest.re:95:6 --> DeadTest.re:98:4
-  addValueReference DeadTest.re:94:8 --> DeadTest.re:95:6
-  addValueReference DeadTest.re:98:4 --> DeadTest.re:94:8
+  addRecursiveDeclarations bar:DeadTest.re:100:4, foo:DeadTest.re:96:8
+  addDeclaration +cb DeadTest.re:97:6
+  recursiveCall to bar: DeadTest.re:97:6 rerouted to DeadTest.re:96:8
+  addValueReference DeadTest.re:96:8 --> DeadTest.re:100:4
+  addValueReference DeadTest.re:96:8 --> DeadTest.re:97:6
+  addValueReference DeadTest.re:100:4 --> DeadTest.re:96:8
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
@@ -1501,15 +1502,38 @@ File References
   CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
-  DeadTest.bar: 1 references (DeadTest.re:95:6)
-  DeadTest.foo: 1 references (DeadTest.re:98:4)
-  DeadTest.recWithCallback: 1 references (DeadTest.re:90:6)
-  DeadTest.rec2: 1 references (DeadTest.re:86:8)
-  DeadTest.rec1: 1 references (DeadTest.re:87:4)
-  DeadTest.split_map: 1 references (DeadTest.re:82:2)
-  DeadTest.unusedRec: 1 references (DeadTest.re:79:8)
-  DeadTest.+cb: 1 references (DeadTest.re:94:8)
-  DeadTest.+cb: 1 references (DeadTest.re:89:8)
+  
+XXX resolving bar
+  
+XXX resolving foo
+  XXX bar is being resolved already: assume no new dependencies
+  XXX foo still unresolved
+  XXX bar resolved with 0 dependencies
+  
+XXX resolving foo
+  XXX foo resolved with 0 dependencies
+  
+XXX resolving recWithCallback
+  XXX recWithCallback ignoring reference to self
+  XXX recWithCallback resolved with 0 dependencies
+  
+XXX resolving rec2
+  
+XXX resolving rec1
+  XXX rec2 is being resolved already: assume no new dependencies
+  XXX rec1 still unresolved
+  XXX rec2 resolved with 0 dependencies
+  
+XXX resolving rec1
+  XXX rec1 resolved with 0 dependencies
+  
+XXX resolving split_map
+  XXX split_map ignoring reference to self
+  XXX split_map resolved with 0 dependencies
+  
+XXX resolving unusedRec
+  XXX unusedRec ignoring reference to self
+  XXX unusedRec resolved with 0 dependencies
   DeadTest.MM.x: 1 references (DeadTest.re:72:0)
   DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0)
   DeadTest.MM.+y: 2 references (DeadTest.re:63:2, DeadTest.re:66:6)
@@ -2952,6 +2976,66 @@ File References
   MM.y is never used
   <-- line 63
     [@dead "MM.y"] let y: int;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 90:7
+  +cb is never used
+  <-- line 90
+    [@dead "+cb"] let cb = () => recWithCallback();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 97:7
+  +cb is never used
+  <-- line 97
+    [@dead "+cb"] let cb = () => bar();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 79:9
+  unusedRec is never used
+  <-- line 79
+  [@dead "unusedRec"] let rec unusedRec = () => unusedRec();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 81:9
+  split_map is never used
+  <-- line 81
+  [@dead "split_map"] let rec split_map = l => {
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 86:9
+  rec1 is never used
+  <-- line 86
+  [@dead "rec1"] let rec rec1 = () => rec2()
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 87:5
+  rec2 is never used
+  <-- line 87
+  [@dead "rec2"] and rec2 = () => rec1();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 89:9
+  recWithCallback is never used
+  <-- line 89
+  [@dead "recWithCallback"] let rec recWithCallback = () => {
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 94:5
+  aaa is never used
+  <-- line 94
+  [@dead "aaa"] let aaa = () => ();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 96:9
+  foo is never used
+  <-- line 96
+  [@dead "foo"] let rec foo = () => {
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 100:5
+  bar is never used
+  <-- line 100
+  [@dead "bar"] and bar = () => foo();
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9
