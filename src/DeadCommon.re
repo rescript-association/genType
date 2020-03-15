@@ -67,11 +67,6 @@ let write = Sys.getenv_opt("Write") != None;
 let deadAnnotation = "dead";
 let liveAnnotation = "live";
 
-type declKind =
-  | RecordLabel
-  | VariantCase
-  | Value;
-
 /* Location printer: `filename:line: ' */
 let posToString = (~printCol=true, ~shortFile=true, pos: Lexing.position) => {
   let file = pos.Lexing.pos_fname;
@@ -161,18 +156,22 @@ module FileHash = {
 };
 
 type path = list(string);
+type declKind =
+  | RecordLabel
+  | VariantCase
+  | Value;
 type decl = {
   declKind,
   path,
   pos: Lexing.position,
   posAnnotation: Lexing.position,
+  mutable resolved: bool,
 };
-type decls = Hashtbl.t(Lexing.position, decl);
-let decls: decls = Hashtbl.create(256); /* all exported declarations */
+type decls = PosHash.t(decl);
+let decls: decls = PosHash.create(256); /* all exported declarations */
 type recInfo = {
   name: string,
   recSet: PosSet.t,
-  mutable resolved: bool,
 };
 let recursiveDecls: PosHash.t(recInfo) = PosHash.create(256); /* all recursive declarations */
 
@@ -380,10 +379,10 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
       );
     };
 
-    Hashtbl.add(
+    PosHash.replace(
       decls,
       pos,
-      {declKind, path: [name, ...path], pos, posAnnotation},
+      {declKind, path: [name, ...path], pos, posAnnotation, resolved: false},
     );
   };
 };
@@ -627,21 +626,21 @@ let comparePos =
 };
 
 let rec resolveRecursiveRefs =
-        (~orderedFiles, ~refsTodo, ~refsBeingResolved, pos) => {
-  switch (PosHash.find_opt(recursiveDecls, pos)) {
+        (~orderedFiles, ~refsTodo, ~refsBeingResolved, decl) => {
+  switch (PosHash.find_opt(recursiveDecls, decl.pos)) {
   | None =>
     // Check for out-of-order dependencies
     if (refsTodo
         |> PosSet.exists(x => {
              let r =
-               try(comparePos(~orderedFiles, pos, x) < 0) {
+               try(comparePos(~orderedFiles, decl.pos, x) < 0) {
                | Not_found => false
                };
              if (r) {
                Log_.item(
                  "resolveRecursiveRefs: out-of-order dependency %s -> %s@.",
                  x |> posToString,
-                 pos |> posToString,
+                 decl.pos |> posToString,
                );
              };
              r;
@@ -649,10 +648,10 @@ let rec resolveRecursiveRefs =
       ();
     };
     refsTodo;
-  | Some({name, resolved: true}) =>
+  | Some({name}) when decl.resolved =>
     Log_.item("XXX %s already resolved@.", name);
     refsTodo;
-  | Some(recInfo) when PosSet.mem(pos, refsBeingResolved) =>
+  | Some(recInfo) when PosSet.mem(decl.pos, refsBeingResolved) =>
     Log_.item(
       "XXX %s is being resolved already: assume no new dependencies@.",
       recInfo.name,
@@ -664,7 +663,7 @@ let rec resolveRecursiveRefs =
     let newRefsTodo =
       refsTodo
       |> PosSet.filter(x =>
-           if (x == pos) {
+           if (x == decl.pos) {
              Log_.item("XXX %s ignoring reference to self@.", name);
              false;
            } else if (!PosSet.mem(x, recSet)) {
@@ -674,20 +673,21 @@ let rec resolveRecursiveRefs =
              );
              true;
            } else {
-             let xRecSet = PosHash.find(recursiveDecls, x);
+             let xDecl = PosHash.find(decls, x);
              let xRefsTodo = PosHash.findSet(valueReferences, x);
-             if (xRecSet.resolved) {
+             if (xDecl.resolved) {
                !ProcessDeadAnnotations.isAnnotatedDead(x)
                && !PosSet.is_empty(xRefsTodo);
              } else {
                let xNewRefsTodo =
-                 x
+                 xDecl
                  |> resolveRecursiveRefs(
                       ~orderedFiles,
                       ~refsTodo=xRefsTodo,
-                      ~refsBeingResolved=PosSet.add(pos, refsBeingResolved),
+                      ~refsBeingResolved=
+                        PosSet.add(decl.pos, refsBeingResolved),
                     );
-               if (!xRecSet.resolved) {
+               if (!xDecl.resolved) {
                  unresolved := true;
                };
                !PosSet.is_empty(xNewRefsTodo);
@@ -695,9 +695,9 @@ let rec resolveRecursiveRefs =
            }
          );
     if (! unresolved^ || PosSet.is_empty(refsBeingResolved)) {
-      recInfo.resolved = true;
+      decl.resolved = true;
       if (PosSet.is_empty(newRefsTodo)) {
-        pos |> ProcessDeadAnnotations.annotateDead;
+        decl.pos |> ProcessDeadAnnotations.annotateDead;
       };
       Log_.item(
         "XXX %s resolved with %d dependencies@.",
@@ -715,7 +715,8 @@ let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let iterDeclInOrder = (~orderedFiles, items, {declKind, pos, path} as item) => {
+  let iterDeclInOrder =
+      (~orderedFiles, declarations, {declKind, pos, path} as decl) => {
     switch (
       pos
       |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
@@ -726,7 +727,7 @@ let reportDead = (~onDeadCode) => {
           ~orderedFiles,
           ~refsBeingResolved=PosSet.empty,
           ~refsTodo=referencesToLoc,
-          pos,
+          decl,
         );
       let liveReferences =
         referencesToLoc
@@ -739,7 +740,7 @@ let reportDead = (~onDeadCode) => {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
-        [{...item, path}, ...items];
+        [{...decl, path}, ...declarations];
       } else {
         if (verbose) {
           let refsString =
@@ -755,10 +756,10 @@ let reportDead = (~onDeadCode) => {
             refsString,
           );
         };
-        items;
+        declarations;
       };
-    | _ => items
-    | exception Not_found => items
+    | _ => declarations
+    | exception Not_found => declarations
     };
   };
 
@@ -777,8 +778,12 @@ let reportDead = (~onDeadCode) => {
        );
   };
 
-  let itemsList =
-    Hashtbl.fold((_pos, item, items) => [item, ...items], decls, []);
+  let declarations =
+    PosHash.fold(
+      (_pos, decl, declarations) => [decl, ...declarations],
+      decls,
+      [],
+    );
 
   let orderedFiles = Hashtbl.create(256);
   iterFilesFromRootsToLeaves(
@@ -842,7 +847,7 @@ let reportDead = (~onDeadCode) => {
     );
   };
 
-  itemsList
+  declarations
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
   |> List.fold_left(iterDeclInOrder(~orderedFiles), [])
   |> List.iter(item => item |> onDeadCode);
