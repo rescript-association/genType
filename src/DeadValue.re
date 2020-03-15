@@ -103,7 +103,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
     | Tpat_var(id, {loc: {loc_start, loc_ghost} as loc}) when !loc_ghost =>
       let name = "+" ++ Ident.name(id);
       let exists =
-        switch (Hashtbl.find_opt(decls, loc_start)) {
+        switch (PosHash.find_opt(decls, loc_start)) {
         | Some({declKind: Value}) => true
         | Some(_) => assert(false)
         | None => false
@@ -112,7 +112,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
       if (!exists) {
         addDeclaration(~declKind=Value, ~path, ~loc, ~name);
       };
-      switch (Hashtbl.find_opt(decls, loc_start)) {
+      switch (PosHash.find_opt(decls, loc_start)) {
       | None => ()
       | Some(decl) =>
         // Value bindings contain the correct location for the entire declaration: update final position.
@@ -122,7 +122,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
           annotateAtEnd(~pos=loc_start)
             ? vb.vb_loc.loc_end : vb.vb_loc.loc_start;
 
-        Hashtbl.replace(decls, loc_start, {...decl, posAnnotation});
+        PosHash.replace(decls, loc_start, {...decl, posAnnotation});
       };
       loc_start;
     | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
@@ -161,7 +161,7 @@ let collectValueBindings =
          );
     namePosList
     |> List.iter(((name, pos)) => {
-         let recInfo = {recSet, name, resolved: false};
+         let recInfo = {recSet, name};
          PosHash.replace(recursiveDecls, pos, recInfo);
        });
     if (verbose) {
