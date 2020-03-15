@@ -161,7 +161,13 @@ module FileHash = {
 };
 
 type path = list(string);
-type decls = Hashtbl.t(Lexing.position, (path, declKind, Lexing.position));
+type decl = {
+  declKind,
+  path,
+  pos: Lexing.position,
+  posAnnotation: Lexing.position,
+};
+type decls = Hashtbl.t(Lexing.position, decl);
 let decls: decls = Hashtbl.create(256); /* all exported declarations */
 type recInfo = {
   name: string,
@@ -374,7 +380,11 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
       );
     };
 
-    Hashtbl.add(decls, pos, ([name, ...path], declKind, posAnnotation));
+    Hashtbl.add(
+      decls,
+      pos,
+      {declKind, path: [name, ...path], pos, posAnnotation},
+    );
   };
 };
 
@@ -489,23 +499,16 @@ module ProcessDeadAnnotations = {
   };
 };
 
-type item = {
-  declKind,
-  path,
-  pos: Lexing.position,
-  posAnnotation: Lexing.position,
-};
-
 module WriteDeadAnnotations = {
   type line = {
-    mutable items: list(item),
+    mutable declarations: list(decl),
     original: string,
   };
 
-  let rec lineToString = ({original, items}) => {
-    switch (items) {
+  let rec lineToString = ({original, declarations}) => {
+    switch (declarations) {
     | [] => original
-    | [{declKind, path, pos, posAnnotation}, ...otherItems] =>
+    | [{declKind, path, pos, posAnnotation}, ...nextDeclarations] =>
       let isReason = posIsReason(pos);
       let annotationStr =
         (isReason ? "" : " ")
@@ -526,7 +529,7 @@ module WriteDeadAnnotations = {
           } else {
             isReason ? annotationStr ++ original : original ++ annotationStr;
           },
-        items: otherItems,
+        declarations: nextDeclarations,
       }
       |> lineToString;
     };
@@ -539,7 +542,7 @@ module WriteDeadAnnotations = {
     let channel = open_in(fileName);
     let lines = ref([]);
     let rec loop = () => {
-      let line = {original: input_line(channel), items: []};
+      let line = {original: input_line(channel), declarations: []};
       lines := [line, ...lines^];
       loop();
     };
@@ -564,8 +567,8 @@ module WriteDeadAnnotations = {
       close_out(channel);
     };
 
-  let onDeadItem = (~ppf, item) => {
-    let fileName = item.pos.pos_fname;
+  let onDeadDecl = (~ppf, decl) => {
+    let fileName = decl.pos.pos_fname;
     if (Sys.file_exists(fileName)) {
       if (fileName != currentFile^) {
         writeFile(currentFile^, currentFileLines^);
@@ -573,19 +576,19 @@ module WriteDeadAnnotations = {
         currentFileLines := readFile(fileName);
       };
 
-      let indexInLines = item.posAnnotation.pos_lnum - 1;
+      let indexInLines = decl.posAnnotation.pos_lnum - 1;
 
       if (indexInLines < Array.length(currentFileLines^)) {
         let line = currentFileLines^[indexInLines];
-        line.items = [item, ...line.items];
+        line.declarations = [decl, ...line.declarations];
         Format.fprintf(
           ppf,
           "  <-- line %d@.  %s@.",
-          item.pos.pos_lnum,
+          decl.pos.pos_lnum,
           line |> lineToString,
         );
       } else {
-        Format.fprintf(ppf, "  <-- Can't find line %d@.", item.pos.pos_lnum);
+        Format.fprintf(ppf, "  <-- Can't find line %d@.", decl.pos.pos_lnum);
       };
     } else {
       Format.fprintf(ppf, "  <-- can't find file@.");
@@ -712,7 +715,7 @@ let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let iterOrderedItem = (~orderedFiles, items, {declKind, pos, path} as item) => {
+  let iterDeclInOrder = (~orderedFiles, items, {declKind, pos, path} as item) => {
     switch (
       pos
       |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
@@ -774,13 +777,8 @@ let reportDead = (~onDeadCode) => {
        );
   };
 
-  let items =
-    Hashtbl.fold(
-      (pos, (path, declKind, posAnnotation), items) =>
-        [{declKind, path, pos, posAnnotation}, ...items],
-      decls,
-      [],
-    );
+  let itemsList =
+    Hashtbl.fold((_pos, item, items) => [item, ...items], decls, []);
 
   let orderedFiles = Hashtbl.create(256);
   iterFilesFromRootsToLeaves(
@@ -844,8 +842,8 @@ let reportDead = (~onDeadCode) => {
     );
   };
 
-  items
+  itemsList
   |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
-  |> List.fold_left(iterOrderedItem(~orderedFiles), [])
+  |> List.fold_left(iterDeclInOrder(~orderedFiles), [])
   |> List.iter(item => item |> onDeadCode);
 };
