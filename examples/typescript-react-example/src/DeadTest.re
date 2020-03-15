@@ -91,8 +91,6 @@ let rec recWithCallback = () => {
   cb();
 };
 
-let aaa = () => ();
-
 let rec foo = () => {
   let cb = () => bar();
   cb();
