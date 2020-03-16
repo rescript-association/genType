@@ -169,11 +169,6 @@ type decl = {
 };
 type decls = PosHash.t(decl);
 let decls: decls = PosHash.create(256); /* all exported declarations */
-type recInfo = {
-  name: string,
-  recSet: PosSet.t,
-};
-let recursiveDecls: PosHash.t(recInfo) = PosHash.create(256); /* all recursive declarations */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
@@ -202,47 +197,21 @@ let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
   let lastBinding = getLastBinding();
   let posUsage =
     !transitive || lastBinding == Lexing.dummy_pos ? posUsage : lastBinding;
-  let posReRouted =
-    // if posDeclaration is recursive toghether with {x,y,z},
-    // and there exists y in {x,y,z} which is a current binding
-    // then rerout the binding to y --> posDeclaration
-    switch (PosHash.find_opt(recursiveDecls, posDeclaration)) {
-    | Some({name, recSet}) =>
-      switch (
-        PosSet.find_first_opt(
-          pos => PosSet.mem(pos, currentBindings^),
-          recSet,
-        )
-      ) {
-      | Some(posReRouted) =>
-        if (verbose && posReRouted != posUsage) {
-          Log_.item(
-            "recursiveCall to %s: %s rerouted to %s@.",
-            name,
-            posUsage |> posToString,
-            posReRouted |> posToString,
-          );
-        };
-        posReRouted;
-      | None => posUsage
-      }
-    | None => posUsage
-    };
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
-      posReRouted |> posToString,
+      posUsage |> posToString,
       posDeclaration |> posToString,
     );
   };
-  PosHash.addSet(valueReferences, posDeclaration, posReRouted);
+  PosHash.addSet(valueReferences, posDeclaration, posUsage);
   if (addFileReference
       && posDeclaration.pos_fname != none_
-      && posReRouted.pos_fname != none_
-      && posReRouted.pos_fname != posDeclaration.pos_fname) {
+      && posUsage.pos_fname != none_
+      && posUsage.pos_fname != posDeclaration.pos_fname) {
     FileHash.addSet(
       fileReferences,
-      posReRouted.pos_fname,
+      posUsage.pos_fname,
       posDeclaration.pos_fname,
     );
   };
@@ -627,70 +596,52 @@ let comparePos =
 
 let rec resolveRecursiveRefs =
         (~orderedFiles, ~refsTodo, ~refsBeingResolved, decl) => {
-  switch (PosHash.find_opt(recursiveDecls, decl.pos)) {
-  | None =>
-    // Check for out-of-order dependencies
-    if (refsTodo
-        |> PosSet.exists(x => {
-             let r =
-               try(comparePos(~orderedFiles, decl.pos, x) < 0) {
-               | Not_found => false
-               };
-             if (r) {
-               Log_.item(
-                 "resolveRecursiveRefs: out-of-order dependency %s -> %s@.",
-                 x |> posToString,
-                 decl.pos |> posToString,
-               );
-             };
-             r;
-           })) {
-      ();
-    };
+  switch (decl.pos) {
+  | _ when decl.resolved =>
+    Log_.item("XXX %s already resolved@.", decl.path |> pathToString);
     refsTodo;
-  | Some({name}) when decl.resolved =>
-    Log_.item("XXX %s already resolved@.", name);
-    refsTodo;
-  | Some(recInfo) when PosSet.mem(decl.pos, refsBeingResolved) =>
+  | _ when PosSet.mem(decl.pos, refsBeingResolved) =>
     Log_.item(
       "XXX %s is being resolved already: assume no new dependencies@.",
-      recInfo.name,
+      decl.path |> pathToString,
     );
     PosSet.empty;
-  | Some({name, recSet} as recInfo) =>
-    Log_.item("@.XXX resolving %s@.", name);
+  | _ =>
+    Log_.item("@.XXX resolving out-of-order %s@.", decl.path |> pathToString);
     let unresolved = ref(false);
     let newRefsTodo =
       refsTodo
       |> PosSet.filter(x =>
            if (x == decl.pos) {
-             Log_.item("XXX %s ignoring reference to self@.", name);
-             false;
-           } else if (!PosSet.mem(x, recSet)) {
              Log_.item(
-               "XXX %s: one dependency is not mutually recursive@.",
-               name,
+               "XXX %s ignoring reference to self@.",
+               decl.path |> pathToString,
              );
-             true;
+             false;
            } else {
-             let xDecl = PosHash.find(decls, x);
-             let xRefsTodo = PosHash.findSet(valueReferences, x);
-             if (xDecl.resolved) {
-               !ProcessDeadAnnotations.isAnnotatedDead(x)
-               && !PosSet.is_empty(xRefsTodo);
-             } else {
-               let xNewRefsTodo =
-                 xDecl
-                 |> resolveRecursiveRefs(
-                      ~orderedFiles,
-                      ~refsTodo=xRefsTodo,
-                      ~refsBeingResolved=
-                        PosSet.add(decl.pos, refsBeingResolved),
-                    );
-               if (!xDecl.resolved) {
-                 unresolved := true;
+             switch (PosHash.find_opt(decls, x)) {
+             | None =>
+               Log_.item("XXX can't find decl for %s@.", x |> posToString);
+               true;
+             | Some(xDecl) =>
+               let xRefsTodo = PosHash.findSet(valueReferences, x);
+               if (xDecl.resolved) {
+                 !ProcessDeadAnnotations.isAnnotatedDead(x)
+                 && !PosSet.is_empty(xRefsTodo);
+               } else {
+                 let xNewRefsTodo =
+                   xDecl
+                   |> resolveRecursiveRefs(
+                        ~orderedFiles,
+                        ~refsTodo=xRefsTodo,
+                        ~refsBeingResolved=
+                          PosSet.add(decl.pos, refsBeingResolved),
+                      );
+                 if (!xDecl.resolved) {
+                   unresolved := true;
+                 };
+                 !PosSet.is_empty(xNewRefsTodo);
                };
-               !PosSet.is_empty(xNewRefsTodo);
              };
            }
          );
@@ -701,11 +652,11 @@ let rec resolveRecursiveRefs =
       };
       Log_.item(
         "XXX %s resolved with %d dependencies@.",
-        name,
+        decl.path |> pathToString,
         newRefsTodo |> PosSet.cardinal,
       );
     } else {
-      Log_.item("XXX %s still unresolved@.", name);
+      Log_.item("XXX %s still unresolved@.", decl.path |> pathToString);
     };
     newRefsTodo;
   };
@@ -723,12 +674,14 @@ let reportDead = (~onDeadCode) => {
     ) {
     | referencesToLoc when !(pos |> dontReportDead) =>
       let referencesToLoc =
-        resolveRecursiveRefs(
-          ~orderedFiles,
-          ~refsBeingResolved=PosSet.empty,
-          ~refsTodo=referencesToLoc,
-          decl,
-        );
+        decl.declKind == Value
+          ? resolveRecursiveRefs(
+              ~orderedFiles,
+              ~refsBeingResolved=PosSet.empty,
+              ~refsTodo=referencesToLoc,
+              decl,
+            )
+          : referencesToLoc;
       let liveReferences =
         referencesToLoc
         |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
@@ -740,7 +693,7 @@ let reportDead = (~onDeadCode) => {
         if (transitive) {
           pos |> ProcessDeadAnnotations.annotateDead;
         };
-        [{...decl, path}, ...declarations];
+        [decl, ...declarations];
       } else {
         if (verbose) {
           let refsString =
