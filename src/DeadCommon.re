@@ -662,6 +662,16 @@ let rec resolveRecursiveRefs =
 let doReportDead = pos =>
   !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
+let declIsDead = (~refs, decl) => {
+  let liveRefs =
+    refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
+  liveRefs
+  |> PosSet.cardinal == 0
+  && !ProcessDeadAnnotations.isAnnotatedLive(decl.pos)
+  && posInWhitelist(decl.pos)
+  && !posInBlacklist(decl.pos);
+};
+
 let declCheckDead = (~declarations, ~orderedFiles, ~refs as refs_, decl) =>
   if (decl.pos |> doReportDead) {
     let refs =
@@ -673,13 +683,7 @@ let declCheckDead = (~declarations, ~orderedFiles, ~refs as refs_, decl) =>
             decl,
           )
         : refs_;
-    let liveRefs =
-      refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
-    if (liveRefs
-        |> PosSet.cardinal == 0
-        && !ProcessDeadAnnotations.isAnnotatedLive(decl.pos)
-        && posInWhitelist(decl.pos)
-        && !posInBlacklist(decl.pos)) {
+    if (decl |> declIsDead(~refs)) {
       decl.pos |> ProcessDeadAnnotations.annotateDead;
       [decl, ...declarations];
     } else {
