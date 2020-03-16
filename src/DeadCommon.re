@@ -659,6 +659,25 @@ let rec resolveRecursiveRefs =
   };
 };
 
+let declIsDead = (~orderedFiles, ~refs as refs_, decl) => {
+  let refs =
+    decl.declKind == Value
+      ? resolveRecursiveRefs(
+          ~orderedFiles,
+          ~refsBeingResolved=PosSet.empty,
+          ~refsTodo=refs_,
+          decl,
+        )
+      : refs_;
+  let liveRefs =
+    refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
+  liveRefs
+  |> PosSet.cardinal == 0
+  && !ProcessDeadAnnotations.isAnnotatedLive(decl.pos)
+  && posInWhitelist(decl.pos)
+  && !posInBlacklist(decl.pos);
+};
+
 let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
@@ -666,27 +685,11 @@ let reportDead = (~onDeadCode) => {
   let iterDeclInOrder =
       (~orderedFiles, declarations, {declKind, pos, path} as decl) => {
     switch (
-      pos
+      decl.pos
       |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
     ) {
     | referencesToLoc when !(pos |> dontReportDead) =>
-      let referencesToLoc =
-        decl.declKind == Value
-          ? resolveRecursiveRefs(
-              ~orderedFiles,
-              ~refsBeingResolved=PosSet.empty,
-              ~refsTodo=referencesToLoc,
-              decl,
-            )
-          : referencesToLoc;
-      let liveReferences =
-        referencesToLoc
-        |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
-      if (liveReferences
-          |> PosSet.cardinal == 0
-          && !ProcessDeadAnnotations.isAnnotatedLive(pos)
-          && posInWhitelist(pos)
-          && !posInBlacklist(pos)) {
+      if (decl |> declIsDead(~orderedFiles, ~refs=referencesToLoc)) {
         pos |> ProcessDeadAnnotations.annotateDead;
         [decl, ...declarations];
       } else {
@@ -705,7 +708,7 @@ let reportDead = (~onDeadCode) => {
           );
         };
         declarations;
-      };
+      }
     | _ => declarations
     | exception Not_found => declarations
     };
