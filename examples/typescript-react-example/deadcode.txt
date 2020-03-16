@@ -1495,6 +1495,7 @@ XXX resolving out-of-order BucklescriptAnnotations.+f
 XXX resolving out-of-order BucklescriptAnnotations.bar
   XXX BucklescriptAnnotations.bar resolved with 0 dependencies
   XXX BucklescriptAnnotations.+f resolved with 0 dependencies
+  BucklescriptAnnotations.bar: 0 references ()
   
 XXX resolving out-of-order BucklescriptAnnotations.foo
   XXX BucklescriptAnnotations.foo resolved with 0 dependencies
@@ -1572,6 +1573,7 @@ XXX resolving out-of-order DeadTest.+cb
 XXX resolving out-of-order DeadTest.foo
   XXX DeadTest.foo resolved with 0 dependencies
   XXX DeadTest.+cb resolved with 0 dependencies
+  DeadTest.foo: 1 references (DeadTest.re:98:4)
   
 XXX resolving out-of-order DeadTest.+cb
   
@@ -1669,6 +1671,7 @@ XXX resolving out-of-order DeadTest.thisIsUsedOnce
   XXX can't find decl for DeadTest.re:8:7
   XXX DeadTest.thisIsUsedOnce resolved with 1 dependencies
   DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
+  DeadTest.fortyTwoButExported: 0 references ()
   
 XXX resolving out-of-order DeadTest.fortytwo
   XXX DeadTest.fortytwo resolved with 0 dependencies
@@ -1683,17 +1686,39 @@ XXX resolving out-of-order DeadTestWhitelist.x
 XXX resolving out-of-order DeadTypeTest.a
   XXX DeadTypeTest.a resolved with 0 dependencies
   [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8)
+  Docstrings.unitArgWithConversionU: 0 references ()
+  Docstrings.unitArgWithConversion: 0 references ()
   [type] Docstrings.t.A: 2 references (Docstrings.re:65:34, Docstrings.re:68:36)
+  Docstrings.unitArgWithoutConversionU: 0 references ()
+  Docstrings.unitArgWithoutConversion: 0 references ()
+  Docstrings.grouped: 0 references ()
+  Docstrings.unnamed2U: 0 references ()
+  Docstrings.unnamed2: 0 references ()
+  Docstrings.unnamed1U: 0 references ()
+  Docstrings.unnamed1: 0 references ()
+  Docstrings.useParamU: 0 references ()
+  Docstrings.useParam: 0 references ()
+  Docstrings.treeU: 0 references ()
+  Docstrings.twoU: 0 references ()
+  Docstrings.oneU: 0 references ()
+  Docstrings.tree: 0 references ()
+  Docstrings.two: 0 references ()
+  Docstrings.one: 0 references ()
+  Docstrings.signMessage: 0 references ()
+  Docstrings.flat: 0 references ()
   
 XXX resolving out-of-order ExportWithRename.make
   XXX can't find decl for _none_:1:-1
   XXX ExportWithRename.make resolved with 1 dependencies
   ExportWithRename.make: 1 references (_none_:1:-1)
+  FirstClassModules.someFunctorAsFunction: 0 references ()
   
 XXX resolving out-of-order FirstClassModules.SomeFunctor.+ww
   XXX can't find decl for FirstClassModules.re:46:20
   XXX FirstClassModules.SomeFunctor.+ww resolved with 1 dependencies
   FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20)
+  FirstClassModules.testConvert: 0 references ()
+  FirstClassModules.firstClassModule: 0 references ()
   
 XXX resolving out-of-order FirstClassModules.M.x
   XXX can't find decl for FirstClassModules.re:2:2
@@ -1754,6 +1779,7 @@ XXX resolving out-of-order Hooks.input
   XXX Hooks.input resolved with 1 dependencies
   Hooks.input: 1 references (_none_:1:-1)
   [type] Hooks.r.x: 1 references (Hooks.re:113:45)
+  Hooks.testForwardRef: 0 references ()
   
 XXX resolving out-of-order Hooks.makeWithRef
   XXX can't find decl for _none_:1:-1
@@ -1764,6 +1790,7 @@ XXX resolving out-of-order Hooks.componentWithRenamedArgs
   XXX can't find decl for _none_:1:-1
   XXX Hooks.componentWithRenamedArgs resolved with 1 dependencies
   Hooks.componentWithRenamedArgs: 1 references (_none_:1:-1)
+  Hooks.functionWithRenamedArgs: 0 references ()
   
 XXX resolving out-of-order Hooks.NoProps.+make
   XXX can't find decl for _none_:1:-1
@@ -1794,15 +1821,26 @@ XXX resolving out-of-order Hooks.anotherComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.anotherComponent resolved with 1 dependencies
   Hooks.anotherComponent: 1 references (_none_:1:-1)
+  Hooks.default: 0 references ()
   
 XXX resolving out-of-order Hooks.make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.make resolved with 1 dependencies
   Hooks.make: 1 references (_none_:1:-1)
   [type] Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37)
+  ImportIndex.make: 0 references ()
+  LetPrivate.y: 0 references ()
+  LetPrivate.local_1.+x: 1 references (LetPrivate.re:5:4)
+  ModuleAliases.testInner2: 0 references ()
+  ModuleAliases.testInner: 0 references ()
+  ModuleAliases.testNested: 0 references ()
   
 XXX resolving out-of-order ModuleAliases2.q
   XXX ModuleAliases2.q resolved with 0 dependencies
+  NestedModules.Universe.someString: 0 references ()
+  NestedModules.Universe.Nested2.nested2Function: 0 references ()
+  NestedModules.Universe.Nested2.Nested3.nested3Function: 0 references ()
+  NestedModules.Universe.Nested2.Nested3.nested3Value: 0 references ()
   
 XXX resolving out-of-order NestedModules.Universe.Nested2.Nested3.w
   XXX NestedModules.Universe.Nested2.Nested3.w resolved with 0 dependencies
@@ -1818,18 +1856,28 @@ XXX resolving out-of-order NestedModules.Universe.Nested2.Nested3.x
   
 XXX resolving out-of-order NestedModules.Universe.Nested2.y
   XXX NestedModules.Universe.Nested2.y resolved with 0 dependencies
+  NestedModules.Universe.Nested2.nested2Value: 0 references ()
   
 XXX resolving out-of-order NestedModules.Universe.Nested2.x
   XXX NestedModules.Universe.Nested2.x resolved with 0 dependencies
   
 XXX resolving out-of-order NestedModules.Universe.notExported
   XXX NestedModules.Universe.notExported resolved with 0 dependencies
+  NestedModules.Universe.theAnswer: 0 references ()
+  NestedModules.notNested: 0 references ()
+  NestedModulesInSignature.Universe.theAnswer: 0 references ()
+  Opaque.testConvertNestedRecordFromOtherFile: 0 references ()
+  Opaque.noConversion: 0 references ()
+  ReasonComponent.useRecordsCoord: 0 references ()
+  ReasonComponent.tToString: 0 references ()
+  ReasonComponent.useTypeDefinedInAnotherModule: 0 references ()
   
 XXX resolving out-of-order ReasonComponent.+first
   
 XXX resolving out-of-order ReasonComponent.minus
   XXX ReasonComponent.minus resolved with 0 dependencies
   XXX ReasonComponent.+first resolved with 0 dependencies
+  ReasonComponent.minus: 0 references ()
   
 XXX resolving out-of-order ReasonComponent.+emptyArray
   
@@ -1842,15 +1890,35 @@ XXX resolving out-of-order ReasonComponent.+intList
   
 XXX resolving out-of-order ReasonComponent.+message
   XXX ReasonComponent.+message resolved with 0 dependencies
+  ReasonComponent.make: 0 references ()
+  ReasonComponent.onClick: 1 references (ReasonComponent.re:18:4)
   [type] ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12)
   
 XXX resolving out-of-order ReasonComponent.component
   XXX ReasonComponent.component resolved with 0 dependencies
+  Records.testMyRecBsAs2: 0 references ()
+  Records.testMyRecBsAs: 0 references ()
   [type] Records.myRecBsAs.type_: 1 references (Records.re:167:38)
+  Records.testMyObj2: 0 references ()
+  Records.testMyObj: 0 references ()
+  Records.testMyRec2: 0 references ()
+  Records.testMyRec: 0 references ()
   [type] Records.myRec.type_: 1 references (Records.re:149:30)
+  Records.computeArea4: 0 references ()
+  Records.computeArea3: 0 references ()
+  Records.someBusiness2: 0 references ()
+  Records.findAddress2: 0 references ()
   [type] Records.business2.address2: 1 references (Records.re:93:2)
+  Records.getPayloadRecordPlusOne: 0 references ()
+  Records.payloadValue: 0 references ()
+  Records.recordValue: 1 references (Records.re:76:4)
+  Records.getPayloadRecord: 0 references ()
   [type] Records.record.v: 1 references (Records.re:81:5)
+  Records.getPayload: 0 references ()
   [type] Records.payload.payload: 3 references (Records.re:61:18, Records.re:70:24, Records.re:79:31)
+  Records.findAllAddresses: 0 references ()
+  Records.someBusiness: 0 references ()
+  Records.findAddress: 0 references ()
   
 XXX resolving out-of-order Records.getOpt
   
@@ -1866,9 +1934,17 @@ XXX resolving out-of-order Records.findAddress2
   [type] Records.business.address: 2 references (Records.re:38:2, Records.re:47:6)
   [type] Records.business.owner: 1 references (Records.re:48:8)
   [type] Records.person.address: 1 references (Records.re:48:40)
+  Records.coord2d: 0 references ()
+  Records.computeArea: 0 references ()
+  Records.origin: 0 references ()
   [type] Records.coord.z: 1 references (Records.re:14:19)
   [type] Records.coord.y: 2 references (ReasonComponent.re:63:23, Records.re:14:19)
   [type] Records.coord.x: 2 references (ReasonComponent.re:63:23, Records.re:14:19)
+  References.preserveRefIdentity: 0 references ()
+  References.destroysRefIdentity: 0 references ()
+  References.set: 0 references ()
+  References.make: 0 references ()
+  References.get: 0 references ()
   
 XXX resolving out-of-order References.R.set
   
@@ -1896,35 +1972,109 @@ XXX resolving out-of-order References.R.+make
   
 XXX resolving out-of-order References.R.+get
   XXX References.R.+get resolved with 0 dependencies
+  References.update: 0 references ()
+  References.access: 0 references ()
+  References.create: 0 references ()
   
 XXX resolving out-of-order Shadow.M.test
   XXX Shadow.M.test resolved with 0 dependencies
+  Shadow.M.+test: 0 references ()
+  Shadow.test: 0 references ()
+  Shadow.test: 0 references ()
+  TestEmitInnerModules.Outer.Medium.Inner.y: 0 references ()
+  TestEmitInnerModules.Inner.y: 0 references ()
+  TestEmitInnerModules.Inner.x: 0 references ()
+  TestFirstClassModules.convertFirstClassModuleWithTypeEquations: 0 references ()
+  TestFirstClassModules.convertRecord: 0 references ()
+  TestFirstClassModules.convertInterface: 0 references ()
+  TestFirstClassModules.convert: 0 references ()
   
 XXX resolving out-of-order TestImmutableArray.testBeltArraySet
   XXX TestImmutableArray.testBeltArraySet resolved with 0 dependencies
   
 XXX resolving out-of-order TestImmutableArray.testBeltArrayGet
   XXX TestImmutableArray.testBeltArrayGet resolved with 0 dependencies
+  TestImmutableArray.testImmutableArrayGet: 0 references ()
+  TestImport.defaultValue2: 0 references ()
   
 XXX resolving out-of-order TestImport.make
   XXX TestImport.make resolved with 0 dependencies
+  TestImport.make: 1 references (TestImport.re:42:4)
+  TestImport.defaultValue: 0 references ()
+  TestImport.valueStartingWithUpperCaseLetter: 0 references ()
   
 XXX resolving out-of-order TestImport.innerStuffContents
   XXX TestImport.innerStuffContents resolved with 0 dependencies
+  TestImport.innerStuffContentsAsEmptyObject: 0 references ()
+  TestImport.innerStuffContents: 1 references (TestImport.re:18:4)
+  TestModuleAliases.testInner2Expanded: 0 references ()
+  TestModuleAliases.testInner2: 0 references ()
+  TestModuleAliases.testInner1Expanded: 0 references ()
+  TestModuleAliases.testInner1: 0 references ()
+  TestPromise.convert: 0 references ()
   [type] TestPromise.fromPayload.s: 1 references (TestPromise.re:14:32)
+  TransitiveType1.convertAlias: 0 references ()
+  TransitiveType1.convert: 0 references ()
   
 XXX resolving out-of-order TransitiveType2.convertT2
   XXX TransitiveType2.convertT2 resolved with 0 dependencies
+  TransitiveType3.convertT3: 0 references ()
   
 XXX resolving out-of-order TypeParams1.exportSomething
   XXX TypeParams1.exportSomething resolved with 0 dependencies
   
 XXX resolving out-of-order TypeParams2.exportSomething
   XXX TypeParams2.exportSomething resolved with 0 dependencies
+  TypeParams3.test2: 0 references ()
+  TypeParams3.test: 0 references ()
+  Unboxed.r2Test: 0 references ()
+  Unboxed.testV1: 0 references ()
+  Uncurried.sumLblCurried: 0 references ()
+  Uncurried.sumCurried: 0 references ()
+  Uncurried.sumU2: 0 references ()
+  Uncurried.sumU: 0 references ()
+  Uncurried.callback2U: 0 references ()
+  Uncurried.callback2: 0 references ()
   [type] Uncurried.authU.loginU: 1 references (Uncurried.re:39:25)
   [type] Uncurried.auth.login: 1 references (Uncurried.re:36:24)
+  Uncurried.callback: 0 references ()
+  Uncurried.curried3: 0 references ()
+  Uncurried.uncurried3: 0 references ()
+  Uncurried.uncurried2: 0 references ()
+  Uncurried.uncurried1: 0 references ()
+  Uncurried.uncurried0: 0 references ()
+  UseImportJsValue.useTypeImportedInOtherModule: 0 references ()
+  UseImportJsValue.useGetProp: 0 references ()
+  Variants.restResult3: 0 references ()
+  Variants.restResult2: 0 references ()
+  Variants.restResult1: 0 references ()
+  Variants.polyWithOpt: 0 references ()
+  Variants.id2: 0 references ()
+  Variants.id1: 0 references ()
+  Variants.testConvert2to3: 0 references ()
+  Variants.testConvert3: 0 references ()
+  Variants.testConvert2: 0 references ()
+  Variants.fortytwoBAD: 0 references ()
+  Variants.fortytwoOK: 0 references ()
+  Variants.testConvert: 0 references ()
+  Variants.swap: 0 references ()
+  Variants.onlySunday: 0 references ()
+  Variants.sunday: 0 references ()
+  Variants.saturday: 0 references ()
+  Variants.monday: 0 references ()
+  Variants.isWeekend: 0 references ()
+  VariantsWithPayload.testVariant1Object: 0 references ()
+  VariantsWithPayload.testVariant1Int: 0 references ()
+  VariantsWithPayload.printVariantWithPayloads: 0 references ()
+  VariantsWithPayload.testVariantWithPayloads: 0 references ()
+  VariantsWithPayload.testSimpleVariant: 0 references ()
+  VariantsWithPayload.printManyPayloads: 0 references ()
+  VariantsWithPayload.testManyPayloads: 0 references ()
+  VariantsWithPayload.printVariantWithPayload: 0 references ()
+  VariantsWithPayload.testWithPayload: 0 references ()
   [type] VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53)
   [type] VariantsWithPayload.payload.x: 2 references (VariantsWithPayload.re:27:42, VariantsWithPayload.re:46:36)
+  ComponentAsProp.make: 0 references ()
   
 XXX resolving out-of-order ComponentAsProp.component
   
@@ -1937,15 +2087,18 @@ XXX resolving out-of-order ManyComponents.+emptyArray
 XXX resolving out-of-order ManyComponents.make
   XXX ManyComponents.make resolved with 0 dependencies
   XXX ManyComponents.+emptyArray resolved with 0 dependencies
+  ManyComponents.make: 0 references ()
   
 XXX resolving out-of-order ManyComponents.component
   XXX ManyComponents.component resolved with 0 dependencies
+  ManyComponents.ManyProps.make: 0 references ()
   
 XXX resolving out-of-order ManyComponents.ManyProps.component
   
 XXX resolving out-of-order ManyComponents.ManyProps.make
   XXX ManyComponents.ManyProps.make resolved with 0 dependencies
   XXX ManyComponents.ManyProps.component resolved with 0 dependencies
+  ManyComponents.InnerComponent.make: 1 references (ManyComponents.re:39:4)
   
 XXX resolving out-of-order ManyComponents.InnerComponent.component
   
@@ -1958,10 +2111,35 @@ XXX resolving out-of-order ManyComponents.InnerComponent.someValueSoModuleOffset
   
 XXX resolving out-of-order location.x
   XXX location.x resolved with 0 dependencies
+  Tuples.changeSecondAge: 0 references ()
+  Tuples.marry: 0 references ()
+  Tuples.getFirstName: 0 references ()
   [type] Tuples.person.age: 1 references (Tuples.re:47:19)
   [type] Tuples.person.name: 1 references (Tuples.re:39:49)
+  Tuples.coord2d: 0 references ()
+  Tuples.computeAreaNoConverters: 0 references ()
+  Tuples.computeAreaWithIdent: 0 references ()
+  Tuples.computeArea: 0 references ()
+  Tuples.origin: 0 references ()
+  Tuples.testTuple: 0 references ()
+  Types.currentTime: 0 references ()
+  Types.testInstantiateTypeParameter: 0 references ()
+  Types.setMatch: 0 references ()
+  Types.testMarshalFields: 0 references ()
+  Types.testConvertLocation: 0 references ()
+  Types.testConvertNull: 0 references ()
+  Types.jsonStringify: 0 references ()
+  Types.jsString2T: 0 references ()
+  Types.jsStringT: 0 references ()
+  Types.stringT: 0 references ()
+  Types.testFunctionOnOptionsAsArgument: 0 references ()
+  Types.mutuallyRecursiveConverter: 0 references ()
+  Types.selfRecursiveConverter: 0 references ()
   [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34)
   [type] Types.selfRecursive.self: 1 references (Types.re:46:30)
+  Types.swap: 1 references (Types.re:28:8)
+  Types.map: 0 references ()
+  Types.someIntList: 0 references ()
   
 XXX resolving out-of-order DeadTypeTest._
   XXX DeadTypeTest._ resolved with 0 dependencies
@@ -2175,6 +2353,18 @@ XXX resolving out-of-order ImmutableArray.Array.get
 XXX resolving out-of-order TestImmutableArray.testImmutableArrayGet
   XXX TestImmutableArray.testImmutableArrayGet resolved with 0 dependencies
   XXX ImmutableArray.Array.get resolved with 0 dependencies
+  ImportHookDefault.make2: 0 references ()
+  ImportHookDefault.make: 1 references (Hooks.re:4:4)
+  ImportHooks.foo: 0 references ()
+  ImportHooks.make: 1 references (Hooks.re:4:4)
+  ImportJsValue.default: 0 references ()
+  ImportJsValue.polymorphic: 0 references ()
+  ImportJsValue.convertVariant: 0 references ()
+  ImportJsValue.returnedFromHigherOrder: 0 references ()
+  ImportJsValue.higherOrder: 1 references (ImportJsValue.re:62:4)
+  ImportJsValue.useColor: 0 references ()
+  ImportJsValue.useGetAbs: 0 references ()
+  ImportJsValue.useGetProp: 0 references ()
   
 XXX resolving out-of-order ImportJsValue.AbsoluteValue.getAbs
   
@@ -2184,9 +2374,15 @@ XXX resolving out-of-order ImportJsValue.useGetAbs
   
 XXX resolving out-of-order ImportJsValue.AbsoluteValue.+getAbs
   XXX ImportJsValue.AbsoluteValue.+getAbs resolved with 0 dependencies
+  ImportJsValue.areaValue: 0 references ()
+  ImportJsValue.roundedNumber: 0 references ()
+  ImportJsValue.returnMixedArray: 0 references ()
+  ImportJsValue.area: 1 references (ImportJsValue.re:28:4)
+  ImportJsValue.round: 1 references (ImportJsValue.re:25:4)
   
 XXX resolving out-of-order ImportMyBanner.make
   XXX ImportMyBanner.make resolved with 0 dependencies
+  ImportMyBanner.make: 1 references (ImportMyBanner.re:19:4)
   
 XXX resolving out-of-order NestedModulesInSignature.Universe.+theAnswer
   
