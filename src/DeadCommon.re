@@ -591,77 +591,6 @@ let comparePos =
   compare((position1, lnum2, bol2, cnum2), (position2, lnum1, bol1, cnum1));
 };
 
-let rec resolveRecursiveRefs =
-        (~orderedFiles, ~refsTodo, ~refsBeingResolved, decl) => {
-  switch (decl.pos) {
-  | _ when decl.resolved =>
-    Log_.item("XXX %s already resolved@.", decl.path |> pathToString);
-    refsTodo;
-  | _ when PosSet.mem(decl.pos, refsBeingResolved) =>
-    Log_.item(
-      "XXX %s is being resolved already: assume no new dependencies@.",
-      decl.path |> pathToString,
-    );
-    PosSet.empty;
-  | _ =>
-    Log_.item("@.XXX resolving out-of-order %s@.", decl.path |> pathToString);
-    let unresolved = ref(false);
-    let newRefsTodo =
-      refsTodo
-      |> PosSet.filter(x =>
-           if (x == decl.pos) {
-             Log_.item(
-               "XXX %s ignoring reference to self@.",
-               decl.path |> pathToString,
-             );
-             false;
-           } else {
-             switch (PosHash.find_opt(decls, x)) {
-             | None =>
-               Log_.item("XXX can't find decl for %s@.", x |> posToString);
-               true;
-             | Some(xDecl) =>
-               let xRefsTodo = PosHash.findSet(valueReferences, x);
-               if (xDecl.resolved) {
-                 !ProcessDeadAnnotations.isAnnotatedDead(x)
-                 && !PosSet.is_empty(xRefsTodo);
-               } else {
-                 let xNewRefsTodo =
-                   xDecl
-                   |> resolveRecursiveRefs(
-                        ~orderedFiles,
-                        ~refsTodo=xRefsTodo,
-                        ~refsBeingResolved=
-                          PosSet.add(decl.pos, refsBeingResolved),
-                      );
-                 if (!xDecl.resolved) {
-                   unresolved := true;
-                 };
-                 !PosSet.is_empty(xNewRefsTodo);
-               };
-             };
-           }
-         );
-    if (! unresolved^ || PosSet.is_empty(refsBeingResolved)) {
-      decl.resolved = true;
-      if (PosSet.is_empty(newRefsTodo)) {
-        decl.pos |> ProcessDeadAnnotations.annotateDead;
-      };
-      Log_.item(
-        "XXX %s resolved with %d dependencies@.",
-        decl.path |> pathToString,
-        newRefsTodo |> PosSet.cardinal,
-      );
-    } else {
-      Log_.item("XXX %s still unresolved@.", decl.path |> pathToString);
-    };
-    newRefsTodo;
-  };
-};
-
-let doReportDead = pos =>
-  !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
-
 let declIsDead = (~refs, decl) => {
   let liveRefs =
     refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
@@ -672,17 +601,93 @@ let declIsDead = (~refs, decl) => {
   && !posInBlacklist(decl.pos);
 };
 
+let rec resolveRecursiveRefs =
+        (~orderedFiles, ~refsTodo, ~refsBeingResolved, decl): bool => {
+  let newRefs =
+    switch (decl.pos) {
+    | _ when decl.resolved =>
+      Log_.item("XXX %s already resolved@.", decl.path |> pathToString);
+      refsTodo;
+    | _ when PosSet.mem(decl.pos, refsBeingResolved) =>
+      Log_.item(
+        "XXX %s is being resolved already: assume no new dependencies@.",
+        decl.path |> pathToString,
+      );
+      PosSet.empty;
+    | _ =>
+      Log_.item(
+        "@.XXX resolving out-of-order %s@.",
+        decl.path |> pathToString,
+      );
+      let unresolved = ref(false);
+      let newRefsTodo =
+        refsTodo
+        |> PosSet.filter(x =>
+             if (x == decl.pos) {
+               Log_.item(
+                 "XXX %s ignoring reference to self@.",
+                 decl.path |> pathToString,
+               );
+               false;
+             } else {
+               switch (PosHash.find_opt(decls, x)) {
+               | None =>
+                 Log_.item("XXX can't find decl for %s@.", x |> posToString);
+                 true;
+               | Some(xDecl) =>
+                 let xRefsTodo = PosHash.findSet(valueReferences, x);
+                 if (xDecl.resolved) {
+                   !ProcessDeadAnnotations.isAnnotatedDead(x)
+                   && !PosSet.is_empty(xRefsTodo);
+                 } else {
+                   let isDead =
+                     xDecl
+                     |> resolveRecursiveRefs(
+                          ~orderedFiles,
+                          ~refsTodo=xRefsTodo,
+                          ~refsBeingResolved=
+                            PosSet.add(decl.pos, refsBeingResolved),
+                        );
+                   if (!xDecl.resolved) {
+                     unresolved := true;
+                   };
+                   !isDead;
+                 };
+               };
+             }
+           );
+      if (! unresolved^ || PosSet.is_empty(refsBeingResolved)) {
+        decl.resolved = true;
+        if (PosSet.is_empty(newRefsTodo)) {
+          decl.pos |> ProcessDeadAnnotations.annotateDead;
+        };
+        Log_.item(
+          "XXX %s resolved with %d dependencies@.",
+          decl.path |> pathToString,
+          newRefsTodo |> PosSet.cardinal,
+        );
+      } else {
+        Log_.item("XXX %s still unresolved@.", decl.path |> pathToString);
+      };
+      newRefsTodo;
+    };
+
+  decl |> declIsDead(~refs=newRefs);
+};
+
+let doReportDead = pos =>
+  !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
+
 let declCheckDead = (~declarations, ~orderedFiles, ~refs as refs_, decl) =>
   if (decl.pos |> doReportDead) {
-    let refs =
+    let isDead =
       resolveRecursiveRefs(
         ~orderedFiles,
         ~refsBeingResolved=PosSet.empty,
         ~refsTodo=refs_,
         decl,
       );
-
-    if (decl |> declIsDead(~refs)) {
+    if (isDead) {
       decl.pos |> ProcessDeadAnnotations.annotateDead;
       [decl, ...declarations];
     } else {
