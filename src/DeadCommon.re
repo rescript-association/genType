@@ -682,15 +682,16 @@ let reportDead = (~onDeadCode) => {
   let dontReportDead = pos =>
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-  let iterDeclInOrder =
-      (~orderedFiles, declarations, {declKind, pos, path} as decl) => {
+  let iterDeclInOrder = (~orderedFiles, declarations, decl) => {
     switch (
       decl.pos
-      |> PosHash.findSet(declKind == Value ? valueReferences : typeReferences)
+      |> PosHash.findSet(
+           decl.declKind == Value ? valueReferences : typeReferences,
+         )
     ) {
-    | referencesToLoc when !(pos |> dontReportDead) =>
+    | referencesToLoc when !(decl.pos |> dontReportDead) =>
       if (decl |> declIsDead(~orderedFiles, ~refs=referencesToLoc)) {
-        pos |> ProcessDeadAnnotations.annotateDead;
+        decl.pos |> ProcessDeadAnnotations.annotateDead;
         [decl, ...declarations];
       } else {
         if (verbose) {
@@ -701,8 +702,8 @@ let reportDead = (~onDeadCode) => {
             |> String.concat(", ");
           Log_.item(
             "%s%s: %d references (%s)@.",
-            declKind != Value ? "[type] " : "",
-            path |> pathToString,
+            decl.declKind != Value ? "[type] " : "",
+            decl.path |> pathToString,
             referencesToLoc |> PosSet.cardinal,
             refsString,
           );
@@ -710,7 +711,6 @@ let reportDead = (~onDeadCode) => {
         declarations;
       }
     | _ => declarations
-    | exception Not_found => declarations
     };
   };
 
