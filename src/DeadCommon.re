@@ -671,7 +671,7 @@ let rec resolveRecursiveRefs =
            );
       if (! unresolved^ || PosSet.is_empty(refsBeingResolved)) {
         decl.resolved = true;
-        if (PosSet.is_empty(newRefsTodo)) {
+        if (PosSet.is_empty(newRefsTodo) && shouldReportDead) {
           decl.pos |> ProcessDeadAnnotations.annotateDead;
         };
         Log_.item(
@@ -690,7 +690,7 @@ let rec resolveRecursiveRefs =
     decl.pos |> ProcessDeadAnnotations.annotateDead;
     deadDeclarations := [decl, ...deadDeclarations^];
   };
-  isDead;
+  isDead && shouldReportDead;
 };
 
 let doReportDead = pos =>
