@@ -683,34 +683,32 @@ let reportDead = (~onDeadCode) => {
     ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
   let iterDeclInOrder = (~orderedFiles, declarations, decl) => {
-    switch (
+    let refs =
       decl.pos
       |> PosHash.findSet(
            decl.declKind == Value ? valueReferences : typeReferences,
-         )
-    ) {
-    | referencesToLoc when !(decl.pos |> dontReportDead) =>
-      if (decl |> declIsDead(~orderedFiles, ~refs=referencesToLoc)) {
-        decl.pos |> ProcessDeadAnnotations.annotateDead;
-        [decl, ...declarations];
-      } else {
-        if (verbose) {
-          let refsString =
-            referencesToLoc
-            |> PosSet.elements
-            |> List.map(posToString)
-            |> String.concat(", ");
-          Log_.item(
-            "%s%s: %d references (%s)@.",
-            decl.declKind != Value ? "[type] " : "",
-            decl.path |> pathToString,
-            referencesToLoc |> PosSet.cardinal,
-            refsString,
-          );
-        };
-        declarations;
-      }
-    | _ => declarations
+         );
+    if (decl.pos
+        |> dontReportDead
+        || !(decl |> declIsDead(~orderedFiles, ~refs))) {
+      if (verbose) {
+        let refsString =
+          refs
+          |> PosSet.elements
+          |> List.map(posToString)
+          |> String.concat(", ");
+        Log_.item(
+          "%s%s: %d references (%s)@.",
+          decl.declKind != Value ? "[type] " : "",
+          decl.path |> pathToString,
+          refs |> PosSet.cardinal,
+          refsString,
+        );
+      };
+      declarations;
+    } else {
+      decl.pos |> ProcessDeadAnnotations.annotateDead;
+      [decl, ...declarations];
     };
   };
 
