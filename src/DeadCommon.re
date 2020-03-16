@@ -10,8 +10,6 @@ let analyzeTermination = ref(false);
 
 let analyzeExternals = false;
 
-let transitive = true;
-
 let verbose = Sys.getenv_opt("Debug") != None;
 
 let checkPrefix = prefix_ => {
@@ -195,8 +193,7 @@ let include_ = "*include*";
 
 let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
   let lastBinding = getLastBinding();
-  let posUsage =
-    !transitive || lastBinding == Lexing.dummy_pos ? posUsage : lastBinding;
+  let posUsage = lastBinding == Lexing.dummy_pos ? posUsage : lastBinding;
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
@@ -690,9 +687,7 @@ let reportDead = (~onDeadCode) => {
           && !ProcessDeadAnnotations.isAnnotatedLive(pos)
           && posInWhitelist(pos)
           && !posInBlacklist(pos)) {
-        if (transitive) {
-          pos |> ProcessDeadAnnotations.annotateDead;
-        };
+        pos |> ProcessDeadAnnotations.annotateDead;
         [decl, ...declarations];
       } else {
         if (verbose) {
