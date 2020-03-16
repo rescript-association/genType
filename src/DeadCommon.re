@@ -662,7 +662,7 @@ let rec resolveRecursiveRefs =
 let doReportDead = pos =>
   !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-let declIsDead = (~orderedFiles, ~refs as refs_, decl) =>
+let declCheckDead = (~declarations, ~orderedFiles, ~refs as refs_, decl) =>
   if (decl.pos |> doReportDead) {
     let refs =
       decl.declKind == Value
@@ -675,11 +675,16 @@ let declIsDead = (~orderedFiles, ~refs as refs_, decl) =>
         : refs_;
     let liveRefs =
       refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
-    liveRefs
-    |> PosSet.cardinal == 0
-    && !ProcessDeadAnnotations.isAnnotatedLive(decl.pos)
-    && posInWhitelist(decl.pos)
-    && !posInBlacklist(decl.pos);
+    if (liveRefs
+        |> PosSet.cardinal == 0
+        && !ProcessDeadAnnotations.isAnnotatedLive(decl.pos)
+        && posInWhitelist(decl.pos)
+        && !posInBlacklist(decl.pos)) {
+      decl.pos |> ProcessDeadAnnotations.annotateDead;
+      [decl, ...declarations];
+    } else {
+      declarations;
+    };
   } else {
     if (verbose) {
       let refsString =
@@ -695,7 +700,7 @@ let declIsDead = (~orderedFiles, ~refs as refs_, decl) =>
         refsString,
       );
     };
-    false;
+    declarations;
   };
 
 let reportDead = (~onDeadCode) => {
@@ -705,12 +710,7 @@ let reportDead = (~onDeadCode) => {
       |> PosHash.findSet(
            decl.declKind == Value ? valueReferences : typeReferences,
          );
-    if (decl |> declIsDead(~orderedFiles, ~refs)) {
-      decl.pos |> ProcessDeadAnnotations.annotateDead;
-      [decl, ...declarations];
-    } else {
-      declarations;
-    };
+    decl |> declCheckDead(~declarations, ~orderedFiles, ~refs);
   };
 
   if (verbose) {
