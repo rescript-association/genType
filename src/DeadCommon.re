@@ -679,8 +679,8 @@ let declIsDead = (~orderedFiles, ~refs as refs_, decl) => {
 };
 
 let reportDead = (~onDeadCode) => {
-  let dontReportDead = pos =>
-    ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
+  let doReportDead = pos =>
+    !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
   let iterDeclInOrder = (~orderedFiles, declarations, decl) => {
     let refs =
@@ -688,9 +688,10 @@ let reportDead = (~onDeadCode) => {
       |> PosHash.findSet(
            decl.declKind == Value ? valueReferences : typeReferences,
          );
-    if (decl.pos
-        |> dontReportDead
-        || !(decl |> declIsDead(~orderedFiles, ~refs))) {
+    if (decl.pos |> doReportDead && decl |> declIsDead(~orderedFiles, ~refs)) {
+      decl.pos |> ProcessDeadAnnotations.annotateDead;
+      [decl, ...declarations];
+    } else {
       if (verbose) {
         let refsString =
           refs
@@ -706,9 +707,6 @@ let reportDead = (~onDeadCode) => {
         );
       };
       declarations;
-    } else {
-      decl.pos |> ProcessDeadAnnotations.annotateDead;
-      [decl, ...declarations];
     };
   };
 
