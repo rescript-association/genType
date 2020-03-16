@@ -675,14 +675,13 @@ let declIsDead = (~refs, decl) => {
 let declCheckDead = (~declarations, ~orderedFiles, ~refs as refs_, decl) =>
   if (decl.pos |> doReportDead) {
     let refs =
-      decl.declKind == Value
-        ? resolveRecursiveRefs(
-            ~orderedFiles,
-            ~refsBeingResolved=PosSet.empty,
-            ~refsTodo=refs_,
-            decl,
-          )
-        : refs_;
+      resolveRecursiveRefs(
+        ~orderedFiles,
+        ~refsBeingResolved=PosSet.empty,
+        ~refsTodo=refs_,
+        decl,
+      );
+
     if (decl |> declIsDead(~refs)) {
       decl.pos |> ProcessDeadAnnotations.annotateDead;
       [decl, ...declarations];
