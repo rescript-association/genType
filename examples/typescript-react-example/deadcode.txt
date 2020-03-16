@@ -1489,254 +1489,182 @@ File References
   LetPrivate.re -->> 
   ImportIndex.re -->> 
   TypeParams2.re -->> 
-  
-XXX resolving out-of-order AutoAnnotate.annotatedVariant.R4
+  XXX resolving [0] AutoAnnotate.annotatedVariant.R4
   XXX AutoAnnotate.annotatedVariant.R4 resolved with 0 dependencies
-  
-XXX resolving out-of-order AutoAnnotate.annotatedVariant.R2
+  XXX resolving [0] AutoAnnotate.annotatedVariant.R2
   XXX AutoAnnotate.annotatedVariant.R2 resolved with 0 dependencies
-  
-XXX resolving out-of-order AutoAnnotate.r4.r4
+  XXX resolving [0] AutoAnnotate.r4.r4
   XXX AutoAnnotate.r4.r4 resolved with 0 dependencies
-  
-XXX resolving out-of-order AutoAnnotate.r3.r3
+  XXX resolving [0] AutoAnnotate.r3.r3
   XXX AutoAnnotate.r3.r3 resolved with 0 dependencies
-  
-XXX resolving out-of-order AutoAnnotate.r2.r2
+  XXX resolving [0] AutoAnnotate.r2.r2
   XXX AutoAnnotate.r2.r2 resolved with 0 dependencies
-  
-XXX resolving out-of-order AutoAnnotate.record.variant
+  XXX resolving [0] AutoAnnotate.record.variant
   XXX AutoAnnotate.record.variant resolved with 0 dependencies
-  
-XXX resolving out-of-order AutoAnnotate.variant.R
+  XXX resolving [0] AutoAnnotate.variant.R
   XXX AutoAnnotate.variant.R resolved with 0 dependencies
-  
-XXX resolving out-of-order BucklescriptAnnotations.+f
-  
-XXX resolving out-of-order BucklescriptAnnotations.bar
+  XXX resolving [0] BucklescriptAnnotations.+f
+  XXX resolving [1] BucklescriptAnnotations.bar
   XXX BucklescriptAnnotations.bar resolved with 0 dependencies
   XXX BucklescriptAnnotations.+f resolved with 0 dependencies
   BucklescriptAnnotations.bar: 0 references ()
-  
-XXX resolving out-of-order BucklescriptAnnotations.foo
+  XXX resolving [0] BucklescriptAnnotations.foo
   XXX BucklescriptAnnotations.foo resolved with 0 dependencies
-  
-XXX resolving out-of-order CreateErrorHandler1.Error1.notification
-  
-XXX resolving out-of-order ErrorHandler.Make.+notify
-  
-XXX resolving out-of-order ErrorHandler.Make.notify
+  XXX resolving [0] CreateErrorHandler1.Error1.notification
+  XXX resolving [1] ErrorHandler.Make.+notify
+  XXX resolving [2] ErrorHandler.Make.notify
   XXX can't find decl for CreateErrorHandler1.re:8:0
   XXX ErrorHandler.Make.notify resolved with 1 dependencies
   XXX ErrorHandler.Make.+notify resolved with 1 dependencies
   XXX can't find decl for ErrorHandler.rei:3:2
   XXX CreateErrorHandler1.Error1.notification resolved with 2 dependencies
-  
-XXX resolving out-of-order CreateErrorHandler2.Error2.notification
+  XXX resolving [0] CreateErrorHandler2.Error2.notification
   XXX can't find decl for ErrorHandler.rei:3:2
   XXX CreateErrorHandler2.Error2.notification resolved with 2 dependencies
-  
-XXX resolving out-of-order DeadCodeImplementation.M.+x
+  XXX resolving [0] DeadCodeImplementation.M.+x
   XXX can't find decl for DeadCodeInterface.re:1:17
   XXX DeadCodeImplementation.M.+x resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadMl.module_info.case
+  XXX resolving [0] DeadMl.module_info.case
   XXX DeadMl.module_info.case resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.module_info.module_name
+  XXX resolving [0] DeadMl.module_info.module_name
   XXX DeadMl.module_info.module_name resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.l.Lfunction
+  XXX resolving [0] DeadMl.l.Lfunction
   XXX DeadMl.l.Lfunction resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.Bs_version.package_name
+  XXX resolving [0] DeadMl.Bs_version.package_name
   XXX DeadMl.Bs_version.package_name resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.Bs_version.header
+  XXX resolving [0] DeadMl.Bs_version.header
   XXX DeadMl.Bs_version.header resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.Bs_version.version
+  XXX resolving [0] DeadMl.Bs_version.version
   XXX DeadMl.Bs_version.version resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.Bs_version.+package_name
+  XXX resolving [0] DeadMl.Bs_version.+package_name
   XXX DeadMl.Bs_version.+package_name resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.Bs_version.+header
+  XXX resolving [0] DeadMl.Bs_version.+header
   XXX DeadMl.Bs_version.+header resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.Bs_version.+version
+  XXX resolving [0] DeadMl.Bs_version.+version
   XXX DeadMl.Bs_version.+version resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl._
+  XXX resolving [0] DeadMl._
   XXX DeadMl._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl._
+  XXX resolving [0] DeadMl._
   XXX DeadMl._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.thisIsDead.DeadB
+  XXX resolving [0] DeadMl.thisIsDead.DeadB
   XXX DeadMl.thisIsDead.DeadB resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.thisIsDead.DeadA
+  XXX resolving [0] DeadMl.thisIsDead.DeadA
   XXX DeadMl.thisIsDead.DeadA resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.thisHasSemicolons
+  XXX resolving [0] DeadMl.thisHasSemicolons
   XXX DeadMl.thisHasSemicolons resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.AA.thisIsInInterface
+  XXX resolving [0] DeadMl.AA.thisIsInInterface
   XXX DeadMl.AA.thisIsInInterface resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.AA.+thisIsInInterface
+  XXX resolving [0] DeadMl.AA.+thisIsInInterface
   XXX DeadMl.AA.+thisIsInInterface resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadMl.QQ.thisSpansSeveralLines
+  XXX resolving [0] DeadMl.QQ.thisSpansSeveralLines
   XXX DeadMl.QQ.thisSpansSeveralLines resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.bar
-  
-XXX resolving out-of-order DeadTest.+cb
-  
-XXX resolving out-of-order DeadTest.foo
+  XXX resolving [0] DeadTest.bar
+  XXX resolving [1] DeadTest.+cb
+  XXX resolving [2] DeadTest.foo
   XXX DeadTest.bar is being resolved already: assume no new dependencies
   XXX DeadTest.foo still unresolved
   XXX DeadTest.+cb still unresolved
   XXX DeadTest.bar resolved with 0 dependencies
   DeadTest.+cb: 1 references (DeadTest.re:94:8)
   DeadTest.foo: 1 references (DeadTest.re:98:4)
-  
-XXX resolving out-of-order DeadTest.+cb
-  
-XXX resolving out-of-order DeadTest.recWithCallback
+  XXX resolving [0] DeadTest.+cb
+  XXX resolving [1] DeadTest.recWithCallback
   XXX DeadTest.+cb is being resolved already: assume no new dependencies
   XXX DeadTest.recWithCallback still unresolved
   XXX DeadTest.+cb resolved with 0 dependencies
   DeadTest.recWithCallback: 1 references (DeadTest.re:90:6)
-  
-XXX resolving out-of-order DeadTest.rec2
-  
-XXX resolving out-of-order DeadTest.rec1
+  XXX resolving [0] DeadTest.rec2
+  XXX resolving [1] DeadTest.rec1
   XXX DeadTest.rec2 is being resolved already: assume no new dependencies
   XXX DeadTest.rec1 still unresolved
   XXX DeadTest.rec2 resolved with 0 dependencies
   DeadTest.rec1: 1 references (DeadTest.re:87:4)
-  
-XXX resolving out-of-order DeadTest.split_map
+  XXX resolving [0] DeadTest.split_map
   XXX can't find decl for DeadTest.re:82:2
   XXX DeadTest.split_map resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTest.unusedRec
+  XXX resolving [0] DeadTest.unusedRec
   XXX DeadTest.unusedRec ignoring reference to self
   XXX DeadTest.unusedRec resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.MM.y
+  XXX resolving [0] DeadTest.MM.y
   XXX DeadTest.MM.y resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.MM.x
+  XXX resolving [0] DeadTest.MM.x
   XXX can't find decl for DeadTest.re:72:0
   XXX DeadTest.MM.x resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTest.MM.+valueOnlyInImplementation
+  XXX resolving [0] DeadTest.MM.+valueOnlyInImplementation
   XXX DeadTest.MM.+valueOnlyInImplementation resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.MM.+x
+  XXX resolving [0] DeadTest.MM.+x
   XXX can't find decl for DeadTest.re:72:0
   XXX DeadTest.MM.+x resolved with 2 dependencies
-  
-XXX resolving out-of-order DeadTest.MM.+y
+  XXX resolving [0] DeadTest.MM.+y
   XXX DeadTest.MM.+y resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTest.UnderscoreInside._
+  XXX resolving [0] DeadTest.UnderscoreInside._
   XXX DeadTest.UnderscoreInside._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest._
+  XXX resolving [0] DeadTest._
   XXX DeadTest._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest._
+  XXX resolving [0] DeadTest._
   XXX DeadTest._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.record.yyy
+  XXX resolving [0] DeadTest.record.yyy
   XXX can't find decl for DeadTest.re:55:9
   XXX DeadTest.record.yyy resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTest.record.xxx
+  XXX resolving [0] DeadTest.record.xxx
   XXX can't find decl for DeadTest.re:54:13
   XXX DeadTest.record.xxx resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTest._
+  XXX resolving [0] DeadTest._
   XXX DeadTest._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest._
+  XXX resolving [0] DeadTest._
   XXX DeadTest._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.VariantUsedOnlyInImplementation.a
+  XXX resolving [0] DeadTest.VariantUsedOnlyInImplementation.a
   XXX can't find decl for DeadTest.re:44:0
   XXX DeadTest.VariantUsedOnlyInImplementation.a resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTest.VariantUsedOnlyInImplementation.+a
+  XXX resolving [0] DeadTest.VariantUsedOnlyInImplementation.+a
   XXX can't find decl for DeadTest.re:44:0
   XXX DeadTest.VariantUsedOnlyInImplementation.+a resolved with 2 dependencies
-  
-XXX resolving out-of-order DeadTest.VariantUsedOnlyInImplementation.t.A
+  XXX resolving [0] DeadTest.VariantUsedOnlyInImplementation.t.A
   XXX can't find decl for DeadTest.re:40:6
   XXX can't find decl for DeadTest.re:41:10
   XXX DeadTest.VariantUsedOnlyInImplementation.t.A resolved with 2 dependencies
-  
-XXX resolving out-of-order DeadTest.M.+thisSignatureItemIsDead
+  XXX resolving [0] DeadTest.M.+thisSignatureItemIsDead
   XXX DeadTest.M.+thisSignatureItemIsDead resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.thisIsMarkedLive
+  XXX resolving [0] DeadTest.thisIsMarkedLive
   XXX DeadTest.thisIsMarkedLive resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.thisIsKeptAlive
+  XXX resolving [0] DeadTest.thisIsKeptAlive
   XXX DeadTest.thisIsKeptAlive resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.thisIsUsedTwice
+  XXX resolving [0] DeadTest.thisIsUsedTwice
   XXX can't find decl for DeadTest.re:11:7
   XXX can't find decl for DeadTest.re:12:7
   XXX DeadTest.thisIsUsedTwice resolved with 2 dependencies
-  
-XXX resolving out-of-order DeadTest.thisIsUsedOnce
+  XXX resolving [0] DeadTest.thisIsUsedOnce
   XXX can't find decl for DeadTest.re:8:7
   XXX DeadTest.thisIsUsedOnce resolved with 1 dependencies
   DeadTest.fortyTwoButExported: 0 references ()
-  
-XXX resolving out-of-order DeadTest.fortytwo
+  XXX resolving [0] DeadTest.fortytwo
   XXX DeadTest.fortytwo resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTestWhitelist.x
+  XXX resolving [0] DeadTestWhitelist.x
   XXX DeadTestWhitelist.x resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.deadType.InNeither
+  XXX resolving [0] DeadTypeTest.deadType.InNeither
   XXX DeadTypeTest.deadType.InNeither resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.deadType.InBoth
+  XXX resolving [0] DeadTypeTest.deadType.InBoth
   XXX can't find decl for DeadTest.re:47:8
   XXX can't find decl for DeadTypeTest.re:13:8
   XXX DeadTypeTest.deadType.InBoth resolved with 2 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.deadType.OnlyInInterface
+  XXX resolving [0] DeadTypeTest.deadType.OnlyInInterface
   XXX can't find decl for DeadTest.re:46:8
   XXX DeadTypeTest.deadType.OnlyInInterface resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.deadType.OnlyInImplementation
+  XXX resolving [0] DeadTypeTest.deadType.OnlyInImplementation
   XXX can't find decl for DeadTypeTest.re:12:8
   XXX DeadTypeTest.deadType.OnlyInImplementation resolved with 1 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.a
+  XXX resolving [0] DeadTypeTest.a
   XXX DeadTypeTest.a resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.t.B
+  XXX resolving [0] DeadTypeTest.t.B
   XXX DeadTypeTest.t.B resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.t.A
+  XXX resolving [0] DeadTypeTest.t.A
   XXX can't find decl for DeadTypeTest.re:4:8
   XXX DeadTypeTest.t.A resolved with 1 dependencies
   Docstrings.unitArgWithConversionU: 0 references ()
   Docstrings.unitArgWithConversion: 0 references ()
-  
-XXX resolving out-of-order Docstrings.t.B
+  XXX resolving [0] Docstrings.t.B
   XXX Docstrings.t.B resolved with 0 dependencies
-  
-XXX resolving out-of-order Docstrings.t.A
+  XXX resolving [0] Docstrings.t.A
   XXX can't find decl for Docstrings.re:65:34
   XXX can't find decl for Docstrings.re:68:36
   XXX Docstrings.t.A resolved with 2 dependencies
@@ -1757,116 +1685,89 @@ XXX resolving out-of-order Docstrings.t.A
   Docstrings.one: 0 references ()
   Docstrings.signMessage: 0 references ()
   Docstrings.flat: 0 references ()
-  
-XXX resolving out-of-order ExportWithRename.make
+  XXX resolving [0] ExportWithRename.make
   XXX can't find decl for _none_:1:-1
   XXX ExportWithRename.make resolved with 1 dependencies
   FirstClassModules.someFunctorAsFunction: 0 references ()
-  
-XXX resolving out-of-order FirstClassModules.SomeFunctor.+ww
+  XXX resolving [0] FirstClassModules.SomeFunctor.+ww
   XXX can't find decl for FirstClassModules.re:46:20
   XXX FirstClassModules.SomeFunctor.+ww resolved with 1 dependencies
   FirstClassModules.testConvert: 0 references ()
   FirstClassModules.firstClassModule: 0 references ()
-  
-XXX resolving out-of-order FirstClassModules.M.x
+  XXX resolving [0] FirstClassModules.M.x
   XXX can't find decl for FirstClassModules.re:2:2
   XXX FirstClassModules.M.x resolved with 1 dependencies
-  
-XXX resolving out-of-order FirstClassModules.M.Z.u
+  XXX resolving [0] FirstClassModules.M.Z.u
   XXX can't find decl for FirstClassModules.re:12:20
   XXX can't find decl for FirstClassModules.re:28:20
   XXX FirstClassModules.M.Z.u resolved with 2 dependencies
-  
-XXX resolving out-of-order FirstClassModules.M.InnerModule3.k3
+  XXX resolving [0] FirstClassModules.M.InnerModule3.k3
   XXX can't find decl for FirstClassModules.re:10:4
   XXX FirstClassModules.M.InnerModule3.k3 resolved with 1 dependencies
-  
-XXX resolving out-of-order FirstClassModules.M.InnerModule2.k
+  XXX resolving [0] FirstClassModules.M.InnerModule2.k
   XXX can't find decl for FirstClassModules.re:7:24
   XXX FirstClassModules.M.InnerModule2.k resolved with 1 dependencies
-  
-XXX resolving out-of-order FirstClassModules.M.y
+  XXX resolving [0] FirstClassModules.M.y
   XXX can't find decl for FirstClassModules.re:14:2
   XXX FirstClassModules.M.y resolved with 2 dependencies
-  
-XXX resolving out-of-order FirstClassModulesInterface.r
+  XXX resolving [0] FirstClassModulesInterface.r
   XXX FirstClassModulesInterface.r resolved with 0 dependencies
-  
-XXX resolving out-of-order FirstClassModulesInterface.record.y
+  XXX resolving [0] FirstClassModulesInterface.record.y
   XXX FirstClassModulesInterface.record.y resolved with 0 dependencies
-  
-XXX resolving out-of-order FirstClassModulesInterface.record.x
+  XXX resolving [0] FirstClassModulesInterface.record.x
   XXX FirstClassModulesInterface.record.x resolved with 0 dependencies
-  
-XXX resolving out-of-order Hooks.aComponentWithChildren
+  XXX resolving [0] Hooks.aComponentWithChildren
   XXX can't find decl for _none_:1:-1
   XXX Hooks.aComponentWithChildren resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.RenderPropRequiresConversion.+car
-  
-XXX resolving out-of-order Hooks.RenderPropRequiresConversion.+make
+  XXX resolving [0] Hooks.RenderPropRequiresConversion.+car
+  XXX resolving [1] Hooks.RenderPropRequiresConversion.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.RenderPropRequiresConversion.+make resolved with 1 dependencies
   XXX Hooks.RenderPropRequiresConversion.+car resolved with 1 dependencies
   XXX Hooks.RenderPropRequiresConversion.+make already resolved
-  
-XXX resolving out-of-order Hooks.functionReturningReactElement
+  XXX resolving [0] Hooks.functionReturningReactElement
   XXX can't find decl for _none_:1:-1
   XXX Hooks.functionReturningReactElement resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.polymorphicComponent
+  XXX resolving [0] Hooks.polymorphicComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.polymorphicComponent resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.input
+  XXX resolving [0] Hooks.input
   XXX can't find decl for _none_:1:-1
   XXX Hooks.input resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.r.x
+  XXX resolving [0] Hooks.r.x
   XXX can't find decl for Hooks.re:113:45
   XXX Hooks.r.x resolved with 1 dependencies
   Hooks.testForwardRef: 0 references ()
-  
-XXX resolving out-of-order Hooks.makeWithRef
+  XXX resolving [0] Hooks.makeWithRef
   XXX can't find decl for _none_:1:-1
   XXX Hooks.makeWithRef resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.componentWithRenamedArgs
+  XXX resolving [0] Hooks.componentWithRenamedArgs
   XXX can't find decl for _none_:1:-1
   XXX Hooks.componentWithRenamedArgs resolved with 1 dependencies
   Hooks.functionWithRenamedArgs: 0 references ()
-  
-XXX resolving out-of-order Hooks.NoProps.+make
+  XXX resolving [0] Hooks.NoProps.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.NoProps.+make resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.Inner.Inner2.+anotherComponent
+  XXX resolving [0] Hooks.Inner.Inner2.+anotherComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.Inner2.+anotherComponent resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.Inner.Inner2.+make
+  XXX resolving [0] Hooks.Inner.Inner2.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.Inner2.+make resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.Inner.+anotherComponent
+  XXX resolving [0] Hooks.Inner.+anotherComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.+anotherComponent resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.Inner.+make
+  XXX resolving [0] Hooks.Inner.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.+make resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.anotherComponent
+  XXX resolving [0] Hooks.anotherComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.anotherComponent resolved with 1 dependencies
   Hooks.default: 0 references ()
-  
-XXX resolving out-of-order Hooks.make
+  XXX resolving [0] Hooks.make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.make resolved with 1 dependencies
-  
-XXX resolving out-of-order Hooks.vehicle.name
+  XXX resolving [0] Hooks.vehicle.name
   XXX can't find decl for Hooks.re:11:12
   XXX can't find decl for Hooks.re:42:41
   XXX can't find decl for Hooks.re:49:43
@@ -1887,259 +1788,195 @@ XXX resolving out-of-order Hooks.vehicle.name
   ModuleAliases.testInner2: 0 references ()
   ModuleAliases.testInner: 0 references ()
   ModuleAliases.testNested: 0 references ()
-  
-XXX resolving out-of-order ModuleAliases.Outer2.Inner2.InnerNested.t.nested
+  XXX resolving [0] ModuleAliases.Outer2.Inner2.InnerNested.t.nested
   XXX ModuleAliases.Outer2.Inner2.InnerNested.t.nested resolved with 0 dependencies
-  
-XXX resolving out-of-order ModuleAliases.Outer.Inner.innerT.inner
+  XXX resolving [0] ModuleAliases.Outer.Inner.innerT.inner
   XXX ModuleAliases.Outer.Inner.innerT.inner resolved with 0 dependencies
-  
-XXX resolving out-of-order ModuleAliases2.q
+  XXX resolving [0] ModuleAliases2.q
   XXX ModuleAliases2.q resolved with 0 dependencies
-  
-XXX resolving out-of-order ModuleAliases2.Outer.Inner.inner.inner
+  XXX resolving [0] ModuleAliases2.Outer.Inner.inner.inner
   XXX ModuleAliases2.Outer.Inner.inner.inner resolved with 0 dependencies
-  
-XXX resolving out-of-order ModuleAliases2.Outer.outer.outer
+  XXX resolving [0] ModuleAliases2.Outer.outer.outer
   XXX ModuleAliases2.Outer.outer.outer resolved with 0 dependencies
-  
-XXX resolving out-of-order ModuleAliases2.record.y
+  XXX resolving [0] ModuleAliases2.record.y
   XXX ModuleAliases2.record.y resolved with 0 dependencies
-  
-XXX resolving out-of-order ModuleAliases2.record.x
+  XXX resolving [0] ModuleAliases2.record.x
   XXX ModuleAliases2.record.x resolved with 0 dependencies
   NestedModules.Universe.someString: 0 references ()
-  
-XXX resolving out-of-order NestedModules.Universe.variant.B
+  XXX resolving [0] NestedModules.Universe.variant.B
   XXX NestedModules.Universe.variant.B resolved with 0 dependencies
-  
-XXX resolving out-of-order NestedModules.Universe.variant.A
+  XXX resolving [0] NestedModules.Universe.variant.A
   XXX NestedModules.Universe.variant.A resolved with 0 dependencies
   NestedModules.Universe.Nested2.nested2Function: 0 references ()
   NestedModules.Universe.Nested2.Nested3.nested3Function: 0 references ()
   NestedModules.Universe.Nested2.Nested3.nested3Value: 0 references ()
-  
-XXX resolving out-of-order NestedModules.Universe.Nested2.Nested3.w
+  XXX resolving [0] NestedModules.Universe.Nested2.Nested3.w
   XXX NestedModules.Universe.Nested2.Nested3.w resolved with 0 dependencies
-  
-XXX resolving out-of-order NestedModules.Universe.Nested2.Nested3.z
+  XXX resolving [0] NestedModules.Universe.Nested2.Nested3.z
   XXX NestedModules.Universe.Nested2.Nested3.z resolved with 0 dependencies
-  
-XXX resolving out-of-order NestedModules.Universe.Nested2.Nested3.y
+  XXX resolving [0] NestedModules.Universe.Nested2.Nested3.y
   XXX NestedModules.Universe.Nested2.Nested3.y resolved with 0 dependencies
-  
-XXX resolving out-of-order NestedModules.Universe.Nested2.Nested3.x
+  XXX resolving [0] NestedModules.Universe.Nested2.Nested3.x
   XXX NestedModules.Universe.Nested2.Nested3.x resolved with 0 dependencies
-  
-XXX resolving out-of-order NestedModules.Universe.Nested2.y
+  XXX resolving [0] NestedModules.Universe.Nested2.y
   XXX NestedModules.Universe.Nested2.y resolved with 0 dependencies
   NestedModules.Universe.Nested2.nested2Value: 0 references ()
-  
-XXX resolving out-of-order NestedModules.Universe.Nested2.x
+  XXX resolving [0] NestedModules.Universe.Nested2.x
   XXX NestedModules.Universe.Nested2.x resolved with 0 dependencies
-  
-XXX resolving out-of-order NestedModules.Universe.notExported
+  XXX resolving [0] NestedModules.Universe.notExported
   XXX NestedModules.Universe.notExported resolved with 0 dependencies
   NestedModules.Universe.theAnswer: 0 references ()
   NestedModules.notNested: 0 references ()
   NestedModulesInSignature.Universe.theAnswer: 0 references ()
   Opaque.testConvertNestedRecordFromOtherFile: 0 references ()
   Opaque.noConversion: 0 references ()
-  
-XXX resolving out-of-order Opaque.opaqueFromRecords.A
+  XXX resolving [0] Opaque.opaqueFromRecords.A
   XXX Opaque.opaqueFromRecords.A resolved with 0 dependencies
   ReasonComponent.useRecordsCoord: 0 references ()
   ReasonComponent.tToString: 0 references ()
-  
-XXX resolving out-of-order ReasonComponent.t.C
+  XXX resolving [0] ReasonComponent.t.C
   XXX ReasonComponent.t.C resolved with 0 dependencies
-  
-XXX resolving out-of-order ReasonComponent.t.B
+  XXX resolving [0] ReasonComponent.t.B
   XXX ReasonComponent.t.B resolved with 0 dependencies
-  
-XXX resolving out-of-order ReasonComponent.t.A
+  XXX resolving [0] ReasonComponent.t.A
   XXX ReasonComponent.t.A resolved with 0 dependencies
   ReasonComponent.useTypeDefinedInAnotherModule: 0 references ()
-  
-XXX resolving out-of-order ReasonComponent.+first
-  
-XXX resolving out-of-order ReasonComponent.minus
+  XXX resolving [0] ReasonComponent.+first
+  XXX resolving [1] ReasonComponent.minus
   XXX ReasonComponent.minus resolved with 0 dependencies
   XXX ReasonComponent.+first resolved with 0 dependencies
   ReasonComponent.minus: 0 references ()
-  
-XXX resolving out-of-order ReasonComponent.+emptyArray
-  
-XXX resolving out-of-order ReasonComponent.make
+  XXX resolving [0] ReasonComponent.+emptyArray
+  XXX resolving [1] ReasonComponent.make
   XXX ReasonComponent.make resolved with 0 dependencies
   XXX ReasonComponent.+emptyArray resolved with 0 dependencies
-  
-XXX resolving out-of-order ReasonComponent.+intList
+  XXX resolving [0] ReasonComponent.+intList
   XXX ReasonComponent.+intList resolved with 0 dependencies
-  
-XXX resolving out-of-order ReasonComponent.+message
+  XXX resolving [0] ReasonComponent.+message
   XXX ReasonComponent.+message resolved with 0 dependencies
   ReasonComponent.make: 0 references ()
   ReasonComponent.onClick: 1 references (ReasonComponent.re:18:4)
-  
-XXX resolving out-of-order ReasonComponent.person.polymorphicPayload
+  XXX resolving [0] ReasonComponent.person.polymorphicPayload
   XXX ReasonComponent.person.polymorphicPayload resolved with 0 dependencies
-  
-XXX resolving out-of-order ReasonComponent.person.type_
+  XXX resolving [0] ReasonComponent.person.type_
   XXX ReasonComponent.person.type_ resolved with 0 dependencies
-  
-XXX resolving out-of-order ReasonComponent.person.surname
+  XXX resolving [0] ReasonComponent.person.surname
   XXX ReasonComponent.person.surname resolved with 0 dependencies
-  
-XXX resolving out-of-order ReasonComponent.person.name
+  XXX resolving [0] ReasonComponent.person.name
   XXX can't find decl for ReasonComponent.re:32:12
   XXX ReasonComponent.person.name resolved with 1 dependencies
-  
-XXX resolving out-of-order ReasonComponent.component
+  XXX resolving [0] ReasonComponent.component
   XXX ReasonComponent.component resolved with 0 dependencies
   Records.testMyRecBsAs2: 0 references ()
   Records.testMyRecBsAs: 0 references ()
-  
-XXX resolving out-of-order Records.myRecBsAs.type_
+  XXX resolving [0] Records.myRecBsAs.type_
   XXX can't find decl for Records.re:167:38
   XXX Records.myRecBsAs.type_ resolved with 1 dependencies
   Records.testMyObj2: 0 references ()
   Records.testMyObj: 0 references ()
   Records.testMyRec2: 0 references ()
   Records.testMyRec: 0 references ()
-  
-XXX resolving out-of-order Records.myRec.type_
+  XXX resolving [0] Records.myRec.type_
   XXX can't find decl for Records.re:149:30
   XXX Records.myRec.type_ resolved with 1 dependencies
   Records.computeArea4: 0 references ()
   Records.computeArea3: 0 references ()
   Records.someBusiness2: 0 references ()
   Records.findAddress2: 0 references ()
-  
-XXX resolving out-of-order Records.business2.address2
+  XXX resolving [0] Records.business2.address2
   XXX can't find decl for Records.re:93:2
   XXX Records.business2.address2 resolved with 1 dependencies
-  
-XXX resolving out-of-order Records.business2.owner
+  XXX resolving [0] Records.business2.owner
   XXX Records.business2.owner resolved with 0 dependencies
-  
-XXX resolving out-of-order Records.business2.name
+  XXX resolving [0] Records.business2.name
   XXX Records.business2.name resolved with 0 dependencies
   Records.getPayloadRecordPlusOne: 0 references ()
   Records.payloadValue: 0 references ()
   Records.recordValue: 1 references (Records.re:76:4)
   Records.getPayloadRecord: 0 references ()
-  
-XXX resolving out-of-order Records.record.w
+  XXX resolving [0] Records.record.w
   XXX Records.record.w resolved with 0 dependencies
-  
-XXX resolving out-of-order Records.record.v
+  XXX resolving [0] Records.record.v
   XXX can't find decl for Records.re:81:5
   XXX Records.record.v resolved with 1 dependencies
   Records.getPayload: 0 references ()
-  
-XXX resolving out-of-order Records.payload.payload
+  XXX resolving [0] Records.payload.payload
   XXX can't find decl for Records.re:61:18
   XXX can't find decl for Records.re:70:24
   XXX can't find decl for Records.re:79:31
   XXX Records.payload.payload resolved with 3 dependencies
-  
-XXX resolving out-of-order Records.payload.num
+  XXX resolving [0] Records.payload.num
   XXX Records.payload.num resolved with 0 dependencies
   Records.findAllAddresses: 0 references ()
   Records.someBusiness: 0 references ()
   Records.findAddress: 0 references ()
-  
-XXX resolving out-of-order Records.getOpt
-  
-XXX resolving out-of-order Records.findAddress
+  XXX resolving [0] Records.getOpt
+  XXX resolving [1] Records.findAddress
   XXX Records.findAddress resolved with 0 dependencies
-  
-XXX resolving out-of-order Records.findAllAddresses
+  XXX resolving [1] Records.findAllAddresses
   XXX Records.findAllAddresses resolved with 0 dependencies
-  
-XXX resolving out-of-order Records.findAddress2
+  XXX resolving [1] Records.findAddress2
   XXX Records.findAddress2 resolved with 0 dependencies
   XXX Records.getOpt resolved with 0 dependencies
-  
-XXX resolving out-of-order Records.business.address
+  XXX resolving [0] Records.business.address
   XXX can't find decl for Records.re:38:2
   XXX can't find decl for Records.re:47:6
   XXX Records.business.address resolved with 2 dependencies
-  
-XXX resolving out-of-order Records.business.owner
+  XXX resolving [0] Records.business.owner
   XXX can't find decl for Records.re:48:8
   XXX Records.business.owner resolved with 1 dependencies
-  
-XXX resolving out-of-order Records.business.name
+  XXX resolving [0] Records.business.name
   XXX Records.business.name resolved with 0 dependencies
-  
-XXX resolving out-of-order Records.person.address
+  XXX resolving [0] Records.person.address
   XXX can't find decl for Records.re:48:40
   XXX Records.person.address resolved with 1 dependencies
-  
-XXX resolving out-of-order Records.person.age
+  XXX resolving [0] Records.person.age
   XXX Records.person.age resolved with 0 dependencies
-  
-XXX resolving out-of-order Records.person.name
+  XXX resolving [0] Records.person.name
   XXX Records.person.name resolved with 0 dependencies
   Records.coord2d: 0 references ()
   Records.computeArea: 0 references ()
   Records.origin: 0 references ()
-  
-XXX resolving out-of-order Records.coord.z
+  XXX resolving [0] Records.coord.z
   XXX can't find decl for Records.re:14:19
   XXX Records.coord.z resolved with 1 dependencies
-  
-XXX resolving out-of-order Records.coord.y
+  XXX resolving [0] Records.coord.y
   XXX can't find decl for ReasonComponent.re:63:23
   XXX can't find decl for Records.re:14:19
   XXX Records.coord.y resolved with 2 dependencies
-  
-XXX resolving out-of-order Records.coord.x
+  XXX resolving [0] Records.coord.x
   XXX can't find decl for ReasonComponent.re:63:23
   XXX can't find decl for Records.re:14:19
   XXX Records.coord.x resolved with 2 dependencies
   References.preserveRefIdentity: 0 references ()
   References.destroysRefIdentity: 0 references ()
-  
-XXX resolving out-of-order References.requiresConversion.x
+  XXX resolving [0] References.requiresConversion.x
   XXX References.requiresConversion.x resolved with 0 dependencies
   References.set: 0 references ()
   References.make: 0 references ()
   References.get: 0 references ()
-  
-XXX resolving out-of-order References.R.set
-  
-XXX resolving out-of-order References.set
+  XXX resolving [0] References.R.set
+  XXX resolving [1] References.set
   XXX References.set resolved with 0 dependencies
   XXX References.R.set resolved with 0 dependencies
-  
-XXX resolving out-of-order References.R.make
-  
-XXX resolving out-of-order References.make
+  XXX resolving [0] References.R.make
+  XXX resolving [1] References.make
   XXX References.make resolved with 0 dependencies
   XXX References.R.make resolved with 0 dependencies
-  
-XXX resolving out-of-order References.R.get
-  
-XXX resolving out-of-order References.get
+  XXX resolving [0] References.R.get
+  XXX resolving [1] References.get
   XXX References.get resolved with 0 dependencies
   XXX References.R.get resolved with 0 dependencies
-  
-XXX resolving out-of-order References.R.+set
+  XXX resolving [0] References.R.+set
   XXX References.R.+set resolved with 0 dependencies
-  
-XXX resolving out-of-order References.R.+make
+  XXX resolving [0] References.R.+make
   XXX References.R.+make resolved with 0 dependencies
-  
-XXX resolving out-of-order References.R.+get
+  XXX resolving [0] References.R.+get
   XXX References.R.+get resolved with 0 dependencies
   References.update: 0 references ()
   References.access: 0 references ()
   References.create: 0 references ()
-  
-XXX resolving out-of-order Shadow.M.test
+  XXX resolving [0] Shadow.M.test
   XXX Shadow.M.test resolved with 0 dependencies
   Shadow.M.+test: 0 references ()
   Shadow.test: 0 references ()
@@ -2151,25 +1988,20 @@ XXX resolving out-of-order Shadow.M.test
   TestFirstClassModules.convertRecord: 0 references ()
   TestFirstClassModules.convertInterface: 0 references ()
   TestFirstClassModules.convert: 0 references ()
-  
-XXX resolving out-of-order TestImmutableArray.testBeltArraySet
+  XXX resolving [0] TestImmutableArray.testBeltArraySet
   XXX TestImmutableArray.testBeltArraySet resolved with 0 dependencies
-  
-XXX resolving out-of-order TestImmutableArray.testBeltArrayGet
+  XXX resolving [0] TestImmutableArray.testBeltArrayGet
   XXX TestImmutableArray.testBeltArrayGet resolved with 0 dependencies
   TestImmutableArray.testImmutableArrayGet: 0 references ()
   TestImport.defaultValue2: 0 references ()
-  
-XXX resolving out-of-order TestImport.make
+  XXX resolving [0] TestImport.make
   XXX TestImport.make resolved with 0 dependencies
   TestImport.make: 1 references (TestImport.re:42:4)
-  
-XXX resolving out-of-order TestImport.message.text
+  XXX resolving [0] TestImport.message.text
   XXX TestImport.message.text resolved with 0 dependencies
   TestImport.defaultValue: 0 references ()
   TestImport.valueStartingWithUpperCaseLetter: 0 references ()
-  
-XXX resolving out-of-order TestImport.innerStuffContents
+  XXX resolving [0] TestImport.innerStuffContents
   XXX TestImport.innerStuffContents resolved with 0 dependencies
   TestImport.innerStuffContentsAsEmptyObject: 0 references ()
   TestImport.innerStuffContents: 1 references (TestImport.re:18:4)
@@ -2178,52 +2010,39 @@ XXX resolving out-of-order TestImport.innerStuffContents
   TestModuleAliases.testInner1Expanded: 0 references ()
   TestModuleAliases.testInner1: 0 references ()
   TestPromise.convert: 0 references ()
-  
-XXX resolving out-of-order TestPromise.toPayload.result
+  XXX resolving [0] TestPromise.toPayload.result
   XXX TestPromise.toPayload.result resolved with 0 dependencies
-  
-XXX resolving out-of-order TestPromise.fromPayload.s
+  XXX resolving [0] TestPromise.fromPayload.s
   XXX can't find decl for TestPromise.re:14:32
   XXX TestPromise.fromPayload.s resolved with 1 dependencies
-  
-XXX resolving out-of-order TestPromise.fromPayload.x
+  XXX resolving [0] TestPromise.fromPayload.x
   XXX TestPromise.fromPayload.x resolved with 0 dependencies
   TransitiveType1.convertAlias: 0 references ()
   TransitiveType1.convert: 0 references ()
-  
-XXX resolving out-of-order TransitiveType2.convertT2
+  XXX resolving [0] TransitiveType2.convertT2
   XXX TransitiveType2.convertT2 resolved with 0 dependencies
   TransitiveType3.convertT3: 0 references ()
-  
-XXX resolving out-of-order TransitiveType3.t3.s
+  XXX resolving [0] TransitiveType3.t3.s
   XXX TransitiveType3.t3.s resolved with 0 dependencies
-  
-XXX resolving out-of-order TransitiveType3.t3.i
+  XXX resolving [0] TransitiveType3.t3.i
   XXX TransitiveType3.t3.i resolved with 0 dependencies
-  
-XXX resolving out-of-order TypeParams1.exportSomething
+  XXX resolving [0] TypeParams1.exportSomething
   XXX TypeParams1.exportSomething resolved with 0 dependencies
-  
-XXX resolving out-of-order TypeParams2.exportSomething
+  XXX resolving [0] TypeParams2.exportSomething
   XXX TypeParams2.exportSomething resolved with 0 dependencies
-  
-XXX resolving out-of-order TypeParams2.item.id
+  XXX resolving [0] TypeParams2.item.id
   XXX TypeParams2.item.id resolved with 0 dependencies
   TypeParams3.test2: 0 references ()
   TypeParams3.test: 0 references ()
   Unboxed.r2Test: 0 references ()
-  
-XXX resolving out-of-order Unboxed.r2.B
+  XXX resolving [0] Unboxed.r2.B
   XXX Unboxed.r2.B resolved with 0 dependencies
-  
-XXX resolving out-of-order Unboxed.r1.x
+  XXX resolving [0] Unboxed.r1.x
   XXX Unboxed.r1.x resolved with 0 dependencies
   Unboxed.testV1: 0 references ()
-  
-XXX resolving out-of-order Unboxed.v2.A
+  XXX resolving [0] Unboxed.v2.A
   XXX Unboxed.v2.A resolved with 0 dependencies
-  
-XXX resolving out-of-order Unboxed.v1.A
+  XXX resolving [0] Unboxed.v1.A
   XXX Unboxed.v1.A resolved with 0 dependencies
   Uncurried.sumLblCurried: 0 references ()
   Uncurried.sumCurried: 0 references ()
@@ -2231,12 +2050,10 @@ XXX resolving out-of-order Unboxed.v1.A
   Uncurried.sumU: 0 references ()
   Uncurried.callback2U: 0 references ()
   Uncurried.callback2: 0 references ()
-  
-XXX resolving out-of-order Uncurried.authU.loginU
+  XXX resolving [0] Uncurried.authU.loginU
   XXX can't find decl for Uncurried.re:39:25
   XXX Uncurried.authU.loginU resolved with 1 dependencies
-  
-XXX resolving out-of-order Uncurried.auth.login
+  XXX resolving [0] Uncurried.auth.login
   XXX can't find decl for Uncurried.re:36:24
   XXX Uncurried.auth.login resolved with 1 dependencies
   Uncurried.callback: 0 references ()
@@ -2250,15 +2067,12 @@ XXX resolving out-of-order Uncurried.auth.login
   Variants.restResult3: 0 references ()
   Variants.restResult2: 0 references ()
   Variants.restResult1: 0 references ()
-  
-XXX resolving out-of-order Variants.result1.Error
+  XXX resolving [0] Variants.result1.Error
   XXX Variants.result1.Error resolved with 0 dependencies
-  
-XXX resolving out-of-order Variants.result1.Ok
+  XXX resolving [0] Variants.result1.Ok
   XXX Variants.result1.Ok resolved with 0 dependencies
   Variants.polyWithOpt: 0 references ()
-  
-XXX resolving out-of-order Variants.type_.Type
+  XXX resolving [0] Variants.type_.Type
   XXX Variants.type_.Type resolved with 0 dependencies
   Variants.id2: 0 references ()
   Variants.id1: 0 references ()
@@ -2275,106 +2089,79 @@ XXX resolving out-of-order Variants.type_.Type
   Variants.monday: 0 references ()
   Variants.isWeekend: 0 references ()
   VariantsWithPayload.testVariant1Object: 0 references ()
-  
-XXX resolving out-of-order VariantsWithPayload.variant1Object.R
+  XXX resolving [0] VariantsWithPayload.variant1Object.R
   XXX VariantsWithPayload.variant1Object.R resolved with 0 dependencies
   VariantsWithPayload.testVariant1Int: 0 references ()
-  
-XXX resolving out-of-order VariantsWithPayload.variant1Int.R
+  XXX resolving [0] VariantsWithPayload.variant1Int.R
   XXX VariantsWithPayload.variant1Int.R resolved with 0 dependencies
   VariantsWithPayload.printVariantWithPayloads: 0 references ()
   VariantsWithPayload.testVariantWithPayloads: 0 references ()
-  
-XXX resolving out-of-order VariantsWithPayload.variantWithPayloads.E
+  XXX resolving [0] VariantsWithPayload.variantWithPayloads.E
   XXX VariantsWithPayload.variantWithPayloads.E resolved with 0 dependencies
-  
-XXX resolving out-of-order VariantsWithPayload.variantWithPayloads.D
+  XXX resolving [0] VariantsWithPayload.variantWithPayloads.D
   XXX VariantsWithPayload.variantWithPayloads.D resolved with 0 dependencies
-  
-XXX resolving out-of-order VariantsWithPayload.variantWithPayloads.C
+  XXX resolving [0] VariantsWithPayload.variantWithPayloads.C
   XXX VariantsWithPayload.variantWithPayloads.C resolved with 0 dependencies
-  
-XXX resolving out-of-order VariantsWithPayload.variantWithPayloads.B
+  XXX resolving [0] VariantsWithPayload.variantWithPayloads.B
   XXX VariantsWithPayload.variantWithPayloads.B resolved with 0 dependencies
-  
-XXX resolving out-of-order VariantsWithPayload.variantWithPayloads.A
+  XXX resolving [0] VariantsWithPayload.variantWithPayloads.A
   XXX VariantsWithPayload.variantWithPayloads.A resolved with 0 dependencies
   VariantsWithPayload.testSimpleVariant: 0 references ()
-  
-XXX resolving out-of-order VariantsWithPayload.simpleVariant.C
+  XXX resolving [0] VariantsWithPayload.simpleVariant.C
   XXX VariantsWithPayload.simpleVariant.C resolved with 0 dependencies
-  
-XXX resolving out-of-order VariantsWithPayload.simpleVariant.B
+  XXX resolving [0] VariantsWithPayload.simpleVariant.B
   XXX VariantsWithPayload.simpleVariant.B resolved with 0 dependencies
-  
-XXX resolving out-of-order VariantsWithPayload.simpleVariant.A
+  XXX resolving [0] VariantsWithPayload.simpleVariant.A
   XXX VariantsWithPayload.simpleVariant.A resolved with 0 dependencies
   VariantsWithPayload.printManyPayloads: 0 references ()
   VariantsWithPayload.testManyPayloads: 0 references ()
   VariantsWithPayload.printVariantWithPayload: 0 references ()
   VariantsWithPayload.testWithPayload: 0 references ()
-  
-XXX resolving out-of-order VariantsWithPayload.payload.y
+  XXX resolving [0] VariantsWithPayload.payload.y
   XXX can't find decl for VariantsWithPayload.re:27:59
   XXX can't find decl for VariantsWithPayload.re:46:53
   XXX VariantsWithPayload.payload.y resolved with 2 dependencies
-  
-XXX resolving out-of-order VariantsWithPayload.payload.x
+  XXX resolving [0] VariantsWithPayload.payload.x
   XXX can't find decl for VariantsWithPayload.re:27:42
   XXX can't find decl for VariantsWithPayload.re:46:36
   XXX VariantsWithPayload.payload.x resolved with 2 dependencies
   ComponentAsProp.make: 0 references ()
-  
-XXX resolving out-of-order ComponentAsProp.component
-  
-XXX resolving out-of-order ComponentAsProp.make
+  XXX resolving [0] ComponentAsProp.component
+  XXX resolving [1] ComponentAsProp.make
   XXX ComponentAsProp.make resolved with 0 dependencies
   XXX ComponentAsProp.component resolved with 0 dependencies
-  
-XXX resolving out-of-order ManyComponents.+emptyArray
-  
-XXX resolving out-of-order ManyComponents.make
+  XXX resolving [0] ManyComponents.+emptyArray
+  XXX resolving [1] ManyComponents.make
   XXX ManyComponents.make resolved with 0 dependencies
   XXX ManyComponents.+emptyArray resolved with 0 dependencies
   ManyComponents.make: 0 references ()
-  
-XXX resolving out-of-order ManyComponents.component
+  XXX resolving [0] ManyComponents.component
   XXX ManyComponents.component resolved with 0 dependencies
   ManyComponents.ManyProps.make: 0 references ()
-  
-XXX resolving out-of-order ManyComponents.ManyProps.component
-  
-XXX resolving out-of-order ManyComponents.ManyProps.make
+  XXX resolving [0] ManyComponents.ManyProps.component
+  XXX resolving [1] ManyComponents.ManyProps.make
   XXX ManyComponents.ManyProps.make resolved with 0 dependencies
   XXX ManyComponents.ManyProps.component resolved with 0 dependencies
   ManyComponents.InnerComponent.make: 1 references (ManyComponents.re:39:4)
-  
-XXX resolving out-of-order ManyComponents.InnerComponent.component
-  
-XXX resolving out-of-order ManyComponents.InnerComponent.make
+  XXX resolving [0] ManyComponents.InnerComponent.component
+  XXX resolving [1] ManyComponents.InnerComponent.make
   XXX ManyComponents.InnerComponent.make resolved with 0 dependencies
   XXX ManyComponents.InnerComponent.component resolved with 0 dependencies
-  
-XXX resolving out-of-order ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted
+  XXX resolving [0] ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted
   XXX ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted resolved with 0 dependencies
-  
-XXX resolving out-of-order location.x
+  XXX resolving [0] location.x
   XXX location.x resolved with 0 dependencies
-  
-XXX resolving out-of-order location.t.name
+  XXX resolving [0] location.t.name
   XXX location.t.name resolved with 0 dependencies
-  
-XXX resolving out-of-order location.t.id
+  XXX resolving [0] location.t.id
   XXX location.t.id resolved with 0 dependencies
   Tuples.changeSecondAge: 0 references ()
   Tuples.marry: 0 references ()
   Tuples.getFirstName: 0 references ()
-  
-XXX resolving out-of-order Tuples.person.age
+  XXX resolving [0] Tuples.person.age
   XXX can't find decl for Tuples.re:47:19
   XXX Tuples.person.age resolved with 1 dependencies
-  
-XXX resolving out-of-order Tuples.person.name
+  XXX resolving [0] Tuples.person.name
   XXX can't find decl for Tuples.re:39:49
   XXX Tuples.person.name resolved with 1 dependencies
   Tuples.coord2d: 0 references ()
@@ -2385,517 +2172,359 @@ XXX resolving out-of-order Tuples.person.name
   Tuples.testTuple: 0 references ()
   Types.currentTime: 0 references ()
   Types.testInstantiateTypeParameter: 0 references ()
-  
-XXX resolving out-of-order Types.someRecord.id
+  XXX resolving [0] Types.someRecord.id
   XXX Types.someRecord.id resolved with 0 dependencies
   Types.setMatch: 0 references ()
   Types.testMarshalFields: 0 references ()
   Types.testConvertLocation: 0 references ()
   Types.testConvertNull: 0 references ()
-  
-XXX resolving out-of-order Types.record.s
+  XXX resolving [0] Types.record.s
   XXX Types.record.s resolved with 0 dependencies
-  
-XXX resolving out-of-order Types.record.i
+  XXX resolving [0] Types.record.i
   XXX Types.record.i resolved with 0 dependencies
   Types.jsonStringify: 0 references ()
   Types.jsString2T: 0 references ()
   Types.jsStringT: 0 references ()
   Types.stringT: 0 references ()
-  
-XXX resolving out-of-order Types.opaqueVariant.B
+  XXX resolving [0] Types.opaqueVariant.B
   XXX Types.opaqueVariant.B resolved with 0 dependencies
-  
-XXX resolving out-of-order Types.opaqueVariant.A
+  XXX resolving [0] Types.opaqueVariant.A
   XXX Types.opaqueVariant.A resolved with 0 dependencies
   Types.testFunctionOnOptionsAsArgument: 0 references ()
   Types.mutuallyRecursiveConverter: 0 references ()
   Types.selfRecursiveConverter: 0 references ()
-  
-XXX resolving out-of-order Types.mutuallyRecursiveB.a
+  XXX resolving [0] Types.mutuallyRecursiveB.a
   XXX Types.mutuallyRecursiveB.a resolved with 0 dependencies
-  
-XXX resolving out-of-order Types.mutuallyRecursiveA.b
+  XXX resolving [0] Types.mutuallyRecursiveA.b
   XXX can't find decl for Types.re:53:34
   XXX Types.mutuallyRecursiveA.b resolved with 1 dependencies
-  
-XXX resolving out-of-order Types.selfRecursive.self
+  XXX resolving [0] Types.selfRecursive.self
   XXX can't find decl for Types.re:46:30
   XXX Types.selfRecursive.self resolved with 1 dependencies
   Types.swap: 1 references (Types.re:28:8)
-  
-XXX resolving out-of-order Types.typeWithVars.B
+  XXX resolving [0] Types.typeWithVars.B
   XXX Types.typeWithVars.B resolved with 0 dependencies
-  
-XXX resolving out-of-order Types.typeWithVars.A
+  XXX resolving [0] Types.typeWithVars.A
   XXX Types.typeWithVars.A resolved with 0 dependencies
   Types.map: 0 references ()
   Types.someIntList: 0 references ()
-  
-XXX resolving out-of-order DeadTypeTest._
+  XXX resolving [0] DeadTypeTest._
   XXX DeadTypeTest._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTypeTest._
+  XXX resolving [0] DeadTypeTest._
   XXX DeadTypeTest._ resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTypeTest.+a
+  XXX resolving [0] DeadTypeTest.+a
   XXX DeadTypeTest.+a resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadValueTest.valueDead
+  XXX resolving [0] DeadValueTest.valueDead
   XXX DeadValueTest.valueDead resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadValueTest.valueAlive
+  XXX resolving [0] DeadValueTest.valueAlive
   XXX can't find decl for DeadTest.re:77:0
   XXX DeadValueTest.valueAlive resolved with 1 dependencies
-  
-XXX resolving out-of-order ErrorHandler.x
+  XXX resolving [0] ErrorHandler.x
   XXX ErrorHandler.x resolved with 0 dependencies
   XXX ErrorHandler.Make.notify already resolved
-  
-XXX resolving out-of-order FirstClassModulesInterface.+r
+  XXX resolving [0] FirstClassModulesInterface.+r
   XXX FirstClassModulesInterface.+r resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.eq
+  XXX resolving [0] ImmutableArray.eq
   XXX ImmutableArray.eq resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.eqU
+  XXX resolving [0] ImmutableArray.eqU
   XXX ImmutableArray.eqU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.cmp
+  XXX resolving [0] ImmutableArray.cmp
   XXX ImmutableArray.cmp resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.cmpU
+  XXX resolving [0] ImmutableArray.cmpU
   XXX ImmutableArray.cmpU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.some2
+  XXX resolving [0] ImmutableArray.some2
   XXX ImmutableArray.some2 resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.some2U
+  XXX resolving [0] ImmutableArray.some2U
   XXX ImmutableArray.some2U resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.every2
+  XXX resolving [0] ImmutableArray.every2
   XXX ImmutableArray.every2 resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.every2U
+  XXX resolving [0] ImmutableArray.every2U
   XXX ImmutableArray.every2U resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.every
+  XXX resolving [0] ImmutableArray.every
   XXX ImmutableArray.every resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.everyU
+  XXX resolving [0] ImmutableArray.everyU
   XXX ImmutableArray.everyU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.some
+  XXX resolving [0] ImmutableArray.some
   XXX ImmutableArray.some resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.someU
+  XXX resolving [0] ImmutableArray.someU
   XXX ImmutableArray.someU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.reduceReverse2
+  XXX resolving [0] ImmutableArray.reduceReverse2
   XXX ImmutableArray.reduceReverse2 resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.reduceReverse2U
+  XXX resolving [0] ImmutableArray.reduceReverse2U
   XXX ImmutableArray.reduceReverse2U resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.reduceReverse
+  XXX resolving [0] ImmutableArray.reduceReverse
   XXX ImmutableArray.reduceReverse resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.reduceReverseU
+  XXX resolving [0] ImmutableArray.reduceReverseU
   XXX ImmutableArray.reduceReverseU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.reduce
+  XXX resolving [0] ImmutableArray.reduce
   XXX ImmutableArray.reduce resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.reduceU
+  XXX resolving [0] ImmutableArray.reduceU
   XXX ImmutableArray.reduceU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.partition
+  XXX resolving [0] ImmutableArray.partition
   XXX ImmutableArray.partition resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.partitionU
+  XXX resolving [0] ImmutableArray.partitionU
   XXX ImmutableArray.partitionU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.mapWithIndex
+  XXX resolving [0] ImmutableArray.mapWithIndex
   XXX ImmutableArray.mapWithIndex resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.mapWithIndexU
+  XXX resolving [0] ImmutableArray.mapWithIndexU
   XXX ImmutableArray.mapWithIndexU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.forEachWithIndex
+  XXX resolving [0] ImmutableArray.forEachWithIndex
   XXX ImmutableArray.forEachWithIndex resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.forEachWithIndexU
+  XXX resolving [0] ImmutableArray.forEachWithIndexU
   XXX ImmutableArray.forEachWithIndexU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.keepMap
+  XXX resolving [0] ImmutableArray.keepMap
   XXX ImmutableArray.keepMap resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.keepMapU
+  XXX resolving [0] ImmutableArray.keepMapU
   XXX ImmutableArray.keepMapU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.keepWithIndex
+  XXX resolving [0] ImmutableArray.keepWithIndex
   XXX ImmutableArray.keepWithIndex resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.keepWithIndexU
+  XXX resolving [0] ImmutableArray.keepWithIndexU
   XXX ImmutableArray.keepWithIndexU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.map
+  XXX resolving [0] ImmutableArray.map
   XXX ImmutableArray.map resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.mapU
+  XXX resolving [0] ImmutableArray.mapU
   XXX ImmutableArray.mapU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.forEach
+  XXX resolving [0] ImmutableArray.forEach
   XXX ImmutableArray.forEach resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.forEachU
+  XXX resolving [0] ImmutableArray.forEachU
   XXX ImmutableArray.forEachU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.copy
+  XXX resolving [0] ImmutableArray.copy
   XXX ImmutableArray.copy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.sliceToEnd
+  XXX resolving [0] ImmutableArray.sliceToEnd
   XXX ImmutableArray.sliceToEnd resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.slice
+  XXX resolving [0] ImmutableArray.slice
   XXX ImmutableArray.slice resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.concatMany
+  XXX resolving [0] ImmutableArray.concatMany
   XXX ImmutableArray.concatMany resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.concat
+  XXX resolving [0] ImmutableArray.concat
   XXX ImmutableArray.concat resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.unzip
+  XXX resolving [0] ImmutableArray.unzip
   XXX ImmutableArray.unzip resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.zipBy
+  XXX resolving [0] ImmutableArray.zipBy
   XXX ImmutableArray.zipBy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.zipByU
+  XXX resolving [0] ImmutableArray.zipByU
   XXX ImmutableArray.zipByU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.zip
+  XXX resolving [0] ImmutableArray.zip
   XXX ImmutableArray.zip resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.makeByAndShuffle
+  XXX resolving [0] ImmutableArray.makeByAndShuffle
   XXX ImmutableArray.makeByAndShuffle resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.makeByAndShuffleU
+  XXX resolving [0] ImmutableArray.makeByAndShuffleU
   XXX ImmutableArray.makeByAndShuffleU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.makeBy
+  XXX resolving [0] ImmutableArray.makeBy
   XXX ImmutableArray.makeBy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.makeByU
+  XXX resolving [0] ImmutableArray.makeByU
   XXX ImmutableArray.makeByU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.rangeBy
+  XXX resolving [0] ImmutableArray.rangeBy
   XXX ImmutableArray.rangeBy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.range
+  XXX resolving [0] ImmutableArray.range
   XXX ImmutableArray.range resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.make
+  XXX resolving [0] ImmutableArray.make
   XXX ImmutableArray.make resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.makeUninitializedUnsafe
+  XXX resolving [0] ImmutableArray.makeUninitializedUnsafe
   XXX ImmutableArray.makeUninitializedUnsafe resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.makeUninitialized
+  XXX resolving [0] ImmutableArray.makeUninitialized
   XXX ImmutableArray.makeUninitialized resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.reverse
+  XXX resolving [0] ImmutableArray.reverse
   XXX ImmutableArray.reverse resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.shuffle
+  XXX resolving [0] ImmutableArray.shuffle
   XXX ImmutableArray.shuffle resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.getUndefined
+  XXX resolving [0] ImmutableArray.getUndefined
   XXX ImmutableArray.getUndefined resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.getUnsafe
+  XXX resolving [0] ImmutableArray.getUnsafe
   XXX ImmutableArray.getUnsafe resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.getExn
+  XXX resolving [0] ImmutableArray.getExn
   XXX ImmutableArray.getExn resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.get
+  XXX resolving [0] ImmutableArray.get
   XXX ImmutableArray.get resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.size
+  XXX resolving [0] ImmutableArray.size
   XXX ImmutableArray.size resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.length
+  XXX resolving [0] ImmutableArray.length
   XXX ImmutableArray.length resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.toArray
+  XXX resolving [0] ImmutableArray.toArray
   XXX ImmutableArray.toArray resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.fromArray
+  XXX resolving [0] ImmutableArray.fromArray
   XXX can't find decl for DeadTest.re:1:0
   XXX ImmutableArray.fromArray resolved with 1 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.get
-  
-XXX resolving out-of-order TestImmutableArray.testImmutableArrayGet
+  XXX resolving [0] ImmutableArray.Array.get
+  XXX resolving [1] TestImmutableArray.testImmutableArrayGet
   XXX TestImmutableArray.testImmutableArrayGet resolved with 0 dependencies
   XXX ImmutableArray.Array.get resolved with 0 dependencies
   ImportHookDefault.make2: 0 references ()
   ImportHookDefault.make: 1 references (Hooks.re:4:4)
-  
-XXX resolving out-of-order ImportHookDefault.person.age
+  XXX resolving [0] ImportHookDefault.person.age
   XXX ImportHookDefault.person.age resolved with 0 dependencies
-  
-XXX resolving out-of-order ImportHookDefault.person.name
+  XXX resolving [0] ImportHookDefault.person.name
   XXX ImportHookDefault.person.name resolved with 0 dependencies
   ImportHooks.foo: 0 references ()
   ImportHooks.make: 1 references (Hooks.re:4:4)
-  
-XXX resolving out-of-order ImportHooks.person.age
+  XXX resolving [0] ImportHooks.person.age
   XXX ImportHooks.person.age resolved with 0 dependencies
-  
-XXX resolving out-of-order ImportHooks.person.name
+  XXX resolving [0] ImportHooks.person.name
   XXX ImportHooks.person.name resolved with 0 dependencies
   ImportJsValue.default: 0 references ()
   ImportJsValue.polymorphic: 0 references ()
   ImportJsValue.convertVariant: 0 references ()
-  
-XXX resolving out-of-order ImportJsValue.variant.S
+  XXX resolving [0] ImportJsValue.variant.S
   XXX ImportJsValue.variant.S resolved with 0 dependencies
-  
-XXX resolving out-of-order ImportJsValue.variant.I
+  XXX resolving [0] ImportJsValue.variant.I
   XXX ImportJsValue.variant.I resolved with 0 dependencies
   ImportJsValue.returnedFromHigherOrder: 0 references ()
   ImportJsValue.higherOrder: 1 references (ImportJsValue.re:62:4)
   ImportJsValue.useColor: 0 references ()
   ImportJsValue.useGetAbs: 0 references ()
   ImportJsValue.useGetProp: 0 references ()
-  
-XXX resolving out-of-order ImportJsValue.AbsoluteValue.getAbs
-  
-XXX resolving out-of-order ImportJsValue.useGetAbs
+  XXX resolving [0] ImportJsValue.AbsoluteValue.getAbs
+  XXX resolving [1] ImportJsValue.useGetAbs
   XXX ImportJsValue.useGetAbs resolved with 0 dependencies
   XXX ImportJsValue.AbsoluteValue.getAbs resolved with 0 dependencies
-  
-XXX resolving out-of-order ImportJsValue.AbsoluteValue.+getAbs
+  XXX resolving [0] ImportJsValue.AbsoluteValue.+getAbs
   XXX ImportJsValue.AbsoluteValue.+getAbs resolved with 0 dependencies
   ImportJsValue.areaValue: 0 references ()
   ImportJsValue.roundedNumber: 0 references ()
   ImportJsValue.returnMixedArray: 0 references ()
   ImportJsValue.area: 1 references (ImportJsValue.re:28:4)
-  
-XXX resolving out-of-order ImportJsValue.point.y
+  XXX resolving [0] ImportJsValue.point.y
   XXX ImportJsValue.point.y resolved with 0 dependencies
-  
-XXX resolving out-of-order ImportJsValue.point.x
+  XXX resolving [0] ImportJsValue.point.x
   XXX ImportJsValue.point.x resolved with 0 dependencies
   ImportJsValue.round: 1 references (ImportJsValue.re:25:4)
-  
-XXX resolving out-of-order ImportMyBanner.make
+  XXX resolving [0] ImportMyBanner.make
   XXX ImportMyBanner.make resolved with 0 dependencies
   ImportMyBanner.make: 1 references (ImportMyBanner.re:19:4)
-  
-XXX resolving out-of-order ImportMyBanner.message.text
+  XXX resolving [0] ImportMyBanner.message.text
   XXX ImportMyBanner.message.text resolved with 0 dependencies
-  
-XXX resolving out-of-order NestedModulesInSignature.Universe.+theAnswer
-  
-XXX resolving out-of-order NestedModulesInSignature.Universe.theAnswer
+  XXX resolving [0] NestedModulesInSignature.Universe.+theAnswer
+  XXX resolving [1] NestedModulesInSignature.Universe.theAnswer
   XXX NestedModulesInSignature.Universe.theAnswer resolved with 0 dependencies
   XXX NestedModulesInSignature.Universe.+theAnswer resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadValueTest.+valueOnlyInImplementation
+  XXX resolving [0] DeadValueTest.+valueOnlyInImplementation
   XXX DeadValueTest.+valueOnlyInImplementation resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadValueTest.+valueDead
+  XXX resolving [0] DeadValueTest.+valueDead
   XXX DeadValueTest.+valueDead resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadValueTest.+valueAlive
+  XXX resolving [0] DeadValueTest.+valueAlive
   XXX DeadValueTest.+valueAlive resolved with 1 dependencies
-  
-XXX resolving out-of-order ErrorHandler.+x
+  XXX resolving [0] ErrorHandler.+x
   XXX ErrorHandler.+x resolved with 0 dependencies
   XXX ErrorHandler.Make.+notify already resolved
-  
-XXX resolving out-of-order ImmutableArray.Array.+eq
+  XXX resolving [0] ImmutableArray.Array.+eq
   XXX ImmutableArray.Array.+eq resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+eqU
+  XXX resolving [0] ImmutableArray.Array.+eqU
   XXX ImmutableArray.Array.+eqU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+cmp
+  XXX resolving [0] ImmutableArray.Array.+cmp
   XXX ImmutableArray.Array.+cmp resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+cmpU
+  XXX resolving [0] ImmutableArray.Array.+cmpU
   XXX ImmutableArray.Array.+cmpU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+some2
+  XXX resolving [0] ImmutableArray.Array.+some2
   XXX ImmutableArray.Array.+some2 resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+some2U
+  XXX resolving [0] ImmutableArray.Array.+some2U
   XXX ImmutableArray.Array.+some2U resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+every2
+  XXX resolving [0] ImmutableArray.Array.+every2
   XXX ImmutableArray.Array.+every2 resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+every2U
+  XXX resolving [0] ImmutableArray.Array.+every2U
   XXX ImmutableArray.Array.+every2U resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+every
+  XXX resolving [0] ImmutableArray.Array.+every
   XXX ImmutableArray.Array.+every resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+everyU
+  XXX resolving [0] ImmutableArray.Array.+everyU
   XXX ImmutableArray.Array.+everyU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+some
+  XXX resolving [0] ImmutableArray.Array.+some
   XXX ImmutableArray.Array.+some resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+someU
+  XXX resolving [0] ImmutableArray.Array.+someU
   XXX ImmutableArray.Array.+someU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+reduceReverse2
+  XXX resolving [0] ImmutableArray.Array.+reduceReverse2
   XXX ImmutableArray.Array.+reduceReverse2 resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+reduceReverse2U
+  XXX resolving [0] ImmutableArray.Array.+reduceReverse2U
   XXX ImmutableArray.Array.+reduceReverse2U resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+reduceReverse
+  XXX resolving [0] ImmutableArray.Array.+reduceReverse
   XXX ImmutableArray.Array.+reduceReverse resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+reduceReverseU
+  XXX resolving [0] ImmutableArray.Array.+reduceReverseU
   XXX ImmutableArray.Array.+reduceReverseU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+reduce
+  XXX resolving [0] ImmutableArray.Array.+reduce
   XXX ImmutableArray.Array.+reduce resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+reduceU
+  XXX resolving [0] ImmutableArray.Array.+reduceU
   XXX ImmutableArray.Array.+reduceU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+partition
+  XXX resolving [0] ImmutableArray.Array.+partition
   XXX ImmutableArray.Array.+partition resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+partitionU
+  XXX resolving [0] ImmutableArray.Array.+partitionU
   XXX ImmutableArray.Array.+partitionU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+mapWithIndex
+  XXX resolving [0] ImmutableArray.Array.+mapWithIndex
   XXX ImmutableArray.Array.+mapWithIndex resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+mapWithIndexU
+  XXX resolving [0] ImmutableArray.Array.+mapWithIndexU
   XXX ImmutableArray.Array.+mapWithIndexU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+forEachWithIndex
+  XXX resolving [0] ImmutableArray.Array.+forEachWithIndex
   XXX ImmutableArray.Array.+forEachWithIndex resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+forEachWithIndexU
+  XXX resolving [0] ImmutableArray.Array.+forEachWithIndexU
   XXX ImmutableArray.Array.+forEachWithIndexU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+keepMap
+  XXX resolving [0] ImmutableArray.Array.+keepMap
   XXX ImmutableArray.Array.+keepMap resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+keepMapU
+  XXX resolving [0] ImmutableArray.Array.+keepMapU
   XXX ImmutableArray.Array.+keepMapU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+keepWithIndex
+  XXX resolving [0] ImmutableArray.Array.+keepWithIndex
   XXX ImmutableArray.Array.+keepWithIndex resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+keepWithIndexU
+  XXX resolving [0] ImmutableArray.Array.+keepWithIndexU
   XXX ImmutableArray.Array.+keepWithIndexU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+map
+  XXX resolving [0] ImmutableArray.Array.+map
   XXX ImmutableArray.Array.+map resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+mapU
+  XXX resolving [0] ImmutableArray.Array.+mapU
   XXX ImmutableArray.Array.+mapU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+forEach
+  XXX resolving [0] ImmutableArray.Array.+forEach
   XXX ImmutableArray.Array.+forEach resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+forEachU
+  XXX resolving [0] ImmutableArray.Array.+forEachU
   XXX ImmutableArray.Array.+forEachU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+copy
+  XXX resolving [0] ImmutableArray.Array.+copy
   XXX ImmutableArray.Array.+copy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+sliceToEnd
+  XXX resolving [0] ImmutableArray.Array.+sliceToEnd
   XXX ImmutableArray.Array.+sliceToEnd resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+slice
+  XXX resolving [0] ImmutableArray.Array.+slice
   XXX ImmutableArray.Array.+slice resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+concatMany
+  XXX resolving [0] ImmutableArray.Array.+concatMany
   XXX ImmutableArray.Array.+concatMany resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+concat
+  XXX resolving [0] ImmutableArray.Array.+concat
   XXX ImmutableArray.Array.+concat resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+unzip
+  XXX resolving [0] ImmutableArray.Array.+unzip
   XXX ImmutableArray.Array.+unzip resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+zipBy
+  XXX resolving [0] ImmutableArray.Array.+zipBy
   XXX ImmutableArray.Array.+zipBy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+zipByU
+  XXX resolving [0] ImmutableArray.Array.+zipByU
   XXX ImmutableArray.Array.+zipByU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+zip
+  XXX resolving [0] ImmutableArray.Array.+zip
   XXX ImmutableArray.Array.+zip resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+makeByAndShuffle
+  XXX resolving [0] ImmutableArray.Array.+makeByAndShuffle
   XXX ImmutableArray.Array.+makeByAndShuffle resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+makeByAndShuffleU
+  XXX resolving [0] ImmutableArray.Array.+makeByAndShuffleU
   XXX ImmutableArray.Array.+makeByAndShuffleU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+makeBy
+  XXX resolving [0] ImmutableArray.Array.+makeBy
   XXX ImmutableArray.Array.+makeBy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+makeByU
+  XXX resolving [0] ImmutableArray.Array.+makeByU
   XXX ImmutableArray.Array.+makeByU resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+rangeBy
+  XXX resolving [0] ImmutableArray.Array.+rangeBy
   XXX ImmutableArray.Array.+rangeBy resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+range
+  XXX resolving [0] ImmutableArray.Array.+range
   XXX ImmutableArray.Array.+range resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+make
+  XXX resolving [0] ImmutableArray.Array.+make
   XXX ImmutableArray.Array.+make resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+makeUninitializedUnsafe
+  XXX resolving [0] ImmutableArray.Array.+makeUninitializedUnsafe
   XXX ImmutableArray.Array.+makeUninitializedUnsafe resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+makeUninitialized
+  XXX resolving [0] ImmutableArray.Array.+makeUninitialized
   XXX ImmutableArray.Array.+makeUninitialized resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+reverse
+  XXX resolving [0] ImmutableArray.Array.+reverse
   XXX ImmutableArray.Array.+reverse resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+shuffle
+  XXX resolving [0] ImmutableArray.Array.+shuffle
   XXX ImmutableArray.Array.+shuffle resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+getUndefined
+  XXX resolving [0] ImmutableArray.Array.+getUndefined
   XXX ImmutableArray.Array.+getUndefined resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+getUnsafe
+  XXX resolving [0] ImmutableArray.Array.+getUnsafe
   XXX ImmutableArray.Array.+getUnsafe resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+getExn
+  XXX resolving [0] ImmutableArray.Array.+getExn
   XXX ImmutableArray.Array.+getExn resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+get
+  XXX resolving [0] ImmutableArray.Array.+get
   XXX ImmutableArray.Array.+get resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+size
+  XXX resolving [0] ImmutableArray.Array.+size
   XXX ImmutableArray.Array.+size resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+length
+  XXX resolving [0] ImmutableArray.Array.+length
   XXX ImmutableArray.Array.+length resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+toArray
+  XXX resolving [0] ImmutableArray.Array.+toArray
   XXX ImmutableArray.Array.+toArray resolved with 0 dependencies
-  
-XXX resolving out-of-order ImmutableArray.Array.+fromArray
+  XXX resolving [0] ImmutableArray.Array.+fromArray
   XXX ImmutableArray.Array.+fromArray resolved with 1 dependencies
 
   Warning Dead Value

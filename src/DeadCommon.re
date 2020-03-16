@@ -627,7 +627,8 @@ let rec resolveRecursiveRefs =
       PosSet.empty;
     | _ =>
       Log_.item(
-        "@.XXX resolving out-of-order %s@.",
+        "XXX resolving [%d] %s@.",
+        refsBeingResolved |> PosSet.cardinal,
         decl.path |> pathToString,
       );
       let unresolved = ref(false);
