@@ -601,8 +601,19 @@ let declIsDead = (~refs, decl) => {
   && !posInBlacklist(decl.pos);
 };
 
+let doReportDead = pos =>
+  !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
+
 let rec resolveRecursiveRefs =
-        (~orderedFiles, ~refsTodo, ~refsBeingResolved, decl): bool => {
+        (
+          ~deadDeclarations,
+          ~orderedFiles,
+          ~refsTodo,
+          ~refsBeingResolved,
+          decl,
+        )
+        : bool => {
+  let shouldReportDead = decl.pos |> doReportDead;
   let newRefs =
     switch (decl.pos) {
     | _ when decl.resolved =>
@@ -643,6 +654,7 @@ let rec resolveRecursiveRefs =
                    let isDead =
                      xDecl
                      |> resolveRecursiveRefs(
+                          ~deadDeclarations,
                           ~orderedFiles,
                           ~refsTodo=xRefsTodo,
                           ~refsBeingResolved=
@@ -672,7 +684,12 @@ let rec resolveRecursiveRefs =
       newRefsTodo;
     };
 
-  decl |> declIsDead(~refs=newRefs);
+  let isDead = decl |> declIsDead(~refs=newRefs);
+  if (isDead && shouldReportDead) {
+    decl.pos |> ProcessDeadAnnotations.annotateDead;
+    deadDeclarations := [decl, ...deadDeclarations^];
+  };
+  isDead;
 };
 
 let doReportDead = pos =>
@@ -682,15 +699,13 @@ let declCheckDead = (~deadDeclarations, ~orderedFiles, ~refs as refs_, decl) =>
   if (decl.pos |> doReportDead) {
     let isDead =
       resolveRecursiveRefs(
+        ~deadDeclarations,
         ~orderedFiles,
         ~refsBeingResolved=PosSet.empty,
         ~refsTodo=refs_,
         decl,
       );
-    if (isDead) {
-      decl.pos |> ProcessDeadAnnotations.annotateDead;
-      deadDeclarations := [decl, ...deadDeclarations^];
-    };
+    ();
   } else if (verbose) {
     let refsString =
       refs_

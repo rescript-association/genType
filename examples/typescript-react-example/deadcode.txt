@@ -1600,12 +1600,7 @@ XXX resolving out-of-order DeadTest.foo
   XXX DeadTest.foo still unresolved
   XXX DeadTest.+cb still unresolved
   XXX DeadTest.bar resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.+cb
-  
-XXX resolving out-of-order DeadTest.foo
-  XXX DeadTest.foo resolved with 0 dependencies
-  XXX DeadTest.+cb resolved with 0 dependencies
+  DeadTest.+cb: 1 references (DeadTest.re:94:8)
   DeadTest.foo: 1 references (DeadTest.re:98:4)
   
 XXX resolving out-of-order DeadTest.+cb
@@ -1614,9 +1609,7 @@ XXX resolving out-of-order DeadTest.recWithCallback
   XXX DeadTest.+cb is being resolved already: assume no new dependencies
   XXX DeadTest.recWithCallback still unresolved
   XXX DeadTest.+cb resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.recWithCallback
-  XXX DeadTest.recWithCallback resolved with 0 dependencies
+  DeadTest.recWithCallback: 1 references (DeadTest.re:90:6)
   
 XXX resolving out-of-order DeadTest.rec2
   
@@ -1624,9 +1617,7 @@ XXX resolving out-of-order DeadTest.rec1
   XXX DeadTest.rec2 is being resolved already: assume no new dependencies
   XXX DeadTest.rec1 still unresolved
   XXX DeadTest.rec2 resolved with 0 dependencies
-  
-XXX resolving out-of-order DeadTest.rec1
-  XXX DeadTest.rec1 resolved with 0 dependencies
+  DeadTest.rec1: 1 references (DeadTest.re:87:4)
   
 XXX resolving out-of-order DeadTest.split_map
   XXX can't find decl for DeadTest.re:82:2
@@ -4414,6 +4405,12 @@ XXX resolving out-of-order ImmutableArray.Array.+fromArray
   [@dead "unusedRec"] let rec unusedRec = () => unusedRec();
 
   Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 87:5
+  rec2 is never used
+  <-- line 87
+  [@dead "rec2"] and rec2 = () => rec1();
+
+  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 86:9
   rec1 is never used
   <-- line 86
@@ -4423,7 +4420,13 @@ XXX resolving out-of-order ImmutableArray.Array.+fromArray
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 87:5
   rec2 is never used
   <-- line 87
-  [@dead "rec2"] and rec2 = () => rec1();
+  [@dead "rec2"] [@dead "rec2"] and rec2 = () => rec1();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 90:7
+  +cb is never used
+  <-- line 90
+    [@dead "+cb"] let cb = () => recWithCallback();
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 89:9
@@ -4435,7 +4438,13 @@ XXX resolving out-of-order ImmutableArray.Array.+fromArray
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 90:7
   +cb is never used
   <-- line 90
-    [@dead "+cb"] let cb = () => recWithCallback();
+    [@dead "+cb"] [@dead "+cb"] let cb = () => recWithCallback();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 98:5
+  bar is never used
+  <-- line 98
+  [@dead "bar"] and bar = () => foo();
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 95:7
@@ -4444,10 +4453,16 @@ XXX resolving out-of-order ImmutableArray.Array.+fromArray
     [@dead "+cb"] let cb = () => bar();
 
   Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 94:9
+  foo is never used
+  <-- line 94
+  [@dead "foo"] let rec foo = () => {
+
+  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 98:5
   bar is never used
   <-- line 98
-  [@dead "bar"] and bar = () => foo();
+  [@dead "bar"] [@dead "bar"] and bar = () => foo();
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9
@@ -4562,6 +4577,12 @@ XXX resolving out-of-order ImmutableArray.Array.+fromArray
   +f is never used
   <-- line 22
     [@dead "+f"] let f = x##twoArgs;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 21:5
+  bar is never used
+  <-- line 21
+  [@dead "bar"] let bar = (x: someMethods) => {
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/AutoAnnotate.re 2:5
