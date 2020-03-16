@@ -1620,7 +1620,7 @@ XXX resolving out-of-order DeadTest.MM.+x
   
 XXX resolving out-of-order DeadTest.MM.+y
   XXX DeadTest.MM.+y resolved with 1 dependencies
-  DeadTest.MM.+y: 1 references (DeadTest.re:66:6)
+  DeadTest.MM.+y: 2 references (DeadTest.re:63:2, DeadTest.re:66:6)
   
 XXX resolving out-of-order DeadTest.UnderscoreInside._
   XXX DeadTest.UnderscoreInside._ resolved with 0 dependencies
