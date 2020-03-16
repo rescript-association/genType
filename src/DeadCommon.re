@@ -681,6 +681,20 @@ let declIsDead = (~orderedFiles, ~refs as refs_, decl) =>
     && posInWhitelist(decl.pos)
     && !posInBlacklist(decl.pos);
   } else {
+    if (verbose) {
+      let refsString =
+        refs_
+        |> PosSet.elements
+        |> List.map(posToString)
+        |> String.concat(", ");
+      Log_.item(
+        "%s%s: %d references (%s)@.",
+        decl.declKind != Value ? "[type] " : "",
+        decl.path |> pathToString,
+        refs_ |> PosSet.cardinal,
+        refsString,
+      );
+    };
     false;
   };
 
@@ -695,20 +709,6 @@ let reportDead = (~onDeadCode) => {
       decl.pos |> ProcessDeadAnnotations.annotateDead;
       [decl, ...declarations];
     } else {
-      if (verbose) {
-        let refsString =
-          refs
-          |> PosSet.elements
-          |> List.map(posToString)
-          |> String.concat(", ");
-        Log_.item(
-          "%s%s: %d references (%s)@.",
-          decl.declKind != Value ? "[type] " : "",
-          decl.path |> pathToString,
-          refs |> PosSet.cardinal,
-          refsString,
-        );
-      };
       declarations;
     };
   };

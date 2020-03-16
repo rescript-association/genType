@@ -1510,17 +1510,14 @@ XXX resolving out-of-order ErrorHandler.Make.notify
   XXX ErrorHandler.Make.+notify resolved with 1 dependencies
   XXX can't find decl for ErrorHandler.rei:3:2
   XXX CreateErrorHandler1.Error1.notification resolved with 2 dependencies
-  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   
 XXX resolving out-of-order CreateErrorHandler2.Error2.notification
   XXX can't find decl for ErrorHandler.rei:3:2
   XXX CreateErrorHandler2.Error2.notification resolved with 2 dependencies
-  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2)
   
 XXX resolving out-of-order DeadCodeImplementation.M.+x
   XXX can't find decl for DeadCodeInterface.re:1:17
   XXX DeadCodeImplementation.M.+x resolved with 1 dependencies
-  DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17)
   
 XXX resolving out-of-order DeadMl.Bs_version.package_name
   XXX DeadMl.Bs_version.package_name resolved with 0 dependencies
@@ -1598,7 +1595,6 @@ XXX resolving out-of-order DeadTest.rec1
 XXX resolving out-of-order DeadTest.split_map
   XXX can't find decl for DeadTest.re:82:2
   XXX DeadTest.split_map resolved with 1 dependencies
-  DeadTest.split_map: 1 references (DeadTest.re:82:2)
   
 XXX resolving out-of-order DeadTest.unusedRec
   XXX DeadTest.unusedRec ignoring reference to self
@@ -1610,7 +1606,6 @@ XXX resolving out-of-order DeadTest.MM.y
 XXX resolving out-of-order DeadTest.MM.x
   XXX can't find decl for DeadTest.re:72:0
   XXX DeadTest.MM.x resolved with 1 dependencies
-  DeadTest.MM.x: 1 references (DeadTest.re:72:0)
   
 XXX resolving out-of-order DeadTest.MM.+valueOnlyInImplementation
   XXX DeadTest.MM.+valueOnlyInImplementation resolved with 0 dependencies
@@ -1618,11 +1613,9 @@ XXX resolving out-of-order DeadTest.MM.+valueOnlyInImplementation
 XXX resolving out-of-order DeadTest.MM.+x
   XXX can't find decl for DeadTest.re:72:0
   XXX DeadTest.MM.+x resolved with 2 dependencies
-  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0)
   
 XXX resolving out-of-order DeadTest.MM.+y
   XXX DeadTest.MM.+y resolved with 1 dependencies
-  DeadTest.MM.+y: 2 references (DeadTest.re:63:2, DeadTest.re:66:6)
   
 XXX resolving out-of-order DeadTest.UnderscoreInside._
   XXX DeadTest.UnderscoreInside._ resolved with 0 dependencies
@@ -1632,8 +1625,6 @@ XXX resolving out-of-order DeadTest._
   
 XXX resolving out-of-order DeadTest._
   XXX DeadTest._ resolved with 0 dependencies
-  [type] DeadTest.record.yyy: 1 references (DeadTest.re:55:9)
-  [type] DeadTest.record.xxx: 1 references (DeadTest.re:54:13)
   
 XXX resolving out-of-order DeadTest._
   XXX DeadTest._ resolved with 0 dependencies
@@ -1644,13 +1635,10 @@ XXX resolving out-of-order DeadTest._
 XXX resolving out-of-order DeadTest.VariantUsedOnlyInImplementation.a
   XXX can't find decl for DeadTest.re:44:0
   XXX DeadTest.VariantUsedOnlyInImplementation.a resolved with 1 dependencies
-  DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:0)
   
 XXX resolving out-of-order DeadTest.VariantUsedOnlyInImplementation.+a
   XXX can't find decl for DeadTest.re:44:0
   XXX DeadTest.VariantUsedOnlyInImplementation.+a resolved with 2 dependencies
-  DeadTest.VariantUsedOnlyInImplementation.+a: 2 references (DeadTest.re:37:2, DeadTest.re:44:0)
-  [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10)
   
 XXX resolving out-of-order DeadTest.M.+thisSignatureItemIsDead
   XXX DeadTest.M.+thisSignatureItemIsDead resolved with 0 dependencies
@@ -1665,12 +1653,10 @@ XXX resolving out-of-order DeadTest.thisIsUsedTwice
   XXX can't find decl for DeadTest.re:11:7
   XXX can't find decl for DeadTest.re:12:7
   XXX DeadTest.thisIsUsedTwice resolved with 2 dependencies
-  DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7)
   
 XXX resolving out-of-order DeadTest.thisIsUsedOnce
   XXX can't find decl for DeadTest.re:8:7
   XXX DeadTest.thisIsUsedOnce resolved with 1 dependencies
-  DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7)
   DeadTest.fortyTwoButExported: 0 references ()
   
 XXX resolving out-of-order DeadTest.fortytwo
@@ -1678,17 +1664,11 @@ XXX resolving out-of-order DeadTest.fortytwo
   
 XXX resolving out-of-order DeadTestWhitelist.x
   XXX DeadTestWhitelist.x resolved with 0 dependencies
-  DeadTestWhitelist.x: 0 references ()
-  [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8)
-  [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8)
-  [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8)
   
 XXX resolving out-of-order DeadTypeTest.a
   XXX DeadTypeTest.a resolved with 0 dependencies
-  [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8)
   Docstrings.unitArgWithConversionU: 0 references ()
   Docstrings.unitArgWithConversion: 0 references ()
-  [type] Docstrings.t.A: 2 references (Docstrings.re:65:34, Docstrings.re:68:36)
   Docstrings.unitArgWithoutConversionU: 0 references ()
   Docstrings.unitArgWithoutConversion: 0 references ()
   Docstrings.grouped: 0 references ()
@@ -1710,41 +1690,34 @@ XXX resolving out-of-order DeadTypeTest.a
 XXX resolving out-of-order ExportWithRename.make
   XXX can't find decl for _none_:1:-1
   XXX ExportWithRename.make resolved with 1 dependencies
-  ExportWithRename.make: 1 references (_none_:1:-1)
   FirstClassModules.someFunctorAsFunction: 0 references ()
   
 XXX resolving out-of-order FirstClassModules.SomeFunctor.+ww
   XXX can't find decl for FirstClassModules.re:46:20
   XXX FirstClassModules.SomeFunctor.+ww resolved with 1 dependencies
-  FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20)
   FirstClassModules.testConvert: 0 references ()
   FirstClassModules.firstClassModule: 0 references ()
   
 XXX resolving out-of-order FirstClassModules.M.x
   XXX can't find decl for FirstClassModules.re:2:2
   XXX FirstClassModules.M.x resolved with 1 dependencies
-  FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2)
   
 XXX resolving out-of-order FirstClassModules.M.Z.u
   XXX can't find decl for FirstClassModules.re:12:20
   XXX can't find decl for FirstClassModules.re:28:20
   XXX FirstClassModules.M.Z.u resolved with 2 dependencies
-  FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20)
   
 XXX resolving out-of-order FirstClassModules.M.InnerModule3.k3
   XXX can't find decl for FirstClassModules.re:10:4
   XXX FirstClassModules.M.InnerModule3.k3 resolved with 1 dependencies
-  FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4)
   
 XXX resolving out-of-order FirstClassModules.M.InnerModule2.k
   XXX can't find decl for FirstClassModules.re:7:24
   XXX FirstClassModules.M.InnerModule2.k resolved with 1 dependencies
-  FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24)
   
 XXX resolving out-of-order FirstClassModules.M.y
   XXX can't find decl for FirstClassModules.re:14:2
   XXX FirstClassModules.M.y resolved with 2 dependencies
-  FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:6)
   
 XXX resolving out-of-order FirstClassModulesInterface.r
   XXX FirstClassModulesInterface.r resolved with 0 dependencies
@@ -1752,7 +1725,6 @@ XXX resolving out-of-order FirstClassModulesInterface.r
 XXX resolving out-of-order Hooks.aComponentWithChildren
   XXX can't find decl for _none_:1:-1
   XXX Hooks.aComponentWithChildren resolved with 1 dependencies
-  Hooks.aComponentWithChildren: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.RenderPropRequiresConversion.+car
   
@@ -1760,74 +1732,58 @@ XXX resolving out-of-order Hooks.RenderPropRequiresConversion.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.RenderPropRequiresConversion.+make resolved with 1 dependencies
   XXX Hooks.RenderPropRequiresConversion.+car resolved with 1 dependencies
-  Hooks.RenderPropRequiresConversion.+car: 1 references (Hooks.re:139:6)
   XXX Hooks.RenderPropRequiresConversion.+make already resolved
-  Hooks.RenderPropRequiresConversion.+make: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.functionReturningReactElement
   XXX can't find decl for _none_:1:-1
   XXX Hooks.functionReturningReactElement resolved with 1 dependencies
-  Hooks.functionReturningReactElement: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.polymorphicComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.polymorphicComponent resolved with 1 dependencies
-  Hooks.polymorphicComponent: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.input
   XXX can't find decl for _none_:1:-1
   XXX Hooks.input resolved with 1 dependencies
-  Hooks.input: 1 references (_none_:1:-1)
-  [type] Hooks.r.x: 1 references (Hooks.re:113:45)
   Hooks.testForwardRef: 0 references ()
   
 XXX resolving out-of-order Hooks.makeWithRef
   XXX can't find decl for _none_:1:-1
   XXX Hooks.makeWithRef resolved with 1 dependencies
-  Hooks.makeWithRef: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.componentWithRenamedArgs
   XXX can't find decl for _none_:1:-1
   XXX Hooks.componentWithRenamedArgs resolved with 1 dependencies
-  Hooks.componentWithRenamedArgs: 1 references (_none_:1:-1)
   Hooks.functionWithRenamedArgs: 0 references ()
   
 XXX resolving out-of-order Hooks.NoProps.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.NoProps.+make resolved with 1 dependencies
-  Hooks.NoProps.+make: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.Inner.Inner2.+anotherComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.Inner2.+anotherComponent resolved with 1 dependencies
-  Hooks.Inner.Inner2.+anotherComponent: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.Inner.Inner2.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.Inner2.+make resolved with 1 dependencies
-  Hooks.Inner.Inner2.+make: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.Inner.+anotherComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.+anotherComponent resolved with 1 dependencies
-  Hooks.Inner.+anotherComponent: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.Inner.+make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.Inner.+make resolved with 1 dependencies
-  Hooks.Inner.+make: 1 references (_none_:1:-1)
   
 XXX resolving out-of-order Hooks.anotherComponent
   XXX can't find decl for _none_:1:-1
   XXX Hooks.anotherComponent resolved with 1 dependencies
-  Hooks.anotherComponent: 1 references (_none_:1:-1)
   Hooks.default: 0 references ()
   
 XXX resolving out-of-order Hooks.make
   XXX can't find decl for _none_:1:-1
   XXX Hooks.make resolved with 1 dependencies
-  Hooks.make: 1 references (_none_:1:-1)
-  [type] Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37)
   ImportIndex.make: 0 references ()
   LetPrivate.y: 0 references ()
   LetPrivate.local_1.+x: 1 references (LetPrivate.re:5:4)
@@ -1892,30 +1848,24 @@ XXX resolving out-of-order ReasonComponent.+message
   XXX ReasonComponent.+message resolved with 0 dependencies
   ReasonComponent.make: 0 references ()
   ReasonComponent.onClick: 1 references (ReasonComponent.re:18:4)
-  [type] ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12)
   
 XXX resolving out-of-order ReasonComponent.component
   XXX ReasonComponent.component resolved with 0 dependencies
   Records.testMyRecBsAs2: 0 references ()
   Records.testMyRecBsAs: 0 references ()
-  [type] Records.myRecBsAs.type_: 1 references (Records.re:167:38)
   Records.testMyObj2: 0 references ()
   Records.testMyObj: 0 references ()
   Records.testMyRec2: 0 references ()
   Records.testMyRec: 0 references ()
-  [type] Records.myRec.type_: 1 references (Records.re:149:30)
   Records.computeArea4: 0 references ()
   Records.computeArea3: 0 references ()
   Records.someBusiness2: 0 references ()
   Records.findAddress2: 0 references ()
-  [type] Records.business2.address2: 1 references (Records.re:93:2)
   Records.getPayloadRecordPlusOne: 0 references ()
   Records.payloadValue: 0 references ()
   Records.recordValue: 1 references (Records.re:76:4)
   Records.getPayloadRecord: 0 references ()
-  [type] Records.record.v: 1 references (Records.re:81:5)
   Records.getPayload: 0 references ()
-  [type] Records.payload.payload: 3 references (Records.re:61:18, Records.re:70:24, Records.re:79:31)
   Records.findAllAddresses: 0 references ()
   Records.someBusiness: 0 references ()
   Records.findAddress: 0 references ()
@@ -1931,15 +1881,9 @@ XXX resolving out-of-order Records.findAllAddresses
 XXX resolving out-of-order Records.findAddress2
   XXX Records.findAddress2 resolved with 0 dependencies
   XXX Records.getOpt resolved with 0 dependencies
-  [type] Records.business.address: 2 references (Records.re:38:2, Records.re:47:6)
-  [type] Records.business.owner: 1 references (Records.re:48:8)
-  [type] Records.person.address: 1 references (Records.re:48:40)
   Records.coord2d: 0 references ()
   Records.computeArea: 0 references ()
   Records.origin: 0 references ()
-  [type] Records.coord.z: 1 references (Records.re:14:19)
-  [type] Records.coord.y: 2 references (ReasonComponent.re:63:23, Records.re:14:19)
-  [type] Records.coord.x: 2 references (ReasonComponent.re:63:23, Records.re:14:19)
   References.preserveRefIdentity: 0 references ()
   References.destroysRefIdentity: 0 references ()
   References.set: 0 references ()
@@ -2012,7 +1956,6 @@ XXX resolving out-of-order TestImport.innerStuffContents
   TestModuleAliases.testInner1Expanded: 0 references ()
   TestModuleAliases.testInner1: 0 references ()
   TestPromise.convert: 0 references ()
-  [type] TestPromise.fromPayload.s: 1 references (TestPromise.re:14:32)
   TransitiveType1.convertAlias: 0 references ()
   TransitiveType1.convert: 0 references ()
   
@@ -2035,8 +1978,6 @@ XXX resolving out-of-order TypeParams2.exportSomething
   Uncurried.sumU: 0 references ()
   Uncurried.callback2U: 0 references ()
   Uncurried.callback2: 0 references ()
-  [type] Uncurried.authU.loginU: 1 references (Uncurried.re:39:25)
-  [type] Uncurried.auth.login: 1 references (Uncurried.re:36:24)
   Uncurried.callback: 0 references ()
   Uncurried.curried3: 0 references ()
   Uncurried.uncurried3: 0 references ()
@@ -2072,8 +2013,6 @@ XXX resolving out-of-order TypeParams2.exportSomething
   VariantsWithPayload.testManyPayloads: 0 references ()
   VariantsWithPayload.printVariantWithPayload: 0 references ()
   VariantsWithPayload.testWithPayload: 0 references ()
-  [type] VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53)
-  [type] VariantsWithPayload.payload.x: 2 references (VariantsWithPayload.re:27:42, VariantsWithPayload.re:46:36)
   ComponentAsProp.make: 0 references ()
   
 XXX resolving out-of-order ComponentAsProp.component
@@ -2114,8 +2053,6 @@ XXX resolving out-of-order location.x
   Tuples.changeSecondAge: 0 references ()
   Tuples.marry: 0 references ()
   Tuples.getFirstName: 0 references ()
-  [type] Tuples.person.age: 1 references (Tuples.re:47:19)
-  [type] Tuples.person.name: 1 references (Tuples.re:39:49)
   Tuples.coord2d: 0 references ()
   Tuples.computeAreaNoConverters: 0 references ()
   Tuples.computeAreaWithIdent: 0 references ()
@@ -2135,8 +2072,6 @@ XXX resolving out-of-order location.x
   Types.testFunctionOnOptionsAsArgument: 0 references ()
   Types.mutuallyRecursiveConverter: 0 references ()
   Types.selfRecursiveConverter: 0 references ()
-  [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34)
-  [type] Types.selfRecursive.self: 1 references (Types.re:46:30)
   Types.swap: 1 references (Types.re:28:8)
   Types.map: 0 references ()
   Types.someIntList: 0 references ()
@@ -2156,12 +2091,10 @@ XXX resolving out-of-order DeadValueTest.valueDead
 XXX resolving out-of-order DeadValueTest.valueAlive
   XXX can't find decl for DeadTest.re:77:0
   XXX DeadValueTest.valueAlive resolved with 1 dependencies
-  DeadValueTest.valueAlive: 1 references (DeadTest.re:77:0)
   
 XXX resolving out-of-order ErrorHandler.x
   XXX ErrorHandler.x resolved with 0 dependencies
   XXX ErrorHandler.Make.notify already resolved
-  ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0)
   
 XXX resolving out-of-order FirstClassModulesInterface.+r
   XXX FirstClassModulesInterface.+r resolved with 0 dependencies
@@ -2346,7 +2279,6 @@ XXX resolving out-of-order ImmutableArray.toArray
 XXX resolving out-of-order ImmutableArray.fromArray
   XXX can't find decl for DeadTest.re:1:0
   XXX ImmutableArray.fromArray resolved with 1 dependencies
-  ImmutableArray.fromArray: 1 references (DeadTest.re:1:0)
   
 XXX resolving out-of-order ImmutableArray.Array.get
   
@@ -2398,12 +2330,10 @@ XXX resolving out-of-order DeadValueTest.+valueDead
   
 XXX resolving out-of-order DeadValueTest.+valueAlive
   XXX DeadValueTest.+valueAlive resolved with 1 dependencies
-  DeadValueTest.+valueAlive: 1 references (DeadValueTest.rei:1:0)
   
 XXX resolving out-of-order ErrorHandler.+x
   XXX ErrorHandler.+x resolved with 0 dependencies
   XXX ErrorHandler.Make.+notify already resolved
-  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:5:32)
   
 XXX resolving out-of-order ImmutableArray.Array.+eq
   XXX ImmutableArray.Array.+eq resolved with 0 dependencies
@@ -2584,7 +2514,6 @@ XXX resolving out-of-order ImmutableArray.Array.+toArray
   
 XXX resolving out-of-order ImmutableArray.Array.+fromArray
   XXX ImmutableArray.Array.+fromArray resolved with 1 dependencies
-  ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0)
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 16:7
