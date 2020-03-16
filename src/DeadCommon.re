@@ -678,7 +678,7 @@ let rec resolveRecursiveRefs =
 let doReportDead = pos =>
   !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
 
-let declCheckDead = (~declarations, ~orderedFiles, ~refs as refs_, decl) =>
+let declCheckDead = (~deadDeclarations, ~orderedFiles, ~refs as refs_, decl) =>
   if (decl.pos |> doReportDead) {
     let isDead =
       resolveRecursiveRefs(
@@ -689,36 +689,31 @@ let declCheckDead = (~declarations, ~orderedFiles, ~refs as refs_, decl) =>
       );
     if (isDead) {
       decl.pos |> ProcessDeadAnnotations.annotateDead;
-      [decl, ...declarations];
-    } else {
-      declarations;
+      deadDeclarations := [decl, ...deadDeclarations^];
     };
-  } else {
-    if (verbose) {
-      let refsString =
-        refs_
-        |> PosSet.elements
-        |> List.map(posToString)
-        |> String.concat(", ");
-      Log_.item(
-        "%s%s: %d references (%s)@.",
-        decl.declKind != Value ? "[type] " : "",
-        decl.path |> pathToString,
-        refs_ |> PosSet.cardinal,
-        refsString,
-      );
-    };
-    declarations;
+  } else if (verbose) {
+    let refsString =
+      refs_
+      |> PosSet.elements
+      |> List.map(posToString)
+      |> String.concat(", ");
+    Log_.item(
+      "%s%s: %d references (%s)@.",
+      decl.declKind != Value ? "[type] " : "",
+      decl.path |> pathToString,
+      refs_ |> PosSet.cardinal,
+      refsString,
+    );
   };
 
 let reportDead = (~onDeadCode) => {
-  let iterDeclInOrder = (~orderedFiles, declarations, decl) => {
+  let iterDeclInOrder = (~orderedFiles, ~deadDeclarations, decl) => {
     let refs =
       decl.pos
       |> PosHash.findSet(
            decl.declKind == Value ? valueReferences : typeReferences,
          );
-    decl |> declCheckDead(~declarations, ~orderedFiles, ~refs);
+    decl |> declCheckDead(~deadDeclarations, ~orderedFiles, ~refs);
   };
 
   if (verbose) {
@@ -805,8 +800,11 @@ let reportDead = (~onDeadCode) => {
     );
   };
 
-  declarations
-  |> List.fast_sort(compareItemsUsingDependencies)  /* analyze in reverse order */
-  |> List.fold_left(iterDeclInOrder(~orderedFiles), [])
-  |> List.iter(item => item |> onDeadCode);
+  let orderedDeclarations =
+    declarations
+    |> List.fast_sort(compareItemsUsingDependencies) /* analyze in reverse order */;
+  let deadDeclarations = ref([]);
+  orderedDeclarations
+  |> List.iter(iterDeclInOrder(~orderedFiles, ~deadDeclarations));
+  deadDeclarations^ |> List.iter(item => item |> onDeadCode);
 };
