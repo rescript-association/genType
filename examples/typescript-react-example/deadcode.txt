@@ -1844,12 +1844,12 @@ File References
   XXX resolving [0] ReasonComponent.+first
   XXX resolving [1] ReasonComponent.minus
   XXX ReasonComponent.minus resolved with 0 dependencies
-  XXX ReasonComponent.+first resolved with 0 dependencies
+  XXX ReasonComponent.+first resolved with 1 dependencies
   ReasonComponent.minus: 0 references ()
   XXX resolving [0] ReasonComponent.+emptyArray
   XXX resolving [1] ReasonComponent.make
   XXX ReasonComponent.make resolved with 0 dependencies
-  XXX ReasonComponent.+emptyArray resolved with 0 dependencies
+  XXX ReasonComponent.+emptyArray resolved with 1 dependencies
   XXX resolving [0] ReasonComponent.+intList
   XXX ReasonComponent.+intList resolved with 0 dependencies
   XXX resolving [0] ReasonComponent.+message
@@ -1917,7 +1917,7 @@ File References
   XXX Records.findAllAddresses resolved with 0 dependencies
   XXX resolving [1] Records.findAddress2
   XXX Records.findAddress2 resolved with 0 dependencies
-  XXX Records.getOpt resolved with 0 dependencies
+  XXX Records.getOpt resolved with 3 dependencies
   XXX resolving [0] Records.business.address
   XXX can't find decl for Records.re:38:2
   XXX can't find decl for Records.re:47:6
@@ -1958,21 +1958,21 @@ File References
   XXX resolving [0] References.R.set
   XXX resolving [1] References.set
   XXX References.set resolved with 0 dependencies
-  XXX References.R.set resolved with 0 dependencies
+  XXX References.R.set resolved with 1 dependencies
   XXX resolving [0] References.R.make
   XXX resolving [1] References.make
   XXX References.make resolved with 0 dependencies
-  XXX References.R.make resolved with 0 dependencies
+  XXX References.R.make resolved with 1 dependencies
   XXX resolving [0] References.R.get
   XXX resolving [1] References.get
   XXX References.get resolved with 0 dependencies
-  XXX References.R.get resolved with 0 dependencies
+  XXX References.R.get resolved with 1 dependencies
   XXX resolving [0] References.R.+set
-  XXX References.R.+set resolved with 0 dependencies
+  XXX References.R.+set resolved with 1 dependencies
   XXX resolving [0] References.R.+make
-  XXX References.R.+make resolved with 0 dependencies
+  XXX References.R.+make resolved with 1 dependencies
   XXX resolving [0] References.R.+get
-  XXX References.R.+get resolved with 0 dependencies
+  XXX References.R.+get resolved with 1 dependencies
   References.update: 0 references ()
   References.access: 0 references ()
   References.create: 0 references ()
@@ -2129,11 +2129,11 @@ File References
   XXX resolving [0] ComponentAsProp.component
   XXX resolving [1] ComponentAsProp.make
   XXX ComponentAsProp.make resolved with 0 dependencies
-  XXX ComponentAsProp.component resolved with 0 dependencies
+  XXX ComponentAsProp.component resolved with 1 dependencies
   XXX resolving [0] ManyComponents.+emptyArray
   XXX resolving [1] ManyComponents.make
   XXX ManyComponents.make resolved with 0 dependencies
-  XXX ManyComponents.+emptyArray resolved with 0 dependencies
+  XXX ManyComponents.+emptyArray resolved with 1 dependencies
   ManyComponents.make: 0 references ()
   XXX resolving [0] ManyComponents.component
   XXX ManyComponents.component resolved with 0 dependencies
@@ -2141,12 +2141,12 @@ File References
   XXX resolving [0] ManyComponents.ManyProps.component
   XXX resolving [1] ManyComponents.ManyProps.make
   XXX ManyComponents.ManyProps.make resolved with 0 dependencies
-  XXX ManyComponents.ManyProps.component resolved with 0 dependencies
+  XXX ManyComponents.ManyProps.component resolved with 1 dependencies
   ManyComponents.InnerComponent.make: 1 references (ManyComponents.re:39:4)
   XXX resolving [0] ManyComponents.InnerComponent.component
   XXX resolving [1] ManyComponents.InnerComponent.make
   XXX ManyComponents.InnerComponent.make resolved with 0 dependencies
-  XXX ManyComponents.InnerComponent.component resolved with 0 dependencies
+  XXX ManyComponents.InnerComponent.component resolved with 1 dependencies
   XXX resolving [0] ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted
   XXX ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted resolved with 0 dependencies
   XXX resolving [0] location.x
@@ -2348,7 +2348,7 @@ File References
   XXX resolving [0] ImmutableArray.Array.get
   XXX resolving [1] TestImmutableArray.testImmutableArrayGet
   XXX TestImmutableArray.testImmutableArrayGet resolved with 0 dependencies
-  XXX ImmutableArray.Array.get resolved with 0 dependencies
+  XXX ImmutableArray.Array.get resolved with 1 dependencies
   ImportHookDefault.make2: 0 references ()
   ImportHookDefault.make: 1 references (Hooks.re:4:4)
   XXX resolving [0] ImportHookDefault.person.age
@@ -2376,9 +2376,9 @@ File References
   XXX resolving [0] ImportJsValue.AbsoluteValue.getAbs
   XXX resolving [1] ImportJsValue.useGetAbs
   XXX ImportJsValue.useGetAbs resolved with 0 dependencies
-  XXX ImportJsValue.AbsoluteValue.getAbs resolved with 0 dependencies
+  XXX ImportJsValue.AbsoluteValue.getAbs resolved with 1 dependencies
   XXX resolving [0] ImportJsValue.AbsoluteValue.+getAbs
-  XXX ImportJsValue.AbsoluteValue.+getAbs resolved with 0 dependencies
+  XXX ImportJsValue.AbsoluteValue.+getAbs resolved with 1 dependencies
   ImportJsValue.areaValue: 0 references ()
   ImportJsValue.roundedNumber: 0 references ()
   ImportJsValue.returnMixedArray: 0 references ()
@@ -2396,7 +2396,7 @@ File References
   XXX resolving [0] NestedModulesInSignature.Universe.+theAnswer
   XXX resolving [1] NestedModulesInSignature.Universe.theAnswer
   XXX NestedModulesInSignature.Universe.theAnswer resolved with 0 dependencies
-  XXX NestedModulesInSignature.Universe.+theAnswer resolved with 0 dependencies
+  XXX NestedModulesInSignature.Universe.+theAnswer resolved with 1 dependencies
   XXX resolving [0] DeadValueTest.+valueOnlyInImplementation
   XXX DeadValueTest.+valueOnlyInImplementation resolved with 0 dependencies
   XXX resolving [0] DeadValueTest.+valueDead
@@ -2517,7 +2517,7 @@ File References
   XXX resolving [0] ImmutableArray.Array.+getExn
   XXX ImmutableArray.Array.+getExn resolved with 0 dependencies
   XXX resolving [0] ImmutableArray.Array.+get
-  XXX ImmutableArray.Array.+get resolved with 0 dependencies
+  XXX ImmutableArray.Array.+get resolved with 1 dependencies
   XXX resolving [0] ImmutableArray.Array.+size
   XXX ImmutableArray.Array.+size resolved with 0 dependencies
   XXX resolving [0] ImmutableArray.Array.+length
@@ -2544,12 +2544,6 @@ File References
   Array.+size is never used
   <-- line 22
     [@dead "Array.+size"] let size = a => Array.size(a->fromT);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 24:7
-  Array.+get is never used
-  <-- line 24
-    [@dead "Array.+get"] let get = (a, x) => a->fromT[x];
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 26:7
@@ -2899,12 +2893,6 @@ File References
   <-- line 4
   [@dead "+valueOnlyInImplementation"] let valueOnlyInImplementation = 3;
 
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/NestedModulesInSignature.re 2:7
-  Universe.+theAnswer is never used
-  <-- line 2
-    [@dead "Universe.+theAnswer"] let theAnswer = 42;
-
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
   message.text is a record label never used to read a value
@@ -2928,18 +2916,6 @@ File References
   point.y is a record label never used to read a value
   <-- line 11
     [@dead "point.y"] y: option(int),
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 39:9
-  AbsoluteValue.+getAbs is never used
-  <-- line 39
-      [@dead "AbsoluteValue.+getAbs"] let getAbs = x##getAbs;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 38:7
-  AbsoluteValue.getAbs is never used
-  <-- line 38
-    [@dead "AbsoluteValue.getAbs"] let getAbs = (x: t) => {
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportJsValue.re 65:5
@@ -2976,12 +2952,6 @@ File References
   person.age is a record label never used to read a value
   <-- line 3
     [@dead "person.age"] age: int,
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei 5:16
-  Array.get is never used
-  <-- line 5
-  module Array: {[@dead "Array.get"] let get: (t('a), int) => option('a);};
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.rei 10:1
@@ -3446,34 +3416,10 @@ File References
     [@dead "InnerComponent.someValueSoModuleOffsetsAreShifted"] let someValueSoModuleOffsetsAreShifted = 77;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re 6:7
-  InnerComponent.component is never used
-  <-- line 6
-    [@dead "InnerComponent.component"] let component = ReasonReact.statelessComponent("InnerComponent");
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re 16:7
-  ManyProps.component is never used
-  <-- line 16
-    [@dead "ManyProps.component"] let component = ReasonReact.statelessComponent("ManyProps");
-
-  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re 36:5
   component is never used
   <-- line 36
   [@dead "component"] let component = ReasonReact.statelessComponent("ManyComponents");
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ManyComponents.re 42:50
-  +emptyArray is never used
-  <-- line 42
-      <div> "Outer Component"->ReasonReact.string <[@dead "+emptyArray"] InnerComponent /> </div>,
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/components/ComponentAsProp.re 1:5
-  component is never used
-  <-- line 1
-  [@dead "component"] let component = ReasonReact.statelessComponent("ComponentAsProp");
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/VariantsWithPayload.re 51:5
@@ -3661,42 +3607,6 @@ File References
   <-- line 11
     [@dead "M.test"] let test = () => "a";
 
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 22:7
-  R.+get is never used
-  <-- line 22
-    [@dead "R.+get"] let get = r => r.contents;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 23:7
-  R.+make is never used
-  <-- line 23
-    [@dead "R.+make"] let make = ref;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 24:7
-  R.+set is never used
-  <-- line 24
-    [@dead "R.+set"] let set = (r, v) => r.contents = v;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 17:3
-  R.get is never used
-  <-- line 17
-    [@dead "R.get"] let get: t('a) => 'a;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 18:3
-  R.make is never used
-  <-- line 18
-    [@dead "R.make"] let make: 'a => t('a);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 19:3
-  R.set is never used
-  <-- line 19
-    [@dead "R.set"] let set: (t('a), 'a) => unit;
-
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 39:28
   requiresConversion.x is a record label never used to read a value
@@ -3720,12 +3630,6 @@ File References
   business.name is a record label never used to read a value
   <-- line 29
     [@dead "business.name"] name: string,
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 34:5
-  getOpt is never used
-  <-- line 34
-  [@dead "getOpt"] let getOpt = (opt, default, foo) => opt->Option.mapWithDefault(default, foo);
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Records.re 56:3
@@ -3786,18 +3690,6 @@ File References
   +intList is never used
   <-- line 19
   [@dead "+message"] [@dead "+intList"] [@bs.config {jsx: 2}];
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 35:8
-  +emptyArray is never used
-  <-- line 35
-        <[@dead "+emptyArray"] ImportMyBanner
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 43:15
-  +first is never used
-  <-- line 43
-  [@dead "+message"] [@dead "+intList"] [@dead "+first"] [@bs.config {jsx: 2}];
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ReasonComponent.re 50:5
