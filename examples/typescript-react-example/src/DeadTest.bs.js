@@ -73,6 +73,8 @@ function withDefaultValue(paramWithDefaultOpt, y) {
   return paramWithDefault + y | 0;
 }
 
+var Ext_buffer = { };
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -105,6 +107,7 @@ export {
   foo ,
   bar ,
   withDefaultValue ,
+  Ext_buffer ,
   
 }
 /*  Not a pure module */

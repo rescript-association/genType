@@ -1394,6 +1394,7 @@
   addDeclaration foo DeadTest.re:94:8
   addDeclaration bar DeadTest.re:98:4
   addDeclaration withDefaultValue DeadTest.re:100:4
+  addDeclaration unsafe_string1 DeadTest.re:102:0
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1588,6 +1589,8 @@ File References
   DeadMl.AA.+thisIsInInterface: 0 references () isDead:true [0]
   XXX resolving DeadMl.QQ.thisSpansSeveralLines [0]
   DeadMl.QQ.thisSpansSeveralLines: 0 references () isDead:true [0]
+  XXX resolving DeadTest.unsafe_string1 [0]
+  DeadTest.unsafe_string1: 0 references () isDead:true [0]
   XXX resolving DeadTest.withDefaultValue [0]
   DeadTest.withDefaultValue: 0 references () isDead:true [0]
   XXX resolving DeadTest.bar [0]
@@ -4246,6 +4249,12 @@ File References
   withDefaultValue is never used
   <-- line 100
   [@dead "withDefaultValue"] let withDefaultValue = (~paramWithDefault=3, y) => paramWithDefault + y;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 102:1
+  unsafe_string1 is never used
+  <-- line 102
+  [@dead "unsafe_string1"] external unsafe_string1: (bytes, int, int) => Digest.t = "caml_md5_string";
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9
