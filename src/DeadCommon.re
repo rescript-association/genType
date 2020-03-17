@@ -609,29 +609,32 @@ let doReportDead = pos =>
   && !posInBlacklist(pos);
 
 let rec resolveRecursiveRefs =
-        (~deadDeclarations, ~orderedFiles, ~refs, ~refsBeingResolved, decl)
+        (
+          ~deadDeclarations,
+          ~level,
+          ~orderedFiles,
+          ~refs,
+          ~refsBeingResolved,
+          decl,
+        )
         : bool => {
   switch (decl.pos) {
   | _ when decl.resolved =>
     Log_.item(
       "XXX %s [%d] already resolved@.",
       decl.path |> pathToString,
-      refsBeingResolved |> PosSet.cardinal,
+      level,
     );
     decl.pos |> ProcessDeadAnnotations.isAnnotatedDead;
   | _ when PosSet.mem(decl.pos, refsBeingResolved) =>
     Log_.item(
       "XXX %s [%d] is being resolved: assume dead@.",
       decl.path |> pathToString,
-      refsBeingResolved |> PosSet.cardinal,
+      level,
     );
     true;
   | _ =>
-    Log_.item(
-      "XXX resolving %s [%d]@.",
-      decl.path |> pathToString,
-      refsBeingResolved |> PosSet.cardinal,
-    );
+    Log_.item("XXX resolving %s [%d]@.", decl.path |> pathToString, level);
     let allDepsResolved = ref(true);
     let newRefs =
       refs
@@ -653,6 +656,7 @@ let rec resolveRecursiveRefs =
                  xDecl
                  |> resolveRecursiveRefs(
                       ~deadDeclarations,
+                      ~level=level + 1,
                       ~orderedFiles,
                       ~refs=xRefs,
                       ~refsBeingResolved=
@@ -667,8 +671,7 @@ let rec resolveRecursiveRefs =
          );
 
     let isDead = decl |> declIsDead(~refs=newRefs);
-    let isResolved =
-      !isDead || allDepsResolved^ || PosSet.is_empty(refsBeingResolved);
+    let isResolved = !isDead || allDepsResolved^ || level == 0;
 
     if (isResolved) {
       decl.resolved = true;
@@ -693,7 +696,7 @@ let rec resolveRecursiveRefs =
           newRefs |> PosSet.cardinal,
           refsString,
           isDead,
-          refsBeingResolved |> PosSet.cardinal,
+          level,
         );
       };
     };
@@ -711,6 +714,7 @@ let reportDead = (~onDeadCode) => {
          );
     resolveRecursiveRefs(
       ~deadDeclarations,
+      ~level=0,
       ~orderedFiles,
       ~refsBeingResolved=PosSet.empty,
       ~refs,
