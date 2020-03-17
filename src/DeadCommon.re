@@ -626,7 +626,7 @@ let rec resolveRecursiveRefs =
       level,
     );
     decl.pos |> ProcessDeadAnnotations.isAnnotatedDead;
-  | _ when PosSet.mem(decl.pos, refsBeingResolved) =>
+  | _ when PosSet.mem(decl.pos, refsBeingResolved^) =>
     Log_.item(
       "XXX %s [%d] is being resolved: assume dead@.",
       decl.path |> pathToString,
@@ -635,6 +635,7 @@ let rec resolveRecursiveRefs =
     true;
   | _ =>
     Log_.item("XXX resolving %s [%d]@.", decl.path |> pathToString, level);
+    refsBeingResolved := PosSet.add(decl.pos, refsBeingResolved^);
     let allDepsResolved = ref(true);
     let newRefs =
       refs
@@ -659,8 +660,7 @@ let rec resolveRecursiveRefs =
                       ~level=level + 1,
                       ~orderedFiles,
                       ~refs=xRefs,
-                      ~refsBeingResolved=
-                        PosSet.add(decl.pos, refsBeingResolved),
+                      ~refsBeingResolved,
                     );
                if (!xDecl.resolved) {
                  allDepsResolved := false;
@@ -716,7 +716,7 @@ let reportDead = (~onDeadCode) => {
       ~deadDeclarations,
       ~level=0,
       ~orderedFiles,
-      ~refsBeingResolved=PosSet.empty,
+      ~refsBeingResolved=ref(PosSet.empty),
       ~refs,
       decl,
     )
