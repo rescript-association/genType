@@ -632,7 +632,7 @@ let rec resolveRecursiveRefs =
       decl.path |> pathToString,
       refsBeingResolved |> PosSet.cardinal,
     );
-    let oneDepUnresolved = ref(false);
+    let allDepsResolved = ref(true);
     let newRefs =
       refs
       |> PosSet.filter(x =>
@@ -659,7 +659,7 @@ let rec resolveRecursiveRefs =
                         PosSet.add(decl.pos, refsBeingResolved),
                     );
                if (!xDecl.resolved) {
-                 oneDepUnresolved := true;
+                 allDepsResolved := false;
                };
                !xDeclIsDead;
              };
@@ -667,21 +667,9 @@ let rec resolveRecursiveRefs =
          );
 
     let isDead = decl |> declIsDead(~refs=newRefs);
-    let isResolved =
-      if (! oneDepUnresolved^) {
-        true;
-      } else if (refsBeingResolved |> PosSet.is_empty) {
-        if (verbose) {
-          Log_.item(
-            "%s%s: fixpoint reached: resolved@.",
-            decl.declKind != Value ? "[type] " : "",
-            decl.path |> pathToString,
-          );
-        };
-        true;
-      } else {
-        false;
-      };
+    let resolvedByFixPoint =
+      ! allDepsResolved^ && refsBeingResolved |> PosSet.is_empty;
+    let isResolved = allDepsResolved^ || resolvedByFixPoint;
 
     if (isDead) {
       if (decl.pos |> doReportDead) {
@@ -699,12 +687,13 @@ let rec resolveRecursiveRefs =
           |> List.map(posToString)
           |> String.concat(", ");
         Log_.item(
-          "%s%s: %d references (%s) isDead:%b@.",
+          "%s%s: %d references (%s) isDead:%b%s@.",
           decl.declKind != Value ? "[type] " : "",
           decl.path |> pathToString,
           newRefs |> PosSet.cardinal,
           refsString,
           isDead,
+          resolvedByFixPoint ? " (fixpoint reached)" : "",
         );
       };
     };
