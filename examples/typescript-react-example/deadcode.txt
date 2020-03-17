@@ -1566,28 +1566,28 @@ File References
   XXX resolving DeadTest.bar [0]
   XXX resolving DeadTest.+cb [1]
   XXX resolving DeadTest.foo [2]
-  XXX DeadTest.bar [3] is being resolved: assume not dead
-  DeadTest.bar: 1 references (DeadTest.re:95:6) isDead:false (fixpoint reached)
+  XXX DeadTest.bar [3] is being resolved: assume dead
+  DeadTest.bar: 0 references () isDead:true (fixpoint reached)
   XXX resolving DeadTest.+cb [0]
   XXX resolving DeadTest.foo [1]
   XXX DeadTest.bar [2] already resolved
-  DeadTest.foo: 1 references (DeadTest.re:98:4) isDead:false
-  DeadTest.+cb: 1 references (DeadTest.re:94:8) isDead:false
+  DeadTest.foo: 0 references () isDead:true
+  DeadTest.+cb: 0 references () isDead:true
   XXX DeadTest.foo [0] already resolved
   XXX resolving DeadTest.+cb [0]
   XXX resolving DeadTest.recWithCallback [1]
-  XXX DeadTest.+cb [2] is being resolved: assume not dead
-  DeadTest.+cb: 1 references (DeadTest.re:89:8) isDead:false (fixpoint reached)
+  XXX DeadTest.+cb [2] is being resolved: assume dead
+  DeadTest.+cb: 0 references () isDead:true (fixpoint reached)
   XXX resolving DeadTest.recWithCallback [0]
   XXX DeadTest.+cb [1] already resolved
-  DeadTest.recWithCallback: 1 references (DeadTest.re:90:6) isDead:false
+  DeadTest.recWithCallback: 0 references () isDead:true
   XXX resolving DeadTest.rec2 [0]
   XXX resolving DeadTest.rec1 [1]
-  XXX DeadTest.rec2 [2] is being resolved: assume not dead
-  DeadTest.rec2: 1 references (DeadTest.re:86:8) isDead:false (fixpoint reached)
+  XXX DeadTest.rec2 [2] is being resolved: assume dead
+  DeadTest.rec2: 0 references () isDead:true (fixpoint reached)
   XXX resolving DeadTest.rec1 [0]
   XXX DeadTest.rec2 [1] already resolved
-  DeadTest.rec1: 1 references (DeadTest.re:87:4) isDead:false
+  DeadTest.rec1: 0 references () isDead:true
   XXX resolving DeadTest.split_map [0]
   XXX can't find decl for DeadTest.re:82:2
   DeadTest.split_map: 1 references (DeadTest.re:82:2) isDead:false
@@ -4167,6 +4167,48 @@ File References
   unusedRec is never used
   <-- line 79
   [@dead "unusedRec"] let rec unusedRec = () => unusedRec();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 87:5
+  rec2 is never used
+  <-- line 87
+  [@dead "rec2"] and rec2 = () => rec1();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 86:9
+  rec1 is never used
+  <-- line 86
+  [@dead "rec1"] let rec rec1 = () => rec2()
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 90:7
+  +cb is never used
+  <-- line 90
+    [@dead "+cb"] let cb = () => recWithCallback();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 89:9
+  recWithCallback is never used
+  <-- line 89
+  [@dead "recWithCallback"] let rec recWithCallback = () => {
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 98:5
+  bar is never used
+  <-- line 98
+  [@dead "bar"] and bar = () => foo();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 95:7
+  +cb is never used
+  <-- line 95
+    [@dead "+cb"] let cb = () => bar();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 94:9
+  foo is never used
+  <-- line 94
+  [@dead "foo"] let rec foo = () => {
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9
