@@ -671,15 +671,16 @@ let rec resolveRecursiveRefs =
       ! allDepsResolved^ && refsBeingResolved |> PosSet.is_empty;
     let isResolved = allDepsResolved^ || resolvedByFixPoint;
 
-    if (isDead) {
-      if (decl.pos |> doReportDead) {
-        deadDeclarations := [decl, ...deadDeclarations^];
-      };
-      decl.pos |> ProcessDeadAnnotations.annotateDead;
-    };
-
     if (isResolved) {
       decl.resolved = true;
+
+      if (isDead) {
+        if (decl.pos |> doReportDead) {
+          deadDeclarations := [decl, ...deadDeclarations^];
+        };
+        decl.pos |> ProcessDeadAnnotations.annotateDead;
+      };
+
       if (verbose) {
         let refsString =
           newRefs
