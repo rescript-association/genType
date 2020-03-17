@@ -71,7 +71,7 @@
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
   addValueReference Types.re:28:8 --> Types.re:28:37
-  addDeclaration unsafe_expr Types.re:28:37
+  addDeclaration +unsafe_expr Types.re:28:37
   addValueReference Types.re:46:4 --> Types.re:46:31
   [type] addTypeReference Types.re:46:30 --> Types.re:35:22
   addValueReference Types.re:53:4 --> Types.re:53:35
@@ -81,7 +81,7 @@
   addValueReference Types.re:96:4 --> Types.re:96:23
   addValueReference Types.re:102:4 --> Types.re:102:27
   addValueReference Types.re:120:4 --> Types.re:120:39
-  addDeclaration unsafe_expr Types.re:120:39
+  addDeclaration +unsafe_expr Types.re:120:39
   addValueReference Types.re:136:4 --> Types.re:136:16
   addValueReference Types.re:146:4 --> Types.re:146:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
@@ -174,12 +174,12 @@
   addValueReference ErrorHandler.rei:5:32 --> ErrorHandler.re:7:6
   addValueReference ErrorHandler.rei:7:0 --> ErrorHandler.re:12:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
-  addDeclaration fromT ImmutableArray.re:5:2
-  addDeclaration fromTp ImmutableArray.re:6:2
-  addDeclaration fromTT ImmutableArray.re:7:2
-  addDeclaration toT ImmutableArray.re:8:2
-  addDeclaration toTp ImmutableArray.re:9:2
-  addDeclaration toT2 ImmutableArray.re:10:2
+  addDeclaration +fromT ImmutableArray.re:5:2
+  addDeclaration +fromTp ImmutableArray.re:6:2
+  addDeclaration +fromTT ImmutableArray.re:7:2
+  addDeclaration +toT ImmutableArray.re:8:2
+  addDeclaration +toTp ImmutableArray.re:9:2
+  addDeclaration +toT2 ImmutableArray.re:10:2
   addDeclaration +fromArray ImmutableArray.re:14:6
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:14:18
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:8:2
@@ -1295,7 +1295,7 @@
   addDeclaration +car Hooks.re:149:8
   addValueReference Hooks.re:139:6 --> Hooks.re:149:8
   addValueReference Hooks.re:139:6 --> Hooks.re:150:18
-  addDeclaration unsafe_expr Hooks.re:150:18
+  addDeclaration +unsafe_expr Hooks.re:150:18
   addValueReference Hooks.re:139:6 --> Hooks.re:141:9
   addValueReference _none_:1:-1 --> Hooks.re:139:6
   [type] addTypeReference Hooks.re:158:37 --> Hooks.re:1:16
@@ -1404,6 +1404,7 @@
   addDeclaration bar DeadTest.re:98:4
   addDeclaration withDefaultValue DeadTest.re:100:4
   addDeclaration unsafe_string1 DeadTest.re:102:0
+  addDeclaration unsafe_string2 DeadTest.re:105:2
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1447,13 +1448,15 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:42
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:25
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
-  addDeclaration unsafe_string2 DeadTest.re:106:2
+  addDeclaration +unsafe_string2 DeadTest.re:107:2
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   mergeSet DeadTest.re:63:2 --> DeadTest.re:65:6 (0 new items)
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
+  mergeSet DeadTest.re:105:2 --> DeadTest.re:107:2 (0 new items)
+  addValueReference DeadTest.re:105:2 --> DeadTest.re:107:2
   [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6 (1 new items)
   [type] addTypeReference DeadTest.re:40:6 --> DeadTest.re:36:6
   
@@ -1601,6 +1604,9 @@ File References
   DeadMl.QQ.thisSpansSeveralLines: 0 references () isDead:true [0]
   XXX resolving DeadTest.Ext_buffer.unsafe_string2 [0]
   DeadTest.Ext_buffer.unsafe_string2: 0 references () isDead:true [0]
+  XXX resolving DeadTest.Ext_buffer.+unsafe_string2 [0]
+  XXX DeadTest.Ext_buffer.unsafe_string2 [1] already resolved
+  DeadTest.Ext_buffer.+unsafe_string2: 0 references () isDead:true [0]
   XXX resolving DeadTest.unsafe_string1 [0]
   DeadTest.unsafe_string1: 0 references () isDead:true [0]
   XXX resolving DeadTest.withDefaultValue [0]
@@ -1802,11 +1808,11 @@ File References
   XXX resolving Hooks.aComponentWithChildren [0]
   XXX can't find decl for _none_:1:-1
   Hooks.aComponentWithChildren: 1 references (_none_:1:-1) isDead:false [0]
-  XXX resolving Hooks.RenderPropRequiresConversion.unsafe_expr [0]
+  XXX resolving Hooks.RenderPropRequiresConversion.+unsafe_expr [0]
   XXX resolving Hooks.RenderPropRequiresConversion.+make [1]
   XXX can't find decl for _none_:1:-1
   Hooks.RenderPropRequiresConversion.+make: 1 references (_none_:1:-1) isDead:false [1]
-  Hooks.RenderPropRequiresConversion.unsafe_expr: 1 references (Hooks.re:139:6) isDead:false [0]
+  Hooks.RenderPropRequiresConversion.+unsafe_expr: 1 references (Hooks.re:139:6) isDead:false [0]
   XXX resolving Hooks.RenderPropRequiresConversion.+car [0]
   XXX Hooks.RenderPropRequiresConversion.+make [1] already resolved
   Hooks.RenderPropRequiresConversion.+car: 1 references (Hooks.re:139:6) isDead:false [0]
@@ -2396,10 +2402,10 @@ File References
   [type] Types.someRecord.id: 0 references () isDead:true [0]
   XXX resolving Types.setMatch [0]
   Types.setMatch: 0 references () isDead:false [0]
-  XXX resolving Types.unsafe_expr [0]
+  XXX resolving Types.+unsafe_expr [0]
   XXX resolving Types.testMarshalFields [1]
   Types.testMarshalFields: 0 references () isDead:false [1]
-  Types.unsafe_expr: 1 references (Types.re:120:4) isDead:false [0]
+  Types.+unsafe_expr: 1 references (Types.re:120:4) isDead:false [0]
   XXX Types.testMarshalFields [0] already resolved
   XXX resolving Types.testConvertLocation [0]
   Types.testConvertLocation: 0 references () isDead:false [0]
@@ -2435,11 +2441,11 @@ File References
   XXX resolving Types.selfRecursive.self [0]
   XXX can't find decl for Types.re:46:30
   [type] Types.selfRecursive.self: 1 references (Types.re:46:30) isDead:false [0]
-  XXX resolving Types.unsafe_expr [0]
+  XXX resolving Types.+unsafe_expr [0]
   XXX resolving Types.swap [1]
   XXX Types.swap ignoring reference to self
   Types.swap: 0 references () isDead:false [1]
-  Types.unsafe_expr: 1 references (Types.re:28:8) isDead:false [0]
+  Types.+unsafe_expr: 1 references (Types.re:28:8) isDead:false [0]
   XXX Types.swap [0] already resolved
   XXX resolving Types.typeWithVars.B [0]
   [type] Types.typeWithVars.B: 0 references () isDead:true [0]
@@ -2679,134 +2685,238 @@ File References
   XXX ErrorHandler.x [1] already resolved
   ErrorHandler.+x: 0 references () isDead:true [0]
   XXX ErrorHandler.Make.+notify [0] already resolved
-  XXX resolving ImmutableArray.Array.toT2 [0]
-  XXX resolving ImmutableArray.Array.+unzip [1]
-  XXX ImmutableArray.unzip [2] already resolved
-  ImmutableArray.Array.+unzip: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+partitionU [1]
-  XXX ImmutableArray.partitionU [2] already resolved
-  ImmutableArray.Array.+partitionU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+partition [1]
-  XXX ImmutableArray.partition [2] already resolved
-  ImmutableArray.Array.+partition: 0 references () isDead:true [1]
-  ImmutableArray.Array.toT2: 0 references () isDead:true [0]
-  XXX resolving ImmutableArray.Array.toTp [0]
-  XXX resolving ImmutableArray.Array.+zip [1]
-  XXX ImmutableArray.zip [2] already resolved
-  ImmutableArray.Array.+zip: 0 references () isDead:true [1]
-  ImmutableArray.Array.toTp: 0 references () isDead:true [0]
-  XXX resolving ImmutableArray.Array.toT [0]
-  XXX resolving ImmutableArray.Array.+fromArray [1]
-  XXX ImmutableArray.fromArray [2] already resolved
-  ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0) isDead:false [1]
-  XXX resolving ImmutableArray.Array.+shuffle [1]
-  XXX ImmutableArray.shuffle [2] already resolved
-  ImmutableArray.Array.+shuffle: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+reverse [1]
-  XXX ImmutableArray.reverse [2] already resolved
-  ImmutableArray.Array.+reverse: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+makeUninitialized [1]
-  XXX ImmutableArray.makeUninitialized [2] already resolved
-  ImmutableArray.Array.+makeUninitialized: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+makeUninitializedUnsafe [1]
-  XXX ImmutableArray.makeUninitializedUnsafe [2] already resolved
-  ImmutableArray.Array.+makeUninitializedUnsafe: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+make [1]
-  XXX ImmutableArray.make [2] already resolved
-  ImmutableArray.Array.+make: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+range [1]
-  XXX ImmutableArray.range [2] already resolved
-  ImmutableArray.Array.+range: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+rangeBy [1]
-  XXX ImmutableArray.rangeBy [2] already resolved
-  ImmutableArray.Array.+rangeBy: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+makeByU [1]
-  XXX ImmutableArray.makeByU [2] already resolved
-  ImmutableArray.Array.+makeByU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+makeBy [1]
-  XXX ImmutableArray.makeBy [2] already resolved
-  ImmutableArray.Array.+makeBy: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+makeByAndShuffleU [1]
-  XXX ImmutableArray.makeByAndShuffleU [2] already resolved
-  ImmutableArray.Array.+makeByAndShuffleU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+makeByAndShuffle [1]
-  XXX ImmutableArray.makeByAndShuffle [2] already resolved
-  ImmutableArray.Array.+makeByAndShuffle: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+zipByU [1]
-  XXX ImmutableArray.zipByU [2] already resolved
-  ImmutableArray.Array.+zipByU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+zipBy [1]
-  XXX ImmutableArray.zipBy [2] already resolved
-  ImmutableArray.Array.+zipBy: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+concat [1]
-  XXX ImmutableArray.concat [2] already resolved
-  ImmutableArray.Array.+concat: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+concatMany [1]
-  XXX ImmutableArray.concatMany [2] already resolved
-  ImmutableArray.Array.+concatMany: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+slice [1]
-  XXX ImmutableArray.slice [2] already resolved
-  ImmutableArray.Array.+slice: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+sliceToEnd [1]
-  XXX ImmutableArray.sliceToEnd [2] already resolved
-  ImmutableArray.Array.+sliceToEnd: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+copy [1]
-  XXX ImmutableArray.copy [2] already resolved
-  ImmutableArray.Array.+copy: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+mapU [1]
-  XXX ImmutableArray.mapU [2] already resolved
-  ImmutableArray.Array.+mapU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+map [1]
-  XXX ImmutableArray.map [2] already resolved
-  ImmutableArray.Array.+map: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+keepWithIndexU [1]
-  XXX ImmutableArray.keepWithIndexU [2] already resolved
-  ImmutableArray.Array.+keepWithIndexU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+keepWithIndex [1]
-  XXX ImmutableArray.keepWithIndex [2] already resolved
-  ImmutableArray.Array.+keepWithIndex: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+keepMapU [1]
-  XXX ImmutableArray.keepMapU [2] already resolved
-  ImmutableArray.Array.+keepMapU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+keepMap [1]
-  XXX ImmutableArray.keepMap [2] already resolved
-  ImmutableArray.Array.+keepMap: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+mapWithIndexU [1]
-  XXX ImmutableArray.mapWithIndexU [2] already resolved
-  ImmutableArray.Array.+mapWithIndexU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+mapWithIndex [1]
-  XXX ImmutableArray.mapWithIndex [2] already resolved
-  ImmutableArray.Array.+mapWithIndex: 0 references () isDead:true [1]
-  ImmutableArray.Array.toT: 1 references (ImmutableArray.re:14:6) isDead:false [0]
-  XXX resolving ImmutableArray.Array.fromTT [0]
-  XXX ImmutableArray.Array.+concatMany [1] already resolved
-  ImmutableArray.Array.fromTT: 0 references () isDead:true [0]
-  XXX resolving ImmutableArray.Array.fromTp [0]
+  XXX resolving ImmutableArray.Array.+eq [0]
+  XXX ImmutableArray.eq [1] already resolved
+  ImmutableArray.Array.+eq: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+eqU [0]
+  XXX ImmutableArray.eqU [1] already resolved
+  ImmutableArray.Array.+eqU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+cmp [0]
+  XXX ImmutableArray.cmp [1] already resolved
+  ImmutableArray.Array.+cmp: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+cmpU [0]
+  XXX ImmutableArray.cmpU [1] already resolved
+  ImmutableArray.Array.+cmpU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+some2 [0]
+  XXX ImmutableArray.some2 [1] already resolved
+  ImmutableArray.Array.+some2: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+some2U [0]
+  XXX ImmutableArray.some2U [1] already resolved
+  ImmutableArray.Array.+some2U: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+every2 [0]
+  XXX ImmutableArray.every2 [1] already resolved
+  ImmutableArray.Array.+every2: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+every2U [0]
+  XXX ImmutableArray.every2U [1] already resolved
+  ImmutableArray.Array.+every2U: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+every [0]
+  XXX ImmutableArray.every [1] already resolved
+  ImmutableArray.Array.+every: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+everyU [0]
+  XXX ImmutableArray.everyU [1] already resolved
+  ImmutableArray.Array.+everyU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+some [0]
+  XXX ImmutableArray.some [1] already resolved
+  ImmutableArray.Array.+some: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+someU [0]
+  XXX ImmutableArray.someU [1] already resolved
+  ImmutableArray.Array.+someU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+reduceReverse2 [0]
+  XXX ImmutableArray.reduceReverse2 [1] already resolved
+  ImmutableArray.Array.+reduceReverse2: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+reduceReverse2U [0]
+  XXX ImmutableArray.reduceReverse2U [1] already resolved
+  ImmutableArray.Array.+reduceReverse2U: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+reduceReverse [0]
+  XXX ImmutableArray.reduceReverse [1] already resolved
+  ImmutableArray.Array.+reduceReverse: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+reduceReverseU [0]
+  XXX ImmutableArray.reduceReverseU [1] already resolved
+  ImmutableArray.Array.+reduceReverseU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+reduce [0]
+  XXX ImmutableArray.reduce [1] already resolved
+  ImmutableArray.Array.+reduce: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+reduceU [0]
+  XXX ImmutableArray.reduceU [1] already resolved
+  ImmutableArray.Array.+reduceU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+partition [0]
+  XXX ImmutableArray.partition [1] already resolved
+  ImmutableArray.Array.+partition: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+partitionU [0]
+  XXX ImmutableArray.partitionU [1] already resolved
+  ImmutableArray.Array.+partitionU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+mapWithIndex [0]
+  XXX ImmutableArray.mapWithIndex [1] already resolved
+  ImmutableArray.Array.+mapWithIndex: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+mapWithIndexU [0]
+  XXX ImmutableArray.mapWithIndexU [1] already resolved
+  ImmutableArray.Array.+mapWithIndexU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+forEachWithIndex [0]
+  XXX ImmutableArray.forEachWithIndex [1] already resolved
+  ImmutableArray.Array.+forEachWithIndex: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+forEachWithIndexU [0]
+  XXX ImmutableArray.forEachWithIndexU [1] already resolved
+  ImmutableArray.Array.+forEachWithIndexU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+keepMap [0]
+  XXX ImmutableArray.keepMap [1] already resolved
+  ImmutableArray.Array.+keepMap: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+keepMapU [0]
+  XXX ImmutableArray.keepMapU [1] already resolved
+  ImmutableArray.Array.+keepMapU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+keepWithIndex [0]
+  XXX ImmutableArray.keepWithIndex [1] already resolved
+  ImmutableArray.Array.+keepWithIndex: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+keepWithIndexU [0]
+  XXX ImmutableArray.keepWithIndexU [1] already resolved
+  ImmutableArray.Array.+keepWithIndexU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+map [0]
+  XXX ImmutableArray.map [1] already resolved
+  ImmutableArray.Array.+map: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+mapU [0]
+  XXX ImmutableArray.mapU [1] already resolved
+  ImmutableArray.Array.+mapU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+forEach [0]
+  XXX ImmutableArray.forEach [1] already resolved
+  ImmutableArray.Array.+forEach: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+forEachU [0]
+  XXX ImmutableArray.forEachU [1] already resolved
+  ImmutableArray.Array.+forEachU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+copy [0]
+  XXX ImmutableArray.copy [1] already resolved
+  ImmutableArray.Array.+copy: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+sliceToEnd [0]
+  XXX ImmutableArray.sliceToEnd [1] already resolved
+  ImmutableArray.Array.+sliceToEnd: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+slice [0]
+  XXX ImmutableArray.slice [1] already resolved
+  ImmutableArray.Array.+slice: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+concatMany [0]
+  XXX ImmutableArray.concatMany [1] already resolved
+  ImmutableArray.Array.+concatMany: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+concat [0]
+  XXX ImmutableArray.concat [1] already resolved
+  ImmutableArray.Array.+concat: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+unzip [0]
+  XXX ImmutableArray.unzip [1] already resolved
+  ImmutableArray.Array.+unzip: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+zipBy [0]
+  XXX ImmutableArray.zipBy [1] already resolved
+  ImmutableArray.Array.+zipBy: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+zipByU [0]
+  XXX ImmutableArray.zipByU [1] already resolved
+  ImmutableArray.Array.+zipByU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+zip [0]
+  XXX ImmutableArray.zip [1] already resolved
+  ImmutableArray.Array.+zip: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+makeByAndShuffle [0]
+  XXX ImmutableArray.makeByAndShuffle [1] already resolved
+  ImmutableArray.Array.+makeByAndShuffle: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+makeByAndShuffleU [0]
+  XXX ImmutableArray.makeByAndShuffleU [1] already resolved
+  ImmutableArray.Array.+makeByAndShuffleU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+makeBy [0]
+  XXX ImmutableArray.makeBy [1] already resolved
+  ImmutableArray.Array.+makeBy: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+makeByU [0]
+  XXX ImmutableArray.makeByU [1] already resolved
+  ImmutableArray.Array.+makeByU: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+rangeBy [0]
+  XXX ImmutableArray.rangeBy [1] already resolved
+  ImmutableArray.Array.+rangeBy: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+range [0]
+  XXX ImmutableArray.range [1] already resolved
+  ImmutableArray.Array.+range: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+make [0]
+  XXX ImmutableArray.make [1] already resolved
+  ImmutableArray.Array.+make: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+makeUninitializedUnsafe [0]
+  XXX ImmutableArray.makeUninitializedUnsafe [1] already resolved
+  ImmutableArray.Array.+makeUninitializedUnsafe: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+makeUninitialized [0]
+  XXX ImmutableArray.makeUninitialized [1] already resolved
+  ImmutableArray.Array.+makeUninitialized: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+reverse [0]
+  XXX ImmutableArray.reverse [1] already resolved
+  ImmutableArray.Array.+reverse: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+shuffle [0]
+  XXX ImmutableArray.shuffle [1] already resolved
+  ImmutableArray.Array.+shuffle: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+getUndefined [0]
+  XXX ImmutableArray.getUndefined [1] already resolved
+  ImmutableArray.Array.+getUndefined: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+getUnsafe [0]
+  XXX ImmutableArray.getUnsafe [1] already resolved
+  ImmutableArray.Array.+getUnsafe: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+getExn [0]
+  XXX ImmutableArray.getExn [1] already resolved
+  ImmutableArray.Array.+getExn: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+get [0]
+  XXX ImmutableArray.Array.get [1] already resolved
+  XXX ImmutableArray.get [1] already resolved
+  ImmutableArray.Array.+get: 1 references (ImmutableArray.rei:5:15) isDead:false [0]
+  XXX resolving ImmutableArray.Array.+size [0]
+  XXX ImmutableArray.size [1] already resolved
+  ImmutableArray.Array.+size: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+length [0]
+  XXX ImmutableArray.length [1] already resolved
+  ImmutableArray.Array.+length: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+toArray [0]
+  XXX ImmutableArray.toArray [1] already resolved
+  ImmutableArray.Array.+toArray: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+fromArray [0]
+  XXX ImmutableArray.fromArray [1] already resolved
+  ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0) isDead:false [0]
+  XXX resolving ImmutableArray.Array.+toT2 [0]
   XXX ImmutableArray.Array.+unzip [1] already resolved
-  ImmutableArray.Array.fromTp: 0 references () isDead:true [0]
-  XXX resolving ImmutableArray.Array.fromT [0]
-  XXX resolving ImmutableArray.Array.+toArray [1]
-  XXX ImmutableArray.toArray [2] already resolved
-  ImmutableArray.Array.+toArray: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+length [1]
-  XXX ImmutableArray.length [2] already resolved
-  ImmutableArray.Array.+length: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+size [1]
-  XXX ImmutableArray.size [2] already resolved
-  ImmutableArray.Array.+size: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+get [1]
-  XXX ImmutableArray.Array.get [2] already resolved
-  XXX ImmutableArray.get [2] already resolved
-  ImmutableArray.Array.+get: 1 references (ImmutableArray.rei:5:15) isDead:false [1]
-  XXX resolving ImmutableArray.Array.+getExn [1]
-  XXX ImmutableArray.getExn [2] already resolved
-  ImmutableArray.Array.+getExn: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+getUnsafe [1]
-  XXX ImmutableArray.getUnsafe [2] already resolved
-  ImmutableArray.Array.+getUnsafe: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+getUndefined [1]
-  XXX ImmutableArray.getUndefined [2] already resolved
-  ImmutableArray.Array.+getUndefined: 0 references () isDead:true [1]
+  XXX ImmutableArray.Array.+partitionU [1] already resolved
+  XXX ImmutableArray.Array.+partition [1] already resolved
+  ImmutableArray.Array.+toT2: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+toTp [0]
+  XXX ImmutableArray.Array.+zip [1] already resolved
+  ImmutableArray.Array.+toTp: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+toT [0]
+  XXX ImmutableArray.Array.+fromArray [1] already resolved
+  XXX ImmutableArray.Array.+shuffle [1] already resolved
+  XXX ImmutableArray.Array.+reverse [1] already resolved
+  XXX ImmutableArray.Array.+makeUninitialized [1] already resolved
+  XXX ImmutableArray.Array.+makeUninitializedUnsafe [1] already resolved
+  XXX ImmutableArray.Array.+make [1] already resolved
+  XXX ImmutableArray.Array.+range [1] already resolved
+  XXX ImmutableArray.Array.+rangeBy [1] already resolved
+  XXX ImmutableArray.Array.+makeByU [1] already resolved
+  XXX ImmutableArray.Array.+makeBy [1] already resolved
+  XXX ImmutableArray.Array.+makeByAndShuffleU [1] already resolved
+  XXX ImmutableArray.Array.+makeByAndShuffle [1] already resolved
+  XXX ImmutableArray.Array.+zipByU [1] already resolved
+  XXX ImmutableArray.Array.+zipBy [1] already resolved
+  XXX ImmutableArray.Array.+concat [1] already resolved
+  XXX ImmutableArray.Array.+concatMany [1] already resolved
+  XXX ImmutableArray.Array.+slice [1] already resolved
+  XXX ImmutableArray.Array.+sliceToEnd [1] already resolved
+  XXX ImmutableArray.Array.+copy [1] already resolved
+  XXX ImmutableArray.Array.+mapU [1] already resolved
+  XXX ImmutableArray.Array.+map [1] already resolved
+  XXX ImmutableArray.Array.+keepWithIndexU [1] already resolved
+  XXX ImmutableArray.Array.+keepWithIndex [1] already resolved
+  XXX ImmutableArray.Array.+keepMapU [1] already resolved
+  XXX ImmutableArray.Array.+keepMap [1] already resolved
+  XXX ImmutableArray.Array.+mapWithIndexU [1] already resolved
+  XXX ImmutableArray.Array.+mapWithIndex [1] already resolved
+  ImmutableArray.Array.+toT: 1 references (ImmutableArray.re:14:6) isDead:false [0]
+  XXX resolving ImmutableArray.Array.+fromTT [0]
+  XXX ImmutableArray.Array.+concatMany [1] already resolved
+  ImmutableArray.Array.+fromTT: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+fromTp [0]
+  XXX ImmutableArray.Array.+unzip [1] already resolved
+  ImmutableArray.Array.+fromTp: 0 references () isDead:true [0]
+  XXX resolving ImmutableArray.Array.+fromT [0]
+  XXX ImmutableArray.Array.+toArray [1] already resolved
+  XXX ImmutableArray.Array.+length [1] already resolved
+  XXX ImmutableArray.Array.+size [1] already resolved
+  XXX ImmutableArray.Array.+get [1] already resolved
+  XXX ImmutableArray.Array.+getExn [1] already resolved
+  XXX ImmutableArray.Array.+getUnsafe [1] already resolved
+  XXX ImmutableArray.Array.+getUndefined [1] already resolved
   XXX ImmutableArray.Array.+shuffle [1] already resolved
   XXX ImmutableArray.Array.+reverse [1] already resolved
   XXX ImmutableArray.Array.+zip [1] already resolved
@@ -2816,305 +2926,63 @@ File References
   XXX ImmutableArray.Array.+slice [1] already resolved
   XXX ImmutableArray.Array.+sliceToEnd [1] already resolved
   XXX ImmutableArray.Array.+copy [1] already resolved
-  XXX resolving ImmutableArray.Array.+forEachU [1]
-  XXX ImmutableArray.forEachU [2] already resolved
-  ImmutableArray.Array.+forEachU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+forEach [1]
-  XXX ImmutableArray.forEach [2] already resolved
-  ImmutableArray.Array.+forEach: 0 references () isDead:true [1]
+  XXX ImmutableArray.Array.+forEachU [1] already resolved
+  XXX ImmutableArray.Array.+forEach [1] already resolved
   XXX ImmutableArray.Array.+mapU [1] already resolved
   XXX ImmutableArray.Array.+map [1] already resolved
   XXX ImmutableArray.Array.+keepWithIndexU [1] already resolved
   XXX ImmutableArray.Array.+keepWithIndex [1] already resolved
   XXX ImmutableArray.Array.+keepMapU [1] already resolved
   XXX ImmutableArray.Array.+keepMap [1] already resolved
-  XXX resolving ImmutableArray.Array.+forEachWithIndexU [1]
-  XXX ImmutableArray.forEachWithIndexU [2] already resolved
-  ImmutableArray.Array.+forEachWithIndexU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+forEachWithIndex [1]
-  XXX ImmutableArray.forEachWithIndex [2] already resolved
-  ImmutableArray.Array.+forEachWithIndex: 0 references () isDead:true [1]
+  XXX ImmutableArray.Array.+forEachWithIndexU [1] already resolved
+  XXX ImmutableArray.Array.+forEachWithIndex [1] already resolved
   XXX ImmutableArray.Array.+mapWithIndexU [1] already resolved
   XXX ImmutableArray.Array.+mapWithIndex [1] already resolved
   XXX ImmutableArray.Array.+partitionU [1] already resolved
   XXX ImmutableArray.Array.+partition [1] already resolved
-  XXX resolving ImmutableArray.Array.+reduceU [1]
-  XXX ImmutableArray.reduceU [2] already resolved
-  ImmutableArray.Array.+reduceU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+reduce [1]
-  XXX ImmutableArray.reduce [2] already resolved
-  ImmutableArray.Array.+reduce: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+reduceReverseU [1]
-  XXX ImmutableArray.reduceReverseU [2] already resolved
-  ImmutableArray.Array.+reduceReverseU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+reduceReverse [1]
-  XXX ImmutableArray.reduceReverse [2] already resolved
-  ImmutableArray.Array.+reduceReverse: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+reduceReverse2U [1]
-  XXX ImmutableArray.reduceReverse2U [2] already resolved
-  ImmutableArray.Array.+reduceReverse2U: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+reduceReverse2 [1]
-  XXX ImmutableArray.reduceReverse2 [2] already resolved
-  ImmutableArray.Array.+reduceReverse2: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+someU [1]
-  XXX ImmutableArray.someU [2] already resolved
-  ImmutableArray.Array.+someU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+some [1]
-  XXX ImmutableArray.some [2] already resolved
-  ImmutableArray.Array.+some: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+everyU [1]
-  XXX ImmutableArray.everyU [2] already resolved
-  ImmutableArray.Array.+everyU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+every [1]
-  XXX ImmutableArray.every [2] already resolved
-  ImmutableArray.Array.+every: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+every2U [1]
-  XXX ImmutableArray.every2U [2] already resolved
-  ImmutableArray.Array.+every2U: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+every2 [1]
-  XXX ImmutableArray.every2 [2] already resolved
-  ImmutableArray.Array.+every2: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+some2U [1]
-  XXX ImmutableArray.some2U [2] already resolved
-  ImmutableArray.Array.+some2U: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+some2 [1]
-  XXX ImmutableArray.some2 [2] already resolved
-  ImmutableArray.Array.+some2: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+cmpU [1]
-  XXX ImmutableArray.cmpU [2] already resolved
-  ImmutableArray.Array.+cmpU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+cmp [1]
-  XXX ImmutableArray.cmp [2] already resolved
-  ImmutableArray.Array.+cmp: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+eqU [1]
-  XXX ImmutableArray.eqU [2] already resolved
-  ImmutableArray.Array.+eqU: 0 references () isDead:true [1]
-  XXX resolving ImmutableArray.Array.+eq [1]
-  XXX ImmutableArray.eq [2] already resolved
-  ImmutableArray.Array.+eq: 0 references () isDead:true [1]
-  ImmutableArray.Array.fromT: 1 references (ImmutableArray.re:24:6) isDead:false [0]
-  XXX ImmutableArray.Array.+eq [0] already resolved
-  XXX ImmutableArray.Array.+eqU [0] already resolved
-  XXX ImmutableArray.Array.+cmp [0] already resolved
-  XXX ImmutableArray.Array.+cmpU [0] already resolved
-  XXX ImmutableArray.Array.+some2 [0] already resolved
-  XXX ImmutableArray.Array.+some2U [0] already resolved
-  XXX ImmutableArray.Array.+every2 [0] already resolved
-  XXX ImmutableArray.Array.+every2U [0] already resolved
-  XXX ImmutableArray.Array.+every [0] already resolved
-  XXX ImmutableArray.Array.+everyU [0] already resolved
-  XXX ImmutableArray.Array.+some [0] already resolved
-  XXX ImmutableArray.Array.+someU [0] already resolved
-  XXX ImmutableArray.Array.+reduceReverse2 [0] already resolved
-  XXX ImmutableArray.Array.+reduceReverse2U [0] already resolved
-  XXX ImmutableArray.Array.+reduceReverse [0] already resolved
-  XXX ImmutableArray.Array.+reduceReverseU [0] already resolved
-  XXX ImmutableArray.Array.+reduce [0] already resolved
-  XXX ImmutableArray.Array.+reduceU [0] already resolved
-  XXX ImmutableArray.Array.+partition [0] already resolved
-  XXX ImmutableArray.Array.+partitionU [0] already resolved
-  XXX ImmutableArray.Array.+mapWithIndex [0] already resolved
-  XXX ImmutableArray.Array.+mapWithIndexU [0] already resolved
-  XXX ImmutableArray.Array.+forEachWithIndex [0] already resolved
-  XXX ImmutableArray.Array.+forEachWithIndexU [0] already resolved
-  XXX ImmutableArray.Array.+keepMap [0] already resolved
-  XXX ImmutableArray.Array.+keepMapU [0] already resolved
-  XXX ImmutableArray.Array.+keepWithIndex [0] already resolved
-  XXX ImmutableArray.Array.+keepWithIndexU [0] already resolved
-  XXX ImmutableArray.Array.+map [0] already resolved
-  XXX ImmutableArray.Array.+mapU [0] already resolved
-  XXX ImmutableArray.Array.+forEach [0] already resolved
-  XXX ImmutableArray.Array.+forEachU [0] already resolved
-  XXX ImmutableArray.Array.+copy [0] already resolved
-  XXX ImmutableArray.Array.+sliceToEnd [0] already resolved
-  XXX ImmutableArray.Array.+slice [0] already resolved
-  XXX ImmutableArray.Array.+concatMany [0] already resolved
-  XXX ImmutableArray.Array.+concat [0] already resolved
-  XXX ImmutableArray.Array.+unzip [0] already resolved
-  XXX ImmutableArray.Array.+zipBy [0] already resolved
-  XXX ImmutableArray.Array.+zipByU [0] already resolved
-  XXX ImmutableArray.Array.+zip [0] already resolved
-  XXX ImmutableArray.Array.+makeByAndShuffle [0] already resolved
-  XXX ImmutableArray.Array.+makeByAndShuffleU [0] already resolved
-  XXX ImmutableArray.Array.+makeBy [0] already resolved
-  XXX ImmutableArray.Array.+makeByU [0] already resolved
-  XXX ImmutableArray.Array.+rangeBy [0] already resolved
-  XXX ImmutableArray.Array.+range [0] already resolved
-  XXX ImmutableArray.Array.+make [0] already resolved
-  XXX ImmutableArray.Array.+makeUninitializedUnsafe [0] already resolved
-  XXX ImmutableArray.Array.+makeUninitialized [0] already resolved
-  XXX ImmutableArray.Array.+reverse [0] already resolved
-  XXX ImmutableArray.Array.+shuffle [0] already resolved
-  XXX ImmutableArray.Array.+getUndefined [0] already resolved
-  XXX ImmutableArray.Array.+getUnsafe [0] already resolved
-  XXX ImmutableArray.Array.+getExn [0] already resolved
-  XXX ImmutableArray.Array.+get [0] already resolved
-  XXX ImmutableArray.Array.+size [0] already resolved
-  XXX ImmutableArray.Array.+length [0] already resolved
-  XXX ImmutableArray.Array.+toArray [0] already resolved
-  XXX ImmutableArray.Array.+fromArray [0] already resolved
+  XXX ImmutableArray.Array.+reduceU [1] already resolved
+  XXX ImmutableArray.Array.+reduce [1] already resolved
+  XXX ImmutableArray.Array.+reduceReverseU [1] already resolved
+  XXX ImmutableArray.Array.+reduceReverse [1] already resolved
+  XXX ImmutableArray.Array.+reduceReverse2U [1] already resolved
+  XXX ImmutableArray.Array.+reduceReverse2 [1] already resolved
+  XXX ImmutableArray.Array.+someU [1] already resolved
+  XXX ImmutableArray.Array.+some [1] already resolved
+  XXX ImmutableArray.Array.+everyU [1] already resolved
+  XXX ImmutableArray.Array.+every [1] already resolved
+  XXX ImmutableArray.Array.+every2U [1] already resolved
+  XXX ImmutableArray.Array.+every2 [1] already resolved
+  XXX ImmutableArray.Array.+some2U [1] already resolved
+  XXX ImmutableArray.Array.+some2 [1] already resolved
+  XXX ImmutableArray.Array.+cmpU [1] already resolved
+  XXX ImmutableArray.Array.+cmp [1] already resolved
+  XXX ImmutableArray.Array.+eqU [1] already resolved
+  XXX ImmutableArray.Array.+eq [1] already resolved
+  ImmutableArray.Array.+fromT: 1 references (ImmutableArray.re:24:6) isDead:false [0]
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 118:7
-  Array.+eq is never used
-  <-- line 118
-    [@dead "Array.+eq"] let eq = (a1, a2, f) => Array.eq(fromT(a1), fromT(a2), f);
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 6:3
+  Array.+fromTp is never used
+  <-- line 6
+    [@dead "Array.+fromTp"] external fromTp: t(('a, 'b)) => array(('a, 'b)) = "%identity";
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 117:7
-  Array.+eqU is never used
-  <-- line 117
-    [@dead "Array.+eqU"] let eqU = (a1, a2, f) => Array.eqU(fromT(a1), fromT(a2), f);
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 7:3
+  Array.+fromTT is never used
+  <-- line 7
+    [@dead "Array.+fromTT"] external fromTT: t(t('a)) => array(array('a)) = "%identity";
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 115:7
-  Array.+cmp is never used
-  <-- line 115
-    [@dead "Array.+cmp"] let cmp = (a1, a2, f) => Array.cmp(fromT(a1), fromT(a2), f);
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 9:3
+  Array.+toTp is never used
+  <-- line 9
+    [@dead "Array.+toTp"] external toTp: array(('a, 'b)) => t(('a, 'b)) = "%identity";
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 114:7
-  Array.+cmpU is never used
-  <-- line 114
-    [@dead "Array.+cmpU"] let cmpU = (a1, a2, f) => Array.cmpU(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 112:7
-  Array.+some2 is never used
-  <-- line 112
-    [@dead "Array.+some2"] let some2 = (a1, a2, f) => Array.some2(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 111:7
-  Array.+some2U is never used
-  <-- line 111
-    [@dead "Array.+some2U"] let some2U = (a1, a2, f) => Array.some2U(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 109:7
-  Array.+every2 is never used
-  <-- line 109
-    [@dead "Array.+every2"] let every2 = (a1, a2, f) => Array.every2(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 108:7
-  Array.+every2U is never used
-  <-- line 108
-    [@dead "Array.+every2U"] let every2U = (a1, a2, f) => Array.every2U(fromT(a1), fromT(a2), f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 106:7
-  Array.+every is never used
-  <-- line 106
-    [@dead "Array.+every"] let every = (a, f) => Array.every(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 105:7
-  Array.+everyU is never used
-  <-- line 105
-    [@dead "Array.+everyU"] let everyU = (a, f) => Array.everyU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 103:7
-  Array.+some is never used
-  <-- line 103
-    [@dead "Array.+some"] let some = (a, f) => Array.some(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 102:7
-  Array.+someU is never used
-  <-- line 102
-    [@dead "Array.+someU"] let someU = (a, f) => Array.someU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 99:7
-  Array.+reduceReverse2 is never used
-  <-- line 99
-    [@dead "Array.+reduceReverse2"] let reduceReverse2 = (a1, a2, c, f) =>
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 97:7
-  Array.+reduceReverse2U is never used
-  <-- line 97
-    [@dead "Array.+reduceReverse2U"] let reduceReverse2U = (a1, a2, c, f) =>
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 95:7
-  Array.+reduceReverse is never used
-  <-- line 95
-    [@dead "Array.+reduceReverse"] let reduceReverse = (a, b, f) => Array.reduceReverse(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 94:7
-  Array.+reduceReverseU is never used
-  <-- line 94
-    [@dead "Array.+reduceReverseU"] let reduceReverseU = (a, b, f) => Array.reduceReverseU(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 92:7
-  Array.+reduce is never used
-  <-- line 92
-    [@dead "Array.+reduce"] let reduce = (a, b, f) => Array.reduce(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 91:7
-  Array.+reduceU is never used
-  <-- line 91
-    [@dead "Array.+reduceU"] let reduceU = (a, b, f) => Array.reduceU(a->fromT, b, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 83:7
-  Array.+forEachWithIndex is never used
-  <-- line 83
-    [@dead "Array.+forEachWithIndex"] let forEachWithIndex = (a, f) => Array.forEachWithIndex(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 82:7
-  Array.+forEachWithIndexU is never used
-  <-- line 82
-    [@dead "Array.+forEachWithIndexU"] let forEachWithIndexU = (a, f) => Array.forEachWithIndexU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 71:7
-  Array.+forEach is never used
-  <-- line 71
-    [@dead "Array.+forEach"] let forEach = (a, f) => Array.forEach(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 70:7
-  Array.+forEachU is never used
-  <-- line 70
-    [@dead "Array.+forEachU"] let forEachU = (a, f) => Array.forEachU(a->fromT, f);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 30:7
-  Array.+getUndefined is never used
-  <-- line 30
-    [@dead "Array.+getUndefined"] let getUndefined = (a, x) => Array.getUndefined(a->fromT, x);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 28:7
-  Array.+getUnsafe is never used
-  <-- line 28
-    [@dead "Array.+getUnsafe"] let getUnsafe = (a, x) => Array.getUnsafe(a->fromT, x);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 26:7
-  Array.+getExn is never used
-  <-- line 26
-    [@dead "Array.+getExn"] let getExn = (a, x) => Array.getExn(a->fromT, x);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 22:7
-  Array.+size is never used
-  <-- line 22
-    [@dead "Array.+size"] let size = a => Array.size(a->fromT);
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 20:7
-  Array.+length is never used
-  <-- line 20
-    [@dead "Array.+length"] let length = a => Array.length(a->fromT);
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 10:3
+  Array.+toT2 is never used
+  <-- line 10
+    [@dead "Array.+toT2"] external toT2: array2('a) => (t('a), t('a)) = "%identity";
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 16:7
@@ -3123,166 +2991,34 @@ File References
     [@dead "Array.+toArray"] let toArray = a => Array.copy(a->fromT);
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 6:3
-  Array.fromTp is never used
-  <-- line 6
-    [@dead "Array.fromTp"] external fromTp: t(('a, 'b)) => array(('a, 'b)) = "%identity";
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 20:7
+  Array.+length is never used
+  <-- line 20
+    [@dead "Array.+length"] let length = a => Array.length(a->fromT);
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 7:3
-  Array.fromTT is never used
-  <-- line 7
-    [@dead "Array.fromTT"] external fromTT: t(t('a)) => array(array('a)) = "%identity";
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 22:7
+  Array.+size is never used
+  <-- line 22
+    [@dead "Array.+size"] let size = a => Array.size(a->fromT);
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 86:7
-  Array.+mapWithIndex is never used
-  <-- line 86
-    [@dead "Array.+mapWithIndex"] let mapWithIndex = (a, f) => Array.mapWithIndex(a->fromT, f)->toT;
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 26:7
+  Array.+getExn is never used
+  <-- line 26
+    [@dead "Array.+getExn"] let getExn = (a, x) => Array.getExn(a->fromT, x);
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 85:7
-  Array.+mapWithIndexU is never used
-  <-- line 85
-    [@dead "Array.+mapWithIndexU"] let mapWithIndexU = (a, f) => Array.mapWithIndexU(a->fromT, f)->toT;
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 28:7
+  Array.+getUnsafe is never used
+  <-- line 28
+    [@dead "Array.+getUnsafe"] let getUnsafe = (a, x) => Array.getUnsafe(a->fromT, x);
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 80:7
-  Array.+keepMap is never used
-  <-- line 80
-    [@dead "Array.+keepMap"] let keepMap = (a, f) => Array.keepMap(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 79:7
-  Array.+keepMapU is never used
-  <-- line 79
-    [@dead "Array.+keepMapU"] let keepMapU = (a, f) => Array.keepMapU(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 77:7
-  Array.+keepWithIndex is never used
-  <-- line 77
-    [@dead "Array.+keepWithIndex"] let keepWithIndex = (a, f) => Array.keepWithIndex(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 76:7
-  Array.+keepWithIndexU is never used
-  <-- line 76
-    [@dead "Array.+keepWithIndexU"] let keepWithIndexU = (a, f) => Array.keepWithIndexU(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 74:7
-  Array.+map is never used
-  <-- line 74
-    [@dead "Array.+map"] let map = (a, f) => Array.map(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 73:7
-  Array.+mapU is never used
-  <-- line 73
-    [@dead "Array.+mapU"] let mapU = (a, f) => Array.mapU(a->fromT, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 68:7
-  Array.+copy is never used
-  <-- line 68
-    [@dead "Array.+copy"] let copy = a => Array.copy(a->fromT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 66:7
-  Array.+sliceToEnd is never used
-  <-- line 66
-    [@dead "Array.+sliceToEnd"] let sliceToEnd = (a, b) => Array.sliceToEnd(a->fromT, b)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 63:7
-  Array.+slice is never used
-  <-- line 63
-    [@dead "Array.+slice"] let slice = (a, ~offset, ~len) =>
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 61:7
-  Array.+concatMany is never used
-  <-- line 61
-    [@dead "Array.+concatMany"] let concatMany = (a: t(t(_))) => Array.concatMany(a->fromTT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 59:7
-  Array.+concat is never used
-  <-- line 59
-    [@dead "Array.+concat"] let concat = (a1, a2) => Array.concat(a1->fromT, a2->fromT)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 55:7
-  Array.+zipBy is never used
-  <-- line 55
-    [@dead "Array.+zipBy"] let zipBy = (a1, a2, f) => Array.zipBy(fromT(a1), fromT(a2), f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 54:7
-  Array.+zipByU is never used
-  <-- line 54
-    [@dead "Array.+zipByU"] let zipByU = (a1, a2, f) => Array.zipByU(fromT(a1), fromT(a2), f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 50:7
-  Array.+makeByAndShuffle is never used
-  <-- line 50
-    [@dead "Array.+makeByAndShuffle"] let makeByAndShuffle = (c, f) => Array.makeByAndShuffle(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 49:7
-  Array.+makeByAndShuffleU is never used
-  <-- line 49
-    [@dead "Array.+makeByAndShuffleU"] let makeByAndShuffleU = (c, f) => Array.makeByAndShuffleU(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 47:7
-  Array.+makeBy is never used
-  <-- line 47
-    [@dead "Array.+makeBy"] let makeBy = (c, f) => Array.makeBy(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 46:7
-  Array.+makeByU is never used
-  <-- line 46
-    [@dead "Array.+makeByU"] let makeByU = (c, f) => Array.makeByU(c, f)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 44:7
-  Array.+rangeBy is never used
-  <-- line 44
-    [@dead "Array.+rangeBy"] let rangeBy = (x, y, ~step) => Array.rangeBy(x, y, ~step)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 42:7
-  Array.+range is never used
-  <-- line 42
-    [@dead "Array.+range"] let range = (x, y) => Array.range(x, y)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 40:7
-  Array.+make is never used
-  <-- line 40
-    [@dead "Array.+make"] let make = (x, y) => Array.make(x, y)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 38:7
-  Array.+makeUninitializedUnsafe is never used
-  <-- line 38
-    [@dead "Array.+makeUninitializedUnsafe"] let makeUninitializedUnsafe = x => Array.makeUninitializedUnsafe(x)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 36:7
-  Array.+makeUninitialized is never used
-  <-- line 36
-    [@dead "Array.+makeUninitialized"] let makeUninitialized = x => Array.makeUninitialized(x)->toT;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 34:7
-  Array.+reverse is never used
-  <-- line 34
-    [@dead "Array.+reverse"] let reverse = x => Array.reverse(x->fromT)->toT;
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 30:7
+  Array.+getUndefined is never used
+  <-- line 30
+    [@dead "Array.+getUndefined"] let getUndefined = (a, x) => Array.getUndefined(a->fromT, x);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 32:7
@@ -3291,10 +3027,64 @@ File References
     [@dead "Array.+shuffle"] let shuffle = x => Array.shuffle(x->fromT)->toT;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 9:3
-  Array.toTp is never used
-  <-- line 9
-    [@dead "Array.toTp"] external toTp: array(('a, 'b)) => t(('a, 'b)) = "%identity";
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 34:7
+  Array.+reverse is never used
+  <-- line 34
+    [@dead "Array.+reverse"] let reverse = x => Array.reverse(x->fromT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 36:7
+  Array.+makeUninitialized is never used
+  <-- line 36
+    [@dead "Array.+makeUninitialized"] let makeUninitialized = x => Array.makeUninitialized(x)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 38:7
+  Array.+makeUninitializedUnsafe is never used
+  <-- line 38
+    [@dead "Array.+makeUninitializedUnsafe"] let makeUninitializedUnsafe = x => Array.makeUninitializedUnsafe(x)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 40:7
+  Array.+make is never used
+  <-- line 40
+    [@dead "Array.+make"] let make = (x, y) => Array.make(x, y)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 42:7
+  Array.+range is never used
+  <-- line 42
+    [@dead "Array.+range"] let range = (x, y) => Array.range(x, y)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 44:7
+  Array.+rangeBy is never used
+  <-- line 44
+    [@dead "Array.+rangeBy"] let rangeBy = (x, y, ~step) => Array.rangeBy(x, y, ~step)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 46:7
+  Array.+makeByU is never used
+  <-- line 46
+    [@dead "Array.+makeByU"] let makeByU = (c, f) => Array.makeByU(c, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 47:7
+  Array.+makeBy is never used
+  <-- line 47
+    [@dead "Array.+makeBy"] let makeBy = (c, f) => Array.makeBy(c, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 49:7
+  Array.+makeByAndShuffleU is never used
+  <-- line 49
+    [@dead "Array.+makeByAndShuffleU"] let makeByAndShuffleU = (c, f) => Array.makeByAndShuffleU(c, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 50:7
+  Array.+makeByAndShuffle is never used
+  <-- line 50
+    [@dead "Array.+makeByAndShuffle"] let makeByAndShuffle = (c, f) => Array.makeByAndShuffle(c, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 52:7
@@ -3303,16 +3093,124 @@ File References
     [@dead "Array.+zip"] let zip = (a1, a2) => Array.zip(fromT(a1), fromT(a2))->toTp;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 10:3
-  Array.toT2 is never used
-  <-- line 10
-    [@dead "Array.toT2"] external toT2: array2('a) => (t('a), t('a)) = "%identity";
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 54:7
+  Array.+zipByU is never used
+  <-- line 54
+    [@dead "Array.+zipByU"] let zipByU = (a1, a2, f) => Array.zipByU(fromT(a1), fromT(a2), f)->toT;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 89:7
-  Array.+partition is never used
-  <-- line 89
-    [@dead "Array.+partition"] let partition = (a, f) => Array.partition(a->fromT, f)->toT2;
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 55:7
+  Array.+zipBy is never used
+  <-- line 55
+    [@dead "Array.+zipBy"] let zipBy = (a1, a2, f) => Array.zipBy(fromT(a1), fromT(a2), f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 57:7
+  Array.+unzip is never used
+  <-- line 57
+    [@dead "Array.+unzip"] let unzip = a => Array.unzip(a->fromTp)->toT2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 59:7
+  Array.+concat is never used
+  <-- line 59
+    [@dead "Array.+concat"] let concat = (a1, a2) => Array.concat(a1->fromT, a2->fromT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 61:7
+  Array.+concatMany is never used
+  <-- line 61
+    [@dead "Array.+concatMany"] let concatMany = (a: t(t(_))) => Array.concatMany(a->fromTT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 63:7
+  Array.+slice is never used
+  <-- line 63
+    [@dead "Array.+slice"] let slice = (a, ~offset, ~len) =>
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 66:7
+  Array.+sliceToEnd is never used
+  <-- line 66
+    [@dead "Array.+sliceToEnd"] let sliceToEnd = (a, b) => Array.sliceToEnd(a->fromT, b)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 68:7
+  Array.+copy is never used
+  <-- line 68
+    [@dead "Array.+copy"] let copy = a => Array.copy(a->fromT)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 70:7
+  Array.+forEachU is never used
+  <-- line 70
+    [@dead "Array.+forEachU"] let forEachU = (a, f) => Array.forEachU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 71:7
+  Array.+forEach is never used
+  <-- line 71
+    [@dead "Array.+forEach"] let forEach = (a, f) => Array.forEach(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 73:7
+  Array.+mapU is never used
+  <-- line 73
+    [@dead "Array.+mapU"] let mapU = (a, f) => Array.mapU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 74:7
+  Array.+map is never used
+  <-- line 74
+    [@dead "Array.+map"] let map = (a, f) => Array.map(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 76:7
+  Array.+keepWithIndexU is never used
+  <-- line 76
+    [@dead "Array.+keepWithIndexU"] let keepWithIndexU = (a, f) => Array.keepWithIndexU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 77:7
+  Array.+keepWithIndex is never used
+  <-- line 77
+    [@dead "Array.+keepWithIndex"] let keepWithIndex = (a, f) => Array.keepWithIndex(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 79:7
+  Array.+keepMapU is never used
+  <-- line 79
+    [@dead "Array.+keepMapU"] let keepMapU = (a, f) => Array.keepMapU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 80:7
+  Array.+keepMap is never used
+  <-- line 80
+    [@dead "Array.+keepMap"] let keepMap = (a, f) => Array.keepMap(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 82:7
+  Array.+forEachWithIndexU is never used
+  <-- line 82
+    [@dead "Array.+forEachWithIndexU"] let forEachWithIndexU = (a, f) => Array.forEachWithIndexU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 83:7
+  Array.+forEachWithIndex is never used
+  <-- line 83
+    [@dead "Array.+forEachWithIndex"] let forEachWithIndex = (a, f) => Array.forEachWithIndex(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 85:7
+  Array.+mapWithIndexU is never used
+  <-- line 85
+    [@dead "Array.+mapWithIndexU"] let mapWithIndexU = (a, f) => Array.mapWithIndexU(a->fromT, f)->toT;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 86:7
+  Array.+mapWithIndex is never used
+  <-- line 86
+    [@dead "Array.+mapWithIndex"] let mapWithIndex = (a, f) => Array.mapWithIndex(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 88:7
@@ -3321,10 +3219,118 @@ File References
     [@dead "Array.+partitionU"] let partitionU = (a, f) => Array.partitionU(a->fromT, f)->toT2;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 57:7
-  Array.+unzip is never used
-  <-- line 57
-    [@dead "Array.+unzip"] let unzip = a => Array.unzip(a->fromTp)->toT2;
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 89:7
+  Array.+partition is never used
+  <-- line 89
+    [@dead "Array.+partition"] let partition = (a, f) => Array.partition(a->fromT, f)->toT2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 91:7
+  Array.+reduceU is never used
+  <-- line 91
+    [@dead "Array.+reduceU"] let reduceU = (a, b, f) => Array.reduceU(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 92:7
+  Array.+reduce is never used
+  <-- line 92
+    [@dead "Array.+reduce"] let reduce = (a, b, f) => Array.reduce(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 94:7
+  Array.+reduceReverseU is never used
+  <-- line 94
+    [@dead "Array.+reduceReverseU"] let reduceReverseU = (a, b, f) => Array.reduceReverseU(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 95:7
+  Array.+reduceReverse is never used
+  <-- line 95
+    [@dead "Array.+reduceReverse"] let reduceReverse = (a, b, f) => Array.reduceReverse(a->fromT, b, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 97:7
+  Array.+reduceReverse2U is never used
+  <-- line 97
+    [@dead "Array.+reduceReverse2U"] let reduceReverse2U = (a1, a2, c, f) =>
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 99:7
+  Array.+reduceReverse2 is never used
+  <-- line 99
+    [@dead "Array.+reduceReverse2"] let reduceReverse2 = (a1, a2, c, f) =>
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 102:7
+  Array.+someU is never used
+  <-- line 102
+    [@dead "Array.+someU"] let someU = (a, f) => Array.someU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 103:7
+  Array.+some is never used
+  <-- line 103
+    [@dead "Array.+some"] let some = (a, f) => Array.some(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 105:7
+  Array.+everyU is never used
+  <-- line 105
+    [@dead "Array.+everyU"] let everyU = (a, f) => Array.everyU(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 106:7
+  Array.+every is never used
+  <-- line 106
+    [@dead "Array.+every"] let every = (a, f) => Array.every(a->fromT, f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 108:7
+  Array.+every2U is never used
+  <-- line 108
+    [@dead "Array.+every2U"] let every2U = (a1, a2, f) => Array.every2U(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 109:7
+  Array.+every2 is never used
+  <-- line 109
+    [@dead "Array.+every2"] let every2 = (a1, a2, f) => Array.every2(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 111:7
+  Array.+some2U is never used
+  <-- line 111
+    [@dead "Array.+some2U"] let some2U = (a1, a2, f) => Array.some2U(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 112:7
+  Array.+some2 is never used
+  <-- line 112
+    [@dead "Array.+some2"] let some2 = (a1, a2, f) => Array.some2(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 114:7
+  Array.+cmpU is never used
+  <-- line 114
+    [@dead "Array.+cmpU"] let cmpU = (a1, a2, f) => Array.cmpU(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 115:7
+  Array.+cmp is never used
+  <-- line 115
+    [@dead "Array.+cmp"] let cmp = (a1, a2, f) => Array.cmp(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 117:7
+  Array.+eqU is never used
+  <-- line 117
+    [@dead "Array.+eqU"] let eqU = (a1, a2, f) => Array.eqU(fromT(a1), fromT(a2), f);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 118:7
+  Array.+eq is never used
+  <-- line 118
+    [@dead "Array.+eq"] let eq = (a1, a2, f) => Array.eq(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ErrorHandler.re 12:5
@@ -4395,9 +4401,15 @@ File References
   [@dead "unsafe_string1"] external unsafe_string1: (bytes, int, int) => Digest.t = "caml_md5_string";
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 106:3
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 107:3
+  Ext_buffer.+unsafe_string2 is never used
+  <-- line 107
+    [@dead "Ext_buffer.+unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 105:3
   Ext_buffer.unsafe_string2 is never used
-  <-- line 106
+  <-- line 105
     [@dead "Ext_buffer.unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
   Warning Dead Value
