@@ -106,8 +106,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
       let exists =
         switch (PosHash.find_opt(decls, loc_start)) {
         | Some({declKind: Value}) => true
-        | Some(_) => assert(false)
-        | None => false
+        | _ => false
         };
       let path = currentModulePath^ @ [currentModuleName^];
       if (!exists) {
@@ -205,6 +204,22 @@ let collectValueReferences = {
     switch (structureItem.str_desc) {
     | Tstr_module({mb_name}) =>
       currentModulePath := [mb_name.txt, ...currentModulePath^]
+    | Tstr_primitive(vd) when analyzeExternals =>
+      let path = currentModulePath^ @ [currentModuleName^];
+      let exists =
+        switch (PosHash.find_opt(decls, vd.val_loc.loc_start)) {
+        | Some({declKind: Value}) => true
+        | _ => false
+        };
+      if (!exists) {
+        addDeclaration(
+          ~declKind=Value,
+          ~path,
+          ~loc=vd.val_loc,
+          ~name=vd.val_id |> Ident.name,
+        );
+      };
+
     | _ => ()
     };
     let result = super.structure_item(self, structureItem);
