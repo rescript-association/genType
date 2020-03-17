@@ -621,11 +621,11 @@ let rec resolveRecursiveRefs =
     decl.pos |> ProcessDeadAnnotations.isAnnotatedDead;
   | _ when PosSet.mem(decl.pos, refsBeingResolved) =>
     Log_.item(
-      "XXX %s [%d] is being resolved: assume not dead@.",
+      "XXX %s [%d] is being resolved: assume dead@.",
       decl.path |> pathToString,
       refsBeingResolved |> PosSet.cardinal,
     );
-    false;
+    true;
   | _ =>
     Log_.item(
       "XXX resolving %s [%d]@.",
