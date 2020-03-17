@@ -367,8 +367,12 @@ module ProcessDeadAnnotations = {
   let isAnnotatedDead = pos =>
     PosHash.find_opt(positionsAnnotated, pos) == Some(Dead);
 
-  let isAnnotatedLive = pos =>
-    PosHash.find_opt(positionsAnnotated, pos) == Some(Live);
+  let isAnnotatedGenTypeOrLive = pos =>
+    switch (PosHash.find_opt(positionsAnnotated, pos)) {
+    | Some(Live | GenType) => true
+    | Some(Dead)
+    | None => false
+    };
 
   let isAnnotatedGenTypeOrDead = pos =>
     switch (PosHash.find_opt(positionsAnnotated, pos)) {
@@ -596,7 +600,7 @@ let declIsDead = (~refs, decl) => {
     refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
   liveRefs
   |> PosSet.cardinal == 0
-  && !ProcessDeadAnnotations.isAnnotatedLive(decl.pos)
+  && !ProcessDeadAnnotations.isAnnotatedGenTypeOrLive(decl.pos)
   && posInWhitelist(decl.pos)
   && !posInBlacklist(decl.pos);
 };
