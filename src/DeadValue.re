@@ -216,7 +216,7 @@ let collectValueReferences = {
           ~declKind=Value,
           ~path,
           ~loc=vd.val_loc,
-          ~name=vd.val_id |> Ident.name,
+          ~name="+" ++ (vd.val_id |> Ident.name),
         );
       };
 
