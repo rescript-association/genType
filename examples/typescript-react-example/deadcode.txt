@@ -697,6 +697,7 @@
   [type] addDeclaration Lfunction DeadMl.ml:35:2
   [type] addDeclaration module_name DeadMl.ml:41:2
   [type] addDeclaration case DeadMl.ml:42:2
+  addDeclaration map_split_opt DeadMl.ml:45:8
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
   addDeclaration +thisIsInInterface DeadMl.ml:12:6
@@ -706,6 +707,20 @@
   addDeclaration +version DeadMl.ml:29:8
   addDeclaration +header DeadMl.ml:30:8
   addDeclaration +package_name DeadMl.ml:31:8
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:50:4
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:46:19
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:50:7
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:46:19
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:45:8
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:53:23
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:52:8
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:52:8
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:51:8
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:54:23
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:52:11
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:52:11
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:51:10
+  addValueReference DeadMl.ml:45:8 --> DeadMl.ml:46:3
   mergeSet DeadMl.ml:9:2 --> DeadMl.ml:12:6 (0 new items)
   addValueReference DeadMl.ml:9:2 --> DeadMl.ml:12:6
   mergeSet DeadMl.ml:26:6 --> DeadMl.ml:29:8 (0 new items)
@@ -1162,7 +1177,7 @@
   addDeclaration polymorphicComponent Hooks.re:130:4
   addDeclaration functionReturningReactElement Hooks.re:134:4
   addDeclaration aComponentWithChildren Hooks.re:156:4
-  addValueReference Hooks.re:5:2 --> React.re:104:0
+  addValueReference Hooks.re:4:4 --> React.re:104:0
   [type] addTypeReference Hooks.re:11:12 --> Hooks.re:1:16
   addValueReference Hooks.re:4:4 --> Hooks.re:4:13
   addValueReference Hooks.re:4:4 --> Hooks.re:5:7
@@ -1400,7 +1415,7 @@
   addValueReference DeadTest.re:66:6 --> DeadTest.re:65:6
   addDeclaration +valueOnlyInImplementation DeadTest.re:69:6
   addValueReference DeadTest.re:73:9 --> DeadTest.re:62:2
-  addValueReference DeadTest.re:77:0 --> DeadValueTest.rei:1:0
+  addValueReference DeadTest.re:77:16 --> DeadValueTest.rei:1:0
   addValueReference DeadTest.re:79:8 --> DeadTest.re:79:8
   addValueReference DeadTest.re:81:8 --> DeadTest.re:81:20
   addValueReference DeadTest.re:81:8 --> DeadTest.re:81:8
@@ -1526,6 +1541,9 @@ File References
   XXX resolving DeadCodeImplementation.M.+x [0]
   XXX can't find decl for DeadCodeInterface.re:1:17
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17) isDead:false [0]
+  XXX resolving DeadMl.map_split_opt [0]
+  XXX DeadMl.map_split_opt ignoring reference to self
+  DeadMl.map_split_opt: 0 references () isDead:true [0]
   XXX resolving DeadMl.module_info.case [0]
   [type] DeadMl.module_info.case: 0 references () isDead:true [0]
   XXX resolving DeadMl.module_info.module_name [0]
@@ -2408,8 +2426,8 @@ File References
   XXX resolving DeadValueTest.valueDead [0]
   DeadValueTest.valueDead: 0 references () isDead:true [0]
   XXX resolving DeadValueTest.valueAlive [0]
-  XXX can't find decl for DeadTest.re:77:0
-  DeadValueTest.valueAlive: 1 references (DeadTest.re:77:0) isDead:false [0]
+  XXX can't find decl for DeadTest.re:77:16
+  DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) isDead:false [0]
   XXX resolving ErrorHandler.x [0]
   ErrorHandler.x: 0 references () isDead:true [0]
   XXX ErrorHandler.Make.notify [0] already resolved
@@ -4317,6 +4335,12 @@ File References
   module_info.case is a record label never used to read a value
   <-- line 42
     case: bool [@dead "module_info.case"] 
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 45:9
+  map_split_opt is never used
+  <-- line 45
+      (match d with Some d -> d::ds | None -> ds) [@@dead "map_split_opt"] 
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 19:5

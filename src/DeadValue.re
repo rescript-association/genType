@@ -126,8 +126,6 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
         PosHash.replace(decls, loc_start, {...decl, posAnnotation});
       };
       loc_start;
-    | Tpat_any => getLastBinding()
-    | _ when !vb.vb_loc.loc_ghost => vb.vb_loc.loc_start
     | _ => getLastBinding()
     };
   currentBindings := PosSet.add(pos, currentBindings^);

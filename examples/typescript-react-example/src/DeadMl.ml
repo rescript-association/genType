@@ -41,3 +41,14 @@ type module_info = {
   module_name: string;
   case: bool
 }
+
+let rec map_split_opt 
+  (xs : 'a list)  (f : 'a -> 'b option * 'c option) 
+  : 'b list * 'c list = 
+  match xs with 
+  | [] -> [], []
+  | x::xs ->
+    let c,d = f x in 
+    let cs,ds = map_split_opt xs f in 
+    (match c with Some c -> c::cs | None -> cs),
+    (match d with Some d -> d::ds | None -> ds)
