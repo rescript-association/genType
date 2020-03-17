@@ -688,13 +688,13 @@ let rec resolveRecursiveRefs =
           |> List.map(posToString)
           |> String.concat(", ");
         Log_.item(
-          "%s%s: %d references (%s) isDead:%b%s@.",
+          "%s%s: %d references (%s) isDead:%b [%d]@.",
           decl.declKind != Value ? "[type] " : "",
           decl.path |> pathToString,
           newRefs |> PosSet.cardinal,
           refsString,
           isDead,
-          resolvedByFixPoint ? " (fixpoint reached)" : "",
+          refsBeingResolved |> PosSet.cardinal,
         );
       };
     };

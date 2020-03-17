@@ -1490,324 +1490,324 @@ File References
   ImportIndex.re -->> 
   TypeParams2.re -->> 
   XXX resolving AutoAnnotate.annotatedVariant.R4 [0]
-  [type] AutoAnnotate.annotatedVariant.R4: 0 references () isDead:true
+  [type] AutoAnnotate.annotatedVariant.R4: 0 references () isDead:true [0]
   XXX resolving AutoAnnotate.annotatedVariant.R2 [0]
-  [type] AutoAnnotate.annotatedVariant.R2: 0 references () isDead:true
+  [type] AutoAnnotate.annotatedVariant.R2: 0 references () isDead:true [0]
   XXX resolving AutoAnnotate.r4.r4 [0]
-  [type] AutoAnnotate.r4.r4: 0 references () isDead:true
+  [type] AutoAnnotate.r4.r4: 0 references () isDead:true [0]
   XXX resolving AutoAnnotate.r3.r3 [0]
-  [type] AutoAnnotate.r3.r3: 0 references () isDead:true
+  [type] AutoAnnotate.r3.r3: 0 references () isDead:true [0]
   XXX resolving AutoAnnotate.r2.r2 [0]
-  [type] AutoAnnotate.r2.r2: 0 references () isDead:true
+  [type] AutoAnnotate.r2.r2: 0 references () isDead:true [0]
   XXX resolving AutoAnnotate.record.variant [0]
-  [type] AutoAnnotate.record.variant: 0 references () isDead:true
+  [type] AutoAnnotate.record.variant: 0 references () isDead:true [0]
   XXX resolving AutoAnnotate.variant.R [0]
-  [type] AutoAnnotate.variant.R: 0 references () isDead:true
+  [type] AutoAnnotate.variant.R: 0 references () isDead:true [0]
   XXX resolving BucklescriptAnnotations.+f [0]
   XXX resolving BucklescriptAnnotations.bar [1]
-  BucklescriptAnnotations.bar: 0 references () isDead:true
-  BucklescriptAnnotations.+f: 0 references () isDead:true
+  BucklescriptAnnotations.bar: 0 references () isDead:true [1]
+  BucklescriptAnnotations.+f: 0 references () isDead:true [0]
   XXX BucklescriptAnnotations.bar [0] already resolved
   XXX resolving BucklescriptAnnotations.foo [0]
-  BucklescriptAnnotations.foo: 0 references () isDead:true
+  BucklescriptAnnotations.foo: 0 references () isDead:true [0]
   XXX resolving CreateErrorHandler1.Error1.notification [0]
   XXX resolving ErrorHandler.Make.+notify [1]
   XXX resolving ErrorHandler.Make.notify [2]
   XXX can't find decl for CreateErrorHandler1.re:8:0
-  ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) isDead:false
-  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:5:32) isDead:false
+  ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) isDead:false [2]
+  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:5:32) isDead:false [1]
   XXX can't find decl for ErrorHandler.rei:3:2
-  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2) isDead:false
+  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2) isDead:false [0]
   XXX resolving CreateErrorHandler2.Error2.notification [0]
   XXX ErrorHandler.Make.+notify [1] already resolved
   XXX can't find decl for ErrorHandler.rei:3:2
-  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2) isDead:false
+  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2) isDead:false [0]
   XXX resolving DeadCodeImplementation.M.+x [0]
   XXX can't find decl for DeadCodeInterface.re:1:17
-  DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17) isDead:false
+  DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17) isDead:false [0]
   XXX resolving DeadMl.module_info.case [0]
-  [type] DeadMl.module_info.case: 0 references () isDead:true
+  [type] DeadMl.module_info.case: 0 references () isDead:true [0]
   XXX resolving DeadMl.module_info.module_name [0]
-  [type] DeadMl.module_info.module_name: 0 references () isDead:true
+  [type] DeadMl.module_info.module_name: 0 references () isDead:true [0]
   XXX resolving DeadMl.l.Lfunction [0]
-  [type] DeadMl.l.Lfunction: 0 references () isDead:true
+  [type] DeadMl.l.Lfunction: 0 references () isDead:true [0]
   XXX resolving DeadMl.Bs_version.package_name [0]
-  DeadMl.Bs_version.package_name: 0 references () isDead:true
+  DeadMl.Bs_version.package_name: 0 references () isDead:true [0]
   XXX resolving DeadMl.Bs_version.header [0]
-  DeadMl.Bs_version.header: 0 references () isDead:true
+  DeadMl.Bs_version.header: 0 references () isDead:true [0]
   XXX resolving DeadMl.Bs_version.version [0]
-  DeadMl.Bs_version.version: 0 references () isDead:true
+  DeadMl.Bs_version.version: 0 references () isDead:true [0]
   XXX resolving DeadMl.Bs_version.+package_name [0]
   XXX DeadMl.Bs_version.package_name [1] already resolved
-  DeadMl.Bs_version.+package_name: 0 references () isDead:true
+  DeadMl.Bs_version.+package_name: 0 references () isDead:true [0]
   XXX resolving DeadMl.Bs_version.+header [0]
   XXX DeadMl.Bs_version.header [1] already resolved
-  DeadMl.Bs_version.+header: 0 references () isDead:true
+  DeadMl.Bs_version.+header: 0 references () isDead:true [0]
   XXX resolving DeadMl.Bs_version.+version [0]
   XXX DeadMl.Bs_version.version [1] already resolved
-  DeadMl.Bs_version.+version: 0 references () isDead:true
+  DeadMl.Bs_version.+version: 0 references () isDead:true [0]
   XXX resolving DeadMl._ [0]
-  DeadMl._: 0 references () isDead:true
+  DeadMl._: 0 references () isDead:true [0]
   XXX resolving DeadMl._ [0]
-  DeadMl._: 0 references () isDead:true
+  DeadMl._: 0 references () isDead:true [0]
   XXX resolving DeadMl.thisIsDead.DeadB [0]
-  [type] DeadMl.thisIsDead.DeadB: 0 references () isDead:true
+  [type] DeadMl.thisIsDead.DeadB: 0 references () isDead:true [0]
   XXX resolving DeadMl.thisIsDead.DeadA [0]
-  [type] DeadMl.thisIsDead.DeadA: 0 references () isDead:true
+  [type] DeadMl.thisIsDead.DeadA: 0 references () isDead:true [0]
   XXX resolving DeadMl.thisHasSemicolons [0]
-  DeadMl.thisHasSemicolons: 0 references () isDead:true
+  DeadMl.thisHasSemicolons: 0 references () isDead:true [0]
   XXX resolving DeadMl.AA.thisIsInInterface [0]
-  DeadMl.AA.thisIsInInterface: 0 references () isDead:true
+  DeadMl.AA.thisIsInInterface: 0 references () isDead:true [0]
   XXX resolving DeadMl.AA.+thisIsInInterface [0]
   XXX DeadMl.AA.thisIsInInterface [1] already resolved
-  DeadMl.AA.+thisIsInInterface: 0 references () isDead:true
+  DeadMl.AA.+thisIsInInterface: 0 references () isDead:true [0]
   XXX resolving DeadMl.QQ.thisSpansSeveralLines [0]
-  DeadMl.QQ.thisSpansSeveralLines: 0 references () isDead:true
+  DeadMl.QQ.thisSpansSeveralLines: 0 references () isDead:true [0]
   XXX resolving DeadTest.bar [0]
   XXX resolving DeadTest.+cb [1]
   XXX resolving DeadTest.foo [2]
   XXX DeadTest.bar [3] is being resolved: assume dead
-  DeadTest.bar: 0 references () isDead:true (fixpoint reached)
+  DeadTest.bar: 0 references () isDead:true [0]
   XXX resolving DeadTest.+cb [0]
   XXX resolving DeadTest.foo [1]
   XXX DeadTest.bar [2] already resolved
-  DeadTest.foo: 0 references () isDead:true
-  DeadTest.+cb: 0 references () isDead:true
+  DeadTest.foo: 0 references () isDead:true [1]
+  DeadTest.+cb: 0 references () isDead:true [0]
   XXX DeadTest.foo [0] already resolved
   XXX resolving DeadTest.+cb [0]
   XXX resolving DeadTest.recWithCallback [1]
   XXX DeadTest.+cb [2] is being resolved: assume dead
-  DeadTest.+cb: 0 references () isDead:true (fixpoint reached)
+  DeadTest.+cb: 0 references () isDead:true [0]
   XXX resolving DeadTest.recWithCallback [0]
   XXX DeadTest.+cb [1] already resolved
-  DeadTest.recWithCallback: 0 references () isDead:true
+  DeadTest.recWithCallback: 0 references () isDead:true [0]
   XXX resolving DeadTest.rec2 [0]
   XXX resolving DeadTest.rec1 [1]
   XXX DeadTest.rec2 [2] is being resolved: assume dead
-  DeadTest.rec2: 0 references () isDead:true (fixpoint reached)
+  DeadTest.rec2: 0 references () isDead:true [0]
   XXX resolving DeadTest.rec1 [0]
   XXX DeadTest.rec2 [1] already resolved
-  DeadTest.rec1: 0 references () isDead:true
+  DeadTest.rec1: 0 references () isDead:true [0]
   XXX resolving DeadTest.split_map [0]
   XXX can't find decl for DeadTest.re:82:2
-  DeadTest.split_map: 1 references (DeadTest.re:82:2) isDead:false
+  DeadTest.split_map: 1 references (DeadTest.re:82:2) isDead:false [0]
   XXX resolving DeadTest.unusedRec [0]
   XXX DeadTest.unusedRec ignoring reference to self
-  DeadTest.unusedRec: 0 references () isDead:true
+  DeadTest.unusedRec: 0 references () isDead:true [0]
   XXX resolving DeadTest.MM.y [0]
-  DeadTest.MM.y: 0 references () isDead:true
+  DeadTest.MM.y: 0 references () isDead:true [0]
   XXX resolving DeadTest.MM.x [0]
   XXX can't find decl for DeadTest.re:72:0
-  DeadTest.MM.x: 1 references (DeadTest.re:72:0) isDead:false
+  DeadTest.MM.x: 1 references (DeadTest.re:72:0) isDead:false [0]
   XXX resolving DeadTest.MM.+valueOnlyInImplementation [0]
-  DeadTest.MM.+valueOnlyInImplementation: 0 references () isDead:true
+  DeadTest.MM.+valueOnlyInImplementation: 0 references () isDead:true [0]
   XXX resolving DeadTest.MM.+x [0]
   XXX DeadTest.MM.x [1] already resolved
   XXX can't find decl for DeadTest.re:72:0
-  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0) isDead:false
+  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0) isDead:false [0]
   XXX resolving DeadTest.MM.+y [0]
   XXX DeadTest.MM.y [1] already resolved
   XXX DeadTest.MM.+x [1] already resolved
-  DeadTest.MM.+y: 1 references (DeadTest.re:66:6) isDead:false
+  DeadTest.MM.+y: 1 references (DeadTest.re:66:6) isDead:false [0]
   XXX resolving DeadTest.UnderscoreInside._ [0]
-  DeadTest.UnderscoreInside._: 0 references () isDead:true
+  DeadTest.UnderscoreInside._: 0 references () isDead:true [0]
   XXX resolving DeadTest._ [0]
-  DeadTest._: 0 references () isDead:true
+  DeadTest._: 0 references () isDead:true [0]
   XXX resolving DeadTest._ [0]
-  DeadTest._: 0 references () isDead:true
+  DeadTest._: 0 references () isDead:true [0]
   XXX resolving DeadTest.record.yyy [0]
   XXX can't find decl for DeadTest.re:55:9
-  [type] DeadTest.record.yyy: 1 references (DeadTest.re:55:9) isDead:false
+  [type] DeadTest.record.yyy: 1 references (DeadTest.re:55:9) isDead:false [0]
   XXX resolving DeadTest.record.xxx [0]
   XXX can't find decl for DeadTest.re:54:13
-  [type] DeadTest.record.xxx: 1 references (DeadTest.re:54:13) isDead:false
+  [type] DeadTest.record.xxx: 1 references (DeadTest.re:54:13) isDead:false [0]
   XXX resolving DeadTest._ [0]
-  DeadTest._: 0 references () isDead:true
+  DeadTest._: 0 references () isDead:true [0]
   XXX resolving DeadTest._ [0]
-  DeadTest._: 0 references () isDead:true
+  DeadTest._: 0 references () isDead:true [0]
   XXX resolving DeadTest.VariantUsedOnlyInImplementation.a [0]
   XXX can't find decl for DeadTest.re:44:0
-  DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:0) isDead:false
+  DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:0) isDead:false [0]
   XXX resolving DeadTest.VariantUsedOnlyInImplementation.+a [0]
   XXX DeadTest.VariantUsedOnlyInImplementation.a [1] already resolved
   XXX can't find decl for DeadTest.re:44:0
-  DeadTest.VariantUsedOnlyInImplementation.+a: 2 references (DeadTest.re:37:2, DeadTest.re:44:0) isDead:false
+  DeadTest.VariantUsedOnlyInImplementation.+a: 2 references (DeadTest.re:37:2, DeadTest.re:44:0) isDead:false [0]
   XXX resolving DeadTest.VariantUsedOnlyInImplementation.t.A [0]
   XXX can't find decl for DeadTest.re:40:6
   XXX can't find decl for DeadTest.re:41:10
-  [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10) isDead:false
+  [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10) isDead:false [0]
   XXX resolving DeadTest.M.+thisSignatureItemIsDead [0]
-  DeadTest.M.+thisSignatureItemIsDead: 0 references () isDead:true
+  DeadTest.M.+thisSignatureItemIsDead: 0 references () isDead:true [0]
   XXX resolving DeadTest.thisIsMarkedLive [0]
-  DeadTest.thisIsMarkedLive: 0 references () isDead:false
+  DeadTest.thisIsMarkedLive: 0 references () isDead:false [0]
   XXX resolving DeadTest.thisIsKeptAlive [0]
   XXX DeadTest.thisIsMarkedLive [1] already resolved
-  DeadTest.thisIsKeptAlive: 1 references (DeadTest.re:20:4) isDead:false
+  DeadTest.thisIsKeptAlive: 1 references (DeadTest.re:20:4) isDead:false [0]
   XXX resolving DeadTest.thisIsUsedTwice [0]
   XXX can't find decl for DeadTest.re:11:7
   XXX can't find decl for DeadTest.re:12:7
-  DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7) isDead:false
+  DeadTest.thisIsUsedTwice: 2 references (DeadTest.re:11:7, DeadTest.re:12:7) isDead:false [0]
   XXX resolving DeadTest.thisIsUsedOnce [0]
   XXX can't find decl for DeadTest.re:8:7
-  DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7) isDead:false
+  DeadTest.thisIsUsedOnce: 1 references (DeadTest.re:8:7) isDead:false [0]
   XXX resolving DeadTest.fortyTwoButExported [0]
-  DeadTest.fortyTwoButExported: 0 references () isDead:false
+  DeadTest.fortyTwoButExported: 0 references () isDead:false [0]
   XXX resolving DeadTest.fortytwo [0]
-  DeadTest.fortytwo: 0 references () isDead:true
+  DeadTest.fortytwo: 0 references () isDead:true [0]
   XXX resolving DeadTestWhitelist.x [0]
-  DeadTestWhitelist.x: 0 references () isDead:false
+  DeadTestWhitelist.x: 0 references () isDead:false [0]
   XXX resolving DeadTypeTest.deadType.InNeither [0]
-  [type] DeadTypeTest.deadType.InNeither: 0 references () isDead:true
+  [type] DeadTypeTest.deadType.InNeither: 0 references () isDead:true [0]
   XXX resolving DeadTypeTest.deadType.InBoth [0]
   XXX can't find decl for DeadTest.re:47:8
   XXX can't find decl for DeadTypeTest.re:13:8
-  [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8) isDead:false
+  [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8) isDead:false [0]
   XXX resolving DeadTypeTest.deadType.OnlyInInterface [0]
   XXX can't find decl for DeadTest.re:46:8
-  [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8) isDead:false
+  [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8) isDead:false [0]
   XXX resolving DeadTypeTest.deadType.OnlyInImplementation [0]
   XXX can't find decl for DeadTypeTest.re:12:8
-  [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8) isDead:false
+  [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8) isDead:false [0]
   XXX resolving DeadTypeTest.a [0]
-  DeadTypeTest.a: 0 references () isDead:true
+  DeadTypeTest.a: 0 references () isDead:true [0]
   XXX resolving DeadTypeTest.t.B [0]
-  [type] DeadTypeTest.t.B: 0 references () isDead:true
+  [type] DeadTypeTest.t.B: 0 references () isDead:true [0]
   XXX resolving DeadTypeTest.t.A [0]
   XXX can't find decl for DeadTypeTest.re:4:8
-  [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8) isDead:false
+  [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8) isDead:false [0]
   XXX resolving Docstrings.unitArgWithConversionU [0]
-  Docstrings.unitArgWithConversionU: 0 references () isDead:false
+  Docstrings.unitArgWithConversionU: 0 references () isDead:false [0]
   XXX resolving Docstrings.unitArgWithConversion [0]
-  Docstrings.unitArgWithConversion: 0 references () isDead:false
+  Docstrings.unitArgWithConversion: 0 references () isDead:false [0]
   XXX resolving Docstrings.t.B [0]
-  [type] Docstrings.t.B: 0 references () isDead:true
+  [type] Docstrings.t.B: 0 references () isDead:true [0]
   XXX resolving Docstrings.t.A [0]
   XXX can't find decl for Docstrings.re:65:34
   XXX can't find decl for Docstrings.re:68:36
-  [type] Docstrings.t.A: 2 references (Docstrings.re:65:34, Docstrings.re:68:36) isDead:false
+  [type] Docstrings.t.A: 2 references (Docstrings.re:65:34, Docstrings.re:68:36) isDead:false [0]
   XXX resolving Docstrings.unitArgWithoutConversionU [0]
-  Docstrings.unitArgWithoutConversionU: 0 references () isDead:false
+  Docstrings.unitArgWithoutConversionU: 0 references () isDead:false [0]
   XXX resolving Docstrings.unitArgWithoutConversion [0]
-  Docstrings.unitArgWithoutConversion: 0 references () isDead:false
+  Docstrings.unitArgWithoutConversion: 0 references () isDead:false [0]
   XXX resolving Docstrings.grouped [0]
-  Docstrings.grouped: 0 references () isDead:false
+  Docstrings.grouped: 0 references () isDead:false [0]
   XXX resolving Docstrings.unnamed2U [0]
-  Docstrings.unnamed2U: 0 references () isDead:false
+  Docstrings.unnamed2U: 0 references () isDead:false [0]
   XXX resolving Docstrings.unnamed2 [0]
-  Docstrings.unnamed2: 0 references () isDead:false
+  Docstrings.unnamed2: 0 references () isDead:false [0]
   XXX resolving Docstrings.unnamed1U [0]
-  Docstrings.unnamed1U: 0 references () isDead:false
+  Docstrings.unnamed1U: 0 references () isDead:false [0]
   XXX resolving Docstrings.unnamed1 [0]
-  Docstrings.unnamed1: 0 references () isDead:false
+  Docstrings.unnamed1: 0 references () isDead:false [0]
   XXX resolving Docstrings.useParamU [0]
-  Docstrings.useParamU: 0 references () isDead:false
+  Docstrings.useParamU: 0 references () isDead:false [0]
   XXX resolving Docstrings.useParam [0]
-  Docstrings.useParam: 0 references () isDead:false
+  Docstrings.useParam: 0 references () isDead:false [0]
   XXX resolving Docstrings.treeU [0]
-  Docstrings.treeU: 0 references () isDead:false
+  Docstrings.treeU: 0 references () isDead:false [0]
   XXX resolving Docstrings.twoU [0]
-  Docstrings.twoU: 0 references () isDead:false
+  Docstrings.twoU: 0 references () isDead:false [0]
   XXX resolving Docstrings.oneU [0]
-  Docstrings.oneU: 0 references () isDead:false
+  Docstrings.oneU: 0 references () isDead:false [0]
   XXX resolving Docstrings.tree [0]
-  Docstrings.tree: 0 references () isDead:false
+  Docstrings.tree: 0 references () isDead:false [0]
   XXX resolving Docstrings.two [0]
-  Docstrings.two: 0 references () isDead:false
+  Docstrings.two: 0 references () isDead:false [0]
   XXX resolving Docstrings.one [0]
-  Docstrings.one: 0 references () isDead:false
+  Docstrings.one: 0 references () isDead:false [0]
   XXX resolving Docstrings.signMessage [0]
-  Docstrings.signMessage: 0 references () isDead:false
+  Docstrings.signMessage: 0 references () isDead:false [0]
   XXX resolving Docstrings.flat [0]
-  Docstrings.flat: 0 references () isDead:false
+  Docstrings.flat: 0 references () isDead:false [0]
   XXX resolving ExportWithRename.make [0]
   XXX can't find decl for _none_:1:-1
-  ExportWithRename.make: 1 references (_none_:1:-1) isDead:false
+  ExportWithRename.make: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving FirstClassModules.someFunctorAsFunction [0]
-  FirstClassModules.someFunctorAsFunction: 0 references () isDead:false
+  FirstClassModules.someFunctorAsFunction: 0 references () isDead:false [0]
   XXX resolving FirstClassModules.SomeFunctor.+ww [0]
   XXX can't find decl for FirstClassModules.re:46:20
-  FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20) isDead:false
+  FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20) isDead:false [0]
   XXX resolving FirstClassModules.testConvert [0]
-  FirstClassModules.testConvert: 0 references () isDead:false
+  FirstClassModules.testConvert: 0 references () isDead:false [0]
   XXX resolving FirstClassModules.firstClassModule [0]
-  FirstClassModules.firstClassModule: 0 references () isDead:false
+  FirstClassModules.firstClassModule: 0 references () isDead:false [0]
   XXX resolving FirstClassModules.M.x [0]
   XXX can't find decl for FirstClassModules.re:2:2
-  FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2) isDead:false
+  FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2) isDead:false [0]
   XXX resolving FirstClassModules.M.Z.u [0]
   XXX can't find decl for FirstClassModules.re:12:20
   XXX can't find decl for FirstClassModules.re:28:20
-  FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20) isDead:false
+  FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20) isDead:false [0]
   XXX resolving FirstClassModules.M.InnerModule3.k3 [0]
   XXX can't find decl for FirstClassModules.re:10:4
-  FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4) isDead:false
+  FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4) isDead:false [0]
   XXX resolving FirstClassModules.M.InnerModule2.k [0]
   XXX can't find decl for FirstClassModules.re:7:24
-  FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24) isDead:false
+  FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24) isDead:false [0]
   XXX resolving FirstClassModules.M.y [0]
   XXX can't find decl for FirstClassModules.re:14:2
   XXX FirstClassModules.SomeFunctor.+ww [1] already resolved
-  FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:6) isDead:false
+  FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:6) isDead:false [0]
   XXX resolving FirstClassModulesInterface.r [0]
-  FirstClassModulesInterface.r: 0 references () isDead:true
+  FirstClassModulesInterface.r: 0 references () isDead:true [0]
   XXX resolving FirstClassModulesInterface.record.y [0]
-  [type] FirstClassModulesInterface.record.y: 0 references () isDead:true
+  [type] FirstClassModulesInterface.record.y: 0 references () isDead:true [0]
   XXX resolving FirstClassModulesInterface.record.x [0]
-  [type] FirstClassModulesInterface.record.x: 0 references () isDead:true
+  [type] FirstClassModulesInterface.record.x: 0 references () isDead:true [0]
   XXX resolving Hooks.aComponentWithChildren [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.aComponentWithChildren: 1 references (_none_:1:-1) isDead:false
+  Hooks.aComponentWithChildren: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.RenderPropRequiresConversion.+car [0]
   XXX resolving Hooks.RenderPropRequiresConversion.+make [1]
   XXX can't find decl for _none_:1:-1
-  Hooks.RenderPropRequiresConversion.+make: 1 references (_none_:1:-1) isDead:false
-  Hooks.RenderPropRequiresConversion.+car: 1 references (Hooks.re:139:6) isDead:false
+  Hooks.RenderPropRequiresConversion.+make: 1 references (_none_:1:-1) isDead:false [1]
+  Hooks.RenderPropRequiresConversion.+car: 1 references (Hooks.re:139:6) isDead:false [0]
   XXX Hooks.RenderPropRequiresConversion.+make [0] already resolved
   XXX resolving Hooks.functionReturningReactElement [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.functionReturningReactElement: 1 references (_none_:1:-1) isDead:false
+  Hooks.functionReturningReactElement: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.polymorphicComponent [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.polymorphicComponent: 1 references (_none_:1:-1) isDead:false
+  Hooks.polymorphicComponent: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.input [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.input: 1 references (_none_:1:-1) isDead:false
+  Hooks.input: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.r.x [0]
   XXX can't find decl for Hooks.re:113:45
-  [type] Hooks.r.x: 1 references (Hooks.re:113:45) isDead:false
+  [type] Hooks.r.x: 1 references (Hooks.re:113:45) isDead:false [0]
   XXX resolving Hooks.testForwardRef [0]
-  Hooks.testForwardRef: 0 references () isDead:false
+  Hooks.testForwardRef: 0 references () isDead:false [0]
   XXX resolving Hooks.makeWithRef [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.makeWithRef: 1 references (_none_:1:-1) isDead:false
+  Hooks.makeWithRef: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.componentWithRenamedArgs [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.componentWithRenamedArgs: 1 references (_none_:1:-1) isDead:false
+  Hooks.componentWithRenamedArgs: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.functionWithRenamedArgs [0]
-  Hooks.functionWithRenamedArgs: 0 references () isDead:false
+  Hooks.functionWithRenamedArgs: 0 references () isDead:false [0]
   XXX resolving Hooks.NoProps.+make [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.NoProps.+make: 1 references (_none_:1:-1) isDead:false
+  Hooks.NoProps.+make: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.Inner.Inner2.+anotherComponent [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.Inner.Inner2.+anotherComponent: 1 references (_none_:1:-1) isDead:false
+  Hooks.Inner.Inner2.+anotherComponent: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.Inner.Inner2.+make [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.Inner.Inner2.+make: 1 references (_none_:1:-1) isDead:false
+  Hooks.Inner.Inner2.+make: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.Inner.+anotherComponent [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.Inner.+anotherComponent: 1 references (_none_:1:-1) isDead:false
+  Hooks.Inner.+anotherComponent: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.Inner.+make [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.Inner.+make: 1 references (_none_:1:-1) isDead:false
+  Hooks.Inner.+make: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.anotherComponent [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.anotherComponent: 1 references (_none_:1:-1) isDead:false
+  Hooks.anotherComponent: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.default [0]
-  Hooks.default: 0 references () isDead:false
+  Hooks.default: 0 references () isDead:false [0]
   XXX resolving Hooks.make [0]
   XXX can't find decl for _none_:1:-1
-  Hooks.make: 1 references (_none_:1:-1) isDead:false
+  Hooks.make: 1 references (_none_:1:-1) isDead:false [0]
   XXX resolving Hooks.vehicle.name [0]
   XXX can't find decl for Hooks.re:11:12
   XXX can't find decl for Hooks.re:42:41
@@ -1822,995 +1822,995 @@ File References
   XXX can't find decl for Hooks.re:98:20
   XXX can't find decl for Hooks.re:130:58
   XXX can't find decl for Hooks.re:158:37
-  [type] Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37) isDead:false
+  [type] Hooks.vehicle.name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37) isDead:false [0]
   XXX resolving ImportIndex.make [0]
-  ImportIndex.make: 0 references () isDead:false
+  ImportIndex.make: 0 references () isDead:false [0]
   XXX resolving LetPrivate.y [0]
-  LetPrivate.y: 0 references () isDead:false
+  LetPrivate.y: 0 references () isDead:false [0]
   XXX resolving LetPrivate.local_1.+x [0]
   XXX LetPrivate.y [1] already resolved
-  LetPrivate.local_1.+x: 1 references (LetPrivate.re:5:4) isDead:false
+  LetPrivate.local_1.+x: 1 references (LetPrivate.re:5:4) isDead:false [0]
   XXX resolving ModuleAliases.testInner2 [0]
-  ModuleAliases.testInner2: 0 references () isDead:false
+  ModuleAliases.testInner2: 0 references () isDead:false [0]
   XXX resolving ModuleAliases.testInner [0]
-  ModuleAliases.testInner: 0 references () isDead:false
+  ModuleAliases.testInner: 0 references () isDead:false [0]
   XXX resolving ModuleAliases.testNested [0]
-  ModuleAliases.testNested: 0 references () isDead:false
+  ModuleAliases.testNested: 0 references () isDead:false [0]
   XXX resolving ModuleAliases.Outer2.Inner2.InnerNested.t.nested [0]
-  [type] ModuleAliases.Outer2.Inner2.InnerNested.t.nested: 0 references () isDead:true
+  [type] ModuleAliases.Outer2.Inner2.InnerNested.t.nested: 0 references () isDead:true [0]
   XXX resolving ModuleAliases.Outer.Inner.innerT.inner [0]
-  [type] ModuleAliases.Outer.Inner.innerT.inner: 0 references () isDead:true
+  [type] ModuleAliases.Outer.Inner.innerT.inner: 0 references () isDead:true [0]
   XXX resolving ModuleAliases2.q [0]
-  ModuleAliases2.q: 0 references () isDead:true
+  ModuleAliases2.q: 0 references () isDead:true [0]
   XXX resolving ModuleAliases2.Outer.Inner.inner.inner [0]
-  [type] ModuleAliases2.Outer.Inner.inner.inner: 0 references () isDead:true
+  [type] ModuleAliases2.Outer.Inner.inner.inner: 0 references () isDead:true [0]
   XXX resolving ModuleAliases2.Outer.outer.outer [0]
-  [type] ModuleAliases2.Outer.outer.outer: 0 references () isDead:true
+  [type] ModuleAliases2.Outer.outer.outer: 0 references () isDead:true [0]
   XXX resolving ModuleAliases2.record.y [0]
-  [type] ModuleAliases2.record.y: 0 references () isDead:true
+  [type] ModuleAliases2.record.y: 0 references () isDead:true [0]
   XXX resolving ModuleAliases2.record.x [0]
-  [type] ModuleAliases2.record.x: 0 references () isDead:true
+  [type] ModuleAliases2.record.x: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.someString [0]
-  NestedModules.Universe.someString: 0 references () isDead:false
+  NestedModules.Universe.someString: 0 references () isDead:false [0]
   XXX resolving NestedModules.Universe.variant.B [0]
-  [type] NestedModules.Universe.variant.B: 0 references () isDead:true
+  [type] NestedModules.Universe.variant.B: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.variant.A [0]
-  [type] NestedModules.Universe.variant.A: 0 references () isDead:true
+  [type] NestedModules.Universe.variant.A: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.Nested2.nested2Function [0]
-  NestedModules.Universe.Nested2.nested2Function: 0 references () isDead:false
+  NestedModules.Universe.Nested2.nested2Function: 0 references () isDead:false [0]
   XXX resolving NestedModules.Universe.Nested2.Nested3.nested3Function [0]
-  NestedModules.Universe.Nested2.Nested3.nested3Function: 0 references () isDead:false
+  NestedModules.Universe.Nested2.Nested3.nested3Function: 0 references () isDead:false [0]
   XXX resolving NestedModules.Universe.Nested2.Nested3.nested3Value [0]
-  NestedModules.Universe.Nested2.Nested3.nested3Value: 0 references () isDead:false
+  NestedModules.Universe.Nested2.Nested3.nested3Value: 0 references () isDead:false [0]
   XXX resolving NestedModules.Universe.Nested2.Nested3.w [0]
-  NestedModules.Universe.Nested2.Nested3.w: 0 references () isDead:true
+  NestedModules.Universe.Nested2.Nested3.w: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.Nested2.Nested3.z [0]
-  NestedModules.Universe.Nested2.Nested3.z: 0 references () isDead:true
+  NestedModules.Universe.Nested2.Nested3.z: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.Nested2.Nested3.y [0]
-  NestedModules.Universe.Nested2.Nested3.y: 0 references () isDead:true
+  NestedModules.Universe.Nested2.Nested3.y: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.Nested2.Nested3.x [0]
-  NestedModules.Universe.Nested2.Nested3.x: 0 references () isDead:true
+  NestedModules.Universe.Nested2.Nested3.x: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.Nested2.y [0]
-  NestedModules.Universe.Nested2.y: 0 references () isDead:true
+  NestedModules.Universe.Nested2.y: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.Nested2.nested2Value [0]
-  NestedModules.Universe.Nested2.nested2Value: 0 references () isDead:false
+  NestedModules.Universe.Nested2.nested2Value: 0 references () isDead:false [0]
   XXX resolving NestedModules.Universe.Nested2.x [0]
-  NestedModules.Universe.Nested2.x: 0 references () isDead:true
+  NestedModules.Universe.Nested2.x: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.notExported [0]
-  NestedModules.Universe.notExported: 0 references () isDead:true
+  NestedModules.Universe.notExported: 0 references () isDead:true [0]
   XXX resolving NestedModules.Universe.theAnswer [0]
-  NestedModules.Universe.theAnswer: 0 references () isDead:false
+  NestedModules.Universe.theAnswer: 0 references () isDead:false [0]
   XXX resolving NestedModules.notNested [0]
-  NestedModules.notNested: 0 references () isDead:false
+  NestedModules.notNested: 0 references () isDead:false [0]
   XXX resolving NestedModulesInSignature.Universe.theAnswer [0]
-  NestedModulesInSignature.Universe.theAnswer: 0 references () isDead:false
+  NestedModulesInSignature.Universe.theAnswer: 0 references () isDead:false [0]
   XXX resolving Opaque.testConvertNestedRecordFromOtherFile [0]
-  Opaque.testConvertNestedRecordFromOtherFile: 0 references () isDead:false
+  Opaque.testConvertNestedRecordFromOtherFile: 0 references () isDead:false [0]
   XXX resolving Opaque.noConversion [0]
-  Opaque.noConversion: 0 references () isDead:false
+  Opaque.noConversion: 0 references () isDead:false [0]
   XXX resolving Opaque.opaqueFromRecords.A [0]
-  [type] Opaque.opaqueFromRecords.A: 0 references () isDead:true
+  [type] Opaque.opaqueFromRecords.A: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.useRecordsCoord [0]
-  ReasonComponent.useRecordsCoord: 0 references () isDead:false
+  ReasonComponent.useRecordsCoord: 0 references () isDead:false [0]
   XXX resolving ReasonComponent.tToString [0]
-  ReasonComponent.tToString: 0 references () isDead:false
+  ReasonComponent.tToString: 0 references () isDead:false [0]
   XXX resolving ReasonComponent.t.C [0]
-  [type] ReasonComponent.t.C: 0 references () isDead:true
+  [type] ReasonComponent.t.C: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.t.B [0]
-  [type] ReasonComponent.t.B: 0 references () isDead:true
+  [type] ReasonComponent.t.B: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.t.A [0]
-  [type] ReasonComponent.t.A: 0 references () isDead:true
+  [type] ReasonComponent.t.A: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.useTypeDefinedInAnotherModule [0]
-  ReasonComponent.useTypeDefinedInAnotherModule: 0 references () isDead:false
+  ReasonComponent.useTypeDefinedInAnotherModule: 0 references () isDead:false [0]
   XXX resolving ReasonComponent.+first [0]
   XXX resolving ReasonComponent.minus [1]
-  ReasonComponent.minus: 0 references () isDead:false
-  ReasonComponent.+first: 1 references (ReasonComponent.re:43:4) isDead:false
+  ReasonComponent.minus: 0 references () isDead:false [1]
+  ReasonComponent.+first: 1 references (ReasonComponent.re:43:4) isDead:false [0]
   XXX ReasonComponent.minus [0] already resolved
   XXX resolving ReasonComponent.+emptyArray [0]
   XXX resolving ReasonComponent.make [1]
-  ReasonComponent.make: 0 references () isDead:false
-  ReasonComponent.+emptyArray: 1 references (ReasonComponent.re:18:4) isDead:false
+  ReasonComponent.make: 0 references () isDead:false [1]
+  ReasonComponent.+emptyArray: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   XXX resolving ReasonComponent.+intList [0]
   XXX ReasonComponent.make [1] already resolved
-  ReasonComponent.+intList: 1 references (ReasonComponent.re:18:4) isDead:false
+  ReasonComponent.+intList: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   XXX resolving ReasonComponent.+message [0]
   XXX ReasonComponent.make [1] already resolved
-  ReasonComponent.+message: 1 references (ReasonComponent.re:18:4) isDead:false
+  ReasonComponent.+message: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   XXX ReasonComponent.make [0] already resolved
   XXX resolving ReasonComponent.onClick [0]
   XXX ReasonComponent.make [1] already resolved
-  ReasonComponent.onClick: 1 references (ReasonComponent.re:18:4) isDead:false
+  ReasonComponent.onClick: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   XXX resolving ReasonComponent.person.polymorphicPayload [0]
-  [type] ReasonComponent.person.polymorphicPayload: 0 references () isDead:true
+  [type] ReasonComponent.person.polymorphicPayload: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.person.type_ [0]
-  [type] ReasonComponent.person.type_: 0 references () isDead:true
+  [type] ReasonComponent.person.type_: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.person.surname [0]
-  [type] ReasonComponent.person.surname: 0 references () isDead:true
+  [type] ReasonComponent.person.surname: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.person.name [0]
   XXX can't find decl for ReasonComponent.re:32:12
-  [type] ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12) isDead:false
+  [type] ReasonComponent.person.name: 1 references (ReasonComponent.re:32:12) isDead:false [0]
   XXX resolving ReasonComponent.component [0]
   XXX ReasonComponent.make [1] already resolved
-  ReasonComponent.component: 1 references (ReasonComponent.re:18:4) isDead:false
+  ReasonComponent.component: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   XXX resolving Records.testMyRecBsAs2 [0]
-  Records.testMyRecBsAs2: 0 references () isDead:false
+  Records.testMyRecBsAs2: 0 references () isDead:false [0]
   XXX resolving Records.testMyRecBsAs [0]
-  Records.testMyRecBsAs: 0 references () isDead:false
+  Records.testMyRecBsAs: 0 references () isDead:false [0]
   XXX resolving Records.myRecBsAs.type_ [0]
   XXX can't find decl for Records.re:167:38
-  [type] Records.myRecBsAs.type_: 1 references (Records.re:167:38) isDead:false
+  [type] Records.myRecBsAs.type_: 1 references (Records.re:167:38) isDead:false [0]
   XXX resolving Records.testMyObj2 [0]
-  Records.testMyObj2: 0 references () isDead:false
+  Records.testMyObj2: 0 references () isDead:false [0]
   XXX resolving Records.testMyObj [0]
-  Records.testMyObj: 0 references () isDead:false
+  Records.testMyObj: 0 references () isDead:false [0]
   XXX resolving Records.testMyRec2 [0]
-  Records.testMyRec2: 0 references () isDead:false
+  Records.testMyRec2: 0 references () isDead:false [0]
   XXX resolving Records.testMyRec [0]
-  Records.testMyRec: 0 references () isDead:false
+  Records.testMyRec: 0 references () isDead:false [0]
   XXX resolving Records.myRec.type_ [0]
   XXX can't find decl for Records.re:149:30
-  [type] Records.myRec.type_: 1 references (Records.re:149:30) isDead:false
+  [type] Records.myRec.type_: 1 references (Records.re:149:30) isDead:false [0]
   XXX resolving Records.computeArea4 [0]
-  Records.computeArea4: 0 references () isDead:false
+  Records.computeArea4: 0 references () isDead:false [0]
   XXX resolving Records.computeArea3 [0]
-  Records.computeArea3: 0 references () isDead:false
+  Records.computeArea3: 0 references () isDead:false [0]
   XXX resolving Records.someBusiness2 [0]
-  Records.someBusiness2: 0 references () isDead:false
+  Records.someBusiness2: 0 references () isDead:false [0]
   XXX resolving Records.findAddress2 [0]
-  Records.findAddress2: 0 references () isDead:false
+  Records.findAddress2: 0 references () isDead:false [0]
   XXX resolving Records.business2.address2 [0]
   XXX can't find decl for Records.re:93:2
-  [type] Records.business2.address2: 1 references (Records.re:93:2) isDead:false
+  [type] Records.business2.address2: 1 references (Records.re:93:2) isDead:false [0]
   XXX resolving Records.business2.owner [0]
-  [type] Records.business2.owner: 0 references () isDead:true
+  [type] Records.business2.owner: 0 references () isDead:true [0]
   XXX resolving Records.business2.name [0]
-  [type] Records.business2.name: 0 references () isDead:true
+  [type] Records.business2.name: 0 references () isDead:true [0]
   XXX resolving Records.getPayloadRecordPlusOne [0]
-  Records.getPayloadRecordPlusOne: 0 references () isDead:false
+  Records.getPayloadRecordPlusOne: 0 references () isDead:false [0]
   XXX resolving Records.payloadValue [0]
-  Records.payloadValue: 0 references () isDead:false
+  Records.payloadValue: 0 references () isDead:false [0]
   XXX resolving Records.recordValue [0]
   XXX Records.payloadValue [1] already resolved
-  Records.recordValue: 1 references (Records.re:76:4) isDead:false
+  Records.recordValue: 1 references (Records.re:76:4) isDead:false [0]
   XXX resolving Records.getPayloadRecord [0]
-  Records.getPayloadRecord: 0 references () isDead:false
+  Records.getPayloadRecord: 0 references () isDead:false [0]
   XXX resolving Records.record.w [0]
-  [type] Records.record.w: 0 references () isDead:true
+  [type] Records.record.w: 0 references () isDead:true [0]
   XXX resolving Records.record.v [0]
   XXX can't find decl for Records.re:81:5
-  [type] Records.record.v: 1 references (Records.re:81:5) isDead:false
+  [type] Records.record.v: 1 references (Records.re:81:5) isDead:false [0]
   XXX resolving Records.getPayload [0]
-  Records.getPayload: 0 references () isDead:false
+  Records.getPayload: 0 references () isDead:false [0]
   XXX resolving Records.payload.payload [0]
   XXX can't find decl for Records.re:61:18
   XXX can't find decl for Records.re:70:24
   XXX can't find decl for Records.re:79:31
-  [type] Records.payload.payload: 3 references (Records.re:61:18, Records.re:70:24, Records.re:79:31) isDead:false
+  [type] Records.payload.payload: 3 references (Records.re:61:18, Records.re:70:24, Records.re:79:31) isDead:false [0]
   XXX resolving Records.payload.num [0]
-  [type] Records.payload.num: 0 references () isDead:true
+  [type] Records.payload.num: 0 references () isDead:true [0]
   XXX resolving Records.findAllAddresses [0]
-  Records.findAllAddresses: 0 references () isDead:false
+  Records.findAllAddresses: 0 references () isDead:false [0]
   XXX resolving Records.someBusiness [0]
-  Records.someBusiness: 0 references () isDead:false
+  Records.someBusiness: 0 references () isDead:false [0]
   XXX resolving Records.findAddress [0]
-  Records.findAddress: 0 references () isDead:false
+  Records.findAddress: 0 references () isDead:false [0]
   XXX resolving Records.getOpt [0]
   XXX Records.findAddress [1] already resolved
   XXX Records.findAllAddresses [1] already resolved
   XXX Records.findAddress2 [1] already resolved
-  Records.getOpt: 3 references (Records.re:37:4, Records.re:44:4, Records.re:92:4) isDead:false
+  Records.getOpt: 3 references (Records.re:37:4, Records.re:44:4, Records.re:92:4) isDead:false [0]
   XXX resolving Records.business.address [0]
   XXX can't find decl for Records.re:38:2
   XXX can't find decl for Records.re:47:6
-  [type] Records.business.address: 2 references (Records.re:38:2, Records.re:47:6) isDead:false
+  [type] Records.business.address: 2 references (Records.re:38:2, Records.re:47:6) isDead:false [0]
   XXX resolving Records.business.owner [0]
   XXX can't find decl for Records.re:48:8
-  [type] Records.business.owner: 1 references (Records.re:48:8) isDead:false
+  [type] Records.business.owner: 1 references (Records.re:48:8) isDead:false [0]
   XXX resolving Records.business.name [0]
-  [type] Records.business.name: 0 references () isDead:true
+  [type] Records.business.name: 0 references () isDead:true [0]
   XXX resolving Records.person.address [0]
   XXX can't find decl for Records.re:48:40
-  [type] Records.person.address: 1 references (Records.re:48:40) isDead:false
+  [type] Records.person.address: 1 references (Records.re:48:40) isDead:false [0]
   XXX resolving Records.person.age [0]
-  [type] Records.person.age: 0 references () isDead:true
+  [type] Records.person.age: 0 references () isDead:true [0]
   XXX resolving Records.person.name [0]
-  [type] Records.person.name: 0 references () isDead:true
+  [type] Records.person.name: 0 references () isDead:true [0]
   XXX resolving Records.coord2d [0]
-  Records.coord2d: 0 references () isDead:false
+  Records.coord2d: 0 references () isDead:false [0]
   XXX resolving Records.computeArea [0]
-  Records.computeArea: 0 references () isDead:false
+  Records.computeArea: 0 references () isDead:false [0]
   XXX resolving Records.origin [0]
-  Records.origin: 0 references () isDead:false
+  Records.origin: 0 references () isDead:false [0]
   XXX resolving Records.coord.z [0]
   XXX can't find decl for Records.re:14:19
-  [type] Records.coord.z: 1 references (Records.re:14:19) isDead:false
+  [type] Records.coord.z: 1 references (Records.re:14:19) isDead:false [0]
   XXX resolving Records.coord.y [0]
   XXX can't find decl for ReasonComponent.re:63:23
   XXX can't find decl for Records.re:14:19
-  [type] Records.coord.y: 2 references (ReasonComponent.re:63:23, Records.re:14:19) isDead:false
+  [type] Records.coord.y: 2 references (ReasonComponent.re:63:23, Records.re:14:19) isDead:false [0]
   XXX resolving Records.coord.x [0]
   XXX can't find decl for ReasonComponent.re:63:23
   XXX can't find decl for Records.re:14:19
-  [type] Records.coord.x: 2 references (ReasonComponent.re:63:23, Records.re:14:19) isDead:false
+  [type] Records.coord.x: 2 references (ReasonComponent.re:63:23, Records.re:14:19) isDead:false [0]
   XXX resolving References.preserveRefIdentity [0]
-  References.preserveRefIdentity: 0 references () isDead:false
+  References.preserveRefIdentity: 0 references () isDead:false [0]
   XXX resolving References.destroysRefIdentity [0]
-  References.destroysRefIdentity: 0 references () isDead:false
+  References.destroysRefIdentity: 0 references () isDead:false [0]
   XXX resolving References.requiresConversion.x [0]
-  [type] References.requiresConversion.x: 0 references () isDead:true
+  [type] References.requiresConversion.x: 0 references () isDead:true [0]
   XXX resolving References.set [0]
-  References.set: 0 references () isDead:false
+  References.set: 0 references () isDead:false [0]
   XXX resolving References.make [0]
-  References.make: 0 references () isDead:false
+  References.make: 0 references () isDead:false [0]
   XXX resolving References.get [0]
-  References.get: 0 references () isDead:false
+  References.get: 0 references () isDead:false [0]
   XXX resolving References.R.set [0]
   XXX References.set [1] already resolved
-  References.R.set: 1 references (References.re:37:4) isDead:false
+  References.R.set: 1 references (References.re:37:4) isDead:false [0]
   XXX resolving References.R.make [0]
   XXX References.make [1] already resolved
-  References.R.make: 1 references (References.re:34:4) isDead:false
+  References.R.make: 1 references (References.re:34:4) isDead:false [0]
   XXX resolving References.R.get [0]
   XXX References.get [1] already resolved
-  References.R.get: 1 references (References.re:31:4) isDead:false
+  References.R.get: 1 references (References.re:31:4) isDead:false [0]
   XXX resolving References.R.+set [0]
   XXX References.R.set [1] already resolved
   XXX References.set [1] already resolved
-  References.R.+set: 2 references (References.re:19:2, References.re:37:4) isDead:false
+  References.R.+set: 2 references (References.re:19:2, References.re:37:4) isDead:false [0]
   XXX resolving References.R.+make [0]
   XXX References.R.make [1] already resolved
   XXX References.make [1] already resolved
-  References.R.+make: 2 references (References.re:18:2, References.re:34:4) isDead:false
+  References.R.+make: 2 references (References.re:18:2, References.re:34:4) isDead:false [0]
   XXX resolving References.R.+get [0]
   XXX References.R.get [1] already resolved
   XXX References.get [1] already resolved
-  References.R.+get: 2 references (References.re:17:2, References.re:31:4) isDead:false
+  References.R.+get: 2 references (References.re:17:2, References.re:31:4) isDead:false [0]
   XXX resolving References.update [0]
-  References.update: 0 references () isDead:false
+  References.update: 0 references () isDead:false [0]
   XXX resolving References.access [0]
-  References.access: 0 references () isDead:false
+  References.access: 0 references () isDead:false [0]
   XXX resolving References.create [0]
-  References.create: 0 references () isDead:false
+  References.create: 0 references () isDead:false [0]
   XXX resolving Shadow.M.test [0]
-  Shadow.M.test: 0 references () isDead:true
+  Shadow.M.test: 0 references () isDead:true [0]
   XXX resolving Shadow.M.+test [0]
-  Shadow.M.+test: 0 references () isDead:false
+  Shadow.M.+test: 0 references () isDead:false [0]
   XXX resolving Shadow.test [0]
-  Shadow.test: 0 references () isDead:false
+  Shadow.test: 0 references () isDead:false [0]
   XXX resolving Shadow.test [0]
-  Shadow.test: 0 references () isDead:false
+  Shadow.test: 0 references () isDead:false [0]
   XXX resolving TestEmitInnerModules.Outer.Medium.Inner.y [0]
-  TestEmitInnerModules.Outer.Medium.Inner.y: 0 references () isDead:false
+  TestEmitInnerModules.Outer.Medium.Inner.y: 0 references () isDead:false [0]
   XXX resolving TestEmitInnerModules.Inner.y [0]
-  TestEmitInnerModules.Inner.y: 0 references () isDead:false
+  TestEmitInnerModules.Inner.y: 0 references () isDead:false [0]
   XXX resolving TestEmitInnerModules.Inner.x [0]
-  TestEmitInnerModules.Inner.x: 0 references () isDead:false
+  TestEmitInnerModules.Inner.x: 0 references () isDead:false [0]
   XXX resolving TestFirstClassModules.convertFirstClassModuleWithTypeEquations [0]
-  TestFirstClassModules.convertFirstClassModuleWithTypeEquations: 0 references () isDead:false
+  TestFirstClassModules.convertFirstClassModuleWithTypeEquations: 0 references () isDead:false [0]
   XXX resolving TestFirstClassModules.convertRecord [0]
-  TestFirstClassModules.convertRecord: 0 references () isDead:false
+  TestFirstClassModules.convertRecord: 0 references () isDead:false [0]
   XXX resolving TestFirstClassModules.convertInterface [0]
-  TestFirstClassModules.convertInterface: 0 references () isDead:false
+  TestFirstClassModules.convertInterface: 0 references () isDead:false [0]
   XXX resolving TestFirstClassModules.convert [0]
-  TestFirstClassModules.convert: 0 references () isDead:false
+  TestFirstClassModules.convert: 0 references () isDead:false [0]
   XXX resolving TestImmutableArray.testBeltArraySet [0]
-  TestImmutableArray.testBeltArraySet: 0 references () isDead:true
+  TestImmutableArray.testBeltArraySet: 0 references () isDead:true [0]
   XXX resolving TestImmutableArray.testBeltArrayGet [0]
-  TestImmutableArray.testBeltArrayGet: 0 references () isDead:true
+  TestImmutableArray.testBeltArrayGet: 0 references () isDead:true [0]
   XXX resolving TestImmutableArray.testImmutableArrayGet [0]
-  TestImmutableArray.testImmutableArrayGet: 0 references () isDead:false
+  TestImmutableArray.testImmutableArrayGet: 0 references () isDead:false [0]
   XXX resolving TestImport.defaultValue2 [0]
-  TestImport.defaultValue2: 0 references () isDead:false
+  TestImport.defaultValue2: 0 references () isDead:false [0]
   XXX resolving TestImport.make [0]
-  TestImport.make: 0 references () isDead:true
+  TestImport.make: 0 references () isDead:true [0]
   XXX resolving TestImport.make [0]
   XXX TestImport.make [1] already resolved
-  TestImport.make: 0 references () isDead:false
+  TestImport.make: 0 references () isDead:false [0]
   XXX resolving TestImport.message.text [0]
-  [type] TestImport.message.text: 0 references () isDead:true
+  [type] TestImport.message.text: 0 references () isDead:true [0]
   XXX resolving TestImport.defaultValue [0]
-  TestImport.defaultValue: 0 references () isDead:false
+  TestImport.defaultValue: 0 references () isDead:false [0]
   XXX resolving TestImport.valueStartingWithUpperCaseLetter [0]
-  TestImport.valueStartingWithUpperCaseLetter: 0 references () isDead:false
+  TestImport.valueStartingWithUpperCaseLetter: 0 references () isDead:false [0]
   XXX resolving TestImport.innerStuffContents [0]
-  TestImport.innerStuffContents: 0 references () isDead:true
+  TestImport.innerStuffContents: 0 references () isDead:true [0]
   XXX resolving TestImport.innerStuffContentsAsEmptyObject [0]
-  TestImport.innerStuffContentsAsEmptyObject: 0 references () isDead:false
+  TestImport.innerStuffContentsAsEmptyObject: 0 references () isDead:false [0]
   XXX resolving TestImport.innerStuffContents [0]
   XXX TestImport.innerStuffContents [1] already resolved
-  TestImport.innerStuffContents: 0 references () isDead:false
+  TestImport.innerStuffContents: 0 references () isDead:false [0]
   XXX resolving TestModuleAliases.testInner2Expanded [0]
-  TestModuleAliases.testInner2Expanded: 0 references () isDead:false
+  TestModuleAliases.testInner2Expanded: 0 references () isDead:false [0]
   XXX resolving TestModuleAliases.testInner2 [0]
-  TestModuleAliases.testInner2: 0 references () isDead:false
+  TestModuleAliases.testInner2: 0 references () isDead:false [0]
   XXX resolving TestModuleAliases.testInner1Expanded [0]
-  TestModuleAliases.testInner1Expanded: 0 references () isDead:false
+  TestModuleAliases.testInner1Expanded: 0 references () isDead:false [0]
   XXX resolving TestModuleAliases.testInner1 [0]
-  TestModuleAliases.testInner1: 0 references () isDead:false
+  TestModuleAliases.testInner1: 0 references () isDead:false [0]
   XXX resolving TestPromise.convert [0]
-  TestPromise.convert: 0 references () isDead:false
+  TestPromise.convert: 0 references () isDead:false [0]
   XXX resolving TestPromise.toPayload.result [0]
-  [type] TestPromise.toPayload.result: 0 references () isDead:true
+  [type] TestPromise.toPayload.result: 0 references () isDead:true [0]
   XXX resolving TestPromise.fromPayload.s [0]
   XXX can't find decl for TestPromise.re:14:32
-  [type] TestPromise.fromPayload.s: 1 references (TestPromise.re:14:32) isDead:false
+  [type] TestPromise.fromPayload.s: 1 references (TestPromise.re:14:32) isDead:false [0]
   XXX resolving TestPromise.fromPayload.x [0]
-  [type] TestPromise.fromPayload.x: 0 references () isDead:true
+  [type] TestPromise.fromPayload.x: 0 references () isDead:true [0]
   XXX resolving TransitiveType1.convertAlias [0]
-  TransitiveType1.convertAlias: 0 references () isDead:false
+  TransitiveType1.convertAlias: 0 references () isDead:false [0]
   XXX resolving TransitiveType1.convert [0]
-  TransitiveType1.convert: 0 references () isDead:false
+  TransitiveType1.convert: 0 references () isDead:false [0]
   XXX resolving TransitiveType2.convertT2 [0]
-  TransitiveType2.convertT2: 0 references () isDead:true
+  TransitiveType2.convertT2: 0 references () isDead:true [0]
   XXX resolving TransitiveType3.convertT3 [0]
-  TransitiveType3.convertT3: 0 references () isDead:false
+  TransitiveType3.convertT3: 0 references () isDead:false [0]
   XXX resolving TransitiveType3.t3.s [0]
-  [type] TransitiveType3.t3.s: 0 references () isDead:true
+  [type] TransitiveType3.t3.s: 0 references () isDead:true [0]
   XXX resolving TransitiveType3.t3.i [0]
-  [type] TransitiveType3.t3.i: 0 references () isDead:true
+  [type] TransitiveType3.t3.i: 0 references () isDead:true [0]
   XXX resolving TypeParams1.exportSomething [0]
-  TypeParams1.exportSomething: 0 references () isDead:true
+  TypeParams1.exportSomething: 0 references () isDead:true [0]
   XXX resolving TypeParams2.exportSomething [0]
-  TypeParams2.exportSomething: 0 references () isDead:true
+  TypeParams2.exportSomething: 0 references () isDead:true [0]
   XXX resolving TypeParams2.item.id [0]
-  [type] TypeParams2.item.id: 0 references () isDead:true
+  [type] TypeParams2.item.id: 0 references () isDead:true [0]
   XXX resolving TypeParams3.test2 [0]
-  TypeParams3.test2: 0 references () isDead:false
+  TypeParams3.test2: 0 references () isDead:false [0]
   XXX resolving TypeParams3.test [0]
-  TypeParams3.test: 0 references () isDead:false
+  TypeParams3.test: 0 references () isDead:false [0]
   XXX resolving Unboxed.r2Test [0]
-  Unboxed.r2Test: 0 references () isDead:false
+  Unboxed.r2Test: 0 references () isDead:false [0]
   XXX resolving Unboxed.r2.B [0]
-  [type] Unboxed.r2.B: 0 references () isDead:true
+  [type] Unboxed.r2.B: 0 references () isDead:true [0]
   XXX resolving Unboxed.r1.x [0]
-  [type] Unboxed.r1.x: 0 references () isDead:true
+  [type] Unboxed.r1.x: 0 references () isDead:true [0]
   XXX resolving Unboxed.testV1 [0]
-  Unboxed.testV1: 0 references () isDead:false
+  Unboxed.testV1: 0 references () isDead:false [0]
   XXX resolving Unboxed.v2.A [0]
-  [type] Unboxed.v2.A: 0 references () isDead:true
+  [type] Unboxed.v2.A: 0 references () isDead:true [0]
   XXX resolving Unboxed.v1.A [0]
-  [type] Unboxed.v1.A: 0 references () isDead:true
+  [type] Unboxed.v1.A: 0 references () isDead:true [0]
   XXX resolving Uncurried.sumLblCurried [0]
-  Uncurried.sumLblCurried: 0 references () isDead:false
+  Uncurried.sumLblCurried: 0 references () isDead:false [0]
   XXX resolving Uncurried.sumCurried [0]
-  Uncurried.sumCurried: 0 references () isDead:false
+  Uncurried.sumCurried: 0 references () isDead:false [0]
   XXX resolving Uncurried.sumU2 [0]
-  Uncurried.sumU2: 0 references () isDead:false
+  Uncurried.sumU2: 0 references () isDead:false [0]
   XXX resolving Uncurried.sumU [0]
-  Uncurried.sumU: 0 references () isDead:false
+  Uncurried.sumU: 0 references () isDead:false [0]
   XXX resolving Uncurried.callback2U [0]
-  Uncurried.callback2U: 0 references () isDead:false
+  Uncurried.callback2U: 0 references () isDead:false [0]
   XXX resolving Uncurried.callback2 [0]
-  Uncurried.callback2: 0 references () isDead:false
+  Uncurried.callback2: 0 references () isDead:false [0]
   XXX resolving Uncurried.authU.loginU [0]
   XXX can't find decl for Uncurried.re:39:25
-  [type] Uncurried.authU.loginU: 1 references (Uncurried.re:39:25) isDead:false
+  [type] Uncurried.authU.loginU: 1 references (Uncurried.re:39:25) isDead:false [0]
   XXX resolving Uncurried.auth.login [0]
   XXX can't find decl for Uncurried.re:36:24
-  [type] Uncurried.auth.login: 1 references (Uncurried.re:36:24) isDead:false
+  [type] Uncurried.auth.login: 1 references (Uncurried.re:36:24) isDead:false [0]
   XXX resolving Uncurried.callback [0]
-  Uncurried.callback: 0 references () isDead:false
+  Uncurried.callback: 0 references () isDead:false [0]
   XXX resolving Uncurried.curried3 [0]
-  Uncurried.curried3: 0 references () isDead:false
+  Uncurried.curried3: 0 references () isDead:false [0]
   XXX resolving Uncurried.uncurried3 [0]
-  Uncurried.uncurried3: 0 references () isDead:false
+  Uncurried.uncurried3: 0 references () isDead:false [0]
   XXX resolving Uncurried.uncurried2 [0]
-  Uncurried.uncurried2: 0 references () isDead:false
+  Uncurried.uncurried2: 0 references () isDead:false [0]
   XXX resolving Uncurried.uncurried1 [0]
-  Uncurried.uncurried1: 0 references () isDead:false
+  Uncurried.uncurried1: 0 references () isDead:false [0]
   XXX resolving Uncurried.uncurried0 [0]
-  Uncurried.uncurried0: 0 references () isDead:false
+  Uncurried.uncurried0: 0 references () isDead:false [0]
   XXX resolving UseImportJsValue.useTypeImportedInOtherModule [0]
-  UseImportJsValue.useTypeImportedInOtherModule: 0 references () isDead:false
+  UseImportJsValue.useTypeImportedInOtherModule: 0 references () isDead:false [0]
   XXX resolving UseImportJsValue.useGetProp [0]
-  UseImportJsValue.useGetProp: 0 references () isDead:false
+  UseImportJsValue.useGetProp: 0 references () isDead:false [0]
   XXX resolving Variants.restResult3 [0]
-  Variants.restResult3: 0 references () isDead:false
+  Variants.restResult3: 0 references () isDead:false [0]
   XXX resolving Variants.restResult2 [0]
-  Variants.restResult2: 0 references () isDead:false
+  Variants.restResult2: 0 references () isDead:false [0]
   XXX resolving Variants.restResult1 [0]
-  Variants.restResult1: 0 references () isDead:false
+  Variants.restResult1: 0 references () isDead:false [0]
   XXX resolving Variants.result1.Error [0]
-  [type] Variants.result1.Error: 0 references () isDead:true
+  [type] Variants.result1.Error: 0 references () isDead:true [0]
   XXX resolving Variants.result1.Ok [0]
-  [type] Variants.result1.Ok: 0 references () isDead:true
+  [type] Variants.result1.Ok: 0 references () isDead:true [0]
   XXX resolving Variants.polyWithOpt [0]
-  Variants.polyWithOpt: 0 references () isDead:false
+  Variants.polyWithOpt: 0 references () isDead:false [0]
   XXX resolving Variants.type_.Type [0]
-  [type] Variants.type_.Type: 0 references () isDead:true
+  [type] Variants.type_.Type: 0 references () isDead:true [0]
   XXX resolving Variants.id2 [0]
-  Variants.id2: 0 references () isDead:false
+  Variants.id2: 0 references () isDead:false [0]
   XXX resolving Variants.id1 [0]
-  Variants.id1: 0 references () isDead:false
+  Variants.id1: 0 references () isDead:false [0]
   XXX resolving Variants.testConvert2to3 [0]
-  Variants.testConvert2to3: 0 references () isDead:false
+  Variants.testConvert2to3: 0 references () isDead:false [0]
   XXX resolving Variants.testConvert3 [0]
-  Variants.testConvert3: 0 references () isDead:false
+  Variants.testConvert3: 0 references () isDead:false [0]
   XXX resolving Variants.testConvert2 [0]
-  Variants.testConvert2: 0 references () isDead:false
+  Variants.testConvert2: 0 references () isDead:false [0]
   XXX resolving Variants.fortytwoBAD [0]
-  Variants.fortytwoBAD: 0 references () isDead:false
+  Variants.fortytwoBAD: 0 references () isDead:false [0]
   XXX resolving Variants.fortytwoOK [0]
-  Variants.fortytwoOK: 0 references () isDead:false
+  Variants.fortytwoOK: 0 references () isDead:false [0]
   XXX resolving Variants.testConvert [0]
-  Variants.testConvert: 0 references () isDead:false
+  Variants.testConvert: 0 references () isDead:false [0]
   XXX resolving Variants.swap [0]
-  Variants.swap: 0 references () isDead:false
+  Variants.swap: 0 references () isDead:false [0]
   XXX resolving Variants.onlySunday [0]
-  Variants.onlySunday: 0 references () isDead:false
+  Variants.onlySunday: 0 references () isDead:false [0]
   XXX resolving Variants.sunday [0]
-  Variants.sunday: 0 references () isDead:false
+  Variants.sunday: 0 references () isDead:false [0]
   XXX resolving Variants.saturday [0]
-  Variants.saturday: 0 references () isDead:false
+  Variants.saturday: 0 references () isDead:false [0]
   XXX resolving Variants.monday [0]
-  Variants.monday: 0 references () isDead:false
+  Variants.monday: 0 references () isDead:false [0]
   XXX resolving Variants.isWeekend [0]
-  Variants.isWeekend: 0 references () isDead:false
+  Variants.isWeekend: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.testVariant1Object [0]
-  VariantsWithPayload.testVariant1Object: 0 references () isDead:false
+  VariantsWithPayload.testVariant1Object: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.variant1Object.R [0]
-  [type] VariantsWithPayload.variant1Object.R: 0 references () isDead:true
+  [type] VariantsWithPayload.variant1Object.R: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.testVariant1Int [0]
-  VariantsWithPayload.testVariant1Int: 0 references () isDead:false
+  VariantsWithPayload.testVariant1Int: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.variant1Int.R [0]
-  [type] VariantsWithPayload.variant1Int.R: 0 references () isDead:true
+  [type] VariantsWithPayload.variant1Int.R: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.printVariantWithPayloads [0]
-  VariantsWithPayload.printVariantWithPayloads: 0 references () isDead:false
+  VariantsWithPayload.printVariantWithPayloads: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.testVariantWithPayloads [0]
-  VariantsWithPayload.testVariantWithPayloads: 0 references () isDead:false
+  VariantsWithPayload.testVariantWithPayloads: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.variantWithPayloads.E [0]
-  [type] VariantsWithPayload.variantWithPayloads.E: 0 references () isDead:true
+  [type] VariantsWithPayload.variantWithPayloads.E: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.variantWithPayloads.D [0]
-  [type] VariantsWithPayload.variantWithPayloads.D: 0 references () isDead:true
+  [type] VariantsWithPayload.variantWithPayloads.D: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.variantWithPayloads.C [0]
-  [type] VariantsWithPayload.variantWithPayloads.C: 0 references () isDead:true
+  [type] VariantsWithPayload.variantWithPayloads.C: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.variantWithPayloads.B [0]
-  [type] VariantsWithPayload.variantWithPayloads.B: 0 references () isDead:true
+  [type] VariantsWithPayload.variantWithPayloads.B: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.variantWithPayloads.A [0]
-  [type] VariantsWithPayload.variantWithPayloads.A: 0 references () isDead:true
+  [type] VariantsWithPayload.variantWithPayloads.A: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.testSimpleVariant [0]
-  VariantsWithPayload.testSimpleVariant: 0 references () isDead:false
+  VariantsWithPayload.testSimpleVariant: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.simpleVariant.C [0]
-  [type] VariantsWithPayload.simpleVariant.C: 0 references () isDead:true
+  [type] VariantsWithPayload.simpleVariant.C: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.simpleVariant.B [0]
-  [type] VariantsWithPayload.simpleVariant.B: 0 references () isDead:true
+  [type] VariantsWithPayload.simpleVariant.B: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.simpleVariant.A [0]
-  [type] VariantsWithPayload.simpleVariant.A: 0 references () isDead:true
+  [type] VariantsWithPayload.simpleVariant.A: 0 references () isDead:true [0]
   XXX resolving VariantsWithPayload.printManyPayloads [0]
-  VariantsWithPayload.printManyPayloads: 0 references () isDead:false
+  VariantsWithPayload.printManyPayloads: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.testManyPayloads [0]
-  VariantsWithPayload.testManyPayloads: 0 references () isDead:false
+  VariantsWithPayload.testManyPayloads: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.printVariantWithPayload [0]
-  VariantsWithPayload.printVariantWithPayload: 0 references () isDead:false
+  VariantsWithPayload.printVariantWithPayload: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.testWithPayload [0]
-  VariantsWithPayload.testWithPayload: 0 references () isDead:false
+  VariantsWithPayload.testWithPayload: 0 references () isDead:false [0]
   XXX resolving VariantsWithPayload.payload.y [0]
   XXX can't find decl for VariantsWithPayload.re:27:59
   XXX can't find decl for VariantsWithPayload.re:46:53
-  [type] VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53) isDead:false
+  [type] VariantsWithPayload.payload.y: 2 references (VariantsWithPayload.re:27:59, VariantsWithPayload.re:46:53) isDead:false [0]
   XXX resolving VariantsWithPayload.payload.x [0]
   XXX can't find decl for VariantsWithPayload.re:27:42
   XXX can't find decl for VariantsWithPayload.re:46:36
-  [type] VariantsWithPayload.payload.x: 2 references (VariantsWithPayload.re:27:42, VariantsWithPayload.re:46:36) isDead:false
+  [type] VariantsWithPayload.payload.x: 2 references (VariantsWithPayload.re:27:42, VariantsWithPayload.re:46:36) isDead:false [0]
   XXX resolving ComponentAsProp.make [0]
-  ComponentAsProp.make: 0 references () isDead:false
+  ComponentAsProp.make: 0 references () isDead:false [0]
   XXX resolving ComponentAsProp.component [0]
   XXX ComponentAsProp.make [1] already resolved
-  ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4) isDead:false
+  ComponentAsProp.component: 1 references (ComponentAsProp.re:5:4) isDead:false [0]
   XXX resolving ManyComponents.+emptyArray [0]
   XXX resolving ManyComponents.make [1]
-  ManyComponents.make: 0 references () isDead:false
-  ManyComponents.+emptyArray: 1 references (ManyComponents.re:39:4) isDead:false
+  ManyComponents.make: 0 references () isDead:false [1]
+  ManyComponents.+emptyArray: 1 references (ManyComponents.re:39:4) isDead:false [0]
   XXX ManyComponents.make [0] already resolved
   XXX resolving ManyComponents.component [0]
   XXX ManyComponents.make [1] already resolved
-  ManyComponents.component: 1 references (ManyComponents.re:39:4) isDead:false
+  ManyComponents.component: 1 references (ManyComponents.re:39:4) isDead:false [0]
   XXX resolving ManyComponents.ManyProps.make [0]
-  ManyComponents.ManyProps.make: 0 references () isDead:false
+  ManyComponents.ManyProps.make: 0 references () isDead:false [0]
   XXX resolving ManyComponents.ManyProps.component [0]
   XXX ManyComponents.ManyProps.make [1] already resolved
-  ManyComponents.ManyProps.component: 1 references (ManyComponents.re:19:6) isDead:false
+  ManyComponents.ManyProps.component: 1 references (ManyComponents.re:19:6) isDead:false [0]
   XXX resolving ManyComponents.InnerComponent.make [0]
   XXX ManyComponents.make [1] already resolved
-  ManyComponents.InnerComponent.make: 1 references (ManyComponents.re:39:4) isDead:false
+  ManyComponents.InnerComponent.make: 1 references (ManyComponents.re:39:4) isDead:false [0]
   XXX resolving ManyComponents.InnerComponent.component [0]
   XXX ManyComponents.InnerComponent.make [1] already resolved
-  ManyComponents.InnerComponent.component: 1 references (ManyComponents.re:9:6) isDead:false
+  ManyComponents.InnerComponent.component: 1 references (ManyComponents.re:9:6) isDead:false [0]
   XXX resolving ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted [0]
-  ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted: 0 references () isDead:true
+  ManyComponents.InnerComponent.someValueSoModuleOffsetsAreShifted: 0 references () isDead:true [0]
   XXX resolving location.x [0]
-  location.x: 0 references () isDead:true
+  location.x: 0 references () isDead:true [0]
   XXX resolving location.t.name [0]
-  [type] location.t.name: 0 references () isDead:true
+  [type] location.t.name: 0 references () isDead:true [0]
   XXX resolving location.t.id [0]
-  [type] location.t.id: 0 references () isDead:true
+  [type] location.t.id: 0 references () isDead:true [0]
   XXX resolving Tuples.changeSecondAge [0]
-  Tuples.changeSecondAge: 0 references () isDead:false
+  Tuples.changeSecondAge: 0 references () isDead:false [0]
   XXX resolving Tuples.marry [0]
-  Tuples.marry: 0 references () isDead:false
+  Tuples.marry: 0 references () isDead:false [0]
   XXX resolving Tuples.getFirstName [0]
-  Tuples.getFirstName: 0 references () isDead:false
+  Tuples.getFirstName: 0 references () isDead:false [0]
   XXX resolving Tuples.person.age [0]
   XXX can't find decl for Tuples.re:47:19
-  [type] Tuples.person.age: 1 references (Tuples.re:47:19) isDead:false
+  [type] Tuples.person.age: 1 references (Tuples.re:47:19) isDead:false [0]
   XXX resolving Tuples.person.name [0]
   XXX can't find decl for Tuples.re:39:49
-  [type] Tuples.person.name: 1 references (Tuples.re:39:49) isDead:false
+  [type] Tuples.person.name: 1 references (Tuples.re:39:49) isDead:false [0]
   XXX resolving Tuples.coord2d [0]
-  Tuples.coord2d: 0 references () isDead:false
+  Tuples.coord2d: 0 references () isDead:false [0]
   XXX resolving Tuples.computeAreaNoConverters [0]
-  Tuples.computeAreaNoConverters: 0 references () isDead:false
+  Tuples.computeAreaNoConverters: 0 references () isDead:false [0]
   XXX resolving Tuples.computeAreaWithIdent [0]
-  Tuples.computeAreaWithIdent: 0 references () isDead:false
+  Tuples.computeAreaWithIdent: 0 references () isDead:false [0]
   XXX resolving Tuples.computeArea [0]
-  Tuples.computeArea: 0 references () isDead:false
+  Tuples.computeArea: 0 references () isDead:false [0]
   XXX resolving Tuples.origin [0]
-  Tuples.origin: 0 references () isDead:false
+  Tuples.origin: 0 references () isDead:false [0]
   XXX resolving Tuples.testTuple [0]
-  Tuples.testTuple: 0 references () isDead:false
+  Tuples.testTuple: 0 references () isDead:false [0]
   XXX resolving Types.currentTime [0]
-  Types.currentTime: 0 references () isDead:false
+  Types.currentTime: 0 references () isDead:false [0]
   XXX resolving Types.testInstantiateTypeParameter [0]
-  Types.testInstantiateTypeParameter: 0 references () isDead:false
+  Types.testInstantiateTypeParameter: 0 references () isDead:false [0]
   XXX resolving Types.someRecord.id [0]
-  [type] Types.someRecord.id: 0 references () isDead:true
+  [type] Types.someRecord.id: 0 references () isDead:true [0]
   XXX resolving Types.setMatch [0]
-  Types.setMatch: 0 references () isDead:false
+  Types.setMatch: 0 references () isDead:false [0]
   XXX resolving Types.testMarshalFields [0]
-  Types.testMarshalFields: 0 references () isDead:false
+  Types.testMarshalFields: 0 references () isDead:false [0]
   XXX resolving Types.testConvertLocation [0]
-  Types.testConvertLocation: 0 references () isDead:false
+  Types.testConvertLocation: 0 references () isDead:false [0]
   XXX resolving Types.testConvertNull [0]
-  Types.testConvertNull: 0 references () isDead:false
+  Types.testConvertNull: 0 references () isDead:false [0]
   XXX resolving Types.record.s [0]
-  [type] Types.record.s: 0 references () isDead:true
+  [type] Types.record.s: 0 references () isDead:true [0]
   XXX resolving Types.record.i [0]
-  [type] Types.record.i: 0 references () isDead:true
+  [type] Types.record.i: 0 references () isDead:true [0]
   XXX resolving Types.jsonStringify [0]
-  Types.jsonStringify: 0 references () isDead:false
+  Types.jsonStringify: 0 references () isDead:false [0]
   XXX resolving Types.jsString2T [0]
-  Types.jsString2T: 0 references () isDead:false
+  Types.jsString2T: 0 references () isDead:false [0]
   XXX resolving Types.jsStringT [0]
-  Types.jsStringT: 0 references () isDead:false
+  Types.jsStringT: 0 references () isDead:false [0]
   XXX resolving Types.stringT [0]
-  Types.stringT: 0 references () isDead:false
+  Types.stringT: 0 references () isDead:false [0]
   XXX resolving Types.opaqueVariant.B [0]
-  [type] Types.opaqueVariant.B: 0 references () isDead:true
+  [type] Types.opaqueVariant.B: 0 references () isDead:true [0]
   XXX resolving Types.opaqueVariant.A [0]
-  [type] Types.opaqueVariant.A: 0 references () isDead:true
+  [type] Types.opaqueVariant.A: 0 references () isDead:true [0]
   XXX resolving Types.testFunctionOnOptionsAsArgument [0]
-  Types.testFunctionOnOptionsAsArgument: 0 references () isDead:false
+  Types.testFunctionOnOptionsAsArgument: 0 references () isDead:false [0]
   XXX resolving Types.mutuallyRecursiveConverter [0]
-  Types.mutuallyRecursiveConverter: 0 references () isDead:false
+  Types.mutuallyRecursiveConverter: 0 references () isDead:false [0]
   XXX resolving Types.selfRecursiveConverter [0]
-  Types.selfRecursiveConverter: 0 references () isDead:false
+  Types.selfRecursiveConverter: 0 references () isDead:false [0]
   XXX resolving Types.mutuallyRecursiveB.a [0]
-  [type] Types.mutuallyRecursiveB.a: 0 references () isDead:true
+  [type] Types.mutuallyRecursiveB.a: 0 references () isDead:true [0]
   XXX resolving Types.mutuallyRecursiveA.b [0]
   XXX can't find decl for Types.re:53:34
-  [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34) isDead:false
+  [type] Types.mutuallyRecursiveA.b: 1 references (Types.re:53:34) isDead:false [0]
   XXX resolving Types.selfRecursive.self [0]
   XXX can't find decl for Types.re:46:30
-  [type] Types.selfRecursive.self: 1 references (Types.re:46:30) isDead:false
+  [type] Types.selfRecursive.self: 1 references (Types.re:46:30) isDead:false [0]
   XXX resolving Types.swap [0]
   XXX Types.swap ignoring reference to self
-  Types.swap: 0 references () isDead:false
+  Types.swap: 0 references () isDead:false [0]
   XXX resolving Types.typeWithVars.B [0]
-  [type] Types.typeWithVars.B: 0 references () isDead:true
+  [type] Types.typeWithVars.B: 0 references () isDead:true [0]
   XXX resolving Types.typeWithVars.A [0]
-  [type] Types.typeWithVars.A: 0 references () isDead:true
+  [type] Types.typeWithVars.A: 0 references () isDead:true [0]
   XXX resolving Types.map [0]
-  Types.map: 0 references () isDead:false
+  Types.map: 0 references () isDead:false [0]
   XXX resolving Types.someIntList [0]
-  Types.someIntList: 0 references () isDead:false
+  Types.someIntList: 0 references () isDead:false [0]
   XXX resolving DeadTypeTest._ [0]
-  DeadTypeTest._: 0 references () isDead:true
+  DeadTypeTest._: 0 references () isDead:true [0]
   XXX resolving DeadTypeTest._ [0]
-  DeadTypeTest._: 0 references () isDead:true
+  DeadTypeTest._: 0 references () isDead:true [0]
   XXX resolving DeadTypeTest.+a [0]
   XXX DeadTypeTest.a [1] already resolved
-  DeadTypeTest.+a: 0 references () isDead:true
+  DeadTypeTest.+a: 0 references () isDead:true [0]
   XXX resolving DeadValueTest.valueDead [0]
-  DeadValueTest.valueDead: 0 references () isDead:true
+  DeadValueTest.valueDead: 0 references () isDead:true [0]
   XXX resolving DeadValueTest.valueAlive [0]
   XXX can't find decl for DeadTest.re:77:0
-  DeadValueTest.valueAlive: 1 references (DeadTest.re:77:0) isDead:false
+  DeadValueTest.valueAlive: 1 references (DeadTest.re:77:0) isDead:false [0]
   XXX resolving ErrorHandler.x [0]
-  ErrorHandler.x: 0 references () isDead:true
+  ErrorHandler.x: 0 references () isDead:true [0]
   XXX ErrorHandler.Make.notify [0] already resolved
   XXX resolving FirstClassModulesInterface.+r [0]
   XXX FirstClassModulesInterface.r [1] already resolved
-  FirstClassModulesInterface.+r: 0 references () isDead:true
+  FirstClassModulesInterface.+r: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.eq [0]
-  ImmutableArray.eq: 0 references () isDead:true
+  ImmutableArray.eq: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.eqU [0]
-  ImmutableArray.eqU: 0 references () isDead:true
+  ImmutableArray.eqU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.cmp [0]
-  ImmutableArray.cmp: 0 references () isDead:true
+  ImmutableArray.cmp: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.cmpU [0]
-  ImmutableArray.cmpU: 0 references () isDead:true
+  ImmutableArray.cmpU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.some2 [0]
-  ImmutableArray.some2: 0 references () isDead:true
+  ImmutableArray.some2: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.some2U [0]
-  ImmutableArray.some2U: 0 references () isDead:true
+  ImmutableArray.some2U: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.every2 [0]
-  ImmutableArray.every2: 0 references () isDead:true
+  ImmutableArray.every2: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.every2U [0]
-  ImmutableArray.every2U: 0 references () isDead:true
+  ImmutableArray.every2U: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.every [0]
-  ImmutableArray.every: 0 references () isDead:true
+  ImmutableArray.every: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.everyU [0]
-  ImmutableArray.everyU: 0 references () isDead:true
+  ImmutableArray.everyU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.some [0]
-  ImmutableArray.some: 0 references () isDead:true
+  ImmutableArray.some: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.someU [0]
-  ImmutableArray.someU: 0 references () isDead:true
+  ImmutableArray.someU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.reduceReverse2 [0]
-  ImmutableArray.reduceReverse2: 0 references () isDead:true
+  ImmutableArray.reduceReverse2: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.reduceReverse2U [0]
-  ImmutableArray.reduceReverse2U: 0 references () isDead:true
+  ImmutableArray.reduceReverse2U: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.reduceReverse [0]
-  ImmutableArray.reduceReverse: 0 references () isDead:true
+  ImmutableArray.reduceReverse: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.reduceReverseU [0]
-  ImmutableArray.reduceReverseU: 0 references () isDead:true
+  ImmutableArray.reduceReverseU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.reduce [0]
-  ImmutableArray.reduce: 0 references () isDead:true
+  ImmutableArray.reduce: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.reduceU [0]
-  ImmutableArray.reduceU: 0 references () isDead:true
+  ImmutableArray.reduceU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.partition [0]
-  ImmutableArray.partition: 0 references () isDead:true
+  ImmutableArray.partition: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.partitionU [0]
-  ImmutableArray.partitionU: 0 references () isDead:true
+  ImmutableArray.partitionU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.mapWithIndex [0]
-  ImmutableArray.mapWithIndex: 0 references () isDead:true
+  ImmutableArray.mapWithIndex: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.mapWithIndexU [0]
-  ImmutableArray.mapWithIndexU: 0 references () isDead:true
+  ImmutableArray.mapWithIndexU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.forEachWithIndex [0]
-  ImmutableArray.forEachWithIndex: 0 references () isDead:true
+  ImmutableArray.forEachWithIndex: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.forEachWithIndexU [0]
-  ImmutableArray.forEachWithIndexU: 0 references () isDead:true
+  ImmutableArray.forEachWithIndexU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.keepMap [0]
-  ImmutableArray.keepMap: 0 references () isDead:true
+  ImmutableArray.keepMap: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.keepMapU [0]
-  ImmutableArray.keepMapU: 0 references () isDead:true
+  ImmutableArray.keepMapU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.keepWithIndex [0]
-  ImmutableArray.keepWithIndex: 0 references () isDead:true
+  ImmutableArray.keepWithIndex: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.keepWithIndexU [0]
-  ImmutableArray.keepWithIndexU: 0 references () isDead:true
+  ImmutableArray.keepWithIndexU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.map [0]
-  ImmutableArray.map: 0 references () isDead:true
+  ImmutableArray.map: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.mapU [0]
-  ImmutableArray.mapU: 0 references () isDead:true
+  ImmutableArray.mapU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.forEach [0]
-  ImmutableArray.forEach: 0 references () isDead:true
+  ImmutableArray.forEach: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.forEachU [0]
-  ImmutableArray.forEachU: 0 references () isDead:true
+  ImmutableArray.forEachU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.copy [0]
-  ImmutableArray.copy: 0 references () isDead:true
+  ImmutableArray.copy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.sliceToEnd [0]
-  ImmutableArray.sliceToEnd: 0 references () isDead:true
+  ImmutableArray.sliceToEnd: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.slice [0]
-  ImmutableArray.slice: 0 references () isDead:true
+  ImmutableArray.slice: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.concatMany [0]
-  ImmutableArray.concatMany: 0 references () isDead:true
+  ImmutableArray.concatMany: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.concat [0]
-  ImmutableArray.concat: 0 references () isDead:true
+  ImmutableArray.concat: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.unzip [0]
-  ImmutableArray.unzip: 0 references () isDead:true
+  ImmutableArray.unzip: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.zipBy [0]
-  ImmutableArray.zipBy: 0 references () isDead:true
+  ImmutableArray.zipBy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.zipByU [0]
-  ImmutableArray.zipByU: 0 references () isDead:true
+  ImmutableArray.zipByU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.zip [0]
-  ImmutableArray.zip: 0 references () isDead:true
+  ImmutableArray.zip: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.makeByAndShuffle [0]
-  ImmutableArray.makeByAndShuffle: 0 references () isDead:true
+  ImmutableArray.makeByAndShuffle: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.makeByAndShuffleU [0]
-  ImmutableArray.makeByAndShuffleU: 0 references () isDead:true
+  ImmutableArray.makeByAndShuffleU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.makeBy [0]
-  ImmutableArray.makeBy: 0 references () isDead:true
+  ImmutableArray.makeBy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.makeByU [0]
-  ImmutableArray.makeByU: 0 references () isDead:true
+  ImmutableArray.makeByU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.rangeBy [0]
-  ImmutableArray.rangeBy: 0 references () isDead:true
+  ImmutableArray.rangeBy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.range [0]
-  ImmutableArray.range: 0 references () isDead:true
+  ImmutableArray.range: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.make [0]
-  ImmutableArray.make: 0 references () isDead:true
+  ImmutableArray.make: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.makeUninitializedUnsafe [0]
-  ImmutableArray.makeUninitializedUnsafe: 0 references () isDead:true
+  ImmutableArray.makeUninitializedUnsafe: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.makeUninitialized [0]
-  ImmutableArray.makeUninitialized: 0 references () isDead:true
+  ImmutableArray.makeUninitialized: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.reverse [0]
-  ImmutableArray.reverse: 0 references () isDead:true
+  ImmutableArray.reverse: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.shuffle [0]
-  ImmutableArray.shuffle: 0 references () isDead:true
+  ImmutableArray.shuffle: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.getUndefined [0]
-  ImmutableArray.getUndefined: 0 references () isDead:true
+  ImmutableArray.getUndefined: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.getUnsafe [0]
-  ImmutableArray.getUnsafe: 0 references () isDead:true
+  ImmutableArray.getUnsafe: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.getExn [0]
-  ImmutableArray.getExn: 0 references () isDead:true
+  ImmutableArray.getExn: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.get [0]
-  ImmutableArray.get: 0 references () isDead:true
+  ImmutableArray.get: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.size [0]
-  ImmutableArray.size: 0 references () isDead:true
+  ImmutableArray.size: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.length [0]
-  ImmutableArray.length: 0 references () isDead:true
+  ImmutableArray.length: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.toArray [0]
-  ImmutableArray.toArray: 0 references () isDead:true
+  ImmutableArray.toArray: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.fromArray [0]
   XXX can't find decl for DeadTest.re:1:0
-  ImmutableArray.fromArray: 1 references (DeadTest.re:1:0) isDead:false
+  ImmutableArray.fromArray: 1 references (DeadTest.re:1:0) isDead:false [0]
   XXX resolving ImmutableArray.Array.get [0]
   XXX TestImmutableArray.testImmutableArrayGet [1] already resolved
-  ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4) isDead:false
+  ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4) isDead:false [0]
   XXX resolving ImportHookDefault.make2 [0]
-  ImportHookDefault.make2: 0 references () isDead:false
+  ImportHookDefault.make2: 0 references () isDead:false [0]
   XXX resolving ImportHookDefault.make [0]
   XXX Hooks.make [1] already resolved
-  ImportHookDefault.make: 1 references (Hooks.re:4:4) isDead:false
+  ImportHookDefault.make: 1 references (Hooks.re:4:4) isDead:false [0]
   XXX resolving ImportHookDefault.person.age [0]
-  [type] ImportHookDefault.person.age: 0 references () isDead:true
+  [type] ImportHookDefault.person.age: 0 references () isDead:true [0]
   XXX resolving ImportHookDefault.person.name [0]
-  [type] ImportHookDefault.person.name: 0 references () isDead:true
+  [type] ImportHookDefault.person.name: 0 references () isDead:true [0]
   XXX resolving ImportHooks.foo [0]
-  ImportHooks.foo: 0 references () isDead:false
+  ImportHooks.foo: 0 references () isDead:false [0]
   XXX resolving ImportHooks.make [0]
   XXX Hooks.make [1] already resolved
-  ImportHooks.make: 1 references (Hooks.re:4:4) isDead:false
+  ImportHooks.make: 1 references (Hooks.re:4:4) isDead:false [0]
   XXX resolving ImportHooks.person.age [0]
-  [type] ImportHooks.person.age: 0 references () isDead:true
+  [type] ImportHooks.person.age: 0 references () isDead:true [0]
   XXX resolving ImportHooks.person.name [0]
-  [type] ImportHooks.person.name: 0 references () isDead:true
+  [type] ImportHooks.person.name: 0 references () isDead:true [0]
   XXX resolving ImportJsValue.default [0]
-  ImportJsValue.default: 0 references () isDead:false
+  ImportJsValue.default: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.polymorphic [0]
-  ImportJsValue.polymorphic: 0 references () isDead:false
+  ImportJsValue.polymorphic: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.convertVariant [0]
-  ImportJsValue.convertVariant: 0 references () isDead:false
+  ImportJsValue.convertVariant: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.variant.S [0]
-  [type] ImportJsValue.variant.S: 0 references () isDead:true
+  [type] ImportJsValue.variant.S: 0 references () isDead:true [0]
   XXX resolving ImportJsValue.variant.I [0]
-  [type] ImportJsValue.variant.I: 0 references () isDead:true
+  [type] ImportJsValue.variant.I: 0 references () isDead:true [0]
   XXX resolving ImportJsValue.returnedFromHigherOrder [0]
-  ImportJsValue.returnedFromHigherOrder: 0 references () isDead:false
+  ImportJsValue.returnedFromHigherOrder: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.higherOrder [0]
   XXX ImportJsValue.returnedFromHigherOrder [1] already resolved
-  ImportJsValue.higherOrder: 1 references (ImportJsValue.re:62:4) isDead:false
+  ImportJsValue.higherOrder: 1 references (ImportJsValue.re:62:4) isDead:false [0]
   XXX resolving ImportJsValue.useColor [0]
-  ImportJsValue.useColor: 0 references () isDead:false
+  ImportJsValue.useColor: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.useGetAbs [0]
-  ImportJsValue.useGetAbs: 0 references () isDead:false
+  ImportJsValue.useGetAbs: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.useGetProp [0]
-  ImportJsValue.useGetProp: 0 references () isDead:false
+  ImportJsValue.useGetProp: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.AbsoluteValue.getAbs [0]
   XXX ImportJsValue.useGetAbs [1] already resolved
-  ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:48:4) isDead:false
+  ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:48:4) isDead:false [0]
   XXX resolving ImportJsValue.AbsoluteValue.+getAbs [0]
   XXX ImportJsValue.AbsoluteValue.getAbs [1] already resolved
-  ImportJsValue.AbsoluteValue.+getAbs: 1 references (ImportJsValue.re:38:6) isDead:false
+  ImportJsValue.AbsoluteValue.+getAbs: 1 references (ImportJsValue.re:38:6) isDead:false [0]
   XXX resolving ImportJsValue.areaValue [0]
-  ImportJsValue.areaValue: 0 references () isDead:false
+  ImportJsValue.areaValue: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.roundedNumber [0]
-  ImportJsValue.roundedNumber: 0 references () isDead:false
+  ImportJsValue.roundedNumber: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.returnMixedArray [0]
-  ImportJsValue.returnMixedArray: 0 references () isDead:false
+  ImportJsValue.returnMixedArray: 0 references () isDead:false [0]
   XXX resolving ImportJsValue.area [0]
   XXX ImportJsValue.areaValue [1] already resolved
-  ImportJsValue.area: 1 references (ImportJsValue.re:28:4) isDead:false
+  ImportJsValue.area: 1 references (ImportJsValue.re:28:4) isDead:false [0]
   XXX resolving ImportJsValue.point.y [0]
-  [type] ImportJsValue.point.y: 0 references () isDead:true
+  [type] ImportJsValue.point.y: 0 references () isDead:true [0]
   XXX resolving ImportJsValue.point.x [0]
-  [type] ImportJsValue.point.x: 0 references () isDead:true
+  [type] ImportJsValue.point.x: 0 references () isDead:true [0]
   XXX resolving ImportJsValue.round [0]
   XXX ImportJsValue.roundedNumber [1] already resolved
-  ImportJsValue.round: 1 references (ImportJsValue.re:25:4) isDead:false
+  ImportJsValue.round: 1 references (ImportJsValue.re:25:4) isDead:false [0]
   XXX resolving ImportMyBanner.make [0]
   XXX ReasonComponent.make [1] already resolved
-  ImportMyBanner.make: 1 references (ReasonComponent.re:18:4) isDead:false
+  ImportMyBanner.make: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   XXX resolving ImportMyBanner.make [0]
   XXX ImportMyBanner.make [1] already resolved
-  ImportMyBanner.make: 1 references (ImportMyBanner.re:19:4) isDead:false
+  ImportMyBanner.make: 1 references (ImportMyBanner.re:19:4) isDead:false [0]
   XXX resolving ImportMyBanner.message.text [0]
-  [type] ImportMyBanner.message.text: 0 references () isDead:true
+  [type] ImportMyBanner.message.text: 0 references () isDead:true [0]
   XXX resolving NestedModulesInSignature.Universe.+theAnswer [0]
   XXX NestedModulesInSignature.Universe.theAnswer [1] already resolved
-  NestedModulesInSignature.Universe.+theAnswer: 1 references (NestedModulesInSignature.rei:2:2) isDead:false
+  NestedModulesInSignature.Universe.+theAnswer: 1 references (NestedModulesInSignature.rei:2:2) isDead:false [0]
   XXX resolving DeadValueTest.+valueOnlyInImplementation [0]
-  DeadValueTest.+valueOnlyInImplementation: 0 references () isDead:true
+  DeadValueTest.+valueOnlyInImplementation: 0 references () isDead:true [0]
   XXX resolving DeadValueTest.+valueDead [0]
   XXX DeadValueTest.valueDead [1] already resolved
-  DeadValueTest.+valueDead: 0 references () isDead:true
+  DeadValueTest.+valueDead: 0 references () isDead:true [0]
   XXX resolving DeadValueTest.+valueAlive [0]
   XXX DeadValueTest.valueAlive [1] already resolved
-  DeadValueTest.+valueAlive: 1 references (DeadValueTest.rei:1:0) isDead:false
+  DeadValueTest.+valueAlive: 1 references (DeadValueTest.rei:1:0) isDead:false [0]
   XXX resolving ErrorHandler.+x [0]
   XXX ErrorHandler.x [1] already resolved
-  ErrorHandler.+x: 0 references () isDead:true
+  ErrorHandler.+x: 0 references () isDead:true [0]
   XXX ErrorHandler.Make.+notify [0] already resolved
   XXX resolving ImmutableArray.Array.+eq [0]
   XXX ImmutableArray.eq [1] already resolved
-  ImmutableArray.Array.+eq: 0 references () isDead:true
+  ImmutableArray.Array.+eq: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+eqU [0]
   XXX ImmutableArray.eqU [1] already resolved
-  ImmutableArray.Array.+eqU: 0 references () isDead:true
+  ImmutableArray.Array.+eqU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+cmp [0]
   XXX ImmutableArray.cmp [1] already resolved
-  ImmutableArray.Array.+cmp: 0 references () isDead:true
+  ImmutableArray.Array.+cmp: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+cmpU [0]
   XXX ImmutableArray.cmpU [1] already resolved
-  ImmutableArray.Array.+cmpU: 0 references () isDead:true
+  ImmutableArray.Array.+cmpU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+some2 [0]
   XXX ImmutableArray.some2 [1] already resolved
-  ImmutableArray.Array.+some2: 0 references () isDead:true
+  ImmutableArray.Array.+some2: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+some2U [0]
   XXX ImmutableArray.some2U [1] already resolved
-  ImmutableArray.Array.+some2U: 0 references () isDead:true
+  ImmutableArray.Array.+some2U: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+every2 [0]
   XXX ImmutableArray.every2 [1] already resolved
-  ImmutableArray.Array.+every2: 0 references () isDead:true
+  ImmutableArray.Array.+every2: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+every2U [0]
   XXX ImmutableArray.every2U [1] already resolved
-  ImmutableArray.Array.+every2U: 0 references () isDead:true
+  ImmutableArray.Array.+every2U: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+every [0]
   XXX ImmutableArray.every [1] already resolved
-  ImmutableArray.Array.+every: 0 references () isDead:true
+  ImmutableArray.Array.+every: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+everyU [0]
   XXX ImmutableArray.everyU [1] already resolved
-  ImmutableArray.Array.+everyU: 0 references () isDead:true
+  ImmutableArray.Array.+everyU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+some [0]
   XXX ImmutableArray.some [1] already resolved
-  ImmutableArray.Array.+some: 0 references () isDead:true
+  ImmutableArray.Array.+some: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+someU [0]
   XXX ImmutableArray.someU [1] already resolved
-  ImmutableArray.Array.+someU: 0 references () isDead:true
+  ImmutableArray.Array.+someU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+reduceReverse2 [0]
   XXX ImmutableArray.reduceReverse2 [1] already resolved
-  ImmutableArray.Array.+reduceReverse2: 0 references () isDead:true
+  ImmutableArray.Array.+reduceReverse2: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+reduceReverse2U [0]
   XXX ImmutableArray.reduceReverse2U [1] already resolved
-  ImmutableArray.Array.+reduceReverse2U: 0 references () isDead:true
+  ImmutableArray.Array.+reduceReverse2U: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+reduceReverse [0]
   XXX ImmutableArray.reduceReverse [1] already resolved
-  ImmutableArray.Array.+reduceReverse: 0 references () isDead:true
+  ImmutableArray.Array.+reduceReverse: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+reduceReverseU [0]
   XXX ImmutableArray.reduceReverseU [1] already resolved
-  ImmutableArray.Array.+reduceReverseU: 0 references () isDead:true
+  ImmutableArray.Array.+reduceReverseU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+reduce [0]
   XXX ImmutableArray.reduce [1] already resolved
-  ImmutableArray.Array.+reduce: 0 references () isDead:true
+  ImmutableArray.Array.+reduce: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+reduceU [0]
   XXX ImmutableArray.reduceU [1] already resolved
-  ImmutableArray.Array.+reduceU: 0 references () isDead:true
+  ImmutableArray.Array.+reduceU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+partition [0]
   XXX ImmutableArray.partition [1] already resolved
-  ImmutableArray.Array.+partition: 0 references () isDead:true
+  ImmutableArray.Array.+partition: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+partitionU [0]
   XXX ImmutableArray.partitionU [1] already resolved
-  ImmutableArray.Array.+partitionU: 0 references () isDead:true
+  ImmutableArray.Array.+partitionU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+mapWithIndex [0]
   XXX ImmutableArray.mapWithIndex [1] already resolved
-  ImmutableArray.Array.+mapWithIndex: 0 references () isDead:true
+  ImmutableArray.Array.+mapWithIndex: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+mapWithIndexU [0]
   XXX ImmutableArray.mapWithIndexU [1] already resolved
-  ImmutableArray.Array.+mapWithIndexU: 0 references () isDead:true
+  ImmutableArray.Array.+mapWithIndexU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+forEachWithIndex [0]
   XXX ImmutableArray.forEachWithIndex [1] already resolved
-  ImmutableArray.Array.+forEachWithIndex: 0 references () isDead:true
+  ImmutableArray.Array.+forEachWithIndex: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+forEachWithIndexU [0]
   XXX ImmutableArray.forEachWithIndexU [1] already resolved
-  ImmutableArray.Array.+forEachWithIndexU: 0 references () isDead:true
+  ImmutableArray.Array.+forEachWithIndexU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+keepMap [0]
   XXX ImmutableArray.keepMap [1] already resolved
-  ImmutableArray.Array.+keepMap: 0 references () isDead:true
+  ImmutableArray.Array.+keepMap: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+keepMapU [0]
   XXX ImmutableArray.keepMapU [1] already resolved
-  ImmutableArray.Array.+keepMapU: 0 references () isDead:true
+  ImmutableArray.Array.+keepMapU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+keepWithIndex [0]
   XXX ImmutableArray.keepWithIndex [1] already resolved
-  ImmutableArray.Array.+keepWithIndex: 0 references () isDead:true
+  ImmutableArray.Array.+keepWithIndex: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+keepWithIndexU [0]
   XXX ImmutableArray.keepWithIndexU [1] already resolved
-  ImmutableArray.Array.+keepWithIndexU: 0 references () isDead:true
+  ImmutableArray.Array.+keepWithIndexU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+map [0]
   XXX ImmutableArray.map [1] already resolved
-  ImmutableArray.Array.+map: 0 references () isDead:true
+  ImmutableArray.Array.+map: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+mapU [0]
   XXX ImmutableArray.mapU [1] already resolved
-  ImmutableArray.Array.+mapU: 0 references () isDead:true
+  ImmutableArray.Array.+mapU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+forEach [0]
   XXX ImmutableArray.forEach [1] already resolved
-  ImmutableArray.Array.+forEach: 0 references () isDead:true
+  ImmutableArray.Array.+forEach: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+forEachU [0]
   XXX ImmutableArray.forEachU [1] already resolved
-  ImmutableArray.Array.+forEachU: 0 references () isDead:true
+  ImmutableArray.Array.+forEachU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+copy [0]
   XXX ImmutableArray.copy [1] already resolved
-  ImmutableArray.Array.+copy: 0 references () isDead:true
+  ImmutableArray.Array.+copy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+sliceToEnd [0]
   XXX ImmutableArray.sliceToEnd [1] already resolved
-  ImmutableArray.Array.+sliceToEnd: 0 references () isDead:true
+  ImmutableArray.Array.+sliceToEnd: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+slice [0]
   XXX ImmutableArray.slice [1] already resolved
-  ImmutableArray.Array.+slice: 0 references () isDead:true
+  ImmutableArray.Array.+slice: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+concatMany [0]
   XXX ImmutableArray.concatMany [1] already resolved
-  ImmutableArray.Array.+concatMany: 0 references () isDead:true
+  ImmutableArray.Array.+concatMany: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+concat [0]
   XXX ImmutableArray.concat [1] already resolved
-  ImmutableArray.Array.+concat: 0 references () isDead:true
+  ImmutableArray.Array.+concat: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+unzip [0]
   XXX ImmutableArray.unzip [1] already resolved
-  ImmutableArray.Array.+unzip: 0 references () isDead:true
+  ImmutableArray.Array.+unzip: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+zipBy [0]
   XXX ImmutableArray.zipBy [1] already resolved
-  ImmutableArray.Array.+zipBy: 0 references () isDead:true
+  ImmutableArray.Array.+zipBy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+zipByU [0]
   XXX ImmutableArray.zipByU [1] already resolved
-  ImmutableArray.Array.+zipByU: 0 references () isDead:true
+  ImmutableArray.Array.+zipByU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+zip [0]
   XXX ImmutableArray.zip [1] already resolved
-  ImmutableArray.Array.+zip: 0 references () isDead:true
+  ImmutableArray.Array.+zip: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+makeByAndShuffle [0]
   XXX ImmutableArray.makeByAndShuffle [1] already resolved
-  ImmutableArray.Array.+makeByAndShuffle: 0 references () isDead:true
+  ImmutableArray.Array.+makeByAndShuffle: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+makeByAndShuffleU [0]
   XXX ImmutableArray.makeByAndShuffleU [1] already resolved
-  ImmutableArray.Array.+makeByAndShuffleU: 0 references () isDead:true
+  ImmutableArray.Array.+makeByAndShuffleU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+makeBy [0]
   XXX ImmutableArray.makeBy [1] already resolved
-  ImmutableArray.Array.+makeBy: 0 references () isDead:true
+  ImmutableArray.Array.+makeBy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+makeByU [0]
   XXX ImmutableArray.makeByU [1] already resolved
-  ImmutableArray.Array.+makeByU: 0 references () isDead:true
+  ImmutableArray.Array.+makeByU: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+rangeBy [0]
   XXX ImmutableArray.rangeBy [1] already resolved
-  ImmutableArray.Array.+rangeBy: 0 references () isDead:true
+  ImmutableArray.Array.+rangeBy: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+range [0]
   XXX ImmutableArray.range [1] already resolved
-  ImmutableArray.Array.+range: 0 references () isDead:true
+  ImmutableArray.Array.+range: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+make [0]
   XXX ImmutableArray.make [1] already resolved
-  ImmutableArray.Array.+make: 0 references () isDead:true
+  ImmutableArray.Array.+make: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+makeUninitializedUnsafe [0]
   XXX ImmutableArray.makeUninitializedUnsafe [1] already resolved
-  ImmutableArray.Array.+makeUninitializedUnsafe: 0 references () isDead:true
+  ImmutableArray.Array.+makeUninitializedUnsafe: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+makeUninitialized [0]
   XXX ImmutableArray.makeUninitialized [1] already resolved
-  ImmutableArray.Array.+makeUninitialized: 0 references () isDead:true
+  ImmutableArray.Array.+makeUninitialized: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+reverse [0]
   XXX ImmutableArray.reverse [1] already resolved
-  ImmutableArray.Array.+reverse: 0 references () isDead:true
+  ImmutableArray.Array.+reverse: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+shuffle [0]
   XXX ImmutableArray.shuffle [1] already resolved
-  ImmutableArray.Array.+shuffle: 0 references () isDead:true
+  ImmutableArray.Array.+shuffle: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+getUndefined [0]
   XXX ImmutableArray.getUndefined [1] already resolved
-  ImmutableArray.Array.+getUndefined: 0 references () isDead:true
+  ImmutableArray.Array.+getUndefined: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+getUnsafe [0]
   XXX ImmutableArray.getUnsafe [1] already resolved
-  ImmutableArray.Array.+getUnsafe: 0 references () isDead:true
+  ImmutableArray.Array.+getUnsafe: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+getExn [0]
   XXX ImmutableArray.getExn [1] already resolved
-  ImmutableArray.Array.+getExn: 0 references () isDead:true
+  ImmutableArray.Array.+getExn: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+get [0]
   XXX ImmutableArray.Array.get [1] already resolved
   XXX ImmutableArray.get [1] already resolved
-  ImmutableArray.Array.+get: 1 references (ImmutableArray.rei:5:15) isDead:false
+  ImmutableArray.Array.+get: 1 references (ImmutableArray.rei:5:15) isDead:false [0]
   XXX resolving ImmutableArray.Array.+size [0]
   XXX ImmutableArray.size [1] already resolved
-  ImmutableArray.Array.+size: 0 references () isDead:true
+  ImmutableArray.Array.+size: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+length [0]
   XXX ImmutableArray.length [1] already resolved
-  ImmutableArray.Array.+length: 0 references () isDead:true
+  ImmutableArray.Array.+length: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+toArray [0]
   XXX ImmutableArray.toArray [1] already resolved
-  ImmutableArray.Array.+toArray: 0 references () isDead:true
+  ImmutableArray.Array.+toArray: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.Array.+fromArray [0]
   XXX ImmutableArray.fromArray [1] already resolved
-  ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0) isDead:false
+  ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0) isDead:false [0]
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 16:7
