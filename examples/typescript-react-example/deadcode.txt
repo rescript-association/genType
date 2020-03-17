@@ -1567,23 +1567,30 @@ File References
   XXX resolving DeadTest.+cb [1]
   XXX resolving DeadTest.foo [2]
   XXX DeadTest.bar [3] is being resolved: assume not dead
+  DeadTest.bar: fixpoint reached: resolved
+  DeadTest.bar: 1 references (DeadTest.re:95:6) isDead:false
+  XXX resolving DeadTest.+cb [0]
+  XXX resolving DeadTest.foo [1]
+  XXX DeadTest.bar [2] already resolved
   DeadTest.foo: 1 references (DeadTest.re:98:4) isDead:false
   DeadTest.+cb: 1 references (DeadTest.re:94:8) isDead:false
-  DeadTest.bar: 1 references (DeadTest.re:95:6) isDead:false
-  XXX DeadTest.+cb [0] already resolved
   XXX DeadTest.foo [0] already resolved
   XXX resolving DeadTest.+cb [0]
   XXX resolving DeadTest.recWithCallback [1]
   XXX DeadTest.+cb [2] is being resolved: assume not dead
-  DeadTest.recWithCallback: 1 references (DeadTest.re:90:6) isDead:false
+  DeadTest.+cb: fixpoint reached: resolved
   DeadTest.+cb: 1 references (DeadTest.re:89:8) isDead:false
-  XXX DeadTest.recWithCallback [0] already resolved
+  XXX resolving DeadTest.recWithCallback [0]
+  XXX DeadTest.+cb [1] already resolved
+  DeadTest.recWithCallback: 1 references (DeadTest.re:90:6) isDead:false
   XXX resolving DeadTest.rec2 [0]
   XXX resolving DeadTest.rec1 [1]
   XXX DeadTest.rec2 [2] is being resolved: assume not dead
-  DeadTest.rec1: 1 references (DeadTest.re:87:4) isDead:false
+  DeadTest.rec2: fixpoint reached: resolved
   DeadTest.rec2: 1 references (DeadTest.re:86:8) isDead:false
-  XXX DeadTest.rec1 [0] already resolved
+  XXX resolving DeadTest.rec1 [0]
+  XXX DeadTest.rec2 [1] already resolved
+  DeadTest.rec1: 1 references (DeadTest.re:87:4) isDead:false
   XXX resolving DeadTest.split_map [0]
   XXX can't find decl for DeadTest.re:82:2
   DeadTest.split_map: 1 references (DeadTest.re:82:2) isDead:false

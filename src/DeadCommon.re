@@ -665,33 +665,33 @@ let rec resolveRecursiveRefs =
              };
            }
          );
-    let noDepsLive = PosSet.is_empty(newRefs);
-    if (oneDepUnresolved^ && noDepsLive) {
-      if (refsBeingResolved |> PosSet.is_empty) {
+
+    let isDead = decl |> declIsDead(~refs=newRefs);
+    let isResolved =
+      if (! oneDepUnresolved^) {
+        true;
+      } else if (refsBeingResolved |> PosSet.is_empty) {
         if (verbose) {
           Log_.item(
-            "%s%s: fixpoint reached: dead@.",
+            "%s%s: fixpoint reached: resolved@.",
             decl.declKind != Value ? "[type] " : "",
             decl.path |> pathToString,
           );
         };
-        if (decl.pos |> doReportDead) {
-          deadDeclarations := [decl, ...deadDeclarations^];
-        };
-        decl.pos |> ProcessDeadAnnotations.annotateDead;
-        decl.resolved = true;
         true;
       } else {
-        Log_.item(
-          "XXX %s [%d] still unresolved: assuming not dead@.",
-          decl.path |> pathToString,
-          refsBeingResolved |> PosSet.cardinal,
-        );
         false;
       };
-    } else {
-      let isDead = decl |> declIsDead(~refs=newRefs);
 
+    if (isDead) {
+      if (decl.pos |> doReportDead) {
+        deadDeclarations := [decl, ...deadDeclarations^];
+      };
+      decl.pos |> ProcessDeadAnnotations.annotateDead;
+    };
+
+    if (isResolved) {
+      decl.resolved = true;
       if (verbose) {
         let refsString =
           newRefs
@@ -707,16 +707,9 @@ let rec resolveRecursiveRefs =
           isDead,
         );
       };
-
-      if (isDead) {
-        if (decl.pos |> doReportDead) {
-          deadDeclarations := [decl, ...deadDeclarations^];
-        };
-        decl.pos |> ProcessDeadAnnotations.annotateDead;
-      };
-      decl.resolved = true;
-      isDead;
     };
+
+    isDead;
   };
 };
 
