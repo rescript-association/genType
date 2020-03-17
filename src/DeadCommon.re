@@ -600,13 +600,13 @@ let declIsDead = (~refs, decl) => {
     refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
   liveRefs
   |> PosSet.cardinal == 0
-  && !ProcessDeadAnnotations.isAnnotatedGenTypeOrLive(decl.pos)
-  && posInWhitelist(decl.pos)
-  && !posInBlacklist(decl.pos);
+  && !ProcessDeadAnnotations.isAnnotatedGenTypeOrLive(decl.pos);
 };
 
 let doReportDead = pos =>
-  !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos);
+  !ProcessDeadAnnotations.isAnnotatedGenTypeOrDead(pos)
+  && posInWhitelist(pos)
+  && !posInBlacklist(pos);
 
 let rec resolveRecursiveRefs =
         (~deadDeclarations, ~orderedFiles, ~refs, ~refsBeingResolved, decl)
