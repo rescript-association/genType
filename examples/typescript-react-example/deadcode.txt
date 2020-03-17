@@ -1375,7 +1375,7 @@
   addDeclaration recWithCallback DeadTest.re:89:8
   addDeclaration foo DeadTest.re:94:8
   addDeclaration bar DeadTest.re:98:4
-  addValueReference DeadTest.re:1:0 --> ImmutableArray.rei:7:0
+  addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:12:7 --> DeadTest.re:10:4
@@ -1384,28 +1384,28 @@
   [type] extendTypeDependencies DeadTest.re:40:6 --> DeadTest.re:36:6
   addDeclaration +a DeadTest.re:41:6
   [type] addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
-  addValueReference DeadTest.re:44:0 --> DeadTest.re:37:2
-  addValueReference DeadTest.re:44:0 --> DeadTest.re:44:9
+  addValueReference DeadTest.re:44:17 --> DeadTest.re:37:2
+  addValueReference DeadTest.re:44:14 --> DeadTest.re:44:9
   addDeclaration _ DeadTest.re:46:0
   [type] addTypeReference DeadTest.re:46:8 --> DeadTypeTest.rei:8:4
   addDeclaration _ DeadTest.re:47:0
   [type] addTypeReference DeadTest.re:47:8 --> DeadTypeTest.rei:9:4
   addDeclaration _ DeadTest.re:54:0
   [type] addTypeReference DeadTest.re:54:13 --> DeadTest.re:50:2
-  addValueReference DeadTest.re:54:0 --> DeadTest.re:54:8
+  addValueReference DeadTest.re:54:13 --> DeadTest.re:54:8
   addDeclaration _ DeadTest.re:55:0
-  addValueReference DeadTest.re:55:0 --> DeadTest.re:55:10
+  addValueReference DeadTest.re:55:19 --> DeadTest.re:55:10
   [type] addTypeReference DeadTest.re:55:9 --> DeadTest.re:51:2
   addDeclaration _ DeadTest.re:58:2
   addDeclaration +y DeadTest.re:65:6
   addDeclaration +x DeadTest.re:66:6
   addValueReference DeadTest.re:66:6 --> DeadTest.re:65:6
   addDeclaration +valueOnlyInImplementation DeadTest.re:69:6
-  addValueReference DeadTest.re:72:0 --> DeadTest.re:62:2
+  addValueReference DeadTest.re:73:9 --> DeadTest.re:62:2
   addValueReference DeadTest.re:77:0 --> DeadValueTest.rei:1:0
   addValueReference DeadTest.re:79:8 --> DeadTest.re:79:8
-  addValueReference DeadTest.re:82:2 --> DeadTest.re:81:20
-  addValueReference DeadTest.re:82:2 --> DeadTest.re:81:8
+  addValueReference DeadTest.re:81:8 --> DeadTest.re:81:20
+  addValueReference DeadTest.re:81:8 --> DeadTest.re:81:8
   addValueReference DeadTest.re:86:8 --> DeadTest.re:87:4
   addValueReference DeadTest.re:87:4 --> DeadTest.re:86:8
   addDeclaration +cb DeadTest.re:90:6
@@ -1589,22 +1589,22 @@ File References
   XXX DeadTest.rec2 [1] already resolved
   DeadTest.rec1: 0 references () isDead:true [0]
   XXX resolving DeadTest.split_map [0]
-  XXX can't find decl for DeadTest.re:82:2
-  DeadTest.split_map: 1 references (DeadTest.re:82:2) isDead:false [0]
+  XXX DeadTest.split_map ignoring reference to self
+  DeadTest.split_map: 0 references () isDead:true [0]
   XXX resolving DeadTest.unusedRec [0]
   XXX DeadTest.unusedRec ignoring reference to self
   DeadTest.unusedRec: 0 references () isDead:true [0]
   XXX resolving DeadTest.MM.y [0]
   DeadTest.MM.y: 0 references () isDead:true [0]
   XXX resolving DeadTest.MM.x [0]
-  XXX can't find decl for DeadTest.re:72:0
-  DeadTest.MM.x: 1 references (DeadTest.re:72:0) isDead:false [0]
+  XXX can't find decl for DeadTest.re:73:9
+  DeadTest.MM.x: 1 references (DeadTest.re:73:9) isDead:false [0]
   XXX resolving DeadTest.MM.+valueOnlyInImplementation [0]
   DeadTest.MM.+valueOnlyInImplementation: 0 references () isDead:true [0]
   XXX resolving DeadTest.MM.+x [0]
   XXX DeadTest.MM.x [1] already resolved
-  XXX can't find decl for DeadTest.re:72:0
-  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:72:0) isDead:false [0]
+  XXX can't find decl for DeadTest.re:73:9
+  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:73:9) isDead:false [0]
   XXX resolving DeadTest.MM.+y [0]
   XXX DeadTest.MM.y [1] already resolved
   XXX DeadTest.MM.+x [1] already resolved
@@ -1626,12 +1626,12 @@ File References
   XXX resolving DeadTest._ [0]
   DeadTest._: 0 references () isDead:true [0]
   XXX resolving DeadTest.VariantUsedOnlyInImplementation.a [0]
-  XXX can't find decl for DeadTest.re:44:0
-  DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:0) isDead:false [0]
+  XXX can't find decl for DeadTest.re:44:17
+  DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:17) isDead:false [0]
   XXX resolving DeadTest.VariantUsedOnlyInImplementation.+a [0]
   XXX DeadTest.VariantUsedOnlyInImplementation.a [1] already resolved
-  XXX can't find decl for DeadTest.re:44:0
-  DeadTest.VariantUsedOnlyInImplementation.+a: 2 references (DeadTest.re:37:2, DeadTest.re:44:0) isDead:false [0]
+  XXX can't find decl for DeadTest.re:44:17
+  DeadTest.VariantUsedOnlyInImplementation.+a: 2 references (DeadTest.re:37:2, DeadTest.re:44:17) isDead:false [0]
   XXX resolving DeadTest.VariantUsedOnlyInImplementation.t.A [0]
   XXX can't find decl for DeadTest.re:40:6
   XXX can't find decl for DeadTest.re:41:10
@@ -2541,8 +2541,8 @@ File References
   XXX resolving ImmutableArray.toArray [0]
   ImmutableArray.toArray: 0 references () isDead:true [0]
   XXX resolving ImmutableArray.fromArray [0]
-  XXX can't find decl for DeadTest.re:1:0
-  ImmutableArray.fromArray: 1 references (DeadTest.re:1:0) isDead:false [0]
+  XXX can't find decl for DeadTest.re:1:15
+  ImmutableArray.fromArray: 1 references (DeadTest.re:1:15) isDead:false [0]
   XXX resolving ImmutableArray.Array.get [0]
   XXX TestImmutableArray.testImmutableArrayGet [1] already resolved
   ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4) isDead:false [0]
@@ -4167,6 +4167,12 @@ File References
   unusedRec is never used
   <-- line 79
   [@dead "unusedRec"] let rec unusedRec = () => unusedRec();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 81:9
+  split_map is never used
+  <-- line 81
+  [@dead "split_map"] let rec split_map = l => {
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 86:9
