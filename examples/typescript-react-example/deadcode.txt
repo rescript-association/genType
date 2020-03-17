@@ -658,6 +658,7 @@
   addDeclaration k FirstClassModules.re:21:8
   addDeclaration k3 FirstClassModules.re:25:8
   addDeclaration u FirstClassModules.re:30:8
+  addDeclaration f FirstClassModules.re:33:2
   addDeclaration x FirstClassModules.re:34:6
   addDeclaration firstClassModule FirstClassModules.re:41:4
   addDeclaration testConvert FirstClassModules.re:44:4
@@ -850,6 +851,7 @@
   addDeclaration returnMixedArray ImportJsValue.re:21:0
   addDeclaration roundedNumber ImportJsValue.re:25:4
   addDeclaration areaValue ImportJsValue.re:28:4
+  addDeclaration getProp ImportJsValue.re:35:2
   addDeclaration getAbs ImportJsValue.re:38:6
   addDeclaration useGetProp ImportJsValue.re:45:4
   addDeclaration useGetAbs ImportJsValue.re:48:4
@@ -1023,7 +1025,9 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHookDefault.cmt
   [type] addDeclaration name ImportHookDefault.re:2:2
   [type] addDeclaration age ImportHookDefault.re:3:2
+  addDeclaration makeProps ImportHookDefault.re:6:0
   addDeclaration make ImportHookDefault.re:6:0
+  addDeclaration make2Props ImportHookDefault.re:16:0
   addDeclaration make2 ImportHookDefault.re:16:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/UseImportJsValue.cmt
   addDeclaration useGetProp UseImportJsValue.re:2:4
@@ -1054,6 +1058,7 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHooks.cmt
   [type] addDeclaration name ImportHooks.re:3:2
   [type] addDeclaration age ImportHooks.re:4:2
+  addDeclaration makeProps ImportHooks.re:15:0
   addDeclaration make ImportHooks.re:15:0
   addDeclaration foo ImportHooks.re:21:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BucklescriptAnnotations.cmt
@@ -1162,6 +1167,7 @@
   addValueReference Records.re:167:4 --> Records.re:167:21
   addValueReference Records.re:170:4 --> Records.re:170:22
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
+  addDeclaration makeProps ImportIndex.re:2:0
   addDeclaration make ImportIndex.re:2:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Hooks.cmt
   [type] addDeclaration name Hooks.re:1:16
@@ -1755,6 +1761,9 @@ File References
   XXX resolving FirstClassModules.M.x [0]
   XXX can't find decl for FirstClassModules.re:2:2
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2) isDead:false [0]
+  XXX resolving FirstClassModules.M.f [0]
+  XXX can't find decl for FirstClassModules.re:4:2
+  FirstClassModules.M.f: 1 references (FirstClassModules.re:4:2) isDead:false [0]
   XXX resolving FirstClassModules.M.Z.u [0]
   XXX can't find decl for FirstClassModules.re:12:20
   XXX can't find decl for FirstClassModules.re:28:20
@@ -2600,6 +2609,10 @@ File References
   XXX resolving ImportJsValue.AbsoluteValue.getAbs [0]
   XXX ImportJsValue.useGetAbs [1] already resolved
   ImportJsValue.AbsoluteValue.getAbs: 1 references (ImportJsValue.re:48:4) isDead:false [0]
+  XXX resolving ImportJsValue.AbsoluteValue.getProp [0]
+  XXX ImportJsValue.useGetProp [1] already resolved
+  XXX UseImportJsValue.useGetProp [1] already resolved
+  ImportJsValue.AbsoluteValue.getProp: 2 references (ImportJsValue.re:45:4, UseImportJsValue.re:2:4) isDead:false [0]
   XXX resolving ImportJsValue.AbsoluteValue.+getAbs [0]
   XXX ImportJsValue.AbsoluteValue.getAbs [1] already resolved
   ImportJsValue.AbsoluteValue.+getAbs: 1 references (ImportJsValue.re:38:6) isDead:false [0]

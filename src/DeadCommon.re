@@ -8,7 +8,7 @@ let analyzeTypes = ref(true);
 
 let analyzeTermination = ref(false);
 
-let analyzeExternals = false;
+let analyzeExternals = true;
 
 let verbose = Sys.getenv_opt("Debug") != None;
 
