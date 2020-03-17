@@ -1655,7 +1655,7 @@ File References
   XXX resolving DeadTest.fortytwo [0]
   DeadTest.fortytwo: 0 references () isDead:true [0]
   XXX resolving DeadTestWhitelist.x [0]
-  DeadTestWhitelist.x: 0 references () isDead:false [0]
+  DeadTestWhitelist.x: 0 references () isDead:true [0]
   XXX resolving DeadTypeTest.deadType.InNeither [0]
   [type] DeadTypeTest.deadType.InNeither: 0 references () isDead:true [0]
   XXX resolving DeadTypeTest.deadType.InBoth [0]
