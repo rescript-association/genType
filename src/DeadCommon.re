@@ -667,7 +667,10 @@ let rec resolveRecursiveRefs =
          );
 
     let isDead = decl |> declIsDead(~refs=newRefs);
-    let isResolved = allDepsResolved^ || refsBeingResolved |> PosSet.is_empty;
+    let isResolved =
+      allDepsResolved^
+      || PosSet.is_empty(refsBeingResolved)
+      || !PosSet.is_empty(newRefs);
 
     if (isResolved) {
       decl.resolved = true;
