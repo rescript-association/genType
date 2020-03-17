@@ -12,6 +12,8 @@ let analyzeExternals = true;
 
 let verbose = Sys.getenv_opt("Debug") != None;
 
+let recursiveDebug = false;
+
 let checkPrefix = prefix_ => {
   let prefix =
     GenTypeCommon.projectRoot^ == ""
@@ -567,34 +569,6 @@ module WriteDeadAnnotations = {
   let write = () => writeFile(currentFile^, currentFileLines^);
 };
 
-// TODO: replace compareItemsUsingDependencies
-let comparePos =
-    (
-      ~orderedFiles,
-      {
-        Lexing.pos_fname: fname1,
-        pos_lnum: lnum1,
-        pos_bol: bol1,
-        pos_cnum: cnum1,
-      },
-      {
-        Lexing.pos_fname: fname2,
-        pos_lnum: lnum2,
-        pos_bol: bol2,
-        pos_cnum: cnum2,
-      },
-    ) => {
-  let findPosition = fn => Hashtbl.find(orderedFiles, fn);
-
-  /* From the root of the file dependency DAG to the leaves.
-     From the bottom of the file to the top. */
-  let (position1, position2) = (
-    fname1 |> findPosition,
-    fname2 |> findPosition,
-  );
-  compare((position1, lnum2, bol2, cnum2), (position2, lnum1, bol1, cnum1));
-};
-
 let declIsDead = (~refs, decl) => {
   let liveRefs =
     refs |> PosSet.filter(p => !ProcessDeadAnnotations.isAnnotatedDead(p));
@@ -620,36 +594,46 @@ let rec resolveRecursiveRefs =
         : bool => {
   switch (decl.pos) {
   | _ when decl.resolved =>
-    Log_.item(
-      "XXX %s [%d] already resolved@.",
-      decl.path |> pathToString,
-      level,
-    );
+    if (recursiveDebug) {
+      Log_.item(
+        "XXX %s [%d] already resolved@.",
+        decl.path |> pathToString,
+        level,
+      );
+    };
     decl.pos |> ProcessDeadAnnotations.isAnnotatedDead;
   | _ when PosSet.mem(decl.pos, refsBeingResolved^) =>
-    Log_.item(
-      "XXX %s [%d] is being resolved: assume dead@.",
-      decl.path |> pathToString,
-      level,
-    );
+    if (recursiveDebug) {
+      Log_.item(
+        "XXX %s [%d] is being resolved: assume dead@.",
+        decl.path |> pathToString,
+        level,
+      );
+    };
     true;
   | _ =>
-    Log_.item("XXX resolving %s [%d]@.", decl.path |> pathToString, level);
+    if (recursiveDebug) {
+      Log_.item("XXX resolving %s [%d]@.", decl.path |> pathToString, level);
+    };
     refsBeingResolved := PosSet.add(decl.pos, refsBeingResolved^);
     let allDepsResolved = ref(true);
     let newRefs =
       refs
       |> PosSet.filter(x =>
            if (x == decl.pos) {
-             Log_.item(
-               "XXX %s ignoring reference to self@.",
-               decl.path |> pathToString,
-             );
+             if (recursiveDebug) {
+               Log_.item(
+                 "XXX %s ignoring reference to self@.",
+                 decl.path |> pathToString,
+               );
+             };
              false;
            } else {
              switch (PosHash.find_opt(decls, x)) {
              | None =>
-               Log_.item("XXX can't find decl for %s@.", x |> posToString);
+               if (recursiveDebug) {
+                 Log_.item("XXX can't find decl for %s@.", x |> posToString);
+               };
                true;
              | Some(xDecl) =>
                let xRefs = PosHash.findSet(valueReferences, x);
