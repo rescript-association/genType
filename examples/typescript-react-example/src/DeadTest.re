@@ -96,3 +96,5 @@ let rec foo = () => {
   cb();
 }
 and bar = () => foo();
+
+let withDefaultValue = (~paramWithDefault=3, y) => paramWithDefault + y;

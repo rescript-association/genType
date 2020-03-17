@@ -132,10 +132,8 @@
   addDeclaration tToString ReasonComponent.re:55:4
   addDeclaration useRecordsCoord ReasonComponent.re:63:4
   addValueReference ReasonComponent.re:3:4 --> ReasonReact.rei:153:0
-  addDeclaration +message ReasonComponent.re:19:6
-  addValueReference ReasonComponent.re:19:6 --> ReasonComponent.re:19:14
-  addDeclaration +intList ReasonComponent.re:19:43
-  addValueReference ReasonComponent.re:19:43 --> ReasonComponent.re:19:51
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:14
+  addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:51
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:15:4
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:6
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:43
@@ -149,8 +147,7 @@
   addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:181:0
   addValueReference ReasonComponent.re:18:4 --> ReactDOMRe.re:2105:0
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:3:4
-  addDeclaration +first ReasonComponent.re:43:14
-  addValueReference ReasonComponent.re:43:14 --> ReasonComponent.re:43:20
+  addValueReference ReasonComponent.re:43:4 --> ReasonComponent.re:43:20
   addValueReference ReasonComponent.re:43:4 --> ReasonComponent.re:43:14
   addValueReference ReasonComponent.re:43:4 --> ReasonComponent.re:43:24
   addValueReference ReasonComponent.re:46:4 --> ReasonComponent.re:46:37
@@ -1375,6 +1372,7 @@
   addDeclaration recWithCallback DeadTest.re:89:8
   addDeclaration foo DeadTest.re:94:8
   addDeclaration bar DeadTest.re:98:4
+  addDeclaration withDefaultValue DeadTest.re:100:4
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1415,6 +1413,9 @@
   addValueReference DeadTest.re:95:6 --> DeadTest.re:98:4
   addValueReference DeadTest.re:94:8 --> DeadTest.re:95:6
   addValueReference DeadTest.re:98:4 --> DeadTest.re:94:8
+  addValueReference DeadTest.re:100:4 --> DeadTest.re:100:42
+  addValueReference DeadTest.re:100:4 --> DeadTest.re:100:25
+  addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
@@ -1563,6 +1564,8 @@ File References
   DeadMl.AA.+thisIsInInterface: 0 references () isDead:true [0]
   XXX resolving DeadMl.QQ.thisSpansSeveralLines [0]
   DeadMl.QQ.thisSpansSeveralLines: 0 references () isDead:true [0]
+  XXX resolving DeadTest.withDefaultValue [0]
+  DeadTest.withDefaultValue: 0 references () isDead:true [0]
   XXX resolving DeadTest.bar [0]
   XXX resolving DeadTest.+cb [1]
   XXX resolving DeadTest.foo [2]
@@ -1902,21 +1905,12 @@ File References
   [type] ReasonComponent.t.A: 0 references () isDead:true [0]
   XXX resolving ReasonComponent.useTypeDefinedInAnotherModule [0]
   ReasonComponent.useTypeDefinedInAnotherModule: 0 references () isDead:false [0]
-  XXX resolving ReasonComponent.+first [0]
-  XXX resolving ReasonComponent.minus [1]
-  ReasonComponent.minus: 0 references () isDead:false [1]
-  ReasonComponent.+first: 1 references (ReasonComponent.re:43:4) isDead:false [0]
-  XXX ReasonComponent.minus [0] already resolved
+  XXX resolving ReasonComponent.minus [0]
+  ReasonComponent.minus: 0 references () isDead:false [0]
   XXX resolving ReasonComponent.+emptyArray [0]
   XXX resolving ReasonComponent.make [1]
   ReasonComponent.make: 0 references () isDead:false [1]
   ReasonComponent.+emptyArray: 1 references (ReasonComponent.re:18:4) isDead:false [0]
-  XXX resolving ReasonComponent.+intList [0]
-  XXX ReasonComponent.make [1] already resolved
-  ReasonComponent.+intList: 1 references (ReasonComponent.re:18:4) isDead:false [0]
-  XXX resolving ReasonComponent.+message [0]
-  XXX ReasonComponent.make [1] already resolved
-  ReasonComponent.+message: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   XXX ReasonComponent.make [0] already resolved
   XXX resolving ReasonComponent.onClick [0]
   XXX ReasonComponent.make [1] already resolved
@@ -4215,6 +4209,12 @@ File References
   bar is never used
   <-- line 98
   [@dead "bar"] and bar = () => foo();
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 100:5
+  withDefaultValue is never used
+  <-- line 100
+  [@dead "withDefaultValue"] let withDefaultValue = (~paramWithDefault=3, y) => paramWithDefault + y;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9
