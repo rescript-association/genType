@@ -68,6 +68,11 @@ function bar(param) {
   return foo(/* () */0);
 }
 
+function withDefaultValue(paramWithDefaultOpt, y) {
+  var paramWithDefault = paramWithDefaultOpt !== undefined ? paramWithDefaultOpt : 3;
+  return paramWithDefault + y | 0;
+}
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -99,6 +104,7 @@ export {
   recWithCallback ,
   foo ,
   bar ,
+  withDefaultValue ,
   
 }
 /*  Not a pure module */

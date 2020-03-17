@@ -100,7 +100,8 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   checkAnyBindingWithNoSideEffects(vb);
   let pos =
     switch (vb.vb_pat.pat_desc) {
-    | Tpat_var(id, {loc: {loc_start, loc_ghost} as loc}) when !loc_ghost =>
+    | Tpat_var(id, {loc: {loc_start, loc_ghost} as loc})
+        when !loc_ghost && !vb.vb_loc.loc_ghost =>
       let name = "+" ++ Ident.name(id);
       let exists =
         switch (PosHash.find_opt(decls, loc_start)) {
@@ -152,11 +153,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         _,
       },
     ) =>
-    addValueReference(
-      ~addFileReference=true,
-      posDeclaration,
-      posUsage,
-    );
+    addValueReference(~addFileReference=true, posDeclaration, posUsage)
 
   | Texp_field(
       _,
