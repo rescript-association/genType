@@ -98,3 +98,10 @@ let rec foo = () => {
 and bar = () => foo();
 
 let withDefaultValue = (~paramWithDefault=3, y) => paramWithDefault + y;
+
+external unsafe_string1: (bytes, int, int) => Digest.t = "caml_md5_string";
+
+
+module Ext_buffer: {} = {
+  external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
+};
