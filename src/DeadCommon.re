@@ -620,7 +620,11 @@ let rec resolveRecursiveRefs =
                };
                true;
              | Some(xDecl) =>
-               let xRefs = PosHash.findSet(valueReferences, x);
+               let xRefs =
+                 PosHash.findSet(
+                   xDecl.declKind == Value ? valueReferences : typeReferences,
+                   x,
+                 );
                let xDeclIsDead =
                  xDecl
                  |> resolveRecursiveRefs(
