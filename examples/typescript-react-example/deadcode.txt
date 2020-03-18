@@ -915,6 +915,9 @@
   addValueReference References.re:18:2 --> References.re:23:6
   mergeSet References.re:19:2 --> References.re:24:6 (1 new items)
   addValueReference References.re:19:2 --> References.re:24:6
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWithInterface.cmt
+  addDeclaration +x DeadTestWithInterface.re:2:6
+  mergeSet DeadTestWithInterface.re:1:20 --> DeadTestWithInterface.re:2:6 (0 new items)
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
   addDeclaration theAnswer NestedModulesInSignature.rei:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
@@ -1069,6 +1072,7 @@
   addDeclaration makeProps ImportHooks.re:15:0
   addDeclaration make ImportHooks.re:15:0
   addDeclaration foo ImportHooks.re:21:0
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWithInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BucklescriptAnnotations.cmt
   addDeclaration foo BucklescriptAnnotations.re:19:4
   addDeclaration bar BucklescriptAnnotations.re:21:4
@@ -1475,6 +1479,7 @@ File References
   TypeParams1.re -->> 
   DeadValueTest.rei -->> DeadValueTest.re
   BucklescriptAnnotations.re -->> 
+  DeadTestWithInterface.rei -->> 
   ImportHookDefault.re -->> 
   ModuleAliases.re -->> 
   TestModuleAliases.re -->> 
@@ -1505,6 +1510,7 @@ File References
   FirstClassModulesInterface.rei -->> FirstClassModulesInterface.re
   DeadTestWhitelist.re -->> 
   TransitiveType1.re -->> 
+  DeadTestWithInterface.re -->> 
   TestImmutableArray.re -->> ImmutableArray.rei
   Tuples.re -->> 
   NestedModules.re -->> 
@@ -1594,6 +1600,7 @@ File References
   DeadTest.fortyTwoButExported: 0 references () isDead:false [0]
   DeadTest.fortytwo: 0 references () isDead:true [0]
   DeadTestWhitelist.x: 0 references () isDead:true [0]
+  DeadTestWithInterface.Ext_buffer.+x: 0 references () isDead:true [0]
   [type] DeadTypeTest.deadType.InNeither: 0 references () isDead:true [0]
   [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8) isDead:false [0]
   [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8) isDead:false [0]
@@ -3408,6 +3415,12 @@ File References
   deadType.InNeither is a variant case which is never constructed
   <-- line 10
     | [@dead "deadType.InNeither"] InNeither;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 2:7
+  Ext_buffer.+x is never used
+  <-- line 2
+    [@dead "Ext_buffer.+x"] let x = 42;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 2:5
