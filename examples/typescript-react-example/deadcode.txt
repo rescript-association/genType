@@ -165,300 +165,366 @@
   [type] addDeclaration y FirstClassModulesInterface.rei:4:2
   addDeclaration r FirstClassModulesInterface.rei:7:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
-  addDeclaration +notify ErrorHandler.re:7:6
+  addDeclaration notify ErrorHandler.re:7:6
+  addDeclaration x ErrorHandler.re:12:4
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
-  addDeclaration +x ErrorHandler.re:12:4
   addValueReference ErrorHandler.rei:3:2 --> ErrorHandler.re:3:2
   addValueReference ErrorHandler.re:3:2 --> ErrorHandler.rei:3:2
   addValueReference ErrorHandler.rei:5:32 --> ErrorHandler.re:7:6
   addValueReference ErrorHandler.rei:7:0 --> ErrorHandler.re:12:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
-  addDeclaration +fromT ImmutableArray.re:5:2
-  addDeclaration +fromTp ImmutableArray.re:6:2
-  addDeclaration +fromTT ImmutableArray.re:7:2
-  addDeclaration +toT ImmutableArray.re:8:2
-  addDeclaration +toTp ImmutableArray.re:9:2
-  addDeclaration +toT2 ImmutableArray.re:10:2
-  addDeclaration +fromArray ImmutableArray.re:14:6
+  addDeclaration fromT ImmutableArray.re:5:2
+  addDeclaration fromTp ImmutableArray.re:6:2
+  addDeclaration fromTT ImmutableArray.re:7:2
+  addDeclaration toT ImmutableArray.re:8:2
+  addDeclaration toTp ImmutableArray.re:9:2
+  addDeclaration toT2 ImmutableArray.re:10:2
+  addDeclaration fromArray ImmutableArray.re:14:6
+  addDeclaration toArray ImmutableArray.re:16:6
+  addDeclaration length ImmutableArray.re:20:6
+  addDeclaration size ImmutableArray.re:22:6
+  addDeclaration get ImmutableArray.re:24:6
+  addDeclaration getExn ImmutableArray.re:26:6
+  addDeclaration getUnsafe ImmutableArray.re:28:6
+  addDeclaration getUndefined ImmutableArray.re:30:6
+  addDeclaration shuffle ImmutableArray.re:32:6
+  addDeclaration reverse ImmutableArray.re:34:6
+  addDeclaration makeUninitialized ImmutableArray.re:36:6
+  addDeclaration makeUninitializedUnsafe ImmutableArray.re:38:6
+  addDeclaration make ImmutableArray.re:40:6
+  addDeclaration range ImmutableArray.re:42:6
+  addDeclaration rangeBy ImmutableArray.re:44:6
+  addDeclaration makeByU ImmutableArray.re:46:6
+  addDeclaration makeBy ImmutableArray.re:47:6
+  addDeclaration makeByAndShuffleU ImmutableArray.re:49:6
+  addDeclaration makeByAndShuffle ImmutableArray.re:50:6
+  addDeclaration zip ImmutableArray.re:52:6
+  addDeclaration zipByU ImmutableArray.re:54:6
+  addDeclaration zipBy ImmutableArray.re:55:6
+  addDeclaration unzip ImmutableArray.re:57:6
+  addDeclaration concat ImmutableArray.re:59:6
+  addDeclaration concatMany ImmutableArray.re:61:6
+  addDeclaration slice ImmutableArray.re:63:6
+  addDeclaration sliceToEnd ImmutableArray.re:66:6
+  addDeclaration copy ImmutableArray.re:68:6
+  addDeclaration forEachU ImmutableArray.re:70:6
+  addDeclaration forEach ImmutableArray.re:71:6
+  addDeclaration mapU ImmutableArray.re:73:6
+  addDeclaration map ImmutableArray.re:74:6
+  addDeclaration keepWithIndexU ImmutableArray.re:76:6
+  addDeclaration keepWithIndex ImmutableArray.re:77:6
+  addDeclaration keepMapU ImmutableArray.re:79:6
+  addDeclaration keepMap ImmutableArray.re:80:6
+  addDeclaration forEachWithIndexU ImmutableArray.re:82:6
+  addDeclaration forEachWithIndex ImmutableArray.re:83:6
+  addDeclaration mapWithIndexU ImmutableArray.re:85:6
+  addDeclaration mapWithIndex ImmutableArray.re:86:6
+  addDeclaration partitionU ImmutableArray.re:88:6
+  addDeclaration partition ImmutableArray.re:89:6
+  addDeclaration reduceU ImmutableArray.re:91:6
+  addDeclaration reduce ImmutableArray.re:92:6
+  addDeclaration reduceReverseU ImmutableArray.re:94:6
+  addDeclaration reduceReverse ImmutableArray.re:95:6
+  addDeclaration reduceReverse2U ImmutableArray.re:97:6
+  addDeclaration reduceReverse2 ImmutableArray.re:99:6
+  addDeclaration someU ImmutableArray.re:102:6
+  addDeclaration some ImmutableArray.re:103:6
+  addDeclaration everyU ImmutableArray.re:105:6
+  addDeclaration every ImmutableArray.re:106:6
+  addDeclaration every2U ImmutableArray.re:108:6
+  addDeclaration every2 ImmutableArray.re:109:6
+  addDeclaration some2U ImmutableArray.re:111:6
+  addDeclaration some2 ImmutableArray.re:112:6
+  addDeclaration cmpU ImmutableArray.re:114:6
+  addDeclaration cmp ImmutableArray.re:115:6
+  addDeclaration eqU ImmutableArray.re:117:6
+  addDeclaration eq ImmutableArray.re:118:6
+  addDeclaration fromT ImmutableArray.re:5:2
+  addDeclaration fromTp ImmutableArray.re:6:2
+  addDeclaration fromTT ImmutableArray.re:7:2
+  addDeclaration toT ImmutableArray.re:8:2
+  addDeclaration toTp ImmutableArray.re:9:2
+  addDeclaration toT2 ImmutableArray.re:10:2
+  addDeclaration fromArray ImmutableArray.re:14:6
+  addDeclaration toArray ImmutableArray.re:16:6
+  addDeclaration length ImmutableArray.re:20:6
+  addDeclaration size ImmutableArray.re:22:6
+  addDeclaration get ImmutableArray.re:24:6
+  addDeclaration getExn ImmutableArray.re:26:6
+  addDeclaration getUnsafe ImmutableArray.re:28:6
+  addDeclaration getUndefined ImmutableArray.re:30:6
+  addDeclaration shuffle ImmutableArray.re:32:6
+  addDeclaration reverse ImmutableArray.re:34:6
+  addDeclaration makeUninitialized ImmutableArray.re:36:6
+  addDeclaration makeUninitializedUnsafe ImmutableArray.re:38:6
+  addDeclaration make ImmutableArray.re:40:6
+  addDeclaration range ImmutableArray.re:42:6
+  addDeclaration rangeBy ImmutableArray.re:44:6
+  addDeclaration makeByU ImmutableArray.re:46:6
+  addDeclaration makeBy ImmutableArray.re:47:6
+  addDeclaration makeByAndShuffleU ImmutableArray.re:49:6
+  addDeclaration makeByAndShuffle ImmutableArray.re:50:6
+  addDeclaration zip ImmutableArray.re:52:6
+  addDeclaration zipByU ImmutableArray.re:54:6
+  addDeclaration zipBy ImmutableArray.re:55:6
+  addDeclaration unzip ImmutableArray.re:57:6
+  addDeclaration concat ImmutableArray.re:59:6
+  addDeclaration concatMany ImmutableArray.re:61:6
+  addDeclaration slice ImmutableArray.re:63:6
+  addDeclaration sliceToEnd ImmutableArray.re:66:6
+  addDeclaration copy ImmutableArray.re:68:6
+  addDeclaration forEachU ImmutableArray.re:70:6
+  addDeclaration forEach ImmutableArray.re:71:6
+  addDeclaration mapU ImmutableArray.re:73:6
+  addDeclaration map ImmutableArray.re:74:6
+  addDeclaration keepWithIndexU ImmutableArray.re:76:6
+  addDeclaration keepWithIndex ImmutableArray.re:77:6
+  addDeclaration keepMapU ImmutableArray.re:79:6
+  addDeclaration keepMap ImmutableArray.re:80:6
+  addDeclaration forEachWithIndexU ImmutableArray.re:82:6
+  addDeclaration forEachWithIndex ImmutableArray.re:83:6
+  addDeclaration mapWithIndexU ImmutableArray.re:85:6
+  addDeclaration mapWithIndex ImmutableArray.re:86:6
+  addDeclaration partitionU ImmutableArray.re:88:6
+  addDeclaration partition ImmutableArray.re:89:6
+  addDeclaration reduceU ImmutableArray.re:91:6
+  addDeclaration reduce ImmutableArray.re:92:6
+  addDeclaration reduceReverseU ImmutableArray.re:94:6
+  addDeclaration reduceReverse ImmutableArray.re:95:6
+  addDeclaration reduceReverse2U ImmutableArray.re:97:6
+  addDeclaration reduceReverse2 ImmutableArray.re:99:6
+  addDeclaration someU ImmutableArray.re:102:6
+  addDeclaration some ImmutableArray.re:103:6
+  addDeclaration everyU ImmutableArray.re:105:6
+  addDeclaration every ImmutableArray.re:106:6
+  addDeclaration every2U ImmutableArray.re:108:6
+  addDeclaration every2 ImmutableArray.re:109:6
+  addDeclaration some2U ImmutableArray.re:111:6
+  addDeclaration some2 ImmutableArray.re:112:6
+  addDeclaration cmpU ImmutableArray.re:114:6
+  addDeclaration cmp ImmutableArray.re:115:6
+  addDeclaration eqU ImmutableArray.re:117:6
+  addDeclaration eq ImmutableArray.re:118:6
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:14:18
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:8:2
-  addDeclaration +toArray ImmutableArray.re:16:6
   addValueReference ImmutableArray.re:16:6 --> ImmutableArray.re:16:16
   addValueReference ImmutableArray.re:16:6 --> ImmutableArray.re:5:2
-  addDeclaration +length ImmutableArray.re:20:6
   addValueReference ImmutableArray.re:20:6 --> ImmutableArray.re:20:15
   addValueReference ImmutableArray.re:20:6 --> ImmutableArray.re:5:2
-  addDeclaration +size ImmutableArray.re:22:6
   addValueReference ImmutableArray.re:22:6 --> ImmutableArray.re:22:13
   addValueReference ImmutableArray.re:22:6 --> ImmutableArray.re:5:2
-  addDeclaration +get ImmutableArray.re:24:6
   addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:24:13
   addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:24:6 --> ImmutableArray.re:24:16
-  addDeclaration +getExn ImmutableArray.re:26:6
   addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:26:16
   addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:26:6 --> ImmutableArray.re:26:19
-  addDeclaration +getUnsafe ImmutableArray.re:28:6
   addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:28:19
   addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:28:6 --> ImmutableArray.re:28:22
-  addDeclaration +getUndefined ImmutableArray.re:30:6
   addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:30:22
   addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:30:6 --> ImmutableArray.re:30:25
-  addDeclaration +shuffle ImmutableArray.re:32:6
   addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:32:16
   addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:32:6 --> ImmutableArray.re:8:2
-  addDeclaration +reverse ImmutableArray.re:34:6
   addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:34:16
   addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:34:6 --> ImmutableArray.re:8:2
-  addDeclaration +makeUninitialized ImmutableArray.re:36:6
   addValueReference ImmutableArray.re:36:6 --> ImmutableArray.re:36:26
   addValueReference ImmutableArray.re:36:6 --> ImmutableArray.re:8:2
-  addDeclaration +makeUninitializedUnsafe ImmutableArray.re:38:6
   addValueReference ImmutableArray.re:38:6 --> ImmutableArray.re:38:32
   addValueReference ImmutableArray.re:38:6 --> ImmutableArray.re:8:2
-  addDeclaration +make ImmutableArray.re:40:6
   addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:40:14
   addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:40:17
   addValueReference ImmutableArray.re:40:6 --> ImmutableArray.re:8:2
-  addDeclaration +range ImmutableArray.re:42:6
   addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:42:15
   addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:42:18
   addValueReference ImmutableArray.re:42:6 --> ImmutableArray.re:8:2
-  addDeclaration +rangeBy ImmutableArray.re:44:6
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:17
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:20
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:44:24
   addValueReference ImmutableArray.re:44:6 --> ImmutableArray.re:8:2
-  addDeclaration +makeByU ImmutableArray.re:46:6
   addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:46:17
   addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:46:20
   addValueReference ImmutableArray.re:46:6 --> ImmutableArray.re:8:2
-  addDeclaration +makeBy ImmutableArray.re:47:6
   addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:47:16
   addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:47:19
   addValueReference ImmutableArray.re:47:6 --> ImmutableArray.re:8:2
-  addDeclaration +makeByAndShuffleU ImmutableArray.re:49:6
   addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:49:27
   addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:49:30
   addValueReference ImmutableArray.re:49:6 --> ImmutableArray.re:8:2
-  addDeclaration +makeByAndShuffle ImmutableArray.re:50:6
   addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:50:26
   addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:50:29
   addValueReference ImmutableArray.re:50:6 --> ImmutableArray.re:8:2
-  addDeclaration +zip ImmutableArray.re:52:6
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:52:13
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:52:17
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:52:6 --> ImmutableArray.re:9:2
-  addDeclaration +zipByU ImmutableArray.re:54:6
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:16
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:20
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:54:24
   addValueReference ImmutableArray.re:54:6 --> ImmutableArray.re:8:2
-  addDeclaration +zipBy ImmutableArray.re:55:6
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:15
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:19
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:55:23
   addValueReference ImmutableArray.re:55:6 --> ImmutableArray.re:8:2
-  addDeclaration +unzip ImmutableArray.re:57:6
   addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:57:14
   addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:6:2
   addValueReference ImmutableArray.re:57:6 --> ImmutableArray.re:10:2
-  addDeclaration +concat ImmutableArray.re:59:6
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:59:16
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:59:20
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:59:6 --> ImmutableArray.re:8:2
-  addDeclaration +concatMany ImmutableArray.re:61:6
   addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:61:20
   addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:7:2
   addValueReference ImmutableArray.re:61:6 --> ImmutableArray.re:8:2
-  addDeclaration +slice ImmutableArray.re:63:6
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:15
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:19
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:63:28
   addValueReference ImmutableArray.re:63:6 --> ImmutableArray.re:8:2
-  addDeclaration +sliceToEnd ImmutableArray.re:66:6
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:66:20
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:66:23
   addValueReference ImmutableArray.re:66:6 --> ImmutableArray.re:8:2
-  addDeclaration +copy ImmutableArray.re:68:6
   addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:68:13
   addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:68:6 --> ImmutableArray.re:8:2
-  addDeclaration +forEachU ImmutableArray.re:70:6
   addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:70:18
   addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:70:6 --> ImmutableArray.re:70:21
-  addDeclaration +forEach ImmutableArray.re:71:6
   addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:71:17
   addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:71:6 --> ImmutableArray.re:71:20
-  addDeclaration +mapU ImmutableArray.re:73:6
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:73:14
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:73:17
   addValueReference ImmutableArray.re:73:6 --> ImmutableArray.re:8:2
-  addDeclaration +map ImmutableArray.re:74:6
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:74:13
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:74:16
   addValueReference ImmutableArray.re:74:6 --> ImmutableArray.re:8:2
-  addDeclaration +keepWithIndexU ImmutableArray.re:76:6
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:76:24
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:76:27
   addValueReference ImmutableArray.re:76:6 --> ImmutableArray.re:8:2
-  addDeclaration +keepWithIndex ImmutableArray.re:77:6
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:77:23
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:77:26
   addValueReference ImmutableArray.re:77:6 --> ImmutableArray.re:8:2
-  addDeclaration +keepMapU ImmutableArray.re:79:6
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:79:18
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:79:21
   addValueReference ImmutableArray.re:79:6 --> ImmutableArray.re:8:2
-  addDeclaration +keepMap ImmutableArray.re:80:6
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:80:17
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:80:20
   addValueReference ImmutableArray.re:80:6 --> ImmutableArray.re:8:2
-  addDeclaration +forEachWithIndexU ImmutableArray.re:82:6
   addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:82:27
   addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:82:6 --> ImmutableArray.re:82:30
-  addDeclaration +forEachWithIndex ImmutableArray.re:83:6
   addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:83:26
   addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:83:6 --> ImmutableArray.re:83:29
-  addDeclaration +mapWithIndexU ImmutableArray.re:85:6
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:85:23
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:85:26
   addValueReference ImmutableArray.re:85:6 --> ImmutableArray.re:8:2
-  addDeclaration +mapWithIndex ImmutableArray.re:86:6
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:86:22
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:86:25
   addValueReference ImmutableArray.re:86:6 --> ImmutableArray.re:8:2
-  addDeclaration +partitionU ImmutableArray.re:88:6
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:88:20
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:88:23
   addValueReference ImmutableArray.re:88:6 --> ImmutableArray.re:10:2
-  addDeclaration +partition ImmutableArray.re:89:6
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:89:19
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:89:22
   addValueReference ImmutableArray.re:89:6 --> ImmutableArray.re:10:2
-  addDeclaration +reduceU ImmutableArray.re:91:6
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:17
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:20
   addValueReference ImmutableArray.re:91:6 --> ImmutableArray.re:91:23
-  addDeclaration +reduce ImmutableArray.re:92:6
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:16
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:19
   addValueReference ImmutableArray.re:92:6 --> ImmutableArray.re:92:22
-  addDeclaration +reduceReverseU ImmutableArray.re:94:6
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:24
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:27
   addValueReference ImmutableArray.re:94:6 --> ImmutableArray.re:94:30
-  addDeclaration +reduceReverse ImmutableArray.re:95:6
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:23
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:26
   addValueReference ImmutableArray.re:95:6 --> ImmutableArray.re:95:29
-  addDeclaration +reduceReverse2U ImmutableArray.re:97:6
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:25
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:29
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:33
   addValueReference ImmutableArray.re:97:6 --> ImmutableArray.re:97:36
-  addDeclaration +reduceReverse2 ImmutableArray.re:99:6
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:24
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:28
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:32
   addValueReference ImmutableArray.re:99:6 --> ImmutableArray.re:99:35
-  addDeclaration +someU ImmutableArray.re:102:6
   addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:102:15
   addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:102:6 --> ImmutableArray.re:102:18
-  addDeclaration +some ImmutableArray.re:103:6
   addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:103:14
   addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:103:6 --> ImmutableArray.re:103:17
-  addDeclaration +everyU ImmutableArray.re:105:6
   addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:105:16
   addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:105:6 --> ImmutableArray.re:105:19
-  addDeclaration +every ImmutableArray.re:106:6
   addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:106:15
   addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:106:6 --> ImmutableArray.re:106:18
-  addDeclaration +every2U ImmutableArray.re:108:6
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:17
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:21
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:108:6 --> ImmutableArray.re:108:25
-  addDeclaration +every2 ImmutableArray.re:109:6
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:16
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:20
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:109:6 --> ImmutableArray.re:109:24
-  addDeclaration +some2U ImmutableArray.re:111:6
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:16
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:20
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:111:6 --> ImmutableArray.re:111:24
-  addDeclaration +some2 ImmutableArray.re:112:6
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:15
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:19
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:112:6 --> ImmutableArray.re:112:23
-  addDeclaration +cmpU ImmutableArray.re:114:6
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:14
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:18
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:114:6 --> ImmutableArray.re:114:22
-  addDeclaration +cmp ImmutableArray.re:115:6
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:13
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:17
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:115:6 --> ImmutableArray.re:115:21
-  addDeclaration +eqU ImmutableArray.re:117:6
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:13
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:17
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:117:6 --> ImmutableArray.re:117:21
-  addDeclaration +eq ImmutableArray.re:118:6
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:12
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:5:2
   addValueReference ImmutableArray.re:118:6 --> ImmutableArray.re:118:16
@@ -648,9 +714,9 @@
   [type] addDeclaration inner ModuleAliases2.re:13:18
   addDeclaration q ModuleAliases2.re:21:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadValueTest.cmt
-  addDeclaration +valueAlive DeadValueTest.re:1:4
-  addDeclaration +valueDead DeadValueTest.re:2:4
-  addDeclaration +valueOnlyInImplementation DeadValueTest.re:4:4
+  addDeclaration valueAlive DeadValueTest.re:1:4
+  addDeclaration valueDead DeadValueTest.re:2:4
+  addDeclaration valueOnlyInImplementation DeadValueTest.re:4:4
   addValueReference DeadValueTest.rei:1:0 --> DeadValueTest.re:1:4
   addValueReference DeadValueTest.rei:2:0 --> DeadValueTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
@@ -813,14 +879,12 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWhitelist.cmt
   addDeclaration x DeadTestWhitelist.re:1:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
-  [type] extendTypeDependencies FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2
-  [type] extendTypeDependencies FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2
-  addDeclaration +r FirstClassModulesInterface.re:6:4
+  [type] addDeclaration x FirstClassModulesInterface.re:2:2
+  [type] addDeclaration y FirstClassModulesInterface.re:3:2
+  addDeclaration r FirstClassModulesInterface.re:6:4
   addValueReference FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   addValueReference FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
   addValueReference FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
-  [type] mergeSet FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2 (0 new items)
-  [type] mergeSet FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2 (0 new items)
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
   [type] addDeclaration A Unboxed.re:4:4
   [type] addDeclaration A Unboxed.re:9:4
@@ -900,6 +964,7 @@
   addValueReference References.re:18:2 --> References.re:23:6
   addValueReference References.re:19:2 --> References.re:24:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWithInterface.cmt
+  addDeclaration x DeadTestWithInterface.re:1:20
   addDeclaration +x DeadTestWithInterface.re:2:6
   addValueReference DeadTestWithInterface.re:1:20 --> DeadTestWithInterface.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
@@ -909,25 +974,19 @@
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
   addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
-  [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
-  [type] extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
-  addDeclaration +a DeadTypeTest.re:4:4
+  [type] addDeclaration A DeadTypeTest.re:2:4
+  [type] addDeclaration B DeadTypeTest.re:3:4
+  addDeclaration a DeadTypeTest.re:4:4
+  [type] addDeclaration OnlyInImplementation DeadTypeTest.re:7:4
+  [type] addDeclaration OnlyInInterface DeadTypeTest.re:8:4
+  [type] addDeclaration InBoth DeadTypeTest.re:9:4
+  [type] addDeclaration InNeither DeadTypeTest.re:10:4
   [type] addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
-  [type] extendTypeDependencies DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4
-  [type] extendTypeDependencies DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
-  [type] extendTypeDependencies DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4
-  [type] extendTypeDependencies DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
   addDeclaration _ DeadTypeTest.re:12:0
   [type] addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
   addDeclaration _ DeadTypeTest.re:13:0
   [type] addTypeReference DeadTypeTest.re:13:8 --> DeadTypeTest.re:9:4
   addValueReference DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4
-  [type] mergeSet DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4 (0 new items)
-  [type] mergeSet DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4 (1 new items)
-  [type] mergeSet DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4 (0 new items)
-  [type] mergeSet DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4 (1 new items)
-  [type] mergeSet DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4 (0 new items)
-  [type] mergeSet DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4 (1 new items)
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addDeclaration notification CreateErrorHandler1.re:3:6
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
@@ -1299,7 +1358,7 @@
   addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
   [type] addTypeReference TestPromise.re:14:32 --> TestPromise.re:7:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
-  addDeclaration +theAnswer NestedModulesInSignature.re:2:6
+  addDeclaration theAnswer NestedModulesInSignature.re:2:6
   addValueReference NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Docstrings.cmt
   addDeclaration flat Docstrings.re:3:4
@@ -1575,14 +1634,15 @@ File References
   DeadTest.fortyTwoButExported: 0 references () isDead:false [0]
   DeadTest.fortytwo: 0 references () isDead:true [0]
   DeadTestWhitelist.x: 0 references () isDead:true [0]
-  DeadTestWithInterface.Ext_buffer.+x: 1 references (DeadTestWithInterface.re:1:20) isDead:false [0]
+  DeadTestWithInterface.Ext_buffer.x: 0 references () isDead:true [0]
+  DeadTestWithInterface.Ext_buffer.+x: 0 references () isDead:true [0]
   [type] DeadTypeTest.deadType.InNeither: 0 references () isDead:true [0]
-  [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8) isDead:false [0]
+  [type] DeadTypeTest.deadType.InBoth: 1 references (DeadTest.re:47:8) isDead:false [0]
   [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8) isDead:false [0]
-  [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8) isDead:false [0]
+  [type] DeadTypeTest.deadType.OnlyInImplementation: 0 references () isDead:true [0]
   DeadTypeTest.a: 0 references () isDead:true [0]
   [type] DeadTypeTest.t.B: 0 references () isDead:true [0]
-  [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8) isDead:false [0]
+  [type] DeadTypeTest.t.A: 0 references () isDead:true [0]
   Docstrings.unitArgWithConversionU: 0 references () isDead:false [0]
   Docstrings.unitArgWithConversion: 0 references () isDead:false [0]
   [type] Docstrings.t.B: 0 references () isDead:true [0]
@@ -1902,12 +1962,20 @@ File References
   Types.someIntList: 0 references () isDead:false [0]
   DeadTypeTest._: 0 references () isDead:true [0]
   DeadTypeTest._: 0 references () isDead:true [0]
-  DeadTypeTest.+a: 0 references () isDead:true [0]
+  [type] DeadTypeTest.deadType.InNeither: 0 references () isDead:true [0]
+  [type] DeadTypeTest.deadType.InBoth: 1 references (DeadTypeTest.re:13:8) isDead:false [0]
+  [type] DeadTypeTest.deadType.OnlyInInterface: 0 references () isDead:true [0]
+  [type] DeadTypeTest.deadType.OnlyInImplementation: 1 references (DeadTypeTest.re:12:8) isDead:false [0]
+  DeadTypeTest.a: 0 references () isDead:true [0]
+  [type] DeadTypeTest.t.B: 0 references () isDead:true [0]
+  [type] DeadTypeTest.t.A: 1 references (DeadTypeTest.re:4:8) isDead:false [0]
   DeadValueTest.valueDead: 0 references () isDead:true [0]
   DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) isDead:false [0]
   ErrorHandler.x: 0 references () isDead:true [0]
   ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) isDead:false [0]
-  FirstClassModulesInterface.+r: 0 references () isDead:true [0]
+  FirstClassModulesInterface.r: 0 references () isDead:true [0]
+  [type] FirstClassModulesInterface.record.y: 0 references () isDead:true [0]
+  [type] FirstClassModulesInterface.record.x: 0 references () isDead:true [0]
   ImmutableArray.eq: 0 references () isDead:true [0]
   ImmutableArray.eqU: 0 references () isDead:true [0]
   ImmutableArray.cmp: 0 references () isDead:true [0]
@@ -2000,468 +2068,468 @@ File References
   ImportMyBanner.make: 1 references (ReasonComponent.re:18:4) isDead:false [0]
   ImportMyBanner.make: 1 references (ImportMyBanner.re:19:4) isDead:false [0]
   [type] ImportMyBanner.message.text: 0 references () isDead:true [0]
-  NestedModulesInSignature.Universe.+theAnswer: 1 references (NestedModulesInSignature.rei:2:2) isDead:false [0]
-  DeadValueTest.+valueOnlyInImplementation: 0 references () isDead:true [0]
-  DeadValueTest.+valueDead: 0 references () isDead:true [0]
-  DeadValueTest.+valueAlive: 1 references (DeadValueTest.rei:1:0) isDead:false [0]
-  ErrorHandler.+x: 0 references () isDead:true [0]
-  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:5:32) isDead:false [0]
-  ImmutableArray.Array.+eq: 0 references () isDead:true [0]
-  ImmutableArray.Array.+eqU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+cmp: 0 references () isDead:true [0]
-  ImmutableArray.Array.+cmpU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+some2: 0 references () isDead:true [0]
-  ImmutableArray.Array.+some2U: 0 references () isDead:true [0]
-  ImmutableArray.Array.+every2: 0 references () isDead:true [0]
-  ImmutableArray.Array.+every2U: 0 references () isDead:true [0]
-  ImmutableArray.Array.+every: 0 references () isDead:true [0]
-  ImmutableArray.Array.+everyU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+some: 0 references () isDead:true [0]
-  ImmutableArray.Array.+someU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+reduceReverse2: 0 references () isDead:true [0]
-  ImmutableArray.Array.+reduceReverse2U: 0 references () isDead:true [0]
-  ImmutableArray.Array.+reduceReverse: 0 references () isDead:true [0]
-  ImmutableArray.Array.+reduceReverseU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+reduce: 0 references () isDead:true [0]
-  ImmutableArray.Array.+reduceU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+partition: 0 references () isDead:true [0]
-  ImmutableArray.Array.+partitionU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+mapWithIndex: 0 references () isDead:true [0]
-  ImmutableArray.Array.+mapWithIndexU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+forEachWithIndex: 0 references () isDead:true [0]
-  ImmutableArray.Array.+forEachWithIndexU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+keepMap: 0 references () isDead:true [0]
-  ImmutableArray.Array.+keepMapU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+keepWithIndex: 0 references () isDead:true [0]
-  ImmutableArray.Array.+keepWithIndexU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+map: 0 references () isDead:true [0]
-  ImmutableArray.Array.+mapU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+forEach: 0 references () isDead:true [0]
-  ImmutableArray.Array.+forEachU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+copy: 0 references () isDead:true [0]
-  ImmutableArray.Array.+sliceToEnd: 0 references () isDead:true [0]
-  ImmutableArray.Array.+slice: 0 references () isDead:true [0]
-  ImmutableArray.Array.+concatMany: 0 references () isDead:true [0]
-  ImmutableArray.Array.+concat: 0 references () isDead:true [0]
-  ImmutableArray.Array.+unzip: 0 references () isDead:true [0]
-  ImmutableArray.Array.+zipBy: 0 references () isDead:true [0]
-  ImmutableArray.Array.+zipByU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+zip: 0 references () isDead:true [0]
-  ImmutableArray.Array.+makeByAndShuffle: 0 references () isDead:true [0]
-  ImmutableArray.Array.+makeByAndShuffleU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+makeBy: 0 references () isDead:true [0]
-  ImmutableArray.Array.+makeByU: 0 references () isDead:true [0]
-  ImmutableArray.Array.+rangeBy: 0 references () isDead:true [0]
-  ImmutableArray.Array.+range: 0 references () isDead:true [0]
-  ImmutableArray.Array.+make: 0 references () isDead:true [0]
-  ImmutableArray.Array.+makeUninitializedUnsafe: 0 references () isDead:true [0]
-  ImmutableArray.Array.+makeUninitialized: 0 references () isDead:true [0]
-  ImmutableArray.Array.+reverse: 0 references () isDead:true [0]
-  ImmutableArray.Array.+shuffle: 0 references () isDead:true [0]
-  ImmutableArray.Array.+getUndefined: 0 references () isDead:true [0]
-  ImmutableArray.Array.+getUnsafe: 0 references () isDead:true [0]
-  ImmutableArray.Array.+getExn: 0 references () isDead:true [0]
-  ImmutableArray.Array.+get: 1 references (ImmutableArray.rei:5:15) isDead:false [0]
-  ImmutableArray.Array.+size: 0 references () isDead:true [0]
-  ImmutableArray.Array.+length: 0 references () isDead:true [0]
-  ImmutableArray.Array.+toArray: 0 references () isDead:true [0]
-  ImmutableArray.Array.+fromArray: 1 references (ImmutableArray.rei:7:0) isDead:false [0]
-  ImmutableArray.Array.+toT2: 0 references () isDead:true [0]
-  ImmutableArray.Array.+toTp: 0 references () isDead:true [0]
-  ImmutableArray.Array.+toT: 1 references (ImmutableArray.re:14:6) isDead:false [0]
-  ImmutableArray.Array.+fromTT: 0 references () isDead:true [0]
-  ImmutableArray.Array.+fromTp: 0 references () isDead:true [0]
-  ImmutableArray.Array.+fromT: 1 references (ImmutableArray.re:24:6) isDead:false [0]
+  NestedModulesInSignature.Universe.theAnswer: 1 references (NestedModulesInSignature.rei:2:2) isDead:false [0]
+  DeadValueTest.valueOnlyInImplementation: 0 references () isDead:true [0]
+  DeadValueTest.valueDead: 0 references () isDead:true [0]
+  DeadValueTest.valueAlive: 1 references (DeadValueTest.rei:1:0) isDead:false [0]
+  ErrorHandler.x: 0 references () isDead:true [0]
+  ErrorHandler.Make.notify: 1 references (ErrorHandler.rei:5:32) isDead:false [0]
+  ImmutableArray.eq: 0 references () isDead:true [0]
+  ImmutableArray.eqU: 0 references () isDead:true [0]
+  ImmutableArray.cmp: 0 references () isDead:true [0]
+  ImmutableArray.cmpU: 0 references () isDead:true [0]
+  ImmutableArray.some2: 0 references () isDead:true [0]
+  ImmutableArray.some2U: 0 references () isDead:true [0]
+  ImmutableArray.every2: 0 references () isDead:true [0]
+  ImmutableArray.every2U: 0 references () isDead:true [0]
+  ImmutableArray.every: 0 references () isDead:true [0]
+  ImmutableArray.everyU: 0 references () isDead:true [0]
+  ImmutableArray.some: 0 references () isDead:true [0]
+  ImmutableArray.someU: 0 references () isDead:true [0]
+  ImmutableArray.reduceReverse2: 0 references () isDead:true [0]
+  ImmutableArray.reduceReverse2U: 0 references () isDead:true [0]
+  ImmutableArray.reduceReverse: 0 references () isDead:true [0]
+  ImmutableArray.reduceReverseU: 0 references () isDead:true [0]
+  ImmutableArray.reduce: 0 references () isDead:true [0]
+  ImmutableArray.reduceU: 0 references () isDead:true [0]
+  ImmutableArray.partition: 0 references () isDead:true [0]
+  ImmutableArray.partitionU: 0 references () isDead:true [0]
+  ImmutableArray.mapWithIndex: 0 references () isDead:true [0]
+  ImmutableArray.mapWithIndexU: 0 references () isDead:true [0]
+  ImmutableArray.forEachWithIndex: 0 references () isDead:true [0]
+  ImmutableArray.forEachWithIndexU: 0 references () isDead:true [0]
+  ImmutableArray.keepMap: 0 references () isDead:true [0]
+  ImmutableArray.keepMapU: 0 references () isDead:true [0]
+  ImmutableArray.keepWithIndex: 0 references () isDead:true [0]
+  ImmutableArray.keepWithIndexU: 0 references () isDead:true [0]
+  ImmutableArray.map: 0 references () isDead:true [0]
+  ImmutableArray.mapU: 0 references () isDead:true [0]
+  ImmutableArray.forEach: 0 references () isDead:true [0]
+  ImmutableArray.forEachU: 0 references () isDead:true [0]
+  ImmutableArray.copy: 0 references () isDead:true [0]
+  ImmutableArray.sliceToEnd: 0 references () isDead:true [0]
+  ImmutableArray.slice: 0 references () isDead:true [0]
+  ImmutableArray.concatMany: 0 references () isDead:true [0]
+  ImmutableArray.concat: 0 references () isDead:true [0]
+  ImmutableArray.unzip: 0 references () isDead:true [0]
+  ImmutableArray.zipBy: 0 references () isDead:true [0]
+  ImmutableArray.zipByU: 0 references () isDead:true [0]
+  ImmutableArray.zip: 0 references () isDead:true [0]
+  ImmutableArray.makeByAndShuffle: 0 references () isDead:true [0]
+  ImmutableArray.makeByAndShuffleU: 0 references () isDead:true [0]
+  ImmutableArray.makeBy: 0 references () isDead:true [0]
+  ImmutableArray.makeByU: 0 references () isDead:true [0]
+  ImmutableArray.rangeBy: 0 references () isDead:true [0]
+  ImmutableArray.range: 0 references () isDead:true [0]
+  ImmutableArray.make: 0 references () isDead:true [0]
+  ImmutableArray.makeUninitializedUnsafe: 0 references () isDead:true [0]
+  ImmutableArray.makeUninitialized: 0 references () isDead:true [0]
+  ImmutableArray.reverse: 0 references () isDead:true [0]
+  ImmutableArray.shuffle: 0 references () isDead:true [0]
+  ImmutableArray.getUndefined: 0 references () isDead:true [0]
+  ImmutableArray.getUnsafe: 0 references () isDead:true [0]
+  ImmutableArray.getExn: 0 references () isDead:true [0]
+  ImmutableArray.get: 1 references (ImmutableArray.rei:5:15) isDead:false [0]
+  ImmutableArray.size: 0 references () isDead:true [0]
+  ImmutableArray.length: 0 references () isDead:true [0]
+  ImmutableArray.toArray: 0 references () isDead:true [0]
+  ImmutableArray.fromArray: 1 references (ImmutableArray.rei:7:0) isDead:false [0]
+  ImmutableArray.toT2: 0 references () isDead:true [0]
+  ImmutableArray.toTp: 0 references () isDead:true [0]
+  ImmutableArray.toT: 1 references (ImmutableArray.re:14:6) isDead:false [0]
+  ImmutableArray.fromTT: 0 references () isDead:true [0]
+  ImmutableArray.fromTp: 0 references () isDead:true [0]
+  ImmutableArray.fromT: 1 references (ImmutableArray.re:24:6) isDead:false [0]
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 6:3
-  Array.+fromTp is never used
+  fromTp is never used
   <-- line 6
-    [@dead "Array.+fromTp"] external fromTp: t(('a, 'b)) => array(('a, 'b)) = "%identity";
+    [@dead "fromTp"] external fromTp: t(('a, 'b)) => array(('a, 'b)) = "%identity";
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 7:3
-  Array.+fromTT is never used
+  fromTT is never used
   <-- line 7
-    [@dead "Array.+fromTT"] external fromTT: t(t('a)) => array(array('a)) = "%identity";
+    [@dead "fromTT"] external fromTT: t(t('a)) => array(array('a)) = "%identity";
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 9:3
-  Array.+toTp is never used
+  toTp is never used
   <-- line 9
-    [@dead "Array.+toTp"] external toTp: array(('a, 'b)) => t(('a, 'b)) = "%identity";
+    [@dead "toTp"] external toTp: array(('a, 'b)) => t(('a, 'b)) = "%identity";
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 10:3
-  Array.+toT2 is never used
+  toT2 is never used
   <-- line 10
-    [@dead "Array.+toT2"] external toT2: array2('a) => (t('a), t('a)) = "%identity";
+    [@dead "toT2"] external toT2: array2('a) => (t('a), t('a)) = "%identity";
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 16:7
-  Array.+toArray is never used
+  toArray is never used
   <-- line 16
-    [@dead "Array.+toArray"] let toArray = a => Array.copy(a->fromT);
+    [@dead "toArray"] let toArray = a => Array.copy(a->fromT);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 20:7
-  Array.+length is never used
+  length is never used
   <-- line 20
-    [@dead "Array.+length"] let length = a => Array.length(a->fromT);
+    [@dead "length"] let length = a => Array.length(a->fromT);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 22:7
-  Array.+size is never used
+  size is never used
   <-- line 22
-    [@dead "Array.+size"] let size = a => Array.size(a->fromT);
+    [@dead "size"] let size = a => Array.size(a->fromT);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 26:7
-  Array.+getExn is never used
+  getExn is never used
   <-- line 26
-    [@dead "Array.+getExn"] let getExn = (a, x) => Array.getExn(a->fromT, x);
+    [@dead "getExn"] let getExn = (a, x) => Array.getExn(a->fromT, x);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 28:7
-  Array.+getUnsafe is never used
+  getUnsafe is never used
   <-- line 28
-    [@dead "Array.+getUnsafe"] let getUnsafe = (a, x) => Array.getUnsafe(a->fromT, x);
+    [@dead "getUnsafe"] let getUnsafe = (a, x) => Array.getUnsafe(a->fromT, x);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 30:7
-  Array.+getUndefined is never used
+  getUndefined is never used
   <-- line 30
-    [@dead "Array.+getUndefined"] let getUndefined = (a, x) => Array.getUndefined(a->fromT, x);
+    [@dead "getUndefined"] let getUndefined = (a, x) => Array.getUndefined(a->fromT, x);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 32:7
-  Array.+shuffle is never used
+  shuffle is never used
   <-- line 32
-    [@dead "Array.+shuffle"] let shuffle = x => Array.shuffle(x->fromT)->toT;
+    [@dead "shuffle"] let shuffle = x => Array.shuffle(x->fromT)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 34:7
-  Array.+reverse is never used
+  reverse is never used
   <-- line 34
-    [@dead "Array.+reverse"] let reverse = x => Array.reverse(x->fromT)->toT;
+    [@dead "reverse"] let reverse = x => Array.reverse(x->fromT)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 36:7
-  Array.+makeUninitialized is never used
+  makeUninitialized is never used
   <-- line 36
-    [@dead "Array.+makeUninitialized"] let makeUninitialized = x => Array.makeUninitialized(x)->toT;
+    [@dead "makeUninitialized"] let makeUninitialized = x => Array.makeUninitialized(x)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 38:7
-  Array.+makeUninitializedUnsafe is never used
+  makeUninitializedUnsafe is never used
   <-- line 38
-    [@dead "Array.+makeUninitializedUnsafe"] let makeUninitializedUnsafe = x => Array.makeUninitializedUnsafe(x)->toT;
+    [@dead "makeUninitializedUnsafe"] let makeUninitializedUnsafe = x => Array.makeUninitializedUnsafe(x)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 40:7
-  Array.+make is never used
+  make is never used
   <-- line 40
-    [@dead "Array.+make"] let make = (x, y) => Array.make(x, y)->toT;
+    [@dead "make"] let make = (x, y) => Array.make(x, y)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 42:7
-  Array.+range is never used
+  range is never used
   <-- line 42
-    [@dead "Array.+range"] let range = (x, y) => Array.range(x, y)->toT;
+    [@dead "range"] let range = (x, y) => Array.range(x, y)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 44:7
-  Array.+rangeBy is never used
+  rangeBy is never used
   <-- line 44
-    [@dead "Array.+rangeBy"] let rangeBy = (x, y, ~step) => Array.rangeBy(x, y, ~step)->toT;
+    [@dead "rangeBy"] let rangeBy = (x, y, ~step) => Array.rangeBy(x, y, ~step)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 46:7
-  Array.+makeByU is never used
+  makeByU is never used
   <-- line 46
-    [@dead "Array.+makeByU"] let makeByU = (c, f) => Array.makeByU(c, f)->toT;
+    [@dead "makeByU"] let makeByU = (c, f) => Array.makeByU(c, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 47:7
-  Array.+makeBy is never used
+  makeBy is never used
   <-- line 47
-    [@dead "Array.+makeBy"] let makeBy = (c, f) => Array.makeBy(c, f)->toT;
+    [@dead "makeBy"] let makeBy = (c, f) => Array.makeBy(c, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 49:7
-  Array.+makeByAndShuffleU is never used
+  makeByAndShuffleU is never used
   <-- line 49
-    [@dead "Array.+makeByAndShuffleU"] let makeByAndShuffleU = (c, f) => Array.makeByAndShuffleU(c, f)->toT;
+    [@dead "makeByAndShuffleU"] let makeByAndShuffleU = (c, f) => Array.makeByAndShuffleU(c, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 50:7
-  Array.+makeByAndShuffle is never used
+  makeByAndShuffle is never used
   <-- line 50
-    [@dead "Array.+makeByAndShuffle"] let makeByAndShuffle = (c, f) => Array.makeByAndShuffle(c, f)->toT;
+    [@dead "makeByAndShuffle"] let makeByAndShuffle = (c, f) => Array.makeByAndShuffle(c, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 52:7
-  Array.+zip is never used
+  zip is never used
   <-- line 52
-    [@dead "Array.+zip"] let zip = (a1, a2) => Array.zip(fromT(a1), fromT(a2))->toTp;
+    [@dead "zip"] let zip = (a1, a2) => Array.zip(fromT(a1), fromT(a2))->toTp;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 54:7
-  Array.+zipByU is never used
+  zipByU is never used
   <-- line 54
-    [@dead "Array.+zipByU"] let zipByU = (a1, a2, f) => Array.zipByU(fromT(a1), fromT(a2), f)->toT;
+    [@dead "zipByU"] let zipByU = (a1, a2, f) => Array.zipByU(fromT(a1), fromT(a2), f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 55:7
-  Array.+zipBy is never used
+  zipBy is never used
   <-- line 55
-    [@dead "Array.+zipBy"] let zipBy = (a1, a2, f) => Array.zipBy(fromT(a1), fromT(a2), f)->toT;
+    [@dead "zipBy"] let zipBy = (a1, a2, f) => Array.zipBy(fromT(a1), fromT(a2), f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 57:7
-  Array.+unzip is never used
+  unzip is never used
   <-- line 57
-    [@dead "Array.+unzip"] let unzip = a => Array.unzip(a->fromTp)->toT2;
+    [@dead "unzip"] let unzip = a => Array.unzip(a->fromTp)->toT2;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 59:7
-  Array.+concat is never used
+  concat is never used
   <-- line 59
-    [@dead "Array.+concat"] let concat = (a1, a2) => Array.concat(a1->fromT, a2->fromT)->toT;
+    [@dead "concat"] let concat = (a1, a2) => Array.concat(a1->fromT, a2->fromT)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 61:7
-  Array.+concatMany is never used
+  concatMany is never used
   <-- line 61
-    [@dead "Array.+concatMany"] let concatMany = (a: t(t(_))) => Array.concatMany(a->fromTT)->toT;
+    [@dead "concatMany"] let concatMany = (a: t(t(_))) => Array.concatMany(a->fromTT)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 63:7
-  Array.+slice is never used
+  slice is never used
   <-- line 63
-    [@dead "Array.+slice"] let slice = (a, ~offset, ~len) =>
+    [@dead "slice"] let slice = (a, ~offset, ~len) =>
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 66:7
-  Array.+sliceToEnd is never used
+  sliceToEnd is never used
   <-- line 66
-    [@dead "Array.+sliceToEnd"] let sliceToEnd = (a, b) => Array.sliceToEnd(a->fromT, b)->toT;
+    [@dead "sliceToEnd"] let sliceToEnd = (a, b) => Array.sliceToEnd(a->fromT, b)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 68:7
-  Array.+copy is never used
+  copy is never used
   <-- line 68
-    [@dead "Array.+copy"] let copy = a => Array.copy(a->fromT)->toT;
+    [@dead "copy"] let copy = a => Array.copy(a->fromT)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 70:7
-  Array.+forEachU is never used
+  forEachU is never used
   <-- line 70
-    [@dead "Array.+forEachU"] let forEachU = (a, f) => Array.forEachU(a->fromT, f);
+    [@dead "forEachU"] let forEachU = (a, f) => Array.forEachU(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 71:7
-  Array.+forEach is never used
+  forEach is never used
   <-- line 71
-    [@dead "Array.+forEach"] let forEach = (a, f) => Array.forEach(a->fromT, f);
+    [@dead "forEach"] let forEach = (a, f) => Array.forEach(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 73:7
-  Array.+mapU is never used
+  mapU is never used
   <-- line 73
-    [@dead "Array.+mapU"] let mapU = (a, f) => Array.mapU(a->fromT, f)->toT;
+    [@dead "mapU"] let mapU = (a, f) => Array.mapU(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 74:7
-  Array.+map is never used
+  map is never used
   <-- line 74
-    [@dead "Array.+map"] let map = (a, f) => Array.map(a->fromT, f)->toT;
+    [@dead "map"] let map = (a, f) => Array.map(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 76:7
-  Array.+keepWithIndexU is never used
+  keepWithIndexU is never used
   <-- line 76
-    [@dead "Array.+keepWithIndexU"] let keepWithIndexU = (a, f) => Array.keepWithIndexU(a->fromT, f)->toT;
+    [@dead "keepWithIndexU"] let keepWithIndexU = (a, f) => Array.keepWithIndexU(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 77:7
-  Array.+keepWithIndex is never used
+  keepWithIndex is never used
   <-- line 77
-    [@dead "Array.+keepWithIndex"] let keepWithIndex = (a, f) => Array.keepWithIndex(a->fromT, f)->toT;
+    [@dead "keepWithIndex"] let keepWithIndex = (a, f) => Array.keepWithIndex(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 79:7
-  Array.+keepMapU is never used
+  keepMapU is never used
   <-- line 79
-    [@dead "Array.+keepMapU"] let keepMapU = (a, f) => Array.keepMapU(a->fromT, f)->toT;
+    [@dead "keepMapU"] let keepMapU = (a, f) => Array.keepMapU(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 80:7
-  Array.+keepMap is never used
+  keepMap is never used
   <-- line 80
-    [@dead "Array.+keepMap"] let keepMap = (a, f) => Array.keepMap(a->fromT, f)->toT;
+    [@dead "keepMap"] let keepMap = (a, f) => Array.keepMap(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 82:7
-  Array.+forEachWithIndexU is never used
+  forEachWithIndexU is never used
   <-- line 82
-    [@dead "Array.+forEachWithIndexU"] let forEachWithIndexU = (a, f) => Array.forEachWithIndexU(a->fromT, f);
+    [@dead "forEachWithIndexU"] let forEachWithIndexU = (a, f) => Array.forEachWithIndexU(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 83:7
-  Array.+forEachWithIndex is never used
+  forEachWithIndex is never used
   <-- line 83
-    [@dead "Array.+forEachWithIndex"] let forEachWithIndex = (a, f) => Array.forEachWithIndex(a->fromT, f);
+    [@dead "forEachWithIndex"] let forEachWithIndex = (a, f) => Array.forEachWithIndex(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 85:7
-  Array.+mapWithIndexU is never used
+  mapWithIndexU is never used
   <-- line 85
-    [@dead "Array.+mapWithIndexU"] let mapWithIndexU = (a, f) => Array.mapWithIndexU(a->fromT, f)->toT;
+    [@dead "mapWithIndexU"] let mapWithIndexU = (a, f) => Array.mapWithIndexU(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 86:7
-  Array.+mapWithIndex is never used
+  mapWithIndex is never used
   <-- line 86
-    [@dead "Array.+mapWithIndex"] let mapWithIndex = (a, f) => Array.mapWithIndex(a->fromT, f)->toT;
+    [@dead "mapWithIndex"] let mapWithIndex = (a, f) => Array.mapWithIndex(a->fromT, f)->toT;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 88:7
-  Array.+partitionU is never used
+  partitionU is never used
   <-- line 88
-    [@dead "Array.+partitionU"] let partitionU = (a, f) => Array.partitionU(a->fromT, f)->toT2;
+    [@dead "partitionU"] let partitionU = (a, f) => Array.partitionU(a->fromT, f)->toT2;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 89:7
-  Array.+partition is never used
+  partition is never used
   <-- line 89
-    [@dead "Array.+partition"] let partition = (a, f) => Array.partition(a->fromT, f)->toT2;
+    [@dead "partition"] let partition = (a, f) => Array.partition(a->fromT, f)->toT2;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 91:7
-  Array.+reduceU is never used
+  reduceU is never used
   <-- line 91
-    [@dead "Array.+reduceU"] let reduceU = (a, b, f) => Array.reduceU(a->fromT, b, f);
+    [@dead "reduceU"] let reduceU = (a, b, f) => Array.reduceU(a->fromT, b, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 92:7
-  Array.+reduce is never used
+  reduce is never used
   <-- line 92
-    [@dead "Array.+reduce"] let reduce = (a, b, f) => Array.reduce(a->fromT, b, f);
+    [@dead "reduce"] let reduce = (a, b, f) => Array.reduce(a->fromT, b, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 94:7
-  Array.+reduceReverseU is never used
+  reduceReverseU is never used
   <-- line 94
-    [@dead "Array.+reduceReverseU"] let reduceReverseU = (a, b, f) => Array.reduceReverseU(a->fromT, b, f);
+    [@dead "reduceReverseU"] let reduceReverseU = (a, b, f) => Array.reduceReverseU(a->fromT, b, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 95:7
-  Array.+reduceReverse is never used
+  reduceReverse is never used
   <-- line 95
-    [@dead "Array.+reduceReverse"] let reduceReverse = (a, b, f) => Array.reduceReverse(a->fromT, b, f);
+    [@dead "reduceReverse"] let reduceReverse = (a, b, f) => Array.reduceReverse(a->fromT, b, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 97:7
-  Array.+reduceReverse2U is never used
+  reduceReverse2U is never used
   <-- line 97
-    [@dead "Array.+reduceReverse2U"] let reduceReverse2U = (a1, a2, c, f) =>
+    [@dead "reduceReverse2U"] let reduceReverse2U = (a1, a2, c, f) =>
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 99:7
-  Array.+reduceReverse2 is never used
+  reduceReverse2 is never used
   <-- line 99
-    [@dead "Array.+reduceReverse2"] let reduceReverse2 = (a1, a2, c, f) =>
+    [@dead "reduceReverse2"] let reduceReverse2 = (a1, a2, c, f) =>
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 102:7
-  Array.+someU is never used
+  someU is never used
   <-- line 102
-    [@dead "Array.+someU"] let someU = (a, f) => Array.someU(a->fromT, f);
+    [@dead "someU"] let someU = (a, f) => Array.someU(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 103:7
-  Array.+some is never used
+  some is never used
   <-- line 103
-    [@dead "Array.+some"] let some = (a, f) => Array.some(a->fromT, f);
+    [@dead "some"] let some = (a, f) => Array.some(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 105:7
-  Array.+everyU is never used
+  everyU is never used
   <-- line 105
-    [@dead "Array.+everyU"] let everyU = (a, f) => Array.everyU(a->fromT, f);
+    [@dead "everyU"] let everyU = (a, f) => Array.everyU(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 106:7
-  Array.+every is never used
+  every is never used
   <-- line 106
-    [@dead "Array.+every"] let every = (a, f) => Array.every(a->fromT, f);
+    [@dead "every"] let every = (a, f) => Array.every(a->fromT, f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 108:7
-  Array.+every2U is never used
+  every2U is never used
   <-- line 108
-    [@dead "Array.+every2U"] let every2U = (a1, a2, f) => Array.every2U(fromT(a1), fromT(a2), f);
+    [@dead "every2U"] let every2U = (a1, a2, f) => Array.every2U(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 109:7
-  Array.+every2 is never used
+  every2 is never used
   <-- line 109
-    [@dead "Array.+every2"] let every2 = (a1, a2, f) => Array.every2(fromT(a1), fromT(a2), f);
+    [@dead "every2"] let every2 = (a1, a2, f) => Array.every2(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 111:7
-  Array.+some2U is never used
+  some2U is never used
   <-- line 111
-    [@dead "Array.+some2U"] let some2U = (a1, a2, f) => Array.some2U(fromT(a1), fromT(a2), f);
+    [@dead "some2U"] let some2U = (a1, a2, f) => Array.some2U(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 112:7
-  Array.+some2 is never used
+  some2 is never used
   <-- line 112
-    [@dead "Array.+some2"] let some2 = (a1, a2, f) => Array.some2(fromT(a1), fromT(a2), f);
+    [@dead "some2"] let some2 = (a1, a2, f) => Array.some2(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 114:7
-  Array.+cmpU is never used
+  cmpU is never used
   <-- line 114
-    [@dead "Array.+cmpU"] let cmpU = (a1, a2, f) => Array.cmpU(fromT(a1), fromT(a2), f);
+    [@dead "cmpU"] let cmpU = (a1, a2, f) => Array.cmpU(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 115:7
-  Array.+cmp is never used
+  cmp is never used
   <-- line 115
-    [@dead "Array.+cmp"] let cmp = (a1, a2, f) => Array.cmp(fromT(a1), fromT(a2), f);
+    [@dead "cmp"] let cmp = (a1, a2, f) => Array.cmp(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 117:7
-  Array.+eqU is never used
+  eqU is never used
   <-- line 117
-    [@dead "Array.+eqU"] let eqU = (a1, a2, f) => Array.eqU(fromT(a1), fromT(a2), f);
+    [@dead "eqU"] let eqU = (a1, a2, f) => Array.eqU(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImmutableArray.re 118:7
-  Array.+eq is never used
+  eq is never used
   <-- line 118
-    [@dead "Array.+eq"] let eq = (a1, a2, f) => Array.eq(fromT(a1), fromT(a2), f);
+    [@dead "eq"] let eq = (a1, a2, f) => Array.eq(fromT(a1), fromT(a2), f);
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ErrorHandler.re 12:5
-  +x is never used
+  x is never used
   <-- line 12
-  [@dead "+x"] [@genType]
+  [@dead "x"] [@genType]
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 2:5
-  +valueDead is never used
+  valueDead is never used
   <-- line 2
-  [@dead "+valueDead"] let valueDead = 2;
+  [@dead "valueDead"] let valueDead = 2;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.re 4:5
-  +valueOnlyInImplementation is never used
+  valueOnlyInImplementation is never used
   <-- line 4
-  [@dead "+valueOnlyInImplementation"] let valueOnlyInImplementation = 3;
+  [@dead "valueOnlyInImplementation"] let valueOnlyInImplementation = 3;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
@@ -2871,11 +2939,23 @@ File References
   <-- line 109
   [@dead "eq"] let eq: (t('a), t('a), ('a, 'a) => bool) => bool;
 
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.re 2:3
+  record.x is a record label never used to read a value
+  <-- line 2
+    [@dead "record.x"] x: int,
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.re 3:3
+  record.y is a record label never used to read a value
+  <-- line 3
+    [@dead "record.y"] y: string,
+
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.re 6:5
-  +r is never used
+  r is never used
   <-- line 6
-  [@dead "+r"] let r = {x: 3, y: "hello"};
+  [@dead "r"] let r = {x: 3, y: "hello"};
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ErrorHandler.rei 7:1
@@ -2889,11 +2969,29 @@ File References
   <-- line 2
   [@dead "valueDead"] let valueDead: int;
 
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 3:5
+  t.B is a variant case which is never constructed
+  <-- line 3
+    | [@dead "t.B"] B;
+
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 4:5
-  +a is never used
+  a is never used
   <-- line 4
-  [@dead "+a"] let a = A;
+  [@dead "a"] let a = A;
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 8:5
+  deadType.OnlyInInterface is a variant case which is never constructed
+  <-- line 8
+    | [@dead "deadType.OnlyInInterface"] OnlyInInterface
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 10:5
+  deadType.InNeither is a variant case which is never constructed
+  <-- line 10
+    | [@dead "deadType.InNeither"] InNeither;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.re 12:1
@@ -3376,6 +3474,12 @@ File References
     | [@dead "t.B"] B;
 
   Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 2:5
+  t.A is a variant case which is never constructed
+  <-- line 2
+    | [@dead "t.A"] A
+
+  Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 3:5
   t.B is a variant case which is never constructed
   <-- line 3
@@ -3388,10 +3492,28 @@ File References
   [@dead "a"] let a: t;
 
   Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 7:5
+  deadType.OnlyInImplementation is a variant case which is never constructed
+  <-- line 7
+    | [@dead "deadType.OnlyInImplementation"] OnlyInImplementation
+
+  Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTypeTest.rei 10:5
   deadType.InNeither is a variant case which is never constructed
   <-- line 10
     | [@dead "deadType.InNeither"] InNeither;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 2:7
+  Ext_buffer.+x is never used
+  <-- line 2
+    [@dead "Ext_buffer.+x"] let x = 42;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 1:21
+  Ext_buffer.x is never used
+  <-- line 1
+  module Ext_buffer: {[@dead "Ext_buffer.x"] let x: int;} = {
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 2:5
