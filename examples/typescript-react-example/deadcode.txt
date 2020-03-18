@@ -170,7 +170,7 @@
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
   addDeclaration +x ErrorHandler.re:12:4
   addValueReference ErrorHandler.rei:3:2 --> ErrorHandler.re:3:2
-  mergeSet ErrorHandler.re:3:2 --> ErrorHandler.rei:3:2 (2 new items)
+  addValueReference ErrorHandler.re:3:2 --> ErrorHandler.rei:3:2
   addValueReference ErrorHandler.rei:5:32 --> ErrorHandler.re:7:6
   addValueReference ErrorHandler.rei:7:0 --> ErrorHandler.re:12:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
@@ -676,23 +676,14 @@
   addDeclaration +ww FirstClassModules.re:49:6
   addValueReference FirstClassModules.re:49:6 --> FirstClassModules.re:14:2
   addValueReference FirstClassModules.re:53:4 --> FirstClassModules.re:53:29
-  mergeSet FirstClassModules.re:2:2 --> FirstClassModules.re:34:6 (0 new items)
   addValueReference FirstClassModules.re:2:2 --> FirstClassModules.re:34:6
-  mergeSet FirstClassModules.re:4:2 --> FirstClassModules.re:33:2 (0 new items)
   addValueReference FirstClassModules.re:4:2 --> FirstClassModules.re:33:2
-  mergeSet FirstClassModules.re:7:24 --> FirstClassModules.re:21:8 (0 new items)
   addValueReference FirstClassModules.re:7:24 --> FirstClassModules.re:21:8
-  mergeSet FirstClassModules.re:10:4 --> FirstClassModules.re:25:8 (0 new items)
   addValueReference FirstClassModules.re:10:4 --> FirstClassModules.re:25:8
-  mergeSet FirstClassModules.re:12:20 --> FirstClassModules.re:28:20 (0 new items)
   addValueReference FirstClassModules.re:12:20 --> FirstClassModules.re:28:20
-  mergeSet FirstClassModules.re:28:20 --> FirstClassModules.re:12:20 (1 new items)
   addValueReference FirstClassModules.re:28:20 --> FirstClassModules.re:12:20
-  mergeSet FirstClassModules.re:28:20 --> FirstClassModules.re:30:8 (1 new items)
   addValueReference FirstClassModules.re:28:20 --> FirstClassModules.re:30:8
-  mergeSet FirstClassModules.re:14:2 --> FirstClassModules.re:17:6 (1 new items)
   addValueReference FirstClassModules.re:14:2 --> FirstClassModules.re:17:6
-  mergeSet FirstClassModules.re:46:20 --> FirstClassModules.re:49:6 (0 new items)
   addValueReference FirstClassModules.re:46:20 --> FirstClassModules.re:49:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadMl.cmt
   addDeclaration thisSpansSeveralLines DeadMl.ml:3:8
@@ -730,13 +721,9 @@
   addValueReference DeadMl.ml:45:8 --> DeadMl.ml:52:11
   addValueReference DeadMl.ml:45:8 --> DeadMl.ml:51:10
   addValueReference DeadMl.ml:45:8 --> DeadMl.ml:46:3
-  mergeSet DeadMl.ml:9:2 --> DeadMl.ml:12:6 (0 new items)
   addValueReference DeadMl.ml:9:2 --> DeadMl.ml:12:6
-  mergeSet DeadMl.ml:26:6 --> DeadMl.ml:29:8 (0 new items)
   addValueReference DeadMl.ml:26:6 --> DeadMl.ml:29:8
-  mergeSet DeadMl.ml:26:27 --> DeadMl.ml:30:8 (0 new items)
   addValueReference DeadMl.ml:26:27 --> DeadMl.ml:30:8
-  mergeSet DeadMl.ml:26:47 --> DeadMl.ml:31:8 (0 new items)
   addValueReference DeadMl.ml:26:47 --> DeadMl.ml:31:8
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
   [type] addDeclaration text ImportMyBanner.re:6:16
@@ -831,7 +818,7 @@
   addDeclaration +r FirstClassModulesInterface.re:6:4
   addValueReference FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   addValueReference FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
-  mergeSet FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18 (1 new items)
+  addValueReference FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
   [type] mergeSet FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2 (0 new items)
   [type] mergeSet FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2 (0 new items)
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
@@ -909,21 +896,17 @@
   addValueReference References.re:37:4 --> References.re:19:2
   addValueReference References.re:43:4 --> References.re:43:27
   addValueReference References.re:47:4 --> References.re:47:27
-  mergeSet References.re:17:2 --> References.re:22:6 (1 new items)
   addValueReference References.re:17:2 --> References.re:22:6
-  mergeSet References.re:18:2 --> References.re:23:6 (1 new items)
   addValueReference References.re:18:2 --> References.re:23:6
-  mergeSet References.re:19:2 --> References.re:24:6 (1 new items)
   addValueReference References.re:19:2 --> References.re:24:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWithInterface.cmt
   addDeclaration +x DeadTestWithInterface.re:2:6
-  mergeSet DeadTestWithInterface.re:1:20 --> DeadTestWithInterface.re:2:6 (0 new items)
+  addValueReference DeadTestWithInterface.re:1:20 --> DeadTestWithInterface.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
   addDeclaration theAnswer NestedModulesInSignature.rei:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   addDeclaration notification CreateErrorHandler2.re:3:6
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
-  mergeSet ErrorHandler.rei:3:2 --> CreateErrorHandler2.re:3:6 (2 new items)
   addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
   [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
@@ -950,7 +933,6 @@
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:5:32
-  mergeSet ErrorHandler.rei:3:2 --> CreateErrorHandler1.re:3:6 (2 new items)
   addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler1.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/LetPrivate.cmt
   addDeclaration y LetPrivate.re:5:4
@@ -1384,7 +1366,6 @@
   [type] addDeclaration R4 AutoAnnotate.re:16:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeImplementation.cmt
   addDeclaration +x DeadCodeImplementation.re:2:6
-  mergeSet DeadCodeInterface.re:1:17 --> DeadCodeImplementation.re:2:6 (0 new items)
   addValueReference DeadCodeInterface.re:1:17 --> DeadCodeImplementation.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTest.cmt
   addDeclaration fortytwo DeadTest.re:2:4
@@ -1453,13 +1434,9 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:25
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   addDeclaration +unsafe_string2 DeadTest.re:107:2
-  mergeSet DeadTest.re:37:2 --> DeadTest.re:41:6 (1 new items)
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
-  mergeSet DeadTest.re:62:2 --> DeadTest.re:66:6 (1 new items)
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
-  mergeSet DeadTest.re:63:2 --> DeadTest.re:65:6 (0 new items)
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
-  mergeSet DeadTest.re:105:2 --> DeadTest.re:107:2 (0 new items)
   addValueReference DeadTest.re:105:2 --> DeadTest.re:107:2
   [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6 (1 new items)
   [type] addTypeReference DeadTest.re:40:6 --> DeadTest.re:36:6
@@ -1541,10 +1518,8 @@ File References
   BucklescriptAnnotations.bar: 0 references () isDead:true [1]
   BucklescriptAnnotations.+f: 0 references () isDead:true [0]
   BucklescriptAnnotations.foo: 0 references () isDead:true [0]
-  ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) isDead:false [2]
-  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:5:32) isDead:false [1]
-  CreateErrorHandler1.Error1.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2) isDead:false [0]
-  CreateErrorHandler2.Error2.notification: 2 references (ErrorHandler.re:7:6, ErrorHandler.rei:3:2) isDead:false [0]
+  CreateErrorHandler1.Error1.notification: 1 references (ErrorHandler.rei:3:2) isDead:false [0]
+  CreateErrorHandler2.Error2.notification: 1 references (ErrorHandler.rei:3:2) isDead:false [0]
   DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17) isDead:false [0]
   DeadMl.map_split_opt: 0 references () isDead:true [0]
   [type] DeadMl.module_info.case: 0 references () isDead:true [0]
@@ -1580,7 +1555,7 @@ File References
   DeadTest.MM.y: 0 references () isDead:true [0]
   DeadTest.MM.x: 1 references (DeadTest.re:73:9) isDead:false [0]
   DeadTest.MM.+valueOnlyInImplementation: 0 references () isDead:true [0]
-  DeadTest.MM.+x: 2 references (DeadTest.re:62:2, DeadTest.re:73:9) isDead:false [0]
+  DeadTest.MM.+x: 1 references (DeadTest.re:62:2) isDead:false [0]
   DeadTest.MM.+y: 1 references (DeadTest.re:66:6) isDead:false [0]
   DeadTest.UnderscoreInside._: 0 references () isDead:true [0]
   DeadTest._: 0 references () isDead:true [0]
@@ -1590,7 +1565,7 @@ File References
   DeadTest._: 0 references () isDead:true [0]
   DeadTest._: 0 references () isDead:true [0]
   DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:17) isDead:false [0]
-  DeadTest.VariantUsedOnlyInImplementation.+a: 2 references (DeadTest.re:37:2, DeadTest.re:44:17) isDead:false [0]
+  DeadTest.VariantUsedOnlyInImplementation.+a: 1 references (DeadTest.re:37:2) isDead:false [0]
   [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10) isDead:false [0]
   DeadTest.M.+thisSignatureItemIsDead: 0 references () isDead:true [0]
   DeadTest.thisIsMarkedLive: 0 references () isDead:false [0]
@@ -1600,7 +1575,7 @@ File References
   DeadTest.fortyTwoButExported: 0 references () isDead:false [0]
   DeadTest.fortytwo: 0 references () isDead:true [0]
   DeadTestWhitelist.x: 0 references () isDead:true [0]
-  DeadTestWithInterface.Ext_buffer.+x: 0 references () isDead:true [0]
+  DeadTestWithInterface.Ext_buffer.+x: 1 references (DeadTestWithInterface.re:1:20) isDead:false [0]
   [type] DeadTypeTest.deadType.InNeither: 0 references () isDead:true [0]
   [type] DeadTypeTest.deadType.InBoth: 2 references (DeadTest.re:47:8, DeadTypeTest.re:13:8) isDead:false [0]
   [type] DeadTypeTest.deadType.OnlyInInterface: 1 references (DeadTest.re:46:8) isDead:false [0]
@@ -1636,10 +1611,10 @@ File References
   FirstClassModules.firstClassModule: 0 references () isDead:false [0]
   FirstClassModules.M.x: 1 references (FirstClassModules.re:2:2) isDead:false [0]
   FirstClassModules.M.f: 1 references (FirstClassModules.re:4:2) isDead:false [0]
-  FirstClassModules.M.Z.u: 2 references (FirstClassModules.re:12:20, FirstClassModules.re:28:20) isDead:false [0]
+  FirstClassModules.M.Z.u: 1 references (FirstClassModules.re:28:20) isDead:false [0]
   FirstClassModules.M.InnerModule3.k3: 1 references (FirstClassModules.re:10:4) isDead:false [0]
   FirstClassModules.M.InnerModule2.k: 1 references (FirstClassModules.re:7:24) isDead:false [0]
-  FirstClassModules.M.y: 2 references (FirstClassModules.re:14:2, FirstClassModules.re:49:6) isDead:false [0]
+  FirstClassModules.M.y: 1 references (FirstClassModules.re:14:2) isDead:false [0]
   FirstClassModulesInterface.r: 0 references () isDead:true [0]
   [type] FirstClassModulesInterface.record.y: 0 references () isDead:true [0]
   [type] FirstClassModulesInterface.record.x: 0 references () isDead:true [0]
@@ -1761,9 +1736,9 @@ File References
   References.R.set: 1 references (References.re:37:4) isDead:false [0]
   References.R.make: 1 references (References.re:34:4) isDead:false [0]
   References.R.get: 1 references (References.re:31:4) isDead:false [0]
-  References.R.+set: 2 references (References.re:19:2, References.re:37:4) isDead:false [0]
-  References.R.+make: 2 references (References.re:18:2, References.re:34:4) isDead:false [0]
-  References.R.+get: 2 references (References.re:17:2, References.re:31:4) isDead:false [0]
+  References.R.+set: 1 references (References.re:19:2) isDead:false [0]
+  References.R.+make: 1 references (References.re:18:2) isDead:false [0]
+  References.R.+get: 1 references (References.re:17:2) isDead:false [0]
   References.update: 0 references () isDead:false [0]
   References.access: 0 references () isDead:false [0]
   References.create: 0 references () isDead:false [0]
@@ -1931,6 +1906,7 @@ File References
   DeadValueTest.valueDead: 0 references () isDead:true [0]
   DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) isDead:false [0]
   ErrorHandler.x: 0 references () isDead:true [0]
+  ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) isDead:false [0]
   FirstClassModulesInterface.+r: 0 references () isDead:true [0]
   ImmutableArray.eq: 0 references () isDead:true [0]
   ImmutableArray.eqU: 0 references () isDead:true [0]
@@ -2029,6 +2005,7 @@ File References
   DeadValueTest.+valueDead: 0 references () isDead:true [0]
   DeadValueTest.+valueAlive: 1 references (DeadValueTest.rei:1:0) isDead:false [0]
   ErrorHandler.+x: 0 references () isDead:true [0]
+  ErrorHandler.Make.+notify: 1 references (ErrorHandler.rei:5:32) isDead:false [0]
   ImmutableArray.Array.+eq: 0 references () isDead:true [0]
   ImmutableArray.Array.+eqU: 0 references () isDead:true [0]
   ImmutableArray.Array.+cmp: 0 references () isDead:true [0]
@@ -3415,12 +3392,6 @@ File References
   deadType.InNeither is a variant case which is never constructed
   <-- line 10
     | [@dead "deadType.InNeither"] InNeither;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 2:7
-  Ext_buffer.+x is never used
-  <-- line 2
-    [@dead "Ext_buffer.+x"] let x = 42;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 2:5
