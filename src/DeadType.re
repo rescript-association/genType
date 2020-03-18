@@ -4,13 +4,38 @@ open DeadCommon;
 
 let typeDependencies = ref([]);
 
+let addTypeReference = (~posDeclaration, ~posUsage) => {
+  if (verbose) {
+    Log_.item(
+      "[type] addTypeReference %s --> %s@.",
+      posUsage |> posToString,
+      posDeclaration |> posToString,
+    );
+  };
+  PosHash.addSet(typeReferences, posDeclaration, posUsage);
+};
+
 let addTypeDeclaration =
-    (~path, {type_kind, type_manifest}: Types.type_declaration) => {
-  let save = (~declKind, ~loc, ~name) => {
+    (~path as path_, {type_kind, type_manifest}: Types.type_declaration) => {
+  let save = (~declKind, ~loc: Location.t, ~name) => {
+    let isInterfaceFile = Filename.check_suffix(loc.loc_start.pos_fname, "i");
+    let name = isInterfaceFile ? name : "+" ++ name;
+    let path = [name, ...path_] |> pathToString;
+    // let (name, path) =
+    //   switch (Hashtbl.find_opt(fields, path)) {
+    //   | None => (name, path)
+    //   | Some(locOld) =>
+    //     if (false) {
+    //       addTypeReference(
+    //         ~posDeclaration=loc.loc_start,
+    //         ~posUsage=locOld.loc_start,
+    //       );
+    //     };
+    //     ("+" ++ name, ["+" ++ name, ...path_] |> pathToString);
+    //   };
     if (type_manifest == None) {
-      addDeclaration(~declKind, ~path, ~loc, ~name);
+      addDeclaration(~declKind, ~path=path_, ~loc, ~name);
     };
-    let path = [name, ...path] |> pathToString;
     Hashtbl.replace(fields, path, loc);
   };
 
@@ -29,17 +54,6 @@ let addTypeDeclaration =
     )
   | _ => ()
   };
-};
-
-let addTypeReference = (~posDeclaration, ~posUsage) => {
-  if (verbose) {
-    Log_.item(
-      "[type] addTypeReference %s --> %s@.",
-      posUsage |> posToString,
-      posDeclaration |> posToString,
-    );
-  };
-  PosHash.addSet(typeReferences, posDeclaration, posUsage);
 };
 
 let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
