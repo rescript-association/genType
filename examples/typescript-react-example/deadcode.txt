@@ -1497,7 +1497,7 @@
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
   addValueReference DeadTest.re:105:2 --> DeadTest.re:107:2
-  [type] mergeSet DeadTest.re:40:6 --> DeadTest.re:36:6 (1 new items)
+  [type] addTypeReference DeadTest.re:36:6 --> DeadTest.re:40:6
   [type] addTypeReference DeadTest.re:40:6 --> DeadTest.re:36:6
   
 File References
@@ -1625,7 +1625,7 @@ File References
   DeadTest._: 0 references () isDead:true [0]
   DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:17) isDead:false [0]
   DeadTest.VariantUsedOnlyInImplementation.+a: 1 references (DeadTest.re:37:2) isDead:false [0]
-  [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 2 references (DeadTest.re:40:6, DeadTest.re:41:10) isDead:false [0]
+  [type] DeadTest.VariantUsedOnlyInImplementation.t.A: 1 references (DeadTest.re:40:6) isDead:false [0]
   DeadTest.M.+thisSignatureItemIsDead: 0 references () isDead:true [0]
   DeadTest.thisIsMarkedLive: 0 references () isDead:false [0]
   DeadTest.thisIsKeptAlive: 1 references (DeadTest.re:20:4) isDead:false [0]

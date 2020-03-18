@@ -110,22 +110,6 @@ module PosHash = {
     let set = findSet(h, k);
     replace(h, k, PosSet.add(v, set));
   };
-
-  let mergeSet = (~isType, ~from, ~to_, table) => {
-    let set1 = findSet(table, to_);
-    let set2 = findSet(table, from);
-    let setUnion = PosSet.union(set1, set2);
-    replace(table, to_, setUnion);
-    if (verbose) {
-      Log_.item(
-        "%smergeSet %s --> %s (%d new items)@.",
-        isType ? "[type] " : "",
-        from |> posToString,
-        to_ |> posToString,
-        PosSet.cardinal(setUnion) - PosSet.cardinal(set1),
-      );
-    };
-  };
 };
 
 module FileSet = Set.Make(String);

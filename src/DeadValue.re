@@ -258,7 +258,7 @@ let processTypeDependency = ((from: Lexing.position, to_: Lexing.position)) => {
     !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
 
   if (fnTo != none_ && fnFrom != none_ && to_ != from) {
-    typeReferences |> PosHash.mergeSet(~isType=true, ~from, ~to_);
+    DeadType.addTypeReference(~posDeclaration=from, ~posUsage=to_);
     if (isInterface(fnTo) && isInterface(fnFrom)) {
       DeadType.addTypeReference(~posDeclaration=to_, ~posUsage=from);
     };
