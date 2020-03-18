@@ -460,7 +460,7 @@ module WriteDeadAnnotations = {
     original: string,
   };
 
-  let rec lineToString = ({original, declarations}) => {
+  let rec lineToString_ = ({original, declarations}) => {
     switch (declarations) {
     | [] => original
     | [{declKind, path, pos, posAnnotation}, ...nextDeclarations] =>
@@ -486,8 +486,21 @@ module WriteDeadAnnotations = {
           },
         declarations: nextDeclarations,
       }
-      |> lineToString;
+      |> lineToString_;
     };
+  };
+
+  let lineToString = ({original, declarations}) => {
+    let declarations =
+      declarations
+      |> List.sort(
+           (
+             {posAnnotation: {pos_cnum: c1}},
+             {posAnnotation: {pos_cnum: c2}},
+           ) =>
+           c2 - c1
+         );
+    lineToString_({original, declarations});
   };
 
   let currentFile = ref("");
