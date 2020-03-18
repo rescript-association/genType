@@ -159,9 +159,7 @@ let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type refer
 
 let fileReferences: FileHash.t(FileSet.t) = FileHash.create(256); /* references across files */
 
-let fields: Hashtbl.t(string, Lexing.position) = (
-  Hashtbl.create(256): Hashtbl.t(string, Lexing.position)
-); /* link from fields (record/variant) paths and locations */
+let fields: Hashtbl.t(string, Location.t) = Hashtbl.create(256); /* link from fields (record/variant) paths and locations */
 
 let currentSrc = ref("");
 let currentModuleName = ref("");

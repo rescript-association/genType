@@ -251,13 +251,16 @@ let processValueDependency =
     addValueReference(~addFileReference, pos1, pos2);
   };
 
-let processTypeDependency = ((from: Lexing.position, to_: Lexing.position)) => {
-  let fnTo = to_.pos_fname
-  and fnFrom = from.pos_fname;
-  if (fnTo != none_ && fnFrom != none_ && to_ != from) {
-    DeadType.addTypeReference(~posDeclaration=to_, ~posUsage=from);
+let processTypeDependency =
+    (
+      (
+        {loc_start: pos1, loc_ghost: ghost1}: Location.t,
+        {loc_start: pos2, loc_ghost: ghost2}: Location.t,
+      ),
+    ) =>
+  if (!ghost1 && !ghost2 && pos1 != pos2) {
+    DeadType.addTypeReference(~posDeclaration=pos1, ~posUsage=pos2);
   };
-};
 
 let processStructure =
     (~cmt_value_dependencies, structure: Typedtree.structure) => {

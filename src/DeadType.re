@@ -11,7 +11,7 @@ let addTypeDeclaration =
       addDeclaration(~declKind, ~path, ~loc, ~name);
     };
     let path = [name, ...path] |> pathToString;
-    Hashtbl.replace(fields, path, loc.Location.loc_start);
+    Hashtbl.replace(fields, path, loc);
   };
 
   switch (type_kind) {
@@ -43,19 +43,19 @@ let addTypeReference = (~posDeclaration, ~posUsage) => {
 };
 
 let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
-  let extendTypeDependencies = (pos1, pos2) =>
-    if (pos1 != pos2) {
+  let extendTypeDependencies = (loc1: Location.t, loc2: Location.t) =>
+    if (loc1.loc_start != loc2.loc_start) {
       if (verbose) {
         Log_.item(
           "[type] extendTypeDependencies %s --> %s@.",
-          pos1 |> posToString,
-          pos2 |> posToString,
+          loc1.loc_start |> posToString,
+          loc2.loc_start |> posToString,
         );
       };
 
-      typeDependencies := [(pos1, pos2), ...typeDependencies^];
+      typeDependencies := [(loc1, loc2), ...typeDependencies^];
     };
-  let updateDependencies = (name, pos) => {
+  let updateDependencies = (name, loc) => {
     let path2 =
       [
         currentModuleName^,
@@ -74,18 +74,18 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
           [currentModuleName^, ...Longident.flatten(txt)]
           @ [name.Asttypes.txt]
           |> String.concat(".");
-        let pos1 = Hashtbl.find(fields, path1);
-        let pos2 = Hashtbl.find(fields, path2);
-        extendTypeDependencies(pos, pos1);
-        extendTypeDependencies(pos1, pos2);
+        let loc1 = Hashtbl.find(fields, path1);
+        let loc2 = Hashtbl.find(fields, path2);
+        extendTypeDependencies(loc, loc1);
+        extendTypeDependencies(loc1, loc2);
       | _ => ()
       }
     ) {
     | _ => ()
     };
     switch (Hashtbl.find_opt(fields, path2)) {
-    | Some(pos2) => extendTypeDependencies(pos, pos2)
-    | None => Hashtbl.add(fields, path2, pos)
+    | Some(loc2) => extendTypeDependencies(loc, loc2)
+    | None => Hashtbl.add(fields, path2, loc)
     };
   };
 
@@ -93,13 +93,13 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
   | Ttype_record(l) =>
     l
     |> List.iter(({Typedtree.ld_name, ld_loc}) =>
-         updateDependencies(ld_name, ld_loc.Location.loc_start)
+         updateDependencies(ld_name, ld_loc)
        )
 
   | Ttype_variant(l) =>
     l
     |> List.iter(({Typedtree.cd_name, cd_loc}) =>
-         updateDependencies(cd_name, cd_loc.Location.loc_start)
+         updateDependencies(cd_name, cd_loc)
        )
 
   | _ => ()
