@@ -236,8 +236,6 @@ let collectValueReferences = {
   };
 };
 
-let isImplementation = fn => fn.[String.length(fn) - 1] != 'i';
-
 /* Merge a location's references to another one's */
 let processValueDependency =
     (
