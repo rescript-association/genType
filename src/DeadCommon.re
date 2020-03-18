@@ -175,25 +175,26 @@ let include_ = "*include*";
 
 /********   HELPERS   ********/
 
-let addValueReference = (~addFileReference, posDeclaration, posUsage) => {
+let addValueReference =
+    (~addFileReference, locDeclaration: Location.t, locUsage: Location.t) => {
   let lastBinding = getLastBinding();
-  let posUsage = lastBinding == Lexing.dummy_pos ? posUsage : lastBinding;
+  let posUsage = lastBinding == Lexing.dummy_pos ? locUsage.loc_start : lastBinding;
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
       posUsage |> posToString,
-      posDeclaration |> posToString,
+      locDeclaration.loc_start |> posToString,
     );
   };
-  PosHash.addSet(valueReferences, posDeclaration, posUsage);
+  PosHash.addSet(valueReferences, locDeclaration.loc_start, posUsage);
   if (addFileReference
-      && posDeclaration.pos_fname != none_
+      && !locDeclaration.loc_ghost
       && posUsage.pos_fname != none_
-      && posUsage.pos_fname != posDeclaration.pos_fname) {
+      && posUsage.pos_fname != locDeclaration.loc_start.pos_fname) {
     FileHash.addSet(
       fileReferences,
       posUsage.pos_fname,
-      posDeclaration.pos_fname,
+      locDeclaration.loc_start.pos_fname,
     );
   };
 };

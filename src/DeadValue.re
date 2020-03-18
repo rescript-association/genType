@@ -136,21 +136,14 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 };
 
 let collectExpr = (super, self, e: Typedtree.expression) => {
-  let posUsage = e.exp_loc.loc_start;
+  let locUsage = e.exp_loc;
   switch (e.exp_desc) {
   | Texp_ident(
       _path,
       _,
-      {
-        Types.val_loc: {
-          Location.loc_start: posDeclaration,
-          loc_ghost: false,
-          _,
-        },
-        _,
-      },
+      {Types.val_loc: {loc_ghost: false, _} as locDeclaration, _},
     ) =>
-    addValueReference(~addFileReference=true, posDeclaration, posUsage)
+    addValueReference(~addFileReference=true, locDeclaration, locUsage)
 
   | Texp_field(
       _,
@@ -163,7 +156,10 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
       _,
     ) =>
     if (analyzeTypes^) {
-      DeadType.addTypeReference(~posDeclaration, ~posUsage);
+      DeadType.addTypeReference(
+        ~posDeclaration,
+        ~posUsage=locUsage.loc_start,
+      );
     }
 
   | _ => ()
@@ -240,13 +236,19 @@ let collectValueReferences = {
 let processValueDependency =
     (
       (
-        {val_loc: {loc_start: {pos_fname: fn1} as pos1, loc_ghost: ghost1}}: Types.value_description,
-        {val_loc: {loc_start: {pos_fname: fn2} as pos2, loc_ghost: ghost2}}: Types.value_description,
+        {
+          val_loc:
+            {loc_start: {pos_fname: fn1} as pos1, loc_ghost: ghost1} as loc1,
+        }: Types.value_description,
+        {
+          val_loc:
+            {loc_start: {pos_fname: fn2} as pos2, loc_ghost: ghost2} as loc2,
+        }: Types.value_description,
       ),
     ) =>
   if (!ghost1 && !ghost2 && pos1 != pos2) {
     let addFileReference = fileIsImplementationOf(fn1, fn2);
-    addValueReference(~addFileReference, pos1, pos2);
+    addValueReference(~addFileReference, loc1, loc2);
   };
 
 let processTypeDependency =
