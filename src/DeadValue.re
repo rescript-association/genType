@@ -98,7 +98,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
   let oldCurrentBindings = currentBindings^;
   let oldLastBinding = lastBinding^;
   checkAnyBindingWithNoSideEffects(vb);
-  let pos =
+  let loc =
     switch (vb.vb_pat.pat_desc) {
     | Tpat_var(id, {loc: {loc_start, loc_ghost} as loc})
         when !loc_ghost && !vb.vb_loc.loc_ghost =>
@@ -124,11 +124,11 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 
         PosHash.replace(decls, loc_start, {...decl, posAnnotation});
       };
-      loc_start;
+      loc;
     | _ => getLastBinding()
     };
-  currentBindings := PosSet.add(pos, currentBindings^);
-  lastBinding := pos;
+  currentBindings := PosSet.add(loc.loc_start, currentBindings^);
+  lastBinding := loc;
   let r = super.Tast_mapper.value_binding(self, vb);
   currentBindings := oldCurrentBindings;
   lastBinding := oldLastBinding;

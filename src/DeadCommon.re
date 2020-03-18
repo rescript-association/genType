@@ -164,36 +164,37 @@ let fields: Hashtbl.t(string, Location.t) = Hashtbl.create(256); /* link from fi
 let currentSrc = ref("");
 let currentModuleName = ref("");
 let currentBindings = ref(PosSet.empty);
-let lastBinding = ref(Lexing.dummy_pos);
+let lastBinding = ref(Location.none);
 let getLastBinding = () => lastBinding^;
 
 /* Keep track of the module path while traversing with Tast_mapper */
 let currentModulePath: ref(path) = ref([]);
-
-let none_ = "_none_";
-let include_ = "*include*";
 
 /********   HELPERS   ********/
 
 let addValueReference =
     (~addFileReference, locDeclaration: Location.t, locUsage: Location.t) => {
   let lastBinding = getLastBinding();
-  let posUsage = lastBinding == Lexing.dummy_pos ? locUsage.loc_start : lastBinding;
+  let locUsage = lastBinding == Location.none ? locUsage : lastBinding;
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
-      posUsage |> posToString,
+      locUsage.loc_start |> posToString,
       locDeclaration.loc_start |> posToString,
     );
   };
-  PosHash.addSet(valueReferences, locDeclaration.loc_start, posUsage);
+  PosHash.addSet(
+    valueReferences,
+    locDeclaration.loc_start,
+    locUsage.loc_start,
+  );
   if (addFileReference
       && !locDeclaration.loc_ghost
-      && posUsage.pos_fname != none_
-      && posUsage.pos_fname != locDeclaration.loc_start.pos_fname) {
+      && !locUsage.loc_ghost
+      && locUsage.loc_start.pos_fname != locDeclaration.loc_start.pos_fname) {
     FileHash.addSet(
       fileReferences,
-      posUsage.pos_fname,
+      locUsage.loc_start.pos_fname,
       locDeclaration.loc_start.pos_fname,
     );
   };
@@ -320,7 +321,7 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
        will create value definitions whose location is in set.mli
      */
   if (!loc.loc_ghost
-      && (currentSrc^ == pos.pos_fname || currentModuleName^ === include_)) {
+      && (currentSrc^ == pos.pos_fname || currentModuleName^ === "*include*")) {
     if (verbose) {
       Log_.item(
         "%saddDeclaration %s %s@.",
