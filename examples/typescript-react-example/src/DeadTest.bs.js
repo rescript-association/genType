@@ -75,6 +75,8 @@ function withDefaultValue(paramWithDefaultOpt, y) {
 
 var Ext_buffer = { };
 
+console.log(/* Root */["xzz"]);
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
