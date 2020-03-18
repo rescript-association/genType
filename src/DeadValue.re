@@ -254,14 +254,8 @@ let processValueDependency =
 let processTypeDependency = ((from: Lexing.position, to_: Lexing.position)) => {
   let fnTo = to_.pos_fname
   and fnFrom = from.pos_fname;
-  let isInterface = fn =>
-    !isImplementation(fn) || !Sys.file_exists(fn ++ "i");
-
   if (fnTo != none_ && fnFrom != none_ && to_ != from) {
-    DeadType.addTypeReference(~posDeclaration=from, ~posUsage=to_);
-    if (isInterface(fnTo) && isInterface(fnFrom)) {
-      DeadType.addTypeReference(~posDeclaration=to_, ~posUsage=from);
-    };
+    DeadType.addTypeReference(~posDeclaration=to_, ~posUsage=from);
   };
 };
 
