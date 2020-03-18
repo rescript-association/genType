@@ -1633,8 +1633,8 @@ File References
   DeadRT.emitModuleAccessPath: 0 references () isDead:true [0]
   [type] DeadRT.moduleAccessPath.Kaboom: 0 references () isDead:true [1]
   [type] DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) isDead:false [0]
-  [type] DeadRT.moduleAccessPath.Root: 0 references () isDead:true [1]
-  [type] DeadRT.moduleAccessPath.+Root: 0 references () isDead:true [0]
+  [type] DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) isDead:false [1]
+  [type] DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) isDead:false [0]
   DeadTest.Ext_buffer.unsafe_string2: 0 references () isDead:true [0]
   DeadTest.Ext_buffer.+unsafe_string2: 0 references () isDead:true [0]
   DeadTest.unsafe_string1: 0 references () isDead:true [0]
@@ -3683,18 +3683,6 @@ File References
   Ext_buffer.unsafe_string2 is never used
   <-- line 105
     [@dead "Ext_buffer.unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.re 2:5
-  moduleAccessPath.+Root is a variant case which is never constructed
-  <-- line 2
-    | [@dead "moduleAccessPath.+Root"] Root(string)
-
-  Warning Dead Type
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.rei 2:5
-  moduleAccessPath.Root is a variant case which is never constructed
-  <-- line 2
-    | [@dead "moduleAccessPath.Root"] Root(string)
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.rei 3:5
