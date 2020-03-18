@@ -1137,6 +1137,9 @@
   addDeclaration +f BucklescriptAnnotations.re:22:6
   addValueReference BucklescriptAnnotations.re:22:6 --> BucklescriptAnnotations.re:21:11
   addValueReference BucklescriptAnnotations.re:21:4 --> BucklescriptAnnotations.re:22:6
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadRT.cmti
+  [type] addDeclaration Root DeadRT.rei:2:4
+  [type] addDeclaration Kaboom DeadRT.rei:3:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
   [type] addDeclaration +x Records.re:5:2
   [type] addDeclaration +y Records.re:6:2
@@ -1235,6 +1238,17 @@
   [type] addTypeReference Records.re:167:38 --> Records.re:162:2
   addValueReference Records.re:167:4 --> Records.re:167:21
   addValueReference Records.re:170:4 --> Records.re:170:22
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadRT.cmt
+  [type] addDeclaration +Root DeadRT.re:2:4
+  [type] addDeclaration +Kaboom DeadRT.re:3:4
+  addDeclaration emitModuleAccessPath DeadRT.re:5:8
+  [type] extendTypeDependencies DeadRT.re:2:4 --> DeadRT.rei:2:4
+  [type] extendTypeDependencies DeadRT.re:3:4 --> DeadRT.rei:3:4
+  addValueReference DeadRT.re:5:8 --> DeadRT.re:7:9
+  addValueReference DeadRT.re:5:8 --> DeadRT.re:5:31
+  [type] addTypeReference DeadRT.re:11:16 --> DeadRT.re:3:4
+  [type] addTypeReference DeadRT.rei:3:4 --> DeadRT.re:3:4
+  [type] addTypeReference DeadRT.rei:2:4 --> DeadRT.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
   addDeclaration makeProps ImportIndex.re:2:0
   addDeclaration make ImportIndex.re:2:0
@@ -1509,6 +1523,7 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:25
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   addDeclaration +unsafe_string2 DeadTest.re:107:2
+  [type] addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
@@ -1531,6 +1546,7 @@ File References
   DeadValueTest.rei -->> DeadValueTest.re
   BucklescriptAnnotations.re -->> 
   DeadTestWithInterface.rei -->> 
+  DeadRT.re -->> 
   ImportHookDefault.re -->> 
   ModuleAliases.re -->> 
   TestModuleAliases.re -->> 
@@ -1538,6 +1554,7 @@ File References
   CreateErrorHandler2.re -->> 
   VariantsWithPayload.re -->> 
   FirstClassModules.re -->> 
+  DeadRT.rei -->> 
   Opaque.re -->> 
   location.re -->> 
   Shadow.re -->> 
@@ -1613,6 +1630,11 @@ File References
   DeadMl.AA.thisIsInInterface: 0 references () isDead:true [0]
   DeadMl.AA.+thisIsInInterface: 0 references () isDead:true [0]
   DeadMl.QQ.thisSpansSeveralLines: 0 references () isDead:true [0]
+  DeadRT.emitModuleAccessPath: 0 references () isDead:true [0]
+  [type] DeadRT.moduleAccessPath.Kaboom: 0 references () isDead:true [1]
+  [type] DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) isDead:false [0]
+  [type] DeadRT.moduleAccessPath.Root: 0 references () isDead:true [1]
+  [type] DeadRT.moduleAccessPath.+Root: 0 references () isDead:true [0]
   DeadTest.Ext_buffer.unsafe_string2: 0 references () isDead:true [0]
   DeadTest.Ext_buffer.+unsafe_string2: 0 references () isDead:true [0]
   DeadTest.unsafe_string1: 0 references () isDead:true [0]
@@ -3661,6 +3683,30 @@ File References
   Ext_buffer.unsafe_string2 is never used
   <-- line 105
     [@dead "Ext_buffer.unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.re 2:5
+  moduleAccessPath.+Root is a variant case which is never constructed
+  <-- line 2
+    | [@dead "moduleAccessPath.+Root"] Root(string)
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.rei 2:5
+  moduleAccessPath.Root is a variant case which is never constructed
+  <-- line 2
+    | [@dead "moduleAccessPath.Root"] Root(string)
+
+  Warning Dead Type
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.rei 3:5
+  moduleAccessPath.Kaboom is a variant case which is never constructed
+  <-- line 3
+    | [@dead "moduleAccessPath.Kaboom"] Kaboom
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.re 5:9
+  emitModuleAccessPath is never used
+  <-- line 5
+  [@dead "emitModuleAccessPath"] let rec emitModuleAccessPath = moduleAccessPath =>
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 3:9

@@ -106,3 +106,5 @@ module Ext_buffer: {
 } = {
   external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 };
+
+let () = Js.log(DeadRT.Root("xzz"));
