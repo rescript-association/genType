@@ -51,7 +51,7 @@ let emitExportType:
     ~emitters: Emitters.t,
     ~nameAs: option(string),
     ~opaque: bool,
-    ~optType: option(type_),
+    ~optType: type_,
     ~typeNameIsInterface: string => bool,
     ~typeVars: list(string),
     string
