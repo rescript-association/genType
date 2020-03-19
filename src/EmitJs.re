@@ -33,7 +33,7 @@ let createExportTypeMap =
     let addExportType =
         (
           ~annotation,
-          {resolvedTypeName, typeVars, optType}: CodeItem.exportType,
+          {resolvedTypeName, type_, typeVars}: CodeItem.exportType,
         ) => {
       if (Debug.codeItems^) {
         Log_.item(
@@ -41,28 +41,21 @@ let createExportTypeMap =
           resolvedTypeName |> ResolvedName.toString,
           typeVars == []
             ? "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
-          switch (optType) {
-          | type_ =>
-            " "
-            ++ (annotation |> Annotation.toString |> EmitText.comment)
-            ++ " = "
-            ++ (
-              type_
-              |> EmitType.typeToString(~config, ~typeNameIsInterface=_ =>
-                   false
-                 )
-            )
-          },
+          " "
+          ++ (annotation |> Annotation.toString |> EmitText.comment)
+          ++ " = "
+          ++ (
+            type_
+            |> EmitType.typeToString(~config, ~typeNameIsInterface=_ => false)
+          ),
         );
       };
-      switch (optType) {
-      | type_ =>
-        exportTypeMap
-        |> StringMap.add(
-             resolvedTypeName |> ResolvedName.toString,
-             {CodeItem.typeVars, type_, annotation},
-           )
-      };
+
+      exportTypeMap
+      |> StringMap.add(
+           resolvedTypeName |> ResolvedName.toString,
+           {CodeItem.typeVars, type_, annotation},
+         );
     };
     switch (typeDeclaration.exportFromTypeDeclaration) {
     | {exportType, annotation} => exportType |> addExportType(~annotation)
@@ -100,12 +93,12 @@ let emitExportType =
       ~config,
       ~typeGetNormalized,
       ~typeNameIsInterface,
-      {CodeItem.nameAs, opaque, optType, typeVars, resolvedTypeName},
+      {CodeItem.nameAs, opaque, type_, typeVars, resolvedTypeName},
     ) => {
-  let (opaque, optType) =
-    switch (opaque, optType) {
-    | (Some(opaque), type_) => (opaque, type_)
-    | (None, type_) =>
+  let (opaque, type_) =
+    switch (opaque) {
+    | Some(opaque) => (opaque, type_)
+    | None =>
       let normalized = type_ |> typeGetNormalized;
       (false, normalized);
     };
@@ -117,7 +110,7 @@ let emitExportType =
        ~emitters,
        ~nameAs,
        ~opaque,
-       ~optType,
+       ~type_,
        ~typeNameIsInterface,
        ~typeVars,
      );
@@ -628,7 +621,7 @@ let rec emitCodeItem =
       );
 
     let emitters =
-      switch (exportType.optType) {
+      switch (exportType.type_) {
       | GroupOfLabeledArgs(fields)
           when config.language == Untyped && config.propTypes =>
         fields
@@ -789,7 +782,7 @@ let rec emitCodeItem =
         let exportType: CodeItem.exportType = {
           nameAs: None,
           opaque: Some(false),
-          optType: propsType,
+          type_: propsType,
           typeVars,
           resolvedTypeName,
         };

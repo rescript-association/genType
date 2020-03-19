@@ -525,7 +525,7 @@ let emitExportType =
       ~emitters,
       ~nameAs,
       ~opaque,
-      ~optType as type_,
+      ~type_,
       ~typeNameIsInterface,
       ~typeVars,
       resolvedTypeName,
@@ -551,8 +551,7 @@ let emitExportType =
 
   switch (config.language) {
   | Flow =>
-    switch (type_) {
-    | _ when config.exportInterfaces && isInterface && !opaque =>
+    if (config.exportInterfaces && isInterface && !opaque) {
       "export interface "
       ++ resolvedTypeName
       ++ typeParamsString
@@ -563,8 +562,8 @@ let emitExportType =
       )
       ++ ";"
       ++ exportNameAs
-      |> export(~emitters)
-    | _ =>
+      |> export(~emitters);
+    } else {
       "export"
       ++ (opaque ? " opaque " : " ")
       ++ "type "
@@ -577,15 +576,7 @@ let emitExportType =
       )
       ++ ";"
       ++ exportNameAs
-      |> export(~emitters)
-    // | None =>
-    //   "export"
-    //   ++ (opaque ? " opaque " : " ")
-    //   ++ "type "
-    //   ++ (resolvedTypeName |> EmitText.brackets)
-    //   ++ ";"
-    //   ++ exportNameAs
-    //   |> export(~emitters)
+      |> export(~emitters);
     }
   | TypeScript =>
     if (opaque) {

@@ -8,14 +8,14 @@ type declarationKind =
   | NoDeclaration;
 
 let createExportTypeFromTypeDeclaration =
-    (~nameAs, ~opaque, ~typeVars, ~optType, ~annotation, ~typeEnv, typeName)
+    (~annotation, ~nameAs, ~opaque, ~type_, ~typeEnv, typeName, ~typeVars)
     : CodeItem.exportFromTypeDeclaration => {
   let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
   {
     exportType: {
       nameAs,
       opaque,
-      optType,
+      type_,
       typeVars,
       resolvedTypeName,
     },
@@ -80,12 +80,12 @@ let traslateDeclarationKind =
     let exportFromTypeDeclaration =
       typeName
       |> createExportTypeFromTypeDeclaration(
+           ~annotation,
            ~nameAs,
            ~opaque,
-           ~typeVars,
-           ~optType=translation.type_,
-           ~annotation,
+           ~type_=translation.type_,
            ~typeEnv,
+           ~typeVars,
          );
     let importTypes =
       translation.dependencies
@@ -170,14 +170,14 @@ let traslateDeclarationKind =
       /* Make the imported type usable from other modules by exporting it too. */
       typeName_
       |> createExportTypeFromTypeDeclaration(
+           ~annotation=GenType,
            ~nameAs=None,
            ~opaque=Some(false),
-           ~typeVars,
-           ~optType=
+           ~type_=
              asTypeName
              |> ident(~typeArgs=typeVars |> List.map(s => TypeVar(s))),
-           ~annotation=GenType,
            ~typeEnv,
+           ~typeVars,
          );
     [{CodeItem.importTypes, exportFromTypeDeclaration}];
 
@@ -187,12 +187,12 @@ let traslateDeclarationKind =
       exportFromTypeDeclaration:
         typeName
         |> createExportTypeFromTypeDeclaration(
+             ~annotation,
              ~nameAs,
              ~opaque=Some(true),
-             ~typeVars,
-             ~optType=mixedOrUnknown(~config),
-             ~annotation,
+             ~type_=mixedOrUnknown(~config),
              ~typeEnv,
+             ~typeVars,
            ),
     }
     |> returnTypeDeclaration
@@ -238,7 +238,6 @@ let traslateDeclarationKind =
     let {TranslateTypeExprFromTypes.dependencies, type_} =
       labelDeclarations |> translateLabelDeclarations;
 
-    let optType = type_;
     let importTypes =
       dependencies
       |> Translation.translateDependencies(
@@ -252,12 +251,12 @@ let traslateDeclarationKind =
       exportFromTypeDeclaration:
         typeName
         |> createExportTypeFromTypeDeclaration(
+             ~annotation,
              ~nameAs,
              ~opaque,
-             ~typeVars,
-             ~optType,
-             ~annotation,
+             ~type_,
              ~typeEnv,
+             ~typeVars,
            ),
     }
     |> returnTypeDeclaration;
@@ -374,7 +373,7 @@ let traslateDeclarationKind =
       CodeItem.exportType: {
         nameAs,
         opaque,
-        optType: variantTyp,
+        type_: variantTyp,
         typeVars,
         resolvedTypeName,
       },
