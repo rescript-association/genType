@@ -675,12 +675,12 @@ let rec resolveRecursiveRefs =
           |> List.map(posToString)
           |> String.concat(", ");
         Log_.item(
-          "%s%s: %d references (%s) isDead:%b [%d]@.",
-          decl.declKind != Value ? "[type] " : "",
+          "%s %s %s: %d references (%s) [%d]@.",
+          isDead ? "Dead" : "Live",
+          decl.declKind == Value ? "Value" : "Type",
           decl.path |> pathToString,
           newRefs |> PosSet.cardinal,
           refsString,
-          isDead,
           level,
         );
       };
