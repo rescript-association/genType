@@ -42,7 +42,7 @@ let createExportTypeMap =
           typeVars == []
             ? "" : "(" ++ (typeVars |> String.concat(",")) ++ ")",
           switch (optType) {
-          | Some(type_) =>
+          | type_ =>
             " "
             ++ (annotation |> Annotation.toString |> EmitText.comment)
             ++ " = "
@@ -52,18 +52,16 @@ let createExportTypeMap =
                    false
                  )
             )
-          | None => ""
           },
         );
       };
       switch (optType) {
-      | Some(type_) =>
+      | type_ =>
         exportTypeMap
         |> StringMap.add(
              resolvedTypeName |> ResolvedName.toString,
              {CodeItem.typeVars, type_, annotation},
            )
-      | None => exportTypeMap
       };
     };
     switch (typeDeclaration.exportFromTypeDeclaration) {
@@ -106,9 +104,8 @@ let emitExportType =
     ) => {
   let (opaque, optType) =
     switch (opaque, optType) {
-    | (_, None) => assert(false)
-    | (Some(opaque), Some(type_)) => (opaque, type_)
-    | (None, Some(type_)) =>
+    | (Some(opaque), type_) => (opaque, type_)
+    | (None, type_) =>
       let normalized = type_ |> typeGetNormalized;
       (false, normalized);
     };
@@ -632,7 +629,7 @@ let rec emitCodeItem =
 
     let emitters =
       switch (exportType.optType) {
-      | Some(GroupOfLabeledArgs(fields))
+      | GroupOfLabeledArgs(fields)
           when config.language == Untyped && config.propTypes =>
         fields
         |> List.map((field: field) => {
@@ -792,7 +789,7 @@ let rec emitCodeItem =
         let exportType: CodeItem.exportType = {
           nameAs: None,
           opaque: Some(false),
-          optType: Some(propsType),
+          optType: propsType,
           typeVars,
           resolvedTypeName,
         };

@@ -83,7 +83,7 @@ let traslateDeclarationKind =
            ~nameAs,
            ~opaque,
            ~typeVars,
-           ~optType=Some(translation.type_),
+           ~optType=translation.type_,
            ~annotation,
            ~typeEnv,
          );
@@ -174,10 +174,8 @@ let traslateDeclarationKind =
            ~opaque=Some(false),
            ~typeVars,
            ~optType=
-             Some(
-               asTypeName
-               |> ident(~typeArgs=typeVars |> List.map(s => TypeVar(s))),
-             ),
+             asTypeName
+             |> ident(~typeArgs=typeVars |> List.map(s => TypeVar(s))),
            ~annotation=GenType,
            ~typeEnv,
          );
@@ -192,7 +190,7 @@ let traslateDeclarationKind =
              ~nameAs,
              ~opaque=Some(true),
              ~typeVars,
-             ~optType=Some(mixedOrUnknown(~config)),
+             ~optType=mixedOrUnknown(~config),
              ~annotation,
              ~typeEnv,
            ),
@@ -240,7 +238,7 @@ let traslateDeclarationKind =
     let {TranslateTypeExprFromTypes.dependencies, type_} =
       labelDeclarations |> translateLabelDeclarations;
 
-    let optType = Some(type_);
+    let optType = type_;
     let importTypes =
       dependencies
       |> Translation.translateDependencies(
@@ -376,7 +374,7 @@ let traslateDeclarationKind =
       CodeItem.exportType: {
         nameAs,
         opaque,
-        optType: Some(variantTyp),
+        optType: variantTyp,
         typeVars,
         resolvedTypeName,
       },

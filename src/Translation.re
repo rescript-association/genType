@@ -264,7 +264,7 @@ let translateComponent =
         exportType: {
           nameAs: None,
           opaque: Some(false),
-          optType: Some(propsType),
+          optType: propsType,
           typeVars,
           resolvedTypeName,
         },
@@ -412,7 +412,7 @@ let translatePrimitive =
         exportType: {
           nameAs: None,
           opaque: Some(false),
-          optType: Some(propsTyp),
+          optType: propsTyp,
           typeVars,
           resolvedTypeName,
         },
@@ -474,15 +474,13 @@ let addTypeDeclarationsFromModuleEquations = (~typeEnv, translation: t) => {
                 ...exportType,
                 nameAs: None,
                 optType:
-                  Some(
-                    y
-                    |> ResolvedName.toString
-                    |> ident(
-                         ~builtin=false,
-                         ~typeArgs=
-                           exportType.typeVars |> List.map(s => TypeVar(s)),
-                       ),
-                  ),
+                  y
+                  |> ResolvedName.toString
+                  |> ident(
+                       ~builtin=false,
+                       ~typeArgs=
+                         exportType.typeVars |> List.map(s => TypeVar(s)),
+                     ),
                 resolvedTypeName: x,
               };
               {
