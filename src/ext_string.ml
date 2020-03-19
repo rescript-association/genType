@@ -117,7 +117,7 @@ let ends_with_then_chop s beg =
      this version try to make it not locale senstive, this bug is fixed
      in the compiler trunk     
 *)
-let escaped s =
+let escapedx s =
   let rec needs_escape i =
     if i >= String.length s then false else
       match String.unsafe_get s i with

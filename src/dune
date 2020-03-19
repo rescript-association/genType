@@ -1,4 +1,3 @@
-(copy_files# ext/*.{ml,mli})
 (
   executable
     (public_name gentype.exe)
