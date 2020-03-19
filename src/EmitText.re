@@ -18,8 +18,6 @@ let argi = (~nameGen, i) => "Arg" ++ (i |> string_of_int) |> name(~nameGen);
 
 let array = xs => "[" ++ (xs |> String.concat(", ")) ++ "]";
 
-// let brackets = x => "{ " ++ x ++ " }";
-
 let comment = x => "/* " ++ x ++ " */";
 
 let curry = (~args, ~numArgs, name) =>
@@ -32,8 +30,9 @@ let curry = (~args, ~numArgs, name) =>
   };
 
 let funCall = (~args, ~useCurry=false, name) =>
-  useCurry ?
-    name |> curry(~args, ~numArgs=args |> List.length) : name ++ parens(args);
+  useCurry
+    ? name |> curry(~args, ~numArgs=args |> List.length)
+    : name ++ parens(args);
 
 let genericsString = (~typeVars) =>
   typeVars === [] ? "" : "<" ++ String.concat(",", typeVars) ++ ">";
