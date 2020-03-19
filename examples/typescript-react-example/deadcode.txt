@@ -882,8 +882,8 @@
   addTypeDeclaration +x FirstClassModulesInterface.re:2:2
   addTypeDeclaration +y FirstClassModulesInterface.re:3:2
   addValueDeclaration r FirstClassModulesInterface.re:6:4
-  [type] extendTypeDependencies FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2
-  [type] extendTypeDependencies FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2
+  extendTypeDependencies FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2
+  extendTypeDependencies FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2
   addValueReference FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   addValueReference FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
   addValueReference FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
@@ -985,13 +985,13 @@
   addTypeDeclaration +OnlyInInterface DeadTypeTest.re:8:4
   addTypeDeclaration +InBoth DeadTypeTest.re:9:4
   addTypeDeclaration +InNeither DeadTypeTest.re:10:4
-  [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
-  [type] extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
+  extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
+  extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
   addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
-  [type] extendTypeDependencies DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4
-  [type] extendTypeDependencies DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
-  [type] extendTypeDependencies DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4
-  [type] extendTypeDependencies DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
+  extendTypeDependencies DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4
+  extendTypeDependencies DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
+  extendTypeDependencies DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4
+  extendTypeDependencies DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
   addValueDeclaration _ DeadTypeTest.re:12:0
   addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
   addValueDeclaration _ DeadTypeTest.re:13:0
@@ -1242,8 +1242,8 @@
   addTypeDeclaration +Root DeadRT.re:2:4
   addTypeDeclaration +Kaboom DeadRT.re:3:4
   addValueDeclaration emitModuleAccessPath DeadRT.re:5:8
-  [type] extendTypeDependencies DeadRT.re:2:4 --> DeadRT.rei:2:4
-  [type] extendTypeDependencies DeadRT.re:3:4 --> DeadRT.rei:3:4
+  extendTypeDependencies DeadRT.re:2:4 --> DeadRT.rei:2:4
+  extendTypeDependencies DeadRT.re:3:4 --> DeadRT.rei:3:4
   addValueReference DeadRT.re:5:8 --> DeadRT.re:7:9
   addValueReference DeadRT.re:5:8 --> DeadRT.re:5:31
   addTypeReference DeadRT.re:11:16 --> DeadRT.re:3:4
@@ -1485,7 +1485,7 @@
   addValueReference DeadTest.re:12:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:20:4 --> DeadTest.re:17:4
   addValueDeclaration +thisSignatureItemIsDead DeadTest.re:31:6
-  [type] extendTypeDependencies DeadTest.re:40:6 --> DeadTest.re:36:6
+  extendTypeDependencies DeadTest.re:40:6 --> DeadTest.re:36:6
   addValueDeclaration +a DeadTest.re:41:6
   addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
   addValueReference DeadTest.re:44:17 --> DeadTest.re:37:2

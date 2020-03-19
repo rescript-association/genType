@@ -61,7 +61,7 @@ let processTypeDeclaration = (typeDeclaration: Typedtree.type_declaration) => {
     if (loc1.loc_start != loc2.loc_start) {
       if (verbose) {
         Log_.item(
-          "[type] extendTypeDependencies %s --> %s@.",
+          "extendTypeDependencies %s --> %s@.",
           loc1.loc_start |> posToString,
           loc2.loc_start |> posToString,
         );
