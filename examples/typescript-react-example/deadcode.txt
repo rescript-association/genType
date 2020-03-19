@@ -1,15 +1,15 @@
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/location/location.cmt
-  [type] addDeclaration +id location.re:5:2
-  [type] addDeclaration +name location.re:6:2
-  addDeclaration x location.re:9:4
+  addTypeDeclaration +id location.re:5:2
+  addTypeDeclaration +name location.re:6:2
+  addValueDeclaration x location.re:9:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ManyComponents.cmt
-  addDeclaration someValueSoModuleOffsetsAreShifted ManyComponents.re:4:6
-  addDeclaration component ManyComponents.re:6:6
-  addDeclaration make ManyComponents.re:9:6
-  addDeclaration component ManyComponents.re:16:6
-  addDeclaration make ManyComponents.re:19:6
-  addDeclaration component ManyComponents.re:36:4
-  addDeclaration make ManyComponents.re:39:4
+  addValueDeclaration someValueSoModuleOffsetsAreShifted ManyComponents.re:4:6
+  addValueDeclaration component ManyComponents.re:6:6
+  addValueDeclaration make ManyComponents.re:9:6
+  addValueDeclaration component ManyComponents.re:16:6
+  addValueDeclaration make ManyComponents.re:19:6
+  addValueDeclaration component ManyComponents.re:36:4
+  addValueDeclaration make ManyComponents.re:39:4
   addValueReference ManyComponents.re:6:6 --> ReasonReact.rei:153:0
   addValueReference ManyComponents.re:9:6 --> ReasonReact.rei:17:0
   addValueReference ManyComponents.re:9:6 --> ReactDOMRe.re:2105:0
@@ -20,15 +20,15 @@
   addValueReference ManyComponents.re:19:6 --> ManyComponents.re:16:6
   addValueReference ManyComponents.re:36:4 --> ReasonReact.rei:153:0
   addValueReference ManyComponents.re:39:4 --> ReasonReact.rei:17:0
-  addDeclaration +emptyArray ManyComponents.re:42:49
+  addValueDeclaration +emptyArray ManyComponents.re:42:49
   addValueReference ManyComponents.re:39:4 --> ManyComponents.re:42:49
   addValueReference ManyComponents.re:39:4 --> ManyComponents.re:9:6
   addValueReference ManyComponents.re:39:4 --> ReasonReact.rei:181:0
   addValueReference ManyComponents.re:39:4 --> ReactDOMRe.re:2105:0
   addValueReference ManyComponents.re:39:4 --> ManyComponents.re:36:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/components/ComponentAsProp.cmt
-  addDeclaration component ComponentAsProp.re:1:4
-  addDeclaration make ComponentAsProp.re:5:4
+  addValueDeclaration component ComponentAsProp.re:1:4
+  addValueDeclaration make ComponentAsProp.re:5:4
   addValueReference ComponentAsProp.re:1:4 --> ReasonReact.rei:153:0
   addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:5:13
   addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:5:21
@@ -39,39 +39,39 @@
   addValueReference ComponentAsProp.re:5:4 --> ReactDOMRe.re:1097:0
   addValueReference ComponentAsProp.re:5:4 --> ComponentAsProp.re:1:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Types.cmt
-  addDeclaration someIntList Types.re:5:4
-  addDeclaration map Types.re:8:4
-  [type] addDeclaration +A Types.re:12:4
-  [type] addDeclaration +B Types.re:13:4
-  addDeclaration swap Types.re:28:8
-  [type] addDeclaration +self Types.re:35:22
-  [type] addDeclaration +b Types.re:38:27
-  [type] addDeclaration +a Types.re:39:26
-  addDeclaration selfRecursiveConverter Types.re:46:4
-  addDeclaration mutuallyRecursiveConverter Types.re:53:4
-  addDeclaration testFunctionOnOptionsAsArgument Types.re:56:4
-  [type] addDeclaration +A Types.re:60:4
-  [type] addDeclaration +B Types.re:61:4
-  addDeclaration stringT Types.re:64:4
-  addDeclaration jsStringT Types.re:67:4
-  addDeclaration jsString2T Types.re:70:4
-  addDeclaration jsonStringify Types.re:82:4
-  [type] addDeclaration +i Types.re:91:2
-  [type] addDeclaration +s Types.re:92:2
-  addDeclaration testConvertNull Types.re:96:4
-  addDeclaration testConvertLocation Types.re:102:4
-  addDeclaration testMarshalFields Types.re:120:4
-  addDeclaration setMatch Types.re:136:4
-  [type] addDeclaration +id Types.re:141:19
-  addDeclaration testInstantiateTypeParameter Types.re:146:4
-  addDeclaration currentTime Types.re:156:4
+  addValueDeclaration someIntList Types.re:5:4
+  addValueDeclaration map Types.re:8:4
+  addTypeDeclaration +A Types.re:12:4
+  addTypeDeclaration +B Types.re:13:4
+  addValueDeclaration swap Types.re:28:8
+  addTypeDeclaration +self Types.re:35:22
+  addTypeDeclaration +b Types.re:38:27
+  addTypeDeclaration +a Types.re:39:26
+  addValueDeclaration selfRecursiveConverter Types.re:46:4
+  addValueDeclaration mutuallyRecursiveConverter Types.re:53:4
+  addValueDeclaration testFunctionOnOptionsAsArgument Types.re:56:4
+  addTypeDeclaration +A Types.re:60:4
+  addTypeDeclaration +B Types.re:61:4
+  addValueDeclaration stringT Types.re:64:4
+  addValueDeclaration jsStringT Types.re:67:4
+  addValueDeclaration jsString2T Types.re:70:4
+  addValueDeclaration jsonStringify Types.re:82:4
+  addTypeDeclaration +i Types.re:91:2
+  addTypeDeclaration +s Types.re:92:2
+  addValueDeclaration testConvertNull Types.re:96:4
+  addValueDeclaration testConvertLocation Types.re:102:4
+  addValueDeclaration testMarshalFields Types.re:120:4
+  addValueDeclaration setMatch Types.re:136:4
+  addTypeDeclaration +id Types.re:141:19
+  addValueDeclaration testInstantiateTypeParameter Types.re:146:4
+  addValueDeclaration currentTime Types.re:156:4
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
   addValueReference Types.re:28:8 --> Types.re:28:37
-  addDeclaration +unsafe_expr Types.re:28:37
+  addValueDeclaration +unsafe_expr Types.re:28:37
   addValueReference Types.re:46:4 --> Types.re:46:31
   [type] addTypeReference Types.re:46:30 --> Types.re:35:22
   addValueReference Types.re:53:4 --> Types.re:53:35
@@ -81,21 +81,21 @@
   addValueReference Types.re:96:4 --> Types.re:96:23
   addValueReference Types.re:102:4 --> Types.re:102:27
   addValueReference Types.re:120:4 --> Types.re:120:39
-  addDeclaration +unsafe_expr Types.re:120:39
+  addValueDeclaration +unsafe_expr Types.re:120:39
   addValueReference Types.re:136:4 --> Types.re:136:16
   addValueReference Types.re:146:4 --> Types.re:146:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
-  addDeclaration testTuple Tuples.re:4:4
-  addDeclaration origin Tuples.re:10:4
-  addDeclaration computeArea Tuples.re:13:4
-  addDeclaration computeAreaWithIdent Tuples.re:17:4
-  addDeclaration computeAreaNoConverters Tuples.re:21:4
-  addDeclaration coord2d Tuples.re:24:4
-  [type] addDeclaration +name Tuples.re:31:2
-  [type] addDeclaration +age Tuples.re:32:2
-  addDeclaration getFirstName Tuples.re:39:4
-  addDeclaration marry Tuples.re:42:4
-  addDeclaration changeSecondAge Tuples.re:45:4
+  addValueDeclaration testTuple Tuples.re:4:4
+  addValueDeclaration origin Tuples.re:10:4
+  addValueDeclaration computeArea Tuples.re:13:4
+  addValueDeclaration computeAreaWithIdent Tuples.re:17:4
+  addValueDeclaration computeAreaNoConverters Tuples.re:21:4
+  addValueDeclaration coord2d Tuples.re:24:4
+  addTypeDeclaration +name Tuples.re:31:2
+  addTypeDeclaration +age Tuples.re:32:2
+  addValueDeclaration getFirstName Tuples.re:39:4
+  addValueDeclaration marry Tuples.re:42:4
+  addValueDeclaration changeSecondAge Tuples.re:45:4
   addValueReference Tuples.re:4:4 --> Tuples.re:4:18
   addValueReference Tuples.re:4:4 --> Tuples.re:4:21
   addValueReference Tuples.re:13:4 --> Tuples.re:13:20
@@ -119,20 +119,20 @@
   addValueReference Tuples.re:45:4 --> Tuples.re:45:31
   addValueReference Tuples.re:45:4 --> Tuples.re:45:31
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ReasonComponent.cmt
-  addDeclaration component ReasonComponent.re:3:4
-  [type] addDeclaration +name ReasonComponent.re:7:2
-  [type] addDeclaration +surname ReasonComponent.re:8:2
-  [type] addDeclaration +type_ ReasonComponent.re:9:2
-  [type] addDeclaration +polymorphicPayload ReasonComponent.re:11:2
-  addDeclaration onClick ReasonComponent.re:15:4
-  addDeclaration make ReasonComponent.re:18:4
-  addDeclaration minus ReasonComponent.re:43:4
-  addDeclaration useTypeDefinedInAnotherModule ReasonComponent.re:46:4
-  [type] addDeclaration +A ReasonComponent.re:50:4
-  [type] addDeclaration +B ReasonComponent.re:51:4
-  [type] addDeclaration +C ReasonComponent.re:52:4
-  addDeclaration tToString ReasonComponent.re:55:4
-  addDeclaration useRecordsCoord ReasonComponent.re:63:4
+  addValueDeclaration component ReasonComponent.re:3:4
+  addTypeDeclaration +name ReasonComponent.re:7:2
+  addTypeDeclaration +surname ReasonComponent.re:8:2
+  addTypeDeclaration +type_ ReasonComponent.re:9:2
+  addTypeDeclaration +polymorphicPayload ReasonComponent.re:11:2
+  addValueDeclaration onClick ReasonComponent.re:15:4
+  addValueDeclaration make ReasonComponent.re:18:4
+  addValueDeclaration minus ReasonComponent.re:43:4
+  addValueDeclaration useTypeDefinedInAnotherModule ReasonComponent.re:46:4
+  addTypeDeclaration +A ReasonComponent.re:50:4
+  addTypeDeclaration +B ReasonComponent.re:51:4
+  addTypeDeclaration +C ReasonComponent.re:52:4
+  addValueDeclaration tToString ReasonComponent.re:55:4
+  addValueDeclaration useRecordsCoord ReasonComponent.re:63:4
   addValueReference ReasonComponent.re:3:4 --> ReasonReact.rei:153:0
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:14
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:51
@@ -143,7 +143,7 @@
   [type] addTypeReference ReasonComponent.re:32:12 --> ReasonComponent.re:7:2
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:34
   addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:17:0
-  addDeclaration +emptyArray ReasonComponent.re:35:7
+  addValueDeclaration +emptyArray ReasonComponent.re:35:7
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:35:7
   addValueReference ReasonComponent.re:18:4 --> ImportMyBanner.re:19:4
   addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:181:0
@@ -161,12 +161,12 @@
   [type] addTypeReference ReasonComponent.re:63:23 --> Records.re:5:2
   [type] addTypeReference ReasonComponent.re:63:23 --> Records.re:6:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
-  [type] addDeclaration x FirstClassModulesInterface.rei:3:2
-  [type] addDeclaration y FirstClassModulesInterface.rei:4:2
-  addDeclaration r FirstClassModulesInterface.rei:7:0
+  addTypeDeclaration x FirstClassModulesInterface.rei:3:2
+  addTypeDeclaration y FirstClassModulesInterface.rei:4:2
+  addValueDeclaration r FirstClassModulesInterface.rei:7:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmt
-  addDeclaration notify ErrorHandler.re:7:6
-  addDeclaration x ErrorHandler.re:12:4
+  addValueDeclaration notify ErrorHandler.re:7:6
+  addValueDeclaration x ErrorHandler.re:12:4
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:7:15
   addValueReference ErrorHandler.re:7:6 --> ErrorHandler.re:3:2
   addValueReference ErrorHandler.rei:3:2 --> ErrorHandler.re:3:2
@@ -174,138 +174,138 @@
   addValueReference ErrorHandler.rei:5:32 --> ErrorHandler.re:7:6
   addValueReference ErrorHandler.rei:7:0 --> ErrorHandler.re:12:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmt
-  addDeclaration fromT ImmutableArray.re:5:2
-  addDeclaration fromTp ImmutableArray.re:6:2
-  addDeclaration fromTT ImmutableArray.re:7:2
-  addDeclaration toT ImmutableArray.re:8:2
-  addDeclaration toTp ImmutableArray.re:9:2
-  addDeclaration toT2 ImmutableArray.re:10:2
-  addDeclaration fromArray ImmutableArray.re:14:6
-  addDeclaration toArray ImmutableArray.re:16:6
-  addDeclaration length ImmutableArray.re:20:6
-  addDeclaration size ImmutableArray.re:22:6
-  addDeclaration get ImmutableArray.re:24:6
-  addDeclaration getExn ImmutableArray.re:26:6
-  addDeclaration getUnsafe ImmutableArray.re:28:6
-  addDeclaration getUndefined ImmutableArray.re:30:6
-  addDeclaration shuffle ImmutableArray.re:32:6
-  addDeclaration reverse ImmutableArray.re:34:6
-  addDeclaration makeUninitialized ImmutableArray.re:36:6
-  addDeclaration makeUninitializedUnsafe ImmutableArray.re:38:6
-  addDeclaration make ImmutableArray.re:40:6
-  addDeclaration range ImmutableArray.re:42:6
-  addDeclaration rangeBy ImmutableArray.re:44:6
-  addDeclaration makeByU ImmutableArray.re:46:6
-  addDeclaration makeBy ImmutableArray.re:47:6
-  addDeclaration makeByAndShuffleU ImmutableArray.re:49:6
-  addDeclaration makeByAndShuffle ImmutableArray.re:50:6
-  addDeclaration zip ImmutableArray.re:52:6
-  addDeclaration zipByU ImmutableArray.re:54:6
-  addDeclaration zipBy ImmutableArray.re:55:6
-  addDeclaration unzip ImmutableArray.re:57:6
-  addDeclaration concat ImmutableArray.re:59:6
-  addDeclaration concatMany ImmutableArray.re:61:6
-  addDeclaration slice ImmutableArray.re:63:6
-  addDeclaration sliceToEnd ImmutableArray.re:66:6
-  addDeclaration copy ImmutableArray.re:68:6
-  addDeclaration forEachU ImmutableArray.re:70:6
-  addDeclaration forEach ImmutableArray.re:71:6
-  addDeclaration mapU ImmutableArray.re:73:6
-  addDeclaration map ImmutableArray.re:74:6
-  addDeclaration keepWithIndexU ImmutableArray.re:76:6
-  addDeclaration keepWithIndex ImmutableArray.re:77:6
-  addDeclaration keepMapU ImmutableArray.re:79:6
-  addDeclaration keepMap ImmutableArray.re:80:6
-  addDeclaration forEachWithIndexU ImmutableArray.re:82:6
-  addDeclaration forEachWithIndex ImmutableArray.re:83:6
-  addDeclaration mapWithIndexU ImmutableArray.re:85:6
-  addDeclaration mapWithIndex ImmutableArray.re:86:6
-  addDeclaration partitionU ImmutableArray.re:88:6
-  addDeclaration partition ImmutableArray.re:89:6
-  addDeclaration reduceU ImmutableArray.re:91:6
-  addDeclaration reduce ImmutableArray.re:92:6
-  addDeclaration reduceReverseU ImmutableArray.re:94:6
-  addDeclaration reduceReverse ImmutableArray.re:95:6
-  addDeclaration reduceReverse2U ImmutableArray.re:97:6
-  addDeclaration reduceReverse2 ImmutableArray.re:99:6
-  addDeclaration someU ImmutableArray.re:102:6
-  addDeclaration some ImmutableArray.re:103:6
-  addDeclaration everyU ImmutableArray.re:105:6
-  addDeclaration every ImmutableArray.re:106:6
-  addDeclaration every2U ImmutableArray.re:108:6
-  addDeclaration every2 ImmutableArray.re:109:6
-  addDeclaration some2U ImmutableArray.re:111:6
-  addDeclaration some2 ImmutableArray.re:112:6
-  addDeclaration cmpU ImmutableArray.re:114:6
-  addDeclaration cmp ImmutableArray.re:115:6
-  addDeclaration eqU ImmutableArray.re:117:6
-  addDeclaration eq ImmutableArray.re:118:6
-  addDeclaration fromT ImmutableArray.re:5:2
-  addDeclaration fromTp ImmutableArray.re:6:2
-  addDeclaration fromTT ImmutableArray.re:7:2
-  addDeclaration toT ImmutableArray.re:8:2
-  addDeclaration toTp ImmutableArray.re:9:2
-  addDeclaration toT2 ImmutableArray.re:10:2
-  addDeclaration fromArray ImmutableArray.re:14:6
-  addDeclaration toArray ImmutableArray.re:16:6
-  addDeclaration length ImmutableArray.re:20:6
-  addDeclaration size ImmutableArray.re:22:6
-  addDeclaration get ImmutableArray.re:24:6
-  addDeclaration getExn ImmutableArray.re:26:6
-  addDeclaration getUnsafe ImmutableArray.re:28:6
-  addDeclaration getUndefined ImmutableArray.re:30:6
-  addDeclaration shuffle ImmutableArray.re:32:6
-  addDeclaration reverse ImmutableArray.re:34:6
-  addDeclaration makeUninitialized ImmutableArray.re:36:6
-  addDeclaration makeUninitializedUnsafe ImmutableArray.re:38:6
-  addDeclaration make ImmutableArray.re:40:6
-  addDeclaration range ImmutableArray.re:42:6
-  addDeclaration rangeBy ImmutableArray.re:44:6
-  addDeclaration makeByU ImmutableArray.re:46:6
-  addDeclaration makeBy ImmutableArray.re:47:6
-  addDeclaration makeByAndShuffleU ImmutableArray.re:49:6
-  addDeclaration makeByAndShuffle ImmutableArray.re:50:6
-  addDeclaration zip ImmutableArray.re:52:6
-  addDeclaration zipByU ImmutableArray.re:54:6
-  addDeclaration zipBy ImmutableArray.re:55:6
-  addDeclaration unzip ImmutableArray.re:57:6
-  addDeclaration concat ImmutableArray.re:59:6
-  addDeclaration concatMany ImmutableArray.re:61:6
-  addDeclaration slice ImmutableArray.re:63:6
-  addDeclaration sliceToEnd ImmutableArray.re:66:6
-  addDeclaration copy ImmutableArray.re:68:6
-  addDeclaration forEachU ImmutableArray.re:70:6
-  addDeclaration forEach ImmutableArray.re:71:6
-  addDeclaration mapU ImmutableArray.re:73:6
-  addDeclaration map ImmutableArray.re:74:6
-  addDeclaration keepWithIndexU ImmutableArray.re:76:6
-  addDeclaration keepWithIndex ImmutableArray.re:77:6
-  addDeclaration keepMapU ImmutableArray.re:79:6
-  addDeclaration keepMap ImmutableArray.re:80:6
-  addDeclaration forEachWithIndexU ImmutableArray.re:82:6
-  addDeclaration forEachWithIndex ImmutableArray.re:83:6
-  addDeclaration mapWithIndexU ImmutableArray.re:85:6
-  addDeclaration mapWithIndex ImmutableArray.re:86:6
-  addDeclaration partitionU ImmutableArray.re:88:6
-  addDeclaration partition ImmutableArray.re:89:6
-  addDeclaration reduceU ImmutableArray.re:91:6
-  addDeclaration reduce ImmutableArray.re:92:6
-  addDeclaration reduceReverseU ImmutableArray.re:94:6
-  addDeclaration reduceReverse ImmutableArray.re:95:6
-  addDeclaration reduceReverse2U ImmutableArray.re:97:6
-  addDeclaration reduceReverse2 ImmutableArray.re:99:6
-  addDeclaration someU ImmutableArray.re:102:6
-  addDeclaration some ImmutableArray.re:103:6
-  addDeclaration everyU ImmutableArray.re:105:6
-  addDeclaration every ImmutableArray.re:106:6
-  addDeclaration every2U ImmutableArray.re:108:6
-  addDeclaration every2 ImmutableArray.re:109:6
-  addDeclaration some2U ImmutableArray.re:111:6
-  addDeclaration some2 ImmutableArray.re:112:6
-  addDeclaration cmpU ImmutableArray.re:114:6
-  addDeclaration cmp ImmutableArray.re:115:6
-  addDeclaration eqU ImmutableArray.re:117:6
-  addDeclaration eq ImmutableArray.re:118:6
+  addValueDeclaration fromT ImmutableArray.re:5:2
+  addValueDeclaration fromTp ImmutableArray.re:6:2
+  addValueDeclaration fromTT ImmutableArray.re:7:2
+  addValueDeclaration toT ImmutableArray.re:8:2
+  addValueDeclaration toTp ImmutableArray.re:9:2
+  addValueDeclaration toT2 ImmutableArray.re:10:2
+  addValueDeclaration fromArray ImmutableArray.re:14:6
+  addValueDeclaration toArray ImmutableArray.re:16:6
+  addValueDeclaration length ImmutableArray.re:20:6
+  addValueDeclaration size ImmutableArray.re:22:6
+  addValueDeclaration get ImmutableArray.re:24:6
+  addValueDeclaration getExn ImmutableArray.re:26:6
+  addValueDeclaration getUnsafe ImmutableArray.re:28:6
+  addValueDeclaration getUndefined ImmutableArray.re:30:6
+  addValueDeclaration shuffle ImmutableArray.re:32:6
+  addValueDeclaration reverse ImmutableArray.re:34:6
+  addValueDeclaration makeUninitialized ImmutableArray.re:36:6
+  addValueDeclaration makeUninitializedUnsafe ImmutableArray.re:38:6
+  addValueDeclaration make ImmutableArray.re:40:6
+  addValueDeclaration range ImmutableArray.re:42:6
+  addValueDeclaration rangeBy ImmutableArray.re:44:6
+  addValueDeclaration makeByU ImmutableArray.re:46:6
+  addValueDeclaration makeBy ImmutableArray.re:47:6
+  addValueDeclaration makeByAndShuffleU ImmutableArray.re:49:6
+  addValueDeclaration makeByAndShuffle ImmutableArray.re:50:6
+  addValueDeclaration zip ImmutableArray.re:52:6
+  addValueDeclaration zipByU ImmutableArray.re:54:6
+  addValueDeclaration zipBy ImmutableArray.re:55:6
+  addValueDeclaration unzip ImmutableArray.re:57:6
+  addValueDeclaration concat ImmutableArray.re:59:6
+  addValueDeclaration concatMany ImmutableArray.re:61:6
+  addValueDeclaration slice ImmutableArray.re:63:6
+  addValueDeclaration sliceToEnd ImmutableArray.re:66:6
+  addValueDeclaration copy ImmutableArray.re:68:6
+  addValueDeclaration forEachU ImmutableArray.re:70:6
+  addValueDeclaration forEach ImmutableArray.re:71:6
+  addValueDeclaration mapU ImmutableArray.re:73:6
+  addValueDeclaration map ImmutableArray.re:74:6
+  addValueDeclaration keepWithIndexU ImmutableArray.re:76:6
+  addValueDeclaration keepWithIndex ImmutableArray.re:77:6
+  addValueDeclaration keepMapU ImmutableArray.re:79:6
+  addValueDeclaration keepMap ImmutableArray.re:80:6
+  addValueDeclaration forEachWithIndexU ImmutableArray.re:82:6
+  addValueDeclaration forEachWithIndex ImmutableArray.re:83:6
+  addValueDeclaration mapWithIndexU ImmutableArray.re:85:6
+  addValueDeclaration mapWithIndex ImmutableArray.re:86:6
+  addValueDeclaration partitionU ImmutableArray.re:88:6
+  addValueDeclaration partition ImmutableArray.re:89:6
+  addValueDeclaration reduceU ImmutableArray.re:91:6
+  addValueDeclaration reduce ImmutableArray.re:92:6
+  addValueDeclaration reduceReverseU ImmutableArray.re:94:6
+  addValueDeclaration reduceReverse ImmutableArray.re:95:6
+  addValueDeclaration reduceReverse2U ImmutableArray.re:97:6
+  addValueDeclaration reduceReverse2 ImmutableArray.re:99:6
+  addValueDeclaration someU ImmutableArray.re:102:6
+  addValueDeclaration some ImmutableArray.re:103:6
+  addValueDeclaration everyU ImmutableArray.re:105:6
+  addValueDeclaration every ImmutableArray.re:106:6
+  addValueDeclaration every2U ImmutableArray.re:108:6
+  addValueDeclaration every2 ImmutableArray.re:109:6
+  addValueDeclaration some2U ImmutableArray.re:111:6
+  addValueDeclaration some2 ImmutableArray.re:112:6
+  addValueDeclaration cmpU ImmutableArray.re:114:6
+  addValueDeclaration cmp ImmutableArray.re:115:6
+  addValueDeclaration eqU ImmutableArray.re:117:6
+  addValueDeclaration eq ImmutableArray.re:118:6
+  addValueDeclaration fromT ImmutableArray.re:5:2
+  addValueDeclaration fromTp ImmutableArray.re:6:2
+  addValueDeclaration fromTT ImmutableArray.re:7:2
+  addValueDeclaration toT ImmutableArray.re:8:2
+  addValueDeclaration toTp ImmutableArray.re:9:2
+  addValueDeclaration toT2 ImmutableArray.re:10:2
+  addValueDeclaration fromArray ImmutableArray.re:14:6
+  addValueDeclaration toArray ImmutableArray.re:16:6
+  addValueDeclaration length ImmutableArray.re:20:6
+  addValueDeclaration size ImmutableArray.re:22:6
+  addValueDeclaration get ImmutableArray.re:24:6
+  addValueDeclaration getExn ImmutableArray.re:26:6
+  addValueDeclaration getUnsafe ImmutableArray.re:28:6
+  addValueDeclaration getUndefined ImmutableArray.re:30:6
+  addValueDeclaration shuffle ImmutableArray.re:32:6
+  addValueDeclaration reverse ImmutableArray.re:34:6
+  addValueDeclaration makeUninitialized ImmutableArray.re:36:6
+  addValueDeclaration makeUninitializedUnsafe ImmutableArray.re:38:6
+  addValueDeclaration make ImmutableArray.re:40:6
+  addValueDeclaration range ImmutableArray.re:42:6
+  addValueDeclaration rangeBy ImmutableArray.re:44:6
+  addValueDeclaration makeByU ImmutableArray.re:46:6
+  addValueDeclaration makeBy ImmutableArray.re:47:6
+  addValueDeclaration makeByAndShuffleU ImmutableArray.re:49:6
+  addValueDeclaration makeByAndShuffle ImmutableArray.re:50:6
+  addValueDeclaration zip ImmutableArray.re:52:6
+  addValueDeclaration zipByU ImmutableArray.re:54:6
+  addValueDeclaration zipBy ImmutableArray.re:55:6
+  addValueDeclaration unzip ImmutableArray.re:57:6
+  addValueDeclaration concat ImmutableArray.re:59:6
+  addValueDeclaration concatMany ImmutableArray.re:61:6
+  addValueDeclaration slice ImmutableArray.re:63:6
+  addValueDeclaration sliceToEnd ImmutableArray.re:66:6
+  addValueDeclaration copy ImmutableArray.re:68:6
+  addValueDeclaration forEachU ImmutableArray.re:70:6
+  addValueDeclaration forEach ImmutableArray.re:71:6
+  addValueDeclaration mapU ImmutableArray.re:73:6
+  addValueDeclaration map ImmutableArray.re:74:6
+  addValueDeclaration keepWithIndexU ImmutableArray.re:76:6
+  addValueDeclaration keepWithIndex ImmutableArray.re:77:6
+  addValueDeclaration keepMapU ImmutableArray.re:79:6
+  addValueDeclaration keepMap ImmutableArray.re:80:6
+  addValueDeclaration forEachWithIndexU ImmutableArray.re:82:6
+  addValueDeclaration forEachWithIndex ImmutableArray.re:83:6
+  addValueDeclaration mapWithIndexU ImmutableArray.re:85:6
+  addValueDeclaration mapWithIndex ImmutableArray.re:86:6
+  addValueDeclaration partitionU ImmutableArray.re:88:6
+  addValueDeclaration partition ImmutableArray.re:89:6
+  addValueDeclaration reduceU ImmutableArray.re:91:6
+  addValueDeclaration reduce ImmutableArray.re:92:6
+  addValueDeclaration reduceReverseU ImmutableArray.re:94:6
+  addValueDeclaration reduceReverse ImmutableArray.re:95:6
+  addValueDeclaration reduceReverse2U ImmutableArray.re:97:6
+  addValueDeclaration reduceReverse2 ImmutableArray.re:99:6
+  addValueDeclaration someU ImmutableArray.re:102:6
+  addValueDeclaration some ImmutableArray.re:103:6
+  addValueDeclaration everyU ImmutableArray.re:105:6
+  addValueDeclaration every ImmutableArray.re:106:6
+  addValueDeclaration every2U ImmutableArray.re:108:6
+  addValueDeclaration every2 ImmutableArray.re:109:6
+  addValueDeclaration some2U ImmutableArray.re:111:6
+  addValueDeclaration some2 ImmutableArray.re:112:6
+  addValueDeclaration cmpU ImmutableArray.re:114:6
+  addValueDeclaration cmp ImmutableArray.re:115:6
+  addValueDeclaration eqU ImmutableArray.re:117:6
+  addValueDeclaration eq ImmutableArray.re:118:6
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:14:18
   addValueReference ImmutableArray.re:14:6 --> ImmutableArray.re:8:2
   addValueReference ImmutableArray.re:16:6 --> ImmutableArray.re:16:16
@@ -592,35 +592,35 @@
   addValueReference ImmutableArray.rei:108:0 --> ImmutableArray.re:117:6
   addValueReference ImmutableArray.rei:109:0 --> ImmutableArray.re:118:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType3.cmt
-  [type] addDeclaration +i TransitiveType3.re:3:2
-  [type] addDeclaration +s TransitiveType3.re:4:2
-  addDeclaration convertT3 TransitiveType3.re:8:4
+  addTypeDeclaration +i TransitiveType3.re:3:2
+  addTypeDeclaration +s TransitiveType3.re:4:2
+  addValueDeclaration convertT3 TransitiveType3.re:8:4
   addValueReference TransitiveType3.re:8:4 --> TransitiveType3.re:8:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
-  addDeclaration convertT2 TransitiveType2.re:7:4
+  addValueDeclaration convertT2 TransitiveType2.re:7:4
   addValueReference TransitiveType2.re:7:4 --> TransitiveType2.re:7:17
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Variants.cmt
-  addDeclaration isWeekend Variants.re:13:4
-  addDeclaration monday Variants.re:21:4
-  addDeclaration saturday Variants.re:23:4
-  addDeclaration sunday Variants.re:25:4
-  addDeclaration onlySunday Variants.re:28:4
-  addDeclaration swap Variants.re:31:4
-  addDeclaration testConvert Variants.re:45:4
-  addDeclaration fortytwoOK Variants.re:48:4
-  addDeclaration fortytwoBAD Variants.re:52:4
-  addDeclaration testConvert2 Variants.re:64:4
-  addDeclaration testConvert3 Variants.re:76:4
-  addDeclaration testConvert2to3 Variants.re:80:4
-  addDeclaration id1 Variants.re:89:4
-  addDeclaration id2 Variants.re:92:4
-  [type] addDeclaration +Type Variants.re:97:4
-  addDeclaration polyWithOpt Variants.re:100:4
-  [type] addDeclaration +Ok Variants.re:105:4
-  [type] addDeclaration +Error Variants.re:106:4
-  addDeclaration restResult1 Variants.re:115:4
-  addDeclaration restResult2 Variants.re:118:4
-  addDeclaration restResult3 Variants.re:121:4
+  addValueDeclaration isWeekend Variants.re:13:4
+  addValueDeclaration monday Variants.re:21:4
+  addValueDeclaration saturday Variants.re:23:4
+  addValueDeclaration sunday Variants.re:25:4
+  addValueDeclaration onlySunday Variants.re:28:4
+  addValueDeclaration swap Variants.re:31:4
+  addValueDeclaration testConvert Variants.re:45:4
+  addValueDeclaration fortytwoOK Variants.re:48:4
+  addValueDeclaration fortytwoBAD Variants.re:52:4
+  addValueDeclaration testConvert2 Variants.re:64:4
+  addValueDeclaration testConvert3 Variants.re:76:4
+  addValueDeclaration testConvert2to3 Variants.re:80:4
+  addValueDeclaration id1 Variants.re:89:4
+  addValueDeclaration id2 Variants.re:92:4
+  addTypeDeclaration +Type Variants.re:97:4
+  addValueDeclaration polyWithOpt Variants.re:100:4
+  addTypeDeclaration +Ok Variants.re:105:4
+  addTypeDeclaration +Error Variants.re:106:4
+  addValueDeclaration restResult1 Variants.re:115:4
+  addValueDeclaration restResult2 Variants.re:118:4
+  addValueDeclaration restResult3 Variants.re:121:4
   addValueReference Variants.re:13:4 --> Variants.re:13:17
   addValueReference Variants.re:31:4 --> Variants.re:31:11
   addValueReference Variants.re:45:4 --> Variants.re:45:19
@@ -636,20 +636,20 @@
   addValueReference Variants.re:118:4 --> Variants.re:118:19
   addValueReference Variants.re:121:4 --> Variants.re:121:19
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Uncurried.cmt
-  addDeclaration uncurried0 Uncurried.re:14:4
-  addDeclaration uncurried1 Uncurried.re:17:4
-  addDeclaration uncurried2 Uncurried.re:20:4
-  addDeclaration uncurried3 Uncurried.re:23:4
-  addDeclaration curried3 Uncurried.re:27:4
-  addDeclaration callback Uncurried.re:30:4
-  [type] addDeclaration +login Uncurried.re:32:13
-  [type] addDeclaration +loginU Uncurried.re:33:14
-  addDeclaration callback2 Uncurried.re:36:4
-  addDeclaration callback2U Uncurried.re:39:4
-  addDeclaration sumU Uncurried.re:42:4
-  addDeclaration sumU2 Uncurried.re:48:4
-  addDeclaration sumCurried Uncurried.re:55:4
-  addDeclaration sumLblCurried Uncurried.re:63:4
+  addValueDeclaration uncurried0 Uncurried.re:14:4
+  addValueDeclaration uncurried1 Uncurried.re:17:4
+  addValueDeclaration uncurried2 Uncurried.re:20:4
+  addValueDeclaration uncurried3 Uncurried.re:23:4
+  addValueDeclaration curried3 Uncurried.re:27:4
+  addValueDeclaration callback Uncurried.re:30:4
+  addTypeDeclaration +login Uncurried.re:32:13
+  addTypeDeclaration +loginU Uncurried.re:33:14
+  addValueDeclaration callback2 Uncurried.re:36:4
+  addValueDeclaration callback2U Uncurried.re:39:4
+  addValueDeclaration sumU Uncurried.re:42:4
+  addValueDeclaration sumU2 Uncurried.re:48:4
+  addValueDeclaration sumCurried Uncurried.re:55:4
+  addValueDeclaration sumLblCurried Uncurried.re:63:4
   addValueReference Uncurried.re:17:4 --> Uncurried.re:17:20
   addValueReference Uncurried.re:20:4 --> Uncurried.re:20:20
   addValueReference Uncurried.re:20:4 --> Uncurried.re:20:23
@@ -680,66 +680,66 @@
   addValueReference Uncurried.re:63:4 --> Uncurried.re:63:21
   addValueReference Uncurried.re:63:4 --> Uncurried.re:63:33
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestEmitInnerModules.cmt
-  addDeclaration x TestEmitInnerModules.re:3:6
-  addDeclaration y TestEmitInnerModules.re:5:6
-  addDeclaration y TestEmitInnerModules.re:12:10
+  addValueDeclaration x TestEmitInnerModules.re:3:6
+  addValueDeclaration y TestEmitInnerModules.re:5:6
+  addValueDeclaration y TestEmitInnerModules.re:12:10
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModules.cmt
-  addDeclaration notNested NestedModules.re:2:4
-  addDeclaration theAnswer NestedModules.re:6:6
-  addDeclaration notExported NestedModules.re:8:6
-  addDeclaration x NestedModules.re:14:8
-  addDeclaration nested2Value NestedModules.re:17:8
-  addDeclaration y NestedModules.re:19:8
-  addDeclaration x NestedModules.re:25:10
-  addDeclaration y NestedModules.re:26:10
-  addDeclaration z NestedModules.re:27:10
-  addDeclaration w NestedModules.re:28:10
-  addDeclaration nested3Value NestedModules.re:34:10
-  addDeclaration nested3Function NestedModules.re:37:10
-  addDeclaration nested2Function NestedModules.re:41:8
-  [type] addDeclaration +A NestedModules.re:46:6
-  [type] addDeclaration +B NestedModules.re:47:6
-  addDeclaration someString NestedModules.re:50:6
+  addValueDeclaration notNested NestedModules.re:2:4
+  addValueDeclaration theAnswer NestedModules.re:6:6
+  addValueDeclaration notExported NestedModules.re:8:6
+  addValueDeclaration x NestedModules.re:14:8
+  addValueDeclaration nested2Value NestedModules.re:17:8
+  addValueDeclaration y NestedModules.re:19:8
+  addValueDeclaration x NestedModules.re:25:10
+  addValueDeclaration y NestedModules.re:26:10
+  addValueDeclaration z NestedModules.re:27:10
+  addValueDeclaration w NestedModules.re:28:10
+  addValueDeclaration nested3Value NestedModules.re:34:10
+  addValueDeclaration nested3Function NestedModules.re:37:10
+  addValueDeclaration nested2Function NestedModules.re:41:8
+  addTypeDeclaration +A NestedModules.re:46:6
+  addTypeDeclaration +B NestedModules.re:47:6
+  addValueDeclaration someString NestedModules.re:50:6
   addValueReference NestedModules.re:37:10 --> NestedModules.re:37:29
   addValueReference NestedModules.re:41:8 --> NestedModules.re:41:27
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Shadow.cmt
-  addDeclaration test Shadow.re:2:4
-  addDeclaration test Shadow.re:5:4
-  addDeclaration test Shadow.re:11:6
-  addDeclaration +test Shadow.re:9:6
+  addValueDeclaration test Shadow.re:2:4
+  addValueDeclaration test Shadow.re:5:4
+  addValueDeclaration test Shadow.re:11:6
+  addValueDeclaration +test Shadow.re:9:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases2.cmt
-  [type] addDeclaration +x ModuleAliases2.re:3:2
-  [type] addDeclaration +y ModuleAliases2.re:4:2
-  [type] addDeclaration +outer ModuleAliases2.re:9:16
-  [type] addDeclaration +inner ModuleAliases2.re:13:18
-  addDeclaration q ModuleAliases2.re:21:4
+  addTypeDeclaration +x ModuleAliases2.re:3:2
+  addTypeDeclaration +y ModuleAliases2.re:4:2
+  addTypeDeclaration +outer ModuleAliases2.re:9:16
+  addTypeDeclaration +inner ModuleAliases2.re:13:18
+  addValueDeclaration q ModuleAliases2.re:21:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadValueTest.cmt
-  addDeclaration valueAlive DeadValueTest.re:1:4
-  addDeclaration valueDead DeadValueTest.re:2:4
-  addDeclaration valueOnlyInImplementation DeadValueTest.re:4:4
+  addValueDeclaration valueAlive DeadValueTest.re:1:4
+  addValueDeclaration valueDead DeadValueTest.re:2:4
+  addValueDeclaration valueOnlyInImplementation DeadValueTest.re:4:4
   addValueReference DeadValueTest.rei:1:0 --> DeadValueTest.re:1:4
   addValueReference DeadValueTest.rei:2:0 --> DeadValueTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType1.cmt
-  addDeclaration convert TransitiveType1.re:2:4
-  addDeclaration convertAlias TransitiveType1.re:5:4
+  addValueDeclaration convert TransitiveType1.re:2:4
+  addValueDeclaration convertAlias TransitiveType1.re:5:4
   addValueReference TransitiveType1.re:2:4 --> TransitiveType1.re:2:15
   addValueReference TransitiveType1.re:5:4 --> TransitiveType1.re:5:20
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams2.cmt
-  [type] addDeclaration +id TypeParams2.re:2:13
-  addDeclaration exportSomething TypeParams2.re:10:4
+  addTypeDeclaration +id TypeParams2.re:2:13
+  addValueDeclaration exportSomething TypeParams2.re:10:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModules.cmt
-  addDeclaration y FirstClassModules.re:17:6
-  addDeclaration k FirstClassModules.re:21:8
-  addDeclaration k3 FirstClassModules.re:25:8
-  addDeclaration u FirstClassModules.re:30:8
-  addDeclaration f FirstClassModules.re:33:2
-  addDeclaration x FirstClassModules.re:34:6
-  addDeclaration firstClassModule FirstClassModules.re:41:4
-  addDeclaration testConvert FirstClassModules.re:44:4
-  addDeclaration someFunctorAsFunction FirstClassModules.re:53:4
+  addValueDeclaration y FirstClassModules.re:17:6
+  addValueDeclaration k FirstClassModules.re:21:8
+  addValueDeclaration k3 FirstClassModules.re:25:8
+  addValueDeclaration u FirstClassModules.re:30:8
+  addValueDeclaration f FirstClassModules.re:33:2
+  addValueDeclaration x FirstClassModules.re:34:6
+  addValueDeclaration firstClassModule FirstClassModules.re:41:4
+  addValueDeclaration testConvert FirstClassModules.re:44:4
+  addValueDeclaration someFunctorAsFunction FirstClassModules.re:53:4
   addValueReference FirstClassModules.re:25:8 --> FirstClassModules.re:25:13
   addValueReference FirstClassModules.re:44:4 --> FirstClassModules.re:44:19
-  addDeclaration +ww FirstClassModules.re:49:6
+  addValueDeclaration +ww FirstClassModules.re:49:6
   addValueReference FirstClassModules.re:49:6 --> FirstClassModules.re:14:2
   addValueReference FirstClassModules.re:53:4 --> FirstClassModules.re:53:29
   addValueReference FirstClassModules.re:2:2 --> FirstClassModules.re:34:6
@@ -752,27 +752,27 @@
   addValueReference FirstClassModules.re:14:2 --> FirstClassModules.re:17:6
   addValueReference FirstClassModules.re:46:20 --> FirstClassModules.re:49:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadMl.cmt
-  addDeclaration thisSpansSeveralLines DeadMl.ml:3:8
-  addDeclaration thisIsInInterface DeadMl.ml:9:2
-  addDeclaration thisHasSemicolons DeadMl.ml:15:4
-  [type] addDeclaration +DeadA DeadMl.ml:17:18
-  [type] addDeclaration +DeadB DeadMl.ml:17:26
-  addDeclaration version DeadMl.ml:26:6
-  addDeclaration header DeadMl.ml:26:27
-  addDeclaration package_name DeadMl.ml:26:47
-  [type] addDeclaration +Lfunction DeadMl.ml:35:2
-  [type] addDeclaration +module_name DeadMl.ml:41:2
-  [type] addDeclaration +case DeadMl.ml:42:2
-  addDeclaration map_split_opt DeadMl.ml:45:8
+  addValueDeclaration thisSpansSeveralLines DeadMl.ml:3:8
+  addValueDeclaration thisIsInInterface DeadMl.ml:9:2
+  addValueDeclaration thisHasSemicolons DeadMl.ml:15:4
+  addTypeDeclaration +DeadA DeadMl.ml:17:18
+  addTypeDeclaration +DeadB DeadMl.ml:17:26
+  addValueDeclaration version DeadMl.ml:26:6
+  addValueDeclaration header DeadMl.ml:26:27
+  addValueDeclaration package_name DeadMl.ml:26:47
+  addTypeDeclaration +Lfunction DeadMl.ml:35:2
+  addTypeDeclaration +module_name DeadMl.ml:41:2
+  addTypeDeclaration +case DeadMl.ml:42:2
+  addValueDeclaration map_split_opt DeadMl.ml:45:8
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
-  addDeclaration +thisIsInInterface DeadMl.ml:12:6
+  addValueDeclaration +thisIsInInterface DeadMl.ml:12:6
   addValueReference DeadMl.ml:12:6 --> DeadMl.ml:12:24
-  addDeclaration _ DeadMl.ml:21:2
-  addDeclaration _ DeadMl.ml:22:2
-  addDeclaration +version DeadMl.ml:29:8
-  addDeclaration +header DeadMl.ml:30:8
-  addDeclaration +package_name DeadMl.ml:31:8
+  addValueDeclaration _ DeadMl.ml:21:2
+  addValueDeclaration _ DeadMl.ml:22:2
+  addValueDeclaration +version DeadMl.ml:29:8
+  addValueDeclaration +header DeadMl.ml:30:8
+  addValueDeclaration +package_name DeadMl.ml:31:8
   addValueReference DeadMl.ml:45:8 --> DeadMl.ml:50:4
   addValueReference DeadMl.ml:45:8 --> DeadMl.ml:46:19
   addValueReference DeadMl.ml:45:8 --> DeadMl.ml:50:7
@@ -792,62 +792,62 @@
   addValueReference DeadMl.ml:26:27 --> DeadMl.ml:30:8
   addValueReference DeadMl.ml:26:47 --> DeadMl.ml:31:8
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportMyBanner.cmt
-  [type] addDeclaration +text ImportMyBanner.re:6:16
-  addDeclaration make ImportMyBanner.re:8:0
-  addDeclaration make ImportMyBanner.re:19:4
+  addTypeDeclaration +text ImportMyBanner.re:6:16
+  addValueDeclaration make ImportMyBanner.re:8:0
+  addValueDeclaration make ImportMyBanner.re:19:4
   addValueReference ImportMyBanner.re:19:4 --> ImportMyBanner.re:8:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams3.cmt
-  addDeclaration test TypeParams3.re:2:4
-  addDeclaration test2 TypeParams3.re:5:4
+  addValueDeclaration test TypeParams3.re:2:4
+  addValueDeclaration test2 TypeParams3.re:5:4
   addValueReference TypeParams3.re:2:4 --> TypeParams3.re:2:12
   addValueReference TypeParams3.re:5:4 --> TypeParams3.re:5:13
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadValueTest.cmti
-  addDeclaration valueAlive DeadValueTest.rei:1:0
-  addDeclaration valueDead DeadValueTest.rei:2:0
+  addValueDeclaration valueAlive DeadValueTest.rei:1:0
+  addValueDeclaration valueDead DeadValueTest.rei:2:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/IgnoreInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TypeParams1.cmt
-  addDeclaration exportSomething TypeParams1.re:4:4
+  addValueDeclaration exportSomething TypeParams1.re:4:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestModuleAliases.cmt
-  addDeclaration testInner1 TestModuleAliases.re:32:4
-  addDeclaration testInner1Expanded TestModuleAliases.re:35:4
-  addDeclaration testInner2 TestModuleAliases.re:38:4
-  addDeclaration testInner2Expanded TestModuleAliases.re:41:4
+  addValueDeclaration testInner1 TestModuleAliases.re:32:4
+  addValueDeclaration testInner1Expanded TestModuleAliases.re:35:4
+  addValueDeclaration testInner2 TestModuleAliases.re:38:4
+  addValueDeclaration testInner2Expanded TestModuleAliases.re:41:4
   addValueReference TestModuleAliases.re:32:4 --> TestModuleAliases.re:32:18
   addValueReference TestModuleAliases.re:35:4 --> TestModuleAliases.re:35:26
   addValueReference TestModuleAliases.re:38:4 --> TestModuleAliases.re:38:18
   addValueReference TestModuleAliases.re:41:4 --> TestModuleAliases.re:41:26
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Opaque.cmt
-  [type] addDeclaration +A Opaque.re:3:4
-  addDeclaration noConversion Opaque.re:6:4
-  addDeclaration testConvertNestedRecordFromOtherFile Opaque.re:12:4
+  addTypeDeclaration +A Opaque.re:3:4
+  addValueDeclaration noConversion Opaque.re:6:4
+  addValueDeclaration testConvertNestedRecordFromOtherFile Opaque.re:12:4
   addValueReference Opaque.re:6:4 --> Opaque.re:6:20
   addValueReference Opaque.re:12:4 --> Opaque.re:12:44
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ErrorHandler.cmti
-  addDeclaration notify ErrorHandler.rei:5:32
-  addDeclaration x ErrorHandler.rei:7:0
+  addValueDeclaration notify ErrorHandler.rei:5:32
+  addValueDeclaration x ErrorHandler.rei:7:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/VariantsWithPayload.cmt
-  [type] addDeclaration +x VariantsWithPayload.re:2:2
-  [type] addDeclaration +y VariantsWithPayload.re:3:2
-  addDeclaration testWithPayload VariantsWithPayload.re:16:4
-  addDeclaration printVariantWithPayload VariantsWithPayload.re:19:4
-  addDeclaration testManyPayloads VariantsWithPayload.re:38:4
-  addDeclaration printManyPayloads VariantsWithPayload.re:41:4
-  [type] addDeclaration +A VariantsWithPayload.re:51:4
-  [type] addDeclaration +B VariantsWithPayload.re:52:4
-  [type] addDeclaration +C VariantsWithPayload.re:53:4
-  addDeclaration testSimpleVariant VariantsWithPayload.re:56:4
-  [type] addDeclaration +A VariantsWithPayload.re:60:4
-  [type] addDeclaration +B VariantsWithPayload.re:61:4
-  [type] addDeclaration +C VariantsWithPayload.re:62:4
-  [type] addDeclaration +D VariantsWithPayload.re:63:4
-  [type] addDeclaration +E VariantsWithPayload.re:64:4
-  addDeclaration testVariantWithPayloads VariantsWithPayload.re:67:4
-  addDeclaration printVariantWithPayloads VariantsWithPayload.re:70:4
-  [type] addDeclaration +R VariantsWithPayload.re:100:4
-  addDeclaration testVariant1Int VariantsWithPayload.re:103:4
-  [type] addDeclaration +R VariantsWithPayload.re:107:4
-  addDeclaration testVariant1Object VariantsWithPayload.re:110:4
+  addTypeDeclaration +x VariantsWithPayload.re:2:2
+  addTypeDeclaration +y VariantsWithPayload.re:3:2
+  addValueDeclaration testWithPayload VariantsWithPayload.re:16:4
+  addValueDeclaration printVariantWithPayload VariantsWithPayload.re:19:4
+  addValueDeclaration testManyPayloads VariantsWithPayload.re:38:4
+  addValueDeclaration printManyPayloads VariantsWithPayload.re:41:4
+  addTypeDeclaration +A VariantsWithPayload.re:51:4
+  addTypeDeclaration +B VariantsWithPayload.re:52:4
+  addTypeDeclaration +C VariantsWithPayload.re:53:4
+  addValueDeclaration testSimpleVariant VariantsWithPayload.re:56:4
+  addTypeDeclaration +A VariantsWithPayload.re:60:4
+  addTypeDeclaration +B VariantsWithPayload.re:61:4
+  addTypeDeclaration +C VariantsWithPayload.re:62:4
+  addTypeDeclaration +D VariantsWithPayload.re:63:4
+  addTypeDeclaration +E VariantsWithPayload.re:64:4
+  addValueDeclaration testVariantWithPayloads VariantsWithPayload.re:67:4
+  addValueDeclaration printVariantWithPayloads VariantsWithPayload.re:70:4
+  addTypeDeclaration +R VariantsWithPayload.re:100:4
+  addValueDeclaration testVariant1Int VariantsWithPayload.re:103:4
+  addTypeDeclaration +R VariantsWithPayload.re:107:4
+  addValueDeclaration testVariant1Object VariantsWithPayload.re:110:4
   addValueReference VariantsWithPayload.re:16:4 --> VariantsWithPayload.re:16:23
   [type] addTypeReference VariantsWithPayload.re:27:42 --> VariantsWithPayload.re:2:2
   addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:26:6
@@ -877,11 +877,11 @@
   addValueReference VariantsWithPayload.re:103:4 --> VariantsWithPayload.re:103:23
   addValueReference VariantsWithPayload.re:110:4 --> VariantsWithPayload.re:110:26
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWhitelist.cmt
-  addDeclaration x DeadTestWhitelist.re:1:4
+  addValueDeclaration x DeadTestWhitelist.re:1:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmt
-  [type] addDeclaration +x FirstClassModulesInterface.re:2:2
-  [type] addDeclaration +y FirstClassModulesInterface.re:3:2
-  addDeclaration r FirstClassModulesInterface.re:6:4
+  addTypeDeclaration +x FirstClassModulesInterface.re:2:2
+  addTypeDeclaration +y FirstClassModulesInterface.re:3:2
+  addValueDeclaration r FirstClassModulesInterface.re:6:4
   [type] extendTypeDependencies FirstClassModulesInterface.re:2:2 --> FirstClassModulesInterface.rei:3:2
   [type] extendTypeDependencies FirstClassModulesInterface.re:3:2 --> FirstClassModulesInterface.rei:4:2
   addValueReference FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
@@ -890,45 +890,45 @@
   [type] addTypeReference FirstClassModulesInterface.rei:4:2 --> FirstClassModulesInterface.re:3:2
   [type] addTypeReference FirstClassModulesInterface.rei:3:2 --> FirstClassModulesInterface.re:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
-  [type] addDeclaration +A Unboxed.re:4:4
-  [type] addDeclaration +A Unboxed.re:9:4
-  addDeclaration testV1 Unboxed.re:12:4
-  [type] addDeclaration +x Unboxed.re:16:11
-  [type] addDeclaration +B Unboxed.re:21:4
-  addDeclaration r2Test Unboxed.re:24:4
+  addTypeDeclaration +A Unboxed.re:4:4
+  addTypeDeclaration +A Unboxed.re:9:4
+  addValueDeclaration testV1 Unboxed.re:12:4
+  addTypeDeclaration +x Unboxed.re:16:11
+  addTypeDeclaration +B Unboxed.re:21:4
+  addValueDeclaration r2Test Unboxed.re:24:4
   addValueReference Unboxed.re:12:4 --> Unboxed.re:12:14
   addValueReference Unboxed.re:24:4 --> Unboxed.re:24:14
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmti
-  [type] addDeclaration A DeadTypeTest.rei:2:4
-  [type] addDeclaration B DeadTypeTest.rei:3:4
-  addDeclaration a DeadTypeTest.rei:4:0
-  [type] addDeclaration OnlyInImplementation DeadTypeTest.rei:7:4
-  [type] addDeclaration OnlyInInterface DeadTypeTest.rei:8:4
-  [type] addDeclaration InBoth DeadTypeTest.rei:9:4
-  [type] addDeclaration InNeither DeadTypeTest.rei:10:4
+  addTypeDeclaration A DeadTypeTest.rei:2:4
+  addTypeDeclaration B DeadTypeTest.rei:3:4
+  addValueDeclaration a DeadTypeTest.rei:4:0
+  addTypeDeclaration OnlyInImplementation DeadTypeTest.rei:7:4
+  addTypeDeclaration OnlyInInterface DeadTypeTest.rei:8:4
+  addTypeDeclaration InBoth DeadTypeTest.rei:9:4
+  addTypeDeclaration InNeither DeadTypeTest.rei:10:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportJsValue.cmt
-  addDeclaration round ImportJsValue.re:1:0
-  [type] addDeclaration +x ImportJsValue.re:10:2
-  [type] addDeclaration +y ImportJsValue.re:11:2
-  addDeclaration area ImportJsValue.re:14:0
-  addDeclaration returnMixedArray ImportJsValue.re:21:0
-  addDeclaration roundedNumber ImportJsValue.re:25:4
-  addDeclaration areaValue ImportJsValue.re:28:4
-  addDeclaration getProp ImportJsValue.re:35:2
-  addDeclaration getAbs ImportJsValue.re:38:6
-  addDeclaration useGetProp ImportJsValue.re:45:4
-  addDeclaration useGetAbs ImportJsValue.re:48:4
-  addDeclaration useColor ImportJsValue.re:56:0
-  addDeclaration higherOrder ImportJsValue.re:58:0
-  addDeclaration returnedFromHigherOrder ImportJsValue.re:62:4
-  [type] addDeclaration +I ImportJsValue.re:65:4
-  [type] addDeclaration +S ImportJsValue.re:66:4
-  addDeclaration convertVariant ImportJsValue.re:68:0
-  addDeclaration polymorphic ImportJsValue.re:71:0
-  addDeclaration default ImportJsValue.re:73:0
+  addValueDeclaration round ImportJsValue.re:1:0
+  addTypeDeclaration +x ImportJsValue.re:10:2
+  addTypeDeclaration +y ImportJsValue.re:11:2
+  addValueDeclaration area ImportJsValue.re:14:0
+  addValueDeclaration returnMixedArray ImportJsValue.re:21:0
+  addValueDeclaration roundedNumber ImportJsValue.re:25:4
+  addValueDeclaration areaValue ImportJsValue.re:28:4
+  addValueDeclaration getProp ImportJsValue.re:35:2
+  addValueDeclaration getAbs ImportJsValue.re:38:6
+  addValueDeclaration useGetProp ImportJsValue.re:45:4
+  addValueDeclaration useGetAbs ImportJsValue.re:48:4
+  addValueDeclaration useColor ImportJsValue.re:56:0
+  addValueDeclaration higherOrder ImportJsValue.re:58:0
+  addValueDeclaration returnedFromHigherOrder ImportJsValue.re:62:4
+  addTypeDeclaration +I ImportJsValue.re:65:4
+  addTypeDeclaration +S ImportJsValue.re:66:4
+  addValueDeclaration convertVariant ImportJsValue.re:68:0
+  addValueDeclaration polymorphic ImportJsValue.re:71:0
+  addValueDeclaration default ImportJsValue.re:73:0
   addValueReference ImportJsValue.re:25:4 --> ImportJsValue.re:1:0
   addValueReference ImportJsValue.re:28:4 --> ImportJsValue.re:14:0
-  addDeclaration +getAbs ImportJsValue.re:39:8
+  addValueDeclaration +getAbs ImportJsValue.re:39:8
   addValueReference ImportJsValue.re:39:8 --> ImportJsValue.re:38:16
   addValueReference ImportJsValue.re:38:6 --> ImportJsValue.re:39:8
   addValueReference ImportJsValue.re:45:4 --> ImportJsValue.re:45:18
@@ -937,26 +937,26 @@
   addValueReference ImportJsValue.re:48:4 --> ImportJsValue.re:38:6
   addValueReference ImportJsValue.re:62:4 --> ImportJsValue.re:58:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/References.cmt
-  addDeclaration create References.re:4:4
-  addDeclaration access References.re:7:4
-  addDeclaration update References.re:10:4
-  addDeclaration get References.re:17:2
-  addDeclaration make References.re:18:2
-  addDeclaration set References.re:19:2
-  addDeclaration get References.re:31:4
-  addDeclaration make References.re:34:4
-  addDeclaration set References.re:37:4
-  [type] addDeclaration +x References.re:39:27
-  addDeclaration destroysRefIdentity References.re:43:4
-  addDeclaration preserveRefIdentity References.re:47:4
+  addValueDeclaration create References.re:4:4
+  addValueDeclaration access References.re:7:4
+  addValueDeclaration update References.re:10:4
+  addValueDeclaration get References.re:17:2
+  addValueDeclaration make References.re:18:2
+  addValueDeclaration set References.re:19:2
+  addValueDeclaration get References.re:31:4
+  addValueDeclaration make References.re:34:4
+  addValueDeclaration set References.re:37:4
+  addTypeDeclaration +x References.re:39:27
+  addValueDeclaration destroysRefIdentity References.re:43:4
+  addValueDeclaration preserveRefIdentity References.re:47:4
   addValueReference References.re:4:4 --> References.re:4:14
   addValueReference References.re:7:4 --> References.re:7:13
   addValueReference References.re:10:4 --> References.re:10:13
   addValueReference References.re:10:4 --> References.re:10:13
-  addDeclaration +get References.re:22:6
+  addValueDeclaration +get References.re:22:6
   addValueReference References.re:22:6 --> References.re:22:12
-  addDeclaration +make References.re:23:6
-  addDeclaration +set References.re:24:6
+  addValueDeclaration +make References.re:23:6
+  addValueDeclaration +set References.re:24:6
   addValueReference References.re:24:6 --> References.re:24:16
   addValueReference References.re:24:6 --> References.re:24:13
   addValueReference References.re:31:4 --> References.re:17:2
@@ -968,23 +968,23 @@
   addValueReference References.re:18:2 --> References.re:23:6
   addValueReference References.re:19:2 --> References.re:24:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWithInterface.cmt
-  addDeclaration x DeadTestWithInterface.re:1:20
-  addDeclaration +x DeadTestWithInterface.re:2:6
+  addValueDeclaration x DeadTestWithInterface.re:1:20
+  addValueDeclaration +x DeadTestWithInterface.re:2:6
   addValueReference DeadTestWithInterface.re:1:20 --> DeadTestWithInterface.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
-  addDeclaration theAnswer NestedModulesInSignature.rei:2:2
+  addValueDeclaration theAnswer NestedModulesInSignature.rei:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
-  addDeclaration notification CreateErrorHandler2.re:3:6
+  addValueDeclaration notification CreateErrorHandler2.re:3:6
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
   addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler2.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
-  [type] addDeclaration +A DeadTypeTest.re:2:4
-  [type] addDeclaration +B DeadTypeTest.re:3:4
-  addDeclaration a DeadTypeTest.re:4:4
-  [type] addDeclaration +OnlyInImplementation DeadTypeTest.re:7:4
-  [type] addDeclaration +OnlyInInterface DeadTypeTest.re:8:4
-  [type] addDeclaration +InBoth DeadTypeTest.re:9:4
-  [type] addDeclaration +InNeither DeadTypeTest.re:10:4
+  addTypeDeclaration +A DeadTypeTest.re:2:4
+  addTypeDeclaration +B DeadTypeTest.re:3:4
+  addValueDeclaration a DeadTypeTest.re:4:4
+  addTypeDeclaration +OnlyInImplementation DeadTypeTest.re:7:4
+  addTypeDeclaration +OnlyInInterface DeadTypeTest.re:8:4
+  addTypeDeclaration +InBoth DeadTypeTest.re:9:4
+  addTypeDeclaration +InNeither DeadTypeTest.re:10:4
   [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
   [type] extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
   [type] addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
@@ -992,9 +992,9 @@
   [type] extendTypeDependencies DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
   [type] extendTypeDependencies DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4
   [type] extendTypeDependencies DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
-  addDeclaration _ DeadTypeTest.re:12:0
+  addValueDeclaration _ DeadTypeTest.re:12:0
   [type] addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
-  addDeclaration _ DeadTypeTest.re:13:0
+  addValueDeclaration _ DeadTypeTest.re:13:0
   [type] addTypeReference DeadTypeTest.re:13:8 --> DeadTypeTest.re:9:4
   addValueReference DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4
   [type] addTypeReference DeadTypeTest.rei:10:4 --> DeadTypeTest.re:10:4
@@ -1004,183 +1004,183 @@
   [type] addTypeReference DeadTypeTest.rei:3:4 --> DeadTypeTest.re:3:4
   [type] addTypeReference DeadTypeTest.rei:2:4 --> DeadTypeTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
-  addDeclaration notification CreateErrorHandler1.re:3:6
+  addValueDeclaration notification CreateErrorHandler1.re:3:6
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
   addValueReference CreateErrorHandler1.re:8:0 --> ErrorHandler.rei:5:32
   addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler1.re:3:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/LetPrivate.cmt
-  addDeclaration y LetPrivate.re:5:4
-  addDeclaration +x LetPrivate.re:2:12
+  addValueDeclaration y LetPrivate.re:5:4
+  addValueDeclaration +x LetPrivate.re:2:12
   addValueReference LetPrivate.re:5:4 --> LetPrivate.re:2:12
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ModuleAliases.cmt
-  [type] addDeclaration +inner ModuleAliases.re:3:19
-  [type] addDeclaration +nested ModuleAliases.re:11:16
-  addDeclaration testNested ModuleAliases.re:22:4
-  addDeclaration testInner ModuleAliases.re:25:4
-  addDeclaration testInner2 ModuleAliases.re:28:4
+  addTypeDeclaration +inner ModuleAliases.re:3:19
+  addTypeDeclaration +nested ModuleAliases.re:11:16
+  addValueDeclaration testNested ModuleAliases.re:22:4
+  addValueDeclaration testInner ModuleAliases.re:25:4
+  addValueDeclaration testInner2 ModuleAliases.re:28:4
   addValueReference ModuleAliases.re:22:4 --> ModuleAliases.re:22:18
   addValueReference ModuleAliases.re:25:4 --> ModuleAliases.re:25:17
   addValueReference ModuleAliases.re:28:4 --> ModuleAliases.re:28:18
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeInterface.cmt
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ExportWithRename.cmt
-  addDeclaration make ExportWithRename.re:3:4
+  addValueDeclaration make ExportWithRename.re:3:4
   addValueReference ExportWithRename.re:3:4 --> ExportWithRename.re:3:13
   addValueReference ExportWithRename.re:3:4 --> React.re:5:0
   addValueReference _none_:1:-1 --> ExportWithRename.re:3:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmti
-  addDeclaration get ImmutableArray.rei:5:15
-  addDeclaration fromArray ImmutableArray.rei:7:0
-  addDeclaration toArray ImmutableArray.rei:10:0
-  addDeclaration length ImmutableArray.rei:12:0
-  addDeclaration size ImmutableArray.rei:16:0
-  addDeclaration get ImmutableArray.rei:18:0
-  addDeclaration getExn ImmutableArray.rei:20:0
-  addDeclaration getUnsafe ImmutableArray.rei:22:0
-  addDeclaration getUndefined ImmutableArray.rei:24:0
-  addDeclaration shuffle ImmutableArray.rei:26:0
-  addDeclaration reverse ImmutableArray.rei:28:0
-  addDeclaration makeUninitialized ImmutableArray.rei:30:0
-  addDeclaration makeUninitializedUnsafe ImmutableArray.rei:32:0
-  addDeclaration make ImmutableArray.rei:34:0
-  addDeclaration range ImmutableArray.rei:36:0
-  addDeclaration rangeBy ImmutableArray.rei:38:0
-  addDeclaration makeByU ImmutableArray.rei:40:0
-  addDeclaration makeBy ImmutableArray.rei:41:0
-  addDeclaration makeByAndShuffleU ImmutableArray.rei:43:0
-  addDeclaration makeByAndShuffle ImmutableArray.rei:44:0
-  addDeclaration zip ImmutableArray.rei:46:0
-  addDeclaration zipByU ImmutableArray.rei:48:0
-  addDeclaration zipBy ImmutableArray.rei:49:0
-  addDeclaration unzip ImmutableArray.rei:51:0
-  addDeclaration concat ImmutableArray.rei:53:0
-  addDeclaration concatMany ImmutableArray.rei:55:0
-  addDeclaration slice ImmutableArray.rei:57:0
-  addDeclaration sliceToEnd ImmutableArray.rei:59:0
-  addDeclaration copy ImmutableArray.rei:61:0
-  addDeclaration forEachU ImmutableArray.rei:63:0
-  addDeclaration forEach ImmutableArray.rei:64:0
-  addDeclaration mapU ImmutableArray.rei:66:0
-  addDeclaration map ImmutableArray.rei:67:0
-  addDeclaration keepWithIndexU ImmutableArray.rei:69:0
-  addDeclaration keepWithIndex ImmutableArray.rei:70:0
-  addDeclaration keepMapU ImmutableArray.rei:72:0
-  addDeclaration keepMap ImmutableArray.rei:73:0
-  addDeclaration forEachWithIndexU ImmutableArray.rei:75:0
-  addDeclaration forEachWithIndex ImmutableArray.rei:76:0
-  addDeclaration mapWithIndexU ImmutableArray.rei:78:0
-  addDeclaration mapWithIndex ImmutableArray.rei:79:0
-  addDeclaration partitionU ImmutableArray.rei:81:0
-  addDeclaration partition ImmutableArray.rei:82:0
-  addDeclaration reduceU ImmutableArray.rei:84:0
-  addDeclaration reduce ImmutableArray.rei:85:0
-  addDeclaration reduceReverseU ImmutableArray.rei:87:0
-  addDeclaration reduceReverse ImmutableArray.rei:88:0
-  addDeclaration reduceReverse2U ImmutableArray.rei:90:0
-  addDeclaration reduceReverse2 ImmutableArray.rei:91:0
-  addDeclaration someU ImmutableArray.rei:93:0
-  addDeclaration some ImmutableArray.rei:94:0
-  addDeclaration everyU ImmutableArray.rei:96:0
-  addDeclaration every ImmutableArray.rei:97:0
-  addDeclaration every2U ImmutableArray.rei:99:0
-  addDeclaration every2 ImmutableArray.rei:100:0
-  addDeclaration some2U ImmutableArray.rei:102:0
-  addDeclaration some2 ImmutableArray.rei:103:0
-  addDeclaration cmpU ImmutableArray.rei:105:0
-  addDeclaration cmp ImmutableArray.rei:106:0
-  addDeclaration eqU ImmutableArray.rei:108:0
-  addDeclaration eq ImmutableArray.rei:109:0
+  addValueDeclaration get ImmutableArray.rei:5:15
+  addValueDeclaration fromArray ImmutableArray.rei:7:0
+  addValueDeclaration toArray ImmutableArray.rei:10:0
+  addValueDeclaration length ImmutableArray.rei:12:0
+  addValueDeclaration size ImmutableArray.rei:16:0
+  addValueDeclaration get ImmutableArray.rei:18:0
+  addValueDeclaration getExn ImmutableArray.rei:20:0
+  addValueDeclaration getUnsafe ImmutableArray.rei:22:0
+  addValueDeclaration getUndefined ImmutableArray.rei:24:0
+  addValueDeclaration shuffle ImmutableArray.rei:26:0
+  addValueDeclaration reverse ImmutableArray.rei:28:0
+  addValueDeclaration makeUninitialized ImmutableArray.rei:30:0
+  addValueDeclaration makeUninitializedUnsafe ImmutableArray.rei:32:0
+  addValueDeclaration make ImmutableArray.rei:34:0
+  addValueDeclaration range ImmutableArray.rei:36:0
+  addValueDeclaration rangeBy ImmutableArray.rei:38:0
+  addValueDeclaration makeByU ImmutableArray.rei:40:0
+  addValueDeclaration makeBy ImmutableArray.rei:41:0
+  addValueDeclaration makeByAndShuffleU ImmutableArray.rei:43:0
+  addValueDeclaration makeByAndShuffle ImmutableArray.rei:44:0
+  addValueDeclaration zip ImmutableArray.rei:46:0
+  addValueDeclaration zipByU ImmutableArray.rei:48:0
+  addValueDeclaration zipBy ImmutableArray.rei:49:0
+  addValueDeclaration unzip ImmutableArray.rei:51:0
+  addValueDeclaration concat ImmutableArray.rei:53:0
+  addValueDeclaration concatMany ImmutableArray.rei:55:0
+  addValueDeclaration slice ImmutableArray.rei:57:0
+  addValueDeclaration sliceToEnd ImmutableArray.rei:59:0
+  addValueDeclaration copy ImmutableArray.rei:61:0
+  addValueDeclaration forEachU ImmutableArray.rei:63:0
+  addValueDeclaration forEach ImmutableArray.rei:64:0
+  addValueDeclaration mapU ImmutableArray.rei:66:0
+  addValueDeclaration map ImmutableArray.rei:67:0
+  addValueDeclaration keepWithIndexU ImmutableArray.rei:69:0
+  addValueDeclaration keepWithIndex ImmutableArray.rei:70:0
+  addValueDeclaration keepMapU ImmutableArray.rei:72:0
+  addValueDeclaration keepMap ImmutableArray.rei:73:0
+  addValueDeclaration forEachWithIndexU ImmutableArray.rei:75:0
+  addValueDeclaration forEachWithIndex ImmutableArray.rei:76:0
+  addValueDeclaration mapWithIndexU ImmutableArray.rei:78:0
+  addValueDeclaration mapWithIndex ImmutableArray.rei:79:0
+  addValueDeclaration partitionU ImmutableArray.rei:81:0
+  addValueDeclaration partition ImmutableArray.rei:82:0
+  addValueDeclaration reduceU ImmutableArray.rei:84:0
+  addValueDeclaration reduce ImmutableArray.rei:85:0
+  addValueDeclaration reduceReverseU ImmutableArray.rei:87:0
+  addValueDeclaration reduceReverse ImmutableArray.rei:88:0
+  addValueDeclaration reduceReverse2U ImmutableArray.rei:90:0
+  addValueDeclaration reduceReverse2 ImmutableArray.rei:91:0
+  addValueDeclaration someU ImmutableArray.rei:93:0
+  addValueDeclaration some ImmutableArray.rei:94:0
+  addValueDeclaration everyU ImmutableArray.rei:96:0
+  addValueDeclaration every ImmutableArray.rei:97:0
+  addValueDeclaration every2U ImmutableArray.rei:99:0
+  addValueDeclaration every2 ImmutableArray.rei:100:0
+  addValueDeclaration some2U ImmutableArray.rei:102:0
+  addValueDeclaration some2 ImmutableArray.rei:103:0
+  addValueDeclaration cmpU ImmutableArray.rei:105:0
+  addValueDeclaration cmp ImmutableArray.rei:106:0
+  addValueDeclaration eqU ImmutableArray.rei:108:0
+  addValueDeclaration eq ImmutableArray.rei:109:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHookDefault.cmt
-  [type] addDeclaration +name ImportHookDefault.re:2:2
-  [type] addDeclaration +age ImportHookDefault.re:3:2
-  addDeclaration makeProps ImportHookDefault.re:6:0
-  addDeclaration make ImportHookDefault.re:6:0
-  addDeclaration make2Props ImportHookDefault.re:16:0
-  addDeclaration make2 ImportHookDefault.re:16:0
+  addTypeDeclaration +name ImportHookDefault.re:2:2
+  addTypeDeclaration +age ImportHookDefault.re:3:2
+  addValueDeclaration makeProps ImportHookDefault.re:6:0
+  addValueDeclaration make ImportHookDefault.re:6:0
+  addValueDeclaration make2Props ImportHookDefault.re:16:0
+  addValueDeclaration make2 ImportHookDefault.re:16:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/UseImportJsValue.cmt
-  addDeclaration useGetProp UseImportJsValue.re:2:4
-  addDeclaration useTypeImportedInOtherModule UseImportJsValue.re:6:4
+  addValueDeclaration useGetProp UseImportJsValue.re:2:4
+  addValueDeclaration useTypeImportedInOtherModule UseImportJsValue.re:6:4
   addValueReference UseImportJsValue.re:2:4 --> UseImportJsValue.re:2:18
   addValueReference UseImportJsValue.re:2:4 --> ImportJsValue.re:35:2
   addValueReference UseImportJsValue.re:6:4 --> UseImportJsValue.re:6:36
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImport.cmt
-  addDeclaration innerStuffContents TestImport.re:1:0
-  addDeclaration innerStuffContentsAsEmptyObject TestImport.re:9:0
-  addDeclaration innerStuffContents TestImport.re:18:4
-  addDeclaration valueStartingWithUpperCaseLetter TestImport.re:20:0
-  addDeclaration defaultValue TestImport.re:24:0
-  [type] addDeclaration +text TestImport.re:28:16
-  addDeclaration make TestImport.re:30:0
-  addDeclaration make TestImport.re:42:4
-  addDeclaration defaultValue2 TestImport.re:44:0
+  addValueDeclaration innerStuffContents TestImport.re:1:0
+  addValueDeclaration innerStuffContentsAsEmptyObject TestImport.re:9:0
+  addValueDeclaration innerStuffContents TestImport.re:18:4
+  addValueDeclaration valueStartingWithUpperCaseLetter TestImport.re:20:0
+  addValueDeclaration defaultValue TestImport.re:24:0
+  addTypeDeclaration +text TestImport.re:28:16
+  addValueDeclaration make TestImport.re:30:0
+  addValueDeclaration make TestImport.re:42:4
+  addValueDeclaration defaultValue2 TestImport.re:44:0
   addValueReference TestImport.re:18:4 --> TestImport.re:1:0
   addValueReference TestImport.re:42:4 --> TestImport.re:30:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestImmutableArray.cmt
-  addDeclaration testImmutableArrayGet TestImmutableArray.re:2:4
-  addDeclaration testBeltArrayGet TestImmutableArray.re:9:4
-  addDeclaration testBeltArraySet TestImmutableArray.re:11:4
+  addValueDeclaration testImmutableArrayGet TestImmutableArray.re:2:4
+  addValueDeclaration testBeltArrayGet TestImmutableArray.re:9:4
+  addValueDeclaration testBeltArraySet TestImmutableArray.re:11:4
   addValueReference TestImmutableArray.re:2:4 --> TestImmutableArray.re:2:28
   addValueReference TestImmutableArray.re:2:4 --> ImmutableArray.rei:5:15
   addValueReference TestImmutableArray.re:9:4 --> TestImmutableArray.re:9:23
   addValueReference TestImmutableArray.re:11:4 --> TestImmutableArray.re:11:23
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportHooks.cmt
-  [type] addDeclaration +name ImportHooks.re:3:2
-  [type] addDeclaration +age ImportHooks.re:4:2
-  addDeclaration makeProps ImportHooks.re:15:0
-  addDeclaration make ImportHooks.re:15:0
-  addDeclaration foo ImportHooks.re:21:0
+  addTypeDeclaration +name ImportHooks.re:3:2
+  addTypeDeclaration +age ImportHooks.re:4:2
+  addValueDeclaration makeProps ImportHooks.re:15:0
+  addValueDeclaration make ImportHooks.re:15:0
+  addValueDeclaration foo ImportHooks.re:21:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWithInterface.cmti
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BucklescriptAnnotations.cmt
-  addDeclaration foo BucklescriptAnnotations.re:19:4
-  addDeclaration bar BucklescriptAnnotations.re:21:4
+  addValueDeclaration foo BucklescriptAnnotations.re:19:4
+  addValueDeclaration bar BucklescriptAnnotations.re:21:4
   addValueReference BucklescriptAnnotations.re:19:4 --> BucklescriptAnnotations.re:19:11
-  addDeclaration +f BucklescriptAnnotations.re:22:6
+  addValueDeclaration +f BucklescriptAnnotations.re:22:6
   addValueReference BucklescriptAnnotations.re:22:6 --> BucklescriptAnnotations.re:21:11
   addValueReference BucklescriptAnnotations.re:21:4 --> BucklescriptAnnotations.re:22:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadRT.cmti
-  [type] addDeclaration Root DeadRT.rei:2:4
-  [type] addDeclaration Kaboom DeadRT.rei:3:4
+  addTypeDeclaration Root DeadRT.rei:2:4
+  addTypeDeclaration Kaboom DeadRT.rei:3:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Records.cmt
-  [type] addDeclaration +x Records.re:5:2
-  [type] addDeclaration +y Records.re:6:2
-  [type] addDeclaration +z Records.re:7:2
-  addDeclaration origin Records.re:11:4
-  addDeclaration computeArea Records.re:14:4
-  addDeclaration coord2d Records.re:18:4
-  [type] addDeclaration +name Records.re:22:2
-  [type] addDeclaration +age Records.re:23:2
-  [type] addDeclaration +address Records.re:24:2
-  [type] addDeclaration +name Records.re:29:2
-  [type] addDeclaration +owner Records.re:30:2
-  [type] addDeclaration +address Records.re:31:2
-  addDeclaration getOpt Records.re:34:4
-  addDeclaration findAddress Records.re:37:4
-  addDeclaration someBusiness Records.re:41:4
-  addDeclaration findAllAddresses Records.re:44:4
-  [type] addDeclaration +num Records.re:56:2
-  [type] addDeclaration +payload Records.re:57:2
-  addDeclaration getPayload Records.re:61:4
-  [type] addDeclaration +v Records.re:65:2
-  [type] addDeclaration +w Records.re:66:2
-  addDeclaration getPayloadRecord Records.re:70:4
-  addDeclaration recordValue Records.re:73:4
-  addDeclaration payloadValue Records.re:76:4
-  addDeclaration getPayloadRecordPlusOne Records.re:79:4
-  [type] addDeclaration +name Records.re:86:2
-  [type] addDeclaration +owner Records.re:87:2
-  [type] addDeclaration +address2 Records.re:88:2
-  addDeclaration findAddress2 Records.re:92:4
-  addDeclaration someBusiness2 Records.re:96:4
-  addDeclaration computeArea3 Records.re:103:4
-  addDeclaration computeArea4 Records.re:115:4
-  [type] addDeclaration +type_ Records.re:141:2
-  addDeclaration testMyRec Records.re:149:4
-  addDeclaration testMyRec2 Records.re:152:4
-  addDeclaration testMyObj Records.re:155:4
-  addDeclaration testMyObj2 Records.re:158:4
-  [type] addDeclaration +type_ Records.re:162:2
-  addDeclaration testMyRecBsAs Records.re:167:4
-  addDeclaration testMyRecBsAs2 Records.re:170:4
+  addTypeDeclaration +x Records.re:5:2
+  addTypeDeclaration +y Records.re:6:2
+  addTypeDeclaration +z Records.re:7:2
+  addValueDeclaration origin Records.re:11:4
+  addValueDeclaration computeArea Records.re:14:4
+  addValueDeclaration coord2d Records.re:18:4
+  addTypeDeclaration +name Records.re:22:2
+  addTypeDeclaration +age Records.re:23:2
+  addTypeDeclaration +address Records.re:24:2
+  addTypeDeclaration +name Records.re:29:2
+  addTypeDeclaration +owner Records.re:30:2
+  addTypeDeclaration +address Records.re:31:2
+  addValueDeclaration getOpt Records.re:34:4
+  addValueDeclaration findAddress Records.re:37:4
+  addValueDeclaration someBusiness Records.re:41:4
+  addValueDeclaration findAllAddresses Records.re:44:4
+  addTypeDeclaration +num Records.re:56:2
+  addTypeDeclaration +payload Records.re:57:2
+  addValueDeclaration getPayload Records.re:61:4
+  addTypeDeclaration +v Records.re:65:2
+  addTypeDeclaration +w Records.re:66:2
+  addValueDeclaration getPayloadRecord Records.re:70:4
+  addValueDeclaration recordValue Records.re:73:4
+  addValueDeclaration payloadValue Records.re:76:4
+  addValueDeclaration getPayloadRecordPlusOne Records.re:79:4
+  addTypeDeclaration +name Records.re:86:2
+  addTypeDeclaration +owner Records.re:87:2
+  addTypeDeclaration +address2 Records.re:88:2
+  addValueDeclaration findAddress2 Records.re:92:4
+  addValueDeclaration someBusiness2 Records.re:96:4
+  addValueDeclaration computeArea3 Records.re:103:4
+  addValueDeclaration computeArea4 Records.re:115:4
+  addTypeDeclaration +type_ Records.re:141:2
+  addValueDeclaration testMyRec Records.re:149:4
+  addValueDeclaration testMyRec2 Records.re:152:4
+  addValueDeclaration testMyObj Records.re:155:4
+  addValueDeclaration testMyObj2 Records.re:158:4
+  addTypeDeclaration +type_ Records.re:162:2
+  addValueDeclaration testMyRecBsAs Records.re:167:4
+  addValueDeclaration testMyRecBsAs2 Records.re:170:4
   addValueReference Records.re:14:4 --> Records.re:14:20
   addValueReference Records.re:14:4 --> Records.re:14:23
   addValueReference Records.re:14:4 --> Records.re:14:26
@@ -1239,9 +1239,9 @@
   addValueReference Records.re:167:4 --> Records.re:167:21
   addValueReference Records.re:170:4 --> Records.re:170:22
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadRT.cmt
-  [type] addDeclaration +Root DeadRT.re:2:4
-  [type] addDeclaration +Kaboom DeadRT.re:3:4
-  addDeclaration emitModuleAccessPath DeadRT.re:5:8
+  addTypeDeclaration +Root DeadRT.re:2:4
+  addTypeDeclaration +Kaboom DeadRT.re:3:4
+  addValueDeclaration emitModuleAccessPath DeadRT.re:5:8
   [type] extendTypeDependencies DeadRT.re:2:4 --> DeadRT.rei:2:4
   [type] extendTypeDependencies DeadRT.re:3:4 --> DeadRT.rei:3:4
   addValueReference DeadRT.re:5:8 --> DeadRT.re:7:9
@@ -1250,22 +1250,22 @@
   [type] addTypeReference DeadRT.rei:3:4 --> DeadRT.re:3:4
   [type] addTypeReference DeadRT.rei:2:4 --> DeadRT.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
-  addDeclaration makeProps ImportIndex.re:2:0
-  addDeclaration make ImportIndex.re:2:0
+  addValueDeclaration makeProps ImportIndex.re:2:0
+  addValueDeclaration make ImportIndex.re:2:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Hooks.cmt
-  [type] addDeclaration +name Hooks.re:1:16
-  addDeclaration make Hooks.re:4:4
-  addDeclaration default Hooks.re:36:4
-  addDeclaration anotherComponent Hooks.re:40:4
-  addDeclaration functionWithRenamedArgs Hooks.re:80:4
-  addDeclaration componentWithRenamedArgs Hooks.re:87:4
-  addDeclaration makeWithRef Hooks.re:94:4
-  addDeclaration testForwardRef Hooks.re:105:4
-  [type] addDeclaration +x Hooks.re:107:10
-  addDeclaration input Hooks.re:111:4
-  addDeclaration polymorphicComponent Hooks.re:130:4
-  addDeclaration functionReturningReactElement Hooks.re:134:4
-  addDeclaration aComponentWithChildren Hooks.re:156:4
+  addTypeDeclaration +name Hooks.re:1:16
+  addValueDeclaration make Hooks.re:4:4
+  addValueDeclaration default Hooks.re:36:4
+  addValueDeclaration anotherComponent Hooks.re:40:4
+  addValueDeclaration functionWithRenamedArgs Hooks.re:80:4
+  addValueDeclaration componentWithRenamedArgs Hooks.re:87:4
+  addValueDeclaration makeWithRef Hooks.re:94:4
+  addValueDeclaration testForwardRef Hooks.re:105:4
+  addTypeDeclaration +x Hooks.re:107:10
+  addValueDeclaration input Hooks.re:111:4
+  addValueDeclaration polymorphicComponent Hooks.re:130:4
+  addValueDeclaration functionReturningReactElement Hooks.re:134:4
+  addValueDeclaration aComponentWithChildren Hooks.re:156:4
   addValueReference Hooks.re:4:4 --> React.re:104:0
   [type] addTypeReference Hooks.re:11:12 --> Hooks.re:1:16
   addValueReference Hooks.re:4:4 --> Hooks.re:4:13
@@ -1300,31 +1300,31 @@
   addValueReference Hooks.re:40:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:40:4 --> Hooks.re:40:35
   addValueReference _none_:1:-1 --> Hooks.re:40:4
-  addDeclaration +make Hooks.re:48:6
+  addValueDeclaration +make Hooks.re:48:6
   [type] addTypeReference Hooks.re:49:43 --> Hooks.re:1:16
   addValueReference Hooks.re:48:6 --> Hooks.re:48:15
   addValueReference Hooks.re:48:6 --> React.re:5:0
   addValueReference Hooks.re:48:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:48:6
-  addDeclaration +anotherComponent Hooks.re:53:6
+  addValueDeclaration +anotherComponent Hooks.re:53:6
   [type] addTypeReference Hooks.re:54:43 --> Hooks.re:1:16
   addValueReference Hooks.re:53:6 --> Hooks.re:53:27
   addValueReference Hooks.re:53:6 --> React.re:5:0
   addValueReference Hooks.re:53:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:53:6
-  addDeclaration +make Hooks.re:59:8
+  addValueDeclaration +make Hooks.re:59:8
   [type] addTypeReference Hooks.re:60:45 --> Hooks.re:1:16
   addValueReference Hooks.re:59:8 --> Hooks.re:59:17
   addValueReference Hooks.re:59:8 --> React.re:5:0
   addValueReference Hooks.re:59:8 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:59:8
-  addDeclaration +anotherComponent Hooks.re:64:8
+  addValueDeclaration +anotherComponent Hooks.re:64:8
   [type] addTypeReference Hooks.re:65:45 --> Hooks.re:1:16
   addValueReference Hooks.re:64:8 --> Hooks.re:64:29
   addValueReference Hooks.re:64:8 --> React.re:5:0
   addValueReference Hooks.re:64:8 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:64:8
-  addDeclaration +make Hooks.re:72:6
+  addValueDeclaration +make Hooks.re:72:6
   addValueReference Hooks.re:72:6 --> ReasonReact.rei:15:0
   addValueReference Hooks.re:72:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:72:6
@@ -1366,11 +1366,11 @@
   addValueReference Hooks.re:134:4 --> Hooks.re:134:38
   addValueReference Hooks.re:134:4 --> React.re:5:0
   addValueReference _none_:1:-1 --> Hooks.re:134:4
-  addDeclaration +make Hooks.re:139:6
-  addDeclaration +car Hooks.re:149:8
+  addValueDeclaration +make Hooks.re:139:6
+  addValueDeclaration +car Hooks.re:149:8
   addValueReference Hooks.re:139:6 --> Hooks.re:149:8
   addValueReference Hooks.re:139:6 --> Hooks.re:150:18
-  addDeclaration +unsafe_expr Hooks.re:150:18
+  addValueDeclaration +unsafe_expr Hooks.re:150:18
   addValueReference Hooks.re:139:6 --> Hooks.re:141:9
   addValueReference _none_:1:-1 --> Hooks.re:139:6
   [type] addTypeReference Hooks.re:158:37 --> Hooks.re:1:16
@@ -1381,37 +1381,37 @@
   addValueReference Hooks.re:156:4 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:156:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestPromise.cmt
-  [type] addDeclaration +x TestPromise.re:6:2
-  [type] addDeclaration +s TestPromise.re:7:2
-  [type] addDeclaration +result TestPromise.re:11:18
-  addDeclaration convert TestPromise.re:14:4
+  addTypeDeclaration +x TestPromise.re:6:2
+  addTypeDeclaration +s TestPromise.re:7:2
+  addTypeDeclaration +result TestPromise.re:11:18
+  addValueDeclaration convert TestPromise.re:14:4
   addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
   [type] addTypeReference TestPromise.re:14:32 --> TestPromise.re:7:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
-  addDeclaration theAnswer NestedModulesInSignature.re:2:6
+  addValueDeclaration theAnswer NestedModulesInSignature.re:2:6
   addValueReference NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Docstrings.cmt
-  addDeclaration flat Docstrings.re:3:4
-  addDeclaration signMessage Docstrings.re:13:4
-  addDeclaration one Docstrings.re:16:4
-  addDeclaration two Docstrings.re:19:4
-  addDeclaration tree Docstrings.re:22:4
-  addDeclaration oneU Docstrings.re:25:4
-  addDeclaration twoU Docstrings.re:28:4
-  addDeclaration treeU Docstrings.re:31:4
-  addDeclaration useParam Docstrings.re:34:4
-  addDeclaration useParamU Docstrings.re:37:4
-  addDeclaration unnamed1 Docstrings.re:40:4
-  addDeclaration unnamed1U Docstrings.re:43:4
-  addDeclaration unnamed2 Docstrings.re:46:4
-  addDeclaration unnamed2U Docstrings.re:49:4
-  addDeclaration grouped Docstrings.re:52:4
-  addDeclaration unitArgWithoutConversion Docstrings.re:55:4
-  addDeclaration unitArgWithoutConversionU Docstrings.re:58:4
-  [type] addDeclaration +A Docstrings.re:61:4
-  [type] addDeclaration +B Docstrings.re:62:4
-  addDeclaration unitArgWithConversion Docstrings.re:65:4
-  addDeclaration unitArgWithConversionU Docstrings.re:68:4
+  addValueDeclaration flat Docstrings.re:3:4
+  addValueDeclaration signMessage Docstrings.re:13:4
+  addValueDeclaration one Docstrings.re:16:4
+  addValueDeclaration two Docstrings.re:19:4
+  addValueDeclaration tree Docstrings.re:22:4
+  addValueDeclaration oneU Docstrings.re:25:4
+  addValueDeclaration twoU Docstrings.re:28:4
+  addValueDeclaration treeU Docstrings.re:31:4
+  addValueDeclaration useParam Docstrings.re:34:4
+  addValueDeclaration useParamU Docstrings.re:37:4
+  addValueDeclaration unnamed1 Docstrings.re:40:4
+  addValueDeclaration unnamed1U Docstrings.re:43:4
+  addValueDeclaration unnamed2 Docstrings.re:46:4
+  addValueDeclaration unnamed2U Docstrings.re:49:4
+  addValueDeclaration grouped Docstrings.re:52:4
+  addValueDeclaration unitArgWithoutConversion Docstrings.re:55:4
+  addValueDeclaration unitArgWithoutConversionU Docstrings.re:58:4
+  addTypeDeclaration +A Docstrings.re:61:4
+  addTypeDeclaration +B Docstrings.re:62:4
+  addValueDeclaration unitArgWithConversion Docstrings.re:65:4
+  addValueDeclaration unitArgWithConversionU Docstrings.re:68:4
   addValueReference Docstrings.re:13:4 --> Docstrings.re:13:21
   addValueReference Docstrings.re:13:4 --> Docstrings.re:13:30
   addValueReference Docstrings.re:16:4 --> Docstrings.re:16:10
@@ -1437,74 +1437,74 @@
   [type] addTypeReference Docstrings.re:65:34 --> Docstrings.re:61:4
   [type] addTypeReference Docstrings.re:68:36 --> Docstrings.re:61:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestFirstClassModules.cmt
-  addDeclaration convert TestFirstClassModules.re:2:4
-  addDeclaration convertInterface TestFirstClassModules.re:5:4
-  addDeclaration convertRecord TestFirstClassModules.re:8:4
-  addDeclaration convertFirstClassModuleWithTypeEquations TestFirstClassModules.re:26:4
+  addValueDeclaration convert TestFirstClassModules.re:2:4
+  addValueDeclaration convertInterface TestFirstClassModules.re:5:4
+  addValueDeclaration convertRecord TestFirstClassModules.re:8:4
+  addValueDeclaration convertFirstClassModuleWithTypeEquations TestFirstClassModules.re:26:4
   addValueReference TestFirstClassModules.re:2:4 --> TestFirstClassModules.re:2:15
   addValueReference TestFirstClassModules.re:5:4 --> TestFirstClassModules.re:5:24
   addValueReference TestFirstClassModules.re:8:4 --> TestFirstClassModules.re:8:21
   addValueReference TestFirstClassModules.re:26:4 --> TestFirstClassModules.re:30:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/AutoAnnotate.cmt
-  [type] addDeclaration +R AutoAnnotate.re:2:4
-  [type] addDeclaration +variant AutoAnnotate.re:5:15
-  [type] addDeclaration +r2 AutoAnnotate.re:7:11
-  [type] addDeclaration +r3 AutoAnnotate.re:9:11
-  [type] addDeclaration +r4 AutoAnnotate.re:11:11
-  [type] addDeclaration +R2 AutoAnnotate.re:15:4
-  [type] addDeclaration +R4 AutoAnnotate.re:16:4
+  addTypeDeclaration +R AutoAnnotate.re:2:4
+  addTypeDeclaration +variant AutoAnnotate.re:5:15
+  addTypeDeclaration +r2 AutoAnnotate.re:7:11
+  addTypeDeclaration +r3 AutoAnnotate.re:9:11
+  addTypeDeclaration +r4 AutoAnnotate.re:11:11
+  addTypeDeclaration +R2 AutoAnnotate.re:15:4
+  addTypeDeclaration +R4 AutoAnnotate.re:16:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadCodeImplementation.cmt
-  addDeclaration +x DeadCodeImplementation.re:2:6
+  addValueDeclaration +x DeadCodeImplementation.re:2:6
   addValueReference DeadCodeInterface.re:1:17 --> DeadCodeImplementation.re:2:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTest.cmt
-  addDeclaration fortytwo DeadTest.re:2:4
-  addDeclaration fortyTwoButExported DeadTest.re:5:4
-  addDeclaration thisIsUsedOnce DeadTest.re:7:4
-  addDeclaration thisIsUsedTwice DeadTest.re:10:4
-  addDeclaration thisIsKeptAlive DeadTest.re:17:4
-  addDeclaration thisIsMarkedLive DeadTest.re:20:4
-  [type] addDeclaration +A DeadTest.re:36:6
-  addDeclaration a DeadTest.re:37:2
-  [type] addDeclaration +xxx DeadTest.re:50:2
-  [type] addDeclaration +yyy DeadTest.re:51:2
-  addDeclaration x DeadTest.re:62:2
-  addDeclaration y DeadTest.re:63:2
-  addDeclaration unusedRec DeadTest.re:79:8
-  addDeclaration split_map DeadTest.re:81:8
-  addDeclaration rec1 DeadTest.re:86:8
-  addDeclaration rec2 DeadTest.re:87:4
-  addDeclaration recWithCallback DeadTest.re:89:8
-  addDeclaration foo DeadTest.re:94:8
-  addDeclaration bar DeadTest.re:98:4
-  addDeclaration withDefaultValue DeadTest.re:100:4
-  addDeclaration unsafe_string1 DeadTest.re:102:0
-  addDeclaration unsafe_string2 DeadTest.re:105:2
+  addValueDeclaration fortytwo DeadTest.re:2:4
+  addValueDeclaration fortyTwoButExported DeadTest.re:5:4
+  addValueDeclaration thisIsUsedOnce DeadTest.re:7:4
+  addValueDeclaration thisIsUsedTwice DeadTest.re:10:4
+  addValueDeclaration thisIsKeptAlive DeadTest.re:17:4
+  addValueDeclaration thisIsMarkedLive DeadTest.re:20:4
+  addTypeDeclaration +A DeadTest.re:36:6
+  addValueDeclaration a DeadTest.re:37:2
+  addTypeDeclaration +xxx DeadTest.re:50:2
+  addTypeDeclaration +yyy DeadTest.re:51:2
+  addValueDeclaration x DeadTest.re:62:2
+  addValueDeclaration y DeadTest.re:63:2
+  addValueDeclaration unusedRec DeadTest.re:79:8
+  addValueDeclaration split_map DeadTest.re:81:8
+  addValueDeclaration rec1 DeadTest.re:86:8
+  addValueDeclaration rec2 DeadTest.re:87:4
+  addValueDeclaration recWithCallback DeadTest.re:89:8
+  addValueDeclaration foo DeadTest.re:94:8
+  addValueDeclaration bar DeadTest.re:98:4
+  addValueDeclaration withDefaultValue DeadTest.re:100:4
+  addValueDeclaration unsafe_string1 DeadTest.re:102:0
+  addValueDeclaration unsafe_string2 DeadTest.re:105:2
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:12:7 --> DeadTest.re:10:4
   addValueReference DeadTest.re:20:4 --> DeadTest.re:17:4
-  addDeclaration +thisSignatureItemIsDead DeadTest.re:31:6
+  addValueDeclaration +thisSignatureItemIsDead DeadTest.re:31:6
   [type] extendTypeDependencies DeadTest.re:40:6 --> DeadTest.re:36:6
-  addDeclaration +a DeadTest.re:41:6
+  addValueDeclaration +a DeadTest.re:41:6
   [type] addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
   addValueReference DeadTest.re:44:17 --> DeadTest.re:37:2
   addValueReference DeadTest.re:44:14 --> DeadTest.re:44:9
-  addDeclaration _ DeadTest.re:46:0
+  addValueDeclaration _ DeadTest.re:46:0
   [type] addTypeReference DeadTest.re:46:8 --> DeadTypeTest.rei:8:4
-  addDeclaration _ DeadTest.re:47:0
+  addValueDeclaration _ DeadTest.re:47:0
   [type] addTypeReference DeadTest.re:47:8 --> DeadTypeTest.rei:9:4
-  addDeclaration _ DeadTest.re:54:0
+  addValueDeclaration _ DeadTest.re:54:0
   [type] addTypeReference DeadTest.re:54:13 --> DeadTest.re:50:2
   addValueReference DeadTest.re:54:13 --> DeadTest.re:54:8
-  addDeclaration _ DeadTest.re:55:0
+  addValueDeclaration _ DeadTest.re:55:0
   addValueReference DeadTest.re:55:19 --> DeadTest.re:55:10
   [type] addTypeReference DeadTest.re:55:9 --> DeadTest.re:51:2
-  addDeclaration _ DeadTest.re:58:2
-  addDeclaration +y DeadTest.re:65:6
-  addDeclaration +x DeadTest.re:66:6
+  addValueDeclaration _ DeadTest.re:58:2
+  addValueDeclaration +y DeadTest.re:65:6
+  addValueDeclaration +x DeadTest.re:66:6
   addValueReference DeadTest.re:66:6 --> DeadTest.re:65:6
-  addDeclaration +valueOnlyInImplementation DeadTest.re:69:6
+  addValueDeclaration +valueOnlyInImplementation DeadTest.re:69:6
   addValueReference DeadTest.re:73:9 --> DeadTest.re:62:2
   addValueReference DeadTest.re:77:16 --> DeadValueTest.rei:1:0
   addValueReference DeadTest.re:79:8 --> DeadTest.re:79:8
@@ -1512,17 +1512,17 @@
   addValueReference DeadTest.re:81:8 --> DeadTest.re:81:8
   addValueReference DeadTest.re:86:8 --> DeadTest.re:87:4
   addValueReference DeadTest.re:87:4 --> DeadTest.re:86:8
-  addDeclaration +cb DeadTest.re:90:6
+  addValueDeclaration +cb DeadTest.re:90:6
   addValueReference DeadTest.re:90:6 --> DeadTest.re:89:8
   addValueReference DeadTest.re:89:8 --> DeadTest.re:90:6
-  addDeclaration +cb DeadTest.re:95:6
+  addValueDeclaration +cb DeadTest.re:95:6
   addValueReference DeadTest.re:95:6 --> DeadTest.re:98:4
   addValueReference DeadTest.re:94:8 --> DeadTest.re:95:6
   addValueReference DeadTest.re:98:4 --> DeadTest.re:94:8
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:42
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:25
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
-  addDeclaration +unsafe_string2 DeadTest.re:107:2
+  addValueDeclaration +unsafe_string2 DeadTest.re:107:2
   [type] addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6

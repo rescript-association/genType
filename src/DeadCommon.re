@@ -324,8 +324,8 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
       && (currentSrc^ == pos.pos_fname || currentModuleName^ === "*include*")) {
     if (verbose) {
       Log_.item(
-        "%saddDeclaration %s %s@.",
-        declKind != Value ? "[type] " : "",
+        "add%sDeclaration %s %s@.",
+        declKind == Value ? "Value" : "Type",
         name,
         pos |> posToString,
       );
