@@ -64,7 +64,7 @@ let rec translateArrowType =
         (
           ~config,
           ~typeVarsGen,
-          ~noFunctionReturnDependencies=false,
+          ~noFunctionReturnDependencies,
           ~typeEnv,
           ~revArgDeps,
           ~revArgs,
