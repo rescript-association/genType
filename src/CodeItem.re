@@ -3,7 +3,7 @@ open GenTypeCommon;
 type exportType = {
   nameAs: option(string),
   opaque: option(bool),
-  optType: option(type_),
+  optType: type_,
   typeVars: list(string),
   resolvedTypeName: ResolvedName.t,
 };
