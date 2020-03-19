@@ -106,11 +106,11 @@ let emitExportType =
     ) => {
   let (opaque, optType) =
     switch (opaque, optType) {
-    | (Some(opaque), _) => (opaque, optType)
+    | (_, None) => assert(false)
+    | (Some(opaque), Some(type_)) => (opaque, type_)
     | (None, Some(type_)) =>
       let normalized = type_ |> typeGetNormalized;
-      (false, Some(normalized));
-    | (None, None) => (false, None)
+      (false, normalized);
     };
   resolvedTypeName
   |> ResolvedName.toString
