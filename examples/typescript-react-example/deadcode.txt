@@ -73,9 +73,9 @@
   addValueReference Types.re:28:8 --> Types.re:28:37
   addValueDeclaration +unsafe_expr Types.re:28:37
   addValueReference Types.re:46:4 --> Types.re:46:31
-  [type] addTypeReference Types.re:46:30 --> Types.re:35:22
+  addTypeReference Types.re:46:30 --> Types.re:35:22
   addValueReference Types.re:53:4 --> Types.re:53:35
-  [type] addTypeReference Types.re:53:34 --> Types.re:38:27
+  addTypeReference Types.re:53:34 --> Types.re:38:27
   addValueReference Types.re:56:4 --> Types.re:56:39
   addValueReference Types.re:56:4 --> Types.re:56:54
   addValueReference Types.re:96:4 --> Types.re:96:23
@@ -110,12 +110,12 @@
   addValueReference Tuples.re:21:4 --> Tuples.re:21:40
   addValueReference Tuples.re:24:4 --> Tuples.re:24:15
   addValueReference Tuples.re:24:4 --> Tuples.re:24:18
-  [type] addTypeReference Tuples.re:39:49 --> Tuples.re:31:2
+  addTypeReference Tuples.re:39:49 --> Tuples.re:31:2
   addValueReference Tuples.re:39:4 --> Tuples.re:39:21
   addValueReference Tuples.re:42:4 --> Tuples.re:42:13
   addValueReference Tuples.re:42:4 --> Tuples.re:42:20
   addValueReference Tuples.re:45:4 --> Tuples.re:45:24
-  [type] addTypeReference Tuples.re:47:19 --> Tuples.re:32:2
+  addTypeReference Tuples.re:47:19 --> Tuples.re:32:2
   addValueReference Tuples.re:45:4 --> Tuples.re:45:31
   addValueReference Tuples.re:45:4 --> Tuples.re:45:31
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ReasonComponent.cmt
@@ -140,7 +140,7 @@
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:6
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:43
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:29:31
-  [type] addTypeReference ReasonComponent.re:32:12 --> ReasonComponent.re:7:2
+  addTypeReference ReasonComponent.re:32:12 --> ReasonComponent.re:7:2
   addValueReference ReasonComponent.re:18:4 --> ReasonComponent.re:19:34
   addValueReference ReasonComponent.re:18:4 --> ReasonReact.rei:17:0
   addValueDeclaration +emptyArray ReasonComponent.re:35:7
@@ -158,8 +158,8 @@
   addValueReference ReasonComponent.re:55:4 --> ReasonComponent.re:55:16
   addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:24
   addValueReference ReasonComponent.re:63:4 --> ReasonComponent.re:63:35
-  [type] addTypeReference ReasonComponent.re:63:23 --> Records.re:5:2
-  [type] addTypeReference ReasonComponent.re:63:23 --> Records.re:6:2
+  addTypeReference ReasonComponent.re:63:23 --> Records.re:5:2
+  addTypeReference ReasonComponent.re:63:23 --> Records.re:6:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/FirstClassModulesInterface.cmti
   addTypeDeclaration x FirstClassModulesInterface.rei:3:2
   addTypeDeclaration y FirstClassModulesInterface.rei:4:2
@@ -660,9 +660,9 @@
   addValueReference Uncurried.re:27:4 --> Uncurried.re:27:19
   addValueReference Uncurried.re:27:4 --> Uncurried.re:27:22
   addValueReference Uncurried.re:30:4 --> Uncurried.re:30:15
-  [type] addTypeReference Uncurried.re:36:24 --> Uncurried.re:32:13
+  addTypeReference Uncurried.re:36:24 --> Uncurried.re:32:13
   addValueReference Uncurried.re:36:4 --> Uncurried.re:36:16
-  [type] addTypeReference Uncurried.re:39:25 --> Uncurried.re:33:14
+  addTypeReference Uncurried.re:39:25 --> Uncurried.re:33:14
   addValueReference Uncurried.re:39:4 --> Uncurried.re:39:17
   addValueReference Uncurried.re:42:4 --> Uncurried.re:43:8
   addValueReference Uncurried.re:42:4 --> Uncurried.re:43:5
@@ -849,18 +849,18 @@
   addTypeDeclaration +R VariantsWithPayload.re:107:4
   addValueDeclaration testVariant1Object VariantsWithPayload.re:110:4
   addValueReference VariantsWithPayload.re:16:4 --> VariantsWithPayload.re:16:23
-  [type] addTypeReference VariantsWithPayload.re:27:42 --> VariantsWithPayload.re:2:2
+  addTypeReference VariantsWithPayload.re:27:42 --> VariantsWithPayload.re:2:2
   addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:26:6
-  [type] addTypeReference VariantsWithPayload.re:27:59 --> VariantsWithPayload.re:3:2
+  addTypeReference VariantsWithPayload.re:27:59 --> VariantsWithPayload.re:3:2
   addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:26:6
   addValueReference VariantsWithPayload.re:19:4 --> VariantsWithPayload.re:19:31
   addValueReference VariantsWithPayload.re:38:4 --> VariantsWithPayload.re:38:24
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:43:8
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:44:9
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:44:13
-  [type] addTypeReference VariantsWithPayload.re:46:36 --> VariantsWithPayload.re:2:2
+  addTypeReference VariantsWithPayload.re:46:36 --> VariantsWithPayload.re:2:2
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:45:10
-  [type] addTypeReference VariantsWithPayload.re:46:53 --> VariantsWithPayload.re:3:2
+  addTypeReference VariantsWithPayload.re:46:53 --> VariantsWithPayload.re:3:2
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:45:10
   addValueReference VariantsWithPayload.re:41:4 --> VariantsWithPayload.re:41:25
   addValueReference VariantsWithPayload.re:56:4 --> VariantsWithPayload.re:56:25
@@ -887,8 +887,8 @@
   addValueReference FirstClassModulesInterface.rei:7:0 --> FirstClassModulesInterface.re:6:4
   addValueReference FirstClassModulesInterface.rei:10:18 --> FirstClassModulesInterface.re:8:18
   addValueReference FirstClassModulesInterface.re:8:18 --> FirstClassModulesInterface.rei:10:18
-  [type] addTypeReference FirstClassModulesInterface.rei:4:2 --> FirstClassModulesInterface.re:3:2
-  [type] addTypeReference FirstClassModulesInterface.rei:3:2 --> FirstClassModulesInterface.re:2:2
+  addTypeReference FirstClassModulesInterface.rei:4:2 --> FirstClassModulesInterface.re:3:2
+  addTypeReference FirstClassModulesInterface.rei:3:2 --> FirstClassModulesInterface.re:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/Unboxed.cmt
   addTypeDeclaration +A Unboxed.re:4:4
   addTypeDeclaration +A Unboxed.re:9:4
@@ -987,22 +987,22 @@
   addTypeDeclaration +InNeither DeadTypeTest.re:10:4
   [type] extendTypeDependencies DeadTypeTest.re:2:4 --> DeadTypeTest.rei:2:4
   [type] extendTypeDependencies DeadTypeTest.re:3:4 --> DeadTypeTest.rei:3:4
-  [type] addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
+  addTypeReference DeadTypeTest.re:4:8 --> DeadTypeTest.re:2:4
   [type] extendTypeDependencies DeadTypeTest.re:7:4 --> DeadTypeTest.rei:7:4
   [type] extendTypeDependencies DeadTypeTest.re:8:4 --> DeadTypeTest.rei:8:4
   [type] extendTypeDependencies DeadTypeTest.re:9:4 --> DeadTypeTest.rei:9:4
   [type] extendTypeDependencies DeadTypeTest.re:10:4 --> DeadTypeTest.rei:10:4
   addValueDeclaration _ DeadTypeTest.re:12:0
-  [type] addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
+  addTypeReference DeadTypeTest.re:12:8 --> DeadTypeTest.re:7:4
   addValueDeclaration _ DeadTypeTest.re:13:0
-  [type] addTypeReference DeadTypeTest.re:13:8 --> DeadTypeTest.re:9:4
+  addTypeReference DeadTypeTest.re:13:8 --> DeadTypeTest.re:9:4
   addValueReference DeadTypeTest.rei:4:0 --> DeadTypeTest.re:4:4
-  [type] addTypeReference DeadTypeTest.rei:10:4 --> DeadTypeTest.re:10:4
-  [type] addTypeReference DeadTypeTest.rei:9:4 --> DeadTypeTest.re:9:4
-  [type] addTypeReference DeadTypeTest.rei:8:4 --> DeadTypeTest.re:8:4
-  [type] addTypeReference DeadTypeTest.rei:7:4 --> DeadTypeTest.re:7:4
-  [type] addTypeReference DeadTypeTest.rei:3:4 --> DeadTypeTest.re:3:4
-  [type] addTypeReference DeadTypeTest.rei:2:4 --> DeadTypeTest.re:2:4
+  addTypeReference DeadTypeTest.rei:10:4 --> DeadTypeTest.re:10:4
+  addTypeReference DeadTypeTest.rei:9:4 --> DeadTypeTest.re:9:4
+  addTypeReference DeadTypeTest.rei:8:4 --> DeadTypeTest.re:8:4
+  addTypeReference DeadTypeTest.rei:7:4 --> DeadTypeTest.re:7:4
+  addTypeReference DeadTypeTest.rei:3:4 --> DeadTypeTest.re:3:4
+  addTypeReference DeadTypeTest.rei:2:4 --> DeadTypeTest.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler1.cmt
   addValueDeclaration notification CreateErrorHandler1.re:3:6
   addValueReference CreateErrorHandler1.re:3:6 --> CreateErrorHandler1.re:3:21
@@ -1185,41 +1185,41 @@
   addValueReference Records.re:14:4 --> Records.re:14:23
   addValueReference Records.re:14:4 --> Records.re:14:26
   addValueReference Records.re:14:4 --> Records.re:15:40
-  [type] addTypeReference Records.re:14:19 --> Records.re:5:2
-  [type] addTypeReference Records.re:14:19 --> Records.re:6:2
-  [type] addTypeReference Records.re:14:19 --> Records.re:7:2
+  addTypeReference Records.re:14:19 --> Records.re:5:2
+  addTypeReference Records.re:14:19 --> Records.re:6:2
+  addTypeReference Records.re:14:19 --> Records.re:7:2
   addValueReference Records.re:18:4 --> Records.re:18:15
   addValueReference Records.re:18:4 --> Records.re:18:18
   addValueReference Records.re:34:4 --> Records.re:34:19
   addValueReference Records.re:34:4 --> Records.re:34:28
   addValueReference Records.re:34:4 --> Records.re:34:14
   addValueReference Records.re:37:4 --> Records.re:38:31
-  [type] addTypeReference Records.re:38:2 --> Records.re:31:2
+  addTypeReference Records.re:38:2 --> Records.re:31:2
   addValueReference Records.re:37:4 --> Records.re:37:19
   addValueReference Records.re:37:4 --> Records.re:34:4
   addValueReference Records.re:44:4 --> Records.re:47:35
-  [type] addTypeReference Records.re:47:6 --> Records.re:31:2
+  addTypeReference Records.re:47:6 --> Records.re:31:2
   addValueReference Records.re:44:4 --> Records.re:46:14
   addValueReference Records.re:44:4 --> Records.re:34:4
   addValueReference Records.re:44:4 --> Records.re:48:62
-  [type] addTypeReference Records.re:48:40 --> Records.re:24:2
+  addTypeReference Records.re:48:40 --> Records.re:24:2
   addValueReference Records.re:44:4 --> Records.re:48:35
   addValueReference Records.re:44:4 --> Records.re:34:4
-  [type] addTypeReference Records.re:48:8 --> Records.re:30:2
+  addTypeReference Records.re:48:8 --> Records.re:30:2
   addValueReference Records.re:44:4 --> Records.re:46:14
   addValueReference Records.re:44:4 --> Records.re:34:4
   addValueReference Records.re:44:4 --> Records.re:44:24
   addValueReference Records.re:61:4 --> Records.re:61:19
-  [type] addTypeReference Records.re:61:18 --> Records.re:57:2
+  addTypeReference Records.re:61:18 --> Records.re:57:2
   addValueReference Records.re:70:4 --> Records.re:70:25
-  [type] addTypeReference Records.re:70:24 --> Records.re:57:2
+  addTypeReference Records.re:70:24 --> Records.re:57:2
   addValueReference Records.re:76:4 --> Records.re:73:4
-  [type] addTypeReference Records.re:81:5 --> Records.re:65:2
+  addTypeReference Records.re:81:5 --> Records.re:65:2
   addValueReference Records.re:79:4 --> Records.re:79:32
   addValueReference Records.re:79:4 --> Records.re:79:32
-  [type] addTypeReference Records.re:79:31 --> Records.re:57:2
+  addTypeReference Records.re:79:31 --> Records.re:57:2
   addValueReference Records.re:92:4 --> Records.re:93:54
-  [type] addTypeReference Records.re:93:2 --> Records.re:88:2
+  addTypeReference Records.re:93:2 --> Records.re:88:2
   addValueReference Records.re:92:4 --> Records.re:92:20
   addValueReference Records.re:92:4 --> Records.re:34:4
   addValueReference Records.re:103:4 --> Records.re:105:6
@@ -1230,12 +1230,12 @@
   addValueReference Records.re:115:4 --> Records.re:117:6
   addValueReference Records.re:115:4 --> Records.re:124:47
   addValueReference Records.re:115:4 --> Records.re:117:6
-  [type] addTypeReference Records.re:149:30 --> Records.re:141:2
+  addTypeReference Records.re:149:30 --> Records.re:141:2
   addValueReference Records.re:149:4 --> Records.re:149:17
   addValueReference Records.re:152:4 --> Records.re:152:18
   addValueReference Records.re:155:4 --> Records.re:155:17
   addValueReference Records.re:158:4 --> Records.re:158:18
-  [type] addTypeReference Records.re:167:38 --> Records.re:162:2
+  addTypeReference Records.re:167:38 --> Records.re:162:2
   addValueReference Records.re:167:4 --> Records.re:167:21
   addValueReference Records.re:170:4 --> Records.re:170:22
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadRT.cmt
@@ -1246,9 +1246,9 @@
   [type] extendTypeDependencies DeadRT.re:3:4 --> DeadRT.rei:3:4
   addValueReference DeadRT.re:5:8 --> DeadRT.re:7:9
   addValueReference DeadRT.re:5:8 --> DeadRT.re:5:31
-  [type] addTypeReference DeadRT.re:11:16 --> DeadRT.re:3:4
-  [type] addTypeReference DeadRT.rei:3:4 --> DeadRT.re:3:4
-  [type] addTypeReference DeadRT.rei:2:4 --> DeadRT.re:2:4
+  addTypeReference DeadRT.re:11:16 --> DeadRT.re:3:4
+  addTypeReference DeadRT.rei:3:4 --> DeadRT.re:3:4
+  addTypeReference DeadRT.rei:2:4 --> DeadRT.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImportIndex.cmt
   addValueDeclaration makeProps ImportIndex.re:2:0
   addValueDeclaration make ImportIndex.re:2:0
@@ -1267,7 +1267,7 @@
   addValueDeclaration functionReturningReactElement Hooks.re:134:4
   addValueDeclaration aComponentWithChildren Hooks.re:156:4
   addValueReference Hooks.re:4:4 --> React.re:104:0
-  [type] addTypeReference Hooks.re:11:12 --> Hooks.re:1:16
+  addTypeReference Hooks.re:11:12 --> Hooks.re:1:16
   addValueReference Hooks.re:4:4 --> Hooks.re:4:13
   addValueReference Hooks.re:4:4 --> Hooks.re:5:7
   addValueReference Hooks.re:4:4 --> React.re:5:0
@@ -1294,32 +1294,32 @@
   addValueReference Hooks.re:4:4 --> React.re:16:0
   addValueReference Hooks.re:4:4 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:4:4
-  [type] addTypeReference Hooks.re:42:41 --> Hooks.re:1:16
+  addTypeReference Hooks.re:42:41 --> Hooks.re:1:16
   addValueReference Hooks.re:40:4 --> Hooks.re:40:25
   addValueReference Hooks.re:40:4 --> React.re:5:0
   addValueReference Hooks.re:40:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:40:4 --> Hooks.re:40:35
   addValueReference _none_:1:-1 --> Hooks.re:40:4
   addValueDeclaration +make Hooks.re:48:6
-  [type] addTypeReference Hooks.re:49:43 --> Hooks.re:1:16
+  addTypeReference Hooks.re:49:43 --> Hooks.re:1:16
   addValueReference Hooks.re:48:6 --> Hooks.re:48:15
   addValueReference Hooks.re:48:6 --> React.re:5:0
   addValueReference Hooks.re:48:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:48:6
   addValueDeclaration +anotherComponent Hooks.re:53:6
-  [type] addTypeReference Hooks.re:54:43 --> Hooks.re:1:16
+  addTypeReference Hooks.re:54:43 --> Hooks.re:1:16
   addValueReference Hooks.re:53:6 --> Hooks.re:53:27
   addValueReference Hooks.re:53:6 --> React.re:5:0
   addValueReference Hooks.re:53:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:53:6
   addValueDeclaration +make Hooks.re:59:8
-  [type] addTypeReference Hooks.re:60:45 --> Hooks.re:1:16
+  addTypeReference Hooks.re:60:45 --> Hooks.re:1:16
   addValueReference Hooks.re:59:8 --> Hooks.re:59:17
   addValueReference Hooks.re:59:8 --> React.re:5:0
   addValueReference Hooks.re:59:8 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:59:8
   addValueDeclaration +anotherComponent Hooks.re:64:8
-  [type] addTypeReference Hooks.re:65:45 --> Hooks.re:1:16
+  addTypeReference Hooks.re:65:45 --> Hooks.re:1:16
   addValueReference Hooks.re:64:8 --> Hooks.re:64:29
   addValueReference Hooks.re:64:8 --> React.re:5:0
   addValueReference Hooks.re:64:8 --> ReactDOMRe.re:1097:0
@@ -1328,15 +1328,15 @@
   addValueReference Hooks.re:72:6 --> ReasonReact.rei:15:0
   addValueReference Hooks.re:72:6 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:72:6
-  [type] addTypeReference Hooks.re:82:2 --> Hooks.re:1:16
+  addTypeReference Hooks.re:82:2 --> Hooks.re:1:16
   addValueReference Hooks.re:80:4 --> Hooks.re:80:32
-  [type] addTypeReference Hooks.re:82:14 --> Hooks.re:1:16
+  addTypeReference Hooks.re:82:14 --> Hooks.re:1:16
   addValueReference Hooks.re:80:4 --> Hooks.re:80:38
   addValueReference Hooks.re:80:4 --> Hooks.re:80:32
   addValueReference Hooks.re:80:4 --> Hooks.re:80:46
-  [type] addTypeReference Hooks.re:89:15 --> Hooks.re:1:16
+  addTypeReference Hooks.re:89:15 --> Hooks.re:1:16
   addValueReference Hooks.re:87:4 --> Hooks.re:87:33
-  [type] addTypeReference Hooks.re:89:27 --> Hooks.re:1:16
+  addTypeReference Hooks.re:89:27 --> Hooks.re:1:16
   addValueReference Hooks.re:87:4 --> Hooks.re:87:39
   addValueReference Hooks.re:87:4 --> React.re:5:0
   addValueReference Hooks.re:87:4 --> Hooks.re:87:33
@@ -1344,7 +1344,7 @@
   addValueReference _none_:1:-1 --> Hooks.re:87:4
   addValueReference Hooks.re:94:4 --> Hooks.re:96:9
   addValueReference Hooks.re:94:4 --> ReactDOMRe.re:96:2
-  [type] addTypeReference Hooks.re:98:20 --> Hooks.re:1:16
+  addTypeReference Hooks.re:98:20 --> Hooks.re:1:16
   addValueReference Hooks.re:94:4 --> Hooks.re:94:20
   addValueReference Hooks.re:94:4 --> React.re:5:0
   addValueReference Hooks.re:94:4 --> ReactDOMRe.re:1097:0
@@ -1353,13 +1353,13 @@
   addValueReference _none_:1:-1 --> Hooks.re:94:4
   addValueReference Hooks.re:105:4 --> React.re:44:0
   addValueReference Hooks.re:111:4 --> Hooks.re:112:28
-  [type] addTypeReference Hooks.re:113:45 --> Hooks.re:107:10
+  addTypeReference Hooks.re:113:45 --> Hooks.re:107:10
   addValueReference Hooks.re:111:4 --> Hooks.re:112:21
   addValueReference Hooks.re:111:4 --> React.re:5:0
   addValueReference Hooks.re:111:4 --> ReactDOMRe.re:1097:0
   addValueReference _none_:1:-1 --> Hooks.re:111:4
   addValueReference Hooks.re:112:2 --> React.re:44:0
-  [type] addTypeReference Hooks.re:130:58 --> Hooks.re:1:16
+  addTypeReference Hooks.re:130:58 --> Hooks.re:1:16
   addValueReference Hooks.re:130:4 --> Hooks.re:130:35
   addValueReference Hooks.re:130:4 --> React.re:5:0
   addValueReference _none_:1:-1 --> Hooks.re:130:4
@@ -1373,7 +1373,7 @@
   addValueDeclaration +unsafe_expr Hooks.re:150:18
   addValueReference Hooks.re:139:6 --> Hooks.re:141:9
   addValueReference _none_:1:-1 --> Hooks.re:139:6
-  [type] addTypeReference Hooks.re:158:37 --> Hooks.re:1:16
+  addTypeReference Hooks.re:158:37 --> Hooks.re:1:16
   addValueReference Hooks.re:156:4 --> Hooks.re:156:31
   addValueReference Hooks.re:156:4 --> React.re:5:0
   addValueReference Hooks.re:156:4 --> Hooks.re:156:41
@@ -1386,7 +1386,7 @@
   addTypeDeclaration +result TestPromise.re:11:18
   addValueDeclaration convert TestPromise.re:14:4
   addValueReference TestPromise.re:14:4 --> TestPromise.re:14:33
-  [type] addTypeReference TestPromise.re:14:32 --> TestPromise.re:7:2
+  addTypeReference TestPromise.re:14:32 --> TestPromise.re:7:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmt
   addValueDeclaration theAnswer NestedModulesInSignature.re:2:6
   addValueReference NestedModulesInSignature.rei:2:2 --> NestedModulesInSignature.re:2:6
@@ -1434,8 +1434,8 @@
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:26
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:29
   addValueReference Docstrings.re:52:4 --> Docstrings.re:52:33
-  [type] addTypeReference Docstrings.re:65:34 --> Docstrings.re:61:4
-  [type] addTypeReference Docstrings.re:68:36 --> Docstrings.re:61:4
+  addTypeReference Docstrings.re:65:34 --> Docstrings.re:61:4
+  addTypeReference Docstrings.re:68:36 --> Docstrings.re:61:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestFirstClassModules.cmt
   addValueDeclaration convert TestFirstClassModules.re:2:4
   addValueDeclaration convertInterface TestFirstClassModules.re:5:4
@@ -1487,19 +1487,19 @@
   addValueDeclaration +thisSignatureItemIsDead DeadTest.re:31:6
   [type] extendTypeDependencies DeadTest.re:40:6 --> DeadTest.re:36:6
   addValueDeclaration +a DeadTest.re:41:6
-  [type] addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
+  addTypeReference DeadTest.re:41:10 --> DeadTest.re:40:6
   addValueReference DeadTest.re:44:17 --> DeadTest.re:37:2
   addValueReference DeadTest.re:44:14 --> DeadTest.re:44:9
   addValueDeclaration _ DeadTest.re:46:0
-  [type] addTypeReference DeadTest.re:46:8 --> DeadTypeTest.rei:8:4
+  addTypeReference DeadTest.re:46:8 --> DeadTypeTest.rei:8:4
   addValueDeclaration _ DeadTest.re:47:0
-  [type] addTypeReference DeadTest.re:47:8 --> DeadTypeTest.rei:9:4
+  addTypeReference DeadTest.re:47:8 --> DeadTypeTest.rei:9:4
   addValueDeclaration _ DeadTest.re:54:0
-  [type] addTypeReference DeadTest.re:54:13 --> DeadTest.re:50:2
+  addTypeReference DeadTest.re:54:13 --> DeadTest.re:50:2
   addValueReference DeadTest.re:54:13 --> DeadTest.re:54:8
   addValueDeclaration _ DeadTest.re:55:0
   addValueReference DeadTest.re:55:19 --> DeadTest.re:55:10
-  [type] addTypeReference DeadTest.re:55:9 --> DeadTest.re:51:2
+  addTypeReference DeadTest.re:55:9 --> DeadTest.re:51:2
   addValueDeclaration _ DeadTest.re:58:2
   addValueDeclaration +y DeadTest.re:65:6
   addValueDeclaration +x DeadTest.re:66:6
@@ -1523,12 +1523,12 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:25
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   addValueDeclaration +unsafe_string2 DeadTest.re:107:2
-  [type] addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
+  addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
   addValueReference DeadTest.re:105:2 --> DeadTest.re:107:2
-  [type] addTypeReference DeadTest.re:36:6 --> DeadTest.re:40:6
+  addTypeReference DeadTest.re:36:6 --> DeadTest.re:40:6
   
 File References
 

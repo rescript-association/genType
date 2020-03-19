@@ -7,7 +7,7 @@ let typeDependencies = ref([]);
 let addTypeReference = (~posDeclaration, ~posUsage) => {
   if (verbose) {
     Log_.item(
-      "[type] addTypeReference %s --> %s@.",
+      "addTypeReference %s --> %s@.",
       posUsage |> posToString,
       posDeclaration |> posToString,
     );
