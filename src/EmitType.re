@@ -578,14 +578,14 @@ let emitExportType =
       ++ ";"
       ++ exportNameAs
       |> export(~emitters)
-    | None =>
-      "export"
-      ++ (opaque ? " opaque " : " ")
-      ++ "type "
-      ++ (resolvedTypeName |> EmitText.brackets)
-      ++ ";"
-      ++ exportNameAs
-      |> export(~emitters)
+    // | None =>
+    //   "export"
+    //   ++ (opaque ? " opaque " : " ")
+    //   ++ "type "
+    //   ++ (resolvedTypeName |> EmitText.brackets)
+    //   ++ ";"
+    //   ++ exportNameAs
+    //   |> export(~emitters)
     }
   | TypeScript =>
     if (opaque) {
