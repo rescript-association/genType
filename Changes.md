@@ -1,5 +1,6 @@
 # master
 - When a `@genType` annotation appears in a `.re`, but the `.rei` also exists, give a warning on the command-line that the annotation will be ignored.
+- Dead Code Elimination improvements and bug fixes. Add support for adding annotations to both implementations and interfaces. Analyze recursive functions.
 
 # 3.15.0
 - Add support for let%private: nothing is exported even when a `@genType` annotation is added.
