@@ -1,7 +1,9 @@
 *.DS_Store*
 *.merlin*
 *.bsb.lock*
+*.coverage
 bundledOutputs/
+_coverage/
 _esy/
 esy.lock/
 
