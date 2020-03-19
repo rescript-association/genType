@@ -134,7 +134,7 @@ let isTypeReactElement: (~config: config, type_) => bool;
 let ofType:
   (
     ~config: config,
-    ~typeNameIsInterface: string => bool,
+    ~typeNameIsInterface: string => bool=?,
     ~type_: type_,
     string
   ) =>

@@ -423,7 +423,7 @@ and renderFunType =
 let typeToString = (~config, ~typeNameIsInterface, type_) =>
   type_ |> renderType(~config, ~typeNameIsInterface, ~inFunType=false);
 
-let ofType = (~config, ~typeNameIsInterface, ~type_, s) =>
+let ofType = (~config, ~typeNameIsInterface=_ => false, ~type_, s) =>
   config.language == Untyped
     ? s : s ++ ": " ++ (type_ |> typeToString(~config, ~typeNameIsInterface));
 
@@ -805,7 +805,6 @@ let ofTypeAny = (~config, s) =>
   s
   |> ofType(
        ~config,
-       ~typeNameIsInterface=_ => false,
        ~type_=typeAny(~config),
      );
 
