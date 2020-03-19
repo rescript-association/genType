@@ -36,7 +36,7 @@ let emitExportDefault:
 let emitExportFunction:
   (
     ~early: bool,
-    ~comment: string=?,
+    ~comment: string,
     ~emitters: Emitters.t,
     ~name: string,
     ~config: config,

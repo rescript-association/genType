@@ -496,9 +496,8 @@ let emitExportConst = emitExportConst_(~early=false);
 
 let emitExportConstEarly = emitExportConst_(~early=true);
 
-let emitExportFunction =
-    (~early, ~comment="", ~emitters, ~name, ~config, line) =>
-  (comment == "" ? comment : "// " ++ comment ++ "\n")
+let emitExportFunction = (~early, ~comment, ~emitters, ~name, ~config, line) =>
+  ("// " ++ comment ++ "\n")
   ++ (
     switch (config.module_, config.language) {
     | (_, TypeScript)
