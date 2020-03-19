@@ -18,7 +18,7 @@ let argi = (~nameGen, i) => "Arg" ++ (i |> string_of_int) |> name(~nameGen);
 
 let array = xs => "[" ++ (xs |> String.concat(", ")) ++ "]";
 
-let brackets = x => "{ " ++ x ++ " }";
+// let brackets = x => "{ " ++ x ++ " }";
 
 let comment = x => "/* " ++ x ++ " */";
 
