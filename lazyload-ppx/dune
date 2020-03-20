@@ -1,0 +1,6 @@
+(executable
+ (name LazyLoad)
+ (public_name lazyLoad.exe)
+ (libraries compiler-libs.common)
+ (flags
+  (:standard -w -9)))
