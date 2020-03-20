@@ -103,6 +103,28 @@ var LazyExportWithRename = {
   make: make
 };
 
+var reasonResource$1 = JSResource("ExportWithRename.bs");
+
+function makeProps$1(prim, prim$1, prim$2) {
+  var tmp = {
+    s: prim
+  };
+  if (prim$1 !== undefined) {
+    tmp.key = Caml_option.valFromOption(prim$1);
+  }
+  return tmp;
+}
+
+function make$1(props) {
+  return React.createElement(BootloaderResource.read(reasonResource$1).make, props);
+}
+
+var LazyExportWithRename2 = {
+  reasonResource: reasonResource$1,
+  makeProps: makeProps$1,
+  make: make$1
+};
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -137,6 +159,7 @@ export {
   withDefaultValue ,
   Ext_buffer ,
   LazyExportWithRename ,
+  LazyExportWithRename2 ,
   
 }
 /*  Not a pure module */
