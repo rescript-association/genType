@@ -110,3 +110,19 @@ module Ext_buffer: {
 let () = Js.log(DeadRT.Root("xzz"));
 
 module LazyExportWithRename = [%lazyLoadComponent ExportWithRename];
+
+module type LocalExportWithRename2 = (module type of ExportWithRename);
+
+module LazyExportWithRename2 = {
+  let reasonResource: JSResource.t(module LocalExportWithRename2) =
+    JSResource.jSResource("ExportWithRename.bs");
+  let makeProps = ExportWithRename.makeProps;
+  let make = props =>
+    React.createElement(
+      {
+        module Comp = (val BootloaderResource.read(reasonResource));
+        Comp.make;
+      },
+      props,
+    );
+};
