@@ -126,3 +126,7 @@ module LazyExportWithRename2 = {
       props,
     );
 };
+
+let cmp = <LazyExportWithRename s="hello" />;
+
+let cmp2 = <LazyExportWithRename2 s="hello" />;

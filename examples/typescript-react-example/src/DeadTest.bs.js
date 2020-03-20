@@ -125,6 +125,14 @@ var LazyExportWithRename2 = {
   make: make$1
 };
 
+var cmp = React.createElement(make, {
+      s: "hello"
+    });
+
+var cmp2 = React.createElement(make$1, {
+      s: "hello"
+    });
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -160,6 +168,8 @@ export {
   Ext_buffer ,
   LazyExportWithRename ,
   LazyExportWithRename2 ,
+  cmp ,
+  cmp2 ,
   
 }
 /*  Not a pure module */

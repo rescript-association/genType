@@ -1486,6 +1486,8 @@
   addValueDeclaration reasonResource DeadTest.re:117:6
   addValueDeclaration makeProps DeadTest.re:119:6
   addValueDeclaration make DeadTest.re:120:6
+  addValueDeclaration cmp DeadTest.re:130:4
+  addValueDeclaration cmp2 DeadTest.re:132:4
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1539,6 +1541,10 @@
   addValueReference DeadTest.re:120:6 --> BootloaderResource.re:3:0
   addValueReference DeadTest.re:120:6 --> DeadTest.re:120:13
   addValueReference DeadTest.re:120:6 --> React.re:13:0
+  addValueReference DeadTest.re:130:4 --> React.re:13:0
+  addValueReference DeadTest.re:132:4 --> DeadTest.re:120:6
+  addValueReference DeadTest.re:132:4 --> DeadTest.re:119:6
+  addValueReference DeadTest.re:132:4 --> React.re:13:0
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
@@ -1652,6 +1658,8 @@ File References
   Live Type DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) [0]
   Live Type DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) [1]
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
+  Dead Value DeadTest.cmp2: 0 references () [0]
+  Dead Value DeadTest.cmp: 0 references () [0]
   Dead Value DeadTest.LazyExportWithRename2.make: 0 references () [0]
   Dead Value DeadTest.LazyExportWithRename2.makeProps: 0 references () [0]
   Dead Value DeadTest.LazyExportWithRename2.reasonResource: 0 references () [0]
@@ -3723,6 +3731,18 @@ File References
   LazyExportWithRename2.make is never used
   <-- line 120
     [@dead "LazyExportWithRename2.make"] let make = props =>
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 130:5
+  cmp is never used
+  <-- line 130
+  [@dead "cmp"] let cmp = <LazyExportWithRename s="hello" />;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 132:5
+  cmp2 is never used
+  <-- line 132
+  [@dead "cmp2"] let cmp2 = <LazyExportWithRename2 s="hello" />;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.rei 3:5
