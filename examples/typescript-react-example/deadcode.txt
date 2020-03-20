@@ -971,12 +971,16 @@
   addValueDeclaration x DeadTestWithInterface.re:1:20
   addValueDeclaration +x DeadTestWithInterface.re:2:6
   addValueReference DeadTestWithInterface.re:1:20 --> DeadTestWithInterface.re:2:6
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/JSResource.cmt
+  addValueDeclaration jSResource JSResource.re:3:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/NestedModulesInSignature.cmti
   addValueDeclaration theAnswer NestedModulesInSignature.rei:2:2
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/CreateErrorHandler2.cmt
   addValueDeclaration notification CreateErrorHandler2.re:3:6
   addValueReference CreateErrorHandler2.re:3:6 --> CreateErrorHandler2.re:3:21
   addValueReference ErrorHandler.rei:3:2 --> CreateErrorHandler2.re:3:6
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BootloaderResource.cmt
+  addValueDeclaration read BootloaderResource.re:3:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTypeTest.cmt
   addTypeDeclaration +A DeadTypeTest.re:2:4
   addTypeDeclaration +B DeadTypeTest.re:3:4
@@ -1524,6 +1528,9 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   addValueDeclaration +unsafe_string2 DeadTest.re:107:2
   addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
+  addValueReference _none_:1:-1 --> JSResource.re:3:0
+  addValueReference _none_:1:-1 --> BootloaderResource.re:3:0
+  addValueReference _none_:1:-1 --> React.re:13:0
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
@@ -1571,11 +1578,13 @@ File References
   DeadCodeImplementation.re -->> 
   DeadCodeInterface.re -->> 
   TransitiveType3.re -->> 
+  BootloaderResource.re -->> 
   Uncurried.re -->> 
   TransitiveType2.re -->> 
   IgnoreInterface.rei -->> 
   TestFirstClassModules.re -->> 
   FirstClassModulesInterface.rei -->> FirstClassModulesInterface.re
+  JSResource.re -->> 
   DeadTestWhitelist.re -->> 
   TransitiveType1.re -->> 
   DeadTestWithInterface.re -->> 
@@ -1606,6 +1615,7 @@ File References
   Dead Type AutoAnnotate.r2.+r2: 0 references () [0]
   Dead Type AutoAnnotate.record.+variant: 0 references () [0]
   Dead Type AutoAnnotate.variant.+R: 0 references () [0]
+  Live Value BootloaderResource.read: 1 references (_none_:1:-1) [0]
   Dead Value BucklescriptAnnotations.bar: 0 references () [1]
   Dead Value BucklescriptAnnotations.+f: 0 references () [0]
   Dead Value BucklescriptAnnotations.foo: 0 references () [0]
@@ -1737,6 +1747,7 @@ File References
   Live Value Hooks.make: 1 references (_none_:1:-1) [0]
   Live Type Hooks.vehicle.+name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37) [0]
   Live Value ImportIndex.make: 0 references () [0]
+  Live Value JSResource.jSResource: 1 references (_none_:1:-1) [0]
   Live Value LetPrivate.y: 0 references () [0]
   Live Value LetPrivate.local_1.+x: 1 references (LetPrivate.re:5:4) [0]
   Live Value ModuleAliases.testInner2: 0 references () [0]

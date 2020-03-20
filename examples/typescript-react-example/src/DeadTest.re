@@ -108,3 +108,5 @@ module Ext_buffer: {
 };
 
 let () = Js.log(DeadRT.Root("xzz"));
+
+module LazyExportWithRename = [%lazyLoadComponent ExportWithRename];
