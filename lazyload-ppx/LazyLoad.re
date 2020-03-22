@@ -406,93 +406,106 @@ let module_expr = (mapper, module_expr) =>
             },
           ]),
         )),
-    } as pmod => {
-      ...pmod,
-      pmod_desc:
-        Pmod_structure([
-          Str.value(
-            Nonrecursive,
-            [
-              Vb.mk(
-                Pat.var({loc: default_loc^, txt: "reasonResource"}),
-                expr(
-                  mapper,
-                  Exp.extension((
-                    {loc: default_loc^, txt: "reasonResource"},
-                    PStr([
-                      Str.eval(
-                        Exp.construct({loc: default_loc^, txt}, None),
-                      ),
-                    ]),
-                  )),
-                ),
-              ),
-            ],
-          ),
-          Str.value(
-            Nonrecursive,
-            [
-              Vb.mk(
-                Pat.var({loc: default_loc^, txt: "makeProps"}),
-                Exp.ident({loc: default_loc^, txt: Ldot(txt, "makeProps")}),
-              ),
-            ],
-          ),
-          Str.value(
-            Nonrecursive,
-            [
-              Vb.mk(
-                Pat.var({loc: default_loc^, txt: "make"}),
-                Exp.fun_(
-                  Nolabel,
-                  None,
-                  Pat.var({loc: default_loc^, txt: "props"}),
-                  Exp.apply(
-                    Exp.ident({
-                      loc: default_loc^,
-                      txt: Ldot(Lident("React"), "createElement"),
-                    }),
-                    [
-                      (
-                        Nolabel,
-                        Exp.letmodule(
-                          {loc: default_loc^, txt: "Comp"},
-                          Mod.unpack(
-                            Exp.apply(
-                              Exp.ident({
-                                loc: default_loc^,
-                                txt:
-                                  Ldot(Lident("BootloaderResource"), "read"),
-                              }),
-                              [
-                                (
-                                  Nolabel,
-                                  Exp.ident({
-                                    loc: default_loc^,
-                                    txt: Lident("reasonResource"),
-                                  }),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Exp.ident({
-                            loc: default_loc^,
-                            txt: Ldot(Lident("Comp"), "make"),
-                          }),
+      pmod_loc,
+    } as pmod =>
+    with_default_loc(pmod_loc, () =>
+      {
+        ...pmod,
+        pmod_desc:
+          Pmod_structure([
+            Str.value(
+              Nonrecursive,
+              [
+                Vb.mk(
+                  Pat.var({loc: default_loc^, txt: "reasonResource"}),
+                  expr(
+                    mapper,
+                    Exp.extension((
+                      {loc: default_loc^, txt: "reasonResource"},
+                      PStr([
+                        Str.eval(
+                          Exp.construct({loc: default_loc^, txt}, None),
                         ),
-                      ),
-                      (
-                        Nolabel,
-                        Exp.ident({loc: default_loc^, txt: Lident("props")}),
-                      ),
-                    ],
+                      ]),
+                    )),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ]),
-    }
+              ],
+            ),
+            Str.value(
+              Nonrecursive,
+              [
+                Vb.mk(
+                  Pat.var({loc: default_loc^, txt: "makeProps"}),
+                  Exp.ident({
+                    loc: default_loc^,
+                    txt: Ldot(txt, "makeProps"),
+                  }),
+                ),
+              ],
+            ),
+            Str.value(
+              Nonrecursive,
+              [
+                Vb.mk(
+                  Pat.var({loc: default_loc^, txt: "make"}),
+                  Exp.fun_(
+                    Nolabel,
+                    None,
+                    Pat.var({loc: default_loc^, txt: "props"}),
+                    Exp.apply(
+                      Exp.ident({
+                        loc: default_loc^,
+                        txt: Ldot(Lident("React"), "createElement"),
+                      }),
+                      [
+                        (
+                          Nolabel,
+                          Exp.letmodule(
+                            {loc: default_loc^, txt: "Comp"},
+                            Mod.unpack(
+                              Exp.apply(
+                                Exp.ident({
+                                  loc: default_loc^,
+                                  txt:
+                                    Ldot(
+                                      Lident("BootloaderResource"),
+                                      "read",
+                                    ),
+                                }),
+                                [
+                                  (
+                                    Nolabel,
+                                    Exp.ident({
+                                      loc: default_loc^,
+                                      txt: Lident("reasonResource"),
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Exp.ident({
+                              loc: default_loc^,
+                              txt: Ldot(Lident("Comp"), "make"),
+                            }),
+                          ),
+                        ),
+                        (
+                          Nolabel,
+                          Exp.ident({
+                            loc: default_loc^,
+                            txt: Lident("props"),
+                          }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ]),
+      }
+    )
   | _ => default_mapper.module_expr(mapper, module_expr)
   };
 

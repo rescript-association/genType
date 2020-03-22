@@ -130,3 +130,7 @@ module LazyExportWithRename2 = {
 let cmp = <LazyExportWithRename s="hello" />;
 
 let cmp2 = <LazyExportWithRename2 s="hello" />;
+
+// let mk = LazyExportWithRename.make;
+
+// let () = Js.log(mk);
