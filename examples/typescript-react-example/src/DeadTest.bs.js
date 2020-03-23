@@ -133,6 +133,8 @@ var cmp2 = React.createElement(make$1, {
       s: "hello"
     });
 
+console.log(cmp);
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
