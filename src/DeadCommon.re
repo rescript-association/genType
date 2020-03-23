@@ -177,23 +177,25 @@ let addValueReference =
     (~addFileReference, ~locFrom: Location.t, ~locTo: Location.t) => {
   let lastBinding = getLastBinding();
   let locFrom = lastBinding == Location.none ? locFrom : lastBinding;
-  if (verbose) {
-    Log_.item(
-      "addValueReference %s --> %s@.",
-      locFrom.loc_start |> posToString,
-      locTo.loc_start |> posToString,
-    );
-  };
-  PosHash.addSet(valueReferences, locTo.loc_start, locFrom.loc_start);
-  if (addFileReference
-      && !locTo.loc_ghost
-      && !locFrom.loc_ghost
-      && locFrom.loc_start.pos_fname != locTo.loc_start.pos_fname) {
-    FileHash.addSet(
-      fileReferences,
-      locFrom.loc_start.pos_fname,
-      locTo.loc_start.pos_fname,
-    );
+  if (locFrom != Location.none) {
+    if (verbose) {
+      Log_.item(
+        "addValueReference %s --> %s@.",
+        locFrom.loc_start |> posToString,
+        locTo.loc_start |> posToString,
+      );
+    };
+    PosHash.addSet(valueReferences, locTo.loc_start, locFrom.loc_start);
+    if (addFileReference
+        && !locTo.loc_ghost
+        && !locFrom.loc_ghost
+        && locFrom.loc_start.pos_fname != locTo.loc_start.pos_fname) {
+      FileHash.addSet(
+        fileReferences,
+        locFrom.loc_start.pos_fname,
+        locTo.loc_start.pos_fname,
+      );
+    };
   };
 };
 
