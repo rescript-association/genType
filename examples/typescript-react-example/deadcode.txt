@@ -1541,13 +1541,13 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   addValueDeclaration +unsafe_string2 DeadTest.re:107:2
   addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
-  XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0
+  XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0 defined in DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest.re:112:40 --> JSResource.re:3:0
   addValueReference DeadTest.re:112:40 --> DeadTest.re:112:40
   addValueReference DeadTest.re:112:40 --> BootloaderResource.re:3:0
   addValueReference DeadTest.re:112:40 --> DeadTest.re:112:40
   addValueReference DeadTest.re:112:40 --> React.re:13:0
-  XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0
+  XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0 defined in DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest.re:119:6 --> JSResource.re:3:0
   addValueReference DeadTest.re:122:6 --> DeadTest.re:119:6
   addValueReference DeadTest.re:122:6 --> BootloaderResource.re:3:0
