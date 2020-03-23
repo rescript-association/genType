@@ -6,10 +6,18 @@ open Longident;
 
 let hasMappedStructure = ref(false);
 
-module SS = Set.Make(String);
+module Resource = {
+  type t = {
+    name: string,
+    loc: Location.t,
+  };
+  let compare = ({name: n1}, {name: n2}) => compare(n1, n2);
+};
+
+module ResourceSet = Set.Make(Resource);
 module SM = Map.Make(String);
 
-let jsResources = ref(SS.empty);
+let jsResources = ref(ResourceSet.empty);
 let topLevelExprs = ref(SM.empty);
 
 let addTopLevelExpr = (bindingName, expr) => {
@@ -33,12 +41,14 @@ let depIgnore = [
 
 let localModulePrefix = "$Local$";
 
-let genLocal = name =>
-  Str.modtype(
-    Mtd.mk(
-      ~typ=Mty.typeof_(Mod.ident({loc: default_loc^, txt: Lident(name)})),
-      {loc: default_loc^, txt: localModulePrefix ++ name},
-    ),
+let genLocal = ({Resource.name, loc}) =>
+  with_default_loc(loc, () =>
+    Str.modtype(
+      Mtd.mk(
+        ~typ=Mty.typeof_(Mod.ident({loc: default_loc^, txt: Lident(name)})),
+        {loc: default_loc^, txt: localModulePrefix ++ name},
+      ),
+    )
   );
 
 let genTopLevelBinding = ((txt, exp)) =>
@@ -62,7 +72,7 @@ let structure = (mapper, structure) =>
       );
     let newStructure = default_mapper.structure(mapper, restOfStructure);
     fileAttributes
-    @ List.map(genLocal, SS.elements(jsResources^))
+    @ List.map(genLocal, ResourceSet.elements(jsResources^))
     @ (
       switch (SM.bindings(topLevelExprs^)) {
       | [] => []
@@ -80,7 +90,7 @@ let expr = (mapper, expr) =>
   | {
       pexp_desc:
         Pexp_extension((
-          {txt: "reasonResource"},
+          {txt: "reasonResource", loc},
           PStr([
             {
               pstr_desc:
@@ -89,8 +99,9 @@ let expr = (mapper, expr) =>
           ]),
         )),
     } as pexp =>
-    let [txt, ..._] = Longident.flatten(txt);
-    let _ = jsResources := SS.add(txt, jsResources^);
+    let [name, ..._] = Longident.flatten(txt);
+    let _ =
+      jsResources := ResourceSet.add({Resource.name, loc}, jsResources^);
     {
       ...pexp,
       pexp_desc:
@@ -100,13 +111,13 @@ let expr = (mapper, expr) =>
               loc: default_loc^,
               txt: Ldot(Lident("JSResource"), "jSResource"),
             }),
-            [(Nolabel, Exp.constant(Pconst_string(txt ++ ".bs", None)))],
+            [(Nolabel, Exp.constant(Pconst_string(name ++ ".bs", None)))],
           ),
           Typ.constr(
             {loc: default_loc^, txt: Ldot(Lident("JSResource"), "t")},
             [
               Typ.package(
-                {loc: default_loc^, txt: Lident(localModulePrefix ++ txt)},
+                {loc: default_loc^, txt: Lident(localModulePrefix ++ name)},
                 [],
               ),
             ],
@@ -116,7 +127,7 @@ let expr = (mapper, expr) =>
   | {
       pexp_desc:
         Pexp_extension((
-          {txt: "requireDeferred"},
+          {txt: "requireDeferred", loc},
           PStr([
             {
               pstr_desc:
@@ -125,9 +136,10 @@ let expr = (mapper, expr) =>
           ]),
         )),
     } =>
-    let [txt, ..._] = Longident.flatten(txt);
-    let _ = jsResources := SS.add(txt, jsResources^);
-    let bindingName = "$" ++ txt ++ "$Deferred";
+    let [name, ..._] = Longident.flatten(txt);
+    let _ =
+      jsResources := ResourceSet.add({Resource.name, loc}, jsResources^);
+    let bindingName = "$" ++ name ++ "$Deferred";
     let actualExp =
       Exp.constraint_(
         Exp.apply(
@@ -135,13 +147,13 @@ let expr = (mapper, expr) =>
             loc: default_loc^,
             txt: Ldot(Lident("RequireDeferred"), "make"),
           }),
-          [(Nolabel, Exp.constant(Pconst_string(txt ++ ".bs", None)))],
+          [(Nolabel, Exp.constant(Pconst_string(name ++ ".bs", None)))],
         ),
         Typ.constr(
           {loc: default_loc^, txt: Ldot(Lident("RequireDeferred"), "t")},
           [
             Typ.package(
-              {loc: default_loc^, txt: Lident(localModulePrefix ++ txt)},
+              {loc: default_loc^, txt: Lident(localModulePrefix ++ name)},
               [],
             ),
           ],
@@ -182,7 +194,10 @@ let expr = (mapper, expr) =>
                                                 {
                                                   pexp_desc:
                                                     Pexp_construct(
-                                                      {txt: thenTxt},
+                                                      {
+                                                        txt: thenTxt,
+                                                        loc: thenLoc,
+                                                      },
                                                       _,
                                                     ),
                                                   pexp_loc: pexp_loc_then,
@@ -196,7 +211,10 @@ let expr = (mapper, expr) =>
                                                 {
                                                   pexp_desc:
                                                     Pexp_construct(
-                                                      {txt: elseTxt},
+                                                      {
+                                                        txt: elseTxt,
+                                                        loc: elseLoc,
+                                                      },
                                                       _,
                                                     ),
                                                   pexp_loc: pexp_loc_else,
@@ -212,7 +230,10 @@ let expr = (mapper, expr) =>
                                                 {
                                                   pexp_desc:
                                                     Pexp_construct(
-                                                      {txt: elseTxt},
+                                                      {
+                                                        txt: elseTxt,
+                                                        loc: elseLoc,
+                                                      },
                                                       _,
                                                     ),
                                                   pexp_loc: pexp_loc_else,
@@ -226,7 +247,10 @@ let expr = (mapper, expr) =>
                                                 {
                                                   pexp_desc:
                                                     Pexp_construct(
-                                                      {txt: thenTxt},
+                                                      {
+                                                        txt: thenTxt,
+                                                        loc: thenLoc,
+                                                      },
                                                       _,
                                                     ),
                                                   pexp_loc: pexp_loc_then,
@@ -253,8 +277,18 @@ let expr = (mapper, expr) =>
     let [thenModule, ..._] = Longident.flatten(thenTxt);
     let [elseModule, ..._] = Longident.flatten(elseTxt);
 
-    let _ = jsResources := SS.add(thenModule, jsResources^);
-    let _ = jsResources := SS.add(elseModule, jsResources^);
+    let _ =
+      jsResources :=
+        ResourceSet.add(
+          {Resource.name: thenModule, loc: thenLoc},
+          jsResources^,
+        );
+    let _ =
+      jsResources :=
+        ResourceSet.add(
+          {Resource.name: elseModule, loc: elseLoc},
+          jsResources^,
+        );
     let bindingName =
       "$" ++ thenModule ++ "$OR$" ++ elseModule ++ "$RequireCond";
 
@@ -337,7 +371,7 @@ let expr = (mapper, expr) =>
                       Pexp_tuple([
                         conditionType,
                         condition,
-                        {pexp_desc: Pexp_construct({txt}, _)},
+                        {pexp_desc: Pexp_construct({txt, loc}, _)},
                       ]),
                   },
                   _,
@@ -346,9 +380,10 @@ let expr = (mapper, expr) =>
           ]),
         )),
     } =>
-    let [txt, ..._] = Longident.flatten(txt);
-    let _ = jsResources := SS.add(txt, jsResources^);
-    let bindingName = "$" ++ txt ++ "$RequireCond";
+    let [name, ..._] = Longident.flatten(txt);
+    let _ =
+      jsResources := ResourceSet.add({Resource.name, loc}, jsResources^);
+    let bindingName = "$" ++ name ++ "$RequireCond";
     let actualExp =
       Exp.constraint_(
         Exp.apply(
@@ -359,7 +394,7 @@ let expr = (mapper, expr) =>
           [
             (Nolabel, conditionType),
             (Nolabel, condition),
-            (Nolabel, Exp.constant(Pconst_string(txt ++ ".bs", None))),
+            (Nolabel, Exp.constant(Pconst_string(name ++ ".bs", None))),
           ],
         ),
         Typ.constr(
@@ -369,7 +404,7 @@ let expr = (mapper, expr) =>
           },
           [
             Typ.package(
-              {loc: default_loc^, txt: Lident(localModulePrefix ++ txt)},
+              {loc: default_loc^, txt: Lident(localModulePrefix ++ name)},
               [],
             ),
           ],
