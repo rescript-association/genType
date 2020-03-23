@@ -1545,6 +1545,7 @@
   addValueReference DeadTest.re:134:4 --> DeadTest.re:122:6
   addValueReference DeadTest.re:134:4 --> DeadTest.re:121:6
   addValueReference DeadTest.re:134:4 --> React.re:13:0
+  addValueReference DeadTest.re:136:16 --> DeadTest.re:132:4
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
@@ -1660,11 +1661,11 @@ File References
   Live Type DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) [1]
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
   Dead Value DeadTest.cmp2: 0 references () [0]
-  Dead Value DeadTest.cmp: 0 references () [0]
+  Live Value DeadTest.cmp: 1 references (DeadTest.re:136:16) [0]
   Dead Value DeadTest.LazyDynamicallyLoadedComponent2.make: 0 references () [0]
   Dead Value DeadTest.LazyDynamicallyLoadedComponent2.makeProps: 0 references () [0]
   Dead Value DeadTest.LazyDynamicallyLoadedComponent2.reasonResource: 0 references () [0]
-  Dead Value DeadTest.LazyDynamicallyLoadedComponent.make: 0 references () [0]
+  Live Value DeadTest.LazyDynamicallyLoadedComponent.make: 1 references (DeadTest.re:132:4) [0]
   Dead Value DeadTest.Ext_buffer.unsafe_string2: 0 references () [0]
   Dead Value DeadTest.Ext_buffer.+unsafe_string2: 0 references () [0]
   Dead Value DeadTest.unsafe_string1: 0 references () [0]
@@ -2027,7 +2028,7 @@ File References
   Dead Type Types.typeWithVars.+A: 0 references () [0]
   Live Value Types.map: 0 references () [0]
   Live Value Types.someIntList: 0 references () [0]
-  Dead Value BootloaderResource.read: 0 references () [0]
+  Live Value BootloaderResource.read: 1 references (DeadTest.re:112:40) [0]
   Dead Value DeadTypeTest._: 0 references () [0]
   Dead Value DeadTypeTest._: 0 references () [0]
   Dead Type DeadTypeTest.deadType.+InNeither: 0 references () [0]
@@ -2039,7 +2040,7 @@ File References
   Live Type DeadTypeTest.t.+A: 1 references (DeadTypeTest.re:4:8) [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
   Live Value DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) [0]
-  Dead Value DynamicallyLoadedComponent.make: 0 references () [0]
+  Live Value DynamicallyLoadedComponent.make: 1 references (DeadTest.re:112:40) [0]
   Dead Value ErrorHandler.x: 0 references () [0]
   Live Value ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) [0]
   Dead Value FirstClassModulesInterface.r: 0 references () [0]
@@ -2137,7 +2138,7 @@ File References
   Live Value ImportMyBanner.make: 1 references (ReasonComponent.re:18:4) [0]
   Live Value ImportMyBanner.make: 1 references (ImportMyBanner.re:19:4) [0]
   Dead Type ImportMyBanner.message.+text: 0 references () [0]
-  Dead Value JSResource.jSResource: 0 references () [0]
+  Live Value JSResource.jSResource: 1 references (DeadTest.re:112:40) [0]
   Live Value NestedModulesInSignature.Universe.theAnswer: 1 references (NestedModulesInSignature.rei:2:2) [0]
   Dead Value DeadValueTest.valueOnlyInImplementation: 0 references () [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
@@ -2601,12 +2602,6 @@ File References
   <-- line 4
   [@dead "valueOnlyInImplementation"] let valueOnlyInImplementation = 3;
 
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/JSResource.re 3:1
-  jSResource is never used
-  <-- line 3
-  [@dead "jSResource"] [@bs.module] external jSResource: string => t('a) = "JSResource";
-
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ImportMyBanner.re 6:17
   message.+text is a record label never used to read a value
@@ -3040,12 +3035,6 @@ File References
   [@dead "x"] let x: int;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DynamicallyLoadedComponent.re 2:5
-  make is never used
-  <-- line 2
-  [@dead "make"] [@react.component]
-
-  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.rei 2:1
   valueDead is never used
   <-- line 2
@@ -3080,12 +3069,6 @@ File References
   _ has no side effects and can be removed
   <-- line 13
   [@dead "_"] let _ = InBoth;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BootloaderResource.re 3:1
-  read is never used
-  <-- line 3
-  [@dead "read"] [@bs.module "BootloaderResource"]
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 12:5
@@ -3838,12 +3821,6 @@ File References
     [@dead "Ext_buffer.unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 112:41
-  LazyDynamicallyLoadedComponent.make is never used
-  <-- line 112
-  module LazyDynamicallyLoadedComponent = [@dead "LazyDynamicallyLoadedComponent.make"] [%lazyLoadComponent
-
-  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 119:7
   LazyDynamicallyLoadedComponent2.reasonResource is never used
   <-- line 119
@@ -3860,12 +3837,6 @@ File References
   LazyDynamicallyLoadedComponent2.make is never used
   <-- line 122
     [@dead "LazyDynamicallyLoadedComponent2.make"] let make = props =>
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 132:5
-  cmp is never used
-  <-- line 132
-  [@dead "cmp"] let cmp = <LazyDynamicallyLoadedComponent s="hello" />;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 134:5

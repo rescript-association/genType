@@ -132,3 +132,5 @@ module LazyDynamicallyLoadedComponent2 = {
 let cmp = <LazyDynamicallyLoadedComponent s="hello" />;
 
 let cmp2 = <LazyDynamicallyLoadedComponent2 s="hello" />;
+
+let () = Js.log(cmp);
