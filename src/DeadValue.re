@@ -141,6 +141,22 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
   | Texp_ident(_path, _, {Types.val_loc: {loc_ghost: false, _} as locTo, _}) =>
     addValueReference(~addFileReference=true, ~locFrom, ~locTo);
 
+  | Texp_apply(
+      {exp_desc: Texp_ident(path, _, {Types.val_loc: locTo, _})},
+      [(_lbl, Some({exp_desc: Texp_constant(Const_string(s, _))}))],
+    )
+      when
+        path
+        |> Path.name == "JSResource.jSResource"
+        && Filename.check_suffix(s, ".bs") =>
+    let moduleName = Filename.chop_extension(s);
+    Log_.item(
+      "XXX %s(%s) %s@.",
+      path |> Path.name,
+      moduleName,
+      locTo.loc_start |> posToString,
+    );
+
   | Texp_field(
       _,
       _,

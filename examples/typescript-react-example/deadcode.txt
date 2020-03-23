@@ -1536,11 +1536,13 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   addValueDeclaration +unsafe_string2 DeadTest.re:107:2
   addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
+  XXX JSResource.jSResource(ExportWithRename) JSResource.re:3:0
   addValueReference DeadTest.re:112:30 --> JSResource.re:3:0
   addValueReference DeadTest.re:112:30 --> DeadTest.re:112:30
   addValueReference DeadTest.re:112:30 --> BootloaderResource.re:3:0
   addValueReference DeadTest.re:112:30 --> DeadTest.re:112:30
   addValueReference DeadTest.re:112:30 --> React.re:13:0
+  XXX JSResource.jSResource(ExportWithRename) JSResource.re:3:0
   addValueReference DeadTest.re:117:6 --> JSResource.re:3:0
   addValueReference DeadTest.re:120:6 --> DeadTest.re:117:6
   addValueReference DeadTest.re:120:6 --> BootloaderResource.re:3:0
