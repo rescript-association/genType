@@ -177,7 +177,7 @@ let addValueReference =
     (~addFileReference, ~locFrom: Location.t, ~locTo: Location.t) => {
   let lastBinding = getLastBinding();
   let locFrom = lastBinding == Location.none ? locFrom : lastBinding;
-  if (locFrom != Location.none) {
+  if (!locFrom.loc_ghost) {
     if (verbose) {
       Log_.item(
         "addValueReference %s --> %s@.",
