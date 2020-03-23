@@ -596,6 +596,11 @@
   addTypeDeclaration +s TransitiveType3.re:4:2
   addValueDeclaration convertT3 TransitiveType3.re:8:4
   addValueReference TransitiveType3.re:8:4 --> TransitiveType3.re:8:17
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DynamicallyLoadedComponent.cmt
+  addValueDeclaration make DynamicallyLoadedComponent.re:2:4
+  addValueReference DynamicallyLoadedComponent.re:2:4 --> DynamicallyLoadedComponent.re:2:13
+  addValueReference DynamicallyLoadedComponent.re:2:4 --> React.re:5:0
+  addValueReference _none_:1:-1 --> DynamicallyLoadedComponent.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
   addValueDeclaration convertT2 TransitiveType2.re:7:4
   addValueReference TransitiveType2.re:7:4 --> TransitiveType2.re:7:17
@@ -1483,14 +1488,14 @@
   addValueDeclaration withDefaultValue DeadTest.re:100:4
   addValueDeclaration unsafe_string1 DeadTest.re:102:0
   addValueDeclaration unsafe_string2 DeadTest.re:105:2
-  addValueDeclaration reasonResource DeadTest.re:112:30
-  addValueDeclaration makeProps DeadTest.re:112:30
-  addValueDeclaration make DeadTest.re:112:30
-  addValueDeclaration reasonResource DeadTest.re:117:6
-  addValueDeclaration makeProps DeadTest.re:119:6
-  addValueDeclaration make DeadTest.re:120:6
-  addValueDeclaration cmp DeadTest.re:130:4
-  addValueDeclaration cmp2 DeadTest.re:132:4
+  addValueDeclaration reasonResource DeadTest.re:112:40
+  addValueDeclaration makeProps DeadTest.re:112:40
+  addValueDeclaration make DeadTest.re:112:40
+  addValueDeclaration reasonResource DeadTest.re:119:6
+  addValueDeclaration makeProps DeadTest.re:121:6
+  addValueDeclaration make DeadTest.re:122:6
+  addValueDeclaration cmp DeadTest.re:132:4
+  addValueDeclaration cmp2 DeadTest.re:134:4
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1536,24 +1541,24 @@
   addValueReference DeadTest.re:100:4 --> DeadTest.re:100:45
   addValueDeclaration +unsafe_string2 DeadTest.re:107:2
   addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
-  XXX JSResource.jSResource(ExportWithRename) JSResource.re:3:0
-  addValueReference DeadTest.re:112:30 --> JSResource.re:3:0
-  addValueReference DeadTest.re:112:30 --> DeadTest.re:112:30
-  addValueReference DeadTest.re:112:30 --> BootloaderResource.re:3:0
-  addValueReference DeadTest.re:112:30 --> DeadTest.re:112:30
-  addValueReference DeadTest.re:112:30 --> React.re:13:0
-  XXX JSResource.jSResource(ExportWithRename) JSResource.re:3:0
-  addValueReference DeadTest.re:117:6 --> JSResource.re:3:0
-  addValueReference DeadTest.re:120:6 --> DeadTest.re:117:6
-  addValueReference DeadTest.re:120:6 --> BootloaderResource.re:3:0
-  addValueReference DeadTest.re:120:6 --> DeadTest.re:120:13
-  addValueReference DeadTest.re:120:6 --> React.re:13:0
-  addValueReference DeadTest.re:130:4 --> DeadTest.re:112:30
-  addValueReference DeadTest.re:130:4 --> DeadTest.re:112:30
-  addValueReference DeadTest.re:130:4 --> React.re:13:0
-  addValueReference DeadTest.re:132:4 --> DeadTest.re:120:6
-  addValueReference DeadTest.re:132:4 --> DeadTest.re:119:6
+  XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0
+  addValueReference DeadTest.re:112:40 --> JSResource.re:3:0
+  addValueReference DeadTest.re:112:40 --> DeadTest.re:112:40
+  addValueReference DeadTest.re:112:40 --> BootloaderResource.re:3:0
+  addValueReference DeadTest.re:112:40 --> DeadTest.re:112:40
+  addValueReference DeadTest.re:112:40 --> React.re:13:0
+  XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0
+  addValueReference DeadTest.re:119:6 --> JSResource.re:3:0
+  addValueReference DeadTest.re:122:6 --> DeadTest.re:119:6
+  addValueReference DeadTest.re:122:6 --> BootloaderResource.re:3:0
+  addValueReference DeadTest.re:122:6 --> DeadTest.re:122:13
+  addValueReference DeadTest.re:122:6 --> React.re:13:0
+  addValueReference DeadTest.re:132:4 --> DeadTest.re:112:40
+  addValueReference DeadTest.re:132:4 --> DeadTest.re:112:40
   addValueReference DeadTest.re:132:4 --> React.re:13:0
+  addValueReference DeadTest.re:134:4 --> DeadTest.re:122:6
+  addValueReference DeadTest.re:134:4 --> DeadTest.re:121:6
+  addValueReference DeadTest.re:134:4 --> React.re:13:0
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
@@ -1604,6 +1609,7 @@ File References
   BootloaderResource.re -->> 
   Uncurried.re -->> 
   TransitiveType2.re -->> 
+  DynamicallyLoadedComponent.re -->> React.re
   IgnoreInterface.rei -->> 
   TestFirstClassModules.re -->> 
   FirstClassModulesInterface.rei -->> FirstClassModulesInterface.re
@@ -1669,10 +1675,10 @@ File References
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
   Dead Value DeadTest.cmp2: 0 references () [0]
   Dead Value DeadTest.cmp: 0 references () [0]
-  Dead Value DeadTest.LazyExportWithRename2.make: 0 references () [0]
-  Dead Value DeadTest.LazyExportWithRename2.makeProps: 0 references () [0]
-  Dead Value DeadTest.LazyExportWithRename2.reasonResource: 0 references () [0]
-  Dead Value DeadTest.LazyExportWithRename.make: 0 references () [0]
+  Dead Value DeadTest.LazyDynamicallyLoadedComponent2.make: 0 references () [0]
+  Dead Value DeadTest.LazyDynamicallyLoadedComponent2.makeProps: 0 references () [0]
+  Dead Value DeadTest.LazyDynamicallyLoadedComponent2.reasonResource: 0 references () [0]
+  Dead Value DeadTest.LazyDynamicallyLoadedComponent.make: 0 references () [0]
   Dead Value DeadTest.Ext_buffer.unsafe_string2: 0 references () [0]
   Dead Value DeadTest.Ext_buffer.+unsafe_string2: 0 references () [0]
   Dead Value DeadTest.unsafe_string1: 0 references () [0]
@@ -1739,6 +1745,7 @@ File References
   Live Value Docstrings.one: 0 references () [0]
   Live Value Docstrings.signMessage: 0 references () [0]
   Live Value Docstrings.flat: 0 references () [0]
+  Live Value DynamicallyLoadedComponent.make: 1 references (_none_:1:-1) [0]
   Live Value ExportWithRename.make: 1 references (_none_:1:-1) [0]
   Live Value FirstClassModules.someFunctorAsFunction: 0 references () [0]
   Live Value FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20) [0]
@@ -3737,40 +3744,40 @@ File References
     [@dead "Ext_buffer.unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 112:31
-  LazyExportWithRename.make is never used
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 112:41
+  LazyDynamicallyLoadedComponent.make is never used
   <-- line 112
-  module LazyExportWithRename = [@dead "LazyExportWithRename.make"] [%lazyLoadComponent ExportWithRename];
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 117:7
-  LazyExportWithRename2.reasonResource is never used
-  <-- line 117
-    [@dead "LazyExportWithRename2.reasonResource"] let reasonResource: JSResource.t(module LocalExportWithRename2) =
+  module LazyDynamicallyLoadedComponent = [@dead "LazyDynamicallyLoadedComponent.make"] [%lazyLoadComponent
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 119:7
-  LazyExportWithRename2.makeProps is never used
+  LazyDynamicallyLoadedComponent2.reasonResource is never used
   <-- line 119
-    [@dead "LazyExportWithRename2.makeProps"] let makeProps = ExportWithRename.makeProps;
+    [@dead "LazyDynamicallyLoadedComponent2.reasonResource"] let reasonResource: JSResource.t(module LocalDynamicallyLoadedComponent2) =
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 120:7
-  LazyExportWithRename2.make is never used
-  <-- line 120
-    [@dead "LazyExportWithRename2.make"] let make = props =>
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 121:7
+  LazyDynamicallyLoadedComponent2.makeProps is never used
+  <-- line 121
+    [@dead "LazyDynamicallyLoadedComponent2.makeProps"] let makeProps = DynamicallyLoadedComponent.makeProps;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 130:5
-  cmp is never used
-  <-- line 130
-  [@dead "cmp"] let cmp = <LazyExportWithRename s="hello" />;
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 122:7
+  LazyDynamicallyLoadedComponent2.make is never used
+  <-- line 122
+    [@dead "LazyDynamicallyLoadedComponent2.make"] let make = props =>
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 132:5
-  cmp2 is never used
+  cmp is never used
   <-- line 132
-  [@dead "cmp2"] let cmp2 = <LazyExportWithRename2 s="hello" />;
+  [@dead "cmp"] let cmp = <LazyDynamicallyLoadedComponent s="hello" />;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 134:5
+  cmp2 is never used
+  <-- line 134
+  [@dead "cmp2"] let cmp2 = <LazyDynamicallyLoadedComponent2 s="hello" />;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.rei 3:5
