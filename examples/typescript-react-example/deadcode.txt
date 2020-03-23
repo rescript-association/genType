@@ -600,7 +600,6 @@
   addValueDeclaration make DynamicallyLoadedComponent.re:2:4
   addValueReference DynamicallyLoadedComponent.re:2:4 --> DynamicallyLoadedComponent.re:2:13
   addValueReference DynamicallyLoadedComponent.re:2:4 --> React.re:5:0
-  addValueReference _none_:1:-1 --> DynamicallyLoadedComponent.re:2:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TransitiveType2.cmt
   addValueDeclaration convertT2 TransitiveType2.re:7:4
   addValueReference TransitiveType2.re:7:4 --> TransitiveType2.re:7:17
@@ -1036,7 +1035,6 @@
   addValueDeclaration make ExportWithRename.re:3:4
   addValueReference ExportWithRename.re:3:4 --> ExportWithRename.re:3:13
   addValueReference ExportWithRename.re:3:4 --> React.re:5:0
-  addValueReference _none_:1:-1 --> ExportWithRename.re:3:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/ImmutableArray.cmti
   addValueDeclaration get ImmutableArray.rei:5:15
   addValueDeclaration fromArray ImmutableArray.rei:7:0
@@ -1302,41 +1300,34 @@
   addValueReference Hooks.re:4:4 --> React.re:5:0
   addValueReference Hooks.re:4:4 --> React.re:16:0
   addValueReference Hooks.re:4:4 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:4:4
   addTypeReference Hooks.re:42:41 --> Hooks.re:1:16
   addValueReference Hooks.re:40:4 --> Hooks.re:40:25
   addValueReference Hooks.re:40:4 --> React.re:5:0
   addValueReference Hooks.re:40:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:40:4 --> Hooks.re:40:35
-  addValueReference _none_:1:-1 --> Hooks.re:40:4
   addValueDeclaration +make Hooks.re:48:6
   addTypeReference Hooks.re:49:43 --> Hooks.re:1:16
   addValueReference Hooks.re:48:6 --> Hooks.re:48:15
   addValueReference Hooks.re:48:6 --> React.re:5:0
   addValueReference Hooks.re:48:6 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:48:6
   addValueDeclaration +anotherComponent Hooks.re:53:6
   addTypeReference Hooks.re:54:43 --> Hooks.re:1:16
   addValueReference Hooks.re:53:6 --> Hooks.re:53:27
   addValueReference Hooks.re:53:6 --> React.re:5:0
   addValueReference Hooks.re:53:6 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:53:6
   addValueDeclaration +make Hooks.re:59:8
   addTypeReference Hooks.re:60:45 --> Hooks.re:1:16
   addValueReference Hooks.re:59:8 --> Hooks.re:59:17
   addValueReference Hooks.re:59:8 --> React.re:5:0
   addValueReference Hooks.re:59:8 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:59:8
   addValueDeclaration +anotherComponent Hooks.re:64:8
   addTypeReference Hooks.re:65:45 --> Hooks.re:1:16
   addValueReference Hooks.re:64:8 --> Hooks.re:64:29
   addValueReference Hooks.re:64:8 --> React.re:5:0
   addValueReference Hooks.re:64:8 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:64:8
   addValueDeclaration +make Hooks.re:72:6
   addValueReference Hooks.re:72:6 --> ReasonReact.rei:15:0
   addValueReference Hooks.re:72:6 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:72:6
   addTypeReference Hooks.re:82:2 --> Hooks.re:1:16
   addValueReference Hooks.re:80:4 --> Hooks.re:80:32
   addTypeReference Hooks.re:82:14 --> Hooks.re:1:16
@@ -1350,7 +1341,6 @@
   addValueReference Hooks.re:87:4 --> React.re:5:0
   addValueReference Hooks.re:87:4 --> Hooks.re:87:33
   addValueReference Hooks.re:87:4 --> Hooks.re:87:47
-  addValueReference _none_:1:-1 --> Hooks.re:87:4
   addValueReference Hooks.re:94:4 --> Hooks.re:96:9
   addValueReference Hooks.re:94:4 --> ReactDOMRe.re:96:2
   addTypeReference Hooks.re:98:20 --> Hooks.re:1:16
@@ -1359,36 +1349,30 @@
   addValueReference Hooks.re:94:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:94:4 --> React.re:3:0
   addValueReference Hooks.re:94:4 --> Hooks.re:94:29
-  addValueReference _none_:1:-1 --> Hooks.re:94:4
   addValueReference Hooks.re:105:4 --> React.re:44:0
   addValueReference Hooks.re:111:4 --> Hooks.re:112:28
   addTypeReference Hooks.re:113:45 --> Hooks.re:107:10
   addValueReference Hooks.re:111:4 --> Hooks.re:112:21
   addValueReference Hooks.re:111:4 --> React.re:5:0
   addValueReference Hooks.re:111:4 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:111:4
   addValueReference Hooks.re:112:2 --> React.re:44:0
   addTypeReference Hooks.re:130:58 --> Hooks.re:1:16
   addValueReference Hooks.re:130:4 --> Hooks.re:130:35
   addValueReference Hooks.re:130:4 --> React.re:5:0
-  addValueReference _none_:1:-1 --> Hooks.re:130:4
   addValueReference Hooks.re:134:4 --> Hooks.re:134:38
   addValueReference Hooks.re:134:4 --> React.re:5:0
-  addValueReference _none_:1:-1 --> Hooks.re:134:4
   addValueDeclaration +make Hooks.re:139:6
   addValueDeclaration +car Hooks.re:149:8
   addValueReference Hooks.re:139:6 --> Hooks.re:149:8
   addValueReference Hooks.re:139:6 --> Hooks.re:150:18
   addValueDeclaration +unsafe_expr Hooks.re:150:18
   addValueReference Hooks.re:139:6 --> Hooks.re:141:9
-  addValueReference _none_:1:-1 --> Hooks.re:139:6
   addTypeReference Hooks.re:158:37 --> Hooks.re:1:16
   addValueReference Hooks.re:156:4 --> Hooks.re:156:31
   addValueReference Hooks.re:156:4 --> React.re:5:0
   addValueReference Hooks.re:156:4 --> Hooks.re:156:41
   addValueReference Hooks.re:156:4 --> ReactDOMRe.re:1097:0
   addValueReference Hooks.re:156:4 --> ReactDOMRe.re:1097:0
-  addValueReference _none_:1:-1 --> Hooks.re:156:4
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/TestPromise.cmt
   addTypeDeclaration +x TestPromise.re:6:2
   addTypeDeclaration +s TestPromise.re:7:2
@@ -1747,7 +1731,7 @@ File References
   Live Value Docstrings.one: 0 references () [0]
   Live Value Docstrings.signMessage: 0 references () [0]
   Live Value Docstrings.flat: 0 references () [0]
-  Live Value ExportWithRename.make: 1 references (_none_:1:-1) [0]
+  Dead Value ExportWithRename.make: 0 references () [0]
   Live Value FirstClassModules.someFunctorAsFunction: 0 references () [0]
   Live Value FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20) [0]
   Live Value FirstClassModules.testConvert: 0 references () [0]
@@ -1761,26 +1745,26 @@ File References
   Dead Value FirstClassModulesInterface.r: 0 references () [0]
   Dead Type FirstClassModulesInterface.record.y: 0 references () [0]
   Dead Type FirstClassModulesInterface.record.x: 0 references () [0]
-  Live Value Hooks.aComponentWithChildren: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.RenderPropRequiresConversion.+make: 1 references (_none_:1:-1) [1]
-  Live Value Hooks.RenderPropRequiresConversion.+unsafe_expr: 1 references (Hooks.re:139:6) [0]
-  Live Value Hooks.RenderPropRequiresConversion.+car: 1 references (Hooks.re:139:6) [0]
-  Live Value Hooks.functionReturningReactElement: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.polymorphicComponent: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.input: 1 references (_none_:1:-1) [0]
+  Dead Value Hooks.aComponentWithChildren: 0 references () [0]
+  Dead Value Hooks.RenderPropRequiresConversion.+make: 0 references () [1]
+  Dead Value Hooks.RenderPropRequiresConversion.+unsafe_expr: 0 references () [0]
+  Dead Value Hooks.RenderPropRequiresConversion.+car: 0 references () [0]
+  Dead Value Hooks.functionReturningReactElement: 0 references () [0]
+  Dead Value Hooks.polymorphicComponent: 0 references () [0]
+  Dead Value Hooks.input: 0 references () [0]
   Live Type Hooks.r.+x: 1 references (Hooks.re:113:45) [0]
   Live Value Hooks.testForwardRef: 0 references () [0]
-  Live Value Hooks.makeWithRef: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.componentWithRenamedArgs: 1 references (_none_:1:-1) [0]
+  Dead Value Hooks.makeWithRef: 0 references () [0]
+  Dead Value Hooks.componentWithRenamedArgs: 0 references () [0]
   Live Value Hooks.functionWithRenamedArgs: 0 references () [0]
-  Live Value Hooks.NoProps.+make: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.Inner.Inner2.+anotherComponent: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.Inner.Inner2.+make: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.Inner.+anotherComponent: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.Inner.+make: 1 references (_none_:1:-1) [0]
-  Live Value Hooks.anotherComponent: 1 references (_none_:1:-1) [0]
+  Dead Value Hooks.NoProps.+make: 0 references () [0]
+  Dead Value Hooks.Inner.Inner2.+anotherComponent: 0 references () [0]
+  Dead Value Hooks.Inner.Inner2.+make: 0 references () [0]
+  Dead Value Hooks.Inner.+anotherComponent: 0 references () [0]
+  Dead Value Hooks.Inner.+make: 0 references () [0]
+  Dead Value Hooks.anotherComponent: 0 references () [0]
   Live Value Hooks.default: 0 references () [0]
-  Live Value Hooks.make: 1 references (_none_:1:-1) [0]
+  Dead Value Hooks.make: 0 references () [0]
   Live Type Hooks.vehicle.+name: 13 references (Hooks.re:11:12, Hooks.re:42:41, Hooks.re:49:43, Hooks.re:54:43, Hooks.re:60:45, Hooks.re:65:45, Hooks.re:82:2, Hooks.re:82:14, Hooks.re:89:15, Hooks.re:89:27, Hooks.re:98:20, Hooks.re:130:58, Hooks.re:158:37) [0]
   Live Value ImportIndex.make: 0 references () [0]
   Live Value LetPrivate.y: 0 references () [0]
@@ -2055,7 +2039,7 @@ File References
   Live Type DeadTypeTest.t.+A: 1 references (DeadTypeTest.re:4:8) [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
   Live Value DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) [0]
-  Live Value DynamicallyLoadedComponent.make: 1 references (_none_:1:-1) [0]
+  Dead Value DynamicallyLoadedComponent.make: 0 references () [0]
   Dead Value ErrorHandler.x: 0 references () [0]
   Live Value ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) [0]
   Dead Value FirstClassModulesInterface.r: 0 references () [0]
@@ -2123,11 +2107,11 @@ File References
   Live Value ImmutableArray.fromArray: 1 references (DeadTest.re:1:15) [0]
   Live Value ImmutableArray.Array.get: 1 references (TestImmutableArray.re:2:4) [0]
   Live Value ImportHookDefault.make2: 0 references () [0]
-  Live Value ImportHookDefault.make: 1 references (Hooks.re:4:4) [0]
+  Live Value ImportHookDefault.make: 0 references () [0]
   Dead Type ImportHookDefault.person.+age: 0 references () [0]
   Dead Type ImportHookDefault.person.+name: 0 references () [0]
   Live Value ImportHooks.foo: 0 references () [0]
-  Live Value ImportHooks.make: 1 references (Hooks.re:4:4) [0]
+  Live Value ImportHooks.make: 0 references () [0]
   Dead Type ImportHooks.person.+age: 0 references () [0]
   Dead Type ImportHooks.person.+name: 0 references () [0]
   Live Value ImportJsValue.default: 0 references () [0]
@@ -3056,6 +3040,12 @@ File References
   [@dead "x"] let x: int;
 
   Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DynamicallyLoadedComponent.re 2:5
+  make is never used
+  <-- line 2
+  [@dead "make"] [@react.component]
+
+  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadValueTest.rei 2:1
   valueDead is never used
   <-- line 2
@@ -3541,6 +3531,102 @@ File References
   <-- line 11
         type t = {[@dead "Outer2.Inner2.InnerNested.t.+nested"] nested: int};
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 4:5
+  make is never used
+  <-- line 4
+  [@dead "make"] [@react.component]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 40:5
+  anotherComponent is never used
+  <-- line 40
+  [@dead "anotherComponent"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 48:7
+  Inner.+make is never used
+  <-- line 48
+    [@dead "Inner.+make"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 53:7
+  Inner.+anotherComponent is never used
+  <-- line 53
+    [@dead "Inner.+anotherComponent"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 59:9
+  Inner.Inner2.+make is never used
+  <-- line 59
+      [@dead "Inner.Inner2.+make"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 64:9
+  Inner.Inner2.+anotherComponent is never used
+  <-- line 64
+      [@dead "Inner.Inner2.+anotherComponent"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 72:7
+  NoProps.+make is never used
+  <-- line 72
+    [@dead "NoProps.+make"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 87:5
+  componentWithRenamedArgs is never used
+  <-- line 87
+  [@dead "componentWithRenamedArgs"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 94:5
+  makeWithRef is never used
+  <-- line 94
+  [@dead "makeWithRef"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 111:5
+  input is never used
+  <-- line 111
+  [@dead "input"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 130:5
+  polymorphicComponent is never used
+  <-- line 130
+  [@dead "polymorphicComponent"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 134:5
+  functionReturningReactElement is never used
+  <-- line 134
+  [@dead "functionReturningReactElement"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 149:9
+  RenderPropRequiresConversion.+car is never used
+  <-- line 149
+      [@dead "RenderPropRequiresConversion.+car"] let car = {name: "Car"};
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 150:19
+  RenderPropRequiresConversion.+unsafe_expr is never used
+  <-- line 150
+      renderVehicle([@dead "RenderPropRequiresConversion.+unsafe_expr"] {"vehicle": car, "number": 42});
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 139:7
+  RenderPropRequiresConversion.+make is never used
+  <-- line 139
+    [@dead "RenderPropRequiresConversion.+make"] [@genType]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 156:5
+  aComponentWithChildren is never used
+  <-- line 156
+  [@dead "aComponentWithChildren"] [@genType]
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/FirstClassModulesInterface.rei 3:3
   record.x is a record label never used to read a value
@@ -3558,6 +3644,12 @@ File References
   r is never used
   <-- line 7
   [@dead "r"] let r: record;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ExportWithRename.re 3:5
+  make is never used
+  <-- line 3
+  [@dead "make"] [@genType "ExportWithRename"]
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Docstrings.re 62:5
