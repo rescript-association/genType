@@ -139,7 +139,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
   let locFrom = e.exp_loc;
   switch (e.exp_desc) {
   | Texp_ident(_path, _, {Types.val_loc: {loc_ghost: false, _} as locTo, _}) =>
-    addValueReference(~addFileReference=true, ~locFrom, ~locTo);
+    addValueReference(~addFileReference=true, ~locFrom, ~locTo)
 
   | Texp_apply(
       {exp_desc: Texp_ident(path, _, {Types.val_loc: locTo, _})},
@@ -150,12 +150,17 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         |> Path.name == "JSResource.jSResource"
         && Filename.check_suffix(s, ".bs") =>
     let moduleName = Filename.chop_extension(s);
-    Log_.item(
-      "XXX %s(%s) %s@.",
-      path |> Path.name,
-      moduleName,
-      locTo.loc_start |> posToString,
-    );
+    switch (Hashtbl.find_opt(makeDecls, moduleName)) {
+    | Some(makePos) =>
+      Log_.item(
+        "XXX %s(%s) %s defined in %s@.",
+        path |> Path.name,
+        moduleName,
+        locTo.loc_start |> posToString,
+        makePos |> posToString,
+      )
+    | None => ()
+    };
 
   | Texp_field(
       _,
