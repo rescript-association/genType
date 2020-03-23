@@ -136,30 +136,27 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 };
 
 let collectExpr = (super, self, e: Typedtree.expression) => {
-  let locUsage = e.exp_loc;
+  let locFrom = e.exp_loc;
   switch (e.exp_desc) {
   | Texp_ident(
       _path,
       _,
       {Types.val_loc: {loc_ghost: false, _} as locDeclaration, _},
     ) =>
-    addValueReference(~addFileReference=true, locDeclaration, locUsage)
+    addValueReference(~addFileReference=true, ~locFrom, ~locTo=locDeclaration)
 
   | Texp_field(
       _,
       _,
-      {lbl_loc: {Location.loc_start: posDeclaration, loc_ghost: false}, _},
+      {lbl_loc: {Location.loc_start: posTo, loc_ghost: false}, _},
     )
   | Texp_construct(
       _,
-      {cstr_loc: {Location.loc_start: posDeclaration, loc_ghost: false}, _},
+      {cstr_loc: {Location.loc_start: posTo, loc_ghost: false}, _},
       _,
     ) =>
     if (analyzeTypes^) {
-      DeadType.addTypeReference(
-        ~posDeclaration,
-        ~posUsage=locUsage.loc_start,
-      );
+      DeadType.addTypeReference(~posTo, ~posFrom=locFrom.loc_start);
     }
 
   | _ => ()
@@ -168,14 +165,13 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
 };
 
 let collectPattern = (super, self, pat: Typedtree.pattern) => {
-  let posUsage = pat.pat_loc.loc_start;
+  let posFrom = pat.pat_loc.loc_start;
   switch (pat.pat_desc) {
   | Tpat_record(cases, _clodsedFlag) =>
     cases
-    |> List.iter(
-         ((_loc, {Types.lbl_loc: {loc_start: posDeclaration}}, _pat)) =>
+    |> List.iter(((_loc, {Types.lbl_loc: {loc_start: posTo}}, _pat)) =>
          if (analyzeTypes^) {
-           DeadType.addTypeReference(~posDeclaration, ~posUsage);
+           DeadType.addTypeReference(~posFrom, ~posTo);
          }
        )
   | _ => ()
@@ -238,28 +234,28 @@ let processValueDependency =
       (
         {
           val_loc:
-            {loc_start: {pos_fname: fn1} as pos1, loc_ghost: ghost1} as loc1,
+            {loc_start: {pos_fname: fnTo} as posTo, loc_ghost: ghost1} as locTo,
         }: Types.value_description,
         {
           val_loc:
-            {loc_start: {pos_fname: fn2} as pos2, loc_ghost: ghost2} as loc2,
+            {loc_start: {pos_fname: fnFrom} as posFrom, loc_ghost: ghost2} as locFrom,
         }: Types.value_description,
       ),
     ) =>
-  if (!ghost1 && !ghost2 && pos1 != pos2) {
-    let addFileReference = fileIsImplementationOf(fn1, fn2);
-    addValueReference(~addFileReference, loc1, loc2);
+  if (!ghost1 && !ghost2 && posTo != posFrom) {
+    let addFileReference = fileIsImplementationOf(fnTo, fnFrom);
+    addValueReference(~addFileReference, ~locFrom, ~locTo);
   };
 
 let processTypeDependency =
     (
       (
-        {loc_start: pos1, loc_ghost: ghost1}: Location.t,
-        {loc_start: pos2, loc_ghost: ghost2}: Location.t,
+        {loc_start: posTo, loc_ghost: ghost1}: Location.t,
+        {loc_start: posFrom, loc_ghost: ghost2}: Location.t,
       ),
     ) =>
-  if (!ghost1 && !ghost2 && pos1 != pos2) {
-    DeadType.addTypeReference(~posDeclaration=pos1, ~posUsage=pos2);
+  if (!ghost1 && !ghost2 && posTo != posFrom) {
+    DeadType.addTypeReference(~posTo, ~posFrom);
   };
 
 let processStructure =
