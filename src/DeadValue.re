@@ -138,12 +138,8 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 let collectExpr = (super, self, e: Typedtree.expression) => {
   let locFrom = e.exp_loc;
   switch (e.exp_desc) {
-  | Texp_ident(
-      _path,
-      _,
-      {Types.val_loc: {loc_ghost: false, _} as locDeclaration, _},
-    ) =>
-    addValueReference(~addFileReference=true, ~locFrom, ~locTo=locDeclaration)
+  | Texp_ident(_path, _, {Types.val_loc: {loc_ghost: false, _} as locTo, _}) =>
+    addValueReference(~addFileReference=true, ~locFrom, ~locTo);
 
   | Texp_field(
       _,
