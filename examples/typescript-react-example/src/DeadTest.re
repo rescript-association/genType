@@ -109,14 +109,16 @@ module Ext_buffer: {
 
 let () = Js.log(DeadRT.Root("xzz"));
 
-module LazyExportWithRename = [%lazyLoadComponent ExportWithRename];
+module LazyDynamicallyLoadedComponent = [%lazyLoadComponent
+  DynamicallyLoadedComponent
+];
 
-module type LocalExportWithRename2 = (module type of ExportWithRename);
+module type LocalDynamicallyLoadedComponent2 = (module type of DynamicallyLoadedComponent);
 
-module LazyExportWithRename2 = {
-  let reasonResource: JSResource.t(module LocalExportWithRename2) =
-    JSResource.jSResource("ExportWithRename.bs");
-  let makeProps = ExportWithRename.makeProps;
+module LazyDynamicallyLoadedComponent2 = {
+  let reasonResource: JSResource.t(module LocalDynamicallyLoadedComponent2) =
+    JSResource.jSResource("DynamicallyLoadedComponent.bs");
+  let makeProps = DynamicallyLoadedComponent.makeProps;
   let make = props =>
     React.createElement(
       {
@@ -127,10 +129,6 @@ module LazyExportWithRename2 = {
     );
 };
 
-let cmp = <LazyExportWithRename s="hello" />;
+let cmp = <LazyDynamicallyLoadedComponent s="hello" />;
 
-let cmp2 = <LazyExportWithRename2 s="hello" />;
-
-// let mk = LazyExportWithRename.make;
-
-// let () = Js.log(mk);
+let cmp2 = <LazyDynamicallyLoadedComponent2 s="hello" />;

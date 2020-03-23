@@ -81,7 +81,7 @@ var Ext_buffer = { };
 
 console.log(/* Root */["xzz"]);
 
-var reasonResource = JSResource("ExportWithRename.bs");
+var reasonResource = JSResource("DynamicallyLoadedComponent.bs");
 
 function makeProps(prim, prim$1, prim$2) {
   var tmp = {
@@ -97,13 +97,13 @@ function make(props) {
   return React.createElement(BootloaderResource.read(reasonResource).make, props);
 }
 
-var LazyExportWithRename = {
+var LazyDynamicallyLoadedComponent = {
   reasonResource: reasonResource,
   makeProps: makeProps,
   make: make
 };
 
-var reasonResource$1 = JSResource("ExportWithRename.bs");
+var reasonResource$1 = JSResource("DynamicallyLoadedComponent.bs");
 
 function makeProps$1(prim, prim$1, prim$2) {
   var tmp = {
@@ -119,7 +119,7 @@ function make$1(props) {
   return React.createElement(BootloaderResource.read(reasonResource$1).make, props);
 }
 
-var LazyExportWithRename2 = {
+var LazyDynamicallyLoadedComponent2 = {
   reasonResource: reasonResource$1,
   makeProps: makeProps$1,
   make: make$1
@@ -166,8 +166,8 @@ export {
   bar ,
   withDefaultValue ,
   Ext_buffer ,
-  LazyExportWithRename ,
-  LazyExportWithRename2 ,
+  LazyDynamicallyLoadedComponent ,
+  LazyDynamicallyLoadedComponent2 ,
   cmp ,
   cmp2 ,
   
