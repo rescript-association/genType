@@ -151,14 +151,16 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         && Filename.check_suffix(s, ".bs") =>
     let moduleName = Filename.chop_extension(s);
     switch (Hashtbl.find_opt(makeDecls, moduleName)) {
-    | Some(makePos) =>
+    | Some(locMake) =>
       Log_.item(
         "XXX %s(%s) %s defined in %s@.",
         path |> Path.name,
         moduleName,
         locTo.loc_start |> posToString,
-        makePos |> posToString,
-      )
+        locMake.loc_start |> posToString,
+      );
+      addValueReference(~addFileReference=true, ~locFrom, ~locTo=locMake);
+
     | None => ()
     };
 

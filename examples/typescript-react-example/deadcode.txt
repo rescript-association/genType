@@ -1542,12 +1542,14 @@
   addValueDeclaration +unsafe_string2 DeadTest.re:107:2
   addTypeReference DeadTest.re:110:16 --> DeadRT.rei:2:4
   XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0 defined in DynamicallyLoadedComponent.re:2:4
+  addValueReference DeadTest.re:112:40 --> DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest.re:112:40 --> JSResource.re:3:0
   addValueReference DeadTest.re:112:40 --> DeadTest.re:112:40
   addValueReference DeadTest.re:112:40 --> BootloaderResource.re:3:0
   addValueReference DeadTest.re:112:40 --> DeadTest.re:112:40
   addValueReference DeadTest.re:112:40 --> React.re:13:0
   XXX JSResource.jSResource(DynamicallyLoadedComponent) JSResource.re:3:0 defined in DynamicallyLoadedComponent.re:2:4
+  addValueReference DeadTest.re:119:6 --> DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest.re:119:6 --> JSResource.re:3:0
   addValueReference DeadTest.re:122:6 --> DeadTest.re:119:6
   addValueReference DeadTest.re:122:6 --> BootloaderResource.re:3:0
@@ -1575,7 +1577,7 @@ File References
   UseImportJsValue.re -->> ImportJsValue.re
   FirstClassModulesInterface.re -->> 
   ReasonComponent.re -->> ReactDOMRe.re, ReasonReact.rei, ImportMyBanner.re
-  DeadTest.re -->> React.re, BootloaderResource.re, DeadValueTest.rei, ImmutableArray.rei, JSResource.re
+  DeadTest.re -->> React.re, BootloaderResource.re, DeadValueTest.rei, DynamicallyLoadedComponent.re, ImmutableArray.rei, JSResource.re
   TestEmitInnerModules.re -->> 
   TypeParams1.re -->> 
   DeadValueTest.rei -->> DeadValueTest.re
@@ -1745,7 +1747,6 @@ File References
   Live Value Docstrings.one: 0 references () [0]
   Live Value Docstrings.signMessage: 0 references () [0]
   Live Value Docstrings.flat: 0 references () [0]
-  Live Value DynamicallyLoadedComponent.make: 1 references (_none_:1:-1) [0]
   Live Value ExportWithRename.make: 1 references (_none_:1:-1) [0]
   Live Value FirstClassModules.someFunctorAsFunction: 0 references () [0]
   Live Value FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20) [0]
@@ -2054,6 +2055,7 @@ File References
   Live Type DeadTypeTest.t.+A: 1 references (DeadTypeTest.re:4:8) [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
   Live Value DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) [0]
+  Live Value DynamicallyLoadedComponent.make: 1 references (_none_:1:-1) [0]
   Dead Value ErrorHandler.x: 0 references () [0]
   Live Value ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) [0]
   Dead Value FirstClassModulesInterface.r: 0 references () [0]

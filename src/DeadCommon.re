@@ -153,7 +153,7 @@ type decl = {
 };
 type decls = PosHash.t(decl);
 let decls: decls = PosHash.create(256); /* all exported declarations */
-let makeDecls: Hashtbl.t(string, Lexing.position) = Hashtbl.create(1); /* from module name to pos of make function */
+let makeDecls: Hashtbl.t(string, Location.t) = Hashtbl.create(1); /* from module name to loc of make function */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
@@ -330,7 +330,7 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
 
     switch (path) {
     | [moduleName] when name == "make" && declKind == Value =>
-      Hashtbl.replace(makeDecls, moduleName, pos)
+      Hashtbl.replace(makeDecls, moduleName, loc)
     | _ => ()
     };
     PosHash.replace(
