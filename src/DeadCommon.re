@@ -173,29 +173,25 @@ let currentModulePath: ref(path) = ref([]);
 /********   HELPERS   ********/
 
 let addValueReference =
-    (~addFileReference, locDeclaration: Location.t, locUsage: Location.t) => {
+    (~addFileReference, ~locFrom: Location.t, ~locTo: Location.t) => {
   let lastBinding = getLastBinding();
-  let locUsage = lastBinding == Location.none ? locUsage : lastBinding;
+  let locFrom = lastBinding == Location.none ? locFrom : lastBinding;
   if (verbose) {
     Log_.item(
       "addValueReference %s --> %s@.",
-      locUsage.loc_start |> posToString,
-      locDeclaration.loc_start |> posToString,
+      locFrom.loc_start |> posToString,
+      locTo.loc_start |> posToString,
     );
   };
-  PosHash.addSet(
-    valueReferences,
-    locDeclaration.loc_start,
-    locUsage.loc_start,
-  );
+  PosHash.addSet(valueReferences, locTo.loc_start, locFrom.loc_start);
   if (addFileReference
-      && !locDeclaration.loc_ghost
-      && !locUsage.loc_ghost
-      && locUsage.loc_start.pos_fname != locDeclaration.loc_start.pos_fname) {
+      && !locTo.loc_ghost
+      && !locFrom.loc_ghost
+      && locFrom.loc_start.pos_fname != locTo.loc_start.pos_fname) {
     FileHash.addSet(
       fileReferences,
-      locUsage.loc_start.pos_fname,
-      locDeclaration.loc_start.pos_fname,
+      locFrom.loc_start.pos_fname,
+      locTo.loc_start.pos_fname,
     );
   };
 };

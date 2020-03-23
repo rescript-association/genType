@@ -4,15 +4,15 @@ open DeadCommon;
 
 let typeDependencies = ref([]);
 
-let addTypeReference = (~posDeclaration, ~posUsage) => {
+let addTypeReference = (~posFrom, ~posTo) => {
   if (verbose) {
     Log_.item(
       "addTypeReference %s --> %s@.",
-      posUsage |> posToString,
-      posDeclaration |> posToString,
+      posFrom |> posToString,
+      posTo |> posToString,
     );
   };
-  PosHash.addSet(typeReferences, posDeclaration, posUsage);
+  PosHash.addSet(typeReferences, posTo, posFrom);
 };
 
 let addTypeDeclaration =
