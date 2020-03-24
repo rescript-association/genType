@@ -99,7 +99,7 @@ let expr = (mapper, expr) =>
           ]),
         )),
     } as pexp =>
-    let [name, ..._] = Longident.flatten(txt);
+    let name = txt |> Longident.flatten |> List.hd;
     let _ =
       jsResources := ResourceSet.add({Resource.name, loc}, jsResources^);
     {
@@ -136,7 +136,7 @@ let expr = (mapper, expr) =>
           ]),
         )),
     } =>
-    let [name, ..._] = Longident.flatten(txt);
+    let name = txt |> Longident.flatten |> List.hd;
     let _ =
       jsResources := ResourceSet.add({Resource.name, loc}, jsResources^);
     let bindingName = "$" ++ name ++ "$Deferred";
@@ -274,21 +274,19 @@ let expr = (mapper, expr) =>
           ]),
         )),
     } =>
-    let [thenModule, ..._] = Longident.flatten(thenTxt);
-    let [elseModule, ..._] = Longident.flatten(elseTxt);
+    let thenModule = thenTxt |> Longident.flatten |> List.hd;
+    let elseModule = elseTxt |> Longident.flatten |> List.hd;
 
-    let _ =
-      jsResources :=
-        ResourceSet.add(
-          {Resource.name: thenModule, loc: thenLoc},
-          jsResources^,
-        );
-    let _ =
-      jsResources :=
-        ResourceSet.add(
-          {Resource.name: elseModule, loc: elseLoc},
-          jsResources^,
-        );
+    jsResources :=
+      ResourceSet.add(
+        {Resource.name: thenModule, loc: thenLoc},
+        jsResources^,
+      );
+    jsResources :=
+      ResourceSet.add(
+        {Resource.name: elseModule, loc: elseLoc},
+        jsResources^,
+      );
     let bindingName =
       "$" ++ thenModule ++ "$OR$" ++ elseModule ++ "$RequireCond";
 
@@ -380,7 +378,7 @@ let expr = (mapper, expr) =>
           ]),
         )),
     } =>
-    let [name, ..._] = Longident.flatten(txt);
+    let name = txt |> Longident.flatten |> List.hd;
     let _ =
       jsResources := ResourceSet.add({Resource.name, loc}, jsResources^);
     let bindingName = "$" ++ name ++ "$RequireCond";
