@@ -153,7 +153,7 @@ type decl = {
 };
 type decls = PosHash.t(decl);
 let decls: decls = PosHash.create(256); /* all exported declarations */
-let makeDecls: Hashtbl.t(string, Location.t) = Hashtbl.create(1); /* from module name to loc of make function */
+let moduleDecls: Hashtbl.t(string, PosSet.t) = Hashtbl.create(1); /* from module name to its decls */
 
 let valueReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all value references */
 let typeReferences: PosHash.t(PosSet.t) = PosHash.create(256); /* all type references */
@@ -167,6 +167,21 @@ let currentModuleName = ref("");
 let currentBindings = ref(PosSet.empty);
 let lastBinding = ref(Location.none);
 let getLastBinding = () => lastBinding^;
+
+let getPosOfValue = (~moduleName, ~name) => {
+  switch (Hashtbl.find_opt(moduleDecls, moduleName)) {
+  | Some(posSet) =>
+    posSet
+    |> PosSet.find_first_opt(pos =>
+         switch (PosHash.find_opt(decls, pos)) {
+         | Some({declKind: Value, path: [name_, ..._]}) when name_ == name =>
+           true
+         | _ => false
+         }
+       )
+  | None => None
+  };
+};
 
 /* Keep track of the module path while traversing with Tast_mapper */
 let currentModulePath: ref(path) = ref([]);
@@ -332,7 +347,7 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
 
     switch (path) {
     | [moduleName] when name == "make" && declKind == Value =>
-      Hashtbl.replace(makeDecls, moduleName, loc)
+      Hashtbl.replace(moduleDecls, moduleName, PosSet.singleton(pos))
     | _ => ()
     };
     PosHash.replace(
