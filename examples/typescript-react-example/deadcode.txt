@@ -1484,7 +1484,9 @@
   addValueDeclaration cmp DeadTest.re:132:4
   addValueDeclaration cmp2 DeadTest.re:134:4
   addValueDeclaration makeSwitch DeadTest.re:150:4
-  XXX requireCond  true:ExportWithRename false:DynamicallyLoadedComponent allPositions:[DynamicallyLoadedComponent.re:2:4, ExportWithRename.re:3:4]
+  requireCond  true:ExportWithRename false:DynamicallyLoadedComponent allPositions:[DynamicallyLoadedComponent.re:2:4, ExportWithRename.re:3:4]
+  addValueReference DeadTest:0:-1 --> DynamicallyLoadedComponent.re:2:4
+  addValueReference DeadTest:0:-1 --> ExportWithRename.re:3:4
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1739,7 +1741,7 @@ File References
   Live Value Docstrings.one: 0 references () [0]
   Live Value Docstrings.signMessage: 0 references () [0]
   Live Value Docstrings.flat: 0 references () [0]
-  Dead Value ExportWithRename.make: 0 references () [0]
+  Live Value ExportWithRename.make: 1 references (DeadTest:0:-1) [0]
   Live Value FirstClassModules.someFunctorAsFunction: 0 references () [0]
   Live Value FirstClassModules.SomeFunctor.+ww: 1 references (FirstClassModules.re:46:20) [0]
   Live Value FirstClassModules.testConvert: 0 references () [0]
@@ -2049,7 +2051,7 @@ File References
   Live Type DeadTypeTest.t.+A: 1 references (DeadTypeTest.re:4:8) [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
   Live Value DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) [0]
-  Live Value DynamicallyLoadedComponent.make: 1 references (DeadTest.re:112:40) [0]
+  Live Value DynamicallyLoadedComponent.make: 2 references (DeadTest.re:112:40, DeadTest:0:-1) [0]
   Dead Value ErrorHandler.x: 0 references () [0]
   Live Value ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) [0]
   Dead Value FirstClassModulesInterface.r: 0 references () [0]
@@ -3648,12 +3650,6 @@ File References
   r is never used
   <-- line 7
   [@dead "r"] let r: record;
-
-  Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/ExportWithRename.re 3:5
-  make is never used
-  <-- line 3
-  [@dead "make"] [@genType "ExportWithRename"]
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Docstrings.re 62:5
