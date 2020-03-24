@@ -22,7 +22,7 @@ let addTypeDeclaration =
     let name = isInterfaceFile ? name : "+" ++ name;
     let path = [name, ...path_] |> pathToString;
     if (type_manifest == None) {
-      addDeclaration(~declKind, ~path=path_, ~loc, ~name);
+      addDeclaration(~declKind, ~path=path_, ~loc, name);
     };
     Hashtbl.replace(fields, path, loc);
   };

@@ -90,7 +90,7 @@ let checkAnyBindingWithNoSideEffects =
   | Tpat_any when exprNoSideEffects(expr) && !loc.loc_ghost =>
     let name = "_";
     let path = currentModulePath^ @ [currentModuleName^];
-    addDeclaration(~declKind=Value, ~path, ~loc, ~name);
+    addDeclaration(~declKind=Value, ~path, ~loc, name);
   | _ => ()
   };
 
@@ -110,7 +110,12 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
         };
       let path = currentModulePath^ @ [currentModuleName^];
       if (!exists) {
-        addDeclaration(~declKind=Value, ~path, ~loc, ~name);
+        let sideEffects = exprNoSideEffects(vb.vb_expr);
+        addDeclaration(~declKind=Value, ~sideEffects, ~path, ~loc, name);
+        if (sideEffects) {
+          //Log_.item("XXX this has side effects@.");
+          ()
+        };
       };
       switch (PosHash.find_opt(decls, loc_start)) {
       | None => ()
@@ -279,7 +284,7 @@ let collectValueReferences = {
           ~declKind=Value,
           ~path,
           ~loc=vd.val_loc,
-          ~name="+" ++ (vd.val_id |> Ident.name),
+          "+" ++ (vd.val_id |> Ident.name),
         );
       };
 
