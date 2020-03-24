@@ -21,18 +21,6 @@ let addTypeDeclaration =
     let isInterfaceFile = Filename.check_suffix(loc.loc_start.pos_fname, "i");
     let name = isInterfaceFile ? name : "+" ++ name;
     let path = [name, ...path_] |> pathToString;
-    // let (name, path) =
-    //   switch (Hashtbl.find_opt(fields, path)) {
-    //   | None => (name, path)
-    //   | Some(locOld) =>
-    //     if (false) {
-    //       addTypeReference(
-    //         ~posDeclaration=loc.loc_start,
-    //         ~posUsage=locOld.loc_start,
-    //       );
-    //     };
-    //     ("+" ++ name, ["+" ++ name, ...path_] |> pathToString);
-    //   };
     if (type_manifest == None) {
       addDeclaration(~declKind, ~path=path_, ~loc, ~name);
     };

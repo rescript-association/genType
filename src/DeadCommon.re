@@ -183,6 +183,13 @@ let getPosOfValue = (~moduleName, ~name) => {
   };
 };
 
+let getDeclPositions = (~moduleName) => {
+  switch (Hashtbl.find_opt(moduleDecls, moduleName)) {
+  | Some(posSet) => posSet
+  | None => PosSet.empty
+  };
+};
+
 /* Keep track of the module path while traversing with Tast_mapper */
 let currentModulePath: ref(path) = ref([]);
 
@@ -346,8 +353,9 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
     };
 
     switch (path) {
-    | [moduleName] when name == "make" && declKind == Value =>
-      Hashtbl.replace(moduleDecls, moduleName, PosSet.singleton(pos))
+    | [moduleName] when declKind == Value =>
+      let oldSet = getDeclPositions(~moduleName);
+      Hashtbl.replace(moduleDecls, moduleName, PosSet.add(pos, oldSet));
     | _ => ()
     };
     PosHash.replace(
