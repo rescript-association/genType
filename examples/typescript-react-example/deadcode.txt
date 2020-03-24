@@ -1652,8 +1652,11 @@ File References
   Dead Value DeadMl.Bs_version.package_name: 0 references () [0]
   Dead Value DeadMl.Bs_version.header: 0 references () [0]
   Dead Value DeadMl.Bs_version.version: 0 references () [0]
+  XXX dead with side effects
   Dead Value DeadMl.Bs_version.+package_name: 0 references () [0]
+  XXX dead with side effects
   Dead Value DeadMl.Bs_version.+header: 0 references () [0]
+  XXX dead with side effects
   Dead Value DeadMl.Bs_version.+version: 0 references () [0]
   Dead Value DeadMl._: 0 references () [0]
   Dead Value DeadMl._: 0 references () [0]
@@ -1661,6 +1664,7 @@ File References
   Dead Type DeadMl.thisIsDead.+DeadA: 0 references () [0]
   Dead Value DeadMl.thisHasSemicolons: 0 references () [0]
   Dead Value DeadMl.AA.thisIsInInterface: 0 references () [0]
+  XXX dead with side effects
   Dead Value DeadMl.AA.+thisIsInInterface: 0 references () [0]
   Dead Value DeadMl.QQ.thisSpansSeveralLines: 0 references () [0]
   Dead Value DeadRT.emitModuleAccessPath: 0 references () [0]
@@ -1681,7 +1685,9 @@ File References
   Dead Value DeadTest.withDefaultValue: 0 references () [0]
   Dead Value DeadTest.bar: 0 references () [0]
   Dead Value DeadTest.foo: 0 references () [1]
+  XXX dead with side effects
   Dead Value DeadTest.+cb: 0 references () [0]
+  XXX dead with side effects
   Dead Value DeadTest.+cb: 0 references () [0]
   Dead Value DeadTest.recWithCallback: 0 references () [0]
   Dead Value DeadTest.rec2: 0 references () [0]
@@ -1690,6 +1696,7 @@ File References
   Dead Value DeadTest.unusedRec: 0 references () [0]
   Dead Value DeadTest.MM.y: 0 references () [0]
   Live Value DeadTest.MM.x: 1 references (DeadTest.re:73:9) [0]
+  XXX dead with side effects
   Dead Value DeadTest.MM.+valueOnlyInImplementation: 0 references () [0]
   Live Value DeadTest.MM.+x: 1 references (DeadTest.re:62:2) [0]
   Live Value DeadTest.MM.+y: 1 references (DeadTest.re:66:6) [0]
@@ -1703,6 +1710,7 @@ File References
   Live Value DeadTest.VariantUsedOnlyInImplementation.a: 1 references (DeadTest.re:44:17) [0]
   Live Value DeadTest.VariantUsedOnlyInImplementation.+a: 1 references (DeadTest.re:37:2) [0]
   Dead Type DeadTest.VariantUsedOnlyInImplementation.t.+A: 0 references () [0]
+  XXX dead with side effects
   Dead Value DeadTest.M.+thisSignatureItemIsDead: 0 references () [0]
   Live Value DeadTest.thisIsMarkedLive: 0 references () [0]
   Live Value DeadTest.thisIsKeptAlive: 1 references (DeadTest.re:20:4) [0]
@@ -1712,6 +1720,7 @@ File References
   Dead Value DeadTest.fortytwo: 0 references () [0]
   Dead Value DeadTestWhitelist.x: 0 references () [0]
   Dead Value DeadTestWithInterface.Ext_buffer.x: 0 references () [0]
+  XXX dead with side effects
   Dead Value DeadTestWithInterface.Ext_buffer.+x: 0 references () [0]
   Dead Type DeadTypeTest.deadType.InNeither: 0 references () [0]
   Live Type DeadTypeTest.deadType.InBoth: 1 references (DeadTest.re:47:8) [0]
@@ -1756,8 +1765,10 @@ File References
   Dead Type FirstClassModulesInterface.record.y: 0 references () [0]
   Dead Type FirstClassModulesInterface.record.x: 0 references () [0]
   Dead Value Hooks.aComponentWithChildren: 0 references () [0]
+  XXX dead with side effects
   Dead Value Hooks.RenderPropRequiresConversion.+make: 0 references () [1]
   Dead Value Hooks.RenderPropRequiresConversion.+unsafe_expr: 0 references () [0]
+  XXX dead with side effects
   Dead Value Hooks.RenderPropRequiresConversion.+car: 0 references () [0]
   Dead Value Hooks.functionReturningReactElement: 0 references () [0]
   Dead Value Hooks.polymorphicComponent: 0 references () [0]
@@ -1767,10 +1778,15 @@ File References
   Dead Value Hooks.makeWithRef: 0 references () [0]
   Dead Value Hooks.componentWithRenamedArgs: 0 references () [0]
   Live Value Hooks.functionWithRenamedArgs: 0 references () [0]
+  XXX dead with side effects
   Dead Value Hooks.NoProps.+make: 0 references () [0]
+  XXX dead with side effects
   Dead Value Hooks.Inner.Inner2.+anotherComponent: 0 references () [0]
+  XXX dead with side effects
   Dead Value Hooks.Inner.Inner2.+make: 0 references () [0]
+  XXX dead with side effects
   Dead Value Hooks.Inner.+anotherComponent: 0 references () [0]
+  XXX dead with side effects
   Dead Value Hooks.Inner.+make: 0 references () [0]
   Dead Value Hooks.anotherComponent: 0 references () [0]
   Live Value Hooks.default: 0 references () [0]

@@ -29,7 +29,7 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
         ~declKind=Value,
         ~path,
         ~loc=val_loc,
-        ~name=Ident.name(id),
+        Ident.name(id),
       );
     };
   | Sig_type(id, t, _) =>

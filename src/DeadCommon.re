@@ -150,6 +150,7 @@ type decl = {
   pos: Lexing.position,
   posAnnotation: Lexing.position,
   mutable resolved: bool,
+  sideEffects: bool,
 };
 type decls = PosHash.t(decl);
 let decls: decls = PosHash.create(256); /* all exported declarations */
@@ -331,7 +332,8 @@ let pathWithoutHead = path => {
 
 let annotateAtEnd = (~pos) => !posIsReason(pos);
 
-let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
+let addDeclaration =
+    (~sideEffects=false, ~declKind, ~path, ~loc: Location.t, name) => {
   let pos = loc.loc_start;
   let posEnd = loc.loc_end;
   let posAnnotation = annotateAtEnd(~pos) ? posEnd : pos;
@@ -358,11 +360,15 @@ let addDeclaration = (~declKind, ~path, ~loc: Location.t, ~name) => {
       Hashtbl.replace(moduleDecls, moduleName, PosSet.add(pos, oldSet));
     | _ => ()
     };
-    PosHash.replace(
-      decls,
+    let decl = {
+      declKind,
+      path: [name, ...path],
       pos,
-      {declKind, path: [name, ...path], pos, posAnnotation, resolved: false},
-    );
+      posAnnotation,
+      resolved: false,
+      sideEffects,
+    };
+    PosHash.replace(decls, pos, decl);
   };
 };
 
@@ -691,6 +697,9 @@ let rec resolveRecursiveRefs =
       if (isDead) {
         if (decl.pos |> doReportDead) {
           deadDeclarations := [decl, ...deadDeclarations^];
+        };
+        if (decl.sideEffects) {
+          Log_.item("XXX dead with side effects@.");
         };
         decl.pos |> ProcessDeadAnnotations.annotateDead;
       };
