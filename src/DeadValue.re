@@ -150,24 +150,28 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         |> Path.name == "JSResource.jSResource"
         && Filename.check_suffix(s, ".bs") =>
     let moduleName = Filename.chop_extension(s);
-    switch (Hashtbl.find_opt(makeDecls, moduleName)) {
-    | Some(locMake) =>
+    switch (getPosOfValue(~moduleName, ~name="make")) {
+    | None => ()
+    | Some(posMake) =>
       if (verbose) {
         Log_.item(
           "lazyLoad %s(%s) %s defined in %s@.",
           path |> Path.name,
           moduleName,
           locTo.loc_start |> posToString,
-          locMake.loc_start |> posToString,
+          posMake |> posToString,
         );
       };
+      let locMake = {
+        Location.loc_start: posMake,
+        loc_end: posMake,
+        loc_ghost: false,
+      };
       addValueReference(~addFileReference=true, ~locFrom, ~locTo=locMake);
-
-    | None => ()
     };
 
   | Texp_apply(
-      {exp_desc: Texp_ident(path, _, {Types.val_loc: locTo, _})},
+      {exp_desc: Texp_ident(path, _, _)},
       [
         (_, Some({exp_desc: Texp_constant(Const_string(sTrue, _))})),
         (_, Some({exp_desc: Texp_constant(Const_string(sFalse, _))})),
