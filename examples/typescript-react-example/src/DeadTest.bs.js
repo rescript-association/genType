@@ -3,9 +3,15 @@
 import * as React from "react";
 import * as JSResource from "JSResource";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as RequireCond from "requireCond";
 import * as DeadValueTest from "./DeadValueTest.bs.js";
 import * as ImmutableArray from "./ImmutableArray.bs.js";
 import * as BootloaderResource from "BootloaderResource";
+
+var $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond = RequireCond("gk", "chat", {
+      true: "ExportWithRename.bs",
+      false: "DynamicallyLoadedComponent.bs"
+    });
 
 console.log(ImmutableArray.fromArray);
 
@@ -135,6 +141,8 @@ var cmp2 = React.createElement(make$1, {
 
 console.log(cmp);
 
+var Chat = { };
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -147,7 +155,12 @@ var thisIsKeptAlive = 42;
 
 var thisIsMarkedLive = 42;
 
+var ComponentSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond;
+
+var makeSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond.make;
+
 export {
+  $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond ,
   fortytwo ,
   fortyTwoButExported ,
   thisIsUsedOnce ,
@@ -172,6 +185,9 @@ export {
   LazyDynamicallyLoadedComponent2 ,
   cmp ,
   cmp2 ,
+  Chat ,
+  ComponentSwitch ,
+  makeSwitch ,
   
 }
-/*  Not a pure module */
+/* $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond Not a pure module */
