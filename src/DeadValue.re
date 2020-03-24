@@ -184,7 +184,20 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         && Filename.check_suffix(sFalse, ".bs") =>
     let moduleTrue = Filename.chop_extension(sTrue);
     let moduleFalse = Filename.chop_extension(sFalse);
-    Log_.item("XXX requireCond  true:%s false:%s@.", moduleTrue, moduleFalse);
+
+    let positionsTrue = getDeclPositions(~moduleName=moduleTrue);
+    let positionsFalse = getDeclPositions(~moduleName=moduleFalse);
+    let allPositions = PosSet.union(positionsTrue, positionsFalse);
+
+    Log_.item(
+      "XXX requireCond  true:%s false:%s allPositions:[%s]@.",
+      moduleTrue,
+      moduleFalse,
+      allPositions
+      |> PosSet.elements
+      |> List.map(posToString)
+      |> String.concat(", "),
+    );
 
   | Texp_field(
       _,
