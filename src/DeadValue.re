@@ -189,15 +189,32 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
     let positionsFalse = getDeclPositions(~moduleName=moduleFalse);
     let allPositions = PosSet.union(positionsTrue, positionsFalse);
 
-    Log_.item(
-      "XXX requireCond  true:%s false:%s allPositions:[%s]@.",
-      moduleTrue,
-      moduleFalse,
-      allPositions
-      |> PosSet.elements
-      |> List.map(posToString)
-      |> String.concat(", "),
-    );
+    if (verbose) {
+      Log_.item(
+        "requireCond  true:%s false:%s allPositions:[%s]@.",
+        moduleTrue,
+        moduleFalse,
+        allPositions
+        |> PosSet.elements
+        |> List.map(posToString)
+        |> String.concat(", "),
+      );
+    };
+
+    allPositions
+    |> PosSet.iter(pos => {
+         let posFrom = {...Lexing.dummy_pos, pos_fname: currentModuleName^};
+         let locFrom = {
+           Location.loc_start: posFrom,
+           loc_end: posFrom,
+           loc_ghost: false,
+         };
+         addValueReference(
+           ~addFileReference=false,
+           ~locTo={Location.loc_start: pos, loc_end: pos, loc_ghost: false},
+           ~locFrom,
+         );
+       });
 
   | Texp_field(
       _,
