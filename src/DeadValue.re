@@ -152,13 +152,15 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
     let moduleName = Filename.chop_extension(s);
     switch (Hashtbl.find_opt(makeDecls, moduleName)) {
     | Some(locMake) =>
-      Log_.item(
-        "XXX %s(%s) %s defined in %s@.",
-        path |> Path.name,
-        moduleName,
-        locTo.loc_start |> posToString,
-        locMake.loc_start |> posToString,
-      );
+      if (verbose) {
+        Log_.item(
+          "lazyLoad %s(%s) %s defined in %s@.",
+          path |> Path.name,
+          moduleName,
+          locTo.loc_start |> posToString,
+          locMake.loc_start |> posToString,
+        );
+      };
       addValueReference(~addFileReference=true, ~locFrom, ~locTo=locMake);
 
     | None => ()
