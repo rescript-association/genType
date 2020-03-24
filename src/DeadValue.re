@@ -166,6 +166,22 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
     | None => ()
     };
 
+  | Texp_apply(
+      {exp_desc: Texp_ident(path, _, {Types.val_loc: locTo, _})},
+      [
+        (_, Some({exp_desc: Texp_constant(Const_string(sTrue, _))})),
+        (_, Some({exp_desc: Texp_constant(Const_string(sFalse, _))})),
+      ],
+    )
+      when
+        path
+        |> Path.name == "J.unsafe_expr"
+        && Filename.check_suffix(sTrue, ".bs")
+        && Filename.check_suffix(sFalse, ".bs") =>
+    let moduleTrue = Filename.chop_extension(sTrue);
+    let moduleFalse = Filename.chop_extension(sFalse);
+    Log_.item("XXX requireCond  true:%s false:%s@.", moduleTrue, moduleFalse);
+
   | Texp_field(
       _,
       _,

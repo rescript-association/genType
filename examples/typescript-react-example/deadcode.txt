@@ -1484,6 +1484,7 @@
   addValueDeclaration cmp DeadTest.re:132:4
   addValueDeclaration cmp2 DeadTest.re:134:4
   addValueDeclaration makeSwitch DeadTest.re:150:4
+  XXX requireCond  true:ExportWithRename false:DynamicallyLoadedComponent
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
