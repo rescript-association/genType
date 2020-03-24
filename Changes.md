@@ -1,4 +1,5 @@
 # master
+- [DCE] add support for lazyLoad.
 
 # 3.16.0
 - When a `@genType` annotation appears in a `.re`, but the `.rei` also exists, give a warning on the command-line that the annotation will be ignored.
