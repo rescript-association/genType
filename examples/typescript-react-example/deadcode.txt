@@ -1137,6 +1137,9 @@
   addValueDeclaration make ImportHooks.re:15:0
   addValueDeclaration foo ImportHooks.re:21:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/DeadTestWithInterface.cmti
+  Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/RequireCond.cmt
+  addValueDeclaration make RequireCond.re:1:0
+  addValueDeclaration either RequireCond.re:14:0
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/BucklescriptAnnotations.cmt
   addValueDeclaration foo BucklescriptAnnotations.re:19:4
   addValueDeclaration bar BucklescriptAnnotations.re:21:4
@@ -1480,6 +1483,7 @@
   addValueDeclaration make DeadTest.re:122:6
   addValueDeclaration cmp DeadTest.re:132:4
   addValueDeclaration cmp2 DeadTest.re:134:4
+  addValueDeclaration makeSwitch DeadTest.re:150:4
   addValueReference DeadTest.re:1:15 --> ImmutableArray.rei:7:0
   addValueReference DeadTest.re:8:7 --> DeadTest.re:7:4
   addValueReference DeadTest.re:11:7 --> DeadTest.re:10:4
@@ -1554,6 +1558,7 @@
   
 File References
 
+  RequireCond.re -->> 
   Docstrings.re -->> 
   TypeParams3.re -->> 
   DeadTypeTest.re -->> 
@@ -1660,6 +1665,7 @@ File References
   Live Type DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) [0]
   Live Type DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) [1]
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
+  Dead Value DeadTest.makeSwitch: 0 references () [0]
   Dead Value DeadTest.cmp2: 0 references () [0]
   Live Value DeadTest.cmp: 1 references (DeadTest.re:136:16) [0]
   Dead Value DeadTest.LazyDynamicallyLoadedComponent2.make: 0 references () [0]
@@ -1870,6 +1876,8 @@ File References
   Live Value References.update: 0 references () [0]
   Live Value References.access: 0 references () [0]
   Live Value References.create: 0 references () [0]
+  Dead Value RequireCond.either: 0 references () [0]
+  Dead Value RequireCond.make: 0 references () [0]
   Dead Value Shadow.M.test: 0 references () [0]
   Live Value Shadow.M.+test: 0 references () [0]
   Live Value Shadow.test: 0 references () [0]
@@ -3328,6 +3336,18 @@ File References
   <-- line 11
     [@dead "M.test"] let test = () => "a";
 
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/RequireCond.re 1:1
+  make is never used
+  <-- line 1
+  [@dead "make"] [@bs.module]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/RequireCond.re 14:1
+  either is never used
+  <-- line 14
+  [@dead "either"] [@bs.module]
+
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/References.re 39:28
   requiresConversion.+x is a record label never used to read a value
@@ -3843,6 +3863,12 @@ File References
   cmp2 is never used
   <-- line 134
   [@dead "cmp2"] let cmp2 = <LazyDynamicallyLoadedComponent2 s="hello" />;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 150:5
+  makeSwitch is never used
+  <-- line 150
+  [@dead "makeSwitch"] let makeSwitch = ComponentSwitch.make;
 
   Warning Dead Type
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.rei 3:5

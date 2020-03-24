@@ -134,3 +134,17 @@ let cmp = <LazyDynamicallyLoadedComponent s="hello" />;
 let cmp2 = <LazyDynamicallyLoadedComponent2 s="hello" />;
 
 let () = Js.log(cmp);
+
+module Chat = {};
+
+module ComponentSwitch = (
+  val [%requireCond
+        (
+          `gk,
+          "chat",
+          {"false": DynamicallyLoadedComponent, "true": ExportWithRename},
+        )
+      ]
+);
+
+let makeSwitch = ComponentSwitch.make;
