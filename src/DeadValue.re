@@ -110,7 +110,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
         };
       let path = currentModulePath^ @ [currentModuleName^];
       if (!exists) {
-        let sideEffects = exprNoSideEffects(vb.vb_expr);
+        let sideEffects = !exprNoSideEffects(vb.vb_expr);
         addDeclaration(~declKind=Value, ~sideEffects, ~path, ~loc, name);
         if (sideEffects) {
           //Log_.item("XXX this has side effects@.");
