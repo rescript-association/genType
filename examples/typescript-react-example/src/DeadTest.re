@@ -148,3 +148,8 @@ module ComponentSwitch = (
 );
 
 let makeSwitch = ComponentSwitch.make;
+
+[@react.component]
+let make = s => React.string(s);
+
+let () = Js.log(make);

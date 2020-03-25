@@ -143,6 +143,12 @@ console.log(cmp);
 
 var Chat = { };
 
+function DeadTest(Props, s) {
+  return s;
+}
+
+console.log(DeadTest);
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -158,6 +164,8 @@ var thisIsMarkedLive = 42;
 var ComponentSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond;
 
 var makeSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond.make;
+
+var make$2 = DeadTest;
 
 export {
   $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond ,
@@ -188,6 +196,7 @@ export {
   Chat ,
   ComponentSwitch ,
   makeSwitch ,
+  make$2 as make,
   
 }
 /* $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond Not a pure module */
