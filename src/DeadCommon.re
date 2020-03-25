@@ -698,8 +698,12 @@ let rec resolveRecursiveRefs =
         if (decl.pos |> doReportDead) {
           deadDeclarations := [decl, ...deadDeclarations^];
         };
-        if (decl.sideEffects) {
-          Log_.item("XXX dead with side effects %s@.", decl.pos |> posToString);
+        if (decl.sideEffects && (decl.path |> List.hd).[0] != '_') {
+          Log_.item(
+            "XXX %s dead with side effects %s@.",
+            decl.path |> pathToString,
+            decl.pos |> posToString,
+          );
         };
         decl.pos |> ProcessDeadAnnotations.annotateDead;
       };
@@ -726,7 +730,7 @@ let rec resolveRecursiveRefs =
   };
 };
 
-let reportDead = (~onDeadCode) => {
+let reportDead = () => {
   let iterDeclInOrder = (~orderedFiles, ~deadDeclarations, decl) => {
     let refs =
       decl.pos
@@ -828,11 +832,46 @@ let reportDead = (~onDeadCode) => {
     );
   };
 
+  let ppf = Format.std_formatter;
+  let onDecl = ({declKind, pos, path}) => {
+    let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
+    let (name, message) =
+      switch (declKind) {
+      | Value => (
+          "Warning Dead Value",
+          switch (path) {
+          | ["_", ..._] => "has no side effects and can be removed"
+          | _ => "is never used"
+          },
+        )
+      | RecordLabel => (
+          "Warning Dead Type",
+          "is a record label never used to read a value",
+        )
+      | VariantCase => (
+          "Warning Dead Type",
+          "is a variant case which is never constructed",
+        )
+      };
+    Log_.info(~loc, ~name, (ppf, ()) =>
+      Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
+    );
+  };
+
   let orderedDeclarations =
     declarations
     |> List.fast_sort(compareItemsUsingDependencies) /* analyze in reverse order */;
   let deadDeclarations = ref([]);
   orderedDeclarations
   |> List.iter(iterDeclInOrder(~orderedFiles, ~deadDeclarations));
-  deadDeclarations^ |> List.iter(item => item |> onDeadCode);
+  deadDeclarations^
+  |> List.iter(item =>
+       item
+       |> (
+         decl => {
+           decl |> onDecl;
+           decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
+         }
+       )
+     );
 };
