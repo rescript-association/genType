@@ -1640,7 +1640,7 @@ File References
   Dead Type AutoAnnotate.record.+variant: 0 references () [0]
   Dead Type AutoAnnotate.variant.+R: 0 references () [0]
   Dead Value BucklescriptAnnotations.bar: 0 references () [1]
-  XXX dead with side effects BucklescriptAnnotations.re:22:6
+  XXX BucklescriptAnnotations.+f dead with side effects BucklescriptAnnotations.re:22:6
   Dead Value BucklescriptAnnotations.+f: 0 references () [0]
   Dead Value BucklescriptAnnotations.foo: 0 references () [0]
   Live Value CreateErrorHandler1.Error1.notification: 1 references (ErrorHandler.rei:3:2) [0]

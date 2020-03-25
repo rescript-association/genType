@@ -25,12 +25,7 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      addDeclaration(
-        ~declKind=Value,
-        ~path,
-        ~loc=val_loc,
-        Ident.name(id),
-      );
+      addDeclaration(~declKind=Value, ~path, ~loc=val_loc, Ident.name(id));
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes^) {
@@ -116,36 +111,7 @@ let loadCmtFile = cmtFilePath => {
 };
 
 let reportResults = () => {
-  let ppf = Format.std_formatter;
-  let onDecl = ({declKind, pos, path}) => {
-    let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
-    let (name, message) =
-      switch (declKind) {
-      | Value => (
-          "Warning Dead Value",
-          switch (path) {
-          | ["_", ..._] => "has no side effects and can be removed"
-          | _ => "is never used"
-          },
-        )
-      | RecordLabel => (
-          "Warning Dead Type",
-          "is a record label never used to read a value",
-        )
-      | VariantCase => (
-          "Warning Dead Type",
-          "is a variant case which is never constructed",
-        )
-      };
-    Log_.info(~loc, ~name, (ppf, ()) =>
-      Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
-    );
-  };
-  let onDeadCode = decl => {
-    decl |> onDecl;
-    decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
-  };
-  reportDead(~onDeadCode);
+  reportDead();
   WriteDeadAnnotations.write();
 };
 
