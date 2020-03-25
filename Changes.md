@@ -1,4 +1,6 @@
 # master
+
+# 3.17.0
 - [DCE] Add support for lazyLoad.
 - [DCE] Classify dead values that have side effects.
 - [DCE] Don't report dead values within the scope of other dead values.
