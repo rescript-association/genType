@@ -730,6 +730,90 @@ let rec resolveRecursiveRefs =
   };
 };
 
+module Decl = {
+  let compareUsingDependencies =
+      (
+        ~orderedFiles,
+        {
+          declKind: kind1,
+          path: path1,
+          pos: {
+            pos_fname: fname1,
+            pos_lnum: lnum1,
+            pos_bol: bol1,
+            pos_cnum: cnum1,
+          },
+        },
+        {
+          declKind: kind2,
+          path: path2,
+          pos: {
+            pos_fname: fname2,
+            pos_lnum: lnum2,
+            pos_bol: bol2,
+            pos_cnum: cnum2,
+          },
+        },
+      ) => {
+    let findPosition = fn => Hashtbl.find(orderedFiles, fn);
+
+    let pathIsImplementationOf = (path1, path2) =>
+      switch (path1, path2) {
+      | ([name1, ...restPath1], [name2, ...restPath2]) =>
+        name1.[0] == '+'
+        && name2.[0] != '+'
+        && List.length(restPath1) > 1
+        && restPath1 == restPath2
+      | ([], _)
+      | (_, []) => false
+      };
+
+    /* From the root of the file dependency DAG to the leaves.
+       From the bottom of the file to the top. */
+    let (position1, position2) = (
+      fname1 |> findPosition,
+      fname2 |> findPosition,
+    );
+    let (p1, p2) =
+      pathIsImplementationOf(path1, path2)
+        ? (1, 0) : pathIsImplementationOf(path2, path1) ? (0, 1) : (0, 0);
+    compare(
+      (position1, p1, lnum2, bol2, cnum2, kind1),
+      (position2, p2, lnum1, bol1, cnum1, kind2),
+    );
+  };
+
+  let report = ({declKind, pos, path, sideEffects}) => {
+    let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
+    let sideEffectsNoUnderscore = sideEffects && (path |> List.hd).[0] != '_';
+
+    let (name, message) =
+      switch (declKind) {
+      | Value => (
+          "Warning Dead Value"
+          ++ (sideEffectsNoUnderscore ? " With Side Effects" : ""),
+          switch (path) {
+          | ["_", ..._] => "has no side effects and can be removed"
+          | _ =>
+            "is never used"
+            ++ (sideEffectsNoUnderscore ? " and could have side effects" : "")
+          },
+        )
+      | RecordLabel => (
+          "Warning Dead Type",
+          "is a record label never used to read a value",
+        )
+      | VariantCase => (
+          "Warning Dead Type",
+          "is a variant case which is never constructed",
+        )
+      };
+    Log_.info(~loc, ~name, (ppf, ()) =>
+      Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
+    );
+  };
+};
+
 let reportDead = () => {
   let iterDeclInOrder = (~orderedFiles, ~deadDeclarations, decl) => {
     let refs =
@@ -781,102 +865,18 @@ let reportDead = () => {
     },
   );
 
-  let compareItemsUsingDependencies =
-      (
-        {
-          declKind: kind1,
-          path: path1,
-          pos: {
-            pos_fname: fname1,
-            pos_lnum: lnum1,
-            pos_bol: bol1,
-            pos_cnum: cnum1,
-          },
-        },
-        {
-          declKind: kind2,
-          path: path2,
-          pos: {
-            pos_fname: fname2,
-            pos_lnum: lnum2,
-            pos_bol: bol2,
-            pos_cnum: cnum2,
-          },
-        },
-      ) => {
-    let findPosition = fn => Hashtbl.find(orderedFiles, fn);
-
-    let pathIsImplementationOf = (path1, path2) =>
-      switch (path1, path2) {
-      | ([name1, ...restPath1], [name2, ...restPath2]) =>
-        name1.[0] == '+'
-        && name2.[0] != '+'
-        && List.length(restPath1) > 1
-        && restPath1 == restPath2
-      | ([], _)
-      | (_, []) => false
-      };
-
-    /* From the root of the file dependency DAG to the leaves.
-       From the bottom of the file to the top. */
-    let (position1, position2) = (
-      fname1 |> findPosition,
-      fname2 |> findPosition,
-    );
-    let (p1, p2) =
-      pathIsImplementationOf(path1, path2)
-        ? (1, 0) : pathIsImplementationOf(path2, path1) ? (0, 1) : (0, 0);
-    compare(
-      (position1, p1, lnum2, bol2, cnum2, kind1),
-      (position2, p2, lnum1, bol1, cnum1, kind2),
-    );
-  };
-
-  let ppf = Format.std_formatter;
-  let onDecl = ({declKind, pos, path, sideEffects}) => {
-    let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
-    let sideEffectsNoUnderscore = sideEffects && (path |> List.hd).[0] != '_';
-
-    let (name, message) =
-      switch (declKind) {
-      | Value => (
-          "Warning Dead Value"
-          ++ (sideEffectsNoUnderscore ? " With Side Effects" : ""),
-          switch (path) {
-          | ["_", ..._] => "has no side effects and can be removed"
-          | _ =>
-            "is never used"
-            ++ (sideEffectsNoUnderscore ? " and could have side effects" : "")
-          },
-        )
-      | RecordLabel => (
-          "Warning Dead Type",
-          "is a record label never used to read a value",
-        )
-      | VariantCase => (
-          "Warning Dead Type",
-          "is a variant case which is never constructed",
-        )
-      };
-    Log_.info(~loc, ~name, (ppf, ()) =>
-      Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
-    );
-  };
-
   let orderedDeclarations =
     declarations
-    |> List.fast_sort(compareItemsUsingDependencies) /* analyze in reverse order */;
+    |> List.fast_sort(Decl.compareUsingDependencies(~orderedFiles)) /* analyze in reverse order */;
+
   let deadDeclarations = ref([]);
   orderedDeclarations
   |> List.iter(iterDeclInOrder(~orderedFiles, ~deadDeclarations));
+
+  let ppf = Format.std_formatter;
   deadDeclarations^
-  |> List.iter(item =>
-       item
-       |> (
-         decl => {
-           decl |> onDecl;
-           decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
-         }
-       )
-     );
+  |> List.iter(decl => {
+       decl |> Decl.report;
+       decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
+     });
 };
