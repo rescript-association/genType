@@ -814,7 +814,7 @@ module Decl = {
     );
   };
 
-  let report = ({declKind, pos, posEnd, path, sideEffects}) => {
+  let report = (~ppf, {declKind, pos, posEnd, path, sideEffects} as decl) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let sideEffectsNoUnderscore = sideEffects && (path |> List.hd).[0] != '_';
 
@@ -844,19 +844,22 @@ module Decl = {
       declKind == Value
       && !fileHasChanged
       && maxValuePosEnd^.pos_cnum > pos.pos_cnum;
-    Log_.info(~loc, ~name, (ppf, ()) =>
-      Format.fprintf(
-        ppf,
-        "@{<info>%s@} %s%s",
-        path |> pathWithoutHead,
-        message,
-        insideReportedValue ? " XXX position already covered" : "",
-      )
-    );
-    if (declKind == Value) {
-      if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
-        maxValuePosEnd := posEnd;
+    if (!insideReportedValue) {
+      Log_.info(~loc, ~name, (ppf, ()) =>
+        Format.fprintf(
+          ppf,
+          "@{<info>%s@} %s",
+          path |> pathWithoutHead,
+          message,
+        )
+      );
+      if (declKind == Value) {
+        if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
+          maxValuePosEnd := posEnd;
+        };
       };
+
+      decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
     };
   };
 };
@@ -921,10 +924,7 @@ let reportDead = () => {
   |> List.iter(iterDeclInOrder(~orderedFiles, ~deadDeclarations));
 
   let ppf = Format.std_formatter;
-  deadDeclarations^
-  |> List.fast_sort(Decl.compareForReporting)
-  |> List.iter(decl => {
-       decl |> Decl.report;
-       decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
-     });
+  let sortedDeadDeclarations =
+    deadDeclarations^ |> List.fast_sort(Decl.compareForReporting);
+  sortedDeadDeclarations |> List.iter(Decl.report(~ppf));
 };
