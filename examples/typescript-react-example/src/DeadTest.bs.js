@@ -167,6 +167,8 @@ var makeSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond.mak
 
 var make$2 = DeadTest;
 
+var zzz = /* () */0;
+
 export {
   $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond ,
   fortytwo ,
@@ -197,6 +199,7 @@ export {
   ComponentSwitch ,
   makeSwitch ,
   make$2 as make,
+  zzz ,
   
 }
 /* $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond Not a pure module */

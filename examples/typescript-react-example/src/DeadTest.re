@@ -153,3 +153,10 @@ let makeSwitch = ComponentSwitch.make;
 let make = s => React.string(s);
 
 let () = Js.log(make);
+
+let zzz = {
+  let a1 = 1;
+  let a2 = 2;
+  let a3 = 3;
+  ();
+};
