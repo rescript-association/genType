@@ -169,6 +169,7 @@ let currentModuleName = ref("");
 let currentBindings = ref(PosSet.empty);
 let lastBinding = ref(Location.none);
 let getLastBinding = () => lastBinding^;
+let maxValuePosEnd = ref(Lexing.dummy_pos); // max end position of a value reported dead
 
 let getPosOfValue = (~moduleName, ~name) => {
   switch (Hashtbl.find_opt(moduleDecls, moduleName)) {
@@ -813,7 +814,7 @@ module Decl = {
     );
   };
 
-  let report = ({declKind, pos, path, sideEffects}) => {
+  let report = ({declKind, pos, posEnd, path, sideEffects}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let sideEffectsNoUnderscore = sideEffects && (path |> List.hd).[0] != '_';
 
@@ -838,9 +839,25 @@ module Decl = {
           "is a variant case which is never constructed",
         )
       };
+    let fileHasChanged = maxValuePosEnd^.pos_fname != pos.pos_fname;
+    let insideReportedValue =
+      declKind == Value
+      && !fileHasChanged
+      && maxValuePosEnd^.pos_cnum > pos.pos_cnum;
     Log_.info(~loc, ~name, (ppf, ()) =>
-      Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
+      Format.fprintf(
+        ppf,
+        "@{<info>%s@} %s%s",
+        path |> pathWithoutHead,
+        message,
+        insideReportedValue ? " XXX position already covered" : "",
+      )
     );
+    if (declKind == Value) {
+      if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
+        maxValuePosEnd := posEnd;
+      };
+    };
   };
 };
 

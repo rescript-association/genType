@@ -1485,6 +1485,7 @@
   addValueDeclaration cmp2 DeadTest.re:134:4
   addValueDeclaration makeSwitch DeadTest.re:150:4
   addValueDeclaration make DeadTest.re:153:4
+  addValueDeclaration zzz DeadTest.re:157:4
   requireCond  true:ExportWithRename false:DynamicallyLoadedComponent allPositions:[DynamicallyLoadedComponent.re:2:4, ExportWithRename.re:3:4]
   addValueReference DeadTest:0:-1 --> DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest:0:-1 --> ExportWithRename.re:3:4
@@ -1556,6 +1557,9 @@
   addValueReference DeadTest.re:136:16 --> DeadTest.re:132:4
   addValueReference DeadTest.re:153:4 --> DeadTest.re:153:11
   addValueReference DeadTest.re:153:4 --> React.re:5:0
+  addValueDeclaration +a1 DeadTest.re:158:6
+  addValueDeclaration +a2 DeadTest.re:159:6
+  addValueDeclaration +a3 DeadTest.re:160:6
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
@@ -1671,6 +1675,10 @@ File References
   Live Type DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) [0]
   Live Type DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) [1]
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
+  Dead Value DeadTest.+a3: 0 references () [0]
+  Dead Value DeadTest.+a2: 0 references () [0]
+  Dead Value DeadTest.+a1: 0 references () [0]
+  Dead Value DeadTest.zzz: 0 references () [0]
   Dead Value DeadTest.make: 0 references () [0]
   Dead Value DeadTest.makeSwitch: 0 references () [0]
   Dead Value DeadTest.cmp2: 0 references () [0]
@@ -2283,7 +2291,7 @@ File References
 
   Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/BucklescriptAnnotations.re 22:7
-  +f is never used and could have side effects
+  +f is never used and could have side effects XXX position already covered
   <-- line 22
     [@dead "+f"] let f = x##twoArgs;
 
@@ -2499,7 +2507,7 @@ File References
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 90:7
-  +cb is never used
+  +cb is never used XXX position already covered
   <-- line 90
     [@dead "+cb"] let cb = () => recWithCallback();
 
@@ -2511,7 +2519,7 @@ File References
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 95:7
-  +cb is never used
+  +cb is never used XXX position already covered
   <-- line 95
     [@dead "+cb"] let cb = () => bar();
 
@@ -2580,6 +2588,30 @@ File References
   make is never used
   <-- line 153
   [@dead "make"] [@react.component]
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 157:5
+  zzz is never used
+  <-- line 157
+  [@dead "zzz"] let zzz = {
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 158:7
+  +a1 is never used XXX position already covered
+  <-- line 158
+    [@dead "+a1"] let a1 = 1;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 159:7
+  +a2 is never used XXX position already covered
+  <-- line 159
+    [@dead "+a2"] let a2 = 2;
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 160:7
+  +a3 is never used XXX position already covered
+  <-- line 160
+    [@dead "+a3"] let a3 = 3;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 1:21
@@ -2805,13 +2837,13 @@ File References
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 149:9
-  RenderPropRequiresConversion.+car is never used
+  RenderPropRequiresConversion.+car is never used XXX position already covered
   <-- line 149
       [@dead "RenderPropRequiresConversion.+car"] let car = {name: "Car"};
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/Hooks.re 150:19
-  RenderPropRequiresConversion.+unsafe_expr is never used
+  RenderPropRequiresConversion.+unsafe_expr is never used XXX position already covered
   <-- line 150
       renderVehicle([@dead "RenderPropRequiresConversion.+unsafe_expr"] {"vehicle": car, "number": 42});
 
