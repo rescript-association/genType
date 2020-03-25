@@ -112,10 +112,6 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
       if (!exists) {
         let sideEffects = !exprNoSideEffects(vb.vb_expr);
         addDeclaration(~declKind=Value, ~sideEffects, ~path, ~loc, name);
-        if (sideEffects) {
-          //Log_.item("XXX this has side effects@.");
-          ()
-        };
       };
       switch (PosHash.find_opt(decls, loc_start)) {
       | None => ()
