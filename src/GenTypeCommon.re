@@ -226,6 +226,7 @@ let dateT = ident("Date");
 let numberT = ident("number");
 let stringT = ident("string");
 let unitT = ident("void");
+let int64T = Tuple([numberT, numberT]);
 
 module NodeFilename = {
   include Filename;

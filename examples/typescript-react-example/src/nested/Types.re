@@ -154,3 +154,12 @@ type date = Js.Date.t;
 
 [@genType]
 let currentTime = Js.Date.make();
+
+[@genType]
+type i64A = Int64.t;
+
+[@genType]
+type i64B = int64;
+
+[@genType]
+let i64Const: i64B = 34L;

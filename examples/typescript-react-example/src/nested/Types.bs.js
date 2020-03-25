@@ -78,6 +78,11 @@ var jsStringT = "a";
 
 var jsString2T = "a";
 
+var i64Const = /* int64 */[
+  /* hi */0,
+  /* lo */34
+];
+
 export {
   someIntList ,
   map ,
@@ -95,6 +100,7 @@ export {
   setMatch ,
   testInstantiateTypeParameter ,
   currentTime ,
+  i64Const ,
   
 }
 /* currentTime Not a pure module */

@@ -56,6 +56,9 @@ let translateConstr =
 
   | (["FB", "int"] | ["int"], []) => {dependencies: [], type_: numberT}
 
+
+  | (["Int64", "t"] | ["int64"], []) => {dependencies: [], type_: int64T}
+
   | (["FB", "float"] | ["float"], []) => {dependencies: [], type_: numberT}
 
   | (

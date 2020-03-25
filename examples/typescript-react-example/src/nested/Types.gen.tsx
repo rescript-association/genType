@@ -97,6 +97,12 @@ export type Vector<a> = vector<a>;
 // tslint:disable-next-line:interface-over-type-literal
 export type date = Date;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type i64A = [number, number];
+
+// tslint:disable-next-line:interface-over-type-literal
+export type i64B = [number, number];
+
 export const someIntList: list<number> = TypesBS.someIntList;
 
 export const map: <T1,T2>(_1:((_1:T1) => T2), _2:list<T1>) => list<T2> = function <T1,T2>(Arg1: any, Arg2: any) {
@@ -134,3 +140,5 @@ export const setMatch: (x:marshalMutableField) => void = TypesBS.setMatch;
 export const testInstantiateTypeParameter: (x:instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;
 
 export const currentTime: Date = TypesBS.currentTime;
+
+export const i64Const: i64B = TypesBS.i64Const;
