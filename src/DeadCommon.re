@@ -783,6 +783,33 @@ module Decl = {
     );
   };
 
+  let compareForReporting =
+      (
+        {
+          declKind: kind1,
+          pos: {
+            pos_fname: fname1,
+            pos_lnum: lnum1,
+            pos_bol: bol1,
+            pos_cnum: cnum1,
+          },
+        },
+        {
+          declKind: kind2,
+          pos: {
+            pos_fname: fname2,
+            pos_lnum: lnum2,
+            pos_bol: bol2,
+            pos_cnum: cnum2,
+          },
+        },
+      ) => {
+    compare(
+      (fname1, lnum1, bol1, cnum1, kind1),
+      (fname2, lnum2, bol2, cnum2, kind2),
+    );
+  };
+
   let report = ({declKind, pos, path, sideEffects}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let sideEffectsNoUnderscore = sideEffects && (path |> List.hd).[0] != '_';
@@ -875,6 +902,7 @@ let reportDead = () => {
 
   let ppf = Format.std_formatter;
   deadDeclarations^
+  |> List.fast_sort(Decl.compareForReporting)
   |> List.iter(decl => {
        decl |> Decl.report;
        decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
