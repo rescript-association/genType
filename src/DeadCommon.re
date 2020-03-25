@@ -626,7 +626,7 @@ let rec resolveRecursiveRefs =
   | _ when decl.resolved =>
     if (recursiveDebug) {
       Log_.item(
-        "XXX %s [%d] already resolved@.",
+        "recursiveDebug %s [%d] already resolved@.",
         decl.path |> pathToString,
         level,
       );
@@ -635,7 +635,7 @@ let rec resolveRecursiveRefs =
   | _ when PosSet.mem(decl.pos, refsBeingResolved^) =>
     if (recursiveDebug) {
       Log_.item(
-        "XXX %s [%d] is being resolved: assume dead@.",
+        "recursiveDebug %s [%d] is being resolved: assume dead@.",
         decl.path |> pathToString,
         level,
       );
@@ -643,7 +643,7 @@ let rec resolveRecursiveRefs =
     true;
   | _ =>
     if (recursiveDebug) {
-      Log_.item("XXX resolving %s [%d]@.", decl.path |> pathToString, level);
+      Log_.item("recursiveDebug resolving %s [%d]@.", decl.path |> pathToString, level);
     };
     refsBeingResolved := PosSet.add(decl.pos, refsBeingResolved^);
     let allDepsResolved = ref(true);
@@ -653,7 +653,7 @@ let rec resolveRecursiveRefs =
            if (x == decl.pos) {
              if (recursiveDebug) {
                Log_.item(
-                 "XXX %s ignoring reference to self@.",
+                 "recursiveDebug %s ignoring reference to self@.",
                  decl.path |> pathToString,
                );
              };
@@ -662,7 +662,7 @@ let rec resolveRecursiveRefs =
              switch (PosHash.find_opt(decls, x)) {
              | None =>
                if (recursiveDebug) {
-                 Log_.item("XXX can't find decl for %s@.", x |> posToString);
+                 Log_.item("recursiveDebug can't find decl for %s@.", x |> posToString);
                };
                true;
              | Some(xDecl) =>
