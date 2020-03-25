@@ -643,7 +643,11 @@ let rec resolveRecursiveRefs =
     true;
   | _ =>
     if (recursiveDebug) {
-      Log_.item("recursiveDebug resolving %s [%d]@.", decl.path |> pathToString, level);
+      Log_.item(
+        "recursiveDebug resolving %s [%d]@.",
+        decl.path |> pathToString,
+        level,
+      );
     };
     refsBeingResolved := PosSet.add(decl.pos, refsBeingResolved^);
     let allDepsResolved = ref(true);
@@ -662,7 +666,10 @@ let rec resolveRecursiveRefs =
              switch (PosHash.find_opt(decls, x)) {
              | None =>
                if (recursiveDebug) {
-                 Log_.item("recursiveDebug can't find decl for %s@.", x |> posToString);
+                 Log_.item(
+                   "recursiveDebug can't find decl for %s@.",
+                   x |> posToString,
+                 );
                };
                true;
              | Some(xDecl) =>
@@ -697,13 +704,6 @@ let rec resolveRecursiveRefs =
       if (isDead) {
         if (decl.pos |> doReportDead) {
           deadDeclarations := [decl, ...deadDeclarations^];
-        };
-        if (decl.sideEffects && (decl.path |> List.hd).[0] != '_') {
-          Log_.item(
-            "XXX %s dead with side effects %s@.",
-            decl.path |> pathToString,
-            decl.pos |> posToString,
-          );
         };
         decl.pos |> ProcessDeadAnnotations.annotateDead;
       };
@@ -833,15 +833,20 @@ let reportDead = () => {
   };
 
   let ppf = Format.std_formatter;
-  let onDecl = ({declKind, pos, path}) => {
+  let onDecl = ({declKind, pos, path, sideEffects}) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
+    let sideEffectsNoUnderscore = sideEffects && (path |> List.hd).[0] != '_';
+
     let (name, message) =
       switch (declKind) {
       | Value => (
-          "Warning Dead Value",
+          "Warning Dead Value"
+          ++ (sideEffectsNoUnderscore ? " With Side Effects" : ""),
           switch (path) {
           | ["_", ..._] => "has no side effects and can be removed"
-          | _ => "is never used"
+          | _ =>
+            "is never used"
+            ++ (sideEffectsNoUnderscore ? " and could have side effects" : "")
           },
         )
       | RecordLabel => (
