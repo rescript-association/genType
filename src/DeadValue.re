@@ -119,11 +119,11 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
         // Value bindings contain the correct location for the entire declaration: update final position.
         // The previous value was taken from the signature, which only has positions for the id.
 
-        let posAnnotation =
-          annotateAtEnd(~pos=loc_start)
-            ? vb.vb_loc.loc_end : vb.vb_loc.loc_start;
-
-        PosHash.replace(decls, loc_start, {...decl, posAnnotation});
+        PosHash.replace(
+          decls,
+          loc_start,
+          {...decl, posEnd: vb.vb_loc.loc_end, posStart: vb.vb_loc.loc_start},
+        )
       };
       loc;
     | _ => getLastBinding()

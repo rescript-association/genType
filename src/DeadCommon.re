@@ -148,7 +148,8 @@ type decl = {
   declKind,
   path,
   pos: Lexing.position,
-  posAnnotation: Lexing.position,
+  posEnd: Lexing.position,
+  posStart: Lexing.position,
   mutable resolved: bool,
   sideEffects: bool,
 };
@@ -332,11 +333,14 @@ let pathWithoutHead = path => {
 
 let annotateAtEnd = (~pos) => !posIsReason(pos);
 
+let getPosAnnotation = decl =>
+  annotateAtEnd(~pos=decl.pos) ? decl.posEnd : decl.posStart;
+
 let addDeclaration =
     (~sideEffects=false, ~declKind, ~path, ~loc: Location.t, name) => {
   let pos = loc.loc_start;
+  let posStart = pos;
   let posEnd = loc.loc_end;
-  let posAnnotation = annotateAtEnd(~pos) ? posEnd : pos;
 
   /* a .cmi file can contain locations from other files.
        For instance:
@@ -364,7 +368,8 @@ let addDeclaration =
       declKind,
       path: [name, ...path],
       pos,
-      posAnnotation,
+      posEnd,
+      posStart,
       resolved: false,
       sideEffects,
     };
@@ -496,7 +501,7 @@ module WriteDeadAnnotations = {
   let rec lineToString_ = ({original, declarations}) => {
     switch (declarations) {
     | [] => original
-    | [{declKind, path, pos, posAnnotation}, ...nextDeclarations] =>
+    | [{declKind, path, pos} as decl, ...nextDeclarations] =>
       let isReason = posIsReason(pos);
       let annotationStr =
         (isReason ? "" : " ")
@@ -506,6 +511,7 @@ module WriteDeadAnnotations = {
         ++ " \""
         ++ (path |> pathWithoutHead)
         ++ "\"] ";
+      let posAnnotation = decl |> getPosAnnotation;
       let col = posAnnotation.pos_cnum - posAnnotation.pos_bol;
       let originalLen = String.length(original);
       {
@@ -526,12 +532,9 @@ module WriteDeadAnnotations = {
   let lineToString = ({original, declarations}) => {
     let declarations =
       declarations
-      |> List.sort(
-           (
-             {posAnnotation: {pos_cnum: c1}},
-             {posAnnotation: {pos_cnum: c2}},
-           ) =>
-           c2 - c1
+      |> List.sort((decl1, decl2) =>
+           getPosAnnotation(decl2).pos_cnum
+           - getPosAnnotation(decl1).pos_cnum
          );
     lineToString_({original, declarations});
   };
@@ -577,7 +580,7 @@ module WriteDeadAnnotations = {
         currentFileLines := readFile(fileName);
       };
 
-      let indexInLines = decl.posAnnotation.pos_lnum - 1;
+      let indexInLines = (decl |> getPosAnnotation).pos_lnum - 1;
 
       if (indexInLines < Array.length(currentFileLines^)) {
         let line = currentFileLines^[indexInLines];
