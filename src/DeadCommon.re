@@ -699,7 +699,7 @@ let rec resolveRecursiveRefs =
           deadDeclarations := [decl, ...deadDeclarations^];
         };
         if (decl.sideEffects) {
-          Log_.item("XXX dead with side effects@.");
+          Log_.item("XXX dead with side effects %s@.", decl.pos |> posToString);
         };
         decl.pos |> ProcessDeadAnnotations.annotateDead;
       };
