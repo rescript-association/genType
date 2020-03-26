@@ -2,18 +2,37 @@ open GenTypeCommon;
 
 let rec addAnnotationsToTypes_ =
         (~config, ~expr: Typedtree.expression, argTypes: list(argType)) =>
-  switch (expr.exp_desc, argTypes) {
-  | (_, [{aName, aType: GroupOfLabeledArgs(fields)}, ...nextTypes]) =>
+  switch (expr.exp_desc, expr.exp_type.desc, argTypes) {
+  | (_, _, [{aName, aType: GroupOfLabeledArgs(fields)}, ...nextTypes]) =>
     let (fields1, nextTypes1) =
       addAnnotationsToFields(~config, expr, fields, nextTypes);
     [{aName, aType: GroupOfLabeledArgs(fields1)}, ...nextTypes1];
-  | (Texp_function({param, cases: [{c_rhs}]}), [{aType}, ...nextTypes]) =>
+  | (
+      Texp_function({param, cases: [{c_rhs}]}),
+      _,
+      [{aType}, ...nextTypes],
+    ) =>
     let nextTypes1 =
       nextTypes |> addAnnotationsToTypes_(~config, ~expr=c_rhs);
     let aName = Ident.name(param);
     [{aName, aType}, ...nextTypes1];
   | (
+      Texp_record({
+        fields: [|({lbl_name: "I"}, Overridden(_, exprRecord))|],
+      }),
+      Tconstr(path, _, _),
+      _,
+    )
+      when
+        switch (path |> TranslateTypeExprFromTypes.pathToList |> List.rev) {
+        | ["Js", "Fn", _arity] => true
+        | _ => false
+        } =>
+    // let uncurried1: Js.Fn.arity1(_) = {I: x => x |> string_of_int};
+    addAnnotationsToTypes_(~config, ~expr=exprRecord, argTypes)
+  | (
       Texp_apply({exp_desc: Texp_ident(path, _, _)}, [(_, Some(expr1))]),
+      _,
       _,
     ) =>
     switch (path |> TranslateTypeExprFromTypes.pathToList |> List.rev) {
