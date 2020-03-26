@@ -139,6 +139,35 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
 let collectExpr = (super, self, e: Typedtree.expression) => {
   let locFrom = e.exp_loc;
   switch (e.exp_desc) {
+  | Texp_ident(path, _, {Types.val_loc: {loc_ghost: true}}) =>
+    switch (path |> Path.flatten) {
+    | `Ok(id, ls) =>
+      let moduleName_ = path |> Path.head |> Ident.name;
+      let name = path |> Path.last;
+      let moduleName = moduleName_ == name ? currentModuleName^ : moduleName_;
+      let path = [Ident.name(id), ...ls] |> String.concat(".");
+      switch (getPosOfValue(~moduleName, ~name)) {
+      | Some(posName) =>
+        if (name == "make") {
+          Log_.item(
+            "XXX reference to ghost make %s moduleName:%s path:%s posName:%s@.",
+            locFrom.loc_start |> posToString,
+            moduleName,
+            path,
+            posName |> posToString,
+          );
+          addValueReference(
+            ~addFileReference=true,
+            ~locFrom,
+            ~locTo={loc_start: posName, loc_end: posName, loc_ghost: false},
+          );
+        }
+
+      | None => ()
+      };
+    | _ => ()
+    }
+
   | Texp_ident(_path, _, {Types.val_loc: {loc_ghost: false, _} as locTo, _}) =>
     addValueReference(~addFileReference=true, ~locFrom, ~locTo)
 

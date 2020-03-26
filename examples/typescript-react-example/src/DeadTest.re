@@ -160,3 +160,5 @@ let zzz = {
   let a3 = 3;
   ();
 };
+
+let () = Js.log(<DynamicallyLoadedComponent s="" />);
