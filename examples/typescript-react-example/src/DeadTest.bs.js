@@ -36,7 +36,7 @@ console.log(DeadValueTest.valueAlive);
 
 function unusedRec(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
@@ -48,34 +48,34 @@ function split_map(l) {
 
 function rec1(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function rec2(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function recWithCallback(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function foo(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function bar(param) {
-  return foo(/* () */0);
+  return foo(undefined);
 }
 
 function withDefaultValue(paramWithDefaultOpt, y) {
@@ -167,7 +167,7 @@ var makeSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond.mak
 
 var make$2 = DeadTest;
 
-var zzz = /* () */0;
+var zzz;
 
 export {
   $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond ,

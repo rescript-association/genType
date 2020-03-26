@@ -56,7 +56,6 @@ let translateConstr =
 
   | (["FB", "int"] | ["int"], []) => {dependencies: [], type_: numberT}
 
-
   | (["Int64", "t"] | ["int64"], []) => {dependencies: [], type_: int64T}
 
   | (["FB", "float"] | ["float"], []) => {dependencies: [], type_: numberT}
@@ -236,6 +235,48 @@ let translateConstr =
           typeVars: [],
           uncurried: true,
         }),
+    }
+  | (["Js", "Fn", "arity0"], [ret]) => {
+      dependencies: ret.dependencies,
+      type_:
+        Function({
+          argTypes: [],
+          componentName: None,
+          retType: ret.type_,
+          typeVars: [],
+          uncurried: true,
+        }),
+    }
+  | (
+      [
+        "Js" | "Js_OO",
+        "Fn" | "Meth",
+        "arity1" | "arity2" | "arity3" | "arity4" | "arity5" | "arity6" |
+        "arity7" |
+        "arity8" |
+        "arity9" |
+        "arity10" |
+        "arity11" |
+        "arity12" |
+        "arity13" |
+        "arity14" |
+        "arity15" |
+        "arity16" |
+        "arity17" |
+        "arity18" |
+        "arity19" |
+        "arity20" |
+        "arity21" |
+        "arity22",
+      ],
+      [arg],
+    ) => {
+      dependencies: arg.dependencies,
+      type_:
+        switch (arg.type_) {
+        | Function(function_) => Function({...function_, uncurried: true})
+        | _ => arg.type_
+        },
     }
   | (
       ["Js", "Internal", "fn"],

@@ -26,29 +26,28 @@ var Bs_version = {
 };
 
 function map_split_opt(xs, f) {
-  if (xs) {
-    var match = Curry._1(f, xs[0]);
-    var d = match[1];
-    var c = match[0];
-    var match$1 = map_split_opt(xs[1], f);
-    var ds = match$1[1];
-    var cs = match$1[0];
-    return /* tuple */[
-            c !== undefined ? /* :: */[
-                Caml_option.valFromOption(c),
-                cs
-              ] : cs,
-            d !== undefined ? /* :: */[
-                Caml_option.valFromOption(d),
-                ds
-              ] : ds
-          ];
-  } else {
+  if (!xs) {
     return /* tuple */[
             /* [] */0,
             /* [] */0
           ];
   }
+  var match = Curry._1(f, xs[0]);
+  var d = match[1];
+  var c = match[0];
+  var match$1 = map_split_opt(xs[1], f);
+  var ds = match$1[1];
+  var cs = match$1[0];
+  return /* tuple */[
+          c !== undefined ? /* :: */[
+              Caml_option.valFromOption(c),
+              cs
+            ] : cs,
+          d !== undefined ? /* :: */[
+              Caml_option.valFromOption(d),
+              ds
+            ] : ds
+        ];
 }
 
 var thisHasSemicolons = 3;
