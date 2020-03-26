@@ -1,4 +1,5 @@
 # master
+- Support new uncurry representation that will be available from Bucklescript version 7.3.0.
 
 # 3.17.0
 - [DCE] Add support for lazyLoad.
