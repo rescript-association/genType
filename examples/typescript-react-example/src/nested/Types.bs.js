@@ -2,7 +2,6 @@
 
 import * as List from "bs-platform/lib/es6/list.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
-import * as Caml_int64 from "bs-platform/lib/es6/caml_int64.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 
 function swap(tree) {
@@ -51,7 +50,7 @@ var testMarshalFields = {
 
 function setMatch(x) {
   x.match = 34;
-  
+  return /* () */0;
 }
 
 function testInstantiateTypeParameter(x) {
@@ -79,7 +78,10 @@ var jsStringT = "a";
 
 var jsString2T = "a";
 
-var i64Const = Caml_int64.mk(34, 0);
+var i64Const = /* int64 */[
+  /* hi */0,
+  /* lo */34
+];
 
 export {
   someIntList ,

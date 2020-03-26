@@ -10,7 +10,7 @@ function isWeekend(x) {
 }
 
 function onlySunday(param) {
-  
+  return /* () */0;
 }
 
 function swap(x) {

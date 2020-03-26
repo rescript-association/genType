@@ -11,26 +11,27 @@ function printVariantWithPayload(x) {
       if (x >= 803296723) {
         if (x >= 937218926) {
           console.log("printVariantWithPayload: True");
-          return ;
+          return /* () */0;
         } else {
           console.log("printVariantWithPayload: Half");
-          return ;
+          return /* () */0;
         }
       } else if (x >= 98) {
         console.log("printVariantWithPayload: b");
-        return ;
+        return /* () */0;
       } else {
         console.log("printVariantWithPayload: Twenty");
-        return ;
+        return /* () */0;
       }
     } else {
       console.log("printVariantWithPayload: a");
-      return ;
+      return /* () */0;
     }
+  } else {
+    var payload = x[1];
+    console.log("printVariantWithPayload x:", payload.x, "y:", payload.y);
+    return /* () */0;
   }
-  var payload = x[1];
-  console.log("printVariantWithPayload x:", payload.x, "y:", payload.y);
-  
 }
 
 function testManyPayloads(x) {
@@ -43,14 +44,16 @@ function printManyPayloads(x) {
     if (variant >= 261117022) {
       var payload = x[1];
       console.log("printManyPayloads x:", payload.x, "y:", payload.y);
-      return ;
+      return /* () */0;
+    } else {
+      console.log("printManyPayloads one:", x[1]);
+      return /* () */0;
     }
-    console.log("printManyPayloads one:", x[1]);
-    return ;
+  } else {
+    var match = x[1];
+    console.log("printManyPayloads two:", match[0], match[1]);
+    return /* () */0;
   }
-  var match = x[1];
-  console.log("printManyPayloads two:", match[0], match[1]);
-  
 }
 
 function testSimpleVariant(x) {
@@ -64,23 +67,24 @@ function testVariantWithPayloads(x) {
 function printVariantWithPayloads(x) {
   if (typeof x === "number") {
     console.log("printVariantWithPayloads", "A");
-    return ;
-  }
-  switch (x.tag | 0) {
-    case /* B */0 :
-        console.log("printVariantWithPayloads", "B(" + (String(x[0]) + ")"));
-        return ;
-    case /* C */1 :
-        console.log("printVariantWithPayloads", "C(" + (String(x[0]) + (", " + (String(x[1]) + ")"))));
-        return ;
-    case /* D */2 :
-        var match = x[0];
-        console.log("printVariantWithPayloads", "D((" + (String(match[0]) + (", " + (String(match[1]) + "))"))));
-        return ;
-    case /* E */3 :
-        console.log("printVariantWithPayloads", "E(" + (String(x[0]) + (", " + (x[1] + (", " + (String(x[2]) + ")"))))));
-        return ;
-    
+    return /* () */0;
+  } else {
+    switch (x.tag | 0) {
+      case /* B */0 :
+          console.log("printVariantWithPayloads", "B(" + (String(x[0]) + ")"));
+          return /* () */0;
+      case /* C */1 :
+          console.log("printVariantWithPayloads", "C(" + (String(x[0]) + (", " + (String(x[1]) + ")"))));
+          return /* () */0;
+      case /* D */2 :
+          var match = x[0];
+          console.log("printVariantWithPayloads", "D((" + (String(match[0]) + (", " + (String(match[1]) + "))"))));
+          return /* () */0;
+      case /* E */3 :
+          console.log("printVariantWithPayloads", "E(" + (String(x[0]) + (", " + (x[1] + (", " + (String(x[2]) + ")"))))));
+          return /* () */0;
+      
+    }
   }
 }
 
