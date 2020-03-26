@@ -13,7 +13,7 @@ function access(r) {
 
 function update(r) {
   r.contents = r.contents + 1 | 0;
-  
+  return /* () */0;
 }
 
 function get(r) {
@@ -28,7 +28,7 @@ function make(prim) {
 
 function set(r, v) {
   r.contents = v;
-  
+  return /* () */0;
 }
 
 var R = {
