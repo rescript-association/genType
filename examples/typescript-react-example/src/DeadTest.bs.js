@@ -7,6 +7,7 @@ import * as RequireCond from "requireCond";
 import * as DeadValueTest from "./DeadValueTest.bs.js";
 import * as ImmutableArray from "./ImmutableArray.bs.js";
 import * as BootloaderResource from "BootloaderResource";
+import * as DynamicallyLoadedComponent from "./DynamicallyLoadedComponent.bs.js";
 
 var $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond = RequireCond("gk", "chat", {
       true: "ExportWithRename.bs",
@@ -148,6 +149,10 @@ function DeadTest(Props, s) {
 }
 
 console.log(DeadTest);
+
+console.log(React.createElement(DynamicallyLoadedComponent.make, {
+          s: ""
+        }));
 
 var fortytwo = 42;
 
