@@ -10,7 +10,7 @@ var component = ReasonReact.statelessComponent("ReasonComponent");
 
 function onClick(param) {
   console.log("click");
-  return /* () */0;
+  
 }
 
 function make(messageOpt, person, intListOpt, _children) {
