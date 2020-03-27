@@ -886,9 +886,7 @@ module Decl = {
 
     let shouldEmitWarning = !insideReportedValue;
     if (shouldEmitWarning) {
-      if (shouldEmitWarning) {
-        decl |> emitWarning(~message, ~loc, ~name, ~path=decl.path, ~ppf);
-      };
+      decl |> emitWarning(~message, ~loc, ~name, ~path=decl.path, ~ppf);
     };
   };
 };
