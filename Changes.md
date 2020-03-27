@@ -1,6 +1,8 @@
 # master
 - Support new uncurry representation that will be available from Bucklescript version 7.3.0.
 - [DCE] Work around the fact that the react.componentt ppx gives `make` a dummy location.
+- [DCE] Add option to toggle removing dead values with side effects.
+- [DCE] Add whitelist mechanism for function calls with no side effects.
 
 # 3.17.0
 - [DCE] Add support for lazyLoad.
