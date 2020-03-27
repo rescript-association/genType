@@ -2581,9 +2581,9 @@ File References
   <-- line 159
   [@dead "second"] let second = 1L;
 
-  Warning Dead Value With Side Effects
+  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 160:1-35
-  minute is never used and could have side effects
+  minute is never used
   <-- line 160
   [@dead "minute"] let minute = Int64.mul(60L, second);
 
