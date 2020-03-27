@@ -25,9 +25,8 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      addDeclaration(
+      addValueDeclaration(
         ~sideEffects=false,
-        ~declKind=Value,
         ~path,
         ~loc=val_loc,
         Ident.name(id),
@@ -35,7 +34,7 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes^) {
-      DeadType.addTypeDeclaration(~path=[id |> Ident.name, ...path], t);
+      DeadType.addDeclaration(~path=[id |> Ident.name, ...path], t);
     }
   | (
       Sig_module(id, {Types.md_type: moduleType}, _) |

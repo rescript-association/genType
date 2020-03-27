@@ -15,14 +15,14 @@ let addTypeReference = (~posFrom, ~posTo) => {
   PosHash.addSet(typeReferences, posTo, posFrom);
 };
 
-let addTypeDeclaration =
+let addDeclaration =
     (~path as path_, {type_kind, type_manifest}: Types.type_declaration) => {
   let save = (~declKind, ~loc: Location.t, ~name) => {
     let isInterfaceFile = Filename.check_suffix(loc.loc_start.pos_fname, "i");
     let name = isInterfaceFile ? name : "+" ++ name;
     let path = [name, ...path_] |> pathToString;
     if (type_manifest == None) {
-      addDeclaration(~declKind, ~path=path_, ~loc, name);
+      addTypeDeclaration(~declKind, ~path=path_, ~loc, name);
     };
     Hashtbl.replace(fields, path, loc);
   };

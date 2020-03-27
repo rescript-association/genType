@@ -337,7 +337,7 @@ let annotateAtEnd = (~pos) => !posIsReason(pos);
 let getPosAnnotation = decl =>
   annotateAtEnd(~pos=decl.pos) ? decl.posEnd : decl.posStart;
 
-let addDeclaration =
+let addDeclaration_ =
     (~sideEffects=false, ~declKind, ~path, ~loc: Location.t, name) => {
   let pos = loc.loc_start;
   let posStart = pos;
@@ -377,6 +377,11 @@ let addDeclaration =
     PosHash.replace(decls, pos, decl);
   };
 };
+
+let addTypeDeclaration = addDeclaration_;
+
+let addValueDeclaration = (~sideEffects, ~path, ~loc: Location.t, name) =>
+  name |> addDeclaration_(~sideEffects, ~declKind=Value, ~path, ~loc);
 
 /**** REPORTING ****/
 
