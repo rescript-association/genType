@@ -2,7 +2,7 @@
 
 open DeadCommon;
 
-let whiteListForSideEffects = [
+let whiteListSideEffects = [
   "Pervasives./.",
   "Pervasives.ref",
   "Int64.mul",
@@ -12,11 +12,21 @@ let whiteListForSideEffects = [
   "Int64.one",
   "String.length",
 ];
+let whiteTableSideEffects =
+  lazy({
+    let tbl = Hashtbl.create(11);
+
+    whiteListSideEffects |> List.iter(s => Hashtbl.add(tbl, s, ()));
+    tbl;
+  });
+
 let pathIsWhitelistedForSideEffects = path => {
   switch (path |> Path.flatten) {
   | `Ok(id, mods) =>
-    whiteListForSideEffects
-    |> List.mem([Ident.name(id), ...mods] |> String.concat("."))
+    Hashtbl.mem(
+      Lazy.force(whiteTableSideEffects),
+      [Ident.name(id), ...mods] |> String.concat("."),
+    )
   | `Contains_apply => false
   };
 };
