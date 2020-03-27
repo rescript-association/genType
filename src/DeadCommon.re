@@ -829,11 +829,10 @@ module Decl = {
     );
   };
 
-  let emitWarning = (~message, ~loc, ~name, ~path, ~ppf, decl) => {
+  let emitWarning = (~message, ~loc, ~name, ~path) => {
     Log_.info(~loc, ~name, (ppf, ()) =>
       Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
     );
-    decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
   };
 
   let isInsideReportedValue = decl => {
@@ -890,15 +889,12 @@ module Decl = {
     let insideReportedValue = decl |> isInsideReportedValue;
 
     let shouldEmitWarning = !insideReportedValue;
+    let shouldWriteAnnotation = shouldEmitWarning;
     if (shouldEmitWarning) {
-      decl
-      |> emitWarning(
-           ~message,
-           ~loc=decl |> declGetLoc,
-           ~name,
-           ~path=decl.path,
-           ~ppf,
-         );
+      emitWarning(~message, ~loc=decl |> declGetLoc, ~name, ~path=decl.path);
+    };
+    if (shouldWriteAnnotation) {
+      decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
     };
   };
 };
