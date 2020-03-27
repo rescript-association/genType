@@ -1,4 +1,6 @@
 # master
+
+# 3.18.0
 - Support new uncurry representation that will be available from Bucklescript version 7.3.0.
 - [DCE] Work around the fact that the react.componentt ppx gives `make` a dummy location.
 - [DCE] Add option to toggle removing dead values with side effects.
