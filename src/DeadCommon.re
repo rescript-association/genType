@@ -171,13 +171,13 @@ let lastBinding = ref(Location.none);
 let getLastBinding = () => lastBinding^;
 let maxValuePosEnd = ref(Lexing.dummy_pos); // max end position of a value reported dead
 
-let getPosOfValue = (~moduleName, ~name) => {
+let getPosOfValue = (~moduleName, ~valueName) => {
   switch (Hashtbl.find_opt(moduleDecls, moduleName)) {
   | Some(posSet) =>
     posSet
     |> PosSet.find_first_opt(pos =>
          switch (PosHash.find_opt(decls, pos)) {
-         | Some({declKind: Value, path: [name_, ..._]}) when name_ == name =>
+         | Some({declKind: Value, path: [name, ..._]}) when name == valueName =>
            true
          | _ => false
          }

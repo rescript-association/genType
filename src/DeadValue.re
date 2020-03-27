@@ -141,10 +141,10 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
   switch (e.exp_desc) {
   | Texp_ident(path, _, {Types.val_loc: {loc_ghost: true}}) =>
     // When the ppx uses a dummy location, find the original location.
-    let moduleName_ = path |> Path.head |> Ident.name;
-    let name = path |> Path.last;
-    let moduleName = moduleName_ == name ? currentModuleName^ : moduleName_;
-    switch (getPosOfValue(~moduleName, ~name)) {
+    let pathHead = path |> Path.head |> Ident.name;
+    let valueName = path |> Path.last;
+    let moduleName = pathHead == valueName ? currentModuleName^ : pathHead;
+    switch (getPosOfValue(~moduleName, ~valueName)) {
     | Some(posName) =>
       addValueReference(
         ~addFileReference=true,
@@ -166,7 +166,7 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
         |> Path.name == "JSResource.jSResource"
         && Filename.check_suffix(s, ".bs") =>
     let moduleName = Filename.chop_extension(s);
-    switch (getPosOfValue(~moduleName, ~name="make")) {
+    switch (getPosOfValue(~moduleName, ~valueName="make")) {
     | None => ()
     | Some(posMake) =>
       if (verbose) {
