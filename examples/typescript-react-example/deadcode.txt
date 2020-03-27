@@ -1484,9 +1484,11 @@
   addValueDeclaration make DeadTest.re:122:6
   addValueDeclaration cmp DeadTest.re:132:4
   addValueDeclaration cmp2 DeadTest.re:134:4
-  addValueDeclaration makeSwitch DeadTest.re:150:4
-  addValueDeclaration make DeadTest.re:153:4
-  addValueDeclaration zzz DeadTest.re:157:4
+  addValueDeclaration zzz DeadTest.re:150:4
+  addValueDeclaration second DeadTest.re:159:4
+  addValueDeclaration minute DeadTest.re:160:4
+  addValueDeclaration makeSwitch DeadTest.re:162:4
+  addValueDeclaration make DeadTest.re:165:4
   requireCond  true:ExportWithRename false:DynamicallyLoadedComponent allPositions:[DynamicallyLoadedComponent.re:2:4, ExportWithRename.re:3:4]
   addValueReference DeadTest:0:-1 --> DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest:0:-1 --> ExportWithRename.re:3:4
@@ -1556,14 +1558,15 @@
   addValueReference DeadTest.re:134:4 --> DeadTest.re:121:6
   addValueReference DeadTest.re:134:4 --> React.re:13:0
   addValueReference DeadTest.re:136:16 --> DeadTest.re:132:4
-  addValueReference DeadTest.re:153:4 --> DeadTest.re:153:11
-  addValueReference DeadTest.re:153:4 --> React.re:5:0
-  addValueReference DeadTest.re:155:16 --> DeadTest.re:153:4
-  addValueDeclaration +a1 DeadTest.re:158:6
-  addValueDeclaration +a2 DeadTest.re:159:6
-  addValueDeclaration +a3 DeadTest.re:160:6
-  addValueReference DeadTest.re:164:17 --> DynamicallyLoadedComponent.re:2:4
-  addValueReference DeadTest.re:164:17 --> React.re:13:0
+  addValueDeclaration +a1 DeadTest.re:151:6
+  addValueDeclaration +a2 DeadTest.re:152:6
+  addValueDeclaration +a3 DeadTest.re:153:6
+  addValueReference DeadTest.re:157:17 --> DynamicallyLoadedComponent.re:2:4
+  addValueReference DeadTest.re:157:17 --> React.re:13:0
+  addValueReference DeadTest.re:160:4 --> DeadTest.re:159:4
+  addValueReference DeadTest.re:165:4 --> DeadTest.re:165:11
+  addValueReference DeadTest.re:165:4 --> React.re:5:0
+  addValueReference DeadTest.re:167:16 --> DeadTest.re:165:4
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
   addValueReference DeadTest.re:62:2 --> DeadTest.re:66:6
   addValueReference DeadTest.re:63:2 --> DeadTest.re:65:6
@@ -1679,12 +1682,14 @@ File References
   Live Type DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) [0]
   Live Type DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) [1]
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
+  Live Value DeadTest.make: 1 references (DeadTest.re:167:16) [0]
+  Dead Value DeadTest.makeSwitch: 0 references () [0]
+  Dead Value DeadTest.minute: 0 references () [0]
+  Dead Value DeadTest.second: 0 references () [0]
   Dead Value DeadTest.+a3: 0 references () [0]
   Dead Value DeadTest.+a2: 0 references () [0]
   Dead Value DeadTest.+a1: 0 references () [0]
   Dead Value DeadTest.zzz: 0 references () [0]
-  Live Value DeadTest.make: 1 references (DeadTest.re:155:16) [0]
-  Dead Value DeadTest.makeSwitch: 0 references () [0]
   Dead Value DeadTest.cmp2: 0 references () [0]
   Live Value DeadTest.cmp: 1 references (DeadTest.re:136:16) [0]
   Dead Value DeadTest.LazyDynamicallyLoadedComponent2.make: 0 references () [0]
@@ -2068,7 +2073,7 @@ File References
   Live Type DeadTypeTest.t.+A: 1 references (DeadTypeTest.re:4:8) [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
   Live Value DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) [0]
-  Live Value DynamicallyLoadedComponent.make: 3 references (DeadTest.re:112:40, DeadTest.re:164:17, DeadTest:0:-1) [0]
+  Live Value DynamicallyLoadedComponent.make: 3 references (DeadTest.re:112:40, DeadTest.re:157:17, DeadTest:0:-1) [0]
   Dead Value ErrorHandler.x: 0 references () [0]
   Live Value ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) [0]
   Dead Value FirstClassModulesInterface.r: 0 references () [0]
@@ -2565,16 +2570,28 @@ File References
   [@dead "cmp2"] let cmp2 = () => <LazyDynamicallyLoadedComponent2 s="hello" />;
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 150:1-37
-  makeSwitch is never used
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 150:1-155:1
+  zzz is never used
   <-- line 150
-  [@dead "makeSwitch"] let makeSwitch = ComponentSwitch.make;
+  [@dead "zzz"] let zzz = {
 
   Warning Dead Value
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 157:1-162:1
-  zzz is never used
-  <-- line 157
-  [@dead "zzz"] let zzz = {
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 159:1-15
+  second is never used
+  <-- line 159
+  [@dead "second"] let second = 1L;
+
+  Warning Dead Value With Side Effects
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 160:1-35
+  minute is never used and could have side effects
+  <-- line 160
+  [@dead "minute"] let minute = Int64.mul(60L, second);
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 162:1-37
+  makeSwitch is never used
+  <-- line 162
+  [@dead "makeSwitch"] let makeSwitch = ComponentSwitch.make;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 1:21-30

@@ -147,13 +147,6 @@ module ComponentSwitch = (
       ]
 );
 
-let makeSwitch = ComponentSwitch.make;
-
-[@react.component]
-let make = s => React.string(s);
-
-let () = Js.log(make);
-
 let zzz = {
   let a1 = 1;
   let a2 = 2;
@@ -162,3 +155,13 @@ let zzz = {
 };
 
 let () = Js.log(<DynamicallyLoadedComponent s="" />);
+
+let second = 1L;
+let minute = Int64.mul(60L, second);
+
+let makeSwitch = ComponentSwitch.make;
+
+[@react.component]
+let make = s => React.string(s);
+
+let () = Js.log(make);
