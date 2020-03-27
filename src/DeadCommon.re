@@ -857,6 +857,12 @@ module Decl = {
       && !fileHasChanged
       && maxValuePosEnd^.pos_cnum > pos.pos_cnum;
     if (!insideReportedValue) {
+      if (declKind == Value) {
+        if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
+          maxValuePosEnd := posEnd;
+        };
+      };
+
       Log_.info(~loc, ~name, (ppf, ()) =>
         Format.fprintf(
           ppf,
@@ -865,11 +871,6 @@ module Decl = {
           message,
         )
       );
-      if (declKind == Value) {
-        if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
-          maxValuePosEnd := posEnd;
-        };
-      };
 
       decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
     };
