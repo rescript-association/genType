@@ -847,8 +847,8 @@ module Decl = {
 
   let report = (~ppf, decl) => {
     let loc = {
-      Location.loc_start: decl.pos,
-      loc_end: decl.pos,
+      Location.loc_start: decl.posStart,
+      loc_end: decl.posEnd,
       loc_ghost: false,
     };
     let sideEffectsNoUnderscore =
