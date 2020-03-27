@@ -633,6 +633,9 @@ let doReportDead = pos =>
   && posInWhitelist(pos)
   && !posInBlacklist(pos);
 
+let checkSideEffects = decl =>
+  removeDeadValuesWithSideEffects || !decl.sideEffects;
+
 let rec resolveRecursiveRefs =
         (
           ~deadDeclarations,
@@ -726,7 +729,7 @@ let rec resolveRecursiveRefs =
         if (decl.pos |> doReportDead) {
           deadDeclarations := [decl, ...deadDeclarations^];
         };
-        if (removeDeadValuesWithSideEffects || !decl.sideEffects) {
+        if (decl |> checkSideEffects) {
           decl.pos |> ProcessDeadAnnotations.annotateDead;
         };
       };
@@ -895,9 +898,7 @@ module Decl = {
     let insideReportedValue = decl |> isInsideReportedValue;
 
     let shouldEmitWarning = !insideReportedValue;
-    let shouldWriteAnnotation =
-      shouldEmitWarning
-      && (removeDeadValuesWithSideEffects || !decl.sideEffects);
+    let shouldWriteAnnotation = shouldEmitWarning && decl |> checkSideEffects;
     if (shouldEmitWarning) {
       emitWarning(~message, ~loc=decl |> declGetLoc, ~name, ~path=decl.path);
     };
