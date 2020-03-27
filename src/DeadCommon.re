@@ -816,7 +816,14 @@ module Decl = {
 
   let report = (~ppf, {declKind, pos, posEnd, path, sideEffects} as decl) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
-    let sideEffectsNoUnderscore = sideEffects && (path |> List.hd).[0] != '_';
+    let sideEffectsNoUnderscore =
+      sideEffects
+      && !{
+           let name = path |> List.hd;
+           name
+           |> String.length >= 2
+           && (name.[0] == '_' || name.[0] == '+' && name.[1] == '_');
+         };
 
     let (name, message) =
       switch (declKind) {
