@@ -12,6 +12,8 @@ let analyzeExternals = true;
 
 let verbose = Sys.getenv_opt("Debug") != None;
 
+let removeDeadValuesWithSideEffects = true;
+
 let recursiveDebug = false;
 
 let checkPrefix = prefix_ => {
@@ -724,7 +726,9 @@ let rec resolveRecursiveRefs =
         if (decl.pos |> doReportDead) {
           deadDeclarations := [decl, ...deadDeclarations^];
         };
-        decl.pos |> ProcessDeadAnnotations.annotateDead;
+        if (removeDeadValuesWithSideEffects || !decl.sideEffects) {
+          decl.pos |> ProcessDeadAnnotations.annotateDead;
+        };
       };
 
       if (verbose) {
@@ -855,25 +859,27 @@ module Decl = {
   };
 
   let report = (~ppf, decl) => {
-    let sideEffectsNoUnderscore =
-      decl.sideEffects
-      && !{
-           let name = decl.path |> List.hd;
-           name
-           |> String.length >= 2
-           && (name.[0] == '_' || name.[0] == '+' && name.[1] == '_');
-         };
+    let noSideEffectsOrUnderscore =
+      !decl.sideEffects
+      || {
+        let name = decl.path |> List.hd;
+        name
+        |> String.length >= 2
+        && (name.[0] == '_' || name.[0] == '+' && name.[1] == '_');
+      };
 
     let (name, message) =
       switch (decl.declKind) {
       | Value => (
           "Warning Dead Value"
-          ++ (sideEffectsNoUnderscore ? " With Side Effects" : ""),
+          ++ (!noSideEffectsOrUnderscore ? " With Side Effects" : ""),
           switch (decl.path) {
           | ["_", ..._] => "has no side effects and can be removed"
           | _ =>
             "is never used"
-            ++ (sideEffectsNoUnderscore ? " and could have side effects" : "")
+            ++ (
+              !noSideEffectsOrUnderscore ? " and could have side effects" : ""
+            )
           },
         )
       | RecordLabel => (
@@ -889,7 +895,9 @@ module Decl = {
     let insideReportedValue = decl |> isInsideReportedValue;
 
     let shouldEmitWarning = !insideReportedValue;
-    let shouldWriteAnnotation = shouldEmitWarning;
+    let shouldWriteAnnotation =
+      shouldEmitWarning
+      && (removeDeadValuesWithSideEffects || !decl.sideEffects);
     if (shouldEmitWarning) {
       emitWarning(~message, ~loc=decl |> declGetLoc, ~name, ~path=decl.path);
     };
