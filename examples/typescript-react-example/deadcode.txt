@@ -2075,7 +2075,7 @@ File References
   Live Type DeadTypeTest.t.+A: 1 references (DeadTypeTest.re:4:8) [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
   Live Value DeadValueTest.valueAlive: 1 references (DeadTest.re:77:16) [0]
-  Live Value DynamicallyLoadedComponent.make: 3 references (DeadTest.re:112:40, DeadTest.re:157:17, DeadTest:0:-1) [0]
+  Live Value DynamicallyLoadedComponent.make: 4 references (DeadTest.re:112:40, DeadTest.re:119:6, DeadTest.re:157:17, DeadTest:0:-1) [0]
   Dead Value ErrorHandler.x: 0 references () [0]
   Live Value ErrorHandler.Make.notify: 1 references (CreateErrorHandler1.re:8:0) [0]
   Dead Value FirstClassModulesInterface.r: 0 references () [0]
@@ -2173,7 +2173,7 @@ File References
   Live Value ImportMyBanner.make: 1 references (ReasonComponent.re:18:4) [0]
   Live Value ImportMyBanner.make: 1 references (ImportMyBanner.re:19:4) [0]
   Dead Type ImportMyBanner.message.+text: 0 references () [0]
-  Live Value JSResource.jSResource: 1 references (DeadTest.re:112:40) [0]
+  Live Value JSResource.jSResource: 2 references (DeadTest.re:112:40, DeadTest.re:119:6) [0]
   Live Value NestedModulesInSignature.Universe.theAnswer: 1 references (NestedModulesInSignature.rei:2:2) [0]
   Dead Value DeadValueTest.valueOnlyInImplementation: 0 references () [0]
   Dead Value DeadValueTest.valueDead: 0 references () [0]
@@ -2544,14 +2544,10 @@ File References
   Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 107:3-76
   Ext_buffer.+unsafe_string2 is never used and could have side effects
-  <-- line 107
-    [@dead "Ext_buffer.+unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
   Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 119:3-120:58
   LazyDynamicallyLoadedComponent2.reasonResource is never used and could have side effects
-  <-- line 119
-    [@dead "LazyDynamicallyLoadedComponent2.reasonResource"] let reasonResource: JSResource.t(module LocalDynamicallyLoadedComponent2) =
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 121:3-54

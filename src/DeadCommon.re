@@ -12,7 +12,7 @@ let analyzeExternals = true;
 
 let verbose = Sys.getenv_opt("Debug") != None;
 
-let removeDeadValuesWithSideEffects = true;
+let removeDeadValuesWithSideEffects = false;
 
 let recursiveDebug = false;
 
