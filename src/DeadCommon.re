@@ -858,18 +858,26 @@ module Decl = {
           "is a variant case which is never constructed",
         )
       };
-    let fileHasChanged = maxValuePosEnd^.pos_fname != pos.pos_fname;
-    let insideReportedValue =
-      declKind == Value
-      && !fileHasChanged
-      && maxValuePosEnd^.pos_cnum > pos.pos_cnum;
-    if (!insideReportedValue) {
-      if (declKind == Value) {
-        if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
-          maxValuePosEnd := posEnd;
+
+    let insideReportedValue = {
+      let fileHasChanged = maxValuePosEnd^.pos_fname != pos.pos_fname;
+
+      let insideReportedValue =
+        declKind == Value
+        && !fileHasChanged
+        && maxValuePosEnd^.pos_cnum > pos.pos_cnum;
+
+      if (!insideReportedValue) {
+        if (declKind == Value) {
+          if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
+            maxValuePosEnd := posEnd;
+          };
         };
       };
+
+      insideReportedValue;
     };
+
     let shouldEmitWarning = !insideReportedValue;
     if (shouldEmitWarning) {
       if (shouldEmitWarning) {
