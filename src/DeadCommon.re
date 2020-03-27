@@ -140,10 +140,12 @@ module FileHash = {
 };
 
 type path = list(string);
+
 type declKind =
   | RecordLabel
   | VariantCase
   | Value;
+
 type decl = {
   declKind,
   path,
@@ -153,7 +155,9 @@ type decl = {
   mutable resolved: bool,
   sideEffects: bool,
 };
+
 type decls = PosHash.t(decl);
+
 let decls: decls = PosHash.create(256); /* all exported declarations */
 let moduleDecls: Hashtbl.t(string, PosSet.t) = Hashtbl.create(1); /* from module name to its decls */
 
@@ -170,6 +174,12 @@ let currentBindings = ref(PosSet.empty);
 let lastBinding = ref(Location.none);
 let getLastBinding = () => lastBinding^;
 let maxValuePosEnd = ref(Lexing.dummy_pos); // max end position of a value reported dead
+
+let declGetLoc = decl => {
+  Location.loc_start: decl.posStart,
+  loc_end: decl.posEnd,
+  loc_ghost: false,
+};
 
 let getPosOfValue = (~moduleName, ~valueName) => {
   switch (Hashtbl.find_opt(moduleDecls, moduleName)) {
@@ -846,11 +856,6 @@ module Decl = {
   };
 
   let report = (~ppf, decl) => {
-    let loc = {
-      Location.loc_start: decl.posStart,
-      loc_end: decl.posEnd,
-      loc_ghost: false,
-    };
     let sideEffectsNoUnderscore =
       decl.sideEffects
       && !{
@@ -886,7 +891,14 @@ module Decl = {
 
     let shouldEmitWarning = !insideReportedValue;
     if (shouldEmitWarning) {
-      decl |> emitWarning(~message, ~loc, ~name, ~path=decl.path, ~ppf);
+      decl
+      |> emitWarning(
+           ~message,
+           ~loc=decl |> declGetLoc,
+           ~name,
+           ~path=decl.path,
+           ~ppf,
+         );
     };
   };
 };
