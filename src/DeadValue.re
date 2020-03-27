@@ -2,12 +2,25 @@
 
 open DeadCommon;
 
+let whiteListForSideEffects = ["React.createElement"];
+let pathIsWhitelistedForSideEffects = path => {
+  switch (path |> Path.flatten) {
+  | `Ok(id, mods) =>
+    whiteListForSideEffects
+    |> List.mem([Ident.name(id), ...mods] |> String.concat("."))
+  | `Contains_apply => false
+  };
+};
+
 let rec exprNoSideEffects = (expr: Typedtree.expression) =>
   switch (expr.exp_desc) {
   | Texp_ident(_)
   | Texp_constant(_) => true
   | Texp_construct(_, _, el) => el |> List.for_all(exprNoSideEffects)
   | Texp_function(_) => true
+  | Texp_apply({exp_desc: Texp_ident(path, _, _)}, args)
+      when path |> pathIsWhitelistedForSideEffects =>
+    args |> List.for_all(((_, eo)) => eo |> exprOptNoSideEffects)
   | Texp_apply(_) => false
   | Texp_sequence(e1, e2) =>
     e1 |> exprNoSideEffects && e2 |> exprNoSideEffects

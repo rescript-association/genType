@@ -136,9 +136,11 @@ var cmp = React.createElement(make, {
       s: "hello"
     });
 
-var cmp2 = React.createElement(make$1, {
-      s: "hello"
-    });
+function cmp2(param) {
+  return React.createElement(make$1, {
+              s: "hello"
+            });
+}
 
 console.log(cmp);
 

@@ -2558,11 +2558,11 @@ File References
   <-- line 122
     [@dead "LazyDynamicallyLoadedComponent2.make"] let make = props =>
 
-  Warning Dead Value With Side Effects
-  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 134:1-56
-  cmp2 is never used and could have side effects
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 134:1-62
+  cmp2 is never used
   <-- line 134
-  [@dead "cmp2"] let cmp2 = <LazyDynamicallyLoadedComponent2 s="hello" />;
+  [@dead "cmp2"] let cmp2 = () => <LazyDynamicallyLoadedComponent2 s="hello" />;
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 150:1-37
