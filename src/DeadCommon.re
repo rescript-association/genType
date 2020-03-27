@@ -826,23 +826,46 @@ module Decl = {
     decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
   };
 
-  let report = (~ppf, {declKind, pos, posEnd, path, sideEffects} as decl) => {
-    let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
+  let isInsideReportedValue = decl => {
+    let fileHasChanged = maxValuePosEnd^.pos_fname != decl.pos.pos_fname;
+
+    let insideReportedValue =
+      decl.declKind == Value
+      && !fileHasChanged
+      && maxValuePosEnd^.pos_cnum > decl.pos.pos_cnum;
+
+    if (!insideReportedValue) {
+      if (decl.declKind == Value) {
+        if (fileHasChanged || decl.posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
+          maxValuePosEnd := decl.posEnd;
+        };
+      };
+    };
+
+    insideReportedValue;
+  };
+
+  let report = (~ppf, decl) => {
+    let loc = {
+      Location.loc_start: decl.pos,
+      loc_end: decl.pos,
+      loc_ghost: false,
+    };
     let sideEffectsNoUnderscore =
-      sideEffects
+      decl.sideEffects
       && !{
-           let name = path |> List.hd;
+           let name = decl.path |> List.hd;
            name
            |> String.length >= 2
            && (name.[0] == '_' || name.[0] == '+' && name.[1] == '_');
          };
 
     let (name, message) =
-      switch (declKind) {
+      switch (decl.declKind) {
       | Value => (
           "Warning Dead Value"
           ++ (sideEffectsNoUnderscore ? " With Side Effects" : ""),
-          switch (path) {
+          switch (decl.path) {
           | ["_", ..._] => "has no side effects and can be removed"
           | _ =>
             "is never used"
@@ -859,29 +882,12 @@ module Decl = {
         )
       };
 
-    let insideReportedValue = {
-      let fileHasChanged = maxValuePosEnd^.pos_fname != pos.pos_fname;
-
-      let insideReportedValue =
-        declKind == Value
-        && !fileHasChanged
-        && maxValuePosEnd^.pos_cnum > pos.pos_cnum;
-
-      if (!insideReportedValue) {
-        if (declKind == Value) {
-          if (fileHasChanged || posEnd.pos_cnum > maxValuePosEnd^.pos_cnum) {
-            maxValuePosEnd := posEnd;
-          };
-        };
-      };
-
-      insideReportedValue;
-    };
+    let insideReportedValue = decl |> isInsideReportedValue;
 
     let shouldEmitWarning = !insideReportedValue;
     if (shouldEmitWarning) {
       if (shouldEmitWarning) {
-        decl |> emitWarning(~message, ~loc, ~name, ~path, ~ppf);
+        decl |> emitWarning(~message, ~loc, ~name, ~path=decl.path, ~ppf);
       };
     };
   };
