@@ -819,6 +819,13 @@ module Decl = {
     );
   };
 
+  let emitWarning = (~message, ~loc, ~name, ~path, ~ppf, decl) => {
+    Log_.info(~loc, ~name, (ppf, ()) =>
+      Format.fprintf(ppf, "@{<info>%s@} %s", path |> pathWithoutHead, message)
+    );
+    decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
+  };
+
   let report = (~ppf, {declKind, pos, posEnd, path, sideEffects} as decl) => {
     let loc = {Location.loc_start: pos, loc_end: pos, loc_ghost: false};
     let sideEffectsNoUnderscore =
@@ -862,17 +869,12 @@ module Decl = {
           maxValuePosEnd := posEnd;
         };
       };
-
-      Log_.info(~loc, ~name, (ppf, ()) =>
-        Format.fprintf(
-          ppf,
-          "@{<info>%s@} %s",
-          path |> pathWithoutHead,
-          message,
-        )
-      );
-
-      decl |> WriteDeadAnnotations.onDeadDecl(~ppf);
+    };
+    let shouldEmitWarning = !insideReportedValue;
+    if (shouldEmitWarning) {
+      if (shouldEmitWarning) {
+        decl |> emitWarning(~message, ~loc, ~name, ~path, ~ppf);
+      };
     };
   };
 };
