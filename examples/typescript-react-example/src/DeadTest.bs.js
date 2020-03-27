@@ -171,6 +171,8 @@ function DeadTest(Props, s) {
 
 console.log(DeadTest);
 
+console.log(123);
+
 var fortytwo = 42;
 
 var fortyTwoButExported = 42;
@@ -190,6 +192,8 @@ var zzz = /* () */0;
 var makeSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond.make;
 
 var make$2 = DeadTest;
+
+var theSideEffectIsLogging = /* () */0;
 
 export {
   $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond ,
@@ -225,6 +229,7 @@ export {
   deadRef ,
   makeSwitch ,
   make$2 as make,
+  theSideEffectIsLogging ,
   
 }
 /* $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond Not a pure module */

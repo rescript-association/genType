@@ -2,7 +2,15 @@
 
 open DeadCommon;
 
-let whiteListForSideEffects = ["Pervasives.ref", "Int64.mul"];
+let whiteListForSideEffects = [
+  "Pervasives./.",
+  "Pervasives.ref",
+  "Int64.mul",
+  "Int64.neg",
+  "Int64.sub",
+  "Int64.shift_left",
+  "Int64.one",
+];
 let pathIsWhitelistedForSideEffects = path => {
   switch (path |> Path.flatten) {
   | `Ok(id, mods) =>
@@ -316,7 +324,7 @@ let collectValueReferences = {
         addValueDeclaration(
           ~path,
           ~loc=vd.val_loc,
-          ~sideEffects=true,
+          ~sideEffects=false,
           "+" ++ (vd.val_id |> Ident.name),
         );
       };

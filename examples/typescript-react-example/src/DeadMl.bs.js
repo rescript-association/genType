@@ -51,6 +51,8 @@ function map_split_opt(xs, f) {
   }
 }
 
+var inline_threshold = 10 / 8;
+
 var thisHasSemicolons = 3;
 
 export {
@@ -59,6 +61,7 @@ export {
   thisHasSemicolons ,
   Bs_version ,
   map_split_opt ,
+  inline_threshold ,
   
 }
 /* No side effect */

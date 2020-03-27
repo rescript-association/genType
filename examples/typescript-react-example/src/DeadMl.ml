@@ -52,3 +52,5 @@ let rec map_split_opt
     let cs,ds = map_split_opt xs f in 
     (match c with Some c -> c::cs | None -> cs),
     (match d with Some d -> d::ds | None -> ds)
+
+let inline_threshold = Some (10. /. 8.);

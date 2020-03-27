@@ -769,6 +769,7 @@
   addTypeDeclaration +module_name DeadMl.ml:41:2
   addTypeDeclaration +case DeadMl.ml:42:2
   addValueDeclaration map_split_opt DeadMl.ml:45:8
+  addValueDeclaration inline_threshold DeadMl.ml:56:4
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:11
   addValueReference DeadMl.ml:3:8 --> DeadMl.ml:4:20
   addValueDeclaration +thisIsInInterface DeadMl.ml:12:6
@@ -1490,6 +1491,7 @@
   addValueDeclaration deadRef DeadTest.re:162:4
   addValueDeclaration makeSwitch DeadTest.re:164:4
   addValueDeclaration make DeadTest.re:167:4
+  addValueDeclaration theSideEffectIsLogging DeadTest.re:171:4
   requireCond  true:ExportWithRename false:DynamicallyLoadedComponent allPositions:[DynamicallyLoadedComponent.re:2:4, ExportWithRename.re:3:4]
   addValueReference DeadTest:0:-1 --> DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest:0:-1 --> ExportWithRename.re:3:4
@@ -1660,6 +1662,7 @@ File References
   Live Value CreateErrorHandler1.Error1.notification: 1 references (ErrorHandler.rei:3:2) [0]
   Live Value CreateErrorHandler2.Error2.notification: 1 references (ErrorHandler.rei:3:2) [0]
   Live Value DeadCodeImplementation.M.+x: 1 references (DeadCodeInterface.re:1:17) [0]
+  Dead Value DeadMl.inline_threshold: 0 references () [0]
   Dead Value DeadMl.map_split_opt: 0 references () [0]
   Dead Type DeadMl.module_info.+case: 0 references () [0]
   Dead Type DeadMl.module_info.+module_name: 0 references () [0]
@@ -1683,6 +1686,7 @@ File References
   Live Type DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) [0]
   Live Type DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) [1]
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
+  Dead Value DeadTest.theSideEffectIsLogging: 0 references () [0]
   Live Value DeadTest.make: 1 references (DeadTest.re:169:16) [0]
   Dead Value DeadTest.makeSwitch: 0 references () [0]
   Dead Value DeadTest.deadRef: 0 references () [0]
@@ -2410,6 +2414,12 @@ File References
       (match d with Some d -> d::ds | None -> ds) [@@dead "map_split_opt"] 
 
   Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadMl.ml 56:1-40
+  inline_threshold is never used
+  <-- line 56
+  let inline_threshold = Some (10. /. 8.); [@@dead "inline_threshold"] 
+
+  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadRT.re 5:1-9:3
   emitModuleAccessPath is never used
   <-- line 5
@@ -2541,9 +2551,11 @@ File References
   <-- line 105
     [@dead "Ext_buffer.unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
-  Warning Dead Value With Side Effects
+  Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 107:3-76
-  Ext_buffer.+unsafe_string2 is never used and could have side effects
+  Ext_buffer.+unsafe_string2 is never used
+  <-- line 107
+    [@dead "Ext_buffer.+unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
   Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 119:3-120:58
@@ -2596,6 +2608,10 @@ File References
   makeSwitch is never used
   <-- line 164
   [@dead "makeSwitch"] let makeSwitch = ComponentSwitch.make;
+
+  Warning Dead Value With Side Effects
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 171:1-40
+  theSideEffectIsLogging is never used and could have side effects
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 1:21-30
