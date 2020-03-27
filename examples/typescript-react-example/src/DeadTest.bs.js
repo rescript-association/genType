@@ -161,6 +161,10 @@ var minute = Caml_int64.mul(/* int64 */[
       /* lo */60
     ], second);
 
+var deadRef = {
+  contents: 12
+};
+
 function DeadTest(Props, s) {
   return s;
 }
@@ -218,6 +222,7 @@ export {
   zzz ,
   second ,
   minute ,
+  deadRef ,
   makeSwitch ,
   make$2 as make,
   

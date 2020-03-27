@@ -2,7 +2,7 @@
 
 open DeadCommon;
 
-let whiteListForSideEffects = ["Int64.mul"];
+let whiteListForSideEffects = ["Pervasives.ref", "Int64.mul"];
 let pathIsWhitelistedForSideEffects = path => {
   switch (path |> Path.flatten) {
   | `Ok(id, mods) =>

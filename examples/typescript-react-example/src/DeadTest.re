@@ -159,6 +159,8 @@ let () = Js.log(<DynamicallyLoadedComponent s="" />);
 let second = 1L;
 let minute = Int64.mul(60L, second);
 
+let deadRef = ref(12);
+
 let makeSwitch = ComponentSwitch.make;
 
 [@react.component]
