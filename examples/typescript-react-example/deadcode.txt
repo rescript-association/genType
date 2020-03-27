@@ -1558,12 +1558,10 @@
   addValueReference DeadTest.re:136:16 --> DeadTest.re:132:4
   addValueReference DeadTest.re:153:4 --> DeadTest.re:153:11
   addValueReference DeadTest.re:153:4 --> React.re:5:0
-  XXX reference to ghost make DeadTest.re:155:16 moduleName:DeadTest path:make posName:DeadTest.re:153:4
   addValueReference DeadTest.re:155:16 --> DeadTest.re:153:4
   addValueDeclaration +a1 DeadTest.re:158:6
   addValueDeclaration +a2 DeadTest.re:159:6
   addValueDeclaration +a3 DeadTest.re:160:6
-  XXX reference to ghost make DeadTest.re:164:17 moduleName:DynamicallyLoadedComponent path:DynamicallyLoadedComponent.make posName:DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest.re:164:17 --> DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest.re:164:17 --> React.re:13:0
   addValueReference DeadTest.re:37:2 --> DeadTest.re:41:6
