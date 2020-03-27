@@ -195,6 +195,8 @@ var make$2 = DeadTest;
 
 var theSideEffectIsLogging = /* () */0;
 
+var stringLengthNoSideEffects = 5;
+
 export {
   $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond ,
   fortytwo ,
@@ -230,6 +232,7 @@ export {
   makeSwitch ,
   make$2 as make,
   theSideEffectIsLogging ,
+  stringLengthNoSideEffects ,
   
 }
 /* $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond Not a pure module */

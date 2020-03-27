@@ -10,6 +10,7 @@ let whiteListForSideEffects = [
   "Int64.sub",
   "Int64.shift_left",
   "Int64.one",
+  "String.length",
 ];
 let pathIsWhitelistedForSideEffects = path => {
   switch (path |> Path.flatten) {

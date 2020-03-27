@@ -1492,6 +1492,7 @@
   addValueDeclaration makeSwitch DeadTest.re:164:4
   addValueDeclaration make DeadTest.re:167:4
   addValueDeclaration theSideEffectIsLogging DeadTest.re:171:4
+  addValueDeclaration stringLengthNoSideEffects DeadTest.re:173:4
   requireCond  true:ExportWithRename false:DynamicallyLoadedComponent allPositions:[DynamicallyLoadedComponent.re:2:4, ExportWithRename.re:3:4]
   addValueReference DeadTest:0:-1 --> DynamicallyLoadedComponent.re:2:4
   addValueReference DeadTest:0:-1 --> ExportWithRename.re:3:4
@@ -1686,6 +1687,7 @@ File References
   Live Type DeadRT.moduleAccessPath.+Kaboom: 1 references (DeadRT.re:11:16) [0]
   Live Type DeadRT.moduleAccessPath.Root: 1 references (DeadTest.re:110:16) [1]
   Live Type DeadRT.moduleAccessPath.+Root: 1 references (DeadRT.rei:2:4) [0]
+  Dead Value DeadTest.stringLengthNoSideEffects: 0 references () [0]
   Dead Value DeadTest.theSideEffectIsLogging: 0 references () [0]
   Live Value DeadTest.make: 1 references (DeadTest.re:169:16) [0]
   Dead Value DeadTest.makeSwitch: 0 references () [0]
@@ -2612,6 +2614,12 @@ File References
   Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 171:1-40
   theSideEffectIsLogging is never used and could have side effects
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 173:1-54
+  stringLengthNoSideEffects is never used
+  <-- line 173
+  [@dead "stringLengthNoSideEffects"] let stringLengthNoSideEffects = String.length("sdkdl");
 
   Warning Dead Value
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTestWithInterface.re 1:21-30
