@@ -2534,15 +2534,15 @@ File References
   <-- line 105
     [@dead "Ext_buffer.unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
-  Warning Dead Value
+  Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 107:3
-  Ext_buffer.+unsafe_string2 is never used
+  Ext_buffer.+unsafe_string2 is never used and could have side effects
   <-- line 107
     [@dead "Ext_buffer.+unsafe_string2"] external unsafe_string2: (bytes, int, int) => Digest.t = "caml_md5_string";
 
-  Warning Dead Value
+  Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 119:7
-  LazyDynamicallyLoadedComponent2.reasonResource is never used
+  LazyDynamicallyLoadedComponent2.reasonResource is never used and could have side effects
   <-- line 119
     [@dead "LazyDynamicallyLoadedComponent2.reasonResource"] let reasonResource: JSResource.t(module LocalDynamicallyLoadedComponent2) =
 
@@ -2558,9 +2558,9 @@ File References
   <-- line 122
     [@dead "LazyDynamicallyLoadedComponent2.make"] let make = props =>
 
-  Warning Dead Value
+  Warning Dead Value With Side Effects
   /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/DeadTest.re 134:5
-  cmp2 is never used
+  cmp2 is never used and could have side effects
   <-- line 134
   [@dead "cmp2"] let cmp2 = <LazyDynamicallyLoadedComponent2 s="hello" />;
 

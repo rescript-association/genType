@@ -25,7 +25,13 @@ let rec collectExportFromSignatureItem = (~path, si: Types.signature_item) =>
       | _ => false
       };
     if (!isPrimitive || analyzeExternals) {
-      addDeclaration(~declKind=Value, ~path, ~loc=val_loc, Ident.name(id));
+      addDeclaration(
+        ~sideEffects=false,
+        ~declKind=Value,
+        ~path,
+        ~loc=val_loc,
+        Ident.name(id),
+      );
     };
   | Sig_type(id, t, _) =>
     if (analyzeTypes^) {

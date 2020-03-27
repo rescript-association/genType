@@ -111,7 +111,7 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
       let path = currentModulePath^ @ [currentModuleName^];
       if (!exists) {
         let sideEffects = !exprNoSideEffects(vb.vb_expr);
-        addDeclaration(~declKind=Value, ~sideEffects, ~path, ~loc, name);
+        addDeclaration(~declKind=Value, ~path, ~loc, ~sideEffects, name);
       };
       switch (PosHash.find_opt(decls, loc_start)) {
       | None => ()
@@ -119,11 +119,17 @@ let collectValueBinding = (super, self, vb: Typedtree.value_binding) => {
         // Value bindings contain the correct location for the entire declaration: update final position.
         // The previous value was taken from the signature, which only has positions for the id.
 
+        let sideEffects = !exprNoSideEffects(vb.vb_expr);
         PosHash.replace(
           decls,
           loc_start,
-          {...decl, posEnd: vb.vb_loc.loc_end, posStart: vb.vb_loc.loc_start},
-        )
+          {
+            ...decl,
+            posEnd: vb.vb_loc.loc_end,
+            posStart: vb.vb_loc.loc_start,
+            sideEffects,
+          },
+        );
       };
       loc;
     | _ => getLastBinding()
@@ -298,6 +304,7 @@ let collectValueReferences = {
           ~declKind=Value,
           ~path,
           ~loc=vd.val_loc,
+          ~sideEffects=true,
           "+" ++ (vd.val_id |> Ident.name),
         );
       };
