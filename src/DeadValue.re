@@ -141,9 +141,12 @@ let collectExpr = (super, self, e: Typedtree.expression) => {
   switch (e.exp_desc) {
   | Texp_ident(path, _, {Types.val_loc: {loc_ghost: true}}) =>
     // When the ppx uses a dummy location, find the original location.
-    let pathHead = path |> Path.head |> Ident.name;
+    let moduleName =
+      switch (path) {
+      | Pident(_) => currentModuleName^
+      | _ => path |> Path.head |> Ident.name
+      };
     let valueName = path |> Path.last;
-    let moduleName = pathHead == valueName ? currentModuleName^ : pathHead;
     switch (getPosOfValue(~moduleName, ~valueName)) {
     | Some(posName) =>
       addValueReference(
