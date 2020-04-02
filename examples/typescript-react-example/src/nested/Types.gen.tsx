@@ -143,4 +143,4 @@ export const currentTime: Date = TypesBS.currentTime;
 
 export const i64Const: i64B = TypesBS.i64Const;
 
-export const foo: (null | undefined | (() => number)) = TypesBS.foo;
+export const optFunction: (null | undefined | (() => number)) = TypesBS.optFunction;

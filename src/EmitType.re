@@ -244,34 +244,28 @@ let rec renderType =
     ++ ")"
   | Nullable(type_)
   | Option(type_) =>
+    let useParens = x =>
+      switch (type_) {
+      | Function(_)
+      | Variant(_) => EmitText.parens([x])
+      | _ => x
+      };
     switch (config.language) {
     | Flow
     | Untyped =>
-      let isComplex =
-        switch (type_) {
-        | Variant(_) => true
-        | _ => false
-        };
       "?"
-      ++ (isComplex ? " (" : "")
-      ++ (
-        type_
-        |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
-      )
-      ++ (isComplex ? ")" : "");
+      ++ useParens(
+           type_
+           |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType),
+         )
     | TypeScript =>
-      let useParens = x =>
-        switch (type_) {
-        | Function(_) => EmitText.parens([x])
-        | _ => x
-        };
       "(null | undefined | "
       ++ useParens(
            type_
            |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType),
          )
-      ++ ")";
-    }
+      ++ ")"
+    };
   | Promise(type_) =>
     "Promise"
     ++ "<"
