@@ -59,7 +59,7 @@ function testInstantiateTypeParameter(x) {
 
 var currentTime = new Date();
 
-var foo = (function (param) {
+var optFunction = (function (param) {
     return 3;
   });
 
@@ -105,7 +105,7 @@ export {
   testInstantiateTypeParameter ,
   currentTime ,
   i64Const ,
-  foo ,
+  optFunction ,
   
 }
 /* currentTime Not a pure module */

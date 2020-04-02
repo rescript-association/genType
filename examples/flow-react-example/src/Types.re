@@ -140,3 +140,6 @@ type date = Js.Date.t;
 
 [@genType]
 let currentTime = Js.Date.make();
+
+[@genType]
+let optFunction = Some(() => 3);

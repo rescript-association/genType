@@ -165,4 +165,4 @@ type i64B = int64;
 let i64Const: i64B = 34L;
 
 [@genType]
-let foo = Some(() => 3);
+let optFunction = Some(() => 3);
