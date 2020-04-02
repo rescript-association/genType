@@ -66,6 +66,7 @@
   addValueDeclaration testInstantiateTypeParameter Types.re:146:4
   addValueDeclaration currentTime Types.re:156:4
   addValueDeclaration i64Const Types.re:165:4
+  addValueDeclaration optFunction Types.re:168:4
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:16
   addValueReference Types.re:28:8 --> Types.re:28:8
@@ -2040,6 +2041,7 @@ File References
   Live Value Tuples.computeArea: 0 references () [0]
   Live Value Tuples.origin: 0 references () [0]
   Live Value Tuples.testTuple: 0 references () [0]
+  Live Value Types.optFunction: 0 references () [0]
   Live Value Types.i64Const: 0 references () [0]
   Live Value Types.currentTime: 0 references () [0]
   Live Value Types.testInstantiateTypeParameter: 0 references () [0]
