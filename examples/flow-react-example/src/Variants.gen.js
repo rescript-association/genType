@@ -109,7 +109,7 @@ export const id2: (x2) => x2 = function (Arg1: $any) {
   return $$toJS1061900109[result]
 };
 
-export const polyWithOpt: (string) => ? (
+export const polyWithOpt: (string) => ?(
     {| tag: "One", value: string |}
   | {| tag: "Two", value: number |}) = function (Arg1: $any) {
   const result = VariantsBS.polyWithOpt(Arg1);

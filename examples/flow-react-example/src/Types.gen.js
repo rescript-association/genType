@@ -143,4 +143,4 @@ export const testInstantiateTypeParameter: (instantiateTypeParameter) => instant
 
 export const currentTime: Date = TypesBS.currentTime;
 
-export const optFunction: ? (() => number) = TypesBS.optFunction;
+export const optFunction: ?(() => number) = TypesBS.optFunction;

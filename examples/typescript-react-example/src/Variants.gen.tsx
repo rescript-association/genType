@@ -129,9 +129,9 @@ export const id2: (x:x2) => x2 = function (Arg1: any) {
   return $$toJS1061900109[result]
 };
 
-export const polyWithOpt: (foo:string) => (null | undefined | 
+export const polyWithOpt: (foo:string) => (null | undefined | (
     { tag: "One"; value: string }
-  | { tag: "Two"; value: number }) = function (Arg1: any) {
+  | { tag: "Two"; value: number })) = function (Arg1: any) {
   const result = VariantsBS.polyWithOpt(Arg1);
   return (result == null ? result : result[0]===/* One */3953222
     ? {tag:"One", value:result[1]}
