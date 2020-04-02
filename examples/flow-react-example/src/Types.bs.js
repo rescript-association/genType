@@ -69,6 +69,10 @@ function testInstantiateTypeParameter(x) {
 
 var currentTime = new Date();
 
+var optFunction = (function (param) {
+    return 3;
+  });
+
 export {
   consumeOption ,
   consumeOption2 ,
@@ -86,6 +90,7 @@ export {
   convertObjectWithCallback ,
   testInstantiateTypeParameter ,
   currentTime ,
+  optFunction ,
   
 }
 /* saturday Not a pure module */

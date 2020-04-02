@@ -244,29 +244,28 @@ let rec renderType =
     ++ ")"
   | Nullable(type_)
   | Option(type_) =>
+    let useParens = x =>
+      switch (type_) {
+      | Function(_)
+      | Variant(_) => EmitText.parens([x])
+      | _ => x
+      };
     switch (config.language) {
     | Flow
     | Untyped =>
-      let isComplex =
-        switch (type_) {
-        | Variant(_) => true
-        | _ => false
-        };
       "?"
-      ++ (isComplex ? " (" : "")
-      ++ (
-        type_
-        |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
-      )
-      ++ (isComplex ? ")" : "");
+      ++ useParens(
+           type_
+           |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType),
+         )
     | TypeScript =>
       "(null | undefined | "
-      ++ (
-        type_
-        |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
-      )
+      ++ useParens(
+           type_
+           |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType),
+         )
       ++ ")"
-    }
+    };
   | Promise(type_) =>
     "Promise"
     ++ "<"
@@ -802,11 +801,7 @@ let emitImportTypeAs =
 };
 
 let ofTypeAny = (~config, s) =>
-  s
-  |> ofType(
-       ~config,
-       ~type_=typeAny(~config),
-     );
+  s |> ofType(~config, ~type_=typeAny(~config));
 
 let emitTypeCast = (~config, ~type_, ~typeNameIsInterface, s) =>
   switch (config.language) {

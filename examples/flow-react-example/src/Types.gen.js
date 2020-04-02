@@ -142,3 +142,5 @@ export const convertObjectWithCallback: (objectWithCallback) => objectWithCallba
 export const testInstantiateTypeParameter: (instantiateTypeParameter) => instantiateTypeParameter = TypesBS.testInstantiateTypeParameter;
 
 export const currentTime: Date = TypesBS.currentTime;
+
+export const optFunction: ? (() => number) = TypesBS.optFunction;

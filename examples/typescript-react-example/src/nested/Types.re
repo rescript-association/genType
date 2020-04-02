@@ -163,3 +163,6 @@ type i64B = int64;
 
 [@genType]
 let i64Const: i64B = 34L;
+
+[@genType]
+let optFunction = Some(() => 3);
