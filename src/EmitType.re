@@ -260,12 +260,17 @@ let rec renderType =
       )
       ++ (isComplex ? ")" : "");
     | TypeScript =>
+      let useParens = x =>
+        switch (type_) {
+        | Function(_) => EmitText.parens([x])
+        | _ => x
+        };
       "(null | undefined | "
-      ++ (
-        type_
-        |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType)
-      )
-      ++ ")"
+      ++ useParens(
+           type_
+           |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType),
+         )
+      ++ ")";
     }
   | Promise(type_) =>
     "Promise"
@@ -802,11 +807,7 @@ let emitImportTypeAs =
 };
 
 let ofTypeAny = (~config, s) =>
-  s
-  |> ofType(
-       ~config,
-       ~type_=typeAny(~config),
-     );
+  s |> ofType(~config, ~type_=typeAny(~config));
 
 let emitTypeCast = (~config, ~type_, ~typeNameIsInterface, s) =>
   switch (config.language) {
