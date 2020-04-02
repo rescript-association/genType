@@ -59,6 +59,10 @@ function testInstantiateTypeParameter(x) {
 
 var currentTime = new Date();
 
+var foo = (function (param) {
+    return 3;
+  });
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -101,6 +105,7 @@ export {
   testInstantiateTypeParameter ,
   currentTime ,
   i64Const ,
+  foo ,
   
 }
 /* currentTime Not a pure module */
