@@ -1,5 +1,6 @@
 /* @flow strict */
 
+// flowlint untyped-import:off
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 
