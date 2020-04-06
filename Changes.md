@@ -1,4 +1,6 @@
 # master
+
+# 3.19.0
 - Fix issue of missing parens when emitting optional function type.
 - In Flow back-end, don't emit config suppression warnings for genType files.
 
