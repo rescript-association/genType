@@ -15,7 +15,6 @@ import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as NestedBS from './Nested.bs';
 
-// flowlint-next-line nonstrict-import:off
 import type {variant as Component2_variant} from '../../src/Component2.gen';
 
 export type variant = 

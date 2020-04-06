@@ -13,7 +13,6 @@ import * as Curry from 'bs-platform/lib/es6/curry.js';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as RecordsBS from './Records.bs';
 
-// flowlint-next-line nonstrict-import:off
 import type {weekday as Types_weekday} from './Types.gen';
 
 export type coord = {|

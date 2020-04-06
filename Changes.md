@@ -1,5 +1,6 @@
 # master
 - Fix issue of missing parens when emitting optional function type.
+- In Flow back-end, don't emit config suppression warnings for genType files.
 
 # 3.18.0
 - Support new uncurry representation that will be available from Bucklescript version 7.3.0.

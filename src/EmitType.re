@@ -775,8 +775,14 @@ let emitImportTypeAs =
         : (typeName, asTypeName)
     | None => (typeName, asTypeName)
     };
+  let importPathString = importPath |> ImportPath.emit(~config);
   let strictLocalPrefix =
-    config.language == Flow
+    !
+      Filename.check_suffix(
+        importPathString,
+        generatedFilesExtension(~config),
+      )
+    && config.language == Flow
       ? "// flowlint-next-line nonstrict-import:off\n" : "";
   switch (config.language) {
   | Flow
@@ -793,7 +799,7 @@ let emitImportTypeAs =
       }
     )
     ++ "} from '"
-    ++ (importPath |> ImportPath.emit(~config))
+    ++ importPathString
     ++ "';"
     |> Emitters.import(~emitters)
   | Untyped => emitters

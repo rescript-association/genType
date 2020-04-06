@@ -28,13 +28,11 @@ const TypesBS = require('./Types.bs');
 // flowlint-next-line nonstrict-import:off
 import type {anInterestingFlowType as $$anInterestingFlowType} from './SomeFlowTypes';
 
-// flowlint-next-line nonstrict-import:off
 import type {annotatedVariant as AutoAnnotate_annotatedVariant} from './AutoAnnotate.gen';
 
 // flowlint-next-line nonstrict-import:off
 import type {t as Obj_t} from '../src/shims/Obj.shim';
 
-// flowlint-next-line nonstrict-import:off
 import type {variant as AutoAnnotate_variant} from './AutoAnnotate.gen';
 
 // flowlint-next-line nonstrict-import:off

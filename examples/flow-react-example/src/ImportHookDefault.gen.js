@@ -31,7 +31,6 @@ export const defaultTypeChecked: React$ComponentType<{|
 // Export '$$default' early to allow circular import from the '.bs.js' file.
 export const $$default: mixed = defaultTypeChecked;
 
-// flowlint-next-line nonstrict-import:off
 import type {renderMe as ImportHooks_renderMe} from './ImportHooks.gen';
 
 export type person = {| +name: string, +age: number |};
