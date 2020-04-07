@@ -1,4 +1,5 @@
 # master
+- Fix issue where genType would not run when the only annotation is in the interface of an inner module.
 
 # 3.19.0
 - Fix issue of missing parens when emitting optional function type.

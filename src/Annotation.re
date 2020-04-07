@@ -242,13 +242,27 @@ let rec structureItemCheckAnnotation =
     |> moduleExprCheckAnnotation(~checkAnnotation)
   | _ => false
   }
+
 and moduleExprCheckAnnotation =
     (~checkAnnotation, moduleExpr: Typedtree.module_expr) =>
   switch (moduleExpr.mod_desc) {
-  | Tmod_structure(structure)
-  | Tmod_constraint({mod_desc: Tmod_structure(structure)}, _, _, _) =>
+  | Tmod_structure(structure) =>
     structure |> structureCheckAnnotation(~checkAnnotation)
-  | Tmod_constraint(_)
+  | Tmod_constraint(
+      moduleExpr,
+      _moduleType,
+      moduleTypeConstraint,
+      _moduleCoercion,
+    ) =>
+    moduleExpr
+    |> moduleExprCheckAnnotation(~checkAnnotation)
+    || (
+      switch (moduleTypeConstraint) {
+      | Tmodtype_explicit(moduleType) =>
+        moduleType |> moduleTypeCheckAnnotation(~checkAnnotation)
+      | Tmodtype_implicit => false
+      }
+    )
   | Tmod_ident(_)
   | Tmod_functor(_)
   | Tmod_apply(_)
