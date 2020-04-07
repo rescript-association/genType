@@ -166,3 +166,11 @@ let i64Const: i64B = 34L;
 
 [@genType]
 let optFunction = Some(() => 3);
+
+module ObjectId: {
+  [@genType]
+  type t = int;
+} = {
+  type t = int;
+  let x = 1;
+};

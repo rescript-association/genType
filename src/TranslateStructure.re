@@ -356,6 +356,21 @@ let rec translateModuleBinding =
     |> translateStructure(~config, ~outputFileRelative, ~resolver, ~typeEnv)
     |> Translation.combine
 
+  | Tmod_constraint(
+      _,
+      _,
+      Tmodtype_explicit({mty_desc: Tmty_signature({sig_type: signature})}),
+      _,
+    ) =>
+    signature
+    |> TranslateSignatureFromTypes.translateSignatureFromTypes(
+         ~config,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeEnv,
+       )
+    |> Translation.combine
+
   | Tmod_constraint(_) =>
     logNotImplemented("Tmod_constraint " ++ __LOC__);
     Translation.empty;

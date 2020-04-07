@@ -63,6 +63,8 @@ var optFunction = (function (param) {
     return 3;
   });
 
+var ObjectId = { };
+
 var someIntList = /* :: */[
   1,
   /* :: */[
@@ -106,6 +108,7 @@ export {
   currentTime ,
   i64Const ,
   optFunction ,
+  ObjectId ,
   
 }
 /* currentTime Not a pure module */
