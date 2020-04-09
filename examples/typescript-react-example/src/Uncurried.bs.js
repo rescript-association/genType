@@ -23,11 +23,11 @@ function curried3(x, y, z) {
 }
 
 function callback(cb) {
-  return String(Curry._1(cb, /* () */0));
+  return String(Curry._1(cb, undefined));
 }
 
 function callback2(auth) {
-  return Curry._1(auth.login, /* () */0);
+  return Curry._1(auth.login, undefined);
 }
 
 function callback2U(auth) {
@@ -36,13 +36,13 @@ function callback2U(auth) {
 
 function sumU(n, m) {
   console.log("sumU 2nd arg", m, "result", n + m | 0);
-  return /* () */0;
+  
 }
 
 function sumU2(n) {
   return (function (m) {
       console.log("sumU2 2nd arg", m, "result", n + m | 0);
-      return /* () */0;
+      
     });
 }
 
@@ -50,7 +50,7 @@ function sumCurried(n) {
   console.log("sumCurried 1st arg", n);
   return (function (m) {
       console.log("sumCurried 2nd arg", m, "result", n + m | 0);
-      return /* () */0;
+      
     });
 }
 
@@ -58,7 +58,7 @@ function sumLblCurried(s, n) {
   console.log(s, "sumLblCurried 1st arg", n);
   return (function (m) {
       console.log("sumLblCurried 2nd arg", m, "result", n + m | 0);
-      return /* () */0;
+      
     });
 }
 

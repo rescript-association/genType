@@ -17,17 +17,17 @@ function testInner2Expanded(x) {
   return x;
 }
 
-var OtherFile = /* alias */0;
+var OtherFile;
 
-var OtherFileAlias = /* alias */0;
+var OtherFileAlias;
 
-var OuterAlias = /* alias */0;
+var OuterAlias;
 
-var OtherFile1 = /* alias */0;
+var OtherFile1;
 
-var Outer2 = /* alias */0;
+var Outer2;
 
-var Inner2 = /* alias */0;
+var Inner2;
 
 export {
   OtherFile ,
