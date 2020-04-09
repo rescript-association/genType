@@ -11,11 +11,11 @@ var InnerNested = { };
 
 var Inner2 = {
   InnerNested: InnerNested,
-  OuterInnerAlias2: /* alias */0
+  OuterInnerAlias2: undefined
 };
 
 var Outer2 = {
-  OuterInnerAlias: /* alias */0,
+  OuterInnerAlias: undefined,
   Inner2: Inner2
 };
 
@@ -31,9 +31,9 @@ function testInner2(x) {
   return x;
 }
 
-var Outer2Alias = /* alias */0;
+var Outer2Alias;
 
-var InnerNestedAlias = /* alias */0;
+var InnerNestedAlias;
 
 export {
   Outer ,

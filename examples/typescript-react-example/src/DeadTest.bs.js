@@ -38,7 +38,7 @@ console.log(DeadValueTest.valueAlive);
 
 function unusedRec(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
@@ -50,34 +50,34 @@ function split_map(l) {
 
 function rec1(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function rec2(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function recWithCallback(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function foo(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function bar(param) {
-  return foo(/* () */0);
+  return foo(undefined);
 }
 
 function withDefaultValue(paramWithDefaultOpt, y) {
@@ -151,15 +151,9 @@ console.log(React.createElement(DynamicallyLoadedComponent.make, {
           s: ""
         }));
 
-var second = /* int64 */[
-  /* hi */0,
-  /* lo */1
-];
+var second = Caml_int64.one;
 
-var minute = Caml_int64.mul(/* int64 */[
-      /* hi */0,
-      /* lo */60
-    ], second);
+var minute = Caml_int64.mul(Caml_int64.mk(60, 0), second);
 
 var deadRef = {
   contents: 12
@@ -187,13 +181,13 @@ var thisIsMarkedLive = 42;
 
 var ComponentSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond;
 
-var zzz = /* () */0;
+var zzz;
 
 var makeSwitch = $ExportWithRename$OR$DynamicallyLoadedComponent$RequireCond.make;
 
 var make$2 = DeadTest;
 
-var theSideEffectIsLogging = /* () */0;
+var theSideEffectIsLogging;
 
 var stringLengthNoSideEffects = 5;
 
