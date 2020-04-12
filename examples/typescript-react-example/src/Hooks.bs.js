@@ -113,11 +113,9 @@ var testForwardRef = React.forwardRef(Hooks$makeWithRef);
 
 var input = React.forwardRef((function (Props, param) {
         var partial_arg = Props.r;
-        return (function (param) {
-                    return React.createElement("div", {
-                                ref: param
-                              }, partial_arg.x);
-                  })(param);
+        return React.createElement("div", {
+                    ref: param
+                  }, partial_arg.x);
       }));
 
 function Hooks$polymorphicComponent(Props) {
