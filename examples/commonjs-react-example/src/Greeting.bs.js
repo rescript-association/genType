@@ -9,7 +9,7 @@ var component = ReasonReact.statelessComponent("PageReason");
 
 function onClick(param) {
   console.log("click");
-  return /* () */0;
+  
 }
 
 function make(message, someNumber, extraGreeting, _children) {

@@ -9,7 +9,7 @@ var component = ReasonReact.statelessComponent("App");
 
 function make(array, callbackOpt, person, title, _children) {
   var callback = callbackOpt !== undefined ? callbackOpt : (function (param) {
-        return /* () */0;
+        
       });
   return {
           debugName: component.debugName,
@@ -22,7 +22,7 @@ function make(array, callbackOpt, person, title, _children) {
           willUpdate: component.willUpdate,
           shouldUpdate: component.shouldUpdate,
           render: (function (_self) {
-              Curry._1(callback, /* () */0);
+              Curry._1(callback, undefined);
               return React.createElement("div", undefined, "Test Component Title:" + (title + (" Name:" + (person.name + (" array[0]:" + Caml_array.caml_array_get(array, 0))))));
             }),
           initialState: component.initialState,
