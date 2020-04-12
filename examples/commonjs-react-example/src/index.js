@@ -1,5 +1,6 @@
 /* @flow strict */
 
+// flowlint untyped-import:off
 const ReactDOM = require("react-dom");
 const React = require("react");
 
