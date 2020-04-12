@@ -86,6 +86,7 @@
   addValueDeclaration +unsafe_expr Types.re:120:39
   addValueReference Types.re:136:4 --> Types.re:136:16
   addValueReference Types.re:146:4 --> Types.re:146:36
+  addValueDeclaration +x Types.re:175:6
   Scanning /Users/cristianoc/reasonml/genType/examples/typescript-react-example/lib/bs/src/nested/Tuples.cmt
   addValueDeclaration testTuple Tuples.re:4:4
   addValueDeclaration origin Tuples.re:10:4
@@ -2041,6 +2042,7 @@ File References
   Live Value Tuples.computeArea: 0 references () [0]
   Live Value Tuples.origin: 0 references () [0]
   Live Value Tuples.testTuple: 0 references () [0]
+  Dead Value Types.ObjectId.+x: 0 references () [0]
   Live Value Types.optFunction: 0 references () [0]
   Live Value Types.i64Const: 0 references () [0]
   Live Value Types.currentTime: 0 references () [0]
@@ -4086,3 +4088,9 @@ File References
   someRecord.+id is a record label never used to read a value
   <-- line 141
   type someRecord = {[@dead "someRecord.+id"] id: int};
+
+  Warning Dead Value
+  /Users/cristianoc/reasonml/genType/examples/typescript-react-example/src/nested/Types.re 175:3-11
+  ObjectId.+x is never used
+  <-- line 175
+    [@dead "ObjectId.+x"] let x = 1;
