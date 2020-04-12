@@ -9,7 +9,7 @@ var component = ReasonReact.statelessComponent("Page");
 
 function handleClick(_event, _self) {
   console.log("clicked!");
-  return /* () */0;
+  
 }
 
 function make(messageOpt, _children) {
@@ -50,14 +50,14 @@ function concat(x, y) {
 function consumeVariant(x) {
   if (typeof x === "number") {
     return 1;
-  } else if (x.tag) {
-    var n = x[0];
-    return (
-            n !== undefined ? n : 0
-          ) + 3 | 0;
-  } else {
+  }
+  if (!x.tag) {
     return (x[0] + x[1] | 0) + 2 | 0;
   }
+  var n = x[0];
+  return (
+          n !== undefined ? n : 0
+        ) + 3 | 0;
 }
 
 var l = /* :: */[

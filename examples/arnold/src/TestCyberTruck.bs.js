@@ -23,7 +23,7 @@ function progress(param) {
         ];
   }
   counter.contents = counter.contents - 1 | 0;
-  return /* () */0;
+  
 }
 
 var Nested = {
@@ -35,39 +35,39 @@ var Progress = {
 };
 
 function justReturn(param) {
-  return /* () */0;
+  
 }
 
 function alwaysLoop(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function alwaysProgress(_param) {
   while(true) {
-    progress(/* () */0);
-    _param = /* () */0;
+    progress(undefined);
+    _param = undefined;
     continue ;
   };
 }
 
 function alwaysProgressWrongOrder(param) {
-  alwaysProgressWrongOrder(/* () */0);
-  return progress(/* () */0);
+  alwaysProgressWrongOrder(undefined);
+  return progress(undefined);
 }
 
 function doNotAlias(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function progressOnBothBranches(x) {
   while(true) {
-    progress(/* () */0);
+    progress(undefined);
     continue ;
   };
 }
@@ -75,7 +75,7 @@ function progressOnBothBranches(x) {
 function progressOnOneBranch(x) {
   while(true) {
     if (x > 3) {
-      progress(/* () */0);
+      progress(undefined);
     }
     continue ;
   };
@@ -84,7 +84,7 @@ function progressOnOneBranch(x) {
 function testParametricFunction(x) {
   while(true) {
     if (x > 3) {
-      progress(/* () */0);
+      progress(undefined);
     }
     continue ;
   };
@@ -99,69 +99,68 @@ function callParseFunction(x, parseFunction) {
 function testCacheHit(x) {
   while(true) {
     if (x > 0) {
-      progress(/* () */0);
+      progress(undefined);
     }
     continue ;
   };
 }
 
 function doNothing(param) {
-  return /* () */0;
+  
 }
 
 function evalOrderIsNotLeftToRight(x) {
   evalOrderIsNotLeftToRight(x);
-  progress(/* () */0);
-  return /* () */0;
+  progress(undefined);
+  
 }
 
 function evalOrderIsNotRightToLeft(x) {
-  progress(/* () */0);
+  progress(undefined);
   evalOrderIsNotRightToLeft(x);
-  return /* () */0;
+  
 }
 
 function butFirstArgumentIsAlwaysEvaluated(x) {
   while(true) {
-    progress(/* () */0);
+    progress(undefined);
     continue ;
   };
 }
 
 function butSecondArgumentIsAlwaysEvaluated(x) {
   while(true) {
-    progress(/* () */0);
+    progress(undefined);
     continue ;
   };
 }
 
 function tokenToString(token) {
-  if (typeof token === "number") {
-    switch (token) {
-      case /* Asterisk */0 :
-          return "*";
-      case /* Eof */1 :
-          return "Eof";
-      case /* Lparen */2 :
-          return "(";
-      case /* Plus */3 :
-          return "+";
-      case /* Rparen */4 :
-          return ")";
-      
-    }
-  } else {
+  if (typeof token !== "number") {
     return String(token[0]);
+  }
+  switch (token) {
+    case /* Asterisk */0 :
+        return "*";
+    case /* Eof */1 :
+        return "Eof";
+    case /* Lparen */2 :
+        return "(";
+    case /* Plus */3 :
+        return "+";
+    case /* Rparen */4 :
+        return ")";
+    
   }
 }
 
 function next(p) {
-  p.token = Random.bool(/* () */0) ? /* Eof */1 : /* Int */[Random.$$int(1000)];
+  p.token = Random.bool(undefined) ? /* Eof */1 : /* Int */[Random.$$int(1000)];
   p.position = {
     lnum: Random.$$int(1000),
     cnum: Random.$$int(80)
   };
-  return /* () */0;
+  
 }
 
 function err(p, s) {
@@ -169,7 +168,7 @@ function err(p, s) {
     s,
     p.errors
   ];
-  return /* () */0;
+  
 }
 
 function expect(p, token) {
@@ -193,40 +192,41 @@ function parseList(p, f) {
   var loop = function (p) {
     if (p.token === /* Asterisk */0) {
       return /* [] */0;
-    } else {
-      var item = Curry._1(f, p);
-      var l = loop(p);
-      return /* :: */[
-              item,
-              l
-            ];
     }
+    var item = Curry._1(f, p);
+    var l = loop(p);
+    return /* :: */[
+            item,
+            l
+          ];
   };
   return loop(p);
 }
 
 function $$parseInt(p) {
-  var match = p.token;
-  var res = typeof match === "number" ? (err(p, "integer expected"), -1) : match[0];
+  var n = p.token;
+  var res = typeof n === "number" ? (err(p, "integer expected"), -1) : n[0];
   next(p);
   return res;
 }
 
 function parseExpression(xOpt, p) {
   var match = p.token;
-  if (typeof match === "number" && match === 2) {
-    next(p);
-    var e1 = parseExpression(undefined, p);
-    expect(p, /* Plus */3);
-    var e2 = parseExpression(undefined, p);
-    expect(p, /* Lparen */2);
-    return /* Plus */Block.__(1, [
-              e1,
-              e2
-            ]);
-  } else {
+  if (typeof match !== "number") {
     return /* Int */Block.__(0, [$$parseInt(p)]);
   }
+  if (match !== 2) {
+    return /* Int */Block.__(0, [$$parseInt(p)]);
+  }
+  next(p);
+  var e1 = parseExpression(undefined, p);
+  expect(p, /* Plus */3);
+  var e2 = parseExpression(undefined, p);
+  expect(p, /* Lparen */2);
+  return /* Plus */Block.__(1, [
+            e1,
+            e2
+          ]);
 }
 
 function parseListInt(p) {
@@ -251,32 +251,30 @@ function parseListExpression2(p) {
 }
 
 function parseListIntTailRecursive(p) {
-  var p$1 = p;
   var _l = /* [] */0;
   while(true) {
     var l = _l;
-    if (p$1.token === /* Asterisk */0) {
+    if (p.token === /* Asterisk */0) {
       return List.rev(l);
-    } else {
-      _l = /* :: */[
-        $$parseInt(p$1),
-        l
-      ];
-      continue ;
     }
+    _l = /* :: */[
+      $$parseInt(p),
+      l
+    ];
+    continue ;
   };
 }
 
 function loopAfterProgress(_param) {
   while(true) {
-    _param = /* () */0;
+    _param = undefined;
     continue ;
   };
 }
 
 function testLoopAfterProgress(param) {
-  progress(/* () */0);
-  return loopAfterProgress(/* () */0);
+  progress(undefined);
+  return loopAfterProgress(undefined);
 }
 
 throw [
