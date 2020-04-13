@@ -4,8 +4,6 @@
 
 let version = Version.version;
 
-let signFile = s => s;
-
 type cliCommand =
   | DCE(option(string))
   | NoOp
