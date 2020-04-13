@@ -147,7 +147,40 @@ let runAnalysis = (~cmtRoot) => {
       Arnold.reportResults();
     };
 
-  | None => assert(false)
+  | None =>
+    Paths.setProjectRoot();
+    let lib_bs = {
+      Paths.projectRoot^ +++ "lib" +++ "bs";
+    };
+
+    let sourceDirs = ModuleResolver.readSourceDirs(~configSources=None);
+    sourceDirs
+    |> List.iter(sourceDir => {
+         let libBsSourceDir = Filename.concat(lib_bs, sourceDir);
+         let files =
+           switch (Sys.readdir(libBsSourceDir) |> Array.to_list) {
+           | files => files
+           | exception (Sys_error(_)) => []
+           };
+         let cmtFiles =
+           files
+           |> List.filter(x =>
+                Filename.check_suffix(x, ".cmt")
+                || Filename.check_suffix(x, ".cmti")
+              );
+         cmtFiles
+         |> List.iter(cmtFile => {
+              let cmtFilePath = Filename.concat(libBsSourceDir, cmtFile);
+              cmtFilePath |> loadCmtFile;
+            });
+       });
+
+    if (dce^) {
+      reportResults();
+    };
+    if (analyzeTermination^) {
+      Arnold.reportResults();
+    };
   };
 };
 

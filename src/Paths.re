@@ -1,3 +1,24 @@
+let projectRoot = ref("");
+
+let bsconfig = "bsconfig.json";
+let rec findProjectRoot = (~dir) =>
+  if (Sys.file_exists(Filename.concat(dir, bsconfig))) {
+    dir;
+  } else {
+    let parent = dir |> Filename.dirname;
+    if (parent == dir) {
+      prerr_endline(
+        "Error: cannot find project root containing " ++ bsconfig ++ ".",
+      );
+      assert(false);
+    } else {
+      findProjectRoot(~dir=parent);
+    };
+  };
+let setProjectRoot = () => {
+  projectRoot := findProjectRoot(~dir=Sys.getcwd());
+};
+
 /*
  * Handle namespaces in cmt files.
  * E.g. src/Module-Project.cmt becomes src/Module
