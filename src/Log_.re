@@ -72,6 +72,7 @@ module Color = {
     );
   };
 
+  [@dead "Color.error"]
   let error = (ppf, s) => Format.fprintf(ppf, "@{<error>%s@}", s);
   let info = (ppf, s) => Format.fprintf(ppf, "@{<info>%s@}", s);
 };
@@ -163,10 +164,6 @@ module Loc = {
   };
 };
 
-let log = x => {
-  Format.fprintf(Format.std_formatter, x);
-};
-
 let item = x => {
   Format.fprintf(Format.std_formatter, "  ");
   Format.fprintf(Format.std_formatter, x);
@@ -187,5 +184,3 @@ let logKind = (body, ~color, ~loc, ~name) => {
 
 let info = (body, ~loc, ~name) =>
   logKind(body, ~color=Color.info, ~loc, ~name);
-let error = (body, ~loc, ~name) =>
-  logKind(body, ~color=Color.error, ~loc, ~name);
