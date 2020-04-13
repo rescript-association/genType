@@ -1,4 +1,4 @@
-  Scanning ./lib/bs/src/TestCyberTruck.cmt
+  Scanning /Users/cristianoc/reasonml/genType/examples/arnold/lib/bs/src/TestCyberTruck.cmt
 
   Function Table
   1 justReturn: _
