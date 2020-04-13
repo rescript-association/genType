@@ -1,7 +1,7 @@
 FROM node:10.11.0-jessie as base
-WORKDIR /genType
+WORKDIR /reanalyze
 
-COPY package.json package-lock.json bsconfig.json /genType/
+COPY package.json package-lock.json bsconfig.json /reanalyze/
 
 RUN npm install
 

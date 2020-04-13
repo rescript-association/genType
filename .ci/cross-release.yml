@@ -30,7 +30,7 @@ steps:
   - task: CopyFiles@2
     inputs:
       sourceFolder: "dist"
-      contents: "gentype-*.tgz"
+      contents: "reanalyze-*.tgz"
       targetFolder: "_release"
 
   - task: PublishBuildArtifacts@1
@@ -44,5 +44,5 @@ steps:
     displayName: "Create Github Release"
     inputs:
       gitHubConnection: gh-ra-bot
-      repositoryName: cristianoc/genType
-      assets: dist/gentype-*.tgz
+      repositoryName: cristianoc/reanalyze
+      assets: dist/reanalyze-*.tgz

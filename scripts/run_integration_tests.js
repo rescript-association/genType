@@ -3,7 +3,7 @@ This script is used for cross-platform installing & building the example project
 checking the git diff of the examples directory.
 
 In a successful test scenario, after building the example projects, there should not be any changed files.
-(We check manually verified genType generated files in git, we consider diffs as regressions)
+(We check manually verified reanalyze generated files in git, we consider diffs as regressions)
 */
 
 /*
@@ -28,11 +28,11 @@ const isWindows = /^win/i.test(process.platform);
 
 // To prevent all kinds of cross-platform symlink errors, we decided to always
 // copy the built binary to the examples folder, otherwise the example projects
-// cannot find genType. We don't fully understand what kind of files esy
+// cannot find reanalyze. We don't fully understand what kind of files esy
 // creates on each platform. Linux & MacOS usually work fine, but Windows
 // caused a lot of troubles. Be aware that this was a concious decision,
 // refactoring this will eventually cause you man hours of work on AzureCI.
-const genTypeFile = path.join(__dirname, "../examples/reanalyze.exe");
+const reanalyzeFile = path.join(__dirname, "../examples/reanalyze.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise
@@ -109,7 +109,7 @@ function checkDiff() {
 
     if (output.length > 0) {
       throw new Error(
-        `Changed files detected in path '${exampleDir}'! Make sure genType is emitting the right code and commit the files to git` +
+        `Changed files detected in path '${exampleDir}'! Make sure reanalyze is emitting the right code and commit the files to git` +
         "\n" + output + "\n"
       );
     }
@@ -122,9 +122,9 @@ function checkSetup() {
     throw new Error("This script cannot be run with `esy`. Use `npm test` instead!");
   }
 
-  console.log(`Check existing binary: ${genTypeFile}`);
-  if (!fs.existsSync(path.resolve(genTypeFile))) {
-    const filepath = path.relative(path.join(__dirname, ".."), genTypeFile);
+  console.log(`Check existing binary: ${reanalyzeFile}`);
+  if (!fs.existsSync(path.resolve(reanalyzeFile))) {
+    const filepath = path.relative(path.join(__dirname, ".."), reanalyzeFile);
     throw new Error(`${filepath} does not exist. Use \`esy\` first!`);
   }
 
@@ -133,7 +133,7 @@ function checkSetup() {
 
   /* Compare the --version output with the package.json version number (should match) */
   try {
-    output = child_process.execSync(`${genTypeFile} --version`, {
+    output = child_process.execSync(`${reanalyzeFile} --version`, {
       shell: isWindows,
       encoding: "utf8"
     });
@@ -148,7 +148,7 @@ function checkSetup() {
 
   if (output.indexOf(pjson.version) === -1) {
     throw new Error(
-      path.basename(genTypeFile) +
+      path.basename(reanalyzeFile) +
         ` --version doesn't contain the version number of package.json` +
         `("${stripNewlines(output)}" should contain ${pjson.version})` +
         `- Run \`node scripts/bump_version_module.js\` and rebuild to sync version numbers`

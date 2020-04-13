@@ -16,5 +16,5 @@ node_modules/
 /yarn-error.log
 
 # npm publish related stuff
-gentype-*.tgz
+reanalyze-*.tgz
 
