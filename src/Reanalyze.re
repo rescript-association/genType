@@ -1,7 +1,3 @@
-/***
- * Copyright 2004-present Facebook. All Rights Reserved.
- */
-
 let version = Version.version;
 
 type cliCommand =
@@ -11,7 +7,7 @@ type cliCommand =
 
 let cli = () => {
   let cliCommand = ref(NoOp);
-  let usage = "genType version " ++ version;
+  let usage = "reanalyze version " ++ version;
   let versionAndExit = () => {
     print_endline(usage);
     exit(0);

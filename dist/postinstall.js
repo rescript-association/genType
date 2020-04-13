@@ -3,7 +3,7 @@ var fs = require("fs");
 var platform = process.platform;
 
 /* We always use the .exe extension, no matter if unix / win32 */
-const targetPath = path.join(__dirname, "gentype.exe");
+const targetPath = path.join(__dirname, "reanalyze.exe");
 
 function fail(msg) {
     console.warn(msg);
@@ -11,7 +11,7 @@ function fail(msg) {
 }
 
 function getPlatformBinaryPath(platform) {
-  return path.join(__dirname, "vendor-" + platform, "gentype.exe");
+  return path.join(__dirname, "vendor-" + platform, "reanalyze.exe");
 }
 
 function movePlatformBinary(platform) {

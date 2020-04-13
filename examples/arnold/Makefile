@@ -4,7 +4,7 @@ clean:
 	./node_modules/.bin/bsb -clean
 
 test: build
-	Debug=1 time ../gentype.exe -termination >deadcode.txt
+	Debug=1 time ../reanalyze.exe -termination >deadcode.txt
 
 
 

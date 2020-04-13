@@ -1,6 +1,6 @@
 /*
  * Note:
- * This file has been modified to the needs of gentype!
+ * This file has been modified to the needs of reanalyze!
  */
 const fs = require("fs");
 const path = require("path");
@@ -38,13 +38,12 @@ const packageJson = JSON.stringify(
       postinstall: "node ./postinstall.js"
     },
     bin: esyJson.esy.release.bin.reduce((acc, curr) => {
-      // should result in "bin": { "gentype": "gentype.exe" }
       const key = path.basename(curr, ".exe");
       return Object.assign({ [key]: curr }, acc);
     }, {}),
     files: [
       // Dummy file
-      "gentype.exe",
+      "reanalyze.exe",
       "postinstall.js",
       "vendor-linux/",
       "vendor-darwin/",

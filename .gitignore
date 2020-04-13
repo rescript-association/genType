@@ -12,7 +12,7 @@ node_modules/
 /_esy
 /_build
 /_release
-/genType.install
+/reanalyze.install
 /yarn-error.log
 
 # npm publish related stuff

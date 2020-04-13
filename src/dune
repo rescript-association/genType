@@ -1,10 +1,10 @@
 (copy_files# ext/*.{ml,mli})
 (
   executable
-    (public_name gentype.exe)
+    (public_name reanalyze.exe)
 
     ; The main module that will become the binary.
-    (name GenType)
+    (name Reanalyze)
 
     (flags "-w" "+6+26+27+32+33+39")
 

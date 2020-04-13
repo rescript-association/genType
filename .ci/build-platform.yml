@@ -67,22 +67,22 @@ jobs:
       - bash: cd $(ESY_CACHE_SOURCE_PATH) && tar czf $(STAGING_DIRECTORY_UNIX)/$(ESY_CACHE_SOURCE_TGZ) .
         displayName: "Create esy cache source .tgz"
         condition: eq(variables.CACHE_RESTORED, 'false')
-      - bash: "echo `npx esy x which gentype.exe`"
-        displayName: "Find gentype.exe"
+      - bash: "echo `npx esy x which reanalyze.exe`"
+        displayName: "Find reanalyze.exe"
       - bash: |
-          rm examples/gentype.exe
-          cp `npx esy x which gentype.exe` examples/gentype.exe	
+          rm examples/reanalyze.exe
+          cp `npx esy x which reanalyze.exe` examples/reanalyze.exe	
           rm examples/deadcodeppx.exe
           cp `npx esy x which deadcodeppx.exe` examples/deadcodeppx.exe
           rm examples/lazyLoad.exe
           cp `npx esy x which lazyLoad.exe` examples/lazyLoad.exe
-        displayName: "Copy gentype.exe, deadcodeppx.exe, lazyLoad.exe to examples/"
+        displayName: "Copy reanalyze.exe, deadcodeppx.exe, lazyLoad.exe to examples/"
       - bash: npm test
         displayName: "Test command"
       - bash: mkdir _release
         displayName: "Create _release directory"
-      - bash: cp `npx esy x which gentype.exe` _release/gentype.exe
-        displayName: "Copy gentype.exe to _release"
+      - bash: cp `npx esy x which reanalyze.exe` _release/reanalyze.exe
+        displayName: "Copy reanalyze.exe to _release"
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: ${{ parameters.platform }}"
         inputs:

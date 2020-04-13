@@ -1,5 +1,5 @@
 {
-  "name": "gentype",
+  "name": "reanalyze",
   "version": "3.20.0",
   "private": true,
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
@@ -10,7 +10,7 @@
     "test": "node ./scripts/run_integration_tests.js",
     "install:examples": "(cd examples/typescript-react-example && npm install) & (cd examples/arnold && npm install)",
     "build:examples": "(cd examples/typescript-react-example && npm run clean && npm run build) & (cd examples/arnold && npm run clean && npm run build)",
-    "dce": "Whitelist=src Blacklist=src/nothing ./examples/gentype.exe -dce-cmt `find  _esy/default/store/b/gentype-*/default/src/.GenType.eobjs -name byte`",
+    "dce": "Whitelist=src Blacklist=src/nothing ./examples/reanalyze.exe -dce-cmt `find  _esy/default/store/b/reanalyze-*/default/src/.Reanalyze.eobjs -name byte`",
     "preversion": "npm test",
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"
@@ -22,7 +22,7 @@
   },
   "author": "Cristiano Calcagno",
   "bugs": {
-    "url": "https://github.com/cristianoc/gentype/issues"
+    "url": "https://github.com/cristianoc/reanalyze/issues"
   },
-  "homepage": "https://github.com/cristianoc/gentype#readme"
+  "homepage": "https://github.com/cristianoc/reanalyze#readme"
 }
