@@ -1,4 +1,5 @@
 # master
+- Remove DCE and termination analysis.
 
 # 3.20.0
 - Fix issue where genType would not run when the only annotation is in the interface of an inner module.
