@@ -1,21 +1,4 @@
 {
-  "gentypeconfig": {
-    "language": "typescript",
-    "module": "es6",
-    "importPath": "relative",
-    "shims": {
-      "Js": "Js",
-      "React": "ReactShim",
-      "ReactEvent": "ReactEvent",
-      "ReasonPervasives": "ReasonPervasives",
-      "ReasonReact": "ReactShim"
-    },
-    "debug": {
-      "all": false
-    },
-    "exportInterfaces": false,
-    "path": "../gentype.exe"
-  },
   "name": "arnold",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 3 },
