@@ -46,7 +46,7 @@ let readDirsFromConfig = (~configSources) => {
 let readSourceDirs = (~configSources) => {
   let sourceDirs =
     ["lib", "bs", ".sourcedirs.json"]
-    |> List.fold_left((+++), Paths.projectRoot^);
+    |> List.fold_left((+++), Paths.bsbProjectRoot^);
   let dirs = ref([]);
 
   let readDirs = json => {
@@ -71,7 +71,12 @@ let readSourceDirs = (~configSources) => {
   if (sourceDirs |> Sys.file_exists) {
     try({
       let json = sourceDirs |> Ext_json_parse.parse_json_from_file;
-      readDirs(json);
+      if (Paths.bsbProjectRoot^ != Paths.projectRoot^) {
+        readDirs(json);
+        dirs := readDirsFromConfig(~configSources);
+      } else {
+        readDirs(json);
+      };
     }) {
     | _ => ()
     };

@@ -1,4 +1,5 @@
 let projectRoot = ref("");
+let bsbProjectRoot = ref("");
 
 let bsconfig = "bsconfig.json";
 let rec findProjectRoot = (~dir) =>
@@ -17,6 +18,13 @@ let rec findProjectRoot = (~dir) =>
   };
 let setProjectRoot = () => {
   projectRoot := findProjectRoot(~dir=Sys.getcwd());
+  bsbProjectRoot :=
+    (
+      switch (Sys.getenv_opt("BSB_PROJECT_ROOT")) {
+      | None => projectRoot^
+      | Some(s) => s
+      }
+    );
 };
 
 /*

@@ -16,7 +16,10 @@ let removeDeadValuesWithSideEffects = false;
 
 let recursiveDebug = false;
 
-let checkPrefix = prefix => {
+let checkPrefix = prefix_ => {
+  let prefix =
+    Paths.projectRoot^ == ""
+      ? prefix_ : Filename.concat(Paths.projectRoot^, prefix_);
   let prefixLen = prefix |> String.length;
   sourceDir =>
     String.length(sourceDir) >= prefixLen
