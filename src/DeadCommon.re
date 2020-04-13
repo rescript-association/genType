@@ -16,10 +16,7 @@ let removeDeadValuesWithSideEffects = false;
 
 let recursiveDebug = false;
 
-let checkPrefix = prefix_ => {
-  let prefix =
-    GenTypeCommon.projectRoot^ == ""
-      ? prefix_ : Filename.concat(GenTypeCommon.projectRoot^, prefix_);
+let checkPrefix = prefix => {
   let prefixLen = prefix |> String.length;
   sourceDir =>
     String.length(sourceDir) >= prefixLen

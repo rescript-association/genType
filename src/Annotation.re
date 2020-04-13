@@ -1,8 +1,3 @@
-type import = {
-  name: string,
-  importPath: ImportPath.t,
-};
-
 type attributePayload =
   | BoolPayload(bool)
   | FloatPayload(string)
@@ -284,17 +279,3 @@ and structureCheckAnnotation =
 
 let sanitizeVariableName = name =>
   name |> Str.global_replace(Str.regexp("-"), "_");
-
-let importFromString = (importString): import => {
-  let name = {
-    let base = importString |> Filename.basename;
-    (
-      try(base |> Filename.chop_extension) {
-      | Invalid_argument(_) => base
-      }
-    )
-    |> sanitizeVariableName;
-  };
-  let importPath = ImportPath.fromStringUnsafe(importString);
-  {name, importPath};
-};

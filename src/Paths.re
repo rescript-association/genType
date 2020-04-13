@@ -1,5 +1,3 @@
-open GenTypeCommon;
-
 let bsconfig = "bsconfig.json";
 
 let rec findProjectRoot = (~dir) =>
@@ -16,17 +14,6 @@ let rec findProjectRoot = (~dir) =>
       findProjectRoot(~dir=parent);
     };
   };
-
-let setProjectRoot = () => {
-  projectRoot := findProjectRoot(~dir=Sys.getcwd());
-  bsbProjectRoot :=
-    (
-      switch (Sys.getenv_opt("BSB_PROJECT_ROOT")) {
-      | None => projectRoot^
-      | Some(s) => s
-      }
-    );
-};
 
 let concat = Filename.concat;
 
@@ -93,15 +80,6 @@ let getCmtFile = cmt => {
   cmtFile;
 };
 
-let getConfigFile = () => {
-  let gentypeconfig = concat(projectRoot^, "gentypeconfig.json");
-  gentypeconfig |> Sys.file_exists ? Some(gentypeconfig) : None;
-};
-let getBsConfigFile = () => {
-  let bsconfig = concat(projectRoot^, "bsconfig.json");
-  bsconfig |> Sys.file_exists ? Some(bsconfig) : None;
-};
-
 /* Find the relative path from /.../bs/lib
    e.g. /foo/bar/bs/lib/src/Hello.re --> src/Hello.re */
 let relativePathFromBsLib = fileName =>
@@ -134,8 +112,3 @@ let relativePathFromBsLib = fileName =>
         }
     );
   };
-
-let readConfig = (~bsVersion, ~namespace) => {
-  setProjectRoot();
-  Config.readConfig(~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace);
-};
