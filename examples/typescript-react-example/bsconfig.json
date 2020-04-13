@@ -13,8 +13,7 @@
     "debug": {
       "all": false
     },
-    "exportInterfaces": false,
-    "path": "../gentype.exe"
+    "exportInterfaces": false
   },
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],

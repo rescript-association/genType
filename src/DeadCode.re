@@ -126,7 +126,11 @@ let runAnalysis = (~cmtRoot) => {
   | Some(root) =>
     let rec walkSubDirs = dir => {
       let absDir = dir == "" ? root : root +++ dir;
-      if (Sys.file_exists(absDir)) {
+      let skipDir = {
+        let base = Filename.basename(dir);
+        base == "node_modules" || base == "_esy";
+      };
+      if (!skipDir && Sys.file_exists(absDir)) {
         if (Sys.is_directory(absDir)) {
           absDir |> Sys.readdir |> Array.iter(d => walkSubDirs(dir +++ d));
         } else if (Filename.check_suffix(absDir, ".cmt")
