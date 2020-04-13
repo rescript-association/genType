@@ -5,7 +5,6 @@
 bundledOutputs/
 _coverage/
 _esy/
-esy.lock/
 
 lib/
 node_modules/
