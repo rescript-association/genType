@@ -10,7 +10,7 @@
     "test": "node ./scripts/run_integration_tests.js",
     "install:examples": "(cd examples/typescript-react-example && npm install) & (cd examples/flow-react-example && npm install) & (cd examples/untyped-react-example && npm install) & (cd examples/commonjs-react-example && npm install) & (cd examples/arnold && npm install)",
     "build:examples": "(cd examples/typescript-react-example && npm run clean && npm run build && cd use-some-library && npm run clean && npm run build) && (cd examples/flow-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build) & (cd examples/commonjs-react-example && npm run clean && npm run build) & (cd examples/arnold && npm run clean && npm run build)",
-    "dce": "Whitelist=src Blacklist=src/nothing node_modules/.bin/reanalyze -dce-cmt `find  _esy/default/store/b/gentype-*/default/src/.GenType.eobjs -name byte`",
+    "dce": "node_modules/.bin/reanalyze -live-paths src/ext -dce-cmt `find  _esy/default/store/b/gentype-*/default/src/.GenType.eobjs -name byte`",
     "preversion": "npm test",
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"
@@ -19,7 +19,7 @@
   "devDependencies": {
     "esy": "0.5.8",
     "debug": "^4.1.0",
-    "reanalyze": "^3.22.0"
+    "reanalyze": "^1.6.0"
   },
   "author": "Cristiano Calcagno",
   "bugs": {
