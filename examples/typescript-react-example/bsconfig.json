@@ -18,7 +18,6 @@
   },
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],
-  "ppx-flags": ["../deadcodeppx.exe", "../lazyLoad.exe"],
   "reason": { "react-jsx": 3 },
   "bs-dependencies": ["reason-react"],
   "sources": [
