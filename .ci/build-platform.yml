@@ -71,12 +71,8 @@ jobs:
         displayName: "Find gentype.exe"
       - bash: |
           rm examples/gentype.exe
-          cp `npx esy x which gentype.exe` examples/gentype.exe	
-          rm examples/deadcodeppx.exe
-          cp `npx esy x which deadcodeppx.exe` examples/deadcodeppx.exe
-          rm examples/lazyLoad.exe
-          cp `npx esy x which lazyLoad.exe` examples/lazyLoad.exe
-        displayName: "Copy gentype.exe, deadcodeppx.exe, lazyLoad.exe to examples/"
+          cp `npx esy x which gentype.exe` examples/gentype.exe
+        displayName: "Copy gentype.exeto examples/"
       - bash: npm test
         displayName: "Test command"
       - bash: mkdir _release
