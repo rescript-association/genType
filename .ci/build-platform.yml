@@ -72,7 +72,7 @@ jobs:
       - bash: |
           rm examples/gentype.exe
           cp `npx esy x which gentype.exe` examples/gentype.exe
-        displayName: "Copy gentype.exeto examples/"
+        displayName: "Copy gentype.exe to examples/"
       - bash: npm test
         displayName: "Test command"
       - bash: mkdir _release
