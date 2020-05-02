@@ -1,5 +1,5 @@
 # master
-- Only emit inner module when its vaues require no conversion.
+- Only emit inner module when its vaues require no conversion. See https://github.com/cristianoc/genType/pull/416.
 
 # 3.21.0
 - Remove DCE and termination analysis.
