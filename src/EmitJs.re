@@ -660,9 +660,7 @@ let rec emitCodeItem =
       resolvedName,
       type_,
     }) =>
-    resolvedName
-    |> ExportModule.extendExportModules(~moduleItemsEmitter, ~type_);
-    let resolvedName = ResolvedName.toString(resolvedName);
+    let resolvedNameStr = ResolvedName.toString(resolvedName);
     let nameGen = EmitText.newNameGen();
     let importPath =
       fileName
@@ -679,7 +677,7 @@ let rec emitCodeItem =
     let default = "default";
     let make = "make";
 
-    let name = originalName == default ? Runtime.default : resolvedName;
+    let name = originalName == default ? Runtime.default : resolvedNameStr;
 
     module HookType = {
       type t = {
@@ -717,18 +715,18 @@ let rec emitCodeItem =
           argTypes: [{aName: "", aType: propsType}],
         };
         let chopSuffix = suffix =>
-          resolvedName == suffix
+          resolvedNameStr == suffix
             ? ""
-            : Filename.check_suffix(resolvedName, "_" ++ suffix)
-                ? Filename.chop_suffix(resolvedName, "_" ++ suffix)
-                : resolvedName;
+            : Filename.check_suffix(resolvedNameStr, "_" ++ suffix)
+                ? Filename.chop_suffix(resolvedNameStr, "_" ++ suffix)
+                : resolvedNameStr;
         let suffix =
           if (originalName == default) {
             chopSuffix(default);
           } else if (originalName == make) {
             chopSuffix(make);
           } else {
-            resolvedName;
+            resolvedNameStr;
           };
         let hookName =
           (fileName |> ModuleName.toString)
@@ -754,6 +752,12 @@ let rec emitCodeItem =
       hookType != None && config.language == Flow;
 
     let converter = type_ |> typeGetConverter;
+    resolvedName
+    |> ExportModule.extendExportModules(
+         ~converter,
+         ~moduleItemsEmitter,
+         ~type_,
+       );
 
     let hookNameForTypeof = name ++ "$$forTypeof";
     let type_ =

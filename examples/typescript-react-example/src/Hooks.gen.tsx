@@ -134,24 +134,3 @@ export const RenderPropRequiresConversion_make: React.ComponentType<{ readonly r
 export type aComponentWithChildren_Props = { readonly children: React.ReactNode; readonly vehicle: vehicle };
 
 export const aComponentWithChildren: React.ComponentType<{ readonly children: React.ReactNode; readonly vehicle: vehicle }> = HooksBS.aComponentWithChildren;
-
-export const NoProps: { make: React.ComponentType<{}> } = HooksBS.NoProps
-
-export const Inner: {
-  Inner2: {
-    anotherComponent: React.ComponentType<{
-      readonly vehicle: vehicle
-    }>; 
-    make: React.ComponentType<{
-      readonly vehicle: vehicle
-    }>
-  }; 
-  anotherComponent: React.ComponentType<{
-    readonly vehicle: vehicle
-  }>; 
-  make: React.ComponentType<{
-    readonly vehicle: vehicle
-  }>
-} = HooksBS.Inner
-
-export const RenderPropRequiresConversion: { make: React.ComponentType<{ readonly renderVehicle: React.ComponentType<{ readonly number: number; readonly vehicle: vehicle }> }> } = HooksBS.RenderPropRequiresConversion
