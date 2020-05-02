@@ -2,7 +2,7 @@ open GenTypeCommon;
 
 type exportModuleItem = Hashtbl.t(string, exportModuleValue)
 and exportModuleValue =
-  | S(string, type_)
+  | S(string, type_, Converter.t)
   | M(exportModuleItem);
 
 type exportModuleItems = Hashtbl.t(string, exportModuleItem);
@@ -10,24 +10,45 @@ type exportModuleItems = Hashtbl.t(string, exportModuleItem);
 type types = {
   typeForValue: type_,
   typeForType: type_,
+  needsConversion: bool,
+};
+
+type fieldInfo = {
+  fieldForValue: field,
+  fieldForType: field,
+  needsConversion: bool,
 };
 
 let rec exportModuleValueToType = exportModuleValue =>
   switch (exportModuleValue) {
-  | S(s, type_) => {typeForValue: ident(s), typeForType: type_}
+  | S(s, type_, converter) => {
+      typeForValue: ident(s),
+      typeForType: type_,
+      needsConversion: converter != IdentC,
+    }
   | M(exportModuleItem) =>
-    let (fieldsForValue, fieldsForType) =
-      exportModuleItem |> exportModuleItemToFields |> List.split;
+    let fieldsInfo = exportModuleItem |> exportModuleItemToFields;
+    let fieldsForValue =
+      fieldsInfo |> List.map(({fieldForValue}) => fieldForValue);
+    let fieldsForType =
+      fieldsInfo |> List.map(({fieldForType}) => fieldForType);
+    let needsConversion =
+      fieldsInfo
+      |> List.fold_left(
+           (acc, {needsConversion}) => acc || needsConversion,
+           false,
+         );
     {
       typeForValue: Object(Open, fieldsForValue),
       typeForType: Object(Open, fieldsForType),
+      needsConversion,
     };
   }
-and exportModuleItemToFields: exportModuleItem => list((field, field)) =
+and exportModuleItemToFields: exportModuleItem => list(fieldInfo) =
   exportModuleItem => {
     Hashtbl.fold(
       (fieldName, exportModuleValue, fields) => {
-        let {typeForValue, typeForType} =
+        let {typeForValue, typeForType, needsConversion} =
           exportModuleValue |> exportModuleValueToType;
         let fieldForType = {
           mutable_: Mutable,
@@ -37,7 +58,7 @@ and exportModuleItemToFields: exportModuleItem => list((field, field)) =
           type_: typeForType,
         };
         let fieldForValue = {...fieldForType, type_: typeForValue};
-        [(fieldForValue, fieldForType), ...fields];
+        [{fieldForValue, fieldForType, needsConversion}, ...fields];
       },
       exportModuleItem,
       [],
@@ -45,11 +66,21 @@ and exportModuleItemToFields: exportModuleItem => list((field, field)) =
   };
 
 let rec extendExportModuleItem =
-        (x, ~exportModuleItem: exportModuleItem, ~type_, ~valueName) =>
+        (
+          x,
+          ~converter,
+          ~exportModuleItem: exportModuleItem,
+          ~type_,
+          ~valueName,
+        ) =>
   switch (x) {
   | [] => ()
   | [fieldName] =>
-    Hashtbl.replace(exportModuleItem, fieldName, S(valueName, type_))
+    Hashtbl.replace(
+      exportModuleItem,
+      fieldName,
+      S(valueName, type_, converter),
+    )
   | [fieldName, ...rest] =>
     let innerExportModuleItem =
       switch (Hashtbl.find(exportModuleItem, fieldName)) {
@@ -66,6 +97,7 @@ let rec extendExportModuleItem =
       };
     rest
     |> extendExportModuleItem(
+         ~converter,
          ~exportModuleItem=innerExportModuleItem,
          ~valueName,
          ~type_,
@@ -73,7 +105,7 @@ let rec extendExportModuleItem =
   };
 
 let extendExportModuleItems =
-    (x, ~exportModuleItems: exportModuleItems, ~type_, ~valueName) =>
+    (x, ~converter, ~exportModuleItems: exportModuleItems, ~type_, ~valueName) =>
   switch (x) {
   | [] => assert(false)
   | [_valueName] => ()
@@ -86,7 +118,13 @@ let extendExportModuleItems =
         Hashtbl.replace(exportModuleItems, moduleName, exportModuleItem);
         exportModuleItem;
       };
-    rest |> extendExportModuleItem(~exportModuleItem, ~type_, ~valueName);
+    rest
+    |> extendExportModuleItem(
+         ~converter,
+         ~exportModuleItem,
+         ~type_,
+         ~valueName,
+       );
   };
 
 let createModuleItemsEmitter: unit => exportModuleItems =
@@ -102,40 +140,52 @@ let emitAllModuleItems =
   emitters
   |> rev_fold(
        (moduleName, exportModuleItem, emitters) => {
-         let {typeForValue, typeForType} =
+         let {typeForValue, typeForType, needsConversion} =
            M(exportModuleItem) |> exportModuleValueToType;
-         let emittedModuleItem =
-           config.modulesAsObjects
-             ? ModuleName.forInnerModule(
-                 ~fileName,
-                 ~innerModuleName=moduleName,
-               )
-               |> ModuleName.toString
-             : typeForValue
-               |> EmitType.typeToString(
-                    ~config={...config, language: Flow} /* abuse type to print object */,
-                    ~typeNameIsInterface=_ =>
-                    false
-                  );
-         emittedModuleItem
-         |> EmitType.emitExportConst(
-              ~config,
-              ~emitters,
-              ~name=moduleName,
-              ~type_=typeForType,
-              ~typeNameIsInterface=_ =>
-              false
-            );
+         if (Debug.codeItems^) {
+           Log_.item(
+             "EmitModule %s needsConversion:%b@.",
+             moduleName,
+             needsConversion,
+           );
+         };
+         if (needsConversion) {
+           emitters;
+         } else {
+           let emittedModuleItem =
+             config.modulesAsObjects
+               ? ModuleName.forInnerModule(
+                   ~fileName,
+                   ~innerModuleName=moduleName,
+                 )
+                 |> ModuleName.toString
+               : typeForValue
+                 |> EmitType.typeToString(
+                      ~config={...config, language: Flow} /* abuse type to print object */,
+                      ~typeNameIsInterface=_ =>
+                      false
+                    );
+           emittedModuleItem
+           |> EmitType.emitExportConst(
+                ~config,
+                ~emitters,
+                ~name=moduleName,
+                ~type_=typeForType,
+                ~typeNameIsInterface=_ =>
+                false
+              );
+         };
        },
        exportModuleItems,
      );
 };
 
 let extendExportModules =
-    (~moduleItemsEmitter: exportModuleItems, ~type_, resolvedName) =>
+    (~converter, ~moduleItemsEmitter: exportModuleItems, ~type_, resolvedName) =>
   resolvedName
   |> ResolvedName.toList
   |> extendExportModuleItems(
+       ~converter,
        ~exportModuleItems=moduleItemsEmitter,
        ~type_,
        ~valueName=resolvedName |> ResolvedName.toString,

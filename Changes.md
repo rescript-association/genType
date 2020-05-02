@@ -1,4 +1,5 @@
 # master
+- Only emit inner module when its vaues require no conversion.
 
 # 3.21.0
 - Remove DCE and termination analysis.
