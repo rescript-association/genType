@@ -9,13 +9,13 @@ let translateSignatureValue =
       valueDescription: Typedtree.value_description,
     )
     : Translation.t => {
-  let {Typedtree.val_id, val_desc, val_attributes} = valueDescription;
+  let {Typedtree.val_attributes, val_desc, val_id, val_loc} = valueDescription;
   if (Debug.translation^) {
     Log_.item("Translate Signature Value %s\n", val_id |> Ident.name);
   };
   let typeExpr = val_desc.ctyp_type;
   let addAnnotationsToFunction = type_ => type_;
-  switch (val_id, Annotation.fromAttributes(val_attributes)) {
+  switch (val_id, val_attributes |> Annotation.fromAttributes(~loc=val_loc)) {
   | (id, GenType) =>
     id
     |> Ident.name

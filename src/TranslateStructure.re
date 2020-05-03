@@ -135,7 +135,7 @@ let translateValueBinding =
       ~resolver,
       ~moduleItemGen,
       ~typeEnv,
-      {Typedtree.vb_pat, vb_attributes, vb_expr},
+      {Typedtree.vb_attributes, vb_expr, vb_pat},
     )
     : Translation.t => {
   switch (vb_pat.pat_desc) {
@@ -147,7 +147,7 @@ let translateValueBinding =
     let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
     typeEnv |> TypeEnv.updateModuleItem(~nameOpt=Some(name), ~moduleItem);
 
-    if (Annotation.fromAttributes(vb_attributes) == GenType) {
+    if (vb_attributes |> Annotation.fromAttributes(~loc=vb_pat.pat_loc) == GenType) {
       id
       |> Ident.name
       |> Translation.(

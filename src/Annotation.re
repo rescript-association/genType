@@ -36,7 +36,10 @@ let tagIsGenTypeImport = s => s == "genType.import" || s == "gentype.import";
 let tagIsGenTypeOpaque = s => s == "genType.opaque" || s == "gentype.opaque";
 
 let tagIsOneOfTheGenTypeAnnotations = s =>
-  tagIsGenType(s) || tagIsGenTypeImport(s) || tagIsGenTypeOpaque(s);
+  tagIsGenType(s)
+  || tagIsGenTypeAs(s)
+  || tagIsGenTypeImport(s)
+  || tagIsGenTypeOpaque(s);
 
 let tagIsGenTypeIgnoreInterface = s =>
   s == "genType.ignoreInterface" || s == "gentype.ignoreInterface";
@@ -163,11 +166,24 @@ let getDocString = attributes => {
 let hasAttribute = (checkText, attributes: Typedtree.attributes) =>
   getAttributePayload(checkText, attributes) != None;
 
-let fromAttributes = (attributes: Typedtree.attributes) =>
-  if (hasAttribute(tagIsGenType, attributes)) {
-    GenType;
-  } else if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
+let fromAttributes = (~loc, attributes: Typedtree.attributes) =>
+  if (hasAttribute(tagIsGenTypeOpaque, attributes)) {
     GenTypeOpaque;
+  } else if (hasAttribute(
+               s => tagIsGenType(s) || tagIsGenTypeAs(s),
+               attributes,
+             )) {
+    switch (attributes |> getAttributePayload(tagIsGenType)) {
+    | Some(UnrecognizedPayload) => ()
+    | Some(_) =>
+      Log_.Color.setup();
+      Log_.info(~loc, ~name="Warning genType", (ppf, ()) =>
+        Format.fprintf(ppf, "Annotation payload is ignored")
+      );
+    | _ => ()
+    };
+
+    GenType;
   } else {
     NoGenType;
   };

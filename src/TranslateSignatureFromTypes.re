@@ -8,7 +8,7 @@ let translateTypeDeclarationFromTypes =
       ~resolver,
       ~typeEnv,
       ~id,
-      {type_params, type_kind, type_attributes, type_manifest}: Types.type_declaration,
+      {type_attributes, type_kind, type_loc, type_manifest, type_params}: Types.type_declaration,
     )
     : list(CodeItem.typeDeclaration) => {
   typeEnv |> TypeEnv.newType(~name=id |> Ident.name);
@@ -36,6 +36,7 @@ let translateTypeDeclarationFromTypes =
   declarationKind
   |> TranslateTypeDeclarations.traslateDeclarationKind(
        ~config,
+       ~loc=type_loc,
        ~outputFileRelative,
        ~resolver,
        ~typeAttributes=type_attributes,

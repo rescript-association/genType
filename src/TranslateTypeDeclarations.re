@@ -55,6 +55,7 @@ let renameRecordField = (~config, ~attributes, ~nameRE) => {
 let traslateDeclarationKind =
     (
       ~config,
+      ~loc,
       ~outputFileRelative,
       ~resolver,
       ~typeAttributes,
@@ -64,7 +65,7 @@ let traslateDeclarationKind =
       declarationKind,
     )
     : list(CodeItem.typeDeclaration) => {
-  let annotation = typeAttributes |> Annotation.fromAttributes;
+  let annotation = typeAttributes |> Annotation.fromAttributes(~loc);
   let opaque = annotation == Annotation.GenTypeOpaque ? Some(true) : None /* None means don't know */;
   let (importStringOpt, nameAs) =
     typeAttributes |> Annotation.getAttributeImportRenaming;
@@ -402,7 +403,7 @@ let translateTypeDeclaration =
       ~outputFileRelative,
       ~resolver,
       ~typeEnv,
-      {typ_attributes, typ_id, typ_manifest, typ_params, typ_type}: Typedtree.type_declaration,
+      {typ_attributes, typ_id, typ_loc, typ_manifest, typ_params, typ_type}: Typedtree.type_declaration,
     )
     : list(CodeItem.typeDeclaration) => {
   if (Debug.translation^) {
@@ -433,6 +434,7 @@ let translateTypeDeclaration =
   declarationKind
   |> traslateDeclarationKind(
        ~config,
+       ~loc=typ_loc,
        ~outputFileRelative,
        ~resolver,
        ~typeAttributes=typ_attributes,

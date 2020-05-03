@@ -1,5 +1,7 @@
 # master
 - Only emit inner module when its vaues require no conversion. See https://github.com/cristianoc/genType/pull/416.
+- Give a warning when a `@genType` annotations is used with payload.
+  E.g. in `[@genType "foo"]` the payload `"foo"` is ignored.
 
 # 3.21.0
 - Remove DCE and termination analysis.
