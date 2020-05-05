@@ -70,7 +70,7 @@ scripts: {
 
 > **Note:** With genType < 2.17.0 or bucklescript < 5.0.0, one has to set environment variable `BS_CMT_POST_PROCESS_CMD`. See the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
-With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.re.js` files are generated).
+With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.gen.js` files are generated).
 
 Check out the [Examples](#examples) for detailed setups (TypeScript, Flow and Plain JavaScript).
 
@@ -331,8 +331,8 @@ Every `genType` powered project requires a configuration item `"gentypeconfig"` 
 - **language**
 
   - "typescript" : Generate `*.tsx` files written in TypeScript.
-  - "flow": Generate `*.re.js` files with Flow type annotations.
-  - "untyped": Generate `*.re.js` files in vanilla JavaScript.
+  - "flow": Generate `*.gen.js` files with Flow type annotations.
+  - "untyped": Generate `*.gen.js` files in vanilla JavaScript.
 
 - **shims**
   - e.g. `Array<string>` with format: `"ReasonModule=JavaScriptModule"`
