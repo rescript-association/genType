@@ -72,3 +72,5 @@ export abstract class UI_t {
 export abstract class Wheel_t {
   protected opaque: unknown;
 }
+
+export type inputFocusEvent = React.FocusEvent<HTMLInputElement>;
