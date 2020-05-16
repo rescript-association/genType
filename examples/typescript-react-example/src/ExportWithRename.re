@@ -1,3 +1,3 @@
-[@genType.as "ExportWithRename"]
+[@genType "ExportWithRename"]
 [@react.component]
 let make = (~s) => React.string(s);
