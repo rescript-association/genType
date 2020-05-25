@@ -29,7 +29,7 @@ let emitVariantGetLabel:
   (~config: config, ~polymorphic: bool, string) => string;
 
 let emitVariantGetPayload:
-  (~numArgs: int, ~polymorphic: bool, string) => string;
+  (~config: config, ~numArgs: int, ~polymorphic: bool, string) => string;
 
 let emitVariantLabel: (~comment: bool=?, ~polymorphic: bool, string) => string;
 

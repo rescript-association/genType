@@ -143,8 +143,8 @@ export const restResult1: (x:result1<number,string>) => result1<number,string> =
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
   return result.TAG===0
-    ? {tag:"Ok", value:result[0]}
-    : {tag:"Error", value:result[0]}
+    ? {tag:"Ok", value:result._0}
+    : {tag:"Error", value:result._0}
 };
 
 export const restResult2: (x:result2<number,string>) => result2<number,string> = function (Arg1: any) {
@@ -152,8 +152,8 @@ export const restResult2: (x:result2<number,string>) => result2<number,string> =
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
   return result.TAG===0
-    ? {tag:"Ok", value:result[0]}
-    : {tag:"Error", value:result[0]}
+    ? {tag:"Ok", value:result._0}
+    : {tag:"Error", value:result._0}
 };
 
 export const restResult3: (x:result3<number,string>) => result3<number,string> = function (Arg1: any) {
@@ -161,6 +161,6 @@ export const restResult3: (x:result3<number,string>) => result3<number,string> =
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
   return result.TAG===0
-    ? {tag:"Ok", value:result[0]}
-    : {tag:"Error", value:result[0]}
+    ? {tag:"Ok", value:result._0}
+    : {tag:"Error", value:result._0}
 };

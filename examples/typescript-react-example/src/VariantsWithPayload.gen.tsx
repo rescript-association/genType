@@ -104,11 +104,11 @@ export const testVariantWithPayloads: (x:variantWithPayloads) => variantWithPayl
     : $$toRE13337556[Arg1]);
   return typeof(result) === 'object'
     ? result.TAG===0
-      ? {tag:"B", value:result[0]}
+      ? {tag:"B", value:result._0}
       : result.TAG===1
       ? {tag:"C", value:result.slice()}
       : result.TAG===2
-      ? {tag:"D", value:result[0]}
+      ? {tag:"D", value:result._0}
       : {tag:"E", value:result.slice()}
     : $$toJS13337556[result]
 };
@@ -128,10 +128,10 @@ export const printVariantWithPayloads: (x:variantWithPayloads) => void = functio
 
 export const testVariant1Int: (x:variant1Int) => variant1Int = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testVariant1Int(CreateBucklescriptBlock.__(0, [Arg1.value]));
-  return {tag:"R", value:result[0]}
+  return {tag:"R", value:result._0}
 };
 
 export const testVariant1Object: (x:variant1Object) => variant1Object = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testVariant1Object(CreateBucklescriptBlock.__(0, [Arg1]));
-  return result[0]
+  return result._0
 };

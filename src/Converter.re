@@ -829,6 +829,7 @@ let rec apply =
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
+               ~config,
                ~numArgs,
                ~polymorphic=variantC.polymorphic,
              )
@@ -872,6 +873,7 @@ let rec apply =
         |> (
           toJS
             ? Runtime.emitVariantGetPayload(
+                ~config,
                 ~numArgs,
                 ~polymorphic=variantC.polymorphic,
               )

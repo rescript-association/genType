@@ -71,11 +71,18 @@ let emitVariantGetLabel = (~config, ~polymorphic, x) =>
     x |> EmitText.fieldAccess(~label=config.variantsAsObjects ? "TAG" : "tag");
   };
 
-let emitVariantGetPayload = (~numArgs, ~polymorphic, x) =>
+let accessVarant = (~config, ~index, x) =>
+  if (config.variantsAsObjects) {
+    x ++ "._" ++ string_of_int(index);
+  } else {
+    x |> EmitText.arrayAccess(~index);
+  };
+
+let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
-    x |> EmitText.arrayAccess(~index=0);
+    x |> accessVarant(~config, ~index=0);
   } else if (numArgs == 0) {
     /* inline record */
     x;
