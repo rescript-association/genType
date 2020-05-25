@@ -2,7 +2,9 @@
 
 
 function foo(param) {
-  return /* record */[/* lib */"this is a lib"];
+  return {
+          lib: "this is a lib"
+        };
 }
 
 export {
