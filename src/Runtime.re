@@ -95,9 +95,27 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     EmitText.array([label |> emitVariantLabel(~polymorphic), x]);
   } else {
-    config.emitCreateBucklescriptBlock = true;
-    let args = numArgs == 1 ? [x] |> EmitText.array : x;
-    createBucklescriptBlock |> EmitText.funCall(~args=[label, args]);
+    let args =
+      numArgs == 1
+        ? [x]
+        : {
+          List.init(numArgs, index => x |> EmitText.arrayAccess(~index));
+        };
+    if (config.variantsAsObjects) {
+      "{TAG: "
+      ++ label
+      ++ ", "
+      ++ (
+        args
+        |> List.mapi((i, s) => "_" ++ string_of_int(i) ++ ":" ++ s)
+        |> String.concat(", ")
+      )
+      ++ "}";
+    } else {
+      config.emitCreateBucklescriptBlock = true;
+      let args = numArgs == 1 ? [x] |> EmitText.array : x;
+      createBucklescriptBlock |> EmitText.funCall(~args=[label, args]);
+    };
   };
 
 let jsVariantTag = "tag";
