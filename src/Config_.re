@@ -42,6 +42,7 @@ type config = {
   shimsMap: ModuleNameMap.t(ModuleName.t),
   sources: option(Ext_json_types.t),
   useUnboxedAnnotations: bool,
+  variantsAsObjects: bool,
 };
 
 let default = {
@@ -68,6 +69,7 @@ let default = {
   shimsMap: ModuleNameMap.empty,
   sources: None,
   useUnboxedAnnotations: false,
+  variantsAsObjects: false,
 };
 
 let bsPlatformLib = (~config) =>
@@ -266,6 +268,11 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | _ => v1 > 6
       };
     };
+    let variantsAsObjects = {
+      switch (v1) {
+      | _ => v1 >= 8
+      };
+    };
     let useUnboxedAnnotations = {
       switch (v1) {
       | 7 => bsVersion > (7, 0, 1)
@@ -313,6 +320,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       shimsMap,
       sources: None,
       useUnboxedAnnotations,
+      variantsAsObjects,
     };
   };
 
