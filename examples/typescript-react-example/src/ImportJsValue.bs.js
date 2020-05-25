@@ -45,9 +45,9 @@ function higherOrder(prim) {
   return ImportJsValueGen.higherOrder(prim);
 }
 
-var returnedFromHigherOrder = ImportJsValueGen.higherOrder((function (prim, prim$1) {
-        return prim + prim$1 | 0;
-      }));
+var returnedFromHigherOrder = ImportJsValueGen.higherOrder(function (prim, prim$1) {
+      return prim + prim$1 | 0;
+    });
 
 function convertVariant(prim) {
   return ImportJsValueGen.convertVariant(prim);
