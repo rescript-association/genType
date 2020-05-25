@@ -2,15 +2,12 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
 import ComponentAsProp from "./components/ComponentAsProp.gen";
-import { InnerComponent } from "./components/ManyComponents.gen";
 import * as ImportJsValue from "./ImportJsValue.gen";
 import * as Uncurried from "./Uncurried.gen";
 import "./index.css";
 import * as MyMath from "./MyMath";
 import * as Types from "./nested/Types.gen";
 import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules.gen";
-import ReasonComponent from "./ReasonComponent.gen";
-import { minus, t, tToString } from "./ReasonComponent.gen";
 import * as Records from "./Records.gen";
 import registerServiceWorker from "./registerServiceWorker";
 import * as Variants from "./Variants.gen";
@@ -26,15 +23,8 @@ import {
 } from "./VariantsWithPayload.gen";
 import * as TestPromise from "./TestPromise.gen";
 
-const minusOne: number = minus({ second: 1 });
-
-const a: t = "A";
-const b: t = { tag: "B", value: 3 };
-
 // tslint:disable-next-line:no-console
 const consoleLog = console.log;
-
-consoleLog(a, b);
 
 const intList = Types.map(x => x + 1, Types.someIntList);
 
@@ -47,6 +37,9 @@ const businesses = [
 ];
 
 const addresses = Records.findAllAddresses(businesses);
+
+consoleLog("indList", intList);
+consoleLog("addresses", addresses);
 
 consoleLog("index.tsx roundedNumber:", ImportJsValue.roundedNumber);
 consoleLog("index.tsx areaValue:", ImportJsValue.areaValue);
@@ -75,24 +68,6 @@ Uncurried.sumLblCurried("hello", { n: 3, m: 4 });
 ReactDOM.render(
   <div>
     <App name={"Hello"} />
-    <ReasonComponent
-      message={
-        "Message from typescript: minus one is " +
-        minusOne +
-        " and B(3) prints as " +
-        tToString(b) +
-        " addresses: " +
-        addresses
-      }
-      intList={intList}
-      person={{
-        name: "Name",
-        polymorphicPayload: null,
-        surname: "Surname",
-        type: ""
-      }}
-    />
-    <InnerComponent />
     <ComponentAsProp
       title={<div>title</div>}
       description={<div>description</div>}

@@ -91,13 +91,16 @@ let componentWithRenamedArgs = (~_to, ~_Type, ~cb: cb) => {
 
 [@genType]
 [@react.component]
-let makeWithRef = (~vehicle, ref) => {
-  switch (ref->Js.Nullable.toOption) {
-  | Some(ref) =>
-    <button ref={ReactDOMRe.Ref.domRef(ref)}>
-      {React.string(vehicle.name)}
-    </button>
-  | None => React.null
+let makeWithRef = (~vehicle) => {
+  let _ = 34;
+  ref => {
+    switch (ref->Js.Nullable.toOption) {
+    | Some(ref) =>
+      <button ref={ReactDOMRe.Ref.domRef(ref)}>
+        {React.string(vehicle.name)}
+      </button>
+    | None => React.null
+    };
   };
 };
 
