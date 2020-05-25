@@ -5,7 +5,7 @@
   "dependencies": {
     "@demo/some-library": "file:some-library",
     "@demo/use-some-library": "file:use-some-library",
-    "bs-platform": "7.3.2",
+    "bs-platform": "8.0.0-dev.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",

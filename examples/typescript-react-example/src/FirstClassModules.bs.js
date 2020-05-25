@@ -3,7 +3,7 @@
 
 var y = "abc";
 
-var EmptyInnerModule = { };
+var EmptyInnerModule = {};
 
 var InnerModule2 = {
   k: 4242
@@ -18,7 +18,7 @@ var InnerModule3 = {
 };
 
 var Z = {
-  u: /* tuple */[
+  u: [
     0,
     0
   ]

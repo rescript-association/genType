@@ -64,18 +64,18 @@ var optFunction = (function (param) {
     return 3;
   });
 
-var ObjectId = { };
+var ObjectId = {};
 
-var someIntList = /* :: */[
-  1,
-  /* :: */[
-    2,
-    /* :: */[
-      3,
-      /* [] */0
-    ]
-  ]
-];
+var someIntList = /* :: */{
+  _0: 1,
+  _1: /* :: */{
+    _0: 2,
+    _1: /* :: */{
+      _0: 3,
+      _1: /* [] */0
+    }
+  }
+};
 
 var map = List.map;
 
