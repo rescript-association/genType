@@ -98,18 +98,22 @@ function Hooks$componentWithRenamedArgs(Props) {
   return _to.name + _Type.name;
 }
 
-function Hooks$makeWithRef(Props, ref) {
+function Hooks$makeWithRef(Props) {
   var vehicle = Props.vehicle;
-  if (ref == null) {
-    return null;
-  } else {
-    return React.createElement("button", {
-                ref: ref
-              }, vehicle.name);
-  }
+  return (function (ref) {
+      if (ref == null) {
+        return null;
+      } else {
+        return React.createElement("button", {
+                    ref: ref
+                  }, vehicle.name);
+      }
+    });
 }
 
-var testForwardRef = React.forwardRef(Hooks$makeWithRef);
+var testForwardRef = React.forwardRef((function (param, param$1) {
+        return Hooks$makeWithRef(param)(param$1);
+      }));
 
 var input = React.forwardRef((function (Props, param) {
         var partial_arg = Props.r;
