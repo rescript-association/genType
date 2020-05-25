@@ -71,8 +71,8 @@ export const convertVariantTypeChecked: (_1:variant) => variant = convertVariant
 // Export 'convertVariant' early to allow circular import from the '.bs.js' file.
 export const convertVariant: unknown = function (Arg1: any) {
   const result = convertVariantTypeChecked(Arg1.TAG===0
-    ? {tag:"I", value:Arg1[0]}
-    : {tag:"S", value:Arg1[0]});
+    ? {tag:"I", value:Arg1._0}
+    : {tag:"S", value:Arg1._0});
   return result.tag==="I"
     ? CreateBucklescriptBlock.__(0, [result.value])
     : CreateBucklescriptBlock.__(1, [result.value])
