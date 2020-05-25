@@ -142,7 +142,7 @@ export const restResult1: (x:result1<number,string>) => result1<number,string> =
   const result = VariantsBS.restResult1(Arg1.tag==="Ok"
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
-  return result.tag===0
+  return result.TAG===0
     ? {tag:"Ok", value:result[0]}
     : {tag:"Error", value:result[0]}
 };
@@ -151,7 +151,7 @@ export const restResult2: (x:result2<number,string>) => result2<number,string> =
   const result = VariantsBS.restResult2(Arg1.tag==="Ok"
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
-  return result.tag===0
+  return result.TAG===0
     ? {tag:"Ok", value:result[0]}
     : {tag:"Error", value:result[0]}
 };
@@ -160,7 +160,7 @@ export const restResult3: (x:result3<number,string>) => result3<number,string> =
   const result = VariantsBS.restResult3(Arg1.tag==="Ok"
     ? CreateBucklescriptBlock.__(0, [Arg1.value])
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
-  return result.tag===0
+  return result.TAG===0
     ? {tag:"Ok", value:result[0]}
     : {tag:"Error", value:result[0]}
 };
