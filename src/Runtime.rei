@@ -25,7 +25,8 @@ let emitJSVariantGetPayload: string => string;
 
 let emitJSVariantWithPayload: (~label: string, string) => string;
 
-let emitVariantGetLabel: (~polymorphic: bool, string) => string;
+let emitVariantGetLabel:
+  (~config: config, ~polymorphic: bool, string) => string;
 
 let emitVariantGetPayload:
   (~numArgs: int, ~polymorphic: bool, string) => string;

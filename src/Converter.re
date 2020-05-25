@@ -915,7 +915,10 @@ let rec apply =
         value
         |> Runtime.(
              toJS
-               ? emitVariantGetLabel(~polymorphic=variantC.polymorphic)
+               ? emitVariantGetLabel(
+                   ~config,
+                   ~polymorphic=variantC.polymorphic,
+                 )
                : emitJSVariantGetLabel
            )
         |> EmitText.switch_(~indent, ~cases=switchCases(~indent));

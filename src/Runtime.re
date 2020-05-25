@@ -64,11 +64,11 @@ let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
     label;
   };
 
-let emitVariantGetLabel = (~polymorphic, x) =>
+let emitVariantGetLabel = (~config, ~polymorphic, x) =>
   if (polymorphic) {
     x |> EmitText.arrayAccess(~index=0);
   } else {
-    x |> EmitText.fieldAccess(~label="tag");
+    x |> EmitText.fieldAccess(~label=config.variantsAsObjects ? "TAG" : "tag");
   };
 
 let emitVariantGetPayload = (~numArgs, ~polymorphic, x) =>

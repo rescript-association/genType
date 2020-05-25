@@ -103,11 +103,11 @@ export const testVariantWithPayloads: (x:variantWithPayloads) => variantWithPayl
       : CreateBucklescriptBlock.__(3, Arg1.value)
     : $$toRE13337556[Arg1]);
   return typeof(result) === 'object'
-    ? result.tag===0
+    ? result.TAG===0
       ? {tag:"B", value:result[0]}
-      : result.tag===1
+      : result.TAG===1
       ? {tag:"C", value:result.slice()}
-      : result.tag===2
+      : result.TAG===2
       ? {tag:"D", value:result[0]}
       : {tag:"E", value:result.slice()}
     : $$toJS13337556[result]
