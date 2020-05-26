@@ -137,8 +137,8 @@ export const polyWithOpt: (foo:string) => (null | undefined | (
 
 export const restResult1: (x:result1<number,string>) => result1<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult1(Arg1.tag==="Ok"
-    ? {TAG: 0, _0:Arg1.value}
-    : {TAG: 1, _0:Arg1.value});
+    ? {TAG: 0, _0:Arg1.value} as any
+    : {TAG: 1, _0:Arg1.value} as any);
   return result.TAG===0
     ? {tag:"Ok", value:result._0}
     : {tag:"Error", value:result._0}
@@ -146,8 +146,8 @@ export const restResult1: (x:result1<number,string>) => result1<number,string> =
 
 export const restResult2: (x:result2<number,string>) => result2<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult2(Arg1.tag==="Ok"
-    ? {TAG: 0, _0:Arg1.value}
-    : {TAG: 1, _0:Arg1.value});
+    ? {TAG: 0, _0:Arg1.value} as any
+    : {TAG: 1, _0:Arg1.value} as any);
   return result.TAG===0
     ? {tag:"Ok", value:result._0}
     : {tag:"Error", value:result._0}
@@ -155,8 +155,8 @@ export const restResult2: (x:result2<number,string>) => result2<number,string> =
 
 export const restResult3: (x:result3<number,string>) => result3<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult3(Arg1.tag==="Ok"
-    ? {TAG: 0, _0:Arg1.value}
-    : {TAG: 1, _0:Arg1.value});
+    ? {TAG: 0, _0:Arg1.value} as any
+    : {TAG: 1, _0:Arg1.value} as any);
   return result.TAG===0
     ? {tag:"Ok", value:result._0}
     : {tag:"Error", value:result._0}

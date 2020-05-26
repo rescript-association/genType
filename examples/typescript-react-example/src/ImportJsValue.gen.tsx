@@ -71,8 +71,8 @@ export const convertVariant: unknown = function (Arg1: any) {
     ? {tag:"I", value:Arg1._0}
     : {tag:"S", value:Arg1._0});
   return result.tag==="I"
-    ? {TAG: 0, _0:result.value}
-    : {TAG: 1, _0:result.value}
+    ? {TAG: 0, _0:result.value} as any
+    : {TAG: 1, _0:result.value} as any
 } as (_1:variant) => variant;
 
 // In case of type error, check the type of 'polymorphic' in 'ImportJsValue.re' and './MyMath'.

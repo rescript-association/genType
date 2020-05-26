@@ -77,10 +77,10 @@ export const testVariantWithPayloads = function (Arg1) {
     ? result.tag===0
       ? {tag:"B", value:result[0]}
       : result.tag===1
-      ? {tag:"C", value:result}
+      ? {tag:"C", value:result.slice()}
       : result.tag===2
       ? {tag:"D", value:result[0]}
-      : {tag:"E", value:result}
+      : {tag:"E", value:result.slice()}
     : $$toJS13337556[result]
 };
 
