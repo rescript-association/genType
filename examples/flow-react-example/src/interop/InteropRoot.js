@@ -4,14 +4,8 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 
-import * as GreetingRe from "./Greeting.gen";
-
-// Import a ReasonReact component!
-import Greeting from "./Greeting.gen";
 
 import ComponentAsProp from "../components/ComponentAsProp.gen";
-
-import { InnerComponent } from "../components/ManyComponents.gen";
 
 import * as SomeFlowTypes from "../SomeFlowTypes";
 
@@ -29,15 +23,6 @@ import {
 } from "../VariantsWithPayload.gen";
 
 const consoleLog = console.log;
-
-const helloWorldList = GreetingRe.cons({
-  x: "Hello",
-  l: GreetingRe.cons2({ x: "World", l: GreetingRe.empty })
-});
-
-const helloWorld = GreetingRe.concat("++", helloWorldList);
-
-const someNumber: number = GreetingRe.testDefaultArgs({ y: 10 });
 
 import * as WrapJsValue from "./ImportJsValue.gen";
 
@@ -76,12 +61,6 @@ printVariantWithPayloads(
 
 const App = () => (
   <div>
-    <Greeting
-      message={helloWorld}
-      someNumber={someNumber}
-      polymorphicProp={[1, 2, 3]}
-    />
-    <InnerComponent />
     <ComponentAsProp
       title={<div>title</div>}
       description={<div>description</div>}
