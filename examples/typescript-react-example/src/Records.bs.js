@@ -2,12 +2,13 @@
 
 import * as Belt_List from "bs-platform/lib/es6/belt_List.js";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import * as Caml_int32 from "bs-platform/lib/es6/caml_int32.js";
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
 function computeArea(param) {
-  return Math.imul(Math.imul(param.x, param.y), Belt_Option.mapWithDefault(param.z, 1, (function (n) {
+  return Caml_int32.imul(Caml_int32.imul(param.x, param.y), Belt_Option.mapWithDefault(param.z, 1, (function (n) {
                     return n;
                   })));
 }
@@ -24,26 +25,26 @@ var getOpt = Belt_Option.mapWithDefault;
 
 function findAddress(business) {
   return Belt_Option.mapWithDefault(business.address, /* [] */0, (function (a) {
-                return /* :: */{
-                        _0: a,
-                        _1: /* [] */0
-                      };
+                return /* :: */[
+                        a,
+                        /* [] */0
+                      ];
               }));
 }
 
 function findAllAddresses(businesses) {
   return Belt_List.toArray(Belt_List.flatten(Belt_List.fromArray(Belt_Array.map(businesses, (function (business) {
                             return Pervasives.$at(Belt_Option.mapWithDefault(business.address, /* [] */0, (function (a) {
-                                              return /* :: */{
-                                                      _0: a,
-                                                      _1: /* [] */0
-                                                    };
+                                              return /* :: */[
+                                                      a,
+                                                      /* [] */0
+                                                    ];
                                             })), Belt_Option.mapWithDefault(business.owner, /* [] */0, (function (p) {
                                               return Belt_Option.mapWithDefault(p.address, /* [] */0, (function (a) {
-                                                            return /* :: */{
-                                                                    _0: a,
-                                                                    _1: /* [] */0
-                                                                  };
+                                                            return /* :: */[
+                                                                    a,
+                                                                    /* [] */0
+                                                                  ];
                                                           }));
                                             })));
                           })))));
@@ -77,10 +78,10 @@ function getPayloadRecordPlusOne(param) {
 
 function findAddress2(business) {
   return Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(business.address2), /* [] */0, (function (a) {
-                return /* :: */{
-                        _0: a,
-                        _1: /* [] */0
-                      };
+                return /* :: */[
+                        a,
+                        /* [] */0
+                      ];
               }));
 }
 
@@ -95,13 +96,13 @@ var someBusiness2 = {
 };
 
 function computeArea3(o) {
-  return Math.imul(Math.imul(o.x, o.y), Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(o.z), 1, (function (n) {
+  return Caml_int32.imul(Caml_int32.imul(o.x, o.y), Belt_Option.mapWithDefault(Caml_option.nullable_to_opt(o.z), 1, (function (n) {
                     return n;
                   })));
 }
 
 function computeArea4(o) {
-  return Math.imul(Math.imul(o.x, o.y), Belt_Option.mapWithDefault(o.z, 1, (function (n) {
+  return Caml_int32.imul(Caml_int32.imul(o.x, o.y), Belt_Option.mapWithDefault(o.z, 1, (function (n) {
                     return n;
                   })));
 }

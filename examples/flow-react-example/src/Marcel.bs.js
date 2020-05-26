@@ -2,7 +2,7 @@
 
 
 function Make(Conf) {
-  var Inner = {};
+  var Inner = { };
   return {
           Inner: Inner
         };
@@ -12,13 +12,13 @@ var A = {
   Make: Make
 };
 
-var Inner = {};
+var Inner = { };
 
 var B = {
   Inner: Inner
 };
 
-var Inner$1 = {};
+var Inner$1 = { };
 
 var C = {
   Inner: Inner$1

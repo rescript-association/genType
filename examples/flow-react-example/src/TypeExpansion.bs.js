@@ -5,7 +5,7 @@ function testConversion(x) {
   return x;
 }
 
-var A = {};
+var A = { };
 
 export {
   testConversion ,
