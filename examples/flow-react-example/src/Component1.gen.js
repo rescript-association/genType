@@ -10,6 +10,9 @@ type $any = any;
 const $$toRE552311971 = {"A": 0};
 
 // $FlowExpectedError: Reason checked type sufficiently
+import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
+
+// $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
@@ -40,8 +43,8 @@ export const concat: (string, ?string) => ?string = function (Arg1: $any, Arg2: 
 export const consumeVariant: (Component2_variant) => number = function (Arg1: $any) {
   const result = Component1BS.consumeVariant(typeof(Arg1) === 'object'
     ? Arg1.tag==="B"
-      ? {TAG: 0, _0:Arg1.value[0], _1:Arg1.value[1]}
-      : {TAG: 1, _0:(Arg1.value == null ? undefined : Arg1.value)}
+      ? CreateBucklescriptBlock.__(0, Arg1.value)
+      : CreateBucklescriptBlock.__(1, [(Arg1.value == null ? undefined : Arg1.value)])
     : $$toRE552311971[Arg1]);
   return result
 };
