@@ -93,7 +93,7 @@ let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
   } else {
     /* to convert a runtime block to a tuple, remove the tag */
     config.variantsAsObjects
-      ? x |> EmitText.arraySlice : x;
+      ? x : x |> EmitText.arraySlice;
   };
 
 let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
@@ -123,7 +123,8 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
         |> List.mapi((i, s) => "_" ++ string_of_int(i) ++ ":" ++ s)
         |> String.concat(", ")
       )
-      ++ "}";
+      ++ "}"
+      ++ (config.language == TypeScript ? " as any" : "");
     } else {
       config.emitCreateBucklescriptBlock = true;
       let args = numArgs == 1 ? [x] |> EmitText.array : x;

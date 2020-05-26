@@ -131,7 +131,7 @@ export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoA
     ? CreateBucklescriptBlock.__(0, Arg1.value)
     : CreateBucklescriptBlock.__(1, [Arg1.value]));
   return result.tag===0
-    ? {tag:"R2", value:result}
+    ? {tag:"R2", value:result.slice()}
     : {tag:"R4", value:result[0]}
 };
 
