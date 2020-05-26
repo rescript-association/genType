@@ -1,4 +1,5 @@
 # master
+- Add forward support for bucklescript 8.
 
 # 3.22.0
 - Only emit inner module when its vaues require no conversion. See https://github.com/cristianoc/genType/pull/416.
