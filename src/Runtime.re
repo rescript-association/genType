@@ -97,7 +97,15 @@ let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
 
 let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
-    EmitText.array([label |> emitVariantLabel(~polymorphic), x]);
+    if (config.variantsAsObjects) {
+      "{HASH: "
+      ++ (label |> emitVariantLabel(~polymorphic))
+      ++ ", value: "
+      ++ x
+      ++ "}";
+    } else {
+      EmitText.array([label |> emitVariantLabel(~polymorphic), x]);
+    };
   } else {
     let args =
       numArgs == 1

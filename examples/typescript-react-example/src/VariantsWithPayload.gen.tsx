@@ -48,7 +48,7 @@ export type variant1Object = payload;
 
 export const testWithPayload: (x:withPayload) => withPayload = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
-    ? [/* c */99, Arg1]
+    ? {HASH: /* c */99, value: Arg1}
     : $$toRE435467058[Arg1.toString()]);
   return typeof(result) === 'object'
     ? result.value
@@ -57,17 +57,17 @@ export const testWithPayload: (x:withPayload) => withPayload = function (Arg1: a
 
 export const printVariantWithPayload: (x:withPayload) => void = function (Arg1: any) {
   const result = VariantsWithPayloadBS.printVariantWithPayload(typeof(Arg1) === 'object'
-    ? [/* c */99, Arg1]
+    ? {HASH: /* c */99, value: Arg1}
     : $$toRE435467058[Arg1.toString()]);
   return result
 };
 
 export const testManyPayloads: (x:manyPayloads) => manyPayloads = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testManyPayloads(Arg1.tag==="oneRenamed"
-    ? [/* one */5544550, Arg1.value]
+    ? {HASH: /* one */5544550, value: Arg1.value}
     : Arg1.tag===2
-    ? [/* two */5795212, Arg1.value]
-    : [/* three */261117022, Arg1.value]);
+    ? {HASH: /* two */5795212, value: Arg1.value}
+    : {HASH: /* three */261117022, value: Arg1.value});
   return result.HASH===/* one */5544550
     ? {tag:"oneRenamed", value:result.value}
     : result.HASH===/* two */5795212
@@ -77,10 +77,10 @@ export const testManyPayloads: (x:manyPayloads) => manyPayloads = function (Arg1
 
 export const printManyPayloads: (x:manyPayloads) => void = function (Arg1: any) {
   const result = VariantsWithPayloadBS.printManyPayloads(Arg1.tag==="oneRenamed"
-    ? [/* one */5544550, Arg1.value]
+    ? {HASH: /* one */5544550, value: Arg1.value}
     : Arg1.tag===2
-    ? [/* two */5795212, Arg1.value]
-    : [/* three */261117022, Arg1.value]);
+    ? {HASH: /* two */5795212, value: Arg1.value}
+    : {HASH: /* three */261117022, value: Arg1.value});
   return result
 };
 
