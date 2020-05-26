@@ -92,7 +92,8 @@ let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
     x;
   } else {
     /* to convert a runtime block to a tuple, remove the tag */
-    x |> EmitText.arraySlice;
+    config.variantsAsObjects
+      ? x |> EmitText.arraySlice : x;
   };
 
 let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
