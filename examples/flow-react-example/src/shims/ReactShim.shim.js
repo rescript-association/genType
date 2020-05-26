@@ -26,3 +26,6 @@ export opaque type stateless = any;
 
 // $FlowExpectedError: Reason checked type sufficiently.
 export opaque type reactRef = any;
+
+// $FlowExpectedError: Reason checked type sufficiently.
+export opaque type ref = any;

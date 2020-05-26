@@ -8,13 +8,7 @@
 type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.js';
-
-// $FlowExpectedError: Reason checked type sufficiently
 import * as Component2BS from './Component2.bs';
-
-// $FlowExpectedError: Reason checked type sufficiently
-import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 export type variant = 
     "A"
@@ -23,15 +17,12 @@ export type variant =
 
 export type block = "Block";
 
-export type Props = {| +greeting: string, +children?: mixed |};
+// Type annotated function components are not checked by Flow, but typeof() works.
+const make$$forTypeof = function (_: {| +greeting: string |}) : React$Node { return null };
 
-export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
-  Component2BS.component,
-  (function _(jsProps: Props) {
-     return Curry._2(Component2BS.make, jsProps.greeting, jsProps.children);
-  }));
+export type Props = {| +greeting: string |};
 
-export default component;
+export const make: typeof(make$$forTypeof) = Component2BS.make;
 
 export const getBlock: (block) => number = function (Arg1: $any) {
   const result = Component2BS.getBlock(0);

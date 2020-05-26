@@ -16,12 +16,9 @@ let handleClick = (_event, _self) => Js.log("clicked!");
    `ReasonReact.element(Page.make(~message="hello", [||]))` */
 
 [@genType]
-let make = (~message="default message", _children) : ReasonReact.component(_) => {
-  ...component,
-  render: self =>
-    <div onClick=(self.handle(handleClick))>
-      (ReasonReact.string(message))
-    </div>,
+[@react.component]
+let make = (~message="default message") => {
+  <div> {ReasonReact.string(message)} </div>;
 };
 
 [@genType]
