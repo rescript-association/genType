@@ -104,10 +104,10 @@ export const testVariantWithPayloads: (variantWithPayloads) => variantWithPayloa
     ? result.tag===0
       ? {tag:"B", value:result[0]}
       : result.tag===1
-      ? {tag:"C", value:result.slice()}
+      ? {tag:"C", value:result}
       : result.tag===2
       ? {tag:"D", value:result[0]}
-      : {tag:"E", value:result.slice()}
+      : {tag:"E", value:result}
     : $$toJS13337556[result]
 };
 
