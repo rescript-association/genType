@@ -32,10 +32,10 @@ function consumeVariant(x) {
   if (typeof x === "number") {
     return 1;
   }
-  if (!x.tag) {
-    return (x[0] + x[1] | 0) + 2 | 0;
+  if (!x.TAG) {
+    return (x._0 + x._1 | 0) + 2 | 0;
   }
-  var n = x[0];
+  var n = x._0;
   return (
           n !== undefined ? n : 0
         ) + 3 | 0;
@@ -43,16 +43,16 @@ function consumeVariant(x) {
 
 var make = Component1;
 
-var l = /* :: */[
-  1,
-  /* :: */[
-    2,
-    /* :: */[
-      3,
-      /* [] */0
-    ]
-  ]
-];
+var l = /* :: */{
+  _0: 1,
+  _1: /* :: */{
+    _0: 2,
+    _1: /* :: */{
+      _0: 3,
+      _1: /* [] */0
+    }
+  }
+};
 
 var map = List.map;
 
