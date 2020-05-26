@@ -66,7 +66,8 @@ let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
 
 let emitVariantGetLabel = (~config, ~polymorphic, x) =>
   if (polymorphic) {
-    x |> EmitText.arrayAccess(~index=0);
+    config.variantsAsObjects
+      ? x |> EmitText.fieldAccess(~label="HASH") : x |> EmitText.arrayAccess(~index=0);
   } else {
     x |> EmitText.fieldAccess(~label=config.variantsAsObjects ? "TAG" : "tag");
   };
@@ -80,7 +81,9 @@ let accessVarant = (~config, ~index, x) =>
 
 let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
-    x |> EmitText.arrayAccess(~index=1);
+    config.variantsAsObjects
+      ? x |> EmitText.fieldAccess(~label="value")
+      : x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
     x |> accessVarant(~config, ~index=0);
   } else if (numArgs == 0) {

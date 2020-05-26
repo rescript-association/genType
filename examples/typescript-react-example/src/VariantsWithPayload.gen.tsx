@@ -51,7 +51,7 @@ export const testWithPayload: (x:withPayload) => withPayload = function (Arg1: a
     ? [/* c */99, Arg1]
     : $$toRE435467058[Arg1.toString()]);
   return typeof(result) === 'object'
-    ? result[1]
+    ? result.value
     : $$toJS435467058[result]
 };
 
@@ -68,11 +68,11 @@ export const testManyPayloads: (x:manyPayloads) => manyPayloads = function (Arg1
     : Arg1.tag===2
     ? [/* two */5795212, Arg1.value]
     : [/* three */261117022, Arg1.value]);
-  return result[0]===/* one */5544550
-    ? {tag:"oneRenamed", value:result[1]}
-    : result[0]===/* two */5795212
-    ? {tag:2, value:result[1]}
-    : {tag:"three", value:result[1]}
+  return result.HASH===/* one */5544550
+    ? {tag:"oneRenamed", value:result.value}
+    : result.HASH===/* two */5795212
+    ? {tag:2, value:result.value}
+    : {tag:"three", value:result.value}
 };
 
 export const printManyPayloads: (x:manyPayloads) => void = function (Arg1: any) {

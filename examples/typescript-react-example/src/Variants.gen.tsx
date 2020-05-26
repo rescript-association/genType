@@ -130,9 +130,9 @@ export const polyWithOpt: (foo:string) => (null | undefined | (
     { tag: "One"; value: string }
   | { tag: "Two"; value: number })) = function (Arg1: any) {
   const result = VariantsBS.polyWithOpt(Arg1);
-  return (result == null ? result : result[0]===/* One */3953222
-    ? {tag:"One", value:result[1]}
-    : {tag:"Two", value:result[1]})
+  return (result == null ? result : result.HASH===/* One */3953222
+    ? {tag:"One", value:result.value}
+    : {tag:"Two", value:result.value})
 };
 
 export const restResult1: (x:result1<number,string>) => result1<number,string> = function (Arg1: any) {
