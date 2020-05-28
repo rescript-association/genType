@@ -10,7 +10,7 @@ const spawn = child_process.spawn;
 
 const isWindows = /^win/i.test(process.platform);
 
-const genTypeNativePath = path.join(__dirname, "../_esy/default/build/install/default/bin/gentype.exe");
+const genTypeNativePath = path.join(__dirname, "../_build/default/src/GenType.exe");
 
 const shell = isWindows ? true : false;
 
