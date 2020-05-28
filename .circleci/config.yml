@@ -60,7 +60,7 @@ commands:
           command: |
             eval $(opam env)
             if [ ! -d _opam ]; then
-              opam switch create . 4.07.1 --deps-only | cat
+              opam switch create . 4.06.1 --deps-only | cat
             fi
             
 jobs:
