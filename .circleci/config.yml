@@ -29,6 +29,13 @@ executors:
         environment:
           <<: *opam_env
     working_directory: ~/repo
+  mac:
+    macos:
+      xcode: "9.0"
+    environment:
+      <<: *opam_env
+      OPAM_VERSION: 2.0.5
+    working_directory: ~/repo
 
 commands:
   restore-opam-cache:
@@ -106,70 +113,61 @@ jobs:
       - run:
           name: Test gentype
           command: npm test
-
-      ## Download and cache dependencies
-      #- restore_cache:
-          #keys:
-            #- v1-dependencies-{{ checksum "package-lock.json" }}
-            ## fallback to using the latest cache if no exact match is found
-            #- v1-dependencies-
-
-      #- save_cache:
-          #key: v1-dependencies-{{ checksum "package-lock.json" }}
-          #paths:
-            #- node_modules
-
       - run:
           name: Create tar file for executable
           command: |
             cp _build/default/src/GenType.exe gentype.exe
             tar -czvf artifacts/gentype-linux.tar.gz gentype.exe
-
       - store_artifacts:
           path: artifacts/gentype-linux.tar.gz
           destination: gentype-linux.tar.gz
-
       - persist_to_workspace:
           root: artifacts
           paths:
             - gentype-linux.tar.gz
 
   build_macos:
-    macos:
-      xcode: "9.0"
-
-    working_directory: ~/repo
+    executor: mac
 
     steps:
       - checkout
-
       - attach_workspace:
           at: ~/repo/artifacts
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-macos-dependencies-{{ checksum "package-lock.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-macos-dependencies-
-
-      # build & test
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-
-      - save_cache:
-          key: v1-macos-dependencies-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-
-      # Tar things up
-      - run: tar czvf artifacts/gentype-macos.tar.gz -C src/lib/bs/native gentype.native
-
+      - run:
+          name: Install opam
+          command: |
+            if ! [ -x "$(command -v opam)" ]; then
+              TMP=${TMPDIR:-/tmp}
+              curl -sL -o "$TMP/opam" "https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-macos"
+              install -m 755 "$TMP/opam" "/usr/local/bin/opam"
+              rm -f "$TMP/opam"
+            fi
+      - restore-opam-cache
+      - run:
+          name: Init opam
+          command: |
+            [ -d ~/.opam ] || opam init --bare --disable-sandboxing
+      - create-opam-switch
+      - save-opam-cache
+      - run:
+          name: Install npm deps
+          command: npm install
+      - run:
+          name: Build gentype
+          command: |
+            echo $PATH
+            npm run build
+      - run:
+          name: Test gentype
+          command: npm test
+      - run:
+          name: Create tar file for executable
+          command: |
+            cp _build/default/src/GenType.exe gentype.exe
+            tar -czvf artifacts/gentype-macos.tar.gz gentype.exe
       - store_artifacts:
           path: artifacts/gentype-macos.tar.gz
           destination: gentype-macos.tar.gz
-
       - persist_to_workspace:
           root: artifacts
           paths:
@@ -201,10 +199,10 @@ workflows:
           filters:
             tags:
               only: /.*/
-      #- build_macos:
-          #filters:
-            #tags:
-              #only: /.*/
+      - build_macos:
+          filters:
+            tags:
+              only: /.*/
       #- github_release:
           #requires:
             #- build_linux
