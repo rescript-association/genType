@@ -25,7 +25,7 @@ aliases:
 executors:
   linux-opam:
     docker:
-      - image: ocaml/opam2:debian-8
+      - image: ocaml/opam2:debian-9
         environment:
           <<: *opam_env
     working_directory: ~/repo
@@ -72,20 +72,13 @@ jobs:
       - attach_workspace:
           at: ~/repo/artifacts
       - run:
-          # installs `zip` and `m4` but also has to fix some apt issues:
-          # https://discuss.circleci.com/t/failed-to-fetch-jessie-updates/29246
-          # https://www.reddit.com/r/debian/comments/g9is3p/debian_8_jessie_keyexpired_drive_my_crazy/
-          # TODO: remove this when updating to ocaml/opam2:debian-9
-          name: Install deps
+          # installs LTS v12 `node`, `npm`, `zip` and `m4` 
+          name: Install debian deps
           command: |
-            sudo rm /etc/apt/sources.list
-            echo "deb [trusted=yes] http://archive.debian.org/debian/ jessie main contrib non-free" | sudo tee -a /etc/apt/sources.list
-            echo "deb [trusted=yes] http://archive.debian.org/debian/ jessie-backports main contrib non-free" | sudo tee -a /etc/apt/sources.list
-            echo "deb-src [trusted=yes] http://archive.debian.org/debian/ jessie main contrib non-free" | sudo tee -a /etc/apt/sources.list
-            echo "deb-src [trusted=yes] http://archive.debian.org/debian/ jessie-backports main contrib non-free" | sudo tee -a /etc/apt/sources.list
-            echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid
-            echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
-            sudo apt-get update && sudo apt-get --yes install zip m4
+            sudo apt-get update
+            sudo apt-get --yes install zip m4 curl software-properties-common
+            curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
+            sudo apt-get --yes install nodejs
       - restore-opam-cache
       - run:
           name: Update opam repo
@@ -99,11 +92,14 @@ jobs:
           command: opam install reason.3.6.0 dune.1.11.4 | cat
       - save-opam-cache
       - run:
+          name: Install npm deps
+          command: npm install
+      - run:
           name: Build gentype
           command: npm run build
       - run:
-          name: Test executable
-          command: ./_build/default/src/GenType.exe --version
+          name: Test gentype
+          command: npm test
 
       ## Download and cache dependencies
       #- restore_cache:
@@ -111,9 +107,6 @@ jobs:
             #- v1-dependencies-{{ checksum "package-lock.json" }}
             ## fallback to using the latest cache if no exact match is found
             #- v1-dependencies-
-
-      # build & test
-      - run: npm install
 
       #- save_cache:
           #key: v1-dependencies-{{ checksum "package-lock.json" }}
