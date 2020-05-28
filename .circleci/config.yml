@@ -120,10 +120,10 @@ jobs:
             #- node_modules
 
       - run:
-        name: Create tar file for executable
-        command: |
-          cp _build/default/src/GenType.exe gentype.exe
-          tar -czvf artifacts/gentype-linux.tar.gz gentype.exe
+          name: Create tar file for executable
+          command: |
+            cp _build/default/src/GenType.exe gentype.exe
+            tar -czvf artifacts/gentype-linux.tar.gz gentype.exe
 
       - store_artifacts:
           path: artifacts/gentype-linux.tar.gz
