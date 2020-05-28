@@ -100,7 +100,9 @@ jobs:
           command: npm install
       - run:
           name: Build gentype
-          command: npm run build
+          command: |
+            echo $PATH
+            npm run build
       - run:
           name: Test gentype
           command: npm test
