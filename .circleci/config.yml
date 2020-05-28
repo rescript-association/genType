@@ -99,12 +99,12 @@ jobs:
           command: opam install reason.3.6.0 dune.1.11.4 | cat
       - save-opam-cache
       - run:
-        name: Build gentype
-        command: |
+          name: Build gentype
+          command: |
           npm run build
       - run:
-        name: Test executable
-        command: ./_build/default/src/GenType.exe --version
+          name: Test executable
+          command: ./_build/default/src/GenType.exe --version
 
       ## Download and cache dependencies
       #- restore_cache:
