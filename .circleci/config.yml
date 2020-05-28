@@ -43,12 +43,14 @@ commands:
             #cat .circleci/config.yml >> .circleci/opamcachebreaker
       - restore_cache:
           keys:
-          - v1-opam-cache-{{ arch }}-{{ checksum ".circleci/opamcachebreaker" }}
+          #- v1-opam-cache-{{ arch }}-{{ checksum ".circleci/opamcachebreaker" }}
+          - v1-opam-cache-{{ arch }}-v0
 
   save-opam-cache:
     steps:
       - save_cache:
-          key: v1-opam-cache-{{ arch }}-{{ checksum ".circleci/opamcachebreaker" }}
+          #key: v1-opam-cache-{{ arch }}-{{ checksum ".circleci/opamcachebreaker" }}
+          key: v1-opam-cache-{{ arch }}-v0
           paths:
             - ~/.opam
             - _opam
