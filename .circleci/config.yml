@@ -1,11 +1,19 @@
 version: 2.1
-jobs: # a basic unit of work in a run
-  build: # runs not using `Workflows` must have a `build` job as entry point
-    macos:  # indicate that we are using the macOS executor
-      xcode: 11.3.0 # indicate our selected version of Xcode
-    steps: # a series of commands to run
-      - checkout  # pull down code from your version control system.
+
+orbs:
+  win: circleci/windows@2.2.0
+
+jobs:
+  build:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - run: systeminfo
       - run:
-          # run our tests using xcode's cli tool `xcodebuild`
-          name: Run Unit Tests
-          command: clang -v
+          name: "Check docker"
+          shell: powershell.exe
+          command: |
+            docker info
+            docker run hello-world:nanoserver-1809
