@@ -33,14 +33,14 @@ executors:
 commands:
   restore-opam-cache:
     steps:
-      - run:
-          name: Create cache breaker
-          command: |
-            echo "ocaml-4.06.1" > .circleci/opamcachebreaker
-            opam --version >> .circleci/opamcachebreaker
-            cat gentype.opam >> .circleci/opamcachebreaker
-            cat package-lock.json >> .circleci/opamcachebreaker
-            cat .circleci/config.yml >> .circleci/opamcachebreaker
+      #- run:
+          #name: Create cache breaker
+          #command: |
+            #echo "ocaml-4.06.1" > .circleci/opamcachebreaker
+            #opam --version >> .circleci/opamcachebreaker
+            #cat gentype.opam >> .circleci/opamcachebreaker
+            #cat package-lock.json >> .circleci/opamcachebreaker
+            #cat .circleci/config.yml >> .circleci/opamcachebreaker
       - restore_cache:
           keys:
           - v1-opam-cache-{{ arch }}-{{ checksum ".circleci/opamcachebreaker" }}
