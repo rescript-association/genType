@@ -64,6 +64,7 @@ commands:
             if [ ! -d _opam ]; then
               opam switch create . 4.06.1 --deps-only | cat
             fi
+            opam env >> $BASH_ENV
             
 jobs:
   build_linux:
@@ -93,8 +94,6 @@ jobs:
           name: Install opam dev dependencies
           command: |
             opam install reason.3.6.0 dune.1.11.4 | cat
-            eval $(opam env)
-            echo "export PATH=${PATH}" > ~/.bashrc
       - save-opam-cache
       - run:
           name: Install npm deps
