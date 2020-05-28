@@ -91,7 +91,9 @@ jobs:
       - create-opam-switch
       - run:
           name: Install opam dev dependencies
-          command: opam install reason.3.6.0 dune.1.11.4 | cat
+          command: |
+            opam install reason.3.6.0 dune.1.11.4 | cat
+            eval $(opam env)
       - save-opam-cache
       - run:
           name: Install npm deps
