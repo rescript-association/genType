@@ -100,8 +100,7 @@ jobs:
       - save-opam-cache
       - run:
           name: Build gentype
-          command: |
-          npm run build
+          command: npm run build
       - run:
           name: Test executable
           command: ./_build/default/src/GenType.exe --version
