@@ -119,17 +119,20 @@ jobs:
           #paths:
             #- node_modules
 
-      # Tar things up
-      #- run: tar czvf artifacts/gentype-linux.tar.gz -C src/lib/bs/native gentype.native
+      - run:
+        name: Create tar file for executable
+        command: |
+          cp _build/default/src/GenType.exe gentype.exe
+          tar -czvf artifacts/gentype-linux.tar.gz gentype.exe
 
-      #- store_artifacts:
-          #path: artifacts/gentype-linux.tar.gz
-          #destination: gentype-linux.tar.gz
+      - store_artifacts:
+          path: artifacts/gentype-linux.tar.gz
+          destination: gentype-linux.tar.gz
 
-      #- persist_to_workspace:
-          #root: artifacts
-          #paths:
-            #- gentype-linux.tar.gz
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - gentype-linux.tar.gz
 
   build_macos:
     macos:
