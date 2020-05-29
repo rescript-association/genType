@@ -230,6 +230,10 @@ jobs:
           name: Set up workspace
           command: |
             New-Item -ItemType Directory $Env:REPO_TMP_DIR
+      - restore_cache:
+          keys:
+          #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
+          - v0-opam-cache-{{ arch }}
       - opam_windows/install
       - attach_workspace:
           at: ./artifacts
@@ -251,10 +255,6 @@ jobs:
             #/usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
             #echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
             #/usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
-      - restore_cache:
-          keys:
-          #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-          - v0-opam-cache-{{ arch }}
       - opam_windows/init
       - opam_windows/create_switch
       - run:
