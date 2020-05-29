@@ -293,9 +293,38 @@ jobs:
           root: artifacts
           paths:
             - gentype-win32.tar.gz
+  npm_pack:
+    executor: linux-node
+    steps:
+      - attach_workspace:
+          at: ~/repo/artifacts
+      - run:
+          name: Pack genType
+          command: |
+            # Put the built artifacts in the appropriate package folder
+            tar -xf artifacts/gentype-linux.tar.gz -C dist/vendor-linux
+            tar -xf artifacts/gentype-macos.tar.gz -C dist/vendor-darwin
+            tar -xf artifacts/gentype-win32.tar.gz -C dist/vendor-win32
+
+            # Add the correct package.json / README / etc to dist
+            node scripts/prepare_release.js
+
+            # Pack everything up
+            cd dist
+            npm pack
+            cd ..
+
+            mv dist/gentype-$CIRCLE_TAG.tgz /artifacts
+      - store_artifacts:
+          path: artifacts/gentype-$CIRCLE_TAG.tgz
+          destination: gentype-$CIRCLE_TAG.tgz
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - gentype-$CIRCLE_TAG.tgz
+              
   github_release:
     docker:
-      #- image: appropriate/curl:latest
       - image: cibuilds/github:0.10
 
     working_directory: ~/repo
@@ -309,35 +338,39 @@ jobs:
       - run:
           name: Publish Release on Github
           command: |
-            VERSION=$CIRCLE_TAG-test
-            # tar -xf artifacts/gentype-linux.tar.gz -C dist/vendor-linux
-            # tar -xf artifacts/gentype-macos.tar.gz -C dist/vendor-darwin
-            # tar -xf artifacts/gentype-win32.tar.gz -C dist/vendor-win32
-
-
+            VERSION=$CIRCLE_TAG
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 workflows:
   version: 2
   build_deploy:
     jobs:
-      #- build_linux:
-          #filters:
-            #tags:
-              #only: /.*/
-      #- build_macos:
-          #filters:
-            #tags:
-              #only: /.*/
+      - build_linux:
+          filters:
+            tags:
+              only: /.*/
+      - build_macos:
+          filters:
+            tags:
+              only: /.*/
       - build_win:
           filters:
             tags:
               only: /.*/
-      #- github_release:
-          #requires:
-            #- build_linux
-            #- build_macos
-          #filters:
-            #branches:
-              #ignore: /.*/
-            #tags:
-              #only: /^v.*/
+      - npm_pack:
+          requires:
+            - build_linux
+            - build_win
+            - build_macos
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - github_release:
+          requires:
+            - npm_pack
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
