@@ -144,7 +144,7 @@ jobs:
       - run:
           name: Install opam dev dependencies
           command: |
-            opam install reason.3.6.0 dune.1.11.4 | cat
+            opam install reason.3.6.0 dune.1.11.4 --yes | cat
       - save-opam-cache
       - run:
           name: Install npm deps
@@ -195,7 +195,7 @@ jobs:
       - run:
           name: Install opam dev dependencies
           command: |
-            opam install reason.3.6.0 dune.1.11.4 | cat
+            opam install reason.3.6.0 dune.1.11.4 --yes | cat
       - save-opam-cache
       - run:
           name: Install npm deps
@@ -264,7 +264,7 @@ jobs:
             PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
           command: |
             eval $(opam env)
-            opam install reason.3.6.0 dune.1.11.4 | cat
+            opam install reason.3.6.0 dune.1.11.4 --yes | cat
       - save_cache:
           #key: opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
           key: v0-opam-cache-{{ arch }}
