@@ -300,9 +300,9 @@ jobs:
   npm_pack:
     executor: linux-node
     steps:
+      - checkout
       - attach_workspace:
           at: ~/repo/artifacts
-      - checkout
       - run:
           name: Pack genType
           command: |
