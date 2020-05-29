@@ -305,11 +305,15 @@ workflows:
   version: 2
   build_deploy:
     jobs:
-      - build_linux:
-          filters:
-            tags:
-              only: /.*/
-      - build_macos:
+      #- build_linux:
+          #filters:
+            #tags:
+              #only: /.*/
+      #- build_macos:
+          #filters:
+            #tags:
+              #only: /.*/
+      - build_win:
           filters:
             tags:
               only: /.*/
