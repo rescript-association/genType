@@ -162,11 +162,14 @@ function checkSetup() {
 async function main() {
   try {
     checkSetup();
-    await installExamples();
-    cleanBuildExamples();
 
-    /* Git diffing is broken... we need a better way to test regressions */
-    checkDiff();
+    if(!isWindows){
+      await installExamples();
+      cleanBuildExamples();
+
+      /* Git diffing is broken... we need a better way to test regressions */
+      checkDiff();
+    }
 
     console.log("Test successful!");
   } catch (e) {
