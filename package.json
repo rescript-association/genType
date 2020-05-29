@@ -17,7 +17,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "esy": "0.5.8",
     "debug": "^4.1.0",
     "reanalyze": "^1.6.0"
   },
