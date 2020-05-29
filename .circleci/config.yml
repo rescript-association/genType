@@ -227,13 +227,14 @@ jobs:
             New-Item -ItemType Directory $Env:REPO_TMP_DIR
       - opam_windows/install
       - attach_workspace:
-          at: .
+          at: ./artifacts
       - run:
           name: Check node / npm version
           shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
           environment:
             PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
           command: |
+            pwd
             ls -l
             echo "Versions"
             node --version
