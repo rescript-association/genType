@@ -319,14 +319,16 @@ jobs:
             npm pack
             cd ..
 
-            mv dist/gentype-*.tgz artifacts/gentype-$CIRCLE_TAG.tgz
+            # We can't use gentype-$CIRCLE_TAG.tgz since circleCI 2.0 doesn't support interpolation
+            # within store_artifacts / persist_to_workspace yet
+            mv dist/gentype-*.tgz artifacts/gentype-npm.tgz
       - store_artifacts:
-          path: artifacts/gentype-$CIRCLE_TAG.tgz
-          destination: gentype-$CIRCLE_TAG.tgz
+          path: artifacts/gentype-npm.tgz
+          destination: gentype-npm.tgz
       - persist_to_workspace:
           root: artifacts
           paths:
-            - gentype-$CIRCLE_TAG.tgz
+            - gentype-npm.tgz
               
   github_release:
     docker:
@@ -344,6 +346,10 @@ jobs:
           name: Publish Release on Github
           command: |
             VERSION=$CIRCLE_TAG
+
+            # Rename the npm package for the final version (since we can't do this on creation)
+            mv artifacts/gentype-npm.tgz artifacts/gentype-$CIRCLE_TAG.tgz
+
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 workflows:
   version: 2
