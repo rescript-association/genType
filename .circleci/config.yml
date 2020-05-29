@@ -218,13 +218,13 @@ jobs:
   build_win:
     executor: win/default
     environment:
-      - FLOW_TMP_DIR: 'C:\tmp\repo'
+      - REPO_TMP_DIR: 'C:\tmp\repo'
       - OPAMDOWNLOADJOBS: 1
     steps:
       - run:
           name: Set up workspace
           command: |
-            New-Item -ItemType Directory $Env:FLOW_TMP_DIR
+            New-Item -ItemType Directory $Env:REPO_TMP_DIR
       - opam_windows/install
       - attach_workspace:
           at: .
@@ -237,52 +237,47 @@ jobs:
             echo "Versions"
             node --version
             npm --version
-
-      #- run:
-          #name: Create cache breaker
-          #shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
-          #command: |
-            #/usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
-            #echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
-            #/usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
-      #- restore_cache:
-          #keys:
+      - run:
+          name: Create cache breaker
+          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          command: |
+            /usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
+            echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
+            /usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
+      - restore_cache:
+          keys:
           #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-      #- opam_windows/init
-      #- opam_windows/create_switch
-      #- save_cache:
+          - opam-cache-{{ arch }}
+      - opam_windows/init
+      - opam_windows/create_switch
+      - save_cache:
           #key: opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-          #paths:
-            #- C:/tools/cygwin/home/circleci/.opam
-            #- _opam
-      #- run:
-          #name: Build gentype.exe
-          #shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
-          #environment:
-            #PATH: /usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
-          #command: |
-             #eval $(opam env)
-             #make bin/flow.exe dist/flow.zip
-             #mkdir -p bin/win64 && cp bin/flow.exe bin/win64/flow.exe
-             #cp dist/flow.zip dist/flow-win64.zip
-      #- run:
-          #name: Build parser test runner
-          #shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
-          #environment:
-            #PATH: /usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
-          #command: |
-            #eval $(opam env)
-            #make -C src/parser/ ../../_build/src/parser/test/run_tests.native
-            #cp _build/src/parser/test/run_tests.native bin/win64/run_parser_tests.exe
-      #- persist_to_workspace:
-          #root: .
-          #paths:
-            #- bin/win64/flow.exe
-            #- dist/flow-win64.zip
-            #- bin/win64/run_parser_tests.exe
-      #- store_artifacts:
-          #path: .\dist\flow-win64.zip
-          #destination: flow-win64.zip
+          key: opam-cache-{{ arch }}
+          paths:
+            - C:/tools/cygwin/home/circleci/.opam
+            - _opam
+      - run:
+          name: Build & Test gentype.exe
+          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          environment:
+            PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
+          command: |
+             eval $(opam env)
+             npm install
+             npm run build
+             npm run test
+      - run:
+          name: Create tar file for executable
+          command: |
+            cp _build/default/src/GenType.exe gentype.exe
+            tar -czvf artifacts/gentype-win32.tar.gz gentype.exe
+      - store_artifacts:
+          path: artifacts/gentype-win32.tar.gz
+          destination: gentype-win32.tar.gz
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - gentype-win32.tar.gz
   github_release:
     docker:
       #- image: appropriate/curl:latest
@@ -299,7 +294,12 @@ jobs:
       - run:
           name: Publish Release on Github
           command: |
-            VERSION=$CIRCLE_TAG
+            VERSION=$CIRCLE_TAG-test
+            # tar -xf artifacts/gentype-linux.tar.gz -C dist/vendor-linux
+            # tar -xf artifacts/gentype-macos.tar.gz -C dist/vendor-darwin
+            # tar -xf artifacts/gentype-win32.tar.gz -C dist/vendor-win32
+
+
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 workflows:
   version: 2
