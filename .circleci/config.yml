@@ -192,6 +192,10 @@ jobs:
           command: |
             [ -d ~/.opam ] || opam init --bare --disable-sandboxing
       - create-opam-switch
+      - run:
+          name: Install opam dev dependencies
+          command: |
+            opam install reason.3.6.0 dune.1.11.4 | cat
       - save-opam-cache
       - run:
           name: Install npm deps
@@ -250,12 +254,16 @@ jobs:
       - restore_cache:
           keys:
           #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-          - opam-cache-{{ arch }}
+          - v0-opam-cache-{{ arch }}
       - opam_windows/init
       - opam_windows/create_switch
+      - run:
+          name: Install opam dev dependencies
+          command: |
+            opam install reason.3.6.0 dune.1.11.4 | cat
       - save_cache:
           #key: opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-          key: opam-cache-{{ arch }}
+          key: v0-opam-cache-{{ arch }}
           paths:
             - C:/tools/cygwin/home/circleci/.opam
             - _opam
