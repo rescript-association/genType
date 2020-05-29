@@ -221,6 +221,7 @@ jobs:
       - REPO_TMP_DIR: 'C:\tmp\repo'
       - OPAMDOWNLOADJOBS: 1
     steps:
+      - checkout
       - run:
           name: Set up workspace
           command: |
