@@ -1,4 +1,3 @@
-
 # Reason genType
 
 **Status `master (v3.*)`:** [![Build
