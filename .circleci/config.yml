@@ -234,16 +234,17 @@ jobs:
           environment:
             PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
           command: |
+            ls -l
             echo "Versions"
             node --version
             npm --version
-      - run:
-          name: Create cache breaker
-          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
-          command: |
-            /usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
-            echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
-            /usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
+      #- run:
+          #name: Create cache breaker
+          #shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          #command: |
+            #/usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
+            #echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
+            #/usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
       - restore_cache:
           keys:
           #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
