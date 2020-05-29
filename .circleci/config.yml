@@ -319,7 +319,7 @@ jobs:
             npm pack
             cd ..
 
-            mv dist/gentype-*.tgz /artifacts/gentype-$CIRCLE_TAG.tgz
+            mv dist/gentype-*.tgz artifacts/gentype-$CIRCLE_TAG.tgz
       - store_artifacts:
           path: artifacts/gentype-$CIRCLE_TAG.tgz
           destination: gentype-$CIRCLE_TAG.tgz
