@@ -259,7 +259,11 @@ jobs:
       - opam_windows/create_switch
       - run:
           name: Install opam dev dependencies
+          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          environment:
+            PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
           command: |
+            eval $(opam env)
             opam install reason.3.6.0 dune.1.11.4 | cat
       - save_cache:
           #key: opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
