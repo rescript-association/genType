@@ -233,7 +233,7 @@ jobs:
       - restore_cache:
           keys:
           #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-          - v0-opam-cache-{{ arch }}
+          - v7-opam-cache-{{ arch }}
       - opam_windows/install
       - attach_workspace:
           at: ./artifacts
