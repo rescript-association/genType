@@ -29,9 +29,7 @@
     "noEmit": true
   },
   "include": [
-    "src",
-    "some-library/src",
-    "use-some-library/src"
+    "src"
   ],
   "exclude": [
     "node_modules",
