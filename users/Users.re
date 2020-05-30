@@ -150,13 +150,7 @@ module Diffs = {
   let currentFound = ref(false);
   let currentDate = ref("");
   let currentUser = ref("");
-
-  let addItem = (~quarterly) => {
-    // Mon, 28 Oct 2019
-    let month = currentDate^ |> Month.fromDate(~quarterly);
-    diffsPerMonth |> DiffsPerMonth.add(~month);
-  };
-
+  
   let processCurrentItem = (~quarterly) => {
     let user = currentUser^;
     let date = currentDate^;
