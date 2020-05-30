@@ -23,18 +23,14 @@ const exampleDirNames = [
   "flow-react-example",
   "typescript-react-example",
   "untyped-react-example",
-  "commonjs-react-example"
+  "commonjs-react-example",
 ];
-const exampleDirPaths = exampleDirNames.map(exampleName => path.join(__dirname, "..", "examples", exampleName));
+const exampleDirPaths = exampleDirNames.map((exampleName) =>
+  path.join(__dirname, "..", "examples", exampleName)
+);
 
 const isWindows = /^win/i.test(process.platform);
 
-// To prevent all kinds of cross-platform symlink errors, we decided to always
-// copy the built binary to the examples folder, otherwise the example projects
-// cannot find genType. We don't fully understand what kind of files esy
-// creates on each platform. Linux & MacOS usually work fine, but Windows
-// caused a lot of troubles. Be aware that this was a concious decision,
-// refactoring this will eventually cause you man hours of work on AzureCI.
 const genTypeFile = path.join(__dirname, "../_build/default/src/GenType.exe");
 
 /*
@@ -44,13 +40,13 @@ function wrappedSpawn(command, args, options) {
   return new Promise((resolve, reject) => {
     const child = child_process.spawn(command, args, {
       env: process.env,
-      ...options
+      ...options,
     });
 
     child.stdout.pipe(process.stdout);
     child.stderr.pipe(process.stderr);
 
-    child.on("exit", code => {
+    child.on("exit", (code) => {
       if (code == 0) {
         resolve(code);
       } else {
@@ -58,7 +54,7 @@ function wrappedSpawn(command, args, options) {
       }
     });
 
-    child.on("error", err => {
+    child.on("error", (err) => {
       console.error(`${command} ${args.join(" ")} exited with ${err.code}`);
       return reject(err.code);
     });
@@ -66,7 +62,7 @@ function wrappedSpawn(command, args, options) {
 }
 
 async function installExamples() {
-  const tasks = exampleDirPaths.map(cwd => {
+  const tasks = exampleDirPaths.map((cwd) => {
     console.log(`${cwd}: npm install --no-save (takes a while)`);
 
     // The npm command is not an executable, but a cmd script on Windows
@@ -75,7 +71,7 @@ async function installExamples() {
     const shell = isWindows ? true : false;
     return wrappedSpawn("npm", ["install", "--no-save"], {
       cwd,
-      shell
+      shell,
     });
   });
 
@@ -91,12 +87,12 @@ function cleanBuildExamples() {
     child_process.execFileSync("npm", ["run", "clean"], {
       cwd,
       shell,
-      stdio: [0,1,2]
+      stdio: [0, 1, 2],
     });
     child_process.execFileSync("npm", ["run", "build"], {
       cwd,
       shell,
-      stdio: [0,1,2]
+      stdio: [0, 1, 2],
     });
   }
 }
@@ -106,14 +102,20 @@ function checkDiff() {
     const exampleDir = path.join(path.join("examples", example), "src");
     console.log(`Checking for changes in '${exampleDir}'`);
 
-    const output = child_process.execFileSync("git", ["diff", "--", exampleDir + "/"], {
-      encoding: "utf8"
-    });
+    const output = child_process.execFileSync(
+      "git",
+      ["diff", "--", exampleDir + "/"],
+      {
+        encoding: "utf8",
+      }
+    );
 
     if (output.length > 0) {
       throw new Error(
         `Changed files detected in path '${exampleDir}'! Make sure genType is emitting the right code and commit the files to git` +
-        "\n" + output + "\n"
+          "\n" +
+          output +
+          "\n"
       );
     }
   });
@@ -121,8 +123,10 @@ function checkDiff() {
 
 function checkSetup() {
   console.log(`Make sure this script is not run with esy...`);
-  if(process.env.ESY__ROOT_PACKAGE_CONFIG_PATH) {
-    throw new Error("This script cannot be run with `esy`. Use `npm test` instead!");
+  if (process.env.ESY__ROOT_PACKAGE_CONFIG_PATH) {
+    throw new Error(
+      "This script cannot be run with `esy`. Use `npm test` instead!"
+    );
   }
 
   console.log(`Check existing binary: ${genTypeFile}`);
@@ -138,7 +142,7 @@ function checkSetup() {
   try {
     output = child_process.execSync(`${genTypeFile} --version`, {
       shell: isWindows,
-      encoding: "utf8"
+      encoding: "utf8",
     });
   } catch (e) {
     throw new Error(
@@ -163,7 +167,7 @@ async function main() {
   try {
     checkSetup();
 
-    if(!isWindows){
+    if (!isWindows) {
       await installExamples();
       cleanBuildExamples();
 
