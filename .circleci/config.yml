@@ -1,13 +1,387 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+# We build artifacts to the `~/repo/dist` directory and attach it to the workspace
+# so that the release jobs can access all the build artifacts of the workspace
+# context.
+#
+# Therefore following mental directory model:
+# ~/repo: the actual gentype repo
+#  |- artifacts: contains all build artifacts to be uploaded to github releases
+#  |- src
+#  |- ...
+#  |- package.json
+#
+# All commands should all be run in the workdir `~/repo` to prevent confusion.
+#
+# Research / Inspiration for cross-building ocaml projects w/ opam:
+# ----
+# https://github.com/facebook/flow/blob/master/.circleci/config.yml
+
 version: 2.1
-# Use a package of configuration called an orb.
+
+aliases:
+  - &opam_env
+    TERM: dumb
+    OPAMYES: true
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
+  win: circleci/windows@2.2.0
+
+  opam_windows:
+    commands:
+      install:
+        steps:
+          - run:
+              name: Install dependencies
+              command: |
+                choco install --no-progress cygwin
+                if (-not $?) { throw "Failed to install cygwin" }
+                choco install --no-progress rsync patch diffutils curl make zip unzip git m4 perl mingw64-x86_64-gcc-core --source=cygwin
+                if (-not $?) { throw "Failed to install deps from cygwin" }
+          - run:
+              name: Install opam
+              command: |
+                $install_dir = "$Env:TEMP\flow\opam_installer"
+                New-Item -ItemType Directory $install_dir
+                echo "Downloading opam64.tar.xz"
+                (New-Object System.Net.WebClient).DownloadFile("https://github.com/fdopen/opam-repository-mingw/releases/download/0.0.0.2/opam64.tar.xz", "$install_dir\opam64.tar.xz")
+                echo "Extracting opam64.tar.xz"
+                $out_dir = "$install_dir".Replace("\", "/")
+                C:\tools\cygwin\bin\tar.exe -x --force-local -f $install_dir\opam64.tar.xz -C "$out_dir"
+                echo "Installing opam"
+                C:\tools\cygwin\bin\bash.exe -l "$install_dir\opam64\install.sh"
+                echo "Done"
+      init:
+        steps:
+          - run:
+              name: Init opam
+              shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+              command: |
+                export PATH=$PATH:/usr/local/bin:/usr/bin
+                [ -d ~/.opam ] || opam init default 'https://github.com/fdopen/opam-repository-mingw.git#opam2' --bare --disable-sandboxing
+      create_switch:
+        steps:
+          - run:
+              name: Create opam switch
+              shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+              environment:
+                PATH: /usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
+              command: |
+                [ -d _opam ] || opam switch create . ocaml-variants.4.06.1+mingw64c --deps-only --yes -vvv
+
+executors:
+  linux-opam:
+    docker:
+      - image: ocaml/opam2:debian-9
+        environment:
+          <<: *opam_env
+    working_directory: ~/repo
+  linux-node:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/repo
+  mac:
+    macos:
+      xcode: "9.0"
+    environment:
+      <<: *opam_env
+      OPAM_VERSION: 2.0.5
+    working_directory: ~/repo
+
+commands:
+  restore-opam-cache:
+    steps:
+      #- run:
+          #name: Create cache breaker
+          #command: |
+            #echo "ocaml-4.06.1" > .circleci/opamcachebreaker
+            #opam --version >> .circleci/opamcachebreaker
+            #cat gentype.opam >> .circleci/opamcachebreaker
+            #cat package-lock.json >> .circleci/opamcachebreaker
+            #cat .circleci/config.yml >> .circleci/opamcachebreaker
+      - restore_cache:
+          keys:
+          #- v1-opam-cache-{{ arch }}-{{ checksum ".circleci/opamcachebreaker" }}
+          - v1-opam-cache-{{ arch }}-v0
+
+  save-opam-cache:
+    steps:
+      - save_cache:
+          #key: v1-opam-cache-{{ arch }}-{{ checksum ".circleci/opamcachebreaker" }}
+          key: v1-opam-cache-{{ arch }}-v0
+          paths:
+            - ~/.opam
+            - _opam
+
+  create-opam-switch:
+    steps:
+      - run:
+          name: Install deps from opam
+          command: |
+            eval $(opam env)
+            if [ ! -d _opam ]; then
+              opam switch create . 4.06.1 --deps-only | cat
+            fi
+            opam env >> $BASH_ENV
+            
+jobs:
+  build_linux:
+    executor: linux-opam
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo/artifacts
+      - run:
+          # installs LTS v12 `node`, `npm`, `zip` and `m4` 
+          name: Install debian deps
+          command: |
+            sudo apt-get update
+            sudo apt-get --yes install zip m4 curl software-properties-common
+            curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
+            sudo apt-get --yes install nodejs
+      - restore-opam-cache
+      - run:
+          name: Update opam repo
+          command: |
+            opam remote list -s | grep upstream >/dev/null || \
+              opam remote add upstream https://opam.ocaml.org --all-switches --set-default | cat
+            opam update | cat
+      - create-opam-switch
+      - run:
+          name: Install opam dev dependencies
+          command: |
+            opam install reason.3.6.0 dune.1.11.4 --yes | cat
+      - save-opam-cache
+      - run:
+          name: Install npm deps
+          command: npm install
+      - run:
+          name: Build gentype
+          command: |
+            echo $PATH
+            npm run build
+      - run:
+          name: Test gentype
+          command: npm test
+      - run:
+          name: Create tar file for executable
+          command: |
+            cp _build/default/src/GenType.exe gentype.exe
+            tar -czvf artifacts/gentype-linux.tar.gz gentype.exe
+      - store_artifacts:
+          path: artifacts/gentype-linux.tar.gz
+          destination: gentype-linux.tar.gz
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - gentype-linux.tar.gz
+
+  build_macos:
+    executor: mac
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo/artifacts
+      - run:
+          name: Install opam
+          command: |
+            if ! [ -x "$(command -v opam)" ]; then
+              TMP=${TMPDIR:-/tmp}
+              curl -sL -o "$TMP/opam" "https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-x86_64-macos"
+              install -m 755 "$TMP/opam" "/usr/local/bin/opam"
+              rm -f "$TMP/opam"
+            fi
+      - restore-opam-cache
+      - run:
+          name: Init opam
+          command: |
+            [ -d ~/.opam ] || opam init --bare --disable-sandboxing
+      - create-opam-switch
+      - run:
+          name: Install opam dev dependencies
+          command: |
+            opam install reason.3.6.0 dune.1.11.4 --yes | cat
+      - save-opam-cache
+      - run:
+          name: Install npm deps
+          command: npm install
+      - run:
+          name: Build gentype
+          command: |
+            npm run build
+      - run:
+          name: Test gentype
+          command: npm test
+      - run:
+          name: Create tar file for executable
+          command: |
+            cp _build/default/src/GenType.exe gentype.exe
+            tar -czvf artifacts/gentype-macos.tar.gz gentype.exe
+      - store_artifacts:
+          path: artifacts/gentype-macos.tar.gz
+          destination: gentype-macos.tar.gz
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - gentype-macos.tar.gz
+  build_win:
+    executor: win/default
+    environment:
+      - REPO_TMP_DIR: 'C:\tmp\repo'
+      - OPAMDOWNLOADJOBS: 1
+    steps:
+      - checkout
+      - run:
+          name: Set up workspace
+          command: |
+            New-Item -ItemType Directory $Env:REPO_TMP_DIR
+      - opam_windows/install
+      - attach_workspace:
+          at: ./artifacts
+      - run:
+          name: Check node / npm version
+          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          environment:
+            PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
+          command: |
+            pwd
+            ls -l
+            echo "Versions"
+            node --version
+            npm --version
+      #- run:
+          #name: Create cache breaker
+          #shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          #command: |
+            #/usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
+            #echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
+            #/usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
+      - restore_cache:
+          keys:
+          #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
+          - v0-opam-cache-{{ arch }}
+      - opam_windows/init
+      - opam_windows/create_switch
+      - run:
+          name: Install opam dev dependencies
+          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          environment:
+            PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
+          command: |
+            eval $(opam env)
+            opam install reason.3.6.0 dune.1.11.4 --yes | cat
+      - save_cache:
+          #key: opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
+          key: v0-opam-cache-{{ arch }}
+          paths:
+            - C:/tools/cygwin/home/circleci/.opam
+            - _opam
+      - run:
+          name: Build & Test gentype.exe
+          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          environment:
+            PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
+          command: |
+             eval $(opam env)
+             npm install
+             npm run build
+             npm run test
+      - run:
+          name: Create tar file for executable
+          command: |
+            cp _build/default/src/GenType.exe gentype.exe
+            tar -czvf artifacts/gentype-win32.tar.gz gentype.exe
+      - store_artifacts:
+          path: artifacts/gentype-win32.tar.gz
+          destination: gentype-win32.tar.gz
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - gentype-win32.tar.gz
+  npm_pack:
+    executor: linux-node
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo/artifacts
+      - run:
+          name: Pack genType
+          command: |
+            # Put the built artifacts in the appropriate package folder
+            tar -xf artifacts/gentype-linux.tar.gz -C dist/vendor-linux
+            tar -xf artifacts/gentype-win32.tar.gz -C dist/vendor-win32
+            tar -xf artifacts/gentype-macos.tar.gz -C dist/vendor-darwin
+
+            # Add the correct package.json / README / etc to dist
+            node scripts/prepare_release.js
+
+            # Pack everything up
+            cd dist
+            npm pack
+            cd ..
+
+            # We can't use gentype-$CIRCLE_TAG.tgz since circleCI 2.0 doesn't support interpolation
+            # within store_artifacts / persist_to_workspace yet
+            mv dist/gentype-*.tgz artifacts/gentype-npm.tgz
+      - store_artifacts:
+          path: artifacts/gentype-npm.tgz
+          destination: gentype-npm.tgz
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - gentype-npm.tgz
+              
+  github_release:
+    docker:
+      - image: cibuilds/github:0.10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: ~/repo/artifacts
+
+      - run:
+          name: Publish Release on Github
+          command: |
+            VERSION=$CIRCLE_TAG
+
+            # Rename the npm package for the final version (since we can't do this on creation)
+            mv artifacts/gentype-npm.tgz artifacts/gentype-$CIRCLE_TAG.tgz
+
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  build_deploy:
     jobs:
-      - welcome/run
+      - build_linux:
+          filters:
+            tags:
+              only: /.*/
+      - build_macos:
+          filters:
+            tags:
+              only: /.*/
+      - build_win:
+          filters:
+            tags:
+              only: /.*/
+      - npm_pack:
+          requires:
+            - build_linux
+            - build_win
+            - build_macos
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - github_release:
+          requires:
+            - npm_pack
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/

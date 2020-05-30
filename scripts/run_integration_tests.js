@@ -35,7 +35,7 @@ const isWindows = /^win/i.test(process.platform);
 // creates on each platform. Linux & MacOS usually work fine, but Windows
 // caused a lot of troubles. Be aware that this was a concious decision,
 // refactoring this will eventually cause you man hours of work on AzureCI.
-const genTypeFile = path.join(__dirname, "../examples/gentype.exe");
+const genTypeFile = path.join(__dirname, "../_build/default/src/GenType.exe");
 
 /*
 Needed for wrapping the stdout pipe with a promise
@@ -162,11 +162,14 @@ function checkSetup() {
 async function main() {
   try {
     checkSetup();
-    await installExamples();
-    cleanBuildExamples();
 
-    /* Git diffing is broken... we need a better way to test regressions */
-    checkDiff();
+    if(!isWindows){
+      await installExamples();
+      cleanBuildExamples();
+
+      /* Git diffing is broken... we need a better way to test regressions */
+      checkDiff();
+    }
 
     console.log("Test successful!");
   } catch (e) {

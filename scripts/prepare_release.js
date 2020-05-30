@@ -1,25 +1,15 @@
-/*
- * Note:
- * This file has been modified to the needs of gentype!
- */
+// This script will prepare the dist/ folder by adding the right meta
+// data such as the package.json, LICENSE and README file
+
 const fs = require("fs");
 const path = require("path");
 
 console.log("Creating package.json");
 
-// From the project root pwd
-if (!fs.existsSync('esy.json')) {
-  console.error("No esy.json in project root found");
-  process.exit(1);
-}
-
 if (!fs.existsSync('package.json')) {
   console.error("No package.json in project root found");
   process.exit(1);
 }
-
-// Now require from this script's location.
-const esyJson = require(path.join('..', 'esy.json'));
 
 // We need that for the package metadata
 const pjson = require(path.join('..', 'package.json'));
@@ -37,11 +27,7 @@ const packageJson = JSON.stringify(
     scripts: {
       postinstall: "node ./postinstall.js"
     },
-    bin: esyJson.esy.release.bin.reduce((acc, curr) => {
-      // should result in "bin": { "gentype": "gentype.exe" }
-      const key = path.basename(curr, ".exe");
-      return Object.assign({ [key]: curr }, acc);
-    }, {}),
+    bin: { "gentype": "gentype.exe" },
     files: [
       // Dummy file
       "gentype.exe",

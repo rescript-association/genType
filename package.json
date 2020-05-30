@@ -5,19 +5,18 @@
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
   "license": "MIT",
   "scripts": {
-    "build": "npx esy",
-    "clean": "npx esy clean",
+    "build": "dune build",
+    "clean": "dune clean",
     "test": "node ./scripts/run_integration_tests.js",
     "install:examples": "(cd examples/typescript-react-example && npm install) & (cd examples/flow-react-example && npm install) & (cd examples/untyped-react-example && npm install) & (cd examples/commonjs-react-example && npm install)",
     "build:examples": "(cd examples/typescript-react-example && npm run clean && npm run build && cd use-some-library && npm run clean && npm run build) && (cd examples/flow-react-example && npm run clean && npm run build) & (cd examples/untyped-react-example && npm run clean && npm run build) & (cd examples/commonjs-react-example && npm run clean && npm run build)",
-    "dce": "node_modules/.bin/reanalyze -live-paths src/ext -dce-cmt `find  _esy/default/store/b/gentype-*/default/src/.GenType.eobjs -name byte`",
+    "dce": "node_modules/.bin/reanalyze -live-paths src/ext -dce-cmt `find _build -name byte`",
     "preversion": "npm test",
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"
   },
   "dependencies": {},
   "devDependencies": {
-    "esy": "0.5.8",
     "debug": "^4.1.0",
     "reanalyze": "^1.6.0"
   },
