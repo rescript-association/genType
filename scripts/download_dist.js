@@ -9,7 +9,7 @@ const path = require("path");
 
 const projectRoot = path.join(__dirname, "..");
 
-const filename = `gentype-${pjson.version}.tgz`;
+const filename = `gentype-v${pjson.version}.tgz`;
 
 const targetLink = (version) =>
   `https://github.com/cristianoc/genType/releases/download/v${version}/${filename}`;
