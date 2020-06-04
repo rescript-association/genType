@@ -43,7 +43,9 @@ let renameRecordField = (~config, ~attributes, ~nameRE) => {
   | None =>
     if (config.recordsAsObjects) {
       switch (attributes |> Annotation.getBsAsRenaming) {
-      | Some(name) => (name, name)
+      | Some(name) =>
+        Log_.item("XXX renamed as %s@.", name);
+        (name, name);
       | None => (nameRE, nameRE)
       };
     } else {
