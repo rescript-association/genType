@@ -124,7 +124,13 @@ function testMyObj2(x) {
 }
 
 function testMyRecBsAs(x) {
-  return x.type;
+  return [
+          x.valid,
+          x.type,
+          x["the-key"],
+          x["with\"dquote"],
+          x["with'squote"]
+        ];
 }
 
 function testMyRecBsAs2(x) {

@@ -61,7 +61,13 @@ export type myRec = { readonly type: string };
 export type myObj = { readonly type_: string };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type myRecBsAs = { readonly type: string };
+export type myRecBsAs = {
+  readonly valid: string; 
+  readonly "type": string; 
+  readonly "the-key": string; 
+  readonly "with\"dquote": string; 
+  readonly "with'squote": string
+};
 
 export const origin: coord = RecordsBS.origin;
 
@@ -118,6 +124,12 @@ export const testMyObj: (x:myObj) => string = RecordsBS.testMyObj;
 
 export const testMyObj2: (x:myObj) => myObj = RecordsBS.testMyObj2;
 
-export const testMyRecBsAs: (x:myRecBsAs) => string = RecordsBS.testMyRecBsAs;
+export const testMyRecBsAs: (x:myRecBsAs) => string[] = function (Arg1: any) {
+  const result = RecordsBS.testMyRecBsAs({valid:Arg1.valid, type:Arg1."type", the-key:Arg1."the-key", with"dquote:Arg1."with\"dquote", with'squote:Arg1."with'squote"});
+  return result
+};
 
-export const testMyRecBsAs2: (x:myRecBsAs) => myRecBsAs = RecordsBS.testMyRecBsAs2;
+export const testMyRecBsAs2: (x:myRecBsAs) => myRecBsAs = function (Arg1: any) {
+  const result = RecordsBS.testMyRecBsAs2({valid:Arg1.valid, type:Arg1."type", the-key:Arg1."the-key", with"dquote:Arg1."with\"dquote", with'squote:Arg1."with'squote"});
+  return {valid:result.valid, "type":result.type, "the-key":result.the-key, "with\"dquote":result.with"dquote, "with'squote":result.with'squote}
+};

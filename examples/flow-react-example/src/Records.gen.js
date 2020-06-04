@@ -47,6 +47,14 @@ export opaque type innerRecord = mixed;
 
 export type outerRecord = {| +innerRecord: innerRecord |};
 
+export type myRecBsAs = {|
+  +valid: string, 
+  +"type": string, 
+  +"the-key": string, 
+  +"with\"dquote": string, 
+  +"with'squote": string
+|};
+
 export const origin: coord = RecordsBS.origin;
 
 export const computeArea: (coord) => number = RecordsBS.computeArea;
@@ -115,3 +123,13 @@ export const useTypeImportedInOtherModule: (Types_weekday) => Types_weekday = Re
 export const convertInner: (innerRecord) => innerRecord = RecordsBS.convertInner;
 
 export const convertOuter: (outerRecord) => outerRecord = RecordsBS.convertOuter;
+
+export const testMyRecBsAs: (myRecBsAs) => Array<string> = function (Arg1: $any) {
+  const result = RecordsBS.testMyRecBsAs({valid:Arg1.valid, type:Arg1."type", the-key:Arg1."the-key", with"dquote:Arg1."with\"dquote", with'squote:Arg1."with'squote"});
+  return result
+};
+
+export const testMyRecBsAs2: (myRecBsAs) => myRecBsAs = function (Arg1: $any) {
+  const result = RecordsBS.testMyRecBsAs2({valid:Arg1.valid, type:Arg1."type", the-key:Arg1."the-key", with"dquote:Arg1."with\"dquote", with'squote:Arg1."with'squote"});
+  return {valid:result.valid, "type":result.type, "the-key":result.the-key, "with\"dquote":result.with"dquote, "with'squote":result.with'squote}
+};

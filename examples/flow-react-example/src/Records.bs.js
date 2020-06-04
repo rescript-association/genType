@@ -64,6 +64,20 @@ function convertOuter(x) {
   return x;
 }
 
+function testMyRecBsAs(x) {
+  return [
+          x.valid,
+          x.type,
+          x["the-key"],
+          x["with\"dquote"],
+          x["with'squote"]
+        ];
+}
+
+function testMyRecBsAs2(x) {
+  return x;
+}
+
 var origin = {
   x: 0,
   y: 0,
@@ -84,6 +98,8 @@ export {
   useTypeImportedInOtherModule ,
   convertInner ,
   convertOuter ,
+  testMyRecBsAs ,
+  testMyRecBsAs2 ,
   
 }
 /* No side effect */

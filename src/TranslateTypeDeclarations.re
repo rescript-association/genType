@@ -36,14 +36,17 @@ let createCase = ((label, attributes)) =>
 
 // Rename record fields.
 // If @genType.as is used, perform renaming conversion.
-// If @bs.as is used (with records-as-objects active), no conversion is required.
+// If @bs.as is used (with records-as-objects active), quote and escape
+// because it's likely that @bs.as was used to allow invalid identifier characters
 let renameRecordField = (~config, ~attributes, ~nameRE) => {
   switch (attributes |> Annotation.getGenTypeAsRenaming) {
   | Some(nameJS) => (nameJS, nameRE)
   | None =>
     if (config.recordsAsObjects) {
       switch (attributes |> Annotation.getBsAsRenaming) {
-      | Some(name) => (name, name)
+      | Some(nameBS) =>
+        let nameJS = nameBS |> String.escaped |> EmitText.quotes;
+        (nameJS, nameBS);
       | None => (nameRE, nameRE)
       };
     } else {

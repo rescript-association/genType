@@ -159,12 +159,25 @@ let testMyObj2 = (x: myObj) => x;
 
 [@genType]
 type myRecBsAs = {
+  valid: string,
   [@bs.as "type"]
   type_: string,
+  [@bs.as "the-key"]
+  theKey: string,
+  [@bs.as "with\"dquote"]
+  withDQuote: string,
+  [@bs.as "with'squote"]
+  withSQuote: string,
 };
 
 [@genType]
-let testMyRecBsAs = (x: myRecBsAs) => x.type_;
+let testMyRecBsAs = (x: myRecBsAs) => [|
+  x.valid,
+  x.type_,
+  x.theKey,
+  x.withDQuote,
+  x.withSQuote,
+|];
 
 [@genType]
 let testMyRecBsAs2 = (x: myRecBsAs) => x;
