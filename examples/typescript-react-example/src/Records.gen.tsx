@@ -61,7 +61,14 @@ export type myRec = { readonly type: string };
 export type myObj = { readonly type_: string };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type myRecBsAs = { readonly type: string };
+export type myRecBsAs = {
+  readonly jsValid0: string; 
+  readonly type: string; 
+  readonly "the-key": string; 
+  readonly "with\"dquote": string; 
+  readonly "with'squote": string; 
+  readonly "1number": string
+};
 
 export const origin: coord = RecordsBS.origin;
 
@@ -118,6 +125,6 @@ export const testMyObj: (x:myObj) => string = RecordsBS.testMyObj;
 
 export const testMyObj2: (x:myObj) => myObj = RecordsBS.testMyObj2;
 
-export const testMyRecBsAs: (x:myRecBsAs) => string = RecordsBS.testMyRecBsAs;
+export const testMyRecBsAs: (x:myRecBsAs) => string[] = RecordsBS.testMyRecBsAs;
 
 export const testMyRecBsAs2: (x:myRecBsAs) => myRecBsAs = RecordsBS.testMyRecBsAs2;

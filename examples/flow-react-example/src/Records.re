@@ -161,3 +161,32 @@ let convertInner = (x: innerRecord) => x;
 
 [@genType]
 let convertOuter = (x: outerRecord) => x;
+
+[@genType]
+type myRecBsAs = {
+  [@bs.as "jsValid0"]
+  valid: string,
+  [@bs.as "type"]
+  type_: string,
+  [@bs.as "the-key"]
+  theKey: string,
+  [@bs.as "with\"dquote"]
+  withDQuote: string,
+  [@bs.as "with'squote"]
+  withSQuote: string,
+  [@bs.as "1number"]
+  number1: string,
+};
+
+[@genType]
+let testMyRecBsAs = (x: myRecBsAs) => [|
+  x.valid,
+  x.type_,
+  x.theKey,
+  x.withDQuote,
+  x.withSQuote,
+  x.number1,
+|];
+
+[@genType]
+let testMyRecBsAs2 = (x: myRecBsAs) => x;

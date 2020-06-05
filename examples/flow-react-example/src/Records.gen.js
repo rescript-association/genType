@@ -47,6 +47,15 @@ export opaque type innerRecord = mixed;
 
 export type outerRecord = {| +innerRecord: innerRecord |};
 
+export type myRecBsAs = {|
+  +jsValid0: string, 
+  +type: string, 
+  +"the-key": string, 
+  +"with\"dquote": string, 
+  +"with'squote": string, 
+  +"1number": string
+|};
+
 export const origin: coord = RecordsBS.origin;
 
 export const computeArea: (coord) => number = RecordsBS.computeArea;
@@ -115,3 +124,7 @@ export const useTypeImportedInOtherModule: (Types_weekday) => Types_weekday = Re
 export const convertInner: (innerRecord) => innerRecord = RecordsBS.convertInner;
 
 export const convertOuter: (outerRecord) => outerRecord = RecordsBS.convertOuter;
+
+export const testMyRecBsAs: (myRecBsAs) => Array<string> = RecordsBS.testMyRecBsAs;
+
+export const testMyRecBsAs2: (myRecBsAs) => myRecBsAs = RecordsBS.testMyRecBsAs2;

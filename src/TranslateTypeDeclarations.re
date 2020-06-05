@@ -34,16 +34,29 @@ let createCase = ((label, attributes)) =>
   | _ => {label, labelJS: StringLabel(label)}
   };
 
-// Rename record fields.
-// If @genType.as is used, perform renaming conversion.
-// If @bs.as is used (with records-as-objects active), no conversion is required.
+let isJSSafePropertyName = name => {
+  let jsSafeRegex = {|^[A-z][A-z0-9]*$|} |> Str.regexp;
+  Str.string_match(jsSafeRegex, name, 0);
+};
+
+/**
+ * Rename record fields.
+ * If @genType.as is used, perform renaming conversion.
+ * If @bs.as is used (with records-as-objects active), escape and quote if
+ * the identifier contains characters which are invalid as JS property names.
+ */
 let renameRecordField = (~config, ~attributes, ~nameRE) => {
   switch (attributes |> Annotation.getGenTypeAsRenaming) {
   | Some(nameJS) => (nameJS, nameRE)
   | None =>
     if (config.recordsAsObjects) {
       switch (attributes |> Annotation.getBsAsRenaming) {
-      | Some(name) => (name, name)
+      | Some(nameBS) =>
+        let escapedName = nameBS |> String.escaped;
+        let name =
+          isJSSafePropertyName(escapedName)
+            ? escapedName : EmitText.quotes(escapedName);
+        (name, name);
       | None => (nameRE, nameRE)
       };
     } else {
