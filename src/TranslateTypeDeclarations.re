@@ -45,8 +45,8 @@ let renameRecordField = (~config, ~attributes, ~nameRE) => {
     if (config.recordsAsObjects) {
       switch (attributes |> Annotation.getBsAsRenaming) {
       | Some(nameBS) =>
-        let nameJS = nameBS |> String.escaped |> EmitText.quotes;
-        (nameJS, nameBS);
+        let name = nameBS |> String.escaped |> EmitText.quotes;
+        (name, name);
       | None => (nameRE, nameRE)
       };
     } else {
