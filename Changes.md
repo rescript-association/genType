@@ -1,4 +1,5 @@
 # master
+- Fix issue where `bs.as` in records e.g. `[@bs.as "the-key"] theKey: string,` was not escaped in the generated type.
 
 # 3.23.0
 - Add forward support for bucklescript 8.
