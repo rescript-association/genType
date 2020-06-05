@@ -66,11 +66,12 @@ function convertOuter(x) {
 
 function testMyRecBsAs(x) {
   return [
-          x.valid,
+          x.jsValid0,
           x.type,
           x["the-key"],
           x["with\"dquote"],
-          x["with'squote"]
+          x["with'squote"],
+          x["1number"]
         ];
 }
 

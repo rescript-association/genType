@@ -164,6 +164,7 @@ let convertOuter = (x: outerRecord) => x;
 
 [@genType]
 type myRecBsAs = {
+  [@bs.as "jsValid0"]
   valid: string,
   [@bs.as "type"]
   type_: string,
@@ -173,6 +174,8 @@ type myRecBsAs = {
   withDQuote: string,
   [@bs.as "with'squote"]
   withSQuote: string,
+  [@bs.as "1number"]
+  number1: string,
 };
 
 [@genType]
@@ -182,6 +185,7 @@ let testMyRecBsAs = (x: myRecBsAs) => [|
   x.theKey,
   x.withDQuote,
   x.withSQuote,
+  x.number1,
 |];
 
 [@genType]

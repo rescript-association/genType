@@ -48,11 +48,12 @@ export opaque type innerRecord = mixed;
 export type outerRecord = {| +innerRecord: innerRecord |};
 
 export type myRecBsAs = {|
-  +valid: string, 
-  +"type": string, 
+  +jsValid0: string, 
+  +type: string, 
   +"the-key": string, 
   +"with\"dquote": string, 
-  +"with'squote": string
+  +"with'squote": string, 
+  +"1number": string
 |};
 
 export const origin: coord = RecordsBS.origin;
