@@ -4,7 +4,7 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as ErrorHandler from "./ErrorHandler.bs.js";
 
 function notification(s) {
-  return /* tuple */[
+  return [
           s,
           s
         ];

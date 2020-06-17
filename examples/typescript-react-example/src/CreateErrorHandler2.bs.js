@@ -3,7 +3,7 @@
 import * as ErrorHandler from "./ErrorHandler.bs.js";
 
 function notification(n) {
-  return /* tuple */[
+  return [
           String(n),
           ""
         ];

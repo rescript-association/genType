@@ -11,9 +11,6 @@ type $any = any;
 import {foo as fooNotChecked} from './name-with-dashes';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
-
-// $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
@@ -128,11 +125,11 @@ export const testAutoAnnotateVariants: (AutoAnnotate_variant) => AutoAnnotate_va
 
 export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = function (Arg1: $any) {
   const result = TypesBS.testAutoAnnotateVariants2(Arg1.tag==="R2"
-    ? CreateBucklescriptBlock.__(0, Arg1.value)
-    : CreateBucklescriptBlock.__(1, [Arg1.value]));
-  return result.tag===0
-    ? {tag:"R2", value:result.slice()}
-    : {tag:"R4", value:result[0]}
+    ? {TAG: 0, _0:Arg1.value[0], _1:Arg1.value[1]}
+    : {TAG: 1, _0:Arg1.value});
+  return result.TAG===0
+    ? {tag:"R2", value:result}
+    : {tag:"R4", value:result._0}
 };
 
 export const convertObjectWithCallback: (objectWithCallback) => objectWithCallback = TypesBS.convertObjectWithCallback;

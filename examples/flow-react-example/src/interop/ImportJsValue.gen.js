@@ -31,9 +31,6 @@ import {default as defaultNotChecked} from './MyMath';
 const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as CreateBucklescriptBlock from 'bs-platform/lib/es6/block.js';
-
-// $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
@@ -74,12 +71,12 @@ export const convertVariantTypeChecked: (variant) => variant = convertVariantNot
 
 // Export 'convertVariant' early to allow circular import from the '.bs.js' file.
 export const convertVariant: mixed = function (Arg1: $any) {
-  const result = convertVariantTypeChecked(Arg1.tag===0
-    ? {tag:"I", value:Arg1[0]}
-    : {tag:"S", value:Arg1[0]});
+  const result = convertVariantTypeChecked(Arg1.TAG===0
+    ? {tag:"I", value:Arg1._0}
+    : {tag:"S", value:Arg1._0});
   return result.tag==="I"
-    ? CreateBucklescriptBlock.__(0, [result.value])
-    : CreateBucklescriptBlock.__(1, [result.value])
+    ? {TAG: 0, _0:result.value}
+    : {TAG: 1, _0:result.value}
 };
 
 // In case of type error, check the type of 'polymorphic' in 'ImportJsValue.re' and './MyMath'.

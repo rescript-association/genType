@@ -83,7 +83,7 @@ let accessVarant = (~config, ~index, x) =>
 let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     config.variantsAsObjects
-      ? x |> EmitText.fieldAccess(~label="value")
+      ? x |> EmitText.fieldAccess(~label="VAL")
       : x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
     x |> accessVarant(~config, ~index=0);
@@ -101,7 +101,7 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
     if (config.variantsAsObjects) {
       "{HASH: "
       ++ (label |> emitVariantLabel(~polymorphic))
-      ++ ", value: "
+      ++ ", VAL: "
       ++ x
       ++ "}";
     } else {
