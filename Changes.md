@@ -1,5 +1,7 @@
 # master
-- Support for bucklescript 8.0.0 (some minor changes wrt bs 8 beta)
+
+# 3.26.0
+- Support for bucklescript 8.0.0 (some minor changes wrt bs 8 beta).
 
 # 3.25.0
 - Fix issue where `bs.as` in records e.g. `[@bs.as "the-key"] theKey: string,` was not escaped in the generated type.
