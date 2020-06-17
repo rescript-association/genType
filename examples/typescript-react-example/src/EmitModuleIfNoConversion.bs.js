@@ -3,12 +3,11 @@
 
 function foo(t) {
   if (t) {
-    console.log("B" + t[/* name */0]);
-    return ;
+    console.log("B" + t.name);
   } else {
     console.log("A");
-    return ;
   }
+  
 }
 
 var X = {

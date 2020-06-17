@@ -11,24 +11,20 @@ function printVariantWithPayload(x) {
       if (x >= 803296723) {
         if (x >= 937218926) {
           console.log("printVariantWithPayload: True");
-          return ;
         } else {
           console.log("printVariantWithPayload: Half");
-          return ;
         }
       } else if (x >= 98) {
         console.log("printVariantWithPayload: b");
-        return ;
       } else {
         console.log("printVariantWithPayload: Twenty");
-        return ;
       }
     } else {
       console.log("printVariantWithPayload: a");
-      return ;
     }
+    return ;
   }
-  var payload = x[1];
+  var payload = x.VAL;
   console.log("printVariantWithPayload x:", payload.x, "y:", payload.y);
   
 }
@@ -38,17 +34,17 @@ function testManyPayloads(x) {
 }
 
 function printManyPayloads(x) {
-  var variant = x[0];
+  var variant = x.HASH;
   if (variant !== 5795212) {
     if (variant >= 261117022) {
-      var payload = x[1];
+      var payload = x.VAL;
       console.log("printManyPayloads x:", payload.x, "y:", payload.y);
       return ;
     }
-    console.log("printManyPayloads one:", x[1]);
+    console.log("printManyPayloads one:", x.VAL);
     return ;
   }
-  var match = x[1];
+  var match = x.VAL;
   console.log("printManyPayloads two:", match[0], match[1]);
   
 }
@@ -66,19 +62,19 @@ function printVariantWithPayloads(x) {
     console.log("printVariantWithPayloads", "A");
     return ;
   }
-  switch (x.tag | 0) {
+  switch (x.TAG | 0) {
     case /* B */0 :
-        console.log("printVariantWithPayloads", "B(" + (String(x[0]) + ")"));
+        console.log("printVariantWithPayloads", "B(" + (String(x._0) + ")"));
         return ;
     case /* C */1 :
-        console.log("printVariantWithPayloads", "C(" + (String(x[0]) + (", " + (String(x[1]) + ")"))));
+        console.log("printVariantWithPayloads", "C(" + (String(x._0) + (", " + (String(x._1) + ")"))));
         return ;
     case /* D */2 :
-        var match = x[0];
+        var match = x._0;
         console.log("printVariantWithPayloads", "D((" + (String(match[0]) + (", " + (String(match[1]) + "))"))));
         return ;
     case /* E */3 :
-        console.log("printVariantWithPayloads", "E(" + (String(x[0]) + (", " + (x[1] + (", " + (String(x[2]) + ")"))))));
+        console.log("printVariantWithPayloads", "E(" + (String(x._0) + (", " + (x._1 + (", " + (String(x._2) + ")"))))));
         return ;
     
   }

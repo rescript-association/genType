@@ -49,15 +49,15 @@ function polyWithOpt(foo) {
   if (foo === "bar") {
     return ;
   } else if (foo !== "baz") {
-    return /* `One */[
-            3953222,
-            foo
-          ];
+    return {
+            HASH: /* One */3953222,
+            VAL: foo
+          };
   } else {
-    return /* `Two */[
-            4203884,
-            1
-          ];
+    return {
+            HASH: /* Two */4203884,
+            VAL: 1
+          };
   }
 }
 

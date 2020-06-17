@@ -5,9 +5,9 @@ import * as React from "react";
 
 function Hooks(Props) {
   var vehicle = Props.vehicle;
-  var match = React.useState((function () {
-          return 0;
-        }));
+  var match = React.useState(function () {
+        return 0;
+      });
   var setCount = match[1];
   var count = match[0];
   return React.createElement("div", undefined, React.createElement("p", undefined, "Hooks example " + (vehicle.name + (" clicked " + (String(count) + " times")))), React.createElement("button", {

@@ -40,26 +40,26 @@ function sumU(n, m) {
 }
 
 function sumU2(n) {
-  return (function (m) {
-      console.log("sumU2 2nd arg", m, "result", n + m | 0);
-      
-    });
+  return function (m) {
+    console.log("sumU2 2nd arg", m, "result", n + m | 0);
+    
+  };
 }
 
 function sumCurried(n) {
   console.log("sumCurried 1st arg", n);
-  return (function (m) {
-      console.log("sumCurried 2nd arg", m, "result", n + m | 0);
-      
-    });
+  return function (m) {
+    console.log("sumCurried 2nd arg", m, "result", n + m | 0);
+    
+  };
 }
 
 function sumLblCurried(s, n) {
   console.log(s, "sumLblCurried 1st arg", n);
-  return (function (m) {
-      console.log("sumLblCurried 2nd arg", m, "result", n + m | 0);
-      
-    });
+  return function (m) {
+    console.log("sumLblCurried 2nd arg", m, "result", n + m | 0);
+    
+  };
 }
 
 export {
