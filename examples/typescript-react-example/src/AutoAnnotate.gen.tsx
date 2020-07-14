@@ -1,4 +1,4 @@
-/* TypeScript file generated from AutoAnnotate.re by genType. */
+/* TypeScript file generated from AutoAnnotate.res by genType. */
 /* eslint-disable import/first */
 
 

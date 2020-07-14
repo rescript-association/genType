@@ -263,11 +263,13 @@ let resolveModule =
     /* Check if the module is in the same directory as the file being generated.
        So if e.g. project_root/src/ModuleName.re exists. */
     outputFileAbsoluteDir +++ ModuleName.toString(moduleName) ++ ".re";
+  let moduleNameResFile =
+    outputFileAbsoluteDir +++ ModuleName.toString(moduleName) ++ ".res";
   let candidate =
     /* e.g. import "./Modulename.ext" */
     moduleName
     |> ImportPath.fromModule(~dir=Filename.current_dir_name, ~importExtension);
-  if (Sys.file_exists(moduleNameReFile)) {
+  if (Sys.file_exists(moduleNameReFile) || Sys.file_exists(moduleNameResFile)) {
     candidate;
   } else {
     let rec pathToList = path => {

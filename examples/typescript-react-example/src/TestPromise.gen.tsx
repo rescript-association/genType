@@ -1,4 +1,4 @@
-/* TypeScript file generated from TestPromise.re by genType. */
+/* TypeScript file generated from TestPromise.res by genType. */
 /* eslint-disable import/first */
 
 

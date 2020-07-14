@@ -1,4 +1,4 @@
-/* TypeScript file generated from Docstrings.re by genType. */
+/* TypeScript file generated from Docstrings.res by genType. */
 /* eslint-disable import/first */
 
 

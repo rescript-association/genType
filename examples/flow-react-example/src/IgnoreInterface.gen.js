@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from IgnoreInterface.rei
+ * @generated from IgnoreInterface.re
  * @nolint
  */
 /* eslint-disable */

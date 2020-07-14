@@ -1,4 +1,4 @@
-/* TypeScript file generated from Variants.re by genType. */
+/* TypeScript file generated from Variants.res by genType. */
 /* eslint-disable import/first */
 
 

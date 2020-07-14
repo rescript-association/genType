@@ -1,4 +1,4 @@
-/* TypeScript file generated from NestedModulesInSignature.rei by genType. */
+/* TypeScript file generated from NestedModulesInSignature.resi by genType. */
 /* eslint-disable import/first */
 
 

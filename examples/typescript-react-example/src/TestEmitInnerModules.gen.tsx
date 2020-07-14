@@ -1,4 +1,4 @@
-/* TypeScript file generated from TestEmitInnerModules.re by genType. */
+/* TypeScript file generated from TestEmitInnerModules.res by genType. */
 /* eslint-disable import/first */
 
 

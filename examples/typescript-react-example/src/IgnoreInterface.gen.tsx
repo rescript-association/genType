@@ -1,4 +1,4 @@
-/* TypeScript file generated from IgnoreInterface.rei by genType. */
+/* TypeScript file generated from IgnoreInterface.res by genType. */
 /* eslint-disable import/first */
 
 

@@ -1,4 +1,4 @@
-/* TypeScript file generated from ExportWithRename.re by genType. */
+/* TypeScript file generated from ExportWithRename.res by genType. */
 /* eslint-disable import/first */
 
 

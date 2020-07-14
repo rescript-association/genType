@@ -109,11 +109,11 @@ let emitTranslation =
     (
       ~config,
       ~fileName,
-      ~isInterface,
       ~outputFile,
       ~outputFileRelative,
       ~resolver,
       ~signFile,
+      ~sourceFile,
       translation,
     ) => {
   let codeText =
@@ -127,11 +127,7 @@ let emitTranslation =
        );
   let fileContents =
     signFile(
-      EmitType.fileHeader(
-        ~config,
-        ~sourceFile=
-          (fileName |> ModuleName.toString) ++ (isInterface ? ".rei" : ".re"),
-      )
+      EmitType.fileHeader(~config, ~sourceFile=Filename.basename(sourceFile))
       ++ "\n"
       ++ codeText
       ++ "\n",
@@ -162,7 +158,7 @@ let processCmtFile = (~signFile, ~config, cmt) => {
     let resolver =
       ModuleResolver.createLazyResolver(
         ~config,
-        ~extensions=[".re", EmitType.shimExtension(~config)],
+        ~extensions=[".re", ".res", EmitType.shimExtension(~config)],
         ~excludeFile=fname =>
         fname == "React.re" || fname == "ReasonReact.re"
       );
@@ -216,16 +212,22 @@ let processCmtFile = (~signFile, ~config, cmt) => {
       };
     };
     if (hasGenTypeAnnotations) {
+      let sourceFile =
+        switch (inputCMT.cmt_annots |> FindSourceFile.cmt) {
+        | Some(sourceFile) => sourceFile
+        | None =>
+          (fileName |> ModuleName.toString) ++ (isInterface ? ".resi" : ".res")
+        };
       inputCMT
       |> translateCMT(~config, ~outputFileRelative, ~resolver)
       |> emitTranslation(
            ~config,
            ~fileName,
-           ~isInterface,
            ~outputFile,
            ~outputFileRelative,
            ~resolver,
            ~signFile,
+           ~sourceFile,
          );
     } else if (inputCMT |> cmtHasTypeErrors) {
       outputFile |> GeneratedFiles.logFileAction(TypeError);
