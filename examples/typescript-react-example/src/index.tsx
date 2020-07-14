@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
-import ComponentAsProp from "./components/ComponentAsProp.gen";
 import * as ImportJsValue from "./ImportJsValue.gen";
 import * as Uncurried from "./Uncurried.gen";
 import "./index.css";
@@ -68,10 +67,6 @@ Uncurried.sumLblCurried("hello", { n: 3, m: 4 });
 ReactDOM.render(
   <div>
     <App name={"Hello"} />
-    <ComponentAsProp
-      title={<div>title</div>}
-      description={<div>description</div>}
-    />
     <Hooks vehicle={{ name: "Car" }} />
   </div>,
   document.getElementById("root") as HTMLElement
