@@ -1,0 +1,15 @@
+export type person = {
+  name: string,
+  age: int,
+}
+
+export type renderMe<'a> = React.component<{"randomString": string, "poly": 'a}>
+
+@genType.import("./hookExample") @react.component
+external make: (
+  ~person: person,
+  ~children: React.element,
+  ~renderMe: renderMe<'a>,
+) => React.element = "makeRenamed"
+
+@genType.import("./hookExample") external foo: (~person: person) => string = "foo"

@@ -1,4 +1,5 @@
 # master
+- Add support for `.res[i]` files from the new Buclescript Syntax. 
 
 # 3.26.0
 - Support for bucklescript 8.0.0 (some minor changes wrt bs 8 beta).

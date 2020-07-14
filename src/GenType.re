@@ -98,7 +98,8 @@ let cli = () => {
            let files = Sys.readdir(dir);
            files
            |> Array.iter(file =>
-                if (Filename.check_suffix(file, ".re")) {
+                if (Filename.check_suffix(file, ".re")
+                    || Filename.check_suffix(file, ".res")) {
                   let extension = EmitType.outputFileSuffix(~config);
                   let generated =
                     Filename.concat(

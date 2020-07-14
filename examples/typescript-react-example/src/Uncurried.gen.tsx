@@ -1,4 +1,4 @@
-/* TypeScript file generated from Uncurried.re by genType. */
+/* TypeScript file generated from Uncurried.res by genType. */
 /* eslint-disable import/first */
 
 

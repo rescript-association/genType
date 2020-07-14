@@ -1,4 +1,4 @@
-/* TypeScript file generated from TypeParams3.re by genType. */
+/* TypeScript file generated from TypeParams3.res by genType. */
 /* eslint-disable import/first */
 
 

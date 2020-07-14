@@ -139,7 +139,8 @@ let translateValueBinding =
     )
     : Translation.t => {
   switch (vb_pat.pat_desc) {
-  | Tpat_var(id, _) =>
+  | Tpat_var(id, _)
+  | Tpat_alias({pat_desc: Tpat_any}, id, _) =>
     let name = id |> Ident.name;
     if (Debug.translation^) {
       Log_.item("Translate Value Binding %s\n", name);

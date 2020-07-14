@@ -1,4 +1,4 @@
-/* TypeScript file generated from TestImmutableArray.re by genType. */
+/* TypeScript file generated from TestImmutableArray.res by genType. */
 /* eslint-disable import/first */
 
 

@@ -1,4 +1,4 @@
-/* TypeScript file generated from Records.re by genType. */
+/* TypeScript file generated from Records.res by genType. */
 /* eslint-disable import/first */
 
 

@@ -1,4 +1,4 @@
-/* TypeScript file generated from Unboxed.re by genType. */
+/* TypeScript file generated from Unboxed.res by genType. */
 /* eslint-disable import/first */
 
 

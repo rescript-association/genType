@@ -1,4 +1,4 @@
-/* TypeScript file generated from Tuples.re by genType. */
+/* TypeScript file generated from Tuples.res by genType. */
 /* eslint-disable import/first */
 
 
