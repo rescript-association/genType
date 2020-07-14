@@ -3,43 +3,36 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
-import * as ReasonReact from "reason-react/src/ReasonReact.js";
+import * as ReasonReact from "reason-react/src/legacy/ReasonReact.bs.js";
 
 var component = ReasonReact.statelessComponent("App");
 
-function make(array, callbackOpt, person, title, _children) {
+function App(Props) {
+  var array = Props.array;
+  var callbackOpt = Props.callback;
+  var person = Props.person;
+  var title = Props.title;
   var callback = callbackOpt !== undefined ? callbackOpt : (function (param) {
         
       });
-  return {
-          debugName: component.debugName,
-          reactClassInternal: component.reactClassInternal,
-          handedOffState: component.handedOffState,
-          willReceiveProps: component.willReceiveProps,
-          didMount: component.didMount,
-          didUpdate: component.didUpdate,
-          willUnmount: component.willUnmount,
-          willUpdate: component.willUpdate,
-          shouldUpdate: component.shouldUpdate,
-          render: (function (_self) {
-              Curry._1(callback, undefined);
-              return React.createElement("div", undefined, "Test Component Title:" + (title + (" Name:" + (person.name + (" array[0]:" + Caml_array.caml_array_get(array, 0))))));
-            }),
-          initialState: component.initialState,
-          retainedProps: component.retainedProps,
-          reducer: component.reducer,
-          jsElementWrapped: component.jsElementWrapped
-        };
+  Curry._1(callback, undefined);
+  return React.createElement("div", undefined, "Test Component Title:" + (title + (" Name:" + (person.name + (" array[0]:" + Caml_array.caml_array_get(array, 0))))));
 }
 
 function poly(x, _y) {
   return x + 1 | 0;
 }
 
+var make = App;
+
+var $$default = App;
+
 export {
   component ,
   make ,
   poly ,
+  $$default ,
+  $$default as default,
   
 }
 /* component Not a pure module */

@@ -10,15 +10,9 @@ import * as PropTypes from 'prop-types';
 
 import * as AppBS from './App.bs';
 
-import * as ReasonReact from 'reason-react/src/ReasonReact.js';
+export const make = AppBS.make;
 
-export const App = ReasonReact.wrapReasonForJs(
-  AppBS.component,
-  (function _(jsProps) {
-     return Curry._5(AppBS.make, jsProps.array, jsProps.callback, jsProps.person, jsProps.title, jsProps.children);
-  }));
-
-App.propTypes = {
+make.propTypes = {
   array : PropTypes.arrayOf(PropTypes.string).isRequired,
   callback : PropTypes.func,
   person : PropTypes.shape({
@@ -30,9 +24,23 @@ App.propTypes = {
   title : PropTypes.string.isRequired
 };
 
-export default App;
-
 export const poly = function (Arg1, Arg2) {
   const result = Curry._2(AppBS.poly, Arg1, Arg2);
   return result
 };
+
+export const $$default = AppBS.default;
+
+$$default.propTypes = {
+  array : PropTypes.arrayOf(PropTypes.string).isRequired,
+  callback : PropTypes.func,
+  person : PropTypes.shape({
+    name : PropTypes.string.isRequired,
+    age : PropTypes.number.isRequired,
+    optional : PropTypes.number,
+    unknown : PropTypes.any
+  }).isRequired,
+  title : PropTypes.string.isRequired
+};
+
+export default $$default;
