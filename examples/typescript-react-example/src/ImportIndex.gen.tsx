@@ -1,4 +1,4 @@
-/* TypeScript file generated from ImportIndex.re by genType. */
+/* TypeScript file generated from ImportIndex.res by genType. */
 /* eslint-disable import/first */
 
 

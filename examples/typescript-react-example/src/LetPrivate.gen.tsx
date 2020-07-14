@@ -1,4 +1,4 @@
-/* TypeScript file generated from LetPrivate.re by genType. */
+/* TypeScript file generated from LetPrivate.res by genType. */
 /* eslint-disable import/first */
 
 

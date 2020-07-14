@@ -1,4 +1,4 @@
-/* TypeScript file generated from location.re by genType. */
+/* TypeScript file generated from location.res by genType. */
 /* eslint-disable import/first */
 
 

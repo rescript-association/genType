@@ -1,4 +1,4 @@
-/* TypeScript file generated from References.re by genType. */
+/* TypeScript file generated from References.res by genType. */
 /* eslint-disable import/first */
 
 

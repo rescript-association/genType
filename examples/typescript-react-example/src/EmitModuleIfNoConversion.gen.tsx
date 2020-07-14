@@ -1,4 +1,4 @@
-/* TypeScript file generated from EmitModuleIfNoConversion.re by genType. */
+/* TypeScript file generated from EmitModuleIfNoConversion.res by genType. */
 /* eslint-disable import/first */
 
 

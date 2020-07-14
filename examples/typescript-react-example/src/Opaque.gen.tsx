@@ -1,4 +1,4 @@
-/* TypeScript file generated from Opaque.re by genType. */
+/* TypeScript file generated from Opaque.res by genType. */
 /* eslint-disable import/first */
 
 

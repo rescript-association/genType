@@ -1,4 +1,4 @@
-/* TypeScript file generated from NestedModules.re by genType. */
+/* TypeScript file generated from NestedModules.res by genType. */
 /* eslint-disable import/first */
 
 

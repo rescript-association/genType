@@ -1,4 +1,4 @@
-/* TypeScript file generated from MyInput.re by genType. */
+/* TypeScript file generated from MyInput.res by genType. */
 /* eslint-disable import/first */
 
 

@@ -1,4 +1,4 @@
-/* TypeScript file generated from Warnings.re by genType. */
+/* TypeScript file generated from Warnings.res by genType. */
 /* eslint-disable import/first */
 
 

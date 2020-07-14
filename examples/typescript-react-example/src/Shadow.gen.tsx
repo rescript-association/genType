@@ -1,4 +1,4 @@
-/* TypeScript file generated from Shadow.re by genType. */
+/* TypeScript file generated from Shadow.res by genType. */
 /* eslint-disable import/first */
 
 

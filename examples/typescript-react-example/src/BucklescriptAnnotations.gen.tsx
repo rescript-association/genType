@@ -1,4 +1,4 @@
-/* TypeScript file generated from BucklescriptAnnotations.re by genType. */
+/* TypeScript file generated from BucklescriptAnnotations.res by genType. */
 /* eslint-disable import/first */
 
 
