@@ -4,9 +4,6 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 
-
-import ComponentAsProp from "../components/ComponentAsProp.gen";
-
 import * as SomeFlowTypes from "../SomeFlowTypes";
 
 import * as Variants from "../Variants.gen";
@@ -19,7 +16,7 @@ import {
   testManyPayloads,
   testWithPayload,
   testVariantWithPayloads,
-  printVariantWithPayloads
+  printVariantWithPayloads,
 } from "../VariantsWithPayload.gen";
 
 const consoleLog = console.log;
@@ -61,10 +58,6 @@ printVariantWithPayloads(
 
 const App = () => (
   <div>
-    <ComponentAsProp
-      title={<div>title</div>}
-      description={<div>description</div>}
-    />
     <Hooks vehicle={{ name: "Car" }} />
   </div>
 );
