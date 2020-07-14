@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bs-platform": "8.0.0",
+    "bs-platform": "8.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "reason-react": "^0.8.0"
+    "reason-react": "^0.9.1"
   },
   "scripts": {
     "start": "node ../run_bsb.js -make-world -w",

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as ReasonReact from "reason-react/src/ReasonReact.js";
+import * as ReasonReact from "reason-react/src/legacy/ReasonReact.bs.js";
 
 var component = ReasonReact.statelessComponent("ComponentAsProp");
 
