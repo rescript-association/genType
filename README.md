@@ -84,11 +84,11 @@ Configure your shim files in your `"gentypeconfig"` in [`bsconfig.json`](example
 
 ## Testing the whole setup
 
-Open any relevant `*.re` file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Hooks.re](examples/typescript-react-example/src/Hooks.re).
+Open any relevant `*.res` (or `*.re`) file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Hooks.res](examples/typescript-react-example/src/Hooks.res).
 
-Save the file and rebuild the project with BuckleScript. You should now see a `*.gen.tsx` (for TypeScript, or `*.gen.js` for Flow) file with the same name (e.g. `MyComponent.re` -> `MyComponent.gen.tsx`).
+Save the file and rebuild the project with BuckleScript. You should now see a `*.gen.tsx` (for TypeScript, or `*.gen.js` for Flow) file with the same name (e.g. `MyComponent.res` -> `MyComponent.gen.tsx`).
 
-Any values exported from `MyComponent.re` can then be imported from JS. For example:
+Any values exported from `MyComponent.res` can then be imported from JS. For example:
 
 ```js
 import MyComponent from "./components/MyComponent.gen";
@@ -208,7 +208,7 @@ The type of `make` must have a named argument for each prop in the JS component.
 
 This assumes that the JS component was exported with a default export. In case of named export, use e.g. `[@genType.import ("./MyBanner", "componentName")]`. To import a nested component, use e.g. `[@genType.import ("./MyBanner", "Some.Nested.component")]`.
 
-### Interface (.rei) and Implementation (.re) files
+### Interface (.rei/.resi) and Implementation (.re/.res) files
 
 If both `Foo.rei` and `Foo.re` exist, the annotations are taken from `Foo.rei`.
 
@@ -429,7 +429,7 @@ Boolean/integer/float constants can be expressed as ``` | [@genType.as true] Tru
 The `@genType.as` annotation can also be used on variants with payloads to determine what appears in `{ tag: ... }`.
 
 
-For more examples, see [Variants.re](examples/typescript-react-example/src/Variants.re) and [VariantsWithPayload.re](examples/typescript-react-example/src/VariantsWithPayload.re).
+For more examples, see [Variants.res](examples/typescript-react-example/src/Variants.res) and [VariantsWithPayload.res](examples/typescript-react-example/src/VariantsWithPayload.res).
 
 **NOTE** When exporting/importing values that have polymorphic variant type, you have to use type annotations, and cannot rely on type inference. So instead of ```let monday = `Monday```, use ```let monday : days = `Monday```. The former does not work, as the type checker infers a type without annotations.
 
@@ -438,7 +438,7 @@ For more examples, see [Variants.re](examples/typescript-react-example/src/Varia
 Arrays with elements of Reason type `t` are exported to JS arrays with elements of the corresponding JS type. If a conversion is required, a copy of the array is performed.
 
 Immutable arrays are supported with the additional Reason library
-[ImmutableArray.re/.rei](examples/typescript-react-example/src/ImmutableArray.rei), which currently needs to be added to your project.
+[ImmutableArray.res/.resi](examples/typescript-react-example/src/ImmutableArray.resi), which currently needs to be added to your project.
 The type `ImmutableArray.t(+'a)` is covariant, and is mapped to readonly array types in TS/Flow. As opposed to TS/Flow, `ImmutableArray.t` does not allow casting in either direction with normal arrays. Instead, a copy must be performed using `fromArray` and `toArray`.
 
 ### functions and function components
@@ -493,7 +493,7 @@ See for example [Types.re](examples/flow-react-example/src/Types.re) and [SomeFl
 
 Recursive types which do not require a conversion are fully supported.
 If a recursive type requires a conversion, only a shallow conversion is performed, and a warning comment is included in the output. (The alternative would be to perform an expensive conversion down a data structure of arbitrary size).
-See for example [Types.re](examples/typescript-react-example/src/nested/Types.re).
+See for example [Types.res](examples/typescript-react-example/src/nested/Types.res).
 
 ### first class modules
 
