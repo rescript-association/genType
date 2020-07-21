@@ -31,7 +31,8 @@ let emitVariantGetLabel:
 let emitVariantGetPayload:
   (~config: config, ~numArgs: int, ~polymorphic: bool, string) => string;
 
-let emitVariantLabel: (~comment: bool=?, ~polymorphic: bool, string) => string;
+let emitVariantLabel:
+  (~comment: bool=?, ~config: config, ~polymorphic: bool, string) => string;
 
 let emitVariantWithPayload:
   (

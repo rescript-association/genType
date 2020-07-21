@@ -393,28 +393,28 @@ let typeGetNormalized =
      )
   |> snd;
 
-let rec converterIsIdentity = (~toJS, converter) =>
+let rec converterIsIdentity = (~config, ~toJS, converter) =>
   switch (converter) {
-  | ArrayC(c) => c |> converterIsIdentity(~toJS)
+  | ArrayC(c) => c |> converterIsIdentity(~config, ~toJS)
 
-  | CircularC(_, c) => c |> converterIsIdentity(~toJS)
+  | CircularC(_, c) => c |> converterIsIdentity(~config, ~toJS)
 
   | FunctionC({argConverters, retConverter, uncurried}) =>
     retConverter
-    |> converterIsIdentity(~toJS)
+    |> converterIsIdentity(~config, ~toJS)
     && (!toJS || uncurried || argConverters |> List.length <= 1)
     && argConverters
     |> List.for_all(groupedArgConverter =>
          switch (groupedArgConverter) {
          | ArgConverter(argConverter) =>
-           argConverter |> converterIsIdentity(~toJS=!toJS)
+           argConverter |> converterIsIdentity(~config, ~toJS=!toJS)
          | GroupConverter(_) => false
          }
        )
 
   | IdentC => true
 
-  | NullableC(c) => c |> converterIsIdentity(~toJS)
+  | NullableC(c) => c |> converterIsIdentity(~config, ~toJS)
 
   | ObjectC(fieldsC) =>
     fieldsC
@@ -422,33 +422,41 @@ let rec converterIsIdentity = (~toJS, converter) =>
          lblJS == lblRE
          && (
            switch (c) {
-           | OptionC(c1) => c1 |> converterIsIdentity(~toJS)
-           | _ => c |> converterIsIdentity(~toJS)
+           | OptionC(c1) => c1 |> converterIsIdentity(~config, ~toJS)
+           | _ => c |> converterIsIdentity(~config, ~toJS)
            }
          )
        )
 
   | OptionC(c) =>
     if (toJS) {
-      c |> converterIsIdentity(~toJS);
+      c |> converterIsIdentity(~config, ~toJS);
     } else {
       false;
     }
 
-  | PromiseC(c) => c |> converterIsIdentity(~toJS)
+  | PromiseC(c) => c |> converterIsIdentity(~config, ~toJS)
 
   | RecordC(_) => false
 
   | TupleC(innerTypesC) =>
-    innerTypesC |> List.for_all(converterIsIdentity(~toJS))
+    innerTypesC |> List.for_all(converterIsIdentity(~config, ~toJS))
 
-  | VariantC(_) => false
+  | VariantC({polymorphic, withPayload}) =>
+    if (config.variantHashesAsStrings && polymorphic) {
+      withPayload
+      |> List.for_all(((_, _, c)) =>
+           c |> converterIsIdentity(~config, ~toJS)
+         );
+    } else {
+      false;
+    }
   };
 
 let rec apply =
         (~config, ~converter, ~indent, ~nameGen, ~toJS, ~variantTables, value) =>
   switch (converter) {
-  | _ when converter |> converterIsIdentity(~toJS) => value
+  | _ when converter |> converterIsIdentity(~config, ~toJS) => value
 
   | ArrayC(c) =>
     let x = "ArrayItem" |> EmitText.name(~nameGen);
@@ -544,7 +552,10 @@ let rec apply =
                       ~config,
                       ~converter=
                         optional == Optional
-                        && !(argConverter |> converterIsIdentity(~toJS))
+                        && !(
+                             argConverter
+                             |> converterIsIdentity(~config, ~toJS)
+                           )
                           ? OptionC(argConverter) : argConverter,
                       ~indent=indent2,
                       ~nameGen,
@@ -655,7 +666,8 @@ let rec apply =
   | ObjectC(fieldsC) =>
     let simplifyFieldConverted = fieldConverter =>
       switch (fieldConverter) {
-      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
+      | OptionC(converter1)
+          when converter1 |> converterIsIdentity(~config, ~toJS) =>
         IdentC
       | _ => fieldConverter
       };
@@ -739,7 +751,8 @@ let rec apply =
   | RecordC(fieldsC) =>
     let simplifyFieldConverted = fieldConverter =>
       switch (fieldConverter) {
-      | OptionC(converter1) when converter1 |> converterIsIdentity(~toJS) =>
+      | OptionC(converter1)
+          when converter1 |> converterIsIdentity(~config, ~toJS) =>
         IdentC
       | _ => fieldConverter
       };
@@ -806,7 +819,7 @@ let rec apply =
   | VariantC({noPayloads: [case], withPayload: [], polymorphic}) =>
     toJS
       ? case.labelJS |> labelJSToString
-      : case.label |> Runtime.emitVariantLabel(~polymorphic)
+      : case.label |> Runtime.emitVariantLabel(~config, ~polymorphic)
 
   | VariantC(variantC) =>
     if (variantC.noPayloads != []) {
@@ -820,7 +833,9 @@ let rec apply =
          )
         ? ".toString()" : "";
     let table = variantC.hash |> variantTable(~toJS);
-    let accessTable = v => table ++ EmitText.array([v ++ convertToString]);
+    let accessTable = v =>
+      config.variantHashesAsStrings
+        ? v : table ++ EmitText.array([v ++ convertToString]);
     switch (variantC.withPayload) {
     | [] => value |> accessTable
 
@@ -906,6 +921,7 @@ let rec apply =
                toJS
                  ? case.label
                    |> Runtime.emitVariantLabel(
+                        ~config,
                         ~polymorphic=variantC.polymorphic,
                       )
                  : case.labelJS |> labelJSToString,

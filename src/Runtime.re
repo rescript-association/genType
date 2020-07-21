@@ -56,10 +56,12 @@ let rec emitModuleAccessPath = (~config, moduleAccessPath) =>
     )
   };
 
-let emitVariantLabel = (~comment=true, ~polymorphic, label) =>
+let emitVariantLabel = (~comment=true, ~config, ~polymorphic, label) =>
   if (polymorphic) {
-    (comment ? label |> EmitText.comment : "")
-    ++ (label |> Btype.hash_variant |> string_of_int);
+    config.variantHashesAsStrings
+      ? label |> EmitText.quotes
+      : (comment ? label |> EmitText.comment : "")
+        ++ (label |> Btype.hash_variant |> string_of_int);
   } else {
     label;
   };
@@ -100,12 +102,12 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     if (config.variantsAsObjects) {
       "{HASH: "
-      ++ (label |> emitVariantLabel(~polymorphic))
+      ++ (label |> emitVariantLabel(~config, ~polymorphic))
       ++ ", VAL: "
       ++ x
       ++ "}";
     } else {
-      EmitText.array([label |> emitVariantLabel(~polymorphic), x]);
+      EmitText.array([label |> emitVariantLabel(~config, ~polymorphic), x]);
     };
   } else {
     let args =
