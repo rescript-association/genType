@@ -556,7 +556,10 @@ let rec emitCodeItem =
                     optional == Optional
                     && !(
                          argConverter
-                         |> Converter.converterIsIdentity(~toJS=false)
+                         |> Converter.converterIsIdentity(
+                              ~config,
+                              ~toJS=false,
+                            )
                        )
                       ? OptionC(argConverter) : argConverter,
                   ~indent,
@@ -917,6 +920,7 @@ let emitVariantTables = (~config, ~emitters, variantTables) => {
              case.label
              |> Runtime.emitVariantLabel(
                   ~comment=false,
+                  ~config,
                   ~polymorphic=variantC.polymorphic,
                 );
            toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
@@ -1342,7 +1346,9 @@ let emitTranslationAsString =
            )
       : env;
 
-  let emitters = variantTables |> emitVariantTables(~config, ~emitters);
+  let emitters =
+    config.variantHashesAsStrings
+      ? emitters : variantTables |> emitVariantTables(~config, ~emitters);
   let emitters =
     moduleItemsEmitter
     |> ExportModule.emitAllModuleItems(~config, ~emitters, ~fileName);

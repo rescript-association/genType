@@ -43,6 +43,7 @@ type config = {
   sources: option(Ext_json_types.t),
   useUnboxedAnnotations: bool,
   variantsAsObjects: bool,
+  variantHashesAsStrings: bool,
 };
 
 let default = {
@@ -70,6 +71,7 @@ let default = {
   sources: None,
   useUnboxedAnnotations: false,
   variantsAsObjects: false,
+  variantHashesAsStrings: false,
 };
 
 let bsPlatformLib = (~config) =>
@@ -273,6 +275,9 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | _ => v1 >= 8
       };
     };
+    let variantHashesAsStrings = {
+      bsVersion >= (8, 2, 0);
+    };
     let useUnboxedAnnotations = {
       switch (v1) {
       | 7 => bsVersion > (7, 0, 1)
@@ -321,6 +326,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       sources: None,
       useUnboxedAnnotations,
       variantsAsObjects,
+      variantHashesAsStrings,
     };
   };
 
