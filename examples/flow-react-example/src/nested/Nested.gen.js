@@ -7,8 +7,6 @@
 // $FlowExpectedError: Reason checked type sufficiently
 type $any = any;
 
-const $$toRE552311971 = {"A": 0};
-
 // $FlowExpectedError: Reason checked type sufficiently
 import * as NestedBS from './Nested.bs';
 
@@ -24,6 +22,6 @@ export const consumeVariant: (Component2_variant) => number = function (Arg1: $a
     ? Arg1.tag==="B"
       ? {TAG: 0, _0:Arg1.value[0], _1:Arg1.value[1]}
       : {TAG: 1, _0:(Arg1.value == null ? undefined : Arg1.value)}
-    : $$toRE552311971[Arg1]);
+    : Arg1);
   return result
 };
