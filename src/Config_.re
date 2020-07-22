@@ -276,7 +276,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       };
     };
     let variantHashesAsStrings = {
-      bsVersion >= (8, 1 /* Change back to 2 */, 0);
+      bsVersion >= (8, 2, 0);
     };
     let useUnboxedAnnotations = {
       switch (v1) {
