@@ -1,4 +1,5 @@
 # master
+- Add missing support for `React.ref` (previously `React.Ref.t`).
 
 # 3.27.0
 - Add support for `.res[i]` files from the new Bucklescript Syntax. 
