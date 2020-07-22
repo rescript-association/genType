@@ -2,6 +2,8 @@
 /* eslint-disable import/first */
 
 
+const $$toRE552311971: { [key: string]: any } = {"A": 0};
+
 // tslint:disable-next-line:no-var-requires
 const EmitModuleIfNoConversionBS = require('./EmitModuleIfNoConversion.bs');
 
@@ -11,7 +13,7 @@ export type t = "A" | { readonly name: string };
 export const X_foo: (t:t) => void = function (Arg1: any) {
   const result = EmitModuleIfNoConversionBS.X.foo(typeof(Arg1) === 'object'
     ? {TAG: 0, } as any
-    : Arg1);
+    : $$toRE552311971[Arg1]);
   return result
 };
 

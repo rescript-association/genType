@@ -28,6 +28,8 @@ import {polymorphic as polymorphicNotChecked} from './MyMath';
 // flowlint-next-line nonstrict-import:off
 import {default as defaultNotChecked} from './MyMath';
 
+const $$toJS580645844 = {"322339018": "tomato", "-999567389": "gray"};
+
 // $FlowExpectedError: Reason checked type sufficiently
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
@@ -47,7 +49,10 @@ export const area: mixed = areaTypeChecked;
 export const useColorTypeChecked: (color) => number = useColorNotChecked;
 
 // Export 'useColor' early to allow circular import from the '.bs.js' file.
-export const useColor: mixed = useColorTypeChecked;
+export const useColor: mixed = function (Arg1: $any) {
+  const result = useColorTypeChecked($$toJS580645844[Arg1]);
+  return result
+};
 
 // In case of type error, check the type of 'higherOrder' in 'ImportJsValue.re' and './MyMath'.
 export const higherOrderTypeChecked: (((number, number) => number)) => number = higherOrderNotChecked;
