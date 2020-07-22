@@ -18,8 +18,6 @@ import {polymorphic as polymorphicNotChecked} from './MyMath';
 
 import {default as defaultNotChecked} from './MyMath';
 
-const $$toJS580645844: { [key: string]: any } = {"322339018": "tomato", "-999567389": "gray"};
-
 // tslint:disable-next-line:no-var-requires
 const Curry = require('bs-platform/lib/es6/curry.js');
 
@@ -45,10 +43,7 @@ export const returnMixedArray: unknown = returnMixedArrayTypeChecked as () => nu
 export const useColorTypeChecked: (_1:color) => number = useColorNotChecked;
 
 // Export 'useColor' early to allow circular import from the '.bs.js' file.
-export const useColor: unknown = function (Arg1: any) {
-  const result = useColorTypeChecked($$toJS580645844[Arg1]);
-  return result
-} as (_1:color) => number;
+export const useColor: unknown = useColorTypeChecked as (_1:color) => number;
 
 // In case of type error, check the type of 'higherOrder' in 'ImportJsValue.re' and './MyMath'.
 export const higherOrderTypeChecked: (_1:((_1:number, _2:number) => number)) => number = higherOrderNotChecked;
