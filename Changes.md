@@ -1,5 +1,6 @@
 # master
 - Add missing support for `React.ref` (previously `React.Ref.t`).
+- Add ahead-of-time support for the new runtime representatiion of polymorphic variants in the upcoming Bucklescript 8.2.
 
 # 3.27.0
 - Add support for `.res[i]` files from the new Bucklescript Syntax. 
