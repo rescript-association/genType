@@ -19,6 +19,8 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 # Requirements
 
+`bs-platform` 8.2.0 or higher: use `genType` 3.28.0 or higher.
+
 `bs-platform` 8.1.1 or higher: use `genType` 3.27.0 or higher.
 
 `bs-platform` 8.0.0 or higher: use `genType` 3.26.0 or higher.

@@ -1,4 +1,6 @@
 # master
+
+# 3.28.0
 - Add missing support for `React.ref` (previously `React.Ref.t`).
 - Add ahead-of-time support for the new runtime representatiion of polymorphic variants in the upcoming Bucklescript 8.2.
 
