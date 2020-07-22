@@ -15,9 +15,9 @@ export type payload = {| +x: number, +y?: string |};
 export type withPayload = "a" | "bRenamed" | true | 20 | 0.5 | payload;
 
 export type manyPayloads = 
-    {| tag: "oneRenamed", value: number |}
-  | {| tag: 2, value: [string, string] |}
-  | {| tag: "three", value: payload |};
+    {| NAME: "oneRenamed", VAL: number |}
+  | {| NAME: 2, VAL: [string, string] |}
+  | {| NAME: "three", VAL: payload |};
 
 export type simpleVariant = "A" | "B" | "C";
 

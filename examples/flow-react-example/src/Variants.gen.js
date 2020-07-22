@@ -59,5 +59,5 @@ export const id1: (x1) => x1 = VariantsBS.id1;
 export const id2: (x2) => x2 = VariantsBS.id2;
 
 export const polyWithOpt: (string) => ?(
-    {| tag: "One", value: string |}
-  | {| tag: "Two", value: number |}) = VariantsBS.polyWithOpt;
+    {| NAME: "One", VAL: string |}
+  | {| NAME: "Two", VAL: number |}) = VariantsBS.polyWithOpt;

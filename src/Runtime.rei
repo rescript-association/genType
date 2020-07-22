@@ -19,11 +19,14 @@ let default: string;
 
 let emitModuleAccessPath: (~config: config, moduleAccessPath) => string;
 
-let emitJSVariantGetLabel: string => string;
+let emitJSVariantGetLabel:
+  (~config: config, ~polymorphic: bool, string) => string;
 
-let emitJSVariantGetPayload: string => string;
+let emitJSVariantGetPayload:
+  (~config: config, ~polymorphic: bool, string) => string;
 
-let emitJSVariantWithPayload: (~label: string, string) => string;
+let emitJSVariantWithPayload:
+  (~config: config, ~label: string, ~polymorphic: bool, string) => string;
 
 let emitVariantGetLabel:
   (~config: config, ~polymorphic: bool, string) => string;
@@ -58,6 +61,6 @@ let recordGen: unit => recordGen;
 
 let recordValueToString: recordValue => string;
 
-let jsVariantTag: string;
+let jsVariantTag: (~config: config, ~polymorphic: bool) => string;
 
-let jsVariantValue: string;
+let jsVariantValue: (~config: config, ~polymorphic: bool) => string;
