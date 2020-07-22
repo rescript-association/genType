@@ -16,9 +16,6 @@ import * as Curry from 'bs-platform/lib/es6/curry.js';
 // $FlowExpectedError: Reason checked type sufficiently
 import * as HooksBS from './Hooks.bs';
 
-// flowlint-next-line nonstrict-import:off
-import type {ref as React_ref} from '../src/shims/ReactShim.shim';
-
 export type vehicle = {| +name: string |};
 
 export type cb = ({| +to: vehicle |}) => void;
@@ -29,7 +26,7 @@ export type callback<input,output> = (input) => output;
 
 export type testReactContext = React$Context<number>;
 
-export type testReactRef = React_ref<number>;
+export type testReactRef = {| current: (null | number) |};
 
 export type testDomRef = React$Ref<mixed>;
 

@@ -158,7 +158,7 @@ let translateConstr =
         EmitType.typeReactContext(~config, ~type_=paramTranslation.type_),
     }
 
-  | (["React", "Ref", "t"], [paramTranslation]) => {
+  | (["React", "Ref", "t"] | ["React", "ref"], [paramTranslation]) => {
       dependencies: paramTranslation.dependencies,
       type_: EmitType.typeReactRef(~type_=paramTranslation.type_),
     }
