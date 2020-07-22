@@ -66,10 +66,13 @@ let emitVariantLabel = (~comment=true, ~config, ~polymorphic, label) =>
     label;
   };
 
+let polyVariantLabelName = (~config) =>
+  config.variantHashesAsStrings ? "NAME" : "HASH";
+
 let emitVariantGetLabel = (~config, ~polymorphic, x) =>
   if (polymorphic) {
     config.variantsAsObjects
-      ? x |> EmitText.fieldAccess(~label="HASH")
+      ? x |> EmitText.fieldAccess(~label=polyVariantLabelName(~config))
       : x |> EmitText.arrayAccess(~index=0);
   } else {
     x |> EmitText.fieldAccess(~label=config.variantsAsObjects ? "TAG" : "tag");
@@ -101,7 +104,9 @@ let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
 let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     if (config.variantsAsObjects) {
-      "{HASH: "
+      "{"
+      ++ polyVariantLabelName(~config)
+      ++ ": "
       ++ (label |> emitVariantLabel(~config, ~polymorphic))
       ++ ", VAL: "
       ++ x
@@ -134,22 +139,25 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
     };
   };
 
-let jsVariantTag = "tag";
-let jsVariantValue = "value";
+let jsVariantTag = (~config, ~polymorphic) =>
+  polymorphic && config.variantHashesAsStrings ? "NAME" : "tag";
 
-let emitJSVariantGetLabel = x =>
-  x |> EmitText.fieldAccess(~label=jsVariantTag);
+let jsVariantValue = (~config, ~polymorphic) =>
+  polymorphic && config.variantHashesAsStrings ? "VAL" : "value";
 
-let emitJSVariantGetPayload = x =>
-  x |> EmitText.fieldAccess(~label=jsVariantValue);
+let emitJSVariantGetLabel = (~config, ~polymorphic, x) =>
+  x |> EmitText.fieldAccess(~label=jsVariantTag(~config, ~polymorphic));
 
-let emitJSVariantWithPayload = (~label, x) =>
+let emitJSVariantGetPayload = (~config, ~polymorphic, x) =>
+  x |> EmitText.fieldAccess(~label=jsVariantValue(~config, ~polymorphic));
+
+let emitJSVariantWithPayload = (~config, ~label, ~polymorphic, x) =>
   "{"
-  ++ jsVariantTag
+  ++ jsVariantTag(~config, ~polymorphic)
   ++ ":"
   ++ label
   ++ ", "
-  ++ jsVariantValue
+  ++ jsVariantValue(~config, ~polymorphic)
   ++ ":"
   ++ x
   ++ "}";

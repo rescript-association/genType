@@ -78,8 +78,8 @@ export const id1: (x:x1) => x1 = VariantsBS.id1;
 export const id2: (x:x2) => x2 = VariantsBS.id2;
 
 export const polyWithOpt: (foo:string) => (null | undefined | (
-    { tag: "One"; value: string }
-  | { tag: "Two"; value: number })) = VariantsBS.polyWithOpt;
+    { NAME: "One"; VAL: string }
+  | { NAME: "Two"; VAL: number })) = VariantsBS.polyWithOpt;
 
 export const restResult1: (x:result1<number,string>) => result1<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult1(Arg1.tag==="Ok"

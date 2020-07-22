@@ -285,7 +285,7 @@ let rec renderType =
     ++ "]"
   | TypeVar(s) => s
 
-  | Variant({noPayloads, payloads, unboxed}) =>
+  | Variant({noPayloads, payloads, polymorphic, unboxed}) =>
     let noPayloadsRendered =
       noPayloads |> List.map(case => case.labelJS |> labelJSToString);
     let field = (~name, value) => {
@@ -315,8 +315,11 @@ let rec renderType =
              : [
                  case.labelJS
                  |> labelJSToString
-                 |> field(~name=Runtime.jsVariantTag),
-                 typeRendered |> field(~name=Runtime.jsVariantValue),
+                 |> field(~name=Runtime.jsVariantTag(~config, ~polymorphic)),
+                 typeRendered
+                 |> field(
+                      ~name=Runtime.jsVariantValue(~config, ~polymorphic),
+                    ),
                ]
                |> fields;
          });

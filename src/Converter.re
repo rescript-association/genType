@@ -892,7 +892,10 @@ let rec apply =
                 ~numArgs,
                 ~polymorphic=variantC.polymorphic,
               )
-            : Runtime.emitJSVariantGetPayload
+            : Runtime.emitJSVariantGetPayload(
+                ~config,
+                ~polymorphic=variantC.polymorphic,
+              )
         )
         |> apply(
              ~config,
@@ -905,7 +908,9 @@ let rec apply =
         |> (
           toJS
             ? Runtime.emitJSVariantWithPayload(
+                ~config,
                 ~label=case.labelJS |> labelJSToString,
+                ~polymorphic=variantC.polymorphic,
               )
             : Runtime.emitVariantWithPayload(
                 ~config,
@@ -932,12 +937,10 @@ let rec apply =
       let casesWithPayload = (~indent) =>
         value
         |> Runtime.(
-             toJS
-               ? emitVariantGetLabel(
-                   ~config,
-                   ~polymorphic=variantC.polymorphic,
-                 )
-               : emitJSVariantGetLabel
+             (toJS ? emitVariantGetLabel : emitJSVariantGetLabel)(
+               ~config,
+               ~polymorphic=variantC.polymorphic,
+             )
            )
         |> EmitText.switch_(~indent, ~cases=switchCases(~indent));
       variantC.noPayloads == []
