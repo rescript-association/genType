@@ -1,4 +1,5 @@
 # master
+- More support for polymorphic variants in Bucklescript 8.2: no special case for a single payload case, and no renaming via `@genType.as`.
 
 # 3.28.0
 - Add missing support for `React.ref` (previously `React.Ref.t`).

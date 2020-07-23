@@ -286,6 +286,8 @@ let typeGetConverterNormalized =
     | TypeVar(_) => (IdentC, normalized_)
 
     | Variant(variant) =>
+      let allowUnboxed =
+        !(variant.polymorphic && config.variantHashesAsStrings);
       let (withPayload, normalized, unboxed) =
         switch (
           variant.payloads
@@ -293,8 +295,8 @@ let typeGetConverterNormalized =
                (case, numArgs, t |> visit(~visited))
              )
         ) {
-        | [] => ([], normalized_, variant.unboxed)
-        | [(case, numArgs, (converter, tNormalized))] =>
+        | [] when allowUnboxed => ([], normalized_, variant.unboxed)
+        | [(case, numArgs, (converter, tNormalized))] when allowUnboxed =>
           let unboxed = tNormalized |> expandOneLevel |> typeIsObject;
           let normalized =
             Variant({
@@ -304,7 +306,7 @@ let typeGetConverterNormalized =
               unboxed: unboxed ? true : variant.unboxed,
             });
           ([(case, numArgs, converter)], normalized, unboxed);
-        | [_, _, ..._] as withPayloadConverted =>
+        | withPayloadConverted =>
           let withPayloadNormalized =
             withPayloadConverted
             |> List.map(((case, numArgs, (_, tNormalized))) =>

@@ -241,7 +241,7 @@ let traslateDeclarationKind =
             variant.payloads;
           };
 
-        createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+        createVariant(~config, ~noPayloads, ~payloads, ~polymorphic=true);
       | _ => translation.type_
       };
     {...translation, type_}
@@ -379,7 +379,8 @@ let traslateDeclarationKind =
       switch (noPayloads, payloads) {
       | ([], [(_c, _, type_)])
           when unboxedAnnotation && config.useUnboxedAnnotations => type_
-      | _ => createVariant(~noPayloads, ~payloads, ~polymorphic=false)
+      | _ =>
+        createVariant(~config, ~noPayloads, ~payloads, ~polymorphic=false)
       };
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 
