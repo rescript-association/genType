@@ -284,7 +284,8 @@ and translateCoreType_ =
                translation.type_,
              );
            });
-      let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      let type_ =
+        createVariant(~config, ~noPayloads, ~payloads, ~polymorphic=true);
       let dependencies =
         payloadsTranslations
         |> List.map(((_, _, {dependencies})) => dependencies)

@@ -195,7 +195,20 @@ let rec depToResolvedName = (dep: dep) =>
   | Dot(p, s) => ResolvedName.dot(s, p |> depToResolvedName)
   };
 
-let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
+let createVariant = (~config, ~noPayloads, ~payloads, ~polymorphic) => {
+  let noRenaming = config.variantHashesAsStrings && polymorphic;
+  let noPayloads =
+    noRenaming
+      ? noPayloads
+        |> List.map(({label}) => {label, labelJS: StringLabel(label)})
+      : noPayloads;
+  let payloads =
+    noRenaming
+      ? payloads
+        |> List.map((({label}, n, t)) =>
+             ({label, labelJS: StringLabel(label)}, n, t)
+           )
+      : payloads;
   let hash =
     noPayloads
     |> List.map(case => (case.label, case.labelJS))
