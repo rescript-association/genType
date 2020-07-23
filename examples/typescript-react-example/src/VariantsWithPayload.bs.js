@@ -6,21 +6,17 @@ function testWithPayload(x) {
 }
 
 function printVariantWithPayload(x) {
-  if (typeof x === "number") {
-    if (x !== 97) {
-      if (x >= 803296723) {
-        if (x >= 937218926) {
-          console.log("printVariantWithPayload: True");
-        } else {
-          console.log("printVariantWithPayload: Half");
-        }
-      } else if (x >= 98) {
-        console.log("printVariantWithPayload: b");
-      } else {
-        console.log("printVariantWithPayload: Twenty");
-      }
-    } else {
+  if (typeof x === "string") {
+    if (x === "a") {
       console.log("printVariantWithPayload: a");
+    } else if (x === "b") {
+      console.log("printVariantWithPayload: b");
+    } else if (x === "Half") {
+      console.log("printVariantWithPayload: Half");
+    } else if (x === "True") {
+      console.log("printVariantWithPayload: True");
+    } else {
+      console.log("printVariantWithPayload: Twenty");
     }
     return ;
   }
@@ -34,18 +30,18 @@ function testManyPayloads(x) {
 }
 
 function printManyPayloads(x) {
-  var variant = x.HASH;
-  if (variant !== 5795212) {
-    if (variant >= 261117022) {
-      var payload = x.VAL;
-      console.log("printManyPayloads x:", payload.x, "y:", payload.y);
-      return ;
-    }
-    console.log("printManyPayloads one:", x.VAL);
+  var variant = x.NAME;
+  if (variant === "two") {
+    var match = x.VAL;
+    console.log("printManyPayloads two:", match[0], match[1]);
     return ;
   }
-  var match = x.VAL;
-  console.log("printManyPayloads two:", match[0], match[1]);
+  if (variant === "three") {
+    var payload = x.VAL;
+    console.log("printManyPayloads x:", payload.x, "y:", payload.y);
+    return ;
+  }
+  console.log("printManyPayloads one:", x.VAL);
   
 }
 

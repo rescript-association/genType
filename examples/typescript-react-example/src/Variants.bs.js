@@ -2,10 +2,10 @@
 
 
 function isWeekend(x) {
-  if (x !== -29784519) {
-    return x === 569248848;
-  } else {
+  if (x === "sunday") {
     return true;
+  } else {
+    return x === "saturday";
   }
 }
 
@@ -14,10 +14,10 @@ function onlySunday(param) {
 }
 
 function swap(x) {
-  if (x >= 569248848) {
-    return /* saturday */-29784519;
+  if (x === "sunday") {
+    return "saturday";
   } else {
-    return /* sunday */569248848;
+    return "sunday";
   }
 }
 
@@ -50,12 +50,12 @@ function polyWithOpt(foo) {
     return ;
   } else if (foo !== "baz") {
     return {
-            HASH: /* One */3953222,
+            NAME: "One",
             VAL: foo
           };
   } else {
     return {
-            HASH: /* Two */4203884,
+            NAME: "Two",
             VAL: 1
           };
   }
@@ -73,15 +73,15 @@ function restResult3(x) {
   return x;
 }
 
-var monday = /* monday */-949852400;
+var monday = "monday";
 
-var saturday = /* saturday */-29784519;
+var saturday = "saturday";
 
-var sunday = /* sunday */569248848;
+var sunday = "sunday";
 
-var fortytwoOK = /* fortytwo */23437694;
+var fortytwoOK = "fortytwo";
 
-var fortytwoBAD = /* fortytwo */23437694;
+var fortytwoBAD = "fortytwo";
 
 export {
   isWeekend ,
