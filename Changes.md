@@ -1,4 +1,6 @@
 # master
+
+# 3.29.0
 - More support for polymorphic variants in Bucklescript 8.2: no special case for a single payload case, and no renaming via `@genType.as`.
 
 # 3.28.0
