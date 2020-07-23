@@ -5,14 +5,10 @@ type payload = {
 
 type withPayload = [
 | #a
-| @genType.as("bRenamed")
-#b
-| @genType.as(true)
-#True
-| @genType.as(20)
-#Twenty
-| @genType.as(0.5)
-#Half
+| #b
+| #True
+| #Twenty
+| #Half
 | #c(payload)
 ]
 
@@ -29,8 +25,8 @@ export printVariantWithPayload = (x: withPayload) =>
   }
 
 export type manyPayloads = [
-| @genType.as("oneRenamed") #one(int)
-| @genType.as(2) #two(string, string)
+| #one(int)
+| #two(string, string)
 | #three(payload)
 ]
 

@@ -18,21 +18,21 @@ import {
   printVariantWithPayloads,
   testManyPayloads,
   testVariantWithPayloads,
-  testWithPayload
+  testWithPayload,
 } from "./VariantsWithPayload.gen";
 import * as TestPromise from "./TestPromise.gen";
 
 // tslint:disable-next-line:no-console
 const consoleLog = console.log;
 
-const intList = Types.map(x => x + 1, Types.someIntList);
+const intList = Types.map((x) => x + 1, Types.someIntList);
 
 const businesses = [
   {
     address: "Poison road",
     name: "AcmeLTD",
-    owner: { name: "John", age: 12, address: "garage" }
-  }
+    owner: { name: "John", age: 12, address: "garage" },
+  },
 ];
 
 const addresses = Records.findAllAddresses(businesses);
@@ -89,9 +89,12 @@ consoleLog("Enums: fortytwoOK is", Variants.fortytwoOK);
 consoleLog("Enums: fortytwoBAD is", Variants.fortytwoBAD);
 consoleLog(
   "Variants: testConvert3to2('module') =",
-  Variants.testConvert2to3("module")
+  Variants.testConvert2to3("module_")
 );
-consoleLog("Variants: testConvert3to2('42') =", Variants.testConvert2to3("42"));
+consoleLog(
+  "Variants: testConvert3to2('42') =",
+  Variants.testConvert2to3("fortytwo")
+);
 
 const absoluteValueInstance = new MyMath.AbsoluteValue();
 absoluteValueInstance.prop = -3;
@@ -103,15 +106,15 @@ consoleLog("ImportJsValue: getProp() =", propValue);
 consoleLog("ImportJsValue: getAbs() =", absValue);
 
 printVariantWithPayload("a");
-printVariantWithPayload("bRenamed");
-printVariantWithPayload(true);
-printVariantWithPayload(20);
-printVariantWithPayload(0.5);
-printVariantWithPayload(testWithPayload({ x: 15 }));
+printVariantWithPayload("b");
+printVariantWithPayload("True");
+printVariantWithPayload("Twenty");
+printVariantWithPayload("Half");
+printVariantWithPayload(testWithPayload({ NAME: "c", VAL: { x: 15 } }));
 
-printManyPayloads({ tag: "oneRenamed", value: 34 });
-printManyPayloads({ tag: 2, value: ["hello", "world"] });
-printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));
+printManyPayloads({ NAME: "one", VAL: 34 });
+printManyPayloads({ NAME: "two", VAL: ["hello", "world"] });
+printManyPayloads(testManyPayloads({ NAME: "three", VAL: { x: 15 } }));
 
 printVariantWithPayloads(testVariantWithPayloads("ARenamed"));
 printVariantWithPayloads(testVariantWithPayloads({ tag: "B", value: 4 }));
@@ -121,7 +124,7 @@ printVariantWithPayloads(
   testVariantWithPayloads({ tag: "E", value: [1, "hello", 2] })
 );
 
-TestPromise.convert(Promise.resolve({ x: 3, s: "hello" })).then(x =>
+TestPromise.convert(Promise.resolve({ x: 3, s: "hello" })).then((x) =>
   consoleLog("TestPromise result:", x.result)
 );
 
