@@ -4,18 +4,18 @@ import * as React from "react";
 import App from "./App.gen";
 import {
   printVariantWithPayload,
-  testWithPayload
+  testWithPayload,
 } from "./VariantsWithPayload.gen";
 import Hooks from "./Hooks.gen";
 
 const consoleLog = console.log;
 
 printVariantWithPayload("a");
-printVariantWithPayload("bRenamed");
-printVariantWithPayload(true);
-printVariantWithPayload(20);
-printVariantWithPayload(0.5);
-printVariantWithPayload(testWithPayload({ x: 15 }));
+printVariantWithPayload("b");
+printVariantWithPayload("true");
+printVariantWithPayload("Twenty");
+printVariantWithPayload("Half");
+printVariantWithPayload(testWithPayload({ NAME: "C", VAL: { x: 15 } }));
 
 const Main = () => (
   <div>
