@@ -66,21 +66,33 @@ let emitVariantLabel = (~comment=true, ~config, ~polymorphic, label) =>
     label;
   };
 
-let polyVariantLabelName = (~config) =>
-  config.variantHashesAsStrings ? "NAME" : "HASH";
+module VariantsAsObjects = {
+  let polyVariantLabelName = (~config) =>
+    config.variantHashesAsStrings ? "NAME" : "HASH";
+  let label = (~config, ~polymorphic) => {
+    polymorphic ? polyVariantLabelName(~config) : "TAG";
+  };
+
+  let indexLabel = i => "_" ++ string_of_int(i);
+};
 
 let emitVariantGetLabel = (~config, ~polymorphic, x) =>
-  if (polymorphic) {
-    config.variantsAsObjects
-      ? x |> EmitText.fieldAccess(~label=polyVariantLabelName(~config))
-      : x |> EmitText.arrayAccess(~index=0);
-  } else {
-    x |> EmitText.fieldAccess(~label=config.variantsAsObjects ? "TAG" : "tag");
-  };
+  config.variantsAsObjects
+    ? x
+      |> EmitText.fieldAccess(
+           ~label=VariantsAsObjects.label(~config, ~polymorphic),
+         )
+    : (
+      if (polymorphic) {
+        x |> EmitText.arrayAccess(~index=0);
+      } else {
+        x |> EmitText.fieldAccess(~label="tag");
+      }
+    );
 
 let accessVarant = (~config, ~index, x) =>
   if (config.variantsAsObjects) {
-    x ++ "." ++ "_" ++ string_of_int(index);
+    x |> EmitText.fieldAccess(~label=index |> VariantsAsObjects.indexLabel);
   } else {
     x |> EmitText.arrayAccess(~index);
   };
@@ -105,7 +117,7 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     if (config.variantsAsObjects) {
       "{"
-      ++ polyVariantLabelName(~config)
+      ++ VariantsAsObjects.polyVariantLabelName(~config)
       ++ ": "
       ++ (label |> emitVariantLabel(~config, ~polymorphic))
       ++ ", VAL: "
@@ -127,7 +139,9 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
       ++ ", "
       ++ (
         args
-        |> List.mapi((i, s) => "_" ++ string_of_int(i) ++ ":" ++ s)
+        |> List.mapi((i, s) =>
+             (i |> VariantsAsObjects.indexLabel) ++ ":" ++ s
+           )
         |> String.concat(", ")
       )
       ++ "}"
@@ -155,7 +169,9 @@ let emitJSVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) => {
   let convertedPayload =
     if (!polymorphic && config.variantsAsObjects && numArgs > 1) {
       EmitText.array(
-        Array.init(numArgs, i => x ++ "." ++ "_" ++ string_of_int(i))
+        Array.init(numArgs, i =>
+          x |> EmitText.fieldAccess(~label=i |> VariantsAsObjects.indexLabel)
+        )
         |> Array.to_list,
       );
     } else {
