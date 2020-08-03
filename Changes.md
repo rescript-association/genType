@@ -1,4 +1,6 @@
 # master
+
+# 3.30.0
 - Fix conversion of ordinary variants with >1 payloads, in bs >= 8.
 
 # 3.29.0
