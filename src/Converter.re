@@ -912,6 +912,7 @@ let rec apply =
             ? Runtime.emitJSVariantWithPayload(
                 ~config,
                 ~label=case.labelJS |> labelJSToString,
+                ~numArgs,
                 ~polymorphic=variantC.polymorphic,
               )
             : Runtime.emitVariantWithPayload(
