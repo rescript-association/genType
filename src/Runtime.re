@@ -80,7 +80,7 @@ let emitVariantGetLabel = (~config, ~polymorphic, x) =>
 
 let accessVarant = (~config, ~index, x) =>
   if (config.variantsAsObjects) {
-    x ++ "._" ++ string_of_int(index);
+    x ++ "." ++ "_" ++ string_of_int(index);
   } else {
     x |> EmitText.arrayAccess(~index);
   };
@@ -151,7 +151,16 @@ let emitJSVariantGetLabel = (~config, ~polymorphic, x) =>
 let emitJSVariantGetPayload = (~config, ~polymorphic, x) =>
   x |> EmitText.fieldAccess(~label=jsVariantValue(~config, ~polymorphic));
 
-let emitJSVariantWithPayload = (~config, ~label, ~polymorphic, x) =>
+let emitJSVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) => {
+  let convertedPayload =
+    if (!polymorphic && config.variantsAsObjects && numArgs > 1) {
+      EmitText.array(
+        Array.init(numArgs, i => x ++ "." ++ "_" ++ string_of_int(i))
+        |> Array.to_list,
+      );
+    } else {
+      x;
+    };
   "{"
   ++ jsVariantTag(~config, ~polymorphic)
   ++ ":"
@@ -159,8 +168,9 @@ let emitJSVariantWithPayload = (~config, ~label, ~polymorphic, x) =>
   ++ ", "
   ++ jsVariantValue(~config, ~polymorphic)
   ++ ":"
-  ++ x
+  ++ convertedPayload
   ++ "}";
+};
 
 let isMutableObjectField = name =>
   String.length(name) >= 2

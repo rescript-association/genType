@@ -128,7 +128,7 @@ export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoA
     ? {TAG: 0, _0:Arg1.value[0], _1:Arg1.value[1]}
     : {TAG: 1, _0:Arg1.value});
   return result.TAG===0
-    ? {tag:"R2", value:result}
+    ? {tag:"R2", value:[result._0, result._1]}
     : {tag:"R4", value:result._0}
 };
 

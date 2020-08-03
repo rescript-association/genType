@@ -67,10 +67,10 @@ export const testVariantWithPayloads: (x:variantWithPayloads) => variantWithPayl
     ? result.TAG===0
       ? {tag:"B", value:result._0}
       : result.TAG===1
-      ? {tag:"C", value:result}
+      ? {tag:"C", value:[result._0, result._1]}
       : result.TAG===2
       ? {tag:"D", value:result._0}
-      : {tag:"E", value:result}
+      : {tag:"E", value:[result._0, result._1, result._2]}
     : result
 };
 
