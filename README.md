@@ -19,7 +19,7 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 # Requirements
 
-`bs-platform` 8.2.0 or higher: use `genType` 3.29.0 or higher. Note that `@genType.as` for polymorphic variant cases is currently not supported for the new runtime representation in bucklescript.
+`bs-platform` 8.2.0 or higher: use `genType` 3.31.0 or higher.
 
 `bs-platform` 8.1.1 or higher: use `genType` 3.27.0 or higher.
 
