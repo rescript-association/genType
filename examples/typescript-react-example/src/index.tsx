@@ -89,11 +89,11 @@ consoleLog("Enums: fortytwoOK is", Variants.fortytwoOK);
 consoleLog("Enums: fortytwoBAD is", Variants.fortytwoBAD);
 consoleLog(
   "Variants: testConvert3to2('module') =",
-  Variants.testConvert2to3("module_")
+  Variants.testConvert2to3('module')
 );
 consoleLog(
   "Variants: testConvert3to2('42') =",
-  Variants.testConvert2to3("fortytwo")
+  Variants.testConvert2to3('42')
 );
 
 const absoluteValueInstance = new MyMath.AbsoluteValue();

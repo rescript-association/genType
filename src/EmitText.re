@@ -68,6 +68,9 @@ let newNameGen = () => Hashtbl.create(1);
 
 let quotes = x => "\"" ++ x ++ "\"";
 
+let quotesIfRequired = x =>
+  String.length(x) > 0 && x.[0] == '"' ? x : quotes(x);
+
 let resultName = (~nameGen) => "result" |> name(~nameGen);
 
 let switch_ = (~indent, ~cases, expr) => {
