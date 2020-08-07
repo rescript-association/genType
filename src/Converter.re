@@ -824,7 +824,8 @@ let rec apply =
       : case.label |> Runtime.emitVariantLabel(~config, ~polymorphic)
 
   | VariantC(variantC) =>
-    if (variantC.noPayloads != []) {
+    if (variantC.noPayloads != []
+        && !(variantC.polymorphic && config.variantHashesAsStrings)) {
       Hashtbl.replace(variantTables, (variantC.hash, toJS), variantC);
     };
     let convertToString =
@@ -836,7 +837,7 @@ let rec apply =
         ? ".toString()" : "";
     let table = variantC.hash |> variantTable(~toJS);
     let accessTable = v =>
-      config.variantHashesAsStrings
+      variantC.polymorphic && config.variantHashesAsStrings
         ? v : table ++ EmitText.array([v ++ convertToString]);
     switch (variantC.withPayload) {
     | [] => value |> accessTable

@@ -1346,9 +1346,7 @@ let emitTranslationAsString =
            )
       : env;
 
-  let emitters =
-    config.variantHashesAsStrings
-      ? emitters : variantTables |> emitVariantTables(~config, ~emitters);
+  let emitters = variantTables |> emitVariantTables(~config, ~emitters);
   let emitters =
     moduleItemsEmitter
     |> ExportModule.emitAllModuleItems(~config, ~emitters, ~fileName);
