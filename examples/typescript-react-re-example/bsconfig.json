@@ -1,0 +1,35 @@
+{
+  "gentypeconfig": {
+    "language": "typescript",
+    "module": "es6",
+    "importPath": "relative",
+    "shims": {
+      "Js": "Js",
+      "React": "ReactShim",
+      "ReactEvent": "ReactEvent",
+      "ReasonPervasives": "ReasonPervasives",
+      "ReasonReact": "ReactShim"
+    },
+    "debug": {
+      "all": false
+    },
+    "exportInterfaces": false,
+    "path": "../../_build/default/src/GenType.exe"
+  },
+  "name": "sample-typescript-app",
+  "bsc-flags": ["-bs-super-errors"],
+  "reason": { "react-jsx": 3 },
+  "bs-dependencies": ["reason-react"],
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "refmt": 3
+}
