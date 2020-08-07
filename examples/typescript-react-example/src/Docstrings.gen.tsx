@@ -2,6 +2,8 @@
 /* eslint-disable import/first */
 
 
+const $$toJS453167283: { [key: string]: any } = {"0": "A", "1": "B"};
+
 // tslint:disable-next-line:no-var-requires
 const Curry = require('bs-platform/lib/es6/curry.js');
 
@@ -67,10 +69,10 @@ export const unitArgWithoutConversionU: () => string = DocstringsBS.unitArgWitho
 
 export const unitArgWithConversion: () => t = function () {
   const result = DocstringsBS.unitArgWithConversion();
-  return result
+  return $$toJS453167283[result]
 };
 
 export const unitArgWithConversionU: () => t = function () {
   const result = DocstringsBS.unitArgWithConversionU();
-  return result
+  return $$toJS453167283[result]
 };

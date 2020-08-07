@@ -1,4 +1,5 @@
 # master
+- Fix conversion for ordinary variants without payload (conversion tables were missing).
 
 # 3.30.0
 - Fix conversion of ordinary variants with >1 payloads, in bs >= 8.

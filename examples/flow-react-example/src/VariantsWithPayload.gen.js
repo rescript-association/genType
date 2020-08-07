@@ -7,6 +7,14 @@
 // $FlowExpectedError: Reason checked type sufficiently
 type $any = any;
 
+const $$toJS13337556 = {"0": "ARenamed"};
+
+const $$toRE13337556 = {"ARenamed": 0};
+
+const $$toJS346759412 = {"0": "A", "1": "B", "2": "C"};
+
+const $$toRE346759412 = {"A": 0, "B": 1, "C": 2};
+
 // $FlowExpectedError: Reason checked type sufficiently
 import * as VariantsWithPayloadBS from './VariantsWithPayload.bs';
 
@@ -47,8 +55,8 @@ export const testManyPayloads: (manyPayloads) => manyPayloads = VariantsWithPayl
 export const printManyPayloads: (manyPayloads) => void = VariantsWithPayloadBS.printManyPayloads;
 
 export const testSimpleVariant: (simpleVariant) => simpleVariant = function (Arg1: $any) {
-  const result = VariantsWithPayloadBS.testSimpleVariant(Arg1);
-  return result
+  const result = VariantsWithPayloadBS.testSimpleVariant($$toRE346759412[Arg1]);
+  return $$toJS346759412[result]
 };
 
 export const testVariantWithPayloads: (variantWithPayloads) => variantWithPayloads = function (Arg1: $any) {
@@ -60,7 +68,7 @@ export const testVariantWithPayloads: (variantWithPayloads) => variantWithPayloa
       : Arg1.tag==="D"
       ? {TAG: 2, _0:Arg1.value}
       : {TAG: 3, _0:Arg1.value[0], _1:Arg1.value[1], _2:Arg1.value[2]}
-    : Arg1);
+    : $$toRE13337556[Arg1]);
   return typeof(result) === 'object'
     ? result.TAG===0
       ? {tag:"B", value:result._0}
@@ -69,7 +77,7 @@ export const testVariantWithPayloads: (variantWithPayloads) => variantWithPayloa
       : result.TAG===2
       ? {tag:"D", value:result._0}
       : {tag:"E", value:[result._0, result._1, result._2]}
-    : result
+    : $$toJS13337556[result]
 };
 
 export const printVariantWithPayloads: (variantWithPayloads) => void = function (Arg1: $any) {
@@ -81,7 +89,7 @@ export const printVariantWithPayloads: (variantWithPayloads) => void = function 
       : Arg1.tag==="D"
       ? {TAG: 2, _0:Arg1.value}
       : {TAG: 3, _0:Arg1.value[0], _1:Arg1.value[1], _2:Arg1.value[2]}
-    : Arg1);
+    : $$toRE13337556[Arg1]);
   return result
 };
 
