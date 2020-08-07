@@ -35,6 +35,7 @@ and variantC = {
   withPayload: list((case, int, t)),
   polymorphic: bool,
   unboxed: bool,
+  useVariantTables: bool,
 };
 
 let rec toString = converter =>
@@ -323,13 +324,28 @@ let typeGetConverterNormalized =
             variant.unboxed,
           );
         };
+      let noPayloads = variant.noPayloads;
+      let useVariantTables =
+        if (variant.polymorphic && config.variantHashesAsStrings) {
+          noPayloads
+          |> List.exists(({label, labelJS}) =>
+               labelJS != StringLabel(label)
+             )
+          || withPayload
+          |> List.exists((({label, labelJS}, _, _)) =>
+               labelJS != StringLabel(label)
+             );
+        } else {
+          true;
+        };
       let converter =
         VariantC({
           hash: variant.hash,
-          noPayloads: variant.noPayloads,
+          noPayloads,
           withPayload,
           polymorphic: variant.polymorphic,
           unboxed,
+          useVariantTables,
         });
       (converter, normalized);
     };
@@ -444,8 +460,8 @@ let rec converterIsIdentity = (~config, ~toJS, converter) =>
   | TupleC(innerTypesC) =>
     innerTypesC |> List.for_all(converterIsIdentity(~config, ~toJS))
 
-  | VariantC({polymorphic, withPayload}) =>
-    if (config.variantHashesAsStrings && polymorphic) {
+  | VariantC({withPayload, useVariantTables}) =>
+    if (!useVariantTables) {
       withPayload
       |> List.for_all(((_, _, c)) =>
            c |> converterIsIdentity(~config, ~toJS)
@@ -824,8 +840,7 @@ let rec apply =
       : case.label |> Runtime.emitVariantLabel(~config, ~polymorphic)
 
   | VariantC(variantC) =>
-    if (variantC.noPayloads != []
-        && !(variantC.polymorphic && config.variantHashesAsStrings)) {
+    if (variantC.noPayloads != [] && variantC.useVariantTables) {
       Hashtbl.replace(variantTables, (variantC.hash, toJS), variantC);
     };
     let convertToString =
@@ -837,7 +852,7 @@ let rec apply =
         ? ".toString()" : "";
     let table = variantC.hash |> variantTable(~toJS);
     let accessTable = v =>
-      variantC.polymorphic && config.variantHashesAsStrings
+      !variantC.useVariantTables
         ? v : table ++ EmitText.array([v ++ convertToString]);
     switch (variantC.withPayload) {
     | [] => value |> accessTable

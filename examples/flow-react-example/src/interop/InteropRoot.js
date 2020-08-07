@@ -33,19 +33,19 @@ consoleLog("Variants: fortytwoOK is", Variants.fortytwoOK);
 consoleLog("Variants: fortytwoBAD is", Variants.fortytwoBAD);
 consoleLog(
   "Variants: testConvert3to2('module') =",
-  Variants.testConvert2to3("module_")
+  Variants.testConvert2to3("module")
 );
-consoleLog("Variants: testConvert3to2('42') =", Variants.testConvert2to3("fortytwo"));
+consoleLog("Variants: testConvert3to2('42') =", Variants.testConvert2to3("42"));
 
 printVariantWithPayload("a");
-printVariantWithPayload("b");
-printVariantWithPayload("True");
-printVariantWithPayload("Twenty");
-printVariantWithPayload("Half");
-printVariantWithPayload(testWithPayload({NAME: "c", VAL:{ x: 15 }}));
+printVariantWithPayload("bRenamed");
+printVariantWithPayload(true);
+printVariantWithPayload(20);
+printVariantWithPayload(0.5);
+printVariantWithPayload(testWithPayload({ NAME: "c", VAL: { x: 15 } }));
 
-printManyPayloads({ NAME: "one", VAL: 34 });
-printManyPayloads({ NAME: "two", VAL: ["hello", "world"] });
+printManyPayloads({ NAME: "oneRenamed", VAL: 34 });
+printManyPayloads({ NAME: 2, VAL: ["hello", "world"] });
 printManyPayloads(testManyPayloads({ NAME: "three", VAL: { x: 15 } }));
 
 printVariantWithPayloads(testVariantWithPayloads("ARenamed"));

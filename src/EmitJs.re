@@ -923,7 +923,9 @@ let emitVariantTables = (~config, ~emitters, variantTables) => {
                   ~config,
                   ~polymorphic=variantC.polymorphic,
                 );
-           toJS ? (re |> EmitText.quotes) ++ ": " ++ js : js ++ ": " ++ re;
+           toJS
+             ? (re |> EmitText.quotesIfRequired) ++ ": " ++ js
+             : js ++ ": " ++ re;
          })
       |> String.concat(", ")
     )

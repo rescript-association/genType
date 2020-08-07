@@ -15,6 +15,10 @@ const $$toJS346759412 = {"0": "A", "1": "B", "2": "C"};
 
 const $$toRE346759412 = {"A": 0, "B": 1, "C": 2};
 
+const $$toJS435467058 = {"a": "a", "b": "bRenamed", "True": true, "Twenty": 20, "Half": 0.5};
+
+const $$toRE435467058 = {"a": "a", "bRenamed": "b", "true": "True", "20": "Twenty", "0.5": "Half"};
+
 // $FlowExpectedError: Reason checked type sufficiently
 import * as VariantsWithPayloadBS from './VariantsWithPayload.bs';
 
@@ -22,15 +26,15 @@ export type payload = {| +x: number, +y?: string |};
 
 export type withPayload = 
     "a"
-  | "b"
-  | "True"
-  | "Twenty"
-  | "Half"
+  | "bRenamed"
+  | true
+  | 20
+  | 0.5
   | {| NAME: "c", VAL: payload |};
 
 export type manyPayloads = 
-    {| NAME: "one", VAL: number |}
-  | {| NAME: "two", VAL: [string, string] |}
+    {| NAME: "oneRenamed", VAL: number |}
+  | {| NAME: 2, VAL: [string, string] |}
   | {| NAME: "three", VAL: payload |};
 
 export type simpleVariant = "A" | "B" | "C";
@@ -46,13 +50,43 @@ export type variant1Int = {| tag: "R", value: number |};
 
 export type variant1Object = payload;
 
-export const testWithPayload: (withPayload) => withPayload = VariantsWithPayloadBS.testWithPayload;
+export const testWithPayload: (withPayload) => withPayload = function (Arg1: $any) {
+  const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
+    ? {NAME: "c", VAL: Arg1.VAL}
+    : $$toRE435467058[Arg1.toString()]);
+  return typeof(result) === 'object'
+    ? {NAME:"c", VAL:result.VAL}
+    : $$toJS435467058[result]
+};
 
-export const printVariantWithPayload: (withPayload) => void = VariantsWithPayloadBS.printVariantWithPayload;
+export const printVariantWithPayload: (withPayload) => void = function (Arg1: $any) {
+  const result = VariantsWithPayloadBS.printVariantWithPayload(typeof(Arg1) === 'object'
+    ? {NAME: "c", VAL: Arg1.VAL}
+    : $$toRE435467058[Arg1.toString()]);
+  return result
+};
 
-export const testManyPayloads: (manyPayloads) => manyPayloads = VariantsWithPayloadBS.testManyPayloads;
+export const testManyPayloads: (manyPayloads) => manyPayloads = function (Arg1: $any) {
+  const result = VariantsWithPayloadBS.testManyPayloads(Arg1.NAME==="oneRenamed"
+    ? {NAME: "one", VAL: Arg1.VAL}
+    : Arg1.NAME===2
+    ? {NAME: "two", VAL: Arg1.VAL}
+    : {NAME: "three", VAL: Arg1.VAL});
+  return result.NAME==="one"
+    ? {NAME:"oneRenamed", VAL:result.VAL}
+    : result.NAME==="two"
+    ? {NAME:2, VAL:result.VAL}
+    : {NAME:"three", VAL:result.VAL}
+};
 
-export const printManyPayloads: (manyPayloads) => void = VariantsWithPayloadBS.printManyPayloads;
+export const printManyPayloads: (manyPayloads) => void = function (Arg1: $any) {
+  const result = VariantsWithPayloadBS.printManyPayloads(Arg1.NAME==="oneRenamed"
+    ? {NAME: "one", VAL: Arg1.VAL}
+    : Arg1.NAME===2
+    ? {NAME: "two", VAL: Arg1.VAL}
+    : {NAME: "three", VAL: Arg1.VAL});
+  return result
+};
 
 export const testSimpleVariant: (simpleVariant) => simpleVariant = function (Arg1: $any) {
   const result = VariantsWithPayloadBS.testSimpleVariant($$toRE346759412[Arg1]);
