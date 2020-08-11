@@ -112,11 +112,11 @@ printVariantWithPayload("bRenamed");
 printVariantWithPayload(true);
 printVariantWithPayload(20);
 printVariantWithPayload(0.5);
-printVariantWithPayload(testWithPayload({ x: 15 }));
+printVariantWithPayload(testWithPayload({ NAME: "c", VAL: { x: 15 } }));
 
-printManyPayloads({ tag: "oneRenamed", value: 34 });
-printManyPayloads({ tag: 2, value: ["hello", "world"] });
-printManyPayloads(testManyPayloads({ tag: "three", value: { x: 15 } }));
+printManyPayloads({ NAME: "oneRenamed", VAL: 34 });
+printManyPayloads({ NAME: 2, VAL: ["hello", "world"] });
+printManyPayloads(testManyPayloads({ NAME: "three", VAL: { x: 15 } }));
 
 printVariantWithPayloads(testVariantWithPayloads("ARenamed"));
 printVariantWithPayloads(testVariantWithPayloads({ tag: "B", value: 4 }));
