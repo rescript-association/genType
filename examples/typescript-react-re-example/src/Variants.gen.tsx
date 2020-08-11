@@ -2,27 +2,21 @@
 /* eslint-disable import/first */
 
 
-const $$toRE288839514: { [key: string]: any } = {"monday": -949852400, "tuesday": 323181965, "wednesday": -863289194, "thursday": 122883354, "friday": 835226847, "saturday": -29784519, "sunday": 569248848};
+const $$toJS508922110: { [key: string]: any } = {"type_": "type", "module_": "module", "fortytwo": "42"};
 
-const $$toJS508922110: { [key: string]: any } = {"449540197": "type", "-134553037": "module", "23437694": "42"};
+const $$toRE508922110: { [key: string]: any } = {"type": "type_", "module": "module_", "42": "fortytwo"};
 
-const $$toRE508922110: { [key: string]: any } = {"type": 449540197, "module": -134553037, "42": 23437694};
+const $$toJS584768163: { [key: string]: any } = {"type_": "type", "module_": "module", "fortytwo": "XXX THIS IS DIFFERENT"};
 
-const $$toJS584768163: { [key: string]: any } = {"449540197": "type", "-134553037": "module", "23437694": "XXX THIS IS DIFFERENT"};
+const $$toRE584768163: { [key: string]: any } = {"type": "type_", "module": "module_", "XXX THIS IS DIFFERENT": "fortytwo"};
 
-const $$toRE584768163: { [key: string]: any } = {"type": 449540197, "module": -134553037, "XXX THIS IS DIFFERENT": 23437694};
+const $$toJS930788378: { [key: string]: any } = {"x": "x", "x1": "same"};
 
-const $$toJS694113598: { [key: string]: any } = {"-29784519": "saturday", "569248848": "sunday"};
+const $$toRE930788378: { [key: string]: any } = {"x": "x", "same": "x1"};
 
-const $$toRE694113598: { [key: string]: any } = {"saturday": -29784519, "sunday": 569248848};
+const $$toJS1061900109: { [key: string]: any } = {"x": "x", "x2": "same"};
 
-const $$toJS930788378: { [key: string]: any } = {"120": "x", "26809": "same"};
-
-const $$toRE930788378: { [key: string]: any } = {"x": 120, "same": 26809};
-
-const $$toJS1061900109: { [key: string]: any } = {"120": "x", "26810": "same"};
-
-const $$toRE1061900109: { [key: string]: any } = {"x": 120, "same": 26810};
+const $$toRE1061900109: { [key: string]: any } = {"x": "x", "same": "x2"};
 
 // tslint:disable-next-line:no-var-requires
 const VariantsBS = require('./Variants.bs');
@@ -71,26 +65,17 @@ export type result3<a,b> =
     { tag: "Ok"; value: a }
   | { tag: "Error"; value: b };
 
-export const isWeekend: (x:weekday) => boolean = function (Arg1: any) {
-  const result = VariantsBS.isWeekend($$toRE288839514[Arg1]);
-  return result
-};
+export const isWeekend: (x:weekday) => boolean = VariantsBS.isWeekend;
 
-export const monday: "monday" = "monday";
+export const monday: "monday" = VariantsBS.monday;
 
-export const saturday: "saturday" = "saturday";
+export const saturday: "saturday" = VariantsBS.saturday;
 
-export const sunday: "sunday" = "sunday";
+export const sunday: "sunday" = VariantsBS.sunday;
 
-export const onlySunday: (param:"sunday") => void = function (Arg1: any) {
-  const result = VariantsBS.onlySunday(/* sunday */569248848);
-  return result
-};
+export const onlySunday: (param:"sunday") => void = VariantsBS.onlySunday;
 
-export const swap: (x:"saturday" | "sunday") => "saturday" | "sunday" = function (Arg1: any) {
-  const result = VariantsBS.swap($$toRE694113598[Arg1]);
-  return $$toJS694113598[result]
-};
+export const swap: (x:"saturday" | "sunday") => "saturday" | "sunday" = VariantsBS.swap;
 
 export const testConvert: (x:testGenTypeAs) => testGenTypeAs = function (Arg1: any) {
   const result = VariantsBS.testConvert($$toRE508922110[Arg1]);
@@ -99,7 +84,7 @@ export const testConvert: (x:testGenTypeAs) => testGenTypeAs = function (Arg1: a
 
 export const fortytwoOK: testGenTypeAs = $$toJS508922110[VariantsBS.fortytwoOK];
 
-export const fortytwoBAD: "fortytwo" = "fortytwo";
+export const fortytwoBAD: "fortytwo" = VariantsBS.fortytwoBAD;
 
 export const testConvert2: (x:testGenTypeAs2) => testGenTypeAs2 = function (Arg1: any) {
   const result = VariantsBS.testConvert2($$toRE508922110[Arg1]);
@@ -127,13 +112,8 @@ export const id2: (x:x2) => x2 = function (Arg1: any) {
 };
 
 export const polyWithOpt: (foo:string) => (null | undefined | (
-    { tag: "One"; value: string }
-  | { tag: "Two"; value: number })) = function (Arg1: any) {
-  const result = VariantsBS.polyWithOpt(Arg1);
-  return (result == null ? result : result.HASH===/* One */3953222
-    ? {tag:"One", value:result.VAL}
-    : {tag:"Two", value:result.VAL})
-};
+    { NAME: "One"; VAL: string }
+  | { NAME: "Two"; VAL: number })) = VariantsBS.polyWithOpt;
 
 export const restResult1: (x:result1<number,string>) => result1<number,string> = function (Arg1: any) {
   const result = VariantsBS.restResult1(Arg1.tag==="Ok"

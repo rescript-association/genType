@@ -10,9 +10,9 @@ const $$toJS346759412: { [key: string]: any } = {"0": "A", "1": "B", "2": "C"};
 
 const $$toRE346759412: { [key: string]: any } = {"A": 0, "B": 1, "C": 2};
 
-const $$toJS435467058: { [key: string]: any } = {"97": "a", "98": "bRenamed", "937218926": true, "-574635695": 20, "803296723": 0.5};
+const $$toJS435467058: { [key: string]: any } = {"a": "a", "b": "bRenamed", "True": true, "Twenty": 20, "Half": 0.5};
 
-const $$toRE435467058: { [key: string]: any } = {"a": 97, "bRenamed": 98, "true": 937218926, "20": -574635695, "0.5": 803296723};
+const $$toRE435467058: { [key: string]: any } = {"a": "a", "bRenamed": "b", "true": "True", "20": "Twenty", "0.5": "Half"};
 
 // tslint:disable-next-line:no-var-requires
 const VariantsWithPayloadBS = require('./VariantsWithPayload.bs');
@@ -21,13 +21,19 @@ const VariantsWithPayloadBS = require('./VariantsWithPayload.bs');
 export type payload = { readonly x: number; readonly y?: string };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type withPayload = "a" | "bRenamed" | true | 20 | 0.5 | payload;
+export type withPayload = 
+    "a"
+  | "bRenamed"
+  | true
+  | 20
+  | 0.5
+  | { NAME: "c"; VAL: payload };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type manyPayloads = 
-    { tag: "oneRenamed"; value: number }
-  | { tag: 2; value: [string, string] }
-  | { tag: "three"; value: payload };
+    { NAME: "oneRenamed"; VAL: number }
+  | { NAME: 2; VAL: [string, string] }
+  | { NAME: "three"; VAL: payload };
 
 // tslint:disable-next-line:interface-over-type-literal
 export type simpleVariant = "A" | "B" | "C";
@@ -48,39 +54,39 @@ export type variant1Object = payload;
 
 export const testWithPayload: (x:withPayload) => withPayload = function (Arg1: any) {
   const result = VariantsWithPayloadBS.testWithPayload(typeof(Arg1) === 'object'
-    ? {HASH: /* c */99, VAL: Arg1}
+    ? {NAME: "c", VAL: Arg1.VAL}
     : $$toRE435467058[Arg1.toString()]);
   return typeof(result) === 'object'
-    ? result.VAL
+    ? {NAME:"c", VAL:result.VAL}
     : $$toJS435467058[result]
 };
 
 export const printVariantWithPayload: (x:withPayload) => void = function (Arg1: any) {
   const result = VariantsWithPayloadBS.printVariantWithPayload(typeof(Arg1) === 'object'
-    ? {HASH: /* c */99, VAL: Arg1}
+    ? {NAME: "c", VAL: Arg1.VAL}
     : $$toRE435467058[Arg1.toString()]);
   return result
 };
 
 export const testManyPayloads: (x:manyPayloads) => manyPayloads = function (Arg1: any) {
-  const result = VariantsWithPayloadBS.testManyPayloads(Arg1.tag==="oneRenamed"
-    ? {HASH: /* one */5544550, VAL: Arg1.value}
-    : Arg1.tag===2
-    ? {HASH: /* two */5795212, VAL: Arg1.value}
-    : {HASH: /* three */261117022, VAL: Arg1.value});
-  return result.HASH===/* one */5544550
-    ? {tag:"oneRenamed", value:result.VAL}
-    : result.HASH===/* two */5795212
-    ? {tag:2, value:result.VAL}
-    : {tag:"three", value:result.VAL}
+  const result = VariantsWithPayloadBS.testManyPayloads(Arg1.NAME==="oneRenamed"
+    ? {NAME: "one", VAL: Arg1.VAL}
+    : Arg1.NAME===2
+    ? {NAME: "two", VAL: Arg1.VAL}
+    : {NAME: "three", VAL: Arg1.VAL});
+  return result.NAME==="one"
+    ? {NAME:"oneRenamed", VAL:result.VAL}
+    : result.NAME==="two"
+    ? {NAME:2, VAL:result.VAL}
+    : {NAME:"three", VAL:result.VAL}
 };
 
 export const printManyPayloads: (x:manyPayloads) => void = function (Arg1: any) {
-  const result = VariantsWithPayloadBS.printManyPayloads(Arg1.tag==="oneRenamed"
-    ? {HASH: /* one */5544550, VAL: Arg1.value}
-    : Arg1.tag===2
-    ? {HASH: /* two */5795212, VAL: Arg1.value}
-    : {HASH: /* three */261117022, VAL: Arg1.value});
+  const result = VariantsWithPayloadBS.printManyPayloads(Arg1.NAME==="oneRenamed"
+    ? {NAME: "one", VAL: Arg1.VAL}
+    : Arg1.NAME===2
+    ? {NAME: "two", VAL: Arg1.VAL}
+    : {NAME: "three", VAL: Arg1.VAL});
   return result
 };
 
@@ -103,10 +109,10 @@ export const testVariantWithPayloads: (x:variantWithPayloads) => variantWithPayl
     ? result.TAG===0
       ? {tag:"B", value:result._0}
       : result.TAG===1
-      ? {tag:"C", value:result}
+      ? {tag:"C", value:[result._0, result._1]}
       : result.TAG===2
       ? {tag:"D", value:result._0}
-      : {tag:"E", value:result}
+      : {tag:"E", value:[result._0, result._1, result._2]}
     : $$toJS13337556[result]
 };
 
