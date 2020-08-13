@@ -9,35 +9,62 @@ let posToString = (pos: Lexing.position) => {
   ++ string_of_int(col);
 };
 
+module ModulePath = {
+  type t = list(string);
+  let empty: t = [];
+
+  let toString = (x: t) => x |> List.rev |> String.concat(".");
+};
+
 module Env = {
   module StringMap = Map.Make(String);
   type t = StringMap.t(Location.t);
   let empty: t = StringMap.empty;
-  let addId = (~id, ~loc, env) => StringMap.add(id |> Ident.name, loc, env);
-  let findPath = (~path, env) => StringMap.find_opt(Path.name(path), env);
+  let addPath = (~path, ~loc, env) =>
+    StringMap.add(path |> ModulePath.toString, loc, env);
+  let findPath = (~modulePath, ~path, env) => {
+    let pathName = Path.name(path);
+    let rec loop = modulePath =>
+      switch (
+        StringMap.find_opt(
+          [pathName, ...modulePath] |> ModulePath.toString,
+          env,
+        )
+      ) {
+      | None =>
+        switch (modulePath) {
+        | [] => None
+        | [_, ...rest] => loop(rest)
+        }
+      | Some(_) as res => res
+      };
+    loop(modulePath);
+  };
 };
 
 let currEnv = ref(Env.empty);
-let currModulePath = ref([]);
+let currModulePath = ref(ModulePath.empty);
 
 let rec processPattern = (pat: Typedtree.pattern) =>
   switch (pat.pat_desc) {
   | Tpat_any => ()
   | Tpat_var(id, {loc}) =>
+    let path = [Ident.name(id), ...currModulePath^];
     Log_.item(
       "Value binding:%s %s@.",
-      Ident.name(id),
+      path |> ModulePath.toString,
       loc.loc_start |> posToString,
     );
-    currEnv := currEnv^ |> Env.addId(~id, ~loc);
+    currEnv := currEnv^ |> Env.addPath(~path, ~loc);
   | Tpat_alias(p, id, {loc}) =>
+    let path = [Ident.name(id), ...currModulePath^];
     p |> processPattern;
     Log_.item(
       "Value binding alias:%s %s@.",
-      Ident.unique_name(id),
+      path |> ModulePath.toString,
       loc.loc_start |> posToString,
     );
-    currEnv := currEnv^ |> Env.addId(~id, ~loc);
+    currEnv := currEnv^ |> Env.addPath(~path, ~loc);
   | Tpat_constant(_) => assert(false)
   | Tpat_tuple(pats) => pats |> List.iter(processPattern)
   | Tpat_construct(_loc, _cd, pats) => pats |> List.iter(processPattern)
@@ -70,7 +97,7 @@ let processExpr = (super, self, e: Typedtree.expression) => {
   switch (e.exp_desc) {
   | Texp_ident(path, {loc}, _) =>
     let foundLoc =
-      switch (currEnv^ |> Env.findPath(~path)) {
+      switch (currEnv^ |> Env.findPath(~modulePath=currModulePath^, ~path)) {
       | Some(loc) => loc.loc_start |> posToString
       | None => "NotFound"
       };
