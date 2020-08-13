@@ -11,6 +11,7 @@ let signFile = s => s;
 type cliCommand =
   | Add(string)
   | Clean
+  | FileInfo(string)
   | NoOp
   | Rm(string);
 
@@ -38,6 +39,9 @@ let cli = () => {
   and setAdd = s => {
     Add(s) |> setCliCommand;
   }
+  and setFileInfo = s => {
+    FileInfo(s) |> setCliCommand;
+  }
   and setRm = s => {
     Rm(s) |> setCliCommand;
   }
@@ -53,6 +57,7 @@ let cli = () => {
     ("-clean", Arg.Unit(setClean), "clean all the generated files"),
     ("-cmt-add", Arg.String(setAdd), "compile a .cmt[i] file"),
     ("-cmt-rm", Arg.String(setRm), "remove a .cmt[i] file"),
+    ("-file-info", Arg.String(setFileInfo), "print info of a source file"),
     (
       "-version",
       Arg.Unit(versionAndExit),
@@ -116,6 +121,19 @@ let cli = () => {
       if (Debug.basic^) {
         Log_.item("Cleaned %d files\n", count^);
       };
+      exit(0);
+
+    | FileInfo(s) =>
+      Paths.setProjectRoot();
+      let isInterface = Filename.check_suffix(s, "i");
+      let (+++) = Filename.concat;
+      let cmtFile =
+        Config.projectRoot^
+        +++ "lib"
+        +++ "bs"
+        +++ Filename.chop_extension(s)
+        ++ (isInterface ? ".cmti" : ".cmt");
+      cmtFile |> FileInfo.processCmtFile;
       exit(0);
 
     | NoOp => printUsageAndExit()
