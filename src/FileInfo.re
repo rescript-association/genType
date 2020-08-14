@@ -1,3 +1,45 @@
+module ModulesTable = {
+  let table = Hashtbl.create(10);
+  let addModule = (~dir, ~file) => {
+    let moduleName =
+      file |> Filename.remove_extension |> String.capitalize_ascii;
+    if (!Hashtbl.mem(table, moduleName)) {
+      let cmtFile = Filename.concat(dir, file);
+      Hashtbl.replace(table, moduleName, cmtFile);
+      //Log_.item("moduleName:%s cmtFile:%s@.", moduleName, cmtFile);
+    };
+  };
+
+  let rec processDir = (~subdirs, dir) =>
+    if (dir |> Sys.file_exists && dir |> Sys.is_directory) {
+      //Log_.item("module dir:%s@.", dir);
+      dir
+      |> Sys.readdir
+      |> Array.iter(file =>
+           if (Filename.check_suffix(file, ".cmt")) {
+             addModule(~dir, ~file);
+           } else if (subdirs) {
+             processDir(~subdirs, Filename.concat(dir, file));
+           }
+         );
+    };
+
+  let populate = (~config) => {
+    ["lib", "bs"]
+    |> List.fold_left(Filename.concat, Config_.projectRoot^)
+    |> processDir(~subdirs=true);
+
+    ModuleResolver.readSourceDirs(~configSources=config.Config_.sources).pkgs
+    |> Hashtbl.iter((_, dir) =>
+         ["lib", "ocaml"]
+         |> List.fold_left(Filename.concat, dir)
+         |> processDir(~subdirs=false)
+       );
+  };
+
+  let find = moduleName => Hashtbl.find_opt(table, moduleName);
+};
+
 let posToString = (pos: Lexing.position) => {
   let file = pos.Lexing.pos_fname;
   let line = pos.Lexing.pos_lnum;
@@ -99,7 +141,14 @@ let processExpr = (super, self, e: Typedtree.expression) => {
     let foundLoc =
       switch (currEnv^ |> Env.findPath(~modulePath=currModulePath^, ~path)) {
       | Some(loc) => loc.loc_start |> posToString
-      | None => "NotFound"
+      | None =>
+        let moduleName = path |> Path.head |> Ident.name;
+        let moduleFound =
+          switch (moduleName |> ModulesTable.find) {
+          | None => "ModuleNotFound"
+          | Some(cmtFile) => cmtFile |> Filename.basename
+          };
+        "NotFound (" ++ moduleName ++ ":" ++ moduleFound ++ ")";
       };
     Log_.item(
       "Ident:%s loc:%s ref:%s@.",
@@ -188,8 +237,9 @@ let traverseStructure = {
   };
 };
 
-let processCmtFile = cmtFile => {
+let processCmtFile = (~config, cmtFile) => {
   Log_.item("FileInfo cmtFile:%s@.", cmtFile);
+  ModulesTable.populate(~config);
   let inputCMT = GenTypeMain.readCmt(cmtFile);
   let {Cmt_format.cmt_annots} = inputCMT;
   switch (cmt_annots) {

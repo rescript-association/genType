@@ -126,14 +126,16 @@ let cli = () => {
     | FileInfo(s) =>
       Paths.setProjectRoot();
       let isInterface = Filename.check_suffix(s, "i");
-      let (+++) = Filename.concat;
       let cmtFile =
-        Config.projectRoot^
-        +++ "lib"
-        +++ "bs"
-        +++ Filename.chop_extension(s)
-        ++ (isInterface ? ".cmti" : ".cmt");
-      cmtFile |> FileInfo.processCmtFile;
+        [
+          "lib",
+          "bs",
+          Filename.chop_extension(s) ++ (isInterface ? ".cmti" : ".cmt"),
+        ]
+        |> List.fold_left(Filename.concat, Config.projectRoot^);
+
+      let config = Paths.readConfig(~bsVersion, ~namespace=None);
+      cmtFile |> FileInfo.processCmtFile(~config);
       exit(0);
 
     | NoOp => printUsageAndExit()
