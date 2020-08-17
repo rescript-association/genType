@@ -236,6 +236,16 @@ let processStructureItem =
     valueBindings
     |> processValueBindings(~currEnv, ~currModulePath, ~recFlag, ~self);
     si;
+  | Tstr_primitive({val_id, val_loc: loc}) =>
+    let path = [val_id |> Ident.name, ...currModulePath^];
+    Log_.item(
+      "External:%s %s@.",
+      path |> ModulePath.toString,
+      loc.loc_start |> posToString,
+    );
+    currEnv := currEnv^ |> Env.addPath(~path, ~loc);
+    si;
+
   | Tstr_module({mb_id}) =>
     let oldModulePath = currModulePath^;
     currModulePath := [Ident.name(mb_id), ...oldModulePath];
