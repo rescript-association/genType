@@ -1,45 +1,3 @@
-module ModulesTable = {
-  let table = Hashtbl.create(10);
-  let addModule = (~dir, ~file) => {
-    let moduleName =
-      file |> Filename.remove_extension |> String.capitalize_ascii;
-    if (!Hashtbl.mem(table, moduleName)) {
-      let cmtFile = Filename.concat(dir, file);
-      Hashtbl.replace(table, moduleName, cmtFile);
-      //Log_.item("moduleName:%s cmtFile:%s@.", moduleName, cmtFile);
-    };
-  };
-
-  let rec processDir = (~subdirs, dir) =>
-    if (dir |> Sys.file_exists && dir |> Sys.is_directory) {
-      //Log_.item("module dir:%s@.", dir);
-      dir
-      |> Sys.readdir
-      |> Array.iter(file =>
-           if (Filename.check_suffix(file, ".cmt")) {
-             addModule(~dir, ~file);
-           } else if (subdirs) {
-             processDir(~subdirs, Filename.concat(dir, file));
-           }
-         );
-    };
-
-  let populate = (~config) => {
-    ["lib", "bs"]
-    |> List.fold_left(Filename.concat, Config_.projectRoot^)
-    |> processDir(~subdirs=true);
-
-    ModuleResolver.readSourceDirs(~configSources=config.Config_.sources).pkgs
-    |> Hashtbl.iter((_, dir) =>
-         ["lib", "ocaml"]
-         |> List.fold_left(Filename.concat, dir)
-         |> processDir(~subdirs=false)
-       );
-  };
-
-  let find = moduleName => Hashtbl.find_opt(table, moduleName);
-};
-
 let posToString = (pos: Lexing.position) => {
   let file = pos.Lexing.pos_fname;
   let line = pos.Lexing.pos_lnum;
@@ -82,6 +40,62 @@ module Env = {
       };
     loop(modulePath);
   };
+
+  let findExternalPath = (~path, env: t) => {
+    let p =
+      switch (Path.flatten(path)) {
+      | `Contains_apply => assert(false)
+      | `Ok(_id, p) => p
+      };
+    StringMap.find_opt(p |> ModulePath.toString, env);
+  };
+};
+
+module ModulesTable = {
+  type moduleInfo = {
+    cmtFile: string,
+    mutable exportedEnv: option(Env.t),
+  };
+  let table: Hashtbl.t(string, moduleInfo) = Hashtbl.create(10);
+
+  let addModule = (~dir, ~file) => {
+    let moduleName =
+      file |> Filename.remove_extension |> String.capitalize_ascii;
+    if (!Hashtbl.mem(table, moduleName)) {
+      let cmtFile = Filename.concat(dir, file);
+      Hashtbl.replace(table, moduleName, {cmtFile, exportedEnv: None});
+      //Log_.item("moduleName:%s cmtFile:%s@.", moduleName, cmtFile);
+    };
+  };
+
+  let rec processDir = (~subdirs, dir) =>
+    if (dir |> Sys.file_exists && dir |> Sys.is_directory) {
+      //Log_.item("module dir:%s@.", dir);
+      dir
+      |> Sys.readdir
+      |> Array.iter(file =>
+           if (Filename.check_suffix(file, ".cmt")) {
+             addModule(~dir, ~file);
+           } else if (subdirs) {
+             processDir(~subdirs, Filename.concat(dir, file));
+           }
+         );
+    };
+
+  let populate = (~config) => {
+    ["lib", "bs"]
+    |> List.fold_left(Filename.concat, Config_.projectRoot^)
+    |> processDir(~subdirs=true);
+
+    ModuleResolver.readSourceDirs(~configSources=config.Config_.sources).pkgs
+    |> Hashtbl.iter((_, dir) =>
+         ["lib", "ocaml"]
+         |> List.fold_left(Filename.concat, dir)
+         |> processDir(~subdirs=false)
+       );
+  };
+
+  let find = moduleName => Hashtbl.find_opt(table, moduleName);
 };
 
 let rec processPattern = (~currEnv, ~currModulePath, pat: Typedtree.pattern) =>
@@ -146,7 +160,14 @@ let processValueBindings =
   };
 };
 let processExpr =
-    (~currEnv, ~currModulePath, super, self, e: Typedtree.expression) => {
+    (
+      ~currEnv,
+      ~currModulePath,
+      ~readCmtExports,
+      super,
+      self,
+      e: Typedtree.expression,
+    ) => {
   switch (e.exp_desc) {
   | Texp_ident(path, {loc}, _) =>
     let foundLoc =
@@ -154,12 +175,22 @@ let processExpr =
       | Some(loc) => loc.loc_start |> posToString
       | None =>
         let moduleName = path |> Path.head |> Ident.name;
-        let moduleFound =
-          switch (moduleName |> ModulesTable.find) {
-          | None => "ModuleNotFound"
-          | Some(cmtFile) => cmtFile |> Filename.basename
+        switch (moduleName |> ModulesTable.find) {
+        | None => "ModuleNotFound:" ++ moduleName
+        | Some({cmtFile, exportedEnv} as moduleInfo) =>
+          let env =
+            switch (exportedEnv) {
+            | None =>
+              let env = cmtFile |> readCmtExports;
+              moduleInfo.exportedEnv = Some(env);
+              env;
+            | Some(env) => env
+            };
+          switch (env |> Env.findExternalPath(~path)) {
+          | None => "NotFound in " ++ (cmtFile |> Filename.basename)
+          | Some(loc) => loc.loc_start |> posToString
           };
-        "NotFound (" ++ moduleName ++ ":" ++ moduleFound ++ ")";
+        };
       };
     Log_.item(
       "Ident:%s loc:%s ref:%s@.",
@@ -240,10 +271,32 @@ let traverseStructure = {
     c |> processCase(~currEnv, ~currModulePath, super, self);
   let class_expr = (self, ce) =>
     ce |> processClassExpr(~currEnv, ~currModulePath, super, self);
+
+  let readCmtExports = cmtFile => {
+    Log_.item("@.");
+    Log_.item("XXX reading %s@.", cmtFile);
+    let currEnv = ref(Env.empty);
+    let currModulePath = ref(ModulePath.empty);
+    let inputCMT = GenTypeMain.readCmt(cmtFile);
+    let {Cmt_format.cmt_annots} = inputCMT;
+    switch (cmt_annots) {
+    | Implementation(structure) =>
+      let structure_item = (self, si) =>
+        si |> processStructureItem(~currEnv, ~currModulePath, super, self);
+      let mapper = Tast_mapper.{...super, structure_item};
+      structure |> mapper.structure(mapper) |> ignore;
+      Log_.item("XXX Done@.@.");
+      currEnv^;
+    | Interface(signature) => assert(false)
+    | _ => assert(false)
+    };
+  };
+
   let expr = (self, e) =>
-    e |> processExpr(~currEnv, ~currModulePath, super, self);
+    e |> processExpr(~currEnv, ~currModulePath, ~readCmtExports, super, self);
   let structure_item = (self, si) =>
     si |> processStructureItem(~currEnv, ~currModulePath, super, self);
+
   Tast_mapper.{...super, case, class_expr, expr, structure_item};
 };
 
