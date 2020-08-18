@@ -18,17 +18,28 @@ module ModulePath = {
 
 module Env = {
   module StringMap = Map.Make(String);
-  type t = StringMap.t(Location.t);
-  let empty: t = StringMap.empty;
-  let addPath = (~path, ~loc, env) =>
-    StringMap.add(path |> ModulePath.toString, loc, env);
-  let findPath = (~modulePath, ~path, env: t) => {
+  type t = {
+    values: StringMap.t(Location.t),
+    types: StringMap.t(Location.t),
+  };
+  let empty: t = {values: StringMap.empty, types: StringMap.empty};
+  let addPath = (~path, ~loc, map) =>
+    StringMap.add(path |> ModulePath.toString, loc, map);
+  let addValuePath = (~path, ~loc, env) => {
+    ...env,
+    values: env.values |> addPath(~path, ~loc),
+  };
+  let addTypePath = (~path, ~loc, env) => {
+    ...env,
+    types: env.types |> addPath(~path, ~loc),
+  };
+  let findPath = (~modulePath, ~path, map) => {
     let pathName = Path.name(path);
     let rec loop = modulePath =>
       switch (
         StringMap.find_opt(
           [pathName, ...modulePath] |> ModulePath.toString,
-          env,
+          map,
         )
       ) {
       | None =>
@@ -41,14 +52,20 @@ module Env = {
     loop(modulePath);
   };
 
-  let findExternalPath = (~path, env: t) => {
+  let findExternalPath = (~path, map) => {
     let p =
       switch (Path.flatten(path)) {
       | `Contains_apply => assert(false)
       | `Ok(_id, p) => p
       };
-    StringMap.find_opt(p |> ModulePath.toString, env);
+    StringMap.find_opt(p |> ModulePath.toString, map);
   };
+
+  let findValuePath = (~modulePath, ~path, env: t) =>
+    env.values |> findPath(~modulePath, ~path);
+
+  let findExternalValuePath = (~path, env: t) =>
+    env.values |> findExternalPath(~path);
 };
 
 module ModulesTable = {
@@ -108,7 +125,7 @@ let rec processPattern = (~currEnv, ~currModulePath, pat: Typedtree.pattern) =>
       path |> ModulePath.toString,
       loc.loc_start |> posToString,
     );
-    currEnv := currEnv^ |> Env.addPath(~path, ~loc);
+    currEnv := currEnv^ |> Env.addValuePath(~path, ~loc);
   | Tpat_alias(p, id, {loc}) =>
     let path = [Ident.name(id), ...currModulePath^];
     p |> processPattern(~currEnv, ~currModulePath);
@@ -117,7 +134,7 @@ let rec processPattern = (~currEnv, ~currModulePath, pat: Typedtree.pattern) =>
       path |> ModulePath.toString,
       loc.loc_start |> posToString,
     );
-    currEnv := currEnv^ |> Env.addPath(~path, ~loc);
+    currEnv := currEnv^ |> Env.addValuePath(~path, ~loc);
   | Tpat_constant(_) => assert(false)
   | Tpat_tuple(pats) =>
     pats |> List.iter(processPattern(~currEnv, ~currModulePath))
@@ -138,27 +155,86 @@ let processValueBindings =
       ~self,
       valueBindings,
     ) => {
+  let doBody = (vb: Typedtree.value_binding) =>
+    self.Tast_mapper.expr(self, vb.vb_expr) |> ignore;
+  let doBinders = (vb: Typedtree.value_binding) =>
+    vb.vb_pat |> processPattern(~currEnv, ~currModulePath);
   switch (recFlag) {
   | Nonrecursive =>
-    valueBindings
-    |> List.iter((vb: Typedtree.value_binding) =>
-         self.Tast_mapper.expr(self, vb.vb_expr) |> ignore
-       );
-    valueBindings
-    |> List.iter((vb: Typedtree.value_binding) =>
-         vb.vb_pat |> processPattern(~currEnv, ~currModulePath)
-       );
+    valueBindings |> List.iter(doBody);
+    valueBindings |> List.iter(doBinders);
   | Recursive =>
-    valueBindings
-    |> List.iter((vb: Typedtree.value_binding) =>
-         vb.vb_pat |> processPattern(~currEnv, ~currModulePath)
-       );
-    valueBindings
-    |> List.iter((vb: Typedtree.value_binding) =>
-         self.Tast_mapper.expr(self, vb.vb_expr) |> ignore
-       );
+    valueBindings |> List.iter(doBinders);
+    valueBindings |> List.iter(doBody);
   };
 };
+
+let processTypeDeclarations =
+    (
+      ~currEnv,
+      ~currModulePath,
+      ~recFlag: Asttypes.rec_flag,
+      ~self,
+      typeDeclarations,
+    ) => {
+  let doBody = (td: Typedtree.type_declaration) => {
+    td.typ_cstrs
+    |> List.iter(((t1, t2, _loc)) => {
+         self.Tast_mapper.typ(self, t1) |> ignore;
+         self.Tast_mapper.typ(self, t2) |> ignore;
+       });
+    self.Tast_mapper.type_kind(self, td.typ_kind) |> ignore;
+    switch (td.typ_manifest) {
+    | None => ()
+    | Some(t) => self.Tast_mapper.typ(self, t) |> ignore
+    };
+    td.typ_params
+    |> List.iter(((t, _variance)) => {
+         self.Tast_mapper.typ(self, t) |> ignore
+       });
+  };
+  let doBinders = (td: Typedtree.type_declaration) => {
+    let path = [Ident.name(td.typ_id), ...currModulePath^];
+    Log_.item(
+      "Type:%s %s@.",
+      path |> ModulePath.toString,
+      td.typ_loc.loc_start |> posToString,
+    );
+    currEnv := currEnv^ |> Env.addTypePath(~path, ~loc=td.typ_loc);
+  };
+  switch (recFlag) {
+  | Nonrecursive =>
+    typeDeclarations |> List.iter(doBody);
+    typeDeclarations |> List.iter(doBinders);
+  | Recursive =>
+    typeDeclarations |> List.iter(doBinders);
+    typeDeclarations |> List.iter(doBody);
+  };
+};
+
+let resolveRef = (~currEnv, ~currModulePath, ~readCmtExports, path) =>
+  switch (currEnv^ |> Env.findValuePath(~modulePath=currModulePath^, ~path)) {
+  | Some(loc) => loc.loc_start |> posToString
+  | None =>
+    let moduleName = path |> Path.head |> Ident.name;
+    switch (moduleName |> ModulesTable.find) {
+    | None => "ModuleNotFound:" ++ moduleName
+    | Some({cmtFile, exportedEnv} as moduleInfo) =>
+      let env =
+        switch (exportedEnv) {
+        | None =>
+          let env = cmtFile |> readCmtExports;
+          moduleInfo.exportedEnv = Some(env);
+          env;
+        | Some(env) => env
+        };
+      switch (env |> Env.findExternalValuePath(~path)) {
+      | None => "NotFound in " ++ (cmtFile |> Filename.basename)
+      | Some(loc) => loc.loc_start |> posToString
+      };
+    };
+  };
+
 let processExpr =
     (
       ~currEnv,
@@ -171,27 +247,7 @@ let processExpr =
   switch (e.exp_desc) {
   | Texp_ident(path, {loc}, _) =>
     let foundLoc =
-      switch (currEnv^ |> Env.findPath(~modulePath=currModulePath^, ~path)) {
-      | Some(loc) => loc.loc_start |> posToString
-      | None =>
-        let moduleName = path |> Path.head |> Ident.name;
-        switch (moduleName |> ModulesTable.find) {
-        | None => "ModuleNotFound:" ++ moduleName
-        | Some({cmtFile, exportedEnv} as moduleInfo) =>
-          let env =
-            switch (exportedEnv) {
-            | None =>
-              let env = cmtFile |> readCmtExports;
-              moduleInfo.exportedEnv = Some(env);
-              env;
-            | Some(env) => env
-            };
-          switch (env |> Env.findExternalPath(~path)) {
-          | None => "NotFound in " ++ (cmtFile |> Filename.basename)
-          | Some(loc) => loc.loc_start |> posToString
-          };
-        };
-      };
+      path |> resolveRef(~currEnv, ~currModulePath, ~readCmtExports);
     Log_.item(
       "Ident:%s loc:%s ref:%s@.",
       Path.name(path),
@@ -236,6 +292,7 @@ let processStructureItem =
     valueBindings
     |> processValueBindings(~currEnv, ~currModulePath, ~recFlag, ~self);
     si;
+
   | Tstr_primitive({val_id, val_loc: loc}) =>
     let path = [val_id |> Ident.name, ...currModulePath^];
     Log_.item(
@@ -243,7 +300,12 @@ let processStructureItem =
       path |> ModulePath.toString,
       loc.loc_start |> posToString,
     );
-    currEnv := currEnv^ |> Env.addPath(~path, ~loc);
+    currEnv := currEnv^ |> Env.addValuePath(~path, ~loc);
+    si;
+
+  | Tstr_type(recFlag, typeDeclarations) =>
+    typeDeclarations
+    |> processTypeDeclarations(~currEnv, ~currModulePath, ~recFlag, ~self);
     si;
 
   | Tstr_module({mb_id}) =>
