@@ -297,6 +297,30 @@ let processExpr =
   };
 };
 
+let processModuleExpr =
+    (
+      ~currEnv,
+      ~currModulePath,
+      ~readCmtExports,
+      super,
+      self,
+      me: Typedtree.module_expr,
+    ) => {
+  switch (me.mod_desc) {
+  | Tmod_ident(path, {loc}) =>
+    let foundLoc =
+      path |> resolveValuePath(~currEnv, ~currModulePath, ~readCmtExports);
+    Log_.item(
+      "ModuleRef:%s loc:%s ref:%s@.",
+      Path.name(path),
+      loc.loc_start |> posToString,
+      foundLoc,
+    );
+    me;
+  | _ => super.Tast_mapper.module_expr(self, me)
+  };
+};
+
 let processType =
     (
       ~currEnv,
@@ -316,6 +340,7 @@ let processType =
       loc.loc_start |> posToString,
       foundLoc,
     );
+    args |> List.iter(t => super.Tast_mapper.typ(self, t) |> ignore);
     coreType;
 
   | _ => super.Tast_mapper.typ(self, coreType)
@@ -364,7 +389,15 @@ let processStructureItem =
     |> processTypeDeclarations(~currEnv, ~currModulePath, ~recFlag, ~self);
     si;
 
-  | Tstr_module({mb_id}) =>
+  | Tstr_module({mb_id, mb_name: {loc}}) =>
+    let path = [mb_id |> Ident.name, ...currModulePath^];
+    Log_.item(
+      "ModuleDef:%s %s@.",
+      path |> ModulePath.toString,
+      loc.loc_start |> posToString,
+    );
+    currEnv := currEnv^ |> Env.addValuePath(~path, ~loc);
+
     let oldModulePath = currModulePath^;
     currModulePath := [Ident.name(mb_id), ...oldModulePath];
     super.Tast_mapper.structure_item(self, si) |> ignore;
@@ -422,12 +455,29 @@ let traverseStructure = {
 
   let expr = (self, e) =>
     e |> processExpr(~currEnv, ~currModulePath, ~readCmtExports, super, self);
+  let module_expr = (self, me) =>
+    me
+    |> processModuleExpr(
+         ~currEnv,
+         ~currModulePath,
+         ~readCmtExports,
+         super,
+         self,
+       );
   let typ = (self, t) =>
     t |> processType(~currEnv, ~currModulePath, ~readCmtExports, super, self);
   let structure_item = (self, si) =>
     si |> processStructureItem(~currEnv, ~currModulePath, super, self);
 
-  Tast_mapper.{...super, case, class_expr, expr, structure_item, typ};
+  Tast_mapper.{
+    ...super,
+    case,
+    class_expr,
+    expr,
+    module_expr,
+    structure_item,
+    typ,
+  };
 };
 
 let processCmtFile = (~config, cmtFile) => {
