@@ -9,6 +9,72 @@ let posToString = (pos: Lexing.position) => {
   ++ string_of_int(col);
 };
 
+module PathWithLoc = {
+  // Split a path into a sequence of ids with location.
+  type t = list((string, Location.t));
+
+  let toString = l =>
+    l
+    |> List.rev_map(((s, loc: Location.t)) =>
+         s
+         ++ ":"
+         ++ (loc.loc_start |> posToString)
+         ++ "--"
+         ++ (loc.loc_end |> posToString)
+       )
+    |> String.concat(", ");
+
+
+  // Split an id of given len at the end of a loc, and return the id's loc.
+  let splitLoc = (~len, {loc_start, loc_end, loc_ghost} as loc: Location.t) =>
+    if (!loc_ghost
+        && loc_start.pos_bol == loc_end.pos_bol
+        && loc_end.pos_cnum
+        - loc_start.pos_cnum >= len) {
+      {
+        ...loc,
+        loc_start: {
+          ...loc_start,
+          pos_cnum: loc_end.pos_cnum - len,
+        },
+      };
+    } else {
+      Location.none;
+    };
+
+  let rec create =
+          (~loc: Location.t, ~longIdent: Longident.t, ~path: Path.t): t =>
+    switch (longIdent, path) {
+    | (Lident(s), Pident(_)) =>
+      let loc = loc |> splitLoc(~len=String.length(s));
+      [(s, loc)];
+
+    | (Lident(s), Pdot(p, _, _)) =>
+      // path is longer than longident: typically because of a module open
+      let loc = loc |> splitLoc(~len=String.length(s));
+      let rec wrap = (p: Path.t) =>
+        switch (p) {
+        | Pident(i) => [(Ident.name(i), Location.none)]
+        | Pdot(p1, s, _) => [(s, Location.none), ...wrap(p1)]
+        | Papply(_) => assert(false)
+        };
+      [(s, loc), ...wrap(p)];
+
+    | (Ldot(li, s), Pdot(p, _, _)) =>
+      let locId = loc |> splitLoc(~len=String.length(s));
+      let loc_end = {
+        ...locId.loc_start,
+        pos_cnum: locId.loc_start.pos_cnum - 1,
+      };
+      let loc_ghost = locId.loc_ghost;
+      let pwl =
+        create(~loc={...loc, loc_end, loc_ghost}, ~longIdent=li, ~path=p);
+      [(s, locId), ...pwl];
+
+    | _ => assert(false)
+    };
+};
+
 module ModulePath = {
   type t = list(string);
   let empty: t = [];
@@ -276,15 +342,18 @@ let processExpr =
       e: Typedtree.expression,
     ) => {
   switch (e.exp_desc) {
-  | Texp_ident(path, {loc}, _) =>
+  | Texp_ident(path, {loc, txt}, _) =>
     let foundLoc =
       path |> resolveValuePath(~currEnv, ~currModulePath, ~readCmtExports);
+    let pwl = PathWithLoc.create(~loc, ~longIdent=txt, ~path);
     Log_.item(
-      "IdentRef:%s loc:%s ref:%s@.",
+      "IdentRef:%s loc:%s %s ref:%s@.",
       Path.name(path),
       loc.loc_start |> posToString,
+      loc.loc_end |> posToString,
       foundLoc,
     );
+    Log_.item("XXX pathWithLoc: %s@.", pwl |> PathWithLoc.toString);
     e;
   | Texp_let(recFlag, valueBindings, body) =>
     let oldEnv = currEnv^;
