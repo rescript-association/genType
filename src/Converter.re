@@ -326,7 +326,9 @@ let typeGetConverterNormalized =
         };
       let noPayloads = variant.noPayloads;
       let useVariantTables =
-        if (variant.polymorphic && config.variantHashesAsStrings) {
+        if (variant.bsString) {
+          false;
+        } else if (variant.polymorphic && config.variantHashesAsStrings) {
           noPayloads
           |> List.exists(({label, labelJS}) =>
                labelJS != StringLabel(label)

@@ -102,6 +102,7 @@ let translateConstr =
     );
     let variant =
       createVariant(
+        ~bsString=false,
         ~noPayloads=[],
         ~payloads=[
           case(0, "Ok", paramTranslation1.type_),
@@ -632,7 +633,13 @@ and translateTypeExprFromTypes_ =
     | {noPayloads, payloads: [], unknowns: []} =>
       let noPayloads =
         noPayloads |> List.map(label => {label, labelJS: StringLabel(label)});
-      let type_ = createVariant(~noPayloads, ~payloads=[], ~polymorphic=true);
+      let type_ =
+        createVariant(
+          ~bsString=false,
+          ~noPayloads,
+          ~payloads=[],
+          ~polymorphic=true,
+        );
       {dependencies: [], type_};
 
     | {noPayloads: [], payloads: [(_label, t)], unknowns: []} =>
@@ -668,7 +675,13 @@ and translateTypeExprFromTypes_ =
                translation.type_,
              );
            });
-      let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      let type_ =
+        createVariant(
+          ~bsString=false,
+          ~noPayloads,
+          ~payloads,
+          ~polymorphic=true,
+        );
       let dependencies =
         payloadTranslations
         |> List.map(((_, {dependencies})) => dependencies)
