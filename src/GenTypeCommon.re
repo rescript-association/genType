@@ -85,6 +85,7 @@ and ident = {
   typeArgs: list(type_),
 }
 and variant = {
+  bsString: bool,
   hash: int,
   noPayloads: list(case),
   payloads: list((case, int, type_)),
@@ -195,7 +196,7 @@ let rec depToResolvedName = (dep: dep) =>
   | Dot(p, s) => ResolvedName.dot(s, p |> depToResolvedName)
   };
 
-let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
+let createVariant = (~bsString, ~noPayloads, ~payloads, ~polymorphic) => {
   let hash =
     noPayloads
     |> List.map(case => (case.label, case.labelJS))
@@ -203,7 +204,7 @@ let createVariant = (~noPayloads, ~payloads, ~polymorphic) => {
     |> Hashtbl.hash;
 
   let unboxed = payloads == [];
-  Variant({hash, noPayloads, payloads, polymorphic, unboxed});
+  Variant({bsString, hash, noPayloads, payloads, polymorphic, unboxed});
 };
 
 let variantTable = (hash, ~toJS) =>

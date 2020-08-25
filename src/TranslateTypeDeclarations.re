@@ -240,8 +240,11 @@ let traslateDeclarationKind =
           } else {
             variant.payloads;
           };
+        let bsString =
+          coreType.ctyp_attributes
+          |> Annotation.hasAttribute(Annotation.tagIsBsString);
 
-        createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+        createVariant(~bsString, ~noPayloads, ~payloads, ~polymorphic=true);
       | _ => translation.type_
       };
     {...translation, type_}
@@ -379,7 +382,13 @@ let traslateDeclarationKind =
       switch (noPayloads, payloads) {
       | ([], [(_c, _, type_)])
           when unboxedAnnotation && config.useUnboxedAnnotations => type_
-      | _ => createVariant(~noPayloads, ~payloads, ~polymorphic=false)
+      | _ =>
+        createVariant(
+          ~bsString=false,
+          ~noPayloads,
+          ~payloads,
+          ~polymorphic=false,
+        )
       };
     let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
 

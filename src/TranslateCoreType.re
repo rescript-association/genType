@@ -258,13 +258,25 @@ and translateCoreType_ =
   | Ttyp_var(s) => {dependencies: [], type_: TypeVar(s)}
 
   | Ttyp_variant(rowFields, _, _) =>
+    let bsString =
+      coreType.ctyp_attributes
+      |> Annotation.hasAttribute(Annotation.tagIsBsString);
     switch (rowFields |> processVariant) {
     | {noPayloads, payloads, unknowns: []} =>
       let noPayloads =
         noPayloads
-        |> List.map(((label, _attibutes)) =>
-             {label, labelJS: StringLabel(label)}
-           );
+        |> List.map(((label, attributes)) => {
+             let labelRenamed =
+               if (bsString) {
+                 switch (attributes |> Annotation.getBsAsRenaming) {
+                 | Some(labelRenamed) => labelRenamed
+                 | None => label
+                 };
+               } else {
+                 label;
+               };
+             {label, labelJS: StringLabel(labelRenamed)};
+           });
       let payloadsTranslations =
         payloads
         |> List.map(((label, attributes, payload)) =>
@@ -284,7 +296,8 @@ and translateCoreType_ =
                translation.type_,
              );
            });
-      let type_ = createVariant(~noPayloads, ~payloads, ~polymorphic=true);
+      let type_ =
+        createVariant(~bsString, ~noPayloads, ~payloads, ~polymorphic=true);
       let dependencies =
         payloadsTranslations
         |> List.map(((_, _, {dependencies})) => dependencies)
@@ -292,7 +305,7 @@ and translateCoreType_ =
       {dependencies, type_};
 
     | _ => {dependencies: [], type_: mixedOrUnknown(~config)}
-    }
+    };
 
   | Ttyp_package({pack_path, pack_fields}) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path=pack_path)) {
