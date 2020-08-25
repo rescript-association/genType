@@ -19,15 +19,16 @@ type fieldInfo = {
   needsConversion: bool,
 };
 
-let rec exportModuleValueToType = exportModuleValue =>
+let rec exportModuleValueToType = (~config, exportModuleValue) =>
   switch (exportModuleValue) {
   | S(s, type_, converter) => {
       typeForValue: ident(s),
       typeForType: type_,
-      needsConversion: converter != IdentC,
+      needsConversion:
+        !(converter |> Converter.converterIsIdentity(~config, ~toJS=true)),
     }
   | M(exportModuleItem) =>
-    let fieldsInfo = exportModuleItem |> exportModuleItemToFields;
+    let fieldsInfo = exportModuleItem |> exportModuleItemToFields(~config);
     let fieldsForValue =
       fieldsInfo |> List.map(({fieldForValue}) => fieldForValue);
     let fieldsForType =
@@ -44,12 +45,13 @@ let rec exportModuleValueToType = exportModuleValue =>
       needsConversion,
     };
   }
-and exportModuleItemToFields: exportModuleItem => list(fieldInfo) =
-  exportModuleItem => {
+and exportModuleItemToFields:
+  (~config: config, exportModuleItem) => list(fieldInfo) =
+  (~config, exportModuleItem) => {
     Hashtbl.fold(
       (fieldName, exportModuleValue, fields) => {
         let {typeForValue, typeForType, needsConversion} =
-          exportModuleValue |> exportModuleValueToType;
+          exportModuleValue |> exportModuleValueToType(~config);
         let fieldForType = {
           mutable_: Mutable,
           nameJS: fieldName,
@@ -141,7 +143,7 @@ let emitAllModuleItems =
   |> rev_fold(
        (moduleName, exportModuleItem, emitters) => {
          let {typeForValue, typeForType, needsConversion} =
-           M(exportModuleItem) |> exportModuleValueToType;
+           M(exportModuleItem) |> exportModuleValueToType(~config);
          if (Debug.codeItems^) {
            Log_.item(
              "EmitModule %s needsConversion:%b@.",

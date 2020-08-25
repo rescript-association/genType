@@ -1,4 +1,6 @@
 # master
+- Fix issue with conversion checking where inner modules without conversion were not exported.
+  See https://github.com/reason-association/genType/issues/414.
 
 # 3.31.0
 - Fix conversion for ordinary variants without payload (conversion tables were missing).
