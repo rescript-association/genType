@@ -1,4 +1,6 @@
 # master
+
+# 3.32.0
 - Fix issue with conversion checking where inner modules without conversion were not exported.
   See https://github.com/reason-association/genType/issues/414.
 
