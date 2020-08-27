@@ -157,7 +157,10 @@ and translateSignatureItem =
     }
 
   | {Typedtree.sig_desc: Tsig_value(valueDescription)} =>
-    if (valueDescription.val_prim != []) {
+    let isImport =
+      valueDescription.val_attributes
+      |> Annotation.hasAttribute(Annotation.tagIsGenTypeImport);
+    if (valueDescription.val_prim != [] || isImport) {
       valueDescription
       |> Translation.translatePrimitive(
            ~config,
@@ -177,7 +180,7 @@ and translateSignatureItem =
            ~resolver,
            ~typeEnv,
          );
-    }
+    };
 
   | {Typedtree.sig_desc: Typedtree.Tsig_module(moduleDeclaration)} =>
     moduleDeclaration
