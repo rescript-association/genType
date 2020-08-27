@@ -240,11 +240,13 @@ let traslateDeclarationKind =
           } else {
             variant.payloads;
           };
-        let bsString =
-          coreType.ctyp_attributes
-          |> Annotation.hasAttribute(Annotation.tagIsBsString);
 
-        createVariant(~bsString, ~noPayloads, ~payloads, ~polymorphic=true);
+        createVariant(
+          ~bsString=false,
+          ~noPayloads,
+          ~payloads,
+          ~polymorphic=true,
+        );
       | _ => translation.type_
       };
     {...translation, type_}
