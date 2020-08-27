@@ -1,5 +1,6 @@
 # master
 - Add support for `bs.string` and `bs.as` to `@genType.import`.
+- Fix issue where `@genType.import` was not supported in interface files.
 
 # 3.32.0
 - Fix issue with conversion checking where inner modules without conversion were not exported.
