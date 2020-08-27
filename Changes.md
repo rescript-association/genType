@@ -1,4 +1,6 @@
 # master
+
+# 3.33.0
 - Add support for `bs.string` and `bs.as` to `@genType.import`.
 - Fix issue where `@genType.import` was not supported in interface files.
 
