@@ -1,5 +1,4 @@
 [@genType.import "./bsString"]
-[@module "TestBsString.re"]
 external pack:
   (
     [@bs.string] [ | [@bs.as "remove-range"] `removeRange | `normal],
