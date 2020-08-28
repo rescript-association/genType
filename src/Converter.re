@@ -326,7 +326,7 @@ let typeGetConverterNormalized =
         };
       let noPayloads = variant.noPayloads;
       let useVariantTables =
-        if (variant.bsString) {
+        if (variant.bsStringOrInt) {
           false;
         } else if (variant.polymorphic && config.variantHashesAsStrings) {
           noPayloads

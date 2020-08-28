@@ -258,24 +258,37 @@ and translateCoreType_ =
   | Ttyp_var(s) => {dependencies: [], type_: TypeVar(s)}
 
   | Ttyp_variant(rowFields, _, _) =>
-    let bsString =
-      coreType.ctyp_attributes
-      |> Annotation.hasAttribute(Annotation.tagIsBsString);
     switch (rowFields |> processVariant) {
     | {noPayloads, payloads, unknowns: []} =>
+      let bsString =
+        coreType.ctyp_attributes
+        |> Annotation.hasAttribute(Annotation.tagIsBsString);
+      let bsInt =
+        coreType.ctyp_attributes
+        |> Annotation.hasAttribute(Annotation.tagIsBsInt);
+      let lastBsInt = ref(-1);
       let noPayloads =
         noPayloads
         |> List.map(((label, attributes)) => {
-             let labelRenamed =
+             let labelJS =
                if (bsString) {
                  switch (attributes |> Annotation.getBsAsRenaming) {
-                 | Some(labelRenamed) => labelRenamed
-                 | None => label
+                 | Some(labelRenamed) => StringLabel(labelRenamed)
+                 | None => StringLabel(label)
+                 };
+               } else if (bsInt) {
+                 switch (attributes |> Annotation.getBsAsInt) {
+                 | Some(n) =>
+                   lastBsInt := n;
+                   IntLabel(string_of_int(n));
+                 | None =>
+                   lastBsInt := lastBsInt^ + 1;
+                   IntLabel(string_of_int(lastBsInt^));
                  };
                } else {
-                 label;
+                 StringLabel(label);
                };
-             {label, labelJS: StringLabel(labelRenamed)};
+             {label, labelJS};
            });
       let payloadsTranslations =
         payloads
@@ -297,7 +310,12 @@ and translateCoreType_ =
              );
            });
       let type_ =
-        createVariant(~bsString, ~noPayloads, ~payloads, ~polymorphic=true);
+        createVariant(
+          ~bsStringOrInt=bsString || bsInt,
+          ~noPayloads,
+          ~payloads,
+          ~polymorphic=true,
+        );
       let dependencies =
         payloadsTranslations
         |> List.map(((_, _, {dependencies})) => dependencies)
@@ -305,7 +323,7 @@ and translateCoreType_ =
       {dependencies, type_};
 
     | _ => {dependencies: [], type_: mixedOrUnknown(~config)}
-    };
+    }
 
   | Ttyp_package({pack_path, pack_fields}) =>
     switch (typeEnv |> TypeEnv.lookupModuleTypeSignature(~path=pack_path)) {

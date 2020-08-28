@@ -242,7 +242,7 @@ let traslateDeclarationKind =
           };
 
         createVariant(
-          ~bsString=false,
+          ~bsStringOrInt=false,
           ~noPayloads,
           ~payloads,
           ~polymorphic=true,
@@ -386,7 +386,7 @@ let traslateDeclarationKind =
           when unboxedAnnotation && config.useUnboxedAnnotations => type_
       | _ =>
         createVariant(
-          ~bsString=false,
+          ~bsStringOrInt=false,
           ~noPayloads,
           ~payloads,
           ~polymorphic=false,

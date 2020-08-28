@@ -29,6 +29,8 @@ let tagIsGenTypeAs = s => s == "genType.as" || s == "gentype.as";
 
 let tagIsBsAs = s => s == "bs.as";
 
+let tagIsBsInt = s => s == "bs.int";
+
 let tagIsBsString = s => s == "bs.string";
 
 let tagIsUnboxed = s => s == "unboxed" || s == "ocaml.unboxed";
@@ -130,6 +132,15 @@ let getGenTypeAsRenaming = attributes =>
 let getBsAsRenaming = attributes =>
   switch (attributes |> getAttributePayload(tagIsBsAs)) {
   | Some(StringPayload(s)) => Some(s)
+  | _ => None
+  };
+
+let getBsAsInt = attributes =>
+  switch (attributes |> getAttributePayload(tagIsBsAs)) {
+  | Some(IntPayload(s)) =>
+    try(Some(int_of_string(s))) {
+    | Failure(_) => None
+    }
   | _ => None
   };
 
