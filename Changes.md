@@ -1,4 +1,6 @@
 # master
+
+# 3.34.0
 - Add support for `bs.int` and `bs.as` to `@genType.import`.
 
 # 3.33.0
