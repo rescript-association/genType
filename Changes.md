@@ -1,4 +1,5 @@
 # master
+- Functions `React.ref(-) => React.element` are not considered function components anymore.
 
 # 3.34.0
 - Add support for `bs.int` and `bs.as` to `@genType.import`.

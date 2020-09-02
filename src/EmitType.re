@@ -99,19 +99,30 @@ let typeReactDOMReDomRef = (~config) =>
   (config.language == Flow ? "React$Ref" : "React.Ref")
   |> ident(~builtin=true, ~typeArgs=[mixedOrUnknown(~config)]);
 
+let reactRefCurrent = "current";
 let typeReactRef = (~type_) =>
   Object(
     Closed,
     [
       {
         mutable_: Mutable,
-        nameJS: "current",
-        nameRE: "current",
+        nameJS: reactRefCurrent,
+        nameRE: reactRefCurrent,
         optional: Mandatory,
         type_: Null(type_),
       },
     ],
   );
+
+let isTypeReactRef = (~fields) =>
+  switch (fields) {
+  | [{mutable_: Mutable, nameJS, nameRE, optional: Mandatory}] =>
+    nameJS === reactRefCurrent && nameJS === nameRE
+  | _ => false
+  };
+
+let isTypeFunctionComponent = (~config, ~fields, type_) =>
+  type_ |> isTypeReactElement(~config) && !isTypeReactRef(~fields);
 
 let componentExportName = (~config, ~fileName, ~moduleName) =>
   switch (config.language) {
@@ -163,7 +174,7 @@ let rec renderType =
       retType,
       typeVars,
     })
-      when retType |> isTypeReactElement(~config) =>
+      when retType |> isTypeFunctionComponent(~config, ~fields) =>
     let fields =
       fields
       |> List.map(field =>

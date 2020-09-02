@@ -426,8 +426,8 @@ let rec emitCodeItem =
 
     let type_ =
       switch (type_) {
-      | Function({argTypes: [{aType: Object(_)}], retType} as function_)
-          when retType |> EmitType.isTypeReactElement(~config) =>
+      | Function({argTypes: [{aType: Object(_, fields)}], retType} as function_)
+          when retType |> EmitType.isTypeFunctionComponent(~config, ~fields) =>
         let componentName =
           switch (importFile) {
           | "."
@@ -700,7 +700,7 @@ let rec emitCodeItem =
             typeVars,
           } as function_,
         )
-          when retType |> EmitType.isTypeReactElement(~config) =>
+          when retType |> EmitType.isTypeFunctionComponent(~config, ~fields) =>
         let propsType = {
           let fields =
             fields

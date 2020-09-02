@@ -150,8 +150,8 @@ let typeGetConverterNormalized =
       let (retConverter, retNormalized) = retType |> visit(~visited);
       let isHook =
         switch (argTypes) {
-        | [{aType: Object(_)}] =>
-          retType |> EmitType.isTypeReactElement(~config)
+        | [{aType: Object(_, fields)}] =>
+          retType |> EmitType.isTypeFunctionComponent(~config, ~fields)
         | _ => false
         };
       (
