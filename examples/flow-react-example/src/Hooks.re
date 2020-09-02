@@ -162,3 +162,6 @@ let aComponentWithChildren = (~vehicle, ~children) => {
     <div> children </div>
   </div>;
 };
+
+  [@genType]
+  type notAFunctionComponent = React.ref(int) => React.element;
