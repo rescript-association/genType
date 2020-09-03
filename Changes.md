@@ -1,5 +1,6 @@
 # master
 - Functions `React.ref(-) => React.element` are not considered function components anymore.
+- Make `React.ref(-)` types open objects, to align with how they are modeled by Flow.
 
 # 3.34.0
 - Add support for `bs.int` and `bs.as` to `@genType.import`.

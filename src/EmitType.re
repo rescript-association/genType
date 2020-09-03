@@ -102,7 +102,7 @@ let typeReactDOMReDomRef = (~config) =>
 let reactRefCurrent = "current";
 let typeReactRef = (~type_) =>
   Object(
-    Closed,
+    Open,
     [
       {
         mutable_: Mutable,
