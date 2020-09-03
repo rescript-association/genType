@@ -26,11 +26,11 @@ export type callback<input,output> = (input) => output;
 
 export type testReactContext = React$Context<number>;
 
-export type testReactRef = {| current: (null | number) |};
+export type testReactRef = { current: (null | number), ... };
 
 export type testDomRef = React$Ref<mixed>;
 
-export type notAFunctionComponent = ({| current: (null | number) |}) => React$Node;
+export type notAFunctionComponent = ({ current: (null | number), ... }) => React$Node;
 
 // Type annotated function components are not checked by Flow, but typeof() works.
 const $$default$$forTypeof = function (_: {| +vehicle: vehicle |}) : React$Node { return null };
