@@ -1,4 +1,6 @@
 # master
+
+# 3.35.0
 - Functions `React.ref(-) => React.element` are not considered function components anymore.
 - Make `React.ref(-)` types open objects, to align with how they are modeled by Flow.
 
