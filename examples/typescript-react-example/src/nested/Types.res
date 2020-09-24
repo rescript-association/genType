@@ -1,3 +1,5 @@
+@@warning("-32")
+
 export type t = int
 
 export someIntList = list{1, 2, 3}
