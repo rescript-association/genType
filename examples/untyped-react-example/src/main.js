@@ -11,10 +11,10 @@ import Hooks from "./Hooks.gen";
 const consoleLog = console.log;
 
 printVariantWithPayload("a");
-printVariantWithPayload("b");
+printVariantWithPayload("bRenamed");
 printVariantWithPayload("true");
-printVariantWithPayload("Twenty");
-printVariantWithPayload("Half");
+printVariantWithPayload("20");
+printVariantWithPayload("0.5");
 printVariantWithPayload(testWithPayload({ NAME: "C", VAL: { x: 15 } }));
 
 const Main = () => (
