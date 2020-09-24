@@ -1,4 +1,6 @@
 # master
+
+# 3.36.0
 - Add support for bs-platform 8.3: abbreviated annotations (e.g. `as` instead of `bs.as`).
 
 # 3.35.0
