@@ -3,14 +3,14 @@
 const exportNestedValues = 42;
 
 class InnerClass {
-  static InnerStuff = {
-    innerStuffContents: { x: 34 }
+  static InnerStuff: { innerStuffContents: { x: number } } = {
+    innerStuffContents: { x: 34 },
   };
 }
 
 class TopLevelClass {
   static MiddleLevelElements = {
-    stuff: InnerClass
+    stuff: InnerClass,
   };
 }
 
