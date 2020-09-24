@@ -9,7 +9,7 @@ const React = require("react");
 export type Props = {| show: boolean, Message: ?string |};
 
 class MyBanner extends React.Component<Props> {
-  render() {
+  render(): React.Node {
     if (this.props.show) {
       return React.createElement(
         "div",
