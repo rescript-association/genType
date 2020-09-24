@@ -110,7 +110,7 @@ export testMyObj2 = (x: myObj) => x
 export type myRecBsAs = {
   @bs.as("jsValid0")
   valid: string,
-  @bs.as("type")
+  @as("type")
   type_: string,
   @bs.as("the-key")
   theKey: string,
