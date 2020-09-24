@@ -5,15 +5,15 @@ type $any = any;
 
 const ImportJsValue = require("./ImportJsValue.gen");
 
-export const round: number => number = Math.round;
+export const round: (number) => number = Math.round;
 
-export const area = function(point: ImportJsValue.point): number {
+export const area = function (point: ImportJsValue.point): number {
   return point.x * (point.y === undefined ? 1 : point.y);
 };
 
 export type myArray<T> = Array<T>;
 
-export const getValueAtIndex: (myArray<string>, number) => string = function(
+export const getValueAtIndex: (myArray<string>, number) => string = function (
   myArray: myArray<string>,
   i
 ) {
@@ -23,20 +23,20 @@ export const getValueAtIndex: (myArray<string>, number) => string = function(
 export const functionWithRenamedArgument: (
   string,
   {|
-    +ArgRenamed: string
+    +ArgRenamed: string,
   |}
-) => string = function(_) {
+) => string = function (_) {
   return "";
 };
 
-export const useColor = function(x: "tomato" | "gray"): number {
+export const useColor = function (x: "tomato" | "gray"): number {
   return 0;
 };
 
-export const higherOrder = (foo: (_1: number, _2: number) => number) =>
+export const higherOrder: ((number, number) => number) => number = (foo) =>
   foo(3, 4);
 
-export const convertVariant = (x: $any) => x;
+export const convertVariant = (x: $any): $any => x;
 
 export class AbsoluteValue {
   prop: number;
@@ -54,6 +54,6 @@ export const polymorphic = <T>(x: T): T => x;
 
 export type num = number;
 
-export type polyType<T> = {x:T};
+export type polyType<T> = { x: T };
 
 export default 42;
