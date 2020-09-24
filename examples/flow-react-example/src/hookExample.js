@@ -2,7 +2,9 @@
 
 import * as React from "react";
 
-export const foo = function(x: { +person: { +name: string, +age: number } }) {
+export const foo: ({
+  +person: { +name: string, +age: number },
+}) => string = function (x) {
   return x.person.name;
 };
 
@@ -11,12 +13,12 @@ type Props = {|
   +children: React.Node,
   +renderMe: React.ComponentType<{|
     +randomString: string,
-    +poly: string
-  |}>
+    +poly: string,
+  |}>,
 |};
 
 export class make extends React.Component<Props> {
-  render() {
+  render(): React.Node {
     const RenderMe = this.props.renderMe;
     return (
       <div>

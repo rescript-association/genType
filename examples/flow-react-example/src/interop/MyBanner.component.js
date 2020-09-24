@@ -9,7 +9,7 @@ const React = require("react");
 export type Props = {| show: boolean, Message: ?string |};
 
 class App extends React.Component<Props> {
-  render() {
+  render(): React.Node {
     if (this.props.show) {
       return React.createElement(
         "div",
@@ -26,7 +26,7 @@ class App extends React.Component<Props> {
 export default App;
 
 export class TopLevelClass {
-  static MiddleLevelElements = {
-    MyBannerInternal: App
+  static MiddleLevelElements: { MyBannerInternal: typeof App } = {
+    MyBannerInternal: App,
   };
 }
