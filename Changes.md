@@ -1,4 +1,5 @@
 # master
+- Add support for bs-platform 8.3: abbreviated annotations (e.g. `as` instead of `bs.as`).
 
 # 3.35.0
 - Functions `React.ref(-) => React.element` are not considered function components anymore.

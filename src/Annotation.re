@@ -27,11 +27,11 @@ let toString = annotation =>
 let tagIsGenType = s => s == "genType" || s == "gentype";
 let tagIsGenTypeAs = s => s == "genType.as" || s == "gentype.as";
 
-let tagIsBsAs = s => s == "bs.as";
+let tagIsBsAs = s => s == "bs.as" || s == "as";
 
-let tagIsBsInt = s => s == "bs.int";
+let tagIsBsInt = s => s == "bs.int" || s == "int";
 
-let tagIsBsString = s => s == "bs.string";
+let tagIsBsString = s => s == "bs.string" || s == "string";
 
 let tagIsUnboxed = s => s == "unboxed" || s == "ocaml.unboxed";
 
