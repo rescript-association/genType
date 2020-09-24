@@ -1,3 +1,5 @@
+@@warning("-3")
+
 type vehicle = {name: string}
 
 @react.component

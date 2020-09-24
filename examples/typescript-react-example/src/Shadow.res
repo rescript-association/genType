@@ -1,3 +1,5 @@
+@@warning("-32")
+
 export test = () => 3
 
 export test = () => "a"
