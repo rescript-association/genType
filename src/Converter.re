@@ -574,7 +574,7 @@ let rec apply =
                         optional == Optional
                         && !(
                              argConverter
-                             |> converterIsIdentity(~config, ~toJS)
+                             |> converterIsIdentity(~config, ~toJS=notToJS)
                            )
                           ? OptionC(argConverter) : argConverter,
                       ~indent=indent2,

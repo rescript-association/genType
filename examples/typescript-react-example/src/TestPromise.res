@@ -8,3 +8,5 @@ export type fromPayload = {
 export type toPayload = {result: string}
 
 export convert = Js.Promise.then_(({s}) => Js.Promise.resolve({result: s}))
+
+export barx = (~x=Js.Promise.resolve(Some("a")), ()) => x == x

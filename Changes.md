@@ -1,4 +1,5 @@
 # master
+- Fix issue where a conversion was not applied to optional arguments due to mistaken covariance.
 
 # 3.36.0
 - Add support for bs-platform 8.3: abbreviated annotations (e.g. `as` instead of `bs.as`).
