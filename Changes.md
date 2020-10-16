@@ -1,4 +1,6 @@
 # master
+
+# 3.37.0
 - Fix issue where a conversion was not applied to optional arguments due to mistaken covariance.
 
 # 3.36.0
