@@ -6,7 +6,7 @@
     "bs-platform": "8.3.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^3.4.4",
     "reason-react": "^0.9.1"
   },
   "scripts": {
