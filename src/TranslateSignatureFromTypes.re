@@ -118,9 +118,24 @@ and translateSignatureItemFromTypes =
          ~id,
        );
 
-  | Types.Sig_value(_) =>
-    logNotImplemented("Sig_value " ++ __LOC__);
-    Translation.empty;
+  | Types.Sig_value(id, {val_attributes, val_loc, val_type}) =>
+    if (val_attributes |> Annotation.fromAttributes(~loc=val_loc) == GenType) {
+      id
+      |> Ident.name
+      |> Translation.translateValue(
+           ~attributes=val_attributes,
+           ~config,
+           ~docString=Annotation.getDocString(val_attributes),
+           ~outputFileRelative,
+           ~resolver,
+           ~typeEnv,
+           ~typeExpr=val_type,
+           ~addAnnotationsToFunction=t =>
+           t
+         );
+    } else {
+      Translation.empty;
+    }
   | Types.Sig_typext(_) =>
     logNotImplemented("Sig_typext " ++ __LOC__);
     Translation.empty;
