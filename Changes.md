@@ -1,5 +1,7 @@
 # master
-- Add missing support for annotations in inner module signatures (e.g. `module M : { ... } = { ... }`).
+
+# 3.38.0
+- Add missing support for annotations in inner module signatures (e.g. `module M : { ... } = { ... }`). See https://github.com/reason-association/genType/issues/469.
 
 # 3.37.0
 - Fix issue where a conversion was not applied to optional arguments due to mistaken covariance.
