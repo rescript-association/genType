@@ -12,6 +12,8 @@ type moduleAccessPath =
   | Root(string)
   | Dot(moduleAccessPath, moduleItem);
 
+let accessVariant: (~config: config, ~index: int, string) => string;
+
 let checkMutableObjectField: (~previousName: string, ~name: string) => bool;
 
 /* Internal name of a value called "default" used by buclescript for default export */
@@ -26,14 +28,7 @@ let emitJSVariantGetPayload:
   (~config: config, ~polymorphic: bool, string) => string;
 
 let emitJSVariantWithPayload:
-  (
-    ~config: config,
-    ~label: string,
-    ~numArgs: int,
-    ~polymorphic: bool,
-    string
-  ) =>
-  string;
+  (~config: config, ~label: string, ~polymorphic: bool, string) => string;
 
 let emitVariantGetLabel:
   (~config: config, ~polymorphic: bool, string) => string;
