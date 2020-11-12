@@ -1,4 +1,5 @@
 # master
+- Fix conversion for nested variants from bs-platform 8 onwards.
 
 # 3.38.0
 - Add missing support for annotations in inner module signatures (e.g. `module M : { ... } = { ... }`). See https://github.com/reason-association/genType/issues/469.

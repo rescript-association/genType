@@ -90,7 +90,7 @@ let emitVariantGetLabel = (~config, ~polymorphic, x) =>
       }
     );
 
-let accessVarant = (~config, ~index, x) =>
+let accessVariant = (~config, ~index, x) =>
   if (config.variantsAsObjects) {
     x |> EmitText.fieldAccess(~label=index |> VariantsAsObjects.indexLabel);
   } else {
@@ -103,7 +103,7 @@ let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
       ? x |> EmitText.fieldAccess(~label="VAL")
       : x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
-    x |> accessVarant(~config, ~index=0);
+    x |> accessVariant(~config, ~index=0);
   } else if (numArgs == 0) {
     /* inline record */
     x;
@@ -165,18 +165,7 @@ let emitJSVariantGetLabel = (~config, ~polymorphic, x) =>
 let emitJSVariantGetPayload = (~config, ~polymorphic, x) =>
   x |> EmitText.fieldAccess(~label=jsVariantValue(~config, ~polymorphic));
 
-let emitJSVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) => {
-  let convertedPayload =
-    if (!polymorphic && config.variantsAsObjects && numArgs > 1) {
-      EmitText.array(
-        Array.init(numArgs, i =>
-          x |> EmitText.fieldAccess(~label=i |> VariantsAsObjects.indexLabel)
-        )
-        |> Array.to_list,
-      );
-    } else {
-      x;
-    };
+let emitJSVariantWithPayload = (~config, ~label, ~polymorphic, x) => {
   "{"
   ++ jsVariantTag(~config, ~polymorphic)
   ++ ":"
@@ -184,7 +173,7 @@ let emitJSVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) => {
   ++ ", "
   ++ jsVariantValue(~config, ~polymorphic)
   ++ ":"
-  ++ convertedPayload
+  ++ x
   ++ "}";
 };
 
