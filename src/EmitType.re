@@ -317,7 +317,7 @@ let rec renderType =
          );
     let payloadsRendered =
       payloads
-      |> List.map(((case, _numArgs, type_)) => {
+      |> List.map(({case, t: type_}) => {
            let typeRendered =
              type_
              |> renderType(~config, ~indent, ~typeNameIsInterface, ~inFunType);

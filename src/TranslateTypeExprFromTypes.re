@@ -95,11 +95,14 @@ let translateConstr =
       ["Pervasives", "result"] | ["Belt", "Result", "t"],
       [paramTranslation1, paramTranslation2],
     ) =>
-    let case = (n, name, type_) => (
-      {label: string_of_int(n), labelJS: StringLabel(name)},
-      1,
-      type_,
-    );
+    let case = (n, name, type_) => {
+      case: {
+        label: string_of_int(n),
+        labelJS: StringLabel(name),
+      },
+      numArgs: 1,
+      t: type_,
+    };
     let variant =
       createVariant(
         ~bsStringOrInt=false,
@@ -286,8 +289,8 @@ let translateConstr =
     let argTypes =
       (
         switch (singleT) {
-        | Variant({payloads: [(_, _, Tuple(argTypes))]}) => argTypes
-        | Variant({payloads: [(_, _, type_)]}) => [type_]
+        | Variant({payloads: [{t: Tuple(argTypes)}]}) => argTypes
+        | Variant({payloads: [{t: type_}]}) => [type_]
         | _ => [singleT]
         }
       )
@@ -308,7 +311,8 @@ let translateConstr =
       [
         {
           dependencies: argsDependencies,
-          type_: Variant({payloads: [({label: "Arity_1"}, _, type_)]}),
+          type_:
+            Variant({payloads: [{case: {label: "Arity_1"}, t: type_}]}),
         },
         ret,
       ],
@@ -328,7 +332,7 @@ let translateConstr =
       [
         {
           dependencies: argsDependencies,
-          type_: Variant({payloads: [(_, _, Tuple(ts))]}),
+          type_: Variant({payloads: [{t: Tuple(ts)}]}),
         },
         ret,
       ],
@@ -669,11 +673,14 @@ and translateTypeExprFromTypes_ =
         payloadTranslations
         |> List.map(((label, translation)) => {
              let numArgs = 1;
-             (
-               {label, labelJS: StringLabel(label)},
+             {
+               case: {
+                 label,
+                 labelJS: StringLabel(label),
+               },
                numArgs,
-               translation.type_,
-             );
+               t: translation.type_,
+             };
            });
       let type_ =
         createVariant(
