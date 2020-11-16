@@ -104,7 +104,13 @@ let emitVariantGetPayload =
       ? x |> EmitText.fieldAccess(~label="VAL")
       : x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
-    inlineRecord ? x : x |> accessVariant(~config, ~index=0);
+    if (inlineRecord) {
+      // inline record is repressented as record plus a tag:
+      // here pass it unchanged as if it was just a record (the payload)
+      x;
+    } else {
+      x |> accessVariant(~config, ~index=0);
+    };
   } else {
     /* to convert a runtime block to a tuple, remove the tag */
     config.variantsAsObjects
@@ -124,7 +130,9 @@ let emitVariantWithPayload =
     ++ "}"
   | [arg] when polymorphic && !config.variantsAsObjects =>
     [label |> emitVariantLabel(~config, ~polymorphic), arg] |> EmitText.array
-  | [arg] when inlineRecord => arg
+  | [arg] when inlineRecord && config.variantsAsObjects =>
+    // inline records are represented as records plus a `TAG`
+    "Object.assign({TAG: " ++ label ++ "}, " ++ arg ++ ")"
   | _ =>
     if (config.variantsAsObjects) {
       "{TAG: "

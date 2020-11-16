@@ -61,9 +61,28 @@ type boxedBinary =
 [@genType]
 type unboxedBinary =
   | UB(typeD, int);
+[@genType]
+type inline =
+  | I({
+      i: int,
+      j: int,
+    })
+  | J({
+      i: int,
+      j: int,
+    })
+  | K(int, int);
 
 [@genType]
 let testBoxedBinary = (_: boxedBinary) => 34;
 
 [@genType]
 let testUnboxedBinary = (_: unboxedBinary) => 34;
+
+[@genType]
+let testInline = x =>
+  switch (x) {
+  | I(q) => I({...q, i: q.i})
+  | J(q) => J(q)
+  | K(a, b) => K(b, a)
+  };
