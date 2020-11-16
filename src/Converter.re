@@ -298,7 +298,7 @@ let typeGetConverterNormalized =
       let (withPayloads, normalized, unboxed) =
         switch (
           variant.payloads
-          |> List.map(((case, numArgs, t)) =>
+          |> List.map(({case, numArgs, t}) =>
                (case, numArgs, t |> visit(~visited))
              )
         ) {
@@ -308,7 +308,7 @@ let typeGetConverterNormalized =
           let normalized =
             Variant({
               ...variant,
-              payloads: [(case, numArgs, tNormalized)],
+              payloads: [{case, numArgs, t: tNormalized}],
 
               unboxed: unboxed ? true : variant.unboxed,
             });
@@ -326,7 +326,7 @@ let typeGetConverterNormalized =
           let withPayloadNormalized =
             withPayloadConverted
             |> List.map(((case, numArgs, (_, tNormalized))) =>
-                 (case, numArgs, tNormalized)
+                 {case, numArgs, t: tNormalized}
                );
           let normalized =
             Variant({...variant, payloads: withPayloadNormalized});

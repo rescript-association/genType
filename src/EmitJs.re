@@ -1185,8 +1185,7 @@ let propagateAnnotationToSubTypes =
       | Promise(t) => t |> visit
       | Tuple(innerTypes) => innerTypes |> List.iter(visit)
       | TypeVar(_) => ()
-      | Variant({payloads}) =>
-        payloads |> List.iter(((_, _, t)) => t |> visit)
+      | Variant({payloads}) => payloads |> List.iter(({t}) => t |> visit)
       };
     type0 |> visit;
   };

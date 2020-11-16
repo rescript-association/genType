@@ -75,8 +75,8 @@ let rec substitute = (~f, type0) =>
       ...variant,
       payloads:
         variant.payloads
-        |> List.map(((case, numArgs, t)) =>
-             (case, numArgs, t |> substitute(~f))
+        |> List.map(({case, numArgs, t}) =>
+             {case, numArgs, t: t |> substitute(~f)}
            ),
     })
   };
@@ -117,7 +117,7 @@ let rec free_ = (type0): StringSet.t =>
   | Variant({payloads}) =>
     payloads
     |> List.fold_left(
-         (s, (_, _, t)) => StringSet.union(s, t |> free_),
+         (s, {t}) => StringSet.union(s, t |> free_),
          StringSet.empty,
        )
   }

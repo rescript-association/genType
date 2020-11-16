@@ -88,9 +88,14 @@ and variant = {
   bsStringOrInt: bool,
   hash: int,
   noPayloads: list(case),
-  payloads: list((case, int, type_)),
+  payloads: list(payload),
   polymorphic: bool,
   unboxed: bool,
+}
+and payload = {
+  case,
+  numArgs: int,
+  t: type_,
 };
 
 let typeIsObject = type_ =>
