@@ -302,15 +302,15 @@ and translateCoreType_ =
       let payloads =
         payloadsTranslations
         |> List.map(((label, _attributes, translation)) => {
-             let numArgs = 1;
              {
                case: {
                  label,
                  labelJS: StringLabel(label),
                },
-               numArgs,
+               inlineRecord: false,
+               numArgs: 1,
                t: translation.type_,
-             };
+             }
            });
       let type_ =
         createVariant(

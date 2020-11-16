@@ -233,9 +233,9 @@ let traslateDeclarationKind =
           if (variant.payloads
               |> List.length == (rowFieldsVariants.payloads |> List.length)) {
             List.combine(variant.payloads, rowFieldsVariants.payloads)
-            |> List.map((({numArgs, t}, (label, attributes, _))) => {
+            |> List.map(((payload, (label, attributes, _))) => {
                  let case = (label, attributes) |> createCase;
-                 {case, numArgs, t};
+                 {...payload, case};
                });
           } else {
             variant.payloads;
@@ -372,12 +372,13 @@ let traslateDeclarationKind =
              | [type_] => type_
              | _ => Tuple(argTypes)
              };
-           let numArgs = inlineRecord ? 0 : argTypes |> List.length;
+           let numArgs = argTypes |> List.length;
            {
              case: {
                ...(name, attributes) |> createCase,
                label: recordValue,
              },
+             inlineRecord,
              numArgs,
              t: type_,
            };
