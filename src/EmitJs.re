@@ -426,7 +426,9 @@ let rec emitCodeItem =
 
     let type_ =
       switch (type_) {
-      | Function({argTypes: [{aType: Object(_, fields)}], retType} as function_)
+      | Function(
+          {argTypes: [{aType: Object(_, fields)}], retType} as function_,
+        )
           when retType |> EmitType.isTypeFunctionComponent(~config, ~fields) =>
         let componentName =
           switch (importFile) {
@@ -527,8 +529,8 @@ let rec emitCodeItem =
 
     let (propConverters, childrenConverter) =
       switch (converter) {
-      | FunctionC({argConverters}) =>
-        switch (argConverters) {
+      | FunctionC({funArgConverters}) =>
+        switch (funArgConverters) {
         | [
             GroupConverter(propConverters),
             ArgConverter(childrenConverter),
