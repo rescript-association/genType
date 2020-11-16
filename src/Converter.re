@@ -39,7 +39,7 @@ and variantC = {
 }
 and withPayload = {
   case,
-  numArgs: int,
+  inlineRecord: bool,
   argConverters: list(t),
 };
 
@@ -114,10 +114,9 @@ let rec toString = converter =>
       (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
       @ (
         withPayloads
-        |> List.map(({case, numArgs, argConverters}) =>
+        |> List.map(({case, inlineRecord, argConverters}) =>
              (case.labelJS |> labelJSToString)
-             ++ ":"
-             ++ string_of_int(numArgs)
+             ++ (inlineRecord ? " inlineRecord " : "")
              ++ ":"
              ++ "{"
              ++ (argConverters |> List.map(toString) |> String.concat(", "))
@@ -318,7 +317,11 @@ let typeGetConverterNormalized =
             | TupleC(converters) when numArgs > 1 => converters
             | _ => [converter]
             };
-          ([{case, numArgs, argConverters}], normalized, unboxed);
+          (
+            [{argConverters, case, inlineRecord: numArgs == 0}],
+            normalized,
+            unboxed,
+          );
         | withPayloadConverted =>
           let withPayloadNormalized =
             withPayloadConverted
@@ -335,7 +338,7 @@ let typeGetConverterNormalized =
                    | TupleC(converters) when numArgs > 1 => converters
                    | _ => [converter]
                    };
-                 {case, numArgs, argConverters};
+                 {argConverters, case, inlineRecord: numArgs == 0};
                }),
             normalized,
             variant.unboxed,
@@ -938,13 +941,14 @@ let rec apply =
     switch (variantC.withPayloads) {
     | [] => value |> accessTable
 
-    | [{case, numArgs, argConverters}] when variantC.unboxed =>
+    | [{case, inlineRecord, argConverters}] when variantC.unboxed =>
       let casesWithPayload = (~indent) =>
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
                ~config,
-               ~numArgs,
+               ~inlineRecord,
+               ~numArgs=argConverters |> List.length,
                ~polymorphic=variantC.polymorphic,
              )
           |> convertVariantPayloadToJS(~argConverters, ~indent);
@@ -953,8 +957,8 @@ let rec apply =
           |> convertVariantPayloadToRE(~argConverters, ~indent)
           |> Runtime.emitVariantWithPayload(
                ~config,
+               ~inlineRecord,
                ~label=case.label,
-               ~numArgs,
                ~polymorphic=variantC.polymorphic,
              );
         };
@@ -968,12 +972,14 @@ let rec apply =
           );
 
     | [_, ..._] =>
-      let convertCaseWithPayload = (~indent, ~numArgs, ~argConverters, case) =>
+      let convertCaseWithPayload =
+          (~indent, ~inlineRecord, ~argConverters, case) =>
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
                ~config,
-               ~numArgs,
+               ~inlineRecord,
+               ~numArgs=argConverters |> List.length,
                ~polymorphic=variantC.polymorphic,
              )
           |> convertVariantPayloadToJS(~argConverters, ~indent)
@@ -991,14 +997,14 @@ let rec apply =
           |> convertVariantPayloadToRE(~argConverters, ~indent)
           |> Runtime.emitVariantWithPayload(
                ~config,
+               ~inlineRecord,
                ~label=case.label,
-               ~numArgs,
                ~polymorphic=variantC.polymorphic,
              );
         };
       let switchCases = (~indent) =>
         variantC.withPayloads
-        |> List.map(({case, numArgs, argConverters}) => {
+        |> List.map(({case, inlineRecord, argConverters}) => {
              (
                toJS
                  ? case.label
@@ -1008,7 +1014,11 @@ let rec apply =
                       )
                  : case.labelJS |> labelJSToString,
                case
-               |> convertCaseWithPayload(~indent, ~numArgs, ~argConverters),
+               |> convertCaseWithPayload(
+                    ~indent,
+                    ~inlineRecord,
+                    ~argConverters,
+                  ),
              )
            });
       let casesWithPayload = (~indent) =>
