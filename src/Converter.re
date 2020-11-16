@@ -22,7 +22,7 @@ and fieldC = {
 }
 and fieldsC = list(fieldC)
 and functionC = {
-  argConverters: list(groupedArgConverter),
+  funArgConverters: list(groupedArgConverter),
   componentName: option(string),
   isHook: bool,
   retConverter: t,
@@ -32,10 +32,15 @@ and functionC = {
 and variantC = {
   hash: int,
   noPayloads: list(case),
-  withPayload: list((case, int, list(t))),
+  withPayloads: list(withPayload),
   polymorphic: bool,
   unboxed: bool,
   useVariantTables: bool,
+}
+and withPayload = {
+  case,
+  numArgs: int,
+  argConverters: list(t),
 };
 
 let rec toString = converter =>
@@ -44,12 +49,12 @@ let rec toString = converter =>
 
   | CircularC(s, c) => "circular(" ++ s ++ " " ++ toString(c) ++ ")"
 
-  | FunctionC({argConverters, retConverter, uncurried}) =>
+  | FunctionC({funArgConverters, retConverter, uncurried}) =>
     "fn"
     ++ (uncurried ? "Uncurried" : "")
     ++ "("
     ++ (
-      argConverters
+      funArgConverters
       |> List.map(groupedArgConverter =>
            switch (groupedArgConverter) {
            | ArgConverter(conv) => "(" ++ "_" ++ ":" ++ toString(conv) ++ ")"
@@ -103,13 +108,13 @@ let rec toString = converter =>
   | TupleC(innerTypesC) =>
     "[" ++ (innerTypesC |> List.map(toString) |> String.concat(", ")) ++ "]"
 
-  | VariantC({noPayloads, withPayload}) =>
+  | VariantC({noPayloads, withPayloads}) =>
     "variant("
     ++ (
       (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
       @ (
-        withPayload
-        |> List.map(((case, numArgs, argConverters)) =>
+        withPayloads
+        |> List.map(({case, numArgs, argConverters}) =>
              (case.labelJS |> labelJSToString)
              ++ ":"
              ++ string_of_int(numArgs)
@@ -148,7 +153,7 @@ let typeGetConverterNormalized =
       ) =>
       let argConverted =
         argTypes |> List.map(argTypeToGroupedArgConverter(~visited));
-      let argConverters = argConverted |> List.map(fst);
+      let funArgConverters = argConverted |> List.map(fst);
       let (retConverter, retNormalized) = retType |> visit(~visited);
       let isHook =
         switch (argTypes) {
@@ -158,7 +163,7 @@ let typeGetConverterNormalized =
         };
       (
         FunctionC({
-          argConverters,
+          funArgConverters,
           componentName,
           isHook,
           retConverter,
@@ -291,7 +296,7 @@ let typeGetConverterNormalized =
     | Variant(variant) =>
       let allowUnboxed =
         !(variant.polymorphic && config.variantHashesAsStrings);
-      let (withPayload, normalized, unboxed) =
+      let (withPayloads, normalized, unboxed) =
         switch (
           variant.payloads
           |> List.map(((case, numArgs, t)) =>
@@ -308,12 +313,12 @@ let typeGetConverterNormalized =
 
               unboxed: unboxed ? true : variant.unboxed,
             });
-          let converters =
+          let argConverters =
             switch (converter) {
             | TupleC(converters) when numArgs > 1 => converters
             | _ => [converter]
             };
-          ([(case, numArgs, converters)], normalized, unboxed);
+          ([{case, numArgs, argConverters}], normalized, unboxed);
         | withPayloadConverted =>
           let withPayloadNormalized =
             withPayloadConverted
@@ -325,12 +330,12 @@ let typeGetConverterNormalized =
           (
             withPayloadConverted
             |> List.map(((case, numArgs, (converter, _))) => {
-                 let converters =
+                 let argConverters =
                    switch (converter) {
                    | TupleC(converters) when numArgs > 1 => converters
                    | _ => [converter]
                    };
-                 (case, numArgs, converters);
+                 {case, numArgs, argConverters};
                }),
             normalized,
             variant.unboxed,
@@ -345,8 +350,8 @@ let typeGetConverterNormalized =
           |> List.exists(({label, labelJS}) =>
                labelJS != StringLabel(label)
              )
-          || withPayload
-          |> List.exists((({label, labelJS}, _, _)) =>
+          || withPayloads
+          |> List.exists(({case: {label, labelJS}}) =>
                labelJS != StringLabel(label)
              );
         } else {
@@ -356,7 +361,7 @@ let typeGetConverterNormalized =
         VariantC({
           hash: variant.hash,
           noPayloads,
-          withPayload,
+          withPayloads,
           polymorphic: variant.polymorphic,
           unboxed,
           useVariantTables,
@@ -431,11 +436,11 @@ let rec converterIsIdentity = (~config, ~toJS, converter) =>
 
   | CircularC(_, c) => c |> converterIsIdentity(~config, ~toJS)
 
-  | FunctionC({argConverters, retConverter, uncurried}) =>
+  | FunctionC({funArgConverters, retConverter, uncurried}) =>
     retConverter
     |> converterIsIdentity(~config, ~toJS)
-    && (!toJS || uncurried || argConverters |> List.length <= 1)
-    && argConverters
+    && (!toJS || uncurried || funArgConverters |> List.length <= 1)
+    && funArgConverters
     |> List.for_all(groupedArgConverter =>
          switch (groupedArgConverter) {
          | ArgConverter(argConverter) =>
@@ -474,11 +479,11 @@ let rec converterIsIdentity = (~config, ~toJS, converter) =>
   | TupleC(innerTypesC) =>
     innerTypesC |> List.for_all(converterIsIdentity(~config, ~toJS))
 
-  | VariantC({withPayload, useVariantTables}) =>
+  | VariantC({withPayloads, useVariantTables}) =>
     if (!useVariantTables) {
-      withPayload
-      |> List.for_all(((_, _, converters)) =>
-           converters
+      withPayloads
+      |> List.for_all(({argConverters}) =>
+           argConverters
            |> List.for_all(c => c |> converterIsIdentity(~config, ~toJS))
          );
     } else {
@@ -521,7 +526,7 @@ let rec apply =
     |> apply(~config, ~converter=c, ~indent, ~nameGen, ~toJS, ~variantTables)
 
   | FunctionC({
-      argConverters,
+      funArgConverters,
       componentName,
       isHook,
       retConverter,
@@ -657,7 +662,7 @@ let rec apply =
       ++ (functionName |> EmitText.funCall(~args, ~useCurry) |> mkReturn);
     };
 
-    let convertedArgs = argConverters |> List.mapi(convertArg);
+    let convertedArgs = funArgConverters |> List.mapi(convertArg);
     let args = convertedArgs |> List.map(fst) |> List.concat;
     let funParams = args |> List.map(v => v |> EmitType.ofTypeAny(~config));
     let bodyArgs = convertedArgs |> List.map(snd) |> List.concat;
@@ -849,7 +854,7 @@ let rec apply =
     )
     ++ "]"
 
-  | VariantC({noPayloads: [case], withPayload: [], polymorphic}) =>
+  | VariantC({noPayloads: [case], withPayloads: [], polymorphic}) =>
     toJS
       ? case.labelJS |> labelJSToString
       : case.label |> Runtime.emitVariantLabel(~config, ~polymorphic)
@@ -930,10 +935,10 @@ let rec apply =
       };
     };
 
-    switch (variantC.withPayload) {
+    switch (variantC.withPayloads) {
     | [] => value |> accessTable
 
-    | [(case, numArgs, argConverters)] when variantC.unboxed =>
+    | [{case, numArgs, argConverters}] when variantC.unboxed =>
       let casesWithPayload = (~indent) =>
         if (toJS) {
           value
@@ -992,8 +997,8 @@ let rec apply =
              );
         };
       let switchCases = (~indent) =>
-        variantC.withPayload
-        |> List.map(((case, numArgs, argConverters)) => {
+        variantC.withPayloads
+        |> List.map(({case, numArgs, argConverters}) => {
              (
                toJS
                  ? case.label
