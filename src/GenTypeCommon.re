@@ -94,6 +94,7 @@ and variant = {
 }
 and payload = {
   case,
+  inlineRecord: bool,
   numArgs: int,
   t: type_,
 };

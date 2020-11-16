@@ -298,17 +298,18 @@ let typeGetConverterNormalized =
       let (withPayloads, normalized, unboxed) =
         switch (
           variant.payloads
-          |> List.map(({case, numArgs, t}) =>
-               (case, numArgs, t |> visit(~visited))
+          |> List.map(({case, inlineRecord, numArgs, t}) =>
+               (case, inlineRecord, numArgs, t |> visit(~visited))
              )
         ) {
         | [] when allowUnboxed => ([], normalized_, variant.unboxed)
-        | [(case, numArgs, (converter, tNormalized))] when allowUnboxed =>
+        | [(case, inlineRecord, numArgs, (converter, tNormalized))]
+            when allowUnboxed =>
           let unboxed = tNormalized |> expandOneLevel |> typeIsObject;
           let normalized =
             Variant({
               ...variant,
-              payloads: [{case, numArgs, t: tNormalized}],
+              payloads: [{case, inlineRecord, numArgs, t: tNormalized}],
 
               unboxed: unboxed ? true : variant.unboxed,
             });
@@ -317,28 +318,24 @@ let typeGetConverterNormalized =
             | TupleC(converters) when numArgs > 1 => converters
             | _ => [converter]
             };
-          (
-            [{argConverters, case, inlineRecord: numArgs == 0}],
-            normalized,
-            unboxed,
-          );
+          ([{argConverters, case, inlineRecord}], normalized, unboxed);
         | withPayloadConverted =>
           let withPayloadNormalized =
             withPayloadConverted
-            |> List.map(((case, numArgs, (_, tNormalized))) =>
-                 {case, numArgs, t: tNormalized}
+            |> List.map(((case, inlineRecord, numArgs, (_, tNormalized))) =>
+                 {case, inlineRecord, numArgs, t: tNormalized}
                );
           let normalized =
             Variant({...variant, payloads: withPayloadNormalized});
           (
             withPayloadConverted
-            |> List.map(((case, numArgs, (converter, _))) => {
+            |> List.map(((case, inlineRecord, numArgs, (converter, _))) => {
                  let argConverters =
                    switch (converter) {
                    | TupleC(converters) when numArgs > 1 => converters
                    | _ => [converter]
                    };
-                 {argConverters, case, inlineRecord: numArgs == 0};
+                 {argConverters, case, inlineRecord};
                }),
             normalized,
             variant.unboxed,

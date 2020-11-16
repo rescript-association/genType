@@ -100,6 +100,7 @@ let translateConstr =
         label: string_of_int(n),
         labelJS: StringLabel(name),
       },
+      inlineRecord: false,
       numArgs: 1,
       t: type_,
     };
@@ -672,15 +673,15 @@ and translateTypeExprFromTypes_ =
       let payloads =
         payloadTranslations
         |> List.map(((label, translation)) => {
-             let numArgs = 1;
              {
                case: {
                  label,
                  labelJS: StringLabel(label),
                },
-               numArgs,
+               inlineRecord: false,
+               numArgs: 1,
                t: translation.type_,
-             };
+             }
            });
       let type_ =
         createVariant(

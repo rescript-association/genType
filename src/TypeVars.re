@@ -75,9 +75,7 @@ let rec substitute = (~f, type0) =>
       ...variant,
       payloads:
         variant.payloads
-        |> List.map(({case, numArgs, t}) =>
-             {case, numArgs, t: t |> substitute(~f)}
-           ),
+        |> List.map(payload => {...payload, t: payload.t |> substitute(~f)}),
     })
   };
 
