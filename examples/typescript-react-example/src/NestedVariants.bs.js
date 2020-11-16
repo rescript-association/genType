@@ -110,6 +110,26 @@ function testUnboxedBinary(param) {
   return 34;
 }
 
+function testInline(x) {
+  switch (x.TAG | 0) {
+    case /* I */0 :
+        return {
+                TAG: /* I */0,
+                i: x.i,
+                j: x.j
+              };
+    case /* J */1 :
+        return x;
+    case /* K */2 :
+        return {
+                TAG: /* K */2,
+                _0: x._1,
+                _1: x._0
+              };
+    
+  }
+}
+
 export {
   makeVariant ,
   makeABC ,
@@ -123,6 +143,7 @@ export {
   makeK ,
   testBoxedBinary ,
   testUnboxedBinary ,
+  testInline ,
   
 }
 /* No side effect */
