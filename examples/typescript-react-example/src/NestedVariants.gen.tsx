@@ -125,12 +125,12 @@ export const makeK: () => typeK = function () {
 
 export const testBoxedBinary: (param:boxedBinary) => number = function (Arg1: any) {
   const result = NestedVariantsBS.testBoxedBinary(Arg1.tag==="BB"
-    ? {TAG: 0, _0:[{TAG: 0, _0:Arg1.value[0].value} as any, Arg1.value[1]][0], _1:[{TAG: 0, _0:Arg1.value[0].value} as any, Arg1.value[1]][1]} as any
+    ? {TAG: 0, _0:{TAG: 0, _0:Arg1.value[0].value} as any, _1:Arg1.value[1]} as any
     : {TAG: 1, _0:Arg1.value} as any);
   return result
 };
 
 export const testUnboxedBinary: (param:unboxedBinary) => number = function (Arg1: any) {
-  const result = NestedVariantsBS.testUnboxedBinary({TAG: 0, _0:[{TAG: 0, _0:Arg1[0].value} as any, Arg1[1]][0], _1:[{TAG: 0, _0:Arg1[0].value} as any, Arg1[1]][1]} as any);
+  const result = NestedVariantsBS.testUnboxedBinary({TAG: 0, _0:{TAG: 0, _0:Arg1[0].value} as any, _1:Arg1[1]} as any);
   return result
 };

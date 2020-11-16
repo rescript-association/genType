@@ -32,7 +32,7 @@ and functionC = {
 and variantC = {
   hash: int,
   noPayloads: list(case),
-  withPayload: list((case, int, t)),
+  withPayload: list((case, int, list(t))),
   polymorphic: bool,
   unboxed: bool,
   useVariantTables: bool,
@@ -109,12 +109,14 @@ let rec toString = converter =>
       (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
       @ (
         withPayload
-        |> List.map(((case, numArgs, c)) =>
+        |> List.map(((case, numArgs, cs)) =>
              (case.labelJS |> labelJSToString)
              ++ ":"
              ++ string_of_int(numArgs)
              ++ ":"
-             ++ (c |> toString)
+             ++ "{"
+             ++ (cs |> List.map(toString) |> String.concat(", "))
+             ++ "}"
            )
       )
       |> String.concat(", ")
@@ -306,7 +308,12 @@ let typeGetConverterNormalized =
 
               unboxed: unboxed ? true : variant.unboxed,
             });
-          ([(case, numArgs, converter)], normalized, unboxed);
+          let converters =
+            switch (converter) {
+            | TupleC(converters) when numArgs > 1 => converters
+            | _ => [converter]
+            };
+          ([(case, numArgs, converters)], normalized, unboxed);
         | withPayloadConverted =>
           let withPayloadNormalized =
             withPayloadConverted
@@ -317,9 +324,14 @@ let typeGetConverterNormalized =
             Variant({...variant, payloads: withPayloadNormalized});
           (
             withPayloadConverted
-            |> List.map(((case, numArgs, (converter, _))) =>
-                 (case, numArgs, converter)
-               ),
+            |> List.map(((case, numArgs, (converter, _))) => {
+                 let converters =
+                   switch (converter) {
+                   | TupleC(converters) when numArgs > 1 => converters
+                   | _ => [converter]
+                   };
+                 (case, numArgs, converters);
+               }),
             normalized,
             variant.unboxed,
           );
@@ -465,8 +477,9 @@ let rec converterIsIdentity = (~config, ~toJS, converter) =>
   | VariantC({withPayload, useVariantTables}) =>
     if (!useVariantTables) {
       withPayload
-      |> List.for_all(((_, _, c)) =>
-           c |> converterIsIdentity(~config, ~toJS)
+      |> List.for_all(((_, _, converters)) =>
+           converters
+           |> List.for_all(c => c |> converterIsIdentity(~config, ~toJS))
          );
     } else {
       false;
@@ -857,10 +870,20 @@ let rec apply =
       !variantC.useVariantTables
         ? v : table ++ EmitText.array([v ++ convertToString]);
 
-    let convertVariantPayloadToJS = (~numArgs, ~objConverter, x) => {
-      switch (objConverter) {
-      | TupleC(converters) when config.variantsAsObjects && numArgs > 1 =>
-        converters
+    let convertVariantPayloadToJS = (~indent, ~objConverters, x) => {
+      switch (objConverters) {
+      | [converter] =>
+        x
+        |> apply(
+             ~config,
+             ~converter,
+             ~indent,
+             ~nameGen,
+             ~toJS,
+             ~variantTables,
+           )
+      | _ =>
+        objConverters
         |> List.mapi((i, converter) =>
              x
              |> Runtime.accessVariant(~config, ~index=i)
@@ -874,15 +897,35 @@ let rec apply =
                 )
            )
         |> EmitText.array
+      };
+    };
+
+    let convertVariantPayloadToRE = (~indent, ~objConverters, x) => {
+      switch (objConverters) {
+      | [converter] => [
+          x
+          |> apply(
+               ~config,
+               ~converter,
+               ~indent,
+               ~nameGen,
+               ~toJS,
+               ~variantTables,
+             ),
+        ]
       | _ =>
-        x
-        |> apply(
-             ~config,
-             ~converter=objConverter,
-             ~indent,
-             ~nameGen,
-             ~toJS,
-             ~variantTables,
+        objConverters
+        |> List.mapi((i, converter) =>
+             x
+             |> EmitText.arrayAccess(~index=i)
+             |> apply(
+                  ~config,
+                  ~converter,
+                  ~indent,
+                  ~nameGen,
+                  ~toJS,
+                  ~variantTables,
+                )
            )
       };
     };
@@ -890,7 +933,7 @@ let rec apply =
     switch (variantC.withPayload) {
     | [] => value |> accessTable
 
-    | [(case, numArgs, objConverter)] when variantC.unboxed =>
+    | [(case, numArgs, objConverters)] when variantC.unboxed =>
       let casesWithPayload = (~indent) =>
         if (toJS) {
           value
@@ -899,17 +942,10 @@ let rec apply =
                ~numArgs,
                ~polymorphic=variantC.polymorphic,
              )
-          |> convertVariantPayloadToJS(~numArgs, ~objConverter);
+          |> convertVariantPayloadToJS(~indent, ~objConverters);
         } else {
           value
-          |> apply(
-               ~config,
-               ~converter=objConverter,
-               ~indent,
-               ~nameGen,
-               ~toJS,
-               ~variantTables,
-             )
+          |> convertVariantPayloadToRE(~indent, ~objConverters)
           |> Runtime.emitVariantWithPayload(
                ~config,
                ~label=case.label,
@@ -927,7 +963,7 @@ let rec apply =
           );
 
     | [_, ..._] =>
-      let convertCaseWithPayload = (~indent, ~numArgs, ~objConverter, case) =>
+      let convertCaseWithPayload = (~indent, ~numArgs, ~objConverters, case) =>
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
@@ -935,7 +971,7 @@ let rec apply =
                ~numArgs,
                ~polymorphic=variantC.polymorphic,
              )
-          |> convertVariantPayloadToJS(~numArgs, ~objConverter)
+          |> convertVariantPayloadToJS(~indent, ~objConverters)
           |> Runtime.emitJSVariantWithPayload(
                ~config,
                ~label=case.labelJS |> labelJSToString,
@@ -947,14 +983,7 @@ let rec apply =
                ~config,
                ~polymorphic=variantC.polymorphic,
              )
-          |> apply(
-               ~config,
-               ~converter=objConverter,
-               ~indent,
-               ~nameGen,
-               ~toJS,
-               ~variantTables,
-             )
+          |> convertVariantPayloadToRE(~indent, ~objConverters)
           |> Runtime.emitVariantWithPayload(
                ~config,
                ~label=case.label,
@@ -964,7 +993,7 @@ let rec apply =
         };
       let switchCases = (~indent) =>
         variantC.withPayload
-        |> List.map(((case, numArgs, objConverter)) =>
+        |> List.map(((case, numArgs, objConverters)) => {
              (
                toJS
                  ? case.label
@@ -974,9 +1003,9 @@ let rec apply =
                       )
                  : case.labelJS |> labelJSToString,
                case
-               |> convertCaseWithPayload(~indent, ~numArgs, ~objConverter),
+               |> convertCaseWithPayload(~indent, ~numArgs, ~objConverters),
              )
-           );
+           });
       let casesWithPayload = (~indent) =>
         value
         |> Runtime.(

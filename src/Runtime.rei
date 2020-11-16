@@ -41,11 +41,11 @@ let emitVariantLabel:
 
 let emitVariantWithPayload:
   (
-    ~config: config,
+    ~config: Config_.config,
     ~label: string,
     ~numArgs: int,
     ~polymorphic: bool,
-    string
+    list(string)
   ) =>
   string;
 

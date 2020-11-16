@@ -113,26 +113,22 @@ let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
       ? x : x |> EmitText.arraySlice;
   };
 
-let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
-  if (polymorphic) {
-    if (config.variantsAsObjects) {
-      "{"
-      ++ VariantsAsObjects.polyVariantLabelName(~config)
-      ++ ": "
-      ++ (label |> emitVariantLabel(~config, ~polymorphic))
-      ++ ", VAL: "
-      ++ x
-      ++ "}";
-    } else {
-      EmitText.array([label |> emitVariantLabel(~config, ~polymorphic), x]);
-    };
-  } else {
-    let args =
-      numArgs == 1
-        ? [x]
-        : {
-          List.init(numArgs, index => x |> EmitText.arrayAccess(~index));
-        };
+let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, args) =>
+  switch (args) {
+  | [arg] when polymorphic && config.variantsAsObjects =>
+    "{"
+    ++ VariantsAsObjects.polyVariantLabelName(~config)
+    ++ ": "
+    ++ (label |> emitVariantLabel(~config, ~polymorphic))
+    ++ ", VAL: "
+    ++ arg
+    ++ "}"
+  | [arg] when polymorphic && !config.variantsAsObjects =>
+    [label |> emitVariantLabel(~config, ~polymorphic), arg] |> EmitText.array
+  | [arg] when numArgs == 0 =>
+    /* inline record */
+    arg
+  | _ =>
     if (config.variantsAsObjects) {
       "{TAG: "
       ++ label
@@ -148,9 +144,9 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, x) =>
       ++ (config.language == TypeScript ? " as any" : "");
     } else {
       config.emitCreateBucklescriptBlock = true;
-      let args = numArgs == 1 ? [x] |> EmitText.array : x;
-      createBucklescriptBlock |> EmitText.funCall(~args=[label, args]);
-    };
+      createBucklescriptBlock
+      |> EmitText.funCall(~args=[label, args |> EmitText.array]);
+    }
   };
 
 let jsVariantTag = (~config, ~polymorphic) =>
