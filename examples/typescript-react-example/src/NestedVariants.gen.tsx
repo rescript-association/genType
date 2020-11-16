@@ -43,6 +43,14 @@ export type typeJ = [typeD, typeD];
 // tslint:disable-next-line:interface-over-type-literal
 export type typeK = [typeD, typeD];
 
+// tslint:disable-next-line:interface-over-type-literal
+export type boxedBinary = 
+    { tag: "BB"; value: [typeD, number] }
+  | { tag: "Z"; value: number };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type unboxedBinary = [typeD, number];
+
 export const makeVariant: () => typeL = function () {
   const result = NestedVariantsBS.makeVariant();
   return [result._0, result._1]
@@ -113,4 +121,16 @@ export const makeJ: () => typeJ = function () {
 export const makeK: () => typeK = function () {
   const result = NestedVariantsBS.makeK();
   return [{tag:"Int", value:result._0[0]._0}, {tag:"Int", value:result._0[1]._0}]
+};
+
+export const testBoxedBinary: (param:boxedBinary) => number = function (Arg1: any) {
+  const result = NestedVariantsBS.testBoxedBinary(Arg1.tag==="BB"
+    ? {TAG: 0, _0:[{TAG: 0, _0:Arg1.value[0].value} as any, Arg1.value[1]][0], _1:[{TAG: 0, _0:Arg1.value[0].value} as any, Arg1.value[1]][1]} as any
+    : {TAG: 1, _0:Arg1.value} as any);
+  return result
+};
+
+export const testUnboxedBinary: (param:unboxedBinary) => number = function (Arg1: any) {
+  const result = NestedVariantsBS.testUnboxedBinary({TAG: 0, _0:[{TAG: 0, _0:Arg1[0].value} as any, Arg1[1]][0], _1:[{TAG: 0, _0:Arg1[0].value} as any, Arg1[1]][1]} as any);
+  return result
 };

@@ -102,6 +102,14 @@ function makeK(param) {
         };
 }
 
+function testBoxedBinary(param) {
+  return 34;
+}
+
+function testUnboxedBinary(param) {
+  return 34;
+}
+
 export {
   makeVariant ,
   makeABC ,
@@ -113,6 +121,8 @@ export {
   makeHD ,
   makeJ ,
   makeK ,
+  testBoxedBinary ,
+  testUnboxedBinary ,
   
 }
 /* No side effect */

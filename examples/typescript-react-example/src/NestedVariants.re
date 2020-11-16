@@ -53,3 +53,17 @@ let makeJ = (): typeJ => J(Int(5), Int(3));
 
 [@genType]
 let makeK = (): typeK => K((Int(5), Int(3)));
+
+[@genType]
+type boxedBinary =
+  | BB(typeD, int)
+  | Z(int);
+[@genType]
+type unboxedBinary =
+  | UB(typeD, int);
+
+[@genType]
+let testBoxedBinary = (_: boxedBinary) => 34;
+
+[@genType]
+let testUnboxedBinary = (_: unboxedBinary) => 34;
