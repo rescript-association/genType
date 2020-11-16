@@ -97,23 +97,22 @@ let accessVariant = (~config, ~index, x) =>
     x |> EmitText.arrayAccess(~index);
   };
 
-let emitVariantGetPayload = (~config, ~numArgs, ~polymorphic, x) =>
+let emitVariantGetPayload =
+    (~config, ~inlineRecord, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
     config.variantsAsObjects
       ? x |> EmitText.fieldAccess(~label="VAL")
       : x |> EmitText.arrayAccess(~index=1);
   } else if (numArgs == 1) {
-    x |> accessVariant(~config, ~index=0);
-  } else if (numArgs == 0) {
-    /* inline record */
-    x;
+    inlineRecord ? x : x |> accessVariant(~config, ~index=0);
   } else {
     /* to convert a runtime block to a tuple, remove the tag */
     config.variantsAsObjects
       ? x : x |> EmitText.arraySlice;
   };
 
-let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, args) =>
+let emitVariantWithPayload =
+    (~config, ~inlineRecord, ~label, ~polymorphic, args) =>
   switch (args) {
   | [arg] when polymorphic && config.variantsAsObjects =>
     "{"
@@ -125,9 +124,7 @@ let emitVariantWithPayload = (~config, ~label, ~numArgs, ~polymorphic, args) =>
     ++ "}"
   | [arg] when polymorphic && !config.variantsAsObjects =>
     [label |> emitVariantLabel(~config, ~polymorphic), arg] |> EmitText.array
-  | [arg] when numArgs == 0 =>
-    /* inline record */
-    arg
+  | [arg] when inlineRecord => arg
   | _ =>
     if (config.variantsAsObjects) {
       "{TAG: "
