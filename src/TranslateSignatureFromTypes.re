@@ -119,9 +119,14 @@ and translateSignatureItemFromTypes =
        );
 
   | Types.Sig_value(id, {val_attributes, val_loc, val_type}) =>
+    let name = id |> Ident.name;
+    if (Debug.translation^) {
+      Log_.item("Translate Sig Value %s\n", name);
+    };
+    let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
+    typeEnv |> TypeEnv.updateModuleItem(~nameOpt=Some(name), ~moduleItem);
     if (val_attributes |> Annotation.fromAttributes(~loc=val_loc) == GenType) {
-      id
-      |> Ident.name
+      name
       |> Translation.translateValue(
            ~attributes=val_attributes,
            ~config,
@@ -135,7 +140,7 @@ and translateSignatureItemFromTypes =
          );
     } else {
       Translation.empty;
-    }
+    };
   | Types.Sig_typext(_) =>
     logNotImplemented("Sig_typext " ++ __LOC__);
     Translation.empty;
