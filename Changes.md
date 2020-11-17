@@ -1,4 +1,6 @@
 # master
+
+# 3.39.0
 - Fix conversion for nested variants from bs-platform 8 onwards.
 - Fix name of functions emitted when an inner signature is annotated (see https://github.com/reason-association/genType/issues/474).
 
