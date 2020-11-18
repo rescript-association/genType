@@ -1,20 +1,3 @@
-# We build artifacts to the `~/repo/dist` directory and attach it to the workspace
-# so that the release jobs can access all the build artifacts of the workspace
-# context.
-#
-# Therefore following mental directory model:
-# ~/repo: the actual gentype repo
-#  |- artifacts: contains all build artifacts to be uploaded to github releases
-#  |- src
-#  |- ...
-#  |- package.json
-#
-# All commands should all be run in the workdir `~/repo` to prevent confusion.
-#
-# Research / Inspiration for cross-building ocaml projects w/ opam:
-# ----
-# https://github.com/facebook/flow/blob/master/.circleci/config.yml
-
 version: 2.1
 
 aliases:
@@ -162,14 +145,14 @@ jobs:
           name: Create tar file for executable
           command: |
             cp _build/default/src/Bin.exe bin.exe
-            tar -czvf artifacts/bin-linux.tar.gz bin.exe
+            tar -czvf artifacts/bin-linux.tgz bin.exe
       - store_artifacts:
-          path: artifacts/bin-linux.tar.gz
-          destination: bin-linux.tar.gz
+          path: artifacts/bin-linux.tgz
+          destination: bin-linux.tgz
       - persist_to_workspace:
           root: artifacts
           paths:
-            - bin-linux.tar.gz
+            - bin-linux.tgz
 
   build_macos:
     executor: mac
@@ -209,14 +192,14 @@ jobs:
           name: Create tar file for executable
           command: |
             cp _build/default/src/Bin.exe bin.exe
-            tar -czvf artifacts/bin-macos.tar.gz bin.exe
+            tar -czvf artifacts/bin-darwin.tgz bin.exe
       - store_artifacts:
-          path: artifacts/bin-macos.tar.gz
-          destination: bin-macos.tar.gz
+          path: artifacts/bin-darwin.tgz
+          destination: bin-darwin.tgz
       - persist_to_workspace:
           root: artifacts
           paths:
-            - bin-macos.tar.gz
+            - bin-darwin.tgz
   build_win:
     executor: win/default
     environment:
@@ -242,16 +225,8 @@ jobs:
             echo "Versions"
             node --version
             npm --version
-      #- run:
-          #name: Create cache breaker
-          #shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
-          #command: |
-            #/usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
-            #echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
-            #/usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
       - restore_cache:
           keys:
-          #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
           - v0-opam-cache-{{ arch }}
       - opam_windows/init
       - opam_windows/create_switch
@@ -282,14 +257,14 @@ jobs:
           name: Create tar file for executable
           command: |
             cp _build/default/src/Bin.exe bin.exe
-            tar -czvf artifacts/bin-win32.tar.gz bin.exe
+            tar -czvf artifacts/bin-win32.tgz bin.exe
       - store_artifacts:
-          path: artifacts/bin-win32.tar.gz
-          destination: bin-win32.tar.gz
+          path: artifacts/bin-win32.tgz
+          destination: bin-win32.tgz
       - persist_to_workspace:
           root: artifacts
           paths:
-            - bin-win32.tar.gz
+            - bin-win32.tgz
   artifacts:
     executor: linux-node
     steps:
@@ -299,17 +274,16 @@ jobs:
       - run:
           name: Pack genType
           command: |
-            # Put the built artifacts in the appropriate package folder
             cd artifacts
             mkdir linux
-            tar -xf bin-linux.tar.gz -C linux
+            tar -xf bin-linux.tgz -C linux
             mkdir win32
-            tar -xf bin-win32.tar.gz -C win32
+            tar -xf bin-win32.tgz -C win32
             mkdir darwin
-            tar -xf bin-macos.tar.gz -C darwin
+            tar -xf bin-darwin.tgz -C darwin
 
             # Pack everything up
-            tar -czvf binaries.tar.gz linux win32 darwin
+            tar -czvf binaries.tgz linux win32 darwin
       - store_artifacts:
           path: artifacts/binaries.tgz
           destination: binaries.tgz
@@ -317,28 +291,6 @@ jobs:
           root: artifacts
           paths:
             - binaries.tgz
-              
-  github_release:
-    docker:
-      - image: cibuilds/github:0.10
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - attach_workspace:
-          at: ~/repo/artifacts
-
-      - run:
-          name: Publish Release on Github
-          command: |
-            VERSION=$CIRCLE_TAG
-
-            # Rename the npm package for the final version (since we can't do this on creation)
-            mv artifacts/gentype-npm.tgz artifacts/gentype-$CIRCLE_TAG.tgz
-
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 workflows:
   version: 2
   build_deploy:
@@ -363,11 +315,3 @@ workflows:
           filters:
             tags:
               only: /.*/
-      # - github_release:
-      #     requires:
-      #       - npm_pack
-      #     filters:
-      #       branches:
-      #         ignore: /.*/
-      #       tags:
-      #         only: /^v.*/
