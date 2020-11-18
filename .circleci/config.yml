@@ -300,13 +300,16 @@ jobs:
           name: Pack genType
           command: |
             # Put the built artifacts in the appropriate package folder
-            tar -xf artifacts/bin-linux.tar.gz -C dist/linux
-            tar -xf artifacts/bin-win32.tar.gz -C dist/win32
-            tar -xf artifacts/bin-macos.tar.gz -C dist/darwin
+            cd artifacts
+            mkdir linux
+            tar -xf bin-linux.tar.gz -C linux
+            mkdir win32
+            tar -xf bin-win32.tar.gz -C win32
+            mkdir darwin
+            tar -xf bin-macos.tar.gz -C darwin
 
             # Pack everything up
-            cd dist
-            tar -czvf ../artifacts/binaries.tar.gz *
+            tar -czvf binaries.tar.gz linux win32 darwin
       - store_artifacts:
           path: artifacts/binaries.tgz
           destination: binaries.tgz
