@@ -1,1 +1,8 @@
-(ignored_subdirs (node_modules))
+(ignored_subdirs (
+  examples
+  node_modules
+))
+
+(env
+    (dev
+      (flags (:standard -warn-error -A))))

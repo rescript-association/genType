@@ -148,31 +148,28 @@ jobs:
       - run:
           name: Install opam dev dependencies
           command: |
-            opam install reason.3.6.0 dune.1.11.4 --yes | cat
+            opam install reason.3.6.0 dune.1.11.4 ocaml-migrate-parsetree.1.3.1 ppx_tools_versioned uri --yes | cat
       - save-opam-cache
       - run:
-          name: Install npm deps
-          command: npm install
-      - run:
-          name: Build gentype
+          name: Build
           command: |
             echo $PATH
-            npm run build
+            dune build
       - run:
-          name: Test gentype
-          command: npm test
+          name: Test
+          command: ./_build/default/src/Bin.exe --help 
       - run:
           name: Create tar file for executable
           command: |
-            cp _build/default/src/GenType.exe gentype.exe
-            tar -czvf artifacts/gentype-linux.tar.gz gentype.exe
+            cp _build/default/src/Bin.exe bin.exe
+            tar -czvf artifacts/bin-linux.tar.gz bin.exe
       - store_artifacts:
-          path: artifacts/gentype-linux.tar.gz
-          destination: gentype-linux.tar.gz
+          path: artifacts/bin-linux.tar.gz
+          destination: bin-linux.tar.gz
       - persist_to_workspace:
           root: artifacts
           paths:
-            - gentype-linux.tar.gz
+            - bin-linux.tar.gz
 
   build_macos:
     executor: mac
@@ -359,29 +356,29 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - build_macos:
-          filters:
-            tags:
-              only: /.*/
-      - build_win:
-          filters:
-            tags:
-              only: /.*/
-      - npm_pack:
-          requires:
-            - build_linux
-            - build_win
-            - build_macos
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-      - github_release:
-          requires:
-            - npm_pack
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+      # - build_macos:
+      #     filters:
+      #       tags:
+      #         only: /.*/
+      # - build_win:
+      #     filters:
+      #       tags:
+      #         only: /.*/
+      # - npm_pack:
+      #     requires:
+      #       - build_linux
+      #       - build_win
+      #       - build_macos
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /^v.*/
+      # - github_release:
+      #     requires:
+      #       - npm_pack
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /^v.*/

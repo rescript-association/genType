@@ -1,0 +1,8 @@
+
+(library
+  (name Ppx_monads)
+  (flags :standard -w -9)
+  (libraries compiler-libs ocaml-migrate-parsetree ppx_tools_versioned)
+  (preprocess (pps ppx_tools_versioned.metaquot_402))
+  (kind ppx_rewriter))
+
