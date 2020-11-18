@@ -290,7 +290,7 @@ jobs:
           root: artifacts
           paths:
             - bin-win32.tar.gz
-  npm_pack:
+  artifacts:
     executor: linux-node
     steps:
       - checkout
@@ -300,28 +300,20 @@ jobs:
           name: Pack genType
           command: |
             # Put the built artifacts in the appropriate package folder
-            tar -xf artifacts/gentype-linux.tar.gz -C dist/vendor-linux
-            tar -xf artifacts/gentype-win32.tar.gz -C dist/vendor-win32
-            tar -xf artifacts/gentype-macos.tar.gz -C dist/vendor-darwin
-
-            # Add the correct package.json / README / etc to dist
-            node scripts/prepare_release.js
+            tar -xf artifacts/bin-linux.tar.gz -C dist/linux
+            tar -xf artifacts/bin-win32.tar.gz -C dist/win32
+            tar -xf artifacts/bin-macos.tar.gz -C dist/darwin
 
             # Pack everything up
             cd dist
-            npm pack
-            cd ..
-
-            # We can't use gentype-$CIRCLE_TAG.tgz since circleCI 2.0 doesn't support interpolation
-            # within store_artifacts / persist_to_workspace yet
-            mv dist/gentype-*.tgz artifacts/gentype-npm.tgz
+            tar -czvf ../artifacts/binaries.tar.gz *
       - store_artifacts:
-          path: artifacts/gentype-npm.tgz
-          destination: gentype-npm.tgz
+          path: artifacts/binaries.tgz
+          destination: binaries.tgz
       - persist_to_workspace:
           root: artifacts
           paths:
-            - gentype-npm.tgz
+            - binaries.tgz
               
   github_release:
     docker:
@@ -360,16 +352,14 @@ workflows:
           filters:
             tags:
               only: /.*/
-      # - npm_pack:
-      #     requires:
-      #       - build_linux
-      #       - build_win
-      #       - build_macos
-      #     filters:
-      #       branches:
-      #         ignore: /.*/
-      #       tags:
-      #         only: /^v.*/
+      - artifacts:
+          requires:
+            - build_linux
+            - build_win
+            - build_macos
+          filters:
+            tags:
+              only: /.*/
       # - github_release:
       #     requires:
       #       - npm_pack
