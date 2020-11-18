@@ -397,7 +397,6 @@ The dump command can also omit `:line:column`, to show results for every positio
 
 let showHelp = () => {
   print_endline(help);
-  exit(1);
 };
 
 let main = () => {
@@ -444,6 +443,8 @@ let main = () => {
   | (_opts, ["dump", ...files]) => dump(files)
   | (_opts, ["complete", pathWithPos, currentFile]) =>
     complete(~pathWithPos, ~currentFile)
-  | _ => showHelp()
+  | _ =>
+    showHelp();
+    exit(1);
   };
 };
