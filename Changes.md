@@ -1,4 +1,5 @@
 # master
+- Add support for flexible file names introduced in bs-platform 8.3 (see https://github.com/reason-association/genType/issues/477).
 
 # 3.39.0
 - Fix conversion for nested variants from bs-platform 8 onwards.
