@@ -1,4 +1,6 @@
 # master
+
+# 3.40.0
 - Add support for flexible file names introduced in bs-platform 8.3 (see https://github.com/reason-association/genType/issues/477).
 
 # 3.39.0
