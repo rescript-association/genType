@@ -12,7 +12,7 @@ type cliCommand =
   | Add(string)
   | Clean
   | NoOp
-  | Rm(string);
+  | Rm(list(string));
 
 let cli = () => {
   let bsVersion = ref(None);
@@ -52,7 +52,7 @@ let cli = () => {
     ),
     ("-clean", Arg.Unit(setClean), "clean all the generated files"),
     ("-cmt-add", Arg.String(setAdd), "compile a .cmt[i] file"),
-    ("-cmt-rm", Arg.String(setRm), "remove a .cmt[i] file"),
+    ("-cmt-rm", Arg.String(s => setRm([s])), "remove one or more .cmt[i] files"),
     (
       "-version",
       Arg.Unit(versionAndExit),
@@ -120,25 +120,33 @@ let cli = () => {
 
     | NoOp => printUsageAndExit()
 
-    | Rm(s) =>
-      let splitColon = Str.split(Str.regexp(":"), s) |> Array.of_list;
-      assert(Array.length(splitColon) === 1);
-      let cmtAbsolutePath: string = splitColon[0];
-      /* somehow the CMT hook is passing an absolute path here */
-      let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
-      let config =
-        Paths.readConfig(~bsVersion, ~namespace=cmt |> Paths.findNameSpace);
-      let outputFile = cmt |> Paths.getOutputFile(~config);
-      if (Debug.basic^) {
-        Log_.item("Remove %s\n", cmt);
+    | Rm(l) =>
+      let removeOne = s => {
+        let cmtAbsolutePath = s;
+        /* somehow the CMT hook is passing an absolute path here */
+        let cmt = cmtAbsolutePath |> Paths.relativePathFromBsLib;
+        let config =
+          Paths.readConfig(~bsVersion, ~namespace=cmt |> Paths.findNameSpace);
+        let outputFile = cmt |> Paths.getOutputFile(~config);
+        if (Debug.basic^) {
+          Log_.item("Remove %s\n", cmt);
+        };
+        if (Sys.file_exists(outputFile)) {
+          Unix.unlink(outputFile);
+        };
       };
-      if (Sys.file_exists(outputFile)) {
-        Unix.unlink(outputFile);
-      };
+      l |> List.rev |> List.iter(removeOne);
       exit(0);
     };
 
-  Arg.parse(speclist, print_endline, usage);
+  let anonArg = s => {
+    switch (cliCommand^) {
+    | Rm(l) => cliCommand := Rm([s, ...l])
+    | _ => print_endline(s)
+    };
+  };
+
+  Arg.parse(speclist, anonArg, usage);
 
   executeCliCommand(~bsVersion=bsVersion^, cliCommand^);
 };
