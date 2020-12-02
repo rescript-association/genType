@@ -20,6 +20,7 @@
     "debug": "^4.1.0",
     "reanalyze": "^1.6.0"
   },
+  "keywords": ["rescript", "tooling"],
   "author": "Cristiano Calcagno",
   "bugs": {
     "url": "https://github.com/cristianoc/gentype/issues"
