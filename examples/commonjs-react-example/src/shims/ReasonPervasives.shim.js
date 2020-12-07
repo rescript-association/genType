@@ -15,7 +15,7 @@ export opaque type Cons<t> = mixed;
 
 export type list<t> = | Cons<t> | EmptyList;
 
-function cons(itm, lst) {
+function cons<t>(itm, lst) {
   return /* :: */[
           itm,
           lst
