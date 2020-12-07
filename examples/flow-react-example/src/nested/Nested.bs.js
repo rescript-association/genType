@@ -5,7 +5,7 @@ function consumeVariant(x) {
   if (typeof x === "number") {
     return 1;
   }
-  if (!x.TAG) {
+  if (x.TAG === /* B */0) {
     return (x._0 + x._1 | 0) + 2 | 0;
   }
   var n = x._0;
