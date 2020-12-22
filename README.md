@@ -1,9 +1,9 @@
-# Reason genType
+# ReScript genType
 
 **Status `master (v3.*)`:** [![Build
 Status](https://dev.azure.com/ccrisccris/genType/_apis/build/status/cristianoc.genType?branchName=master)](https://dev.azure.com/ccrisccris/genType/_build/latest?definitionId=1&branchName=master)
 
-`genType` lets you export [Reason](https://reasonml.github.io/) values and types to use in JavaScript, and import JavaScript values and types into Reason, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
+`genType` lets you export [ReScript](https://rescript-lang.org/) values and types to use in JavaScript, and import JavaScript values and types into ReScript, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
 In particular, conversion of [ReasonReact](https://reasonml.github.io/reason-react/) components both ways is supported, with automatic generation of the wrappers.
 
 # Project status.
@@ -60,30 +60,30 @@ Add a `gentypeconfig` section to your `bsconfig.json` (See [Configuration](#conf
 }
 ```
 
-For running `gentype` with BuckleScript via `npm` workflow, add following script in your `package.json`:
+For running `gentype` with ReScript via `npm` workflow, add following script in your `package.json`:
 
 ```
 scripts: {
-  "bs:build": "bsb -make-world",
-  "bs:clean": "bsb -clean-world"
+  "build": "bsb -make-world",
+  "clean": "bsb -clean-world"
 }
 ```
 
-> **Note:** With genType < 2.17.0 or bucklescript < 5.0.0, one has to set environment variable `BS_CMT_POST_PROCESS_CMD`. See the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
+> **Note:** With genType < 2.17.0 or ReScript < 5.0.0, one has to set environment variable `BS_CMT_POST_PROCESS_CMD`. See the older [README](https://github.com/cristianoc/genType/blob/v2.16.0/README.md).
 
-With this configuration, BuckleScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.gen.js` files are generated).
+With this configuration, ReScript will call `gentype` for each newly built file. You might want to clean your build artifacts before usage: `npx bsb -clean-world` (otherwise there might be cached values and no `.gen.js` files are generated).
 
 Check out the [Examples](#examples) for detailed setups (TypeScript, Flow and Plain JavaScript).
 
 ## Adding shims (TypeScript & Flow)
 
-Configure your shim files in your `"gentypeconfig"` in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and add relevant `.shims.js` files in a directory which is visible by bucklescript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example shim to export ReactEvent can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
+Configure your shim files in your `"gentypeconfig"` in [`bsconfig.json`](examples/typescript-react-example/bsconfig.json), and add relevant `.shims.js` files in a directory which is visible by ReScript e.g. [`src/shims/`](examples/typescript-react-example/src/shims). An example shim to export ReactEvent can be found [here](examples/typescript-react-example/src/shims/ReactEvent.shim.ts).
 
 ## Testing the whole setup
 
-Open any relevant `*.res` (or `*.re`) file and add `[@genType]` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Hooks.res](examples/typescript-react-example/src/Hooks.res).
+Open any relevant `*.res` file and add `@genType` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Hooks.res](examples/typescript-react-example/src/Hooks.res).
 
-Save the file and rebuild the project with BuckleScript. You should now see a `*.gen.tsx` (for TypeScript, or `*.gen.js` for Flow) file with the same name (e.g. `MyComponent.res` -> `MyComponent.gen.tsx`).
+Save the file and rebuild the project with ReScript. You should now see a `*.gen.tsx` (for TypeScript, or `*.gen.js` for Flow) file with the same name (e.g. `MyComponent.res` -> `MyComponent.gen.tsx`).
 
 Any values exported from `MyComponent.res` can then be imported from JS. For example:
 
@@ -103,9 +103,9 @@ We prepared some examples to give you an idea on how to integrate `genType` in y
 
 # Documentation
 
-The docs have been moved to the rescript-lang.org website in a dedicated `genType` section that can be found [here](https://rescript-lang.org/docs/gentype/latest/introduction).
+Full documentation can be found [here](https://rescript-lang.org/docs/gentype/latest/introduction).
 
-(In case you are looking for the old docs, here is an [older version](https://github.com/reason-association/genType/blob/be699a467800b84221a7cb448e140d8f232d7025/README.md) of this README)
+(In case you are looking for the previous version of the docs, here is an [older version](https://github.com/reason-association/genType/blob/be699a467800b84221a7cb448e140d8f232d7025/README.md) of this README)
 
 # Development/Contributing
 
