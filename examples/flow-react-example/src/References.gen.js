@@ -19,11 +19,11 @@ export type t<a> = R_t<a>;
 
 export type requiresConversion = {| +x: number |};
 
-export const create: (number) => [number] = ReferencesBS.create;
+export const create: (number) => {| contents: number |} = ReferencesBS.create;
 
-export const access: ([number]) => number = ReferencesBS.access;
+export const access: ({| contents: number |}) => number = ReferencesBS.access;
 
-export const update: ([number]) => void = ReferencesBS.update;
+export const update: ({| contents: number |}) => void = ReferencesBS.update;
 
 export const get: <T1>(R_t<T1>) => T1 = ReferencesBS.get;
 
@@ -34,6 +34,6 @@ export const set: <T1>(R_t<T1>, T1) => void = function <T1>(Arg1: $any, Arg2: $a
   return result
 };
 
-export const destroysRefIdentity: ([requiresConversion]) => [requiresConversion] = ReferencesBS.destroysRefIdentity;
+export const destroysRefIdentity: ({| contents: requiresConversion |}) => {| contents: requiresConversion |} = ReferencesBS.destroysRefIdentity;
 
 export const preserveRefIdentity: (R_t<requiresConversion>) => R_t<requiresConversion> = ReferencesBS.preserveRefIdentity;
