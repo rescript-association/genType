@@ -1,4 +1,6 @@
 # master
+
+# 3.42.0
 - Fix type of references which should be a record type since the runtime representation switched to records.
 
 # 3.41.0
