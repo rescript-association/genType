@@ -1,6 +1,6 @@
 {
   "name": "gentype",
-  "version": "3.41.0",
+  "version": "3.42.0",
   "private": true,
   "description": "Use Reason values from Javascript: vanilla, or TypeScript/FlowType-annotated",
   "license": "MIT",
@@ -20,7 +20,10 @@
     "debug": "^4.1.0",
     "reanalyze": "^1.6.0"
   },
-  "keywords": ["rescript", "tooling"],
+  "keywords": [
+    "rescript",
+    "tooling"
+  ],
   "author": "Cristiano Calcagno",
   "bugs": {
     "url": "https://github.com/cristianoc/gentype/issues"
