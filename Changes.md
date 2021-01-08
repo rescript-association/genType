@@ -1,4 +1,5 @@
 # master
+- Fix type of references which should be a record type since the runtime representation switched to records.
 
 # 3.41.0
 - Internal (Support multiple arguments on the command line for -cmt-rm).

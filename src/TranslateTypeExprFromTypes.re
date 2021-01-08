@@ -88,7 +88,23 @@ let translateConstr =
 
   | (["Pervasives", "ref"], [paramTranslation]) => {
       dependencies: paramTranslation.dependencies,
-      type_: Tuple([paramTranslation.type_]),
+      type_:
+        if (config.recordsAsObjects) {
+          Object(
+            Closed,
+            [
+              {
+                mutable_: Mutable,
+                nameJS: "contents",
+                nameRE: "contents",
+                optional: Mandatory,
+                type_: paramTranslation.type_,
+              },
+            ],
+          );
+        } else {
+          Tuple([paramTranslation.type_]);
+        },
     }
 
   | (
