@@ -112,14 +112,14 @@ module Loc = {
             if (start_line_start_char == end_line_end_char) {
               Format.fprintf(
                 ppf,
-                " @{<dim>%i:%i@}",
+                ":@{<dim>%i:%i@}",
                 start_line,
                 start_line_start_char,
               );
             } else {
               Format.fprintf(
                 ppf,
-                " @{<dim>%i:%i-%i@}",
+                ":@{<dim>%i:%i-%i@}",
                 start_line,
                 start_line_start_char,
                 end_line_end_char,
@@ -128,7 +128,7 @@ module Loc = {
           } else {
             Format.fprintf(
               ppf,
-              " @{<dim>%i:%i-%i:%i@}",
+              ":@{<dim>%i:%i-%i:%i@}",
               start_line,
               start_line_start_char,
               end_line,
