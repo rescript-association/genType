@@ -52,18 +52,18 @@ orbs:
         steps:
           - run:
               name: Init opam
-              shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+              shell: C:/tools/cygwin/bin/bash.exe -leo pipefail
               command: |
-                export PATH=$PATH:/usr/local/bin:/usr/bin
                 [ -d ~/.opam ] || opam init default 'https://github.com/fdopen/opam-repository-mingw.git#opam2' --bare --disable-sandboxing
       create_switch:
         steps:
           - run:
               name: Create opam switch
-              shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+              shell: C:/tools/cygwin/bin/bash.exe -leo pipefail
               environment:
                 PATH: /usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
               command: |
+                cd /cygdrive/c/Users/circleci/project
                 [ -d _opam ] || opam switch create . ocaml-variants.4.06.1+mingw64c --deps-only --yes -vvv
 
 executors:
@@ -239,48 +239,42 @@ jobs:
           at: ./artifacts
       - run:
           name: Check node / npm version
-          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          shell: C:/tools/cygwin/bin/bash.exe -leo pipefail
           environment:
             PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
           command: |
+            cd /cygdrive/c/Users/circleci/project
             pwd
             ls -l
             echo "Versions"
             node --version
             npm --version
-      #- run:
-          #name: Create cache breaker
-          #shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
-          #command: |
-            #/usr/local/bin/opam --version > /cygdrive/c/tmp/repo/opamcachebreaker
-            #echo "ocaml-4.06.1" >> /cygdrive/c/tmp/repo/opamcachebreaker
-            #/usr/bin/cat .circleci/config.yml >> /cygdrive/c/tmp/repo/opamcachebreaker
       - restore_cache:
           keys:
-          #- opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-          - v0-opam-cache-{{ arch }}
+          - v2-opam-cache-{{ arch }}
       - opam_windows/init
       - opam_windows/create_switch
       - run:
           name: Install opam dev dependencies
-          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          shell: C:/tools/cygwin/bin/bash.exe -leo pipefail
           environment:
             PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
           command: |
+            cd /cygdrive/c/Users/circleci/project
             eval $(opam env)
             opam install reason.3.6.0 dune.1.11.4 --yes | cat
       - save_cache:
-          #key: opam-cache-{{ arch }}-{{ checksum "C:/tmp/repo/opamcachebreaker" }}
-          key: v0-opam-cache-{{ arch }}
+          key: v2-opam-cache-{{ arch }}
           paths:
             - C:/tools/cygwin/home/circleci/.opam
             - _opam
       - run:
           name: Build & Test gentype.exe
-          shell: C:/tools/cygwin/bin/bash.exe --noprofile --norc -eo pipefail
+          shell: C:/tools/cygwin/bin/bash.exe -leo pipefail
           environment:
             PATH: /cygdrive/c/Program Files/nodejs:/usr/local/bin:/usr/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/Wbem:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0
           command: |
+             cd /cygdrive/c/Users/circleci/project
              eval $(opam env)
              npm install
              npm run build
