@@ -219,6 +219,9 @@ let variantTable = (hash, ~toJS) =>
 let ident = (~builtin=true, ~typeArgs=[], name) =>
   Ident({builtin, name, typeArgs});
 
+let sanitizeTypeName = name =>
+  name |> Str.global_replace(Str.regexp("'"), "_");
+
 let mixedOrUnknown = (~config) =>
   ident(
     switch (config.language) {

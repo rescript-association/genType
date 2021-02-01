@@ -10,7 +10,8 @@ type declarationKind =
 let createExportTypeFromTypeDeclaration =
     (~annotation, ~nameAs, ~opaque, ~type_, ~typeEnv, typeName, ~typeVars)
     : CodeItem.exportFromTypeDeclaration => {
-  let resolvedTypeName = typeName |> TypeEnv.addModulePath(~typeEnv);
+  let resolvedTypeName =
+    typeName |> sanitizeTypeName |> TypeEnv.addModulePath(~typeEnv);
   {
     exportType: {
       nameAs,

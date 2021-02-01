@@ -136,3 +136,5 @@ module ObjectId: {
   type t = int
   let x = 1
 }
+
+export type tPrimed = (TypeNameSanitize.t', TypeNameSanitize.M.t'')
