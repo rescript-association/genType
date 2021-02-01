@@ -12,7 +12,11 @@ import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
 
 import {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
 
+import {M_t__ as TypeNameSanitize_M_t__} from '../../src/TypeNameSanitize.gen';
+
 import {list} from '../../src/shims/ReasonPervasives.shim';
+
+import {t_ as TypeNameSanitize_t_} from '../../src/TypeNameSanitize.gen';
 
 import {t as Location_t} from '../../src/location/location.gen';
 
@@ -105,6 +109,9 @@ export type i64B = [number, number];
 
 // tslint:disable-next-line:interface-over-type-literal
 export type ObjectId_t = number;
+
+// tslint:disable-next-line:interface-over-type-literal
+export type tPrimed = [TypeNameSanitize_t_, TypeNameSanitize_M_t__];
 
 export const someIntList: list<number> = TypesBS.someIntList;
 

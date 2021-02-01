@@ -231,6 +231,7 @@ let rec renderType =
        );
 
   | Ident({builtin, name, typeArgs}) =>
+    let name = name |> sanitizeTypeName;
     (
       !builtin && config.exportInterfaces && name |> typeNameIsInterface
         ? name |> interfaceName(~config) : name
@@ -246,7 +247,7 @@ let rec renderType =
                   ~inFunType,
                 ),
               ),
-       )
+       );
   | Null(type_) =>
     "(null | "
     ++ (
@@ -778,6 +779,12 @@ let emitImportTypeAs =
       ~typeNameIsInterface,
       ~importPath,
     ) => {
+  let typeName = sanitizeTypeName(typeName);
+  let asTypeName =
+    switch (asTypeName) {
+    | None => asTypeName
+    | Some(s) => Some(sanitizeTypeName(s))
+    };
   let (typeName, asTypeName) =
     switch (asTypeName) {
     | Some(asName) =>
