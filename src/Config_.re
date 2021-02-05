@@ -22,6 +22,7 @@ type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
   bsDependencies: list(string),
+  bsPlatformLibExtension: string,
   mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
@@ -50,6 +51,7 @@ let default = {
   bsBlockPath: None,
   bsCurryPath: None,
   bsDependencies: [],
+  bsPlatformLibExtension: ".js",
   emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
@@ -82,13 +84,15 @@ let bsPlatformLib = (~config) =>
 
 let getBsBlockPath = (~config) =>
   switch (config.bsBlockPath) {
-  | None => bsPlatformLib(~config) ++ "/block.js"
+  | None =>
+    bsPlatformLib(~config) ++ "/block" ++ config.bsPlatformLibExtension
   | Some(s) => s
   };
 
 let getBsCurryPath = (~config) =>
   switch (config.bsCurryPath) {
-  | None => bsPlatformLib(~config) ++ "/curry"
+  | None =>
+    bsPlatformLib(~config) ++ "/curry" ++ config.bsPlatformLibExtension
   | Some(s) => s
   };
 
@@ -284,6 +288,12 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | _ => v1 > 7
       };
     };
+    let bsPlatformLibExtension =
+      if (v1 >= 9 && module_ == ES6) {
+        ".mjs";
+      } else {
+        ".js";
+      };
     if (Debug.config^) {
       Log_.item("Project root: %s\n", projectRoot^);
       if (bsbProjectRoot^ != projectRoot^) {
@@ -305,6 +315,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       bsBlockPath,
       bsCurryPath,
       bsDependencies: [],
+      bsPlatformLibExtension,
       emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
       emitImportCurry: false,

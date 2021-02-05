@@ -3,7 +3,7 @@
 
 
 // tslint:disable-next-line:no-var-requires
-const Curry = require('bs-platform/lib/es6/curry');
+const Curry = require('bs-platform/lib/es6/curry.mjs');
 
 // tslint:disable-next-line:no-var-requires
 const RecordsBS = require('./Records.bs');
