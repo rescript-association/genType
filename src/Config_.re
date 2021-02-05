@@ -88,7 +88,7 @@ let getBsBlockPath = (~config) =>
 
 let getBsCurryPath = (~config) =>
   switch (config.bsCurryPath) {
-  | None => bsPlatformLib(~config) ++ "/curry.js"
+  | None => bsPlatformLib(~config) ++ "/curry"
   | Some(s) => s
   };
 
