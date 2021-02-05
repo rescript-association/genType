@@ -1,6 +1,7 @@
 # master
 - Add `:` before location in warnings, so the correct line is picked up by vscocde terminal.
 - Allow `'` in the name of an exported type without generating invalid JS code.
+- Support `bs-platform` version `9.0.0` (es6 library modules now use `.mjs` extension).
 
 # 3.42.0
 - Fix type of references which should be a record type since the runtime representation switched to records.
