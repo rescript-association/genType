@@ -8,7 +8,7 @@
 type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry';
+import * as Curry from 'bs-platform/lib/es6/curry.mjs';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';

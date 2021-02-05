@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 
-import * as Curry from 'bs-platform/lib/es6/curry';
+import * as Curry from 'bs-platform/lib/es6/curry.mjs';
 
 import * as PropTypes from 'prop-types';
 
