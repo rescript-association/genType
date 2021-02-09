@@ -49,16 +49,21 @@ let fileHeader = (~config, ~sourceFile) => {
 
 let generatedFilesExtension = (~config) =>
   switch (config.generatedFileExtension) {
-  | Some(s) => s
+  | Some(s) => Filename.remove_extension(s) /* from .foo.bar to .foo */
   | None => ".gen"
   };
 
-let outputFileSuffix = (~config) =>
-  switch (config.language) {
-  | Flow
-  | Untyped => generatedFilesExtension(~config) ++ ".js"
-  | TypeScript => generatedFilesExtension(~config) ++ ".tsx"
+let outputFileSuffix = (~config) => {
+  switch (config.generatedFileExtension) {
+  | Some(s) when Filename.extension(s) != "" /* double extension */ => s
+  | _ =>
+    switch (config.language) {
+    | Flow
+    | Untyped => generatedFilesExtension(~config) ++ ".js"
+    | TypeScript => generatedFilesExtension(~config) ++ ".tsx"
+    }
   };
+};
 
 let generatedModuleExtension = (~config) => generatedFilesExtension(~config);
 
