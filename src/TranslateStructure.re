@@ -148,7 +148,8 @@ let translateValueBinding =
     let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
     typeEnv |> TypeEnv.updateModuleItem(~nameOpt=Some(name), ~moduleItem);
 
-    if (vb_attributes |> Annotation.fromAttributes(~loc=vb_pat.pat_loc) == GenType) {
+    if (vb_attributes
+        |> Annotation.fromAttributes(~loc=vb_pat.pat_loc) == GenType) {
       id
       |> Ident.name
       |> Translation.(
@@ -388,7 +389,7 @@ and translateStructureItem =
     )
     : Translation.t =>
   switch (structItem) {
-  | {Typedtree.str_desc: Typedtree.Tstr_type(_, typeDeclarations)} => {
+  | {Typedtree.str_desc: Typedtree.Tstr_type(recFlag, typeDeclarations)} => {
       importTypes: [],
       codeItems: [],
       typeDeclarations:
@@ -396,6 +397,7 @@ and translateStructureItem =
         |> TranslateTypeDeclarations.translateTypeDeclarations(
              ~config,
              ~outputFileRelative,
+             ~recursive=recFlag == Recursive,
              ~resolver,
              ~typeEnv,
            ),
