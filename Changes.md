@@ -1,4 +1,5 @@
 # master
+- Fix issue with non-recursive types inside modules when the type name is already in scope (See https://github.com/reason-association/genType/issues/492).
 
 # 3.43.0
 - Add `:` before location in warnings, so the correct line is picked up by vscocde terminal.

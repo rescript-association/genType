@@ -143,7 +143,7 @@ and translateSignatureItem =
     )
     : Translation.t =>
   switch (signatureItem) {
-  | {Typedtree.sig_desc: Typedtree.Tsig_type(_, typeDeclarations)} => {
+  | {Typedtree.sig_desc: Typedtree.Tsig_type(recFlag, typeDeclarations)} => {
       importTypes: [],
       codeItems: [],
       typeDeclarations:
@@ -151,6 +151,7 @@ and translateSignatureItem =
         |> TranslateTypeDeclarations.translateTypeDeclarations(
              ~config,
              ~outputFileRelative,
+             ~recursive=recFlag==Recursive,
              ~resolver,
              ~typeEnv,
            ),

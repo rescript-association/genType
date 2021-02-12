@@ -430,6 +430,7 @@ let translateTypeDeclaration =
     (
       ~config,
       ~outputFileRelative,
+      ~recursive,
       ~resolver,
       ~typeEnv,
       {typ_attributes, typ_id, typ_loc, typ_manifest, typ_params, typ_type}: Typedtree.type_declaration,
@@ -438,7 +439,10 @@ let translateTypeDeclaration =
   if (Debug.translation^) {
     Log_.item("Translate Type Declaration %s\n", typ_id |> Ident.name);
   };
-  typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
+
+  if (recursive) {
+    typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
+  };
 
   let typeName = Ident.name(typ_id);
 
@@ -460,23 +464,31 @@ let translateTypeDeclaration =
     | _ => NoDeclaration
     };
 
-  declarationKind
-  |> traslateDeclarationKind(
-       ~config,
-       ~loc=typ_loc,
-       ~outputFileRelative,
-       ~resolver,
-       ~typeAttributes=typ_attributes,
-       ~typeEnv,
-       ~typeName,
-       ~typeVars,
-     );
+  let res =
+    declarationKind
+    |> traslateDeclarationKind(
+         ~config,
+         ~loc=typ_loc,
+         ~outputFileRelative,
+         ~resolver,
+         ~typeAttributes=typ_attributes,
+         ~typeEnv,
+         ~typeName,
+         ~typeVars,
+       );
+
+  if (!recursive) {
+    typeEnv |> TypeEnv.newType(~name=typ_id |> Ident.name);
+  };
+
+  res;
 };
 
 let translateTypeDeclarations =
     (
       ~config,
       ~outputFileRelative,
+      ~recursive,
       ~resolver,
       ~typeEnv,
       typeDeclarations: list(Typedtree.type_declaration),
@@ -487,6 +499,7 @@ let translateTypeDeclarations =
        translateTypeDeclaration(
          ~config,
          ~outputFileRelative,
+         ~recursive,
          ~resolver,
          ~typeEnv,
        ),
