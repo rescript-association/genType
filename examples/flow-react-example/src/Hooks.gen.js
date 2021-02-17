@@ -11,7 +11,7 @@ type $any = any;
 import * as React from 'react';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.mjs';
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as HooksBS from './Hooks.bs';
