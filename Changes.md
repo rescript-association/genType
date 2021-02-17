@@ -1,5 +1,6 @@
 # master
 - Fix issue with non-recursive types inside modules when the type name is already in scope (See https://github.com/reason-association/genType/issues/492).
+- Support `bs-platform` version `9.0.1` (es6 library modules reverted to `.js` extension)
 
 # 3.43.0
 - Add `:` before location in warnings, so the correct line is picked up by vscocde terminal.

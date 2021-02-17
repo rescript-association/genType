@@ -289,7 +289,7 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       };
     };
     let bsPlatformLibExtension =
-      if (v1 >= 9 && module_ == ES6) {
+      if (v1 >= 9 && v2 == 0 && v3 == 0 && module_ == ES6) {
         ".mjs";
       } else {
         ".js";
