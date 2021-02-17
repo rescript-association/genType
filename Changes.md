@@ -1,4 +1,6 @@
 # master
+
+# 3.44.0
 - Fix issue with non-recursive types inside modules when the type name is already in scope (See https://github.com/reason-association/genType/issues/492).
 - Support `bs-platform` version `9.0.1` (es6 library modules reverted to `.js` extension)
 
