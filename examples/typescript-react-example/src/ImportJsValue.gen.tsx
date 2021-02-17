@@ -19,7 +19,7 @@ import {polymorphic as polymorphicNotChecked} from './MyMath';
 import {default as defaultNotChecked} from './MyMath';
 
 // tslint:disable-next-line:no-var-requires
-const Curry = require('bs-platform/lib/es6/curry.mjs');
+const Curry = require('bs-platform/lib/es6/curry.js');
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
 export const roundTypeChecked: (_1:number) => number = roundNotChecked;
