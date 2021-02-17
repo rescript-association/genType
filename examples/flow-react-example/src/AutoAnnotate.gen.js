@@ -6,7 +6,7 @@
 /* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.mjs';
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as AutoAnnotateBS from './AutoAnnotate.bs';
