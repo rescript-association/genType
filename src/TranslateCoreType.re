@@ -204,7 +204,7 @@ and translateCoreType_ =
     translateConstr(
       ~config,
       ~fieldsTranslations,
-      ~closedFlag=closedFlag == Closed ? Closed : Open,
+      ~objectType=closedFlag == Closed ? Some(Closed) : Some(Open),
       ~paramsTranslation=[],
       ~path,
       ~typeEnv,
@@ -216,7 +216,7 @@ and translateCoreType_ =
     TranslateTypeExprFromTypes.translateConstr(
       ~config,
       ~fieldsTranslations=[],
-      ~closedFlag=Closed,
+      ~objectType=None,
       ~paramsTranslation,
       ~path,
       ~typeEnv,
