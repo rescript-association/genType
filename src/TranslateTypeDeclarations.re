@@ -8,12 +8,22 @@ type declarationKind =
   | NoDeclaration;
 
 let createExportTypeFromTypeDeclaration =
-    (~annotation, ~nameAs, ~opaque, ~type_, ~typeEnv, typeName, ~typeVars)
+    (
+      ~annotation,
+      ~loc,
+      ~nameAs,
+      ~opaque,
+      ~type_,
+      ~typeEnv,
+      typeName,
+      ~typeVars,
+    )
     : CodeItem.exportFromTypeDeclaration => {
   let resolvedTypeName =
     typeName |> sanitizeTypeName |> TypeEnv.addModulePath(~typeEnv);
   {
     exportType: {
+      loc,
       nameAs,
       opaque,
       type_,
@@ -96,6 +106,7 @@ let traslateDeclarationKind =
       typeName
       |> createExportTypeFromTypeDeclaration(
            ~annotation,
+           ~loc,
            ~nameAs,
            ~opaque,
            ~type_=translation.type_,
@@ -186,6 +197,7 @@ let traslateDeclarationKind =
       typeName_
       |> createExportTypeFromTypeDeclaration(
            ~annotation=GenType,
+           ~loc,
            ~nameAs=None,
            ~opaque=Some(false),
            ~type_=
@@ -203,6 +215,7 @@ let traslateDeclarationKind =
         typeName
         |> createExportTypeFromTypeDeclaration(
              ~annotation,
+             ~loc,
              ~nameAs,
              ~opaque=Some(true),
              ~type_=mixedOrUnknown(~config),
@@ -272,6 +285,7 @@ let traslateDeclarationKind =
         typeName
         |> createExportTypeFromTypeDeclaration(
              ~annotation,
+             ~loc,
              ~nameAs,
              ~opaque,
              ~type_,
@@ -401,6 +415,7 @@ let traslateDeclarationKind =
 
     let exportFromTypeDeclaration = {
       CodeItem.exportType: {
+        loc,
         nameAs,
         opaque,
         type_: variantTyp,

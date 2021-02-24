@@ -93,8 +93,27 @@ let emitExportType =
       ~config,
       ~typeGetNormalized,
       ~typeNameIsInterface,
-      {CodeItem.nameAs, opaque, type_, typeVars, resolvedTypeName},
+      {CodeItem.loc, nameAs, opaque, type_, typeVars, resolvedTypeName},
     ) => {
+  let freeTypeVars = TypeVars.free(type_);
+  let isGADT = freeTypeVars |> List.exists(s => !List.mem(s, typeVars));
+
+  let opaque =
+    switch (opaque) {
+    | Some(true) => opaque
+    | _ when isGADT =>
+      Log_.Color.setup();
+      Log_.info(~loc, ~name="Warning genType", (ppf, ()) =>
+        Format.fprintf(
+          ppf,
+          "GADT types are not supported: exporting %s as opaque type",
+          resolvedTypeName |> ResolvedName.toString,
+        )
+      );
+      Some(true);
+    | _ => opaque
+    };
+
   let (opaque, type_) =
     switch (opaque) {
     | Some(opaque) => (opaque, type_)
@@ -789,6 +808,7 @@ let rec emitCodeItem =
       switch (hookType) {
       | Some({propsType, resolvedTypeName, typeVars}) =>
         let exportType: CodeItem.exportType = {
+          loc: Location.none,
           nameAs: None,
           opaque: Some(false),
           type_: propsType,

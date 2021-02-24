@@ -1,4 +1,5 @@
 # master
+- Give a warning when attempting to export a GADT type (unless it's already a opaque export), and export it as an opaque type.
 
 # 3.44.0
 - Fix issue with non-recursive types inside modules when the type name is already in scope (See https://github.com/reason-association/genType/issues/492).
