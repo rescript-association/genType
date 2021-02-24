@@ -28,7 +28,7 @@ let translateConstr =
     (
       ~config,
       ~fieldsTranslations,
-      ~closedFlag,
+      ~objectType,
       ~paramsTranslation,
       ~path: Path.t,
       ~typeEnv,
@@ -364,37 +364,40 @@ let translateConstr =
           uncurried: true,
         }),
     }
-  | (["Js", "t"], _) =>
-    let dependencies =
-      fieldsTranslations
-      |> List.map(((_, {dependencies})) => dependencies)
-      |> List.concat;
-    let rec checkMutableField = (~acc=[], fields) =>
-      switch (fields) {
-      | [(previousName, {type_: _}), (name, {type_}), ...rest]
-          when Runtime.checkMutableObjectField(~previousName, ~name) =>
-        /* The field was annotated "@bs.set" */
-        rest |> checkMutableField(~acc=[(name, type_, Mutable), ...acc])
-      | [(name, {type_}), ...rest] =>
-        rest |> checkMutableField(~acc=[(name, type_, Immutable), ...acc])
-      | [] => acc |> List.rev
-      };
-    let fields =
-      fieldsTranslations
-      |> checkMutableField
-      |> List.map(((name, t, mutable_)) => {
-           let (optional, type_) =
-             switch (t) {
-             | Option(t) => (Optional, t)
-             | _ => (Mandatory, t)
-             };
-           let name = name |> Runtime.mangleObjectField;
-           {mutable_, nameJS: name, nameRE: name, optional, type_};
-         });
-    let type_ = Object(closedFlag, fields);
-    {dependencies, type_};
+  | _ =>
+    switch (objectType) {
+    | Some(closedFlag) =>
+      let dependencies =
+        fieldsTranslations
+        |> List.map(((_, {dependencies})) => dependencies)
+        |> List.concat;
+      let rec checkMutableField = (~acc=[], fields) =>
+        switch (fields) {
+        | [(previousName, {type_: _}), (name, {type_}), ...rest]
+            when Runtime.checkMutableObjectField(~previousName, ~name) =>
+          /* The field was annotated "@bs.set" */
+          rest |> checkMutableField(~acc=[(name, type_, Mutable), ...acc])
+        | [(name, {type_}), ...rest] =>
+          rest |> checkMutableField(~acc=[(name, type_, Immutable), ...acc])
+        | [] => acc |> List.rev
+        };
+      let fields =
+        fieldsTranslations
+        |> checkMutableField
+        |> List.map(((name, t, mutable_)) => {
+             let (optional, type_) =
+               switch (t) {
+               | Option(t) => (Optional, t)
+               | _ => (Mandatory, t)
+               };
+             let name = name |> Runtime.mangleObjectField;
+             {mutable_, nameJS: name, nameRE: name, optional, type_};
+           });
+      let type_ = Object(closedFlag, fields);
+      {dependencies, type_};
 
-  | _ => defaultCase()
+    | None => defaultCase()
+    }
   };
 };
 
@@ -580,7 +583,7 @@ and translateTypeExprFromTypes_ =
     translateConstr(
       ~config,
       ~fieldsTranslations,
-      ~closedFlag,
+      ~objectType=Some(closedFlag),
       ~paramsTranslation=[],
       ~path,
       ~typeEnv,
@@ -602,7 +605,7 @@ and translateTypeExprFromTypes_ =
     translateConstr(
       ~config,
       ~fieldsTranslations=[],
-      ~closedFlag=Closed,
+      ~objectType=None,
       ~paramsTranslation,
       ~path,
       ~typeEnv,
