@@ -262,6 +262,7 @@ let translateComponent =
       CodeItem.ExportComponent({
         componentAccessPath,
         exportType: {
+          loc: Location.none,
           nameAs: None,
           opaque: Some(false),
           type_: propsType,
@@ -410,6 +411,7 @@ let translatePrimitive =
         asPath,
         childrenTyp,
         exportType: {
+          loc: Location.none,
           nameAs: None,
           opaque: Some(false),
           type_: propsTyp,

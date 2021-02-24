@@ -1,6 +1,7 @@
 open GenTypeCommon;
 
 type exportType = {
+  loc: Location.t,
   nameAs: option(string),
   opaque: option(bool),
   type_,
