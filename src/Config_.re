@@ -160,7 +160,7 @@ let getShims = json => {
   shims^;
 };
 
-let getDebug = json =>
+let setDebug = json =>
   switch (json) {
   | Ext_json_types.Obj({map}) =>
     switch (map |> String_map.find_opt("debug")) {
@@ -172,20 +172,20 @@ let getDebug = json =>
   };
 
 let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
-  let fromJson = (~packageSpecsModule, json) => {
-    let languageString = json |> getString("language");
-    let moduleString = json |> getStringOption("module");
-    let importPathString = json |> getString("importPath");
-    let reasonReactPathString = json |> getString("reasonReactPath");
-    let fileHeader = json |> getStringOption("fileHeader");
-    let bsBlockPathString = json |> getString("bsBlockPath");
-    let bsCurryPathString = json |> getString("bsCurryPath");
-    let exportInterfacesBool = json |> getBool("exportInterfaces");
+  let parseConfig = (~bsconf, ~gtconf) => {
+    let languageString = gtconf |> getString("language");
+    let moduleString = gtconf |> getStringOption("module");
+    let importPathString = gtconf |> getString("importPath");
+    let reasonReactPathString = gtconf |> getString("reasonReactPath");
+    let fileHeader = gtconf |> getStringOption("fileHeader");
+    let bsBlockPathString = gtconf |> getString("bsBlockPath");
+    let bsCurryPathString = gtconf |> getString("bsCurryPath");
+    let exportInterfacesBool = gtconf |> getBool("exportInterfaces");
     let generatedFileExtensionStringOption =
-      json |> getStringOption("generatedFileExtension");
-    let propTypesBool = json |> getBool("propTypes");
+      gtconf |> getStringOption("generatedFileExtension");
+    let propTypesBool = gtconf |> getBool("propTypes");
     let shimsMap =
-      json
+      gtconf
       |> getShims
       |> List.fold_left(
            (map, (fromModule, toModule)) => {
@@ -196,22 +196,28 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
            },
            ModuleNameMap.empty,
          );
-    json |> getDebug;
+    setDebug(gtconf);
     let language =
       switch (languageString) {
       | "typescript" => TypeScript
       | "untyped" => Untyped
       | _ => Flow
       };
-    let module_ =
+    let module_ = {
+      let packageSpecsModuleString =
+        switch (bsconf |> String_map.find_opt("package-specs")) {
+        | Some(packageSpecs) => packageSpecs |> getStringOption("module")
+        | _ => None
+        };
       // Give priority to gentypeconfig, followed by package-specs
-      switch (moduleString, packageSpecsModule) {
+      switch (moduleString, packageSpecsModuleString) {
       | (Some("commonjs"), _) => CommonJS
       | (Some("es6"), _) => ES6
       | (None, Some("commonjs")) => CommonJS
       | (None, Some("es6" | "es6-global")) => ES6
       | _ => default.module_
       };
+    };
     let importPath =
       switch (importPathString) {
       | "relative" => Relative
@@ -317,10 +323,37 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       );
     };
 
+    let namespace =
+      switch (bsconf |> String_map.find_opt("namespace")) {
+      | Some(True(_)) => namespace
+      | _ => default.namespace
+      };
+
+    let bsDependencies =
+      switch (bsconf |> String_map.find_opt("bs-dependencies")) {
+      | Some(Arr({content})) =>
+        let strings = ref([]);
+        content
+        |> Array.iter(x =>
+             switch (x) {
+             | Ext_json_types.Str({str}) => strings := [str, ...strings^]
+             | _ => ()
+             }
+           );
+        strings^;
+      | _ => default.bsDependencies
+      };
+
+    let sources =
+      switch (bsconf |> String_map.find_opt("sources")) {
+      | Some(sourceItem) => Some(sourceItem)
+      | _ => default.sources
+      };
+
     {
       bsBlockPath,
       bsCurryPath,
-      bsDependencies: [],
+      bsDependencies,
       bsPlatformLibExtension,
       emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
@@ -335,65 +368,31 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       language,
       module_,
       modulesAsObjects,
-      namespace: None,
+      namespace,
       propTypes,
       reasonReactPath,
       recordsAsObjects,
       shimsMap,
-      sources: None,
+      sources,
       useUnboxedAnnotations,
       variantsAsObjects,
       variantHashesAsStrings,
     };
   };
-
-  let fromBsConfig = json =>
-    switch (json) {
-    | Ext_json_types.Obj({map}) =>
-      let packageSpecsModule =
-        switch (map |> String_map.find_opt("package-specs")) {
-        | Some(packageSpecs) => packageSpecs |> getStringOption("module")
-        | _ => None
-        };
-      let config =
-        switch (map |> String_map.find_opt("gentypeconfig")) {
-        | Some(jsonGenTypeConfig) =>
-          jsonGenTypeConfig |> fromJson(~packageSpecsModule)
-        | _ => default
-        };
-      let config =
-        switch (map |> String_map.find_opt("namespace")) {
-        | Some(True(_)) => {...config, namespace}
-        | _ => config
-        };
-      let config =
-        switch (map |> String_map.find_opt("bs-dependencies")) {
-        | Some(Arr({content})) =>
-          let strings = ref([]);
-          content
-          |> Array.iter(x =>
-               switch (x) {
-               | Ext_json_types.Str({str}) => strings := [str, ...strings^]
-               | _ => ()
-               }
-             );
-          {...config, bsDependencies: strings^};
-        | _ => config
-        };
-      let config = {
-        switch (map |> String_map.find_opt("sources")) {
-        | Some(sourceItem) => {...config, sources: Some(sourceItem)}
-        | _ => config
-        };
-      };
-      config;
-    | _ => default
-    };
   switch (getBsConfigFile()) {
   | Some(bsConfigFile) =>
-    try(bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromBsConfig) {
+    let fromJson = json =>
+      switch (json) {
+      | Ext_json_types.Obj({map: bsconf}) =>
+        switch (bsconf |> String_map.find_opt("gentypeconfig")) {
+        | Some(gtconf) => parseConfig(~bsconf, ~gtconf)
+        | None => default
+        }
+      | _ => default
+      };
+    try(bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
     | _ => default
-    }
+    };
   | None => default
   };
 };
