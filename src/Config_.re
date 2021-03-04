@@ -172,9 +172,9 @@ let getDebug = json =>
   };
 
 let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
-  let fromJson = json => {
+  let fromJson = (~packageSpecsModule, json) => {
     let languageString = json |> getString("language");
-    let moduleString = json |> getString("module");
+    let moduleString = json |> getStringOption("module");
     let importPathString = json |> getString("importPath");
     let reasonReactPathString = json |> getString("reasonReactPath");
     let fileHeader = json |> getStringOption("fileHeader");
@@ -204,9 +204,12 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       | _ => Flow
       };
     let module_ =
-      switch (moduleString) {
-      | "commonjs" => CommonJS
-      | "es6" => ES6
+      // Give priority to gentypeconfig, followed by package-specs
+      switch (moduleString, packageSpecsModule) {
+      | (Some("commonjs"), _) => CommonJS
+      | (Some("es6"), _) => ES6
+      | (None, Some("commonjs")) => CommonJS
+      | (None, Some("es6" | "es6-global")) => ES6
       | _ => default.module_
       };
     let importPath =
@@ -302,7 +305,10 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       Log_.item(
         "Config language:%s module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n",
         languageString,
-        moduleString,
+        switch (moduleString) {
+        | None => ""
+        | Some(s) => s
+        },
         importPathString,
         shimsMap |> ModuleNameMap.cardinal,
         v1,
@@ -344,9 +350,15 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
   let fromBsConfig = json =>
     switch (json) {
     | Ext_json_types.Obj({map}) =>
+      let packageSpecsModule =
+        switch (map |> String_map.find_opt("package-specs")) {
+        | Some(packageSpecs) => packageSpecs |> getStringOption("module")
+        | _ => None
+        };
       let config =
         switch (map |> String_map.find_opt("gentypeconfig")) {
-        | Some(jsonGenFlowConfig) => jsonGenFlowConfig |> fromJson
+        | Some(jsonGenFlowConfig) =>
+          jsonGenFlowConfig |> fromJson(~packageSpecsModule)
         | _ => default
         };
       let config =
@@ -379,7 +391,11 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
     };
   switch (getConfigFile()) {
   | Some(configFile) =>
-    try(configFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
+    try(
+      configFile
+      |> Ext_json_parse.parse_json_from_file
+      |> fromJson(~packageSpecsModule=None)
+    ) {
     | _ => default
     }
   | None =>
