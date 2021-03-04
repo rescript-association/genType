@@ -20,3 +20,4 @@ gentype-*.tgz
 dist/gentype-*.tgz
 dist/LICENSE
 dist/package.json
+examples/typescript-react-example/.eslintcache
