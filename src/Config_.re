@@ -96,78 +96,61 @@ let getBsCurryPath = (~config) =>
   | Some(s) => s
   };
 
-let getBool = (s, json) =>
-  switch (json) {
-  | Ext_json_types.Obj({map}) =>
-    switch (map |> String_map.find_opt(s)) {
-    | Some(True(_)) => Some(true)
-    | Some(False(_)) => Some(false)
-    | _ => None
-    }
+type map = String_map.t(Ext_json_types.t);
+
+let getOpt = (s, map: map) => String_map.find_opt(s, map);
+
+let getBool = (s, map) =>
+  switch (map |> getOpt(s)) {
+  | Some(True(_)) => Some(true)
+  | Some(False(_)) => Some(false)
   | _ => None
   };
 
-let getString = (s, json) =>
-  switch (json) {
-  | Ext_json_types.Obj({map}) =>
-    switch (map |> String_map.find_opt(s)) {
-    | Some(Str({str})) => str
-    | _ => ""
-    }
+let getString = (s, map) =>
+  switch (map |> getOpt(s)) {
+  | Some(Str({str})) => str
   | _ => ""
   };
 
-let getStringOption = (s, json) =>
-  switch (json) {
-  | Ext_json_types.Obj({map}) =>
-    switch (map |> String_map.find_opt(s)) {
-    | Some(Str({str})) => Some(str)
-    | _ => None
-    }
+let getStringOption = (s, map) =>
+  switch (map |> getOpt(s)) {
+  | Some(Str({str})) => Some(str)
   | _ => None
   };
 
-let getShims = json => {
+let getShims = map => {
   let shims = ref([]);
-  switch (json) {
-  | Ext_json_types.Obj({map}) =>
-    switch (map |> String_map.find_opt("shims")) {
-    | Some(Ext_json_types.Obj({map: shimsMap})) =>
-      shimsMap
-      |> String_map.iter((fromModule, toModule) =>
-           switch (toModule) {
-           | Ext_json_types.Str({str}) =>
-             shims := [(fromModule, str), ...shims^]
-           | _ => ()
-           }
-         )
-    | Some(Arr({content})) =>
-      /* To be deprecated: array of strings */
-      content
-      |> Array.iter(x =>
-           switch (x) {
-           | Ext_json_types.Str({str}) =>
-             let fromTo = Str.split(Str.regexp("="), str) |> Array.of_list;
-             assert(Array.length(fromTo) === 2);
-             shims := [(fromTo[0], fromTo[1]), ...shims^];
-           | _ => ()
-           }
-         )
-    | _ => ()
-    }
+  switch (map |> getOpt("shims")) {
+  | Some(Obj({map: shimsMap})) =>
+    shimsMap
+    |> String_map.iter((fromModule, toModule) =>
+         switch (toModule) {
+         | Ext_json_types.Str({str}) =>
+           shims := [(fromModule, str), ...shims^]
+         | _ => ()
+         }
+       )
+  | Some(Arr({content})) =>
+    /* To be deprecated: array of strings */
+    content
+    |> Array.iter(x =>
+         switch (x) {
+         | Ext_json_types.Str({str}) =>
+           let fromTo = Str.split(Str.regexp("="), str) |> Array.of_list;
+           assert(Array.length(fromTo) === 2);
+           shims := [(fromTo[0], fromTo[1]), ...shims^];
+         | _ => ()
+         }
+       )
   | _ => ()
   };
   shims^;
 };
 
-let setDebug = json =>
-  switch (json) {
-  | Ext_json_types.Obj({map}) =>
-    switch (map |> String_map.find_opt("debug")) {
-    | Some(Ext_json_types.Obj({map})) =>
-      map |> String_map.iter(Debug.setItem)
-    | _ => ()
-    }
+let setDebug = (~gtconf) =>
+  switch (gtconf |> getOpt("debug")) {
+  | Some(Obj({map})) => map |> String_map.iter(Debug.setItem)
   | _ => ()
   };
 
@@ -196,7 +179,7 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
            },
            ModuleNameMap.empty,
          );
-    setDebug(gtconf);
+    setDebug(~gtconf);
     let language =
       switch (languageString) {
       | "typescript" => TypeScript
@@ -205,8 +188,9 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       };
     let module_ = {
       let packageSpecsModuleString =
-        switch (bsconf |> String_map.find_opt("package-specs")) {
-        | Some(packageSpecs) => packageSpecs |> getStringOption("module")
+        switch (bsconf |> getOpt("package-specs")) {
+        | Some(Obj({map: packageSpecs})) =>
+          packageSpecs |> getStringOption("module")
         | _ => None
         };
       // Give priority to gentypeconfig, followed by package-specs
@@ -324,13 +308,13 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
     };
 
     let namespace =
-      switch (bsconf |> String_map.find_opt("namespace")) {
+      switch (bsconf |> getOpt("namespace")) {
       | Some(True(_)) => namespace
       | _ => default.namespace
       };
 
     let bsDependencies =
-      switch (bsconf |> String_map.find_opt("bs-dependencies")) {
+      switch (bsconf |> getOpt("bs-dependencies")) {
       | Some(Arr({content})) =>
         let strings = ref([]);
         content
@@ -345,7 +329,7 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       };
 
     let sources =
-      switch (bsconf |> String_map.find_opt("sources")) {
+      switch (bsconf |> getOpt("sources")) {
       | Some(sourceItem) => Some(sourceItem)
       | _ => default.sources
       };
@@ -381,18 +365,19 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
   };
   switch (getBsConfigFile()) {
   | Some(bsConfigFile) =>
-    let fromJson = json =>
+    try({
+      let json = bsConfigFile |> Ext_json_parse.parse_json_from_file;
       switch (json) {
-      | Ext_json_types.Obj({map: bsconf}) =>
-        switch (bsconf |> String_map.find_opt("gentypeconfig")) {
-        | Some(gtconf) => parseConfig(~bsconf, ~gtconf)
-        | None => default
+      | Obj({map: bsconf}) =>
+        switch (bsconf |> getOpt("gentypeconfig")) {
+        | Some(Obj({map: gtconf})) => parseConfig(~bsconf, ~gtconf)
+        | _ => default
         }
       | _ => default
       };
-    try(bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromJson) {
+    }) {
     | _ => default
-    };
+    }
   | None => default
   };
 };
