@@ -101,10 +101,6 @@ let getCmtFile = cmt => {
   cmtFile;
 };
 
-let getConfigFile = () => {
-  let gentypeconfig = concat(projectRoot^, "gentypeconfig.json");
-  gentypeconfig |> Sys.file_exists ? Some(gentypeconfig) : None;
-};
 let getBsConfigFile = () => {
   let bsconfig = concat(projectRoot^, "bsconfig.json");
   bsconfig |> Sys.file_exists ? Some(bsconfig) : None;
@@ -145,5 +141,5 @@ let relativePathFromBsLib = fileName =>
 
 let readConfig = (~bsVersion, ~namespace) => {
   setProjectRoot();
-  Config.readConfig(~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace);
+  Config.readConfig(~bsVersion, ~getBsConfigFile, ~namespace);
 };

@@ -171,7 +171,7 @@ let getDebug = json =>
   | _ => ()
   };
 
-let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
+let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
   let fromJson = (~packageSpecsModule, json) => {
     let languageString = json |> getString("language");
     let moduleString = json |> getStringOption("module");
@@ -357,8 +357,8 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
         };
       let config =
         switch (map |> String_map.find_opt("gentypeconfig")) {
-        | Some(jsonGenFlowConfig) =>
-          jsonGenFlowConfig |> fromJson(~packageSpecsModule)
+        | Some(jsonGenTypeConfig) =>
+          jsonGenTypeConfig |> fromJson(~packageSpecsModule)
         | _ => default
         };
       let config =
@@ -389,22 +389,11 @@ let readConfig = (~bsVersion, ~getConfigFile, ~getBsConfigFile, ~namespace) => {
       config;
     | _ => default
     };
-  switch (getConfigFile()) {
-  | Some(configFile) =>
-    try(
-      configFile
-      |> Ext_json_parse.parse_json_from_file
-      |> fromJson(~packageSpecsModule=None)
-    ) {
+  switch (getBsConfigFile()) {
+  | Some(bsConfigFile) =>
+    try(bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromBsConfig) {
     | _ => default
     }
-  | None =>
-    switch (getBsConfigFile()) {
-    | Some(bsConfigFile) =>
-      try(bsConfigFile |> Ext_json_parse.parse_json_from_file |> fromBsConfig) {
-      | _ => default
-      }
-    | None => default
-    }
+  | None => default
   };
 };
