@@ -8,7 +8,6 @@ import * as MyMath from "./MyMath";
 import * as Types from "./nested/Types.gen";
 import { Universe_Nested2_Nested3_nested3Value } from "./NestedModules.gen";
 import * as Records from "./Records.gen";
-import registerServiceWorker from "./registerServiceWorker";
 import * as Variants from "./Variants.gen";
 import Hooks from "./Hooks.gen";
 import * as DocStrings from "./Docstrings.gen";
@@ -71,7 +70,6 @@ ReactDOM.render(
   </div>,
   document.getElementById("root") as HTMLElement
 );
-registerServiceWorker();
 
 const x1 = Records.getPayload(Records.payloadValue).v;
 const x2 = Records.getPayloadRecord(Records.payloadValue).v;
