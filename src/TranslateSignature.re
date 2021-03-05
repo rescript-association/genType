@@ -133,14 +133,7 @@ and translateModuleTypeDeclaration =
   };
 }
 and translateSignatureItem =
-    (
-      ~config,
-      ~outputFileRelative,
-      ~resolver,
-      ~moduleItemGen,
-      ~typeEnv,
-      signatureItem,
-    )
+    (~config, ~outputFileRelative, ~resolver, ~typeEnv, signatureItem)
     : Translation.t =>
   switch (signatureItem) {
   | {Typedtree.sig_desc: Typedtree.Tsig_type(recFlag, typeDeclarations)} => {
@@ -151,7 +144,7 @@ and translateSignatureItem =
         |> TranslateTypeDeclarations.translateTypeDeclarations(
              ~config,
              ~outputFileRelative,
-             ~recursive=recFlag==Recursive,
+             ~recursive=recFlag == Recursive,
              ~resolver,
              ~typeEnv,
            ),
@@ -171,8 +164,7 @@ and translateSignatureItem =
          );
     } else {
       let moduleItem =
-        moduleItemGen
-        |> Runtime.newModuleItem(~name=valueDescription.val_id |> Ident.name);
+        Runtime.newModuleItem(~name=valueDescription.val_id |> Ident.name);
       typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
       valueDescription
       |> translateSignatureValue(
@@ -194,10 +186,7 @@ and translateSignatureItem =
 
   | {Typedtree.sig_desc: Typedtree.Tsig_modtype(moduleTypeDeclaration)} =>
     let moduleItem =
-      moduleItemGen
-      |> Runtime.newModuleItem(
-           ~name=moduleTypeDeclaration.mtd_id |> Ident.name,
-         );
+      Runtime.newModuleItem(~name=moduleTypeDeclaration.mtd_id |> Ident.name);
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleTypeDeclaration
     |> translateModuleTypeDeclaration(
@@ -238,14 +227,12 @@ and translateSignature =
   if (Debug.translation^) {
     Log_.item("Translate Signature\n");
   };
-  let moduleItemGen = Runtime.moduleItemGen();
   signature.Typedtree.sig_items
   |> List.map(
        translateSignatureItem(
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~moduleItemGen,
          ~typeEnv,
        ),
      );

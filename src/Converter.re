@@ -293,8 +293,7 @@ let typeGetConverterNormalized =
     | TypeVar(_) => (IdentC, normalized_)
 
     | Variant(variant) =>
-      let allowUnboxed =
-        !(variant.polymorphic && config.variantHashesAsStrings);
+      let allowUnboxed = !variant.polymorphic;
       let (withPayloads, normalized, unboxed) =
         switch (
           variant.payloads
@@ -345,7 +344,7 @@ let typeGetConverterNormalized =
       let useVariantTables =
         if (variant.bsStringOrInt) {
           false;
-        } else if (variant.polymorphic && config.variantHashesAsStrings) {
+        } else if (variant.polymorphic) {
           noPayloads
           |> List.exists(({label, labelJS}) =>
                labelJS != StringLabel(label)
@@ -857,7 +856,7 @@ let rec apply =
   | VariantC({noPayloads: [case], withPayloads: [], polymorphic}) =>
     toJS
       ? case.labelJS |> labelJSToString
-      : case.label |> Runtime.emitVariantLabel(~config, ~polymorphic)
+      : case.label |> Runtime.emitVariantLabel(~polymorphic)
 
   | VariantC(variantC) =>
     if (variantC.noPayloads != [] && variantC.useVariantTables) {
@@ -891,7 +890,7 @@ let rec apply =
         argConverters
         |> List.mapi((i, converter) =>
              x
-             |> Runtime.accessVariant(~config, ~index=i)
+             |> Runtime.accessVariant(~index=i)
              |> apply(
                   ~config,
                   ~converter,
@@ -943,7 +942,6 @@ let rec apply =
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
-               ~config,
                ~inlineRecord,
                ~numArgs=argConverters |> List.length,
                ~polymorphic=variantC.polymorphic,
@@ -974,21 +972,18 @@ let rec apply =
         if (toJS) {
           value
           |> Runtime.emitVariantGetPayload(
-               ~config,
                ~inlineRecord,
                ~numArgs=argConverters |> List.length,
                ~polymorphic=variantC.polymorphic,
              )
           |> convertVariantPayloadToJS(~argConverters, ~indent)
           |> Runtime.emitJSVariantWithPayload(
-               ~config,
                ~label=case.labelJS |> labelJSToString,
                ~polymorphic=variantC.polymorphic,
              );
         } else {
           value
           |> Runtime.emitJSVariantGetPayload(
-               ~config,
                ~polymorphic=variantC.polymorphic,
              )
           |> convertVariantPayloadToRE(~argConverters, ~indent)
@@ -1006,7 +1001,6 @@ let rec apply =
                toJS
                  ? case.label
                    |> Runtime.emitVariantLabel(
-                        ~config,
                         ~polymorphic=variantC.polymorphic,
                       )
                  : case.labelJS |> labelJSToString,
@@ -1022,7 +1016,6 @@ let rec apply =
         value
         |> Runtime.(
              (toJS ? emitVariantGetLabel : emitJSVariantGetLabel)(
-               ~config,
                ~polymorphic=variantC.polymorphic,
              )
            )

@@ -1,6 +1,8 @@
 # master
 - Give a warning when attempting to export a GADT type (unless it's already an opaque export), and export it as an opaque type.
 - When not specified in `gentypeconfig`, read the `module` type from `package-specs`.
+- Only support bs-platform `8.2.0` or newer.
+
 
 # 3.44.0
 - Fix issue with non-recursive types inside modules when the type name is already in scope (See https://github.com/reason-association/genType/issues/492).

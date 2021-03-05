@@ -56,22 +56,18 @@ let isJSSafePropertyName = name => {
  * If @bs.as is used (with records-as-objects active), escape and quote if
  * the identifier contains characters which are invalid as JS property names.
  */
-let renameRecordField = (~config, ~attributes, ~nameRE) => {
+let renameRecordField = (~attributes, ~nameRE) => {
   switch (attributes |> Annotation.getGenTypeAsRenaming) {
   | Some(nameJS) => (nameJS, nameRE)
   | None =>
-    if (config.recordsAsObjects) {
-      switch (attributes |> Annotation.getBsAsRenaming) {
-      | Some(nameBS) =>
-        let escapedName = nameBS |> String.escaped;
-        let name =
-          isJSSafePropertyName(escapedName)
-            ? escapedName : EmitText.quotes(escapedName);
-        (name, name);
-      | None => (nameRE, nameRE)
-      };
-    } else {
-      (nameRE, nameRE);
+    switch (attributes |> Annotation.getBsAsRenaming) {
+    | Some(nameBS) =>
+      let escapedName = nameBS |> String.escaped;
+      let name =
+        isJSSafePropertyName(escapedName)
+          ? escapedName : EmitText.quotes(escapedName);
+      (name, name);
+    | None => (nameRE, nameRE)
     }
   };
 };
@@ -130,7 +126,6 @@ let traslateDeclarationKind =
            let (nameJS, nameRE) =
              renameRecordField(
                ~attributes=ld_attributes,
-               ~config,
                ~nameRE=ld_id |> Ident.name,
              );
            let mutability = ld_mutable == Mutable ? Mutable : Immutable;
@@ -166,10 +161,8 @@ let traslateDeclarationKind =
          });
     let type_ =
       switch (fields) {
-      | [field] when unboxedAnnotation && config.useUnboxedAnnotations =>
-        field.type_
-      | _ =>
-        config.recordsAsObjects ? Object(Closed, fields) : Record(fields)
+      | [field] when unboxedAnnotation => field.type_
+      | _ => Object(Closed, fields)
       };
     {TranslateTypeExprFromTypes.dependencies, type_};
   };
@@ -401,8 +394,7 @@ let traslateDeclarationKind =
 
     let variantTyp =
       switch (noPayloads, payloads) {
-      | ([], [{t: type_}])
-          when unboxedAnnotation && config.useUnboxedAnnotations => type_
+      | ([], [{t: type_}]) when unboxedAnnotation => type_
       | _ =>
         createVariant(
           ~bsStringOrInt=false,

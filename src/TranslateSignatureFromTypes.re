@@ -85,7 +85,6 @@ and translateSignatureItemFromTypes =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~moduleItemGen,
       ~typeEnv,
       signatureItem: Types.signature_item,
     )
@@ -106,8 +105,7 @@ and translateSignatureItemFromTypes =
     }
 
   | Types.Sig_module(id, moduleDeclaration, _) =>
-    let moduleItem =
-      moduleItemGen |> Runtime.newModuleItem(~name=id |> Ident.name);
+    let moduleItem = Runtime.newModuleItem(~name=id |> Ident.name);
     typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
     moduleDeclaration
     |> translateModuleDeclarationFromTypes(
@@ -123,7 +121,7 @@ and translateSignatureItemFromTypes =
     if (Debug.translation^) {
       Log_.item("Translate Sig Value %s\n", name);
     };
-    let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
+    let moduleItem = Runtime.newModuleItem(~name);
     typeEnv |> TypeEnv.updateModuleItem(~nameOpt=Some(name), ~moduleItem);
     if (val_attributes |> Annotation.fromAttributes(~loc=val_loc) == GenType) {
       name
@@ -167,14 +165,12 @@ and translateSignatureFromTypes =
   if (Debug.translation^) {
     Log_.item("Translate Types.signature\n");
   };
-  let moduleItemGen = Runtime.moduleItemGen();
   signature
   |> List.map(
        translateSignatureItemFromTypes(
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~moduleItemGen,
          ~typeEnv,
        ),
      );
