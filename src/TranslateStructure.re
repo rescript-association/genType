@@ -74,7 +74,6 @@ and addAnnotationsToFields =
     let (nameJS, nameRE) =
       TranslateTypeDeclarations.renameRecordField(
         ~attributes=expr.exp_attributes,
-        ~config,
         ~nameRE=field.nameRE,
       );
     ([{...field, nameJS, nameRE}, ...nextFields1], types1);
@@ -133,7 +132,6 @@ let translateValueBinding =
       ~config,
       ~outputFileRelative,
       ~resolver,
-      ~moduleItemGen,
       ~typeEnv,
       {Typedtree.vb_attributes, vb_expr, vb_pat},
     )
@@ -145,7 +143,7 @@ let translateValueBinding =
     if (Debug.translation^) {
       Log_.item("Translate Value Binding %s\n", name);
     };
-    let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
+    let moduleItem = Runtime.newModuleItem(~name);
     typeEnv |> TypeEnv.updateModuleItem(~nameOpt=Some(name), ~moduleItem);
 
     if (vb_attributes
@@ -221,7 +219,6 @@ let rec translateModuleBinding =
           ~outputFileRelative,
           ~resolver,
           ~typeEnv,
-          ~moduleItemGen,
           {mb_id, mb_expr, mb_attributes}: Typedtree.module_binding,
         )
         : Translation.t => {
@@ -229,7 +226,7 @@ let rec translateModuleBinding =
   if (Debug.translation^) {
     Log_.item("Translate Module Binding %s\n", name);
   };
-  let moduleItem = moduleItemGen |> Runtime.newModuleItem(~name);
+  let moduleItem = Runtime.newModuleItem(~name);
   typeEnv |> TypeEnv.updateModuleItem(~moduleItem);
   let typeEnv = typeEnv |> TypeEnv.newModule(~name);
 
@@ -379,14 +376,7 @@ let rec translateModuleBinding =
   };
 }
 and translateStructureItem =
-    (
-      ~config,
-      ~outputFileRelative,
-      ~resolver,
-      ~moduleItemGen,
-      ~typeEnv,
-      structItem,
-    )
+    (~config, ~outputFileRelative, ~resolver, ~typeEnv, structItem)
     : Translation.t =>
   switch (structItem) {
   | {Typedtree.str_desc: Typedtree.Tstr_type(recFlag, typeDeclarations)} => {
@@ -410,7 +400,6 @@ and translateStructureItem =
            ~config,
            ~outputFileRelative,
            ~resolver,
-           ~moduleItemGen,
            ~typeEnv,
          ),
        )
@@ -433,7 +422,6 @@ and translateStructureItem =
          ~outputFileRelative,
          ~resolver,
          ~typeEnv,
-         ~moduleItemGen,
        )
 
   | {Typedtree.str_desc: Tstr_modtype(moduleTypeDeclaration)} =>
@@ -453,7 +441,6 @@ and translateStructureItem =
            ~outputFileRelative,
            ~resolver,
            ~typeEnv,
-           ~moduleItemGen,
          ),
        )
     |> Translation.combine
@@ -487,7 +474,6 @@ and translateStructureItem =
          ~config,
          ~outputFileRelative,
          ~resolver,
-         ~moduleItemGen,
          ~typeEnv,
        )
 
@@ -529,7 +515,6 @@ and translateStructure =
   if (Debug.translation^) {
     Log_.item("Translate Structure\n");
   };
-  let moduleItemGen = Runtime.moduleItemGen();
   structure.Typedtree.str_items
   |> removeValueBindingDuplicates
   |> List.map(structItem =>
@@ -538,7 +523,6 @@ and translateStructure =
             ~config,
             ~outputFileRelative,
             ~resolver,
-            ~moduleItemGen,
             ~typeEnv,
           )
      );

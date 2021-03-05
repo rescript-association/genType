@@ -940,11 +940,7 @@ let emitVariantTables = (~config, ~emitters, variantTables) => {
            let js = case.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
            let re =
              case.label
-             |> Runtime.emitVariantLabel(
-                  ~comment=false,
-                  ~config,
-                  ~polymorphic=variantC.polymorphic,
-                );
+             |> Runtime.emitVariantLabel(~polymorphic=variantC.polymorphic);
            toJS
              ? (re |> EmitText.quotesIfRequired) ++ ": " ++ js
              : js ++ ": " ++ re;

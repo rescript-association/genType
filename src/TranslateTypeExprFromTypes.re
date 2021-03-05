@@ -89,22 +89,18 @@ let translateConstr =
   | (["Pervasives", "ref"], [paramTranslation]) => {
       dependencies: paramTranslation.dependencies,
       type_:
-        if (config.recordsAsObjects) {
-          Object(
-            Closed,
-            [
-              {
-                mutable_: Mutable,
-                nameJS: "contents",
-                nameRE: "contents",
-                optional: Mandatory,
-                type_: paramTranslation.type_,
-              },
-            ],
-          );
-        } else {
-          Tuple([paramTranslation.type_]);
-        },
+        Object(
+          Closed,
+          [
+            {
+              mutable_: Mutable,
+              nameJS: "contents",
+              nameRE: "contents",
+              optional: Mandatory,
+              type_: paramTranslation.type_,
+            },
+          ],
+        ),
     }
 
   | (
@@ -831,10 +827,7 @@ and signatureToModuleRuntimeRepresentation =
     let (dl, fl) = dependenciesAndFields |> List.split;
     (dl |> List.concat, fl |> List.concat);
   };
-  (
-    dependencies,
-    config.modulesAsObjects ? Object(Closed, fields) : Record(fields),
-  );
+  (dependencies, Object(Closed, fields));
 };
 
 let translateTypeExprFromTypes =

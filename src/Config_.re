@@ -22,7 +22,6 @@ type config = {
   bsBlockPath: option(string),
   bsCurryPath: option(string),
   bsDependencies: list(string),
-  bsPlatformLibExtension: string,
   mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
@@ -35,23 +34,17 @@ type config = {
   importPath,
   language,
   module_,
-  modulesAsObjects: bool,
   namespace: option(string),
   propTypes: bool,
   reasonReactPath: string,
-  recordsAsObjects: bool,
   shimsMap: ModuleNameMap.t(ModuleName.t),
   sources: option(Ext_json_types.t),
-  useUnboxedAnnotations: bool,
-  variantsAsObjects: bool,
-  variantHashesAsStrings: bool,
 };
 
 let default = {
   bsBlockPath: None,
   bsCurryPath: None,
   bsDependencies: [],
-  bsPlatformLibExtension: ".js",
   emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
@@ -64,16 +57,11 @@ let default = {
   importPath: Relative,
   language: Flow,
   module_: ES6,
-  modulesAsObjects: false,
   namespace: None,
   propTypes: false,
   reasonReactPath: "reason-react/src/ReasonReact.js",
-  recordsAsObjects: false,
   shimsMap: ModuleNameMap.empty,
   sources: None,
-  useUnboxedAnnotations: false,
-  variantsAsObjects: false,
-  variantHashesAsStrings: false,
 };
 
 let bsPlatformLib = (~config) =>
@@ -82,17 +70,16 @@ let bsPlatformLib = (~config) =>
   | CommonJS => "bs-platform/lib/js"
   };
 
+let bsPlatformLibExtension = ".js";
 let getBsBlockPath = (~config) =>
   switch (config.bsBlockPath) {
-  | None =>
-    bsPlatformLib(~config) ++ "/block" ++ config.bsPlatformLibExtension
+  | None => bsPlatformLib(~config) ++ "/block" ++ bsPlatformLibExtension
   | Some(s) => s
   };
 
 let getBsCurryPath = (~config) =>
   switch (config.bsCurryPath) {
-  | None =>
-    bsPlatformLib(~config) ++ "/curry" ++ config.bsPlatformLibExtension
+  | None => bsPlatformLib(~config) ++ "/curry" ++ bsPlatformLibExtension
   | Some(s) => s
   };
 
@@ -253,40 +240,6 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
         }
       };
     let (v1, v2, v3) = bsVersion;
-    let modulesAsObjects = {
-      switch (v1) {
-      | 5 => bsVersion >= (5, 2, 0)
-      | 6 => bsVersion >= (6, 2, 0)
-      | _ => v1 > 6
-      };
-    };
-    let recordsAsObjects = {
-      switch (v1) {
-      | 5 => bsVersion >= (5, 3, 0)
-      | 6 => bsVersion >= (6, 3, 0)
-      | _ => v1 > 6
-      };
-    };
-    let variantsAsObjects = {
-      switch (v1) {
-      | _ => v1 >= 8
-      };
-    };
-    let variantHashesAsStrings = {
-      bsVersion >= (8, 2, 0);
-    };
-    let useUnboxedAnnotations = {
-      switch (v1) {
-      | 7 => bsVersion > (7, 0, 1)
-      | _ => v1 > 7
-      };
-    };
-    let bsPlatformLibExtension =
-      if (v1 >= 9 && v2 == 0 && v3 == 0 && module_ == ES6) {
-        ".mjs";
-      } else {
-        ".js";
-      };
     if (Debug.config^) {
       Log_.item("Project root: %s\n", projectRoot^);
       if (bsbProjectRoot^ != projectRoot^) {
@@ -338,7 +291,6 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       bsBlockPath,
       bsCurryPath,
       bsDependencies,
-      bsPlatformLibExtension,
       emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
       emitImportCurry: false,
@@ -351,16 +303,11 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       importPath,
       language,
       module_,
-      modulesAsObjects,
       namespace,
       propTypes,
       reasonReactPath,
-      recordsAsObjects,
       shimsMap,
       sources,
-      useUnboxedAnnotations,
-      variantsAsObjects,
-      variantHashesAsStrings,
     };
   };
   switch (getBsConfigFile()) {

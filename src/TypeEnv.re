@@ -20,7 +20,7 @@ and entry =
   | Type(string);
 
 let createTypeEnv = (~name, parent) => {
-  let moduleItem = Runtime.moduleItemGen() |> Runtime.newModuleItem(~name);
+  let moduleItem = Runtime.newModuleItem(~name);
   {
     componentModuleItem: moduleItem,
     map: StringMap.empty,

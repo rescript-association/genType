@@ -332,11 +332,9 @@ let rec renderType =
              : [
                  case.labelJS
                  |> labelJSToString
-                 |> field(~name=Runtime.jsVariantTag(~config, ~polymorphic)),
+                 |> field(~name=Runtime.jsVariantTag(~polymorphic)),
                  typeRendered
-                 |> field(
-                      ~name=Runtime.jsVariantValue(~config, ~polymorphic),
-                    ),
+                 |> field(~name=Runtime.jsVariantValue(~polymorphic)),
                ]
                |> fields;
          });

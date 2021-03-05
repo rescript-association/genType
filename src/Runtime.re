@@ -1,7 +1,5 @@
 open GenTypeCommon;
 
-let createBucklescriptBlock = "CreateBucklescriptBlock" ++ ".__";
-
 type recordGen = {
   mutable unboxed: int,
   mutable boxed: int,
@@ -9,12 +7,7 @@ type recordGen = {
 
 type recordValue = int;
 
-type moduleItemGen = {mutable itemIndex: int};
-
-type moduleItem = {
-  name: string,
-  index: int,
-};
+type moduleItem = string;
 
 type moduleAccessPath =
   | Root(string)
@@ -35,12 +28,8 @@ let newRecordValue = (~unboxed, recordGen) =>
     v;
   };
 
-let moduleItemGen = () => {itemIndex: 0};
-
-let newModuleItem = (~name, moduleItemGen) => {
-  let index = moduleItemGen.itemIndex;
-  moduleItemGen.itemIndex = moduleItemGen.itemIndex + 1;
-  {name, index};
+let newModuleItem = (~name) => {
+  name;
 };
 
 let rec emitModuleAccessPath = (~config, moduleAccessPath) =>
@@ -49,130 +38,92 @@ let rec emitModuleAccessPath = (~config, moduleAccessPath) =>
   | Dot(p, moduleItem) =>
     p
     |> emitModuleAccessPath(~config)
-    |> (
-      config.modulesAsObjects
-        ? EmitText.fieldAccess(~label=moduleItem.name)
-        : EmitText.arrayAccess(~index=moduleItem.index)
-    )
+    |> EmitText.fieldAccess(~label=moduleItem)
   };
 
-let emitVariantLabel = (~comment=true, ~config, ~polymorphic, label) =>
+let emitVariantLabel = (~polymorphic, label) =>
   if (polymorphic) {
-    config.variantHashesAsStrings
-      ? label |> EmitText.quotes
-      : (comment ? label |> EmitText.comment : "")
-        ++ (label |> Btype.hash_variant |> string_of_int);
+    label |> EmitText.quotes;
   } else {
     label;
   };
 
 module VariantsAsObjects = {
-  let polyVariantLabelName = (~config) =>
-    config.variantHashesAsStrings ? "NAME" : "HASH";
-  let label = (~config, ~polymorphic) => {
-    polymorphic ? polyVariantLabelName(~config) : "TAG";
+  let polyVariantLabelName = "NAME";
+  let label = (~polymorphic) => {
+    polymorphic ? polyVariantLabelName : "TAG";
   };
 
   let indexLabel = i => "_" ++ string_of_int(i);
 };
 
-let emitVariantGetLabel = (~config, ~polymorphic, x) =>
-  config.variantsAsObjects
-    ? x
-      |> EmitText.fieldAccess(
-           ~label=VariantsAsObjects.label(~config, ~polymorphic),
-         )
-    : (
-      if (polymorphic) {
-        x |> EmitText.arrayAccess(~index=0);
-      } else {
-        x |> EmitText.fieldAccess(~label="tag");
-      }
-    );
+let emitVariantGetLabel = (~polymorphic, x) =>
+  x |> EmitText.fieldAccess(~label=VariantsAsObjects.label(~polymorphic));
 
-let accessVariant = (~config, ~index, x) =>
-  if (config.variantsAsObjects) {
-    x |> EmitText.fieldAccess(~label=index |> VariantsAsObjects.indexLabel);
-  } else {
-    x |> EmitText.arrayAccess(~index);
-  };
+let accessVariant = (~index, x) => {
+  x |> EmitText.fieldAccess(~label=index |> VariantsAsObjects.indexLabel);
+};
 
-let emitVariantGetPayload =
-    (~config, ~inlineRecord, ~numArgs, ~polymorphic, x) =>
+let emitVariantGetPayload = (~inlineRecord, ~numArgs, ~polymorphic, x) =>
   if (polymorphic) {
-    config.variantsAsObjects
-      ? x |> EmitText.fieldAccess(~label="VAL")
-      : x |> EmitText.arrayAccess(~index=1);
+    x |> EmitText.fieldAccess(~label="VAL");
   } else if (numArgs == 1) {
     if (inlineRecord) {
       // inline record is repressented as record plus a tag:
       // here pass it unchanged as if it was just a record (the payload)
       x;
     } else {
-      x |> accessVariant(~config, ~index=0);
+      x |> accessVariant(~index=0);
     };
   } else {
-    /* to convert a runtime block to a tuple, remove the tag */
-    config.variantsAsObjects
-      ? x : x |> EmitText.arraySlice;
+    /* payload items extracted later when numArgs != 1 */
+    x;
   };
 
 let emitVariantWithPayload =
     (~config, ~inlineRecord, ~label, ~polymorphic, args) =>
   switch (args) {
-  | [arg] when polymorphic && config.variantsAsObjects =>
+  | [arg] when polymorphic =>
     "{"
-    ++ VariantsAsObjects.polyVariantLabelName(~config)
+    ++ VariantsAsObjects.polyVariantLabelName
     ++ ": "
-    ++ (label |> emitVariantLabel(~config, ~polymorphic))
+    ++ (label |> emitVariantLabel(~polymorphic))
     ++ ", VAL: "
     ++ arg
     ++ "}"
-  | [arg] when polymorphic && !config.variantsAsObjects =>
-    [label |> emitVariantLabel(~config, ~polymorphic), arg] |> EmitText.array
-  | [arg] when inlineRecord && config.variantsAsObjects =>
+  | [arg] when inlineRecord =>
     // inline records are represented as records plus a `TAG`
     "Object.assign({TAG: " ++ label ++ "}, " ++ arg ++ ")"
   | _ =>
-    if (config.variantsAsObjects) {
-      "{TAG: "
-      ++ label
-      ++ ", "
-      ++ (
-        args
-        |> List.mapi((i, s) =>
-             (i |> VariantsAsObjects.indexLabel) ++ ":" ++ s
-           )
-        |> String.concat(", ")
-      )
-      ++ "}"
-      ++ (config.language == TypeScript ? " as any" : "");
-    } else {
-      config.emitCreateBucklescriptBlock = true;
-      createBucklescriptBlock
-      |> EmitText.funCall(~args=[label, args |> EmitText.array]);
-    }
+    "{TAG: "
+    ++ label
+    ++ ", "
+    ++ (
+      args
+      |> List.mapi((i, s) => (i |> VariantsAsObjects.indexLabel) ++ ":" ++ s)
+      |> String.concat(", ")
+    )
+    ++ "}"
+    ++ (config.language == TypeScript ? " as any" : "")
   };
 
-let jsVariantTag = (~config, ~polymorphic) =>
-  polymorphic && config.variantHashesAsStrings ? "NAME" : "tag";
+let jsVariantTag = (~polymorphic) => polymorphic ? "NAME" : "tag";
 
-let jsVariantValue = (~config, ~polymorphic) =>
-  polymorphic && config.variantHashesAsStrings ? "VAL" : "value";
+let jsVariantValue = (~polymorphic) => polymorphic ? "VAL" : "value";
 
-let emitJSVariantGetLabel = (~config, ~polymorphic, x) =>
-  x |> EmitText.fieldAccess(~label=jsVariantTag(~config, ~polymorphic));
+let emitJSVariantGetLabel = (~polymorphic, x) =>
+  x |> EmitText.fieldAccess(~label=jsVariantTag(~polymorphic));
 
-let emitJSVariantGetPayload = (~config, ~polymorphic, x) =>
-  x |> EmitText.fieldAccess(~label=jsVariantValue(~config, ~polymorphic));
+let emitJSVariantGetPayload = (~polymorphic, x) =>
+  x |> EmitText.fieldAccess(~label=jsVariantValue(~polymorphic));
 
-let emitJSVariantWithPayload = (~config, ~label, ~polymorphic, x) => {
+let emitJSVariantWithPayload = (~label, ~polymorphic, x) => {
   "{"
-  ++ jsVariantTag(~config, ~polymorphic)
+  ++ jsVariantTag(~polymorphic)
   ++ ":"
   ++ label
   ++ ", "
-  ++ jsVariantValue(~config, ~polymorphic)
+  ++ jsVariantValue(~polymorphic)
   ++ ":"
   ++ x
   ++ "}";

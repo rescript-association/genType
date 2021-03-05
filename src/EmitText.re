@@ -101,6 +101,4 @@ let addComment = (~comment, x) => "\n/* " ++ comment ++ " */\n  " ++ x;
 let arrayAccess = (~index, value) =>
   value ++ "[" ++ string_of_int(index) ++ "]";
 
-let arraySlice = value => value ++ ".slice()";
-
 let fieldAccess = (~label, value) => value ++ "." ++ label;

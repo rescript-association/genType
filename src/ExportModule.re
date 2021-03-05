@@ -142,7 +142,7 @@ let emitAllModuleItems =
   emitters
   |> rev_fold(
        (moduleName, exportModuleItem, emitters) => {
-         let {typeForValue, typeForType, needsConversion} =
+         let {typeForType, needsConversion} =
            M(exportModuleItem) |> exportModuleValueToType(~config);
          if (Debug.codeItems^) {
            Log_.item(
@@ -155,18 +155,9 @@ let emitAllModuleItems =
            emitters;
          } else {
            let emittedModuleItem =
-             config.modulesAsObjects
-               ? ModuleName.forInnerModule(
-                   ~fileName,
-                   ~innerModuleName=moduleName,
-                 )
-                 |> ModuleName.toString
-               : typeForValue
-                 |> EmitType.typeToString(
-                      ~config={...config, language: Flow} /* abuse type to print object */,
-                      ~typeNameIsInterface=_ =>
-                      false
-                    );
+             ModuleName.forInnerModule(~fileName, ~innerModuleName=moduleName)
+             |> ModuleName.toString;
+
            emittedModuleItem
            |> EmitType.emitExportConst(
                 ~config,
