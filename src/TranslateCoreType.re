@@ -176,7 +176,7 @@ and translateCoreType_ =
        )
 
   | Ttyp_constr(
-      Pdot(Pident({name: "Js"}), "t", _) as path,
+      Pdot(Pident({name: "Js"}), "t", _),
       _,
       [
         {
@@ -201,13 +201,9 @@ and translateCoreType_ =
         )
       };
     let fieldsTranslations = tObj |> List.map(getFieldType);
-    translateConstr(
-      ~config,
-      ~fieldsTranslations,
-      ~objectType=closedFlag == Closed ? Some(Closed) : Some(Open),
-      ~paramsTranslation=[],
-      ~path,
-      ~typeEnv,
+    translateObjType(
+      closedFlag == Closed ? Closed : Open,
+      fieldsTranslations,
     );
 
   | Ttyp_constr(path, _, typeParams) =>
@@ -215,8 +211,6 @@ and translateCoreType_ =
       typeParams |> translateCoreTypes_(~config, ~typeVarsGen, ~typeEnv);
     TranslateTypeExprFromTypes.translateConstr(
       ~config,
-      ~fieldsTranslations=[],
-      ~objectType=None,
       ~paramsTranslation,
       ~path,
       ~typeEnv,

@@ -24,15 +24,37 @@ let rec pathToList = path =>
   | Path.Papply(_) => []
   };
 
-let translateConstr =
-    (
-      ~config,
-      ~fieldsTranslations,
-      ~objectType,
-      ~paramsTranslation,
-      ~path: Path.t,
-      ~typeEnv,
-    ) => {
+let translateObjType = (closedFlag, fieldsTranslations) => {
+  let dependencies =
+    fieldsTranslations
+    |> List.map(((_, {dependencies})) => dependencies)
+    |> List.concat;
+  let rec checkMutableField = (~acc=[], fields) =>
+    switch (fields) {
+    | [(previousName, {type_: _}), (name, {type_}), ...rest]
+        when Runtime.checkMutableObjectField(~previousName, ~name) =>
+      /* The field was annotated "@bs.set" */
+      rest |> checkMutableField(~acc=[(name, type_, Mutable), ...acc])
+    | [(name, {type_}), ...rest] =>
+      rest |> checkMutableField(~acc=[(name, type_, Immutable), ...acc])
+    | [] => acc |> List.rev
+    };
+  let fields =
+    fieldsTranslations
+    |> checkMutableField
+    |> List.map(((name, t, mutable_)) => {
+         let (optional, type_) =
+           switch (t) {
+           | Option(t) => (Optional, t)
+           | _ => (Mandatory, t)
+           };
+         let name = name |> Runtime.mangleObjectField;
+         {mutable_, nameJS: name, nameRE: name, optional, type_};
+       });
+  let type_ = Object(closedFlag, fields);
+  {dependencies, type_};
+};
+let translateConstr = (~config, ~paramsTranslation, ~path: Path.t, ~typeEnv) => {
   let defaultCase = () => {
     let typeArgs =
       paramsTranslation |> List.map(({type_}: translation) => type_);
@@ -360,40 +382,7 @@ let translateConstr =
           uncurried: true,
         }),
     }
-  | _ =>
-    switch (objectType) {
-    | Some(closedFlag) =>
-      let dependencies =
-        fieldsTranslations
-        |> List.map(((_, {dependencies})) => dependencies)
-        |> List.concat;
-      let rec checkMutableField = (~acc=[], fields) =>
-        switch (fields) {
-        | [(previousName, {type_: _}), (name, {type_}), ...rest]
-            when Runtime.checkMutableObjectField(~previousName, ~name) =>
-          /* The field was annotated "@bs.set" */
-          rest |> checkMutableField(~acc=[(name, type_, Mutable), ...acc])
-        | [(name, {type_}), ...rest] =>
-          rest |> checkMutableField(~acc=[(name, type_, Immutable), ...acc])
-        | [] => acc |> List.rev
-        };
-      let fields =
-        fieldsTranslations
-        |> checkMutableField
-        |> List.map(((name, t, mutable_)) => {
-             let (optional, type_) =
-               switch (t) {
-               | Option(t) => (Optional, t)
-               | _ => (Mandatory, t)
-               };
-             let name = name |> Runtime.mangleObjectField;
-             {mutable_, nameJS: name, nameRE: name, optional, type_};
-           });
-      let type_ = Object(closedFlag, fields);
-      {dependencies, type_};
-
-    | None => defaultCase()
-    }
+  | _ => defaultCase()
   };
 };
 
@@ -576,14 +565,7 @@ and translateTypeExprFromTypes_ =
       | _ => (Closed, [])
       };
     let (closedFlag, fieldsTranslations) = tObj |> getFieldTypes;
-    translateConstr(
-      ~config,
-      ~fieldsTranslations,
-      ~objectType=Some(closedFlag),
-      ~paramsTranslation=[],
-      ~path,
-      ~typeEnv,
-    );
+    translateObjType(closedFlag, fieldsTranslations);
 
   | Tconstr(path, [{desc: Tlink(te)}], r) =>
     {...typeExpr, desc: Types.Tconstr(path, [te], r)}
@@ -598,14 +580,7 @@ and translateTypeExprFromTypes_ =
     let paramsTranslation =
       typeParams
       |> translateTypeExprsFromTypes_(~config, ~typeVarsGen, ~typeEnv);
-    translateConstr(
-      ~config,
-      ~fieldsTranslations=[],
-      ~objectType=None,
-      ~paramsTranslation,
-      ~path,
-      ~typeEnv,
-    );
+    translateConstr(~config, ~paramsTranslation, ~path, ~typeEnv);
 
   | Tpoly(t, []) =>
     t
