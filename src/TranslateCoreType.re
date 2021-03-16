@@ -178,15 +178,21 @@ and translateCoreType_ =
   | Ttyp_constr(
       Pdot(Pident({name: "Js"}), "t", _),
       _,
-      [
-        {
-          ctyp_desc:
-            Ttyp_object(tObj, closedFlag) |
-            Ttyp_alias({ctyp_desc: Ttyp_object(tObj, closedFlag)}, _),
-          _,
-        },
-      ],
+      [{ctyp_desc: Ttyp_constr(_) | Ttyp_var(_)}],
     ) =>
+    // Preserve some existing uses of Js.t(Obj.t) and Js.t('a).
+    translateObjType(Closed, [])
+
+  | Ttyp_constr(Pdot(Pident({name: "Js"}), "t", _), _, [t]) =>
+    t
+    |> translateCoreType_(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies=false,
+         ~typeEnv,
+       )
+
+  | Ttyp_object(tObj, closedFlag) =>
     let getFieldType = objectField =>
       switch (objectField) {
       | Typedtree.OTtag({txt: name}, _, t) => (
@@ -357,8 +363,7 @@ and translateCoreType_ =
     }
 
   | Ttyp_any
-  | Ttyp_class(_)
-  | Ttyp_object(_) => {dependencies: [], type_: mixedOrUnknown(~config)}
+  | Ttyp_class(_) => {dependencies: [], type_: mixedOrUnknown(~config)}
   }
 and translateCoreTypes_ =
     (~config, ~typeVarsGen, ~typeEnv, typeExprs): list(translation) =>

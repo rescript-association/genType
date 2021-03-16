@@ -535,10 +535,23 @@ and translateTypeExprFromTypes_ =
   | Tvar(Some(s)) => {dependencies: [], type_: TypeVar(s)}
 
   | Tconstr(
-      Pdot(Pident({name: "Js"}), "t", _) as path,
-      [{desc: Tobject(tObj, _)}],
+      Pdot(Pident({name: "Js"}), "t", _),
+      [{desc: Tvar(_) | Tconstr(_)}],
       _,
     ) =>
+    // Preserve some existing uses of Js.t(Obj.t) and Js.t('a).
+    translateObjType(Closed, [])
+
+  | Tconstr(Pdot(Pident({name: "Js"}), "t", _), [t], _) =>
+    t
+    |> translateTypeExprFromTypes_(
+         ~config,
+         ~typeVarsGen,
+         ~noFunctionReturnDependencies,
+         ~typeEnv,
+       )
+
+  | Tobject(tObj, _) =>
     let rec getFieldTypes = (texp: Types.type_expr) =>
       switch (texp.desc) {
       | Tfield(name, _, t1, t2) =>
@@ -560,6 +573,7 @@ and translateTypeExprFromTypes_ =
             ...fields,
           ],
         );
+
       | Tlink(te) => te |> getFieldTypes
       | Tvar(None) => (Open, [])
       | _ => (Closed, [])
@@ -729,7 +743,6 @@ and translateTypeExprFromTypes_ =
 
   | Tfield(_)
   | Tnil
-  | Tobject(_)
   | Tpoly(_)
   | Tsubst(_)
   | Tunivar(_) => {dependencies: [], type_: mixedOrUnknown(~config)}
