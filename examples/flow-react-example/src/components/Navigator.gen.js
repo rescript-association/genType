@@ -6,7 +6,7 @@
 /* eslint-disable */
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as Curry from 'rescript/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as NavigatorBS from './Navigator.bs';
