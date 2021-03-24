@@ -27,19 +27,35 @@ type labelJS =
   | IntLabel(string)
   | StringLabel(string);
 
-let labelJSToString = (~alwaysQuotes=false, labelJS) => {
-  let addQuotes = x => alwaysQuotes ? x |> EmitText.quotes : x;
-  switch (labelJS) {
-  | BoolLabel(b) => b |> string_of_bool |> addQuotes
-  | FloatLabel(s) => s |> addQuotes
-  | IntLabel(i) => i |> addQuotes
-  | StringLabel(s) => s |> EmitText.quotes
-  };
-};
-
 type case = {
   label: string,
   labelJS,
+};
+
+let labelJSToString = (~alwaysQuotes=false, case) => {
+  let addQuotes = x => alwaysQuotes ? x |> EmitText.quotes : x;
+  let isNumber = s => {
+    let res = ref(true);
+    for (i in 0 to String.length(s) - 1) {
+      switch (s.[i]) {
+      | '0'..'9' => ()
+      | '.' => ()
+      | _ => res := false
+      };
+    };
+    res.contents;
+  };
+  switch (case.labelJS) {
+  | BoolLabel(b) => b |> string_of_bool |> addQuotes
+  | FloatLabel(s) => s |> addQuotes
+  | IntLabel(i) => i |> addQuotes
+  | StringLabel(s) =>
+    if (s == case.label && isNumber(s)) {
+      s |> addQuotes;
+    } else {
+      s |> EmitText.quotes;
+    }
+  };
 };
 
 type closedFlag =
