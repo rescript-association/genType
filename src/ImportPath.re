@@ -6,7 +6,6 @@ let propTypes = ("", "prop-types");
 
 let react = ("", "react");
 let reasonReactPath = (~config) => ("", config.reasonReactPath);
-let bsBlockPath = (~config) => ("", Config_.getBsBlockPath(~config));
 
 let bsCurryPath = (~config) => ("", Config_.getBsCurryPath(~config));
 

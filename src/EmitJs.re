@@ -1349,20 +1349,10 @@ let emitTranslationAsString =
            )
       : env;
 
-  let env =
+  let finalEnv =
     config.emitImportPropTypes
       ? ModuleName.propTypes
         |> requireModule(~import=true, ~env, ~importPath=ImportPath.propTypes)
-      : env;
-
-  let finalEnv =
-    config.emitCreateBucklescriptBlock
-      ? ModuleName.createBucklescriptBlock
-        |> requireModule(
-             ~import=true,
-             ~env,
-             ~importPath=ImportPath.bsBlockPath(~config),
-           )
       : env;
 
   let emitters = variantTables |> emitVariantTables(~config, ~emitters);

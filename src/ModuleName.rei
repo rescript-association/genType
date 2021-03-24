@@ -2,8 +2,6 @@ type t;
 
 let compare: (t, t) => int;
 
-let createBucklescriptBlock: t;
-
 let curry: t;
 
 let forBsFile: t => t;

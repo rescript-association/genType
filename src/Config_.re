@@ -19,10 +19,8 @@ type importPath =
 type bsVersion = (int, int, int);
 
 type config = {
-  bsBlockPath: option(string),
   bsCurryPath: option(string),
   bsDependencies: list(string),
-  mutable emitCreateBucklescriptBlock: bool,
   mutable emitFlowAny: bool,
   mutable emitImportCurry: bool,
   mutable emitImportPropTypes: bool,
@@ -42,10 +40,8 @@ type config = {
 };
 
 let default = {
-  bsBlockPath: None,
   bsCurryPath: None,
   bsDependencies: [],
-  emitCreateBucklescriptBlock: false,
   emitFlowAny: false,
   emitImportCurry: false,
   emitImportPropTypes: false,
@@ -71,11 +67,6 @@ let bsPlatformLib = (~config) =>
   };
 
 let bsPlatformLibExtension = ".js";
-let getBsBlockPath = (~config) =>
-  switch (config.bsBlockPath) {
-  | None => bsPlatformLib(~config) ++ "/block" ++ bsPlatformLibExtension
-  | Some(s) => s
-  };
 
 let getBsCurryPath = (~config) =>
   switch (config.bsCurryPath) {
@@ -148,7 +139,6 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
     let importPathString = gtconf |> getString("importPath");
     let reasonReactPathString = gtconf |> getString("reasonReactPath");
     let fileHeader = gtconf |> getStringOption("fileHeader");
-    let bsBlockPathString = gtconf |> getString("bsBlockPath");
     let bsCurryPathString = gtconf |> getString("bsCurryPath");
     let exportInterfacesBool = gtconf |> getBool("exportInterfaces");
     let generatedFileExtensionStringOption =
@@ -199,11 +189,6 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       switch (reasonReactPathString) {
       | "" => default.reasonReactPath
       | _ => reasonReactPathString
-      };
-    let bsBlockPath =
-      switch (bsBlockPathString) {
-      | "" => None
-      | _ => Some(bsBlockPathString)
       };
     let bsCurryPath =
       switch (bsCurryPathString) {
@@ -288,10 +273,8 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       };
 
     {
-      bsBlockPath,
       bsCurryPath,
       bsDependencies,
-      emitCreateBucklescriptBlock: false,
       emitFlowAny: false,
       emitImportCurry: false,
       emitImportPropTypes: false,

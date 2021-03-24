@@ -2,8 +2,6 @@ open GenTypeCommon;
 
 type t;
 
-let bsBlockPath: (~config: config) => t;
-
 let bsCurryPath: (~config: config) => t;
 
 let dump: t => string;

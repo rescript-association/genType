@@ -1,7 +1,5 @@
 type t = string;
 
-let createBucklescriptBlock = "CreateBucklescriptBlock";
-
 let curry = "Curry";
 
 let propTypes = "PropTypes";
