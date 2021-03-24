@@ -111,11 +111,11 @@ let rec toString = converter =>
   | VariantC({noPayloads, withPayloads}) =>
     "variant("
     ++ (
-      (noPayloads |> List.map(case => case.labelJS |> labelJSToString))
+      (noPayloads |> List.map(labelJSToString))
       @ (
         withPayloads
         |> List.map(({case, inlineRecord, argConverters}) =>
-             (case.labelJS |> labelJSToString)
+             (case |> labelJSToString)
              ++ (inlineRecord ? " inlineRecord " : "")
              ++ ":"
              ++ "{"
@@ -855,7 +855,7 @@ let rec apply =
 
   | VariantC({noPayloads: [case], withPayloads: [], polymorphic}) =>
     toJS
-      ? case.labelJS |> labelJSToString
+      ? case |> labelJSToString
       : case.label |> Runtime.emitVariantLabel(~polymorphic)
 
   | VariantC(variantC) =>
@@ -978,7 +978,7 @@ let rec apply =
              )
           |> convertVariantPayloadToJS(~argConverters, ~indent)
           |> Runtime.emitJSVariantWithPayload(
-               ~label=case.labelJS |> labelJSToString,
+               ~label=case |> labelJSToString,
                ~polymorphic=variantC.polymorphic,
              );
         } else {
@@ -1003,7 +1003,7 @@ let rec apply =
                    |> Runtime.emitVariantLabel(
                         ~polymorphic=variantC.polymorphic,
                       )
-                 : case.labelJS |> labelJSToString,
+                 : case |> labelJSToString,
                case
                |> convertCaseWithPayload(
                     ~indent,

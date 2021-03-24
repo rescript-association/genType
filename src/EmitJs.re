@@ -937,7 +937,7 @@ let emitVariantTables = (~config, ~emitters, variantTables) => {
     ++ (
       variantC.noPayloads
       |> List.map(case => {
-           let js = case.labelJS |> labelJSToString(~alwaysQuotes=!toJS);
+           let js = case |> labelJSToString(~alwaysQuotes=!toJS);
            let re =
              case.label
              |> Runtime.emitVariantLabel(~polymorphic=variantC.polymorphic);

@@ -303,8 +303,7 @@ let rec renderType =
   | TypeVar(s) => s
 
   | Variant({noPayloads, payloads, polymorphic, unboxed}) =>
-    let noPayloadsRendered =
-      noPayloads |> List.map(case => case.labelJS |> labelJSToString);
+    let noPayloadsRendered = noPayloads |> List.map(labelJSToString);
     let field = (~name, value) => {
       mutable_: Mutable,
       nameJS: name,
@@ -330,7 +329,7 @@ let rec renderType =
            unboxed
              ? typeRendered
              : [
-                 case.labelJS
+                 case
                  |> labelJSToString
                  |> field(~name=Runtime.jsVariantTag(~polymorphic)),
                  typeRendered
