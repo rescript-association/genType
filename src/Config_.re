@@ -33,6 +33,7 @@ type config = {
   language,
   module_,
   namespace: option(string),
+  platformLib: string,
   propTypes: bool,
   reasonReactPath: string,
   shimsMap: ModuleNameMap.t(ModuleName.t),
@@ -54,6 +55,7 @@ let default = {
   language: Flow,
   module_: ES6,
   namespace: None,
+  platformLib: "",
   propTypes: false,
   reasonReactPath: "reason-react/src/ReasonReact.js",
   shimsMap: ModuleNameMap.empty,
@@ -62,8 +64,8 @@ let default = {
 
 let bsPlatformLib = (~config) =>
   switch (config.module_) {
-  | ES6 => "bs-platform/lib/es6"
-  | CommonJS => "bs-platform/lib/js"
+  | ES6 => config.platformLib ++ "/lib/es6"
+  | CommonJS => config.platformLib ++ "/lib/js"
   };
 
 let bsPlatformLibExtension = ".js";
@@ -225,6 +227,12 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
         }
       };
     let (v1, v2, v3) = bsVersion;
+    let platformLib =
+      if (v1 >= 9 && v2 >= 1) {
+        "rescript";
+      } else {
+        "bs-platform";
+      };
     if (Debug.config^) {
       Log_.item("Project root: %s\n", projectRoot^);
       if (bsbProjectRoot^ != projectRoot^) {
@@ -287,6 +295,7 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       language,
       module_,
       namespace,
+      platformLib,
       propTypes,
       reasonReactPath,
       shimsMap,
