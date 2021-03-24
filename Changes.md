@@ -4,6 +4,7 @@
 - Only support bs-platform `8.2.0` or newer.
 - Translate object types directly, whether or not they are wrapped in `Js.t`, in preparation for a compiler upgrade. Preserve a couple of existing uses which still map to the empty object: `type t1<'a> = Js.t<'a>`, `type t2 = Js.t<Obj.t>`.
 - Use `import` instead of `require` in TS back-end, unless there are circular dependencies. In both TS and Flow, circular dependencies can be avoided by not exporting anything in a file that imports a value/component.
+- Support future npm package `rescript` version `9.1.0` and above.
 
 # 3.44.0
 - Fix issue with non-recursive types inside modules when the type name is already in scope (See https://github.com/reason-association/genType/issues/492).
