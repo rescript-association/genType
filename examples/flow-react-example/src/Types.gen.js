@@ -11,7 +11,7 @@ type $any = any;
 import {foo as fooNotChecked} from './name-with-dashes';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as Curry from 'rescript/lib/es6/curry.js';
 
 // In case of type error, check the type of 'foo' in 'Types.re' and './name-with-dashes'.
 export const fooTypeChecked: (number) => number = fooNotChecked;

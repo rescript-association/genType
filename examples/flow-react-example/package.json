@@ -27,7 +27,7 @@
     "@babel/preset-flow": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
-    "bs-platform": "9.0.2",
+    "rescript": "9.1.0-dev.1",
     "concurrently": "^3.5.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
