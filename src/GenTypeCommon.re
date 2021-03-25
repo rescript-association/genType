@@ -35,15 +35,19 @@ type case = {
 let labelJSToString = (~alwaysQuotes=false, case) => {
   let addQuotes = x => alwaysQuotes ? x |> EmitText.quotes : x;
   let isNumber = s => {
-    let res = ref(true);
-    for (i in 0 to String.length(s) - 1) {
-      switch (s.[i]) {
-      | '0'..'9' => ()
-      | '.' => ()
-      | _ => res := false
+    let len = String.length(s);
+    len > 0
+    && (len > 1 ? s.[0] > '0' : true)
+    && {
+      let res = ref(true);
+      for (i in 0 to len - 1) {
+        switch (s.[i]) {
+        | '0'..'9' => ()
+        | _ => res := false
+        };
       };
+      res.contents;
     };
-    res.contents;
   };
   switch (case.labelJS) {
   | BoolLabel(b) => b |> string_of_bool |> addQuotes
