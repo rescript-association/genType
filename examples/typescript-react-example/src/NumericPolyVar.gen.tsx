@@ -3,4 +3,4 @@
 
 
 // tslint:disable-next-line:interface-over-type-literal
-export type t = 10 | 12.3 | "b";
+export type t = 12 | 0 | "b";
