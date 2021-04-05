@@ -2,7 +2,6 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const LetPrivateBS = require('./LetPrivate.bs');
+import * as LetPrivateBS from './LetPrivate.bs';
 
 export const y: number = LetPrivateBS.y;

@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const TestFirstClassModulesBS = require('./TestFirstClassModules.bs');
+import * as TestFirstClassModulesBS from './TestFirstClassModules.bs';
 
 import {firstClassModule as FirstClassModulesInterface_firstClassModule} from './FirstClassModulesInterface.gen';
 

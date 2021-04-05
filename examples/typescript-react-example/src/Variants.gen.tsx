@@ -18,8 +18,7 @@ const $$toJS1061900109: { [key: string]: any } = {"x": "x", "x2": "same"};
 
 const $$toRE1061900109: { [key: string]: any } = {"x": "x", "same": "x2"};
 
-// tslint:disable-next-line:no-var-requires
-const VariantsBS = require('./Variants.bs');
+import * as VariantsBS from './Variants.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type weekday = 

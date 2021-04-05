@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const TypeParams3BS = require('./TypeParams3.bs');
+import * as TypeParams3BS from './TypeParams3.bs';
 
 import {items2 as TypeParams2_items2} from './TypeParams2.gen';
 

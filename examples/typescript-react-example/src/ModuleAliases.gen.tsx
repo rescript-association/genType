@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const ModuleAliasesBS = require('./ModuleAliases.bs');
+import * as ModuleAliasesBS from './ModuleAliases.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Outer_Inner_innerT = { readonly inner: string };

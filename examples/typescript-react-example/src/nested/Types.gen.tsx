@@ -2,11 +2,9 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const Curry = require('bs-platform/lib/es6/curry.js');
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
-// tslint:disable-next-line:no-var-requires
-const TypesBS = require('./Types.bs');
+import * as TypesBS from './Types.bs';
 
 import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
 

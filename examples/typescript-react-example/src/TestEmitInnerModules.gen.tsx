@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const TestEmitInnerModulesBS = require('./TestEmitInnerModules.bs');
+import * as TestEmitInnerModulesBS from './TestEmitInnerModules.bs';
 
 export const Inner_x: number = TestEmitInnerModulesBS.Inner.x;
 

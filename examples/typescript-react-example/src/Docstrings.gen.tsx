@@ -4,11 +4,9 @@
 
 const $$toJS453167283: { [key: string]: any } = {"0": "A", "1": "B"};
 
-// tslint:disable-next-line:no-var-requires
-const Curry = require('bs-platform/lib/es6/curry.js');
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
-// tslint:disable-next-line:no-var-requires
-const DocstringsBS = require('./Docstrings.bs');
+import * as DocstringsBS from './Docstrings.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = "A" | "B";

@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const InnerModuleSignatureBS = require('./InnerModuleSignature.bs');
+import * as InnerModuleSignatureBS from './InnerModuleSignature.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type InnerModule_t = string;

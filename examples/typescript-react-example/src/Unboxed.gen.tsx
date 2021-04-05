@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const UnboxedBS = require('./Unboxed.bs');
+import * as UnboxedBS from './Unboxed.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type v1 = number;

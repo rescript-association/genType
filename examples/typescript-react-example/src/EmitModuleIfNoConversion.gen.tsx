@@ -4,8 +4,7 @@
 
 const $$toRE552311971: { [key: string]: any } = {"A": 0};
 
-// tslint:disable-next-line:no-var-requires
-const EmitModuleIfNoConversionBS = require('./EmitModuleIfNoConversion.bs');
+import * as EmitModuleIfNoConversionBS from './EmitModuleIfNoConversion.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = "A" | { readonly name: string };

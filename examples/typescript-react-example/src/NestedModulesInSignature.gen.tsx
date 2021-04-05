@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const NestedModulesInSignatureBS = require('./NestedModulesInSignature.bs');
+import * as NestedModulesInSignatureBS from './NestedModulesInSignature.bs';
 
 export const Universe_theAnswer: number = NestedModulesInSignatureBS.Universe.theAnswer;
 

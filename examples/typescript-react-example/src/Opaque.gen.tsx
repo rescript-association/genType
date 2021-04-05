@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const OpaqueBS = require('./Opaque.bs');
+import * as OpaqueBS from './Opaque.bs';
 
 import {business as Records_business} from './Records.gen';
 
