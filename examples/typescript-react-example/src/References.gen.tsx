@@ -2,11 +2,9 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const Curry = require('bs-platform/lib/es6/curry.js');
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
-// tslint:disable-next-line:no-var-requires
-const ReferencesBS = require('./References.bs');
+import * as ReferencesBS from './References.bs';
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class R_t<a> { protected opaque!: a }; /* simulate opaque types */

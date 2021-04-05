@@ -4,11 +4,9 @@
 
 import * as React from 'react';
 
-// tslint:disable-next-line:no-var-requires
-const Curry = require('bs-platform/lib/es6/curry.js');
+import * as Curry from 'bs-platform/lib/es6/curry.js';
 
-// tslint:disable-next-line:no-var-requires
-const HooksBS = require('./Hooks.bs');
+import * as HooksBS from './Hooks.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type vehicle = { readonly name: string };

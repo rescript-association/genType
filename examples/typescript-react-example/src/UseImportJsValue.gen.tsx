@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const UseImportJsValueBS = require('./UseImportJsValue.bs');
+import * as UseImportJsValueBS from './UseImportJsValue.bs';
 
 import {AbsoluteValue_t as ImportJsValue_AbsoluteValue_t} from './ImportJsValue.gen';
 

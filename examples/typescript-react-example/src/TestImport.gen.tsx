@@ -16,8 +16,7 @@ import {default as defaultValue2NotChecked} from './exportNestedValues';
 
 import * as React from 'react';
 
-// tslint:disable-next-line:no-var-requires
-const ReasonReact = require('reason-react/src/ReasonReact.js');
+import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.
 export const innerStuffContentsTypeChecked: { readonly x: number } = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;

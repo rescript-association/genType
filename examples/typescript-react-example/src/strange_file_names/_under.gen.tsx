@@ -2,7 +2,6 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const _underBS = require('./_under.bs');
+import * as _underBS from './_under.bs';
 
 export const x: number = _underBS.x;

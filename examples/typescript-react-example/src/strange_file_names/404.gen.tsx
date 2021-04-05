@@ -2,7 +2,6 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const _404BS = require('./404.bs');
+import * as _404BS from './404.bs';
 
 export const x: number = _404BS.x;

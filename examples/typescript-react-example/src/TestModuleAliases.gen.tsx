@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const TestModuleAliasesBS = require('./TestModuleAliases.bs');
+import * as TestModuleAliasesBS from './TestModuleAliases.bs';
 
 import {InnerAlias_inner as ModuleAliases2_InnerAlias_inner} from './ModuleAliases2.gen';
 

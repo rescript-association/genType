@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const NestedModulesBS = require('./NestedModules.bs');
+import * as NestedModulesBS from './NestedModules.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Universe_nestedType = string[];

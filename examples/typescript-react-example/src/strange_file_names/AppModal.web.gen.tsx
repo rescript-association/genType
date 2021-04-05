@@ -2,7 +2,6 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const AppModal_webBS = require('./AppModal.web.bs');
+import * as AppModal_webBS from './AppModal.web.bs';
 
 export const x: number = AppModal_webBS.x;

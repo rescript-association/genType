@@ -2,7 +2,6 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const ShadowBS = require('./Shadow.bs');
+import * as ShadowBS from './Shadow.bs';
 
 export const test: () => string = ShadowBS.test;

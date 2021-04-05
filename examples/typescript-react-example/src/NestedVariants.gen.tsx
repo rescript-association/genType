@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const NestedVariantsBS = require('./NestedVariants.bs');
+import * as NestedVariantsBS from './NestedVariants.bs';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type typeL = [number, number];

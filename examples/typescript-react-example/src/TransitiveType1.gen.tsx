@@ -2,8 +2,7 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const TransitiveType1BS = require('./TransitiveType1.bs');
+import * as TransitiveType1BS from './TransitiveType1.bs';
 
 import {t2Alias as TransitiveType2_t2Alias} from './TransitiveType2.gen';
 

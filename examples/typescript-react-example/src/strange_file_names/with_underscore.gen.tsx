@@ -2,7 +2,6 @@
 /* eslint-disable import/first */
 
 
-// tslint:disable-next-line:no-var-requires
-const with_underscoreBS = require('./with_underscore.bs');
+import * as with_underscoreBS from './with_underscore.bs';
 
 export const x: number = with_underscoreBS.x;
