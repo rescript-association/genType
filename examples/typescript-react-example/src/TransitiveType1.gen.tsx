@@ -3,7 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as TransitiveType1BS from './TransitiveType1.bs';
+import * as TransitiveType1BSEs6Import from './TransitiveType1.bs';
+const TransitiveType1BS: any = TransitiveType1BSEs6Import;
 
 import {t2Alias as TransitiveType2_t2Alias} from './TransitiveType2.gen';
 

@@ -3,10 +3,12 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = CurryEs6Import;
 
 // @ts-ignore: Implicit any on import
-import * as ReferencesBS from './References.bs';
+import * as ReferencesBSEs6Import from './References.bs';
+const ReferencesBS: any = ReferencesBSEs6Import;
 
 // tslint:disable-next-line:max-classes-per-file 
 export abstract class R_t<a> { protected opaque!: a }; /* simulate opaque types */

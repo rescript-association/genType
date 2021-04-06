@@ -3,7 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as TestEmitInnerModulesBS from './TestEmitInnerModules.bs';
+import * as TestEmitInnerModulesBSEs6Import from './TestEmitInnerModules.bs';
+const TestEmitInnerModulesBS: any = TestEmitInnerModulesBSEs6Import;
 
 export const Inner_x: number = TestEmitInnerModulesBS.Inner.x;
 

@@ -3,7 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as NestedVariantsBS from './NestedVariants.bs';
+import * as NestedVariantsBSEs6Import from './NestedVariants.bs';
+const NestedVariantsBS: any = NestedVariantsBSEs6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type typeL = [number, number];

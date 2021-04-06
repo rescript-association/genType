@@ -5,7 +5,8 @@
 const $$toRE552311971: { [key: string]: any } = {"A": 0};
 
 // @ts-ignore: Implicit any on import
-import * as EmitModuleIfNoConversionBS from './EmitModuleIfNoConversion.bs';
+import * as EmitModuleIfNoConversionBSEs6Import from './EmitModuleIfNoConversion.bs';
+const EmitModuleIfNoConversionBS: any = EmitModuleIfNoConversionBSEs6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = "A" | { readonly name: string };

@@ -5,10 +5,12 @@
 const $$toJS453167283: { [key: string]: any } = {"0": "A", "1": "B"};
 
 // @ts-ignore: Implicit any on import
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = CurryEs6Import;
 
 // @ts-ignore: Implicit any on import
-import * as DocstringsBS from './Docstrings.bs';
+import * as DocstringsBSEs6Import from './Docstrings.bs';
+const DocstringsBS: any = DocstringsBSEs6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = "A" | "B";

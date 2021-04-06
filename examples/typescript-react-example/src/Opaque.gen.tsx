@@ -3,7 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as OpaqueBS from './Opaque.bs';
+import * as OpaqueBSEs6Import from './Opaque.bs';
+const OpaqueBS: any = OpaqueBSEs6Import;
 
 import {business as Records_business} from './Records.gen';
 
