@@ -3,6 +3,7 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as TestImmutableArrayBS from './TestImmutableArray.bs';
+import * as TestImmutableArrayBSEs6Import from './TestImmutableArray.bs';
+const TestImmutableArrayBS: any = TestImmutableArrayBSEs6Import;
 
 export const testImmutableArrayGet: <T1>(arr:ReadonlyArray<T1>) => (null | undefined | T1) = TestImmutableArrayBS.testImmutableArrayGet;

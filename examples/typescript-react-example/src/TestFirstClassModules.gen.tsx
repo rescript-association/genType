@@ -3,7 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as TestFirstClassModulesBS from './TestFirstClassModules.bs';
+import * as TestFirstClassModulesBSEs6Import from './TestFirstClassModules.bs';
+const TestFirstClassModulesBS: any = TestFirstClassModulesBSEs6Import;
 
 import {firstClassModule as FirstClassModulesInterface_firstClassModule} from './FirstClassModulesInterface.gen';
 

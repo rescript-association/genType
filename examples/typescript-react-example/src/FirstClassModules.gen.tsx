@@ -3,7 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as FirstClassModulesBS from './FirstClassModules.bs';
+import * as FirstClassModulesBSEs6Import from './FirstClassModules.bs';
+const FirstClassModulesBS: any = FirstClassModulesBSEs6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type MT_t = number;

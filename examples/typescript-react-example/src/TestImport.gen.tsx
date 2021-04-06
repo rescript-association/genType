@@ -17,7 +17,8 @@ import {default as defaultValue2NotChecked} from './exportNestedValues';
 import * as React from 'react';
 
 // @ts-ignore: Implicit any on import
-import * as ReasonReact from 'reason-react/src/ReasonReact.js';
+import * as ReasonReactEs6Import from 'reason-react/src/ReasonReact.js';
+const ReasonReact: any = ReasonReactEs6Import;
 
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.
 export const innerStuffContentsTypeChecked: { readonly x: number } = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;

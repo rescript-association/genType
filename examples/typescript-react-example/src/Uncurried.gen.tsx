@@ -3,10 +3,12 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = CurryEs6Import;
 
 // @ts-ignore: Implicit any on import
-import * as UncurriedBS from './Uncurried.bs';
+import * as UncurriedBSEs6Import from './Uncurried.bs';
+const UncurriedBS: any = UncurriedBSEs6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type u0 = () => string;

@@ -7,7 +7,8 @@ const $$toJS912209123: { [key: string]: any } = {"type_": "type", "b": "b"};
 const $$toRE912209123: { [key: string]: any } = {"type": "type_", "b": "b"};
 
 // @ts-ignore: Implicit any on import
-import * as MoreVariantsBS from './MoreVariants.bs';
+import * as MoreVariantsBSEs6Import from './MoreVariants.bs';
+const MoreVariantsBS: any = MoreVariantsBSEs6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type withRenaming = "type" | "b";

@@ -3,7 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as UseImportJsValueBS from './UseImportJsValue.bs';
+import * as UseImportJsValueBSEs6Import from './UseImportJsValue.bs';
+const UseImportJsValueBS: any = UseImportJsValueBSEs6Import;
 
 import {AbsoluteValue_t as ImportJsValue_AbsoluteValue_t} from './ImportJsValue.gen';
 

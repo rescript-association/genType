@@ -3,6 +3,7 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as ShadowBS from './Shadow.bs';
+import * as ShadowBSEs6Import from './Shadow.bs';
+const ShadowBS: any = ShadowBSEs6Import;
 
 export const test: () => string = ShadowBS.test;

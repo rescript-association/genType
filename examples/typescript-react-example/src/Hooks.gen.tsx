@@ -5,10 +5,12 @@
 import * as React from 'react';
 
 // @ts-ignore: Implicit any on import
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = CurryEs6Import;
 
 // @ts-ignore: Implicit any on import
-import * as HooksBS from './Hooks.bs';
+import * as HooksBSEs6Import from './Hooks.bs';
+const HooksBS: any = HooksBSEs6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type vehicle = { readonly name: string };
