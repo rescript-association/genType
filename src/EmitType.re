@@ -683,28 +683,30 @@ let emitRequire =
   switch (config.module_) {
   | ES6 when !importedValueOrComponent =>
     let moduleNameString = ModuleName.toString(moduleName);
-    (if (config.language == TypeScript) {
-      let es6ImportModule = moduleNameString ++ "Es6Import";
-      commentBeforeRequire
-      ++ "import * as "
-      ++ es6ImportModule
-      ++ " from '"
-      ++ (importPath |> ImportPath.emit(~config))
-      ++ "';\n"
-      ++ "const "
-      ++ moduleNameString
-      ++ ": any = "
-      ++ es6ImportModule
-      ++ ";"
-    } else {
-      commentBeforeRequire
-      ++ "import * as "
-      ++ moduleNameString
-      ++ " from '"
-      ++ (importPath |> ImportPath.emit(~config))
-      ++ "';"
-    })
-    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters)
+    (
+      if (config.language == TypeScript) {
+        let es6ImportModule = moduleNameString ++ "Es6Import";
+        commentBeforeRequire
+        ++ "import * as "
+        ++ es6ImportModule
+        ++ " from '"
+        ++ (importPath |> ImportPath.emit(~config))
+        ++ "';\n"
+        ++ "const "
+        ++ moduleNameString
+        ++ ": any = "
+        ++ es6ImportModule
+        ++ ";";
+      } else {
+        commentBeforeRequire
+        ++ "import * as "
+        ++ moduleNameString
+        ++ " from '"
+        ++ (importPath |> ImportPath.emit(~config))
+        ++ "';";
+      }
+    )
+    |> (early ? Emitters.requireEarly : Emitters.require)(~emitters);
   | _ =>
     commentBeforeRequire
     ++ "const "
