@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as OpaqueBS from './Opaque.bs';
 
 import {business as Records_business} from './Records.gen';

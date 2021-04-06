@@ -2,8 +2,10 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
+// @ts-ignore: Implicit any on import
 import * as TuplesBS from './Tuples.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

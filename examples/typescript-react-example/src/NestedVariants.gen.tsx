@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as NestedVariantsBS from './NestedVariants.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as TransitiveType1BS from './TransitiveType1.bs';
 
 import {t2Alias as TransitiveType2_t2Alias} from './TransitiveType2.gen';

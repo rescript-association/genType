@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as InnerModuleSignatureBS from './InnerModuleSignature.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

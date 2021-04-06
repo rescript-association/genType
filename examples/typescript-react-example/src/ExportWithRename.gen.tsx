@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 
+// @ts-ignore: Implicit any on import
 import * as ExportWithRenameBS from './ExportWithRename.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

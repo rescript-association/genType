@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as ShadowBS from './Shadow.bs';
 
 export const test: () => string = ShadowBS.test;

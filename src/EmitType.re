@@ -671,7 +671,9 @@ let emitRequire =
   let commentBeforeRequire =
     switch (config.language) {
     | TypeScript =>
-      importedValueOrComponent ? "// tslint:disable-next-line:no-var-requires\n" : ""
+      importedValueOrComponent
+        ? "// tslint:disable-next-line:no-var-requires\n"
+        : "// @ts-ignore: Implicit any on import\n"
     | Flow =>
       strict
         ? early ? "// flowlint-next-line nonstrict-import:off\n" : ""

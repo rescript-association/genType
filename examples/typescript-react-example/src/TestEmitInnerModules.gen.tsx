@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as TestEmitInnerModulesBS from './TestEmitInnerModules.bs';
 
 export const Inner_x: number = TestEmitInnerModulesBS.Inner.x;
