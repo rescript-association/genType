@@ -5,7 +5,7 @@
 const $$toJS453167283: { [key: string]: any } = {"0": "A", "1": "B"};
 
 // @ts-ignore: Implicit any on import
-import * as Curry__Es6Import from 'rescript/lib/es6/curry.js';
+import * as Curry__Es6Import from 'bs-platform/lib/es6/curry.js';
 const Curry: any = Curry__Es6Import;
 
 // @ts-ignore: Implicit any on import
