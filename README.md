@@ -14,6 +14,8 @@ See [Changes.md](Changes.md) for a complete list of features, fixes, and changes
 
 # Requirements
 
+`rescript` 9.1.0 or higher: use `genType` 3.45.0 or higher.
+
 `bs-platform` 9.0.1 or higher: use `genType` 3.44.0 or higher.
 
 `bs-platform` 9.0.0 or higher: use `genType` 3.43.0 or higher.

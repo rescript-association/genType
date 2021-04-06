@@ -1,7 +1,9 @@
 # master
+
+# 3.45.0
+- Only support bs-platform `8.2.0` or newer.
 - Give a warning when attempting to export a GADT type (unless it's already an opaque export), and export it as an opaque type.
 - When not specified in `gentypeconfig`, read the `module` type from `package-specs`.
-- Only support bs-platform `8.2.0` or newer.
 - Translate object types directly, whether or not they are wrapped in `Js.t`, in preparation for a compiler upgrade. Preserve a couple of existing uses which still map to the empty object: `type t1<'a> = Js.t<'a>`, `type t2 = Js.t<Obj.t>`.
 - Use `import` instead of `require` in TS back-end, unless there are circular dependencies. In both TS and Flow, circular dependencies can be avoided by not exporting anything in a file that imports a value/component.
 - Support future npm package `rescript` version `9.1.0` and above.
