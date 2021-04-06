@@ -3,7 +3,7 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as WarningsBSEs6Import from './Warnings.bs';
-const WarningsBS: any = WarningsBSEs6Import;
+import * as WarningsBS__Es6Import from './Warnings.bs';
+const WarningsBS: any = WarningsBS__Es6Import;
 
 export const ddd: number = WarningsBS.x;

@@ -3,7 +3,7 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as LetPrivateBSEs6Import from './LetPrivate.bs';
-const LetPrivateBS: any = LetPrivateBSEs6Import;
+import * as LetPrivateBS__Es6Import from './LetPrivate.bs';
+const LetPrivateBS: any = LetPrivateBS__Es6Import;
 
 export const y: number = LetPrivateBS.y;

@@ -3,8 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as NestedModulesBSEs6Import from './NestedModules.bs';
-const NestedModulesBS: any = NestedModulesBSEs6Import;
+import * as NestedModulesBS__Es6Import from './NestedModules.bs';
+const NestedModulesBS: any = NestedModulesBS__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Universe_nestedType = string[];

@@ -7,8 +7,8 @@ import MyBanner from './MyBanner';
 import * as React from 'react';
 
 // @ts-ignore: Implicit any on import
-import * as ReasonReactEs6Import from 'reason-react/src/ReasonReact.js';
-const ReasonReact: any = ReasonReactEs6Import;
+import * as ReasonReact__Es6Import from 'reason-react/src/ReasonReact.js';
+const ReasonReact: any = ReasonReact__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = { readonly show: boolean; readonly message?: message };

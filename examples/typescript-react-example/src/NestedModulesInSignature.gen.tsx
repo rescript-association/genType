@@ -3,8 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as NestedModulesInSignatureBSEs6Import from './NestedModulesInSignature.bs';
-const NestedModulesInSignatureBS: any = NestedModulesInSignatureBSEs6Import;
+import * as NestedModulesInSignatureBS__Es6Import from './NestedModulesInSignature.bs';
+const NestedModulesInSignatureBS: any = NestedModulesInSignatureBS__Es6Import;
 
 export const Universe_theAnswer: number = NestedModulesInSignatureBS.Universe.theAnswer;
 

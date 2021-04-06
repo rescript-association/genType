@@ -11,8 +11,8 @@ const $$toJS346759412: { [key: string]: any } = {"0": "A", "1": "B", "2": "C"};
 const $$toRE346759412: { [key: string]: any } = {"A": 0, "B": 1, "C": 2};
 
 // @ts-ignore: Implicit any on import
-import * as VariantsWithPayloadBSEs6Import from './VariantsWithPayload.bs';
-const VariantsWithPayloadBS: any = VariantsWithPayloadBSEs6Import;
+import * as VariantsWithPayloadBS__Es6Import from './VariantsWithPayload.bs';
+const VariantsWithPayloadBS: any = VariantsWithPayloadBS__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type payload = { readonly x: number; readonly y?: string };

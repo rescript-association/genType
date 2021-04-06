@@ -3,12 +3,12 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
-const Curry: any = CurryEs6Import;
+import * as Curry__Es6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = Curry__Es6Import;
 
 // @ts-ignore: Implicit any on import
-import * as TestPromiseBSEs6Import from './TestPromise.bs';
-const TestPromiseBS: any = TestPromiseBSEs6Import;
+import * as TestPromiseBS__Es6Import from './TestPromise.bs';
+const TestPromiseBS: any = TestPromiseBS__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type promise<a> = Promise<a>;

@@ -685,7 +685,7 @@ let emitRequire =
     let moduleNameString = ModuleName.toString(moduleName);
     (
       if (config.language == TypeScript) {
-        let es6ImportModule = moduleNameString ++ "Es6Import";
+        let es6ImportModule = moduleNameString ++ "__Es6Import";
         commentBeforeRequire
         ++ "import * as "
         ++ es6ImportModule

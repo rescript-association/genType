@@ -5,8 +5,8 @@
 import * as React from 'react';
 
 // @ts-ignore: Implicit any on import
-import * as ExportWithRenameBSEs6Import from './ExportWithRename.bs';
-const ExportWithRenameBS: any = ExportWithRenameBSEs6Import;
+import * as ExportWithRenameBS__Es6Import from './ExportWithRename.bs';
+const ExportWithRenameBS: any = ExportWithRenameBS__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = { readonly s: string };
