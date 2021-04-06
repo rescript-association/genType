@@ -4,8 +4,10 @@
 
 import * as React from 'react';
 
+// @ts-ignore: Implicit any on import
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
+// @ts-ignore: Implicit any on import
 import * as HooksBS from './Hooks.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

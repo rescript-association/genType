@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as FirstClassModulesBS from './FirstClassModules.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

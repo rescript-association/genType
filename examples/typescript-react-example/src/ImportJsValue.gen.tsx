@@ -18,6 +18,7 @@ import {polymorphic as polymorphicNotChecked} from './MyMath';
 
 import {default as defaultNotChecked} from './MyMath';
 
+// @ts-ignore: Implicit any on import
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.

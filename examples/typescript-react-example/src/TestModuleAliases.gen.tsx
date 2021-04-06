@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as TestModuleAliasesBS from './TestModuleAliases.bs';
 
 import {InnerAlias_inner as ModuleAliases2_InnerAlias_inner} from './ModuleAliases2.gen';

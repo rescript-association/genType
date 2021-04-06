@@ -4,6 +4,7 @@
 
 const $$toRE552311971: { [key: string]: any } = {"A": 0};
 
+// @ts-ignore: Implicit any on import
 import * as EmitModuleIfNoConversionBS from './EmitModuleIfNoConversion.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

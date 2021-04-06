@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as UseImportJsValueBS from './UseImportJsValue.bs';
 
 import {AbsoluteValue_t as ImportJsValue_AbsoluteValue_t} from './ImportJsValue.gen';

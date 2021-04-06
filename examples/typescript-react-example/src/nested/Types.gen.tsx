@@ -2,8 +2,10 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as Curry from 'bs-platform/lib/es6/curry.js';
 
+// @ts-ignore: Implicit any on import
 import * as TypesBS from './Types.bs';
 
 import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';

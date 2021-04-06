@@ -2,6 +2,7 @@
 /* eslint-disable import/first */
 
 
+// @ts-ignore: Implicit any on import
 import * as with_underscoreBS from './with_underscore.bs';
 
 export const x: number = with_underscoreBS.x;

@@ -16,6 +16,7 @@ import {default as defaultValue2NotChecked} from './exportNestedValues';
 
 import * as React from 'react';
 
+// @ts-ignore: Implicit any on import
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.

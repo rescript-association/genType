@@ -6,6 +6,7 @@ const $$toJS912209123: { [key: string]: any } = {"type_": "type", "b": "b"};
 
 const $$toRE912209123: { [key: string]: any } = {"type": "type_", "b": "b"};
 
+// @ts-ignore: Implicit any on import
 import * as MoreVariantsBS from './MoreVariants.bs';
 
 // tslint:disable-next-line:interface-over-type-literal

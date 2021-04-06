@@ -6,6 +6,7 @@ import MyBanner from './MyBanner';
 
 import * as React from 'react';
 
+// @ts-ignore: Implicit any on import
 import * as ReasonReact from 'reason-react/src/ReasonReact.js';
 
 // tslint:disable-next-line:interface-over-type-literal
