@@ -3,8 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as TestModuleAliasesBSEs6Import from './TestModuleAliases.bs';
-const TestModuleAliasesBS: any = TestModuleAliasesBSEs6Import;
+import * as TestModuleAliasesBS__Es6Import from './TestModuleAliases.bs';
+const TestModuleAliasesBS: any = TestModuleAliasesBS__Es6Import;
 
 import {InnerAlias_inner as ModuleAliases2_InnerAlias_inner} from './ModuleAliases2.gen';
 

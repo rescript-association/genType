@@ -19,8 +19,8 @@ import {polymorphic as polymorphicNotChecked} from './MyMath';
 import {default as defaultNotChecked} from './MyMath';
 
 // @ts-ignore: Implicit any on import
-import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
-const Curry: any = CurryEs6Import;
+import * as Curry__Es6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = Curry__Es6Import;
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
 export const roundTypeChecked: (_1:number) => number = roundNotChecked;

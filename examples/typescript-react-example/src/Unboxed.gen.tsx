@@ -3,8 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as UnboxedBSEs6Import from './Unboxed.bs';
-const UnboxedBS: any = UnboxedBSEs6Import;
+import * as UnboxedBS__Es6Import from './Unboxed.bs';
+const UnboxedBS: any = UnboxedBS__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type v1 = number;

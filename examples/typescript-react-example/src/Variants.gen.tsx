@@ -19,8 +19,8 @@ const $$toJS1061900109: { [key: string]: any } = {"x": "x", "x2": "same"};
 const $$toRE1061900109: { [key: string]: any } = {"x": "x", "same": "x2"};
 
 // @ts-ignore: Implicit any on import
-import * as VariantsBSEs6Import from './Variants.bs';
-const VariantsBS: any = VariantsBSEs6Import;
+import * as VariantsBS__Es6Import from './Variants.bs';
+const VariantsBS: any = VariantsBS__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type weekday = 

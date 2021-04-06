@@ -3,8 +3,8 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as InnerModuleSignatureBSEs6Import from './InnerModuleSignature.bs';
-const InnerModuleSignatureBS: any = InnerModuleSignatureBSEs6Import;
+import * as InnerModuleSignatureBS__Es6Import from './InnerModuleSignature.bs';
+const InnerModuleSignatureBS: any = InnerModuleSignatureBS__Es6Import;
 
 // tslint:disable-next-line:interface-over-type-literal
 export type InnerModule_t = string;

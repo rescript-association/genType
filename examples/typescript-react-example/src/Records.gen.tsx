@@ -3,12 +3,12 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
-const Curry: any = CurryEs6Import;
+import * as Curry__Es6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = Curry__Es6Import;
 
 // @ts-ignore: Implicit any on import
-import * as RecordsBSEs6Import from './Records.bs';
-const RecordsBS: any = RecordsBSEs6Import;
+import * as RecordsBS__Es6Import from './Records.bs';
+const RecordsBS: any = RecordsBS__Es6Import;
 
 import {list} from '../src/shims/ReasonPervasives.shim';
 

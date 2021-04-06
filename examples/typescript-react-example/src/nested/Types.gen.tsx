@@ -3,12 +3,12 @@
 
 
 // @ts-ignore: Implicit any on import
-import * as CurryEs6Import from 'bs-platform/lib/es6/curry.js';
-const Curry: any = CurryEs6Import;
+import * as Curry__Es6Import from 'bs-platform/lib/es6/curry.js';
+const Curry: any = Curry__Es6Import;
 
 // @ts-ignore: Implicit any on import
-import * as TypesBSEs6Import from './Types.bs';
-const TypesBS: any = TypesBSEs6Import;
+import * as TypesBS__Es6Import from './Types.bs';
+const TypesBS: any = TypesBS__Es6Import;
 
 import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
 
