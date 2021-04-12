@@ -38,6 +38,7 @@ type config = {
   reasonReactPath: string,
   shimsMap: ModuleNameMap.t(ModuleName.t),
   sources: option(Ext_json_types.t),
+  suffix: string,
 };
 
 let default = {
@@ -60,6 +61,7 @@ let default = {
   reasonReactPath: "reason-react/src/ReasonReact.js",
   shimsMap: ModuleNameMap.empty,
   sources: None,
+  suffix: "",
 };
 
 let bsPlatformLib = (~config) =>
@@ -259,6 +261,13 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
       | _ => default.namespace
       };
 
+    let suffix =
+      switch (bsconf |> getStringOption("suffix")) {
+      | Some(".bs.js") => ".bs"
+      | Some(s) => s
+      | _ => ".bs"
+      };
+
     let bsDependencies =
       switch (bsconf |> getOpt("bs-dependencies")) {
       | Some(Arr({content})) =>
@@ -283,6 +292,7 @@ let readConfig = (~bsVersion, ~getBsConfigFile, ~namespace) => {
     {
       bsCurryPath,
       bsDependencies,
+      suffix,
       emitFlowAny: false,
       emitImportCurry: false,
       emitImportPropTypes: false,
