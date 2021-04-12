@@ -527,7 +527,7 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
-           ~importExtension=".bs",
+           ~importExtension=config.suffix,
            ~outputFileRelative,
            ~resolver,
            ~useBsDependencies=false,
@@ -689,7 +689,7 @@ let rec emitCodeItem =
     let importPath =
       fileName
       |> ModuleResolver.resolveModule(
-           ~importExtension=".bs",
+           ~importExtension=config.suffix,
            ~outputFileRelative,
            ~resolver,
            ~useBsDependencies=false,
