@@ -159,7 +159,7 @@ let translateValueBinding =
            ~outputFileRelative,
            ~resolver,
            ~typeEnv,
-           ~typeExpr=vb_expr.exp_type,
+           ~typeExpr=vb_pat.pat_type,
            ~addAnnotationsToFunction=
              addAnnotationsToFunctionType(~config, vb_expr),
          );
