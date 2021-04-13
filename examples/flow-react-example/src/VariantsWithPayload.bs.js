@@ -6,7 +6,7 @@ function testWithPayload(x) {
 }
 
 function printVariantWithPayload(x) {
-  if (typeof x === "string") {
+  if (typeof x !== "object") {
     if (x === "a") {
       console.log("printVariantWithPayload: a");
     } else if (x === "b") {
