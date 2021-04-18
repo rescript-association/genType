@@ -5,7 +5,6 @@
 This is a native OCaml project, so you will need the following tools:
 - OCaml (we work on version 4.06.1 mostly, but other versions should work as well)
 - dune >= 1.11.4
-- reason >= 3.5.2
 
 Easiest way to install these is via the [opam](https://opam.ocaml.org/doc/Install.html) package manager. We don't use `esy` for simplicity reasons.
 
@@ -14,7 +13,7 @@ Easiest way to install these is via the [opam](https://opam.ocaml.org/doc/Instal
 opam switch create 4.06.1
 
 # Install deps
-opam install reason.3.6.0 dune.1.11.4 --yes
+opam install dune.1.11.4 --yes
 ```
 
 After that, install some npm dependencies as well:
@@ -57,7 +56,7 @@ version [major|minor|patch|...]` command, npm will automatically tag the
 current commit, bump all the necessary version numbers (also the number in
 `src/Version.ml`) and push it to the current remote branch.
 
-When a tag is pushed, [CircleCI](https://circleci.com/gh/reason-association/genType) will create a package to the Github releases [releases](https://github.com/reason-association/genType/releases) page, which can later be released to npm.
+When a tag is pushed, [CircleCI](https://circleci.com/gh/rescript-association/genType) will create a package to the Github releases [releases](https://github.com/rescript-association/genType/releases) page, which can later be released to npm.
 
 This CI process only covers the newest `genType` releases (v3+), which are based on BuckleScript 6.x. This version is based on OCaml 4.06 and is not compatible with any BuckleScript version below 6.x (those are based on OCaml 4.02).
 
