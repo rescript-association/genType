@@ -55,7 +55,7 @@ The project is compatible with the [`npm
 version`](https://docs.npmjs.com/cli/version) workflow. After using the `npm
 version [major|minor|patch|...]` command, npm will automatically tag the
 current commit, bump all the necessary version numbers (also the number in
-`src/Version.re`) and push it to the current remote branch.
+`src/Version.ml`) and push it to the current remote branch.
 
 When a tag is pushed, [CircleCI](https://circleci.com/gh/reason-association/genType) will create a package to the Github releases [releases](https://github.com/reason-association/genType/releases) page, which can later be released to npm.
 

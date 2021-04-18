@@ -2,7 +2,7 @@ const fs = require("fs");
 const pjson = require("../package.json");
 const path = require("path");
 
-const targetFile = path.join(__dirname, "..", "src", "Version.re");
+const targetFile = path.join(__dirname, "..", "src", "Version.ml");
 
 const content = `
 /* CREATED BY genType/scripts/bump_version_module.js */
