@@ -462,9 +462,8 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     let useCurry = numArgs >= 2 in
     config.emitImportCurry <- config.emitImportCurry || useCurry;
     (env, emitters)
-  | ((ExportValue
-       {docString; moduleAccessPath; originalName; resolvedName; type_})[@explicit_arity
-                                                                          ]) ->
+  | ExportValue {docString; moduleAccessPath; originalName; resolvedName; type_}
+    ->
     let resolvedNameStr = ResolvedName.toString resolvedName in
     let nameGen = EmitText.newNameGen () in
     let importPath =
@@ -602,7 +601,7 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     in
     let emitters =
       match hookType with
-      | ((Some {propsType = Object (_, fields)})[@explicit_arity])
+      | Some {propsType = Object (_, fields)}
         when config.language = Untyped && config.propTypes ->
         fields
         |> List.map (fun (field : field) ->
