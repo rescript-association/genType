@@ -15,7 +15,9 @@
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"
   },
-  "dependencies": {},
+  "dependencies": {
+    "rescript": "^9.1.1"
+  },
   "devDependencies": {
     "debug": "^4.1.0",
     "reanalyze": "^1.6.0"
