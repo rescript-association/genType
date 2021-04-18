@@ -148,7 +148,7 @@ jobs:
       - run:
           name: Install opam dev dependencies
           command: |
-            opam install reason.3.6.0 dune.1.11.4 --yes | cat
+            opam install dune.1.11.4 --yes | cat
       - save-opam-cache
       - run:
           name: Install npm deps
@@ -199,7 +199,7 @@ jobs:
       - run:
           name: Install opam dev dependencies
           command: |
-            opam install reason.3.6.0 dune.1.11.4 --yes | cat
+            opam install dune.1.11.4 --yes | cat
       - save-opam-cache
       - run:
           name: Install npm deps
@@ -262,7 +262,7 @@ jobs:
           command: |
             cd /cygdrive/c/Users/circleci/project
             eval $(opam env)
-            opam install reason.3.6.0 dune.1.11.4 --yes | cat
+            opam install dune.1.11.4 --yes | cat
       - save_cache:
           key: v2-opam-cache-{{ arch }}
           paths:

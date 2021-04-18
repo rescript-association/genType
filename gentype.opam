@@ -6,7 +6,6 @@ dev-repo: "https://github.com/cristianoc/genType.git"
 
 depends: [
   "ocaml" {>= "4.06.1"}
-  "reason" {= "3.6.0"}
   "dune" {build & >= "1.7.3"}
 ]
 
