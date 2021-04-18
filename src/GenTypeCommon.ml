@@ -34,10 +34,10 @@ let labelJSToString ?(alwaysQuotes = false) case =
     res.contents
   in
   match case.labelJS with
-  | ((BoolLabel b)[@explicit_arity]) -> b |> string_of_bool |> addQuotes
-  | ((FloatLabel s)[@explicit_arity]) -> s |> addQuotes
-  | ((IntLabel i)[@explicit_arity]) -> i |> addQuotes
-  | ((StringLabel s)[@explicit_arity]) ->
+  | BoolLabel b -> b |> string_of_bool |> addQuotes
+  | FloatLabel s -> s |> addQuotes
+  | IntLabel i -> i |> addQuotes
+  | StringLabel s ->
     if s = case.label && isNumber s then s |> addQuotes
     else s |> EmitText.quotes
 
@@ -139,14 +139,14 @@ struct
   (** @demo/some-library -> DemoSomelibrary *)
   let packageNameToGeneratedModuleName packageName =
     if String.contains packageName '/' then
-      Some (packageName |> namespace_of_package_name) [@explicit_arity]
+      Some (packageName |> namespace_of_package_name)
     else None
 
   let isGeneratedModule id ~config =
     config.bsDependencies
     |> List.exists (fun packageName ->
            packageName |> packageNameToGeneratedModuleName
-           = (Some (id |> Ident.name) [@explicit_arity]))
+           = Some (id |> Ident.name))
 
   (** (Common, DemoSomelibrary) -> Common-DemoSomelibrary *)
   let addGeneratedModule s ~generatedModule =
@@ -159,18 +159,15 @@ end
 
 let rec depToString dep =
   match dep with
-  | ((External name)[@explicit_arity]) ->
-    name |> ScopedPackage.removeGeneratedModule
-  | ((Internal resolvedName)[@explicit_arity]) ->
-    resolvedName |> ResolvedName.toString
-  | ((Dot (d, s))[@explicit_arity]) -> depToString d ^ "_" ^ s
+  | External name -> name |> ScopedPackage.removeGeneratedModule
+  | Internal resolvedName -> resolvedName |> ResolvedName.toString
+  | Dot (d, s) -> depToString d ^ "_" ^ s
 
 let rec depToResolvedName (dep : dep) =
   match dep with
-  | ((External name)[@explicit_arity]) -> name |> ResolvedName.fromString
-  | ((Internal resolvedName)[@explicit_arity]) -> resolvedName
-  | ((Dot (p, s))[@explicit_arity]) ->
-    ResolvedName.dot s (p |> depToResolvedName)
+  | External name -> name |> ResolvedName.fromString
+  | Internal resolvedName -> resolvedName
+  | Dot (p, s) -> ResolvedName.dot s (p |> depToResolvedName)
 
 let createVariant ~bsStringOrInt ~noPayloads ~payloads ~polymorphic =
   let hash =
@@ -179,14 +176,13 @@ let createVariant ~bsStringOrInt ~noPayloads ~payloads ~polymorphic =
     |> Array.of_list |> Hashtbl.hash
   in
   let unboxed = payloads = [] in
-  (Variant {bsStringOrInt; hash; noPayloads; payloads; polymorphic; unboxed}
-  [@explicit_arity])
+  Variant {bsStringOrInt; hash; noPayloads; payloads; polymorphic; unboxed}
 
 let variantTable hash ~toJS =
   (match toJS with true -> "$$toJS" | false -> "$$toRE") ^ string_of_int hash
 
 let ident ?(builtin = true) ?(typeArgs = []) name =
-  (Ident {builtin; name; typeArgs} [@explicit_arity])
+  Ident {builtin; name; typeArgs}
 
 let sanitizeTypeName name = name |> Str.global_replace (Str.regexp "'") "_"
 
@@ -206,7 +202,7 @@ let stringT = ident "string"
 
 let unitT = ident "void"
 
-let int64T = (Tuple [numberT; numberT] [@explicit_arity])
+let int64T = Tuple [numberT; numberT]
 
 module NodeFilename = struct
   include Filename
