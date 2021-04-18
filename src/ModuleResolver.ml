@@ -275,4 +275,3 @@ let importPathForReasonModuleName ~config ~outputFileRelative ~resolver
     importPath
   | exception Not_found ->
     moduleName |> resolveGeneratedModule ~config ~outputFileRelative ~resolver
-  [@@ocaml.doc "\n * Returns the path to import a given Reason module name.\n "]
