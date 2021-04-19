@@ -1,6 +1,6 @@
 /** 
  * this is a custom header you can add to every file!
- * Untyped file generated from ImportMyBanner.re by genType.
+ * Untyped file generated from ImportMyBanner.res by genType.
  */
 /* eslint-disable */
 
