@@ -113,7 +113,7 @@ We prepared some examples to give you an idea on how to integrate `genType` in y
 
 Full documentation can be found [here](https://rescript-lang.org/docs/gentype/latest/introduction).
 
-(In case you are looking for the previous version of the docs, here is an [older version](https://github.com/reason-association/genType/blob/be699a467800b84221a7cb448e140d8f232d7025/README.md) of this README)
+(In case you are looking for the previous version of the docs, here is an [older version](https://github.com/rescript-association/genType/blob/be699a467800b84221a7cb448e140d8f232d7025/README.md) of this README)
 
 # Development/Contributing
 
