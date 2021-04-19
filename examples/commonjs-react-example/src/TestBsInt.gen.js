@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from TestBsInt.re
+ * @generated from TestBsInt.res
  * @nolint
  */
 /* eslint-disable */

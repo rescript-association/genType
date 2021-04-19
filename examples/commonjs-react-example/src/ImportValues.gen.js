@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from ImportValues.re
+ * @generated from ImportValues.res
  * @nolint
  */
 /* eslint-disable */
