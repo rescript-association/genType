@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from StrictLocal.re
+ * @generated from StrictLocal.res
  * @nolint
  */
 /* eslint-disable */

@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from Nested.re
+ * @generated from Nested.res
  * @nolint
  */
 /* eslint-disable */

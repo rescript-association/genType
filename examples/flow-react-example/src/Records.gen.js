@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from Records.re
+ * @generated from Records.res
  * @nolint
  */
 /* eslint-disable */

@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from ImportJsValue.re
+ * @generated from ImportJsValue.res
  * @nolint
  */
 /* eslint-disable */

@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from ImportHooks.re
+ * @generated from ImportHooks.res
  * @nolint
  */
 /* eslint-disable */

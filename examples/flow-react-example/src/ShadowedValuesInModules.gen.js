@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from ShadowedValuesInModules.re
+ * @generated from ShadowedValuesInModules.res
  * @nolint
  */
 /* eslint-disable */
