@@ -1,4 +1,4 @@
-/* TypeScript file generated from NestedVariants.re by genType. */
+/* TypeScript file generated from NestedVariants.res by genType. */
 /* eslint-disable import/first */
 
 

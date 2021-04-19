@@ -1,4 +1,4 @@
-/* TypeScript file generated from InnerModuleSignature.re by genType. */
+/* TypeScript file generated from InnerModuleSignature.res by genType. */
 /* eslint-disable import/first */
 
 
