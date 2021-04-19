@@ -1,6 +1,7 @@
-export type t3 = {
+@genType
+type t3 = {
   i: int,
   s: string,
 }
 
-export convertT3 = (x: t3) => x
+@genType let convertT3 = (x: t3) => x

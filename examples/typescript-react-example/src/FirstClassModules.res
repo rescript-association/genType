@@ -1,7 +1,7 @@
 module type MT = {
   let x: int
   type t = int
-  @bs.module("foo") external f: int => int = "f"
+  @module("foo") external f: int => int = "f"
   module type XXX = {
     type tt = string
   }
@@ -44,15 +44,15 @@ module M = {
     let u = (0, 0)
   }
   type t = int
-  @bs.module("foo") external f: int => int = "f"
+  @module("foo") external f: int => int = "f"
   let x = 42
 }
 
-export type firstClassModule = module(MT)
+@genType type firstClassModule = module(MT)
 
-export firstClassModule: firstClassModule = module(M)
+@genType let firstClassModule: firstClassModule = module(M)
 
-export testConvert = (m: module(MT)) => m
+@genType let testConvert = (m: module(MT)) => m
 
 module type ResT = {
   let ww: string
@@ -62,4 +62,4 @@ module SomeFunctor = (X: MT): ResT => {
   let ww = X.y
 }
 
-export someFunctorAsFunction = (x: module(MT)): module(ResT) => module(SomeFunctor(unpack(x)))
+@genType let someFunctorAsFunction = (x: module(MT)): module(ResT) => module(SomeFunctor(unpack(x)))

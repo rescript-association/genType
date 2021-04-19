@@ -1,15 +1,15 @@
 // Test pervasive references
 
-export create = (x: int) => ref(x)
+@genType let create = (x: int) => ref(x)
 
-export access = r => r.contents + 1
+@genType let access = r => r.contents + 1
 
-export update = r => r.contents = r.contents + 1
+@genType let update = r => r.contents = r.contents + 1
 
 // Abstract version of references: works when conversion is required.
 
 module R: {
-  export type t<'a>
+  @genType type t<'a>
   let get: t<'a> => 'a
   let make: 'a => t<'a>
   let set: (t<'a>, 'a) => unit
@@ -20,19 +20,19 @@ module R: {
   let set = (r, v) => r.contents = v
 }
 
-export type t<'a> = R.t<'a>
+@genType type t<'a> = R.t<'a>
 
-export get = R.get
+@genType let get = R.get
 
 @gentype
 let make = R.make
 
-export set = R.set
+@genType let set = R.set
 
 type requiresConversion = {x: int}
 
 // Careful: conversion makes a copy and destroys the reference identity.
-export destroysRefIdentity = (x: ref<requiresConversion>) => x
+@genType let destroysRefIdentity = (x: ref<requiresConversion>) => x
 
 // Using abstract references preserves the identity.
-export preserveRefIdentity = (x: R.t<requiresConversion>) => x
+@genType let preserveRefIdentity = (x: R.t<requiresConversion>) => x

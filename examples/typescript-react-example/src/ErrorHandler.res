@@ -8,4 +8,4 @@ module Make = (Error: Error) => {
 }
 
 // This is ignored as there's an interface file
-export x = 42
+@genType let x = 42

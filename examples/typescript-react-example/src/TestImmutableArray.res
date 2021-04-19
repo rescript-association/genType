@@ -1,4 +1,5 @@
-export testImmutableArrayGet = arr => {
+@genType
+let testImmutableArrayGet = arr => {
   open ImmutableArray
   arr[3]
 }

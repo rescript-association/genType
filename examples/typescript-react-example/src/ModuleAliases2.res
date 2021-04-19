@@ -1,13 +1,14 @@
-export type record = {
+@genType
+type record = {
   x: int,
   y: string,
 }
 
 module Outer = {
-  export type outer = {outer: string}
+  @genType type outer = {outer: string}
 
   module Inner = {
-    export type inner = {inner: string}
+    @genType type inner = {inner: string}
   }
 }
 

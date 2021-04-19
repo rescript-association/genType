@@ -1,6 +1,7 @@
 /* Test file starting with lower case letter. */
 
-export type t = {
+@genType
+type t = {
   id: string,
   name: string,
 }

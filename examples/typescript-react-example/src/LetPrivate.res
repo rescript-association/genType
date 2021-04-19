@@ -1,5 +1,3 @@
-%%private(
-  export x = 34
-)
+%%private(@genType let x = 34)
 
-export y = x
+@genType let y = x

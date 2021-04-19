@@ -1,19 +1,21 @@
-export type someMutableFields = {
-  @bs.set
+@genType
+type someMutableFields = {
+  @set
   "mutable0": string,
   "immutable": int,
-  @bs.set
+  @set
   "mutable1": string,
-  @bs.set
+  @set
   "mutable2": string,
 }
 
-export type someMethods = {
-  @bs.meth
+@genType
+type someMethods = {
+  @meth
   "send": string => unit,
-  @bs.meth
+  @meth
   "on": (string, (. int) => unit) => unit,
-  @bs.meth
+  @meth
   "threeargs": (int, string, int) => string,
   "twoArgs": (. int, string) => int,
 }

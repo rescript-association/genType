@@ -1,8 +1,8 @@
 @genType.opaque
 type opaqueFromRecords = A(Records.coord)
 
-export noConversion = (x: opaqueFromRecords) => x
+@genType let noConversion = (x: opaqueFromRecords) => x
 
-export type pair = (opaqueFromRecords, opaqueFromRecords)
+@genType type pair = (opaqueFromRecords, opaqueFromRecords)
 
-export testConvertNestedRecordFromOtherFile = (x: Records.business) => x
+@genType let testConvertNestedRecordFromOtherFile = (x: Records.business) => x

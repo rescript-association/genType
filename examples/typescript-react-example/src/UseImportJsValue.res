@@ -1,3 +1,4 @@
-export useGetProp = (x: ImportJsValue.AbsoluteValue.t) => x->ImportJsValue.AbsoluteValue.getProp + 1
+@genType
+let useGetProp = (x: ImportJsValue.AbsoluteValue.t) => x->ImportJsValue.AbsoluteValue.getProp + 1
 
-export useTypeImportedInOtherModule = (x: ImportJsValue.stringFunction) => x
+@genType let useTypeImportedInOtherModule = (x: ImportJsValue.stringFunction) => x

@@ -1,3 +1,3 @@
 module Universe: {
-  export theAnswer: int
+  @genType let theAnswer: int
 }

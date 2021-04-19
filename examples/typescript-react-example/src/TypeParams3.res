@@ -1,3 +1,3 @@
-export test = (x: TypeParams2.items) => x
+@genType let test = (x: TypeParams2.items) => x
 
-export test2 = (x: TypeParams2.items2) => x
+@genType let test2 = (x: TypeParams2.items2) => x

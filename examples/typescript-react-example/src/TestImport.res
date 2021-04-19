@@ -1,11 +1,13 @@
-@genType.import(
-  ("./exportNestedValues", "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContents")
-)
+@genType.import((
+  "./exportNestedValues",
+  "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContents",
+))
 external innerStuffContents: {"x": int} = "innerStuffContents"
 
-@genType.import(
-  ("./exportNestedValues", "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContents")
-)
+@genType.import((
+  "./exportNestedValues",
+  "TopLevelClass.MiddleLevelElements.stuff.InnerStuff.innerStuffContents",
+))
 external innerStuffContentsAsEmptyObject: {.} = "innerStuffContentsAsEmptyObject"
 
 let innerStuffContents = innerStuffContents
@@ -15,7 +17,7 @@ external valueStartingWithUpperCaseLetter: string = "valueStartingWithUpperCaseL
 
 @genType.import(("./exportNestedValues", "default")) external defaultValue: int = "defaultValue"
 
-export type message = {text: string}
+@genType type message = {text: string}
 
 @genType.import(("./MyBanner", "TopLevelClass.MiddleLevelElements.MyBannerInternal"))
 external make: (

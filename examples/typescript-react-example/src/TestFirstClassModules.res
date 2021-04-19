@@ -1,8 +1,8 @@
-export convert = (x: FirstClassModules.firstClassModule) => x
+@genType let convert = (x: FirstClassModules.firstClassModule) => x
 
-export convertInterface = (x: FirstClassModulesInterface.firstClassModule) => x
+@genType let convertInterface = (x: FirstClassModulesInterface.firstClassModule) => x
 
-export convertRecord = (x: FirstClassModulesInterface.record) => x
+@genType let convertRecord = (x: FirstClassModulesInterface.record) => x
 
 module type MT = {
   type outer
@@ -14,12 +14,14 @@ module type MT = {
   }
 }
 
-export type firstClassModuleWithTypeEquations<'i, 'o> = module(MT with
+@genType
+type firstClassModuleWithTypeEquations<'i, 'o> = module(MT with
   type Inner.inner = 'i
   and type outer = 'o
 )
 
-export convertFirstClassModuleWithTypeEquations = (
+@genType
+let convertFirstClassModuleWithTypeEquations = (
   type o i,
   x: module(MT with type Inner.inner = i and type outer = o),
 ) => x

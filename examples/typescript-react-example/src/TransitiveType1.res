@@ -1,3 +1,3 @@
-export convert = (x: TransitiveType2.t2) => x
+@genType let convert = (x: TransitiveType2.t2) => x
 
-export convertAlias = (x: TransitiveType2.t2Alias) => x
+@genType let convertAlias = (x: TransitiveType2.t2Alias) => x

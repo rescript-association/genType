@@ -1,4 +1,5 @@
-export type record = {
+@genType
+type record = {
   x: int,
   y: string,
 }
@@ -10,4 +11,4 @@ module type MT = {
   let x: int
 }
 
-export type firstClassModule = module(MT)
+@genType type firstClassModule = module(MT)

@@ -1,12 +1,13 @@
-export type promise<'a> = Js.Promise.t<'a>
+@genType type promise<'a> = Js.Promise.t<'a>
 
-export type fromPayload = {
+@genType
+type fromPayload = {
   x: int,
   s: string,
 }
 
-export type toPayload = {result: string}
+@genType type toPayload = {result: string}
 
-export convert = Js.Promise.then_(({s}) => Js.Promise.resolve({result: s}))
+@genType let convert = Js.Promise.then_(({s}) => Js.Promise.resolve({result: s}))
 
-export barx = (~x=Js.Promise.resolve(Some("a")), ()) => x == x
+@genType let barx = (~x=Js.Promise.resolve(Some("a")), ()) => x == x

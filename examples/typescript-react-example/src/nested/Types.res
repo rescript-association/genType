@@ -1,84 +1,87 @@
 @@warning("-32")
 
-export type t = int
+@genType type t = int
 
-export someIntList = list{1, 2, 3}
+@genType let someIntList = list{1, 2, 3}
 
-export map = List.map
+@genType let map = List.map
 
-export type typeWithVars<'x, 'y, 'z> =
+@genType
+type typeWithVars<'x, 'y, 'z> =
   | A('x, 'y)
   | B('z)
 
-export type rec tree = {"label": string, "left": option<tree>, "right": option<tree>}
+@genType type rec tree = {"label": string, "left": option<tree>, "right": option<tree>}
 
 /*
  * A tree is a recursive type which does not require any conversion (JS object).
  * All is well.
  */
-export rec swap = (tree: tree): tree =>
+@genType
+let rec swap = (tree: tree): tree =>
   {
     "label": tree["label"],
     "left": tree["right"]->Belt.Option.map(swap),
     "right": tree["left"]->Belt.Option.map(swap),
   }
 
-export type rec selfRecursive = {self: selfRecursive}
+@genType type rec selfRecursive = {self: selfRecursive}
 
-export type rec mutuallyRecursiveA = {b: mutuallyRecursiveB}
+@genType type rec mutuallyRecursiveA = {b: mutuallyRecursiveB}
 and mutuallyRecursiveB = {a: mutuallyRecursiveA}
 
 /*
  * This is a recursive type which requires conversion (a record).
  * Only a shallow conversion of the top-level element is performed.
  */
-export selfRecursiveConverter = ({self}) => self
+@genType let selfRecursiveConverter = ({self}) => self
 
 /*
  * This is a mutually recursive type which requires conversion (a record).
  * Only a shallow conversion of the two top-level elements is performed.
  */
-export mutuallyRecursiveConverter = ({b}) => b
+@genType let mutuallyRecursiveConverter = ({b}) => b
 
-export testFunctionOnOptionsAsArgument = (a: option<'a>, foo) => foo(a)
+@genType let testFunctionOnOptionsAsArgument = (a: option<'a>, foo) => foo(a)
 
 @genType.opaque
 type opaqueVariant =
   | A
   | B
 
-export stringT: String.t = "a"
+@genType let stringT: String.t = "a"
 
-export jsStringT: Js.String.t = "a"
+@genType let jsStringT: Js.String.t = "a"
 
-export jsString2T: Js.String2.t = "a"
+@genType let jsString2T: Js.String2.t = "a"
 
-export type twice<'a> = ('a, 'a)
+@genType type twice<'a> = ('a, 'a)
 
 @gentype
 type genTypeMispelled = int
 
-export type dictString = Js.Dict.t<string>
+@genType type dictString = Js.Dict.t<string>
 
-export jsonStringify = Js.Json.stringify
+@genType let jsonStringify = Js.Json.stringify
 
-export type nullOrString = Js.Null.t<string>
+@genType type nullOrString = Js.Null.t<string>
 
-export type nullOrString2 = Js.null<string>
+@genType type nullOrString2 = Js.null<string>
 
 type record = {
   i: int,
   s: string,
 }
 
-export testConvertNull = (x: Js.Null.t<record>) => x
+@genType let testConvertNull = (x: Js.Null.t<record>) => x
 
-export type decorator<'a, 'b> = 'a => 'b constraint 'a = int constraint 'b = _ => _
+@genType type decorator<'a, 'b> = 'a => 'b constraint 'a = int constraint 'b = _ => _
 
-export testConvertLocation = (x: Location.t) => x
+@genType let testConvertLocation = (x: Location.t) => x
 
 /* Bucklescript's marshaling rules. */
-export type marshalFields = {
+@genType
+type marshalFields = {
   "_rec": string,
   "_switch": string,
   "switch": string,
@@ -90,7 +93,8 @@ export type marshalFields = {
   "_Uppercase__": string,
 }
 
-export testMarshalFields: marshalFields = {
+@genType
+let testMarshalFields: marshalFields = {
   "_rec": "rec",
   "_switch" /* reason keywords are not recognized */: "_switch",
   "switch": "switch",
@@ -102,9 +106,9 @@ export testMarshalFields: marshalFields = {
   "_Uppercase__": "_Uppercase",
 }
 
-export type marshalMutableField = {@bs.set "_match": int}
+@genType type marshalMutableField = {@set "_match": int}
 
-export setMatch = (x: marshalMutableField) => x["_match"] = 34
+@genType let setMatch = (x: marshalMutableField) => x["_match"] = 34
 
 type ocaml_array<'a> = array<'a>
 
@@ -113,28 +117,28 @@ type someRecord = {id: int}
 
 type instantiateTypeParameter = ocaml_array<someRecord>
 
-export testInstantiateTypeParameter = (x: instantiateTypeParameter) => x
+@genType let testInstantiateTypeParameter = (x: instantiateTypeParameter) => x
 
-@genType.as("Vector")
-export type vector<'a> = ('a, 'a)
+@genType @genType.as("Vector")
+type vector<'a> = ('a, 'a)
 
-export type date = Js.Date.t
+@genType type date = Js.Date.t
 
-export currentTime = Js.Date.make()
+@genType let currentTime = Js.Date.make()
 
-export type i64A = Int64.t
+@genType type i64A = Int64.t
 
-export type i64B = int64
+@genType type i64B = int64
 
-export i64Const: i64B = 34L
+@genType let i64Const: i64B = 34L
 
-export optFunction = Some(() => 3)
+@genType let optFunction = Some(() => 3)
 
 module ObjectId: {
-  export type t = int
+  @genType type t = int
 } = {
   type t = int
   let x = 1
 }
 
-export type tPrimed = (TypeNameSanitize.t', TypeNameSanitize.M.t'')
+@genType type tPrimed = (TypeNameSanitize.t', TypeNameSanitize.M.t'')

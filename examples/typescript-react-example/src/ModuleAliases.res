@@ -18,8 +18,8 @@ module Outer2Alias = Outer2
 
 module InnerNestedAlias = Outer2.Inner2.InnerNested
 
-export testNested = (x: InnerNestedAlias.t) => x
+@genType let testNested = (x: InnerNestedAlias.t) => x
 
-export testInner = (x: Outer2Alias.OuterInnerAlias.innerT) => x
+@genType let testInner = (x: Outer2Alias.OuterInnerAlias.innerT) => x
 
-export testInner2 = (x: Outer2Alias.Inner2.OuterInnerAlias2.innerT) => x
+@genType let testInner2 = (x: Outer2Alias.Inner2.OuterInnerAlias2.innerT) => x

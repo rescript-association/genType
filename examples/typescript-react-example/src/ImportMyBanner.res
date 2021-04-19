@@ -1,6 +1,7 @@
 @ocaml.doc("
   * Wrap component MyBanner to be used from Reason.
-  ") @genType
+  ")
+@genType
 type message = {text: string}
 
 @genType.import("./MyBanner")

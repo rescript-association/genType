@@ -1,12 +1,12 @@
 module Inner = {
-  export x = 34
-  export y = "hello"
+  @genType let x = 34
+  @genType let y = "hello"
 }
 
 module Outer = {
   module Medium = {
     module Inner = {
-      export y = 44
+      @genType let y = 44
     }
   }
 }

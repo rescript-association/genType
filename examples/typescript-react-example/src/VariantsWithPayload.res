@@ -4,17 +4,18 @@ type payload = {
 }
 
 type withPayload = [
-| #a
-| #b
-| #True
-| #Twenty
-| #Half
-| #c(payload)
+  | #a
+  | #b
+  | #True
+  | #Twenty
+  | #Half
+  | #c(payload)
 ]
 
-export testWithPayload = (x: withPayload) => x
+@genType let testWithPayload = (x: withPayload) => x
 
-export printVariantWithPayload = (x: withPayload) =>
+@genType
+let printVariantWithPayload = (x: withPayload) =>
   switch x {
   | #a => Js.log("printVariantWithPayload: a")
   | #b => Js.log("printVariantWithPayload: b")
@@ -24,38 +25,43 @@ export printVariantWithPayload = (x: withPayload) =>
   | #c(payload) => Js.log4("printVariantWithPayload x:", payload.x, "y:", payload.y)
   }
 
-export type manyPayloads = [
-| #one(int)
-| #two(string, string)
-| #three(payload)
+@genType
+type manyPayloads = [
+  | #one(int)
+  | #two(string, string)
+  | #three(payload)
 ]
 
-export testManyPayloads = (x: manyPayloads) => x
+@genType let testManyPayloads = (x: manyPayloads) => x
 
-export printManyPayloads = (x: manyPayloads) =>
+@genType
+let printManyPayloads = (x: manyPayloads) =>
   switch x {
   | #one(n) => Js.log2("printManyPayloads one:", n)
   | #two(s1, s2) => Js.log3("printManyPayloads two:", s1, s2)
   | #three(payload) => Js.log4("printManyPayloads x:", payload.x, "y:", payload.y)
   }
 
-export type simpleVariant =
+@genType
+type simpleVariant =
   | A
   | B
   | C
 
-export testSimpleVariant = (x: simpleVariant) => x
+@genType let testSimpleVariant = (x: simpleVariant) => x
 
-export type variantWithPayloads =
+@genType
+type variantWithPayloads =
   | @genType.as("ARenamed") A
   | B(int)
   | C(int, int)
   | D((int, int))
   | E(int, string, int)
 
-export testVariantWithPayloads = (x: variantWithPayloads) => x
+@genType let testVariantWithPayloads = (x: variantWithPayloads) => x
 
-export printVariantWithPayloads = x =>
+@genType
+let printVariantWithPayloads = x =>
   switch x {
   | A => Js.log2("printVariantWithPayloads", "A")
   | B(x) => Js.log2("printVariantWithPayloads", "B(" ++ (string_of_int(x) ++ ")"))
@@ -76,10 +82,10 @@ export printVariantWithPayloads = x =>
     )
   }
 
-export type variant1Int = R(int)
+@genType type variant1Int = R(int)
 
-export testVariant1Int = (x: variant1Int) => x
+@genType let testVariant1Int = (x: variant1Int) => x
 
-export type variant1Object = R(payload)
+@genType type variant1Object = R(payload)
 
-export testVariant1Object = (x: variant1Object) => x
+@genType let testVariant1Object = (x: variant1Object) => x

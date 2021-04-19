@@ -1,52 +1,50 @@
 @ocaml.doc(" hello ") @genType
 let flat = 34
 
-@ocaml.doc(
-  "
+@ocaml.doc("
   * Sign a message with a key.
   *
   * @param message - A message to be signed
   * @param key - The key with which to sign the message
   * @returns A signed message
- "
-)
+ ")
 @genType
 let signMessage = (. message, key) => message ++ string_of_int(key)
 
-export one = a => a + 0
+@genType let one = a => a + 0
 
-export two = (a, b) => a + b + 0
+@genType let two = (a, b) => a + b + 0
 
-export tree = (a, b, c) => a + b + c + 0
+@genType let tree = (a, b, c) => a + b + c + 0
 
-export oneU = (. a) => a + 0
+@genType let oneU = (. a) => a + 0
 
-export twoU = (. a, b) => a + b + 0
+@genType let twoU = (. a, b) => a + b + 0
 
-export treeU = (. a, b, c) => a + b + c + 0
+@genType let treeU = (. a, b, c) => a + b + c + 0
 
-export useParam = param => param + 34
+@genType let useParam = param => param + 34
 
-export useParamU = (. param) => param + 34
+@genType let useParamU = (. param) => param + 34
 
-export unnamed1 = (_: int) => 34
+@genType let unnamed1 = (_: int) => 34
 
-export unnamed1U = (. _: int) => 34
+@genType let unnamed1U = (. _: int) => 34
 
-export unnamed2 = (_: int, _: int) => 34
+@genType let unnamed2 = (_: int, _: int) => 34
 
-export unnamed2U = (. _: int, _: int) => 34
+@genType let unnamed2U = (. _: int, _: int) => 34
 
-export grouped = (~x, ~y, a, b, c, ~z) => x + y + a + b + c + z
+@genType let grouped = (~x, ~y, a, b, c, ~z) => x + y + a + b + c + z
 
-export unitArgWithoutConversion = () => "abc"
+@genType let unitArgWithoutConversion = () => "abc"
 
-export unitArgWithoutConversionU = (. ()) => "abc"
+@genType let unitArgWithoutConversionU = (. ()) => "abc"
 
 type t =
   | A
   | B
 
-export unitArgWithConversion = () => A
+@genType let unitArgWithConversion = () => A
 
-export unitArgWithConversionU = (. ()) => A
+@genType let unitArgWithConversionU = (. ()) => A
