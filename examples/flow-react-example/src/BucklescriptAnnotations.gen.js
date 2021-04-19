@@ -1,6 +1,6 @@
 /** 
  * @flow strict
- * @generated from BucklescriptAnnotations.re
+ * @generated from BucklescriptAnnotations.res
  * @nolint
  */
 /* eslint-disable */
