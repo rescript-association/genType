@@ -11,8 +11,8 @@ var valueStartingWithUpperCaseLetter = TestImportGen.valueStartingWithUpperCaseL
 
 var defaultValue = TestImportGen.defaultValue;
 
-function make(prim, prim$1, prim$2) {
-  return TestImportGen.make(prim, prim$1 !== undefined ? Caml_option.valFromOption(prim$1) : undefined, prim$2);
+function make(prim0, prim1, prim2) {
+  return TestImportGen.make(prim0, prim1 !== undefined ? Caml_option.valFromOption(prim1) : undefined, prim2);
 }
 
 var defaultValue2 = TestImportGen.defaultValue2;

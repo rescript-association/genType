@@ -3,8 +3,8 @@
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as ImportMyBannerGen from "./ImportMyBanner.gen";
 
-function make(prim, prim$1, prim$2) {
-  return ImportMyBannerGen.make(prim, prim$1 !== undefined ? Caml_option.valFromOption(prim$1) : undefined, prim$2);
+function make(prim0, prim1, prim2) {
+  return ImportMyBannerGen.make(prim0, prim1 !== undefined ? Caml_option.valFromOption(prim1) : undefined, prim2);
 }
 
 export {

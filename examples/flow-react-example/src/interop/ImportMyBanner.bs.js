@@ -2,8 +2,8 @@
 
 import * as ImportMyBannerGen from "./ImportMyBanner.gen";
 
-function make(prim, prim$1, prim$2) {
-  return ImportMyBannerGen.make(prim, prim$1, prim$2);
+function make(prim0, prim1, prim2) {
+  return ImportMyBannerGen.make(prim0, prim1, prim2);
 }
 
 export {

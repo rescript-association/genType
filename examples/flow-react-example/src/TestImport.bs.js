@@ -10,8 +10,8 @@ var valueStartingWithUpperCaseLetter = TestImportGen.valueStartingWithUpperCaseL
 
 var defaultValue = TestImportGen.defaultValue;
 
-function make(prim, prim$1, prim$2) {
-  return TestImportGen.make(prim, prim$1, prim$2);
+function make(prim0, prim1, prim2) {
+  return TestImportGen.make(prim0, prim1, prim2);
 }
 
 export {
