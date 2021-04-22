@@ -17,12 +17,9 @@ export type variant =
 
 export type block = "Block";
 
-// Type annotated function components are not checked by Flow, but typeof() works.
-const make$$forTypeof = function (_: {| +greeting: string |}) : React$Node { return null };
-
 export type Props = {| +greeting: string |};
 
-export const make: typeof(make$$forTypeof) = Component2BS.make;
+export const make: React$ComponentType<{| +greeting: string |}> = Component2BS.make;
 
 export const getBlock: (block) => number = function (Arg1: $any) {
   const result = Component2BS.getBlock(0);

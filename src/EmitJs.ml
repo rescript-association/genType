@@ -547,28 +547,9 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
       | _ -> (type_, None)
     in
 
-    (* Work around Flow issue with function components.
-       If type annotated direcly, they are not checked. But typeof() works. *)
-    let flowFunctionTypeWorkaround =
-      hookType <> None && config.language = Flow
-    in
     let converter = type_ |> typeGetConverter in
     resolvedName
     |> ExportModule.extendExportModules ~converter ~moduleItemsEmitter ~type_;
-    let hookNameForTypeof = name ^ "$$forTypeof" in
-    let type_ =
-      match flowFunctionTypeWorkaround with
-      | true -> ident ("typeof(" ^ hookNameForTypeof ^ ")")
-      | false -> type_
-    in
-    let emitters =
-      match hookType with
-      | Some {propsType; retType; typeVars} when flowFunctionTypeWorkaround ->
-        EmitType.emitHookTypeAsFunction ~config ~emitters
-          ~name:hookNameForTypeof ~propsType ~retType ~retValue:"null"
-          ~typeNameIsInterface ~typeVars
-      | _ -> emitters
-    in
     let emitters =
       match hookType with
       | Some {propsType; resolvedTypeName; typeVars} ->
