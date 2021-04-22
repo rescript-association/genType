@@ -1,6 +1,7 @@
 # master
 - Add support for different file extensions using the `suffix` configuration from `bsconfig.json`.
 - Fix issue where `let x:t = ...` is treated differently in `.res` syntax.
+- Remove workaround in Flow that turns components into functions when exported.
 
 # 3.45.0
 - Only support bs-platform `8.2.0` or newer.
