@@ -5,8 +5,8 @@ const path = require("path");
 const targetFile = path.join(__dirname, "..", "src", "Version.ml");
 
 const content = `
-/* CREATED BY genType/scripts/bump_version_module.js */
-/* DO NOT MODIFY BY HAND, WILL BE AUTOMATICALLY UPDATED BY npm version */
+(* CREATED BY genType/scripts/bump_version_module.js *)
+(* DO NOT MODIFY BY HAND, WILL BE AUTOMATICALLY UPDATED BY npm version *)
 let version = "${pjson.version}";
 `;
 
