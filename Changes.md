@@ -1,6 +1,6 @@
 # master
 
-# 3.47.0
+# 3.48.0
 - Remove workaround in Flow that turns components into functions when exported.
 
 # 3.46.0
