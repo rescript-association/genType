@@ -5,9 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "node ../run_bsb.js -make-world",
-    "start": "node ../run_bsb.js -make-world -w",
-    "clean": "node ../clean_bsb.js",
+    "build": "rescript",
+    "start": "rescript build -w",
+    "clean": "rescript clean",
     "test": "exit 0",
     "webpack": "webpack -w",
     "webpack:production": "webpack --env.NODE_ENV=production"
