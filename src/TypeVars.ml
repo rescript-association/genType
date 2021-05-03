@@ -8,6 +8,9 @@ let extractFromTypeExpr typeParams =
          | {Types.desc = Tvar (Some s)} ->
            let typeName = s in
            typeName :: soFar
+         | {Types.desc = Tlink _} ->
+           (* see if we need to collect more type vars here: t as 'a *)
+           soFar
          | _ -> assert false)
        []
   |> List.rev
