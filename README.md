@@ -72,8 +72,8 @@ For running `gentype` with ReScript via `npm` workflow, add following script in 
 
 ```
 scripts: {
-  "build": "bsb -make-world",
-  "clean": "bsb -clean-world"
+  "build": "rescript",
+  "clean": "rescript clean"
 }
 ```
 
