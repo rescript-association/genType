@@ -3,14 +3,14 @@
 export const round: (_: number) => number = Math.round;
 
 // tslint:disable-next-line:only-arrow-functions
-export const area = function(point: { x: number; y?: number }): number {
+export const area = function (point: { x: number; y?: number }): number {
   return point.x * (point.y === undefined ? 1 : point.y);
 };
 
 export type numberOrString = number | string;
 
-export const returnMixedArray = function() : Array<number | string> {
-  return [1,2];
+export const returnMixedArray = function (): Array<number | string> {
+  return [1, 2];
 };
 
 export class AbsoluteValue {
@@ -26,7 +26,7 @@ export class AbsoluteValue {
 export type stringFunction = (_: string) => string;
 
 // tslint:disable-next-line:only-arrow-functions
-export const useColor = function(x: "tomato" | "gray"): number {
+export const useColor = function (x: "tomato" | "gray"): number {
   return 0;
 };
 
@@ -40,5 +40,9 @@ export const polymorphic = <T>(x: T): T => x;
 export type num = number;
 
 export type polyType<T> = { x: T };
+
+export type true_ = true
+
+export let someTrue = (x:true_, y:number) => "aha";
 
 export default 34;
