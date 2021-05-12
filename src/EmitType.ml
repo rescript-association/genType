@@ -96,6 +96,8 @@ let typeReactDOMReDomRef ~config =
   | false -> "React.Ref")
   |> ident ~builtin:true ~typeArgs:[mixedOrUnknown ~config]
 
+let typeReactEventMouseT = "MouseEvent" |> ident ~builtin:true
+
 let reactRefCurrent = "current"
 
 let typeReactRef ~type_ =

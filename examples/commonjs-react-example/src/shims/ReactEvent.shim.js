@@ -11,7 +11,6 @@ export opaque type Form_t = mixed;
 export opaque type Keyboard_t = mixed;
 export opaque type Image_t = mixed;
 export opaque type Media_t = mixed;
-export opaque type Mouse_t = mixed;
 export opaque type Selection_t = mixed;
 export opaque type Synthetic_t = mixed;
 export opaque type Touch_t = mixed;

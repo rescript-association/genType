@@ -8,9 +8,7 @@ import * as React from 'react';
 import * as OnClick2BS__Es6Import from './OnClick2.bs';
 const OnClick2BS: any = OnClick2BS__Es6Import;
 
-import {Mouse_t as ReactEvent_Mouse_t} from '../src/shims/ReactEvent.shim';
-
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = { readonly onClick: (_1:ReactEvent_Mouse_t) => void };
+export type Props = { readonly onClick: (_1:MouseEvent) => void };
 
-export const make: React.ComponentType<{ readonly onClick: (_1:ReactEvent_Mouse_t) => void }> = OnClick2BS.make;
+export const make: React.ComponentType<{ readonly onClick: (_1:MouseEvent) => void }> = OnClick2BS.make;
