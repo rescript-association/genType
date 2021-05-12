@@ -178,6 +178,8 @@ let translateConstr ~config ~paramsTranslation ~(path : Path.t) ~typeEnv =
     {dependencies = []; type_ = EmitType.typeReactDOMReDomRef ~config}
   | ["ReactDOMRe"; "Ref"; "currentDomRef"], [] ->
     {dependencies = []; type_ = EmitType.typeAny ~config}
+  | ["ReactEvent"; "Mouse"; "t"], [] ->
+    {dependencies = []; type_ = EmitType.typeReactEventMouseT}
   | (["React"; "element"] | ["ReasonReact"; "reactElement"]), [] ->
     {dependencies = []; type_ = EmitType.typeReactElement ~config}
   | (["FB"; "option"] | ["option"]), [paramTranslation] ->

@@ -39,11 +39,6 @@ export abstract class Media_t {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export abstract class Mouse_t {
-  protected opaque: unknown;
-}
-
-// tslint:disable-next-line:max-classes-per-file
 export abstract class Selection_t {
   protected opaque: unknown;
 }

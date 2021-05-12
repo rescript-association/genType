@@ -1,4 +1,5 @@
 # master
+- Make ReactEvent.Mouse.t be a builtin type corresponding to `MouseEvent`.
 
 # 3.48.0
 - Remove workaround in Flow that turns components into functions when exported.

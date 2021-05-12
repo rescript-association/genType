@@ -136,6 +136,8 @@ val typeReactDOMReDomRef : config:config -> type_
 
 val typeReactElement : config:config -> type_
 
+val typeReactEventMouseT : type_
+
 val typeReactRef : type_:type_ -> type_
 
 val typeAny : config:config -> type_
