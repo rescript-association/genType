@@ -21,7 +21,7 @@ let requireModule ~import ~env ~importPath ?(strict = false) moduleName =
   | true -> {env with requiresEarly = requiresNew}
   | false -> {env with requires = requiresNew}
 
-let createExportTypeMap ~config ~file
+let createExportTypeMap ~config ~file ~fromCmtReadRecursively
     (typeDeclarations : CodeItem.typeDeclaration list) : CodeItem.exportTypeMap
     =
   if !Debug.codeItems then Log_.item "Create Type Map for %s\n" file;
@@ -29,6 +29,11 @@ let createExportTypeMap ~config ~file
       (typeDeclaration : CodeItem.typeDeclaration) : CodeItem.exportTypeMap =
     let addExportType ~annotation
         ({resolvedTypeName; type_; typeVars} : CodeItem.exportType) =
+      let annotation =
+        match annotation with
+        | Annotation.NoGenType when fromCmtReadRecursively -> Annotation.GenType
+        | _ -> annotation
+      in
       if !Debug.codeItems then
         Log_.item "Type Map: %s%s%s\n"
           (resolvedTypeName |> ResolvedName.toString)
@@ -698,7 +703,7 @@ let rec readCmtFilesRecursively ~config ~env ~inputCmtTranslateTypeDeclarations
       in
       let exportTypeMapFromCmt =
         typeDeclarations
-        |> createExportTypeMap ~config
+        |> createExportTypeMap ~config ~fromCmtReadRecursively:true
              ~file:(cmtFile |> Filename.basename |> Filename.chop_extension)
       in
       let cmtToExportTypeMap =
@@ -851,7 +856,9 @@ let emitTranslationAsString ~config ~fileName ~inputCmtTranslateTypeDeclarations
   let variantTables = Hashtbl.create 1 in
   let exportTypeMap, annotatedSet =
     translation.typeDeclarations
-    |> createExportTypeMap ~config ~file:(fileName |> ModuleName.toString)
+    |> createExportTypeMap ~config
+         ~file:(fileName |> ModuleName.toString)
+         ~fromCmtReadRecursively:false
     |> propagateAnnotationToSubTypes ~codeItems:translation.codeItems
   in
   let annotatedTypeDeclarations =
