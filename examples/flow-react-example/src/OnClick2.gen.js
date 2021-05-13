@@ -4,10 +4,12 @@
  * @nolint
  */
 /* eslint-disable */
+// $FlowExpectedError: Reason checked type sufficiently
+type $any = any;
 
 // $FlowExpectedError: Reason checked type sufficiently
 import * as OnClick2BS from './OnClick2.bs';
 
-export type Props = {| +onClick: (MouseEvent) => void |};
+export type Props = {| +onClick: (SyntheticMouseEvent<$any>) => void |};
 
-export const make: React$ComponentType<{| +onClick: (MouseEvent) => void |}> = OnClick2BS.make;
+export const make: React$ComponentType<{| +onClick: (SyntheticMouseEvent<$any>) => void |}> = OnClick2BS.make;

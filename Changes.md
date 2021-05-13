@@ -1,4 +1,5 @@
 # master
+- Flow: use `SyntheticMouseEvent` type for onClick.
 
 # 3.49.0
 - Make ReactEvent.Mouse.t be a builtin type corresponding to `MouseEvent`.

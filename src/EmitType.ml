@@ -60,6 +60,14 @@ let shimExtension ~config =
 let interfaceName ~config name =
   match config.exportInterfaces with true -> "I" ^ name | false -> name
 
+let typeAny ~config =
+  ident ~builtin:true
+    (match config.language = Flow with
+    | true ->
+      config.emitFlowAny <- true;
+      "$any"
+    | false -> "any")
+
 let typeReactComponent ~config ~propsType =
   (match config.language = Flow with
   | true -> "React$ComponentType"
@@ -96,7 +104,10 @@ let typeReactDOMReDomRef ~config =
   | false -> "React.Ref")
   |> ident ~builtin:true ~typeArgs:[mixedOrUnknown ~config]
 
-let typeReactEventMouseT = "MouseEvent" |> ident ~builtin:true
+let typeReactEventMouseT ~config =
+  if config.language = Flow then
+    "SyntheticMouseEvent" |> ident ~builtin:true ~typeArgs:[typeAny ~config]
+  else "MouseEvent" |> ident ~builtin:true
 
 let reactRefCurrent = "current"
 
@@ -129,14 +140,6 @@ let componentExportName ~config ~fileName ~moduleName =
     | true -> "component"
     | false -> moduleName |> ModuleName.toString)
   | _ -> moduleName |> ModuleName.toString
-
-let typeAny ~config =
-  ident ~builtin:true
-    (match config.language = Flow with
-    | true ->
-      config.emitFlowAny <- true;
-      "$any"
-    | false -> "any")
 
 let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
     type0 =
