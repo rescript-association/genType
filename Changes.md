@@ -1,4 +1,6 @@
 # master
+
+# 3.50.0
 - Flow: use `SyntheticMouseEvent` type for onClick.
 
 # 3.49.0
