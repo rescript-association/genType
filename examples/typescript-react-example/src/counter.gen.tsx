@@ -6,6 +6,6 @@
 import * as counterBS__Es6Import from './counter.bs';
 const counterBS: any = counterBS__Es6Import;
 
-import {aa as Machine_aa} from './Machine.gen';
+import type {aa as Machine_aa} from './Machine.gen';
 
 export const b: Machine_aa = {tag:"A", value:counterBS.b._0};
