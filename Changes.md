@@ -1,5 +1,6 @@
 # master
 - Make ReactEvent.Mouse.t be a builtin type corresponding to `MouseEvent`.
+- When loading a type defined in another file, treat it as if it were annotated with @genType. So if it's needed for an export from the current file, the annotation is already automatically propagated.
 - Use `import type` syntax for TypeScript.
 
 # 3.48.0

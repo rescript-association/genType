@@ -121,7 +121,10 @@ export const testFunctionOnOptionsAsArgument: <T1,a>(?a, ((?a) => T1)) => T1 = f
 
 export const testDateKey: (dateKey) => dateKey = TypesBS.testDateKey;
 
-export const testAutoAnnotateVariants: (AutoAnnotate_variant) => AutoAnnotate_variant = TypesBS.testAutoAnnotateVariants;
+export const testAutoAnnotateVariants: (AutoAnnotate_variant) => AutoAnnotate_variant = function (Arg1: $any) {
+  const result = TypesBS.testAutoAnnotateVariants({TAG: 0, _0:Arg1.value});
+  return {tag:"R", value:result._0}
+};
 
 export const testAutoAnnotateVariants2: (AutoAnnotate_annotatedVariant) => AutoAnnotate_annotatedVariant = function (Arg1: $any) {
   const result = TypesBS.testAutoAnnotateVariants2(Arg1.tag==="R2"
