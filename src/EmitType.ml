@@ -608,9 +608,12 @@ let emitImportTypeAs ~emitters ~config ~typeName ~asTypeName
     | true -> "// flowlint-next-line nonstrict-import:off\n"
     | false -> ""
   in
+  let importPrefix =
+    if config.language = TypeScript then "import type" else "import"
+  in
   match config.language with
   | Flow | TypeScript ->
-    strictLocalPrefix ^ "import "
+    strictLocalPrefix ^ importPrefix ^ " "
     ^ (match config.language = Flow with true -> "type " | false -> "")
     ^ "{" ^ typeName
     ^ (match asTypeName with Some asT -> " as " ^ asT | None -> "")

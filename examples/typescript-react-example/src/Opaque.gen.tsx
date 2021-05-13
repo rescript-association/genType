@@ -6,7 +6,7 @@
 import * as OpaqueBS__Es6Import from './Opaque.bs';
 const OpaqueBS: any = OpaqueBS__Es6Import;
 
-import {business as Records_business} from './Records.gen';
+import type {business as Records_business} from './Records.gen';
 
 // tslint:disable-next-line:max-classes-per-file 
 // tslint:disable-next-line:class-name

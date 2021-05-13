@@ -6,9 +6,9 @@
 import * as TypeParams3BS__Es6Import from './TypeParams3.bs';
 const TypeParams3BS: any = TypeParams3BS__Es6Import;
 
-import {items2 as TypeParams2_items2} from './TypeParams2.gen';
+import type {items2 as TypeParams2_items2} from './TypeParams2.gen';
 
-import {items as TypeParams2_items} from './TypeParams2.gen';
+import type {items as TypeParams2_items} from './TypeParams2.gen';
 
 export const test: (x:TypeParams2_items) => TypeParams2_items = TypeParams3BS.test;
 

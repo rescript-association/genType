@@ -6,13 +6,13 @@
 import * as TestModuleAliasesBS__Es6Import from './TestModuleAliases.bs';
 const TestModuleAliasesBS: any = TestModuleAliasesBS__Es6Import;
 
-import {InnerAlias_inner as ModuleAliases2_InnerAlias_inner} from './ModuleAliases2.gen';
+import type {InnerAlias_inner as ModuleAliases2_InnerAlias_inner} from './ModuleAliases2.gen';
 
-import {Outer_Inner_inner as ModuleAliases2_Outer_Inner_inner} from './ModuleAliases2.gen';
+import type {Outer_Inner_inner as ModuleAliases2_Outer_Inner_inner} from './ModuleAliases2.gen';
 
-import {Outer_outer as ModuleAliases2_Outer_outer} from './ModuleAliases2.gen';
+import type {Outer_outer as ModuleAliases2_Outer_outer} from './ModuleAliases2.gen';
 
-import {record as ModuleAliases2_record} from './ModuleAliases2.gen';
+import type {record as ModuleAliases2_record} from './ModuleAliases2.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type record = ModuleAliases2_record;

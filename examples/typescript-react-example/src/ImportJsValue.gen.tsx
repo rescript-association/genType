@@ -86,17 +86,17 @@ export const $$default: unknown = defaultTypeChecked as number;
 // tslint:disable-next-line:no-var-requires
 const ImportJsValueBS = require('./ImportJsValue.bs');
 
-import {AbsoluteValue as $$AbsoluteValue_t} from './MyMath';
+import type {AbsoluteValue as $$AbsoluteValue_t} from './MyMath';
 
-import {num as $$myNum} from './MyMath';
+import type {num as $$myNum} from './MyMath';
 
-import {num as $$num} from './MyMath';
+import type {num as $$num} from './MyMath';
 
-import {numberOrString as $$numberOrString} from './MyMath';
+import type {numberOrString as $$numberOrString} from './MyMath';
 
-import {polyType as $$polyType} from './MyMath';
+import type {polyType as $$polyType} from './MyMath';
 
-import {stringFunction as $$stringFunction} from './MyMath';
+import type {stringFunction as $$stringFunction} from './MyMath';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type point = { readonly x: number; readonly y?: number };

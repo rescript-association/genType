@@ -10,17 +10,17 @@ const Curry: any = Curry__Es6Import;
 import * as TypesBS__Es6Import from './Types.bs';
 const TypesBS: any = TypesBS__Es6Import;
 
-import {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
+import type {Dict_t as Js_Dict_t} from '../../src/shims/Js.shim';
 
-import {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
+import type {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
 
-import {M_t__ as TypeNameSanitize_M_t__} from '../../src/TypeNameSanitize.gen';
+import type {M_t__ as TypeNameSanitize_M_t__} from '../../src/TypeNameSanitize.gen';
 
-import {list} from '../../src/shims/ReasonPervasives.shim';
+import type {list} from '../../src/shims/ReasonPervasives.shim';
 
-import {t_ as TypeNameSanitize_t_} from '../../src/TypeNameSanitize.gen';
+import type {t_ as TypeNameSanitize_t_} from '../../src/TypeNameSanitize.gen';
 
-import {t as Location_t} from '../../src/location/location.gen';
+import type {t as Location_t} from '../../src/location/location.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type t = number;

@@ -2,7 +2,7 @@
 /* eslint-disable import/first */
 
 
-import {ocaml_array as TypeParams1_ocaml_array} from './TypeParams1.gen';
+import type {ocaml_array as TypeParams1_ocaml_array} from './TypeParams1.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type item = { readonly id: number };
