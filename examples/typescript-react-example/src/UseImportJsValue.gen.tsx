@@ -6,9 +6,9 @@
 import * as UseImportJsValueBS__Es6Import from './UseImportJsValue.bs';
 const UseImportJsValueBS: any = UseImportJsValueBS__Es6Import;
 
-import {AbsoluteValue_t as ImportJsValue_AbsoluteValue_t} from './ImportJsValue.gen';
+import type {AbsoluteValue_t as ImportJsValue_AbsoluteValue_t} from './ImportJsValue.gen';
 
-import {stringFunction as ImportJsValue_stringFunction} from './ImportJsValue.gen';
+import type {stringFunction as ImportJsValue_stringFunction} from './ImportJsValue.gen';
 
 export const useGetProp: (x:ImportJsValue_AbsoluteValue_t) => number = UseImportJsValueBS.useGetProp;
 
