@@ -2,24 +2,24 @@
 /* eslint-disable import/first */
 
 
-import MyBanner from './MyBanner';
+import {make as makeNotChecked} from './MyBanner';
 
-import * as React from 'react';
-
-// @ts-ignore: Implicit any on import
-import * as ReasonReact__Es6Import from 'reason-react/src/ReasonReact.js';
-const ReasonReact: any = ReasonReact__Es6Import;
-
-// tslint:disable-next-line:interface-over-type-literal
-export type Props = { readonly show: boolean; readonly message?: message };
-
-// In case of type error, check the type of 'make' in 'ImportMyBanner.re' and the props of './MyBanner'.
-export function MyBannerTypeChecked(props: Props): JSX.Element {
-  return <MyBanner {...props}/>;
-}
+// In case of type error, check the type of 'make' in 'ImportMyBanner.re' and './MyBanner'.
+export const makeTypeChecked: <a>(_1:{ readonly show: boolean; readonly message?: message }, _2:a) => ReasonReact_component<ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_actionless> = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function (show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, message: message}, children); };
+export const make: unknown = function <a>(Argshow: any, Argmessage: any, Arg2: any) {
+  const result = makeTypeChecked({show:Argshow, message:Argmessage}, Arg2);
+  return result
+} as <a>(_1:{ readonly show: boolean; readonly message?: message }, _2:a) => ReasonReact_component<ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_actionless>;
+
+import type {actionless as ReasonReact_actionless} from '../src/shims/ReactShim.shim';
+
+import type {component as ReasonReact_component} from '../src/shims/ReactShim.shim';
+
+import type {noRetainedProps as ReasonReact_noRetainedProps} from '../src/shims/ReactShim.shim';
+
+import type {stateless as ReasonReact_stateless} from '../src/shims/ReactShim.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type message = { readonly text: string };

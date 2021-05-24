@@ -4,11 +4,13 @@
  */
 /* eslint-disable */
 
-import MyBanner from './MyBanner';
+import {make as makeNotChecked} from './MyBanner';
 
-import * as React from 'react';
-
-import * as ReasonReact from 'reason-react/src/ReasonReact.js';
+// In case of type error, check the type of 'make' in 'ImportMyBanner.re' and './MyBanner'.
+export const makeTypeChecked = makeNotChecked;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make = function (show, message, children) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, message: message}, children); };
+export const make = function (Argshow, Argmessage, Arg2) {
+  const result = makeTypeChecked({show:Argshow, message:Argmessage}, Arg2);
+  return result
+};

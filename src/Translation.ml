@@ -168,7 +168,8 @@ let translateComponent ~attributes ~config ~docString ~outputFileRelative
                 typeArgs = _state :: _;
               } as id);
          _;
-       } as function_) ->
+       } as function_)
+    when false ->
     let type_ =
       Function {function_ with retType = Ident {id with typeArgs = []}}
     in
@@ -283,7 +284,7 @@ let translatePrimitive ~config ~outputFileRelative ~resolver ~typeEnv
           _;
         },
       Some importString )
-    when valueName = "make" ->
+    when valueName = "make" && false ->
     let asPath =
       match attributeRenaming with Some asPath -> asPath | None -> ""
     in
