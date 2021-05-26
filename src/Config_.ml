@@ -200,7 +200,7 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
           (v1, v2, v3)
         | _ -> (0, 0, 0))
     in
-    let externalStdlib = bsconf |> getString "external-stdlib" in
+    let externalStdlib = bsconf |> getStringOption "external-stdlib" in
     let v1, v2, v3 = bsVersion in
     let platformLib =
       match externalStdlib with
