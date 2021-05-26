@@ -1,4 +1,5 @@
 # master
+- Remove support for legacy components.
 
 # 3.50.0
 - Flow: use `SyntheticMouseEvent` type for onClick.
