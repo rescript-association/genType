@@ -58,19 +58,11 @@ let createExportTypeMap ~config ~file ~fromCmtReadRecursively
 
 let codeItemToString ~config ~typeNameIsInterface (codeItem : CodeItem.t) =
   match codeItem with
-  | ExportComponent {nestedModuleName} -> (
-    "ExportComponent nestedModuleName:"
-    ^
-    match nestedModuleName with
-    | Some moduleName -> moduleName |> ModuleName.toString
-    | None -> "")
   | ExportValue {resolvedName; type_} ->
     "ExportValue" ^ " resolvedName:"
     ^ ResolvedName.toString resolvedName
     ^ " type:"
     ^ EmitType.typeToString ~config ~typeNameIsInterface type_
-  | ImportComponent {importAnnotation} ->
-    "ImportComponent " ^ (importAnnotation.importPath |> ImportPath.dump)
   | ImportValue {importAnnotation} ->
     "ImportValue " ^ (importAnnotation.importPath |> ImportPath.dump)
 
@@ -142,130 +134,6 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
       (codeItem |> codeItemToString ~config ~typeNameIsInterface);
   let indent = Some "" in
   match codeItem with
-  | ImportComponent
-      {
-        asPath;
-        childrenTyp;
-        exportType;
-        importAnnotation;
-        propsFields;
-        propsTypeName;
-      } ->
-    let importPath = importAnnotation.importPath in
-    let name = importAnnotation.name in
-    let es6 =
-      match (language, config.module_) with
-      | _, ES6 | TypeScript, _ -> true
-      | (Flow | Untyped), _ -> false
-    in
-    let firstNameInPath, restOfPath, lastNameInPath =
-      match asPath |> Str.split (Str.regexp "\\.") with
-      | x :: y -> (
-        let lastNameInPath =
-          match y |> List.rev with last :: _ -> last | [] -> x
-        in
-        match es6 with
-        | true -> (x, "" :: y |> String.concat ".", lastNameInPath)
-        | false -> (name, "" :: x :: y |> String.concat ".", lastNameInPath))
-      | _ -> (name, "", name)
-    in
-    let componentPath = firstNameInPath ^ restOfPath in
-    let nameGen = EmitText.newNameGen () in
-    let emitters, env =
-      if es6 then
-        (* emit an import {... as ...} immediately *)
-        let emitters =
-          importPath
-          |> EmitType.emitImportValueAsEarly ~config ~emitters
-               ~name:firstNameInPath
-               ~nameAs:
-                 (match firstNameInPath = name with
-                 | true -> None
-                 | false -> Some firstNameInPath)
-        in
-        (emitters, env)
-      else
-        (* add an early require(...) *)
-        let env =
-          firstNameInPath |> ModuleName.fromStringUnsafe
-          |> requireModule ~import:true ~env ~importPath ~strict:true
-        in
-        (emitters, env)
-    in
-    let componentNameTypeChecked = lastNameInPath ^ "TypeChecked" in
-
-    (* Check the type of the component *)
-    config.emitImportReact <- true;
-    let emitters =
-      emitExportType ~early:true ~config ~emitters ~typeGetNormalized
-        ~typeNameIsInterface exportType
-    in
-    let emitters =
-      match config.language = Untyped with
-      | true -> emitters
-      | false ->
-        ("("
-         ^ ("props"
-           |> EmitType.ofType ~config ~typeNameIsInterface
-                ~type_:(ident propsTypeName))
-         ^ ")"
-        |> EmitType.ofType ~config ~typeNameIsInterface
-             ~type_:(EmitType.typeReactElement ~config))
-        ^ " {\n  return <" ^ componentPath ^ " {...props}/>;\n}"
-        |> EmitType.emitExportFunction ~early:true ~emitters
-             ~name:componentNameTypeChecked ~config
-             ~comment:
-               ("In case of type error, check the type of '" ^ "make" ^ "' in '"
-               ^ (fileName |> ModuleName.toString)
-               ^ ".re'" ^ " and the props of '"
-               ^ (importPath |> ImportPath.emit ~config)
-               ^ "'.")
-    in
-    (* Wrap the component *)
-    let emitters =
-      ("function "
-      ^ EmitText.parens
-          ((propsFields |> List.map (fun ({nameJS} : field) -> nameJS))
-           @ ["children"]
-          |> List.map (EmitType.ofTypeAny ~config))
-      ^ " { return ReasonReact.wrapJsForReason"
-      ^ EmitText.parens
-          [
-            componentPath;
-            "{"
-            ^ (propsFields
-              |> List.map (fun {nameJS = propName; optional; type_ = propTyp} ->
-                     propName ^ ": "
-                     ^ (propName
-                       |> Converter.toJS ~config
-                            ~converter:
-                              ((match optional = Mandatory with
-                               | true -> propTyp
-                               | false -> Option propTyp)
-                              |> typeGetConverter)
-                            ~indent ~nameGen ~variantTables))
-              |> String.concat ", ")
-            ^ "}";
-            "children"
-            |> Converter.toJS ~config
-                 ~converter:(childrenTyp |> typeGetConverter)
-                 ~indent ~nameGen ~variantTables;
-          ]
-      ^ "; }")
-      ^ ";"
-      |> EmitType.emitExportConstEarly
-           ~comment:
-             ("Export '" ^ "make"
-            ^ "' early to allow circular import from the '.bs.js' file.")
-           ~config ~emitters ~name:"make" ~type_:(mixedOrUnknown ~config)
-           ~typeNameIsInterface
-    in
-    let env =
-      ModuleName.reasonReact
-      |> requireModule ~import:true ~env
-           ~importPath:(ImportPath.reasonReactPath ~config)
-    in
-    ({env with importedValueOrComponent = true}, emitters)
   | ImportValue {asPath; importAnnotation; type_; valueName} ->
     let nameGen = EmitText.newNameGen () in
     let importPath = importAnnotation.importPath in
@@ -351,122 +219,6 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
       | false -> emitters
     in
     ({env with importedValueOrComponent = true}, emitters)
-  | ExportComponent
-      {
-        componentAccessPath;
-        exportType;
-        moduleAccessPath;
-        nestedModuleName;
-        type_;
-      } ->
-    let nameGen = EmitText.newNameGen () in
-    let converter = type_ |> typeGetConverter in
-    let importPath =
-      fileName
-      |> ModuleResolver.resolveModule ~importExtension:config.suffix
-           ~outputFileRelative ~resolver ~useBsDependencies:false
-    in
-    let moduleNameBs = fileName |> ModuleName.forBsFile in
-    let moduleName =
-      match nestedModuleName with
-      | Some moduleName -> moduleName
-      | None -> fileName
-    in
-    let propsTypeName = exportType.resolvedTypeName |> ResolvedName.toString in
-    let componentType =
-      EmitType.typeReactComponent ~config ~propsType:(ident propsTypeName)
-    in
-    let name = EmitType.componentExportName ~config ~fileName ~moduleName in
-    let jsProps = "jsProps" in
-    let jsPropsDot s = jsProps ^ "." ^ s in
-    let propConverters, childrenConverter =
-      match converter with
-      | FunctionC {funArgConverters} -> (
-        match funArgConverters with
-        | GroupConverter propConverters :: ArgConverter childrenConverter :: _
-          ->
-          (propConverters, childrenConverter)
-        | ArgConverter childrenConverter :: _ -> ([], childrenConverter)
-        | _ -> ([], IdentC))
-      | _ -> ([], IdentC)
-    in
-    let args =
-      (propConverters
-      |> List.map (fun (s, optional, argConverter) ->
-             jsPropsDot s
-             |> Converter.toReason ~config
-                  ~converter:
-                    (match
-                       optional = Optional
-                       && not
-                            (argConverter
-                            |> Converter.converterIsIdentity ~config ~toJS:false
-                            )
-                     with
-                    | true -> OptionC argConverter
-                    | false -> argConverter)
-                  ~indent ~nameGen ~variantTables))
-      @ [
-          jsPropsDot "children"
-          |> Converter.toReason ~config ~converter:childrenConverter ~indent
-               ~nameGen ~variantTables;
-        ]
-    in
-    let emitters =
-      emitExportType ~emitters ~config ~typeGetNormalized ~typeNameIsInterface
-        exportType
-    in
-    let emitters =
-      EmitType.emitExportConst ~config ~emitters ~name ~type_:componentType
-        ~typeNameIsInterface
-        ([
-           "ReasonReact.wrapReasonForJs(";
-           "  "
-           ^ ModuleName.toString moduleNameBs
-           ^ "."
-           ^ (componentAccessPath |> Runtime.emitModuleAccessPath ~config)
-           ^ ",";
-           "  (function _("
-           ^ EmitType.ofType ~config ~typeNameIsInterface
-               ~type_:(ident propsTypeName) jsProps
-           ^ ") {";
-           "     return "
-           ^ (ModuleName.toString moduleNameBs
-              ^ "."
-              ^ (moduleAccessPath |> Runtime.emitModuleAccessPath ~config)
-             |> EmitText.curry ~args ~numArgs:(args |> List.length))
-           ^ ";";
-           "  }));";
-         ]
-        |> String.concat "\n")
-    in
-    let emitters =
-      match exportType.type_ with
-      | GroupOfLabeledArgs fields
-        when config.language = Untyped && config.propTypes ->
-        fields
-        |> List.map (fun (field : field) ->
-               let type_ = field.type_ |> typeGetInlined in
-               {field with type_})
-        |> EmitType.emitPropTypes ~config ~name ~emitters ~indent
-      | _ -> emitters
-    in
-    let emitters =
-      (* only export default for the top level component in the file *)
-      match fileName = moduleName with
-      | true -> EmitType.emitExportDefault ~emitters ~config name
-      | false -> emitters
-    in
-    let env = moduleNameBs |> requireModule ~import:false ~env ~importPath in
-    let env =
-      ModuleName.reasonReact
-      |> requireModule ~import:false ~env
-           ~importPath:(ImportPath.reasonReactPath ~config)
-    in
-    let numArgs = args |> List.length in
-    let useCurry = numArgs >= 2 in
-    config.emitImportCurry <- config.emitImportCurry || useCurry;
-    (env, emitters)
   | ExportValue {docString; moduleAccessPath; originalName; resolvedName; type_}
     ->
     let resolvedNameStr = ResolvedName.toString resolvedName in
@@ -787,10 +539,7 @@ let propagateAnnotationToSubTypes ~codeItems (typeMap : CodeItem.exportTypeMap)
     |> List.map (fun (_, {CodeItem.type_}) -> type_)
   in
   let typesOfExportedValue (codeItem : CodeItem.t) =
-    match codeItem with
-    | ExportComponent {type_} | ExportValue {type_} | ImportValue {type_} ->
-      [type_]
-    | _ -> []
+    match codeItem with ExportValue {type_} | ImportValue {type_} -> [type_]
   in
   let typesOfExportedValues =
     codeItems |> List.map typesOfExportedValue |> List.concat

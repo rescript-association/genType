@@ -9,28 +9,11 @@ type exportType = {
   resolvedTypeName : ResolvedName.t;
 }
 
-type importComponent = {
-  asPath : string;
-  childrenTyp : type_;
-  exportType : exportType;
-  importAnnotation : Annotation.import;
-  propsFields : fields;
-  propsTypeName : string;
-}
-
 type importValue = {
   asPath : string;
   importAnnotation : Annotation.import;
   type_ : type_;
   valueName : string;
-}
-
-type exportComponent = {
-  componentAccessPath : Runtime.moduleAccessPath;
-  exportType : exportType;
-  moduleAccessPath : Runtime.moduleAccessPath;
-  nestedModuleName : ModuleName.t option;
-  type_ : type_;
 }
 
 type exportValue = {
@@ -65,11 +48,7 @@ type typeDeclaration = {
   importTypes : importType list;
 }
 
-type t =
-  | ExportComponent of exportComponent
-  | ExportValue of exportValue
-  | ImportComponent of importComponent
-  | ImportValue of importValue
+type t = ExportValue of exportValue | ImportValue of importValue
 
 type translation = {
   importTypes : importType list;

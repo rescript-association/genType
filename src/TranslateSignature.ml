@@ -12,11 +12,7 @@ let translateSignatureValue ~config ~outputFileRelative ~resolver ~typeEnv
   match (val_id, val_attributes |> Annotation.fromAttributes ~loc:val_loc) with
   | id, GenType ->
     id |> Ident.name
-    |> (let open Translation in
-       match Ident.name id = "make" with
-       | true -> translateComponent
-       | false -> translateValue)
-         ~attributes:val_attributes ~config
+    |> Translation.translateValue ~attributes:val_attributes ~config
          ~docString:(Annotation.getDocString val_attributes)
          ~outputFileRelative ~resolver ~typeEnv ~typeExpr
          ~addAnnotationsToFunction
