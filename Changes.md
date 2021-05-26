@@ -1,4 +1,5 @@
 # master
+- Add support for `external-stdlib` in `bsconfig.json`.
 
 # 4.0.0
 - Remove support for legacy components.
