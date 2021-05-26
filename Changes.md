@@ -1,4 +1,6 @@
 # master
+
+# 4.0.0
 - Remove support for legacy components.
 
 # 3.50.0
