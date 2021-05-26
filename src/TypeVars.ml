@@ -38,7 +38,6 @@ let rec substitute ~f type0 =
           function_.argTypes
           |> List.map (fun {aName; aType = t} ->
                  {aName; aType = t |> substitute ~f});
-        retType = function_.retType |> substitute ~f;
       }
   | GroupOfLabeledArgs fields ->
     GroupOfLabeledArgs

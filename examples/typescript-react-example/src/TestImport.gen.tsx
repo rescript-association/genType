@@ -10,15 +10,9 @@ import {ValueStartingWithUpperCaseLetter as valueStartingWithUpperCaseLetterNotC
 
 import {default as defaultValueNotChecked} from './exportNestedValues';
 
-import {TopLevelClass as TopLevelClass} from './MyBanner';
+import {TopLevelClass as makeNotChecked} from './MyBanner';
 
 import {default as defaultValue2NotChecked} from './exportNestedValues';
-
-import * as React from 'react';
-
-// @ts-ignore: Implicit any on import
-import * as ReasonReact__Es6Import from 'reason-react/src/ReasonReact.js';
-const ReasonReact: any = ReasonReact__Es6Import;
 
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.
 export const innerStuffContentsTypeChecked: { readonly x: number } = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;
@@ -44,22 +38,28 @@ export const defaultValueTypeChecked: number = defaultValueNotChecked;
 // Export 'defaultValue' early to allow circular import from the '.bs.js' file.
 export const defaultValue: unknown = defaultValueTypeChecked as number;
 
-// tslint:disable-next-line:interface-over-type-literal
-export type Props = { readonly show: boolean; readonly message?: message };
-
-// In case of type error, check the type of 'make' in 'TestImport.re' and the props of './MyBanner'.
-export function MyBannerInternalTypeChecked(props: Props): JSX.Element {
-  return <TopLevelClass.MiddleLevelElements.MyBannerInternal {...props}/>;
-}
+// In case of type error, check the type of 'make' in 'TestImport.re' and './MyBanner'.
+export const makeTypeChecked: <a>(_1:{ readonly show: boolean; readonly message?: message }, _2:a) => ReasonReact_component<ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_actionless> = makeNotChecked.MiddleLevelElements.MyBannerInternal;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = function (show: any, message: any, children: any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, message: message}, children); };
+export const make: unknown = function <a>(Argshow: any, Argmessage: any, Arg2: any) {
+  const result = makeTypeChecked({show:Argshow, message:Argmessage}, Arg2);
+  return result
+} as <a>(_1:{ readonly show: boolean; readonly message?: message }, _2:a) => ReasonReact_component<ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_actionless>;
 
 // In case of type error, check the type of 'defaultValue2' in 'TestImport.re' and './exportNestedValues'.
 export const defaultValue2TypeChecked: number = defaultValue2NotChecked;
 
 // Export 'defaultValue2' early to allow circular import from the '.bs.js' file.
 export const defaultValue2: unknown = defaultValue2TypeChecked as number;
+
+import type {actionless as ReasonReact_actionless} from '../src/shims/ReactShim.shim';
+
+import type {component as ReasonReact_component} from '../src/shims/ReactShim.shim';
+
+import type {noRetainedProps as ReasonReact_noRetainedProps} from '../src/shims/ReactShim.shim';
+
+import type {stateless as ReasonReact_stateless} from '../src/shims/ReactShim.shim';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type message = { readonly text: string };

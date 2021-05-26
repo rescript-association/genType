@@ -17,8 +17,6 @@ val react : t
 
 val reasonPervasives : t
 
-val reasonReact : t
-
 val toString : t -> string
 
 val uncapitalize : t -> t

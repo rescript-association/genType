@@ -7,23 +7,28 @@
 // $FlowExpectedError: Reason checked type sufficiently
 type $any = any;
 
-// $FlowExpectedError: Reason checked type sufficiently
-const React = require('react');
-
 // flowlint-next-line nonstrict-import:off
-const MyBanner = require('./MyBanner.component');
+const $$MyBanner = require('./MyBanner.component');
 
-// $FlowExpectedError: Reason checked type sufficiently
-const ReasonReact = require('reason-react/src/ReasonReact.js');
-
-export type Props = {| +show: boolean, +Message: ?string |};
-
-// In case of type error, check the type of 'make' in 'ImportMyBanner.re' and the props of './MyBanner.component'.
-function MyBannerTypeChecked(props: Props): React$Node {
-  return <MyBanner {...props}/>;
-};
-exports.MyBannerTypeChecked = MyBannerTypeChecked
+// In case of type error, check the type of 'make' in 'ImportMyBanner.re' and './MyBanner.component'.
+const makeTypeChecked: <a>({| +show: boolean, +Message: ?string |}, a) => ReasonReact_component<ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_actionless> = $$MyBanner.make;;
+exports.makeTypeChecked = makeTypeChecked
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-const make: mixed = function (show: $any, Message: $any, children: $any) { return ReasonReact.wrapJsForReason(MyBanner, {show: show, Message: Message}, children); };;
+const make: mixed = function <a>(Argshow: $any, ArgMessage: $any, Arg2: $any) {
+  const result = makeTypeChecked({show:Argshow, Message:ArgMessage}, Arg2);
+  return result
+};;
 exports.make = make
+
+// flowlint-next-line nonstrict-import:off
+import type {actionless as ReasonReact_actionless} from '../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {component as ReasonReact_component} from '../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {noRetainedProps as ReasonReact_noRetainedProps} from '../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {stateless as ReasonReact_stateless} from '../src/shims/ReactShim.shim';

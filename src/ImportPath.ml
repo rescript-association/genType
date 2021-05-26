@@ -6,8 +6,6 @@ let propTypes = ("", "prop-types")
 
 let react = ("", "react")
 
-let reasonReactPath ~config = ("", config.reasonReactPath)
-
 let bsCurryPath ~config = ("", Config_.getBsCurryPath ~config)
 
 let fromModule ~dir ~importExtension moduleName =

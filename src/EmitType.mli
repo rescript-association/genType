@@ -1,8 +1,5 @@
 open GenTypeCommon
 
-val componentExportName :
-  config:config -> fileName:ModuleName.t -> moduleName:ModuleName.t -> string
-
 val emitExportConst :
   ?comment:string ->
   config:config ->
@@ -28,15 +25,6 @@ val emitExportConstEarly :
 val emitExportDefault :
   emitters:Emitters.t -> config:config -> string -> Emitters.t
 
-val emitExportFunction :
-  early:bool ->
-  comment:string ->
-  emitters:Emitters.t ->
-  name:string ->
-  config:config ->
-  string ->
-  Emitters.t
-
 val emitExportType :
   ?early:bool ->
   config:config ->
@@ -47,17 +35,6 @@ val emitExportType :
   typeNameIsInterface:(string -> bool) ->
   typeVars:string list ->
   string ->
-  Emitters.t
-
-val emitHookTypeAsFunction :
-  config:config ->
-  emitters:Emitters.t ->
-  name:string ->
-  propsType:type_ ->
-  retType:type_ ->
-  retValue:string ->
-  typeNameIsInterface:(string -> bool) ->
-  typeVars:string list ->
   Emitters.t
 
 val emitImportReact : emitters:Emitters.t -> config:config -> Emitters.t
@@ -112,13 +89,6 @@ val isTypeFunctionComponent : config:config -> fields:fields -> type_ -> bool
 
 val isTypeReactElement : config:config -> type_ -> bool
 
-val ofType :
-  config:config ->
-  ?typeNameIsInterface:(string -> bool) ->
-  type_:type_ ->
-  string ->
-  string
-
 val ofTypeAny : config:config -> string -> string
 (** Help type-checking by making the argument of type any *)
 
@@ -127,8 +97,6 @@ val outputFileSuffix : config:config -> string
 val shimExtension : config:config -> string
 
 val typeReactChild : config:config -> type_
-
-val typeReactComponent : config:config -> propsType:type_ -> type_
 
 val typeReactContext : config:config -> type_:type_ -> type_
 

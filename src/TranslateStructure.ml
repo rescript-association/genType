@@ -101,11 +101,7 @@ let translateValueBinding ~config ~outputFileRelative ~resolver ~typeEnv
     if vb_attributes |> Annotation.fromAttributes ~loc:vb_pat.pat_loc = GenType
     then
       id |> Ident.name
-      |> (let open Translation in
-         match Ident.name id = "make" with
-         | true -> translateComponent
-         | false -> translateValue)
-           ~attributes:vb_attributes ~config
+      |> Translation.translateValue ~attributes:vb_attributes ~config
            ~docString:(Annotation.getDocString vb_attributes)
            ~outputFileRelative ~resolver ~typeEnv ~typeExpr:vb_pat.pat_type
            ~addAnnotationsToFunction:

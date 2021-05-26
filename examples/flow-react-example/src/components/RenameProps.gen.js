@@ -11,10 +11,19 @@ type $any = any;
 import * as Curry from 'rescript/lib/es6/curry.js';
 
 // $FlowExpectedError: Reason checked type sufficiently
-import * as ReasonReact from 'reason-react/src/ReasonReact.js';
-
-// $FlowExpectedError: Reason checked type sufficiently
 import * as RenamePropsBS from './RenameProps.bs';
+
+// flowlint-next-line nonstrict-import:off
+import type {actionless as ReasonReact_actionless} from '../../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {componentSpec as ReasonReact_componentSpec} from '../../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {noRetainedProps as ReasonReact_noRetainedProps} from '../../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {stateless as ReasonReact_stateless} from '../../src/shims/ReactShim.shim';
 
 export type functionTypeWithGenTypeAs = ({| +type: string, +$number: number |}) => number;
 
@@ -27,20 +36,14 @@ export const functionWithGenTypeAs: ({|
   return result
 };
 
-export type Props = {|
+export const make: <T1>({|
   +firstNameArgumentCantBeRenamed: string, 
   +type: string, 
-  +$$number: number, 
-  +children?: mixed
-|};
-
-export const component: React$ComponentType<Props> = ReasonReact.wrapReasonForJs(
-  RenamePropsBS.component,
-  (function _(jsProps: Props) {
-     return Curry._4(RenamePropsBS.make, jsProps.firstNameArgumentCantBeRenamed, jsProps.type, jsProps.$$number, jsProps.children);
-  }));
-
-export default component;
+  +$$number: number
+|}, T1) => ReasonReact_componentSpec<ReasonReact_stateless,ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_noRetainedProps,ReasonReact_actionless> = function <T1>(Arg1: $any, Arg2: $any) {
+  const result = Curry._4(RenamePropsBS.make, Arg1.firstNameArgumentCantBeRenamed, Arg1.type, Arg1.$$number, Arg2);
+  return result
+};
 
 export const firstIsIgnored: ({| +Ignored: number |}) => number = function (Arg1: $any) {
   const result = RenamePropsBS.firstIsIgnored(Arg1.Ignored);

@@ -20,13 +20,7 @@ import {ValueStartingWithUpperCaseLetter as valueStartingWithUpperCaseLetterNotC
 import {default as defaultValueNotChecked} from './exportNestedValues';
 
 // flowlint-next-line nonstrict-import:off
-import {TopLevelClass as TopLevelClass} from './interop/MyBanner.component';
-
-// $FlowExpectedError: Reason checked type sufficiently
-import * as React from 'react';
-
-// $FlowExpectedError: Reason checked type sufficiently
-import * as ReasonReact from 'reason-react/src/ReasonReact.js';
+import {TopLevelClass as makeNotChecked} from './interop/MyBanner.component';
 
 // In case of type error, check the type of 'innerStuffContents' in 'TestImport.re' and './exportNestedValues'.
 export const innerStuffContentsTypeChecked: {| +x: number |} = innerStuffContentsNotChecked.MiddleLevelElements.stuff.InnerStuff.innerStuffContents;
@@ -52,14 +46,25 @@ export const defaultValueTypeChecked: number = defaultValueNotChecked;
 // Export 'defaultValue' early to allow circular import from the '.bs.js' file.
 export const defaultValue: mixed = defaultValueTypeChecked;
 
-export type Props = {| +show: boolean, +Message: ?string |};
-
-// In case of type error, check the type of 'make' in 'TestImport.re' and the props of './interop/MyBanner.component'.
-export function MyBannerInternalTypeChecked(props: Props): React$Node {
-  return <TopLevelClass.MiddleLevelElements.MyBannerInternal {...props}/>;
-}
+// In case of type error, check the type of 'make' in 'TestImport.re' and './interop/MyBanner.component'.
+export const makeTypeChecked: <a>({| +show: boolean, +Message: ?string |}, a) => ReasonReact_component<ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_actionless> = makeNotChecked.MiddleLevelElements.MyBannerInternal;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: mixed = function (show: $any, Message: $any, children: $any) { return ReasonReact.wrapJsForReason(TopLevelClass.MiddleLevelElements.MyBannerInternal, {show: show, Message: Message}, children); };
+export const make: mixed = function <a>(Argshow: $any, ArgMessage: $any, Arg2: $any) {
+  const result = makeTypeChecked({show:Argshow, Message:ArgMessage}, Arg2);
+  return result
+};
+
+// flowlint-next-line nonstrict-import:off
+import type {actionless as ReasonReact_actionless} from '../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {component as ReasonReact_component} from '../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {noRetainedProps as ReasonReact_noRetainedProps} from '../src/shims/ReactShim.shim';
+
+// flowlint-next-line nonstrict-import:off
+import type {stateless as ReasonReact_stateless} from '../src/shims/ReactShim.shim';
 
 export type message = {| +text: string |};

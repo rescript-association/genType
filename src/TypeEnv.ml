@@ -162,11 +162,6 @@ let lookupModuleTypeSignature ~path typeEnv =
       (path |> Path.name);
   typeEnv |> lookupModuleType ~path:(path |> pathToList |> List.rev)
 
-let getNestedModuleName typeEnv =
-  match typeEnv.parent = None with
-  | true -> None
-  | false -> Some (typeEnv.name |> ModuleName.fromStringUnsafe)
-
 let updateModuleItem ?(nameOpt = None) ~moduleItem typeEnv =
   (match nameOpt with
   | Some "component" -> typeEnv.componentModuleItem <- moduleItem

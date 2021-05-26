@@ -133,14 +133,6 @@ let isTypeReactRef ~fields =
 let isTypeFunctionComponent ~config ~fields type_ =
   type_ |> isTypeReactElement ~config && not (isTypeReactRef ~fields)
 
-let componentExportName ~config ~fileName ~moduleName =
-  match config.language with
-  | Flow -> (
-    match fileName = moduleName with
-    | true -> "component"
-    | false -> moduleName |> ModuleName.toString)
-  | _ -> moduleName |> ModuleName.toString
-
 let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
     type0 =
   match type0 with
@@ -357,19 +349,6 @@ let ofType ~config ?(typeNameIsInterface = fun _ -> false) ~type_ s =
   | true -> s
   | false -> s ^ ": " ^ (type_ |> typeToString ~config ~typeNameIsInterface)
 
-let emitHookTypeAsFunction ~config ~emitters ~name ~propsType ~retType ~retValue
-    ~typeNameIsInterface ~typeVars =
-  "// Type annotated function components are not checked by Flow, but typeof() \
-   works.\n" ^ "const " ^ name ^ " = function "
-  ^ EmitText.genericsString ~typeVars
-  ^ "("
-  ^ ("_: "
-    ^ (propsType |> renderType ~config ~typeNameIsInterface ~inFunType:true))
-  ^ ")"
-  ^ (" " |> ofType ~config ~typeNameIsInterface ~type_:retType)
-  ^ " { return " ^ retValue ^ " };"
-  |> Emitters.export ~emitters
-
 let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
     ~name ~type_ ~typeNameIsInterface line =
   ((match comment = "" with true -> comment | false -> "// " ^ comment ^ "\n")
@@ -392,18 +371,6 @@ let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
 let emitExportConst = emitExportConst_ ~early:false
 
 let emitExportConstEarly = emitExportConst_ ~early:true
-
-let emitExportFunction ~early ~comment ~emitters ~name ~config line =
-  (("// " ^ comment ^ "\n")
-  ^
-  match (config.module_, config.language) with
-  | _, TypeScript | ES6, _ -> "export function " ^ name ^ line
-  | CommonJS, _ ->
-    "function " ^ name ^ line ^ ";\nexports." ^ name ^ " = " ^ name)
-  |> (match early with
-     | true -> Emitters.exportEarly
-     | false -> Emitters.export)
-       ~emitters
 
 let emitExportDefault ~emitters ~config name =
   match (config.module_, config.language) with

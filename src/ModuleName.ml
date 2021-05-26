@@ -8,8 +8,6 @@ let react = "React"
 
 let reasonPervasives = "ReasonPervasives"
 
-let reasonReact = "ReasonReact"
-
 let dotRegex = "." |> Str.quote |> Str.regexp
 
 let lbracketRegex = "[" |> Str.quote |> Str.regexp
