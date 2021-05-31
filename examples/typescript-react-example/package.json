@@ -13,7 +13,7 @@
     "start": "rescript build -w",
     "ts:watch": "react-scripts start",
     "build": "rescript",
-    "clean": "rescript clean",
+    "clean": "rescript clean -with-deps",
     "eject": "react-scripts eject",
     "tsc": "tsc -p tsconfig.json"
   },
