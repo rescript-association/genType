@@ -126,7 +126,7 @@ let typeGetConverterNormalized ~config ~inline ~lookupId ~typeNameIsInterface
       let isHook =
         match argTypes with
         | [{aType = Object (_, fields)}] ->
-          retType |> EmitType.isTypeFunctionComponent ~config ~fields
+          retType |> EmitType.isTypeFunctionComponent ~fields
         | _ -> false
       in
       ( FunctionC
@@ -660,8 +660,8 @@ let rec apply ~config ~converter ~indent ~nameGen ~toJS ~variantTables value =
         else
           value
           |> convertVariantPayloadToRE ~argConverters ~indent
-          |> Runtime.emitVariantWithPayload ~config ~inlineRecord
-               ~label:case.label ~polymorphic:variantC.polymorphic
+          |> Runtime.emitVariantWithPayload ~inlineRecord ~label:case.label
+               ~polymorphic:variantC.polymorphic
       in
       match variantC.noPayloads = [] with
       | true -> casesWithPayload ~indent
@@ -684,8 +684,8 @@ let rec apply ~config ~converter ~indent ~nameGen ~toJS ~variantTables value =
           value
           |> Runtime.emitJSVariantGetPayload ~polymorphic:variantC.polymorphic
           |> convertVariantPayloadToRE ~argConverters ~indent
-          |> Runtime.emitVariantWithPayload ~config ~inlineRecord
-               ~label:case.label ~polymorphic:variantC.polymorphic
+          |> Runtime.emitVariantWithPayload ~inlineRecord ~label:case.label
+               ~polymorphic:variantC.polymorphic
       in
       let switchCases ~indent =
         variantC.withPayloads

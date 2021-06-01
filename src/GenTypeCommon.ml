@@ -186,7 +186,7 @@ let ident ?(builtin = true) ?(typeArgs = []) name =
 
 let sanitizeTypeName name = name |> Str.global_replace (Str.regexp "'") "_"
 
-let mixedOrUnknown ~config = ident "unknown"
+let unknown = ident "unknown"
 
 let booleanT = ident "boolean"
 
