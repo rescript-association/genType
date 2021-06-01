@@ -67,13 +67,12 @@ let emitVariantWithPayload ~config ~inlineRecord ~label ~polymorphic args =
   | [arg] when inlineRecord ->
     (* inline records are represented as records plus a `TAG` *)
     "Object.assign({TAG: " ^ label ^ "}, " ^ arg ^ ")"
-  | _ -> (
+  | _ ->
     "{TAG: " ^ label ^ ", "
     ^ (args
       |> List.mapi (fun i s -> (i |> VariantsAsObjects.indexLabel) ^ ":" ^ s)
       |> String.concat ", ")
-    ^ "}"
-    ^ match config.language = TypeScript with true -> " as any" | false -> "")
+    ^ "}" ^ " as any"
 
 let jsVariantTag ~polymorphic =
   match polymorphic with true -> "NAME" | false -> "tag"

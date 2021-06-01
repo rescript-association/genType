@@ -4,8 +4,6 @@ let bsbProjectRoot = ref ""
 
 let projectRoot = ref ""
 
-type language = Flow | TypeScript | Untyped
-
 type module_ = CommonJS | ES6
 
 type importPath = Relative | Node
@@ -24,7 +22,6 @@ type config = {
   fileHeader : string option;
   generatedFileExtension : string option;
   importPath : importPath;
-  language : language;
   module_ : module_;
   namespace : string option;
   platformLib : string;
@@ -48,7 +45,6 @@ let default =
     fileHeader = None;
     generatedFileExtension = None;
     importPath = Relative;
-    language = Flow;
     module_ = ES6;
     namespace = None;
     platformLib = "";
@@ -116,7 +112,6 @@ let setDebug ~gtconf =
 
 let readConfig ~bsVersion ~getBsConfigFile ~namespace =
   let parseConfig ~bsconf ~gtconf =
-    let languageString = gtconf |> getString "language" in
     let moduleString = gtconf |> getStringOption "module" in
     let importPathString = gtconf |> getString "importPath" in
     let reasonReactPathString = gtconf |> getString "reasonReactPath" in
@@ -139,12 +134,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
            ModuleNameMap.empty
     in
     setDebug ~gtconf;
-    let language =
-      match languageString with
-      | "typescript" -> TypeScript
-      | "untyped" -> Untyped
-      | _ -> Flow
-    in
     let module_ =
       let packageSpecsModuleString =
         match bsconf |> getOpt "package-specs" with
@@ -212,9 +201,7 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       if !bsbProjectRoot <> !projectRoot then
         Log_.item "bsb project root: %s\n" !bsbProjectRoot;
       Log_.item
-        "Config language:%s module:%s importPath:%s shims:%d entries \
-         bsVersion:%d.%d.%d\n"
-        languageString
+        "Config module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n"
         (match moduleString with None -> "" | Some s -> s)
         importPathString
         (shimsMap |> ModuleNameMap.cardinal)
@@ -260,7 +247,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       fileHeader;
       generatedFileExtension;
       importPath;
-      language;
       module_;
       namespace;
       platformLib;

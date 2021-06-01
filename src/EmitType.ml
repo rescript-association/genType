@@ -19,20 +19,9 @@ let fileHeader ~config ~sourceFile =
       ^ (lines |> List.map (fun line -> " * " ^ line) |> String.concat "\n")
       ^ "\n */\n"
   in
-  match config.language with
-  | Flow -> (
-    makeHeader
-      ~lines:["@flow strict"; "@" ^ "generated from " ^ sourceFile; "@nolint"]
-    ^ "/* eslint-disable */\n"
-    ^ match config.emitFlowAny with true -> flowTypeAny | false -> "")
-  | TypeScript ->
-    makeHeader
-      ~lines:["TypeScript file generated from " ^ sourceFile ^ " by genType."]
-    ^ "/* eslint-disable import/first */\n\n"
-  | Untyped ->
-    makeHeader
-      ~lines:["Untyped file generated from " ^ sourceFile ^ " by genType."]
-    ^ "/* eslint-disable */\n"
+  makeHeader
+    ~lines:["TypeScript file generated from " ^ sourceFile ^ " by genType."]
+  ^ "/* eslint-disable import/first */\n\n"
 
 let generatedFilesExtension ~config =
   match config.generatedFileExtension with
@@ -44,41 +33,22 @@ let generatedFilesExtension ~config =
 let outputFileSuffix ~config =
   match config.generatedFileExtension with
   | Some s when Filename.extension s <> "" (* double extension  *) -> s
-  | _ -> (
-    match config.language with
-    | Flow | Untyped -> generatedFilesExtension ~config ^ ".js"
-    | TypeScript -> generatedFilesExtension ~config ^ ".tsx")
+  | _ -> generatedFilesExtension ~config ^ ".tsx"
 
 let generatedModuleExtension ~config = generatedFilesExtension ~config
 
-let shimExtension ~config =
-  match config.language with
-  | Flow -> ".shim.js"
-  | TypeScript -> ".shim.ts"
-  | Untyped -> ".shim.not.used"
+let shimExtension ~config = ".shim.ts"
 
 let interfaceName ~config name =
   match config.exportInterfaces with true -> "I" ^ name | false -> name
 
-let typeAny ~config =
-  ident ~builtin:true
-    (match config.language = Flow with
-    | true ->
-      config.emitFlowAny <- true;
-      "$any"
-    | false -> "any")
+let typeAny ~config = ident ~builtin:true "any"
 
 let typeReactComponent ~config ~propsType =
-  (match config.language = Flow with
-  | true -> "React$ComponentType"
-  | false -> "React.ComponentType")
-  |> ident ~builtin:true ~typeArgs:[propsType]
+  "React.ComponentType" |> ident ~builtin:true ~typeArgs:[propsType]
 
 let typeReactContext ~config ~type_ =
-  (match config.language = Flow with
-  | true -> "React$Context"
-  | false -> "React.Context")
-  |> ident ~builtin:true ~typeArgs:[type_]
+  "React.Context" |> ident ~builtin:true ~typeArgs:[type_]
 
 let typeReactElementFlow = ident ~builtin:true "React$Node"
 
@@ -86,28 +56,16 @@ let typeReactElementTypeScript = ident ~builtin:true "JSX.Element"
 
 let typeReactChildTypeScript = ident ~builtin:true "React.ReactNode"
 
-let typeReactElement ~config =
-  match config.language = Flow with
-  | true -> typeReactElementFlow
-  | false -> typeReactElementTypeScript
+let typeReactElement ~config = typeReactElementTypeScript
 
-let typeReactChild ~config =
-  match config.language = Flow with
-  | true -> typeReactElementFlow
-  | false -> typeReactChildTypeScript
+let typeReactChild ~config = typeReactChildTypeScript
 
 let isTypeReactElement ~config type_ = type_ == typeReactElement ~config
 
 let typeReactDOMReDomRef ~config =
-  (match config.language = Flow with
-  | true -> "React$Ref"
-  | false -> "React.Ref")
-  |> ident ~builtin:true ~typeArgs:[mixedOrUnknown ~config]
+  "React.Ref" |> ident ~builtin:true ~typeArgs:[mixedOrUnknown ~config]
 
-let typeReactEventMouseT ~config =
-  if config.language = Flow then
-    "SyntheticMouseEvent" |> ident ~builtin:true ~typeArgs:[typeAny ~config]
-  else "MouseEvent" |> ident ~builtin:true
+let typeReactEventMouseT ~config = "MouseEvent" |> ident ~builtin:true
 
 let reactRefCurrent = "current"
 
@@ -140,16 +98,13 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
     let typeIsSimple =
       match t with Ident _ | TypeVar _ -> true | _ -> false
     in
-    if config.language = TypeScript && typeIsSimple && arrayKind = Mutable then
+    if typeIsSimple && arrayKind = Mutable then
       (t |> renderType ~config ~indent ~typeNameIsInterface ~inFunType) ^ "[]"
     else
       let arrayName =
         match arrayKind = Mutable with
         | true -> "Array"
-        | false -> (
-          match config.language = Flow with
-          | true -> "$ReadOnlyArray"
-          | false -> "ReadonlyArray")
+        | false -> "ReadonlyArray"
       in
       arrayName ^ "<"
       ^ (t |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
@@ -200,20 +155,14 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
     "(null | "
     ^ (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
     ^ ")"
-  | Nullable type_ | Option type_ -> (
+  | Nullable type_ | Option type_ ->
     let useParens x =
       match type_ with Function _ | Variant _ -> EmitText.parens [x] | _ -> x
     in
-    match config.language with
-    | Flow | Untyped ->
-      "?"
-      ^ useParens
-          (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
-    | TypeScript ->
-      "(null | undefined | "
-      ^ useParens
-          (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
-      ^ ")")
+    "(null | undefined | "
+    ^ useParens
+        (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
+    ^ ")"
   | Promise type_ ->
     "Promise" ^ "<"
     ^ (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
@@ -275,10 +224,7 @@ and renderField ~config ~indent ~typeNameIsInterface ~inFunType
     {mutable_; nameJS = lbl; optional; type_} =
   let optMarker = match optional == Optional with true -> "?" | false -> "" in
   let mutMarker =
-    match mutable_ = Immutable with
-    | true -> (
-      match config.language = Flow with true -> "+" | false -> "readonly ")
-    | false -> ""
+    match mutable_ = Immutable with true -> "readonly " | false -> ""
   in
   Indent.break ~indent ^ mutMarker ^ lbl ^ optMarker ^ ": "
   ^ (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
@@ -286,11 +232,6 @@ and renderField ~config ~indent ~typeNameIsInterface ~inFunType
 and renderFields ~closedFlag ~config ~indent ~inFunType ~typeNameIsInterface
     fields =
   let indent1 = indent |> Indent.more in
-  let exact =
-    config.language = Flow
-    && (not config.exportInterfaces)
-    && closedFlag = Closed
-  in
   let space =
     match indent = None && fields <> [] with true -> " " | false -> ""
   in
@@ -299,17 +240,9 @@ and renderFields ~closedFlag ~config ~indent ~inFunType ~typeNameIsInterface
     |> List.map
          (renderField ~config ~indent:indent1 ~typeNameIsInterface ~inFunType)
   in
-  let dotdotdot =
-    match config.language = Flow && not exact with
-    | true -> [Indent.break ~indent:indent1 ^ "..."]
-    | false -> []
-  in
-  ((match exact with true -> "{|" | false -> "{") ^ space)
-  ^ String.concat
-      (match config.language = TypeScript with true -> "; " | false -> ", ")
-      (renderedFields @ dotdotdot)
-  ^ Indent.break ~indent ^ space
-  ^ match exact with true -> "|}" | false -> "}"
+  ("{" ^ space)
+  ^ String.concat "; " renderedFields
+  ^ Indent.break ~indent ^ space ^ "}"
 
 and renderFunType ~config ~indent ~inFunType ~typeNameIsInterface ~typeVars
     argTypes retType =
@@ -320,12 +253,10 @@ and renderFunType ~config ~indent ~inFunType ~typeNameIsInterface ~typeVars
       (List.mapi
          (fun i {aName; aType} ->
            let parameterName =
-             if config.language = Flow then ""
-             else
-               (match aName = "" with
-               | true -> "_" ^ string_of_int (i + 1)
-               | false -> aName)
-               ^ ":"
+             (match aName = "" with
+             | true -> "_" ^ string_of_int (i + 1)
+             | false -> aName)
+             ^ ":"
            in
            parameterName
            ^ (aType
@@ -340,24 +271,14 @@ let typeToString ~config ~typeNameIsInterface type_ =
   type_ |> renderType ~config ~typeNameIsInterface ~inFunType:false
 
 let ofType ~config ?(typeNameIsInterface = fun _ -> false) ~type_ s =
-  match config.language = Untyped with
-  | true -> s
-  | false -> s ^ ": " ^ (type_ |> typeToString ~config ~typeNameIsInterface)
+  s ^ ": " ^ (type_ |> typeToString ~config ~typeNameIsInterface)
 
 let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
     ~name ~type_ ~typeNameIsInterface line =
-  ((match comment = "" with true -> comment | false -> "// " ^ comment ^ "\n")
-  ^ docString
-  ^
-  match (config.module_, config.language) with
-  | _, TypeScript | ES6, _ ->
-    "export const "
-    ^ (name |> ofType ~config ~typeNameIsInterface ~type_)
-    ^ " = " ^ line
-  | CommonJS, _ ->
-    "const "
-    ^ (name |> ofType ~config ~typeNameIsInterface ~type_)
-    ^ " = " ^ line ^ ";\nexports." ^ name ^ " = " ^ name)
+  (match comment = "" with true -> comment | false -> "// " ^ comment ^ "\n")
+  ^ docString ^ "export const "
+  ^ (name |> ofType ~config ~typeNameIsInterface ~type_)
+  ^ " = " ^ line
   |> (match early with
      | true -> Emitters.exportEarly
      | false -> Emitters.export)
@@ -368,11 +289,7 @@ let emitExportConst = emitExportConst_ ~early:false
 let emitExportConstEarly = emitExportConst_ ~early:true
 
 let emitExportDefault ~emitters ~config name =
-  match (config.module_, config.language) with
-  | _, TypeScript | ES6, _ ->
-    "export default " ^ name ^ ";" |> Emitters.export ~emitters
-  | CommonJS, _ ->
-    "exports.default = " ^ name ^ ";" |> Emitters.export ~emitters
+  "export default " ^ name ^ ";" |> Emitters.export ~emitters
 
 let emitExportType ?(early = false) ~config ~emitters ~nameAs ~opaque ~type_
     ~typeNameIsInterface ~typeVars resolvedTypeName =
@@ -393,59 +310,36 @@ let emitExportType ?(early = false) ~config ~emitters ~nameAs ~opaque ~type_
       "\nexport type " ^ s ^ typeParamsString ^ " = " ^ resolvedTypeName
       ^ typeParamsString ^ ";"
   in
-  match config.language with
-  | Flow ->
-    if config.exportInterfaces && isInterface && not opaque then
-      "export interface " ^ resolvedTypeName ^ typeParamsString ^ " "
-      ^ ((match opaque with true -> mixedOrUnknown ~config | false -> type_)
-        |> typeToString ~config ~typeNameIsInterface)
-      ^ ";" ^ exportNameAs
-      |> export ~emitters
+  if opaque then
+    (* Represent an opaque type as an absract class with a field called 'opaque'.
+       Any type parameters must occur in the type of opaque, so that different
+       instantiations are considered different types. *)
+    let typeOfOpaqueField =
+      match typeVars = [] with
+      | true -> "any"
+      | false -> typeVars |> String.concat " | "
+    in
+    "// tslint:disable-next-line:max-classes-per-file \n"
+    ^ (match String.capitalize_ascii resolvedTypeName <> resolvedTypeName with
+      | true -> "// tslint:disable-next-line:class-name\n"
+      | false -> "")
+    ^ "export abstract class " ^ resolvedTypeName ^ typeParamsString
+    ^ " { protected opaque!: " ^ typeOfOpaqueField
+    ^ " }; /* simulate opaque types */" ^ exportNameAs
+    |> export ~emitters
+  else
+    (if isInterface && config.exportInterfaces then
+     "export interface " ^ resolvedTypeName ^ typeParamsString ^ " "
     else
-      "export"
-      ^ (match opaque with true -> " opaque " | false -> " ")
-      ^ "type " ^ resolvedTypeName ^ typeParamsString ^ " = "
-      ^ ((match opaque with true -> mixedOrUnknown ~config | false -> type_)
-        |> typeToString ~config ~typeNameIsInterface)
-      ^ ";" ^ exportNameAs
-      |> export ~emitters
-  | TypeScript ->
-    if opaque then
-      (* Represent an opaque type as an absract class with a field called 'opaque'.
-         Any type parameters must occur in the type of opaque, so that different
-         instantiations are considered different types. *)
-      let typeOfOpaqueField =
-        match typeVars = [] with
-        | true -> "any"
-        | false -> typeVars |> String.concat " | "
-      in
-      "// tslint:disable-next-line:max-classes-per-file \n"
-      ^ (match String.capitalize_ascii resolvedTypeName <> resolvedTypeName with
-        | true -> "// tslint:disable-next-line:class-name\n"
-        | false -> "")
-      ^ "export abstract class " ^ resolvedTypeName ^ typeParamsString
-      ^ " { protected opaque!: " ^ typeOfOpaqueField
-      ^ " }; /* simulate opaque types */" ^ exportNameAs
-      |> export ~emitters
-    else
-      (if isInterface && config.exportInterfaces then
-       "export interface " ^ resolvedTypeName ^ typeParamsString ^ " "
-      else
-        "// tslint:disable-next-line:interface-over-type-literal\n"
-        ^ "export type " ^ resolvedTypeName ^ typeParamsString ^ " = ")
-      ^ (match type_ with
-        | _ -> type_ |> typeToString ~config ~typeNameIsInterface)
-      ^ ";" ^ exportNameAs
-      |> export ~emitters
-  | Untyped -> emitters
+      "// tslint:disable-next-line:interface-over-type-literal\n"
+      ^ "export type " ^ resolvedTypeName ^ typeParamsString ^ " = ")
+    ^ (match type_ with
+      | _ -> type_ |> typeToString ~config ~typeNameIsInterface)
+    ^ ";" ^ exportNameAs
+    |> export ~emitters
 
 let emitImportValueAsEarly ~config ~emitters ~name ~nameAs importPath =
-  let commentBeforeImport =
-    match config.language = Flow with
-    | true -> "// flowlint-next-line nonstrict-import:off\n"
-    | false -> ""
-  in
-  commentBeforeImport ^ "import "
+  "import "
   ^ (match nameAs with
     | Some nameAs -> "{" ^ name ^ " as " ^ nameAs ^ "}"
     | None -> name)
@@ -457,32 +351,17 @@ let emitImportValueAsEarly ~config ~emitters ~name ~nameAs importPath =
 let emitRequire ~importedValueOrComponent ~early ~emitters ~config ~moduleName
     ~strict importPath =
   let commentBeforeRequire =
-    match config.language with
-    | TypeScript -> (
-      match importedValueOrComponent with
-      | true -> "// tslint:disable-next-line:no-var-requires\n"
-      | false -> "// @ts-ignore: Implicit any on import\n")
-    | Flow -> (
-      match strict with
-      | true -> (
-        match early with
-        | true -> "// flowlint-next-line nonstrict-import:off\n"
-        | false -> "")
-      | false -> flowExpectedError)
-    | Untyped -> ""
+    match importedValueOrComponent with
+    | true -> "// tslint:disable-next-line:no-var-requires\n"
+    | false -> "// @ts-ignore: Implicit any on import\n"
   in
   match config.module_ with
   | ES6 when not importedValueOrComponent ->
     let moduleNameString = ModuleName.toString moduleName in
-    (if config.language = TypeScript then
-     let es6ImportModule = moduleNameString ^ "__Es6Import" in
+    (let es6ImportModule = moduleNameString ^ "__Es6Import" in
      commentBeforeRequire ^ "import * as " ^ es6ImportModule ^ " from '"
      ^ (importPath |> ImportPath.emit ~config)
-     ^ "';\n" ^ "const " ^ moduleNameString ^ ": any = " ^ es6ImportModule ^ ";"
-    else
-      commentBeforeRequire ^ "import * as " ^ moduleNameString ^ " from '"
-      ^ (importPath |> ImportPath.emit ~config)
-      ^ "';")
+     ^ "';\n" ^ "const " ^ moduleNameString ^ ": any = " ^ es6ImportModule ^ ";")
     |> (match early with
        | true -> Emitters.requireEarly
        | false -> Emitters.require)
@@ -502,12 +381,7 @@ let require ~early =
   match early with true -> Emitters.requireEarly | false -> Emitters.require
 
 let emitImportReact ~emitters ~config =
-  match config.language with
-  | Flow | Untyped ->
-    emitRequire ~importedValueOrComponent:false ~early:true ~emitters ~config
-      ~moduleName:ModuleName.react ~strict:false ImportPath.react
-  | TypeScript ->
-    "import * as React from 'react';" |> require ~early:true ~emitters
+  "import * as React from 'react';" |> require ~early:true ~emitters
 
 let emitPropTypes ~config ~emitters ~indent ~name fields =
   let indent1 = indent |> Indent.more in
@@ -563,33 +437,13 @@ let emitImportTypeAs ~emitters ~config ~typeName ~asTypeName
     | None -> (typeName, asTypeName)
   in
   let importPathString = importPath |> ImportPath.emit ~config in
-  let strictLocalPrefix =
-    match
-      (not
-         (Filename.check_suffix importPathString
-            (generatedFilesExtension ~config)))
-      && config.language = Flow
-    with
-    | true -> "// flowlint-next-line nonstrict-import:off\n"
-    | false -> ""
-  in
-  let importPrefix =
-    if config.language = TypeScript then "import type" else "import"
-  in
-  match config.language with
-  | Flow | TypeScript ->
-    strictLocalPrefix ^ importPrefix ^ " "
-    ^ (match config.language = Flow with true -> "type " | false -> "")
-    ^ "{" ^ typeName
-    ^ (match asTypeName with Some asT -> " as " ^ asT | None -> "")
-    ^ "} from '" ^ importPathString ^ "';"
-    |> Emitters.import ~emitters
-  | Untyped -> emitters
+  let importPrefix = "import type" in
+  importPrefix ^ " " ^ "{" ^ typeName
+  ^ (match asTypeName with Some asT -> " as " ^ asT | None -> "")
+  ^ "} from '" ^ importPathString ^ "';"
+  |> Emitters.import ~emitters
 
 let ofTypeAny ~config s = s |> ofType ~config ~type_:(typeAny ~config)
 
 let emitTypeCast ~config ~type_ ~typeNameIsInterface s =
-  match config.language with
-  | TypeScript ->
-    s ^ " as " ^ (type_ |> typeToString ~config ~typeNameIsInterface)
-  | Untyped | Flow -> s
+  s ^ " as " ^ (type_ |> typeToString ~config ~typeNameIsInterface)
