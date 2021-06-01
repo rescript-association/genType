@@ -4,9 +4,7 @@ let curry = "Curry"
 
 let propTypes = "PropTypes"
 
-let react = "React"
-
-let rescriptPervasives = "RescriptPervasives"
+let reasonPervasives = "ReasonPervasives"
 
 let dotRegex = "." |> Str.quote |> Str.regexp
 

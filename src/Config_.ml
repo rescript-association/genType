@@ -13,7 +13,6 @@ type bsVersion = int * int * int
 type config = {
   bsCurryPath : string option;
   bsDependencies : string list;
-  mutable emitFlowAny : bool;
   mutable emitImportCurry : bool;
   mutable emitImportPropTypes : bool;
   mutable emitImportReact : bool;
@@ -33,7 +32,6 @@ let default =
   {
     bsCurryPath = None;
     bsDependencies = [];
-    emitFlowAny = false;
     emitImportCurry = false;
     emitImportPropTypes = false;
     emitImportReact = false;
@@ -220,7 +218,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       bsCurryPath;
       bsDependencies;
       suffix;
-      emitFlowAny = false;
       emitImportCurry = false;
       emitImportPropTypes = false;
       emitImportReact = false;

@@ -13,9 +13,7 @@ val fromStringUnsafe : string -> t
 
 val propTypes : t
 
-val react : t
-
-val rescriptPervasives : t
+val reasonPervasives : t
 
 val toString : t -> string
 
