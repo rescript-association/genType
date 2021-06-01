@@ -146,30 +146,15 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
         | x :: y -> (x, "" :: y |> String.concat ".")
         | _ -> (asPath, ""))
     in
-    let importFileVariable = "$$" ^ importFile in
     let emitters, importedAsName, env =
-      match (language, config.module_) with
-      | _, ES6 | TypeScript, _ ->
-        (* emit an import {... as ...} immediately *)
-        let valueNameNotChecked = valueName ^ "NotChecked" in
-        let emitters =
-          importPath
-          |> EmitType.emitImportValueAsEarly ~config ~emitters
-               ~name:firstNameInPath ~nameAs:(Some valueNameNotChecked)
-        in
-        (emitters, valueNameNotChecked, env)
-      | (Flow | Untyped), _ ->
-        (* add an early require(...) *)
-        let importedAsName =
-          match firstNameInPath = "default" with
-          | true -> importFileVariable
-          | false -> importFileVariable ^ "." ^ firstNameInPath
-        in
-        let env =
-          importFileVariable |> ModuleName.fromStringUnsafe
-          |> requireModule ~import:true ~env ~importPath ~strict:true
-        in
-        (emitters, importedAsName, env)
+      (* emit an import {... as ...} immediately *)
+      let valueNameNotChecked = valueName ^ "NotChecked" in
+      let emitters =
+        importPath
+        |> EmitType.emitImportValueAsEarly ~config ~emitters
+             ~name:firstNameInPath ~nameAs:(Some valueNameNotChecked)
+      in
+      (emitters, valueNameNotChecked, env)
     in
     let type_ =
       match type_ with
@@ -340,9 +325,8 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
            }
             : CodeItem.exportType)
         in
-        if config.language = TypeScript then
-          (* For doc gen (https://github.com/cristianoc/genType/issues/342) *)
-          config.emitImportReact <- true;
+        (* For doc gen (https://github.com/cristianoc/genType/issues/342) *)
+        config.emitImportReact <- true;
         emitExportType ~emitters ~config ~typeGetNormalized ~typeNameIsInterface
           exportType
       | _ -> emitters
@@ -383,11 +367,7 @@ let emitRequires ~importedValueOrComponent ~early ~config ~requires emitters =
     requires emitters
 
 let emitVariantTables ~config ~emitters variantTables =
-  let typeAnnotation =
-    match config.language = TypeScript with
-    | true -> ": { [key: string]: any }"
-    | false -> ""
-  in
+  let typeAnnotation = ": { [key: string]: any }" in
   let emitTable ~table ~toJS (variantC : Converter.variantC) =
     "const " ^ table ^ typeAnnotation ^ " = {"
     ^ (variantC.noPayloads
