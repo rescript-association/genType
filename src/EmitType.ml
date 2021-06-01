@@ -1,17 +1,5 @@
 open GenTypeCommon
 
-type flowError = UntypedImport | UnclearType
-
-let flowExpectedError flowError =
-  let errorStr =
-    match flowError with
-    | UntypedImport -> "untyped-import"
-    | UnclearType -> "unclear-type"
-  in
-  "// $FlowExpectedError[" ^ errorStr ^ "]: Reason checked type sufficiently\n"
-
-let flowTypeAny = flowExpectedError UnclearType ^ "type $any = any;\n"
-
 let fileHeader ~config ~sourceFile =
   let makeHeader ~lines =
     match lines with
@@ -39,34 +27,32 @@ let outputFileSuffix ~config =
 
 let generatedModuleExtension ~config = generatedFilesExtension ~config
 
-let shimExtension ~config = ".shim.ts"
+let shimExtension = ".shim.ts"
 
 let interfaceName ~config name =
   match config.exportInterfaces with true -> "I" ^ name | false -> name
 
-let typeAny ~config = ident ~builtin:true "any"
+let typeAny = ident ~builtin:true "any"
 
-let typeReactComponent ~config ~propsType =
+let typeReactComponent ~propsType =
   "React.ComponentType" |> ident ~builtin:true ~typeArgs:[propsType]
 
-let typeReactContext ~config ~type_ =
+let typeReactContext ~type_ =
   "React.Context" |> ident ~builtin:true ~typeArgs:[type_]
 
-let typeReactElementFlow = ident ~builtin:true "React$Node"
 let typeReactElementTypeScript = ident ~builtin:true "JSX.Element"
 let typeReactChildTypeScript = ident ~builtin:true "React.ReactNode"
 
-let typeReactElement ~config = typeReactElementTypeScript
+let typeReactElement = typeReactElementTypeScript
 
-let typeReactChild ~config = typeReactChildTypeScript
+let typeReactChild = typeReactChildTypeScript
 
-let isTypeReactElement ~config type_ = type_ == typeReactElement ~config
+let isTypeReactElement type_ = type_ == typeReactElement
 
+let typeReactDOMReDomRef =
+  "React.Ref" |> ident ~builtin:true ~typeArgs:[unknown]
 
-let typeReactDOMReDomRef ~config =
-  "React.Ref" |> ident ~builtin:true ~typeArgs:[mixedOrUnknown ~config]
-
-let typeReactEventMouseT ~config = "MouseEvent" |> ident ~builtin:true
+let typeReactEventMouseT = "MouseEvent" |> ident ~builtin:true
 
 let reactRefCurrent = "current"
 
@@ -89,8 +75,8 @@ let isTypeReactRef ~fields =
     nameJS == reactRefCurrent && nameJS == nameRE
   | _ -> false
 
-let isTypeFunctionComponent ~config ~fields type_ =
-  type_ |> isTypeReactElement ~config && not (isTypeReactRef ~fields)
+let isTypeFunctionComponent ~fields type_ =
+  type_ |> isTypeReactElement && not (isTypeReactRef ~fields)
 
 let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
     type0 =
@@ -112,7 +98,7 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
       ^ ">"
   | Function
       {argTypes = [{aType = Object (closedFlag, fields)}]; retType; typeVars}
-    when retType |> isTypeFunctionComponent ~config ~fields ->
+    when retType |> isTypeFunctionComponent ~fields ->
     let fields =
       fields
       |> List.map (fun field ->
@@ -121,12 +107,11 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
                type_ =
                  field.type_
                  |> TypeVars.substitute ~f:(fun s ->
-                        if typeVars |> List.mem s then Some (typeAny ~config)
-                        else None);
+                        if typeVars |> List.mem s then Some typeAny else None);
              })
     in
     let componentType =
-      typeReactComponent ~config ~propsType:(Object (closedFlag, fields))
+      typeReactComponent ~propsType:(Object (closedFlag, fields))
     in
     componentType |> renderType ~config ~indent ~typeNameIsInterface ~inFunType
   | Function {argTypes; retType; typeVars} ->
@@ -134,12 +119,8 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
       argTypes retType
   | GroupOfLabeledArgs fields | Object (_, fields) | Record fields ->
     let indent1 = fields |> Indent.heuristicFields ~indent in
-    let closedFlag =
-      match type0 with Object (closedFlag, _) -> closedFlag | _ -> Closed
-    in
     fields
-    |> renderFields ~closedFlag ~config ~indent:indent1 ~inFunType
-         ~typeNameIsInterface
+    |> renderFields ~config ~indent:indent1 ~inFunType ~typeNameIsInterface
   | Ident {builtin; name; typeArgs} ->
     let name = name |> sanitizeTypeName in
     (match
@@ -192,9 +173,7 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
       }
     in
     let fields fields =
-      fields
-      |> renderFields ~closedFlag:Closed ~config ~indent ~inFunType
-           ~typeNameIsInterface
+      fields |> renderFields ~config ~indent ~inFunType ~typeNameIsInterface
     in
     let payloadsRendered =
       payloads
@@ -241,8 +220,7 @@ and renderField ~config ~indent ~typeNameIsInterface ~inFunType
   Indent.break ~indent ^ mutMarker ^ lbl ^ optMarker ^ ": "
   ^ (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
 
-and renderFields ~closedFlag ~config ~indent ~inFunType ~typeNameIsInterface
-    fields =
+and renderFields ~config ~indent ~inFunType ~typeNameIsInterface fields =
   let indent1 = indent |> Indent.more in
   let space =
     match indent = None && fields <> [] with true -> " " | false -> ""
@@ -299,7 +277,7 @@ let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
 let emitExportConst = emitExportConst_ ~early:false
 let emitExportConstEarly = emitExportConst_ ~early:true
 
-let emitExportDefault ~emitters ~config name =
+let emitExportDefault ~emitters name =
   "export default " ^ name ^ ";" |> Emitters.export ~emitters
 
 let emitExportType ?(early = false) ~config ~emitters ~nameAs ~opaque ~type_
@@ -360,7 +338,7 @@ let emitImportValueAsEarly ~config ~emitters ~name ~nameAs importPath =
   |> Emitters.requireEarly ~emitters
 
 let emitRequire ~importedValueOrComponent ~early ~emitters ~config ~moduleName
-    ~strict importPath =
+    importPath =
   let commentBeforeRequire =
     match importedValueOrComponent with
     | true -> "// tslint:disable-next-line:no-var-requires\n"
@@ -391,7 +369,7 @@ let emitRequire ~importedValueOrComponent ~early ~emitters ~config ~moduleName
 let require ~early =
   match early with true -> Emitters.requireEarly | false -> Emitters.require
 
-let emitImportReact ~emitters ~config =
+let emitImportReact ~emitters =
   "import * as React from 'react';" |> require ~early:true ~emitters
 
 let emitImportTypeAs ~emitters ~config ~typeName ~asTypeName
@@ -419,7 +397,7 @@ let emitImportTypeAs ~emitters ~config ~typeName ~asTypeName
   ^ "} from '" ^ importPathString ^ "';"
   |> Emitters.import ~emitters
 
-let ofTypeAny ~config s = s |> ofType ~config ~type_:(typeAny ~config)
+let ofTypeAny ~config s = s |> ofType ~config ~type_:typeAny
 
 let emitTypeCast ~config ~type_ ~typeNameIsInterface s =
   s ^ " as " ^ (type_ |> typeToString ~config ~typeNameIsInterface)

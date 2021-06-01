@@ -159,7 +159,7 @@ let translateConstr ~config ~paramsTranslation ~(path : Path.t) ~typeEnv =
           {
             argTypes = [{aName = ""; aType = propsTranslation.type_}];
             componentName = None;
-            retType = EmitType.typeReactElement ~config;
+            retType = EmitType.typeReactElement;
             typeVars = [];
             uncurried = false;
           };
@@ -167,7 +167,7 @@ let translateConstr ~config ~paramsTranslation ~(path : Path.t) ~typeEnv =
   | ["React"; "Context"; "t"], [paramTranslation] ->
     {
       dependencies = paramTranslation.dependencies;
-      type_ = EmitType.typeReactContext ~config ~type_:paramTranslation.type_;
+      type_ = EmitType.typeReactContext ~type_:paramTranslation.type_;
     }
   | (["React"; "Ref"; "t"] | ["React"; "ref"]), [paramTranslation] ->
     {
@@ -179,13 +179,13 @@ let translateConstr ~config ~paramsTranslation ~(path : Path.t) ~typeEnv =
   | ["ReactDOM"; "Ref"; "currentDomRef"], [] ->
     {dependencies = []; type_ = EmitType.typeAny ~config}
   | ["ReactDOMRe"; "domRef"], [] ->
-    {dependencies = []; type_ = EmitType.typeReactRef}
+    {dependencies = []; type_ = EmitType.typeReactDOMReDomRef}
   | ["ReactDOMRe"; "Ref"; "currentDomRef"], [] ->
-    {dependencies = []; type_ = EmitType.typeAny ~config}
+    {dependencies = []; type_ = EmitType.typeAny}
   | ["ReactEvent"; "Mouse"; "t"], [] ->
-    {dependencies = []; type_ = EmitType.typeReactEventMouseT ~config}
+    {dependencies = []; type_ = EmitType.typeReactEventMouseT}
   | (["React"; "element"] | ["ReasonReact"; "reactElement"]), [] ->
-    {dependencies = []; type_ = EmitType.typeReactElement ~config}
+    {dependencies = []; type_ = EmitType.typeReactElement}
   | (["FB"; "option"] | ["option"]), [paramTranslation] ->
     {paramTranslation with type_ = Option paramTranslation.type_}
   | (["Js"; "Null"; "t"] | ["Js"; "null"]), [paramTranslation] ->
@@ -535,8 +535,7 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
         |> List.concat
       in
       {dependencies; type_}
-    | {unknowns = _ :: _} -> {dependencies = []; type_ = mixedOrUnknown ~config}
-    )
+    | {unknowns = _ :: _} -> {dependencies = []; type_ = unknown})
   | Tpackage (path, ids, types) -> (
     match typeEnv |> TypeEnv.lookupModuleTypeSignature ~path with
     | Some (signature, typeEnv) ->
@@ -566,9 +565,9 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
         dependencies = dependenciesFromTypeEquations @ dependenciesFromRecordType;
         type_;
       }
-    | None -> {dependencies = []; type_ = mixedOrUnknown ~config})
+    | None -> {dependencies = []; type_ = unknown})
   | Tfield _ | Tnil | Tpoly _ | Tsubst _ | Tunivar _ ->
-    {dependencies = []; type_ = mixedOrUnknown ~config}
+    {dependencies = []; type_ = unknown}
 
 and translateTypeExprsFromTypes_ ~config ~typeVarsGen ~typeEnv typeExprs :
     translation list =
@@ -610,8 +609,7 @@ and signatureToModuleRuntimeRepresentation ~config ~typeVarsGen ~typeEnv
                  signature
                  |> signatureToModuleRuntimeRepresentation ~config ~typeVarsGen
                       ~typeEnv:typeEnv1
-               | Mty_ident _ | Mty_functor _ | Mty_alias _ ->
-                 ([], mixedOrUnknown ~config)
+               | Mty_ident _ | Mty_functor _ | Mty_alias _ -> ([], unknown)
              in
              let field =
                {

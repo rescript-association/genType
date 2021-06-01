@@ -1,5 +1,3 @@
-open GenTypeCommon
-
 type recordGen = {mutable unboxed : int; mutable boxed : int}
 
 type recordValue = int
@@ -58,7 +56,7 @@ let emitVariantGetPayload ~inlineRecord ~numArgs ~polymorphic x =
     else x |> accessVariant ~index:0
   else (* payload items extracted later when numArgs != 1 *) x
 
-let emitVariantWithPayload ~config ~inlineRecord ~label ~polymorphic args =
+let emitVariantWithPayload ~inlineRecord ~label ~polymorphic args =
   match args with
   | [arg] when polymorphic ->
     "{" ^ VariantsAsObjects.polyVariantLabelName ^ ": "

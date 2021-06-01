@@ -1,8 +1,8 @@
 open GenTypeCommon
 
 type env = {
-  requiresEarly : (ImportPath.t * bool) ModuleNameMap.t;
-  requires : (ImportPath.t * bool) ModuleNameMap.t;
+  requiresEarly : ImportPath.t ModuleNameMap.t;
+  requires : ImportPath.t ModuleNameMap.t;
       (**  For each .cmt we import types from, keep the map of exported types *)
   cmtToExportTypeMap : CodeItem.exportTypeMap StringMap.t;
       (**  Map of types imported from other files *)
@@ -10,13 +10,11 @@ type env = {
   importedValueOrComponent : bool;
 }
 
-let requireModule ~import ~env ~importPath ?(strict = false) moduleName =
+let requireModule ~import ~env ~importPath moduleName =
   let requires =
     match import with true -> env.requiresEarly | false -> env.requires
   in
-  let requiresNew =
-    requires |> ModuleNameMap.add moduleName (importPath, strict)
-  in
+  let requiresNew = requires |> ModuleNameMap.add moduleName importPath in
   match import with
   | true -> {env with requiresEarly = requiresNew}
   | false -> {env with requires = requiresNew}
@@ -128,7 +126,6 @@ let emitExportFromTypeDeclarations ~config ~emitters ~env ~typeGetNormalized
 let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     ~outputFileRelative ~resolver ~typeGetConverter ~typeGetNormalized
     ~typeNameIsInterface ~variantTables codeItem =
-  let language = config.language in
   if !Debug.codeItems then
     Log_.item "Code Item: %s\n"
       (codeItem |> codeItemToString ~config ~typeNameIsInterface);
@@ -159,11 +156,8 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     let type_ =
       match type_ with
       | Function
-          ({
-             argTypes = [({aType = Object (closedFlag, fields)} as argType)];
-             retType;
-           } as function_)
-        when retType |> EmitType.isTypeFunctionComponent ~config ~fields ->
+          ({argTypes = [{aType = Object (_, fields)}]; retType} as function_)
+        when retType |> EmitType.isTypeFunctionComponent ~fields ->
         let componentName =
           match importFile with "." | ".." -> None | _ -> Some importFile
         in
@@ -214,12 +208,12 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
            ~comment:
              ("Export '" ^ valueNameNotDefault
             ^ "' early to allow circular import from the '.bs.js' file.")
-           ~config ~emitters ~name:valueNameNotDefault
-           ~type_:(mixedOrUnknown ~config) ~typeNameIsInterface
+           ~config ~emitters ~name:valueNameNotDefault ~type_:unknown
+           ~typeNameIsInterface
     in
     let emitters =
       match valueName = "default" with
-      | true -> EmitType.emitExportDefault ~emitters ~config valueNameNotDefault
+      | true -> EmitType.emitExportDefault ~emitters valueNameNotDefault
       | false -> emitters
     in
     ({env with importedValueOrComponent = true}, emitters)
@@ -259,17 +253,16 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
              retType;
              typeVars;
            } as function_)
-        when retType |> EmitType.isTypeFunctionComponent ~config ~fields ->
+        when retType |> EmitType.isTypeFunctionComponent ~fields ->
         let propsType =
           let fields =
             fields
             |> List.map (fun (field : field) ->
                    match
                      field.nameJS = "children"
-                     && field.type_ |> EmitType.isTypeReactElement ~config
+                     && field.type_ |> EmitType.isTypeReactElement
                    with
-                   | true ->
-                     {field with type_ = EmitType.typeReactChild ~config}
+                   | true -> {field with type_ = EmitType.typeReactChild}
                    | false -> field)
           in
           Object (closedFlags, fields)
@@ -342,7 +335,7 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     in
     let emitters =
       match originalName = default with
-      | true -> EmitType.emitExportDefault ~emitters ~config Runtime.default
+      | true -> EmitType.emitExportDefault ~emitters Runtime.default
       | false -> emitters
     in
     (envWithRequires, emitters)
@@ -360,13 +353,13 @@ and emitCodeItems ~config ~outputFileRelative ~emitters ~moduleItemsEmitter ~env
 
 let emitRequires ~importedValueOrComponent ~early ~config ~requires emitters =
   ModuleNameMap.fold
-    (fun moduleName (importPath, strict) emitters ->
+    (fun moduleName importPath emitters ->
       importPath
       |> EmitType.emitRequire ~importedValueOrComponent ~early ~emitters ~config
-           ~moduleName ~strict)
+           ~moduleName)
     requires emitters
 
-let emitVariantTables ~config ~emitters variantTables =
+let emitVariantTables ~emitters variantTables =
   let typeAnnotation = ": { [key: string]: any }" in
   let emitTable ~table ~toJS (variantC : Converter.variantC) =
     "const " ^ table ^ typeAnnotation ^ " = {"
@@ -658,7 +651,7 @@ let emitTranslationAsString ~config ~fileName ~inputCmtTranslateTypeDeclarations
   in
   let emitters =
     match config.emitImportReact with
-    | true -> EmitType.emitImportReact ~emitters ~config
+    | true -> EmitType.emitImportReact ~emitters
     | false -> emitters
   in
   let env =
@@ -676,7 +669,7 @@ let emitTranslationAsString ~config ~fileName ~inputCmtTranslateTypeDeclarations
       |> requireModule ~import:true ~env ~importPath:ImportPath.propTypes
     | false -> env
   in
-  let emitters = variantTables |> emitVariantTables ~config ~emitters in
+  let emitters = variantTables |> emitVariantTables ~emitters in
   let emitters =
     moduleItemsEmitter
     |> ExportModule.emitAllModuleItems ~config ~emitters ~fileName
