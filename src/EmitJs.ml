@@ -225,7 +225,6 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
       type t = {
         propsType : type_;
         resolvedTypeName : ResolvedName.t;
-        retType : type_;
         typeVars : string list;
       }
     end in
@@ -281,7 +280,7 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
           else ResolvedName.fromString name |> ResolvedName.dot "Props"
         in
         ( Function {function_ with componentName = Some hookName},
-          Some {HookType.propsType; resolvedTypeName; retType; typeVars} )
+          Some {HookType.propsType; resolvedTypeName; typeVars} )
       | _ -> (type_, None)
     in
 

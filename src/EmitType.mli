@@ -55,14 +55,6 @@ val emitImportValueAsEarly :
   ImportPath.t ->
   Emitters.t
 
-val emitPropTypes :
-  config:config ->
-  emitters:Emitters.t ->
-  indent:Indent.t ->
-  name:string ->
-  field list ->
-  Emitters.t
-
 val emitRequire :
   importedValueOrComponent:bool ->
   early:bool ->
