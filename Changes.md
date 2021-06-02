@@ -1,5 +1,6 @@
 # master
 - Add support for `external-stdlib` in `bsconfig.json`.
+- Fix issue with `exportInterfaces` and labeled arguments (see https://github.com/rescript-association/genType/issues/561). 
 
 # 4.0.0
 - Remove support for legacy components.

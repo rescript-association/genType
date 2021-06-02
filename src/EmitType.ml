@@ -178,11 +178,6 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
       argTypes retType
   | GroupOfLabeledArgs fields | Object (_, fields) | Record fields ->
     let indent1 = fields |> Indent.heuristicFields ~indent in
-    let config =
-      match type0 with
-      | GroupOfLabeledArgs _ -> {config with exportInterfaces = false}
-      | _ -> config
-    in
     let closedFlag =
       match type0 with Object (closedFlag, _) -> closedFlag | _ -> Closed
     in
