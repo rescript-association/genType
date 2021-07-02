@@ -29,10 +29,10 @@ jobs:
 
     steps:
     # needed for Windows testing
-    - name: Set git to use LF
-      run: |
-        git config --global core.autocrlf false
-        git config --global core.eol lf
+    # - name: Set git to use LF
+    #   run: |
+    #     git config --global core.autocrlf false
+    #     git config --global core.eol lf
 
     - uses: actions/checkout@v2.3.4
 
@@ -53,11 +53,6 @@ jobs:
         node-version: 14.4.0
 
     - run: npm ci
-
-    # These 2 runs (or just the second?) are for when you have opam dependencies. We don't.
-    # Don't add deps. But if you ever do, un-comment these and add an .opam file.
-    # - run: opam pin add rescript-editor-analysis.dev . --no-action
-    # - run: opam install . --deps-only --with-doc --with-test
 
     - run: opam install dune
 
