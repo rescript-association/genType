@@ -22,7 +22,7 @@ jobs:
             build: eval $(opam env) && dune build
             artifact-folder: linux
           - os: windows-latest
-            build: "$env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build"
+            build: "& $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build"
             artifact-folder: win32
 
     runs-on: ${{matrix.os}}
