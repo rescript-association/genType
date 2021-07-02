@@ -22,7 +22,7 @@ jobs:
             build: eval $(opam env) && dune build
             artifact-folder: linux
           - os: windows-latest
-            build: "cd analysis && & $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build"
+            build: "$env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build"
             artifact-folder: win32
 
     runs-on: ${{matrix.os}}
@@ -59,19 +59,21 @@ jobs:
     # - run: opam pin add rescript-editor-analysis.dev . --no-action
     # - run: opam install . --deps-only --with-doc --with-test
 
+    - run: opam install dune
+
     - name: Build and test
       run: ${{matrix.build}}
 
     # Also avoids artifacts upload permission loss:
     # https://github.com/actions/upload-artifact/tree/ee69f02b3dfdecd58bb31b4d133da38ba6fe3700#permission-loss
-    - name: Compress files
-      run: |
-        cd analysis
-        mkdir ${{matrix.artifact-folder}}
-        mv rescript-editor-analysis.exe ${{matrix.artifact-folder}}
-        tar -cvf binary.tar ${{matrix.artifact-folder}}
+    # - name: Compress files
+    #   run: |
+    #     cd analysis
+    #     mkdir ${{matrix.artifact-folder}}
+    #     mv rescript-editor-analysis.exe ${{matrix.artifact-folder}}
+    #     tar -cvf binary.tar ${{matrix.artifact-folder}}
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: ${{matrix.os}}
-        path: analysis/binary.tar
+    # - uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{matrix.os}}
+    #     path: analysis/binary.tar
