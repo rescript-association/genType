@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-18.04, windows-latest]
+        # syntax explanation:
+        # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#example-including-additional-values-into-combinations
+        include:
+          - os: macos-latest
+            build: eval $(opam env) && cd analysis && make test
+            artifact-folder: darwin
+          - os: ubuntu-18.04
+            build: eval $(opam env) && cd analysis && make test
+            artifact-folder: linux
+          - os: windows-latest
+            build: "cd analysis && & $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- make test"
+            artifact-folder: win32
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+    # needed for Windows testing
+    - name: Set git to use LF
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+
+    - uses: actions/checkout@v2.3.4
+
+    - name: Cache OCaml's opam
+      uses: actions/cache@v2.1.5
+      with:
+        path: ~/.opam
+        key: ${{matrix.os}}-rescript-vscode-v1
+
+    - name: Use OCaml
+      uses: ocaml/setup-ocaml@v1.1.11
+      with:
+        ocaml-version: 4.06.1
+
+    - name: Use Node.js
+      uses: actions/setup-node@v2.1.5
+      with:
+        node-version: 14.4.0
+
+    - run: npm ci
+    - run: npm run compile
+
+    # These 2 runs (or just the second?) are for when you have opam dependencies. We don't.
+    # Don't add deps. But if you ever do, un-comment these and add an .opam file.
+    # - run: opam pin add rescript-editor-analysis.dev . --no-action
+    # - run: opam install . --deps-only --with-doc --with-test
+
+    - name: Build and test
+      run: ${{matrix.build}}
+
+    # Also avoids artifacts upload permission loss:
+    # https://github.com/actions/upload-artifact/tree/ee69f02b3dfdecd58bb31b4d133da38ba6fe3700#permission-loss
+    - name: Compress files
+      run: |
+        cd analysis
+        mkdir ${{matrix.artifact-folder}}
+        mv rescript-editor-analysis.exe ${{matrix.artifact-folder}}
+        tar -cvf binary.tar ${{matrix.artifact-folder}}
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{matrix.os}}
+        path: analysis/binary.tar
