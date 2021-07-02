@@ -16,13 +16,13 @@ jobs:
         # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#example-including-additional-values-into-combinations
         include:
           - os: macos-latest
-            build: eval $(opam env) && cd analysis && make test
+            build: eval $(opam env) && dune build
             artifact-folder: darwin
           - os: ubuntu-18.04
-            build: eval $(opam env) && cd analysis && make test
+            build: eval $(opam env) && dune build
             artifact-folder: linux
           - os: windows-latest
-            build: "cd analysis && & $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- make test"
+            build: "cd analysis && & $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build"
             artifact-folder: win32
 
     runs-on: ${{matrix.os}}
@@ -53,7 +53,6 @@ jobs:
         node-version: 14.4.0
 
     - run: npm ci
-    - run: npm run compile
 
     # These 2 runs (or just the second?) are for when you have opam dependencies. We don't.
     # Don't add deps. But if you ever do, un-comment these and add an .opam file.
