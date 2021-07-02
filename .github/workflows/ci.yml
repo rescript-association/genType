@@ -22,17 +22,17 @@ jobs:
             build: eval $(opam env) && dune build && npm test
             artifact-folder: linux
           - os: windows-latest
-            build: "& $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build && npm test"
+            build: "& $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build"
             artifact-folder: win32
 
     runs-on: ${{matrix.os}}
 
     steps:
     # needed for Windows testing
-    # - name: Set git to use LF
-    #   run: |
-    #     git config --global core.autocrlf false
-    #     git config --global core.eol lf
+    - name: Set git to use LF
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
 
     - uses: actions/checkout@v2.3.4
 
