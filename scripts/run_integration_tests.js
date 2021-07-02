@@ -167,13 +167,11 @@ async function main() {
   try {
     checkSetup();
 
-    if (!isWindows) {
-      await installExamples();
-      cleanBuildExamples();
+    await installExamples();
+    cleanBuildExamples();
 
-      /* Git diffing is broken... we need a better way to test regressions */
-      checkDiff();
-    }
+    /* Git diffing is broken... we need a better way to test regressions */
+    checkDiff();
 
     console.log("Test successful!");
   } catch (e) {
