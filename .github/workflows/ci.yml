@@ -99,5 +99,5 @@ jobs:
       - name: upload gentype-npm.tgz
         uses: actions/upload-artifact@v2
         with:
-          name: npm
+          name: gentype-npm.tgz
           path: gentype-npm.tgz

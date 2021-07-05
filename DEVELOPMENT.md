@@ -26,7 +26,7 @@ npm install
 
 ```
 # Builds the project
-npm build
+npm run build
 
 # Alternatively
 dune build
@@ -48,7 +48,7 @@ longer to give you feedback).
 npm test
 ```
 
-## Automated Releases (for Maintainers)
+## Releases (for Maintainers)
 
 The project is compatible with the [`npm
 version`](https://docs.npmjs.com/cli/version) workflow. After using the `npm
@@ -56,9 +56,7 @@ version [major|minor|patch|...]` command, npm will automatically tag the
 current commit, bump all the necessary version numbers (also the number in
 `src/Version.ml`) and push it to the current remote branch.
 
-When a tag is pushed, [CircleCI](https://circleci.com/gh/rescript-association/genType) will create a package to the Github releases [releases](https://github.com/rescript-association/genType/releases) page, which can later be released to npm.
-
-This CI process only covers the newest `genType` releases (v3+), which are based on BuckleScript 6.x. This version is based on OCaml 4.06 and is not compatible with any BuckleScript version below 6.x (those are based on OCaml 4.02).
+When a tag is pushed, proceed to manually create a release from that tag using the GitHub website. (To be automated later).
 
 **Here are the concrete commands to run:**
 
@@ -82,29 +80,17 @@ npm version major
 
 ## Releasing to npm (Maintainers only)
 
-The releasing mechanism downloads the platform dependent artifacts stored on
-the Github releases tab, so make sure to first do an automated release as
-stated above (`npm version ...`).
-
-After the CIs are done releasing the built binaries, do following command on a unix-like system (no Windows supported):
-
-```
-node scripts/download_dist.js
-```
-
-This will download the prepared npm package from the genType Github releases
-tab to the root of your project with the name `gentype-$version.tgz`. This is
-a `tgz` file ready to be released to npm!
+Use the GitHub web iterface to download the artifact `gentype-npm.tar`.
 
 ```
 # Dry run for testing
-npm publish gentype-*.tgz --dry-run
+npm publish gentype-npm.tar --dry-run
 
 # Publish package as @latest
-npm publish gentype-*.tgz
+npm publish gentype-npm.tar
 
 # Publish package with @beta tag
-npm publish gentype-*.tgz --tag beta
+npm publish gentype-npm.tar --tag beta
 ```
 
 Consult the [npm publish](https://docs.npmjs.com/cli/publish) documentation for more options.
