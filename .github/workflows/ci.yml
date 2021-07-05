@@ -65,9 +65,9 @@ jobs:
       run: |
         mkdir ${{matrix.artifact-folder}}
         cp _build/default/src/GenType.exe ${{matrix.artifact-folder}}/gentype.exe
-        tar -cvf binary.tar ${{matrix.artifact-folder}}
+        tar -cvf ${{matrix.artifact-folder}}.tar ${{matrix.artifact-folder}}
 
     - uses: actions/upload-artifact@v2
       with:
         name: ${{matrix.os}}
-        path: binary.tar
+        path: ${{matrix.artifact-folder}}.tar
