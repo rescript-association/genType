@@ -16,12 +16,10 @@ jobs:
         # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#example-including-additional-values-into-combinations
         include:
           - os: macos-latest
-            # build: eval $(opam env) && dune build && npm test
-            build: eval $(opam env) && dune build
+            build: eval $(opam env) && dune build && npm test
             artifact-folder: darwin
           - os: ubuntu-18.04
-            # build: eval $(opam env) && dune build && npm test
-            build: eval $(opam env) && dune build
+            build: eval $(opam env) && dune build && npm test
             artifact-folder: linux
           - os: windows-latest
             build: "& $env:CYGWIN_ROOT\\bin\\ocaml-env exec -- dune build"
