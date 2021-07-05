@@ -1,6 +1,6 @@
 # ReScript genType
 
-**Status `master (v3.*)`:** [![Build
+**Status `master (v4.*)`:** [![Build
 Status](https://dev.azure.com/ccrisccris/genType/_apis/build/status/cristianoc.genType?branchName=master)](https://dev.azure.com/ccrisccris/genType/_build/latest?definitionId=1&branchName=master)
 
 > The latest genType docs have been migrated to the [ReScript website](https://rescript-lang.org/docs/gentype/latest/introduction).
