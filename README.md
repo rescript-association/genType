@@ -1,8 +1,5 @@
 # ReScript genType
 
-**Status `master (v4.*)`:** [![Build
-Status](https://dev.azure.com/ccrisccris/genType/_apis/build/status/cristianoc.genType?branchName=master)](https://dev.azure.com/ccrisccris/genType/_build/latest?definitionId=1&branchName=master)
-
 > The latest genType docs have been migrated to the [ReScript website](https://rescript-lang.org/docs/gentype/latest/introduction).
 
 `genType` lets you export [ReScript](https://rescript-lang.org/) values and types to use in JavaScript, and import JavaScript values and types into ReScript, idiomatically. Converter functions between the two representations are generated based on the type of the value. The converters can be generated in vanilla JavaScript, or in [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/en/) for a type-safe idiomatic interface.
