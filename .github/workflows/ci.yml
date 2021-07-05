@@ -67,29 +67,27 @@ jobs:
       run: |
         mkdir ${{matrix.artifact-folder}}
         cp _build/default/src/GenType.exe ${{matrix.artifact-folder}}/gentype.exe
-        tar -cvf ${{matrix.artifact-folder}}.tar ${{matrix.artifact-folder}}
+        tar -cvf binary.tar ${{matrix.artifact-folder}}
 
     - uses: actions/upload-artifact@v2
       with:
         name: ${{matrix.os}}
-        path: ${{matrix.artifact-folder}}.tar
+        path: binary.tar
 
   artifacts:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: download macos-latest
+      - name: download all binaries
         uses: actions/download-artifact@v2
-        with:
-          name: macos-latest
-      - name: download ubuntu-18.04
-        uses: actions/download-artifact@v2
-        with:
-          name: ubuntu-18.04
-      - name: download windows-latest
-        uses: actions/download-artifact@v2
-        with:
-          name: windows-latest
       - name: combine
         run: |
-          ls -R
+          tar xf macos-latest/binary.tar
+          tar xf ubuntu-18.04/binary.tar
+          tar xf windows-latest/binary.tar
+          tar cf binaries.tar darwin linux win32
+      - name: upload binaries.tar
+        uses: actions/upload-artifact@v2
+        with:
+          name: binaries
+          path: binaries.tar
