@@ -78,13 +78,13 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: download macos-latest
+      - name: download-macos-latest
         uses: actions/download-artifact@v2
         name: macos-latest
-      - name: download ubuntu-18.04
+      - name: download-ubuntu-18.04
         uses: actions/download-artifact@v2
         name: ubuntu-18.04
-      - name: download windows-latest
+      - name: download-windows-latest
         uses: actions/download-artifact@v2
         name: windows-latest
       - name: combine
