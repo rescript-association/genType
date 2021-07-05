@@ -78,16 +78,29 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: download all binaries
+      - uses: actions/checkout@v2.3.4
+      - name: download binaries
         uses: actions/download-artifact@v2
-      - name: combine
+      - name: Pack genType
         run: |
+          # Put the built artifacts in the appropriate package folder
           tar xf macos-latest/binary.tar
           tar xf ubuntu-18.04/binary.tar
           tar xf windows-latest/binary.tar
-          tar cf binaries.tar darwin linux win32
-      - name: upload binaries.tar
+          mv darwin dist/vendor-darwin
+          mv linux dist/vendor-linux
+          mv win32 dist/vendor-win32
+          
+          # Add the correct package.json / README / etc to dist
+          node scripts/prepare_release.js
+
+          # Pack everything up
+          cd dist
+          npm pack
+          cd ..
+          mv dist/gentype-*.tgz gentype-npm.tgz
+      - name: upload gentype-npm.tgz
         uses: actions/upload-artifact@v2
         with:
-          name: binaries
-          path: binaries.tar
+          name: npm
+          path: gentype-npm.tgz
