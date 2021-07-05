@@ -71,3 +71,12 @@ jobs:
       with:
         name: ${{matrix.os}}
         path: ${{matrix.artifact-folder}}.tar
+
+  artifacts:
+    needs: test
+    steps:
+      - name: download
+        uses: actions/download-artifact@v2
+      - name: combine
+        run: ls
+    
