@@ -43,7 +43,7 @@ jobs:
         key: ${{matrix.os}}-rescript-vscode-v1
 
     - name: Use OCaml
-      uses: ocaml/setup-ocaml@v1.1.11
+      uses: ocaml/setup-ocaml@v2
       with:
         ocaml-version: 4.10.2+rescript
 
