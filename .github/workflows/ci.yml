@@ -45,7 +45,7 @@ jobs:
     - name: Use OCaml
       uses: ocaml/setup-ocaml@v2
       with:
-        ocaml-compiler: 4.10.2+rescript
+        ocaml-compiler: ocaml-variants.4.10.2+rescript
 
     - name: Use Node.js
       uses: actions/setup-node@v2.1.5
