@@ -30,39 +30,41 @@
 
 
 (** Extension to standard library [Pervavives] module, safe to open 
-  *)
+*)
 
 external reraise: exn -> 'a = "%reraise"
 
 val finally : 
   'a ->
-  clean:('a -> 'c) -> 
+  clean:('a -> unit) -> 
   ('a -> 'b) -> 'b
 
-val try_it : (unit -> 'a) ->  unit 
+(* val try_it : (unit -> 'a) ->  unit  *)
 
 val with_file_as_chan : string -> (out_channel -> 'a) -> 'a
 
 
+val max_int : int -> int -> int 
+
+val min_int : int -> int -> int 
+val max_int_option : 
+  int option -> 
+  int option -> 
+  int option 
 
 
 
 
 
 
-
-
-
-
-
-external id : 'a -> 'a = "%identity"
+(* external id : 'a -> 'a = "%identity" *)
 
 (** Copied from {!Btype.hash_variant}:
     need sync up and add test case
- *)
-val hash_variant : string -> int
+*)
+(* val hash_variant : string -> int *)
 
-val todo : string -> 'a
+(* val todo : string -> 'a *)
 
 val nat_of_string_exn : string -> int
 

@@ -17,17 +17,17 @@ module Color = struct
     | Bold -> "1"
     | Dim -> "2"
 
-  let style_of_tag s =
+  let style_of_stag s =
     match s with
-    | "error" -> [Bold; FG Red]
-    | "warning" -> [Bold; FG Magenta]
-    | "info" -> [Bold; FG Yellow]
-    | "dim" -> [Dim]
-    | "filename" -> [FG Cyan]
+    | Format.String_tag "error" -> [Bold; FG Red]
+    | Format.String_tag "warning" -> [Bold; FG Magenta]
+    | Format.String_tag "info" -> [Bold; FG Yellow]
+    | Format.String_tag "dim" -> [Dim]
+    | Format.String_tag "filename" -> [FG Cyan]
     | _ -> []
 
-  let ansi_of_tag s =
-    let l = style_of_tag s in
+  let ansi_of_stag s =
+    let l = style_of_stag s in
     let s = String.concat ";" (List.map code_of_style l) in
     "\027[" ^ s ^ "m"
 
@@ -35,19 +35,19 @@ module Color = struct
 
   let color_functions =
     (({
-        mark_open_tag =
-          (fun s -> if get_color_enabled () then ansi_of_tag s else "");
-        mark_close_tag =
+        mark_open_stag =
+          (fun s -> if get_color_enabled () then ansi_of_stag s else "");
+        mark_close_stag =
           (fun _ -> if get_color_enabled () then reset_lit else "");
-        print_open_tag = (fun _ -> ());
-        print_close_tag = (fun _ -> ());
+        print_open_stag = (fun _ -> ());
+        print_close_stag = (fun _ -> ());
       }
-       : Format.formatter_tag_functions)
-      : Format.formatter_tag_functions)
+       : Format.formatter_stag_functions)
+      : Format.formatter_stag_functions)
 
   let setup () =
     Format.pp_set_mark_tags Format.std_formatter true;
-    Format.pp_set_formatter_tag_functions Format.std_formatter color_functions
+    Format.pp_set_formatter_stag_functions Format.std_formatter color_functions
 
   let error ppf s = Format.fprintf ppf "@{<error>%s@}" s [@@dead "Color.error"]
 
@@ -64,10 +64,8 @@ module Loc = struct
   let print_loc ~normalizedRange ppf (loc : Location.t) =
     let file, _, _ = Location.get_pos_info loc.loc_start in
     if file = "//toplevel//" then
-      if Location.highlight_locations ppf [loc] then ()
-      else
-        Format.fprintf ppf "Characters %i-%i" loc.loc_start.pos_cnum
-          loc.loc_end.pos_cnum
+      Format.fprintf ppf "Characters %i-%i" loc.loc_start.pos_cnum
+        loc.loc_end.pos_cnum
     else
       let dim_loc ppf = function
         | None -> ()
