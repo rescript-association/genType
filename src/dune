@@ -1,4 +1,5 @@
 (copy_files# ext/*.{ml,mli})
+(copy_files# ml/*.{ml,mli})
 (
   executable
     (public_name gentype.exe)
@@ -9,5 +10,7 @@
     (flags "-w" "+6+26+27+32+33+39")
 
     ; Depends on:
-    (libraries unix str compiler-libs.common)
+    (libraries unix str)
+
+    (modules_without_implementation asttypes outcometree parsetree)
 )
