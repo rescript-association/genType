@@ -118,14 +118,9 @@ let setup_colors () =
 let print_loc ppf loc =
   setup_colors ();
   let (file, line, startchar) = get_pos_info loc.loc_start in
-#if 1
   let startchar =  startchar + 1 in 
-#end      
   let endchar = loc.loc_end.pos_cnum - loc.loc_start.pos_cnum + startchar in
   if file = "//toplevel//" then begin
-#if false then    
-    if highlight_locations ppf [loc] then () else
-#end    
       fprintf ppf "Characters %i-%i"
               loc.loc_start.pos_cnum loc.loc_end.pos_cnum
   end else begin
@@ -138,11 +133,6 @@ let print_loc ppf loc =
 
 let default_printer ppf loc =
   setup_colors ();
-#if false then
-  if loc.loc_start.pos_fname = "//toplevel//"
-  && highlight_locations ppf [loc] then ()  
-  else 
-#end  
   fprintf ppf "@{<loc>%a@}%s@," print_loc loc msg_colon
 ;;
 
@@ -158,11 +148,6 @@ let print_error_prefix ppf =
 ;;
 
 let print_compact ppf loc =
-#if false then
-  if loc.loc_start.pos_fname = "//toplevel//"
-  && highlight_locations ppf [loc] then ()
-  else 
-#end  
   begin
     let (file, line, startchar) = get_pos_info loc.loc_start in
     let endchar = loc.loc_end.pos_cnum - loc.loc_start.pos_cnum + startchar in

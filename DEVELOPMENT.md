@@ -3,14 +3,14 @@
 ## Dev Setup Requirements
 
 This is a native OCaml project, so you will need the following tools:
-- OCaml
+- OCaml >= 4.10.2
 - dune >= 1.11.4
 
 Easiest way to install these is via the [opam](https://opam.ocaml.org/doc/Install.html) package manager.
 
 ```
-# Create / switch to ocaml 4.10.2+rescript
-opam switch create 4.10.2+rescript
+# Create / switch to ocaml 4.12.0
+opam switch create 4.12.0
 
 # Install deps
 opam install dune.1.11.4 --yes

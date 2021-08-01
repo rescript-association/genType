@@ -84,7 +84,6 @@ let output_cmi filename oc cmi =
   output_value oc cmi.cmi_flags;
   crc
 
-#if true
 (* This function is also called by [save_cmt] as cmi_format is subset of 
        cmt_format, so dont close the channel yet
 *)
@@ -116,9 +115,6 @@ let create_cmi ?check_exists filename (cmi : cmi_infos) =
       output_value oc cmi.cmi_flags;
       close_out oc; 
       crc
-
-
-#end
   
 (* Error report *)
 
