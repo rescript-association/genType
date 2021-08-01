@@ -1577,19 +1577,19 @@ let report_unification_error ppf env ?(unif=true)
 
 let super_type_expansion ~tag t ppf t' =
   if same_path t t' then begin
-    Format.pp_open_tag ppf tag;
+    Format.pp_open_stag ppf tag;
     type_expr ppf t;
-    Format.pp_close_tag ppf ();
+    Format.pp_close_stag ppf ();
   end else begin
     let t' = if proxy t == proxy t' then unalias t' else t' in
     fprintf ppf "@[<2>";
-    Format.pp_open_tag ppf tag;
+    Format.pp_open_stag ppf tag;
     fprintf ppf "%a" type_expr t;
-    Format.pp_close_tag ppf ();
+    Format.pp_close_stag ppf ();
     fprintf ppf "@ @{<dim>(defined as@}@ ";
-    Format.pp_open_tag ppf tag;
+    Format.pp_open_stag ppf tag;
     fprintf ppf "%a" type_expr t';
-    Format.pp_close_tag ppf ();
+    Format.pp_close_stag ppf ();
     fprintf ppf "@{<dim>)@}";
     fprintf ppf "@]";
   end
@@ -1606,8 +1606,8 @@ let super_trace ppf =
       end;
       fprintf ppf
         "@[<hov>%a@ vs@ %a@]%a"
-        (super_type_expansion ~tag:"error" t1) t1'
-        (super_type_expansion ~tag:"info" t2) t2'
+        (super_type_expansion ~tag: (String_tag "error") t1) t1'
+        (super_type_expansion ~tag: (String_tag "info") t2) t2'
         (super_trace false) rem;
       fprintf ppf "@]"
     | _ -> ()
@@ -1633,8 +1633,8 @@ let super_unification_error unif tr txt1 ppf txt2 = begin
           %a\
           %t\
         @]"
-        txt1 (super_type_expansion ~tag:"error" t1) t1'
-        txt2 (super_type_expansion ~tag:"info" t2) t2'
+        txt1 (super_type_expansion ~tag:(String_tag "error") t1) t1'
+        txt2 (super_type_expansion ~tag:(String_tag "info") t2) t2'
         super_trace tr
         (explanation unif mis);
     with exn ->
