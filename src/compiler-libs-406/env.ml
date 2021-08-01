@@ -2139,7 +2139,6 @@ let crc_of_unit name =
 (* Return the list of imported interfaces with their CRCs *)
 
 let imports () =
-#if undefined BS_NO_COMPILER_PATCH then   
   let dont_record_crc_unit = !Clflags.dont_record_crc_unit in 
   match dont_record_crc_unit with 
   | None -> Consistbl.extract (StringSet.elements !imported_units) crc_units
@@ -2148,9 +2147,6 @@ let imports () =
       (StringSet.fold 
       (fun m acc -> if m = x then acc else m::acc) 
       !imported_units []) crc_units
-#else   
-  Consistbl.extract (StringSet.elements !imported_units) crc_units
-#end
 (* Returns true if [s] is an opaque imported module  *)
 let is_imported_opaque s =
   StringSet.mem s !imported_opaque_units
@@ -2174,13 +2170,7 @@ let save_signature_with_imports ?check_exists ~deprecated sg modname filename im
       cmi_flags = flags;
     } in
     let crc =
-#if false then      
-      output_to_file_via_temporary (* see MPR#7472, MPR#4991 *)
-         ~mode: [Open_binary] filename
-         (fun temp_filename oc -> output_cmi temp_filename oc cmi) in
-#else
       create_cmi ?check_exists filename cmi in
-#end
     (* Enter signature in persistent table so that imported_unit()
        will also return its crc *)
     let comps =
