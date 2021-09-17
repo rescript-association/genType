@@ -225,7 +225,12 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
       |> String.concat ", ")
     ^ "]"
   | TypeVar s -> s
-  | Variant {noPayloads; payloads; polymorphic; unboxed} ->
+  | Variant {inherits; noPayloads; payloads; polymorphic; unboxed} ->
+    let inheritsRendered =
+      inherits
+      |> List.map (fun type_ ->
+             type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
+    in
     let noPayloadsRendered = noPayloads |> List.map labelJSToString in
     let field ~name value =
       {
@@ -259,7 +264,7 @@ let rec renderType ~config ?(indent = None) ~typeNameIsInterface ~inFunType
                ]
                |> fields)
     in
-    let rendered = noPayloadsRendered @ payloadsRendered in
+    let rendered = inheritsRendered @ noPayloadsRendered @ payloadsRendered in
     let indent1 = rendered |> Indent.heuristicVariants ~indent in
     (match indent1 = None with
     | true -> ""

@@ -571,7 +571,9 @@ let propagateAnnotationToSubTypes ~codeItems (typeMap : CodeItem.exportTypeMap)
       | Option t | Null t | Nullable t | Promise t -> t |> visit
       | Tuple innerTypes -> innerTypes |> List.iter visit
       | TypeVar _ -> ()
-      | Variant {payloads} -> payloads |> List.iter (fun {t} -> t |> visit)
+      | Variant {inherits; payloads} ->
+        inherits |> List.iter visit;
+        payloads |> List.iter (fun {t} -> t |> visit)
     in
     type0 |> visit
   in

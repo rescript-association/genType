@@ -200,8 +200,8 @@ let traslateDeclarationKind ~config ~loc ~outputFileRelative ~resolver
                    {payload with case})
           else variant.payloads
         in
-        createVariant ~bsStringOrInt:false ~noPayloads ~payloads
-          ~polymorphic:true
+        createVariant ~bsStringOrInt:false ~inherits:variant.inherits
+          ~noPayloads ~payloads ~polymorphic:true
       | _ -> translation.type_
     in
     {translation with type_} |> handleGeneralDeclaration
@@ -311,7 +311,7 @@ let traslateDeclarationKind ~config ~loc ~outputFileRelative ~resolver
       match (noPayloads, payloads) with
       | [], [{t = type_}] when unboxedAnnotation -> type_
       | _ ->
-        createVariant ~bsStringOrInt:false ~noPayloads ~payloads
+        createVariant ~bsStringOrInt:false ~inherits:[] ~noPayloads ~payloads
           ~polymorphic:false
     in
     let resolvedTypeName = typeName |> TypeEnv.addModulePath ~typeEnv in

@@ -112,7 +112,7 @@ let translateConstr ~config ~paramsTranslation ~(path : Path.t) ~typeEnv =
       }
     in
     let variant =
-      createVariant ~bsStringOrInt:false ~noPayloads:[]
+      createVariant ~bsStringOrInt:false ~inherits:[] ~noPayloads:[]
         ~payloads:
           [
             case 0 "Ok" paramTranslation1.type_;
@@ -489,7 +489,7 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
         |> List.map (fun label -> {label; labelJS = StringLabel label})
       in
       let type_ =
-        createVariant ~bsStringOrInt:false ~noPayloads ~payloads:[]
+        createVariant ~bsStringOrInt:false ~inherits:[] ~noPayloads ~payloads:[]
           ~polymorphic:true
       in
       {dependencies = []; type_}
@@ -522,7 +522,7 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
                })
       in
       let type_ =
-        createVariant ~bsStringOrInt:false ~noPayloads ~payloads
+        createVariant ~bsStringOrInt:false ~inherits:[] ~noPayloads ~payloads
           ~polymorphic:true
       in
       let dependencies =

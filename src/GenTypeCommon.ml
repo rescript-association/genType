@@ -83,6 +83,7 @@ and ident = {builtin : bool; name : string; typeArgs : type_ list}
 and variant = {
   bsStringOrInt : bool;
   hash : int;
+  inherits : type_ list;
   noPayloads : case list;
   payloads : payload list;
   polymorphic : bool;
@@ -169,14 +170,15 @@ let rec depToResolvedName (dep : dep) =
   | Internal resolvedName -> resolvedName
   | Dot (p, s) -> ResolvedName.dot s (p |> depToResolvedName)
 
-let createVariant ~bsStringOrInt ~noPayloads ~payloads ~polymorphic =
+let createVariant ~bsStringOrInt ~inherits ~noPayloads ~payloads ~polymorphic =
   let hash =
     noPayloads
     |> List.map (fun case -> (case.label, case.labelJS))
     |> Array.of_list |> Hashtbl.hash
   in
   let unboxed = payloads = [] in
-  Variant {bsStringOrInt; hash; noPayloads; payloads; polymorphic; unboxed}
+  Variant
+    {bsStringOrInt; hash; inherits; noPayloads; payloads; polymorphic; unboxed}
 
 let variantTable hash ~toJS =
   (match toJS with true -> "$$toJS" | false -> "$$toRE") ^ string_of_int hash
