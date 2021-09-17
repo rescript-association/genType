@@ -16,11 +16,11 @@ let removeOption ~(label : Asttypes.arg_label) (coreType : Typedtree.core_type)
 type processVariant = {
   noPayloads : (string * Typedtree.attributes) list;
   payloads : (string * Typedtree.attributes * Typedtree.core_type) list;
-  unknowns : string list;
+  inherits : Typedtree.core_type list;
 }
 
 let processVariant rowFields =
-  let rec loop ~noPayloads ~payloads ~unknowns fields =
+  let rec loop ~noPayloads ~payloads ~inherits fields =
     match fields with
     | Typedtree.Ttag
         ({txt = label}, attributes, _, (* only variants with no payload *) [])
@@ -28,23 +28,25 @@ let processVariant rowFields =
       otherFields
       |> loop
            ~noPayloads:((label, attributes) :: noPayloads)
-           ~payloads ~unknowns
+           ~payloads ~inherits
     | Ttag ({txt = label}, attributes, _, [payload]) :: otherFields ->
       otherFields
       |> loop ~noPayloads
            ~payloads:((label, attributes, payload) :: payloads)
-           ~unknowns
-    | (Ttag (_, _, _, _ :: _ :: _) | Tinherit _) :: otherFields ->
-      otherFields
-      |> loop ~noPayloads ~payloads ~unknowns:("Tinherit" :: unknowns)
+           ~inherits
+    | Ttag (_, _, _, _ :: _ :: _) :: otherFields ->
+      (* Unknown: skipping *)
+      otherFields |> loop ~noPayloads ~payloads ~inherits
+    | Tinherit t :: otherFields ->
+      otherFields |> loop ~noPayloads ~payloads ~inherits:(t :: inherits)
     | [] ->
       {
         noPayloads = noPayloads |> List.rev;
         payloads = payloads |> List.rev;
-        unknowns = unknowns |> List.rev;
+        inherits = inherits |> List.rev;
       }
   in
-  rowFields |> loop ~noPayloads:[] ~payloads:[] ~unknowns:[]
+  rowFields |> loop ~noPayloads:[] ~payloads:[] ~inherits:[]
 
 let rec translateArrowType ~config ~typeVarsGen ~noFunctionReturnDependencies
     ~typeEnv ~revArgDeps ~revArgs (coreType : Typedtree.core_type) =
@@ -183,7 +185,7 @@ and translateCoreType_ ~config ~typeVarsGen
   | Ttyp_var s -> {dependencies = []; type_ = TypeVar s}
   | Ttyp_variant (rowFields, _, _) -> (
     match rowFields |> processVariant with
-    | {noPayloads; payloads; unknowns = []} ->
+    | {noPayloads; payloads; inherits} ->
       let bsString =
         coreType.ctyp_attributes
         |> Annotation.hasAttribute Annotation.tagIsBsString
@@ -230,17 +232,23 @@ and translateCoreType_ ~config ~typeVarsGen
                  t = translation.type_;
                })
       in
+      let inheritsTranslations =
+        inherits |> translateCoreTypes_ ~config ~typeVarsGen ~typeEnv
+      in
+      let inherits = inheritsTranslations |> List.map (fun {type_} -> type_) in
       let type_ =
         createVariant ~bsStringOrInt:(bsString || bsInt) ~noPayloads ~payloads
-          ~polymorphic:true
+          ~inherits ~polymorphic:true
       in
       let dependencies =
-        payloadsTranslations
-        |> List.map (fun (_, _, {dependencies}) -> dependencies)
-        |> List.concat
+        (inheritsTranslations
+        |> List.map (fun {dependencies} -> dependencies)
+        |> List.concat)
+        @ (payloadsTranslations
+          |> List.map (fun (_, _, {dependencies}) -> dependencies)
+          |> List.concat)
       in
-      {dependencies; type_}
-    | _ -> {dependencies = []; type_ = mixedOrUnknown ~config})
+      {dependencies; type_})
   | Ttyp_package {pack_path; pack_fields} -> (
     match typeEnv |> TypeEnv.lookupModuleTypeSignature ~path:pack_path with
     | Some (signature, typeEnv) ->
