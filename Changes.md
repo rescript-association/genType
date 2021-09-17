@@ -1,4 +1,5 @@
 # master
+- Add basic support for inherited type definitions in polymorphic variants e.g. `type color = [red | blue]`. No support for conversion at the moment.
 
 # 4.1.0
 - Add support for `external-stdlib` in `bsconfig.json`.
