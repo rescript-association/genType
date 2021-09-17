@@ -80,7 +80,7 @@ npm version major
 
 ## Releasing to npm (Maintainers only)
 
-Use the GitHub web iterface to download the artifact `gentype-npm.tar`.
+Use the GitHub web iterface to download the artifact `gentype-npm.tar` (might need to manually zip it if publish fails).
 
 ```
 # Dry run for testing
