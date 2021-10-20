@@ -84,17 +84,10 @@ let typeReactElementFlow = ident ~builtin:true "React$Node"
 
 let typeReactElementTypeScript = ident ~builtin:true "React.ReactNode"
 
-let typeReactChildTypeScript = ident ~builtin:true "React.ReactNode"
-
 let typeReactElement ~config =
   match config.language = Flow with
   | true -> typeReactElementFlow
   | false -> typeReactElementTypeScript
-
-let typeReactChild ~config =
-  match config.language = Flow with
-  | true -> typeReactElementFlow
-  | false -> typeReactChildTypeScript
 
 let isTypeReactElement ~config type_ = type_ == typeReactElement ~config
 

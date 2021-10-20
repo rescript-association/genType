@@ -96,8 +96,6 @@ val outputFileSuffix : config:config -> string
 
 val shimExtension : config:config -> string
 
-val typeReactChild : config:config -> type_
-
 val typeReactContext : config:config -> type_:type_ -> type_
 
 val typeReactDOMReDomRef : config:config -> type_

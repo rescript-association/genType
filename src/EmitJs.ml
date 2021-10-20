@@ -256,20 +256,7 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
              typeVars;
            } as function_)
         when retType |> EmitType.isTypeFunctionComponent ~config ~fields ->
-        let propsType =
-          let fields =
-            fields
-            |> List.map (fun (field : field) ->
-                   match
-                     field.nameJS = "children"
-                     && field.type_ |> EmitType.isTypeReactElement ~config
-                   with
-                   | true ->
-                     {field with type_ = EmitType.typeReactChild ~config}
-                   | false -> field)
-          in
-          Object (closedFlags, fields)
-        in
+        let propsType = Object (closedFlags, fields) in
         let function_ =
           {function_ with argTypes = [{aName = ""; aType = propsType}]}
         in
