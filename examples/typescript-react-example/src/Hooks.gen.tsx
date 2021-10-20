@@ -102,7 +102,7 @@ export const componentWithRenamedArgs: React.ComponentType<{
   return result
 };
 
-export const makeWithRef: (_1:{ readonly vehicle: vehicle }, _2:(null | undefined | any)) => JSX.Element = function (Arg1: any, Arg2: any) {
+export const makeWithRef: (_1:{ readonly vehicle: vehicle }, _2:(null | undefined | any)) => React.ReactNode = function (Arg1: any, Arg2: any) {
   const result = Curry._2(HooksBS.makeWithRef, Arg1, Arg2);
   return result
 };

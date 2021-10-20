@@ -82,7 +82,7 @@ let typeReactContext ~config ~type_ =
 
 let typeReactElementFlow = ident ~builtin:true "React$Node"
 
-let typeReactElementTypeScript = ident ~builtin:true "JSX.Element"
+let typeReactElementTypeScript = ident ~builtin:true "React.ReactNode"
 
 let typeReactChildTypeScript = ident ~builtin:true "React.ReactNode"
 

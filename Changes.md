@@ -1,4 +1,5 @@
 # master
+- In TypeScript, always use `React.ReactNode` for react elements.
 
 # 4.2.0
 - Add basic support for inherited type definitions in polymorphic variants e.g. `type color = [red | blue]`. No support for conversion at the moment.
