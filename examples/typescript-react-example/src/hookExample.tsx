@@ -6,7 +6,7 @@ export const foo = (x: {
 
 type Props = {
   readonly person: { readonly name: string; readonly age: number };
-  readonly children: JSX.Element;
+  readonly children: React.ReactNode;
   readonly renderMe: React.ComponentType<{
     randomString: string;
     readonly poly: string;

@@ -174,10 +174,29 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     let type_ =
       match type_ with
       | Function
-          ({argTypes = [{aType = Object (_, fields)}]; retType} as function_)
+          ({
+             argTypes = [({aType = Object (closedFlag, fields)} as argType)];
+             retType;
+           } as function_)
         when retType |> EmitType.isTypeFunctionComponent ~config ~fields ->
         let componentName =
           match importFile with "." | ".." -> None | _ -> Some importFile
+        in
+        let fields =
+          fields
+          |> List.map (fun (field : field) ->
+                 match
+                   field.nameJS = "children"
+                   && field.type_ |> EmitType.isTypeReactElement ~config
+                 with
+                 | true -> {field with type_ = EmitType.typeReactChild ~config}
+                 | false -> field)
+        in
+        let function_ =
+          {
+            function_ with
+            argTypes = [{argType with aType = Object (closedFlag, fields)}];
+          }
         in
         Function {function_ with componentName}
       | _ -> type_
