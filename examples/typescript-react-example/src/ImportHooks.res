@@ -8,6 +8,7 @@ type person = {
 
 @genType.import("./hookExample") @react.component
 external make: (
+  ~actions: React.element=?,
   ~person: person,
   ~children: React.element,
   ~renderMe: renderMe<'a>,
