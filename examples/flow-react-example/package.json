@@ -29,7 +29,7 @@
     "babel-loader": "^8.1.0",
     "concurrently": "^3.5.0",
     "rescript": "9.1.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "webpack": "^5.59.1",
+    "webpack-cli": "^4.9.1"
   }
 }
