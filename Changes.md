@@ -1,4 +1,6 @@
 # master
+
+# 4.3.0
 - TypeScript: type children of imported components as `React.ReactNode` instead of `JSX.Element`.
 
 # 4.2.0

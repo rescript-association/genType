@@ -13,7 +13,7 @@ Easiest way to install these is via the [opam](https://opam.ocaml.org/doc/Instal
 opam switch create 4.12.0
 
 # Install deps
-opam install dune.1.11.4 --yes
+opam install dune
 ```
 
 After that, install some npm dependencies as well:
@@ -80,17 +80,17 @@ npm version major
 
 ## Releasing to npm (Maintainers only)
 
-Use the GitHub web iterface to download the artifact `gentype-npm.tar` (might need to manually zip it if publish fails).
+Use the GitHub web iterface to download the artifact `gentype-npm.tar.gz` (might need to manually zip it if downloading unzips it).
 
 ```
 # Dry run for testing
-npm publish gentype-npm.tar --dry-run
+npm publish gentype-npm.tar.gz --dry-run
 
 # Publish package as @latest
-npm publish gentype-npm.tar
+npm publish gentype-npm.tar.gz
 
 # Publish package with @beta tag
-npm publish gentype-npm.tar --tag beta
+npm publish gentype-npm.tar.gz --tag beta
 ```
 
 Consult the [npm publish](https://docs.npmjs.com/cli/publish) documentation for more options.
