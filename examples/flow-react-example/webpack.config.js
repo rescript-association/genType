@@ -11,6 +11,7 @@ module.exports = {
     path: path.join(__dirname, "bundledOutputs"),
     filename: "[name].js"
   },
+  target: ['web', 'es5'],
   module: {
     rules: [
       {
