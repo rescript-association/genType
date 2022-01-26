@@ -109,3 +109,8 @@ module RenderPropRequiresConversion = {
 @genType @react.component
 let aComponentWithChildren = (~vehicle, ~children) =>
   <div> {React.string("Another Hook " ++ vehicle.name)} <div> children </div> </div>
+
+module DD = {
+  @genType @react.component
+  let make = (~array as _: Js.TypedArray2.Uint8Array.t, ~name: string) => React.string(name)
+}

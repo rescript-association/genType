@@ -151,6 +151,15 @@ function Hooks$aComponentWithChildren(Props) {
   return React.createElement("div", undefined, "Another Hook " + vehicle.name, React.createElement("div", undefined, children));
 }
 
+function Hooks$DD(Props) {
+  var name = Props.name;
+  return name;
+}
+
+var DD = {
+  make: Hooks$DD
+};
+
 var make = Hooks;
 
 var $$default = Hooks;
@@ -183,6 +192,7 @@ export {
   functionReturningReactElement ,
   RenderPropRequiresConversion ,
   aComponentWithChildren ,
+  DD ,
   
 }
 /* testForwardRef Not a pure module */
