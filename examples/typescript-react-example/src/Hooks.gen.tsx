@@ -12,6 +12,8 @@ const Curry: any = Curry__Es6Import;
 import * as HooksBS__Es6Import from './Hooks.bs';
 const HooksBS: any = HooksBS__Es6Import;
 
+import type {TypedArray2_Uint8Array_t as Js_TypedArray2_Uint8Array_t} from '../src/shims/Js.shim';
+
 // tslint:disable-next-line:interface-over-type-literal
 export type vehicle = { readonly name: string };
 
@@ -137,6 +139,11 @@ export type aComponentWithChildren_Props = { readonly children: React.ReactNode;
 
 export const aComponentWithChildren: React.ComponentType<{ readonly children: React.ReactNode; readonly vehicle: vehicle }> = HooksBS.aComponentWithChildren;
 
+// tslint:disable-next-line:interface-over-type-literal
+export type DD_make_Props = { readonly array: Js_TypedArray2_Uint8Array_t; readonly name: string };
+
+export const DD_make: React.ComponentType<{ readonly array: Js_TypedArray2_Uint8Array_t; readonly name: string }> = HooksBS.DD.make;
+
 export const NoProps: { make: React.ComponentType<{}> } = HooksBS.NoProps
 
 export const Inner: {
@@ -157,3 +164,5 @@ export const Inner: {
 } = HooksBS.Inner
 
 export const RenderPropRequiresConversion: { make: React.ComponentType<{ readonly renderVehicle: React.ComponentType<{ readonly number: number; readonly vehicle: vehicle }> }> } = HooksBS.RenderPropRequiresConversion
+
+export const DD: { make: React.ComponentType<{ readonly array: Js_TypedArray2_Uint8Array_t; readonly name: string }> } = HooksBS.DD
