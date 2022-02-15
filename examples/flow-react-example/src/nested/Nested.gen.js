@@ -4,12 +4,12 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
 const $$toRE552311971 = {"A": 0};
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as NestedBS from './Nested.bs';
 
 import type {variant as Component2_variant} from '../../src/Component2.gen';

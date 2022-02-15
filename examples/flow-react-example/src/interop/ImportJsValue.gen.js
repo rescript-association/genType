@@ -4,7 +4,7 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
 // flowlint-next-line nonstrict-import:off
@@ -28,7 +28,7 @@ import {polymorphic as polymorphicNotChecked} from './MyMath';
 // flowlint-next-line nonstrict-import:off
 import {default as defaultNotChecked} from './MyMath';
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as Curry from 'rescript/lib/es6/curry.js';
 
 // In case of type error, check the type of 'round' in 'ImportJsValue.re' and './MyMath'.
@@ -86,7 +86,7 @@ export const defaultTypeChecked: number = defaultNotChecked;
 // Export '$$default' early to allow circular import from the '.bs.js' file.
 export const $$default: mixed = defaultTypeChecked;
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 const ImportJsValueBS = require('./ImportJsValue.bs');
 
 // flowlint-next-line nonstrict-import:off

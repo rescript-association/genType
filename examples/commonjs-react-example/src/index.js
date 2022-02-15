@@ -16,5 +16,5 @@ const App = () => (
 );
 App.displayName = "ExampleInteropRoot";
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 ReactDOM.render(React.createElement(App), document.getElementById("index"));

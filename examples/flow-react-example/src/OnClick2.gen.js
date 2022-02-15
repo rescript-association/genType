@@ -4,10 +4,10 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as OnClick2BS from './OnClick2.bs';
 
 export type Props = {| +onClick: (SyntheticMouseEvent<$any>) => void |};

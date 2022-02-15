@@ -5,7 +5,7 @@
  */
 /* eslint-disable */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as Marcel1BS from './Marcel1.bs';
 
 export type M_t = {| +name: string, +surname: string |};

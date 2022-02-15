@@ -5,7 +5,7 @@
  */
 /* eslint-disable */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 const TestEmitInnerModulesBS = require('./TestEmitInnerModules.bs');
 
 const Inner_x: number = TestEmitInnerModulesBS.Inner.x;;

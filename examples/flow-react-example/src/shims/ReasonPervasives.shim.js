@@ -6,7 +6,7 @@
 export opaque type SafeReasonValueNotExportedToFlow = mixed;
 'use strict';
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 const $$Array = require('bs-platform/lib/js/array');
 
 export opaque type EmptyList = mixed;

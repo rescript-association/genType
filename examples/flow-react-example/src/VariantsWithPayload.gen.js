@@ -4,7 +4,7 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
 const $$toJS13337556 = {"0": "ARenamed"};
@@ -19,7 +19,7 @@ const $$toJS435467058 = {"a": "a", "b": "bRenamed", "True": true, "Twenty": 20, 
 
 const $$toRE435467058 = {"a": "a", "bRenamed": "b", "true": "True", "20": "Twenty", "0.5": "Half"};
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as VariantsWithPayloadBS from './VariantsWithPayload.bs';
 
 export type payload = {| +x: number, +y?: string |};

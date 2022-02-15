@@ -1,6 +1,6 @@
 /* @flow strict */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
 const ImportJsValue = require("./ImportJsValue.gen");
