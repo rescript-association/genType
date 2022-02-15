@@ -1,7 +1,7 @@
 open GenTypeCommon
 
 let flowExpectedError =
-  "// $FlowExpectedError: Reason checked type sufficiently\n"
+  "// $FlowExpectedError[untyped-import]: Reason checked type sufficiently\n"
 
 let flowTypeAny = flowExpectedError ^ "type $any = any;\n"
 

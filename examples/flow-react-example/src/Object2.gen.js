@@ -5,7 +5,7 @@
  */
 /* eslint-disable */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as Object2BS from './Object2.bs';
 
 export type openObject<a> = { +foo: number, ... };

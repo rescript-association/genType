@@ -5,7 +5,7 @@
  */
 /* eslint-disable */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as OpaqueBS from './Opaque.bs';
 
 export opaque type t = mixed;

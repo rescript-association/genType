@@ -5,7 +5,7 @@
  */
 /* eslint-disable */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as ShadowedValuesInModulesBS from './ShadowedValuesInModules.bs';
 
 export const Nested_M_a: number = ShadowedValuesInModulesBS.Nested.M.a;

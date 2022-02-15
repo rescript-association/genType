@@ -4,7 +4,7 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
 // flowlint-next-line nonstrict-import:off

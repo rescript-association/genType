@@ -4,10 +4,10 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as TypeExpansionBS from './TypeExpansion.bs';
 
 import type {person as Tuples_person} from './Tuples.gen';

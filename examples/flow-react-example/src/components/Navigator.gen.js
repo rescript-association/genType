@@ -4,13 +4,13 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as Curry from 'rescript/lib/es6/curry.js';
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as NavigatorBS from './Navigator.bs';
 
 // flowlint-next-line nonstrict-import:off

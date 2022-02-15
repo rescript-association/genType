@@ -4,7 +4,7 @@
  * @nolint
  */
 /* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 type $any = any;
 
 const $$toJS508922110 = {"type_": "type", "module_": "module", "fortytwo": "42"};
@@ -23,7 +23,7 @@ const $$toJS1061900109 = {"x": "x", "x2": "same"};
 
 const $$toRE1061900109 = {"x": "x", "same": "x2"};
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as VariantsBS from './Variants.bs';
 
 export type weekday = 

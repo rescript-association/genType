@@ -5,7 +5,7 @@
  */
 /* eslint-disable */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 const HooksBS = require('./Hooks.bs');
 
 export type vehicle = {| +name: string |};

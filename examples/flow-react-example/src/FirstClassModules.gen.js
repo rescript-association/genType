@@ -5,7 +5,7 @@
  */
 /* eslint-disable */
 
-// $FlowExpectedError: Reason checked type sufficiently
+// $FlowExpectedError[untyped-import]: Reason checked type sufficiently
 import * as FirstClassModulesBS from './FirstClassModules.bs';
 
 export const firstClassModule: {|
