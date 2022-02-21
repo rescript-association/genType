@@ -5,6 +5,7 @@
 [libs]
 
 [lints]
+unclear-type=warn
 untyped-type-import=error
 
 [options]

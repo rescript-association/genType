@@ -12,20 +12,20 @@ export type element = React.Node;
 
 export type component<t> = React.ComponentType<t>;
 
-// $FlowExpectedError[untyped-import]: Reason checked type sufficiently.
+// $FlowExpectedError[unclear-type]: Reason checked type sufficiently.
 export opaque type componentSpec = any;
 
-// $FlowExpectedError[untyped-import]: Reason checked type sufficiently.
+// $FlowExpectedError[unclear-type]: Reason checked type sufficiently.
 export opaque type noRetainedProps = any;
 
-// $FlowExpectedError[untyped-import]: Reason checked type sufficiently.
+// $FlowExpectedError[unclear-type]: Reason checked type sufficiently.
 export opaque type actionless = any;
 
-// $FlowExpectedError[untyped-import]: Reason checked type sufficiently.
+// $FlowExpectedError[unclear-type]: Reason checked type sufficiently.
 export opaque type stateless = any;
 
-// $FlowExpectedError[untyped-import]: Reason checked type sufficiently.
+// $FlowExpectedError[unclear-type]: Reason checked type sufficiently.
 export opaque type reactRef = any;
 
-// $FlowExpectedError[untyped-import]: Reason checked type sufficiently.
+// $FlowExpectedError[unclear-type]: Reason checked type sufficiently.
 export opaque type ref = any;

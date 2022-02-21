@@ -1,9 +1,16 @@
 open GenTypeCommon
 
-let flowExpectedError =
-  "// $FlowExpectedError[untyped-import]: Reason checked type sufficiently\n"
+type flowError = UntypedImport | UnclearType
 
-let flowTypeAny = flowExpectedError ^ "type $any = any;\n"
+let flowExpectedError flowError =
+  let errorStr =
+    match flowError with
+    | UntypedImport -> "untyped-import"
+    | UnclearType -> "unclear-type"
+  in
+  "// $FlowExpectedError[" ^ errorStr ^ "]: Reason checked type sufficiently\n"
+
+let flowTypeAny = flowExpectedError UnclearType ^ "type $any = any;\n"
 
 let fileHeader ~config ~sourceFile =
   let makeHeader ~lines =
@@ -81,9 +88,7 @@ let typeReactContext ~config ~type_ =
   |> ident ~builtin:true ~typeArgs:[type_]
 
 let typeReactElementFlow = ident ~builtin:true "React$Node"
-
 let typeReactElementTypeScript = ident ~builtin:true "JSX.Element"
-
 let typeReactChildTypeScript = ident ~builtin:true "React.ReactNode"
 
 let typeReactElement ~config =
@@ -369,7 +374,6 @@ let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
        ~emitters
 
 let emitExportConst = emitExportConst_ ~early:false
-
 let emitExportConstEarly = emitExportConst_ ~early:true
 
 let emitExportDefault ~emitters ~config name =
@@ -473,7 +477,7 @@ let emitRequire ~importedValueOrComponent ~early ~emitters ~config ~moduleName
         match early with
         | true -> "// flowlint-next-line nonstrict-import:off\n"
         | false -> "")
-      | false -> flowExpectedError)
+      | false -> flowExpectedError UntypedImport)
     | Untyped -> ""
   in
   match config.module_ with
