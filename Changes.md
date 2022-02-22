@@ -1,4 +1,5 @@
 # master
+- Flow: use explicit suppression codes.
 
 # 4.3.0
 - TypeScript: type children of imported components as `React.ReactNode` instead of `JSX.Element`.
