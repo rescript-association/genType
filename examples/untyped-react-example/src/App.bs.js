@@ -3,9 +3,6 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
-import * as ReasonReact from "reason-react/src/legacy/ReasonReact.bs.js";
-
-var component = ReasonReact.statelessComponent("App");
 
 function App(Props) {
   var array = Props.array;
@@ -28,11 +25,10 @@ var make = App;
 var $$default = App;
 
 export {
-  component ,
   make ,
   poly ,
   $$default ,
   $$default as default,
   
 }
-/* component Not a pure module */
+/* react Not a pure module */

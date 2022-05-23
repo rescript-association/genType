@@ -1,5 +1,3 @@
-let component = ReasonReact.statelessComponent("App")
-
 type person = {
   name: string,
   age: int,
@@ -7,11 +5,11 @@ type person = {
   unknown: option<list<int>>,
 }
 
-@genType @react.component
-let make = (~array, ~callback=() => (), ~person, ~title) => {
+@react.component
+export make = (~array, ~callback=() => (), ~person, ~title) => {
   callback()
   <div>
-    {ReasonReact.string(
+    {React.string(
       "Test Component Title:" ++
       (title ++
       (" Name:" ++ (person.name ++ (" array[0]:" ++ array[0])))),
@@ -19,9 +17,6 @@ let make = (~array, ~callback=() => (), ~person, ~title) => {
   </div>
 }
 
-@genType
-let poly = (x, _y) => x + 1
+export poly = (x, _y) => x + 1
 
-@genType
-let default = make
-
+export default = make

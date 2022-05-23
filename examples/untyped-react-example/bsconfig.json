@@ -13,7 +13,7 @@
   "name": "untyped-react-example",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 3 },
-  "bs-dependencies": ["reason-react"],
+  "bs-dependencies": ["@rescript/react"],
   "sources": [
     {
       "dir": "src",
