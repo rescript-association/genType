@@ -11,11 +11,6 @@ make: (
   ~show: bool,
   ~message: option<message>=?,
   'a,
-) => ReasonReact.component<
-  ReasonReact.stateless,
-  ReasonReact.noRetainedProps,
-  ReasonReact.actionless,
-> = "make"
+) => React.element = "make"
 
 let make = make
-

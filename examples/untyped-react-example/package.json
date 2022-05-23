@@ -16,16 +16,16 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@rescript/react": "^0.10.3",
+    "bs-platform": "^9.0.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "reason-react": "^0.9.1"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
-    "bs-platform": "9.0.2",
     "concurrently": "^3.5.0",
     "webpack": "^5.59.1",
     "webpack-cli": "^4.9.1"

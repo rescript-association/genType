@@ -16,9 +16,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@rescript/react": "^0.10.3",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "reason-react": "^0.9.1"
+    "react-dom": "^16.8.6"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
