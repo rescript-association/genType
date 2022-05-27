@@ -43,12 +43,7 @@ let translateObjType closedFlag fieldsTranslations =
              match t with Option t -> (Optional, t) | _ -> (Mandatory, t)
            in
            let name = name |> Runtime.mangleObjectField in
-           let nameJS =
-             match isJSSafePropertyName name with
-             | true -> name
-             | false -> EmitText.quotes name
-           in
-           {mutable_; nameJS; nameRE = name; optional; type_})
+           {mutable_; nameJS = name; nameRE = name; optional; type_})
   in
   let type_ = Object (closedFlag, fields) in
   {dependencies; type_}
