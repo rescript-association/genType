@@ -15,7 +15,7 @@ val propTypes : t
 
 val react : t
 
-val reasonPervasives : t
+val rescriptPervasives : t
 
 val toString : t -> string
 

@@ -38,7 +38,7 @@ let depToImportType ~config ~outputFileRelative ~resolver (dep : dep) =
         CodeItem.typeName = "list";
         asTypeName = None;
         importPath =
-          ModuleName.reasonPervasives
+          ModuleName.rescriptPervasives
           |> ModuleResolver.importPathForReasonModuleName ~config
                ~outputFileRelative ~resolver;
       };
