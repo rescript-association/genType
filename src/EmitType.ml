@@ -292,6 +292,12 @@ and renderField ~config ~indent ~typeNameIsInterface ~inFunType
       match config.language = Flow with true -> "+" | false -> "readonly ")
     | false -> ""
   in
+  let lbl =
+    match isJSSafePropertyName lbl with
+    | true -> lbl
+    | false -> EmitText.quotes lbl
+  in
+
   Indent.break ~indent ^ mutMarker ^ lbl ^ optMarker ^ ": "
   ^ (type_ |> renderType ~config ~indent ~typeNameIsInterface ~inFunType)
 

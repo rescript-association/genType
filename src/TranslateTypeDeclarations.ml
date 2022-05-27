@@ -28,10 +28,6 @@ let createCase (label, attributes) =
   | Some (StringPayload asLabel) -> {label; labelJS = StringLabel asLabel}
   | _ -> {label; labelJS = StringLabel label}
 
-let isJSSafePropertyName name =
-  let jsSafeRegex = {|^[A-z][A-z0-9]*$|} |> Str.regexp in
-  Str.string_match jsSafeRegex name 0
-
 (**
  * Rename record fields.
  * If @genType.as is used, perform renaming conversion.
@@ -45,12 +41,7 @@ let renameRecordField ~attributes ~nameRE =
     match attributes |> Annotation.getBsAsRenaming with
     | Some nameBS ->
       let escapedName = nameBS |> String.escaped in
-      let name =
-        match isJSSafePropertyName escapedName with
-        | true -> escapedName
-        | false -> EmitText.quotes escapedName
-      in
-      (name, name)
+      (escapedName, escapedName)
     | None -> (nameRE, nameRE))
 
 let traslateDeclarationKind ~config ~loc ~outputFileRelative ~resolver
