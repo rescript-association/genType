@@ -25,12 +25,12 @@ import type {noRetainedProps as ReasonReact_noRetainedProps} from '../../src/shi
 // flowlint-next-line nonstrict-import:off
 import type {stateless as ReasonReact_stateless} from '../../src/shims/ReactShim.shim';
 
-export type functionTypeWithGenTypeAs = ({| +type: string, +$number: number |}) => number;
+export type functionTypeWithGenTypeAs = ({| +type: string, +"$number": number |}) => number;
 
 export const functionWithGenTypeAs: ({|
   +firstNameArgumentCantBeRenamed: string, 
   +type: string, 
-  +$$number: number
+  +"$$number": number
 |}) => string = function (Arg1: $any) {
   const result = Curry._3(RenamePropsBS.functionWithGenTypeAs, Arg1.firstNameArgumentCantBeRenamed, Arg1.type, Arg1.$$number);
   return result
@@ -39,7 +39,7 @@ export const functionWithGenTypeAs: ({|
 export const make: <T1>({|
   +firstNameArgumentCantBeRenamed: string, 
   +type: string, 
-  +$$number: number
+  +"$$number": number
 |}, T1) => ReasonReact_componentSpec<ReasonReact_stateless,ReasonReact_stateless,ReasonReact_noRetainedProps,ReasonReact_noRetainedProps,ReasonReact_actionless> = function <T1>(Arg1: $any, Arg2: $any) {
   const result = Curry._4(RenamePropsBS.make, Arg1.firstNameArgumentCantBeRenamed, Arg1.type, Arg1.$$number, Arg2);
   return result
