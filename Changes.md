@@ -1,4 +1,6 @@
 # master
+
+# 4.4.0
 - Flow: use explicit suppression codes.
 - Fix issue with object key needing quotes in JS when it is not a valid JS id.
 
