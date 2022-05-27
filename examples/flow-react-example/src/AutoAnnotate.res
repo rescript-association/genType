@@ -20,12 +20,3 @@ type r5 = {r5: int}
 let useR5 = (x: r5) => x
 
 type r6 = {r6: int}
-
-let component = ReasonReact.statelessComponent(__MODULE__)
-
-@genType
-let make = (~r6 as _: r6, _children) => {
-  ...component,
-  render: _ => ReasonReact.null,
-}
-

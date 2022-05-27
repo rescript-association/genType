@@ -27,6 +27,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-flow": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
+    "@rescript/react": "^0.10.3",
     "babel-loader": "^8.1.0",
     "concurrently": "^3.5.0",
     "rescript": "9.1.1",

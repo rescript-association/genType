@@ -30,6 +30,8 @@ export type testReactRef = { current: (null | number), ... };
 
 export type testDomRef = React$Ref<mixed>;
 
+export type testDOMReft = React$Ref<mixed>;
+
 export type notAFunctionComponent = ({ current: (null | number), ... }) => React$Node;
 
 export type Props = {| +vehicle: vehicle |};

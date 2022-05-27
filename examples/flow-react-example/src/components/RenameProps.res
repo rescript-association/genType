@@ -1,5 +1,3 @@
-let component = ReasonReact.statelessComponent("RenameProps")
-
 /* All these genType.as annotation are picked up in the AST. */
 @genType
 type functionTypeWithGenTypeAs = (
@@ -15,16 +13,13 @@ let functionWithGenTypeAs = (
 ) => firstNameArgumentCantBeRenamed ++ (type_ ++ string_of_int(number))
 
 /* These genType.as annotation are currently not picked up in the AST */
-@genType
+@genType @react.component
 let make = (
   ~firstNameArgumentCantBeRenamed,
   @genType.as("type") ~type_,
   @genType.as("$$number") ~number,
-  _children,
 ) => {
-  ...component,
-  render: _self =>
-    (firstNameArgumentCantBeRenamed ++ (type_ ++ string_of_int(number)))->ReasonReact.string,
+  (firstNameArgumentCantBeRenamed ++ (type_ ++ string_of_int(number)))->React.string
 }
 
 @genType
@@ -55,4 +50,3 @@ let renameABunch2 = (pad, @genType.as("xRenamed") ~x, ~y, @genType.as("zRenamed"
 @genType
 let renameABunch3 = (pad, @genType.as("xRenamed") ~x, y, @genType.as("zRenamed") ~z) =>
   pad + x + y + z
-
