@@ -88,7 +88,9 @@ let typeReactContext ~config ~type_ =
   |> ident ~builtin:true ~typeArgs:[type_]
 
 let typeReactElementFlow = ident ~builtin:true "React$Node"
+
 let typeReactElementTypeScript = ident ~builtin:true "JSX.Element"
+
 let typeReactChildTypeScript = ident ~builtin:true "React.ReactNode"
 
 let typeReactElement ~config =
@@ -374,6 +376,7 @@ let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
        ~emitters
 
 let emitExportConst = emitExportConst_ ~early:false
+
 let emitExportConstEarly = emitExportConst_ ~early:true
 
 let emitExportDefault ~emitters ~config name =
