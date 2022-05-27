@@ -9,7 +9,7 @@
       "Obj": "Obj",
       "React": "ReactShim",
       "ReactEvent": "ReactEvent",
-      "ReasonPervasives": "ReasonPervasives",
+      "RescriptPervasives": "RescriptPervasives",
       "ReasonReact": "ReactShim"
     },
     "debug": {

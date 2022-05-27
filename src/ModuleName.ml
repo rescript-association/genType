@@ -6,7 +6,7 @@ let propTypes = "PropTypes"
 
 let react = "React"
 
-let reasonPervasives = "ReasonPervasives"
+let rescriptPervasives = "RescriptPervasives"
 
 let dotRegex = "." |> Str.quote |> Str.regexp
 
