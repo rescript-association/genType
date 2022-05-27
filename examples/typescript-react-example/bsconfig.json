@@ -18,7 +18,7 @@
   "name": "sample-typescript-app",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 3 },
-  "bs-dependencies": ["reason-react"],
+  "bs-dependencies": ["@rescript/react"],
   "sources": [
     {
       "dir": "src",
@@ -29,6 +29,5 @@
     "module": "es6",
     "in-source": true
   },
-  "suffix": ".bs.js",
-  "refmt": 3
+  "suffix": ".bs.js"
 }

@@ -5,9 +5,7 @@
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^4.0.3",
-    "reason-react": "^0.9.1",
-    "rescript": "9.1.4"
+    "react-scripts": "^4.0.3"
   },
   "scripts": {
     "start": "rescript build -w",
@@ -18,10 +16,12 @@
     "tsc": "tsc -p tsconfig.json"
   },
   "devDependencies": {
+    "@rescript/react": "^0.10.3",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.4",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
+    "rescript": "^9.1.4",
     "typescript": "3.9.2"
   },
   "browserslist": [

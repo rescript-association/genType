@@ -36,6 +36,9 @@ export type testReactRef = { current: (null | number) };
 export type testDomRef = React.Ref<unknown>;
 
 // tslint:disable-next-line:interface-over-type-literal
+export type testDomRef2 = React.Ref<unknown>;
+
+// tslint:disable-next-line:interface-over-type-literal
 export type Props = { readonly vehicle: vehicle };
 
 export const $$default: React.ComponentType<{ readonly vehicle: vehicle }> = HooksBS.default;
