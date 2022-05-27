@@ -105,7 +105,7 @@ let typeReactChild ~config =
 
 let isTypeReactElement ~config type_ = type_ == typeReactElement ~config
 
-let typeReactDOMReDomRef ~config =
+let typeReactDOMRef ~config =
   (match config.language = Flow with
   | true -> "React$Ref"
   | false -> "React.Ref")

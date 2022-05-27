@@ -3,14 +3,11 @@
     "language": "flow",
     "module": "es6",
     "importPath": "relative",
-    "reasonReactPath": "reason-react/src/ReasonReact.js",
     "shims": {
       "Js": "Js",
       "Obj": "Obj",
-      "React": "ReactShim",
       "ReactEvent": "ReactEvent",
-      "RescriptPervasives": "RescriptPervasives",
-      "ReasonReact": "ReactShim"
+      "RescriptPervasives": "RescriptPervasives"
     },
     "debug": {
       "all": false
@@ -21,7 +18,7 @@
   "name": "flow-react-example",
   "bsc-flags": ["-bs-super-errors"],
   "reason": { "react-jsx": 3 },
-  "bs-dependencies": ["reason-react"],
+  "bs-dependencies": ["@rescript/react"],
   "sources": [
     {
       "dir": "src",

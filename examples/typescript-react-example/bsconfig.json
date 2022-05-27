@@ -5,7 +5,6 @@
     "importPath": "relative",
     "shims": {
       "Js": "Js",
-      "React": "ReactShim",
       "ReactEvent": "ReactEvent",
       "RescriptPervasives": "RescriptPervasives",
       "ReasonReact": "ReactShim"

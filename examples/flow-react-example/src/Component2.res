@@ -14,8 +14,8 @@ type action =
 let make = (~greeting) => {
   let message = "You've clicked this " ++ ("xx" ++ " times(s)")
   <div>
-    <button> {ReasonReact.string(message)} </button>
-    <button> {ReasonReact.string("Toggle greeting")} </button>
+    <button> {React.string(message)} </button>
+    <button> {React.string("Toggle greeting")} </button>
     {React.string(greeting)}
   </div>
 }
