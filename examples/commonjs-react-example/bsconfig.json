@@ -3,7 +3,6 @@
     "language": "flow",
     "module": "commonjs",
     "importPath": "relative",
-    "reasonReactPath": "reason-react/src/ReasonReact.js",
     "shims": {
       "Js": "Js",
       "Obj": "Obj",
@@ -33,6 +32,5 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "namespace": true,
-  "refmt": 3
+  "namespace": true
 }
