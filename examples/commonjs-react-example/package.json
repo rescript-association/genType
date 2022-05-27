@@ -8,6 +8,7 @@
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world",
+    "flow": "npx flow-bin",
     "test": "exit 0",
     "webpack": "webpack -w",
     "webpack:production": "webpack --env.NODE_ENV=production"

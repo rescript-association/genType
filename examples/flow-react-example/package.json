@@ -8,6 +8,7 @@
     "build": "rescript",
     "start": "rescript build -w",
     "clean": "rescript clean",
+    "flow": "npx flow-bin",
     "test": "exit 0",
     "webpack": "webpack -w",
     "webpack:production": "webpack --env.NODE_ENV=production"
