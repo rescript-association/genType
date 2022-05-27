@@ -18,6 +18,10 @@ type labelJS =
 
 type case = {label : string; labelJS : labelJS}
 
+let isJSSafePropertyName name =
+  let jsSafeRegex = {|^[A-z][A-z0-9]*$|} |> Str.regexp in
+  Str.string_match jsSafeRegex name 0
+
 let labelJSToString ?(alwaysQuotes = false) case =
   let addQuotes x =
     match alwaysQuotes with true -> x |> EmitText.quotes | false -> x
