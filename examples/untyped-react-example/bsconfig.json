@@ -7,8 +7,7 @@
     },
     "exportInterfaces": false,
     "propTypes": true,
-    "path": "../../_build/default/src/GenType.exe",
-    "fileHeader": "this is a custom header you can add to every file!"
+    "path": "../../_build/default/src/GenType.exe"
   },
   "name": "untyped-react-example",
   "bsc-flags": ["-bs-super-errors"],

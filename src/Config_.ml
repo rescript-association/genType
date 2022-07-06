@@ -21,7 +21,6 @@ type config = {
   mutable emitImportReact : bool;
   mutable emitTypePropDone : bool;
   exportInterfaces : bool;
-  fileHeader : string option;
   generatedFileExtension : string option;
   importPath : importPath;
   language : language;
@@ -43,7 +42,6 @@ let default =
     emitImportReact = false;
     emitTypePropDone = false;
     exportInterfaces = false;
-    fileHeader = None;
     generatedFileExtension = None;
     importPath = Relative;
     language = Flow;
@@ -115,7 +113,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
     let languageString = gtconf |> getString "language" in
     let moduleString = gtconf |> getStringOption "module" in
     let importPathString = gtconf |> getString "importPath" in
-    let fileHeader = gtconf |> getStringOption "fileHeader" in
     let bsCurryPathString = gtconf |> getString "bsCurryPath" in
     let exportInterfacesBool = gtconf |> getBool "exportInterfaces" in
     let generatedFileExtensionStringOption =
@@ -168,7 +165,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       | None -> default.exportInterfaces
       | Some b -> b
     in
-    let fileHeader = fileHeader in
     let generatedFileExtension = generatedFileExtensionStringOption in
     let bsVersion =
       match bsVersion with
@@ -243,7 +239,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       emitImportReact = false;
       emitTypePropDone = false;
       exportInterfaces;
-      fileHeader;
       generatedFileExtension;
       importPath;
       language;

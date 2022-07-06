@@ -1,7 +1,4 @@
-/** 
- * this is a custom header you can add to every file!
- * Untyped file generated from ImportMyBanner.res by genType.
- */
+/* Untyped file generated from ImportMyBanner.res by genType. */
 /* eslint-disable */
 
 import {make as makeNotChecked} from './MyBanner';

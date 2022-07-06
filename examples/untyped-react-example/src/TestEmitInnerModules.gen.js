@@ -1,7 +1,4 @@
-/** 
- * this is a custom header you can add to every file!
- * Untyped file generated from TestEmitInnerModules.res by genType.
- */
+/* Untyped file generated from TestEmitInnerModules.res by genType. */
 /* eslint-disable */
 
 import * as TestEmitInnerModulesBS from './TestEmitInnerModules.bs';
