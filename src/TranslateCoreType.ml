@@ -131,16 +131,6 @@ and translateCoreType_ ~config ~typeVarsGen
     ct
     |> translateCoreType_ ~config ~typeVarsGen
          ~noFunctionReturnDependencies:false ~typeEnv
-  | Ttyp_constr
-      ( Pdot (Pident {name = "Js"}, "t", _),
-        _,
-        [{ctyp_desc = Ttyp_constr _ | Ttyp_var _}] ) ->
-    (* Preserve some existing uses of Js.t(Obj.t) and Js.t('a). *)
-    translateObjType Closed []
-  | Ttyp_constr (Pdot (Pident {name = "Js"}, "t", _), _, [t]) ->
-    t
-    |> translateCoreType_ ~config ~typeVarsGen
-         ~noFunctionReturnDependencies:false ~typeEnv
   | Ttyp_object (tObj, closedFlag) ->
     let getFieldType objectField =
       match objectField with
