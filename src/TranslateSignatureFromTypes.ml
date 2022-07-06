@@ -71,7 +71,7 @@ and translateSignatureItemFromTypes ~config ~outputFileRelative ~resolver
     let name = id |> Ident.name in
     if !Debug.translation then Log_.item "Translate Sig Value %s\n" name;
     let moduleItem = Runtime.newModuleItem ~name in
-    typeEnv |> TypeEnv.updateModuleItem ~nameOpt:(Some name) ~moduleItem;
+    typeEnv |> TypeEnv.updateModuleItem ~moduleItem;
     if val_attributes |> Annotation.fromAttributes ~loc:val_loc = GenType then
       name
       |> Translation.translateValue ~attributes:val_attributes ~config

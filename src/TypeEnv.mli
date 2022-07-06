@@ -20,6 +20,4 @@ val newModuleType : name:string -> signature:Typedtree.signature -> t -> t
 val newType : name:string -> t -> unit
 val root : unit -> t
 val toString : t -> string
-
-val updateModuleItem :
-  ?nameOpt:string option -> moduleItem:Runtime.moduleItem -> t -> unit
+val updateModuleItem : moduleItem:Runtime.moduleItem -> t -> unit

@@ -97,7 +97,7 @@ let translateValueBinding ~config ~outputFileRelative ~resolver ~typeEnv
     let name = id |> Ident.name in
     if !Debug.translation then Log_.item "Translate Value Binding %s\n" name;
     let moduleItem = Runtime.newModuleItem ~name in
-    typeEnv |> TypeEnv.updateModuleItem ~nameOpt:(Some name) ~moduleItem;
+    typeEnv |> TypeEnv.updateModuleItem ~moduleItem;
     if vb_attributes |> Annotation.fromAttributes ~loc:vb_pat.pat_loc = GenType
     then
       id |> Ident.name
@@ -280,7 +280,7 @@ and translateStructureItem ~config ~outputFileRelative ~resolver ~typeEnv
     |> Translation.combine
   | {
    Typedtree.str_desc =
-      (* Bucklescript's encoding of bs.module: include with constraint. *)
+     (* Bucklescript's encoding of bs.module: include with constraint. *)
      Tstr_include
        {
          incl_mod =

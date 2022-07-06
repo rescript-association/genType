@@ -3,7 +3,6 @@ open GenTypeCommon
 type moduleEquation = {internal : bool; dep : dep}
 
 type t = {
-  mutable componentModuleItem : Runtime.moduleItem;
   mutable map : entry StringMap.t;
   mutable mapModuleTypes : (Typedtree.signature * t) StringMap.t;
   mutable moduleEquation : moduleEquation option;
@@ -18,7 +17,6 @@ and entry = Module of t | Type of string
 let createTypeEnv ~name parent =
   let moduleItem = Runtime.newModuleItem ~name in
   {
-    componentModuleItem = moduleItem;
     map = StringMap.empty;
     mapModuleTypes = StringMap.empty;
     moduleEquation = None;
@@ -161,11 +159,7 @@ let lookupModuleTypeSignature ~path typeEnv =
       (path |> Path.name);
   typeEnv |> lookupModuleType ~path:(path |> pathToList |> List.rev)
 
-let updateModuleItem ?(nameOpt = None) ~moduleItem typeEnv =
-  (match nameOpt with
-  | Some "component" -> typeEnv.componentModuleItem <- moduleItem
-  | _ -> ());
-  typeEnv.moduleItem <- moduleItem
+let updateModuleItem ~moduleItem typeEnv = typeEnv.moduleItem <- moduleItem
 
 let rec addModulePath ~typeEnv name =
   match typeEnv.parent with
