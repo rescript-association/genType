@@ -7,7 +7,6 @@ and exportModuleValue =
   | M of exportModuleItem
 
 type exportModuleItems = (string, exportModuleItem) Hashtbl.t
-
 type types = {typeForValue : type_; typeForType : type_; needsConversion : bool}
 
 type fieldInfo = {
@@ -128,8 +127,9 @@ let emitAllModuleItems ~config ~emitters ~fileName
              |> ModuleName.toString
            in
            emittedModuleItem
-           |> EmitType.emitExportConst ~config ~emitters ~name:moduleName
-                ~type_:typeForType ~typeNameIsInterface:(fun _ -> false))
+           |> EmitType.emitExportConst ~early:false ~config ~emitters
+                ~name:moduleName ~type_:typeForType
+                ~typeNameIsInterface:(fun _ -> false))
        exportModuleItems
 
 let extendExportModules ~converter ~(moduleItemsEmitter : exportModuleItems)

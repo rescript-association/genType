@@ -258,7 +258,7 @@ let typeToString ~config ~typeNameIsInterface type_ =
 let ofType ~config ?(typeNameIsInterface = fun _ -> false) ~type_ s =
   s ^ ": " ^ (type_ |> typeToString ~config ~typeNameIsInterface)
 
-let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
+let emitExportConst ~early ?(comment = "") ~config ?(docString = "") ~emitters
     ~name ~type_ ~typeNameIsInterface line =
   (match comment = "" with true -> comment | false -> "// " ^ comment ^ "\n")
   ^ docString ^ "export const "
@@ -268,9 +268,6 @@ let emitExportConst_ ~early ?(comment = "") ~config ?(docString = "") ~emitters
      | true -> Emitters.exportEarly
      | false -> Emitters.export)
        ~emitters
-
-let emitExportConst = emitExportConst_ ~early:false
-let emitExportConstEarly = emitExportConst_ ~early:true
 
 let emitExportDefault ~emitters name =
   "export default " ^ name ^ ";" |> Emitters.export ~emitters

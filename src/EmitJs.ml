@@ -185,7 +185,7 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     let valueNameTypeChecked = valueName ^ "TypeChecked" in
     let emitters =
       (importedAsName ^ restOfPath) ^ ";"
-      |> EmitType.emitExportConstEarly ~config
+      |> EmitType.emitExportConst ~config
            ~comment:
              ("In case of type error, check the type of '" ^ valueName
             ^ "' in '"
@@ -193,7 +193,8 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
              ^ ".re'" ^ " and '"
              ^ (importPath |> ImportPath.emit)
              ^ "'.")
-           ~emitters ~name:valueNameTypeChecked ~type_ ~typeNameIsInterface
+           ~early:true ~emitters ~name:valueNameTypeChecked ~type_
+           ~typeNameIsInterface
     in
     let valueNameNotDefault =
       match valueName = "default" with
@@ -205,11 +206,11 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
       |> Converter.toReason ~config ~converter ~indent ~nameGen ~variantTables
       |> EmitType.emitTypeCast ~config ~type_ ~typeNameIsInterface)
       ^ ";"
-      |> EmitType.emitExportConstEarly
+      |> EmitType.emitExportConst
            ~comment:
              ("Export '" ^ valueNameNotDefault
             ^ "' early to allow circular import from the '.bs.js' file.")
-           ~config ~emitters ~name:valueNameNotDefault ~type_:unknown
+           ~config ~early:true ~emitters ~name:valueNameNotDefault ~type_:unknown
            ~typeNameIsInterface
     in
     let emitters =
@@ -330,8 +331,8 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
        ^ (moduleAccessPath |> Runtime.emitModuleAccessPath ~config)
       |> Converter.toJS ~config ~converter ~indent ~nameGen ~variantTables)
       ^ ";"
-      |> EmitType.emitExportConst ~config ~docString ~emitters ~name ~type_
-           ~typeNameIsInterface
+      |> EmitType.emitExportConst ~config ~docString ~early:false ~emitters
+           ~name ~type_ ~typeNameIsInterface
     in
     let emitters =
       match originalName = default with
