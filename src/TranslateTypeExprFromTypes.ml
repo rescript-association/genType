@@ -352,13 +352,11 @@ let processVariant rowFields =
   in
   rowFields |> loop ~noPayloads:[] ~payloads:[] ~unknowns:[]
 
-let rec translateArrowType ~config ~typeVarsGen
-    ?(noFunctionReturnDependencies = false) ~typeEnv ~revArgDeps ~revArgs
+let rec translateArrowType ~config ~typeVarsGen ~typeEnv ~revArgDeps ~revArgs
     (typeExpr : Types.type_expr) =
   match typeExpr.desc with
   | Tlink t ->
-    translateArrowType ~config ~typeVarsGen ~noFunctionReturnDependencies
-      ~typeEnv ~revArgDeps ~revArgs t
+    translateArrowType ~config ~typeVarsGen ~typeEnv ~revArgDeps ~revArgs t
   | Tarrow (Nolabel, typeExpr1, typeExpr2, _) ->
     let {dependencies; type_} =
       typeExpr1 |> fun __x ->
@@ -366,8 +364,7 @@ let rec translateArrowType ~config ~typeVarsGen
     in
     let nextRevDeps = List.rev_append dependencies revArgDeps in
     typeExpr2
-    |> translateArrowType ~config ~typeVarsGen ~noFunctionReturnDependencies
-         ~typeEnv ~revArgDeps:nextRevDeps
+    |> translateArrowType ~config ~typeVarsGen ~typeEnv ~revArgDeps:nextRevDeps
          ~revArgs:((Nolabel, type_) :: revArgs)
   | Tarrow (((Labelled lbl | Optional lbl) as label), typeExpr1, typeExpr2, _)
     -> (
@@ -378,8 +375,8 @@ let rec translateArrowType ~config ~typeVarsGen
       in
       let nextRevDeps = List.rev_append dependencies revArgDeps in
       typeExpr2
-      |> translateArrowType ~config ~typeVarsGen ~noFunctionReturnDependencies
-           ~typeEnv ~revArgDeps:nextRevDeps
+      |> translateArrowType ~config ~typeVarsGen ~typeEnv
+           ~revArgDeps:nextRevDeps
            ~revArgs:
              ((Label (lbl |> Runtime.mangleObjectField), type1) :: revArgs)
     | Some (lbl, t1) ->
@@ -388,20 +385,15 @@ let rec translateArrowType ~config ~typeVarsGen
       in
       let nextRevDeps = List.rev_append dependencies revArgDeps in
       typeExpr2
-      |> translateArrowType ~config ~typeVarsGen ~noFunctionReturnDependencies
-           ~typeEnv ~revArgDeps:nextRevDeps
+      |> translateArrowType ~config ~typeVarsGen ~typeEnv
+           ~revArgDeps:nextRevDeps
            ~revArgs:
              ((OptLabel (lbl |> Runtime.mangleObjectField), type1) :: revArgs))
   | _ ->
     let {dependencies; type_ = retType} =
       typeExpr |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
     in
-    let allDeps =
-      List.rev_append revArgDeps
-        (match noFunctionReturnDependencies with
-        | true -> []
-        | false -> dependencies)
-    in
+    let allDeps = List.rev_append revArgDeps dependencies in
     let labeledConvertableTypes = revArgs |> List.rev in
     let argTypes = labeledConvertableTypes |> NamedArgs.group in
     let functionType =
@@ -416,8 +408,7 @@ let rec translateArrowType ~config ~typeVarsGen
     in
     {dependencies = allDeps; type_ = functionType}
 
-and translateTypeExprFromTypes_ ~config ~typeVarsGen
-    ?(noFunctionReturnDependencies = false) ~typeEnv
+and translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
     (typeExpr : Types.type_expr) =
   match typeExpr.desc with
   | Tvar None ->
@@ -431,9 +422,7 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
     (* Preserve some existing uses of Js.t(Obj.t) and Js.t('a). *)
     translateObjType Closed []
   | Tconstr (Pdot (Pident {name = "Js"}, "t", _), [t], _) ->
-    t
-    |> translateTypeExprFromTypes_ ~config ~typeVarsGen
-         ~noFunctionReturnDependencies ~typeEnv
+    t |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
   | Tobject (tObj, _) ->
     let rec getFieldTypes (texp : Types.type_expr) =
       match texp.desc with
@@ -454,21 +443,18 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
     translateObjType closedFlag fieldsTranslations
   | Tconstr (path, [{desc = Tlink te}], r) ->
     {typeExpr with desc = Types.Tconstr (path, [te], r)}
-    |> translateTypeExprFromTypes_ ~config ~typeVarsGen
-         ~noFunctionReturnDependencies:false ~typeEnv
+    |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
   | Tconstr (path, typeParams, _) ->
     let paramsTranslation =
       typeParams |> translateTypeExprsFromTypes_ ~config ~typeVarsGen ~typeEnv
     in
     translateConstr ~config ~paramsTranslation ~path ~typeEnv
   | Tpoly (t, []) ->
-    t
-    |> translateTypeExprFromTypes_ ~config ~typeVarsGen
-         ~noFunctionReturnDependencies ~typeEnv
+    t |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
   | Tarrow _ ->
     typeExpr
-    |> translateArrowType ~config ~typeVarsGen ~noFunctionReturnDependencies
-         ~typeEnv ~revArgDeps:[] ~revArgs:[]
+    |> translateArrowType ~config ~typeVarsGen ~typeEnv ~revArgDeps:[]
+         ~revArgs:[]
   | Ttuple listExp ->
     let innerTypesTranslation =
       listExp |> translateTypeExprsFromTypes_ ~config ~typeVarsGen ~typeEnv
@@ -481,10 +467,7 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
     in
     let tupleType = Tuple innerTypes in
     {dependencies = innerTypesDeps; type_ = tupleType}
-  | Tlink t ->
-    t
-    |> translateTypeExprFromTypes_ ~config ~typeVarsGen
-         ~noFunctionReturnDependencies ~typeEnv
+  | Tlink t -> t |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
   | Tvariant rowDesc -> (
     match rowDesc.row_fields |> processVariant with
     | {noPayloads; payloads = []; unknowns = []} ->
@@ -500,9 +483,7 @@ and translateTypeExprFromTypes_ ~config ~typeVarsGen
     | {noPayloads = []; payloads = [(_label, t)]; unknowns = []} ->
       (* Handle bucklescript's "Arity_" encoding in first argument of Js.Internal.fn(_,_) for uncurried functions.
          Return the argument tuple. *)
-      t
-      |> translateTypeExprFromTypes_ ~config ~typeVarsGen
-           ~noFunctionReturnDependencies ~typeEnv
+      t |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
     | {noPayloads; payloads; unknowns = []} ->
       let noPayloads =
         noPayloads
@@ -584,8 +565,7 @@ and signatureToModuleRuntimeRepresentation ~config ~typeVarsGen ~typeEnv
            | Types.Sig_value (id, {val_type = typeExpr}) ->
              let {dependencies; type_} =
                typeExpr
-               |> translateTypeExprFromTypes_ ~config ~typeVarsGen
-                    ~noFunctionReturnDependencies:false ~typeEnv
+               |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
              in
              let field =
                {
@@ -631,13 +611,10 @@ and signatureToModuleRuntimeRepresentation ~config ~typeVarsGen ~typeEnv
   in
   (dependencies, Object (Closed, fields))
 
-let translateTypeExprFromTypes ~config ?noFunctionReturnDependencies ~typeEnv
-    typeExpr =
+let translateTypeExprFromTypes ~config ~typeEnv typeExpr =
   let typeVarsGen = GenIdent.createTypeVarsGen () in
   let translation =
-    typeExpr
-    |> translateTypeExprFromTypes_ ~config ~typeVarsGen
-         ?noFunctionReturnDependencies ~typeEnv
+    typeExpr |> translateTypeExprFromTypes_ ~config ~typeVarsGen ~typeEnv
   in
   if !Debug.dependencies then
     translation.dependencies

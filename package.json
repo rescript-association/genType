@@ -10,7 +10,7 @@
     "test": "node ./scripts/run_integration_tests.js",
     "install:examples": "(cd examples/typescript-react-example && npm install)",
     "build:examples": "(cd examples/typescript-react-example && npm run clean && npm run build)",
-    "dce": "dune build && reanalyze.exe -live-paths src/ext -dce-cmt _build/default",
+    "dce": "dune build && reanalyze.exe -suppress src/compiler-libs-406  -live-paths src/ext -dce-cmt _build/default",
     "preversion": "npm test",
     "version": "node scripts/bump_version_module.js && git add -A src/",
     "postversion": "git push && git push --tags"
