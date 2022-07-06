@@ -1,15 +1,11 @@
 (copy_files# compiler-libs-406/*.{ml,mli})
-(
-  executable
-    (public_name gentype.exe)
 
-    ; The main module that will become the binary.
-    (name GenType)
-
-    (flags "-w" "+6+26+27+32+33+39")
-
-    ; Depends on:
-    (libraries unix str)
-
-    (modules_without_implementation asttypes outcometree parsetree)
-)
+(executable
+ (public_name gentype.exe)
+ (modes byte exe)
+ ; The main module that will become the binary.
+ (name GenType)
+ (flags "-w" "+6+26+27+32+33+39")
+ ; Depends on:
+ (libraries unix str)
+ (modules_without_implementation asttypes outcometree parsetree))

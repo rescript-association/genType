@@ -1,1 +1,1 @@
-(ignored_subdirs (node_modules examples))
+(dirs :standard \ node_modules examples)
