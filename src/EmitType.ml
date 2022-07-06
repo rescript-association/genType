@@ -527,41 +527,6 @@ let emitImportReact ~emitters ~config =
   | TypeScript ->
     "import * as React from 'react';" |> require ~early:true ~emitters
 
-let emitPropTypes ~config ~emitters ~indent ~name fields =
-  let indent1 = indent |> Indent.more in
-  let prefix s = "PropTypes." ^ s in
-  let rec emitType ~indent (type_ : type_) =
-    match type_ with
-    | Array (t, _) -> prefix "arrayOf" ^ "(" ^ (t |> emitType ~indent) ^ ")"
-    | Ident {name = ("bool" | "number" | "string") as id} -> id |> prefix
-    | Function _ -> "func" |> prefix
-    | GroupOfLabeledArgs fields | Object (_, fields) | Record fields ->
-      let indent1 = indent |> Indent.more in
-      prefix "shape" ^ "({"
-      ^ Indent.break ~indent:indent1
-      ^ (fields
-        |> List.filter (fun ({nameJS} : field) -> nameJS <> "children")
-        |> List.map (emitField ~indent:indent1)
-        |> String.concat ("," ^ Indent.break ~indent:indent1))
-      ^ Indent.break ~indent ^ "})"
-    | Ident _ | Null _ | Nullable _ | Option _ | Promise _ | Tuple _ | TypeVar _
-    | Variant _ ->
-      "any" |> prefix
-  and emitField ~indent ({nameJS; optional; type_} : field) =
-    nameJS ^ " : "
-    ^ (type_ |> emitType ~indent)
-    ^ match optional = Mandatory with true -> ".isRequired" | false -> ""
-  in
-  config.emitImportPropTypes <- true;
-  name ^ ".propTypes = " ^ "{"
-  ^ Indent.break ~indent:indent1
-  ^ (fields
-    |> List.filter (fun ({nameJS} : field) -> nameJS <> "children")
-    |> List.map (emitField ~indent:indent1)
-    |> String.concat ("," ^ Indent.break ~indent:indent1))
-  ^ Indent.break ~indent ^ "};"
-  |> Emitters.export ~emitters
-
 let emitImportTypeAs ~emitters ~config ~typeName ~asTypeName
     ~typeNameIsInterface ~importPath =
   let typeName = sanitizeTypeName typeName in

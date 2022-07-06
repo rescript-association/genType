@@ -28,7 +28,6 @@ type config = {
   module_ : module_;
   namespace : string option;
   platformLib : string;
-  propTypes : bool;
   shimsMap : ModuleName.t ModuleNameMap.t;
   sources : Ext_json_types.t option;
   suffix : string;
@@ -51,7 +50,6 @@ let default =
     module_ = ES6;
     namespace = None;
     platformLib = "";
-    propTypes = false;
     shimsMap = ModuleNameMap.empty;
     sources = None;
     suffix = "";
@@ -123,7 +121,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
     let generatedFileExtensionStringOption =
       gtconf |> getStringOption "generatedFileExtension"
     in
-    let propTypesBool = gtconf |> getBool "propTypes" in
     let shimsMap =
       gtconf |> getShims
       |> List.fold_left
@@ -170,9 +167,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       match exportInterfacesBool with
       | None -> default.exportInterfaces
       | Some b -> b
-    in
-    let propTypes =
-      match propTypesBool with None -> default.propTypes | Some b -> b
     in
     let fileHeader = fileHeader in
     let generatedFileExtension = generatedFileExtensionStringOption in
@@ -256,7 +250,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       module_;
       namespace;
       platformLib;
-      propTypes;
       shimsMap;
       sources;
     }

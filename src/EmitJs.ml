@@ -126,8 +126,8 @@ let emitExportFromTypeDeclarations ~config ~emitters ~env ~typeGetNormalized
        (env, emitters)
 
 let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
-    ~outputFileRelative ~resolver ~typeGetConverter ~typeGetInlined
-    ~typeGetNormalized ~typeNameIsInterface ~variantTables codeItem =
+    ~outputFileRelative ~resolver ~typeGetConverter ~typeGetNormalized
+    ~typeNameIsInterface ~variantTables codeItem =
   let language = config.language in
   if !Debug.codeItems then
     Log_.item "Code Item: %s\n"
@@ -357,17 +357,6 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
            ~typeNameIsInterface
     in
     let emitters =
-      match hookType with
-      | Some {propsType = Object (_, fields)}
-        when config.language = Untyped && config.propTypes ->
-        fields
-        |> List.map (fun (field : field) ->
-               let type_ = field.type_ |> typeGetInlined in
-               {field with type_})
-        |> EmitType.emitPropTypes ~config ~name ~emitters ~indent
-      | _ -> emitters
-    in
-    let emitters =
       match originalName = default with
       | true -> EmitType.emitExportDefault ~emitters ~config Runtime.default
       | false -> emitters
@@ -375,14 +364,14 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
     (envWithRequires, emitters)
 
 and emitCodeItems ~config ~outputFileRelative ~emitters ~moduleItemsEmitter ~env
-    ~fileName ~resolver ~typeNameIsInterface ~typeGetConverter ~typeGetInlined
+    ~fileName ~resolver ~typeNameIsInterface ~typeGetConverter
     ~typeGetNormalized ~variantTables codeItems =
   codeItems
   |> List.fold_left
        (fun (env, emitters) ->
          emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
-           ~outputFileRelative ~resolver ~typeGetConverter ~typeGetInlined
-           ~typeGetNormalized ~typeNameIsInterface ~variantTables)
+           ~outputFileRelative ~resolver ~typeGetConverter ~typeGetNormalized
+           ~typeNameIsInterface ~variantTables)
        (env, emitters)
 
 let emitRequires ~importedValueOrComponent ~early ~config ~requires emitters =
@@ -683,7 +672,6 @@ let emitTranslationAsString ~config ~fileName ~inputCmtTranslateTypeDeclarations
     translation.codeItems
     |> emitCodeItems ~config ~emitters ~moduleItemsEmitter ~env ~fileName
          ~outputFileRelative ~resolver
-         ~typeGetInlined:(typeGetNormalized_ ~env ~inline:true)
          ~typeGetNormalized:(typeGetNormalized_ ~env)
          ~typeGetConverter:(typeGetConverter_ ~env)
          ~typeNameIsInterface:(typeNameIsInterface ~env) ~variantTables
