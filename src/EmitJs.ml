@@ -616,9 +616,9 @@ let emitTranslationAsString ~config ~fileName ~inputCmtTranslateTypeDeclarations
     try exportTypeMap |> StringMap.find s
     with Not_found -> env.exportTypeMapFromOtherFiles |> StringMap.find s
   in
-  let typeGetNormalized_ ~env ?(inline = false) type_ =
+  let typeGetNormalized_ ~env type_ =
     type_
-    |> Converter.typeGetNormalized ~config ~inline ~lookupId:(lookupId_ ~env)
+    |> Converter.typeGetNormalized ~config ~inline:false ~lookupId:(lookupId_ ~env)
          ~typeNameIsInterface:(typeNameIsInterface ~env)
   in
   let typeGetConverter_ ~env type_ =
