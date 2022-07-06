@@ -29,7 +29,6 @@ type config = {
   namespace : string option;
   platformLib : string;
   propTypes : bool;
-  reasonReactPath : string;
   shimsMap : ModuleName.t ModuleNameMap.t;
   sources : Ext_json_types.t option;
   suffix : string;
@@ -53,7 +52,6 @@ let default =
     namespace = None;
     platformLib = "";
     propTypes = false;
-    reasonReactPath = "reason-react/src/ReasonReact.js";
     shimsMap = ModuleNameMap.empty;
     sources = None;
     suffix = "";
@@ -119,7 +117,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
     let languageString = gtconf |> getString "language" in
     let moduleString = gtconf |> getStringOption "module" in
     let importPathString = gtconf |> getString "importPath" in
-    let reasonReactPathString = gtconf |> getString "reasonReactPath" in
     let fileHeader = gtconf |> getStringOption "fileHeader" in
     let bsCurryPathString = gtconf |> getString "bsCurryPath" in
     let exportInterfacesBool = gtconf |> getBool "exportInterfaces" in
@@ -165,11 +162,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       | "relative" -> Relative
       | "node" -> Node
       | _ -> default.importPath
-    in
-    let reasonReactPath =
-      match reasonReactPathString with
-      | "" -> default.reasonReactPath
-      | _ -> reasonReactPathString
     in
     let bsCurryPath =
       match bsCurryPathString with "" -> None | _ -> Some bsCurryPathString
@@ -265,7 +257,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       namespace;
       platformLib;
       propTypes;
-      reasonReactPath;
       shimsMap;
       sources;
     }
