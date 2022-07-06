@@ -10,13 +10,9 @@ let name ~nameGen s =
     s
 
 let parens xs = "(" ^ (xs |> String.concat ", ") ^ ")"
-
 let arg ~nameGen x = "Arg" ^ x |> name ~nameGen
-
 let argi ~nameGen i = "Arg" ^ (i |> string_of_int) |> name ~nameGen
-
 let array xs = "[" ^ (xs |> String.concat ", ") ^ "]"
-
 let comment x = "/* " ^ x ^ " */"
 
 let curry ~args ~numArgs name =
@@ -26,7 +22,7 @@ let curry ~args ~numArgs name =
     "Curry._" ^ (n |> string_of_int) ^ parens ([name] @ args)
   | _ -> "Curry.app" ^ parens [name; args |> array]
 
-let funCall ~args ?(useCurry = false) name =
+let funCall ~args ~useCurry name =
   match useCurry with
   | true -> name |> curry ~args ~numArgs:(args |> List.length)
   | false -> name ^ parens args
@@ -48,7 +44,6 @@ let ifThenElse ~indent if_ then_ else_ =
   ^ Indent.break ~indent ^ ": " ^ else_ ~indent:indent1
 
 let newNameGen () = Hashtbl.create 1
-
 let quotes x = "\"" ^ x ^ "\""
 
 let quotesIfRequired x =
@@ -67,9 +62,6 @@ let switch ~indent ~cases expr =
   |> String.concat ""
 
 let typeOfObject x = "typeof(" ^ x ^ ")" ^ " === " ^ "'object'"
-
 let addComment ~comment x = "\n/* " ^ comment ^ " */\n  " ^ x
-
 let arrayAccess ~index value = value ^ "[" ^ string_of_int index ^ "]"
-
 let fieldAccess ~label value = value ^ "." ^ label

@@ -11,8 +11,6 @@ val forInnerModule : fileName:t -> innerModuleName:string -> t
 val fromStringUnsafe : string -> t
 (** Used to turn strings read from external files into module names. *)
 
-val propTypes : t
-
 val rescriptPervasives : t
 
 val toString : t -> string

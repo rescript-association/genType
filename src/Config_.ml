@@ -57,9 +57,6 @@ let getBool s map =
   | Some (False _) -> Some false
   | _ -> None
 
-let getString s map =
-  match map |> getOpt s with Some (Str {str}) -> str | _ -> ""
-
 let getStringOption s map =
   match map |> getOpt s with Some (Str {str}) -> Some str | _ -> None
 
