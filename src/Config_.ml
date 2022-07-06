@@ -7,10 +7,8 @@ type module_ = CommonJS | ES6
 type bsVersion = int * int * int
 
 type config = {
-  bsCurryPath : string option;
   bsDependencies : string list;
   mutable emitImportCurry : bool;
-  mutable emitImportPropTypes : bool;
   mutable emitImportReact : bool;
   mutable emitTypePropDone : bool;
   exportInterfaces : bool;
@@ -25,10 +23,8 @@ type config = {
 
 let default =
   {
-    bsCurryPath = None;
     bsDependencies = [];
     emitImportCurry = false;
-    emitImportPropTypes = false;
     emitImportReact = false;
     emitTypePropDone = false;
     exportInterfaces = false;
@@ -49,9 +45,7 @@ let bsPlatformLib ~config =
 let bsPlatformLibExtension = ".js"
 
 let getBsCurryPath ~config =
-  match config.bsCurryPath with
-  | None -> bsPlatformLib ~config ^ "/curry" ^ bsPlatformLibExtension
-  | Some s -> s
+  bsPlatformLib ~config ^ "/curry" ^ bsPlatformLibExtension
 
 type map = Ext_json_types.t String_map.t
 
@@ -99,7 +93,6 @@ let setDebug ~gtconf =
 let readConfig ~bsVersion ~getBsConfigFile ~namespace =
   let parseConfig ~bsconf ~gtconf =
     let moduleString = gtconf |> getStringOption "module" in
-    let bsCurryPathString = gtconf |> getString "bsCurryPath" in
     let exportInterfacesBool = gtconf |> getBool "exportInterfaces" in
     let generatedFileExtensionStringOption =
       gtconf |> getStringOption "generatedFileExtension"
@@ -130,9 +123,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       | None, Some "commonjs" -> CommonJS
       | None, Some ("es6" | "es6-global") -> ES6
       | _ -> default.module_
-    in
-    let bsCurryPath =
-      match bsCurryPathString with "" -> None | _ -> Some bsCurryPathString
     in
     let exportInterfaces =
       match exportInterfacesBool with
@@ -200,11 +190,9 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       | _ -> default.sources
     in
     {
-      bsCurryPath;
       bsDependencies;
       suffix;
       emitImportCurry = false;
-      emitImportPropTypes = false;
       emitImportReact = false;
       emitTypePropDone = false;
       exportInterfaces;

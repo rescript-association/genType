@@ -12,6 +12,4 @@ val fromModule : dir:string -> importExtension:string -> ModuleName.t -> t
 
 val fromStringUnsafe : string -> t
 
-val propTypes : t
-
 val toCmt : config:config -> outputFileRelative:string -> t -> string

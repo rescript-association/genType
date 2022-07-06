@@ -662,13 +662,7 @@ let emitTranslationAsString ~config ~fileName ~inputCmtTranslateTypeDeclarations
            ~importPath:(ImportPath.bsCurryPath ~config)
     | false -> env
   in
-  let finalEnv =
-    match config.emitImportPropTypes with
-    | true ->
-      ModuleName.propTypes
-      |> requireModule ~import:true ~env ~importPath:ImportPath.propTypes
-    | false -> env
-  in
+  let finalEnv = env in
   let emitters = variantTables |> emitVariantTables ~emitters in
   let emitters =
     moduleItemsEmitter

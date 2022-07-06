@@ -2,7 +2,6 @@ open GenTypeCommon
 
 type t = string * string
 
-let propTypes = ("", "prop-types")
 let bsCurryPath ~config = ("", Config_.getBsCurryPath ~config)
 
 let fromModule ~dir ~importExtension moduleName =
