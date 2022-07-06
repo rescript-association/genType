@@ -29,7 +29,6 @@ let createTypeEnv ~name parent =
   }
 
 let root () = None |> createTypeEnv ~name:"__root__"
-
 let toString typeEnv = typeEnv.name
 
 let newModule ~name typeEnv =
@@ -188,7 +187,7 @@ let rec getModuleEquations typeEnv : ResolvedName.eq list =
   | Some {dep}, Some parent ->
     [(dep |> depToResolvedName, typeEnv.name |> addModulePath ~typeEnv:parent)]
 
-let getModuleAccessPath ?(component = false) ~name typeEnv =
+let getModuleAccessPath ~name typeEnv =
   let rec accessPath typeEnv =
     match typeEnv.parent with
     | None -> Runtime.Root name (* not nested *)
@@ -197,9 +196,7 @@ let getModuleAccessPath ?(component = false) ~name typeEnv =
         ( (match parent.parent = None with
           | true -> Root typeEnv.name
           | false -> parent |> accessPath),
-          match component with
-          | true -> typeEnv.componentModuleItem
-          | false -> typeEnv.moduleItem )
+          typeEnv.moduleItem )
   in
 
   typeEnv |> accessPath
