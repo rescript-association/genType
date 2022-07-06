@@ -64,7 +64,7 @@ let codeItemToString ~config ~typeNameIsInterface (codeItem : CodeItem.t) =
   | ImportValue {importAnnotation} ->
     "ImportValue " ^ (importAnnotation.importPath |> ImportPath.dump)
 
-let emitExportType ?early ~emitters ~config ~typeGetNormalized
+let emitExportType ~emitters ~config ~typeGetNormalized
     ~typeNameIsInterface
     {CodeItem.loc; nameAs; opaque; type_; typeVars; resolvedTypeName} =
   let freeTypeVars = TypeVars.free type_ in
@@ -91,7 +91,7 @@ let emitExportType ?early ~emitters ~config ~typeGetNormalized
       (false, normalized)
   in
   resolvedTypeName |> ResolvedName.toString
-  |> EmitType.emitExportType ?early ~config ~emitters ~nameAs ~opaque ~type_
+  |> EmitType.emitExportType ~config ~emitters ~nameAs ~opaque ~type_
        ~typeNameIsInterface ~typeVars
 
 let typeNameIsInterface ~(exportTypeMap : CodeItem.exportTypeMap)

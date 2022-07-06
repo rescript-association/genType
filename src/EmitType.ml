@@ -272,11 +272,8 @@ let emitExportConst ~early ?(comment = "") ~config ?(docString = "") ~emitters
 let emitExportDefault ~emitters name =
   "export default " ^ name ^ ";" |> Emitters.export ~emitters
 
-let emitExportType ?(early = false) ~config ~emitters ~nameAs ~opaque ~type_
-    ~typeNameIsInterface ~typeVars resolvedTypeName =
-  let export =
-    match early with true -> Emitters.exportEarly | false -> Emitters.export
-  in
+let emitExportType ~config ~emitters ~nameAs ~opaque ~type_ ~typeNameIsInterface
+    ~typeVars resolvedTypeName =
   let typeParamsString = EmitText.genericsString ~typeVars in
   let isInterface = resolvedTypeName |> typeNameIsInterface in
   let resolvedTypeName =
@@ -307,7 +304,7 @@ let emitExportType ?(early = false) ~config ~emitters ~nameAs ~opaque ~type_
     ^ "export abstract class " ^ resolvedTypeName ^ typeParamsString
     ^ " { protected opaque!: " ^ typeOfOpaqueField
     ^ " }; /* simulate opaque types */" ^ exportNameAs
-    |> export ~emitters
+    |> Emitters.export ~emitters
   else
     (if isInterface && config.exportInterfaces then
      "export interface " ^ resolvedTypeName ^ typeParamsString ^ " "
@@ -317,7 +314,7 @@ let emitExportType ?(early = false) ~config ~emitters ~nameAs ~opaque ~type_
     ^ (match type_ with
       | _ -> type_ |> typeToString ~config ~typeNameIsInterface)
     ^ ";" ^ exportNameAs
-    |> export ~emitters
+    |> Emitters.export ~emitters
 
 let emitImportValueAsEarly ~emitters ~name ~nameAs importPath =
   "import "
