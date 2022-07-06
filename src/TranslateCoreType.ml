@@ -274,12 +274,10 @@ and translateCoreTypes_ ~config ~typeVarsGen ~typeEnv typeExprs :
     translation list =
   typeExprs |> List.map (translateCoreType_ ~config ~typeVarsGen ~typeEnv)
 
-let translateCoreType ~config ?noFunctionReturnDependencies ~typeEnv coreType =
+let translateCoreType ~config ~typeEnv coreType =
   let typeVarsGen = GenIdent.createTypeVarsGen () in
   let translation =
-    coreType
-    |> translateCoreType_ ~config ~typeVarsGen ?noFunctionReturnDependencies
-         ~typeEnv
+    coreType |> translateCoreType_ ~config ~typeVarsGen ~typeEnv
   in
   if !Debug.dependencies then
     translation.dependencies
