@@ -248,8 +248,7 @@ and translateCoreType_ ~config ~typeVarsGen
           |> List.map (fun (_, _, {dependencies}) -> dependencies)
           |> List.concat)
       in
-      {dependencies; type_}
-    | _ -> {dependencies = []; type_ = unknown})
+      {dependencies; type_})
   | Ttyp_package {pack_path; pack_fields} -> (
     match typeEnv |> TypeEnv.lookupModuleTypeSignature ~path:pack_path with
     | Some (signature, typeEnv) ->

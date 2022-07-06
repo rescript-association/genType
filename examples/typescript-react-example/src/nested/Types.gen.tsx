@@ -16,7 +16,7 @@ import type {Json_t as Js_Json_t} from '../../src/shims/Js.shim';
 
 import type {M_t__ as TypeNameSanitize_M_t__} from '../../src/TypeNameSanitize.gen';
 
-import type {list} from '../../src/shims/RescriptPervasives.shim';
+import type {list} from './ReasonPervasives.gen';
 
 import type {t_ as TypeNameSanitize_t_} from '../../src/TypeNameSanitize.gen';
 

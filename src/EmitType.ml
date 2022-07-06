@@ -1,6 +1,6 @@
 open GenTypeCommon
 
-let fileHeader ~config ~sourceFile =
+let fileHeader ~sourceFile =
   let makeHeader ~lines =
     match lines with
     | [line] -> "/* " ^ line ^ " */\n"

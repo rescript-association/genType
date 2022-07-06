@@ -10,7 +10,7 @@ const Curry: any = Curry__Es6Import;
 import * as RecordsBS__Es6Import from './Records.bs';
 const RecordsBS: any = RecordsBS__Es6Import;
 
-import type {list} from '../src/shims/RescriptPervasives.shim';
+import type {list} from './ReasonPervasives.gen';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type coord = {

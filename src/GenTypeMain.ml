@@ -78,7 +78,7 @@ let emitTranslation ~config ~fileName ~outputFile ~outputFileRelative ~resolver
   in
   let fileContents =
     signFile
-      (EmitType.fileHeader ~config ~sourceFile:(Filename.basename sourceFile)
+      (EmitType.fileHeader ~sourceFile:(Filename.basename sourceFile)
       ^ "\n" ^ codeText ^ "\n")
   in
   GeneratedFiles.writeFileIfRequired ~outputFile ~fileContents
