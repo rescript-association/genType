@@ -3,7 +3,6 @@ open GenTypeCommon
 type t = string * string
 
 let propTypes = ("", "prop-types")
-
 let bsCurryPath ~config = ("", Config_.getBsCurryPath ~config)
 
 let fromModule ~dir ~importExtension moduleName =
@@ -28,5 +27,4 @@ let toCmt ~config ~outputFileRelative (dir, s) =
     ^ (match config.namespace with None -> "" | Some name -> "-" ^ name)
     ^ ".cmt")
 
-let emit ~config (dir, s) =
-  match config.importPath with Relative -> (dir, s) |> dump | Node -> s
+let emit (dir, s) = (dir, s) |> dump

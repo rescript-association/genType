@@ -1,13 +1,9 @@
 module ModuleNameMap = Map.Make (ModuleName)
 
 let bsbProjectRoot = ref ""
-
 let projectRoot = ref ""
 
 type module_ = CommonJS | ES6
-
-type importPath = Relative | Node
-
 type bsVersion = int * int * int
 
 type config = {
@@ -19,7 +15,6 @@ type config = {
   mutable emitTypePropDone : bool;
   exportInterfaces : bool;
   generatedFileExtension : string option;
-  importPath : importPath;
   module_ : module_;
   namespace : string option;
   platformLib : string;
@@ -38,7 +33,6 @@ let default =
     emitTypePropDone = false;
     exportInterfaces = false;
     generatedFileExtension = None;
-    importPath = Relative;
     module_ = ES6;
     namespace = None;
     platformLib = "";
@@ -105,7 +99,6 @@ let setDebug ~gtconf =
 let readConfig ~bsVersion ~getBsConfigFile ~namespace =
   let parseConfig ~bsconf ~gtconf =
     let moduleString = gtconf |> getStringOption "module" in
-    let importPathString = gtconf |> getString "importPath" in
     let bsCurryPathString = gtconf |> getString "bsCurryPath" in
     let exportInterfacesBool = gtconf |> getBool "exportInterfaces" in
     let generatedFileExtensionStringOption =
@@ -137,12 +130,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       | None, Some "commonjs" -> CommonJS
       | None, Some ("es6" | "es6-global") -> ES6
       | _ -> default.module_
-    in
-    let importPath =
-      match importPathString with
-      | "relative" -> Relative
-      | "node" -> Node
-      | _ -> default.importPath
     in
     let bsCurryPath =
       match bsCurryPathString with "" -> None | _ -> Some bsCurryPathString
@@ -180,10 +167,8 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       Log_.item "Project root: %s\n" !projectRoot;
       if !bsbProjectRoot <> !projectRoot then
         Log_.item "bsb project root: %s\n" !bsbProjectRoot;
-      Log_.item
-        "Config module:%s importPath:%s shims:%d entries bsVersion:%d.%d.%d\n"
+      Log_.item "Config module:%s shims:%d entries bsVersion:%d.%d.%d\n"
         (match moduleString with None -> "" | Some s -> s)
-        importPathString
         (shimsMap |> ModuleNameMap.cardinal)
         v1 v2 v3);
     let namespace =
@@ -224,7 +209,6 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
       emitTypePropDone = false;
       exportInterfaces;
       generatedFileExtension;
-      importPath;
       module_;
       namespace;
       platformLib;

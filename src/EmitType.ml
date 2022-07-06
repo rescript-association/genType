@@ -26,7 +26,6 @@ let outputFileSuffix ~config =
   | _ -> generatedFilesExtension ~config ^ ".tsx"
 
 let generatedModuleExtension ~config = generatedFilesExtension ~config
-
 let shimExtension = ".shim.ts"
 
 let interfaceName ~config name =
@@ -42,18 +41,14 @@ let typeReactContext ~type_ =
 
 let typeReactElementTypeScript = ident ~builtin:true "JSX.Element"
 let typeReactChildTypeScript = ident ~builtin:true "React.ReactNode"
-
 let typeReactElement = typeReactElementTypeScript
-
 let typeReactChild = typeReactChildTypeScript
-
 let isTypeReactElement type_ = type_ == typeReactElement
 
 let typeReactDOMReDomRef =
   "React.Ref" |> ident ~builtin:true ~typeArgs:[unknown]
 
 let typeReactEventMouseT = "MouseEvent" |> ident ~builtin:true
-
 let reactRefCurrent = "current"
 
 let typeReactRef ~type_ =
@@ -327,13 +322,13 @@ let emitExportType ?(early = false) ~config ~emitters ~nameAs ~opaque ~type_
     ^ ";" ^ exportNameAs
     |> export ~emitters
 
-let emitImportValueAsEarly ~config ~emitters ~name ~nameAs importPath =
+let emitImportValueAsEarly ~emitters ~name ~nameAs importPath =
   "import "
   ^ (match nameAs with
     | Some nameAs -> "{" ^ name ^ " as " ^ nameAs ^ "}"
     | None -> name)
   ^ " from " ^ "'"
-  ^ (importPath |> ImportPath.emit ~config)
+  ^ (importPath |> ImportPath.emit)
   ^ "';"
   |> Emitters.requireEarly ~emitters
 
@@ -349,7 +344,7 @@ let emitRequire ~importedValueOrComponent ~early ~emitters ~config ~moduleName
     let moduleNameString = ModuleName.toString moduleName in
     (let es6ImportModule = moduleNameString ^ "__Es6Import" in
      commentBeforeRequire ^ "import * as " ^ es6ImportModule ^ " from '"
-     ^ (importPath |> ImportPath.emit ~config)
+     ^ (importPath |> ImportPath.emit)
      ^ "';\n" ^ "const " ^ moduleNameString ^ ": any = " ^ es6ImportModule ^ ";")
     |> (match early with
        | true -> Emitters.requireEarly
@@ -359,7 +354,7 @@ let emitRequire ~importedValueOrComponent ~early ~emitters ~config ~moduleName
     commentBeforeRequire ^ "const "
     ^ ModuleName.toString moduleName
     ^ " = require('"
-    ^ (importPath |> ImportPath.emit ~config)
+    ^ (importPath |> ImportPath.emit)
     ^ "');"
     |> (match early with
        | true -> Emitters.requireEarly
@@ -390,7 +385,7 @@ let emitImportTypeAs ~emitters ~config ~typeName ~asTypeName
       | false -> (typeName, asTypeName))
     | None -> (typeName, asTypeName)
   in
-  let importPathString = importPath |> ImportPath.emit ~config in
+  let importPathString = importPath |> ImportPath.emit in
   let importPrefix = "import type" in
   importPrefix ^ " " ^ "{" ^ typeName
   ^ (match asTypeName with Some asT -> " as " ^ asT | None -> "")

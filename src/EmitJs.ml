@@ -148,15 +148,16 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
       let valueNameNotChecked = valueName ^ "NotChecked" in
       let emitters =
         importPath
-        |> EmitType.emitImportValueAsEarly ~config ~emitters
-             ~name:firstNameInPath ~nameAs:(Some valueNameNotChecked)
+        |> EmitType.emitImportValueAsEarly ~emitters ~name:firstNameInPath
+             ~nameAs:(Some valueNameNotChecked)
       in
       (emitters, valueNameNotChecked, env)
     in
     let type_ =
       match type_ with
       | Function
-          ({argTypes = [{aType = Object (closedFlag, fields); aName}]; retType} as function_)
+          ({argTypes = [{aType = Object (closedFlag, fields); aName}]; retType}
+          as function_)
         when retType |> EmitType.isTypeFunctionComponent ~fields ->
         let componentName =
           match importFile with "." | ".." -> None | _ -> Some importFile
@@ -172,7 +173,10 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
                  | false -> field)
         in
         let function_ =
-          {function_ with argTypes = [{aType = Object (closedFlag, fields); aName}]}
+          {
+            function_ with
+            argTypes = [{aType = Object (closedFlag, fields); aName}];
+          }
         in
         Function {function_ with componentName}
       | _ -> type_
@@ -187,7 +191,7 @@ let rec emitCodeItem ~config ~emitters ~moduleItemsEmitter ~env ~fileName
             ^ "' in '"
              ^ (fileName |> ModuleName.toString)
              ^ ".re'" ^ " and '"
-             ^ (importPath |> ImportPath.emit ~config)
+             ^ (importPath |> ImportPath.emit)
              ^ "'.")
            ~emitters ~name:valueNameTypeChecked ~type_ ~typeNameIsInterface
     in

@@ -6,7 +6,7 @@ val bsCurryPath : config:config -> t
 
 val dump : t -> string
 
-val emit : config:config -> t -> string
+val emit : t -> string
 
 val fromModule : dir:string -> importExtension:string -> ModuleName.t -> t
 
