@@ -1,4 +1,5 @@
 # master
+- Drop support for "bs-platform".
 
 # 4.4.0
 - Flow: use explicit suppression codes.
