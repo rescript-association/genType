@@ -6,6 +6,5 @@ var make = ImportIndexGen;
 
 export {
   make ,
-  
 }
 /* make Not a pure module */

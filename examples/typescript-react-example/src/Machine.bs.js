@@ -7,6 +7,5 @@ var a = /* A */{
 
 export {
   a ,
-  
 }
 /* No side effect */

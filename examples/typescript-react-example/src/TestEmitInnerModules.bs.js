@@ -21,6 +21,5 @@ var Outer = {
 export {
   Inner ,
   Outer ,
-  
 }
 /* No side effect */

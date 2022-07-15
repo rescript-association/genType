@@ -21,6 +21,5 @@ Curry._1(MyErrorHandler.notify, "abc");
 export {
   Error1 ,
   MyErrorHandler ,
-  
 }
 /* MyErrorHandler Not a pure module */

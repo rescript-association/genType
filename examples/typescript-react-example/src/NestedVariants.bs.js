@@ -144,6 +144,5 @@ export {
   testBoxedBinary ,
   testUnboxedBinary ,
   testInline ,
-  
 }
 /* No side effect */

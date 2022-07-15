@@ -64,6 +64,5 @@ export {
   testConvert ,
   SomeFunctor ,
   someFunctorAsFunction ,
-  
 }
 /* No side effect */

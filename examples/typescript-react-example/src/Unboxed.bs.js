@@ -12,6 +12,5 @@ function r2Test(x) {
 export {
   testV1 ,
   r2Test ,
-  
 }
 /* No side effect */

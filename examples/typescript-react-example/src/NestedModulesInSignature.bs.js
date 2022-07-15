@@ -7,6 +7,5 @@ var Universe = {
 
 export {
   Universe ,
-  
 }
 /* No side effect */

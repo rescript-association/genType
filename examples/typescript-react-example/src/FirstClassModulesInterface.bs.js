@@ -8,6 +8,5 @@ var r = {
 
 export {
   r ,
-  
 }
 /* No side effect */

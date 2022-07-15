@@ -21,7 +21,7 @@
     "@types/node": "^13.13.4",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
-    "rescript": "^9.1.4",
+    "rescript": "^10.0.0-beta.3",
     "typescript": "3.9.2"
   },
   "browserslist": [

@@ -22,6 +22,5 @@ export {
   convertInterface ,
   convertRecord ,
   convertFirstClassModuleWithTypeEquations ,
-  
 }
 /* No side effect */

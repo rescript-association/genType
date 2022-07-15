@@ -9,6 +9,5 @@ var make = ExportWithRename;
 
 export {
   make ,
-  
 }
 /* No side effect */

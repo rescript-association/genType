@@ -11,6 +11,5 @@ function foo(prim) {
 export {
   make ,
   foo ,
-  
 }
 /* make Not a pure module */

@@ -5,6 +5,5 @@ var y = 34;
 
 export {
   y ,
-  
 }
 /* No side effect */

@@ -102,6 +102,5 @@ export {
   restResult1 ,
   restResult2 ,
   restResult3 ,
-  
 }
 /* No side effect */

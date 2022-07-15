@@ -6,6 +6,5 @@ var make = MyInputGen;
 
 export {
   make ,
-  
 }
 /* make Not a pure module */

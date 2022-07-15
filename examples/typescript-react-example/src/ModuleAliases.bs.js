@@ -43,6 +43,5 @@ export {
   testNested ,
   testInner ,
   testInner2 ,
-  
 }
 /* No side effect */

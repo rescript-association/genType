@@ -10,6 +10,5 @@ var make2 = ImportHookDefaultGen;
 export {
   make ,
   make2 ,
-  
 }
 /* make Not a pure module */

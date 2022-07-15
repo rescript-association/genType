@@ -9,6 +9,5 @@ var make = DynamicallyLoadedComponent;
 
 export {
   make ,
-  
 }
 /* No side effect */
