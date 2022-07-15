@@ -1,7 +1,7 @@
 /* Untyped file generated from App.res by genType. */
 /* eslint-disable */
 
-import * as Curry from 'bs-platform/lib/es6/curry.js';
+import * as Curry from 'rescript/lib/es6/curry.js';
 
 import * as AppBS from './App.bs';
 

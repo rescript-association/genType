@@ -1,15 +1,11 @@
 module ModuleNameMap = Map.Make (ModuleName)
 
 let bsbProjectRoot = ref ""
-
 let projectRoot = ref ""
 
 type language = Flow | TypeScript | Untyped
-
 type module_ = CommonJS | ES6
-
 type importPath = Relative | Node
-
 type bsVersion = int * int * int
 
 type config = {
@@ -186,7 +182,7 @@ let readConfig ~bsVersion ~getBsConfigFile ~namespace =
     let v1, v2, v3 = bsVersion in
     let platformLib =
       match externalStdlib with
-      | None -> if v1 >= 9 && v2 >= 1 then "rescript" else "bs-platform"
+      | None -> "rescript"
       | Some externalStdlib -> externalStdlib
     in
     if !Debug.config then (
