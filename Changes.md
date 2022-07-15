@@ -1,4 +1,6 @@
 # master
+
+# 4.5.0
 - Drop support for "bs-platform".
 
 # 4.4.0
