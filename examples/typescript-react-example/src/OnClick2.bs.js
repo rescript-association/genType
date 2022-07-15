@@ -13,6 +13,5 @@ var make = OnClick2;
 
 export {
   make ,
-  
 }
 /* react Not a pure module */

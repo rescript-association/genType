@@ -22,7 +22,6 @@ function printVariantWithPayload(x) {
   }
   var payload = x.VAL;
   console.log("printVariantWithPayload x:", payload.x, "y:", payload.y);
-  
 }
 
 function testManyPayloads(x) {
@@ -42,7 +41,6 @@ function printManyPayloads(x) {
     return ;
   }
   console.log("printManyPayloads one:", x.VAL);
-  
 }
 
 function testSimpleVariant(x) {
@@ -94,6 +92,5 @@ export {
   printVariantWithPayloads ,
   testVariant1Int ,
   testVariant1Object ,
-  
 }
 /* No side effect */

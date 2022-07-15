@@ -16,6 +16,5 @@ var M = {
 export {
   test ,
   M ,
-  
 }
 /* No side effect */

@@ -5,6 +5,5 @@ var x = 42;
 
 export {
   x ,
-  
 }
 /* No side effect */

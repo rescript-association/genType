@@ -7,7 +7,6 @@ function foo(t) {
   } else {
     console.log("A");
   }
-  
 }
 
 var X = {
@@ -22,6 +21,5 @@ var Y = {
 export {
   X ,
   Y ,
-  
 }
 /* No side effect */

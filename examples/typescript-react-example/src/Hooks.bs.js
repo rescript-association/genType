@@ -14,9 +14,9 @@ function Hooks(Props) {
   var count = match[0];
   return React.createElement("div", undefined, React.createElement("p", undefined, "Hooks example " + (vehicle.name + (" clicked " + (String(count) + " times")))), React.createElement("button", {
                   onClick: (function (param) {
-                      return Curry._1(setCount, (function (param) {
-                                    return count + 1 | 0;
-                                  }));
+                      Curry._1(setCount, (function (param) {
+                              return count + 1 | 0;
+                            }));
                     })
                 }, "Click me"), React.createElement(ImportHooks.make, {
                   person: {
@@ -193,6 +193,5 @@ export {
   RenderPropRequiresConversion ,
   aComponentWithChildren ,
   DD ,
-  
 }
 /* testForwardRef Not a pure module */

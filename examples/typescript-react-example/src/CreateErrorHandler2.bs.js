@@ -18,6 +18,5 @@ var MyErrorHandler = ErrorHandler.Make(Error2);
 export {
   Error2 ,
   MyErrorHandler ,
-  
 }
 /* MyErrorHandler Not a pure module */

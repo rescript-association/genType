@@ -11,6 +11,5 @@ var InnerModule = {
 
 export {
   InnerModule ,
-  
 }
 /* No side effect */

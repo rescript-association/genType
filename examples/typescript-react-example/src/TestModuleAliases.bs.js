@@ -40,6 +40,5 @@ export {
   testInner1Expanded ,
   testInner2 ,
   testInner2Expanded ,
-  
 }
 /* No side effect */

@@ -12,6 +12,5 @@ function useTypeImportedInOtherModule(x) {
 export {
   useGetProp ,
   useTypeImportedInOtherModule ,
-  
 }
 /* No side effect */

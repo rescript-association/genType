@@ -38,6 +38,5 @@ var notNested = 1;
 export {
   notNested ,
   Universe ,
-  
 }
 /* No side effect */

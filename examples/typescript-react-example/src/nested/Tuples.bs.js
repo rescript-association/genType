@@ -68,6 +68,5 @@ export {
   getFirstName ,
   marry ,
   changeSecondAge ,
-  
 }
 /* No side effect */

@@ -206,6 +206,5 @@ export {
   cmp ,
   eqU ,
   eq ,
-  
 }
 /* No side effect */

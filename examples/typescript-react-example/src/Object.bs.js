@@ -14,6 +14,5 @@ var st2 = {
 export {
   st ,
   st2 ,
-  
 }
 /* No side effect */

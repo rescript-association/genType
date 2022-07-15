@@ -7,6 +7,5 @@ function convertT3(x) {
 
 export {
   convertT3 ,
-  
 }
 /* No side effect */

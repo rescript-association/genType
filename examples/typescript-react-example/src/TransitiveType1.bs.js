@@ -12,6 +12,5 @@ function convertAlias(x) {
 export {
   convert ,
   convertAlias ,
-  
 }
 /* No side effect */

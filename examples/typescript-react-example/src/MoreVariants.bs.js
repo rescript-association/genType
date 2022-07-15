@@ -12,6 +12,5 @@ function testWithoutRenaming(x) {
 export {
   testWithRenaming ,
   testWithoutRenaming ,
-  
 }
 /* No side effect */

@@ -8,6 +8,5 @@ function bar(x) {
 
 export {
   bar ,
-  
 }
 /* No side effect */

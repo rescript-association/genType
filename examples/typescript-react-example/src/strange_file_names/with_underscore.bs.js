@@ -5,6 +5,5 @@ var x = 123;
 
 export {
   x ,
-  
 }
 /* No side effect */
