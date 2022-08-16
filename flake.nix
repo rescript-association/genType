@@ -44,11 +44,11 @@
           buildPhase = "dune build";
           installPhase = ''
             mkdir -p $out
-            cp -r _build/default/src/GenType.exe $out
+            cp -r _build/default/src $out
           '';
         };
-      in {
 
+      in {
         packages = flake-utils.lib.flattenTree { default = gentype; };
       });
 }
