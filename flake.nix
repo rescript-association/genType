@@ -3,10 +3,7 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, nixpkgs, flake-utils }:
@@ -40,7 +37,7 @@
         gentype = pkgs.stdenv.mkDerivation {
           name = "gentype";
           src = gentype-source + "/libexec/gentype/deps/gentype";
-          buildInputs = with pkgs; [ ocaml dune_2 ];
+          buildInputs = with pkgs; [ ocaml dune_1 ];
           buildPhase = "dune build";
           installPhase = ''
             mkdir -p $out
@@ -48,7 +45,5 @@
           '';
         };
 
-      in {
-        packages = flake-utils.lib.flattenTree { default = gentype; };
-      });
+      in { packages = flake-utils.lib.flattenTree { default = gentype; }; });
 }
