@@ -27,7 +27,7 @@
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
     "concurrently": "^3.5.0",
-    "webpack": "^5.59.1",
+    "webpack": "^5.76.0",
     "webpack-cli": "^4.9.1"
   }
 }
