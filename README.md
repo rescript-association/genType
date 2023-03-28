@@ -1,3 +1,5 @@
+### Note: The project has moved into the compiler.
+
 # ReScript genType
 
 > The latest genType docs have been migrated to the [ReScript website](https://rescript-lang.org/docs/gentype/latest/introduction).
