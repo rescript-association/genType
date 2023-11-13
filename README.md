@@ -1,4 +1,4 @@
-### Note: The project has moved into the compiler and will be released with `rescript@10.1` and above.
+> ⚠️ This project has moved into the [rescript-compiler](https://github.com/rescript-lang/rescript-compiler/tree/master/jscomp/gentype) and is part of `rescript@10.1` and above.
 
 # ReScript genType
 
