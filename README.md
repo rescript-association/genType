@@ -1,4 +1,4 @@
-### Note: The project has moved into the compiler.
+### Note: The project has moved into the compiler and will be released with `rescript@10.1` and above.
 
 # ReScript genType
 
