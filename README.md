@@ -1,4 +1,6 @@
 > ⚠️ This project has moved into the [rescript-compiler](https://github.com/rescript-lang/rescript-compiler/tree/master/jscomp/gentype) and is part of `rescript@10.1` and above.
+>
+> Please report any issues regarding ReScript -> TypeScript compilation in the [compiler issue tracker](https://github.com/rescript-lang/rescript-compiler/issues).
 
 # ReScript genType
 
